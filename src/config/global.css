@@ -1,0 +1,77 @@
+:root {
+  --primary-color: #e85e24;
+
+  --default-black: #18191f;
+
+  --top-nav-height: 5.2rem;
+
+  --bottom-nav-height: 8rem;
+}
+
+input {
+  padding: 0;
+}
+
+.dColor {
+  color: var(--primary-color);
+}
+.nColor {
+  color: rgba(24, 25, 31, 1);
+}
+.nColor6 {
+  color: rgba(24, 25, 31, 0.6);
+}
+.nColor7 {
+  color: rgba(24, 25, 31, 0.7);
+}
+.s12 {
+  font-size: 1.2rem;
+}
+.s14 {
+  font-size: 1.4rem;
+}
+.s16 {
+  font-size: 1.6rem;
+}
+.s18 {
+  font-size: 1.8rem;
+}
+.s20 {
+  font-size: 2rem;
+}
+.s22 {
+  font-size: 2.2rem;
+}
+.s24 {
+  font-size: 2.4rem;
+}
+
+.wlighter {
+  font-weight: lighter;
+}
+.wnormal {
+  font-weight: normal;
+}
+.wbold {
+  font-weight: bold;
+}
+.wbolder {
+  font-weight: bolder;
+}
+.w600 {
+  font-weight: 600;
+}
+.w700 {
+  font-weight: 700;
+}
+.tleft {
+  text-align: left;
+}
+
+.tcenter {
+  text-align: center;
+}
+
+.tright {
+  text-align: right;
+}
