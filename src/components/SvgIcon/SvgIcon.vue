@@ -1,5 +1,5 @@
 <template>
-  <svg>
+  <svg class="svg">
     <use :xlink:href="`#icon-${iconName}`" />
   </svg>
 </template>
@@ -14,3 +14,11 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.svg {
+  outline: none;
+}
+</style>
+
+
+

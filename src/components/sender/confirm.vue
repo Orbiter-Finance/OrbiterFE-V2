@@ -14,9 +14,8 @@
            :key="item.title"
            class="contentItem">
         <div class="up">
-          <svg-icon style="margin-right:1.4rem;width:1.2rem;height:1.2rem"
+          <svg-icon style="margin-right:1.4rem;width:1.5rem;height:1.5rem"
                     :iconName="item.icon"></svg-icon>
-
           <span style="margin-right:1rem;font-weight:600">{{item.title}}</span>
           <o-tooltip placement="topLeft">
             <template v-slot:titleDesc>
@@ -26,8 +25,11 @@
                       style="width:1.5rem;height:1.5rem;"
                       iconName="help"></svg-icon>
           </o-tooltip>
-          <span v-if="item.desc"
+          <span v-if="!item.textBold && item.desc"
                 class="right">{{item.desc}}</span>
+          <span v-else-if="item.textBold && item.desc"
+                class="right"
+                style="font-weight:600">{{item.desc}}</span>
         </div>
         <div v-if="item.descInfo && item.descInfo.length > 0"
              class="descBottom">
@@ -46,6 +48,8 @@
             </span>
           </div>
         </div>
+        <div v-if="item.haveSep"
+             class="sep"></div>
       </div>
       <o-button style="margin-top:2.5rem"
                 width='29.5rem'
@@ -104,25 +108,36 @@ export default {
     confirmData() {
       return [
         {
+          icon: 'withholding_gas_cost',
+          title: 'Withholding Gas Fee',
+          notice: 'Maker will charge Sender a fixed fee to cover gas fee incurred on the destination network.',
+          desc: (this.$store.getters.realSelectMakerInfo ? this.$store.getters.realSelectMakerInfo.tradingFee : 0) + ' ' + this.$store.getters.realSelectMakerInfo.tName
+        },
+        {
+          icon: 'security',
+          title: 'Security Code',
+          notice: 'In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information for the transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.',
+          desc: transferCalculate.realTransferOPID(),
+          haveSep: true
+        },
+        {
+          icon: 'send',
+          title: 'Total Send',
+          notice: 'Include the amount transferred by Sender and withholding gas fee.',
+          desc: transferCalculate.realTransferAmount() + ' ' + this.$store.getters.realSelectMakerInfo.tName,
+          textBold: true
+        },
+        {
+          icon: 'receive',
+          title: 'Received',
+          desc: orbiterCore.getToAmountFromUserAmount(new BigNumber(this.$store.state.transferData.transferValue).plus(new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)), this.$store.getters.realSelectMakerInfo, false) + ' ' + this.$store.getters.realSelectMakerInfo.tName,
+          textBold: true
+        },
+        {
           icon: 'router',
-          title: 'Routes',
+          title: 'Maker Routes',
           notice: 'After a sender submits a transfer application, the asset is transferred to the Maker\'s address and the Maker will provide liquidity. Orbiter\'s staking agreement ensures the security of the asset.',
           descInfo: this.$store.state.confirmData.routeDescInfo
-        },
-        // {
-        //   icon: 'gas_cost',
-        //   title: 'Gas Fee',
-        //   desc: this.gasCost()
-        // },
-        // {
-        //   icon: 'trading_fee',
-        //   title: 'Trading Fee',
-        //   desc: this.$store.state.transferData.selectMakerInfo.tradingFee + this.$store.state.transferData.selectTokenInfo.token
-        // },
-        {
-          icon: 'time_spent',
-          title: 'Time Spend',
-          desc: transferCalculate.transferSpentTime(this.$store.state.transferData.fromChainID, this.$store.state.transferData.toChainID)
         },
       ]
     }
@@ -143,7 +158,8 @@ export default {
       try {
         const syncWallet = await zksync.Wallet.fromEthSigner(ethWallet.getSigner(walletAccount), syncProvider);
         // const state = await syncWallet.getAccountState();
-        var rAmount = new BigNumber(this.$store.state.transferData.transferValue).multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
+
+        var rAmount = (new BigNumber(this.$store.state.transferData.transferValue).plus(new BigNumber(selectMakerInfo.tradingFee))).multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
         var p_text = toChainID.toString().length === 1 ? ('900' + toChainID.toString()) : ('90' + toChainID.toString())
         var tValue = orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text)
@@ -272,9 +288,9 @@ export default {
           that.$store.commit('updateConfirmRouteDescInfo', [
             {
               no: 1,
-              amount: that.transferValue,
+              amount: new BigNumber(that.transferValue).plus(new BigNumber(that.$store.getters.realSelectMakerInfo.tradingFee)),
               coin: that.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(that.$store.state.transferData.selectMakerInfo.makerAddress),
+              toAddress: util.shortAddress(that.$store.getters.realSelectMakerInfo.makerAddress),
             }
           ])
           this.RealTransfer()
@@ -314,7 +330,6 @@ export default {
         Middle.$emit('connectWallet', true)
       } else {
         if (this.$store.state.web3.networkId.toString() !== this.$env.localChainID_netChainID[this.$store.state.transferData.fromChainID]) {
-          // logined, add chain
           this.addChainNetWork()
         } else {
           // sendTransfer
@@ -322,7 +337,7 @@ export default {
           var that = this
           var fromChainID = this.$store.state.transferData.fromChainID
           var toChainID = this.$store.state.transferData.toChainID
-          var selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+          var selectMakerInfo = this.$store.getters.realSelectMakerInfo
 
           if (fromChainID === 3 || fromChainID === 33) {
             this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
@@ -335,7 +350,7 @@ export default {
               })
             } else {
               var to = selectMakerInfo.makerAddress
-              var rAmount = new BigNumber(this.$store.state.transferData.transferValue).multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
+              var rAmount = (new BigNumber(this.$store.state.transferData.transferValue).plus(new BigNumber(selectMakerInfo.tradingFee))).multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
               var rAmountValue = rAmount.toFixed()
               var p_text = toChainID.toString().length === 1 ? ('900' + toChainID.toString()) : ('90' + toChainID.toString())
               var tValue = orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text)
@@ -428,7 +443,7 @@ export default {
         align-items: center;
         display: flex;
         .right {
-          color: #e85e24;
+          color: rgba($color: #18191f, $alpha: 0.7);
           text-align: right;
           font-weight: 400;
           position: absolute;
@@ -437,12 +452,17 @@ export default {
       }
       .descBottom {
         max-height: 9.2rem;
-        padding: 1rem 1.5rem;
-        border-radius: 1rem;
-        border: 0.15rem solid var(--default-black);
+        padding: 1rem 1.5rem 0 2.5rem;
         overflow-y: scroll;
         margin: 1rem 0.5rem 0;
         text-align: left;
+      }
+      .sep {
+        box-sizing: border-box;
+        background-color: #ffece6;
+        height: 0.1rem;
+        border-top: 0.1rem dashed rgba(24, 25, 31, 0.2);
+        margin-top: 1.6rem;
       }
     }
   }

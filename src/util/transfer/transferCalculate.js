@@ -34,27 +34,62 @@ export default {
   // '5': '4', // rinkeby
   // '22': '421611', // arbitrum test
   // '33': '4', // zktest
+  async getTransferGasLimit(fromChainID) {
+    if (fromChainID === 3 || fromChainID === 33) {
+      const syncHttpProvider = await zksync.getDefaultProvider(
+        fromChainID === 33 ? 'rinkeby' : 'mainnet',
+      )
+      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let transferAddress = selectMakerInfo.makerAddress
+        ? selectMakerInfo.makerAddress
+        : null
+      if (!transferAddress) {
+        return null
+      }
+      let zkTokenList =
+        fromChainID === 3
+          ? store.state.zktokenList.mainnet
+          : store.state.zktokenList.rinkeby
+      let tokenAddress =
+        fromChainID === selectMakerInfo.c1ID
+          ? selectMakerInfo.t1Address
+          : selectMakerInfo.t2Address
+      var tokenList = zkTokenList.filter(
+        (item) => item.address === tokenAddress,
+      )
+      let resultToken = tokenList.length > 0 ? tokenList[0] : null
+      if (!resultToken) {
+        return null
+      }
+      const fee = await syncHttpProvider.getTransactionFee(
+        'Transfer',
+        transferAddress,
+        resultToken.id,
+      )
+      return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
+    }
+  },
   transferSpentTime(fromChainID, toChainID) {
     let timeSpent = 0
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
-      timeSpent = 1
+      timeSpent = 30
     }
     if (fromChainID === 2 || fromChainID === 22) {
-      timeSpent = 0.5
+      timeSpent = 15
     }
     if (fromChainID === 3 || fromChainID === 33) {
-      timeSpent = 0.5
+      timeSpent = 5
     }
     if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
-      timeSpent += 1
+      timeSpent += 30
     }
     if (toChainID === 2 || toChainID === 22) {
-      timeSpent += 0.5
+      timeSpent += 15
     }
     if (toChainID === 3 || toChainID === 33) {
-      timeSpent += 0.5
+      timeSpent += 5
     }
-    let timeSpentStr = '~' + timeSpent + 'min'
+    let timeSpentStr = timeSpent + 's'
     return timeSpentStr
   },
   async transferSpentGas(fromChainID) {
@@ -89,9 +124,9 @@ export default {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet',
       )
-      let transferAddress = store.state.transferData.selectMakerInfo
-        .makerAddress
-        ? store.state.transferData.selectMakerInfo.makerAddress
+      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let transferAddress = selectMakerInfo.makerAddress
+        ? selectMakerInfo.makerAddress
         : null
       if (!transferAddress) {
         return null
@@ -101,9 +136,9 @@ export default {
           ? store.state.zktokenList.mainnet
           : store.state.zktokenList.rinkeby
       let tokenAddress =
-        fromChainID === store.state.transferData.selectMakerInfo.c1ID
-          ? store.state.transferData.selectMakerInfo.t1Address
-          : store.state.transferData.selectMakerInfo.t2Address
+        fromChainID === selectMakerInfo.c1ID
+          ? selectMakerInfo.t1Address
+          : selectMakerInfo.t2Address
       var tokenList = zkTokenList.filter(
         (item) => item.address === tokenAddress,
       )
@@ -166,17 +201,19 @@ export default {
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
-        return ' 8.5min'
+        return ' 9.25min'
       }
       if (toChainID === 3 || toChainID === 33) {
         // eth -> zk
-        return ' 8.5min'
+        return ' 9.5min'
       }
     }
   },
   async transferOrginGas(fromChainID, toChainID) {
     let resultGas = 0
+    let selectMakerInfo = store.getters.realSelectMakerInfo
     if (fromChainID === 2 || fromChainID === 22) {
+      // Ar get
       let fromGasPrice = await this.getGasPrice(fromChainID)
       // AR WithDraw
       let ARWithDrawARGas = fromGasPrice * AR_ERC20_WITHDRAW_ONAR
@@ -191,9 +228,8 @@ export default {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet',
       )
-      let transferAddress = store.state.transferData.selectMakerInfo
-        .makerAddress
-        ? store.state.transferData.selectMakerInfo.makerAddress
+      let transferAddress = selectMakerInfo.makerAddress
+        ? selectMakerInfo.makerAddress
         : null
       if (transferAddress) {
         const zkWithDrawFee = await syncHttpProvider.getTransactionFee(
@@ -311,8 +347,10 @@ export default {
   realTransferAmount() {
     let fromChainID = store.state.transferData.fromChainID
     let toChainID = store.state.transferData.toChainID
-    let selectMakerInfo = store.state.transferData.selectMakerInfo
-    let userValue = store.state.transferData.transferValue
+    let selectMakerInfo = store.getters.realSelectMakerInfo
+    let userValue = new BigNumber(store.state.transferData.transferValue).plus(
+      new BigNumber(selectMakerInfo.tradingFee),
+    )
     if (!fromChainID || !userValue) {
       return 0
     }

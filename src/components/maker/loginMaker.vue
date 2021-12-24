@@ -35,7 +35,7 @@
            style="margin-top:2rem">Daily Earnings</div>
       <div class="charts"
            id="report"
-           style="width:29.5rem;height:6.5rem">Here is the histogram</div>
+           style="width:29.5rem;height:6.5rem">This is bar graph</div>
     </o-box-content>
     <o-box-content class="makerLoginBottom"
                    style="width:34.5rem">

@@ -3,6 +3,7 @@
        :style="{width:width,height:height}">
     <button :style="{background:btnBgc,color:btnColor,fontSize:fontSize,boxShadow:boxShadow}"
             @click="handleClick"
+            :disabled='isDisabled'
             class="obtn">
       <label class="btnText">
         <slot></slot>
@@ -39,6 +40,10 @@ export default {
     boxShadow: {
       type: String,
       default: '0px 0.8rem 1.2rem 0px rgba(228,22,22,0.4)'
+    },
+    isDisabled: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -76,6 +81,10 @@ export default {
     bottom: 0.3rem;
     border-radius: 2rem;
     border: 0;
+  }
+  .obtn:disabled {
+    background: radial-gradient(at 50% 0, #d0cbca, #776e6e) !important;
+    box-shadow: 0px 0.8rem 1.2rem 0px rgba(151, 144, 143, 0.4) !important;
   }
 }
 </style>

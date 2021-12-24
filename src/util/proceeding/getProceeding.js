@@ -414,7 +414,6 @@ async function confirmMakerTransaction(
   }, 10 * 1000)
 }
 
-// Confirm number of current transaction
 async function getConfirmations(localChainID, txHash) {
   try {
     const web3 = localWeb3(localChainID)

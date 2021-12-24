@@ -27,6 +27,7 @@ function isZKChain(chain) {
   return false
 }
 
+
 function getToAmountFromUserAmount(userAmount, selectMakerInfo, isWei) {
   let toAmount_tradingFee = new BigNumber(userAmount).minus(
     new BigNumber(selectMakerInfo.tradingFee),
@@ -68,6 +69,7 @@ function getTAmountFromRAmount(chain, amount, pText) {
       error: 'the pText size invalid',
     }
   }
+
   let validDigit = AmountValidDigits(chain, amount) // 10 11
   var amountLength = amount.toString().length
   if (amountLength < SIZE_OP.P_NUMBER) {
@@ -123,6 +125,7 @@ function getPTextFromTAmount(chain, amount) {
       error: "the token doesn't support that many decimal digits",
     }
   }
+
   let validDigit = AmountValidDigits(chain, amount) // 10 11
   var amountLength = amount.toString().length
   if (amountLength < SIZE_OP.P_NUMBER) {
@@ -164,6 +167,7 @@ function getRAmountFromTAmount(chain, amount) {
       error: "the token doesn't support that many decimal digits",
     }
   }
+
   let validDigit = AmountValidDigits(chain, amount) // 10 11
   var amountLength = amount.toString().length
   if (amountLength < SIZE_OP.P_NUMBER) {
@@ -233,6 +237,7 @@ function AmountMaxDigits(chain) {
   return amountRegion.max.toFixed().length
 }
 
+
 function AmountValidDigits(chain, amount) {
   let amountMaxDigits = AmountMaxDigits(chain)
   if (amountMaxDigits.error) {
@@ -252,13 +257,14 @@ function AmountValidDigits(chain, amount) {
   }
 }
 
-// Remove invalid zeros on both sides of the string
+
 function removeSidesZero(param) {
   if (typeof param !== 'string') {
     return 'param must be string'
   }
   return param.replace(/^0+(\d)|(\d)0+$/gm, '$1$2')
 }
+
 
 function isAmountInRegion(amount, chain) {
   if (!isChainSupport(chain)) {
@@ -285,7 +291,6 @@ function pTextFormatZero(num) {
   return (Array(SIZE_OP.P_NUMBER).join(0) + num).slice(-SIZE_OP.P_NUMBER)
 }
 
-// Determine whether the amount is compliant according to the chain and amount
 function isAmountValid(chain, amount) {
   if (!isChainSupport(chain)) {
     return {
@@ -299,6 +304,7 @@ function isAmountValid(chain, amount) {
       error: "the token doesn't support that many decimal digits",
     }
   }
+  
   let validDigit = AmountValidDigits(chain, amount) // 10 11
   var amountLength = amount.toString().length
   if (amountLength < SIZE_OP.P_NUMBER) {
@@ -307,7 +313,7 @@ function isAmountValid(chain, amount) {
       error: 'Amount size must be greater than pNumberSize',
     }
   }
-  // Used to compare the minimum and maximum values, zk special processing
+  
   let rAmount = amount
   if (isZKChain(chain)) {
     rAmount = removeSidesZero(amount.toString())

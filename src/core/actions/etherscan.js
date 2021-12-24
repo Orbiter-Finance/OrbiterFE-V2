@@ -1,4 +1,4 @@
-// util/etherscan.js
+// util/ethersca.js
 import Axios from '../utils/Axios'
 import axios from 'axios'
 import config from '../utils/config'

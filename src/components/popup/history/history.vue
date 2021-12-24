@@ -6,7 +6,7 @@
       <div class="topItem">
         <span>History</span>
         <div @click="closerButton">
-          <svg-icon style="width:2rem;height:2rem"
+          <svg-icon style="width:1.5rem;height:1.5rem"
                     iconName="close"></svg-icon>
         </div>
       </div>
@@ -43,7 +43,7 @@
         </span>
       </div>
       <div v-else
-           style="margin-top:5rem">No History</div>
+           class="noContentItem">No history</div>
     </div>
   </o-box-content>
 </template>
@@ -125,14 +125,14 @@ export default {
     position: relative;
     .topItem {
       width: 100%;
-      height: 2.4rem;
-      font-size: 2.4rem;
+      height: 2rem;
+      font-size: 2rem;
       font-weight: bold;
-      line-height: 2.4rem;
+      line-height: 2rem;
       color: var(--default-black);
       display: flex;
       justify-content: space-between;
-      padding: 0 2.5rem;
+      padding: 0 1rem;
       margin-bottom: 1.5rem;
     }
     .contentTopItem {
@@ -168,6 +168,11 @@ export default {
         height: 1.2rem;
         margin-right: 0.5rem;
       }
+    }
+    .noContentItem {
+      color: rgba($color: #18191f, $alpha: 0.15);
+      font-size: 1.4rem;
+      margin-top: 10rem;
     }
   }
 }

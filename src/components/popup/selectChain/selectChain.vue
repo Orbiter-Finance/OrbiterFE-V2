@@ -6,7 +6,7 @@
       <div class="topItem">
         <span>Select a Chain</span>
         <div @click="closerButton">
-          <svg-icon style="width:2rem;height:2rem"
+          <svg-icon style="width:1.5rem;height:1.5rem"
                     iconName="close"></svg-icon>
         </div>
       </div>
@@ -122,30 +122,33 @@ export default {
     position: relative;
     .topItem {
       width: 100%;
-      height: 2.4rem;
-      font-size: 2.4rem;
+      height: 2rem;
+      font-size: 2rem;
       font-weight: bold;
-      line-height: 2.4rem;
+      line-height: 2rem;
       color: var(--default-black);
       display: flex;
       justify-content: space-between;
-      padding: 0 2.5rem;
+      padding: 0 1rem;
       margin-bottom: 1.5rem;
     }
     .input {
       position: relative;
-      border-width: 0.1rem 0.2rem 0.3rem 0.2rem;
+      border-width: 0.15rem 0.2rem 0.3rem 0.2rem;
       border-color: black;
       border-style: solid;
       border-radius: 2rem;
       margin-bottom: 2rem;
       height: 4rem;
       width: 100%;
-      // border: 0;
       outline: none;
       color: var(--default-black);
       font-size: 1.4rem;
-      padding: 0 4rem 0 1rem;
+      padding: 0 4rem 0 2rem;
+    }
+    input::placeholder {
+      color: #adadb0;
+      font-size: 1.4rem;
     }
     .searchIcon {
       position: absolute;

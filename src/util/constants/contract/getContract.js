@@ -26,7 +26,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
 }
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, makerInfo) {
-  // if localChain = 3 || 33 Need special treatment
+  // if localChain = 3 || 33 
   if (localChainID === 3 || localChainID === 33) {
     console.log('doZK')
     return

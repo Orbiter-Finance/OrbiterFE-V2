@@ -1,39 +1,46 @@
 <template>
-  <o-box-content class="selectTokenBody"
-                 style="width:34.5rem">
-    <div @click.stop="stopPenetrate"
-         class="selectTokenContent">
+  <o-box-content class="selectTokenBody" style="width: 34.5rem">
+    <div @click.stop="stopPenetrate" class="selectTokenContent">
       <div class="topItem">
         <span>Select a Token</span>
         <div @click="closerButton">
-          <svg-icon style="width:1.5rem;height:1.5rem"
-                    iconName="close"></svg-icon>
+          <svg-icon
+            style="width: 1.5rem; height: 1.5rem"
+            iconName="close"
+          ></svg-icon>
         </div>
       </div>
-      <div style="width:100%;position:relative;">
-        <input type="text"
-               v-model="keyword"
-               class="input"
-               @input="checkKeyWord()"
-               :placeholder="`input search text`">
-        <svg-icon @click="search"
-                  class="searchIcon"
-                  iconName="search"></svg-icon>
+      <div style="width: 100%; position: relative">
+        <input
+          type="text"
+          v-model="keyword"
+          class="input"
+          @input="checkKeyWord()"
+          :placeholder="`More tokens will be supported soon.`"
+        />
+        <svg-icon
+          @click="search"
+          class="searchIcon"
+          iconName="search"
+        ></svg-icon>
       </div>
 
-      <div v-for="(item,index) in newTokenData"
-           :key="index"
-           @click="getTokenInfo(item)"
-           class="contentItem">
+      <div
+        v-for="(item, index) in newTokenData"
+        :key="index"
+        @click="getTokenInfo(item)"
+        class="contentItem"
+      >
+        <img
+          v-if="item.icon"
+          :src="item.icon"
+          class="logo"
+          style="margin-right: 1.5rem; margin-left: 1rem"
+          alt=""
+        />
+        <svg-icon v-else class="logo token_icon" iconName="tokenLogo"></svg-icon>
 
-        <!-- <svg-icon class="logo"
-                  style="margin-right:1.5rem;margin-left:1rem"
-                  :iconName="item.icon"></svg-icon> -->
-        <img src="../../../assets/usdclogo.png"
-             class="logo"
-             style="margin-right:1.5rem;margin-left:1rem"
-             alt="">
-        <span style="margin-top:0.2rem">{{item.token}}</span>
+        <span style="margin-top: 0.2rem">{{ item.token }}</span>
         <!-- <span class="right">{{item.amount}}</span> -->
       </div>
     </div>
@@ -41,49 +48,47 @@
 </template>
 
 <script>
-
 export default {
-  name: 'SelectToken',
+  name: "SelectToken",
   props: {
     tokenData: {
       type: Array,
-      require: true
+      require: true,
     },
   },
   data() {
     return {
-      keyword: ''
-    }
+      keyword: "",
+    };
   },
   computed: {
     newTokenData: function () {
-      if (!this.keyword || this.keyword === '') {
+      if (!this.keyword || this.keyword === "") {
         return this.tokenData;
       }
-      return this.tokenData.filter(item => item.token.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1)
-    }
+      return this.tokenData.filter(
+        (item) =>
+          item.token.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1
+      );
+    },
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     closerButton() {
-      this.$emit('closeSelect')
+      this.$emit("closeSelect");
     },
     getTokenInfo(e) {
-      this.$emit('getTokenInfo', e)
-      this.closerButton()
+      this.$emit("getTokenInfo", e);
+      this.closerButton();
     },
     stopPenetrate(e) {
-      e.stopPropagation
+      e.stopPropagation;
     },
-    search() {
-    },
-    checkKeyWord() {
-    },
-  }
-}
+    search() {},
+    checkKeyWord() {},
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -100,7 +105,7 @@ export default {
   );
   overflow-y: scroll;
   .selectTokenContent {
-    margin: 0.5rem 1.5rem 1rem;
+    margin: 1rem 1.5rem;
     position: relative;
     .topItem {
       width: 100%;
@@ -123,7 +128,6 @@ export default {
       margin-bottom: 2rem;
       height: 4rem;
       width: 100%;
-      // border: 0;
       outline: none;
       color: var(--default-black);
       font-size: 1.4rem;

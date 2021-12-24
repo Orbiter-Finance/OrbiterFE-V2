@@ -5,6 +5,7 @@ import {
   Loading,
   Notification,
   MessageBox,
+  Button,
 } from 'element-ui'
 const element = {
   install: function(Vue) {
@@ -12,6 +13,7 @@ const element = {
     Vue.use(Step)
     Vue.use(InputNumber)
     Vue.use(Loading)
+    Vue.use(Button)
     // Vue.prototype.$message = Message
     Vue.prototype.$notify = Notification
     Vue.prototype.$msgbox = MessageBox

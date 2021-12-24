@@ -16,25 +16,33 @@ async function getTokenList(localChainID) {
   if (localChainID !== 3 && localChainID !== 33) {
     return
   }
-  let req = {
-    localChainID: localChainID,
-    from: 0,
-    limit: 100,
-    direction: 'newer',
-  }
+  var isContiue = true
+  var startID = 0
+  var zkTokenAllList = []
   try {
-    let zk_tokenList = await thirdapi.getZKTokenList(req)
-    if (
-      zk_tokenList.status === 'success' &&
-      zk_tokenList.result.list.length !== 0
-    ) {
-      let zk_list = zk_tokenList.result.list
-      let zkTokenResult = {
-        chainID: localChainID,
-        tokenList: zk_list,
+    while (isContiue) {
+      var zkTokenListReq = {
+        from: startID,
+        limit: 100,
+        direction: 'newer',
+        localChainID: localChainID,
       }
-      store.commit('updateZKTokenList', zkTokenResult)
+      let result = await thirdapi.getZKTokenList(zkTokenListReq)
+      if (result.status === 'success' && result.result.list.length !== 0) {
+        let zk_list = result.result.list
+        if (zk_list.length !== 100) {
+          isContiue = false
+        } else {
+          startID = result.result.list[99].id + 1
+        }
+        zkTokenAllList = zkTokenAllList.concat(zk_list)
+      }
     }
+    let zkTokenResult = {
+      chainID: localChainID,
+      tokenList: zkTokenAllList,
+    }
+    store.commit('updateZKTokenList', zkTokenResult)
   } catch (error) {
     console.log('zk_TokenListGetError =', error)
   }

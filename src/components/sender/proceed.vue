@@ -40,7 +40,7 @@
           <div class="explore s14 wlighter bottomsep"
                @click="goToExplorFrom">{{FromTx}}</div>
           <div class="swithBtn s12"
-               @click="switchNetWork('from')">Switch NetWork</div>
+               @click="switchNetWork('from')">Switch Network</div>
         </div>
         <div>
           <div class="s14 wbold bottomsep"
@@ -60,7 +60,7 @@
           <div class="explore s14 wlighter bottomsep"
                @click="goToExplorTo">{{ToTx}}</div>
           <div class="swithBtn s12"
-               @click="switchNetWork('to')">Switch NetWork</div>
+               @click="switchNetWork('to')">Switch Network</div>
         </div>
         <div :class="this.$store.state.proceedState === 5 ? 'no_procee' :  'procee'">
           <div class="k-line k-line-1 "></div>
@@ -126,7 +126,7 @@ export default {
         },
         {
           title: 'Value',
-          desc: (this.$store.state.proceeding.userTransfer.amount / (10 ** this.$store.state.transferData.selectMakerInfo.precision)).toFixed(6) + this.$store.state.transferData.selectTokenInfo.token,
+          desc: (this.$store.state.proceeding.userTransfer.amount / (10 ** this.$store.getters.realSelectMakerInfo.precision)).toFixed(6) + ' ' + this.$store.state.transferData.selectTokenInfo.token,
         }
       ]
     }
@@ -350,10 +350,11 @@ export default {
         height: 2.6rem;
         line-height: 2.6rem;
         border-radius: 1.6rem;
-        border-width: 0.1rem 0.1rem 0.15rem 0.1rem;
+        border-width: 0.1rem 0.1rem 0.2rem 0.1rem;
         border-color: #18191f;
         border-style: solid;
-        background-color: #ffece6;
+        background: radial-gradient(at 50% 0, #ffece6, #fff0d6);
+        // background-color: #ffece6;
       }
     }
     .bottomSep {
