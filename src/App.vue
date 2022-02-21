@@ -2,17 +2,18 @@
   <div id="app">
     <TopNav />
     <keep-alive>
-      <router-view
-        v-if="$route.meta.keepAlive"
-        class="router"
-        id="aliveRouter"
-      />
+      <router-view v-if="$route.meta.keepAlive"
+                   class="router"
+                   id="aliveRouter" />
     </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
+    <router-view v-if="!$route.meta.keepAlive"
+                 class="router"
+                 id="router" />
     <BottomNav />
 
     <!-- Load tooltip.png ahead of time -->
-    <img style="display: none" src="./assets/tooltip.png" />
+    <img style="display: none"
+         src="./assets/tooltip.png" />
   </div>
 </template>
 
@@ -21,6 +22,8 @@ import TopNav from './components/nav/TopNav.vue'
 import BottomNav from './components/nav/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getTransactionList from './core/routes/transactionList'
+// import * as dotenv from 'dotenv'
+// dotenv.config({ path: __dirname + '.env' })
 
 export default {
   name: 'App',
@@ -45,10 +48,6 @@ export default {
     getZkToken.getSupportZKTokenList()
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {
-        // console.log('==============')
-        // if (this.$store.state.web3.isInjected) {
-        //   console.log('isInjected')
-        // }
       })
     }
   },

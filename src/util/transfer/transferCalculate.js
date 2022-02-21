@@ -61,7 +61,9 @@ export default {
         fromChainID === selectMakerInfo.c1ID
           ? selectMakerInfo.t1Address
           : selectMakerInfo.t2Address
-      var tokenList = zkTokenList.filter(item => item.address === tokenAddress)
+      var tokenList = zkTokenList.filter(
+        (item) => item.address === tokenAddress
+      )
       let resultToken = tokenList.length > 0 ? tokenList[0] : null
       if (!resultToken) {
         return null
@@ -96,7 +98,7 @@ export default {
       if (web3) {
         const estimateGas = await web3.eth.estimateGas({
           from: store.state.web3.coinbase,
-          to: makerAddress
+          to: makerAddress,
         })
         const gasPrice = await web3.eth.getGasPrice()
         return new BigNumber(estimateGas)
@@ -120,7 +122,7 @@ export default {
       22: 0.02,
       33: 100,
       66: 60,
-      77: 0.001
+      77: 0.001,
     }
     const GasLimitMap = {
       1: 35000,
@@ -133,7 +135,7 @@ export default {
       22: 810000,
       33: 100,
       66: 1500,
-      77: 21000
+      77: 21000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -146,7 +148,7 @@ export default {
       22: 'AETH',
       33: 'ETH',
       66: 'MATIC',
-      77: 'ETH'
+      77: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -167,7 +169,9 @@ export default {
         fromChainID === selectMakerInfo.c1ID
           ? selectMakerInfo.t1Address
           : selectMakerInfo.t2Address
-      var tokenList = zkTokenList.filter(item => item.address === tokenAddress)
+      var tokenList = zkTokenList.filter(
+        (item) => item.address === tokenAddress
+      )
       let resultToken = tokenList.length > 0 ? tokenList[0] : null
       if (!resultToken) {
         return null
@@ -489,7 +493,7 @@ export default {
       var req = {
         account: userAddress,
         localChainID: localChainID,
-        stateType: 'committed'
+        stateType: 'committed',
       }
       try {
         let balanceInfo = await thirdapi.getZKBalance(req)
@@ -532,11 +536,12 @@ export default {
       return null
     }
     if (LocalNetWorks.indexOf(fromChainID.toString()) > -1) {
-      let response = await axios.post(env.localProvider[fromChainID], {
+      const providerKey = env.localProvider[fromChainID]
+      let response = await axios.post(process.env[providerKey], {
         jsonrpc: '2.0',
         method: 'eth_gasPrice',
         params: [],
-        id: 0
+        id: 0,
       })
       if (
         response.status === 200 &&
@@ -553,8 +558,10 @@ export default {
 
   async getOPFee(fromChainID) {
     // Create an ethers provider connected to the public mainnet endpoint.
+    const providerKey = env.localProvider[fromChainID]
+
     const provider = new ethers.providers.JsonRpcProvider(
-      env.localProvider[fromChainID]
+      process.env[providerKey]
     )
     // Create contract instances connected to the GPO and WETH contracts.
     const GasPriceOracle = getContractFactory('OVM_GasPriceOracle')
@@ -573,7 +580,7 @@ export default {
       ethers.utils.serializeTransaction({
         ...(await ETH.populateTransaction.transfer(to, amount)),
         gasPrice: await provider.getGasPrice(),
-        gasLimit: 21000
+        gasLimit: 21000,
       })
     )
     // console.log(`Estimated L1 fee (in wei): ${l1FeeInWei.toString()}`)
@@ -627,5 +634,5 @@ export default {
         new BigNumber(10 ** selectMakerInfo.precision)
       )
     }
-  }
+  },
 }

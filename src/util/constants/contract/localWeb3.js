@@ -9,7 +9,8 @@ const LocalNetWorks = env.supportLocalNetWorksIDs
  */
 function localWeb3(chainID) {
   if (LocalNetWorks.indexOf(chainID.toString()) > -1) {
-    const provider = new Web3.providers.HttpProvider(env.localProvider[chainID])
+    const providerKey = env.localProvider[chainID]
+    const provider = new Web3.providers.HttpProvider(process.env[providerKey])
     const localWeb3 = new Web3(provider)
     return localWeb3
   } else {
@@ -35,7 +36,8 @@ function localWSWeb3(chainID) {
     //     onTimeout: false,
     //   },
     // }
-    const host = env.localWSProvider[chainID]
+    const providerKey = env.localWSProvider[chainID]
+    const host = process.env[providerKey]
     if (!host) {
       return null
     }

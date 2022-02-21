@@ -1,5 +1,6 @@
 const isProduction = process.env.NODE_ENV !== 'development'
 const path = require('path')
+
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -20,10 +21,7 @@ module.exports = {
       web3: 'Web3',
     })
     // set svg-sprite-loader
-    config.module
-      .rule('svg')
-      .exclude.add(resolve('src/icons'))
-      .end()
+    config.module.rule('svg').exclude.add(resolve('src/icons')).end()
     config.module
       .rule('icons')
       .test(/\.svg$/)
