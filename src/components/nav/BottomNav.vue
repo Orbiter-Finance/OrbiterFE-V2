@@ -70,7 +70,7 @@
            @click.stop="stopPenetrate"
            class="LoginInfoPopContentView">
         <div class="topItem">
-          <span>Orbiter Infomation</span>
+          <span>Orbiter Information</span>
           <div @click="closerButton('orbiterInfo')">
             <svg-icon style="width:1.5rem;height:1.5rem"
                       iconName="close"></svg-icon>
@@ -104,7 +104,7 @@
            @click.stop="stopPenetrate"
            class="LoginInfoPopContentView">
         <div class="topItem">
-          <span>Connect Infomation</span>
+          <span>Connect Information</span>
           <div @click="closerButton('loginInfo')">
             <svg-icon style="width:1.5rem;height:1.5rem"
                       iconName="close"></svg-icon>
@@ -118,7 +118,7 @@
                       :iconName="item.icon"></svg-icon>
             <span style="margin-left:1rem">{{item.title}}</span>
           </div>
-          <div style="text-aligment:right; color:#E85E24; display: flex">
+          <div style="text-align:right; color:#E85E24; display: flex">
             <span>{{ item.value }}</span>
             <div v-if="item.title === 'Address'"
                  v-clipboard:copy="copyAddress"
@@ -259,9 +259,9 @@ export default {
     orbiterInfoData() {
       return [
         {
-          icon: 'home',
-          title: 'Home ',
-          value: 'https://orbiter.finance'
+          icon: 'book',
+          title: 'Docs ',
+          value: 'https://docs.orbiter.finance/'
         },
         {
           icon: 'github',

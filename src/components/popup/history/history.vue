@@ -1,26 +1,26 @@
 <template>
   <o-box-content class="historybody"
-                 style="width:34.5rem">
+                 style="width: 34.5rem">
     <div @click.stop="stopPenetrate"
          class="historyContent">
       <div class="topItem">
         <span>History</span>
         <div @click="closerButton">
-          <svg-icon style="width:1.5rem;height:1.5rem"
+          <svg-icon style="width: 1.5rem; height: 1.5rem"
                     iconName="close"></svg-icon>
         </div>
       </div>
-      <div style="width:100%; height:0.3rem; background:var(--default-black)"></div>
+      <div style="width: 100%; height: 0.3rem; background: var(--default-black)"></div>
 
       <div class="contentTopItem">
-        <span style="width:34%">Time</span>
-        <span style="width:30%">Value</span>
-        <span style="width:18%">From</span>
-        <span style="width:18%">To</span>
+        <span style="width: 34%">Time</span>
+        <span style="width: 30%">Value</span>
+        <span style="width: 18%">From</span>
+        <span style="width: 18%">To</span>
       </div>
-      <div style="width:100%; height:0.15rem; background:var(--default-black)"></div>
+      <div style="width: 100%; height: 0.15rem; background: var(--default-black)"></div>
       <loading v-if="!historyData"
-               style="margin:auto;margin-top: 5rem;"
+               style="margin: auto; margin-top: 5rem"
                loadingColor="#E85E24"
                width="4rem"
                height="4rem"></loading>
@@ -31,15 +31,17 @@
            class="contentItem">
         <svg-icon class="logo"
                   :iconName="iconName(item)"></svg-icon>
-        <span style="width:28%">{{item.fromTimeStamp}}</span>
-        <span style="width:30%; text-align:center;">{{item.userAmount + item.tokenName}}</span>
-        <span style="width:18%; text-align:center;">
-          <svg-icon :iconName='logoName(item.fromChainID)'
-                    style="width:1.6rem;height:1.6rem"></svg-icon>
+        <span style="width: 28%">{{ item.fromTimeStamp }}</span>
+        <span style="width: 30%; text-align: center">{{
+          item.userAmount + item.tokenName
+        }}</span>
+        <span style="width: 18%; text-align: center">
+          <svg-icon :iconName="logoName(item.fromChainID)"
+                    style="width: 1.6rem; height: 1.6rem"></svg-icon>
         </span>
-        <span style="width:18%;text-align:center;">
-          <svg-icon :iconName='logoName(item.toChainID)'
-                    style="width:1.6rem;height:1.6rem"></svg-icon>
+        <span style="width: 18%; text-align: center">
+          <svg-icon :iconName="logoName(item.toChainID)"
+                    style="width: 1.6rem; height: 1.6rem"></svg-icon>
         </span>
       </div>
       <div v-else
@@ -53,27 +55,17 @@ import Loading from '../../loading/loading.vue'
 
 export default {
   name: 'History',
-  props: {
-  },
+  props: {},
   components: {
     Loading,
   },
-  data() {
-    return {
-      historyData: this.$store.state.transactionList
-    }
-  },
-  watch: {
-  },
-  mounted() {
-
-    var that = this
-    setInterval(() => {
-      that.historyData = this.$store.state.transactionList
-    }, 3000);
-  },
+  watch: {},
   computed: {
+    historyData() {
+      return this.$store.state.transactionList
+    },
   },
+  mounted() { },
   methods: {
     closerButton() {
       this.$emit('closeHistory')
@@ -95,15 +87,19 @@ export default {
       }
     },
     logoName(chainID) {
-      if (chainID.toString() === '2' || chainID.toString() === '22') {
+      if (chainID == '2' || chainID == '22') {
         return 'arblogo'
-      } else if (chainID.toString() === '33' || chainID.toString() === '3') {
+      } else if (chainID == '3' || chainID == '33') {
         return 'zklogo'
+      } else if (chainID == '6' || chainID == '66') {
+        return 'pglogo'
+      } else if (chainID == '7' || chainID == '77') {
+        return 'oplogo'
       } else {
         return 'ethlogo'
       }
     },
-  }
+  },
 }
 </script>
 

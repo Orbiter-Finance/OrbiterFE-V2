@@ -11,6 +11,9 @@
     <Detail :detailData="detailData"
             v-on:stateChanged="changeState"
             v-if="showDetail" />
+    <div>git:&nbsp;<span @click="dosome"
+            class="dosome"> somelink</span>
+    </div>
   </div>
 </template>
 
@@ -59,6 +62,9 @@ export default {
           this.status = e;
         }
       }
+    },
+    dosome() {
+      window.open('https://www.google.com', '_blank')
     }
   }
 }
@@ -66,6 +72,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+@media screen and (max-width: 5000px) {
+  .senderContent {
+    .dosome:hover {
+      color: blue;
+    }
+  }
+}
+
 @media screen and (min-width: 5000px) {
   .senderContent {
     display: flex;

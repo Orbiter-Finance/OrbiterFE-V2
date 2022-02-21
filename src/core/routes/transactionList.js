@@ -1,11 +1,582 @@
-import etherscan from '../actions/etherscan'
+import BigNumber from 'bignumber.js'
+import orbiterCore from '../../orbiterCore'
 import arbitrum from '../actions/arbitrum'
+import polygon from '../actions/polygon'
+import optimistic from '../actions/optimistic'
+import etherscan from '../actions/etherscan'
+import thegraph from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
 // import config from '../utils/config'
 import TxInfo from '../utils/modle/txinfo'
-import thegraph from '../actions/thegraph'
-import orbiterCore from '../../orbiterCore'
-import BigNumber from 'bignumber.js'
+
+async function getTransactionListEtherscan(
+  makerAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const L1FromTxList = []
+  const L1ToTxList = []
+
+  let ethScanReq = {
+    timestamp: needTimeStamp,
+    closest: 'before'
+  }
+
+  let ethScanStartBlock = 0
+  try {
+    let resp = await etherscan.getBlockNumberWithTimeStamp(ethScanReq, chainID)
+    if (resp.status === '1' && resp.message === 'OK') {
+      ethScanStartBlock = resp.result
+    } else {
+      ethScanStartBlock = 0
+    }
+  } catch (error) {
+    console.log('ethScanStartBlockError =', error)
+    throw error.message
+  }
+
+  let ethscanReq = {
+    maker: makerAddress,
+    startblock: ethScanStartBlock,
+    endblock: 999999999
+  }
+  try {
+    let res = await etherscan.getTransationList(ethscanReq, chainID)
+    for (const i in res.result) {
+      if (Object.hasOwnProperty.call(res.result, i)) {
+        let etherscanInfo = res.result[i]
+        let txinfo = TxInfo.getTxInfoWithEtherScan(etherscanInfo)
+        let isMatch = false
+
+        for (let j = 0; j < makerList.length; j++) {
+          let makerInfo = makerList[j]
+          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+            continue
+          }
+
+          if (txinfo.tokenName !== makerInfo.tName) {
+            continue
+          }
+
+          let avalibleTimes =
+            chainID === makerInfo.c1ID
+              ? makerInfo.c1AvalibleTimes
+              : makerInfo.c2AvalibleTimes
+          for (let z = 0; z < avalibleTimes.length; z++) {
+            const avalibleTime = avalibleTimes[z]
+
+            if (
+              avalibleTime.startTime <= txinfo.timeStamp &&
+              avalibleTime.endTime >= txinfo.timeStamp
+            ) {
+              isMatch = true
+              break
+            }
+          }
+
+          if (!isMatch) {
+            continue
+          }
+
+          if (txinfo.from === _makerAddress) {
+            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+            let nonce = 0
+            if (pText.state) {
+              nonce = pText.pText
+            }
+            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+              L1ToTxList.push(txinfo)
+              break
+            }
+          } else if (txinfo.to === _makerAddress) {
+            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+              let arr2 = [
+                chainID,
+                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)
+              ]
+              if (judgeArrayEqualFun(arr1, arr2)) {
+                L1FromTxList.push(txinfo)
+                break
+              }
+            }
+          } else {
+            // doNothiing
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('ethError =', error)
+    throw error.message
+  }
+
+  return { L1FromTxList, L1ToTxList }
+}
+
+async function getTransactionListArbitrum(
+  makerAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const ARFromTxList = []
+  const ARToTxList = []
+
+  let arScanReq = {
+    timestamp: needTimeStamp,
+    closest: 'before'
+  }
+  let arScanStartBlock = 0
+  try {
+    let resp = await arbitrum.getBlockNumberWithTimeStamp(arScanReq, chainID)
+    if (resp.status === '1' && resp.message === 'OK') {
+      arScanStartBlock = resp.result
+    } else {
+      arScanStartBlock = 0
+    }
+  } catch (error) {
+    console.log('arScanStartBlockError =', error)
+    throw error.message
+  }
+
+  let ArscanReq = {
+    maker: makerAddress,
+    startblock: arScanStartBlock,
+    endblock: 999999999
+  }
+  try {
+    let res = await arbitrum.getTransationList(ArscanReq, chainID)
+    for (const i in res.result) {
+      if (Object.hasOwnProperty.call(res.result, i)) {
+        let arscanInfo = res.result[i]
+        let txinfo = TxInfo.getTxInfoWithEtherScan(arscanInfo)
+        let isMatch = false
+
+        for (let j = 0; j < makerList.length; j++) {
+          let makerInfo = makerList[j]
+          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+            continue
+          }
+
+          if (txinfo.tokenName !== makerInfo.tName) {
+            continue
+          }
+
+          let avalibleTimes =
+            chainID === makerInfo.c1ID
+              ? makerInfo.c1AvalibleTimes
+              : makerInfo.c2AvalibleTimes
+          for (let z = 0; z < avalibleTimes.length; z++) {
+            const avalibleTime = avalibleTimes[z]
+
+            if (
+              avalibleTime.startTime <= txinfo.timeStamp &&
+              avalibleTime.endTime >= txinfo.timeStamp
+            ) {
+              isMatch = true
+              break
+            }
+          }
+
+          if (!isMatch) {
+            continue
+          }
+
+          if (txinfo.from === _makerAddress) {
+            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+            let nonce = 0
+            if (pText.state) {
+              nonce = pText.pText
+            }
+            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+              ARToTxList.push(txinfo)
+              break
+            }
+          } else if (txinfo.to === _makerAddress) {
+            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+              let arr2 = [
+                chainID,
+                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)
+              ]
+              if (judgeArrayEqualFun(arr1, arr2)) {
+                ARFromTxList.push(txinfo)
+                break
+              }
+            }
+          } else {
+            // doNothiing
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('arbitrumError =', error)
+    throw error.message
+  }
+
+  return { ARFromTxList, ARToTxList }
+}
+
+async function getTransactionListOptimitic(
+  makerAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const OPFromTxList = []
+  const OPToTxList = []
+
+  let opScanReq = {
+    timestamp: needTimeStamp,
+    closest: 'before'
+  }
+  let opScanStartBlock = 0
+  try {
+    let resp = await optimistic.getBlockNumberWithTimeStamp(opScanReq, chainID)
+    if (resp.status === '1' && resp.message === 'OK') {
+      opScanStartBlock = resp.result
+    } else {
+      opScanStartBlock = 0
+    }
+  } catch (error) {
+    console.log('opScanStartBlockError =', error)
+    throw error.message
+  }
+
+  let OpscanReq = {
+    maker: makerAddress,
+    startblock: opScanStartBlock,
+    endblock: 999999999
+  }
+  try {
+    let res = await optimistic.getTransationList(OpscanReq, chainID)
+    for (const i in res.result) {
+      if (Object.hasOwnProperty.call(res.result, i)) {
+        let opscanInfo = res.result[i]
+        let txinfo = TxInfo.getTxInfoWithEtherScan(opscanInfo)
+        let isMatch = false
+
+        for (let j = 0; j < makerList.length; j++) {
+          let makerInfo = makerList[j]
+          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+            continue
+          }
+
+          if (txinfo.tokenName !== makerInfo.tName) {
+            continue
+          }
+
+          let avalibleTimes =
+            chainID === makerInfo.c1ID
+              ? makerInfo.c1AvalibleTimes
+              : makerInfo.c2AvalibleTimes
+          for (let z = 0; z < avalibleTimes.length; z++) {
+            const avalibleTime = avalibleTimes[z]
+
+            if (
+              avalibleTime.startTime <= txinfo.timeStamp &&
+              avalibleTime.endTime >= txinfo.timeStamp
+            ) {
+              isMatch = true
+              break
+            }
+          }
+
+          if (!isMatch) {
+            continue
+          }
+
+          if (txinfo.from === _makerAddress) {
+            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+            let nonce = 0
+            if (pText.state) {
+              nonce = pText.pText
+            }
+            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+              OPToTxList.push(txinfo)
+              break
+            }
+          } else if (txinfo.to === _makerAddress) {
+            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+              let arr2 = [
+                chainID,
+                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)
+              ]
+              if (judgeArrayEqualFun(arr1, arr2)) {
+                OPFromTxList.push(txinfo)
+                break
+              }
+            }
+          } else {
+            // doNothiing
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('optimisticError =', error)
+    throw error.message
+  }
+
+  return { OPFromTxList, OPToTxList }
+}
+
+async function getTransactionListPolygon(
+  makerAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const PGFromTxList = []
+  const PGToTxList = []
+
+  const blockReq = {
+    timestamp: needTimeStamp,
+    closest: 'before'
+  }
+  let startBlockNumber = 0
+  try {
+    let resp = await arbitrum.getBlockNumberWithTimeStamp(blockReq, chainID)
+    if (resp.status === '1' && resp.message === 'OK') {
+      startBlockNumber = resp.result
+    } else {
+      startBlockNumber = 0
+    }
+  } catch (error) {
+    console.log('pgScanStartBlockError =', error)
+    throw error.message
+  }
+
+  const transationReq = {
+    maker: makerAddress,
+    startblock: startBlockNumber,
+    endblock: 999999999
+  }
+  try {
+    const res = await polygon.getTransationList(transationReq, chainID)
+    for (const item of res.result) {
+      let txinfo = TxInfo.getTxInfoWithPolygon(item)
+      let isMatch = false
+
+      for (let j = 0; j < makerList.length; j++) {
+        let makerInfo = makerList[j]
+        let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+        if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+          continue
+        }
+
+        if (txinfo.tokenName !== makerInfo.tName) {
+          continue
+        }
+
+        let avalibleTimes =
+          chainID === makerInfo.c1ID
+            ? makerInfo.c1AvalibleTimes
+            : makerInfo.c2AvalibleTimes
+        for (let z = 0; z < avalibleTimes.length; z++) {
+          const avalibleTime = avalibleTimes[z]
+
+          if (
+            avalibleTime.startTime <= txinfo.timeStamp &&
+            avalibleTime.endTime >= txinfo.timeStamp
+          ) {
+            isMatch = true
+            break
+          }
+        }
+
+        if (!isMatch) {
+          continue
+        }
+
+        if (txinfo.from === _makerAddress) {
+          let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+          let nonce = 0
+          if (pText.state) {
+            nonce = pText.pText
+          }
+          if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+            PGToTxList.push(txinfo)
+            break
+          }
+        } else if (txinfo.to === _makerAddress) {
+          if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+            let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+            let arr2 = [
+              chainID,
+              orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)
+            ]
+            if (judgeArrayEqualFun(arr1, arr2)) {
+              PGFromTxList.push(txinfo)
+              break
+            }
+          }
+        } else {
+          // doNothiing
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('polygonError =', error)
+    throw error.message
+  }
+
+  return { PGFromTxList, PGToTxList }
+}
+
+async function getTransactionListZksync(
+  makerAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const ZKFromTxList = []
+  const ZKToTxList = []
+
+  let zkTokenList
+  try {
+    zkTokenList = await getZKTokenAllList(chainID)
+  } catch (err) {
+    console.log('tokenlistError =', err)
+  }
+  let isContiue = true
+  let lastHash = 0
+  let zkAllTxList = []
+
+  while (isContiue) {
+    try {
+      let zkScanReq1 = {
+        from: lastHash ? lastHash : 'latest',
+        limit: 100,
+        direction: 'older',
+        account: makerAddress,
+        localChainID: chainID
+      }
+      let zkInfo = await thirdapi.getZKInfo(zkScanReq1)
+      let zkList = zkInfo.result.list
+      if (zkList.length === 0) {
+        break
+      } else {
+        for (const i in zkList) {
+          if (Object.hasOwnProperty.call(zkList, i)) {
+            let tx = zkList[i]
+            if (lastHash === tx.txHash) {
+              if (zkList.length === 1) {
+                isContiue = false
+                break
+              } else {
+                continue
+              }
+            }
+            lastHash = tx.txHash
+            if (
+              !tx.failReason &&
+              (tx.status === 'finalized' || tx.status === 'committed') &&
+              tx.op.type === 'Transfer'
+            ) {
+              let timestamp = parseInt(new Date(tx.createdAt).getTime() / 1000)
+              if (timestamp >= needTimeStamp) {
+                tx.timestamp = timestamp
+                zkAllTxList.push(tx)
+              } else {
+                isContiue = false
+                break
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.log('zkError =', error)
+      throw error.message
+    }
+  }
+  for (let index = 0; index < zkAllTxList.length; index++) {
+    let tx = zkAllTxList[index]
+    let zkTokenInfoIndex = (zkTokenList || []).findIndex(
+      item => item.id === tx.op.token
+    )
+    if (zkTokenInfoIndex === -1) {
+      continue
+    }
+    let zkTokenInfo = zkTokenList[zkTokenInfoIndex]
+
+    let txinfo = TxInfo.getTxInfoWithZksync(tx, zkTokenInfo)
+
+    for (let j = 0; j < makerList.length; j++) {
+      let makerInfo = makerList[j]
+      let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+      if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+        continue
+      }
+
+      if (txinfo.tokenName !== makerInfo.tName) {
+        continue
+      }
+
+      let avalibleTimes =
+        chainID === makerInfo.c1ID
+          ? makerInfo.c1AvalibleTimes
+          : makerInfo.c2AvalibleTimes
+      let isMatch = false
+      for (let z = 0; z < avalibleTimes.length; z++) {
+        let avalibleTime = avalibleTimes[z]
+
+        if (
+          avalibleTime.startTime <= txinfo.timeStamp &&
+          avalibleTime.endTime >= txinfo.timeStamp
+        ) {
+          isMatch = true
+          break
+        }
+      }
+
+      if (!isMatch) {
+        continue
+      }
+
+      if (txinfo.from === _makerAddress) {
+        let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+        let nonce = 0
+        if (pText.state) {
+          nonce = pText.pText
+        }
+        if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+          ZKToTxList.push(txinfo)
+          break
+        }
+      } else if (txinfo.to === _makerAddress) {
+        if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+          let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+          let arr2 = [
+            chainID,
+            orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)
+          ]
+          if (judgeArrayEqualFun(arr1, arr2)) {
+            ZKFromTxList.push(txinfo)
+            break
+          }
+        }
+      } else {
+        // doNothiing
+      }
+    }
+  }
+
+  return { ZKFromTxList, ZKToTxList }
+}
 
 export default {
   getTransactionList: async function(req) {
@@ -17,33 +588,24 @@ export default {
      */
     var originTxList = {}
     var makerList = []
-    var L1FromTxList = new Array()
-    var L1ToTxList = new Array()
-    var ZKFromTxList = new Array()
-    var ZKToTxList = new Array()
-    var ARFromTxList = new Array()
-    var ARToTxList = new Array()
     if (req.state === 1) {
       await thegraph
         .getAllMakerList(req, true)
-        .then((response) => {
+        .then(response => {
           makerList = response.data
         })
-        .catch((error) => {
+        .catch(error => {
           console.log('getMakerListError =', error)
           throw error.message
         })
 
       let supportChains = []
-      for (const i in makerList) {
-        if (Object.hasOwnProperty.call(makerList, i)) {
-          let maker = makerList[i]
-          if (supportChains.indexOf(maker.c1ID) === -1) {
-            supportChains.push(maker.c1ID)
-          }
-          if (supportChains.indexOf(maker.c2ID) === -1) {
-            supportChains.push(maker.c2ID)
-          }
+      for (const maker of makerList) {
+        if (supportChains.indexOf(maker.c1ID) === -1) {
+          supportChains.push(maker.c1ID)
+        }
+        if (supportChains.indexOf(maker.c2ID) === -1) {
+          supportChains.push(maker.c2ID)
         }
       }
 
@@ -51,386 +613,125 @@ export default {
       let needTimeStamp =
         nowTimeStamp - 86400 * (req.daysAgo ? req.daysAgo : 10)
 
+      const allPromises = []
+
+      // getTransactionListEtherscan
       if (supportChains.indexOf(1) > -1 || supportChains.indexOf(5) > -1) {
-        let chainID = supportChains.indexOf(1) > -1 ? 1 : 5
-        let ethScanReq = {
-          timestamp: needTimeStamp,
-          closest: 'before',
-        }
-        let ethScanStartBlock = 0
-        try {
-          let resp = await etherscan.getBlockNumberWithTimeStamp(
-            ethScanReq,
-            chainID,
-          )
-          if (resp.status === '1' && resp.message === 'OK') {
-            ethScanStartBlock = resp.result
-          } else {
-            ethScanStartBlock = 0
-          }
-        } catch (error) {
-          console.log('ethScanStartBlockError =', error)
-          throw error.message
-        }
-        let ethscanReq = {
-          maker: req.address,
-          startblock: ethScanStartBlock,
-          endblock: 999999999,
-        }
-        try {
-          let res = await etherscan.getTransationList(ethscanReq, chainID)
-          for (const i in res.result) {
-            if (Object.hasOwnProperty.call(res.result, i)) {
-              let etherscanInfo = res.result[i]
-              let txinfo = TxInfo.getTxInfoWithEtherScan(etherscanInfo)
-              let isMatch = false
+        allPromises.push(
+          (async () => {
+            let chainID = supportChains.indexOf(1) > -1 ? 1 : 5
+            const {
+              L1FromTxList,
+              L1ToTxList
+            } = await getTransactionListEtherscan(
+              req.address,
+              chainID,
+              needTimeStamp,
+              makerList
+            )
 
-              for (let j = 0; j < makerList.length; j++) {
-
-                let makerInfo = makerList[j]
-                let makerAddress = makerInfo.makerAddress.toLowerCase()
-
-                if (
-                  txinfo.from !== makerAddress &&
-                  txinfo.to !== makerAddress
-                ) {
-                  continue
-                }
-
-                if (txinfo.tokenName !== makerInfo.tName) {
-                  continue
-                }
-
-                let avalibleTimes =
-                  chainID === makerInfo.c1ID
-                    ? makerInfo.c1AvalibleTimes
-                    : makerInfo.c2AvalibleTimes
-                for (let z = 0; z < avalibleTimes.length; z++) {
-                  const avalibleTime = avalibleTimes[z]
-
-                  if (
-                    avalibleTime.startTime <= txinfo.timeStamp &&
-                    avalibleTime.endTime >= txinfo.timeStamp
-                  ) {
-                    isMatch = true
-                    break
-                  }
-                }
-
-                if (!isMatch) {
-                  continue
-                }
-
-                if (txinfo.from === makerAddress) {
-                  let pText = orbiterCore.getPTextFromTAmount(
-                    chainID,
-                    txinfo.value,
-                  )
-                  let nonce = 0
-                  if (pText.state) {
-                    nonce = pText.pText
-                  }
-                  if (Number(nonce) < 9000 && Number(nonce) !== 0) {
-                    L1ToTxList.push(txinfo)
-                    break
-                  }
-                } else if (txinfo.to === makerAddress) {
-                  if (
-                    orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)
-                  ) {
-                    let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
-                    let arr2 = [
-                      chainID,
-                      orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
-                    ]
-                    if (judgeArrayEqualFun(arr1, arr2)) {
-                      L1FromTxList.push(txinfo)
-                      break
-                    }
-                  }
-                } else {
-                  // doNothiing
-                }
-              }
+            originTxList[chainID] = {
+              fromList: L1FromTxList,
+              toList: L1ToTxList
             }
-          }
-        } catch (error) {
-          console.log('ethError =', error)
-          throw error.message
-        }
-        originTxList[chainID] = {
-          fromList: L1FromTxList,
-          toList: L1ToTxList,
-        }
-        // console.log('L1FromTxList =', L1FromTxList)
-        // console.log('L1ToTxList =', L1ToTxList)
+          })()
+        )
       }
 
       // 2.2 Ar
       if (supportChains.indexOf(2) > -1 || supportChains.indexOf(22) > -1) {
-        let chainID = supportChains.indexOf(2) > -1 ? 2 : 22
-        let arScanReq = {
-          timestamp: needTimeStamp,
-          closest: 'before',
-        }
-        let arScanStartBlock = 0
-        try {
-          let resp = await arbitrum.getBlockNumberWithTimeStamp(
-            arScanReq,
-            chainID,
-          )
-          if (resp.status === '1' && resp.message === 'OK') {
-            arScanStartBlock = resp.result
-          } else {
-            arScanStartBlock = 0
-          }
-        } catch (error) {
-          console.log('arScanStartBlockError =', error)
-          throw error.message
-        }
+        allPromises.push(
+          (async () => {
+            let chainID = supportChains.indexOf(2) > -1 ? 2 : 22
+            const {
+              ARFromTxList,
+              ARToTxList
+            } = await getTransactionListArbitrum(
+              req.address,
+              chainID,
+              needTimeStamp,
+              makerList
+            )
 
-        let ArscanReq = {
-          maker: req.address,
-          startblock: arScanStartBlock,
-          endblock: 999999999,
-        }
-        try {
-          let res = await arbitrum.getTransationList(ArscanReq, chainID)
-          // console.log('all_ar =', res)
-          for (const i in res.result) {
-            if (Object.hasOwnProperty.call(res.result, i)) {
-              let arscanInfo = res.result[i]
-              let txinfo = TxInfo.getTxInfoWithEtherScan(arscanInfo)
-              let isMatch = false
-
-              for (let j = 0; j < makerList.length; j++) {
-
-                let makerInfo = makerList[j]
-                let makerAddress = makerInfo.makerAddress.toLowerCase()
-
-                if (
-                  txinfo.from !== makerAddress &&
-                  txinfo.to !== makerAddress
-                ) {
-                  continue
-                }
-
-                if (txinfo.tokenName !== makerInfo.tName) {
-                  continue
-                }
-
-                let avalibleTimes =
-                  chainID === makerInfo.c1ID
-                    ? makerInfo.c1AvalibleTimes
-                    : makerInfo.c2AvalibleTimes
-                for (let z = 0; z < avalibleTimes.length; z++) {
-                  const avalibleTime = avalibleTimes[z]
-
-                  if (
-                    avalibleTime.startTime <= txinfo.timeStamp &&
-                    avalibleTime.endTime >= txinfo.timeStamp
-                  ) {
-                    isMatch = true
-                    break
-                  }
-                }
-
-                if (!isMatch) {
-                  continue
-                }
-
-                if (txinfo.from === makerAddress) {
-                  let pText = orbiterCore.getPTextFromTAmount(
-                    chainID,
-                    txinfo.value,
-                  )
-                  let nonce = 0
-                  if (pText.state) {
-                    nonce = pText.pText
-                  }
-                  if (Number(nonce) < 9000 && Number(nonce) !== 0) {
-                    ARToTxList.push(txinfo)
-                    break
-                  }
-                } else if (txinfo.to === makerAddress) {
-                  if (
-                    orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)
-                  ) {
-                    let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
-                    let arr2 = [
-                      chainID,
-                      orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
-                    ]
-                    if (judgeArrayEqualFun(arr1, arr2)) {
-                      ARFromTxList.push(txinfo)
-                      break
-                    }
-                  }
-                } else {
-                  // doNothiing
-                }
-              }
+            originTxList[chainID] = {
+              fromList: ARFromTxList,
+              toList: ARToTxList
             }
-          }
-        } catch (error) {
-          console.log('ethError =', error)
-          throw error.message
-        }
-        originTxList[chainID] = {
-          fromList: ARFromTxList,
-          toList: ARToTxList,
-        }
-        // console.log('ARFromTxList =', ARFromTxList)
-        // console.log('ARToTxList =', ARToTxList)
+          })()
+        )
       }
+
+      // 6.66 pg
+      if (supportChains.indexOf(6) > -1 || supportChains.indexOf(66) > -1) {
+        allPromises.push(
+          (async () => {
+            let chainID = supportChains.indexOf(6) > -1 ? 6 : 66
+            const {
+              PGFromTxList,
+              PGToTxList
+            } = await getTransactionListPolygon(
+              req.address,
+              chainID,
+              needTimeStamp,
+              makerList
+            )
+
+            originTxList[chainID] = {
+              fromList: PGFromTxList,
+              toList: PGToTxList
+            }
+          })()
+        )
+      }
+
+      // 7.77 op
+      if (supportChains.indexOf(7) > -1 || supportChains.indexOf(77) > -1) {
+        allPromises.push(
+          (async () => {
+            let chainID = supportChains.indexOf(7) > -1 ? 7 : 77
+            const {
+              OPFromTxList,
+              OPToTxList
+            } = await getTransactionListOptimitic(
+              req.address,
+              chainID,
+              needTimeStamp,
+              makerList
+            )
+
+            originTxList[chainID] = {
+              fromList: OPFromTxList,
+              toList: OPToTxList
+            }
+          })()
+        )
+      }
+
       // 2.3 zk==================================================================
       if (supportChains.indexOf(3) > -1 || supportChains.indexOf(33) > -1) {
-        let chainID = supportChains.indexOf(3) > -1 ? 3 : 33
-        let zkTokenList
-        try {
-          zkTokenList = await getZKTokenAllList(chainID)
-        } catch (err) {
-          console.log('tokenlistError =', err)
-        }
-        let isContiue = true
-        let lastHash = 0
-        let zkAllTxList = []
+        allPromises.push(
+          (async () => {
+            let chainID = supportChains.indexOf(3) > -1 ? 3 : 33
+            const { ZKFromTxList, ZKToTxList } = await getTransactionListZksync(
+              req.address,
+              chainID,
+              needTimeStamp,
+              makerList
+            )
 
-        while (isContiue) {
-          try {
-            let zkScanReq1 = {
-              from: lastHash ? lastHash : 'latest',
-              limit: 100,
-              direction: 'older',
-              account: req.address,
-              localChainID: chainID,
+            originTxList[chainID] = {
+              fromList: ZKFromTxList,
+              toList: ZKToTxList
             }
-            let zkInfo = await thirdapi.getZKInfo(zkScanReq1)
-            let zkList = zkInfo.result.list
-            if (zkList.length === 0) {
-              break
-            } else {
-              for (const i in zkList) {
-                if (Object.hasOwnProperty.call(zkList, i)) {
-                  let tx = zkList[i]
-                  if (lastHash === tx.txHash) {
-                    if (zkList.length === 1) {
-                      isContiue = false
-                      break
-                    } else {
-                      continue
-                    }
-                  }
-                  lastHash = tx.txHash
-                  if (
-                    !tx.failReason &&
-                    (tx.status === 'finalized' || tx.status === 'committed') &&
-                    tx.op.type === 'Transfer'
-                  ) {
-                    let strtime = tx.createdAt
-                    let date = new Date(
-                      strtime
-                        .replace(/-/g, '/')
-                        .replace(/T/g, '/')
-                        .replace(/Z/g, '/'),
-                    )
-                    let timestamp = Date.parse(date) / 1000
-                    if (timestamp >= needTimeStamp) {
-                      tx.timestamp = timestamp
-                      zkAllTxList.push(tx)
-                    } else {
-                      isContiue = false
-                      break
-                    }
-                  }
-                }
-              }
-            }
-          } catch (error) {
-            console.log('zkError =', error)
-            throw error.message
-          }
-        }
-        for (let index = 0; index < zkAllTxList.length; index++) {
-          let tx = zkAllTxList[index]
-          let zkTokenInfoIndex = (zkTokenList || []).findIndex(
-            (item) => item.id === tx.op.token,
-          )
-          if (zkTokenInfoIndex === -1) {
-            continue
-          }
-          let zkTokenInfo = zkTokenList[zkTokenInfoIndex]
-
-          let txinfo = TxInfo.getTxInfoWithZksync(tx, zkTokenInfo)
-
-          for (let j = 0; j < makerList.length; j++) {
-
-            let makerInfo = makerList[j]
-            let makerAddress = makerInfo.makerAddress.toLowerCase()
-
-            if (txinfo.from !== makerAddress && txinfo.to !== makerAddress) {
-              continue
-            }
-
-            if (txinfo.tokenName !== makerInfo.tName) {
-              continue
-            }
-
-            let avalibleTimes =
-              chainID === makerInfo.c1ID
-                ? makerInfo.c1AvalibleTimes
-                : makerInfo.c2AvalibleTimes
-            let isMatch = false
-            for (let z = 0; z < avalibleTimes.length; z++) {
-              let avalibleTime = avalibleTimes[z]
-
-              if (
-                avalibleTime.startTime <= txinfo.timeStamp &&
-                avalibleTime.endTime >= txinfo.timeStamp
-              ) {
-                isMatch = true
-                break
-              }
-            }
-
-            if (!isMatch) {
-              continue
-            }
-
-            if (txinfo.from === makerAddress) {
-              let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
-              let nonce = 0
-              if (pText.state) {
-                nonce = pText.pText
-              }
-              if (Number(nonce) < 9000 && Number(nonce) >= 0) {
-                ZKToTxList.push(txinfo)
-                break
-              }
-            } else if (txinfo.to === makerAddress) {
-              if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
-                let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
-                let arr2 = [
-                  chainID,
-                  orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
-                ]
-                if (judgeArrayEqualFun(arr1, arr2)) {
-                  ZKFromTxList.push(txinfo)
-                  break
-                }
-              }
-            } else {
-              // doNothiing
-            }
-          }
-        }
-        originTxList[chainID] = {
-          fromList: ZKFromTxList,
-          toList: ZKToTxList,
-        }
-        // console.log('ZKFromTxList =', ZKFromTxList)
-        // console.log('ZKToTxList =', ZKToTxList)
+            // console.log('ZKFromTxList =', ZKFromTxList)
+            // console.log('ZKToTxList =', ZKToTxList)
+          })()
+        )
       }
+
+      // waitting all promise end
+      await Promise.all(allPromises)
+
       //=============================================================================
     } /* else {
 
@@ -535,7 +836,7 @@ export default {
                 if (pText.state) {
                   nonce = pText.pText
                 }
-                if (Number(nonce) < 9000 && Number(nonce) !== 0) {
+                if (Number(nonce) < 9000 && Number(nonce) >= 0) {
                   L1FromTxList.push(txinfo)
                 }
               } else if (txinfo.to === makerAddress) {
@@ -632,14 +933,7 @@ export default {
                     }
                   }
                   lastHash = tx.txHash
-                  let strtime = tx.createdAt
-                  let date = new Date(
-                    strtime
-                      .replace(/-/g, '/')
-                      .replace(/T/g, '/')
-                      .replace(/Z/g, '/'),
-                  )
-                  let timestamp = Date.parse(date) / 1000
+                  let timestamp = new Date(tx.createdAt).getTime() / 1000
                   if (timestamp >= needTimeStamp) {
                     tx.timestamp = timestamp
                     zkAllTxList.push(tx)
@@ -685,7 +979,7 @@ export default {
             if (pText.state) {
               nonce = pText.pText
             }
-            if (Number(nonce) < 9000 && Number(nonce) !== 0) {
+            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
               L1FromTxList.push(txinfo)
             }
           } else if (txinfo.to === makerAddress) {
@@ -813,13 +1107,13 @@ export default {
       // }
     }*/
 
-    var transactionList = getTrasactionListFromTxList(
+    const transactionList = getTrasactionListFromTxList(
       originTxList,
       req.state,
-      makerList,
+      makerList
     )
     return transactionList
-  },
+  }
 }
 
 async function getZKTokenAllList(chainID) {
@@ -832,7 +1126,7 @@ async function getZKTokenAllList(chainID) {
       from: startID,
       limit: 100,
       direction: 'newer',
-      localChainID: chainID,
+      localChainID: chainID
     }
     var result
     try {
@@ -845,7 +1139,7 @@ async function getZKTokenAllList(chainID) {
     if (tokenList.length !== 100) {
       isContiue = false
     } else {
-      startID = result.result.list[99].id + 1
+      startID = tokenList[99].id + 1
     }
     zkTokenAllList = zkTokenAllList.concat(tokenList)
   }
@@ -863,7 +1157,7 @@ function judgeArrayEqualFun(arr1, arr2) {
   if (arr1.length !== arr2.length) {
     flag = false
   } else {
-    arr1.forEach((item) => {
+    arr1.forEach(item => {
       if (arr2.indexOf(item) === -1) {
         flag = false
       }
@@ -893,35 +1187,29 @@ function judgeArrayEqualFun(arr1, arr2) {
 function getTrasactionListFromTxList(origin, state, makerList) {
   let transactionList = []
   if (state) {
-
     for (let i = 0; i < Object.keys(origin).length; i++) {
       let fromChainID = Object.keys(origin)[i]
-      let timestampRep = 0
-      if (fromChainID === '3' || fromChainID === '33') {
-        timestampRep = 3600 * 8
-      }
       let fromList = origin[fromChainID].fromList
       if (fromList.length === 0) {
-
         continue
       }
       for (let j = 0; j < fromList.length; j++) {
-
         let transaction
         let fromTxInfo = fromList[j]
         let now = parseInt(new Date().getTime() / 1000)
         let state = now - fromTxInfo.timeStamp > 86400 ? 2 : 1
         let toChainID = orbiterCore.getToChainIDFromAmount(
           Number(fromChainID),
-          fromTxInfo.value,
+          fromTxInfo.value
         )
         let realFromAmount = orbiterCore.getRAmountFromTAmount(
           Number(fromChainID),
-          fromTxInfo.value,
+          fromTxInfo.value
         ).rAmount
         let userAmount = new BigNumber(realFromAmount).dividedBy(
-          new BigNumber(10 ** fromTxInfo.tokenDecimal),
+          new BigNumber(10 ** fromTxInfo.tokenDecimal)
         )
+
         if (!origin[toChainID] || origin[toChainID].toList.length === 0) {
           transaction = {
             fromChainID: Number(fromChainID),
@@ -929,15 +1217,13 @@ function getTrasactionListFromTxList(origin, state, makerList) {
             userAddress: shortAddress(fromTxInfo.from),
             makerAddress: shortAddress(fromTxInfo.to),
             userAmount: userAmount,
-            fromTimeStamp: timeStampToTime(
-              Number(fromTxInfo.timeStamp) + timestampRep,
-            ),
-            sortTimeStamp: Number(fromTxInfo.timeStamp) + timestampRep,
+            fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
+            sortTimeStamp: Number(fromTxInfo.timeStamp),
             toTimeStamp: 0,
             tokenName: fromTxInfo.tokenName,
             fromTxHash: fromTxInfo.hash,
             toTxHash: '0',
-            state: state,
+            state: state
           }
           transactionList.push(transaction)
           continue
@@ -968,6 +1254,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
             const item = makerList[index]
             if (
               item.makerAddress.toLowerCase() === makerAddress &&
+              item.tName.toLowerCase() === fromTxInfo.tokenName.toLowerCase() &&
               judgeArrayEqualFun(txChainIDS, [item.c1ID, item.c2ID])
             ) {
               let avalibleTimes =
@@ -1010,7 +1297,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
               avalibleDeposit: originMakerInfo.c1AvalibleDeposit,
               tradingFee: originMakerInfo.c1TradingFee,
               gasFee: originMakerInfo.c1GasFee,
-              avalibleTimes: originMakerInfo.c1AvalibleTimes,
+              avalibleTimes: originMakerInfo.c1AvalibleTimes
             }
           } else {
             useMakerInfo = {
@@ -1028,21 +1315,21 @@ function getTrasactionListFromTxList(origin, state, makerList) {
               avalibleDeposit: originMakerInfo.c2AvalibleDeposit,
               tradingFee: originMakerInfo.c2TradingFee,
               gasFee: originMakerInfo.c2GasFee,
-              avalibleTimes: originMakerInfo.c2AvalibleTimes,
+              avalibleTimes: originMakerInfo.c2AvalibleTimes
             }
           }
           let realToAmount = orbiterCore.getToAmountFromUserAmount(
             new BigNumber(realFromAmount).dividedBy(
-              new BigNumber(10 ** makerList[makerIndex].precision),
+              new BigNumber(10 ** makerList[makerIndex].precision)
             ),
             useMakerInfo,
-            true,
+            true
           )
 
           let toAmount = orbiterCore.getTAmountFromRAmount(
             Number(toChainID),
             realToAmount,
-            fromTxInfo.nonce.toString(),
+            fromTxInfo.nonce.toString()
           ).tAmount
 
           if (toAmount !== toTxInfo.value) {
@@ -1055,15 +1342,13 @@ function getTrasactionListFromTxList(origin, state, makerList) {
               userAddress: shortAddress(fromTxInfo.from),
               makerAddress: shortAddress(makerAddress),
               userAmount: userAmount,
-              fromTimeStamp: timeStampToTime(
-                Number(fromTxInfo.timeStamp) + timestampRep,
-              ),
-              sortTimeStamp: Number(fromTxInfo.timeStamp) + timestampRep,
+              fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
+              sortTimeStamp: Number(fromTxInfo.timeStamp),
               toTimeStamp: timeStampToTime(toTxInfo.timeStamp),
               tokenName: fromTxInfo.tokenName,
               fromTxHash: fromTxInfo.hash,
               toTxHash: toTxInfo.hash,
-              state: 0,
+              state: 0
             }
             transactionList.push(transaction)
             isMatch = true
@@ -1077,15 +1362,13 @@ function getTrasactionListFromTxList(origin, state, makerList) {
             userAddress: shortAddress(fromTxInfo.from),
             makerAddress: shortAddress(fromTxInfo.to),
             userAmount: userAmount,
-            fromTimeStamp: timeStampToTime(
-              Number(fromTxInfo.timeStamp) + timestampRep,
-            ),
-            sortTimeStamp: Number(fromTxInfo.timeStamp) + timestampRep,
+            fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
+            sortTimeStamp: Number(fromTxInfo.timeStamp),
             toTimeStamp: 0,
             tokenName: fromTxInfo.tokenName,
             fromTxHash: fromTxInfo.hash,
             toTxHash: '0',
-            state: state,
+            state: state
           }
           transactionList.push(transaction)
           continue
@@ -1214,7 +1497,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
   transactionList.sort(sortBy('sortTimeStamp'))
   return {
     list: transactionList,
-    state: state, // 0 / 1  maker / user
+    state: state // 0 / 1  maker / user
   }
 }
 

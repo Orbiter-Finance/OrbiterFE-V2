@@ -92,6 +92,76 @@
       ],
       "faucets": [],
       "infoURL": "https://rinkeby-explorer.arbitrum.io/"
+    },
+    {
+      "name": "Polygon",
+      "chainId": 137,
+      "shortName": "matic",
+      "networkId": 137,
+      "nativeCurrency": {
+        "name": "Matic",
+        "symbol": "MATIC",
+        "decimals": 18
+      },
+      "rpc": [
+        "https://rpc-mainnet.matic.network",
+        "wss://ws-mainnet.matic.network",
+        "https://rpc-mainnet.matic.quiknode.pro",
+        "https://matic-mainnet.chainstacklabs.com"
+      ],
+      "faucets": [],
+      "infoURL": "https://matic.network/"
+    },
+    {
+      "name": "Polygon(R)",
+      "chainId": 80001,
+      "shortName": "maticmum",
+      "networkId": 80001,
+      "nativeCurrency": {
+        "name": "Matic",
+        "symbol": "tMATIC",
+        "decimals": 18
+      },
+      "rpc": [
+        "https://rpc-mumbai.matic.today",
+        "wss://ws-mumbai.matic.today"
+      ],
+      "faucets": [
+        "https://faucet.matic.network/"
+      ],
+      "infoURL": "https://matic.network/"
+    },
+    {
+      "name": "Optimism",
+      "chainId": 10,
+      "shortName": "oeth",
+      "networkId": 10,
+      "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "OETH",
+        "decimals": 18
+      },
+      "rpc": [
+        "https://mainnet.optimism.io/"
+      ],
+      "faucets": [],
+      "infoURL": "https://optimistic.etherscan.io/"
+    },
+    {
+      "name": "Optimism(K)",
+      "chainId": 69,
+      "shortName": "okov",
+      "networkId": 69,
+      "nativeCurrency": {
+        "name": "Kovan Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": [
+        "https://kovan.optimism.io/"
+      ],
+      "faucets": [],
+      "infoURL": "https://kovan-optimistic.etherscan.io/"
     }
   ]
 }

@@ -228,4 +228,115 @@ const Coin_ABI = [
   },
 ]
 
-export { Coin_ABI }
+const sourceABI = [
+  {
+    inputs: [
+      { internalType: 'address', name: '_relayAddress', type: 'address' },
+      { internalType: 'address', name: '_tokenAddress', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'txIndex',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'hashOnion',
+        type: 'bytes32',
+      },
+    ],
+    name: 'extract',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'txindex',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'bytes32',
+        name: 'hashOnion',
+        type: 'bytes32',
+      },
+    ],
+    name: 'newTransfer',
+    type: 'event',
+  },
+  {
+    inputs: [],
+    name: 'ONEFORK_MAX_LENGTH',
+    outputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'extractHashOnionAndBalance',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'hashOnion',
+    outputs: [{ internalType: 'bytes32', name: '', type: 'bytes32' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'relayAddress',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'tokenAddress',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint256', name: 'fee', type: 'uint256' },
+    ],
+    name: 'transfer',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'dest', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+      { internalType: 'uint256', name: 'fee', type: 'uint256' },
+    ],
+    name: 'transferWithDest',
+    outputs: [],
+    stateMutability: 'payable',
+    type: 'function',
+  },
+]
+
+export { Coin_ABI, sourceABI }

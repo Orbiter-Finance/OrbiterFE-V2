@@ -1,65 +1,75 @@
 <template>
   <o-box-content class="confirmbody"
-                 style="width:34.5rem">
+                 style="width: 34.5rem">
     <div class="confirmContent">
       <div class="topItem">
         <div @click="closerButton">
-          <svg-icon style="width:1.5rem;height:1.5rem;margin-bottom:0.2rem;position:absolute;left:1rem"
+          <svg-icon style="
+              width: 1.5rem;
+              height: 1.5rem;
+              margin-bottom: 0.2rem;
+              position: absolute;
+              left: 1rem;
+            "
                     iconName="back"></svg-icon>
         </div>
         Confirm
       </div>
-      <div style="width:100%; height:0.2rem; background:var(--default-black)"></div>
+      <div style="width: 100%; height: 0.2rem; background: var(--default-black)"></div>
       <div v-for="item in confirmData"
            :key="item.title"
            class="contentItem">
         <div class="up">
-          <svg-icon style="margin-right:1.4rem;width:1.5rem;height:1.5rem"
+          <svg-icon style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem"
                     :iconName="item.icon"></svg-icon>
-          <span style="margin-right:1rem;font-weight:600">{{item.title}}</span>
+          <span style="margin-right: 1rem; font-weight: 600">{{
+            item.title
+          }}</span>
           <o-tooltip placement="topLeft">
             <template v-slot:titleDesc>
-              <span>{{item.notice}}</span>
+              <span>{{ item.notice }}</span>
             </template>
             <svg-icon v-if="item.notice"
-                      style="width:1.5rem;height:1.5rem;"
+                      style="width: 1.5rem; height: 1.5rem"
                       iconName="help"></svg-icon>
           </o-tooltip>
           <span v-if="!item.textBold && item.desc"
-                class="right">{{item.desc}}</span>
+                class="right">{{
+            item.desc
+          }}</span>
           <span v-else-if="item.textBold && item.desc"
                 class="right"
-                style="font-weight:600">{{item.desc}}</span>
+                style="font-weight: 600">{{ item.desc }}</span>
         </div>
         <div v-if="item.descInfo && item.descInfo.length > 0"
              class="descBottom">
           <div v-for="desc in item.descInfo"
                :key="desc.no"
-               style="margin-bottom:1rem;">
+               style="margin-bottom: 1rem">
             Send
             <span class="dColor"
-                  style="margin-left:0.7rem;margin-right:1.1rem">
-              {{desc.amount}}{{desc.coin}}
+                  style="margin-left: 0.7rem; margin-right: 1.1rem">
+              {{ desc.amount }}{{ desc.coin }}
             </span>
             To
             <span class="dColor"
-                  style="margin-left:0.7rem">
-              {{desc.toAddress}}
+                  style="margin-left: 0.7rem">
+              {{ desc.toAddress }}
             </span>
           </div>
         </div>
         <div v-if="item.haveSep"
              class="sep"></div>
       </div>
-      <o-button style="margin-top:2.5rem"
-                width='29.5rem'
-                height='4rem'
+      <o-button style="margin-top: 2.5rem"
+                width="29.5rem"
+                height="4rem"
                 @click="RealTransfer">
         <span v-if="!transferLoading"
               class="wbold s16"
-              style="letter-spacing: 0.1rem;">CONFIRM AND SEND</span>
+              style="letter-spacing: 0.1rem">CONFIRM AND SEND</span>
         <loading v-else
-                 style="margin:auto"
+                 style="margin: auto"
                  loadingColor="white"
                  width="2rem"
                  height="2rem"></loading>
@@ -69,10 +79,12 @@
 </template>
 
 <script>
-
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js'
 import getProceeding from '../../util/proceeding/getProceeding'
-import { getTransferContract, getTransferGasLimit } from '../../util/constants/contract/getContract.js'
+import {
+  getTransferContract,
+  getTransferGasLimit,
+} from '../../util/constants/contract/getContract.js'
 import transferCalculate from '../../util/transfer/transferCalculate'
 import orbiterCore from '../../orbiterCore'
 import Loading from '../loading/loading.vue'
@@ -80,126 +92,187 @@ import util from '../../util/util'
 import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
+import Web3 from 'web3'
 
-
-const ethers = require("ethers");
-const zksync = require("zksync");
-const Web3 = require('web3')
+const ethers = require('ethers')
+const zksync = require('zksync')
 
 export default {
   name: 'Confirm',
-  props: {
-  },
+  props: {},
   components: {
     Loading,
   },
   data() {
     return {
-      transferLoading: false
+      transferLoading: false,
     }
   },
-  asyncComputed: {
-
-  },
+  asyncComputed: {},
   computed: {
     isLogin() {
-      return this.$store.state.web3.isInstallMeta && this.$store.state.web3.isInjected && this.$store.state.web3.localLogin;
+      return (
+        this.$store.state.web3.isInstallMeta &&
+        this.$store.state.web3.isInjected &&
+        this.$store.state.web3.localLogin
+      )
     },
     confirmData() {
+      // 0.000120000000009022 to 0.000120...09022
+      let realTransferAmount = transferCalculate.realTransferAmount().toString()
+      realTransferAmount = realTransferAmount.replace(
+        /(.*?0)0{4,}(0.*?)/,
+        '$1...$2'
+      )
+
       return [
         {
           icon: 'withholding_gas_cost',
-          title: 'Withholding Gas Fee',
-          notice: 'Maker will charge Sender a fixed fee to cover gas fee incurred on the destination network.',
-          desc: (this.$store.getters.realSelectMakerInfo ? this.$store.getters.realSelectMakerInfo.tradingFee : 0) + ' ' + this.$store.getters.realSelectMakerInfo.tName
+          title: 'Withholding Fee',
+          notice:
+            'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
+          desc:
+            (this.$store.getters.realSelectMakerInfo
+              ? this.$store.getters.realSelectMakerInfo.tradingFee
+              : 0) +
+            ' ' +
+            this.$store.getters.realSelectMakerInfo.tName,
         },
         {
           icon: 'security',
           title: 'Security Code',
-          notice: 'In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information for the transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.',
+          notice:
+            'In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information for the transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.',
           desc: transferCalculate.realTransferOPID(),
-          haveSep: true
+          haveSep: true,
         },
         {
           icon: 'send',
           title: 'Total Send',
-          notice: 'Include the amount transferred by Sender and withholding gas fee.',
-          desc: transferCalculate.realTransferAmount() + ' ' + this.$store.getters.realSelectMakerInfo.tName,
-          textBold: true
+          notice:
+            'Include the amount transferred by Sender and withholding gas fee.',
+          desc:
+            realTransferAmount +
+            ' ' +
+            this.$store.getters.realSelectMakerInfo.tName,
+          textBold: true,
         },
         {
           icon: 'receive',
           title: 'Received',
-          desc: orbiterCore.getToAmountFromUserAmount(new BigNumber(this.$store.state.transferData.transferValue).plus(new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)), this.$store.getters.realSelectMakerInfo, false) + ' ' + this.$store.getters.realSelectMakerInfo.tName,
-          textBold: true
+          desc:
+            orbiterCore.getToAmountFromUserAmount(
+              new BigNumber(this.$store.state.transferData.transferValue).plus(
+                new BigNumber(
+                  this.$store.getters.realSelectMakerInfo.tradingFee
+                )
+              ),
+              this.$store.getters.realSelectMakerInfo,
+              false
+            ) +
+            ' ' +
+            this.$store.getters.realSelectMakerInfo.tName,
+          textBold: true,
         },
         {
           icon: 'router',
           title: 'Maker Routes',
-          notice: 'After a sender submits a transfer application, the asset is transferred to the Maker\'s address and the Maker will provide liquidity. Orbiter\'s staking agreement ensures the security of the asset.',
-          descInfo: this.$store.state.confirmData.routeDescInfo
+          notice:
+            "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
+          descInfo: this.$store.state.confirmData.routeDescInfo,
         },
       ]
-    }
+    },
   },
-  watch: {
-  },
-  mounted() {
-
-  },
+  watch: {},
+  mounted() { },
   methods: {
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
-      const web3Provider = new Web3(window.ethereum);
+      const web3Provider = new Web3(window.ethereum)
       const walletAccount = this.$store.state.web3.coinbase
-      var tokenAddress = selectMakerInfo.c1ID === fromChainID ? selectMakerInfo.t1Address : selectMakerInfo.t2Address
-      const ethWallet = new ethers.providers.Web3Provider(web3Provider.currentProvider);
-      const syncProvider = fromChainID === 3 ? await zksync.getDefaultProvider('mainnet') : await zksync.getDefaultProvider('rinkeby')
+      var tokenAddress =
+        selectMakerInfo.c1ID === fromChainID
+          ? selectMakerInfo.t1Address
+          : selectMakerInfo.t2Address
+      const ethWallet = new ethers.providers.Web3Provider(
+        web3Provider.currentProvider
+      )
+      const syncProvider =
+        fromChainID === 3
+          ? await zksync.getDefaultProvider('mainnet')
+          : await zksync.getDefaultProvider('rinkeby')
       // const contractAddresses = await syncProvider.getTokens();
       try {
-        const syncWallet = await zksync.Wallet.fromEthSigner(ethWallet.getSigner(walletAccount), syncProvider);
+        const syncWallet = await zksync.Wallet.fromEthSigner(
+          ethWallet.getSigner(walletAccount),
+          syncProvider
+        )
         // const state = await syncWallet.getAccountState();
 
-        var rAmount = (new BigNumber(this.$store.state.transferData.transferValue).plus(new BigNumber(selectMakerInfo.tradingFee))).multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
+        var rAmount = new BigNumber(
+          this.$store.state.transferData.transferValue
+        )
+          .plus(new BigNumber(selectMakerInfo.tradingFee))
+          .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text = toChainID.toString().length === 1 ? ('900' + toChainID.toString()) : ('90' + toChainID.toString())
-        var tValue = orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text)
+        var p_text =
+          toChainID.toString().length === 1
+            ? '900' + toChainID.toString()
+            : '90' + toChainID.toString()
+        var tValue = orbiterCore.getTAmountFromRAmount(
+          fromChainID,
+          rAmountValue,
+          p_text
+        )
         if (!tValue.state) {
           this.$notify.error({
             title: tValue.error,
-            duration: 3000
+            duration: 3000,
           })
           this.transferLoading = false
           return
         }
-        const amount = zksync.utils.closestPackableTransactionAmount(tValue.tAmount)
+        const amount = zksync.utils.closestPackableTransactionAmount(
+          tValue.tAmount
+        )
         const transferFee = await syncProvider.getTransactionFee(
           'Transfer',
-          syncWallet.address() || "",
-          tokenAddress,
+          syncWallet.address() || '',
+          tokenAddress
         )
         if (!(await syncWallet.isSigningKeySet())) {
-          const nonce = await syncWallet.getNonce("committed");
-          const batchBuilder = syncWallet.batchBuilder(nonce);
-          if (syncWallet.ethSignerType?.verificationMethod === "ERC-1271") {
-            const isOnchainAuthSigningKeySet = await syncWallet.isOnchainAuthSigningKeySet();
+          const nonce = await syncWallet.getNonce('committed')
+          const batchBuilder = syncWallet.batchBuilder(nonce)
+          if (syncWallet.ethSignerType?.verificationMethod === 'ERC-1271') {
+            const isOnchainAuthSigningKeySet =
+              await syncWallet.isOnchainAuthSigningKeySet()
             if (!isOnchainAuthSigningKeySet) {
-              const onchainAuthTransaction = await syncWallet.onchainAuthSigningKey();
-              await onchainAuthTransaction?.wait();
+              const onchainAuthTransaction =
+                await syncWallet.onchainAuthSigningKey()
+              await onchainAuthTransaction?.wait()
             }
           }
-          const newPubKeyHash = await syncWallet.signer.pubKeyHash();
-          const accountID = await syncWallet.getAccountId();
-          if (typeof accountID !== "number") {
-            throw new TypeError("It is required to have a history of balances on the account to activate it.");
+          const newPubKeyHash = await syncWallet.signer.pubKeyHash()
+          const accountID = await syncWallet.getAccountId()
+          if (typeof accountID !== 'number') {
+            throw new TypeError(
+              'It is required to have a history of balances on the account to activate it.'
+            )
           }
-          const changePubKeyMessage = utils.getChangePubkeyLegacyMessage(newPubKeyHash, nonce, accountID);
-          const ethSignature = (await syncWallet.getEthMessageSignature(changePubKeyMessage)).signature;
+          const changePubKeyMessage = utils.getChangePubkeyLegacyMessage(
+            newPubKeyHash,
+            nonce,
+            accountID
+          )
+          const ethSignature = (
+            await syncWallet.getEthMessageSignature(changePubKeyMessage)
+          ).signature
           const keyFee = await syncProvider.getTransactionFee(
             {
               ChangePubKey: { onchainPubkeyAuth: false },
             },
-            syncWallet.address() || "",
-            tokenAddress,
+            syncWallet.address() || '',
+            tokenAddress
           )
 
           const changePubKeyTx = await syncWallet.signer.signSyncChangePubKey({
@@ -211,31 +284,42 @@ export default {
             validFrom: 0,
             validUntil: utils.MAX_TIMESTAMP,
             fee: keyFee.totalFee,
-            feeTokenId: syncWallet.provider.tokenSet.resolveTokenId(tokenAddress),
-          });
+            feeTokenId:
+              syncWallet.provider.tokenSet.resolveTokenId(tokenAddress),
+          })
           batchBuilder.addChangePubKey({
             tx: changePubKeyTx,
             // @ts-ignore
             alreadySigned: true,
-          });
+          })
           batchBuilder.addTransfer({
             to: selectMakerInfo.makerAddress,
             token: tokenAddress,
             amount: amount,
-            fee: transferFee.totalFee
-          });
-          const batchTransactionData = await batchBuilder.build();
-          const transactions = await submitSignedTransactionsBatch(syncWallet.provider, batchTransactionData.txs, [batchTransactionData.signature]);
-          let transaction;
+            fee: transferFee.totalFee,
+          })
+          const batchTransactionData = await batchBuilder.build()
+          const transactions = await submitSignedTransactionsBatch(
+            syncWallet.provider,
+            batchTransactionData.txs,
+            [batchTransactionData.signature]
+          )
+          let transaction
           for (const tx of transactions) {
-            if (tx.txData.tx.type !== "ChangePubKey") {
+            if (tx.txData.tx.type !== 'ChangePubKey') {
               transaction = tx
+              break
             }
           }
           const transferReceipt = await transaction.awaitReceipt()
           if (transferReceipt.success && !transferReceipt.failReason) {
-            getProceeding.UserTransferReady(walletAccount, selectMakerInfo.makerAddress, amount.toString(), fromChainID, selectMakerInfo, transaction.txHash)
-            this.$emit("stateChanged", "3");
+            this.onTransferSucceed(
+              walletAccount,
+              selectMakerInfo,
+              amount.toString(),
+              fromChainID,
+              transaction.txHash
+            )
           }
           this.transferLoading = false
         } else {
@@ -244,15 +328,20 @@ export default {
               to: selectMakerInfo.makerAddress,
               token: tokenAddress,
               amount: amount,
-            });
-            this.$notify.success({
-              title: transfer.txHash,
-              duration: 3000
             })
+            // this.$notify.success({
+            //   title: transfer.txHash,
+            //   duration: 3000,
+            // })
             const transferReceipt = await transfer.awaitReceipt()
             if (transferReceipt.success && !transferReceipt.failReason) {
-              getProceeding.UserTransferReady(walletAccount, selectMakerInfo.makerAddress, amount.toString(), fromChainID, selectMakerInfo, transfer.txHash)
-              this.$emit("stateChanged", "3");
+              this.onTransferSucceed(
+                walletAccount,
+                selectMakerInfo,
+                amount.toString(),
+                fromChainID,
+                transfer.txHash
+              )
             }
             this.transferLoading = false
           } catch (error) {
@@ -260,7 +349,7 @@ export default {
             this.transferLoading = false
             this.$notify.error({
               title: error.message,
-              duration: 3000
+              duration: 3000,
             })
           }
         }
@@ -269,29 +358,40 @@ export default {
         this.transferLoading = false
         this.$notify.error({
           title: error.message,
-          duration: 3000
+          duration: 3000,
         })
       }
     },
     addChainNetWork() {
       var that = this
-      var chain = util.getChainInfo(this.$env.localChainID_netChainID[this.$store.state.transferData.fromChainID])
+      var chain = util.getChainInfo(
+        this.$env.localChainID_netChainID[
+        this.$store.state.transferData.fromChainID
+        ]
+      )
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [switchParams],
-      })
+      window.ethereum
+        .request({
+          method: 'wallet_switchEthereumChain',
+          params: [switchParams],
+        })
         .then(() => {
           // switch success
           that.$store.commit('updateConfirmRouteDescInfo', [
             {
               no: 1,
-              amount: new BigNumber(that.transferValue).plus(new BigNumber(that.$store.getters.realSelectMakerInfo.tradingFee)),
+              amount: new BigNumber(that.$store.state.transferData.transferValue).plus(
+                new BigNumber(
+                  that.$store.getters.realSelectMakerInfo.tradingFee
+                )
+              ),
               coin: that.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(that.$store.getters.realSelectMakerInfo.makerAddress),
-            }
+              toAddress: util.shortAddress(
+                that.$store.getters.realSelectMakerInfo.makerAddress
+              ),
+            },
           ])
           this.RealTransfer()
         })
@@ -308,100 +408,230 @@ export default {
                 decimals: chain.nativeCurrency.decimals,
               },
               rpcUrls: chain.rpc,
-              blockExplorerUrls: [((chain.explorers && chain.explorers.length > 0 && chain.explorers[0].url) ? chain.explorers[0].url : chain.infoURL)]
+              blockExplorerUrls: [
+                chain.explorers &&
+                  chain.explorers.length > 0 &&
+                  chain.explorers[0].url
+                  ? chain.explorers[0].url
+                  : chain.infoURL,
+              ],
             }
-            window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [params, that.$store.state.web3.coinbase],
-            })
-              .then(() => {
+            window.ethereum
+              .request({
+                method: 'wallet_addEthereumChain',
+                params: [params, that.$store.state.web3.coinbase],
               })
+              .then(() => { })
               .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
-              });
+              })
           } else {
             util.showMessage(error.message, 'error')
           }
-        });
+        })
+    },
+    async ethTransfer(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        return
+      }
+
+      try {
+        const web3 = new Web3(window.ethereum)
+
+        const gasLimit = await getTransferGasLimit(
+          fromChainID,
+          selectMakerInfo,
+          from,
+          selectMakerInfo.makerAddress,
+          value
+        )
+        await web3.eth.sendTransaction(
+          {
+            from,
+            to: selectMakerInfo.makerAddress,
+            value,
+            gas: gasLimit,
+          },
+          (error, hash) => {
+            this.transferLoading = false
+
+            if (!error) {
+              this.onTransferSucceed(
+                from,
+                selectMakerInfo,
+                value,
+                fromChainID,
+                hash
+              )
+            } else {
+              this.$notify.error({
+                title: error.message,
+                duration: 3000,
+              })
+            }
+          }
+        )
+      } catch (error) {
+        console.error(error)
+      }
     },
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
-      } else {
-        if (this.$store.state.web3.networkId.toString() !== this.$env.localChainID_netChainID[this.$store.state.transferData.fromChainID]) {
-          this.addChainNetWork()
-        } else {
-          // sendTransfer
-          this.transferLoading = true
-          var that = this
-          var fromChainID = this.$store.state.transferData.fromChainID
-          var toChainID = this.$store.state.transferData.toChainID
-          var selectMakerInfo = this.$store.getters.realSelectMakerInfo
+        return
+      }
 
-          if (fromChainID === 3 || fromChainID === 33) {
-            this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
-          } else {
-            var transferContract = getTransferContract(fromChainID, selectMakerInfo);
-            if (transferContract === null || !transferContract || transferContract === undefined) {
-              this.$notify.error({
-                title: `Failed to obtain contract information, please refresh and try again`,
-                duration: 3000
-              })
-            } else {
-              var to = selectMakerInfo.makerAddress
-              var rAmount = (new BigNumber(this.$store.state.transferData.transferValue).plus(new BigNumber(selectMakerInfo.tradingFee))).multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
-              var rAmountValue = rAmount.toFixed()
-              var p_text = toChainID.toString().length === 1 ? ('900' + toChainID.toString()) : ('90' + toChainID.toString())
-              var tValue = orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text)
-              if (!tValue.state) {
-                this.$notify.error({
-                  title: tValue.error,
-                  duration: 3000
-                })
-                this.transferLoading = false
-                return
-              }
-              var account = this.$store.state.web3.coinbase
-              var gasLimit = await getTransferGasLimit(fromChainID, selectMakerInfo, account, to, tValue.tAmount)
-              if (gasLimit === null || !gasLimit) {
-                gasLimit = 55000
-              }
-              var objOption = { from: account, gas: gasLimit };
-              transferContract.methods.transfer(to, tValue.tAmount)
-                .send(objOption, function (error, transactionHash) {
-                  that.transferLoading = false
-                  if (!error) {
-                    getProceeding.UserTransferReady(account, to, tValue.tAmount, fromChainID, selectMakerInfo, transactionHash)
-                    that.$notify.success({
-                      title: transactionHash,
-                      duration: 3000
-                    })
-                    that.$emit("stateChanged", "3");
-                  } else {
-                    that.$notify.error({
-                      title: error.message,
-                      duration: 3000
-                    })
-                  }
-                });
-            }
+      if (
+        this.$store.state.web3.networkId.toString() !==
+        this.$env.localChainID_netChainID[
+        this.$store.state.transferData.fromChainID
+        ]
+      ) {
+        this.addChainNetWork()
+        return
+      }
+
+      // Only one
+      if (this.transferLoading) {
+        return
+      }
+
+      // sendTransfer
+      this.transferLoading = true
+      var fromChainID = this.$store.state.transferData.fromChainID
+      var toChainID = this.$store.state.transferData.toChainID
+      var selectMakerInfo = this.$store.getters.realSelectMakerInfo
+
+      if (fromChainID === 3 || fromChainID === 33) {
+        this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
+      } else {
+        const tokenAddress =
+          selectMakerInfo.c1ID === fromChainID
+            ? selectMakerInfo.t1Address
+            : selectMakerInfo.t2Address
+
+        const to = selectMakerInfo.makerAddress
+        const rAmount = new BigNumber(
+          this.$store.state.transferData.transferValue
+        )
+          .plus(new BigNumber(selectMakerInfo.tradingFee))
+          .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
+        const rAmountValue = rAmount.toFixed()
+        const p_text =
+          toChainID.toString().length === 1
+            ? '900' + toChainID.toString()
+            : '90' + toChainID.toString()
+        const tValue = orbiterCore.getTAmountFromRAmount(
+          fromChainID,
+          rAmountValue,
+          p_text
+        )
+        if (!tValue.state) {
+          this.$notify.error({
+            title: tValue.error,
+            duration: 3000,
+          })
+          this.transferLoading = false
+          return
+        }
+        const account = this.$store.state.web3.coinbase
+
+        if (util.isEthTokenAddress(tokenAddress)) {
+          // When tokenAddress is eth
+          this.ethTransfer(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+        } else {
+          // When tokenAddress is erc20
+          const transferContract = getTransferContract(
+            fromChainID,
+            selectMakerInfo
+          )
+          if (!transferContract) {
+            this.$notify.error({
+              title: `Failed to obtain contract information, please refresh and try again`,
+              duration: 3000,
+            })
+            return
           }
+
+          const gasLimit = await getTransferGasLimit(
+            fromChainID,
+            selectMakerInfo,
+            account,
+            to,
+            tValue.tAmount
+          )
+          const objOption = { from: account, gas: gasLimit }
+          transferContract.methods
+            .transfer(to, tValue.tAmount)
+            .send(objOption, (error, transactionHash) => {
+              this.transferLoading = false
+              if (!error) {
+                this.onTransferSucceed(
+                  account,
+                  selectMakerInfo,
+                  tValue.tAmount,
+                  fromChainID,
+                  transactionHash
+                )
+              } else {
+                this.$notify.error({
+                  title: error.message,
+                  duration: 3000,
+                })
+              }
+            })
         }
       }
+    },
+    onTransferSucceed(
+      from,
+      selectMakerInfo,
+      amount,
+      fromChainID,
+      transactionHash
+    ) {
+      getProceeding.UserTransferReady(
+        from,
+        selectMakerInfo.makerAddress,
+        amount,
+        fromChainID,
+        selectMakerInfo,
+        transactionHash
+      )
+      this.$notify.success({
+        title: transactionHash,
+        duration: 3000,
+      })
+      this.$emit('stateChanged', '3')
     },
     closerButton() {
-      this.$emit("stateChanged", "1");
+      this.$emit('stateChanged', '1')
     },
     gasCost() {
-      if (this.$store.state.transferData.fromChainID === 3 || this.$store.state.transferData.fromChainID === 33) {
+      if (
+        this.$store.state.transferData.fromChainID === 3 ||
+        this.$store.state.transferData.fromChainID === 33
+      ) {
         if (this.$store.state.transferData.selectTokenInfo.token !== 'ETH') {
-          return Number(this.$store.state.transferData.gasFee).toFixed(4) + 'USD'
+          return (
+            Number(this.$store.state.transferData.gasFee).toFixed(4) + 'USD'
+          )
         }
       }
-      return (this.$store.state.transferData.gasFee * this.$store.state.transferData.ethPrice).toFixed(4) + 'USD'
-    }
-  }
+      return (
+        (
+          this.$store.state.transferData.gasFee *
+          this.$store.state.transferData.ethPrice
+        ).toFixed(4) + 'USD'
+      )
+    },
+  },
 }
 </script>
 
