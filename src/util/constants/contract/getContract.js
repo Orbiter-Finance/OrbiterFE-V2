@@ -54,7 +54,6 @@ function getTransferContract(localChainID, makerInfo) {
       Address = makerInfo.t2Address
     }
     console.log('Address =', Address)
-    console.log('web3 =', web3)
     const ecourseContractInstance = new web3.eth.Contract(ABI, Address)
     if (!ecourseContractInstance) {
       return null

@@ -296,7 +296,6 @@ import CustomPopup from '../popup/bottomPop'
 import Loading from '../loading/loading.vue'
 import makerInfo from '../../core/routes/makerInfo'
 import util from '../../util/util'
-// import BigNumber from "bignumber.js";
 import check from '../../util/check/check'
 import transferCalculate from '../../util/transfer/transferCalculate'
 import Middle from '../../util/middle/middle'
@@ -1441,7 +1440,7 @@ export default {
           const account = this.$store.state.web3.coinbase
           const objOption = { from: account, gasLimit: 150000 }
           const selectMakerInfo = this.$store.getters.realSelectMakerInfo
-          const amount = new BigNumber(this.transferValue * 10 ** selectMakerInfo.precision)
+          const amount = String(new BigNumber(this.transferValue * 10 ** selectMakerInfo.precision))
 
           const sourceContract = getSourceContract(this.$store.state.transferData.fromChainID)
           if (!sourceContract) {
