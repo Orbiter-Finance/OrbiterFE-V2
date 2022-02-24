@@ -303,10 +303,6 @@ import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
-import {
-  getSourceContract,
-  getTransferContract
-} from '../../util/constants/contract/getContract.js'
 
 const queryParamsChainMap = {
   'Mainnet': 1,
@@ -361,12 +357,6 @@ export default {
       transferValue: '',
 
       exchangeToUsdPrice: 0,
-
-      sourceAddress: {
-        5: '0xE106f432eCe00b29381e366001A67237170b2fC7',
-        22: '0x809FC47286d7ca789C064cd8655A80269d2bA1FC',
-        77: '0xD26b2b4d48b9D66dC93483Af3200280e534a31be',
-      }
     }
   },
   asyncComputed: {
@@ -1437,73 +1427,26 @@ export default {
         ) {
           this.addChainNetWork()
         } else {
-          const account = this.$store.state.web3.coinbase
-          const objOption = { from: account, gasLimit: 150000 }
           const selectMakerInfo = this.$store.getters.realSelectMakerInfo
           const amount = String(new BigNumber(this.transferValue * 10 ** selectMakerInfo.precision))
+          this.$store.commit('updateTransferDestAddress', this.destination)
+          this.$store.commit('updateTransferAmount', amount)
 
-          const sourceContract = getSourceContract(this.$store.state.transferData.fromChainID)
-          if (!sourceContract) {
-            this.$notify.error({
-              title: `Failed to obtain contract information, please refresh and try again`,
-              duration: 3000,
-            })
-            return
-          }
 
-          if (util.isEthTokenAddress(selectMakerInfo.t1Address)) {
-            // When tokenAddress is eth
-          } else {
-            // When tokenAddress is erc20
-            const transferContract = getTransferContract(
-              this.$store.state.transferData.fromChainID,
-              selectMakerInfo
-            )
-            if (!transferContract) {
-              this.$notify.error({
-                title: `Failed to obtain contract information, please refresh and try again`,
-                duration: 3000,
-              })
-              return
+          // sendTransfer
+          this.$store.commit('updateConfirmRouteDescInfo', [
+            {
+              no: 1,
+              amount: new BigNumber(this.$store.state.transferData.transferValue).plus(
+                new BigNumber(
+                  this.$store.getters.realSelectMakerInfo.tradingFee
+                )
+              ),
+              coin: this.$store.state.transferData.selectTokenInfo.token,
+              toAddress: util.shortAddress(selectMakerInfo.makerAddress)
             }
-            transferContract.methods.approve(this.sourceAddress[this.$store.state.transferData.fromChainID], amount).send(objOption, (error, transactionHash) => {
-              if (!error) {
-                console.warn('transactionHash =', transactionHash);
-                if (this.destination) {
-                  sourceContract.methods
-                    .transferWithDest(this.destination, amount, 0)
-                    .send(objOption, (error, transactionHash) => {
-                      if (!error) {
-                        console.warn('transactionHash =', transactionHash);
-                      } else {
-                        this.$notify.error({
-                          title: error.message,
-                          duration: 3000,
-                        })
-                      }
-                    })
-                } else {
-                  sourceContract.methods
-                    .transfer(amount, 0)
-                    .send(objOption, (error, transactionHash) => {
-                      if (!error) {
-                        console.warn('transactionHash =', transactionHash);
-                      } else {
-                        this.$notify.error({
-                          title: error.message,
-                          duration: 3000,
-                        })
-                      }
-                    })
-                }
-              } else {
-                this.$notify.error({
-                  title: error.message,
-                  duration: 3000,
-                })
-              }
-            })
-          }
+          ])
+          this.$emit('stateChanged', '2')
         }
       }
     },

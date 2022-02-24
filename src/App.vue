@@ -20,7 +20,7 @@
 <script>
 import TopNav from './components/nav/TopNav.vue'
 import BottomNav from './components/nav/BottomNav.vue'
-import getZkToken from './util/tokenInfo/supportZkTokenInfo'
+// import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getTransactionList from './core/routes/transactionList'
 // import * as dotenv from 'dotenv'
 // dotenv.config({ path: __dirname + '.env' })
@@ -41,11 +41,11 @@ export default {
     BottomNav,
   },
   mounted() {
-    setInterval(this.getHistory, 60 * 1000)
+    // setInterval(this.getHistory, 60 * 1000)
 
-    this.getHistory()
+    // this.getHistory()
 
-    getZkToken.getSupportZKTokenList()
+    // getZkToken.getSupportZKTokenList()
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {
       })

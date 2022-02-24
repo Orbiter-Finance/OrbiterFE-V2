@@ -90,6 +90,12 @@ export default {
   updateETHPrice(state, price) {
     state.transferData.ethPrice = price
   },
+  updateTransferDestAddress(state, destAddress) {
+    state.transferData.destAddress = destAddress
+  },
+  updateTransferAmount(state, amount) {
+    state.transferData.amount = amount
+  },
   updateTransactionList(state, transactionList) {
     state.transactionList = transactionList
   },

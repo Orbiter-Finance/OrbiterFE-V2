@@ -5,7 +5,7 @@ Axios.axios()
 const nowMakerList = [
   // usdc
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x49377441951437beE356D7d90a16dFF97C66fBB0',
     c1ID: 77,
     c2ID: 22,
     c1Name: 'optimism(test)',
@@ -38,7 +38,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x49377441951437beE356D7d90a16dFF97C66fBB0',
     c1ID: 5,
     c2ID: 22,
     c1Name: 'rinkeby',
@@ -71,7 +71,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x49377441951437beE356D7d90a16dFF97C66fBB0',
     c1ID: 77,
     c2ID: 5,
     c1Name: 'optimism(test)',

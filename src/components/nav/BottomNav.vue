@@ -38,12 +38,12 @@
                 @click="login">Connect a Wallet</button>
       </div>
       <div class="LoginRBox">
-        <o-button v-if="isLogin"
+        <!-- <o-button v-if="isLogin"
                   width="8rem"
                   height="3.2rem"
                   @click="toHistory">
           <span class="s14">History</span>
-        </o-button>
+        </o-button> -->
         <div v-if="isLogin"
              @click="clickHoriz"
              class="horiz">

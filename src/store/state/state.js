@@ -23,6 +23,8 @@ const state = {
     transferValue: 0,
     gasFee: 0,
     ethPrice: 0,
+    amount: 0,
+    destAddress: '',
   },
   proceedState: 1,
   proceedTXID: null,
