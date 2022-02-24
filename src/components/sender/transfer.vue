@@ -130,8 +130,16 @@
         </div>
       </div>
     </div>
-    <button style="width:100%;height:4rem;margin:2rem auto 0;font-size:0.8rem"
-            @click="addDestination">{{this.destination ? this.destination : 'add destination'}}</button>
+    <div class="destContent">
+      <input type="text"
+             v-model="destination"
+             class="right"
+             @input="checkDestination()"
+             :maxlength="42"
+             :placeholder="`input dest Address`" />
+    </div>
+    <!-- <button style="width:100%;height:4rem;margin:2rem auto 0;font-size:0.8rem"
+            @click="addDestination">{{this.destination ? this.destination : 'add destination'}}</button> -->
     <o-button style="margin: 2.5rem auto 0"
               width="29.5rem"
               height="4rem"
@@ -273,7 +281,7 @@
                      v-on:closeSelect="closeToChainPopupClick()" />
       </div>
     </CustomPopup>
-    <el-dialog title="Add destination"
+    <!-- <el-dialog title="Add destination"
                :show-close="false"
                :visible.sync="dialogFormVisible">
       <el-input v-model="form.name"
@@ -285,7 +293,7 @@
         <el-button type="primary"
                    @click="destinationOK">OK</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </o-box-content>
 </template>
 
@@ -1174,26 +1182,26 @@ export default {
       })
   },
   methods: {
-    addDestination() {
-      this.dialogFormVisible = true
-    },
-    destinationCancle() {
-      this.form.name = this.destination
-      this.dialogFormVisible = false
-    },
-    destinationOK() {
-      if (this.form.name === '') {
-        this.destination = this.form.name
-        this.dialogFormVisible = false
-        return
-      }
-      if (this.form.name !== '' && util.isETHAddress(this.form.name)) {
-        this.destination = this.form.name
-        this.dialogFormVisible = false
-      } else {
-        util.showMessage('invaild address', 'error')
-      }
-    },
+    // addDestination() {
+    //   this.dialogFormVisible = true
+    // },
+    // destinationCancle() {
+    //   this.form.name = this.destination
+    //   this.dialogFormVisible = false
+    // },
+    // destinationOK() {
+    //   if (this.form.name === '') {
+    //     this.destination = this.form.name
+    //     this.dialogFormVisible = false
+    //     return
+    //   }
+    //   if (this.form.name !== '' && util.isETHAddress(this.form.name)) {
+    //     this.destination = this.form.name
+    //     this.dialogFormVisible = false
+    //   } else {
+    //     util.showMessage('invaild address', 'error')
+    //   }
+    // },
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter(makerInfo => {
@@ -1384,6 +1392,9 @@ export default {
           ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
           : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
     },
+    checkDestination() {
+      console.log('this.destination =', this.destination)
+    },
     async sendTransfer() {
       // if unlogin  login first
       if (!this.isLogin) {
@@ -1417,6 +1428,15 @@ export default {
             title: `As an alpha release, Orbiter can only support ${this.userMinPrice} ~ ${this.maxPrice} ${this.$store.state.transferData.selectTokenInfo.token} for each transfer.`,
             duration: 3000
           })
+          return
+        }
+        let destination = this.destination
+        console.log('destination =', destination)
+        console.log('value2 =', util.isETHAddress(destination))
+        if (destination === '') {
+          //do nothing
+        } else if (!util.isETHAddress(destination)) {
+          util.showMessage('invaild address', 'error')
           return
         }
         if (
@@ -1701,6 +1721,36 @@ export default {
         left: calc(50% - 1.7rem);
         z-index: 1;
       }
+    }
+  }
+  .destContent {
+    margin-top: 2rem;
+    position: relative;
+    height: 3rem;
+    border: 0.15rem solid var(--default-black);
+    border-radius: 2rem;
+    text-align: left;
+    font-weight: 400;
+    font-size: 1.2rem;
+    .right {
+      width: 100%;
+      height: 100%;
+      color: var(--primary-color);
+      text-align: center;
+      border: 0;
+      outline: 0px;
+      appearance: none;
+      background-color: transparent;
+      transition: all 0.2s ease 0s;
+      flex-direction: row-reverse;
+    }
+    input {
+      font-weight: 600;
+    }
+    input::placeholder {
+      color: #adadb0;
+      font-size: 1.4rem;
+      font-weight: 400;
     }
   }
   .notice {
