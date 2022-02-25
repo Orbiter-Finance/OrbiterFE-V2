@@ -278,7 +278,7 @@ export default {
       this.transferLoading = true
       var fromChainID = this.$store.state.transferData.fromChainID
       var selectMakerInfo = this.$store.getters.realSelectMakerInfo
-      var amount = new BigNumber(this.$store.state.transferData.amount)
+      var amount = new BigNumber(this.$store.state.transferData.amount).toFixed()
       var dest = this.$store.state.transferData.destAddress ? this.$store.state.transferData.destAddress : this.$store.state.web3.coinbase
 
       // When tokenAddress is erc20
@@ -286,7 +286,6 @@ export default {
         fromChainID,
         selectMakerInfo
       )
-      console.log('transferContract =', transferContract)
       const sourceContract = getSourceContract(this.$store.state.transferData.fromChainID)
       if (!sourceContract) {
         this.$notify.error({
