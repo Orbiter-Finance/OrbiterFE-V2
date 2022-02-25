@@ -97,9 +97,11 @@ async function confirmUserTransaction(
       storeUpdateProceedState(3)
 
       let amountToSend = amount
+      let TransferChainID =
+        localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
       startScanMakerTransfer(
         txHash,
-        localChainID,
+        TransferChainID,
         makerInfo,
         makerInfo.makerAddress,
         dest,
@@ -120,7 +122,7 @@ async function confirmUserTransaction(
 
 function startScanMakerTransfer(
   transactionID,
-  localChainID,
+  TransferChainID,
   makerInfo,
   from,
   to,
@@ -129,12 +131,14 @@ function startScanMakerTransfer(
   if (!isCurrentTransaction(transactionID)) {
     return
   }
-  const web3 = localWeb3(localChainID)
+  const web3 = localWeb3(TransferChainID)
   var tokenAddress =
-    makerInfo.c1ID === localChainID ? makerInfo.t1Address : makerInfo.t2Address
+    makerInfo.c1ID === TransferChainID
+      ? makerInfo.t1Address
+      : makerInfo.t2Address
   ScanMakerTransfer(
     transactionID,
-    localChainID,
+    TransferChainID,
     makerInfo,
     web3,
     tokenAddress,
@@ -146,7 +150,7 @@ function startScanMakerTransfer(
 
 function ScanMakerTransfer(
   transactionID,
-  localChainID,
+  TransferChainID,
   makerInfo,
   web3,
   tokenAddress,
@@ -166,7 +170,7 @@ function ScanMakerTransfer(
       console.log('_to =', _to)
       console.log('_amount =', _amount)
       console.log('_address =', _address)
-      console.log('localChainID =', localChainID)
+      console.log('localChainID =', TransferChainID)
       console.log('makerInfo =', makerInfo)
       console.log('web3 =', web3)
       console.log('tokenAddress =', tokenAddress)
@@ -194,7 +198,7 @@ function ScanMakerTransfer(
     // when is eth tokenAddress
     if (util.isEthTokenAddress(tokenAddress)) {
       let api = null
-      switch (localChainID) {
+      switch (TransferChainID) {
         case 1:
           api = {
             endPoint: config.etherscan.Mainnet,
@@ -306,7 +310,7 @@ function ScanMakerTransfer(
             storeUpdateProceedState(4)
             confirmMakerTransaction(
               transactionID,
-              localChainID,
+              TransferChainID,
               makerInfo,
               txinfo.transactionHash
             )

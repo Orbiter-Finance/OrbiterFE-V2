@@ -303,6 +303,12 @@ const sourceABI = [
         name: 'fee',
         type: 'uint256',
       },
+      {
+        indexed: true,
+        internalType: 'uint256',
+        name: 'chainId',
+        type: 'uint256',
+      },
     ],
     name: 'newTransfer',
     type: 'event',
@@ -315,6 +321,25 @@ const sourceABI = [
         internalType: 'uint8',
         name: '',
         type: 'uint8',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'chainId_Onions',
+    outputs: [
+      {
+        internalType: 'bytes32',
+        name: '',
+        type: 'bytes32',
       },
     ],
     stateMutability: 'view',
@@ -361,19 +386,6 @@ const sourceABI = [
   },
   {
     inputs: [],
-    name: 'relayAddress',
-    outputs: [
-      {
-        internalType: 'address',
-        name: '',
-        type: 'address',
-      },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-  {
-    inputs: [],
     name: 'tokenAddress',
     outputs: [
       {
@@ -387,6 +399,11 @@ const sourceABI = [
   },
   {
     inputs: [
+      {
+        internalType: 'uint256',
+        name: 'chainId',
+        type: 'uint256',
+      },
       {
         internalType: 'uint256',
         name: 'amount',
@@ -405,6 +422,11 @@ const sourceABI = [
   },
   {
     inputs: [
+      {
+        internalType: 'uint256',
+        name: 'chainId',
+        type: 'uint256',
+      },
       {
         internalType: 'address',
         name: 'dest',

@@ -1452,7 +1452,6 @@ export default {
           this.$store.commit('updateTransferDestAddress', this.destination)
           this.$store.commit('updateTransferAmount', amount)
 
-
           // sendTransfer
           this.$store.commit('updateConfirmRouteDescInfo', [
             {

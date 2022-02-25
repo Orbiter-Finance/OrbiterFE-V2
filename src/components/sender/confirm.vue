@@ -100,9 +100,9 @@ export default {
     return {
       transferLoading: false,
       sourceAddress: {
-        5: '0xE106f432eCe00b29381e366001A67237170b2fC7',
-        22: '0x809FC47286d7ca789C064cd8655A80269d2bA1FC',
-        77: '0xD26b2b4d48b9D66dC93483Af3200280e534a31be',
+        5: '0x81A9064747cAB4AA0842B1E8bf34Fcfc39B4dd2b',
+        22: '0x6db0FDD06342b352f35AE8B538102E25D6dc5a42',
+        77: '0x0b51621Eb5d702064aC84dFeaCA2762EF72550AE',
       }
     }
   },
@@ -286,6 +286,7 @@ export default {
         fromChainID,
         selectMakerInfo
       )
+      console.log('transferContract =', transferContract)
       const sourceContract = getSourceContract(this.$store.state.transferData.fromChainID)
       if (!sourceContract) {
         this.$notify.error({
@@ -304,7 +305,7 @@ export default {
         return
       }
       const account = this.$store.state.web3.coinbase
-      const objOption = { from: account, gasLimit: 150000 }
+      const objOption = { from: account, gasLimit: 1000000 }
       console.warn('account =', account)
       console.warn('objOption =', objOption);
       console.warn('amount =', amount);
@@ -316,7 +317,7 @@ export default {
           console.warn('transactionHash =', transactionHash);
           if (dest) {
             sourceContract.methods
-              .transferWithDest(dest, amount, 0)
+              .transferWithDest(Number(this.$store.state.transferData.toChainID), dest, amount, 0)
               .send(objOption, (error, transactionHash) => {
                 this.transferLoading = false
                 if (!error) {
@@ -337,7 +338,7 @@ export default {
               })
           } else {
             sourceContract.methods
-              .transfer(amount, 0)
+              .transfer(Number(this.$store.state.transferData.fromChainID), amount, 0)
               .send(objOption, (error, transactionHash) => {
                 this.transferLoading = false
                 if (!error) {

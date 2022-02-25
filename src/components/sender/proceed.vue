@@ -157,11 +157,11 @@ export default {
     },
     goToExplorTo() {
       if (this.$store.state.proceedState < 4) {
-        let url = this.$env.accountExploreUrl[this.$store.state.transferData.fromChainID] + this.$store.state.web3.coinbase
+        let url = this.$env.accountExploreUrl[this.$store.state.transferData.toChainID] + this.$store.state.web3.coinbase
         window.open(url, '_blank');
       } else {
         let txid = this.$store.state.proceeding.makerTransfer.txid
-        let url = this.$env.txExploreUrl[this.$store.state.transferData.fromChainID] + txid
+        let url = this.$env.txExploreUrl[this.$store.state.transferData.toChainID] + txid
         window.open(url, '_blank');
       }
 
