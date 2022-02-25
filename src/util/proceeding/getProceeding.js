@@ -5,6 +5,7 @@ import util from '../../util/util'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
 import { EthListen } from './eth_listen'
+import BigNumber from 'bignumber.js'
 
 let startBlockNumber = ''
 
@@ -168,8 +169,8 @@ function ScanMakerTransfer(
     const checkData = (_from, _to, _amount, _address) => {
       console.log('_from =', _from)
       console.log('_to =', _to)
-      console.log('_amount =', _amount)
       console.log('_address =', _address)
+      console.log('_amount =', _amount)
       console.log('localChainID =', TransferChainID)
       console.log('makerInfo =', makerInfo)
       console.log('web3 =', web3)
@@ -185,7 +186,7 @@ function ScanMakerTransfer(
       if (
         _from.toLowerCase() === from.toLowerCase() &&
         _to.toLowerCase() === to.toLowerCase() &&
-        _amount === amount
+        new BigNumber(_amount).comparedTo(new BigNumber(amount)) === 0
       ) {
         if (!isCurrentTransaction(transactionID)) {
           return false

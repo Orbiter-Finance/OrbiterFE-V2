@@ -278,7 +278,7 @@ export default {
       this.transferLoading = true
       var fromChainID = this.$store.state.transferData.fromChainID
       var selectMakerInfo = this.$store.getters.realSelectMakerInfo
-      var amount = this.$store.state.transferData.amount
+      var amount = new BigNumber(this.$store.state.transferData.amount)
       var dest = this.$store.state.transferData.destAddress ? this.$store.state.transferData.destAddress : this.$store.state.web3.coinbase
 
       // When tokenAddress is erc20
