@@ -9,7 +9,7 @@ const sourceAddress = {
   5: '0x929fD178Bbb3270BE58510ba3b6083eB8EfB4382',
   22: '0x78FB449d55AeBE9cF6948dc85cb3C5Bd941CFA7A',
   77: '0xCdDa3Fd3eE034040C9b4679a5DeD2f3452F67dac',
-},
+}
 
 // Get a token contract on the L2 network
 function getLocalCoinContract(localChainID, tokenAddress, state) {
