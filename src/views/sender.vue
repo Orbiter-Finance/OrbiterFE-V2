@@ -21,19 +21,19 @@
     />
     <div class="grant">
       <span>
-        欢迎使用Pizza 🍕 Bridge，这是一个去中心化的L222 bridge，<br />
-        来自Vitalik的Idea:<a
+        Welcome to Pizza 🍕 Bridge, a decentralized L222 bridge, <br />
+        Idea from Vitalik:<a
           href="https://gitcoin.co/issue/gitcoinco/skunkworks/253/100027342"
-          >Grant项目</a
+          >Grant Program</a
         ><br />
+        THE CODE<br />
         <a href="https://github.com/0xbbPizza/L2Bridge-GitcoinBounty"
-          >THE CODE 🌊 Contract and README🏄</a
+          >🌊Contract and README</a
         ><br />
         <a href="https://github.com/0xbbPizza/OrbiterFE-V2"
-          >frontend(power by eric)</a
-        ><br />
-        这是这个项目的telegram群: 可以从这找到我name: 0xbbPizza</span
-      >
+          >🏄frontend (power by eric)</a
+        >
+      </span>
     </div>
   </div>
 </template>

@@ -1,22 +1,12 @@
 <template>
   <div class="topNav">
-    <div v-if="!isWeb" class="nav-logo" @click="dosome()">
-      <svg-icon
-        :style="navIcons.logoStyle"
-        :iconName="navIcons.logo"
-      ></svg-icon>
+    <div class="nav-logo-web" @click="dosome()">
+      <img class="pizza" src="../../assets/pizza.png" alt="" />
     </div>
-
-    <div v-else class="nav-logo-web" @click="dosome()">
-      <svg-icon
-        :style="navIcons.logo_webStyle"
-        :iconName="navIcons.logo_web"
-      ></svg-icon>
-    </div>
-    <a-radio-group v-model="selected" defaultValue="sender" buttonStyle="solid">
+    <!-- <a-radio-group v-model="selected" defaultValue="sender" buttonStyle="solid">
       <a-radio-button value="sender"> Sender </a-radio-button>
       <a-radio-button value="maker"> Maker </a-radio-button>
-    </a-radio-group>
+    </a-radio-group> -->
   </div>
 </template>
 
@@ -154,8 +144,12 @@ export default {
   }
   .nav-logo-web {
     top: 1.6rem;
-    left: 2.2rem;
+    left: 4rem;
     position: absolute;
+    .pizza {
+      width: 6rem;
+      height: 6rem;
+    }
   }
   .ant-radio-group {
     background: #ffede0;
