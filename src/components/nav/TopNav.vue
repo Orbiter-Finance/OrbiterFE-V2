@@ -1,27 +1,21 @@
 <template>
   <div class="topNav">
-    <div v-if="!isWeb"
-         class="nav-logo"
-         @click="dosome()">
-      <svg-icon :style="navIcons.logoStyle"
-                :iconName="navIcons.logo"></svg-icon>
+    <div v-if="!isWeb" class="nav-logo" @click="dosome()">
+      <svg-icon
+        :style="navIcons.logoStyle"
+        :iconName="navIcons.logo"
+      ></svg-icon>
     </div>
 
-    <div v-else
-         class="nav-logo-web"
-         @click="dosome()">
-      <svg-icon :style="navIcons.logo_webStyle"
-                :iconName="navIcons.logo_web"></svg-icon>
+    <div v-else class="nav-logo-web" @click="dosome()">
+      <svg-icon
+        :style="navIcons.logo_webStyle"
+        :iconName="navIcons.logo_web"
+      ></svg-icon>
     </div>
-    <a-radio-group v-model="selected"
-                   defaultValue="sender"
-                   buttonStyle="solid">
-      <a-radio-button value="sender">
-        Sender
-      </a-radio-button>
-      <a-radio-button value="maker">
-        Maker
-      </a-radio-button>
+    <a-radio-group v-model="selected" defaultValue="sender" buttonStyle="solid">
+      <a-radio-button value="sender"> Sender </a-radio-button>
+      <a-radio-button value="maker"> Maker </a-radio-button>
     </a-radio-group>
   </div>
 </template>
@@ -29,16 +23,13 @@
 <script>
 export default {
   name: 'TopNav',
-  props: {
-  },
+  props: {},
   data() {
     return {
-      selected: 'sender'
+      selected: 'sender',
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   computed: {
     isWeb() {
       if (this.$store.state.innerWH.innerWidth > 550) {
@@ -47,7 +38,11 @@ export default {
       return false
     },
     isLogin() {
-      return this.$store.state.web3.isInstallMeta && this.$store.state.web3.isInjected && this.$store.state.web3.localLogin
+      return (
+        this.$store.state.web3.isInstallMeta &&
+        this.$store.state.web3.isInjected &&
+        this.$store.state.web3.localLogin
+      )
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -59,7 +54,7 @@ export default {
       return ''
     },
     navIcons() {
-      const icons = { 
+      const icons = {
         logo: 'orbiterLogo',
         logoStyle: { width: '4.8rem', height: '4.8rem' },
         logo_web: 'orbiterLogo_web',
@@ -71,14 +66,14 @@ export default {
           icons.logoStyle = {
             width: '10.45rem',
             height: '3.7rem',
-            margin: '0.5rem 0 0 -0.4rem'
+            margin: '0.5rem 0 0 -0.4rem',
           }
 
           icons.logo_web = 'orbiterAsZksyncLogo_web'
           icons.logo_webStyle = {
             width: '17.4rem',
             height: '3.7rem',
-            marginTop: '0.3rem'
+            marginTop: '0.3rem',
           }
           break
       }
@@ -86,32 +81,35 @@ export default {
     },
   },
   watch: {
-    '$route': function (to, from) {
+    $route: function (to, from) {
       if (to.path === from.path) {
         return
       }
-      if (to.path === '/maker' && this.selected !== 'maker') {
-        this.selected = 'maker'
-      }
-      if ((to.path === '/' || to.path === '/sender') && this.selected !== 'sender') {
+      // if (to.path === '/maker' && this.selected !== 'maker') {
+      //   this.selected = 'maker'
+      // }
+      if (
+        (to.path === '/' || to.path === '/sender') &&
+        this.selected !== 'sender'
+      ) {
         this.selected = 'sender'
       }
     },
-    'selected': function () {
+    selected: function () {
       if (this.selected === 'sender') {
         if (this.$route.path !== '/') {
           this.$router.push({
             path: '/',
-            query: this.$route.query
+            query: this.$route.query,
           })
         }
       } else {
-        if (this.$route.path !== '/maker') {
-          this.$router.push({
-            path: '/maker',
-            query: this.$route.query
-          })
-        }
+        // if (this.$route.path !== '/maker') {
+        //   this.$router.push({
+        //     path: '/maker',
+        //     query: this.$route.query,
+        //   })
+        // }
       }
     },
   },
@@ -131,11 +129,9 @@ export default {
       this.$store.commit('updateIsInstallMeta', true)
       this.$store.commit('updateIsInjected', true)
     },
-    toHistory() {
-    },
-    clickHoriz() {
-    }
-  }
+    toHistory() {},
+    clickHoriz() {},
+  },
 }
 </script>
 

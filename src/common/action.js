@@ -20,7 +20,7 @@ async function testMethod(opts, successCall, failCall) {
       } else {
         failCall(
           result.message ? result.message : 'network error',
-          res.statusCode,
+          res.statusCode
         )
       }
     } else {
