@@ -3,10 +3,10 @@
     <div class="nav-logo-web" @click="dosome()">
       <img class="pizza" src="../../assets/pizza.png" alt="" />
     </div>
-    <!-- <a-radio-group v-model="selected" defaultValue="sender" buttonStyle="solid">
+    <a-radio-group v-model="selected" defaultValue="sender" buttonStyle="solid">
       <a-radio-button value="sender"> Sender </a-radio-button>
       <a-radio-button value="maker"> Maker </a-radio-button>
-    </a-radio-group> -->
+    </a-radio-group>
   </div>
 </template>
 
