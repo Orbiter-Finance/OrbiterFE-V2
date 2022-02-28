@@ -145,7 +145,7 @@
         class="right"
         @input="checkDestination()"
         :maxlength="42"
-        :placeholder="`input dest Address`"
+        :placeholder="`Custom recipient`"
       />
     </div>
     <!-- <button style="width:100%;height:4rem;margin:2rem auto 0;font-size:0.8rem"
