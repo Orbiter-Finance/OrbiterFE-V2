@@ -6,11 +6,10 @@ import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
 
 const sourceAddress = {
-  5: '0x929fD178Bbb3270BE58510ba3b6083eB8EfB4382',
-  22: '0x78FB449d55AeBE9cF6948dc85cb3C5Bd941CFA7A',
-  77: '0xCdDa3Fd3eE034040C9b4679a5DeD2f3452F67dac',
+  5: '0x11d3985F79EC388077C930A9F8619CeDBB22b840',
+  22: '0x27a4DcB2846bebcE415b6fc406cF8bFCB5d1055c',
+  77: '0xf3c3988609cB90b0C64e5De511eE27D3A6d703f1',
 }
-
 // Get a token contract on the L2 network
 function getLocalCoinContract(localChainID, tokenAddress, state) {
   // 0 : http   1: ws
