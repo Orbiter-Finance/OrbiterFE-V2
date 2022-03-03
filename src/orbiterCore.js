@@ -4,6 +4,8 @@ const MAX_BITS = {
   eth: 256,
   arbitrum: 256,
   zksync: 35,
+  polygon: 256,
+  optimistic: 256,
 }
 
 const CHAIN_INDEX = {
@@ -12,8 +14,11 @@ const CHAIN_INDEX = {
   22: 'arbitrum',
   3: 'zksync',
   33: 'zksync',
-  4: 'eth',
   5: 'eth',
+  6: 'polygon',
+  66: 'polygon',
+  7: 'optimistic',
+  77: 'optimistic',
 }
 
 const SIZE_OP = {
@@ -27,10 +32,9 @@ function isZKChain(chain) {
   return false
 }
 
-
 function getToAmountFromUserAmount(userAmount, selectMakerInfo, isWei) {
   let toAmount_tradingFee = new BigNumber(userAmount).minus(
-    new BigNumber(selectMakerInfo.tradingFee),
+    new BigNumber(selectMakerInfo.tradingFee)
   )
   let gasFee = toAmount_tradingFee
     .multipliedBy(new BigNumber(selectMakerInfo.gasFee))
@@ -43,7 +47,7 @@ function getToAmountFromUserAmount(userAmount, selectMakerInfo, isWei) {
   }
   if (isWei) {
     return toAmount_fee.multipliedBy(
-      new BigNumber(10 ** selectMakerInfo.precision),
+      new BigNumber(10 ** selectMakerInfo.precision)
     )
   } else {
     return toAmount_fee
@@ -237,7 +241,6 @@ function AmountMaxDigits(chain) {
   return amountRegion.max.toFixed().length
 }
 
-
 function AmountValidDigits(chain, amount) {
   let amountMaxDigits = AmountMaxDigits(chain)
   if (amountMaxDigits.error) {
@@ -257,14 +260,12 @@ function AmountValidDigits(chain, amount) {
   }
 }
 
-
 function removeSidesZero(param) {
   if (typeof param !== 'string') {
     return 'param must be string'
   }
   return param.replace(/^0+(\d)|(\d)0+$/gm, '$1$2')
 }
-
 
 function isAmountInRegion(amount, chain) {
   if (!isChainSupport(chain)) {
@@ -304,7 +305,7 @@ function isAmountValid(chain, amount) {
       error: "the token doesn't support that many decimal digits",
     }
   }
-  
+
   let validDigit = AmountValidDigits(chain, amount) // 10 11
   var amountLength = amount.toString().length
   if (amountLength < SIZE_OP.P_NUMBER) {
@@ -313,7 +314,7 @@ function isAmountValid(chain, amount) {
       error: 'Amount size must be greater than pNumberSize',
     }
   }
-  
+
   let rAmount = amount
   if (isZKChain(chain)) {
     rAmount = removeSidesZero(amount.toString())
@@ -350,6 +351,13 @@ function isAmountValid(chain, amount) {
   }
 }
 
+/**
+ * @param {number} precision
+ */
+function getDigitByPrecision(precision) {
+  return precision === 18 ? 6 : 2
+}
+
 module.exports = {
   getPTextFromTAmount,
   getToChainIDFromAmount,
@@ -359,4 +367,5 @@ module.exports = {
   pTextFormatZero,
   isZKChain,
   getToAmountFromUserAmount,
+  getDigitByPrecision,
 }

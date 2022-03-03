@@ -3,6 +3,10 @@ import env from '../../../../env'
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 
+/**
+ * @param {number} chainID
+ * @returns {Web3 | null}
+ */
 function localWeb3(chainID) {
   if (LocalNetWorks.indexOf(chainID.toString()) > -1) {
     const provider = new Web3.providers.HttpProvider(env.localProvider[chainID])
@@ -13,6 +17,10 @@ function localWeb3(chainID) {
   }
 }
 
+/**
+ * @param {number} chainID
+ * @returns {Web3 | null}
+ */
 function localWSWeb3(chainID) {
   if (LocalNetWorks.indexOf(chainID.toString()) > -1) {
     // var socketOptions = {
@@ -27,11 +35,16 @@ function localWSWeb3(chainID) {
     //     onTimeout: false,
     //   },
     // }
+    const host = env.localWSProvider[chainID]
+    if (!host) {
+      return null
+    }
+
     const localWSWeb3 = new Web3(
       new Web3.providers.WebsocketProvider(
-        env.localWSProvider[chainID],
+        host
         // socketOptions,
-      ),
+      )
     )
     return localWSWeb3
   } else {

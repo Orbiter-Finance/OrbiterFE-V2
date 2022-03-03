@@ -1,20 +1,21 @@
 <template>
   <div class="topNav">
-    <svg-icon v-if="!isWeb"
-              class="nav-logo"
-              iconName="orbiterLogo"></svg-icon>
-    <svg-icon v-else
-              class="nav-logo-web"
-              iconName="orbiterLogo_web"></svg-icon>
-    <a-radio-group v-model="selected"
-                   defaultValue="sender"
-                   buttonStyle="solid">
-      <a-radio-button value="sender">
-        Sender
-      </a-radio-button>
-      <a-radio-button value="maker">
-        Maker
-      </a-radio-button>
+    <div v-if="!isWeb" class="nav-logo" @click="dosome()">
+      <svg-icon
+        :style="navIcons.logoStyle"
+        :iconName="navIcons.logo"
+      ></svg-icon>
+    </div>
+
+    <div v-else class="nav-logo-web" @click="dosome()">
+      <svg-icon
+        :style="navIcons.logo_webStyle"
+        :iconName="navIcons.logo_web"
+      ></svg-icon>
+    </div>
+    <a-radio-group v-model="selected" defaultValue="sender" buttonStyle="solid">
+      <a-radio-button value="sender"> Sender </a-radio-button>
+      <a-radio-button value="maker"> Maker </a-radio-button>
     </a-radio-group>
   </div>
 </template>
@@ -22,16 +23,13 @@
 <script>
 export default {
   name: 'TopNav',
-  props: {
-  },
+  props: {},
   data() {
     return {
-      selected: 'sender'
+      selected: 'sender',
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   computed: {
     isWeb() {
       if (this.$store.state.innerWH.innerWidth > 550) {
@@ -40,38 +38,89 @@ export default {
       return false
     },
     isLogin() {
-      return this.$store.state.web3.isInstallMeta && this.$store.state.web3.isInjected && this.$store.state.web3.localLogin
-    }
+      return (
+        this.$store.state.web3.isInstallMeta &&
+        this.$store.state.web3.isInjected &&
+        this.$store.state.web3.localLogin
+      )
+    },
+    refererUpper() {
+      // Don't use [$route.query.referer], because it will delay
+      const { href } = window.location
+      const match = href.match(/referer=(\w*)/i)
+      if (match?.[1]) {
+        return match[1].toUpperCase()
+      }
+      return ''
+    },
+    navIcons() {
+      const icons = {
+        logo: 'orbiterLogo',
+        logoStyle: { width: '4.8rem', height: '4.8rem' },
+        logo_web: 'orbiterLogo_web',
+        logo_webStyle: { width: '16rem', height: '3.1rem' },
+      }
+      switch (this.refererUpper) {
+        case 'ZKSYNC':
+          icons.logo = 'orbiterAsZksyncLogo'
+          icons.logoStyle = {
+            width: '10.45rem',
+            height: '3.7rem',
+            margin: '0.5rem 0 0 -0.4rem',
+          }
+
+          icons.logo_web = 'orbiterAsZksyncLogo_web'
+          icons.logo_webStyle = {
+            width: '17.4rem',
+            height: '3.7rem',
+            marginTop: '0.3rem',
+          }
+          break
+      }
+      return icons
+    },
   },
   watch: {
-    '$route'(to, from) {
+    $route: function (to, from) {
       if (to.path === from.path) {
         return
       }
       if (to.path === '/maker' && this.selected !== 'maker') {
         this.selected = 'maker'
       }
-      if ((to.path === '/' || to.path === '/sender') && this.selected !== 'sender') {
+      if (
+        (to.path === '/' || to.path === '/sender') &&
+        this.selected !== 'sender'
+      ) {
         this.selected = 'sender'
       }
     },
-    'selected': function () {
+    selected: function () {
       if (this.selected === 'sender') {
         if (this.$route.path !== '/') {
           this.$router.push({
-            path: `/`
+            path: '/',
+            query: this.$route.query,
           })
         }
       } else {
         if (this.$route.path !== '/maker') {
           this.$router.push({
-            path: `/maker`
+            path: '/maker',
+            query: this.$route.query,
           })
         }
       }
     },
   },
   methods: {
+    dosome() {
+      if (this.refererUpper) {
+        window.open(window.location.origin)
+      } else {
+        window.location.replace(window.location.origin)
+      }
+    },
     unlogin() {
       this.$store.commit('updateIsInstallMeta', false)
       this.$store.commit('updateIsInjected', false)
@@ -80,11 +129,9 @@ export default {
       this.$store.commit('updateIsInstallMeta', true)
       this.$store.commit('updateIsInjected', true)
     },
-    toHistory() {
-    },
-    clickHoriz() {
-    }
-  }
+    toHistory() {},
+    clickHoriz() {},
+  },
 }
 </script>
 
@@ -103,15 +150,11 @@ export default {
   .nav-logo {
     top: 1.6rem;
     left: 2.2rem;
-    width: 4.8rem;
-    height: 4.8rem;
     position: absolute;
   }
   .nav-logo-web {
     top: 1.6rem;
     left: 2.2rem;
-    width: 16rem;
-    height: 4.8rem;
     position: absolute;
   }
   .ant-radio-group {

@@ -3,6 +3,7 @@ import Web3 from 'web3'
 import { Coin_ABI } from './contract.js'
 import { store } from '../../../store'
 import { localWeb3, localWSWeb3 } from './localWeb3.js'
+import util from '../../util'
 
 // Get a token contract on the L2 network
 function getLocalCoinContract(localChainID, tokenAddress, state) {
@@ -12,7 +13,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
   if (web3) {
     const ecourseContractInstance = new web3.eth.Contract(
       Coin_ABI,
-      tokenAddress,
+      tokenAddress
     )
     if (!ecourseContractInstance) {
       console.log('getLocalCoinContract_ecourseContractInstance')
@@ -26,7 +27,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
 }
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, makerInfo) {
-  // if localChain = 3 || 33 
+  // if localChain = 3 || 33
   if (localChainID === 3 || localChainID === 33) {
     console.log('doZK')
     return
@@ -55,29 +56,42 @@ function getTransferContract(localChainID, makerInfo) {
 async function getTransferGasLimit(localChainID, makerInfo, from, to, value) {
   if (store.state.web3.isInstallMeta) {
     const web3 = new Web3(window.ethereum)
-    var ABI = Coin_ABI
-    var Address = null
+    let tokenAddress = null
     if (makerInfo.c1ID === localChainID) {
-      Address = makerInfo.t1Address
+      tokenAddress = makerInfo.t1Address
     } else {
-      Address = makerInfo.t2Address
+      tokenAddress = makerInfo.t2Address
     }
-    const ecourseContractInstance = new web3.eth.Contract(ABI, Address)
-    if (!ecourseContractInstance) {
-      return null
-    }
+
+    let gasLimit = 55000
     try {
-      var gasLimit = await ecourseContractInstance.methods
-        .transfer(to, value)
-        .estimateGas({
-          from: from,
+      if (util.isEthTokenAddress(tokenAddress)) {
+        gasLimit = await web3.eth.estimateGas({
+          from,
+          to: makerInfo.makerAddress,
+          value
         })
-      // console.log('gasLimit =',gasLimit)
-      return gasLimit
+        return gasLimit
+      } else {
+        const ABI = Coin_ABI
+        const ecourseContractInstance = new web3.eth.Contract(ABI, tokenAddress)
+        if (!ecourseContractInstance) {
+          return gasLimit
+        }
+
+        gasLimit = await ecourseContractInstance.methods
+          .transfer(to, value)
+          .estimateGas({
+            from: from
+          })
+        // console.log('gasLimit =',gasLimit)
+        return gasLimit
+      }
     } catch (err) {
-      // default
-      return 55000
+      console.warn('getTransferGasLimit error: ', err)
     }
+
+    return gasLimit
   }
 }
 

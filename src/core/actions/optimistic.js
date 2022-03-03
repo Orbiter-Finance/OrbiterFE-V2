@@ -6,10 +6,10 @@ import config from '../utils/config'
 
 Axios.axios()
 
-var configNet = config.arbitrum.Mainnet
+var configNet = config.optimistic.Mainnet
 
 export default {
-  getTxList: function (req, chainId, isTokentx = true) {
+  getTxList: function(req, chainId, isTokentx = true) {
     return new Promise((resolve, reject) => {
       const params = {
         module: 'account',
@@ -18,15 +18,15 @@ export default {
         startblock: req.startblock,
         endblock: req.endblock,
         page: 1,
-        offset: 500,
-        sort: 'asc',
+        offset: 100,
+        sort: 'asc'
       }
-      if (chainId == 22) {
-        configNet = config.arbitrum.Rinkeby
+      if (chainId == 77) {
+        configNet = config.optimistic.Rinkeby
       }
       axios
         .get(configNet, { params })
-        .then(function (response) {
+        .then(function(response) {
           if (response.status === 200) {
             var respData = response.data
             if (respData.status === '1' && respData.message === 'OK') {
@@ -42,19 +42,19 @@ export default {
           } else {
             reject({
               errorCode: 1,
-              errorMsg: 'NetWork Error',
+              errorMsg: 'NetWork Error'
             })
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           reject({
             errorCode: 2,
-            errorMsg: error,
+            errorMsg: error
           })
         })
     })
   },
-  getTransationList: async function (req, chainId) {
+  getTransationList: async function(req, chainId) {
     const tokentxList = await this.getTxList(req, chainId)
 
     // contact eth txlist
@@ -69,12 +69,12 @@ export default {
 
     return tokentxList
   },
-  getBlockNumberWithTimeStamp: function (req, chainId) {
-    if (chainId == 22) {
-      configNet = config.arbitrum.Rinkeby
+  getBlockNumberWithTimeStamp: function(req, chainId) {
+    if (chainId == 77) {
+      configNet = config.optimistic.Rinkeby
     }
     return new Promise((resolve, reject) => {
-      const cacheKey = `arbitrum.getBlockNumberWithTimeStamp__${req.closest}`
+      const cacheKey = `optimistic.getBlockNumberWithTimeStamp__${req.closest}`
       const cacheValue = cacheMemoryGet(cacheKey)
       if (cacheValue) {
         resolve(cacheValue)
@@ -85,11 +85,11 @@ export default {
         module: 'block',
         action: 'getblocknobytime',
         timestamp: req.timestamp,
-        closest: req.closest,
+        closest: req.closest
       }
       axios
         .get(configNet, { params })
-        .then(function (response) {
+        .then(function(response) {
           if (response.status === 200) {
             var respData = response.data
             if (respData.status === '1' && respData.message === 'OK') {
@@ -102,16 +102,16 @@ export default {
           } else {
             reject({
               errorCode: 1,
-              errorMsg: 'NetWork Error',
+              errorMsg: 'NetWork Error'
             })
           }
         })
-        .catch(function (error) {
+        .catch(function(error) {
           reject({
             errorCode: 2,
-            errorMsg: error,
+            errorMsg: error
           })
         })
     })
-  },
+  }
 }

@@ -10,134 +10,93 @@
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
     <BottomNav />
+
+    <!-- Load tooltip.png ahead of time -->
+    <img style="display: none" src="./assets/tooltip.png" />
   </div>
 </template>
 
 <script>
-import TopNav from "./components/nav/TopNav.vue";
-import BottomNav from "./components/nav/BottomNav.vue";
-import getZkToken from "./util/tokenInfo/supportZkTokenInfo";
-import getTransactionList from "./core/routes/transactionList";
+import TopNav from './components/nav/TopNav.vue'
+import BottomNav from './components/nav/BottomNav.vue'
+import getZkToken from './util/tokenInfo/supportZkTokenInfo'
+import getTransactionList from './core/routes/transactionList'
 
 export default {
-  name: "App",
+  name: 'App',
   computed: {
     isLogin() {
       return (
         this.$store.state.web3.isInstallMeta &&
         this.$store.state.web3.isInjected &&
         this.$store.state.web3.localLogin
-      );
+      )
     },
   },
   components: {
     TopNav,
     BottomNav,
   },
-  async mounted() {
-    this.getHistory();
-    getZkToken.getSupportZKTokenList();
-    if (localStorage.getItem("localLogin") === "true") {
-      this.$store.dispatch("registerWeb3").then(() => {
+  mounted() {
+    setInterval(this.getHistory, 60 * 1000)
+
+    this.getHistory()
+
+    getZkToken.getSupportZKTokenList()
+    if (localStorage.getItem('localLogin') === 'true') {
+      this.$store.dispatch('registerWeb3').then(() => {
         // console.log('==============')
         // if (this.$store.state.web3.isInjected) {
         //   console.log('isInjected')
         // }
-      });
+      })
     }
   },
   watch: {
     isLogin: function (newValue) {
       if (!newValue) {
-        this.$store.commit("updateTransactionList", []);
+        this.$store.commit('updateTransactionList', [])
       } else {
-        var that = this;
-        if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
-          this.$store.commit("updateTransactionList", null);
-          var req = {
-            address: this.$store.state.web3.coinbase,
-            daysAgo: 14,
-            state: 1, //maker/user
-          };
-          getTransactionList
-            .getTransactionList(req)
-            .then((response) => {
-              if (response.state === 1) {
-                that.$store.commit("updateTransactionList", response.list);
-              }
-            })
-            .catch((error) => {
-              console.log("error =", error);
-            });
-        }
+        this.getHistory()
       }
     },
-    "$store.state.web3.coinbase": function (newValue, oldValue) {
-      if (oldValue && newValue && newValue !== "0x") {
-        var that = this;
-        if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
-          this.$store.commit("updateTransactionList", null);
-          var req = {
-            address: newValue,
-            daysAgo: 14,
-            state: 1, //maker/user
-          };
-          getTransactionList
-            .getTransactionList(req)
-            .then((response) => {
-              if (response.state === 1) {
-                that.$store.commit("updateTransactionList", response.list);
-              }
-            })
-            .catch((error) => {
-              console.log("error =", error);
-            });
-        }
+
+    '$store.state.web3.coinbase': function (newValue, oldValue) {
+      if (oldValue && newValue && newValue !== '0x') {
+        this.getHistory()
+      }
+    },
+
+    '$store.getters.realSelectMakerInfo': function (newValue) {
+      if (newValue) {
+        this.getHistory()
       }
     },
   },
   methods: {
     getHistory() {
-      var that = this;
-      if (that.isLogin && that.$store.getters.realSelectMakerInfo) {
+      if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
+        this.$store.commit('updateTransactionList', null)
+
         var req = {
-          address: that.$store.state.web3.coinbase,
+          address: this.$store.state.web3.coinbase,
           daysAgo: 14,
           state: 1, //maker/user
-        };
+        }
         getTransactionList
           .getTransactionList(req)
           .then((response) => {
             if (response.state === 1) {
-              that.$store.commit("updateTransactionList", response.list);
+              this.$store.commit('updateTransactionList', response.list)
             }
           })
           .catch((error) => {
-            console.log("error =", error);
-          });
+            console.warn('error =', error)
+          })
       }
-      setInterval(() => {
-        if (that.isLogin && this.$store.getters.realSelectMakerInfo) {
-          var req = {
-            address: that.$store.state.web3.coinbase,
-            daysAgo: 14,
-            state: 1, //maker/user
-          };
-          getTransactionList
-            .getTransactionList(req)
-            .then((response) => {
-              if (response.state === 1) {
-                that.$store.commit("updateTransactionList", response.list);
-              }
-            })
-            .catch((error) => {
-              console.log("error =", error);
-            });
-        }
-      }, 60 * 1000);
     },
   },
-};
+}
 </script>
 
 <style>
@@ -167,7 +126,7 @@ export default {
   height: calc(var(--vh, 1vh) * 100);
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  background-image: url("./assets/bgtop.svg");
+  background-image: url('./assets/bgtop.svg');
   background-size: 100% 40%;
   background-repeat: no-repeat;
 }

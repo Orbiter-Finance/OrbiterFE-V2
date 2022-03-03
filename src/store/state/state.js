@@ -52,6 +52,6 @@ const state = {
     rinkeby: [],
     mainnet: [],
   },
-  trasctionList: [],
+  transactionList: null,
 }
 export default state

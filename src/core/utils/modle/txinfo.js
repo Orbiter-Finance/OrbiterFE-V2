@@ -1,6 +1,6 @@
 export default {
   getTxInfoWithEtherScan: function(etherScanInfo) {
-    var txInfo = {
+    const txInfo = {
       from: etherScanInfo.from.toLowerCase(),
       to: etherScanInfo.to.toLowerCase(),
       tokenAddress: etherScanInfo.contractAddress.toLowerCase(),
@@ -14,8 +14,29 @@ export default {
     }
     return txInfo
   },
+  getTxInfoWithPolygon: function(scanInfo) {
+    // tokenName WETH to ETH
+    let tokenName = scanInfo.tokenSymbol
+    if (tokenName?.toUpperCase() == 'WETH') {
+      tokenName = 'ETH'
+    }
+
+    const txInfo = {
+      from: scanInfo.from.toLowerCase(),
+      to: scanInfo.to.toLowerCase(),
+      tokenAddress: scanInfo.contractAddress.toLowerCase(),
+      timeStamp: scanInfo.timeStamp,
+      tokenName,
+      value: scanInfo.value,
+      tokenDecimal: scanInfo.tokenDecimal,
+      hash: scanInfo.hash,
+      nonce: scanInfo.nonce,
+      dataFrom: 'polygon',
+    }
+    return txInfo
+  },
   getTxInfoWithZksync: function(zkSyncInfo, zkTokenInfo) {
-    var txInfo = {
+    const txInfo = {
       from: zkSyncInfo.op.from.toLowerCase(),
       to: zkSyncInfo.op.to.toLowerCase(),
       tokenAddress: zkTokenInfo.address.toLowerCase(),

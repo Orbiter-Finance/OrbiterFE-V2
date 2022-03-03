@@ -64,6 +64,15 @@ export default {
         if (item === 3 || item === 33) {
           iconName = 'zklogo'
         }
+        if (item === 4 || item === 44) {
+          iconName = 'sknlogo'
+        }
+        if (item === 6 || item === 66) {
+          iconName = 'pglogo'
+        }
+        if (item === 7 || item === 77) {
+          iconName = 'oplogo'
+        }
         var chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),
@@ -71,6 +80,13 @@ export default {
         }
         newArray.push(chainData)
       }
+
+      newArray.push({
+        icon: 'sknlogo',
+        chain: 'StarkNet(Goerli)',
+        localID: 44
+      })
+
       return newArray
     },
     newChainData: function () {
@@ -89,6 +105,12 @@ export default {
       this.$emit('closeSelect')
     },
     getChainInfo(e) {
+      if (e.localID  == 44) {
+        // To rinkeby.orbiter.finance
+        window.open('https://rinkeby.orbiter.finance', '_blank');
+        return
+      }
+
       this.$emit('getChainInfo', e)
       this.closerButton()
     },

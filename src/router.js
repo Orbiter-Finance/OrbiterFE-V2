@@ -14,7 +14,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: '.',
+      name: 'Sender',
       component: (resolve) => require(['./views/sender'], resolve),
       meta: {
         title: 'Orbiter',
@@ -23,7 +23,7 @@ export default new Router({
     },
     {
       path: '/maker',
-      name: '.',
+      name: 'Maker',
       component: (resolve) => require(['./views/maker'], resolve),
       meta: {
         title: 'Orbiter',
