@@ -1,9 +1,10 @@
 const tokenIcons = {
-  USDC: require("../assets/usdclogo.png"),
-  USDT: require("../assets/usdtlogo.png"),
-  TUSD: require("../assets/tusdlogo.png"),
-  MCO: require("../assets/mcologo.png"),
-};
+  ETH: require('../assets/ethlogo.svg'),
+  USDC: require('../assets/usdclogo.png'),
+  USDT: require('../assets/usdtlogo.png'),
+  TUSD: require('../assets/tusdlogo.png'),
+  MCO: require('../assets/mcologo.png'),
+}
 
 /**
  *
@@ -12,12 +13,12 @@ const tokenIcons = {
  */
 const getTokenIcon = (token) => {
   if (!token) {
-    return "";
+    return ''
   }
 
-  token = token.toUpperCase();
+  token = token.toUpperCase()
 
-  return tokenIcons[token] || "";
-};
+  return tokenIcons[token] || ''
+}
 
-export default { getTokenIcon };
+export default { getTokenIcon }

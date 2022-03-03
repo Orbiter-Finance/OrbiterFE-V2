@@ -12,7 +12,7 @@ export default {
   },
   getChainInfo(netChainID) {
     var chain = chainList.chainList.filter(
-      (chain) => chain.chainId.toString() === netChainID.toString(),
+      (chain) => chain.chainId.toString() === netChainID.toString()
     )
     if (chain.length > 0) {
       return chain[0]
@@ -20,22 +20,20 @@ export default {
     return undefined
   },
   chainName(localChainID, netChainID) {
-    if (
-      localChainID !== '' &&
-      localChainID &&
-      localChainID.toString() === '3'
-    ) {
-      return 'zkSync'
+    // zksync、starknet
+    switch (Number(localChainID)) {
+      case 3:
+        return 'zkSync'
+      case 33:
+        return 'zkSync(R)'
+      case 4:
+        return 'StarkNet'
+      case 44:
+        return 'StarkNet(R)'
     }
-    if (
-      localChainID !== '' &&
-      localChainID &&
-      localChainID.toString() === '33'
-    ) {
-      return 'zkSync(R)'
-    }
-    var chain = chainList.chainList.filter(
-      (chain) => chain.chainId.toString() === netChainID,
+
+    const chain = chainList.chainList.filter(
+      (_chain) => _chain.chainId == netChainID
     )
     if (chain.length > 0) {
       return chain[0].name
@@ -59,7 +57,7 @@ export default {
       return 'zkSync(R)'
     }
     var chain = chainList.chainList.filter(
-      (chain) => chain.chainId.toString() === netChainID,
+      (chain) => chain.chainId.toString() === netChainID
     )
     if (chain.length > 0) {
       return chain[0].shortName
@@ -101,4 +99,45 @@ export default {
     }
     return ''
   },
+
+  /**
+   * @param {string} value1
+   * @param {string} value2
+   * @returns {boolean}
+   */
+  equalsIgnoreCase(value1, value2) {
+    if (typeof value1 !== 'string' || typeof value2 !== 'string') {
+      return false
+    }
+
+    if (value1 == value2) {
+      return true
+    }
+    if (value1.toUpperCase() == value2.toUpperCase()) {
+      return true
+    }
+
+    return false
+  },
+
+  /**
+   * @param {string} tokenAddress when tokenAddress=/^0x0+$/i,
+   * @returns {boolean}
+   */
+  isEthTokenAddress(tokenAddress) {
+    return /^0x0+$/i.test(tokenAddress)
+  },
+
+
+  /**
+   * @param {number} ms Sleep millisecond
+   * @returns 
+   */
+  sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(null)
+      }, ms)
+    })
+  }
 }

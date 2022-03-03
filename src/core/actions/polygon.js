@@ -6,7 +6,7 @@ import config from '../utils/config'
 
 Axios.axios()
 
-var configNet = config.arbitrum.Mainnet
+var configNet = config.polygon.Mainnet
 
 export default {
   getTxList: function (req, chainId, isTokentx = true) {
@@ -14,15 +14,17 @@ export default {
       const params = {
         module: 'account',
         action: isTokentx ? 'tokentx' : 'txlist',
+        contractaddress: req.tokenAddress,
         address: req.maker,
         startblock: req.startblock,
         endblock: req.endblock,
         page: 1,
         offset: 500,
         sort: 'asc',
+        apikey: config.polygon.key,
       }
-      if (chainId == 22) {
-        configNet = config.arbitrum.Rinkeby
+      if (chainId === 66) {
+        configNet = config.polygon.Rinkeby
       }
       axios
         .get(configNet, { params })
@@ -46,7 +48,7 @@ export default {
             })
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           reject({
             errorCode: 2,
             errorMsg: error,
@@ -54,6 +56,7 @@ export default {
         })
     })
   },
+
   getTransationList: async function (req, chainId) {
     const tokentxList = await this.getTxList(req, chainId)
 
@@ -61,7 +64,7 @@ export default {
     const txList = await this.getTxList(req, chainId, false)
     for (const item of txList.result) {
       // fill tokenSymbol、tokenDecimal
-      item.tokenSymbol = 'ETH'
+      item.tokenSymbol = 'MATIC'
       item.tokenDecimal = 18
 
       tokentxList.result.push(item)
@@ -70,11 +73,8 @@ export default {
     return tokentxList
   },
   getBlockNumberWithTimeStamp: function (req, chainId) {
-    if (chainId == 22) {
-      configNet = config.arbitrum.Rinkeby
-    }
     return new Promise((resolve, reject) => {
-      const cacheKey = `arbitrum.getBlockNumberWithTimeStamp__${req.closest}`
+      const cacheKey = `polygon.getBlockNumberWithTimeStamp__${req.closest}`
       const cacheValue = cacheMemoryGet(cacheKey)
       if (cacheValue) {
         resolve(cacheValue)
@@ -86,6 +86,10 @@ export default {
         action: 'getblocknobytime',
         timestamp: req.timestamp,
         closest: req.closest,
+        apikey: config.polygon.key,
+      }
+      if (chainId === 66) {
+        configNet = config.polygon.Rinkeby
       }
       axios
         .get(configNet, { params })

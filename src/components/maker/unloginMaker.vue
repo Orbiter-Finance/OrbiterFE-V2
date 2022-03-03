@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     clickLearnMore() {
-      window.open('https://docs.orbiter.finance/whitepaper_en', '_blank');
+      window.open('https://docs.orbiter.finance/', '_blank');
     },
     connectWallet() {
       console.log('connectWallet')

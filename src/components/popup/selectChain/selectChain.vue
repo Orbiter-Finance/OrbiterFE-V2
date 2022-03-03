@@ -21,24 +21,31 @@
                   iconName="search"></svg-icon>
       </div>
 
-      <div v-for="item in newChainData"
+      <div v-for="(item, index) in newChainData"
            :key="item.chain"
-           @click="getChainInfo(item)"
+           @click="getChainInfo(item, index)"
            class="contentItem">
         <svg-icon class="logo"
                   style="margin-right:1.5rem"
                   :iconName="item.icon"></svg-icon>
         <span>{{item.chain}}</span>
+        <loading v-if="loadingIndex == index"
+                  style="left: 1rem; top: 0rem"
+                  width="1.5rem"
+                  height="1.5rem"></loading>
       </div>
     </div>
   </o-box-content>
 </template>
 
 <script>
+import { getL2AddressByL1, getNetworkIdByChainId, getStarknetAccount } from '../../../util/constants/starknet/helper'
 import util from '../../../util/util'
+import Loading from '../../loading/loading.vue'
 
 export default {
   name: 'SelectChain',
+  components: { Loading },
   props: {
     ChainData: {
       type: Array,
@@ -49,7 +56,8 @@ export default {
   },
   data() {
     return {
-      keyword: ''
+      keyword: '',
+      loadingIndex: -1
     }
   },
   computed: {
@@ -63,6 +71,15 @@ export default {
         }
         if (item === 3 || item === 33) {
           iconName = 'zklogo'
+        }
+        if (item === 4 || item === 44) {
+          iconName = 'sknlogo'
+        }
+        if (item === 6 || item === 66) {
+          iconName = 'pglogo'
+        }
+        if (item === 7 || item === 77) {
+          iconName = 'oplogo'
         }
         var chainData = {
           icon: iconName,
@@ -88,7 +105,29 @@ export default {
     closerButton() {
       this.$emit('closeSelect')
     },
-    getChainInfo(e) {
+    async getChainInfo(e, index) {
+      if (e.localID == 4 || e.localID == 44) {
+        try{
+          this.loadingIndex = index
+          const { coinbase } = this.$store.state.web3
+          const networkId = getNetworkIdByChainId(e.localID)
+          const l2Address = await getL2AddressByL1(coinbase, networkId)
+          if (!l2Address || l2Address == '0x0') {
+            await getStarknetAccount(coinbase, networkId)
+          }
+
+          this.loadingIndex = -1
+        } catch(err) {
+          this.$notify.error({
+            title: err.message,
+            duration: 3000,
+          })
+
+          this.loadingIndex = -1
+          return
+        }
+      }
+
       this.$emit('getChainInfo', e)
       this.closerButton()
     },

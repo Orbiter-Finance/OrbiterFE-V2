@@ -1,13 +1,9 @@
 // var WAValidator = require('wallet-address-validator')
 export default {
   checkPrice: function(text) {
-    var reg = /^(?!0$|0\.$|0\.0$|0\.00$)(?![1-9]\d*\.$)(0?|[1-9]\d*)(\.\d{0,5})?$/
+    const reg = /^(?!0$|0\.$|0\.0$|0\.00$)(?![1-9]\d*\.$)(0?|[1-9]\d*)(\.\d{0,6})?$/
     // 0 0. 0.0 0.00 1.  222. not alow
-    if (reg.test(text)) {
-      return true
-    } else {
-      return false
-    }
+    return reg.test(text)
   },
   // isETHAddres: function(address) {
   //   if (address && address.length !== 0) {
