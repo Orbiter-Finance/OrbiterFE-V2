@@ -32,6 +32,10 @@ function getTransferContract(localChainID, makerInfo) {
     console.log('doZK')
     return
   }
+  if (localChainID === 4 || localChainID === 44) {
+    console.log('doStarknet')
+    return
+  }
   if (store.state.web3.isInstallMeta) {
     const web3 = new Web3(window.ethereum)
     var ABI = Coin_ABI
@@ -69,7 +73,7 @@ async function getTransferGasLimit(localChainID, makerInfo, from, to, value) {
         gasLimit = await web3.eth.estimateGas({
           from,
           to: makerInfo.makerAddress,
-          value
+          value,
         })
         return gasLimit
       } else {
@@ -82,7 +86,7 @@ async function getTransferGasLimit(localChainID, makerInfo, from, to, value) {
         gasLimit = await ecourseContractInstance.methods
           .transfer(to, value)
           .estimateGas({
-            from: from
+            from: from,
           })
         // console.log('gasLimit =',gasLimit)
         return gasLimit

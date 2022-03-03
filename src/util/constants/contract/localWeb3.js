@@ -9,7 +9,10 @@ const LocalNetWorks = env.supportLocalNetWorksIDs
  */
 function localWeb3(chainID) {
   if (LocalNetWorks.indexOf(chainID.toString()) > -1) {
-    const provider = new Web3.providers.HttpProvider(env.localProvider[chainID])
+    const provider = env.localProvider[chainID]
+    if (!provider) {
+      return null
+    }
     const localWeb3 = new Web3(provider)
     return localWeb3
   } else {

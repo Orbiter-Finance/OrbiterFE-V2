@@ -8,7 +8,13 @@ import { store } from '../../store'
 import util from '../../util/util'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
+import {
+  getL2AddressByL1,
+  getNetworkIdByChainId,
+  getProviderByChainId,
+} from '../constants/starknet/helper'
 import { EthListen } from './eth_listen'
+import { factoryStarknetListen } from './starknet_listen'
 
 let startBlockNumber = ''
 
@@ -18,20 +24,20 @@ const getHistory = () => {
       .getTransactionList({
         address: store.state.web3.coinbase,
         daysAgo: 14,
-        state: 1 //maker/user
+        state: 1, //maker/user
       })
-      .then(response => {
+      .then((response) => {
         if (response.state === 1) {
           store.commit('updateTransactionList', response.list)
         }
       })
-      .catch(error => {
-        console.log('error =', error)
+      .catch((error) => {
+        console.warn('error =', error)
       })
   }
 }
 
-const storeUpdateProceedState = state => {
+const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
 
   getHistory()
@@ -50,12 +56,10 @@ async function confirmUserTransaction(
     toLocalChainID = makerInfo.c1ID
   }
 
-  // Get current blockNumber when no zksync
-  if (toLocalChainID !== 3 && toLocalChainID !== 33) {
-    const _web3 = localWeb3(toLocalChainID)
-    if (_web3) {
-      startBlockNumber = await _web3.eth.getBlockNumber()
-    }
+  // Get current toChain blockNumber
+  const _web3 = localWeb3(toLocalChainID)
+  if (_web3) {
+    startBlockNumber = await _web3.eth.getBlockNumber()
   }
 
   store.commit('updateProceedingUserTransferLocalChainID', localChainID)
@@ -67,7 +71,7 @@ async function confirmUserTransaction(
     if (localChainID === 3 || localChainID === 33) {
       var req = {
         txHash: txHash,
-        localChainID: localChainID
+        localChainID: localChainID,
       }
       try {
         let zkTransactionData = await thirdapi.getZKTransactionData(req)
@@ -93,7 +97,7 @@ async function confirmUserTransaction(
           )
           let zk_makerTransferChainID =
             localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
-          var zk_amountToSend = orbiterCore.getTAmountFromRAmount(
+          var sn_amountToSend = orbiterCore.getTAmountFromRAmount(
             zk_makerTransferChainID,
             zk_SendRAmount,
             zk_nonce
@@ -109,7 +113,7 @@ async function confirmUserTransaction(
             makerInfo,
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
-            zk_amountToSend
+            sn_amountToSend
           )
           return
         }
@@ -124,6 +128,78 @@ async function confirmUserTransaction(
         confirmations
       )
     }
+
+    // starknet
+    if (localChainID == 4 || localChainID == 44) {
+      try {
+        const starknetProvider = getProviderByChainId(localChainID)
+        const resp = await starknetProvider.getTransaction(txHash)
+
+        if (
+          resp.status == 'ACCEPTED_ON_L1' ||
+          resp.status == 'ACCEPTED_ON_L2'
+        ) {
+          const transaction = resp.transaction
+
+          const block = await starknetProvider.getBlock()
+
+          const sn_amount = orbiterCore.getRAmountFromTAmount(
+            localChainID,
+            transaction.calldata?.[4]
+          ).rAmount
+          const sn_nonce = String(
+            transaction.nonce || transaction.calldata?.[6] || 0
+          )
+          const sn_SendRAmount = orbiterCore.getToAmountFromUserAmount(
+            new Bignumber(sn_amount).dividedBy(
+              new Bignumber(10 ** makerInfo.precision)
+            ),
+            makerInfo,
+            true
+          )
+          const sn_makerTransferChainID =
+            localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
+          console.warn({ sn_makerTransferChainID, sn_SendRAmount, sn_nonce })
+          const sn_amountToSend = orbiterCore.getTAmountFromRAmount(
+            sn_makerTransferChainID,
+            sn_SendRAmount,
+            sn_nonce
+          ).tAmount
+          if (!isCurrentTransaction(txHash)) {
+            return
+          }
+          store.commit('updateProceedingUserTransferTimeStamp', block.timestamp)
+          storeUpdateProceedState(3)
+          console.warn({
+            txHash,
+            sn_makerTransferChainID,
+            makerInfo,
+            makerAddress: makerInfo.makerAddress,
+            coinbase: store.state.web3.coinbase,
+            sn_amountToSend,
+          })
+          startScanMakerTransfer(
+            txHash,
+            sn_makerTransferChainID,
+            makerInfo,
+            makerInfo.makerAddress,
+            store.state.web3.coinbase,
+            sn_amountToSend
+          )
+          return
+        }
+      } catch (error) {
+        console.log('error =', error)
+        throw 'getStarknetTransactionDataError'
+      }
+      return confirmUserTransaction(
+        localChainID,
+        makerInfo,
+        txHash,
+        confirmations
+      )
+    }
+
     // main & arbitrum
     const trxConfirmations = await getConfirmations(localChainID, txHash)
     if (!trxConfirmations) {
@@ -163,8 +239,10 @@ async function confirmUserTransaction(
       amountStr = Web3.utils.hexToNumberString(amountHex)
       startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
     }
-    var amount = orbiterCore.getRAmountFromTAmount(localChainID, amountStr)
-      .rAmount
+    var amount = orbiterCore.getRAmountFromTAmount(
+      localChainID,
+      amountStr
+    ).rAmount
 
     if (
       trxConfirmations.confirmations > 0 &&
@@ -235,7 +313,7 @@ function ScanZKMakerTransfer(
       account: from,
       from: 'latest',
       limit: 30,
-      direction: 'older'
+      direction: 'older',
     }
     try {
       let zkTransactions = await thirdapi.getZKInfo(req)
@@ -265,7 +343,7 @@ function ScanZKMakerTransfer(
               ? makerInfo.t1Address
               : makerInfo.t2Address
           var tokenList = zkTokenList.filter(
-            item => item.address === tokenAddress
+            (item) => item.address === tokenAddress
           )
           let resultToken = tokenList.length > 0 ? tokenList[0] : null
           if (!resultToken) {
@@ -370,6 +448,56 @@ function ScanMakerTransfer(
       return false
     }
 
+    // starknet
+    if (localChainID == 4 || localChainID == 44) {
+      const asyncStarknet = async () => {
+        const networkId = getNetworkIdByChainId(localChainID)
+        const fromStarknetAddress = await getL2AddressByL1(from, networkId)
+        let toStarknetAddress = ''
+
+        // Wait toStarknetAddress deploy
+        while (!toStarknetAddress) {
+          toStarknetAddress = await getL2AddressByL1(to, networkId)
+          if (toStarknetAddress) {
+            break
+          }
+
+          await util.sleep(5000)
+        }
+
+        let api = config.starknet.Mainnet
+        if (localChainID == 44) {
+          api = config.starknet.Rinkeby
+        }
+
+        const skl = factoryStarknetListen(
+          { endPoint: api },
+          fromStarknetAddress
+        )
+        skl.transfer(
+          { from: fromStarknetAddress, to: toStarknetAddress },
+          {
+            onReceived: async (transaction) => {
+              if (checkData(from, to, transaction.value, '')) {
+                store.commit(
+                  'updateProceedingMakerTransferTxid',
+                  transaction.hash
+                )
+                storeUpdateProceedState(4)
+              }
+            },
+            onConfirmation: async (transaction) => {
+              if (checkData(from, to, transaction.value, '')) {
+                storeUpdateProceedState(5)
+              }
+            },
+          }
+        )
+      }
+      asyncStarknet()
+      return
+    }
+
     // when is eth tokenAddress
     if (util.isEthTokenAddress(tokenAddress)) {
       let api = null
@@ -377,13 +505,13 @@ function ScanMakerTransfer(
         case 1:
           api = {
             endPoint: config.etherscan.Mainnet,
-            key: config.etherscan.Mainnet.key
+            key: config.etherscan.Mainnet.key,
           }
           break
         case 5:
           api = {
             endPoint: config.etherscan.Rinkeby,
-            key: config.etherscan.key
+            key: config.etherscan.key,
           }
           break
         case 2:
@@ -395,13 +523,13 @@ function ScanMakerTransfer(
         case 7:
           api = {
             endPoint: config.optimistic.Mainnet,
-            key: config.optimistic.key
+            key: config.optimistic.key,
           }
           break
         case 77:
           api = {
             endPoint: config.optimistic.Rinkeby,
-            key: config.optimistic.key
+            key: config.optimistic.key,
           }
           break
       }
@@ -414,7 +542,7 @@ function ScanMakerTransfer(
         .transfer(
           { from, to },
           {
-            onReceived: transaction => {
+            onReceived: (transaction) => {
               if (
                 checkData(
                   transaction.from,
@@ -430,7 +558,7 @@ function ScanMakerTransfer(
                 storeUpdateProceedState(4)
               }
             },
-            onConfirmation: transaction => {
+            onConfirmation: (transaction) => {
               if (
                 checkData(
                   transaction.from,
@@ -441,7 +569,7 @@ function ScanMakerTransfer(
               ) {
                 storeUpdateProceedState(5)
               }
-            }
+            },
           },
           1
         )
@@ -455,12 +583,12 @@ function ScanMakerTransfer(
     const options = {
       filter: {
         from: from,
-        to: to
+        to: to,
       },
       fromBlock: currentBlock - 100,
-      toBlock: 'latest'
+      toBlock: 'latest',
     }
-    tokenContract.getPastEvents('Transfer', options, function(error, events) {
+    tokenContract.getPastEvents('Transfer', options, function (error, events) {
       if (!isCurrentTransaction(transactionID)) {
         return
       }
@@ -562,7 +690,7 @@ async function getConfirmations(localChainID, txHash) {
       return {
         confirmations: currentBlock - trx.blockNumber,
         trx: trx,
-        timestamp: blockInfo.timestamp
+        timestamp: blockInfo.timestamp,
       }
     }
     return { confirmations: 0, trx: trx, timestamp: 0 }
@@ -597,5 +725,5 @@ export default {
     }
     store.commit('updateProceedingUserTransferAmount', realAmount)
     confirmUserTransaction(localChainID, makerInfo, txHash)
-  }
+  },
 }

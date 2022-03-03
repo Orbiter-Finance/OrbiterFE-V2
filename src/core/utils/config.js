@@ -11,6 +11,12 @@ export default {
     chainID: '3',
     rinkeyChainID: '33',
   },
+  starknet: {
+    Mainnet: 'https://voyager.online/api',
+    Rinkeby: 'https://goerli.voyager.online/api',
+    chainID: '4',
+    rinkeyChainID: '44',
+  },
   arbitrum: {
     Mainnet: 'https://api.arbiscan.io/api',
     Rinkeby: 'https://api-testnet.arbiscan.io/api',

@@ -82,6 +82,7 @@
 </template>
 
 <script>
+import { getL2AddressByL1, getNetworkIdByChainId } from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 
@@ -145,23 +146,33 @@ export default {
       }
       this.addChainNetWork(chainID)
     },
-    goToExplorFrom() {
+    async goToExplorFrom() {
+      const { fromChainID } = this.$store.state.transferData
       if (this.$store.state.proceedState === 1) {
-        let url = this.$env.accountExploreUrl[this.$store.state.transferData.fromChainID] + this.$store.state.web3.coinbase
+        let userAddress = this.$store.state.web3.coinbase
+        if (fromChainID == 4 || fromChainID == 44) {
+          userAddress = await getL2AddressByL1(userAddress, getNetworkIdByChainId(fromChainID))
+        }
+        let url = this.$env.accountExploreUrl[fromChainID] + userAddress
         window.open(url, '_blank');
       } else {
         let txid = this.$store.state.proceeding.userTransfer.txid
-        let url = this.$env.txExploreUrl[this.$store.state.transferData.fromChainID] + txid
+        let url = this.$env.txExploreUrl[fromChainID] + txid
         window.open(url, '_blank');
       }
     },
-    goToExplorTo() {
+    async goToExplorTo() {
+      const { toChainID } = this.$store.state.transferData
       if (this.$store.state.proceedState < 4) {
-        let url = this.$env.accountExploreUrl[this.$store.state.transferData.toChainID] + this.$store.state.web3.coinbase
+        let userAddress = this.$store.state.web3.coinbase
+        if (toChainID == 4 || toChainID == 44) {
+          userAddress = await getL2AddressByL1(userAddress, getNetworkIdByChainId(toChainID))
+        }
+        let url = this.$env.accountExploreUrl[toChainID] + userAddress
         window.open(url, '_blank');
       } else {
         let txid = this.$store.state.proceeding.makerTransfer.txid
-        let url = this.$env.txExploreUrl[this.$store.state.transferData.toChainID] + txid
+        let url = this.$env.txExploreUrl[toChainID] + txid
         window.open(url, '_blank');
       }
 

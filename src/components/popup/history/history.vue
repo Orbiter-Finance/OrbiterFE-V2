@@ -13,7 +13,6 @@
       <div
         style="width: 100%; height: 0.3rem; background: var(--default-black)"
       ></div>
-
       <div class="contentTopItem">
         <span style="width: 34%">Time</span>
         <span style="width: 30%">Value</span>
@@ -101,6 +100,8 @@ export default {
         return 'arblogo'
       } else if (chainID == '3' || chainID == '33') {
         return 'zklogo'
+      } else if (chainID == '4' || chainID == '44') {
+        return 'sknlogo'
       } else if (chainID == '6' || chainID == '66') {
         return 'pglogo'
       } else if (chainID == '7' || chainID == '77') {

@@ -11,6 +11,7 @@
     "report": "npm run build -- --report"
   },
   "dependencies": {
+    "@dydxprotocol/starkex-lib": "^1.1.6",
     "@eth-optimism/contracts": "^0.5.14",
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",

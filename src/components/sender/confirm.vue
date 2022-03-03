@@ -93,6 +93,7 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
+import { getL2AddressByL1, getNetworkIdByChainId, sendTransaction } from '../../util/constants/starknet/helper'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -476,6 +477,48 @@ export default {
         console.error(error)
       }
     },
+    async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        return
+      }
+
+      try {
+        let contractAddress = selectMakerInfo.t1Address
+        if (selectMakerInfo.c1ID != fromChainID) {
+          contractAddress = selectMakerInfo.t2Address
+        }
+        
+        const networkId = getNetworkIdByChainId(fromChainID)
+
+        const receiverStarknetAddress = await getL2AddressByL1(
+          selectMakerInfo.makerAddress,
+          networkId
+        )
+
+        const hash = await sendTransaction(
+          from,
+          contractAddress,
+          receiverStarknetAddress,
+          value,
+          networkId
+        )
+
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          hash
+        )
+      } catch (error) {
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
@@ -536,7 +579,15 @@ export default {
           return
         }
         const account = this.$store.state.web3.coinbase
-
+        if (fromChainID == 4 || fromChainID == 44) {
+          this.starknetTransfer(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+          return
+        }
         if (util.isEthTokenAddress(tokenAddress)) {
           // When tokenAddress is eth
           this.ethTransfer(

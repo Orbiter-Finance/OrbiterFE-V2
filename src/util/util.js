@@ -127,4 +127,16 @@ export default {
   isEthTokenAddress(tokenAddress) {
     return /^0x0+$/i.test(tokenAddress)
   },
+
+  /**
+   * @param {number} ms Sleep millisecond
+   * @returns
+   */
+  sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(null)
+      }, ms)
+    })
+  },
 }

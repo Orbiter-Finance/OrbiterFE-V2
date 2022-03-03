@@ -1,34 +1,42 @@
 <template>
-  <o-box-content class="selectChainBody"
-                 style="width:34.5rem">
-    <div @click.stop="stopPenetrate"
-         class="selectChainContent">
+  <o-box-content class="selectChainBody" style="width: 34.5rem">
+    <div @click.stop="stopPenetrate" class="selectChainContent">
       <div class="topItem">
         <span>Select a Chain</span>
         <div @click="closerButton">
-          <svg-icon style="width:1.5rem;height:1.5rem"
-                    iconName="close"></svg-icon>
+          <svg-icon
+            style="width: 1.5rem; height: 1.5rem"
+            iconName="close"
+          ></svg-icon>
         </div>
       </div>
-      <div style="width:100%;position:relative;">
-        <input type="text"
-               v-model="keyword"
-               class="input"
-               @input="checkKeyWord()"
-               :placeholder="`input search text`">
-        <svg-icon @click="search"
-                  class="searchIcon"
-                  iconName="search"></svg-icon>
+      <div style="width: 100%; position: relative">
+        <input
+          type="text"
+          v-model="keyword"
+          class="input"
+          @input="checkKeyWord()"
+          :placeholder="`input search text`"
+        />
+        <svg-icon
+          @click="search"
+          class="searchIcon"
+          iconName="search"
+        ></svg-icon>
       </div>
 
-      <div v-for="item in newChainData"
-           :key="item.chain"
-           @click="getChainInfo(item)"
-           class="contentItem">
-        <svg-icon class="logo"
-                  style="margin-right:1.5rem"
-                  :iconName="item.icon"></svg-icon>
-        <span>{{item.chain}}</span>
+      <div
+        v-for="item in newChainData"
+        :key="item.chain"
+        @click="getChainInfo(item)"
+        class="contentItem"
+      >
+        <svg-icon
+          class="logo"
+          style="margin-right: 1.5rem"
+          :iconName="item.icon"
+        ></svg-icon>
+        <span>{{ item.chain }}</span>
       </div>
     </div>
   </o-box-content>
@@ -44,28 +52,25 @@ export default {
       type: Array,
       default: function () {
         return []
-      }
-    }
+      },
+    },
   },
   data() {
     return {
-      keyword: ''
+      keyword: '',
     }
   },
   computed: {
     transeferChainData: function () {
       var newArray = []
       for (let index = 0; index < this.ChainData.length; index++) {
-        const item = this.ChainData[index];
+        const item = this.ChainData[index]
         let iconName = 'tokenLogo'
         if (item === 2 || item === 22) {
           iconName = 'arblogo'
         }
         if (item === 3 || item === 33) {
           iconName = 'zklogo'
-        }
-        if (item === 4 || item === 44) {
-          iconName = 'sknlogo'
         }
         if (item === 6 || item === 66) {
           iconName = 'pglogo'
@@ -76,7 +81,7 @@ export default {
         var chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),
-          localID: item
+          localID: item,
         }
         newArray.push(chainData)
       }
@@ -84,30 +89,31 @@ export default {
       newArray.push({
         icon: 'sknlogo',
         chain: 'StarkNet(Goerli)',
-        localID: 44
+        localID: 44,
       })
 
       return newArray
     },
     newChainData: function () {
       if (!this.keyword || this.keyword === '') {
-        return this.transeferChainData;
+        return this.transeferChainData
       }
-      return this.transeferChainData.filter(item => item.chain.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1)
-    }
+      return this.transeferChainData.filter(
+        (item) =>
+          item.chain.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1
+      )
+    },
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     closerButton() {
       this.$emit('closeSelect')
     },
     getChainInfo(e) {
-      if (e.localID  == 44) {
+      if (e.localID == 44) {
         // To rinkeby.orbiter.finance
-        window.open('https://rinkeby.orbiter.finance', '_blank');
+        window.open('https://rinkeby.orbiter.finance', '_blank')
         return
       }
 
@@ -120,9 +126,8 @@ export default {
     search() {
       console.log('search')
     },
-    checkKeyWord() {
-    },
-  }
+    checkKeyWord() {},
+  },
 }
 </script>
 

@@ -58,6 +58,27 @@
       "infoURL": "https://ropsten.etherscan.io/"
     },
     {
+      "name": "Görli",
+      "chainId": 5,
+      "shortName": "gor",
+      "networkId": 5,
+      "nativeCurrency": {
+        "name": "Görli Ether",
+        "symbol": "GOR",
+        "decimals": 18
+      },
+      "rpc": [
+        "https://rpc.goerli.mudit.blog/",
+        "https://rpc.slock.it/goerli ",
+        "https://goerli.prylabs.net/"
+      ],
+      "faucets": [
+        "https://goerli-faucet.slock.it/?address=${ADDRESS}",
+        "https://faucet.goerli.mudit.blog"
+      ],
+      "infoURL": "https://goerli.net/#about"
+    },
+    {
       "name": "Arbitrum",
       "chainId": 42161,
       "shortName": "arb1",

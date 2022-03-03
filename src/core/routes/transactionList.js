@@ -1,16 +1,21 @@
 import BigNumber from 'bignumber.js'
 import orbiterCore from '../../orbiterCore'
+import {
+  getL2AddressByL1,
+  getNetworkIdByChainId,
+} from '../../util/constants/starknet/helper'
+import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
-import polygon from '../actions/polygon'
-import optimistic from '../actions/optimistic'
 import etherscan from '../actions/etherscan'
+import optimistic from '../actions/optimistic'
+import polygon from '../actions/polygon'
+import mStarknet from '../actions/starknet'
 import thegraph from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
-// import config from '../utils/config'
 import TxInfo from '../utils/modle/txinfo'
 
 async function getTransactionListEtherscan(
-  makerAddress,
+  userAddress,
   chainID,
   needTimeStamp,
   makerList
@@ -37,7 +42,7 @@ async function getTransactionListEtherscan(
   }
 
   let ethscanReq = {
-    maker: makerAddress,
+    maker: userAddress,
     startblock: ethScanStartBlock,
     endblock: 999999999,
   }
@@ -118,7 +123,7 @@ async function getTransactionListEtherscan(
 }
 
 async function getTransactionListArbitrum(
-  makerAddress,
+  userAddress,
   chainID,
   needTimeStamp,
   makerList
@@ -144,7 +149,7 @@ async function getTransactionListArbitrum(
   }
 
   let ArscanReq = {
-    maker: makerAddress,
+    maker: userAddress,
     startblock: arScanStartBlock,
     endblock: 999999999,
   }
@@ -225,7 +230,7 @@ async function getTransactionListArbitrum(
 }
 
 async function getTransactionListOptimitic(
-  makerAddress,
+  userAddress,
   chainID,
   needTimeStamp,
   makerList
@@ -251,7 +256,7 @@ async function getTransactionListOptimitic(
   }
 
   let OpscanReq = {
-    maker: makerAddress,
+    maker: userAddress,
     startblock: opScanStartBlock,
     endblock: 999999999,
   }
@@ -332,7 +337,7 @@ async function getTransactionListOptimitic(
 }
 
 async function getTransactionListPolygon(
-  makerAddress,
+  userAddress,
   chainID,
   needTimeStamp,
   makerList
@@ -358,7 +363,7 @@ async function getTransactionListPolygon(
   }
 
   const transationReq = {
-    maker: makerAddress,
+    maker: userAddress,
     startblock: startBlockNumber,
     endblock: 999999999,
   }
@@ -436,7 +441,7 @@ async function getTransactionListPolygon(
 }
 
 async function getTransactionListZksync(
-  makerAddress,
+  userAddress,
   chainID,
   needTimeStamp,
   makerList
@@ -460,7 +465,7 @@ async function getTransactionListZksync(
         from: lastHash ? lastHash : 'latest',
         limit: 100,
         direction: 'older',
-        account: makerAddress,
+        account: userAddress,
         localChainID: chainID,
       }
       let zkInfo = await thirdapi.getZKInfo(zkScanReq1)
@@ -576,6 +581,166 @@ async function getTransactionListZksync(
   }
 
   return { ZKFromTxList, ZKToTxList }
+}
+
+async function getTransactionListStarknet(
+  userAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const SNFromTxList = []
+  const SNToTxList = []
+  const networkId = getNetworkIdByChainId(chainID)
+
+  const starknetAllTxList = []
+  const transactionHashs = []
+  const getTxList = async (starknetAddress, p = 1) => {
+    const list = await mStarknet.getTransationList(
+      { starknetAddress, p },
+      chainID
+    )
+
+    if (list.length <= 0) {
+      return
+    }
+
+    let isGetNextPage = true
+    const _allPromises = []
+    for (const item of list) {
+      if (item.timestamp < needTimeStamp) {
+        isGetNextPage = false
+        break
+      }
+
+      if (transactionHashs.indexOf(item.hash) > -1) {
+        continue
+      }
+      transactionHashs.push(item.hash)
+
+      _allPromises.push(
+        (async () => {
+          const transaction = await mStarknet.getTransaction(item.hash, chainID)
+          if (transaction) {
+            starknetAllTxList.push(transaction)
+          }
+        })()
+      )
+    }
+    await Promise.all(_allPromises)
+
+    if (isGetNextPage) {
+      await getTxList(starknetAddress, (p += 1))
+    }
+  }
+
+  // All starknet addresses
+  const userAddressStarknet = await getL2AddressByL1(userAddress, networkId)
+  const starknetAddresses = [userAddressStarknet]
+  const allPromises = [getTxList(userAddressStarknet)]
+  for (const item of makerList) {
+    if (item.c1ID != chainID && item.c2ID != chainID) {
+      continue
+    }
+    const _starknetAddress = await getL2AddressByL1(
+      item.makerAddress,
+      networkId
+    )
+    if (starknetAddresses.indexOf(_starknetAddress) === -1) {
+      starknetAddresses.push(_starknetAddress)
+
+      allPromises.push(getTxList(_starknetAddress))
+    }
+  }
+
+  await Promise.all(allPromises)
+
+  for (const index in starknetAllTxList) {
+    const item = starknetAllTxList[index]
+    const txinfo = TxInfo.getTxInfoWithStarknet(item)
+
+    for (const makerInfo of makerList) {
+      const _makerAddress = makerInfo.makerAddress.toLowerCase()
+      const _makerAddressStarknet = await getL2AddressByL1(
+        _makerAddress,
+        networkId
+      )
+
+      if (
+        txinfo.from !== _makerAddressStarknet &&
+        txinfo.to !== _makerAddressStarknet
+      ) {
+        continue
+      }
+
+      if (txinfo.tokenName !== makerInfo.tName) {
+        continue
+      }
+
+      let avalibleTimes =
+        chainID === makerInfo.c1ID
+          ? makerInfo.c1AvalibleTimes
+          : makerInfo.c2AvalibleTimes
+      let isMatch = false
+      for (let z = 0; z < avalibleTimes.length; z++) {
+        let avalibleTime = avalibleTimes[z]
+
+        if (
+          avalibleTime.startTime <= txinfo.timeStamp &&
+          avalibleTime.endTime >= txinfo.timeStamp
+        ) {
+          isMatch = true
+          break
+        }
+      }
+
+      if (!isMatch) {
+        continue
+      }
+
+      if (
+        txinfo.from === _makerAddressStarknet &&
+        txinfo.to === userAddressStarknet
+      ) {
+        let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+        let nonce = 0
+        if (pText.state) {
+          nonce = pText.pText
+        }
+        if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+          SNToTxList.push({
+            ...txinfo,
+            from: _makerAddress,
+            to: userAddress,
+          })
+          break
+        }
+      } else if (
+        txinfo.to === _makerAddressStarknet &&
+        txinfo.from === userAddressStarknet
+      ) {
+        if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+          let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+          let arr2 = [
+            chainID,
+            orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+          ]
+          if (judgeArrayEqualFun(arr1, arr2)) {
+            SNFromTxList.push({
+              ...txinfo,
+              from: userAddress,
+              to: _makerAddress,
+            })
+            break
+          }
+        }
+      } else {
+        // doNothiing
+      }
+    }
+  }
+
+  return { SNFromTxList, SNToTxList }
 }
 
 export default {
@@ -699,7 +864,7 @@ export default {
         )
       }
 
-      // 2.3 zk==================================================================
+      // 3.33 zk==================================================================
       if (supportChains.indexOf(3) > -1 || supportChains.indexOf(33) > -1) {
         allPromises.push(
           (async () => {
@@ -715,14 +880,45 @@ export default {
               fromList: ZKFromTxList,
               toList: ZKToTxList,
             }
-            // console.log('ZKFromTxList =', ZKFromTxList)
-            // console.log('ZKToTxList =', ZKToTxList)
+          })()
+        )
+      }
+
+      // 4.44 sn
+      if (supportChains.indexOf(4) > -1 || supportChains.indexOf(44) > -1) {
+        allPromises.push(
+          (async () => {
+            let chainID = supportChains.indexOf(4) > -1 ? 4 : 44
+            const { SNFromTxList, SNToTxList } =
+              await getTransactionListStarknet(
+                req.address,
+                chainID,
+                needTimeStamp,
+                makerList
+              )
+
+            originTxList[chainID] = {
+              fromList: SNFromTxList,
+              toList: SNToTxList,
+            }
           })()
         )
       }
 
       // waitting all promise end
-      await Promise.all(allPromises)
+      const maxRetryCount = 3
+      for (let index = 0; index < maxRetryCount; index++) {
+        try {
+          await Promise.all(allPromises)
+        } catch (err) {
+          console.warn(err)
+          if (index < maxRetryCount - 1) {
+            await util.sleep(2000)
+          } else {
+            throw err
+          }
+        }
+      }
 
       //=============================================================================
     } /* else {

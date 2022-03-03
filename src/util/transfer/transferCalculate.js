@@ -1,5 +1,7 @@
+import { getContractFactory, predeploys } from '@eth-optimism/contracts'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
+import { ethers } from 'ethers'
 import * as zksync from 'zksync'
 import env from '../../../env'
 import thirdapi from '../../core/actions/thirdapi'
@@ -8,9 +10,12 @@ import { store } from '../../store'
 import { exchangeToUsd } from '../coinbase'
 import { getLocalCoinContract } from '../constants/contract/getContract'
 import { localWeb3 } from '../constants/contract/localWeb3'
-import { getContractFactory, predeploys } from '@eth-optimism/contracts'
-import { ethers } from 'ethers'
-
+import {
+  getErc20Balance,
+  getStarknetAccountSingle,
+  getL2AddressByL1,
+  getNetworkIdByChainId,
+} from '../constants/starknet/helper'
 import util from '../util'
 
 // zk deposit
@@ -509,8 +514,24 @@ export default {
         console.log('error =', error)
         throw 'getZKBalanceError'
       }
+    } else if (localChainID === 4 || localChainID === 44) {
+      const networkId = getNetworkIdByChainId(localChainID)
+
+      let starknetAddress = await getL2AddressByL1(userAddress, networkId)
+      if (!starknetAddress || starknetAddress == '0x0') {
+        const account = await getStarknetAccountSingle(userAddress, networkId)
+        starknetAddress = account.starknetAddress
+      }
+
+      const balance = await getErc20Balance(
+        starknetAddress,
+        tokenAddress,
+        networkId
+      )
+      return balance
     } else {
       let balance = 0
+
       if (util.isEthTokenAddress(tokenAddress)) {
         // When is ETH
         const web3 = localWeb3(localChainID)
@@ -523,7 +544,6 @@ export default {
         }
         balance = await tokenContract.methods.balanceOf(userAddress).call()
       }
-
       return balance
     }
   },

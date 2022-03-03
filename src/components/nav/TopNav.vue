@@ -17,6 +17,36 @@
       <a-radio-button value="sender"> Sender </a-radio-button>
       <a-radio-button value="maker"> Maker </a-radio-button>
     </a-radio-group>
+    <div class="nav-tips" v-if="isRinkeby">
+      <p>
+        🛸 Welcome to Orbiter Rinkeby Version! if you want to select Starknet
+        Goerli, you should notice the following :
+      </p>
+      <p>
+        If this is your first time using Starknet Goerli to complete
+        cross-rollup transfers by Orbiter, you will need to finish the following
+        steps, and the whole process takes 25-30 minutes.
+        <br />
+        1. Call MateMask signature to get the private key and public key of the
+        Starknet account
+        <br />
+        2. Deploy the account contract using the private key and public key
+        (takes about 10 minutes) to get the address of the Starknet account
+        <br />
+        3. Save Ethereum addresses and Starknet addresses to account mapping
+        contracts (takes about 5 minutes)
+        <br />
+        4. Wait for the above steps to finish, then you can start transferring
+        to Starknet account (takes about 10 minutes)
+      </p>
+      <p>
+        After the above steps, it only takes 10 minutes when you choose Starknet
+        Goerli to complete cross-rollup transfers by Orbiter.
+      </p>
+      ⚠️ Orbiter doesn't collect or record the private key and public key of
+      your StarkNet account. Feel free to test! The private key and public key
+      of your StarkNet account will be stored in your browser's cache.
+    </div>
   </div>
 </template>
 
@@ -53,12 +83,19 @@ export default {
       }
       return ''
     },
+    isRinkeby() {
+      const { href } = window.location
+      return /rinkeby\.orbiter/i.test(href)
+    },
     navIcons() {
       const icons = {
         logo: 'orbiterLogo',
         logoStyle: { width: '4.8rem', height: '4.8rem' },
         logo_web: 'orbiterLogo_web',
         logo_webStyle: { width: '16rem', height: '3.1rem' },
+      }
+      if (this.isRinkeby) {
+        icons.logo_web = 'orbiterLogo_web--rinkeby'
       }
       switch (this.refererUpper) {
         case 'ZKSYNC':
@@ -200,6 +237,25 @@ export default {
     border-width: 0 0.15rem 0.2rem 0.1rem;
     border-color: var(--default-black);
     border-style: solid;
+  }
+
+  .nav-tips {
+    position: absolute;
+    top: 8rem;
+    right: 2rem;
+    width: 30rem;
+    font-size: 10px;
+    text-align: left;
+  }
+  @media (max-width: 900px) {
+    .nav-tips {
+      display: none;
+    }
+  }
+  @media (max-width: 1000px) {
+    .nav-tips {
+      width: 25rem;
+    }
   }
 }
 </style>
