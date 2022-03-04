@@ -743,6 +743,25 @@ async function getTransactionListStarknet(
   return { SNFromTxList, SNToTxList }
 }
 
+async function getTransactionListImmutableX(
+  userAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  console.warn({
+    userAddress,
+    chainID,
+    needTimeStamp,
+    makerList,
+  })
+
+  const IMXFromTxList = []
+  const IMXToTxList = []
+
+  return { IMXFromTxList, IMXToTxList }
+}
+
 export default {
   getTransactionList: async function (req) {
     /*

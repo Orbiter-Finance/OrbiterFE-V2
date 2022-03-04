@@ -182,7 +182,7 @@ const factorys = {}
  * @returns {StarknetListen}
  */
 export function factoryStarknetListen(api, apiParamsTo = '') {
-  const factoryKey = `${api.endPoint}:${api.key}`
+  const factoryKey = `${api.endPoint}:${api.key}:${apiParamsTo}`
 
   if (factorys[factoryKey]) {
     return factorys[factoryKey]

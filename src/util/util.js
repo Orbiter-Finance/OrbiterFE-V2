@@ -30,6 +30,10 @@ export default {
         return 'StarkNet'
       case 44:
         return 'StarkNet(R)'
+      case 8:
+        return 'ImmutableX'
+      case 88:
+        return 'ImmutableX(R)'
     }
 
     const chain = chainList.chainList.filter(
