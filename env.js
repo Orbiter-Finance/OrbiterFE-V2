@@ -22,11 +22,13 @@ export default {
     '5',
     '6',
     '7',
+    '8',
     '22',
     '33',
     '44',
     '66',
     '77',
+    '88',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -36,11 +38,13 @@ export default {
     5: '4', // rinkeby
     6: '137', // polygon
     7: '10', // optimism
+    8: '1', // mainnet
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)
     77: '69', // optimism(K)
+    88: '3', // ropsten
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/

@@ -16,6 +16,7 @@ import {
   getL2AddressByL1,
   getNetworkIdByChainId,
 } from '../constants/starknet/helper'
+import { IMXHelper } from '../IMXHelper'
 import util from '../util'
 
 // zk deposit
@@ -530,6 +531,10 @@ export default {
         networkId
       )
       return balance
+    } else if (localChainID === 8 || localChainID === 88) {
+      const imxHelper = new IMXHelper(localChainID)
+      const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
+      return Number(balance + '')
     } else {
       let balance = 0
 

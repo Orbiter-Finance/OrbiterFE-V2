@@ -6,7 +6,8 @@ const MAX_BITS = {
   zksync: 35,
   starknet: 256,
   polygon: 256,
-  optimistic: 256
+  optimistic: 256,
+  immutablex: 256
 }
 
 const CHAIN_INDEX = {
@@ -21,7 +22,9 @@ const CHAIN_INDEX = {
   6: 'polygon',
   66: 'polygon',
   7: 'optimistic',
-  77: 'optimistic'
+  77: 'optimistic',
+  8: 'immutablex',
+  88: 'immutablex'
 }
 
 const SIZE_OP = {
