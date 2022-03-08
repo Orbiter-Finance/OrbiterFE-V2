@@ -11,8 +11,9 @@ import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
-  getProviderByChainId,
+  getProviderByChainId
 } from '../constants/starknet/helper'
+import { IMXHelper } from '../IMXHelper'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 
@@ -159,7 +160,6 @@ async function confirmUserTransaction(
           )
           const sn_makerTransferChainID =
             localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
-          console.warn({ sn_makerTransferChainID, sn_SendRAmount, sn_nonce })
           const sn_amountToSend = orbiterCore.getTAmountFromRAmount(
             sn_makerTransferChainID,
             sn_SendRAmount,
@@ -170,14 +170,6 @@ async function confirmUserTransaction(
           }
           store.commit('updateProceedingUserTransferTimeStamp', block.timestamp)
           storeUpdateProceedState(3)
-          console.warn({
-            txHash,
-            sn_makerTransferChainID,
-            makerInfo,
-            makerAddress: makerInfo.makerAddress,
-            coinbase: store.state.web3.coinbase,
-            sn_amountToSend,
-          })
           startScanMakerTransfer(
             txHash,
             sn_makerTransferChainID,
@@ -191,6 +183,63 @@ async function confirmUserTransaction(
       } catch (error) {
         console.log('error =', error)
         throw 'getStarknetTransactionDataError'
+      }
+      return confirmUserTransaction(
+        localChainID,
+        makerInfo,
+        txHash,
+        confirmations
+      )
+    }
+
+    // immutablex
+    if (localChainID == 8 || localChainID == 88) {
+      try {
+        const imxHelper = new IMXHelper(localChainID)
+        const imxClient = await imxHelper.getImmutableXClient()
+        const transfer = await imxClient.getTransfer({ id: txHash })
+
+        if (transfer.status.toLowerCase() == 'success') {
+          const imx_amount = orbiterCore.getRAmountFromTAmount(
+            localChainID,
+            transfer.token.data.quantity + ''
+          ).rAmount
+          const imx_nonce = imxHelper.timestampToNonce(transfer.timestamp.getTime())
+          const imx_SendRAmount = orbiterCore.getToAmountFromUserAmount(
+            new Bignumber(imx_amount).dividedBy(
+              new Bignumber(10 ** makerInfo.precision)
+            ),
+            makerInfo,
+            true
+          )
+          const imx_makerTransferChainID =
+            localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
+          const imx_amountToSend = orbiterCore.getTAmountFromRAmount(
+            imx_makerTransferChainID,
+            imx_SendRAmount,
+            imx_nonce
+          ).tAmount
+          if (!isCurrentTransaction(txHash)) {
+            return
+          }
+          store.commit(
+            'updateProceedingUserTransferTimeStamp',
+            transfer.timestamp
+          )
+          storeUpdateProceedState(3)
+          startScanMakerTransfer(
+            txHash,
+            imx_makerTransferChainID,
+            makerInfo,
+            makerInfo.makerAddress,
+            store.state.web3.coinbase,
+            imx_amountToSend
+          )
+          return
+        }
+      } catch (error) {
+        console.log('error =', error)
+        throw 'getImmutableXTransactionDataError'
       }
       return confirmUserTransaction(
         localChainID,

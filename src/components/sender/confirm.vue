@@ -94,6 +94,8 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { getL2AddressByL1, getNetworkIdByChainId, sendTransaction } from '../../util/constants/starknet/helper'
+import { IMXHelper } from '../../util/IMXHelper'
+import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -519,6 +521,60 @@ export default {
         this.transferLoading = false
       }
     },
+    async imxTransfer(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        return
+      }
+
+      try {
+        let contractAddress = selectMakerInfo.t1Address
+        if (selectMakerInfo.c1ID != fromChainID) {
+          contractAddress = selectMakerInfo.t2Address
+        }
+
+        const imxHelper = new IMXHelper(fromChainID)
+        const imxClient = await imxHelper.getImmutableXClient(from)
+
+        let tokenInfo = {
+          type: ERC20TokenType.ERC20,
+          data: {
+            symbol: selectMakerInfo.tName,
+            decimals: selectMakerInfo.precision,
+            tokenAddress: contractAddress
+          }
+        }
+        if (util.isEthTokenAddress(contractAddress)) {
+          tokenInfo = {
+            type: ETHTokenType.ETH,
+            data: {
+              decimals: selectMakerInfo.precision,
+            }
+          }
+        }
+
+        const resp = await imxClient.transfer({
+          sender: from,
+          token: tokenInfo,
+          quantity: ethers.BigNumber.from(value),
+          receiver: selectMakerInfo.makerAddress,
+        })
+
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          resp.transfer_id
+        )
+      } catch (error) {
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
@@ -582,6 +638,16 @@ export default {
 
         if (fromChainID == 4 || fromChainID == 44) {
           this.starknetTransfer(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+          return
+        }
+
+        if (fromChainID == 8 || fromChainID == 88) {
+          this.imxTransfer(
             account,
             selectMakerInfo,
             tValue.tAmount,
@@ -657,8 +723,15 @@ export default {
         selectMakerInfo,
         transactionHash
       )
+
+      // Immutablex's identifier is not a hash
+      let title = transactionHash
+      if (fromChainID == 8 || fromChainID == 88) {
+        title = 'TransferId: ' + title
+      }
+
       this.$notify.success({
-        title: transactionHash,
+        title,
         duration: 3000,
       })
       this.$emit('stateChanged', '3')

@@ -15,11 +15,12 @@ const CONTRACTS = {
   },
 }
 
+const IMMUTABLEX_CLIENTS = {}
+
 export class IMXHelper {
   publicApiUrl = ''
   starkContractAddress = ''
   registrationContractAddress = ''
-  immutableXClients = {}
 
   /**
    * @param {number} chainId
@@ -47,8 +48,8 @@ export class IMXHelper {
   async getImmutableXClient(addressOrIndex = '') {
     const immutableXClientKey = String(addressOrIndex)
 
-    if (this.immutableXClients[immutableXClientKey]) {
-      return this.immutableXClients[immutableXClientKey]
+    if (IMMUTABLEX_CLIENTS[immutableXClientKey]) {
+      return IMMUTABLEX_CLIENTS[immutableXClientKey]
     }
 
     if (!this.starkContractAddress) {
@@ -65,7 +66,7 @@ export class IMXHelper {
       signer = provider.getSigner(addressOrIndex)
     }
 
-    return (this.immutableXClients[immutableXClientKey] =
+    return (IMMUTABLEX_CLIENTS[immutableXClientKey] =
       await ImmutableXClient.build({
         publicApiUrl: this.publicApiUrl,
         signer,
@@ -109,5 +110,29 @@ export class IMXHelper {
     }
 
     return balance
+  }
+
+  /**
+   * The api does not return the nonce value, timestamp(ms) last three number is the nonce
+   *  (warnning: there is a possibility of conflict)
+   * @param {number | string} timestamp ms
+   * @returns {string}
+   */
+  timestampToNonce(timestamp) {
+    let nonce = 0
+
+    if (timestamp) {
+      timestamp = String(timestamp)
+      const match = timestamp.match(/(\d{3})$/i)
+      if (match.length > 1) {
+        nonce = Number(match[1]) || 0
+      }
+
+      if (nonce > 900) {
+        nonce = nonce - 100
+      }
+    }
+
+    return nonce + ''
   }
 }

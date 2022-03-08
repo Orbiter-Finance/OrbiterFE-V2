@@ -106,17 +106,31 @@ export default {
       return 'To ' + util.chainName(this.$store.state.transferData.toChainID, this.$env.localChainID_netChainID[this.$store.state.transferData.toChainID])
     },
     FromTx() {
-      if (this.$store.state.proceedState === 1) {
+      const { proceedState, proceeding, transferData } = this.$store.state
+
+      if (proceedState === 1) {
         return 'View on Explore'
       } else {
-        return `Tx:${util.shortAddress(this.$store.state.proceeding.userTransfer.txid)}`
+        // immutablex
+        if (transferData.fromChainID == 8 || transferData.fromChainID == 88) {
+          return `TransferId: ${proceeding.userTransfer.txid}`
+        }
+
+        return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
       }
     },
     ToTx() {
-      if (this.$store.state.proceedState < 4) {
+      const { proceedState, proceeding, transferData } = this.$store.state
+
+      if (proceedState < 4) {
         return 'View on Explore'
       } else {
-        return `Tx:${util.shortAddress(this.$store.state.proceeding.makerTransfer.txid)}`
+        // immutablex
+        if (transferData.toChainID == 8 || transferData.toChainID == 88) {
+          return `TransferId: ${proceeding.makerTransfer.txid}`
+        }
+        
+        return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
     proceedData() {
