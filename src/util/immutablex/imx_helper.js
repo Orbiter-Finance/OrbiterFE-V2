@@ -1,15 +1,14 @@
 import { ImmutableXClient } from '@imtbl/imx-sdk'
 import { ethers, providers } from 'ethers'
 import Web3 from 'web3'
+import config from '../../core/utils/config'
 
 const CONTRACTS = {
   ropsten: {
-    publicApiUrl: 'https://api.ropsten.x.immutable.com/v1',
     starkContractAddress: '0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef',
     registrationContractAddress: '0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864',
   },
   mainnet: {
-    publicApiUrl: 'https://api.x.immutable.com/v1',
     starkContractAddress: '',
     registrationContractAddress: '',
   },
@@ -27,13 +26,13 @@ export class IMXHelper {
    */
   constructor(chainId) {
     if (chainId == 8) {
-      this.publicApiUrl = CONTRACTS.mainnet.publicApiUrl
+      this.publicApiUrl = config.immutableX.Mainnet
       this.starkContractAddress = CONTRACTS.mainnet.starkContractAddress
       this.registrationContractAddress =
         CONTRACTS.mainnet.registrationContractAddress
     }
     if (chainId == 88) {
-      this.publicApiUrl = CONTRACTS.ropsten.publicApiUrl
+      this.publicApiUrl = config.immutableX.Rinkeby
       this.starkContractAddress = CONTRACTS.ropsten.starkContractAddress
       this.registrationContractAddress =
         CONTRACTS.ropsten.registrationContractAddress
@@ -113,6 +112,38 @@ export class IMXHelper {
   }
 
   /**
+   * IMX transfer => Eth transaction
+   * @param {any} transfer IMX transfer
+   * @returns
+   */
+  toTransaction(transfer) {
+    const timeStampMs = transfer.timestamp.getTime()
+    const nonce = this.timestampToNonce(timeStampMs)
+
+    // When it is ETH
+    let contractAddress = transfer.token.data.token_address
+    if (transfer.token.type == ETHTokenType.ETH) {
+      contractAddress = '0x0000000000000000000000000000000000000000'
+    }
+
+    const transaction = {
+      timeStamp: parseInt(timeStampMs / 1000),
+      hash: transfer.transaction_id,
+      nonce,
+      blockHash: '',
+      transactionIndex: 0,
+      from: transfer.user,
+      to: transfer.receiver,
+      value: transfer.token.data.quantity,
+      txreceipt_status: transfer.status,
+      contractAddress,
+      confirmations: 0,
+    }
+
+    return transaction
+  }
+
+  /**
    * The api does not return the nonce value, timestamp(ms) last three number is the nonce
    *  (warnning: there is a possibility of conflict)
    * @param {number | string} timestamp ms
@@ -124,7 +155,7 @@ export class IMXHelper {
     if (timestamp) {
       timestamp = String(timestamp)
       const match = timestamp.match(/(\d{3})$/i)
-      if (match.length > 1) {
+      if (match && match.length > 1) {
         nonce = Number(match[1]) || 0
       }
 

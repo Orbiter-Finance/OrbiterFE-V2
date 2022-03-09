@@ -547,6 +547,56 @@ function ScanMakerTransfer(
       return
     }
 
+    // starknet
+    if (localChainID == 8 || localChainID == 88) {
+      const asyncStarknet = async () => {
+        const networkId = getNetworkIdByChainId(localChainID)
+        const fromStarknetAddress = await getL2AddressByL1(from, networkId)
+        let toStarknetAddress = ''
+
+        // Wait toStarknetAddress deploy
+        while (!toStarknetAddress) {
+          toStarknetAddress = await getL2AddressByL1(to, networkId)
+          if (toStarknetAddress) {
+            break
+          }
+
+          await util.sleep(5000)
+        }
+
+        let api = config.starknet.Mainnet
+        if (localChainID == 44) {
+          api = config.starknet.Rinkeby
+        }
+
+        const skl = factoryStarknetListen(
+          { endPoint: api },
+          fromStarknetAddress
+        )
+        skl.transfer(
+          { from: fromStarknetAddress, to: toStarknetAddress },
+          {
+            onReceived: async (transaction) => {
+              if (checkData(from, to, transaction.value, '')) {
+                store.commit(
+                  'updateProceedingMakerTransferTxid',
+                  transaction.hash
+                )
+                storeUpdateProceedState(4)
+              }
+            },
+            onConfirmation: async (transaction) => {
+              if (checkData(from, to, transaction.value, '')) {
+                storeUpdateProceedState(5)
+              }
+            },
+          }
+        )
+      }
+      asyncStarknet()
+      return
+    }
+
     // when is eth tokenAddress
     if (util.isEthTokenAddress(tokenAddress)) {
       let api = null
