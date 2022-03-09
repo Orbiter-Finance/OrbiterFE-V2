@@ -94,7 +94,7 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { getL2AddressByL1, getNetworkIdByChainId, sendTransaction } from '../../util/constants/starknet/helper'
-import { IMXHelper } from '../../util/IMXHelper'
+import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 
 const ethers = require('ethers')

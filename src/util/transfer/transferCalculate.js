@@ -16,7 +16,7 @@ import {
   getL2AddressByL1,
   getNetworkIdByChainId,
 } from '../constants/starknet/helper'
-import { IMXHelper } from '../IMXHelper'
+import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
 
 // zk deposit

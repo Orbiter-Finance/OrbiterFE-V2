@@ -13,7 +13,7 @@ import {
   getNetworkIdByChainId,
   getProviderByChainId
 } from '../constants/starknet/helper'
-import { IMXHelper } from '../IMXHelper'
+import { IMXHelper } from '../immutablex/imx_helper'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 
