@@ -533,21 +533,21 @@ export default {
         }
 
         const imxHelper = new IMXHelper(fromChainID)
-        const imxClient = await imxHelper.getImmutableXClient(from)
+        const imxClient = await imxHelper.getImmutableXClient(from, true)
 
         let tokenInfo = {
-          type: ERC20TokenType.ERC20,
+          type: ETHTokenType.ETH,
           data: {
-            symbol: selectMakerInfo.tName,
             decimals: selectMakerInfo.precision,
-            tokenAddress: contractAddress
           }
         }
-        if (util.isEthTokenAddress(contractAddress)) {
+        if (!util.isEthTokenAddress(contractAddress)) {
           tokenInfo = {
-            type: ETHTokenType.ETH,
+            type: ERC20TokenType.ERC20,
             data: {
+              symbol: selectMakerInfo.tName,
               decimals: selectMakerInfo.precision,
+              tokenAddress: contractAddress
             }
           }
         }

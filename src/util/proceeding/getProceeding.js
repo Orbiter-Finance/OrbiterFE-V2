@@ -11,9 +11,10 @@ import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
-  getProviderByChainId
+  getProviderByChainId,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
+import { factoryIMXListen } from '../immutablex/imx_listen'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 
@@ -204,7 +205,9 @@ async function confirmUserTransaction(
             localChainID,
             transfer.token.data.quantity + ''
           ).rAmount
-          const imx_nonce = imxHelper.timestampToNonce(transfer.timestamp.getTime())
+          const imx_nonce = imxHelper.timestampToNonce(
+            transfer.timestamp.getTime()
+          )
           const imx_SendRAmount = orbiterCore.getToAmountFromUserAmount(
             new Bignumber(imx_amount).dividedBy(
               new Bignumber(10 ** makerInfo.precision)
@@ -484,6 +487,11 @@ function ScanMakerTransfer(
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
         return false
       }
+      console.warn(
+        _amount === amount,
+        '_amount >>> ' + _amount,
+        'amount >>> ' + amount
+      )
       if (
         _from.toLowerCase() === from.toLowerCase() &&
         _to.toLowerCase() === to.toLowerCase() &&
@@ -547,53 +555,39 @@ function ScanMakerTransfer(
       return
     }
 
-    // starknet
+    // immutablex
     if (localChainID == 8 || localChainID == 88) {
-      const asyncStarknet = async () => {
-        const networkId = getNetworkIdByChainId(localChainID)
-        const fromStarknetAddress = await getL2AddressByL1(from, networkId)
-        let toStarknetAddress = ''
-
-        // Wait toStarknetAddress deploy
-        while (!toStarknetAddress) {
-          toStarknetAddress = await getL2AddressByL1(to, networkId)
-          if (toStarknetAddress) {
-            break
-          }
-
-          await util.sleep(5000)
+      const imxListen = factoryIMXListen(localChainID, to, false)
+      imxListen.clearListens()
+      imxListen.transfer(
+        { from, to },
+        {
+          onReceived: async (transaction) => {
+            console.warn(
+              'onReceived transaction.value >>> ',
+              transaction.value,
+              checkData(from, to, transaction.value, '')
+            )
+            if (checkData(from, to, transaction.value, '')) {
+              store.commit(
+                'updateProceedingMakerTransferTxid',
+                transaction.hash
+              )
+              storeUpdateProceedState(4)
+            }
+          },
+          onConfirmation: async (transaction) => {
+            console.warn(
+              'onConfirmation transaction.value >>> ',
+              transaction.value,
+              checkData(from, to, transaction.value, '')
+            )
+            if (checkData(from, to, transaction.value, '')) {
+              storeUpdateProceedState(5)
+            }
+          },
         }
-
-        let api = config.starknet.Mainnet
-        if (localChainID == 44) {
-          api = config.starknet.Rinkeby
-        }
-
-        const skl = factoryStarknetListen(
-          { endPoint: api },
-          fromStarknetAddress
-        )
-        skl.transfer(
-          { from: fromStarknetAddress, to: toStarknetAddress },
-          {
-            onReceived: async (transaction) => {
-              if (checkData(from, to, transaction.value, '')) {
-                store.commit(
-                  'updateProceedingMakerTransferTxid',
-                  transaction.hash
-                )
-                storeUpdateProceedState(4)
-              }
-            },
-            onConfirmation: async (transaction) => {
-              if (checkData(from, to, transaction.value, '')) {
-                storeUpdateProceedState(5)
-              }
-            },
-          }
-        )
-      }
-      asyncStarknet()
+      )
       return
     }
 

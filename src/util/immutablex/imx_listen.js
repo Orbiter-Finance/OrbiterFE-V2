@@ -1,6 +1,3 @@
-import { ETHTokenType, ImmutableMethodResults } from '@imtbl/imx-sdk'
-import axios from 'axios'
-import * as starknet from 'starknet'
 import util from '../util'
 import { IMXHelper } from './imx_helper'
 
@@ -14,9 +11,10 @@ class IMXListen {
   transferConfirmationedHashs = {}
   listens = []
 
-  constructor(chainId, receiver = undefined) {
+  constructor(chainId, receiver = undefined, isFirstTicker = true) {
     this.chainId = chainId
     this.receiver = receiver
+    this.isFirstTicker = isFirstTicker
 
     this.start()
   }
@@ -100,52 +98,56 @@ class IMXListen {
     }
 
     const transaction = imxHelper.toTransaction(transfer)
+    const { hash, from, to, txreceipt_status } = transaction
 
-    console.warn({ transaction })
+    const isConfirmed =
+      util.equalsIgnoreCase(txreceipt_status, 'confirmed') ||
+      util.equalsIgnoreCase(txreceipt_status, 'success')
+    const isRejected = util.equalsIgnoreCase(txreceipt_status, 'rejected')
 
-    // const isConfirmed =
-    //   util.equalsIgnoreCase(transaction.txreceipt_status, 'Accepted on L2') ||
-    //   util.equalsIgnoreCase(transaction.txreceipt_status, 'Accepted on L1')
+    for (const item of this.listens) {
+      const { filter, callbacks } = item
 
-    // for (const item of this.listens) {
-    //   const { filter, callbacks } = item
+      if (filter) {
+        if (filter.from && filter.from.toUpperCase() != from.toUpperCase()) {
+          continue
+        }
+        if (filter.to && filter.to.toUpperCase() != to.toUpperCase()) {
+          continue
+        }
+      }
 
-    //   if (filter) {
-    //     if (filter.from && filter.from.toUpperCase() != from.toUpperCase()) {
-    //       continue
-    //     }
-    //     if (filter.to && filter.to.toUpperCase() != to.toUpperCase()) {
-    //       continue
-    //     }
-    //   }
+      if (this.transferReceivedHashs[hash] !== true) {
+        callbacks && callbacks.onReceived && callbacks.onReceived(transaction)
+      }
 
-    //   if (this.transferReceivedHashs[hash] !== true) {
-    //     callbacks && callbacks.onReceived && callbacks.onReceived(transaction)
-    //   }
+      if (
+        this.transferConfirmationedHashs[transaction.hash] === undefined &&
+        isConfirmed
+      ) {
+        console.warn(`Transaction [${transaction.hash}] was confirmed.`)
+        callbacks &&
+          callbacks.onConfirmation &&
+          callbacks.onConfirmation(transaction)
+      }
+    }
 
-    //   if (
-    //     this.transferConfirmationedHashs[transaction.hash] === undefined &&
-    //     isConfirmed
-    //   ) {
-    //     console.warn(`Transaction [${transaction.hash}] was confirmed.`)
-    //     callbacks &&
-    //       callbacks.onConfirmation &&
-    //       callbacks.onConfirmation(transaction)
-    //   }
-    // }
+    this.transferReceivedHashs[hash] = true
 
-    // this.transferReceivedHashs[hash] = true
-
-    // if (isConfirmed) {
-    //   this.transferConfirmationedHashs[transaction.hash] = true
-    // } else {
-    //   await util.sleep(2000)
-    //   this.getTransaction(hash)
-    // }
+    if (isConfirmed) {
+      this.transferConfirmationedHashs[transaction.hash] = true
+    } else if (!isRejected) {
+      await util.sleep(2000)
+      this.doTransfer(transfer)
+    }
   }
 
   transfer(filter, callbacks = undefined) {
     this.listens.push({ filter, callbacks })
+  }
+
+  clearListens() {
+    this.listens = []
   }
 }
 
@@ -154,14 +156,23 @@ const factorys = {}
  *
  * @param {number} chainId
  * @param {string} receiver
+ * @param {boolean} isFirstTicker
  * @returns {IMXListen}
  */
-export function factoryIMXListen(chainId, receiver = undefined) {
-  const factoryKey = `${chainId}:${receiver}`
+export function factoryIMXListen(
+  chainId,
+  receiver = undefined,
+  isFirstTicker = true
+) {
+  const factoryKey = `${chainId}:${receiver}:${isFirstTicker}`
 
   if (factorys[factoryKey]) {
     return factorys[factoryKey]
   } else {
-    return (factorys[factoryKey] = new IMXListen(chainId, receiver))
+    return (factorys[factoryKey] = new IMXListen(
+      chainId,
+      receiver,
+      isFirstTicker
+    ))
   }
 }

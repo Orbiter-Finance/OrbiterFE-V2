@@ -1,4 +1,4 @@
-import { ImmutableXClient } from '@imtbl/imx-sdk'
+import { ETHTokenType, ImmutableXClient } from '@imtbl/imx-sdk'
 import { ethers, providers } from 'ethers'
 import Web3 from 'web3'
 import config from '../../core/utils/config'
@@ -40,14 +40,14 @@ export class IMXHelper {
   }
 
   /**
-   *
    * @param {string | number | undefined} addressOrIndex
+   * @param {boolean} alwaysNew
    * @returns {Promise<ImmutableXClient>}
    */
-  async getImmutableXClient(addressOrIndex = '') {
+  async getImmutableXClient(addressOrIndex = '', alwaysNew = false) {
     const immutableXClientKey = String(addressOrIndex)
 
-    if (IMMUTABLEX_CLIENTS[immutableXClientKey]) {
+    if (IMMUTABLEX_CLIENTS[immutableXClientKey] && !alwaysNew) {
       return IMMUTABLEX_CLIENTS[immutableXClientKey]
     }
 
@@ -134,7 +134,7 @@ export class IMXHelper {
       transactionIndex: 0,
       from: transfer.user,
       to: transfer.receiver,
-      value: transfer.token.data.quantity,
+      value: transfer.token.data.quantity + '',
       txreceipt_status: transfer.status,
       contractAddress,
       confirmations: 0,
