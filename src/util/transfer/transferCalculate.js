@@ -48,6 +48,14 @@ const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
 const OP_ETH_WITHDRAW_ONOP_L2 = 137000
 const OP_ETH_WITHDRAW_ONL1 = 820000
 
+// immutablex deposit
+// Testnet deposit contract: 0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864
+const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 127696
+
+// immutablex withdraw
+const IMX_ETH_WITHDRAW_ONIMX_L2 = 137000
+const IMX_ETH_WITHDRAW_ONL1 = 820000
+
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
@@ -474,6 +482,12 @@ export default {
       let toGasPrice = await this.getGasPrice(toChainID === 7 ? 1 : 5)
       let opDepositGas = toGasPrice * OP_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += opDepositGas
+    }
+    if (toChainID === 8 || toChainID === 88) {
+      // op deposit
+      const toGasPrice = await this.getGasPrice(toChainID === 8 ? 1 : 5)
+      const imxDepositGas = toGasPrice * IMX_ETH_DEPOSIT_DEPOSIT_ONL1
+      ethGas += imxDepositGas
     }
 
     let usd = new BigNumber(0)

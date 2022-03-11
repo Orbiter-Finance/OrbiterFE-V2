@@ -59,6 +59,8 @@ export default {
     66: 'https://mumbai.polygonscan.com/tx/',
     7: 'https://optimistic.etherscan.io/tx/',
     77: 'https://kovan-optimistic.etherscan.io/tx/',
+    8: 'https://immutascan.io/tx/',
+    88: '', // ImmutableX don't have testnet browser
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -73,5 +75,7 @@ export default {
     66: 'https://mumbai.polygonscan.com/address/',
     7: 'https://optimistic.etherscan.io/address/',
     77: 'https://kovan-optimistic.etherscan.io/address/',
+    8: 'https://market.immutable.com/inventory/',
+    88: 'https://market.ropsten.immutable.com/inventory/',
   },
 }

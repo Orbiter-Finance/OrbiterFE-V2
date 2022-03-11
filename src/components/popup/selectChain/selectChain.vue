@@ -54,6 +54,7 @@ import {
   getNetworkIdByChainId,
   getStarknetAccount,
 } from '../../../util/constants/starknet/helper'
+import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
 import Loading from '../../loading/loading.vue'
 
@@ -140,7 +141,9 @@ export default {
 
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
-            console.warn({ e })
+            const { coinbase } = this.$store.state.web3
+            const imxHelper = new IMXHelper(e.localID)
+            await imxHelper.ensureUser(coinbase)
           }
 
           this.loadingIndex = -1

@@ -1,4 +1,3 @@
-// util/ethersca.js
 import axios from 'axios'
 import * as starknet from 'starknet'
 import { getSelectorFromName } from 'starknet/dist/utils/stark'

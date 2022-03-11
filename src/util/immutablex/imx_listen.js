@@ -3,13 +3,14 @@ import { IMXHelper } from './imx_helper'
 
 const IMX_LISTEN_TRANSFER_DURATION = 5 * 1000
 
-class IMXListen {
+export class IMXListen {
   chainId = 0
   receiver = undefined
   isFirstTicker = true
   transferReceivedHashs = {}
   transferConfirmationedHashs = {}
   listens = []
+  tickerTimer = null
 
   constructor(chainId, receiver = undefined, isFirstTicker = true) {
     this.chainId = chainId
@@ -58,7 +59,7 @@ class IMXListen {
     }
     ticker()
 
-    setInterval(ticker, IMX_LISTEN_TRANSFER_DURATION)
+    this.tickerTimer = setInterval(ticker, IMX_LISTEN_TRANSFER_DURATION)
   }
 
   /**
@@ -125,7 +126,7 @@ class IMXListen {
         this.transferConfirmationedHashs[transaction.hash] === undefined &&
         isConfirmed
       ) {
-        console.warn(`Transaction [${transaction.hash}] was confirmed.`)
+        // console.warn(`Transaction [${transaction.hash}] was confirmed.`)
         callbacks &&
           callbacks.onConfirmation &&
           callbacks.onConfirmation(transaction)
@@ -148,6 +149,12 @@ class IMXListen {
 
   clearListens() {
     this.listens = []
+  }
+
+  destroy() {
+    if (this.tickerTimer) {
+      clearInterval(this.tickerTimer)
+    }
   }
 }
 

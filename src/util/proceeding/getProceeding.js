@@ -11,10 +11,10 @@ import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
-  getProviderByChainId,
+  getProviderByChainId
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
-import { factoryIMXListen } from '../immutablex/imx_listen'
+import { IMXListen } from '../immutablex/imx_listen'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 
@@ -99,7 +99,7 @@ async function confirmUserTransaction(
           )
           let zk_makerTransferChainID =
             localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
-          var sn_amountToSend = orbiterCore.getTAmountFromRAmount(
+          var zk_amountToSend = orbiterCore.getTAmountFromRAmount(
             zk_makerTransferChainID,
             zk_SendRAmount,
             zk_nonce
@@ -108,14 +108,14 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
-          storeUpdateProceedState(3)
+          storeUpdateProceedState(3)          
           startScanMakerTransfer(
             txHash,
             zk_makerTransferChainID,
             makerInfo,
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
-            sn_amountToSend
+            zk_amountToSend
           )
           return
         }
@@ -487,11 +487,6 @@ function ScanMakerTransfer(
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
         return false
       }
-      console.warn(
-        _amount === amount,
-        '_amount >>> ' + _amount,
-        'amount >>> ' + amount
-      )
       if (
         _from.toLowerCase() === from.toLowerCase() &&
         _to.toLowerCase() === to.toLowerCase() &&
@@ -557,17 +552,11 @@ function ScanMakerTransfer(
 
     // immutablex
     if (localChainID == 8 || localChainID == 88) {
-      const imxListen = factoryIMXListen(localChainID, to, false)
-      imxListen.clearListens()
+      const imxListen = new IMXListen(localChainID, to, false)
       imxListen.transfer(
         { from, to },
         {
           onReceived: async (transaction) => {
-            console.warn(
-              'onReceived transaction.value >>> ',
-              transaction.value,
-              checkData(from, to, transaction.value, '')
-            )
             if (checkData(from, to, transaction.value, '')) {
               store.commit(
                 'updateProceedingMakerTransferTxid',
@@ -577,13 +566,9 @@ function ScanMakerTransfer(
             }
           },
           onConfirmation: async (transaction) => {
-            console.warn(
-              'onConfirmation transaction.value >>> ',
-              transaction.value,
-              checkData(from, to, transaction.value, '')
-            )
             if (checkData(from, to, transaction.value, '')) {
               storeUpdateProceedState(5)
+              imxListen.destroy()
             }
           },
         }
