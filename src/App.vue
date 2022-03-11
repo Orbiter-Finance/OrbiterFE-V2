@@ -22,6 +22,9 @@ import BottomNav from './components/nav/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getTransactionList from './core/routes/transactionList'
 
+//test
+// import loorping from './core/actions/loopring'
+
 export default {
   name: 'App',
   computed: {
@@ -37,7 +40,21 @@ export default {
     TopNav,
     BottomNav,
   },
-  mounted() {
+  async mounted() {
+    //test
+    // let accountInfo = await loorping.accountInfo(
+    //   '0x6BB0366423a6f0F6C16715278483Dd9321ED5f66'
+    // )
+    // if (!accountInfo.code) {
+    //   console.log('accountInfo =', accountInfo.accountInfo)
+    // } else {
+    //   console.log('errmsg =', accountInfo.errorMessage)
+    // }
+
+    // loorping.getUserApiKey()
+
+    //88888888888888888
+
     setInterval(this.getHistory, 60 * 1000)
 
     this.getHistory()

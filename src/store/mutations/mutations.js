@@ -1,4 +1,10 @@
 export default {
+  updatelpAccountInfo(state, accountInfo) {
+    state.lpAccountInfo = accountInfo
+  },
+  updatelpApiKey(state, accountInfo) {
+    state.lpApiKey = accountInfo
+  },
   updateZKTokenList(state, obj) {
     if (obj.chainID === 3) {
       state.zktokenList.mainnet = obj.tokenList
@@ -111,13 +117,19 @@ export default {
       state.web3.localLogin = true
       localStorage.setItem('localLogin', true)
     }
+    state.lpAccountInfo = null
+    state.lpApiKey = null
     state.web3.coinbase = coinbase
   },
   updateNetWorkId(state, netWorkId) {
     state.web3.networkId = netWorkId
+    state.lpAccountInfo = null
+    state.lpApiKey = null
   },
   updateLocalLogin(state, localLogin) {
     state.web3.localLogin = localLogin
+    state.lpAccountInfo = null
+    state.lpApiKey = null
   },
   setInnerWH(state, { innerWidth, innerHeight }) {
     state.innerWH.innerWidth = innerWidth

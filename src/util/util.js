@@ -30,6 +30,10 @@ export default {
         return 'StarkNet'
       case 44:
         return 'StarkNet(R)'
+      case 9:
+        return 'Loopring'
+      case 99:
+        return 'Loopring(G)'
     }
 
     const chain = chainList.chainList.filter(
@@ -128,10 +132,9 @@ export default {
     return /^0x0+$/i.test(tokenAddress)
   },
 
-
   /**
    * @param {number} ms Sleep millisecond
-   * @returns 
+   * @returns
    */
   sleep(ms) {
     return new Promise((resolve) => {
@@ -139,5 +142,5 @@ export default {
         resolve(null)
       }, ms)
     })
-  }
+  },
 }

@@ -6,7 +6,8 @@ const MAX_BITS = {
   zksync: 35,
   starknet: 256,
   polygon: 256,
-  optimistic: 256
+  optimistic: 256,
+  loopring: 256,
 }
 
 const CHAIN_INDEX = {
@@ -21,11 +22,13 @@ const CHAIN_INDEX = {
   6: 'polygon',
   66: 'polygon',
   7: 'optimistic',
-  77: 'optimistic'
+  77: 'optimistic',
+  9: 'loopring',
+  99: 'loopring',
 }
 
 const SIZE_OP = {
-  P_NUMBER: 4
+  P_NUMBER: 4,
 }
 
 function isZKChain(chain) {
@@ -61,19 +64,19 @@ function getTAmountFromRAmount(chain, amount, pText) {
   if (!isChainSupport(chain)) {
     return {
       state: false,
-      error: 'The chain did not support'
+      error: 'The chain did not support',
     }
   }
   if (amount < 1) {
     return {
       state: false,
-      error: "the token doesn't support that many decimal digits"
+      error: "the token doesn't support that many decimal digits",
     }
   }
   if (pText.length > SIZE_OP.P_NUMBER) {
     return {
       state: false,
-      error: 'the pText size invalid'
+      error: 'the pText size invalid',
     }
   }
 
@@ -82,7 +85,7 @@ function getTAmountFromRAmount(chain, amount, pText) {
   if (amountLength < SIZE_OP.P_NUMBER) {
     return {
       state: false,
-      error: 'Amount size must be greater than pNumberSize'
+      error: 'Amount size must be greater than pNumberSize',
     }
   }
   if (isZKChain(chain) && amountLength > validDigit) {
@@ -92,14 +95,14 @@ function getTAmountFromRAmount(chain, amount, pText) {
       amount.toString().slice(validDigit)
     return {
       state: true,
-      tAmount: tAmount
+      tAmount: tAmount,
     }
   } else {
     let tAmount =
       amount.toString().slice(0, amountLength - pText.length) + pText
     return {
       state: true,
-      tAmount: tAmount
+      tAmount: tAmount,
     }
   }
 }
@@ -123,13 +126,13 @@ function getPTextFromTAmount(chain, amount) {
   if (!isChainSupport(chain)) {
     return {
       state: false,
-      error: 'The chain did not support'
+      error: 'The chain did not support',
     }
   }
   if (amount < 1) {
     return {
       state: false,
-      error: "the token doesn't support that many decimal digits"
+      error: "the token doesn't support that many decimal digits",
     }
   }
 
@@ -138,7 +141,7 @@ function getPTextFromTAmount(chain, amount) {
   if (amountLength < SIZE_OP.P_NUMBER) {
     return {
       state: false,
-      error: 'Amount size must be greater than pNumberSize'
+      error: 'Amount size must be greater than pNumberSize',
     }
   }
   if (isZKChain(chain) && amountLength > validDigit) {
@@ -146,13 +149,13 @@ function getPTextFromTAmount(chain, amount) {
     let op_text = zkAmount.slice(-SIZE_OP.P_NUMBER)
     return {
       state: true,
-      pText: op_text
+      pText: op_text,
     }
   } else {
     let op_text = amount.toString().slice(-SIZE_OP.P_NUMBER)
     return {
       state: true,
-      pText: op_text
+      pText: op_text,
     }
   }
 }
@@ -165,13 +168,13 @@ function getRAmountFromTAmount(chain, amount) {
   if (!isChainSupport(chain)) {
     return {
       state: false,
-      error: 'The chain did not support'
+      error: 'The chain did not support',
     }
   }
   if (amount < 1) {
     return {
       state: false,
-      error: "the token doesn't support that many decimal digits"
+      error: "the token doesn't support that many decimal digits",
     }
   }
 
@@ -180,7 +183,7 @@ function getRAmountFromTAmount(chain, amount) {
   if (amountLength < SIZE_OP.P_NUMBER) {
     return {
       state: false,
-      error: 'Amount size must be greater than pNumberSize'
+      error: 'Amount size must be greater than pNumberSize',
     }
   }
   if (isZKChain(chain) && amountLength > validDigit) {
@@ -190,13 +193,13 @@ function getRAmountFromTAmount(chain, amount) {
       amount.slice(validDigit)
     return {
       state: true,
-      rAmount: rAmount
+      rAmount: rAmount,
     }
   } else {
     let rAmount = amount.slice(0, amountLength - SIZE_OP.P_NUMBER) + pText
     return {
       state: true,
-      rAmount: rAmount
+      rAmount: rAmount,
     }
   }
 }
@@ -218,20 +221,20 @@ function isChainSupport(chain) {
 function AmountRegion(chain) {
   if (!isChainSupport(chain)) {
     return {
-      error: 'The chain did not support'
+      error: 'The chain did not support',
     }
   }
   if (typeof chain === 'number') {
     let max = BigNumber(2 ** MAX_BITS[CHAIN_INDEX[chain]] - 1)
     return {
       min: BigNumber(0),
-      max: max
+      max: max,
     }
   } else if (typeof chain === 'string') {
     let max = BigNumber(2 ** MAX_BITS[chain.toLowerCase()] - 1)
     return {
       min: BigNumber(0),
-      max: max
+      max: max,
     }
   }
 }
@@ -274,7 +277,7 @@ function isAmountInRegion(amount, chain) {
   if (!isChainSupport(chain)) {
     return {
       state: false,
-      error: 'The chain did not support'
+      error: 'The chain did not support',
     }
   }
   let amountRegion = AmountRegion(chain)
@@ -299,13 +302,13 @@ function isAmountValid(chain, amount) {
   if (!isChainSupport(chain)) {
     return {
       state: false,
-      error: 'The chain did not support'
+      error: 'The chain did not support',
     }
   }
   if (amount < 1) {
     return {
       state: false,
-      error: "the token doesn't support that many decimal digits"
+      error: "the token doesn't support that many decimal digits",
     }
   }
 
@@ -314,7 +317,7 @@ function isAmountValid(chain, amount) {
   if (amountLength < SIZE_OP.P_NUMBER) {
     return {
       state: false,
-      error: 'Amount size must be greater than pNumberSize'
+      error: 'Amount size must be greater than pNumberSize',
     }
   }
 
@@ -325,7 +328,7 @@ function isAmountValid(chain, amount) {
   if (!isAmountInRegion(rAmount, chain)) {
     return {
       state: false,
-      error: 'Amount exceeds the spending range'
+      error: 'Amount exceeds the spending range',
     }
   }
   if (isZKChain(chain) && amountLength > validDigit) {
@@ -333,23 +336,23 @@ function isAmountValid(chain, amount) {
     let op_text = zkAmount.slice(-SIZE_OP.P_NUMBER)
     if (Number(op_text) === 0) {
       return {
-        state: true
+        state: true,
       }
     }
     return {
       state: false,
-      error: 'Insufficient number of flag bits'
+      error: 'Insufficient number of flag bits',
     }
   } else {
     let op_text = amount.toString().slice(-SIZE_OP.P_NUMBER)
     if (Number(op_text) === 0) {
       return {
-        state: true
+        state: true,
       }
     }
     return {
       state: false,
-      error: 'Insufficient number of flag bits'
+      error: 'Insufficient number of flag bits',
     }
   }
 }
@@ -370,5 +373,5 @@ module.exports = {
   pTextFormatZero,
   isZKChain,
   getToAmountFromUserAmount,
-  getDigitByPrecision
+  getDigitByPrecision,
 }

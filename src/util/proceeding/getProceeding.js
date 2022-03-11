@@ -15,6 +15,7 @@ import {
 } from '../constants/starknet/helper'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
+import loopring from '../../core/actions/loopring'
 
 let startBlockNumber = ''
 
@@ -39,7 +40,6 @@ const getHistory = () => {
 
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
-
   getHistory()
 }
 
@@ -55,7 +55,6 @@ async function confirmUserTransaction(
     fromTokenAddress = makerInfo.t2Address
     toLocalChainID = makerInfo.c1ID
   }
-
   // Get current toChain blockNumber
   const _web3 = localWeb3(toLocalChainID)
   if (_web3) {
@@ -191,6 +190,92 @@ async function confirmUserTransaction(
       } catch (error) {
         console.log('error =', error)
         throw 'getStarknetTransactionDataError'
+      }
+      return confirmUserTransaction(
+        localChainID,
+        makerInfo,
+        txHash,
+        confirmations
+      )
+    }
+
+    // loopring
+    if (localChainID == 9 || localChainID == 99) {
+      let apiKey = store.state.lpApiKey
+      let acc = store.state.lpAccountInfo
+      /*
+      GetUserTransferListRequest {
+        accountId?: number;
+        hashes?: string;
+        start?: number;
+        end?: number;
+        status?: string;
+        limit?: number;
+        tokenSymbol?: string;
+        offset?: number;
+        transferTypes?: string;
+      }
+      */
+      const GetUserTransferListRequest = {
+        accountId: acc.accountId,
+        hashes: txHash,
+      }
+
+      const userApi = loopring.getUserAPI(localChainID)
+      try {
+        const LPTransferResult = await userApi.getUserTransferList(
+          GetUserTransferListRequest,
+          apiKey
+        )
+        console.log('loopring =', LPTransferResult)
+        if (
+          LPTransferResult.totalNum === 1 &&
+          LPTransferResult.userTransfers.length === 1
+        ) {
+          let lpTransaction = LPTransferResult.userTransfers[0]
+          if (
+            lpTransaction.status == 'processed' &&
+            lpTransaction.txType == 'TRANSFER'
+          ) {
+            let time = lpTransaction.timestamp
+            let lp_amount = orbiterCore.getRAmountFromTAmount(
+              localChainID,
+              lpTransaction.amount
+            ).rAmount
+            let lp_nonce = (lpTransaction.storageInfo.storageId - 1) / 2 + ''
+            let lp_SendRAmount = orbiterCore.getToAmountFromUserAmount(
+              new Bignumber(lp_amount).dividedBy(
+                new Bignumber(10 ** makerInfo.precision)
+              ),
+              makerInfo,
+              true
+            )
+            let lp_makerTransferChainID =
+              localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
+            var lp_amountToSend = orbiterCore.getTAmountFromRAmount(
+              lp_makerTransferChainID,
+              lp_SendRAmount,
+              lp_nonce
+            ).tAmount
+            if (!isCurrentTransaction(txHash)) {
+              return
+            }
+            store.commit('updateProceedingUserTransferTimeStamp', time)
+            storeUpdateProceedState(3)
+            startScanMakerTransfer(
+              txHash,
+              lp_makerTransferChainID,
+              makerInfo,
+              lpTransaction.receiverAddress,
+              lpTransaction.senderAddress,
+              lp_amountToSend
+            )
+            return
+          }
+        }
+      } catch (error) {
+        console.log('error =', error)
+        throw 'getLPTransactionDataError'
       }
       return confirmUserTransaction(
         localChainID,
@@ -496,6 +581,11 @@ function ScanMakerTransfer(
       }
       asyncStarknet()
       return
+    }
+
+    // loopring
+    if (localChainID == 99 || localChainID == 99) {
+      let startTime = store.state.proceeding.userTransfer.timeStamp
     }
 
     // when is eth tokenAddress
