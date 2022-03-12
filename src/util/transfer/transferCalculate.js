@@ -54,7 +54,7 @@ const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 126000
 
 // immutablex withdraw
 // Testnet withdraw contract: 0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef
-const IMX_ETH_WITHDRAW_ONL1 = 510000
+const IMX_ETH_WITHDRAW_ONL1 = 51000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
