@@ -22,11 +22,13 @@ export default {
     '5',
     '6',
     '7',
+    '8',
     '22',
     '33',
     '44',
     '66',
     '77',
+    '88',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -36,11 +38,13 @@ export default {
     5: '4', // rinkeby
     6: '137', // polygon
     7: '10', // optimism
+    8: '1', // mainnet
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)
     77: '69', // optimism(K)
+    88: '3', // ropsten
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -55,6 +59,8 @@ export default {
     66: 'https://mumbai.polygonscan.com/tx/',
     7: 'https://optimistic.etherscan.io/tx/',
     77: 'https://kovan-optimistic.etherscan.io/tx/',
+    8: 'https://immutascan.io/tx/',
+    88: '', // ImmutableX don't have testnet browser
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -69,5 +75,7 @@ export default {
     66: 'https://mumbai.polygonscan.com/address/',
     7: 'https://optimistic.etherscan.io/address/',
     77: 'https://kovan-optimistic.etherscan.io/address/',
+    8: 'https://market.immutable.com/inventory/',
+    88: 'https://market.ropsten.immutable.com/inventory/',
   },
 }

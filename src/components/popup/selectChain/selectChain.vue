@@ -1,45 +1,60 @@
 <template>
-  <o-box-content class="selectChainBody"
-                 style="width:34.5rem">
-    <div @click.stop="stopPenetrate"
-         class="selectChainContent">
+  <o-box-content class="selectChainBody" style="width: 34.5rem">
+    <div @click.stop="stopPenetrate" class="selectChainContent">
       <div class="topItem">
         <span>Select a Chain</span>
         <div @click="closerButton">
-          <svg-icon style="width:1.5rem;height:1.5rem"
-                    iconName="close"></svg-icon>
+          <svg-icon
+            style="width: 1.5rem; height: 1.5rem"
+            iconName="close"
+          ></svg-icon>
         </div>
       </div>
-      <div style="width:100%;position:relative;">
-        <input type="text"
-               v-model="keyword"
-               class="input"
-               @input="checkKeyWord()"
-               :placeholder="`input search text`">
-        <svg-icon @click="search"
-                  class="searchIcon"
-                  iconName="search"></svg-icon>
+      <div style="width: 100%; position: relative">
+        <input
+          type="text"
+          v-model="keyword"
+          class="input"
+          @input="checkKeyWord()"
+          :placeholder="`input search text`"
+        />
+        <svg-icon
+          @click="search"
+          class="searchIcon"
+          iconName="search"
+        ></svg-icon>
       </div>
 
-      <div v-for="(item, index) in newChainData"
-           :key="item.chain"
-           @click="getChainInfo(item, index)"
-           class="contentItem">
-        <svg-icon class="logo"
-                  style="margin-right:1.5rem"
-                  :iconName="item.icon"></svg-icon>
-        <span>{{item.chain}}</span>
-        <loading v-if="loadingIndex == index"
-                  style="left: 1rem; top: 0rem"
-                  width="1.5rem"
-                  height="1.5rem"></loading>
+      <div
+        v-for="(item, index) in newChainData"
+        :key="item.chain"
+        @click="getChainInfo(item, index)"
+        class="contentItem"
+      >
+        <svg-icon
+          class="logo"
+          style="margin-right: 1.5rem"
+          :iconName="item.icon"
+        ></svg-icon>
+        <span>{{ item.chain }}</span>
+        <loading
+          v-if="loadingIndex == index"
+          style="left: 1rem; top: 0rem"
+          width="1.5rem"
+          height="1.5rem"
+        ></loading>
       </div>
     </div>
   </o-box-content>
 </template>
 
 <script>
-import { getL2AddressByL1, getNetworkIdByChainId, getStarknetAccount } from '../../../util/constants/starknet/helper'
+import {
+  getL2AddressByL1,
+  getNetworkIdByChainId,
+  getStarknetAccount,
+} from '../../../util/constants/starknet/helper'
+import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
 import Loading from '../../loading/loading.vue'
 
@@ -51,20 +66,20 @@ export default {
       type: Array,
       default: function () {
         return []
-      }
-    }
+      },
+    },
   },
   data() {
     return {
       keyword: '',
-      loadingIndex: -1
+      loadingIndex: -1,
     }
   },
   computed: {
     transeferChainData: function () {
       var newArray = []
       for (let index = 0; index < this.ChainData.length; index++) {
-        const item = this.ChainData[index];
+        const item = this.ChainData[index]
         let iconName = 'tokenLogo'
         if (item === 2 || item === 22) {
           iconName = 'arblogo'
@@ -81,10 +96,13 @@ export default {
         if (item === 7 || item === 77) {
           iconName = 'oplogo'
         }
-        var chainData = {
+        if (item === 8 || item === 88) {
+          iconName = 'imxlogo'
+        }
+        const chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),
-          localID: item
+          localID: item,
         }
         newArray.push(chainData)
       }
@@ -92,32 +110,45 @@ export default {
     },
     newChainData: function () {
       if (!this.keyword || this.keyword === '') {
-        return this.transeferChainData;
+        return this.transeferChainData
       }
-      return this.transeferChainData.filter(item => item.chain.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1)
-    }
+      return this.transeferChainData.filter(
+        (item) =>
+          item.chain.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1
+      )
+    },
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     closerButton() {
       this.$emit('closeSelect')
     },
     async getChainInfo(e, index) {
-      if (e.localID == 4 || e.localID == 44) {
-        try{
-          this.loadingIndex = index
-          const { coinbase } = this.$store.state.web3
-          const networkId = getNetworkIdByChainId(e.localID)
-          const l2Address = await getL2AddressByL1(coinbase, networkId)
-          if (!l2Address || l2Address == '0x0') {
-            await getStarknetAccount(coinbase, networkId)
+      // When chain use stark system
+      if (this.isStarkSystem(e.localID)) {
+        try {
+          // starknet
+          if (e.localID == 4 || e.localID == 44) {
+            this.loadingIndex = index
+            const { coinbase } = this.$store.state.web3
+            const networkId = getNetworkIdByChainId(e.localID)
+            const l2Address = await getL2AddressByL1(coinbase, networkId)
+            if (!l2Address || l2Address == '0x0') {
+              await getStarknetAccount(coinbase, networkId)
+            }
+          }
+
+          // immutableX
+          if (e.localID == 8 || e.localID == 88) {
+            this.loadingIndex = index
+            const { coinbase } = this.$store.state.web3
+            const imxHelper = new IMXHelper(e.localID)
+            await imxHelper.ensureUser(coinbase)
           }
 
           this.loadingIndex = -1
-        } catch(err) {
+        } catch (err) {
           this.$notify.error({
             title: err.message,
             duration: 3000,
@@ -137,9 +168,11 @@ export default {
     search() {
       console.log('search')
     },
-    checkKeyWord() {
+    checkKeyWord() {},
+    isStarkSystem(chainId) {
+      return [4, 44, 8, 88].indexOf(chainId) > -1
     },
-  }
+  },
 }
 </script>
 
@@ -206,8 +239,11 @@ export default {
       display: flex;
       position: relative;
       .logo {
-        width: 2rem;
-        height: 2rem;
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 50%;
+        background: rgba($color: #000000, $alpha: 0.05);
+        padding: 0.2rem;
       }
       .right {
         text-align: right;

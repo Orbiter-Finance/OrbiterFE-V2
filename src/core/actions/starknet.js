@@ -1,4 +1,3 @@
-// util/ethersca.js
 import axios from 'axios'
 import * as starknet from 'starknet'
 import { getSelectorFromName } from 'starknet/dist/utils/stark'
@@ -13,7 +12,13 @@ const transferSelector = starknet.number.hexToDecimalString(
   getSelectorFromName('transfer')
 )
 
+const TRANSACTION_CACHES = {}
 const getTransaction = async (hash, chainId, retryCount = 0) => {
+  // From cache
+  if (TRANSACTION_CACHES[hash]) {
+    return TRANSACTION_CACHES[hash]
+  }
+
   if (chainId == 44) {
     configNet = config.starknet.Rinkeby
   }
@@ -34,7 +39,7 @@ const getTransaction = async (hash, chainId, retryCount = 0) => {
     }
 
     await util.sleep(1000)
-    return getTransaction(hash, (retryCount += 1))
+    return getTransaction(hash, chainId, (retryCount += 1))
   }
 
   // Check data
@@ -68,6 +73,14 @@ const getTransaction = async (hash, chainId, retryCount = 0) => {
     txreceipt_status: header.status,
     contractAddress,
     confirmations: 0,
+  }
+
+  // When transaction isConfirmed, cache it
+  if (
+    util.equalsIgnoreCase(transaction.txreceipt_status, 'Accepted on L2') ||
+    util.equalsIgnoreCase(transaction.txreceipt_status, 'Accepted on L1')
+  ) {
+    TRANSACTION_CACHES[hash] = transaction
   }
 
   return transaction

@@ -297,12 +297,14 @@ const queryParamsChainMap = {
   'StarkNet': 4,
   'Polygon': 6,
   'Optimism': 7,
+  'ImmutableX': 8,
   'Rinkeby': 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
-  'Optimism(K)': 77
+  'Optimism(K)': 77,
+  'ImmutableX(R)': 88
 }
 
 export default {

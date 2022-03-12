@@ -16,6 +16,7 @@ import {
   getL2AddressByL1,
   getNetworkIdByChainId,
 } from '../constants/starknet/helper'
+import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
 
 // zk deposit
@@ -46,6 +47,14 @@ const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
 // optimistic withdraw
 const OP_ETH_WITHDRAW_ONOP_L2 = 137000
 const OP_ETH_WITHDRAW_ONL1 = 820000
+
+// immutablex deposit
+// Testnet deposit contract: 0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864
+const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 126000
+
+// immutablex withdraw
+// Testnet withdraw contract: 0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef
+const IMX_ETH_WITHDRAW_ONL1 = 510000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
@@ -124,10 +133,12 @@ export default {
       5: 1,
       6: 60,
       7: 0.001,
+      8: 1.7,
       22: 0.02,
       33: 100,
       66: 60,
       77: 0.001,
+      88: 1.7,
     }
     const GasLimitMap = {
       1: 35000,
@@ -137,10 +148,12 @@ export default {
       5: 35000,
       6: 1500,
       7: 21000,
+      8: 51000,
       22: 810000,
       33: 100,
       66: 1500,
       77: 21000,
+      88: 51000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -150,10 +163,12 @@ export default {
       5: 'ETH',
       6: 'MATIC',
       7: 'ETH',
+      8: 'ETH',
       22: 'AETH',
       33: 'ETH',
       66: 'MATIC',
       77: 'ETH',
+      88: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -230,6 +245,9 @@ export default {
     if (fromChainID === 7 || fromChainID === 77) {
       timeSpent = 15
     }
+    if (fromChainID === 8 || fromChainID === 88) {
+      timeSpent = 5
+    }
     if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
       timeSpent += 30
     }
@@ -244,6 +262,9 @@ export default {
     }
     if (toChainID === 7 || toChainID === 77) {
       timeSpent += 15
+    }
+    if (toChainID === 8 || toChainID === 88) {
+      timeSpent += 5
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -262,6 +283,9 @@ export default {
     if (fromChainID === 7 || fromChainID === 77) {
       return '~7 days'
     }
+    if (fromChainID === 8 || fromChainID === 88) {
+      return '~5 hours'
+    }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
@@ -279,6 +303,10 @@ export default {
         // eth -> optimistic
         return '~5min'
       }
+      if (toChainID === 8 || toChainID === 88) {
+        // eth -> immutablex
+        return '~20min'
+      }
     }
   },
   transferSavingTime(fromChainID, toChainID) {
@@ -293,6 +321,9 @@ export default {
     }
     if (fromChainID === 7 || fromChainID === 77) {
       return ' 7 days'
+    }
+    if (fromChainID === 8 || fromChainID === 88) {
+      return ' 4 hours'
     }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -310,6 +341,10 @@ export default {
       if (toChainID === 7 || toChainID === 77) {
         // eth -> optimistic
         return ' 9.25min'
+      }
+      if (toChainID === 8 || toChainID === 88) {
+        // eth -> immutablex
+        return ' 19.95min'
       }
     }
   },
@@ -443,6 +478,13 @@ export default {
       //  gas = gas / 10 ** 18
       //  return gas.toFixed(6).toString()
     }
+    if (fromChainID === 8 || fromChainID === 88) {
+      const L1ChainID = fromChainID === 8 ? 1 : 5
+      const L1GasPrice = await this.getGasPrice(L1ChainID)
+      const IMXWithDrawL1Gas = L1GasPrice * IMX_ETH_WITHDRAW_ONL1
+      ethGas += IMXWithDrawL1Gas
+    }
+
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       // Ar deposit
@@ -473,6 +515,12 @@ export default {
       let toGasPrice = await this.getGasPrice(toChainID === 7 ? 1 : 5)
       let opDepositGas = toGasPrice * OP_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += opDepositGas
+    }
+    if (toChainID === 8 || toChainID === 88) {
+      // op deposit
+      const toGasPrice = await this.getGasPrice(toChainID === 8 ? 1 : 5)
+      const imxDepositGas = toGasPrice * IMX_ETH_DEPOSIT_DEPOSIT_ONL1
+      ethGas += imxDepositGas
     }
 
     let usd = new BigNumber(0)
@@ -530,6 +578,10 @@ export default {
         networkId
       )
       return balance
+    } else if (localChainID === 8 || localChainID === 88) {
+      const imxHelper = new IMXHelper(localChainID)
+      const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
+      return Number(balance + '')
     } else {
       let balance = 0
 
@@ -556,6 +608,10 @@ export default {
       return null
     }
     if (LocalNetWorks.indexOf(fromChainID.toString()) > -1) {
+      if (!env.localProvider[fromChainID]) {
+        return null
+      }
+
       let response = await axios.post(env.localProvider[fromChainID], {
         jsonrpc: '2.0',
         method: 'eth_gasPrice',

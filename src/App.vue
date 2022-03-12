@@ -57,13 +57,13 @@ export default {
       if (!newValue) {
         this.$store.commit('updateTransactionList', [])
       } else {
-        this.getHistory()
+        this.getHistory(true)
       }
     },
 
     '$store.state.web3.coinbase': function (newValue, oldValue) {
       if (oldValue && newValue && newValue !== '0x') {
-        this.getHistory()
+        this.getHistory(true)
       }
     },
 
@@ -74,9 +74,11 @@ export default {
     },
   },
   methods: {
-    getHistory() {
+    getHistory(isRefresh = false) {
       if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
-        this.$store.commit('updateTransactionList', null)
+        if (isRefresh) {
+          this.$store.commit('updateTransactionList', null) 
+        }
 
         var req = {
           address: this.$store.state.web3.coinbase,
