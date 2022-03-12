@@ -6,9 +6,9 @@ const nowMakerList = [
   {
     makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
     c1ID: 99,
-    c2ID: 5,
+    c2ID: 22,
     c1Name: 'loopring(test)',
-    c2Name: 'rinkeby(test)',
+    c2Name: 'arbitrum(test)',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',

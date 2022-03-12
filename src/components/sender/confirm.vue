@@ -104,7 +104,7 @@ import {
   getTransferGasLimit,
 } from '../../util/constants/contract/getContract.js'
 import transferCalculate from '../../util/transfer/transferCalculate'
-import orbiterCore from '../../orbiterCore'
+import orbiterCore, { pTextFormatZero } from '../../orbiterCore'
 import Loading from '../loading/loading.vue'
 import util from '../../util/util'
 import Middle from '../../util/middle/middle'
@@ -424,10 +424,10 @@ export default {
             selectMakerInfo.makerAddress,
             0,
             tokenAddress,
-            amount
+            amount,
+            p_text
           )
-          console.log('response.hash =', response.hash)
-          if (response.hash && response.status == 'processing')
+          if (response.hash && response.status == 'processing') {
             this.onTransferSucceed(
               this.$store.state.web3.coinbase,
               selectMakerInfo,
@@ -435,6 +435,8 @@ export default {
               fromChainID,
               response.hash
             )
+          }
+          this.transferLoading = false
         } catch (error) {
           console.log('inError =', error.message)
           this.transferLoading = false

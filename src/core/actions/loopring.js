@@ -29,7 +29,9 @@ export default {
 
   getLoopringBalance: async function (address, localChainID) {
     const accountResult = await this.accountInfo(address, localChainID)
-    console.log('accountInfo =', accountResult)
+    if (!accountResult) {
+      return 0
+    }
     let accountInfo
     if (accountResult.code) {
       return 0
@@ -69,6 +71,9 @@ export default {
         code: 0,
       }
     }
+    if (!address || !localChainID) {
+      return null
+    }
     const exchangeApi = this.getExchangeAPI(localChainID)
     let GetAccountRequest = {
       owner: address,
@@ -84,8 +89,14 @@ export default {
     } else {
       if (response.code == 101002) {
         let info = {
-          code: 1,
+          code: 101002,
           errorMessage: 'noAccount',
+        }
+        return info
+      } else {
+        let info = {
+          code: response.code,
+          errorMessage: response.message,
         }
         return info
       }
@@ -98,16 +109,20 @@ export default {
     toAddress,
     toAddressID,
     tokenAddress,
-    amount
+    amount,
+    memo
   ) {
     const exchangeApi = this.getExchangeAPI(localChainID)
     const userApi = this.getUserAPI(localChainID)
     const accountResult = await this.accountInfo(address, localChainID)
+    if (!accountResult) {
+      throw Error('获取用户信息失败')
+    }
     let accInfo
     if (accountResult.code) {
       throw Error('Get account error')
     } else {
-      accInfo = accountResult.accountInfo
+      accInfo = accountResult?.accountInfo
     }
     if (
       accInfo.nonce == 0 &&
@@ -139,7 +154,6 @@ export default {
 
     const eddsaKey = await generateKeyPair(options)
 
-    console.log('eddsaKey =', eddsaKey)
     let GetUserApiKeyRequest = {
       accountId: accInfo.accountId,
     }
@@ -150,6 +164,7 @@ export default {
     if (!apiKey) {
       throw Error('Get Loopring ApiKey Error')
     }
+    console.log('apiKey =', apiKey)
     store.commit('updatelpApiKey', apiKey)
     // step 3 get storageId
     const GetNextStorageIdRequest = {
@@ -177,6 +192,7 @@ export default {
         volume: '94000000000000000',
       },
       validUntil: VALID_UNTIL,
+      memo: memo,
     }
     const response = await userApi.submitInternalTransfer({
       request: OriginTransferRequestV3,
@@ -187,13 +203,14 @@ export default {
       apiKey: apiKey,
       isHWAddr: false,
     })
-    console.log('response >>> ', response)
     return response
   },
 
   getTransferFee: async function (address, localChainID) {
     const accountResult = await this.accountInfo(address, localChainID)
-    console.log('accountInfo =', accountResult)
+    if (!accountResult) {
+      return 0
+    }
     let acc
     if (accountResult.code) {
       return 0
@@ -201,7 +218,6 @@ export default {
       acc = accountResult.accountInfo
     }
     let sendAmount = store.state.transferData.transferValue
-    console.log('sendAmount =', sendAmount)
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.TRANSFER,

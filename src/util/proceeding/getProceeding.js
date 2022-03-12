@@ -203,19 +203,6 @@ async function confirmUserTransaction(
     if (localChainID == 9 || localChainID == 99) {
       let apiKey = store.state.lpApiKey
       let acc = store.state.lpAccountInfo
-      /*
-      GetUserTransferListRequest {
-        accountId?: number;
-        hashes?: string;
-        start?: number;
-        end?: number;
-        status?: string;
-        limit?: number;
-        tokenSymbol?: string;
-        offset?: number;
-        transferTypes?: string;
-      }
-      */
       const GetUserTransferListRequest = {
         accountId: acc.accountId,
         hashes: txHash,
@@ -509,6 +496,7 @@ function ScanMakerTransfer(
   to,
   amount
 ) {
+  console.log('startScanMakerTransfer')
   const duration = 10 * 1000
   const ticker = async () => {
     if (!isCurrentTransaction(transactionID)) {
@@ -585,9 +573,76 @@ function ScanMakerTransfer(
 
     // loopring
     if (localChainID == 99 || localChainID == 99) {
+      console.log('lp in')
+      let accountResult = await loopring.accountInfo(
+        makerInfo.makerAddress,
+        localChainID
+      )
+      let accountInfo
+      if (!accountResult || accountResult.code) {
+        setTimeout(() => ticker(), duration)
+        return
+      } else {
+        accountInfo = accountResult.accountInfo
+      }
       let startTime = store.state.proceeding.userTransfer.timeStamp
+      const userApi = loopring.getUserAPI(localChainID)
+      const pValue = orbiterCore.getPTextFromTAmount(amount)
+      const rValue = orbiterCore.getRAmountFromTAmount(amount)
+      let memo, rAmount
+      if (pValue.state && rValue.state) {
+        memo = pValue.pText
+        rAmount = rValue.rAmount
+      } else {
+        return
+      }
+      const GetUserTransferListRequest = {
+        accountId: accountInfo.accountId,
+        start: startTime,
+        end: 99999999999999,
+        status: ['processed', 'processing'],
+        limit: 50,
+        tokenSymbol: 'ETH',
+        transferTypes: 'transfer',
+      }
+      const LPTransferResult = await userApi.getUserTransferList(
+        GetUserTransferListRequest,
+        localChainID == 9
+          ? process.env.VUE_APP_LP_MK_KEY
+          : process.env.VUE_APP_LP_MKTEST_KEY
+      )
+      if (
+        LPTransferResult.totalNum !== 0 &&
+        LPTransferResult.userTransfers.length !== 0
+      ) {
+        let transacionts = LPTransferResult.userTransfers
+        for (let index = 0; index < transacionts.length; index++) {
+          const lpTransaction = transacionts[index]
+          if (
+            lpTransaction.txType == 'TRANSFER' &&
+            lpTransaction.senderAddress.toLowerCase() ==
+              makerAddress.toLowerCase() &&
+            lpTransaction.receiverAddress.toLowerCase() ==
+              store.state.proceeding.userTransfer.from.toLowerCase() &&
+            lpTransaction.symbol == 'ETH' &&
+            lpTransaction.amount == rAmount &&
+            lpTransaction.memo == memo
+          ) {
+            if (lpTransaction.status == 'processing') {
+              storeUpdateProceedState(4)
+              setTimeout(() => ticker(), duration)
+              return
+            }
+            if (lpTransaction.status == 'processed') {
+              storeUpdateProceedState(5)
+              return
+            }
+          }
+        }
+      }
+      setTimeout(() => ticker(), duration)
+      return
     }
-
     // when is eth tokenAddress
     if (util.isEthTokenAddress(tokenAddress)) {
       let api = null
