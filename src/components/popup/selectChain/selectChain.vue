@@ -141,6 +141,7 @@ export default {
 
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
+            this.loadingIndex = index
             const { coinbase } = this.$store.state.web3
             const imxHelper = new IMXHelper(e.localID)
             await imxHelper.ensureUser(coinbase)

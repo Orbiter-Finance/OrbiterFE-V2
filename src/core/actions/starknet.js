@@ -39,7 +39,7 @@ const getTransaction = async (hash, chainId, retryCount = 0) => {
     }
 
     await util.sleep(1000)
-    return getTransaction(hash, (retryCount += 1))
+    return getTransaction(hash, chainId, (retryCount += 1))
   }
 
   // Check data
