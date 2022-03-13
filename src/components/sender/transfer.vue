@@ -289,6 +289,7 @@ import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
+import { IMXHelper } from '../../util/immutablex/imx_helper'
 
 const queryParamsChainMap = {
   'Mainnet': 1,
@@ -1390,6 +1391,13 @@ export default {
         ) {
           this.addChainNetWork()
         } else {
+          // Ensure immutablex's registered
+          const { toChainID } = this.$store.state.transferData
+          if (toChainID == 8 || toChainID == 88) {
+            const imxHelper = new IMXHelper(toChainID)
+            await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+          }
+
           // sendTransfer
           this.$store.commit('updateConfirmRouteDescInfo', [
             {
@@ -1406,7 +1414,6 @@ export default {
       }
     },
     addChainNetWork() {
-      var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
         this.$store.state.transferData.fromChainID
@@ -1421,19 +1428,26 @@ export default {
           method: 'wallet_switchEthereumChain',
           params: [switchParams]
         })
-        .then(() => {
+        .then(async () => {
+          // Ensure immutablex's registered
+          const { toChainID } = this.$store.state.transferData
+          if (toChainID == 8 || toChainID == 88) {
+            const imxHelper = new IMXHelper(toChainID)
+            await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+          }
+
           // switch success
-          that.$store.commit('updateConfirmRouteDescInfo', [
+          this.$store.commit('updateConfirmRouteDescInfo', [
             {
               no: 1,
-              amount: new BigNumber(that.transferValue).plus(
+              amount: new BigNumber(this.transferValue).plus(
                 new BigNumber(selectMakerInfo.tradingFee)
               ),
-              coin: that.$store.state.transferData.selectTokenInfo.token,
+              coin: this.$store.state.transferData.selectTokenInfo.token,
               toAddress: util.shortAddress(selectMakerInfo.makerAddress)
             }
           ])
-          that.$emit('stateChanged', '2')
+          this.$emit('stateChanged', '2')
         })
         .catch(error => {
           console.log(error)
@@ -1459,7 +1473,7 @@ export default {
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase]
+                params: [params, this.$store.state.web3.coinbase]
               })
               .then(() => { })
               .catch(error => {
