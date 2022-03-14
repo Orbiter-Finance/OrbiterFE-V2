@@ -29,12 +29,11 @@ const getTransaction = async (hash, chainId, retryCount = 0) => {
     header = resp.data?.header
     calldata = resp.data?.calldata
   } catch (err) {
-    console.error(
-      `Get starknet transaction [${hash}] failed: ${err.message}, retryCount: ${retryCount}`
-    )
-
     // Out max retry count
     if (retryCount >= 3) {
+      // console.error(
+      //   `Get starknet transaction [${hash}] failed: ${err.message}, retryCount: ${retryCount}`
+      // )
       return undefined
     }
 
