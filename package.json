@@ -23,7 +23,7 @@
     "eth-proof": "^2.1.6",
     "ethers": "^5.5.4",
     "https": "^1.0.0",
-    "starknet": "^2.5.0",
+    "starknet": "2.5.0",
     "tunnel": "0.0.6",
     "vue": "^2.6.11",
     "vue-async-computed": "^3.9.0",
