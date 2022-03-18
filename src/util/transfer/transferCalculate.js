@@ -17,6 +17,7 @@ import {
   getNetworkIdByChainId,
 } from '../constants/starknet/helper'
 import util from '../util'
+import loopring from '../../core/actions/loopring'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -47,8 +48,12 @@ const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
 const OP_ETH_WITHDRAW_ONOP_L2 = 137000
 const OP_ETH_WITHDRAW_ONL1 = 820000
 
+// loopring depost
+const LP_ETH_DEPOSIT_DEPOSIT_ONL1 = 75000
+
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
+  // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -98,6 +103,13 @@ export default {
       }
       return totalFee / 10 ** resultToken.decimals
     } else if (util.isEthTokenAddress(fromTokenAddress)) {
+      if (fromChainID == 9 || fromChainID == 99) {
+        let loopringFee = await loopring.getTransferFee(
+          store.state.web3.coinbase,
+          fromChainID
+        )
+        return loopringFee / 10 ** 18
+      }
       const web3 = localWeb3(fromChainID)
       if (web3) {
         const estimateGas = await web3.eth.estimateGas({
@@ -105,15 +117,18 @@ export default {
           to: makerAddress,
         })
         const gasPrice = await web3.eth.getGasPrice()
-        return new BigNumber(estimateGas)
-          .multipliedBy(gasPrice)
-          .dividedBy(10 ** 18)
-          .toNumber()
+        let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
+        if (fromChainID === 7 || fromChainID === 77) {
+          let l1GasFee = await this.getOPFee(fromChainID)
+          gas = gas.plus(l1GasFee.toNumber())
+        }
+        return gas.dividedBy(10 ** 18).toString()
       }
     }
     return 0
   },
 
+  // gasCost-> savingValue
   async transferSpentGas(fromChainID) {
     const GasPriceMap = {
       1: 100,
@@ -123,10 +138,12 @@ export default {
       5: 1,
       6: 60,
       7: 0.001,
+      9: 100,
       22: 0.02,
       33: 100,
       66: 60,
       77: 0.001,
+      99: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -136,10 +153,12 @@ export default {
       5: 35000,
       6: 1500,
       7: 21000,
+      9: 75000,
       22: 810000,
       33: 100,
       66: 1500,
       77: 21000,
+      99: 75000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -149,10 +168,12 @@ export default {
       5: 'ETH',
       6: 'MATIC',
       7: 'ETH',
+      9: 'ETH',
       22: 'AETH',
       33: 'ETH',
       66: 'MATIC',
       77: 'ETH',
+      99: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -187,6 +208,13 @@ export default {
       )
       return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
     }
+    if (fromChainID == 9 || fromChainID == 99) {
+      let loopringFee = await loopring.getTransferFee(
+        store.state.web3.coinbase,
+        fromChainID
+      )
+      return (loopringFee / 10 ** 18).toFixed(6)
+    }
     if (
       GasPriceMap[fromChainID.toString()] &&
       GasLimitMap[fromChainID.toString()] &&
@@ -212,6 +240,7 @@ export default {
       return null
     }
   },
+
   transferSpentTime(fromChainID, toChainID) {
     let timeSpent = 0
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
@@ -229,6 +258,9 @@ export default {
     if (fromChainID === 7 || fromChainID === 77) {
       timeSpent = 15
     }
+    if (fromChainID === 9 || fromChainID === 99) {
+      timeSpent = 15
+    }
     if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
       timeSpent += 30
     }
@@ -244,9 +276,13 @@ export default {
     if (toChainID === 7 || toChainID === 77) {
       timeSpent += 15
     }
+    if (toChainID === 9 || toChainID === 99) {
+      timeSpent = 15
+    }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
   },
+
   transferOrginTime(fromChainID, toChainID) {
     if (fromChainID === 2 || fromChainID === 22) {
       return '~7 days'
@@ -260,6 +296,9 @@ export default {
     }
     if (fromChainID === 7 || fromChainID === 77) {
       return '~7 days'
+    }
+    if (fromChainID === 9 || fromChainID === 99) {
+      return '~4 hours'
     }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -278,8 +317,12 @@ export default {
         // eth -> optimistic
         return '~5min'
       }
+      if (toChainID === 9 || toChainID === 99) {
+        return '~10min'
+      }
     }
   },
+
   transferSavingTime(fromChainID, toChainID) {
     if (fromChainID === 2 || fromChainID === 22) {
       return ' 7 days'
@@ -292,6 +335,9 @@ export default {
     }
     if (fromChainID === 7 || fromChainID === 77) {
       return ' 7 days'
+    }
+    if (fromChainID === 9 || fromChainID === 99) {
+      return ' 4 hours'
     }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -308,6 +354,10 @@ export default {
       }
       if (toChainID === 7 || toChainID === 77) {
         // eth -> optimistic
+        return ' 9.25min'
+      }
+      if (toChainID === 9 || toChainID === 99) {
+        // eth -> loopring
         return ' 9.25min'
       }
     }
@@ -442,6 +492,14 @@ export default {
       //  gas = gas / 10 ** 18
       //  return gas.toFixed(6).toString()
     }
+    if (fromChainID === 9 || fromChainID === 99) {
+      // api获取
+      let loopringWithDrawFee = await loopring.getWithDrawFee(
+        store.state.web3.coinbase,
+        fromChainID
+      )
+      ethGas += Number(loopringWithDrawFee)
+    }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       // Ar deposit
@@ -473,6 +531,12 @@ export default {
       let opDepositGas = toGasPrice * OP_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += opDepositGas
     }
+    if (toChainID === 9 || toChainID === 99) {
+      //loopring deposit
+      let toGasPrice = await this.getGasPrice(toChainID === 9 ? 1 : 5)
+      let lpDepositGas = toGasPrice * LP_ETH_DEPOSIT_DEPOSIT_ONL1
+      ethGas += lpDepositGas
+    }
 
     let usd = new BigNumber(0)
     if (ethGas > 0) {
@@ -492,7 +556,13 @@ export default {
     return usd.toNumber()
   },
 
-  async getTransferBalance(localChainID, tokenAddress, tokenName, userAddress) {
+  async getTransferBalance(
+    localChainID,
+    tokenAddress,
+    tokenName,
+    userAddress,
+    isMaker = false
+  ) {
     if (localChainID === 3 || localChainID === 33) {
       var req = {
         account: userAddress,
@@ -527,6 +597,14 @@ export default {
         starknetAddress,
         tokenAddress,
         networkId
+      )
+      return balance
+    } else if (localChainID === 9 || localChainID === 99) {
+      // https://api3.loopring.io/api/v3/user/balances?accountId=1&tokens=0,1
+      const balance = await loopring.getLoopringBalance(
+        userAddress,
+        localChainID,
+        isMaker
       )
       return balance
     } else {
@@ -617,6 +695,7 @@ export default {
         : '90' + toChainID.toString()
     return p_text
   },
+
   realTransferAmount() {
     let fromChainID = store.state.transferData.fromChainID
     let toChainID = store.state.transferData.toChainID

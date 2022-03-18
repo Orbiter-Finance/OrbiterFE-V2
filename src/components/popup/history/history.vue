@@ -106,6 +106,8 @@ export default {
         return 'pglogo'
       } else if (chainID == '7' || chainID == '77') {
         return 'oplogo'
+      } else if (chainID == '9' || chainID == '99') {
+        return 'loopringlogo'
       } else {
         return 'ethlogo'
       }

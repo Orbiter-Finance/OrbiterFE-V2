@@ -13,6 +13,7 @@
   "dependencies": {
     "@dydxprotocol/starkex-lib": "^1.1.6",
     "@eth-optimism/contracts": "^0.5.14",
+    "@loopring-web/loopring-sdk": "^1.8.17",
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
     "bignumber.js": "^9.0.1",
@@ -23,6 +24,7 @@
     "ethers": "^5.5.4",
     "https": "^1.0.0",
     "starknet": "^2.5.0",
+    "truffle-privatekey-provider": "^1.5.0",
     "tunnel": "0.0.6",
     "vue": "^2.6.11",
     "vue-async-computed": "^3.9.0",

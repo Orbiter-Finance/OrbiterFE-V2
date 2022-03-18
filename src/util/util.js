@@ -30,6 +30,10 @@ export default {
         return 'StarkNet'
       case 44:
         return 'StarkNet(R)'
+      case 9:
+        return 'Loopring'
+      case 99:
+        return 'Loopring(G)'
     }
 
     const chain = chainList.chainList.filter(

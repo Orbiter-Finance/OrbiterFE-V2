@@ -326,6 +326,8 @@ const queryParamsChainMap = {
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
   'Optimism(K)': 77,
+  Loopring: 9,
+  'Loopring(G)': 99,
 }
 
 export default {
@@ -609,6 +611,8 @@ export default {
           info.text = 'INSUFFICIENT FUNDS'
           info.disabled = 'disabled'
         } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
+          console.warn('this.toValue =', this.toValue)
+          console.warn('this.makerMaxBalance =', this.makerMaxBalance)
           info.text = 'INSUFFICIENT LIQUIDITY'
           info.disabled = 'disabled'
         }
@@ -886,7 +890,6 @@ export default {
     },
     '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
       this.updateExchangeToUsdPrice()
-
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
@@ -1399,6 +1402,15 @@ export default {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
       } else {
+        // if (
+        //   selectMakerInfo.c1ID == 9 ||
+        //   selectMakerInfo.c2ID == 9 ||
+        //   selectMakerInfo.c2ID == 99
+        // ) {
+        //   console.log('========================')
+        //   return
+        // }
+
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
             title: `The format of input amount is incorrect`,
@@ -1536,6 +1548,7 @@ export default {
 
         this.originGasCost = response
       } catch (error) {
+        console.log('error =', error)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -1570,7 +1583,8 @@ export default {
           chainId,
           tokenAddress,
           tokenName,
-          makerAddress
+          makerAddress,
+          true
         )
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
