@@ -13,7 +13,7 @@
   "dependencies": {
     "@dydxprotocol/starkex-lib": "^1.1.6",
     "@eth-optimism/contracts": "^0.5.14",
-    "@loopring-web/loopring-sdk": "^1.8.15",
+    "@loopring-web/loopring-sdk": "^1.8.17",
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
     "bignumber.js": "^9.0.1",

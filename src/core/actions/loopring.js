@@ -19,24 +19,41 @@ var configNet = config.loopring.Mainnet
 export default {
   getUserAPI: function (localChainID) {
     let netWorkID = localChainID == 9 ? 1 : 5
-    return new UserAPI(netWorkID)
+    return new UserAPI({ chainId: netWorkID })
   },
 
   getExchangeAPI: function (localChainID) {
     let netWorkID = localChainID == 9 ? 1 : 5
-    return new ExchangeAPI(netWorkID)
+    return new ExchangeAPI({ chainId: netWorkID })
   },
 
-  getLoopringBalance: async function (address, localChainID) {
-    const accountResult = await this.accountInfo(address, localChainID)
-    if (!accountResult) {
-      return 0
-    }
+  getLoopringBalance: async function (address, localChainID, isMaker) {
     let accountInfo
-    if (accountResult.code) {
-      return 0
+    if (isMaker) {
+      const exchangeApi = this.getExchangeAPI(localChainID)
+      let GetAccountRequest = {
+        owner: address,
+      }
+      let response = await exchangeApi.getAccount(GetAccountRequest)
+      if (response.accInfo && response.raw_data) {
+        accountInfo = response.accInfo
+      } else {
+        if (response.code == 101002) {
+          return 0
+        } else {
+          return 0
+        }
+      }
     } else {
-      accountInfo = accountResult.accountInfo
+      const accountResult = await this.accountInfo(address, localChainID)
+      if (!accountResult) {
+        return 0
+      }
+      if (accountResult.code) {
+        return 0
+      } else {
+        accountInfo = accountResult.accountInfo
+      }
     }
     if (localChainID == 99) {
       configNet = config.loopring.Rinkeby
@@ -131,10 +148,10 @@ export default {
       accInfo.publicKey.y == '' &&
       accInfo.keySeed == ''
     ) {
-      throw Error('用户账号未激活')
+      throw Error('User account is not activated')
     }
     if (accInfo.frozen) {
-      throw Error('用户路印账号被冻结')
+      throw Error('User account is frozen')
     }
     const { exchangeInfo } = await exchangeApi.getExchangeInfo()
     const web3 = new Web3(window.ethereum)
@@ -164,7 +181,6 @@ export default {
     if (!apiKey) {
       throw Error('Get Loopring ApiKey Error')
     }
-    console.log('apiKey =', apiKey)
     store.commit('updatelpApiKey', apiKey)
     // step 3 get storageId
     const GetNextStorageIdRequest = {
@@ -206,6 +222,35 @@ export default {
     return response
   },
 
+  getWithDrawFee: async function (address, localChainID) {
+    const accountResult = await this.accountInfo(address, localChainID)
+    if (!accountResult) {
+      return 0
+    }
+    let acc
+    if (accountResult.code) {
+      return 0
+    } else {
+      acc = accountResult.accountInfo
+    }
+    let sendAmount = store.state.transferData.transferValue
+    const GetOffchainFeeAmtRequest = {
+      accountId: acc.accountId,
+      requestType: OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
+      tokenSymbol: 'ETH',
+      amount: sendAmount,
+    }
+    let userApi = this.getUserAPI(localChainID)
+    const response = await userApi.getOffchainFeeAmt(
+      GetOffchainFeeAmtRequest,
+      ''
+    )
+    if (response?.fees?.ETH?.fee) {
+      return response.fees.ETH.fee
+    }
+    return 0
+  },
+
   getTransferFee: async function (address, localChainID) {
     const accountResult = await this.accountInfo(address, localChainID)
     if (!accountResult) {
@@ -233,5 +278,40 @@ export default {
       return response.fees.ETH.fee
     }
     return 0
+  },
+
+  getLoopringTxList: async function (
+    address,
+    localChainID,
+    startTime,
+    endTime,
+    limit,
+    offset
+  ) {
+    let userApi = this.getUserAPI(localChainID)
+    let accountResult = await this.accountInfo(address, localChainID)
+    let accountInfo
+    if (!accountResult || accountResult.code) {
+      return
+    } else {
+      accountInfo = accountResult.accountInfo
+    }
+    const GetUserTransferListRequest = {
+      accountId: accountInfo.accountId,
+      start: startTime,
+      end: endTime,
+      status: 'processed,processing,received',
+      limit: limit,
+      offset: offset,
+      tokenSymbol: 'ETH',
+      transferTypes: 'transfer',
+    }
+    const LPTransferResult = await userApi.getUserTransferList(
+      GetUserTransferListRequest,
+      localChainID == 9
+        ? process.env.VUE_APP_LP_MK_KEY
+        : process.env.VUE_APP_LP_MKTEST_KEY
+    )
+    return LPTransferResult
   },
 }

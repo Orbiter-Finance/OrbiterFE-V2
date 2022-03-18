@@ -104,7 +104,7 @@ import {
   getTransferGasLimit,
 } from '../../util/constants/contract/getContract.js'
 import transferCalculate from '../../util/transfer/transferCalculate'
-import orbiterCore, { pTextFormatZero } from '../../orbiterCore'
+import orbiterCore from '../../orbiterCore'
 import Loading from '../loading/loading.vue'
 import util from '../../util/util'
 import Middle from '../../util/middle/middle'

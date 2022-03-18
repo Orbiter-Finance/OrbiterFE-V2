@@ -3,6 +3,40 @@ import Axios from '../utils/Axios'
 Axios.axios()
 
 const nowMakerList = [
+  // ETH
+  {
+    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    c1ID: 33,
+    c2ID: 99,
+    c1Name: 'zksync(test)',
+    c2Name: 'loopring(test)',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 10,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 10,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0003,
+    c2TradingFee: 0.00135,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+  },
   {
     makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
     c1ID: 99,
@@ -36,7 +70,105 @@ const nowMakerList = [
       },
     ],
   },
-  // ETH
+  {
+    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    c1ID: 5,
+    c2ID: 99,
+    c1Name: 'rinkeby',
+    c2Name: 'loopring(test)',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 10,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 10,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0003,
+    c2TradingFee: 0.0045,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    c1ID: 99,
+    c2ID: 77,
+    c1Name: 'loopring(test)',
+    c2Name: 'optimism(test)',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 10,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 10,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0003,
+    c2TradingFee: 0.00135,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    c1ID: 99,
+    c2ID: 66,
+    c1Name: 'loopring(test)',
+    c2Name: 'polygon(test)',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 10,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 10,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0003,
+    c2TradingFee: 0.00135,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+  },
   {
     makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
     c1ID: 5,
@@ -71,7 +203,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
     c1ID: 22,
     c2ID: 77,
     c1Name: 'arbitrum(test)',

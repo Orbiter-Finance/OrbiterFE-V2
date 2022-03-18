@@ -7,8 +7,16 @@ export default {
     22: process.env.VUE_APP_HP_AR_R,
     66: process.env.VUE_APP_HP_PO_G,
     77: process.env.VUE_APP_HP_OP_K,
+    1: process.env.VUE_APP_HP,
+    2: process.env.VUE_APP_HP_AR,
+    6: process.env.VUE_APP_HP_PO,
+    7: process.env.VUE_APP_HP_OP,
   },
   localWSProvider: {
+    1: process.env.VUE_APP_WP,
+    2: process.env.VUE_APP_WP_AR,
+    6: process.env.VUE_APP_WP_PO,
+    7: process.env.VUE_APP_WP_OP,
     5: process.env.VUE_APP_WP_R, // rinkeby
     22: process.env.VUE_APP_WP_AR_R,
     66: process.env.VUE_APP_WP_PO_G,
@@ -60,7 +68,7 @@ export default {
     7: 'https://optimistic.etherscan.io/tx/',
     77: 'https://kovan-optimistic.etherscan.io/tx/',
     9: 'https://explorer.loopring.io/tx/',
-    99: 'https://explorer.loopring.io/account/',
+    99: 'https://explorer.loopring.io/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/

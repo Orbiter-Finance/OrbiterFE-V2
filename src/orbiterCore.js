@@ -38,6 +38,13 @@ function isZKChain(chain) {
   return false
 }
 
+function isLPChain(chain) {
+  if (chain === 9 || chain === 99 || chain === 'loopring') {
+    return true
+  }
+  return false
+}
+
 function getToAmountFromUserAmount(userAmount, selectMakerInfo, isWei) {
   let toAmount_tradingFee = new BigNumber(userAmount).minus(
     new BigNumber(selectMakerInfo.tradingFee)
@@ -96,6 +103,11 @@ function getTAmountFromRAmount(chain, amount, pText) {
     return {
       state: true,
       tAmount: tAmount,
+    }
+  } else if (isLPChain(chain)) {
+    return {
+      state: true,
+      tAmount: amount,
     }
   } else {
     let tAmount =
@@ -188,7 +200,7 @@ function getRAmountFromTAmount(chain, amount) {
   }
   if (isZKChain(chain) && amountLength > validDigit) {
     let rAmount =
-      amount.slice(0, validDigit - SIZE_OP.P_NUMBER) +
+      amount.toString().slice(0, validDigit - SIZE_OP.P_NUMBER) +
       pText +
       amount.slice(validDigit)
     return {
@@ -196,7 +208,8 @@ function getRAmountFromTAmount(chain, amount) {
       rAmount: rAmount,
     }
   } else {
-    let rAmount = amount.slice(0, amountLength - SIZE_OP.P_NUMBER) + pText
+    let rAmount =
+      amount.toString().slice(0, amountLength - SIZE_OP.P_NUMBER) + pText
     return {
       state: true,
       rAmount: rAmount,
@@ -372,6 +385,7 @@ module.exports = {
   getRAmountFromTAmount,
   pTextFormatZero,
   isZKChain,
+  isLPChain,
   getToAmountFromUserAmount,
   getDigitByPrecision,
 }

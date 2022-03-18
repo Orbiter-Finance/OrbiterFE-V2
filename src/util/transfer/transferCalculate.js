@@ -494,6 +494,11 @@ export default {
     }
     if (fromChainID === 9 || fromChainID === 99) {
       // api获取
+      let loopringWithDrawFee = await loopring.getWithDrawFee(
+        store.state.web3.coinbase,
+        fromChainID
+      )
+      ethGas += Number(loopringWithDrawFee)
     }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
@@ -551,7 +556,13 @@ export default {
     return usd.toNumber()
   },
 
-  async getTransferBalance(localChainID, tokenAddress, tokenName, userAddress) {
+  async getTransferBalance(
+    localChainID,
+    tokenAddress,
+    tokenName,
+    userAddress,
+    isMaker = false
+  ) {
     if (localChainID === 3 || localChainID === 33) {
       var req = {
         account: userAddress,
@@ -592,7 +603,8 @@ export default {
       // https://api3.loopring.io/api/v3/user/balances?accountId=1&tokens=0,1
       const balance = await loopring.getLoopringBalance(
         userAddress,
-        localChainID
+        localChainID,
+        isMaker
       )
       return balance
     } else {

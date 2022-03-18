@@ -112,7 +112,8 @@ async function confirmUserTransaction(
             makerInfo,
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
-            sn_amountToSend
+            sn_amountToSend,
+            zk_nonce
           )
           return
         }
@@ -183,7 +184,8 @@ async function confirmUserTransaction(
             makerInfo,
             makerInfo.makerAddress,
             store.state.web3.coinbase,
-            sn_amountToSend
+            sn_amountToSend,
+            sn_nonce
           )
           return
         }
@@ -214,14 +216,14 @@ async function confirmUserTransaction(
           GetUserTransferListRequest,
           apiKey
         )
-        console.log('loopring =', LPTransferResult)
         if (
           LPTransferResult.totalNum === 1 &&
           LPTransferResult.userTransfers.length === 1
         ) {
           let lpTransaction = LPTransferResult.userTransfers[0]
           if (
-            lpTransaction.status == 'processed' &&
+            (lpTransaction.status == 'processed' ||
+              lpTransaction.status == 'received') &&
             lpTransaction.txType == 'TRANSFER'
           ) {
             let time = lpTransaction.timestamp
@@ -255,7 +257,8 @@ async function confirmUserTransaction(
               makerInfo,
               lpTransaction.receiverAddress,
               lpTransaction.senderAddress,
-              lp_amountToSend
+              lp_amountToSend,
+              lp_nonce
             )
             return
           }
@@ -355,7 +358,8 @@ async function confirmUserTransaction(
         makerInfo,
         startScanMakerTransferFromAddress,
         trx.from,
-        amountToSend
+        amountToSend,
+        nonce
       )
       return
     }
@@ -456,7 +460,8 @@ function startScanMakerTransfer(
   makerInfo,
   from,
   to,
-  amount
+  amount,
+  nonce
 ) {
   if (!isCurrentTransaction(transactionID)) {
     return
@@ -482,7 +487,8 @@ function startScanMakerTransfer(
     tokenAddress,
     from,
     to,
-    amount
+    amount,
+    nonce
   )
 }
 
@@ -494,9 +500,9 @@ function ScanMakerTransfer(
   tokenAddress,
   from,
   to,
-  amount
+  amount,
+  nonce
 ) {
-  console.log('startScanMakerTransfer')
   const duration = 10 * 1000
   const ticker = async () => {
     if (!isCurrentTransaction(transactionID)) {
@@ -572,8 +578,7 @@ function ScanMakerTransfer(
     }
 
     // loopring
-    if (localChainID == 99 || localChainID == 99) {
-      console.log('lp in')
+    if (localChainID == 9 || localChainID == 99) {
       let accountResult = await loopring.accountInfo(
         makerInfo.makerAddress,
         localChainID
@@ -585,13 +590,15 @@ function ScanMakerTransfer(
       } else {
         accountInfo = accountResult.accountInfo
       }
-      let startTime = store.state.proceeding.userTransfer.timeStamp
+      let startTime = new Date(
+        store.state.proceeding.userTransfer.timeStamp
+      ).getTime()
       const userApi = loopring.getUserAPI(localChainID)
-      const pValue = orbiterCore.getPTextFromTAmount(amount)
-      const rValue = orbiterCore.getRAmountFromTAmount(amount)
+      const pValue = nonce
+      const rValue = orbiterCore.getRAmountFromTAmount(localChainID, amount)
       let memo, rAmount
-      if (pValue.state && rValue.state) {
-        memo = pValue.pText
+      if (rValue.state) {
+        memo = pValue.toString()
         rAmount = rValue.rAmount
       } else {
         return
@@ -600,7 +607,7 @@ function ScanMakerTransfer(
         accountId: accountInfo.accountId,
         start: startTime,
         end: 99999999999999,
-        status: ['processed', 'processing'],
+        status: 'processed,processing,received',
         limit: 50,
         tokenSymbol: 'ETH',
         transferTypes: 'transfer',
@@ -621,19 +628,27 @@ function ScanMakerTransfer(
           if (
             lpTransaction.txType == 'TRANSFER' &&
             lpTransaction.senderAddress.toLowerCase() ==
-              makerAddress.toLowerCase() &&
+              makerInfo.makerAddress.toLowerCase() &&
             lpTransaction.receiverAddress.toLowerCase() ==
               store.state.proceeding.userTransfer.from.toLowerCase() &&
             lpTransaction.symbol == 'ETH' &&
             lpTransaction.amount == rAmount &&
             lpTransaction.memo == memo
           ) {
+            let hash = lpTransaction.hash
+            if (lpTransaction.indexInBlock && lpTransaction.blockId) {
+              hash = `${lpTransaction.blockId}-${lpTransaction.indexInBlock}`
+            }
+            store.commit('updateProceedingMakerTransferTxid', hash)
             if (lpTransaction.status == 'processing') {
               storeUpdateProceedState(4)
               setTimeout(() => ticker(), duration)
               return
             }
-            if (lpTransaction.status == 'processed') {
+            if (
+              lpTransaction.status == 'processed' ||
+              lpTransaction.status == 'received'
+            ) {
               storeUpdateProceedState(5)
               return
             }
