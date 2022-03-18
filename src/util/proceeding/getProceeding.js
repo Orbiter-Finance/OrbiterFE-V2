@@ -11,12 +11,13 @@ import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
-  getProviderByChainId
+  getProviderByChainId,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
 import { IMXListen } from '../immutablex/imx_listen'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
+import loopring from '../../core/actions/loopring'
 
 let startBlockNumber = ''
 
@@ -41,7 +42,6 @@ const getHistory = () => {
 
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
-
   getHistory()
 }
 
@@ -57,7 +57,6 @@ async function confirmUserTransaction(
     fromTokenAddress = makerInfo.t2Address
     toLocalChainID = makerInfo.c1ID
   }
-
   // Get current toChain blockNumber
   const _web3 = localWeb3(toLocalChainID)
   if (_web3) {
@@ -108,14 +107,15 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
-          storeUpdateProceedState(3)          
+          storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
             zk_makerTransferChainID,
             makerInfo,
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
-            zk_amountToSend
+            zk_amountToSend,
+            zk_nonce
           )
           return
         }
@@ -177,7 +177,8 @@ async function confirmUserTransaction(
             makerInfo,
             makerInfo.makerAddress,
             store.state.web3.coinbase,
-            sn_amountToSend
+            sn_amountToSend,
+            sn_nonce
           )
           return
         }
@@ -243,6 +244,79 @@ async function confirmUserTransaction(
       } catch (error) {
         console.log('error =', error)
         throw 'getImmutableXTransactionDataError'
+      }
+      return confirmUserTransaction(
+        localChainID,
+        makerInfo,
+        txHash,
+        confirmations
+      )
+    }
+    // loopring
+    if (localChainID == 9 || localChainID == 99) {
+      let apiKey = store.state.lpApiKey
+      let acc = store.state.lpAccountInfo
+      const GetUserTransferListRequest = {
+        accountId: acc.accountId,
+        hashes: txHash,
+      }
+
+      const userApi = loopring.getUserAPI(localChainID)
+      try {
+        const LPTransferResult = await userApi.getUserTransferList(
+          GetUserTransferListRequest,
+          apiKey
+        )
+        if (
+          LPTransferResult.totalNum === 1 &&
+          LPTransferResult.userTransfers.length === 1
+        ) {
+          let lpTransaction = LPTransferResult.userTransfers[0]
+          if (
+            (lpTransaction.status == 'processed' ||
+              lpTransaction.status == 'received') &&
+            lpTransaction.txType == 'TRANSFER'
+          ) {
+            let time = lpTransaction.timestamp
+            let lp_amount = orbiterCore.getRAmountFromTAmount(
+              localChainID,
+              lpTransaction.amount
+            ).rAmount
+            let lp_nonce = (lpTransaction.storageInfo.storageId - 1) / 2 + ''
+            let lp_SendRAmount = orbiterCore.getToAmountFromUserAmount(
+              new Bignumber(lp_amount).dividedBy(
+                new Bignumber(10 ** makerInfo.precision)
+              ),
+              makerInfo,
+              true
+            )
+            let lp_makerTransferChainID =
+              localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
+            var lp_amountToSend = orbiterCore.getTAmountFromRAmount(
+              lp_makerTransferChainID,
+              lp_SendRAmount,
+              lp_nonce
+            ).tAmount
+            if (!isCurrentTransaction(txHash)) {
+              return
+            }
+            store.commit('updateProceedingUserTransferTimeStamp', time)
+            storeUpdateProceedState(3)
+            startScanMakerTransfer(
+              txHash,
+              lp_makerTransferChainID,
+              makerInfo,
+              lpTransaction.receiverAddress,
+              lpTransaction.senderAddress,
+              lp_amountToSend,
+              lp_nonce
+            )
+            return
+          }
+        }
+      } catch (error) {
+        console.log('error =', error)
+        throw 'getLPTransactionDataError'
       }
       return confirmUserTransaction(
         localChainID,
@@ -335,7 +409,8 @@ async function confirmUserTransaction(
         makerInfo,
         startScanMakerTransferFromAddress,
         trx.from,
-        amountToSend
+        amountToSend,
+        nonce
       )
       return
     }
@@ -436,7 +511,8 @@ function startScanMakerTransfer(
   makerInfo,
   from,
   to,
-  amount
+  amount,
+  nonce
 ) {
   if (!isCurrentTransaction(transactionID)) {
     return
@@ -462,7 +538,8 @@ function startScanMakerTransfer(
     tokenAddress,
     from,
     to,
-    amount
+    amount,
+    nonce
   )
 }
 
@@ -474,7 +551,8 @@ function ScanMakerTransfer(
   tokenAddress,
   from,
   to,
-  amount
+  amount,
+  nonce
 ) {
   const duration = 10 * 1000
   const ticker = async () => {
@@ -576,6 +654,87 @@ function ScanMakerTransfer(
       return
     }
 
+    // loopring
+    if (localChainID == 9 || localChainID == 99) {
+      let accountResult = await loopring.accountInfo(
+        makerInfo.makerAddress,
+        localChainID
+      )
+      let accountInfo
+      if (!accountResult || accountResult.code) {
+        setTimeout(() => ticker(), duration)
+        return
+      } else {
+        accountInfo = accountResult.accountInfo
+      }
+      let startTime = new Date(
+        store.state.proceeding.userTransfer.timeStamp
+      ).getTime()
+      const userApi = loopring.getUserAPI(localChainID)
+      const pValue = nonce
+      const rValue = orbiterCore.getRAmountFromTAmount(localChainID, amount)
+      let memo, rAmount
+      if (rValue.state) {
+        memo = pValue.toString()
+        rAmount = rValue.rAmount
+      } else {
+        return
+      }
+      const GetUserTransferListRequest = {
+        accountId: accountInfo.accountId,
+        start: startTime,
+        end: 99999999999999,
+        status: 'processed,processing,received',
+        limit: 50,
+        tokenSymbol: 'ETH',
+        transferTypes: 'transfer',
+      }
+      const LPTransferResult = await userApi.getUserTransferList(
+        GetUserTransferListRequest,
+        localChainID == 9
+          ? process.env.VUE_APP_LP_MK_KEY
+          : process.env.VUE_APP_LP_MKTEST_KEY
+      )
+      if (
+        LPTransferResult.totalNum !== 0 &&
+        LPTransferResult.userTransfers.length !== 0
+      ) {
+        let transacionts = LPTransferResult.userTransfers
+        for (let index = 0; index < transacionts.length; index++) {
+          const lpTransaction = transacionts[index]
+          if (
+            lpTransaction.txType == 'TRANSFER' &&
+            lpTransaction.senderAddress.toLowerCase() ==
+              makerInfo.makerAddress.toLowerCase() &&
+            lpTransaction.receiverAddress.toLowerCase() ==
+              store.state.proceeding.userTransfer.from.toLowerCase() &&
+            lpTransaction.symbol == 'ETH' &&
+            lpTransaction.amount == rAmount &&
+            lpTransaction.memo == memo
+          ) {
+            let hash = lpTransaction.hash
+            if (lpTransaction.indexInBlock && lpTransaction.blockId) {
+              hash = `${lpTransaction.blockId}-${lpTransaction.indexInBlock}`
+            }
+            store.commit('updateProceedingMakerTransferTxid', hash)
+            if (lpTransaction.status == 'processing') {
+              storeUpdateProceedState(4)
+              setTimeout(() => ticker(), duration)
+              return
+            }
+            if (
+              lpTransaction.status == 'processed' ||
+              lpTransaction.status == 'received'
+            ) {
+              storeUpdateProceedState(5)
+              return
+            }
+          }
+        }
+      }
+      setTimeout(() => ticker(), duration)
+      return
+    }
     // when is eth tokenAddress
     if (util.isEthTokenAddress(tokenAddress)) {
       let api = null

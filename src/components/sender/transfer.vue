@@ -1,43 +1,46 @@
 <template>
-  <o-box-content class="senderbody"
-                 style="width: 34.5rem">
+  <o-box-content class="senderbody" style="width: 34.5rem">
     <div class="header">
       <span class="left">Token</span>
-      <button @click="selectToken"
-              class="right"
-              :style="{ width: tokenInfoArray.length > 1 ? '13rem' : '11rem' }">
-        <img class="token_icon"
-             v-if="this.$store.state.transferData.selectTokenInfo.icon"
-             :src="this.$store.state.transferData.selectTokenInfo.icon"
-             alt="" />
-        <svg-icon v-else
-                  class="token_icon"
-                  iconName="tokenLogo"></svg-icon>
+      <button
+        @click="selectToken"
+        class="right"
+        :style="{ width: tokenInfoArray.length > 1 ? '13rem' : '11rem' }"
+      >
+        <img
+          class="token_icon"
+          v-if="this.$store.state.transferData.selectTokenInfo.icon"
+          :src="this.$store.state.transferData.selectTokenInfo.icon"
+          alt=""
+        />
+        <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
         <div class="token_name">
           {{ this.$store.state.transferData.selectTokenInfo.token }}
         </div>
-        <svg-icon v-if="tokenInfoArray.length > 1"
-                  class="arrow_icon"
-                  iconName="arrow_down"></svg-icon>
+        <svg-icon
+          v-if="tokenInfoArray.length > 1"
+          class="arrow_icon"
+          iconName="arrow_down"
+        ></svg-icon>
       </button>
     </div>
     <div class="content">
       <div class="subContent">
         <div class="topItem">
           <div class="left">From</div>
-          <div v-if="isLogin"
-               class="right">
+          <div v-if="isLogin" class="right">
             Balance:
-            <loading v-if="fromBalanceLoading"
-                     style="left: 0.3rem; top: 0.2rem"
-                     width="1.2rem"
-                     height="1.2rem"></loading>
+            <loading
+              v-if="fromBalanceLoading"
+              style="left: 0.3rem; top: 0.2rem"
+              width="1.2rem"
+              height="1.2rem"
+            ></loading>
             <span v-else>{{ fromBalance }}</span>
           </div>
         </div>
         <div class="bottomItem">
-          <div class="left"
-               @click="changeFromChain">
+          <div class="left" @click="changeFromChain">
             <span>
               {{
                 showChainName(
@@ -48,42 +51,44 @@
                 )
               }}
             </span>
-            <svg-icon v-if="queryParams.sources.length > 1"
-                      style="
+            <svg-icon
+              v-if="queryParams.sources.length > 1"
+              style="
                 margin-left: 0.5rem;
                 margin-top: 0.5rem;
                 width: 2rem;
                 height: 2rem;
               "
-                      iconName="arrow_down"></svg-icon>
+              iconName="arrow_down"
+            ></svg-icon>
           </div>
-          <input type="text"
-                 v-model="transferValue"
-                 class="right"
-                 @input="checkTransferValue()"
-                 :maxlength="18"
-                 :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`" />
-          <el-button @click="fromMax"
-                     class="maxBtn"
-                     style="">Max</el-button>
+          <input
+            type="text"
+            v-model="transferValue"
+            class="right"
+            @input="checkTransferValue()"
+            :maxlength="18"
+            :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
+          />
+          <el-button @click="fromMax" class="maxBtn" style="">Max</el-button>
         </div>
       </div>
       <div class="subContent">
         <div class="topItem">
           <div class="left">To</div>
-          <div v-if="isLogin"
-               class="right">
+          <div v-if="isLogin" class="right">
             Balance:
-            <loading v-if="toBalanceLoading"
-                     style="left: 0.3rem; top: 0.2rem"
-                     width="1.2rem"
-                     height="1.2rem"></loading>
+            <loading
+              v-if="toBalanceLoading"
+              style="left: 0.3rem; top: 0.2rem"
+              width="1.2rem"
+              height="1.2rem"
+            ></loading>
             <span v-else>{{ toBalance }}</span>
           </div>
         </div>
         <div class="bottomItem">
-          <div class="left"
-               @click="changeToChain">
+          <div class="left" @click="changeToChain">
             {{
               showChainName(
                 this.$store.state.transferData.toChainID,
@@ -92,155 +97,170 @@
                 ]
               )
             }}
-            <svg-icon v-if="queryParams.dests.length > 1"
-                      style="
+            <svg-icon
+              v-if="queryParams.dests.length > 1"
+              style="
                 margin-left: 0.5rem;
                 margin-top: 0.5rem;
                 width: 2rem;
                 height: 2rem;
               "
-                      iconName="arrow_down"></svg-icon>
+              iconName="arrow_down"
+            ></svg-icon>
           </div>
-          <div style="display: flex; align-items: center"
-               class="right">
+          <div style="display: flex; align-items: center" class="right">
             <o-tooltip>
               <template v-slot:titleDesc>
                 <span v-html="toValueToolTip"></span>
               </template>
-              <svg-icon style="
+              <svg-icon
+                style="
                   width: 1.5rem;
                   height: 1.5rem;
                   margin-left: 0.5rem;
                   margin-bottom: 0.1rem;
                 "
-                        iconName="help"></svg-icon>
+                iconName="help"
+              ></svg-icon>
             </o-tooltip>
 
             <div>{{ toValue }}</div>
           </div>
         </div>
-        <div v-if="!queryParams.fixed"
-             class="middleImge"
-             @click="transfer_mid">
-          <img src="../../assets/middleIcon.png"
-               style="width: 100%; height: 100%"
-               alt="" />
+        <div v-if="!queryParams.fixed" class="middleImge" @click="transfer_mid">
+          <img
+            src="../../assets/middleIcon.png"
+            style="width: 100%; height: 100%"
+            alt=""
+          />
           <!-- <svg-icon style="width:100%;height:100%"
                     iconName="transfer_mid"></svg-icon> -->
         </div>
       </div>
     </div>
-    <o-button style="margin: 2.5rem auto 0"
-              width="29.5rem"
-              height="4rem"
-              :isDisabled="sendBtnInfo ? sendBtnInfo.disabled : 'disabled'"
-              @click="sendTransfer">
-      <span class="w700 s16"
-            style="letter-spacing: 0.15rem">{{
+    <o-button
+      style="margin: 2.5rem auto 0"
+      width="29.5rem"
+      height="4rem"
+      :isDisabled="sendBtnInfo ? sendBtnInfo.disabled : 'disabled'"
+      @click="sendTransfer"
+    >
+      <span class="w700 s16" style="letter-spacing: 0.15rem">{{
         sendBtnInfo && sendBtnInfo.text
       }}</span>
     </o-button>
     <div class="notice">
-      <div v-if="isShowMax"
-           class="item"
-           style="margin-top: 1.5rem">
+      <div v-if="isShowMax" class="item" style="margin-top: 1.5rem">
         <div class="left">
           <div style="display: flex; color: #e85e24">
-            <svg-icon style="
+            <svg-icon
+              style="
                 width: 2.2rem;
                 height: 2.2rem;
                 margin-right: 0.8rem;
                 margin-left: 0.2rem;
               "
-                      iconName="maxInfo"></svg-icon>
+              iconName="maxInfo"
+            ></svg-icon>
             Makers provide {{ maxPrice }}
             {{ this.$store.state.transferData.selectTokenInfo.token }} for
             liquidity.
           </div>
         </div>
       </div>
-      <div v-if="showSaveGas"
-           class="item"
-           style="margin-top: 1rem">
+      <div v-if="showSaveGas" class="item" style="margin-top: 1rem">
         <div class="left">
           <div style="display: flex">
-            <svg-icon style="
+            <svg-icon
+              style="
                 width: 1.5rem;
                 height: 1.5rem;
                 left: 1.5rem;
                 margin-right: 0.8rem;
                 margin-left: 0.3rem;
               "
-                      iconName="gas_cost"></svg-icon>
+              iconName="gas_cost"
+            ></svg-icon>
             Gas Fee Saved
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
               <span v-html="gasFeeToolTip"></span>
             </template>
-            <svg-icon style="
+            <svg-icon
+              style="
                 width: 1.5rem;
                 height: 1.5rem;
                 margin-left: 0.5rem;
                 margin-bottom: 0.1rem;
               "
-                      iconName="help"></svg-icon>
+              iconName="help"
+            ></svg-icon>
           </o-tooltip>
         </div>
         <div class="right">
           <div class="item">
             save
-            <loading v-if="saveGasLoading"
-                     style="margin: 0 1rem"
-                     width="1rem"
-                     loadingColor="#FFFFFF"
-                     height="1rem"></loading>
-            <span style="margin-left: 0.4rem"
-                  v-else>{{ gasSavingMin }} ~ {{ gasSavingMax }}</span>
+            <loading
+              v-if="saveGasLoading"
+              style="margin: 0 1rem"
+              width="1rem"
+              loadingColor="#FFFFFF"
+              height="1rem"
+            ></loading>
+            <span style="margin-left: 0.4rem" v-else
+              >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
+            >
           </div>
         </div>
       </div>
-      <div class="item"
-           style="margin-top: 1rem">
+      <div class="item" style="margin-top: 1rem">
         <div class="left">
           <div style="display: flex">
-            <svg-icon style="
+            <svg-icon
+              style="
                 width: 1.6rem;
                 height: 1.6rem;
                 margin-right: 0.8rem;
                 margin-left: 0.2rem;
               "
-                      iconName="time_spent"></svg-icon>
+              iconName="time_spent"
+            ></svg-icon>
             Time Spend
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
               <span v-html="timeSpenToolTip"></span>
             </template>
-            <svg-icon style="
+            <svg-icon
+              style="
                 width: 1.5rem;
                 height: 1.5rem;
                 margin-left: 0.5rem;
                 margin-bottom: 0.1rem;
               "
-                      iconName="help"></svg-icon>
+              iconName="help"
+            ></svg-icon>
           </o-tooltip>
         </div>
 
         <div class="right">
-          <loading v-if="timeSpenLoading"
-                   width="1.2rem"
-                   height="1.2rem"></loading>
+          <loading
+            v-if="timeSpenLoading"
+            width="1.2rem"
+            height="1.2rem"
+          ></loading>
           <span v-else>{{ timeSpent }}</span>
           <div class="item">
             save
-            <loading v-if="saveTimeLoading"
-                     style="margin: 0 1rem"
-                     width="1rem"
-                     loadingColor="#FFFFFF"
-                     height="1rem"></loading>
-            <span style="margin-left: 0.4rem"
-                  v-else>{{
+            <loading
+              v-if="saveTimeLoading"
+              style="margin: 0 1rem"
+              width="1rem"
+              loadingColor="#FFFFFF"
+              height="1rem"
+            ></loading>
+            <span style="margin-left: 0.4rem" v-else>{{
               transferSavingTime
             }}</span>
           </div>
@@ -248,27 +268,30 @@
       </div>
     </div>
     <CustomPopup ref="SelectTokenPopupRef">
-      <div slot="PoperContent"
-           style="padding-bottom: var(--bottom-nav-height)">
-        <SelectToken :tokenData="tokenInfoArray"
-                     v-on:getTokenInfo="getTokenInfo"
-                     v-on:closeSelect="closeSelectPopupClick()" />
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <SelectToken
+          :tokenData="tokenInfoArray"
+          v-on:getTokenInfo="getTokenInfo"
+          v-on:closeSelect="closeSelectPopupClick()"
+        />
       </div>
     </CustomPopup>
     <CustomPopup ref="SelectFromChainPopupRef">
-      <div slot="PoperContent"
-           style="padding-bottom: var(--bottom-nav-height)">
-        <SelectChain :ChainData="fromChainArray"
-                     v-on:getChainInfo="getFromChainInfo"
-                     v-on:closeSelect="closeFromChainPopupClick()" />
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <SelectChain
+          :ChainData="fromChainArray"
+          v-on:getChainInfo="getFromChainInfo"
+          v-on:closeSelect="closeFromChainPopupClick()"
+        />
       </div>
     </CustomPopup>
     <CustomPopup ref="SelectToChainPopupRef">
-      <div slot="PoperContent"
-           style="padding-bottom: var(--bottom-nav-height)">
-        <SelectChain :ChainData="toChainArray"
-                     v-on:getChainInfo="getToChainInfo"
-                     v-on:closeSelect="closeToChainPopupClick()" />
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <SelectChain
+          :ChainData="toChainArray"
+          v-on:getChainInfo="getToChainInfo"
+          v-on:closeSelect="closeToChainPopupClick()"
+        />
       </div>
     </CustomPopup>
   </o-box-content>
@@ -292,20 +315,22 @@ import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 
 const queryParamsChainMap = {
-  'Mainnet': 1,
-  'Arbitrum': 2,
-  'ZkSync': 3,
-  'StarkNet': 4,
-  'Polygon': 6,
-  'Optimism': 7,
-  'ImmutableX': 8,
-  'Rinkeby': 5,
+  Mainnet: 1,
+  Arbitrum: 2,
+  ZkSync: 3,
+  StarkNet: 4,
+  Polygon: 6,
+  Optimism: 7,
+  ImmutableX: 8,
+  Rinkeby: 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
   'Optimism(K)': 77,
-  'ImmutableX(R)': 88
+  'ImmutableX(R)': 88,
+  Loopring: 9,
+  'Loopring(G)': 99,
 }
 
 export default {
@@ -315,7 +340,7 @@ export default {
     SelectToken,
     SelectChain,
     CustomPopup,
-    Loading
+    Loading,
   },
   data() {
     return {
@@ -337,7 +362,7 @@ export default {
 
       transferValue: '',
 
-      exchangeToUsdPrice: 0
+      exchangeToUsdPrice: 0,
     }
   },
   asyncComputed: {
@@ -401,7 +426,7 @@ export default {
         console.error('Get maker balance error:', err.message)
       }
       return makerMaxBalance
-    }
+    },
   },
   computed: {
     queryParams() {
@@ -460,10 +485,7 @@ export default {
           }
 
           for (const item of chainIds) {
-            if (
-              allChains.indexOf(item) > -1 &&
-              newChains.indexOf(item) == -1
-            ) {
+            if (allChains.indexOf(item) > -1 && newChains.indexOf(item) == -1) {
               newChains.push(item)
             }
           }
@@ -478,11 +500,7 @@ export default {
       }
       sources = tidyChains(sources)
       dests = tidyChains(dests)
-      if (
-        sources.length == 1 &&
-        dests.length == 1 &&
-        sources[0] == dests[0]
-      ) {
+      if (sources.length == 1 && dests.length == 1 && sources[0] == dests[0]) {
         // Example: sources=[1], dests=[1], invalid, reset them!
         sources = []
         dests = []
@@ -544,7 +562,17 @@ export default {
       }
       fixed = fixed == 1 // To boolean
 
-      return { referer, source, dest, token, tokens: tidyTokens, amount, fixed, sources, dests }
+      return {
+        referer,
+        source,
+        dest,
+        token,
+        tokens: tidyTokens,
+        amount,
+        fixed,
+        sources,
+        dests,
+      }
     },
     sendBtnInfo() {
       let selectMakerInfo = this.$store.getters.realSelectMakerInfo
@@ -586,6 +614,8 @@ export default {
           info.text = 'INSUFFICIENT FUNDS'
           info.disabled = 'disabled'
         } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
+          console.warn('this.toValue =', this.toValue)
+          console.warn('this.makerMaxBalance =', this.makerMaxBalance)
           info.text = 'INSUFFICIENT LIQUIDITY'
           info.disabled = 'disabled'
         }
@@ -630,26 +660,29 @@ export default {
       return `In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information when you transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.`
     },
     timeSpenToolTip() {
-      return `It will take about ${this.originTimeSpent
-        ? this.originTimeSpent.replace('~', '')
-        : this.originTimeSpent
-        } by traditional way, but only take about ${this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
-        } with Orbiter.`
+      return `It will take about ${
+        this.originTimeSpent
+          ? this.originTimeSpent.replace('~', '')
+          : this.originTimeSpent
+      } by traditional way, but only take about ${
+        this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
+      } with Orbiter.`
     },
     gasFeeToolTip() {
-      const gasFee = `<b>The cost before using Orbiter</b><br />Gas Fee: $${(
-        this.originGasCost
-      ).toFixed(2)}<br />`
+      const gasFee = `<b>The cost before using Orbiter</b><br />Gas Fee: $${this.originGasCost.toFixed(
+        2
+      )}<br />`
       const tradingFee = ` <br /><b>The cost after using Orbiter</b><br />Trading Fee: $${(
         this.orbiterTradingFee * this.exchangeToUsdPrice
       ).toFixed(2)}`
-      const withholdingGasFee = `<br />Withholding Fee: $${this.$store.getters.realSelectMakerInfo
-        ? (
-          this.$store.getters.realSelectMakerInfo.tradingFee *
-          this.exchangeToUsdPrice
-        ).toFixed(2)
-        : 0
-        }`
+      const withholdingGasFee = `<br />Withholding Fee: $${
+        this.$store.getters.realSelectMakerInfo
+          ? (
+              this.$store.getters.realSelectMakerInfo.tradingFee *
+              this.exchangeToUsdPrice
+            ).toFixed(2)
+          : 0
+      }`
       const total = `<br /><br /><b>Total: $${(
         this.gasTradingTotal * this.exchangeToUsdPrice
       ).toFixed(2)}</b>`
@@ -725,8 +758,8 @@ export default {
       return (
         Math.ceil(
           this.$store.state.transferData.gasFee *
-          this.$store.state.transferData.ethPrice *
-          10
+            this.$store.state.transferData.ethPrice *
+            10
         ) / 10
       ).toFixed(2)
     },
@@ -760,8 +793,7 @@ export default {
     },
     gasSavingMax() {
       let savingValue =
-        this.originGasCost -
-        this.gasTradingTotal * this.exchangeToUsdPrice
+        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
       if (savingValue < 0) {
         savingValue = 0
       }
@@ -770,8 +802,7 @@ export default {
     },
     showSaveGas() {
       let savingValue =
-        this.originGasCost -
-        this.gasTradingTotal * this.exchangeToUsdPrice
+        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
       if (savingValue > 0) {
         return true
       }
@@ -796,7 +827,7 @@ export default {
         this.$store.state.transferData.fromChainID,
         this.$store.state.transferData.toChainID
       )
-    }
+    },
   },
   watch: {
     queryParams: function (nv) {
@@ -827,13 +858,13 @@ export default {
             selectMakerInfo.tName,
             this.$store.state.web3.coinbase
           )
-          .then(response => {
+          .then((response) => {
             this.c1Balance = (
               response /
               10 ** selectMakerInfo.precision
             ).toFixed(6)
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error)
             return
           })
@@ -844,13 +875,13 @@ export default {
             selectMakerInfo.tName,
             this.$store.state.web3.coinbase
           )
-          .then(response => {
+          .then((response) => {
             this.c2Balance = (
               response /
               10 ** selectMakerInfo.precision
             ).toFixed(6)
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error)
           })
       } else {
@@ -860,7 +891,6 @@ export default {
     },
     '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
       this.updateExchangeToUsdPrice()
-
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
@@ -871,10 +901,10 @@ export default {
             newValue.tName,
             this.$store.state.web3.coinbase
           )
-          .then(response => {
+          .then((response) => {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error)
           })
         transferCalculate
@@ -884,17 +914,17 @@ export default {
             newValue.tName,
             this.$store.state.web3.coinbase
           )
-          .then(response => {
+          .then((response) => {
             this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error)
           })
       }
     },
     '$store.state.transferData.fromChainID': function (newValue) {
       this.toChainArray = []
-      this.makerInfoList.filter(makerInfo => {
+      this.makerInfoList.filter((makerInfo) => {
         if (
           makerInfo.c1ID === newValue &&
           this.toChainArray.indexOf(makerInfo.c2ID) === -1
@@ -934,7 +964,7 @@ export default {
         this.$store.commit('updateTransferToChainID', _toChainID)
       } else {
         this.tokenInfoArray = []
-        this.makerInfoList.filter(makerInfo => {
+        this.makerInfoList.filter((makerInfo) => {
           const { fromChainID, toChainID } = this.$store.state.transferData
           const pushToken = (_fromChainID, _toChainID) => {
             if (_fromChainID !== fromChainID || _toChainID !== toChainID) {
@@ -942,7 +972,12 @@ export default {
             }
 
             const { tokens } = this.queryParams
-            if (tokens.length > 0 && tokens.findIndex(_token => util.equalsIgnoreCase(_token, makerInfo.tName)) == -1) {
+            if (
+              tokens.length > 0 &&
+              tokens.findIndex((_token) =>
+                util.equalsIgnoreCase(_token, makerInfo.tName)
+              ) == -1
+            ) {
               return
             }
 
@@ -965,27 +1000,32 @@ export default {
         // if can's find, use first; else find same name token's makerInfo
         if (
           this.tokenInfoArray.findIndex(
-            item =>
+            (item) =>
               item.token == this.$store.state.transferData.selectTokenInfo.token
           ) === -1
         ) {
-          let defaultIndex = this.tokenInfoArray.findIndex(item => util.equalsIgnoreCase(item.token, this.queryParams.token))
+          let defaultIndex = this.tokenInfoArray.findIndex((item) =>
+            util.equalsIgnoreCase(item.token, this.queryParams.token)
+          )
           if (defaultIndex < 0) {
             defaultIndex = 0
           }
 
-          this.$store.commit('updateTransferTokenInfo', this.tokenInfoArray[defaultIndex])
+          this.$store.commit(
+            'updateTransferTokenInfo',
+            this.tokenInfoArray[defaultIndex]
+          )
         } else {
-          this.makerInfoList.filter(makerInfo => {
+          this.makerInfoList.filter((makerInfo) => {
             if (
               (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
                 makerInfo.c2ID === this.$store.state.transferData.toChainID &&
                 makerInfo.tName ===
-                this.$store.state.transferData.selectTokenInfo.token) ||
+                  this.$store.state.transferData.selectTokenInfo.token) ||
               (makerInfo.c2ID === this.$store.state.transferData.fromChainID &&
                 makerInfo.c1ID === this.$store.state.transferData.toChainID &&
                 makerInfo.tName ===
-                this.$store.state.transferData.selectTokenInfo.token)
+                  this.$store.state.transferData.selectTokenInfo.token)
             ) {
               this.$store.commit('updateTransferMakerInfo', makerInfo)
             }
@@ -1000,11 +1040,11 @@ export default {
         this.gasCostLoading = true
         transferCalculate
           .transferSpentGas(this.$store.state.transferData.fromChainID)
-          .then(response => {
+          .then((response) => {
             this.$store.commit('updateTransferGasFee', response)
             that.gasCostLoading = false
           })
-          .catch(error => {
+          .catch((error) => {
             that.gasCostLoading = false
             console.log('GetGasFeeError =', error)
           })
@@ -1012,7 +1052,7 @@ export default {
     },
     '$store.state.transferData.toChainID': function (newValue) {
       this.tokenInfoArray = []
-      this.makerInfoList.filter(makerInfo => {
+      this.makerInfoList.filter((makerInfo) => {
         const { fromChainID, toChainID } = this.$store.state.transferData
         const pushToken = (_fromChainID, _toChainID) => {
           if (_fromChainID !== fromChainID || _toChainID !== toChainID) {
@@ -1020,7 +1060,12 @@ export default {
           }
 
           const { tokens } = this.queryParams
-          if (tokens.length > 0 && tokens.findIndex(_token => util.equalsIgnoreCase(_token, makerInfo.tName)) == -1) {
+          if (
+            tokens.length > 0 &&
+            tokens.findIndex((_token) =>
+              util.equalsIgnoreCase(_token, makerInfo.tName)
+            ) == -1
+          ) {
             return
           }
 
@@ -1042,27 +1087,32 @@ export default {
 
       if (
         this.tokenInfoArray.findIndex(
-          item =>
+          (item) =>
             item.token == this.$store.state.transferData.selectTokenInfo.token
         ) === -1
       ) {
-        let defaultIndex = this.tokenInfoArray.findIndex(item => util.equalsIgnoreCase(item.token, this.queryParams.token))
+        let defaultIndex = this.tokenInfoArray.findIndex((item) =>
+          util.equalsIgnoreCase(item.token, this.queryParams.token)
+        )
         if (defaultIndex < 0) {
           defaultIndex = 0
         }
 
-        this.$store.commit('updateTransferTokenInfo', this.tokenInfoArray[defaultIndex])
+        this.$store.commit(
+          'updateTransferTokenInfo',
+          this.tokenInfoArray[defaultIndex]
+        )
       } else {
-        this.makerInfoList.filter(makerInfo => {
+        this.makerInfoList.filter((makerInfo) => {
           if (
             (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
               makerInfo.c2ID === this.$store.state.transferData.toChainID &&
               makerInfo.tName ===
-              this.$store.state.transferData.selectTokenInfo.token) ||
+                this.$store.state.transferData.selectTokenInfo.token) ||
             (makerInfo.c2ID === this.$store.state.transferData.fromChainID &&
               makerInfo.c1ID === this.$store.state.transferData.toChainID &&
               makerInfo.tName ===
-              this.$store.state.transferData.selectTokenInfo.token)
+                this.$store.state.transferData.selectTokenInfo.token)
           ) {
             this.$store.commit('updateTransferMakerInfo', makerInfo)
           }
@@ -1074,7 +1124,7 @@ export default {
       }
     },
     '$store.state.transferData.selectTokenInfo': function (newValue) {
-      this.makerInfoList.filter(makerInfo => {
+      this.makerInfoList.filter((makerInfo) => {
         if (
           (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
             makerInfo.c2ID === this.$store.state.transferData.toChainID &&
@@ -1093,16 +1143,16 @@ export default {
       if (this.$store.state.transferData.transferValue !== newValue) {
         this.$store.commit('updateTransferValue', newValue)
       }
-    }
+    },
   },
   mounted() {
     const updateETHPrice = async () => {
       transferCalculate
         .getTokenConvertUsd('ETH')
-        .then(response => {
+        .then((response) => {
           this.$store.commit('updateETHPrice', response)
         })
-        .catch(error => {
+        .catch((error) => {
           console.log('GetETHPriceError =', error)
         })
     }
@@ -1117,7 +1167,7 @@ export default {
           selectMakerInfo.t1Address,
           selectMakerInfo.tName,
           selectMakerInfo.precision
-        ).then(v => {
+        ).then((v) => {
           if (v) {
             this.c1Balance = v
           }
@@ -1129,7 +1179,7 @@ export default {
           selectMakerInfo.t2Address,
           selectMakerInfo.tName,
           selectMakerInfo.precision
-        ).then(v => {
+        ).then((v) => {
           if (v) {
             this.c2Balance = v
           }
@@ -1144,23 +1194,23 @@ export default {
     this.transferValue = this.queryParams.amount
 
     const getMakerInfoFromGraphReq = {
-      maker: '0'
+      maker: '0',
     }
     makerInfo
       .getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
-      .then(response => {
+      .then((response) => {
         if (response.code === 0) {
           this.makerInfoList = response.data
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log('error =', error)
       })
   },
   methods: {
     initChainArray() {
       this.fromChainArray = []
-      this.makerInfoList.filter(makerInfo => {
+      this.makerInfoList.filter((makerInfo) => {
         if (this.fromChainArray.indexOf(makerInfo.c1ID) === -1) {
           // sources fiter
           if (
@@ -1220,7 +1270,8 @@ export default {
       return util.chainName(localChainID, netChainID)
     },
     transfer_mid() {
-      const { fromChainID, toChainID, selectTokenInfo } = this.$store.state.transferData
+      const { fromChainID, toChainID, selectTokenInfo } =
+        this.$store.state.transferData
       this.$store.commit('updateTransferFromChainID', toChainID)
       this.$store.commit('updateTransferTokenInfo', selectTokenInfo)
 
@@ -1238,7 +1289,7 @@ export default {
       let { source, dest, sources, dests } = query
       if (source || dest || sources || dests) {
         // When only one is noempty, do it
-        //  - Change query params, will trigger queryParams computed        
+        //  - Change query params, will trigger queryParams computed
         //  - If query no change, don't replace
         const newQuery = {
           ...query,
@@ -1248,10 +1299,7 @@ export default {
           dests: sources || '',
         }
         const isSame = (v1, v2) => {
-          if (
-            (v1 == '' || v1 == undefined) &&
-            (v2 == '' || v2 == undefined)
-          ) {
+          if ((v1 == '' || v1 == undefined) && (v2 == '' || v2 == undefined)) {
             return true
           }
           return v1 == v2
@@ -1353,17 +1401,26 @@ export default {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
       } else {
+        // if (
+        //   selectMakerInfo.c1ID == 9 ||
+        //   selectMakerInfo.c2ID == 9 ||
+        //   selectMakerInfo.c2ID == 99
+        // ) {
+        //   console.log('========================')
+        //   return
+        // }
+
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
             title: `The format of input amount is incorrect`,
-            duration: 3000
+            duration: 3000,
           })
           return
         }
         if (this.fromBalance === null) {
           this.$notify.error({
             title: `Waiting for account balance to be obtained`,
-            duration: 3000
+            duration: 3000,
           })
           return
         }
@@ -1379,14 +1436,14 @@ export default {
         ) {
           this.$notify.error({
             title: `As an alpha release, Orbiter can only support ${this.userMinPrice} ~ ${this.maxPrice} ${this.$store.state.transferData.selectTokenInfo.token} for each transfer.`,
-            duration: 3000
+            duration: 3000,
           })
           return
         }
         if (
           this.$store.state.web3.networkId.toString() !==
           this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+            this.$store.state.transferData.fromChainID
           ]
         ) {
           this.addChainNetWork()
@@ -1406,8 +1463,8 @@ export default {
                 new BigNumber(selectMakerInfo.tradingFee)
               ),
               coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress)
-            }
+              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+            },
           ])
           this.$emit('stateChanged', '2')
         }
@@ -1416,17 +1473,17 @@ export default {
     addChainNetWork() {
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
-        this.$store.state.transferData.fromChainID
+          this.$store.state.transferData.fromChainID
         ]
       )
       let selectMakerInfo = this.$store.getters.realSelectMakerInfo
       const switchParams = {
-        chainId: util.toHex(chain.chainId)
+        chainId: util.toHex(chain.chainId),
       }
       window.ethereum
         .request({
           method: 'wallet_switchEthereumChain',
-          params: [switchParams]
+          params: [switchParams],
         })
         .then(async () => {
           // Ensure immutablex's registered
@@ -1444,12 +1501,12 @@ export default {
                 new BigNumber(selectMakerInfo.tradingFee)
               ),
               coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress)
-            }
+              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+            },
           ])
           this.$emit('stateChanged', '2')
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error)
           if (error.code === 4902) {
             // need add net
@@ -1459,24 +1516,24 @@ export default {
               nativeCurrency: {
                 name: chain.nativeCurrency.name,
                 symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-                decimals: chain.nativeCurrency.decimals
+                decimals: chain.nativeCurrency.decimals,
               },
               rpcUrls: chain.rpc,
               blockExplorerUrls: [
                 chain.explorers &&
-                  chain.explorers.length > 0 &&
-                  chain.explorers[0].url
+                chain.explorers.length > 0 &&
+                chain.explorers[0].url
                   ? chain.explorers[0].url
-                  : chain.infoURL
-              ]
+                  : chain.infoURL,
+              ],
             }
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, this.$store.state.web3.coinbase]
+                params: [params, this.$store.state.web3.coinbase],
               })
-              .then(() => { })
-              .catch(error => {
+              .then(() => {})
+              .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
               })
@@ -1503,10 +1560,11 @@ export default {
 
         this.originGasCost = response
       } catch (error) {
+        console.log('error =', error)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
-          duration: 3000
+          duration: 3000,
         })
       }
       this.originGasLoading = false
@@ -1533,19 +1591,19 @@ export default {
         if (!makerAddress) {
           return ''
         }
-
         const response = await transferCalculate.getTransferBalance(
           chainId,
           tokenAddress,
           tokenName,
-          makerAddress
+          makerAddress,
+          true
         )
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.log(error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

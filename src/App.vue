@@ -37,7 +37,7 @@ export default {
     TopNav,
     BottomNav,
   },
-  mounted() {
+  async mounted() {
     setInterval(this.getHistory, 60 * 1000)
 
     this.getHistory()

@@ -1,16 +1,18 @@
 <template>
-  <o-box-content class="historybody"
-                 style="width: 34.5rem">
-    <div @click.stop="stopPenetrate"
-         class="historyContent">
+  <o-box-content class="historybody" style="width: 34.5rem">
+    <div @click.stop="stopPenetrate" class="historyContent">
       <div class="topItem">
         <span>History</span>
         <div @click="closerButton">
-          <svg-icon style="width: 1.5rem; height: 1.5rem"
-                    iconName="close"></svg-icon>
+          <svg-icon
+            style="width: 1.5rem; height: 1.5rem"
+            iconName="close"
+          ></svg-icon>
         </div>
       </div>
-      <div style="width: 100%; height: 0.3rem; background: var(--default-black)"></div>
+      <div
+        style="width: 100%; height: 0.3rem; background: var(--default-black)"
+      ></div>
 
       <div class="contentTopItem">
         <span style="width: 34%">Time</span>
@@ -18,34 +20,42 @@
         <span style="width: 18%">From</span>
         <span style="width: 18%">To</span>
       </div>
-      <div style="width: 100%; height: 0.15rem; background: var(--default-black)"></div>
-      <loading v-if="!historyData"
-               style="margin: auto; margin-top: 5rem"
-               loadingColor="#E85E24"
-               width="4rem"
-               height="4rem"></loading>
-      <div v-else-if="historyData && historyData.length !== 0"
-           v-for="(item, index) in historyData"
-           :key="index"
-           @click="getHistoryInfo(item)"
-           class="contentItem">
-        <svg-icon class="logo"
-                  :iconName="iconName(item)"></svg-icon>
+      <div
+        style="width: 100%; height: 0.15rem; background: var(--default-black)"
+      ></div>
+      <loading
+        v-if="!historyData"
+        style="margin: auto; margin-top: 5rem"
+        loadingColor="#E85E24"
+        width="4rem"
+        height="4rem"
+      ></loading>
+      <div
+        v-else-if="historyData && historyData.length !== 0"
+        v-for="(item, index) in historyData"
+        :key="index"
+        @click="getHistoryInfo(item)"
+        class="contentItem"
+      >
+        <svg-icon class="logo" :iconName="iconName(item)"></svg-icon>
         <span style="width: 28%">{{ item.fromTimeStamp }}</span>
         <span style="width: 30%; text-align: center">{{
           item.userAmount + item.tokenName
         }}</span>
         <span style="width: 18%; text-align: center">
-          <svg-icon :iconName="logoName(item.fromChainID)"
-                    style="width: 1.6rem; height: 1.6rem"></svg-icon>
+          <svg-icon
+            :iconName="logoName(item.fromChainID)"
+            style="width: 1.6rem; height: 1.6rem"
+          ></svg-icon>
         </span>
         <span style="width: 18%; text-align: center">
-          <svg-icon :iconName="logoName(item.toChainID)"
-                    style="width: 1.6rem; height: 1.6rem"></svg-icon>
+          <svg-icon
+            :iconName="logoName(item.toChainID)"
+            style="width: 1.6rem; height: 1.6rem"
+          ></svg-icon>
         </span>
       </div>
-      <div v-else
-           class="noContentItem">No history</div>
+      <div v-else class="noContentItem">No history</div>
     </div>
   </o-box-content>
 </template>
@@ -65,7 +75,7 @@ export default {
       return this.$store.state.transactionList
     },
   },
-  mounted() { },
+  mounted() {},
   methods: {
     closerButton() {
       this.$emit('closeHistory')
@@ -99,6 +109,8 @@ export default {
         return 'oplogo'
       } else if (chainID == '8' || chainID == '88') {
         return 'imxlogo'
+      } else if (chainID == '9' || chainID == '99') {
+        return 'loopringlogo'
       } else {
         return 'ethlogo'
       }

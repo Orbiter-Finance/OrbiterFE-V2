@@ -35,6 +35,7 @@ export default {
     }
     return txInfo
   },
+
   getTxInfoWithZksync: function (zkSyncInfo, zkTokenInfo) {
     const txInfo = {
       from: zkSyncInfo.op.from.toLowerCase(),
@@ -50,6 +51,7 @@ export default {
     }
     return txInfo
   },
+
   getTxInfoWithStarknet: function (starknetInfo) {
     const txInfo = {
       from: starknetInfo.from.toLowerCase(),
@@ -77,6 +79,25 @@ export default {
       hash: immutableX.hash,
       nonce: immutableX.nonce,
       dataFrom: 'ImmutableX',
+    }
+    return txInfo
+  },
+
+  getTxInfoWithLoopring: function (loopringInfo) {
+    const txInfo = {
+      from: loopringInfo.senderAddress.toLowerCase(),
+      to: loopringInfo.receiverAddress.toLowerCase(),
+      tokenAddress: loopringInfo.storageInfo.tokenId,
+      timeStamp: Math.round(loopringInfo.timestamp / 1000),
+      tokenName: loopringInfo.symbol,
+      value: loopringInfo.amount,
+      tokenDecimal: 18,
+      hash: loopringInfo.hash,
+      nonce: (loopringInfo.storageInfo.storageId - 1) / 2,
+      memo: loopringInfo.memo,
+      blockNum: loopringInfo.blockId,
+      blockIndex: loopringInfo.indexInBlock,
+      dataFrom: 'loopring',
     }
     return txInfo
   },

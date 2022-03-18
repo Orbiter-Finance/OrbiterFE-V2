@@ -43,6 +43,12 @@ export default {
     chainID: '8',
     rinkeyChainID: '88',
   },
+  loopring: {
+    Mainnet: 'https://api3.loopring.io',
+    Rinkeby: 'https://uat2.loopring.io',
+    chainID: '9',
+    rinkeyChainID: '99',
+  },
   L1: {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',

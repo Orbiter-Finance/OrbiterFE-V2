@@ -99,6 +99,9 @@ export default {
         if (item === 8 || item === 88) {
           iconName = 'imxlogo'
         }
+        if (item === 9 || item === 99) {
+          iconName = 'loopringlogo'
+        }
         const chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),
@@ -138,7 +141,6 @@ export default {
               await getStarknetAccount(coinbase, networkId)
             }
           }
-
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index

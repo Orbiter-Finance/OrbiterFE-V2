@@ -7,8 +7,16 @@ export default {
     22: process.env.VUE_APP_HP_AR_R,
     66: process.env.VUE_APP_HP_PO_G,
     77: process.env.VUE_APP_HP_OP_K,
+    1: process.env.VUE_APP_HP,
+    2: process.env.VUE_APP_HP_AR,
+    6: process.env.VUE_APP_HP_PO,
+    7: process.env.VUE_APP_HP_OP,
   },
   localWSProvider: {
+    1: process.env.VUE_APP_WP,
+    2: process.env.VUE_APP_WP_AR,
+    6: process.env.VUE_APP_WP_PO,
+    7: process.env.VUE_APP_WP_OP,
     5: process.env.VUE_APP_WP_R, // rinkeby
     22: process.env.VUE_APP_WP_AR_R,
     66: process.env.VUE_APP_WP_PO_G,
@@ -23,12 +31,14 @@ export default {
     '6',
     '7',
     '8',
+    '9',
     '22',
     '33',
     '44',
     '66',
     '77',
     '88',
+    '99',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -39,12 +49,14 @@ export default {
     6: '137', // polygon
     7: '10', // optimism
     8: '1', // mainnet
+    9: '1', // loopring
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)
     77: '69', // optimism(K)
     88: '3', // ropsten
+    99: '5', // loopring(G)
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -61,6 +73,8 @@ export default {
     77: 'https://kovan-optimistic.etherscan.io/tx/',
     8: 'https://immutascan.io/tx/',
     88: '', // ImmutableX don't have testnet browser
+    9: 'https://explorer.loopring.io/tx/',
+    99: 'https://explorer.loopring.io/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -77,5 +91,7 @@ export default {
     77: 'https://kovan-optimistic.etherscan.io/address/',
     8: 'https://market.immutable.com/inventory/',
     88: 'https://market.ropsten.immutable.com/inventory/',
+    9: 'https://explorer.loopring.io/account/',
+    99: 'https://explorer.loopring.io/account/',
   },
 }

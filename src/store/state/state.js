@@ -53,5 +53,7 @@ const state = {
     mainnet: [],
   },
   transactionList: null,
+  lpAccountInfo: null,
+  lpApiKey: null,
 }
 export default state
