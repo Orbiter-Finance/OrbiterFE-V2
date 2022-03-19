@@ -438,12 +438,24 @@ export default {
           }
           this.transferLoading = false
         } catch (error) {
-          console.log('inError =', error.message)
           this.transferLoading = false
-          this.$notify.error({
-            title: error.message,
-            duration: 3000,
-          })
+          if (error.message == 'account is not activated') {
+            const notify = this.$notify({
+              type: 'info',
+              message: `<div style="word-break:break-all; font-size: 1.4rem; color: black">This Loopring account is not activated, please activate it at <span style="color:blue"> here </span> before transferring</div>`,
+              dangerouslyUseHTMLString: true,
+              duration: 8000,
+            })
+            notify.$el.querySelector('span').onclick = () => {
+              notify.close()
+              window.open('https://loopring.io/#/layer2/assets', '_blank')
+            }
+          } else {
+            this.$notify.error({
+              title: error.message,
+              duration: 3000,
+            })
+          }
         }
       } catch (error) {
         console.log('outError =', error.message)

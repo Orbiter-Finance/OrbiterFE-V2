@@ -120,7 +120,7 @@ export default {
         let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
         if (fromChainID === 7 || fromChainID === 77) {
           let l1GasFee = await this.getOPFee(fromChainID)
-          gas = gas.plus(l1GasFee.toNumber())
+          gas = gas.plus(l1GasFee)
         }
         return gas.dividedBy(10 ** 18).toString()
       }

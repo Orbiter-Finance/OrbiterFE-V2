@@ -1398,15 +1398,6 @@ export default {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
       } else {
-        // if (
-        //   selectMakerInfo.c1ID == 9 ||
-        //   selectMakerInfo.c2ID == 9 ||
-        //   selectMakerInfo.c2ID == 99
-        // ) {
-        //   console.log('========================')
-        //   return
-        // }
-
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
             title: `The format of input amount is incorrect`,
