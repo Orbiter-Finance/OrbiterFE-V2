@@ -441,8 +441,8 @@ export default {
           this.transferLoading = false
           if (error.message == 'account is not activated') {
             const notify = this.$notify({
-              type: 'info',
-              message: `<div style="word-break:break-all; font-size: 1.4rem; color: black">This Loopring account is not activated, please activate it at <span style="color:blue"> here </span> before transferring</div>`,
+              type: 'error',
+              message: `<div style="text-align:left;font-size: 1.4rem; color: black">This Loopring account is not activated, please activate it at <span style="color:blue;text-decoration: underline"> here </span> before transferring.</div>`,
               dangerouslyUseHTMLString: true,
               duration: 8000,
             })
