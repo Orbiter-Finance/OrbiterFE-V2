@@ -133,7 +133,7 @@ export default {
     const userApi = this.getUserAPI(localChainID)
     const accountResult = await this.accountInfo(address, localChainID)
     if (!accountResult) {
-      throw Error('获取用户信息失败')
+      throw Error('get account error')
     }
     let accInfo
     if (accountResult.code) {
@@ -148,7 +148,7 @@ export default {
       accInfo.publicKey.y == '' &&
       accInfo.keySeed == ''
     ) {
-      throw Error('User account is not activated')
+      throw Error('account is not activated')
     }
     if (accInfo.frozen) {
       throw Error('User account is frozen')

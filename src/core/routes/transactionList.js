@@ -1349,15 +1349,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
       }
     }
   }
-  for (let index = 0; index < transactionList.length; index++) {
-    const element = transactionList[index]
-    console.log('old =', element.sortTimeStamp)
-  }
   transactionList.sort(sortBy('sortTimeStamp'))
-  for (let index = 0; index < transactionList.length; index++) {
-    const element = transactionList[index]
-    console.log('new =', element.sortTimeStamp)
-  }
   return {
     list: transactionList,
     state: state, // 0 / 1  maker / user

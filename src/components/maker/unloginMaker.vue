@@ -1,19 +1,20 @@
 <template>
   <div class="makerUnLoginContent">
-    <o-box-content class="makerUnLoginTop"
-                   style="width:34.5rem">
-      <span style="font-weight: bolder;margin-bottom:2rem">About Maker</span>
-      <span style="font-size: 1.6rem;margin-bottom:2rem">Orbiter's Maker provides liquidity for Layer 2 and benefits from it.</span>
-      <div @click="clickLearnMore"
-           style="align-self: flex-end;">
-        <span class="dColor s14 wbolder"
-              style="cursor: default">LEARN MORE</span>
+    <o-box-content class="makerUnLoginTop" style="width: 34.5rem">
+      <span style="font-weight: bolder; margin-bottom: 2rem">About Maker</span>
+      <span style="font-size: 1.6rem; margin-bottom: 2rem"
+        >Orbiter's Maker provides liquidity for Layer 2 and benefits from
+        it.</span
+      >
+      <div @click="clickLearnMore" style="align-self: flex-end">
+        <span class="dColor s14 wbolder" style="cursor: default"
+          >LEARN MORE</span
+        >
         <!-- <svg-icon style="margin-left:0.8rem;width:1.5rem;height:1.5rem"
                   iconName="help"></svg-icon> -->
       </div>
     </o-box-content>
-    <o-box-content class="makerUnLoginBottom"
-                   style="width:34.5rem">
+    <o-box-content class="makerUnLoginBottom" style="width: 34.5rem">
       <span class="w600">COMING SOON</span>
       <!-- <o-button width="29.5rem"
                 height="4rem"
@@ -28,31 +29,24 @@
 <script>
 import Middle from '../../util/middle/middle'
 
-
-
 export default {
   name: 'unloginMaker',
-  props: {
-  },
+  props: {},
   data() {
-    return {
-    }
+    return {}
   },
-  components: {
-  },
-  watch: {
-  },
-  mounted() {
-  },
+  components: {},
+  watch: {},
+  mounted() {},
   methods: {
     clickLearnMore() {
-      window.open('https://docs.orbiter.finance/', '_blank');
+      window.open('https://docs.orbiter.finance/', '_blank')
     },
     connectWallet() {
       console.log('connectWallet')
       Middle.$emit('connectWallet', true)
-    }
-  }
+    },
+  },
 }
 </script>
 
