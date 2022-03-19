@@ -218,7 +218,7 @@ async function confirmUserTransaction(
         )
         if (
           LPTransferResult.totalNum === 1 &&
-          LPTransferResult.userTransfers.length === 1
+          LPTransferResult.userTransfers?.length === 1
         ) {
           let lpTransaction = LPTransferResult.userTransfers[0]
           if (
@@ -620,7 +620,7 @@ function ScanMakerTransfer(
       )
       if (
         LPTransferResult.totalNum !== 0 &&
-        LPTransferResult.userTransfers.length !== 0
+        LPTransferResult.userTransfers?.length !== 0
       ) {
         let transacionts = LPTransferResult.userTransfers
         for (let index = 0; index < transacionts.length; index++) {
@@ -636,9 +636,6 @@ function ScanMakerTransfer(
             lpTransaction.memo == memo
           ) {
             let hash = lpTransaction.hash
-            if (lpTransaction.indexInBlock && lpTransaction.blockId) {
-              hash = `${lpTransaction.blockId}-${lpTransaction.indexInBlock}`
-            }
             store.commit('updateProceedingMakerTransferTxid', hash)
             if (lpTransaction.status == 'processing') {
               storeUpdateProceedState(4)

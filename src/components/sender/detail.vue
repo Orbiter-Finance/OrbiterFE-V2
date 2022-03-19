@@ -1,67 +1,96 @@
 <template>
-  <o-box-content class="detailBody"
-                 style="width:34.5rem">
+  <o-box-content class="detailBody" style="width: 34.5rem">
     <div class="ProceedContent">
       <div class="topItem">
-        <div style="width:2rem;height:2rem;margin-bottom:0.2rem;position:absolute;left:1rem"
-             @click="closerButton">
-          <svg-icon style="width:1.5rem;height:1.5rem"
-                    iconName="back"></svg-icon>
+        <div
+          style="
+            width: 2rem;
+            height: 2rem;
+            margin-bottom: 0.2rem;
+            position: absolute;
+            left: 1rem;
+          "
+          @click="closerButton"
+        >
+          <svg-icon
+            style="width: 1.5rem; height: 1.5rem"
+            iconName="back"
+          ></svg-icon>
         </div>
         Detail
       </div>
-      <div style="width:100%; height:0.2rem; background:var(--default-black)"></div>
-      <div v-for="item in proceedData"
-           :key="item.title"
-           :class="item.descInfo && item.descInfo.length > 0 ? 'contentItem_status' :  'contentItem'">
-        <span style="font-weight:600;margin-right:1rem">{{item.title}}</span>
-        <span v-if="item.desc || item.descInfo"
-              class="right">{{item.desc}}</span>
-        <loading v-else
-                 class="right"
-                 width="1.2rem"
-                 height="1.2rem"></loading>
+      <div
+        style="width: 100%; height: 0.2rem; background: var(--default-black)"
+      ></div>
+      <div
+        v-for="item in proceedData"
+        :key="item.title"
+        :class="
+          item.descInfo && item.descInfo.length > 0
+            ? 'contentItem_status'
+            : 'contentItem'
+        "
+      >
+        <span style="font-weight: 600; margin-right: 1rem">{{
+          item.title
+        }}</span>
+        <span v-if="item.desc || item.descInfo" class="right">{{
+          item.desc
+        }}</span>
+        <loading v-else class="right" width="1.2rem" height="1.2rem"></loading>
       </div>
       <div class="chainDataContent">
         <div>
-          <div class="s14 wbold bottomsep"
-               style="line-height:2rem">{{FromChainName}}</div>
-          <div class="bottomsep"
-               style="height:3rem">
-            <svg-icon style="width:3rem;height:3rem"
-                      iconName="history_4"></svg-icon>
+          <div class="s14 wbold bottomsep" style="line-height: 2rem">
+            {{ FromChainName }}
           </div>
-          <div class="explore s14 wlighter bottomsep"
-               @click="goToExplorFrom">{{FromTx}}</div>
-          <div class="swithBtn s12"
-               @click="switchNetWork('from')">Switch Network</div>
+          <div class="bottomsep" style="height: 3rem">
+            <svg-icon
+              style="width: 3rem; height: 3rem"
+              iconName="history_4"
+            ></svg-icon>
+          </div>
+          <div class="explore s14 wlighter bottomsep" @click="goToExplorFrom">
+            {{ FromTx }}
+          </div>
+          <div class="swithBtn s12" @click="switchNetWork('from')">
+            Switch Network
+          </div>
         </div>
         <div>
-          <div class="s14 wbold bottomsep"
-               style="line-height:2rem">{{toChainName}}</div>
-          <div class="bottomsep"
-               style="height:3rem">
-            <svg-icon v-if="this.detailData.state === 0"
-                      style="width:3rem;height:3rem"
-                      iconName="history_4"></svg-icon>
-            <svg-icon v-else-if="this.detailData.state === 1"
-                      style="width:3rem;height:3rem"
-                      iconName="history_2"></svg-icon>
-            <svg-icon v-else
-                      style="width:3rem;height:3rem"
-                      iconName="history_error"></svg-icon>
+          <div class="s14 wbold bottomsep" style="line-height: 2rem">
+            {{ toChainName }}
           </div>
-          <div class="explore s14 wlighter bottomsep"
-               @click="goToExplorTo">{{ToTx}}</div>
-          <div class="swithBtn s12"
-               @click="switchNetWork('to')">Switch Network</div>
+          <div class="bottomsep" style="height: 3rem">
+            <svg-icon
+              v-if="this.detailData.state === 0"
+              style="width: 3rem; height: 3rem"
+              iconName="history_4"
+            ></svg-icon>
+            <svg-icon
+              v-else-if="this.detailData.state === 1"
+              style="width: 3rem; height: 3rem"
+              iconName="history_2"
+            ></svg-icon>
+            <svg-icon
+              v-else
+              style="width: 3rem; height: 3rem"
+              iconName="history_error"
+            ></svg-icon>
+          </div>
+          <div class="explore s14 wlighter bottomsep" @click="goToExplorTo">
+            {{ ToTx }}
+          </div>
+          <div class="swithBtn s12" @click="switchNetWork('to')">
+            Switch Network
+          </div>
         </div>
-        <div :class="this.detailData.state !== 1 ? 'no_procee' :  'procee'">
-          <div class="k-line k-line-1 "></div>
-          <div class="k-line k-line-2 "></div>
+        <div :class="this.detailData.state !== 1 ? 'no_procee' : 'procee'">
+          <div class="k-line k-line-1"></div>
+          <div class="k-line k-line-2"></div>
           <div class="k-line k-line-3"></div>
           <div class="k-line k-line-4"></div>
-          <div class="k-line k-line-5 "></div>
+          <div class="k-line k-line-5"></div>
         </div>
       </div>
       <!-- <div style="margin-top:1.5rem;display: flex;flex-direction: column;">
@@ -84,23 +113,33 @@ export default {
   name: 'Detail',
   props: {
     detailData: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   components: {
     Loading,
   },
   data() {
-    return {
-
-    }
+    return {}
   },
   computed: {
     FromChainName() {
-      return 'From ' + util.chainName(this.detailData.fromChainID, this.$env.localChainID_netChainID[this.detailData.fromChainID])
+      return (
+        'From ' +
+        util.chainName(
+          this.detailData.fromChainID,
+          this.$env.localChainID_netChainID[this.detailData.fromChainID]
+        )
+      )
     },
     toChainName() {
-      return 'To ' + util.chainName(this.detailData.toChainID, this.$env.localChainID_netChainID[this.detailData.toChainID])
+      return (
+        'To ' +
+        util.chainName(
+          this.detailData.toChainID,
+          this.$env.localChainID_netChainID[this.detailData.toChainID]
+        )
+      )
     },
     FromTx() {
       return `Tx:${util.shortAddress(this.detailData.fromTxHash)}`
@@ -120,15 +159,16 @@ export default {
         },
         {
           title: 'Value',
-          desc: this.detailData.userAmount.toString() + ' ' + this.detailData.tokenName,
-        }
+          desc:
+            this.detailData.userAmount.toString() +
+            ' ' +
+            this.detailData.tokenName,
+        },
       ]
-    }
+    },
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     switchNetWork(e) {
       let chainID
@@ -141,37 +181,82 @@ export default {
     },
     goToExplorFrom() {
       let txid = this.detailData.fromTxHash
-      let url = this.$env.txExploreUrl[this.detailData.fromChainID] + txid
-      window.open(url, '_blank');
+      let url
+      if (
+        this.detailData.fromChainID == 9 ||
+        this.detailData.fromChainID == 99
+      ) {
+        if (
+          this.detailData.blockNum != 0 &&
+          this.detailData.indexInBlock != 0 &&
+          this.detailData.blockNum != undefined &&
+          this.detailData.indexInBlock != undefined
+        ) {
+          url =
+            this.$env.txExploreUrl[this.detailData.fromChainID] +
+            `${this.detailData.blockNum}-${this.detailData.indexInBlock}`
+        } else {
+          url =
+            this.$env.txExploreUrl[this.detailData.fromChainID] +
+            txid +
+            '-transfer'
+        }
+      } else {
+        url = this.$env.txExploreUrl[this.detailData.fromChainID] + txid
+      }
+      window.open(url, '_blank')
     },
     goToExplorTo() {
       if (this.detailData.state !== 0) {
-        let url = this.$env.accountExploreUrl[this.detailData.toChainID] + this.$store.state.web3.coinbase
-        window.open(url, '_blank');
+        let url =
+          this.$env.accountExploreUrl[this.detailData.toChainID] +
+          this.$store.state.web3.coinbase
+        window.open(url, '_blank')
       } else {
+        let url
         let txid = this.detailData.toTxHash
-        let url = this.$env.txExploreUrl[this.detailData.toChainID] + txid
-        window.open(url, '_blank');
+        if (this.detailData.toChainID == 9 || this.detailData.toChainID == 99) {
+          if (
+            this.detailData.blockNum != 0 &&
+            this.detailData.indexInBlock != 0 &&
+            this.detailData.blockNum != undefined &&
+            this.detailData.indexInBlock != undefined
+          ) {
+            url =
+              this.$env.txExploreUrl[this.detailData.toChainID] +
+              `${this.detailData.blockNum}-${this.detailData.indexInBlock}`
+          } else {
+            url =
+              this.$env.txExploreUrl[this.detailData.toChainID] +
+              txid +
+              '-transfer'
+          }
+        } else {
+          url = this.$env.txExploreUrl[this.detailData.toChainID] + txid
+        }
+        window.open(url, '_blank')
       }
-
     },
     closerButton() {
       Middle.$emit('showHistory', true)
-      this.$emit("stateChanged", "4");
+      this.$emit('stateChanged', '4')
     },
     reportError() {
       console.log('reportError')
     },
     addChainNetWork(useChainID) {
       var that = this
-      var chain = util.getChainInfo(this.$env.localChainID_netChainID[useChainID])
+      var chain = util.getChainInfo(
+        this.$env.localChainID_netChainID[useChainID]
+      )
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [switchParams],
-      })
+      window.ethereum
+        .request({
+          method: 'wallet_switchEthereumChain',
+          params: [switchParams],
+        })
         .then(() => {
           // switch success
           util.showMessage('switch success', 'success')
@@ -189,24 +274,30 @@ export default {
                 decimals: chain.nativeCurrency.decimals,
               },
               rpcUrls: chain.rpc,
-              blockExplorerUrls: [((chain.explorers && chain.explorers.length > 0 && chain.explorers[0].url) ? chain.explorers[0].url : chain.infoURL)]
+              blockExplorerUrls: [
+                chain.explorers &&
+                chain.explorers.length > 0 &&
+                chain.explorers[0].url
+                  ? chain.explorers[0].url
+                  : chain.infoURL,
+              ],
             }
-            window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [params, that.$store.state.web3.coinbase],
-            })
-              .then(() => {
+            window.ethereum
+              .request({
+                method: 'wallet_addEthereumChain',
+                params: [params, that.$store.state.web3.coinbase],
               })
+              .then(() => {})
               .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
-              });
+              })
           } else {
             util.showMessage(error.message, 'error')
           }
-        });
-    }
-  }
+        })
+    },
+  },
 }
 </script>
 
