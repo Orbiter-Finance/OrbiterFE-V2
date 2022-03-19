@@ -1,73 +1,106 @@
 <template>
-  <o-box-content class="ProceedBody"
-                 style="width:34.5rem">
+  <o-box-content class="ProceedBody" style="width: 34.5rem">
     <div class="ProceedContent">
       <div class="topItem">
         <div @click="closerButton">
-          <svg-icon style="width:1.5rem;height:1.5rem;margin-bottom:0.2rem;position:absolute;left:1rem"
-                    iconName="back"></svg-icon>
+          <svg-icon
+            style="
+              width: 1.5rem;
+              height: 1.5rem;
+              margin-bottom: 0.2rem;
+              position: absolute;
+              left: 1rem;
+            "
+            iconName="back"
+          ></svg-icon>
         </div>
         Proceeding
       </div>
-      <div style="width:100%; height:0.2rem; background:var(--default-black)"></div>
-      <div v-for="item in proceedData"
-           :key="item.title"
-           :class="item.descInfo && item.descInfo.length > 0 ? 'contentItem_status' :  'contentItem'">
-        <span style="font-weight:600;margin-right:1rem">{{item.title}}</span>
-        <span v-if="item.desc || item.descInfo"
-              class="right">{{item.desc}}</span>
-        <loading v-else
-                 class="right"
-                 width="1.2rem"
-                 height="1.2rem"></loading>
+      <div
+        style="width: 100%; height: 0.2rem; background: var(--default-black)"
+      ></div>
+      <div
+        v-for="item in proceedData"
+        :key="item.title"
+        :class="
+          item.descInfo && item.descInfo.length > 0
+            ? 'contentItem_status'
+            : 'contentItem'
+        "
+      >
+        <span style="font-weight: 600; margin-right: 1rem">{{
+          item.title
+        }}</span>
+        <span v-if="item.desc || item.descInfo" class="right">{{
+          item.desc
+        }}</span>
+        <loading v-else class="right" width="1.2rem" height="1.2rem"></loading>
       </div>
       <div class="chainDataContent">
         <div>
-          <div class="s14 wbold bottomsep"
-               style="line-height:2rem">{{FromChainName}}</div>
-          <div class="bottomsep"
-               style="height:3rem">
-            <svg-icon v-if="this.$store.state.proceedState === 1"
-                      style="width:3rem;height:3rem"
-                      iconName="history_2"></svg-icon>
-            <svg-icon v-else-if="this.$store.state.proceedState === 2"
-                      style="width:3rem;height:3rem"
-                      iconName="history_3"></svg-icon>
-            <svg-icon v-else
-                      style="width:3rem;height:3rem"
-                      iconName="history_4"></svg-icon>
+          <div class="s14 wbold bottomsep" style="line-height: 2rem">
+            {{ FromChainName }}
           </div>
-          <div class="explore s14 wlighter bottomsep"
-               @click="goToExplorFrom">{{FromTx}}</div>
-          <div class="swithBtn s12"
-               @click="switchNetWork('from')">Switch Network</div>
+          <div class="bottomsep" style="height: 3rem">
+            <svg-icon
+              v-if="this.$store.state.proceedState === 1"
+              style="width: 3rem; height: 3rem"
+              iconName="history_2"
+            ></svg-icon>
+            <svg-icon
+              v-else-if="this.$store.state.proceedState === 2"
+              style="width: 3rem; height: 3rem"
+              iconName="history_3"
+            ></svg-icon>
+            <svg-icon
+              v-else
+              style="width: 3rem; height: 3rem"
+              iconName="history_4"
+            ></svg-icon>
+          </div>
+          <div class="explore s14 wlighter bottomsep" @click="goToExplorFrom">
+            {{ FromTx }}
+          </div>
+          <div class="swithBtn s12" @click="switchNetWork('from')">
+            Switch Network
+          </div>
         </div>
         <div>
-          <div class="s14 wbold bottomsep"
-               style="line-height:2rem">{{toChainName}}</div>
-          <div class="bottomsep"
-               style="height:3rem">
-            <svg-icon v-if="this.$store.state.proceedState === 4"
-                      style="width:3rem;height:3rem"
-                      iconName="history_3"></svg-icon>
-            <svg-icon v-else-if="this.$store.state.proceedState === 5"
-                      style="width:3rem;height:3rem"
-                      iconName="history_4"></svg-icon>
-            <svg-icon v-else
-                      style="width:3rem;height:3rem"
-                      iconName="history_1"></svg-icon>
+          <div class="s14 wbold bottomsep" style="line-height: 2rem">
+            {{ toChainName }}
           </div>
-          <div class="explore s14 wlighter bottomsep"
-               @click="goToExplorTo">{{ToTx}}</div>
-          <div class="swithBtn s12"
-               @click="switchNetWork('to')">Switch Network</div>
+          <div class="bottomsep" style="height: 3rem">
+            <svg-icon
+              v-if="this.$store.state.proceedState === 4"
+              style="width: 3rem; height: 3rem"
+              iconName="history_3"
+            ></svg-icon>
+            <svg-icon
+              v-else-if="this.$store.state.proceedState === 5"
+              style="width: 3rem; height: 3rem"
+              iconName="history_4"
+            ></svg-icon>
+            <svg-icon
+              v-else
+              style="width: 3rem; height: 3rem"
+              iconName="history_1"
+            ></svg-icon>
+          </div>
+          <div class="explore s14 wlighter bottomsep" @click="goToExplorTo">
+            {{ ToTx }}
+          </div>
+          <div class="swithBtn s12" @click="switchNetWork('to')">
+            Switch Network
+          </div>
         </div>
-        <div :class="this.$store.state.proceedState === 5 ? 'no_procee' :  'procee'">
-          <div class="k-line k-line-1 "></div>
-          <div class="k-line k-line-2 "></div>
+        <div
+          :class="this.$store.state.proceedState === 5 ? 'no_procee' : 'procee'"
+        >
+          <div class="k-line k-line-1"></div>
+          <div class="k-line k-line-2"></div>
           <div class="k-line k-line-3"></div>
           <div class="k-line k-line-4"></div>
-          <div class="k-line k-line-5 "></div>
+          <div class="k-line k-line-5"></div>
         </div>
       </div>
       <!-- <div style="margin-top:1.5rem;display: flex;flex-direction: column;">
@@ -82,60 +115,86 @@
 </template>
 
 <script>
-import { getL2AddressByL1, getNetworkIdByChainId } from '../../util/constants/starknet/helper'
+import {
+  getL2AddressByL1,
+  getNetworkIdByChainId,
+} from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 
 export default {
   name: 'Proceeding',
-  props: {
-  },
+  props: {},
   components: {
     Loading,
   },
   data() {
-    return {
-
-    }
+    return {}
   },
   computed: {
     FromChainName() {
-      return 'From ' + util.chainName(this.$store.state.transferData.fromChainID, this.$env.localChainID_netChainID[this.$store.state.transferData.fromChainID])
+      return (
+        'From ' +
+        util.chainName(
+          this.$store.state.transferData.fromChainID,
+          this.$env.localChainID_netChainID[
+            this.$store.state.transferData.fromChainID
+          ]
+        )
+      )
     },
     toChainName() {
-      return 'To ' + util.chainName(this.$store.state.transferData.toChainID, this.$env.localChainID_netChainID[this.$store.state.transferData.toChainID])
+      return (
+        'To ' +
+        util.chainName(
+          this.$store.state.transferData.toChainID,
+          this.$env.localChainID_netChainID[
+            this.$store.state.transferData.toChainID
+          ]
+        )
+      )
     },
     FromTx() {
       if (this.$store.state.proceedState === 1) {
         return 'View on Explore'
       } else {
-        return `Tx:${util.shortAddress(this.$store.state.proceeding.userTransfer.txid)}`
+        return `Tx:${util.shortAddress(
+          this.$store.state.proceeding.userTransfer.txid
+        )}`
       }
     },
     ToTx() {
       if (this.$store.state.proceedState < 4) {
         return 'View on Explore'
       } else {
-        return `Tx:${util.shortAddress(this.$store.state.proceeding.makerTransfer.txid)}`
+        return `Tx:${util.shortAddress(
+          this.$store.state.proceeding.makerTransfer.txid
+        )}`
       }
     },
     proceedData() {
       return [
         {
           title: 'Timestamp',
-          desc: util.transferTimeStampToTime(this.$store.state.proceeding.userTransfer.timeStamp),
+          desc: util.transferTimeStampToTime(
+            this.$store.state.proceeding.userTransfer.timeStamp
+          ),
         },
         {
           title: 'Value',
-          desc: (this.$store.state.proceeding.userTransfer.amount / (10 ** this.$store.getters.realSelectMakerInfo.precision)).toFixed(6) + ' ' + this.$store.state.transferData.selectTokenInfo.token,
-        }
+          desc:
+            (
+              this.$store.state.proceeding.userTransfer.amount /
+              10 ** this.$store.getters.realSelectMakerInfo.precision
+            ).toFixed(6) +
+            ' ' +
+            this.$store.state.transferData.selectTokenInfo.token,
+        },
       ]
-    }
+    },
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     switchNetWork(e) {
       let chainID
@@ -151,14 +210,20 @@ export default {
       if (this.$store.state.proceedState === 1) {
         let userAddress = this.$store.state.web3.coinbase
         if (fromChainID == 4 || fromChainID == 44) {
-          userAddress = await getL2AddressByL1(userAddress, getNetworkIdByChainId(fromChainID))
+          userAddress = await getL2AddressByL1(
+            userAddress,
+            getNetworkIdByChainId(fromChainID)
+          )
         }
         let url = this.$env.accountExploreUrl[fromChainID] + userAddress
-        window.open(url, '_blank');
+        window.open(url, '_blank')
       } else {
         let txid = this.$store.state.proceeding.userTransfer.txid
-        let url = this.$env.txExploreUrl[fromChainID] + txid
-        window.open(url, '_blank');
+        let url =
+          this.$env.txExploreUrl[fromChainID] +
+          txid +
+          (fromChainID == 9 || fromChainID == 99 ? '-transfer' : '')
+        window.open(url, '_blank')
       }
     },
     async goToExplorTo() {
@@ -166,34 +231,42 @@ export default {
       if (this.$store.state.proceedState < 4) {
         let userAddress = this.$store.state.web3.coinbase
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = await getL2AddressByL1(userAddress, getNetworkIdByChainId(toChainID))
+          userAddress = await getL2AddressByL1(
+            userAddress,
+            getNetworkIdByChainId(toChainID)
+          )
         }
         let url = this.$env.accountExploreUrl[toChainID] + userAddress
-        window.open(url, '_blank');
+        window.open(url, '_blank')
       } else {
         let txid = this.$store.state.proceeding.makerTransfer.txid
-        let url = this.$env.txExploreUrl[toChainID] + txid
-        window.open(url, '_blank');
+        let url =
+          this.$env.txExploreUrl[toChainID] +
+          txid +
+          (toChainID == 9 || toChainID == 99 ? '-transfer' : '')
+        window.open(url, '_blank')
       }
-
     },
     closerButton() {
       this.$store.commit('updateProceedTxID', null)
-      this.$emit("stateChanged", "1");
+      this.$emit('stateChanged', '1')
     },
     reportError() {
       console.log('reportError')
     },
     addChainNetWork(useChainID) {
       var that = this
-      var chain = util.getChainInfo(this.$env.localChainID_netChainID[useChainID])
+      var chain = util.getChainInfo(
+        this.$env.localChainID_netChainID[useChainID]
+      )
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [switchParams],
-      })
+      window.ethereum
+        .request({
+          method: 'wallet_switchEthereumChain',
+          params: [switchParams],
+        })
         .then(() => {
           // switch success
           util.showMessage('switch success', 'success')
@@ -211,24 +284,30 @@ export default {
                 decimals: chain.nativeCurrency.decimals,
               },
               rpcUrls: chain.rpc,
-              blockExplorerUrls: [((chain.explorers && chain.explorers.length > 0 && chain.explorers[0].url) ? chain.explorers[0].url : chain.infoURL)]
+              blockExplorerUrls: [
+                chain.explorers &&
+                chain.explorers.length > 0 &&
+                chain.explorers[0].url
+                  ? chain.explorers[0].url
+                  : chain.infoURL,
+              ],
             }
-            window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [params, that.$store.state.web3.coinbase],
-            })
-              .then(() => {
+            window.ethereum
+              .request({
+                method: 'wallet_addEthereumChain',
+                params: [params, that.$store.state.web3.coinbase],
               })
+              .then(() => {})
               .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
-              });
+              })
           } else {
             util.showMessage(error.message, 'error')
           }
-        });
-    }
-  }
+        })
+    },
+  },
 }
 </script>
 

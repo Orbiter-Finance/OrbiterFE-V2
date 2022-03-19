@@ -770,7 +770,7 @@ async function getTransactionListLoopring(
       )
       if (
         LPTransferResult.totalNum !== 0 &&
-        LPTransferResult.userTransfers.length !== 0
+        LPTransferResult.userTransfers?.length !== 0
       ) {
         if (LPTransferResult.userTransfers.length !== limit) {
           isContiue = false
