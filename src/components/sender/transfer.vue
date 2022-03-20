@@ -401,6 +401,15 @@ export default {
         userMax.comparedTo(new BigNumber(selectMakerInfo.maxPrice)) > 0
           ? new BigNumber(selectMakerInfo.maxPrice)
           : userMax
+      if (
+        (selectMakerInfo.c1ID == 9 ||
+          selectMakerInfo.c1ID == 99 ||
+          selectMakerInfo.c2ID == 9 ||
+          selectMakerInfo.c2ID == 99) &&
+        selectMakerInfo.precision == 18
+      ) {
+        max = max.decimalPlaces(5, BigNumber.ROUND_DOWN)
+      }
       return max.toString()
     },
 
@@ -891,6 +900,14 @@ export default {
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
+        if (
+          newValue.c1ID == 9 ||
+          newValue.c1ID == 99 ||
+          newValue.c2ID == 9 ||
+          newValue.c2ID == 99
+        ) {
+          this.checkTransferValue()
+        }
         transferCalculate
           .getTransferBalance(
             newValue.c1ID,
@@ -1261,6 +1278,15 @@ export default {
         userMax.comparedTo(new BigNumber(this.userMaxPrice)) > 0
           ? new BigNumber(this.userMaxPrice)
           : userMax
+      if (
+        (selectMakerInfo.c1ID == 9 ||
+          selectMakerInfo.c1ID == 99 ||
+          selectMakerInfo.c2ID == 9 ||
+          selectMakerInfo.c2ID == 99) &&
+        selectMakerInfo.precision == 18
+      ) {
+        max = max.decimalPlaces(5, BigNumber.ROUND_DOWN)
+      }
       this.transferValue = max.toString()
     },
     showChainName(localChainID, netChainID) {
@@ -1388,10 +1414,24 @@ export default {
       this.$refs.SelectToChainPopupRef.maskClick()
     },
     checkTransferValue() {
-      this.transferValue =
-        this.$store.getters.realSelectMakerInfo.precision === 18
-          ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
-          : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+      let fromChianID = this.$store.getters.realSelectMakerInfo.c1ID
+      let toChainID = this.$store.getters.realSelectMakerInfo.c2ID
+      if (
+        fromChianID == 9 ||
+        fromChianID == 99 ||
+        toChainID == 9 ||
+        toChainID == 99
+      ) {
+        this.transferValue =
+          this.$store.getters.realSelectMakerInfo.precision === 18
+            ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
+            : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+      } else {
+        this.transferValue =
+          this.$store.getters.realSelectMakerInfo.precision === 18
+            ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
+            : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+      }
     },
     async sendTransfer() {
       // if unlogin  login first
