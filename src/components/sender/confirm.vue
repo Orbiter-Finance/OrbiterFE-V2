@@ -450,6 +450,20 @@ export default {
               notify.close()
               window.open('https://loopring.io/#/layer2/assets', '_blank')
             }
+          } else if (error.message == 'User account is frozen') {
+            const notify = this.$notify({
+              type: 'error',
+              message: `<div style="text-align:left;font-size: 1.4rem; color: black">Your Loopring account is frozen, please check your Loopring account status on Loopring website. Get more details <span style="color:blue;text-decoration: underline"> here </span>.</div>`,
+              dangerouslyUseHTMLString: true,
+              duration: 8000,
+            })
+            notify.$el.querySelector('span').onclick = () => {
+              notify.close()
+              window.open(
+                'https://docs.loopring.io/en/basics/key_mgmt.html?h=frozen',
+                '_blank'
+              )
+            }
           } else {
             this.$notify.error({
               title: error.message,

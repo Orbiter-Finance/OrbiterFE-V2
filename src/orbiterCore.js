@@ -55,6 +55,7 @@ function getToAmountFromUserAmount(userAmount, selectMakerInfo, isWei) {
   let digit = selectMakerInfo.precision === 18 ? 5 : 2
   let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
   let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
+
   if (!toAmount_fee || isNaN(toAmount_fee)) {
     return 0
   }
