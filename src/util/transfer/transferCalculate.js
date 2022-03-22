@@ -441,12 +441,14 @@ export default {
     }
     if (fromChainID === 3 || fromChainID === 33) {
       // zk withdraw
+
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
       let transferAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
+
       if (transferAddress) {
         const zkWithDrawFee = await syncHttpProvider.getTransactionFee(
           'Withdraw',

@@ -17,6 +17,7 @@
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
     "bignumber.js": "^9.0.1",
+    "js-base64": "^3.7.2",
     "core-js": "^3.6.5",
     "echarts": "^4.9.0",
     "element-ui": "^2.14.1",
