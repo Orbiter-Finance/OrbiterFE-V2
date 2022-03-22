@@ -768,6 +768,10 @@ async function getTransactionListLoopring(
         limit,
         offset
       )
+      if (!LPTransferResult) {
+        isContiue = false
+        break
+      }
       if (
         LPTransferResult.totalNum !== 0 &&
         LPTransferResult.userTransfers?.length !== 0
