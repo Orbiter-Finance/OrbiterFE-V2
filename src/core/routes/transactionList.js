@@ -2,11 +2,12 @@ import BigNumber from 'bignumber.js'
 import orbiterCore from '../../orbiterCore'
 import {
   getL2AddressByL1,
-  getNetworkIdByChainId,
+  getNetworkIdByChainId
 } from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
 import etherscan from '../actions/etherscan'
+import immutablex from '../actions/immutablex'
 import optimistic from '../actions/optimistic'
 import polygon from '../actions/polygon'
 import mStarknet from '../actions/starknet'
@@ -744,6 +745,94 @@ async function getTransactionListStarknet(
   return { SNFromTxList, SNToTxList }
 }
 
+async function getTransactionListImmutableX(
+  userAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const IMXFromTxList = []
+  const IMXToTxList = []
+
+  const fromList = await immutablex.getTransationList(
+    { user: userAddress },
+    chainID,
+    needTimeStamp
+  )
+  const toList = await immutablex.getTransationList(
+    { receiver: userAddress },
+    chainID,
+    needTimeStamp
+  )
+
+  const imxAllTxList = fromList.concat(toList)
+  for (const tx of imxAllTxList) {
+    const txinfo = TxInfo.getTxInfoWithImmutableX(tx)
+
+    for (let j = 0; j < makerList.length; j++) {
+      let makerInfo = makerList[j]
+      let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+      if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+        continue
+      }
+
+      if (txinfo.tokenName !== makerInfo.tName) {
+        continue
+      }
+
+      let avalibleTimes =
+        chainID === makerInfo.c1ID
+          ? makerInfo.c1AvalibleTimes
+          : makerInfo.c2AvalibleTimes
+      let isMatch = false
+      for (let z = 0; z < avalibleTimes.length; z++) {
+        let avalibleTime = avalibleTimes[z]
+
+        if (
+          avalibleTime.startTime <= txinfo.timeStamp &&
+          avalibleTime.endTime >= txinfo.timeStamp
+        ) {
+          isMatch = true
+          break
+        }
+      }
+
+      if (!isMatch) {
+        continue
+      }
+
+      if (txinfo.from === _makerAddress) {
+        let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+        let nonce = 0
+        if (pText.state) {
+          nonce = pText.pText
+        }
+        if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+          IMXToTxList.push(txinfo)
+          break
+        }
+      } else if (txinfo.to === _makerAddress) {
+        if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+          let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+          let arr2 = [
+            chainID,
+            orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+          ]
+          if (judgeArrayEqualFun(arr1, arr2)) {
+            IMXFromTxList.push(txinfo)
+            break
+          }
+        }
+      } else {
+        // doNothiing
+      }
+    }
+  }
+
+  return { IMXFromTxList, IMXToTxList }
+}
+
 async function getTransactionListLoopring(
   userAddress,
   chainID,
@@ -903,127 +992,131 @@ export default {
 
       // getTransactionListEtherscan
       if (supportChains.indexOf(1) > -1 || supportChains.indexOf(5) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(1) > -1 ? 1 : 5
-            const { L1FromTxList, L1ToTxList } =
-              await getTransactionListEtherscan(
-                req.address,
-                chainID,
-                needTimeStamp,
-                makerList
-              )
-
-            originTxList[chainID] = {
-              fromList: L1FromTxList,
-              toList: L1ToTxList,
-            }
-          })()
-        )
-      }
-
-      // 2.2 Ar
-      if (supportChains.indexOf(2) > -1 || supportChains.indexOf(22) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(2) > -1 ? 2 : 22
-            const { ARFromTxList, ARToTxList } =
-              await getTransactionListArbitrum(
-                req.address,
-                chainID,
-                needTimeStamp,
-                makerList
-              )
-
-            originTxList[chainID] = {
-              fromList: ARFromTxList,
-              toList: ARToTxList,
-            }
-          })()
-        )
-      }
-
-      // 6.66 pg
-      if (supportChains.indexOf(6) > -1 || supportChains.indexOf(66) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(6) > -1 ? 6 : 66
-            const { PGFromTxList, PGToTxList } =
-              await getTransactionListPolygon(
-                req.address,
-                chainID,
-                needTimeStamp,
-                makerList
-              )
-
-            originTxList[chainID] = {
-              fromList: PGFromTxList,
-              toList: PGToTxList,
-            }
-          })()
-        )
-      }
-
-      // 7.77 op
-      if (supportChains.indexOf(7) > -1 || supportChains.indexOf(77) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(7) > -1 ? 7 : 77
-            const { OPFromTxList, OPToTxList } =
-              await getTransactionListOptimitic(
-                req.address,
-                chainID,
-                needTimeStamp,
-                makerList
-              )
-
-            originTxList[chainID] = {
-              fromList: OPFromTxList,
-              toList: OPToTxList,
-            }
-          })()
-        )
-      }
-
-      // 3.33 zk==================================================================
-      if (supportChains.indexOf(3) > -1 || supportChains.indexOf(33) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(3) > -1 ? 3 : 33
-            const { ZKFromTxList, ZKToTxList } = await getTransactionListZksync(
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(1) > -1 ? 1 : 5
+          const { L1FromTxList, L1ToTxList } =
+            await getTransactionListEtherscan(
               req.address,
               chainID,
               needTimeStamp,
               makerList
             )
 
-            originTxList[chainID] = {
-              fromList: ZKFromTxList,
-              toList: ZKToTxList,
-            }
-          })()
-        )
+          originTxList[chainID] = {
+            fromList: L1FromTxList,
+            toList: L1ToTxList,
+          }
+        })
+      }
+
+      // 2.2 Ar
+      if (supportChains.indexOf(2) > -1 || supportChains.indexOf(22) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(2) > -1 ? 2 : 22
+          const { ARFromTxList, ARToTxList } = await getTransactionListArbitrum(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
+
+          originTxList[chainID] = {
+            fromList: ARFromTxList,
+            toList: ARToTxList,
+          }
+        })
+      }
+
+      // 6.66 pg
+      if (supportChains.indexOf(6) > -1 || supportChains.indexOf(66) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(6) > -1 ? 6 : 66
+          const { PGFromTxList, PGToTxList } = await getTransactionListPolygon(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
+
+          originTxList[chainID] = {
+            fromList: PGFromTxList,
+            toList: PGToTxList,
+          }
+        })
+      }
+
+      // 7.77 op
+      if (supportChains.indexOf(7) > -1 || supportChains.indexOf(77) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(7) > -1 ? 7 : 77
+          const { OPFromTxList, OPToTxList } =
+            await getTransactionListOptimitic(
+              req.address,
+              chainID,
+              needTimeStamp,
+              makerList
+            )
+
+          originTxList[chainID] = {
+            fromList: OPFromTxList,
+            toList: OPToTxList,
+          }
+        })
+      }
+
+      // 3.33 zk==================================================================
+      if (supportChains.indexOf(3) > -1 || supportChains.indexOf(33) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(3) > -1 ? 3 : 33
+          const { ZKFromTxList, ZKToTxList } = await getTransactionListZksync(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
+
+          originTxList[chainID] = {
+            fromList: ZKFromTxList,
+            toList: ZKToTxList,
+          }
+        })
       }
 
       // 4.44 sn
       if (supportChains.indexOf(4) > -1 || supportChains.indexOf(44) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(4) > -1 ? 4 : 44
-            const { SNFromTxList, SNToTxList } =
-              await getTransactionListStarknet(
-                req.address,
-                chainID,
-                needTimeStamp,
-                makerList
-              )
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(4) > -1 ? 4 : 44
+          const { SNFromTxList, SNToTxList } = await getTransactionListStarknet(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
 
-            originTxList[chainID] = {
-              fromList: SNFromTxList,
-              toList: SNToTxList,
-            }
-          })()
-        )
+          originTxList[chainID] = {
+            fromList: SNFromTxList,
+            toList: SNToTxList,
+          }
+        })
+      }
+
+      // 8.88 imx
+      if (supportChains.indexOf(8) > -1 || supportChains.indexOf(88) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(8) > -1 ? 8 : 88
+          const { IMXFromTxList, IMXToTxList } =
+            await getTransactionListImmutableX(
+              req.address,
+              chainID,
+              needTimeStamp,
+              makerList
+            )
+
+          originTxList[chainID] = {
+            fromList: IMXFromTxList,
+            toList: IMXToTxList,
+          }
+        })
       }
 
       if (supportChains.indexOf(9) > -1 || supportChains.indexOf(99) > -1) {
@@ -1050,10 +1143,10 @@ export default {
       const maxRetryCount = 3
       for (let index = 0; index < maxRetryCount; index++) {
         try {
-          await Promise.all(allPromises)
+          await Promise.all(allPromises.map((item) => item()))
         } catch (err) {
           console.warn(err)
-          if (index < maxRetryCount - 1) {
+          if (index < maxRetryCount) {
             await util.sleep(2000)
           } else {
             throw err

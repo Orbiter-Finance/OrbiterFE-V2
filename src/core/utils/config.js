@@ -43,6 +43,12 @@ export default {
     chainID: '9',
     rinkeyChainID: '99',
   },
+  immutableX: {
+    Mainnet: 'https://api.x.immutable.com/v1',
+    Rinkeby: 'https://api.ropsten.x.immutable.com/v1',
+    chainID: '8',
+    rinkeyChainID: '88',
+  },
   L1: {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',

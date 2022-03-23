@@ -54,6 +54,7 @@ import {
   getNetworkIdByChainId,
   getStarknetAccount,
 } from '../../../util/constants/starknet/helper'
+import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
 import Loading from '../../loading/loading.vue'
 
@@ -95,6 +96,9 @@ export default {
         if (item === 7 || item === 77) {
           iconName = 'oplogo'
         }
+        if (item === 8 || item === 88) {
+          iconName = 'imxlogo'
+        }
         if (item === 9 || item === 99) {
           iconName = 'loopringlogo'
         }
@@ -124,14 +128,26 @@ export default {
       this.$emit('closeSelect')
     },
     async getChainInfo(e, index) {
-      if (e.localID == 4 || e.localID == 44) {
+      // When chain use stark system
+      if (this.isStarkSystem(e.localID)) {
         try {
-          this.loadingIndex = index
-          const { coinbase } = this.$store.state.web3
-          const networkId = getNetworkIdByChainId(e.localID)
-          const l2Address = await getL2AddressByL1(coinbase, networkId)
-          if (!l2Address || l2Address == '0x0') {
-            await getStarknetAccount(coinbase, networkId)
+          // starknet
+          if (e.localID == 4 || e.localID == 44) {
+            this.loadingIndex = index
+            const { coinbase } = this.$store.state.web3
+            const networkId = getNetworkIdByChainId(e.localID)
+            const l2Address = await getL2AddressByL1(coinbase, networkId)
+            if (!l2Address || l2Address == '0x0') {
+              await getStarknetAccount(coinbase, networkId)
+            }
+          }
+
+          // immutableX
+          if (e.localID == 8 || e.localID == 88) {
+            this.loadingIndex = index
+            const { coinbase } = this.$store.state.web3
+            const imxHelper = new IMXHelper(e.localID)
+            await imxHelper.ensureUser(coinbase)
           }
 
           this.loadingIndex = -1
@@ -156,6 +172,9 @@ export default {
       console.log('search')
     },
     checkKeyWord() {},
+    isStarkSystem(chainId) {
+      return [4, 44, 8, 88].indexOf(chainId) > -1
+    },
   },
 }
 </script>
@@ -223,8 +242,11 @@ export default {
       display: flex;
       position: relative;
       .logo {
-        width: 2rem;
-        height: 2rem;
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 50%;
+        background: rgba($color: #000000, $alpha: 0.05);
+        padding: 0.2rem;
       }
       .right {
         text-align: right;
