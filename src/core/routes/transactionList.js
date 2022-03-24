@@ -865,13 +865,13 @@ async function getTransactionListLoopring(
         LPTransferResult.totalNum !== 0 &&
         LPTransferResult.userTransfers?.length !== 0
       ) {
-        if (LPTransferResult.userTransfers.length !== limit) {
+        if (LPTransferResult.userTransfers?.length !== limit) {
           isContiue = false
         } else {
           offset += limit
         }
         let transacionts = LPTransferResult.userTransfers
-        for (let index = 0; index < transacionts.length; index++) {
+        for (let index = 0; index < transacionts?.length; index++) {
           const lpTransaction = transacionts[index]
           if (
             lpTransaction.txType == 'TRANSFER' &&
