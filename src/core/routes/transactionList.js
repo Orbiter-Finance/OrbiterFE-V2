@@ -8,13 +8,13 @@ import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
 import etherscan from '../actions/etherscan'
 import immutablex from '../actions/immutablex'
+import loopring from '../actions/loopring'
 import optimistic from '../actions/optimistic'
 import polygon from '../actions/polygon'
 import mStarknet from '../actions/starknet'
 import thegraph from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
 import TxInfo from '../utils/modle/txinfo'
-import loopring from '../actions/loopring'
 
 async function getTransactionListEtherscan(
   userAddress,
@@ -1120,23 +1120,20 @@ export default {
       }
 
       if (supportChains.indexOf(9) > -1 || supportChains.indexOf(99) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(9) > -1 ? 9 : 99
-            const { LPFromTxList, LPToTxList } =
-              await getTransactionListLoopring(
-                req.address,
-                chainID,
-                needTimeStamp,
-                makerList
-              )
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(9) > -1 ? 9 : 99
+          const { LPFromTxList, LPToTxList } = await getTransactionListLoopring(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
 
-            originTxList[chainID] = {
-              fromList: LPFromTxList,
-              toList: LPToTxList,
-            }
-          })()
-        )
+          originTxList[chainID] = {
+            fromList: LPFromTxList,
+            toList: LPToTxList,
+          }
+        })
       }
 
       // waitting all promise end
