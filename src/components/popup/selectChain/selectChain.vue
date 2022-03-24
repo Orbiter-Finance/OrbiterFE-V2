@@ -26,9 +26,9 @@
       </div>
 
       <div
-        v-for="item in newChainData"
+        v-for="(item, index) in newChainData"
         :key="item.chain"
-        @click="getChainInfo(item)"
+        @click="getChainInfo(item, index)"
         class="contentItem"
       >
         <svg-icon
@@ -37,16 +37,25 @@
           :iconName="item.icon"
         ></svg-icon>
         <span>{{ item.chain }}</span>
+        <loading
+          v-if="loadingIndex == index"
+          style="left: 1rem; top: 0rem"
+          width="1.5rem"
+          height="1.5rem"
+        ></loading>
       </div>
     </div>
   </o-box-content>
 </template>
 
 <script>
+import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
+import Loading from '../../loading/loading.vue'
 
 export default {
   name: 'SelectChain',
+  components: { Loading },
   props: {
     ChainData: {
       type: Array,
@@ -58,6 +67,7 @@ export default {
   data() {
     return {
       keyword: '',
+      loadingIndex: -1,
     }
   },
   computed: {
@@ -72,11 +82,17 @@ export default {
         if (item === 3 || item === 33) {
           iconName = 'zklogo'
         }
+        if (item === 4 || item === 44) {
+          iconName = 'sknlogo'
+        }
         if (item === 6 || item === 66) {
           iconName = 'pglogo'
         }
         if (item === 7 || item === 77) {
           iconName = 'oplogo'
+        }
+        if (item === 8 || item === 88) {
+          iconName = 'imxlogo'
         }
         if (item === 9 || item === 99) {
           iconName = 'loopringlogo'
@@ -113,11 +129,35 @@ export default {
     closerButton() {
       this.$emit('closeSelect')
     },
-    getChainInfo(e) {
-      if (e.localID == 44) {
-        // To rinkeby.orbiter.finance
-        window.open('https://rinkeby.orbiter.finance', '_blank')
-        return
+    async getChainInfo(e, index) {
+      // When chain use stark system
+      if (this.isStarkSystem(e.localID)) {
+        try {
+          // starknet
+          if (e.localID == 4 || e.localID == 44) {
+            // To rinkeby.orbiter.finance
+            window.open('https://rinkeby.orbiter.finance', '_blank')
+            return
+          }
+
+          // immutableX
+          if (e.localID == 8 || e.localID == 88) {
+            this.loadingIndex = index
+            const { coinbase } = this.$store.state.web3
+            const imxHelper = new IMXHelper(e.localID)
+            await imxHelper.ensureUser(coinbase)
+          }
+
+          this.loadingIndex = -1
+        } catch (err) {
+          this.$notify.error({
+            title: err.message,
+            duration: 3000,
+          })
+
+          this.loadingIndex = -1
+          return
+        }
       }
 
       this.$emit('getChainInfo', e)
@@ -130,6 +170,9 @@ export default {
       console.log('search')
     },
     checkKeyWord() {},
+    isStarkSystem(chainId) {
+      return [4, 44, 8, 88].indexOf(chainId) > -1
+    },
   },
 }
 </script>
@@ -197,8 +240,11 @@ export default {
       display: flex;
       position: relative;
       .logo {
-        width: 2rem;
-        height: 2rem;
+        width: 2.4rem;
+        height: 2.4rem;
+        border-radius: 50%;
+        background: rgba($color: #000000, $alpha: 0.05);
+        padding: 0.2rem;
       }
       .right {
         text-align: right;

@@ -108,6 +108,7 @@
 import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 import Middle from '../../util/middle/middle'
+import { getL2AddressByL1, getNetworkIdByChainId } from '../../util/constants/starknet/helper'
 
 export default {
   name: 'Detail',
@@ -142,13 +143,27 @@ export default {
       )
     },
     FromTx() {
-      return `Tx:${util.shortAddress(this.detailData.fromTxHash)}`
+      const { fromTxHash, fromChainID } = this.detailData
+
+      // immutablex
+      if (fromChainID == 8 || fromChainID == 88) {
+        return `TransferId: ${fromTxHash}`
+      }
+
+      return `Tx:${util.shortAddress(fromTxHash)}`
     },
     ToTx() {
-      if (this.detailData.state !== 0) {
+      const { state, toTxHash, toChainID } = this.detailData
+
+      if (state !== 0) {
         return 'View on Explore'
       } else {
-        return `Tx:${util.shortAddress(this.detailData.toTxHash)}`
+        // immutablex
+        if (toChainID == 8 || toChainID == 88) {
+          return `TransferId: ${toTxHash}`
+        }
+
+        return `Tx:${util.shortAddress(toTxHash)}`
       }
     },
     proceedData() {
@@ -180,8 +195,17 @@ export default {
       this.addChainNetWork(chainID)
     },
     goToExplorFrom() {
+      const { accountExploreUrl } = this.$env
+      const { fromChainID } = this.detailData
       let txid = this.detailData.fromTxHash
-      let url
+      let url = this.$env.txExploreUrl[fromChainID] + txid
+
+      // ImmutableX don't have testnet browser
+      if (fromChainID == 88) {
+        url = accountExploreUrl[fromChainID]
+      }
+
+      // loopring
       if (
         this.detailData.fromChainID == 9 ||
         this.detailData.fromChainID == 99
@@ -201,20 +225,36 @@ export default {
             txid +
             '-transfer'
         }
-      } else {
-        url = this.$env.txExploreUrl[this.detailData.fromChainID] + txid
       }
       window.open(url, '_blank')
     },
-    goToExplorTo() {
-      if (this.detailData.state !== 0) {
-        let url =
-          this.$env.accountExploreUrl[this.detailData.toChainID] +
-          this.$store.state.web3.coinbase
-        window.open(url, '_blank')
+    async goToExplorTo() {
+      const { toChainID, state } = this.detailData
+      const { accountExploreUrl, txExploreUrl } = this.$env
+
+      if (state !== 0) {
+        let userAddress = this.$store.state.web3.coinbase
+        if (toChainID == 4 || toChainID == 44) {
+          userAddress = await getL2AddressByL1(userAddress, getNetworkIdByChainId(toChainID))
+        }
+        let url = accountExploreUrl[toChainID] + userAddress
+
+        // ImmutableX
+        if (toChainID == 8 || toChainID == 88) {
+          url = accountExploreUrl[toChainID]
+        }
+
+        window.open(url, '_blank');
       } else {
-        let url
         let txid = this.detailData.toTxHash
+        let url = txExploreUrl[toChainID] + txid
+
+        // ImmutableX don't have testnet browser
+        if (toChainID == 88) {
+          url = accountExploreUrl[toChainID]
+        }
+
+        // loopring
         if (this.detailData.toChainID == 9 || this.detailData.toChainID == 99) {
           if (
             this.detailData.blockNum != 0 &&
@@ -231,9 +271,8 @@ export default {
               txid +
               '-transfer'
           }
-        } else {
-          url = this.$env.txExploreUrl[this.detailData.toChainID] + txid
         }
+
         window.open(url, '_blank')
       }
     },

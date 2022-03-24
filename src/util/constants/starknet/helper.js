@@ -26,6 +26,11 @@ const L1_TO_L2_ADDRESSES = {
     'georli-alpha':
       '0x2b31ce585a1f407cb3b414e2a71ee45c4430b4df36c8528ab42c0bcee97a887',
   },
+  '0x694434ec84b7a8ad8efc57327ddd0a428e23f8d5': {
+    'mainnet-alpha': '',
+    'georli-alpha':
+      '0x16be82b640500a9b877cef93f9bee5e4aa962220ea5468fcc3c5889742162af',
+  },
 }
 
 function stripHexPrefix(input) {
