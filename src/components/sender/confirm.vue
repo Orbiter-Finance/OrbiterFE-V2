@@ -117,7 +117,6 @@ import {
   sendTransaction,
 } from '../../util/constants/starknet/helper'
 import loopring from '../../core/actions/loopring'
-import { getL2AddressByL1, getNetworkIdByChainId, sendTransaction } from '../../util/constants/starknet/helper'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 

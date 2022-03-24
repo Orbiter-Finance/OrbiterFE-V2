@@ -228,7 +228,7 @@ export default {
       }
       window.open(url, '_blank')
     },
-    goToExplorTo() {
+    async goToExplorTo() {
       const { toChainID, state } = this.detailData
       const { accountExploreUrl, txExploreUrl } = this.$env
 
@@ -248,7 +248,7 @@ export default {
       } else {
         let txid = this.detailData.toTxHash
         let url = txExploreUrl[toChainID] + txid
-        
+
         // ImmutableX don't have testnet browser
         if (toChainID == 88) {
           url = accountExploreUrl[toChainID]
