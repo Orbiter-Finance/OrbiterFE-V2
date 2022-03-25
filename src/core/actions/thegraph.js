@@ -4,6 +4,7 @@ import getMakelist from "../utils/getMakerlist"
 let nowMakerList = []
 let historyMakerList = []
 
+
 function filterHistoryMakerList(daysAgo) {
   const nowTimeStamp = Date.parse(new Date()) / 1000
   const needTimeStamp = nowTimeStamp - 86400 * (daysAgo ? daysAgo : 7)
@@ -42,7 +43,6 @@ export default {
       var res = {}
       res.code = 0
       res.data = []
-
       // push now makerList
       res.data = res.data.concat(nowMakerList)
       const newHistoryMakerList = filterHistoryMakerList(req.daysAgo)

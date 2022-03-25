@@ -155,21 +155,31 @@ export default {
       )
     },
     FromTx() {
-      if (this.$store.state.proceedState === 1) {
+      const { proceedState, proceeding, transferData } = this.$store.state
+
+      if (proceedState === 1) {
         return 'View on Explore'
       } else {
-        return `Tx:${util.shortAddress(
-          this.$store.state.proceeding.userTransfer.txid
-        )}`
+        // immutablex
+        if (transferData.fromChainID == 8 || transferData.fromChainID == 88) {
+          return `TransferId: ${proceeding.userTransfer.txid}`
+        }
+
+        return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
       }
     },
     ToTx() {
-      if (this.$store.state.proceedState < 4) {
+      const { proceedState, proceeding, transferData } = this.$store.state
+
+      if (proceedState < 4) {
         return 'View on Explore'
       } else {
-        return `Tx:${util.shortAddress(
-          this.$store.state.proceeding.makerTransfer.txid
-        )}`
+        // immutablex
+        if (transferData.toChainID == 8 || transferData.toChainID == 88) {
+          return `TransferId: ${proceeding.makerTransfer.txid}`
+        }
+        
+        return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
     proceedData() {
@@ -207,6 +217,7 @@ export default {
     },
     async goToExplorFrom() {
       const { fromChainID } = this.$store.state.transferData
+      const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState === 1) {
         let userAddress = this.$store.state.web3.coinbase
         if (fromChainID == 4 || fromChainID == 44) {
@@ -215,19 +226,32 @@ export default {
             getNetworkIdByChainId(fromChainID)
           )
         }
-        let url = this.$env.accountExploreUrl[fromChainID] + userAddress
-        window.open(url, '_blank')
+        let url = accountExploreUrl[fromChainID] + userAddress
+
+        // ImmutableX
+        if (fromChainID == 8 || fromChainID == 88) {
+          url = accountExploreUrl[fromChainID]
+        }
+
+        window.open(url, '_blank');
       } else {
         let txid = this.$store.state.proceeding.userTransfer.txid
         let url =
-          this.$env.txExploreUrl[fromChainID] +
+          txExploreUrl[fromChainID] +
           txid +
           (fromChainID == 9 || fromChainID == 99 ? '-transfer' : '')
+
+        // ImmutableX don't have testnet browser
+        if (fromChainID == 88) {
+          url = accountExploreUrl[fromChainID]
+        }
+
         window.open(url, '_blank')
       }
     },
     async goToExplorTo() {
       const { toChainID } = this.$store.state.transferData
+      const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState < 4) {
         let userAddress = this.$store.state.web3.coinbase
         if (toChainID == 4 || toChainID == 44) {
@@ -236,15 +260,27 @@ export default {
             getNetworkIdByChainId(toChainID)
           )
         }
-        let url = this.$env.accountExploreUrl[toChainID] + userAddress
-        window.open(url, '_blank')
+        let url = accountExploreUrl[toChainID] + userAddress
+
+        // ImmutableX
+        if (toChainID == 8 || toChainID == 88) {
+          url = accountExploreUrl[toChainID]
+        }
+
+        window.open(url, '_blank');
       } else {
         let txid = this.$store.state.proceeding.makerTransfer.txid
         let url =
-          this.$env.txExploreUrl[toChainID] +
+          txExploreUrl[toChainID] +
           txid +
           (toChainID == 9 || toChainID == 99 ? '-transfer' : '')
-        window.open(url, '_blank')
+        
+        // ImmutableX don't have testnet browser
+        if (toChainID == 88) {
+          url = accountExploreUrl[toChainID]
+        }
+
+        window.open(url, '_blank');
       }
     },
     closerButton() {

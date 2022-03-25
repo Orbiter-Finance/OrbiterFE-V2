@@ -30,12 +30,14 @@ export default {
     '5',
     '6',
     '7',
+    '8',
     '9',
     '22',
     '33',
     '44',
     '66',
     '77',
+    '88',
     '99',
   ],
   localChainID_netChainID: {
@@ -46,12 +48,14 @@ export default {
     5: '4', // rinkeby
     6: '137', // polygon
     7: '10', // optimism
+    8: '1', // mainnet
     9: '1', // loopring
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)
     77: '69', // optimism(K)
+    88: '3', // ropsten
     99: '5', // loopring(G)
   },
   txExploreUrl: {
@@ -67,6 +71,8 @@ export default {
     66: 'https://mumbai.polygonscan.com/tx/',
     7: 'https://optimistic.etherscan.io/tx/',
     77: 'https://kovan-optimistic.etherscan.io/tx/',
+    8: 'https://immutascan.io/tx/',
+    88: '', // ImmutableX don't have testnet browser
     9: 'https://explorer.loopring.io/tx/',
     99: 'https://explorer.loopring.io/tx/',
   },
@@ -83,6 +89,8 @@ export default {
     66: 'https://mumbai.polygonscan.com/address/',
     7: 'https://optimistic.etherscan.io/address/',
     77: 'https://kovan-optimistic.etherscan.io/address/',
+    8: 'https://market.immutable.com/inventory/',
+    88: 'https://market.ropsten.immutable.com/inventory/',
     9: 'https://explorer.loopring.io/account/',
     99: 'https://explorer.loopring.io/account/',
   },
