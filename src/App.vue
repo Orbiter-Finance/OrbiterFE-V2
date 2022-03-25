@@ -81,7 +81,7 @@ export default {
         var req = {
           address: this.$store.state.web3.coinbase,
           daysAgo: 14,
-          state: 1, //maker/user
+          state: 1, 
         }
         getTransactionList
           .getTransactionList(req)
