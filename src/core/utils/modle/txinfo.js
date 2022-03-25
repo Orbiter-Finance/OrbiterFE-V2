@@ -67,21 +67,6 @@ export default {
     }
     return txInfo
   },
-  getTxInfoWithImmutableX: function (immutableX) {
-    const txInfo = {
-      from: immutableX.from.toLowerCase(),
-      to: immutableX.to.toLowerCase(),
-      tokenAddress: immutableX.contractAddress,
-      timeStamp: immutableX.timeStamp,
-      tokenName: 'ETH', // Now only eth
-      value: immutableX.value,
-      tokenDecimal: 18,
-      hash: immutableX.hash,
-      nonce: immutableX.nonce,
-      dataFrom: 'ImmutableX',
-    }
-    return txInfo
-  },
 
   getTxInfoWithLoopring: function (loopringInfo) {
     const txInfo = {
@@ -98,6 +83,21 @@ export default {
       blockNum: loopringInfo.blockId,
       blockIndex: loopringInfo.indexInBlock,
       dataFrom: 'loopring',
+    }
+    return txInfo
+  },
+  getTxInfoWithImmutableX: function (immutableX) {
+    const txInfo = {
+      from: immutableX.from.toLowerCase(),
+      to: immutableX.to.toLowerCase(),
+      tokenAddress: immutableX.contractAddress,
+      timeStamp: immutableX.timeStamp,
+      tokenName: 'ETH', // Now only eth
+      value: immutableX.value,
+      tokenDecimal: 18,
+      hash: immutableX.hash,
+      nonce: immutableX.nonce,
+      dataFrom: 'ImmutableX',
     }
     return txInfo
   },

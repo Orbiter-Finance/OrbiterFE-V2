@@ -115,7 +115,7 @@ async function confirmUserTransaction(
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
             zk_amountToSend,
-            zk_nonce
+            zk_nonce,
           )
           return
         }
@@ -269,7 +269,7 @@ async function confirmUserTransaction(
         )
         if (
           LPTransferResult.totalNum === 1 &&
-          LPTransferResult.userTransfers.length === 1
+          LPTransferResult.userTransfers?.length === 1
         ) {
           let lpTransaction = LPTransferResult.userTransfers[0]
           if (
@@ -627,7 +627,7 @@ function ScanMakerTransfer(
       asyncStarknet()
       return
     }
-
+    
     // immutablex
     if (localChainID == 8 || localChainID == 88) {
       const imxListen = new IMXListen(localChainID, to, false)
@@ -697,7 +697,7 @@ function ScanMakerTransfer(
       )
       if (
         LPTransferResult.totalNum !== 0 &&
-        LPTransferResult.userTransfers.length !== 0
+        LPTransferResult.userTransfers?.length !== 0
       ) {
         let transacionts = LPTransferResult.userTransfers
         for (let index = 0; index < transacionts.length; index++) {
@@ -713,9 +713,6 @@ function ScanMakerTransfer(
             lpTransaction.memo == memo
           ) {
             let hash = lpTransaction.hash
-            if (lpTransaction.indexInBlock && lpTransaction.blockId) {
-              hash = `${lpTransaction.blockId}-${lpTransaction.indexInBlock}`
-            }
             store.commit('updateProceedingMakerTransferTxid', hash)
             if (lpTransaction.status == 'processing') {
               storeUpdateProceedState(4)

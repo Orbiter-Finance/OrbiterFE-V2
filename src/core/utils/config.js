@@ -37,17 +37,17 @@ export default {
     chainID: '7',
     rinkeyChainID: '77',
   },
-  immutableX: {
-    Mainnet: 'https://api.x.immutable.com/v1',
-    Rinkeby: 'https://api.ropsten.x.immutable.com/v1',
-    chainID: '8',
-    rinkeyChainID: '88',
-  },
   loopring: {
     Mainnet: 'https://api3.loopring.io',
     Rinkeby: 'https://uat2.loopring.io',
     chainID: '9',
     rinkeyChainID: '99',
+  },
+  immutableX: {
+    Mainnet: 'https://api.x.immutable.com/v1',
+    Rinkeby: 'https://api.ropsten.x.immutable.com/v1',
+    chainID: '8',
+    rinkeyChainID: '88',
   },
   L1: {
     Mainnet:

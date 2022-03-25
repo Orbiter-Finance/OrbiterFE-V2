@@ -111,14 +111,14 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
-import { IMXHelper } from '../../util/immutablex/imx_helper'
-import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
   sendTransaction,
 } from '../../util/constants/starknet/helper'
 import loopring from '../../core/actions/loopring'
+import { IMXHelper } from '../../util/immutablex/imx_helper'
+import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -440,12 +440,38 @@ export default {
           }
           this.transferLoading = false
         } catch (error) {
-          console.log('inError =', error.message)
           this.transferLoading = false
-          this.$notify.error({
-            title: error.message,
-            duration: 3000,
-          })
+          if (error.message == 'account is not activated') {
+            const notify = this.$notify({
+              type: 'error',
+              message: `<div style="text-align:left;font-size: 1.4rem; color: black">This Loopring account is not activated, please activate it at <span style="color:blue;text-decoration: underline"> here </span> before transferring.</div>`,
+              dangerouslyUseHTMLString: true,
+              duration: 8000,
+            })
+            notify.$el.querySelector('span').onclick = () => {
+              notify.close()
+              window.open('https://loopring.io/#/layer2/assets', '_blank')
+            }
+          } else if (error.message == 'User account is frozen') {
+            const notify = this.$notify({
+              type: 'error',
+              message: `<div style="text-align:left;font-size: 1.4rem; color: black">Your Loopring account is frozen, please check your Loopring account status on Loopring website. Get more details <span style="color:blue;text-decoration: underline"> here </span>.</div>`,
+              dangerouslyUseHTMLString: true,
+              duration: 8000,
+            })
+            notify.$el.querySelector('span').onclick = () => {
+              notify.close()
+              window.open(
+                'https://docs.loopring.io/en/basics/key_mgmt.html?h=frozen',
+                '_blank'
+              )
+            }
+          } else {
+            this.$notify.error({
+              title: error.message,
+              duration: 3000,
+            })
+          }
         }
       } catch (error) {
         console.log('outError =', error.message)

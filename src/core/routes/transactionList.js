@@ -8,13 +8,13 @@ import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
 import etherscan from '../actions/etherscan'
 import immutablex from '../actions/immutablex'
+import loopring from '../actions/loopring'
 import optimistic from '../actions/optimistic'
 import polygon from '../actions/polygon'
 import mStarknet from '../actions/starknet'
 import thegraph from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
 import TxInfo from '../utils/modle/txinfo'
-import loopring from '../actions/loopring'
 
 async function getTransactionListEtherscan(
   userAddress,
@@ -856,17 +856,21 @@ async function getTransactionListLoopring(
         limit,
         offset
       )
+      if (!LPTransferResult) {
+        isContiue = false
+        break
+      }
       if (
         LPTransferResult.totalNum !== 0 &&
-        LPTransferResult.userTransfers.length !== 0
+        LPTransferResult.userTransfers?.length !== 0
       ) {
-        if (LPTransferResult.userTransfers.length !== limit) {
+        if (LPTransferResult.userTransfers?.length !== limit) {
           isContiue = false
         } else {
           offset += limit
         }
         let transacionts = LPTransferResult.userTransfers
-        for (let index = 0; index < transacionts.length; index++) {
+        for (let index = 0; index < transacionts?.length; index++) {
           const lpTransaction = transacionts[index]
           if (
             lpTransaction.txType == 'TRANSFER' &&
@@ -1115,23 +1119,20 @@ export default {
       }
 
       if (supportChains.indexOf(9) > -1 || supportChains.indexOf(99) > -1) {
-        allPromises.push(
-          (async () => {
-            let chainID = supportChains.indexOf(9) > -1 ? 9 : 99
-            const { LPFromTxList, LPToTxList } =
-              await getTransactionListLoopring(
-                req.address,
-                chainID,
-                needTimeStamp,
-                makerList
-              )
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(9) > -1 ? 9 : 99
+          const { LPFromTxList, LPToTxList } = await getTransactionListLoopring(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
 
-            originTxList[chainID] = {
-              fromList: LPFromTxList,
-              toList: LPToTxList,
-            }
-          })()
-        )
+          originTxList[chainID] = {
+            fromList: LPFromTxList,
+            toList: LPToTxList,
+          }
+        })
       }
 
       // waitting all promise end
@@ -1441,15 +1442,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
       }
     }
   }
-  for (let index = 0; index < transactionList.length; index++) {
-    const element = transactionList[index]
-    console.log('old =', element.sortTimeStamp)
-  }
   transactionList.sort(sortBy('sortTimeStamp'))
-  for (let index = 0; index < transactionList.length; index++) {
-    const element = transactionList[index]
-    console.log('new =', element.sortTimeStamp)
-  }
   return {
     list: transactionList,
     state: state, // 0 / 1  maker / user

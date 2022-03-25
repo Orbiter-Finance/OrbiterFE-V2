@@ -315,22 +315,22 @@ import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 
 const queryParamsChainMap = {
-  Mainnet: 1,
-  Arbitrum: 2,
-  ZkSync: 3,
-  StarkNet: 4,
-  Polygon: 6,
-  Optimism: 7,
-  ImmutableX: 8,
-  Rinkeby: 5,
+  'Mainnet': 1,
+  'Arbitrum': 2,
+  'ZkSync': 3,
+  'StarkNet': 4,
+  'Polygon': 6,
+  'Optimism': 7,
+  'ImmutableX': 8,
+  'Rinkeby': 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
   'Optimism(K)': 77,
-  'ImmutableX(R)': 88,
-  Loopring: 9,
+  'Loopring': 9,
   'Loopring(G)': 99,
+  'ImmutableX(R)': 88
 }
 
 export default {
@@ -404,6 +404,15 @@ export default {
         userMax.comparedTo(new BigNumber(selectMakerInfo.maxPrice)) > 0
           ? new BigNumber(selectMakerInfo.maxPrice)
           : userMax
+      if (
+        (selectMakerInfo.c1ID == 9 ||
+          selectMakerInfo.c1ID == 99 ||
+          selectMakerInfo.c2ID == 9 ||
+          selectMakerInfo.c2ID == 99) &&
+        selectMakerInfo.precision == 18
+      ) {
+        max = max.decimalPlaces(5, BigNumber.ROUND_DOWN)
+      }
       return max.toString()
     },
 
@@ -894,6 +903,14 @@ export default {
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
+        if (
+          newValue.c1ID == 9 ||
+          newValue.c1ID == 99 ||
+          newValue.c2ID == 9 ||
+          newValue.c2ID == 99
+        ) {
+          this.checkTransferValue()
+        }
         transferCalculate
           .getTransferBalance(
             newValue.c1ID,
@@ -1264,6 +1281,15 @@ export default {
         userMax.comparedTo(new BigNumber(this.userMaxPrice)) > 0
           ? new BigNumber(this.userMaxPrice)
           : userMax
+      if (
+        (selectMakerInfo.c1ID == 9 ||
+          selectMakerInfo.c1ID == 99 ||
+          selectMakerInfo.c2ID == 9 ||
+          selectMakerInfo.c2ID == 99) &&
+        selectMakerInfo.precision == 18
+      ) {
+        max = max.decimalPlaces(5, BigNumber.ROUND_DOWN)
+      }
       this.transferValue = max.toString()
     },
     showChainName(localChainID, netChainID) {
@@ -1391,25 +1417,30 @@ export default {
       this.$refs.SelectToChainPopupRef.maskClick()
     },
     checkTransferValue() {
-      this.transferValue =
-        this.$store.getters.realSelectMakerInfo.precision === 18
-          ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
-          : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+      let fromChianID = this.$store.getters.realSelectMakerInfo.c1ID
+      let toChainID = this.$store.getters.realSelectMakerInfo.c2ID
+      if (
+        fromChianID == 9 ||
+        fromChianID == 99 ||
+        toChainID == 9 ||
+        toChainID == 99
+      ) {
+        this.transferValue =
+          this.$store.getters.realSelectMakerInfo.precision === 18
+            ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
+            : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+      } else {
+        this.transferValue =
+          this.$store.getters.realSelectMakerInfo.precision === 18
+            ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
+            : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
+      }
     },
     async sendTransfer() {
       // if unlogin  login first
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
       } else {
-        // if (
-        //   selectMakerInfo.c1ID == 9 ||
-        //   selectMakerInfo.c2ID == 9 ||
-        //   selectMakerInfo.c2ID == 99
-        // ) {
-        //   console.log('========================')
-        //   return
-        // }
-
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
             title: `The format of input amount is incorrect`,
@@ -1501,8 +1532,8 @@ export default {
                 new BigNumber(selectMakerInfo.tradingFee)
               ),
               coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
-            },
+              toAddress: util.shortAddress(selectMakerInfo.makerAddress)
+            }
           ])
           this.$emit('stateChanged', '2')
         })
@@ -1530,7 +1561,7 @@ export default {
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, this.$store.state.web3.coinbase],
+                params: [params, this.$store.state.web3.coinbase]
               })
               .then(() => {})
               .catch((error) => {

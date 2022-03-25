@@ -45,18 +45,17 @@ function isZKChain(chain) {
   return false
 }
 
+function isLPChain(chain) {
+  if (chain === 9 || chain === 99 || chain === 'loopring') {
+    return true
+  }
+}
+
 function isLimitNumber(chain) {
   if (chain === 3 || chain === 33 || chain === 'zksync') {
     return true
   }
   if (chain === 8 || chain === 88 || chain === 'immutablex') {
-    return true
-  }
-  return false
-}
-
-function isLPChain(chain) {
-  if (chain === 9 || chain === 99 || chain === 'loopring') {
     return true
   }
   return false
@@ -72,6 +71,7 @@ function getToAmountFromUserAmount(userAmount, selectMakerInfo, isWei) {
   let digit = selectMakerInfo.precision === 18 ? 5 : 2
   let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
   let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
+
   if (!toAmount_fee || isNaN(toAmount_fee)) {
     return 0
   }
@@ -401,8 +401,9 @@ module.exports = {
   getTAmountFromRAmount,
   getRAmountFromTAmount,
   pTextFormatZero,
-  isLimitNumber,
+  isZKChain,
   isLPChain,
+  isLimitNumber,
   getToAmountFromUserAmount,
   getDigitByPrecision,
   isZKChain,

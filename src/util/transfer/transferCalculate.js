@@ -49,15 +49,16 @@ const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
 const OP_ETH_WITHDRAW_ONOP_L2 = 137000
 const OP_ETH_WITHDRAW_ONL1 = 820000
 
+// loopring depost
+const LP_ETH_DEPOSIT_DEPOSIT_ONL1 = 75000
+
 // immutablex deposit
 // Testnet deposit contract: 0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864
 const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 126000
 
 // immutablex withdraw
 // Testnet withdraw contract: 0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef
-const IMX_ETH_WITHDRAW_ONL1 = 51000
-// loopring depost
-const LP_ETH_DEPOSIT_DEPOSIT_ONL1 = 75000
+const IMX_ETH_WITHDRAW_ONL1 = 510000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
@@ -128,7 +129,7 @@ export default {
         let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
         if (fromChainID === 7 || fromChainID === 77) {
           let l1GasFee = await this.getOPFee(fromChainID)
-          gas = gas.plus(l1GasFee.toNumber())
+          gas = gas.plus(l1GasFee)
         }
         return gas.dividedBy(10 ** 18).toString()
       }
@@ -573,7 +574,7 @@ export default {
       ethGas += opDepositGas
     }
     if (toChainID === 8 || toChainID === 88) {
-      // op deposit
+      // imx deposit
       const toGasPrice = await this.getGasPrice(toChainID === 8 ? 1 : 5)
       const imxDepositGas = toGasPrice * IMX_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += imxDepositGas
@@ -658,6 +659,10 @@ export default {
         isMaker
       )
       return balance
+    } else if (localChainID === 8 || localChainID === 88) {
+      const imxHelper = new IMXHelper(localChainID)
+      const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
+      return Number(balance + '')
     } else {
       let balance = 0
 
