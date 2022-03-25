@@ -2,11 +2,7 @@
   <div id="app">
     <TopNav />
     <keep-alive>
-      <router-view
-        v-if="$route.meta.keepAlive"
-        class="router"
-        id="aliveRouter"
-      />
+      <router-view v-if="$route.meta.keepAlive" class="router" id="aliveRouter" />
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
     <BottomNav />
@@ -81,7 +77,7 @@ export default {
         var req = {
           address: this.$store.state.web3.coinbase,
           daysAgo: 14,
-          state: 1, 
+          state: 1,
         }
         getTransactionList
           .getTransactionList(req)
@@ -126,7 +122,7 @@ export default {
   height: calc(var(--vh, 1vh) * 100);
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  background-image: url('./assets/bgtop.svg');
+  background-image: url("./assets/bgtop.svg");
   background-size: 100% 40%;
   background-repeat: no-repeat;
 }

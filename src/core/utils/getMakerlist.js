@@ -1,13 +1,22 @@
 import axios from 'axios'
 import { Base64 } from "js-base64";
 const apiUrl = "https://api.github.com"
-async function getData() {
+const githubToken = 'token ' + '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'
+async function getMakerListData() {
+    try {
+        return await subGetMakerList()
+    } catch (error) {
+        return await subGetMakerList(githubToken)
+    }
+}
+
+async function subGetMakerList(githubToken) {
     const res = await axios({
         url: `${apiUrl}/repos/anengzend/block-chain-demo/contents/data-dev.json`,
         method: "get",
         headers: {
             Accept: "*/*",
-            Authorization: `token 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`,
+            Authorization: githubToken ? githubToken : '',
         },
     });
     const base64Data = res.data.content;
@@ -18,5 +27,5 @@ async function getData() {
     return { makerList, historyMakerList };
 }
 export default {
-    getData
+    getMakerListData
 }

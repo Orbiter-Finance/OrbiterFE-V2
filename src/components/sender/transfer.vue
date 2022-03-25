@@ -15,20 +15,20 @@
           <div class="left">From</div>
           <div v-if="isLogin" class="right">
             Balance:
-            <loading v-if="fromBalanceLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem"></loading>
-            <span v-else>{{ fromBalance }}</span>
+            <span>{{ fromBalance }}</span>
           </div>
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeFromChain">
-            <span>
+            <loading v-if="getMakerLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem"></loading>
+            <span v-else>
               {{
-              showChainName(
-              this.$store.state.transferData.fromChainID,
-              this.$env.localChainID_netChainID[
-              this.$store.state.transferData.fromChainID
-              ]
-              )
+                showChainName(
+                  this.$store.state.transferData.fromChainID,
+                  this.$env.localChainID_netChainID[
+                  this.$store.state.transferData.fromChainID
+                  ]
+                )
               }}
             </span>
             <svg-icon
@@ -57,14 +57,18 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            {{
-            showChainName(
-            this.$store.state.transferData.toChainID,
-            this.$env.localChainID_netChainID[
-            this.$store.state.transferData.toChainID
-            ]
-            )
-            }}
+            <loading v-if="getMakerLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem"></loading>
+            <span v-else>
+              {{
+                showChainName(
+                  this.$store.state.transferData.toChainID,
+                  this.$env.localChainID_netChainID[
+                  this.$store.state.transferData.toChainID
+                  ]
+                )
+              }}
+            </span>
+
             <svg-icon
               v-if="queryParams.dests.length > 1"
               style="
@@ -105,7 +109,7 @@
     <o-button style="margin: 2.5rem auto 0" width="29.5rem" height="4rem" :isDisabled="sendBtnInfo ? sendBtnInfo.disabled : 'disabled'" @click="sendTransfer">
       <span class="w700 s16" style="letter-spacing: 0.15rem">
         {{
-        sendBtnInfo && sendBtnInfo.text
+          sendBtnInfo && sendBtnInfo.text
         }}
       </span>
     </o-button>
@@ -202,7 +206,7 @@
             <loading v-if="saveTimeLoading" style="margin: 0 1rem" width="1rem" loadingColor="#FFFFFF" height="1rem"></loading>
             <span style="margin-left: 0.4rem" v-else>
               {{
-              transferSavingTime
+                transferSavingTime
               }}
             </span>
           </div>
@@ -242,6 +246,8 @@ import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
+import { resolve } from 'path'
+import { rejects } from 'assert'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -272,6 +278,7 @@ export default {
   data() {
     return {
       // loading
+      getMakerLoading: true,
       timeSpenLoading: false,
       gasCostLoading: false,
       originGasLoading: false,
@@ -1086,7 +1093,12 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
+    if (!this.makerInfoList) {
+      this.getMakerLoading = true
+      await this.getMakerList()
+      this.getMakerLoading = false
+    }
 
     const updateETHPrice = async () => {
       transferCalculate
@@ -1100,7 +1112,7 @@ export default {
     }
     updateETHPrice()
 
-    setInterval(() => {
+    setInterval(async () => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
       if (selectMakerInfo && this.isLogin) {
         this.getBalance(
@@ -1127,29 +1139,28 @@ export default {
           }
         })
       }
-
       updateETHPrice()
-
+      await this.getMakerList()
       this.updateExchangeToUsdPrice()
-    }, 10 * 1000)
+    }, 30 * 1000)
 
     this.transferValue = this.queryParams.amount
 
-    const getMakerInfoFromGraphReq = {
-      maker: '0',
-    }
-    makerInfo
-      .getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
-      .then((response) => {
+  },
+  methods: {
+    async getMakerList() {
+      const getMakerInfoFromGraphReq = {
+        maker: '0',
+      }
+      try {
+        const response = await makerInfo.getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
         if (response.code === 0) {
           this.makerInfoList = response.data
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log('error =', error)
-      })
-  },
-  methods: {
+      }
+    },
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter((makerInfo) => {
