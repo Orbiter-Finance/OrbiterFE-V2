@@ -1148,12 +1148,14 @@ export default {
         })
       }
       updateETHPrice()
-      await this.getMakerList()
       this.updateExchangeToUsdPrice()
-    }, 30 * 1000)
-
+    }, 10 * 1000)
     this.transferValue = this.queryParams.amount
-
+  },
+  created() {
+    setTimeout(async () => {
+      await this.getMakerList()
+    }, 30 * 1000)
   },
   methods: {
     async getMakerList() {
