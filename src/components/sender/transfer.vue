@@ -5,7 +5,11 @@
       <button @click="selectToken" class="right" :style="{ width: tokenInfoArray.length > 1 ? '13rem' : '11rem' }">
         <img class="token_icon" v-if="this.$store.state.transferData.selectTokenInfo.icon" :src="this.$store.state.transferData.selectTokenInfo.icon" alt />
         <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
-        <div class="token_name">{{ this.$store.state.transferData.selectTokenInfo.token }}</div>
+
+        <div class="token_name">
+          <loading v-if="getMakerLoading" style="top:10px" width="1.2rem" height="1.2rem"></loading>
+          <span v-else>{{ this.$store.state.transferData.selectTokenInfo.token }}</span>
+        </div>
         <svg-icon v-if="tokenInfoArray.length > 1" class="arrow_icon" iconName="arrow_down"></svg-icon>
       </button>
     </div>
@@ -42,8 +46,11 @@
               iconName="arrow_down"
             ></svg-icon>
           </div>
-          <input type="text" v-model="transferValue" class="right" @input="checkTransferValue()" :maxlength="18" :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`" />
-          <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          <div style="display: flex;justify-content: center;align-items: center;">
+            <loading v-if="getMakerLoading" width="1.2rem" height="1.2rem"></loading>
+            <input v-else type="text" v-model="transferValue" class="right" @input="checkTransferValue()" :maxlength="18" :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`" />
+            <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          </div>
         </div>
       </div>
       <div class="subContent">
@@ -1514,7 +1521,7 @@ export default {
 
         this.originGasCost = response
       } catch (error) {
-        console.log('error =11', error)
+        console.log('error =', error)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
