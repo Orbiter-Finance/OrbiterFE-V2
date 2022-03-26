@@ -11,11 +11,20 @@
           class="token_icon"
           v-if="this.$store.state.transferData.selectTokenInfo.icon"
           :src="this.$store.state.transferData.selectTokenInfo.icon"
-          alt=""
+          alt
         />
         <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
+
         <div class="token_name">
-          {{ this.$store.state.transferData.selectTokenInfo.token }}
+          <loading
+            v-if="getMakerLoading"
+            style="top: 10px"
+            width="1.2rem"
+            height="1.2rem"
+          ></loading>
+          <span v-else>{{
+            this.$store.state.transferData.selectTokenInfo.token
+          }}</span>
         </div>
         <svg-icon
           v-if="tokenInfoArray.length > 1"
@@ -41,7 +50,13 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeFromChain">
-            <span>
+            <loading
+              v-if="getMakerLoading"
+              style="left: 0.3rem; top: 0.2rem"
+              width="1.2rem"
+              height="1.2rem"
+            ></loading>
+            <span v-else>
               {{
                 showChainName(
                   this.$store.state.transferData.fromChainID,
@@ -62,15 +77,25 @@
               iconName="arrow_down"
             ></svg-icon>
           </div>
-          <input
-            type="text"
-            v-model="transferValue"
-            class="right"
-            @input="checkTransferValue()"
-            :maxlength="18"
-            :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
-          />
-          <el-button @click="fromMax" class="maxBtn" style="">Max</el-button>
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <loading
+              v-if="getMakerLoading"
+              width="1.2rem"
+              height="1.2rem"
+            ></loading>
+            <input
+              v-else
+              type="text"
+              v-model="transferValue"
+              class="right"
+              @input="checkTransferValue()"
+              :maxlength="18"
+              :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
+            />
+            <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          </div>
         </div>
       </div>
       <div class="subContent">
@@ -89,14 +114,23 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            {{
-              showChainName(
-                this.$store.state.transferData.toChainID,
-                this.$env.localChainID_netChainID[
-                  this.$store.state.transferData.toChainID
-                ]
-              )
-            }}
+            <loading
+              v-if="getMakerLoading"
+              style="left: 0.3rem; top: 0.2rem"
+              width="1.2rem"
+              height="1.2rem"
+            ></loading>
+            <span v-else>
+              {{
+                showChainName(
+                  this.$store.state.transferData.toChainID,
+                  this.$env.localChainID_netChainID[
+                    this.$store.state.transferData.toChainID
+                  ]
+                )
+              }}
+            </span>
+
             <svg-icon
               v-if="queryParams.dests.length > 1"
               style="
@@ -131,10 +165,10 @@
           <img
             src="../../assets/middleIcon.png"
             style="width: 100%; height: 100%"
-            alt=""
+            alt
           />
           <!-- <svg-icon style="width:100%;height:100%"
-                    iconName="transfer_mid"></svg-icon> -->
+          iconName="transfer_mid"></svg-icon>-->
         </div>
       </div>
     </div>
@@ -145,9 +179,9 @@
       :isDisabled="sendBtnInfo ? sendBtnInfo.disabled : 'disabled'"
       @click="sendTransfer"
     >
-      <span class="w700 s16" style="letter-spacing: 0.15rem">{{
-        sendBtnInfo && sendBtnInfo.text
-      }}</span>
+      <span class="w700 s16" style="letter-spacing: 0.15rem">
+        {{ sendBtnInfo && sendBtnInfo.text }}
+      </span>
     </o-button>
     <div class="notice">
       <div v-if="isShowMax" class="item" style="margin-top: 1.5rem">
@@ -180,8 +214,8 @@
                 margin-left: 0.3rem;
               "
               iconName="gas_cost"
-            ></svg-icon>
-            Gas Fee Saved
+            ></svg-icon
+            >Gas Fee Saved
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
@@ -225,8 +259,8 @@
                 margin-left: 0.2rem;
               "
               iconName="time_spent"
-            ></svg-icon>
-            Time Spend
+            ></svg-icon
+            >Time Spend
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
@@ -260,9 +294,9 @@
               loadingColor="#FFFFFF"
               height="1rem"
             ></loading>
-            <span style="margin-left: 0.4rem" v-else>{{
-              transferSavingTime
-            }}</span>
+            <span style="margin-left: 0.4rem" v-else>
+              {{ transferSavingTime }}
+            </span>
           </div>
         </div>
       </div>
@@ -315,22 +349,22 @@ import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 
 const queryParamsChainMap = {
-  'Mainnet': 1,
-  'Arbitrum': 2,
-  'ZkSync': 3,
-  'StarkNet': 4,
-  'Polygon': 6,
-  'Optimism': 7,
-  'ImmutableX': 8,
-  'Rinkeby': 5,
+  Mainnet: 1,
+  Arbitrum: 2,
+  ZkSync: 3,
+  StarkNet: 4,
+  Polygon: 6,
+  Optimism: 7,
+  ImmutableX: 8,
+  Rinkeby: 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
   'Optimism(K)': 77,
-  'Loopring': 9,
+  Loopring: 9,
   'Loopring(G)': 99,
-  'ImmutableX(R)': 88
+  'ImmutableX(R)': 88,
 }
 
 export default {
@@ -345,6 +379,7 @@ export default {
   data() {
     return {
       // loading
+      getMakerLoading: true,
       timeSpenLoading: false,
       gasCostLoading: false,
       originGasLoading: false,
@@ -1156,13 +1191,20 @@ export default {
 
       this.updateOriginGasCost()
     },
+
     transferValue: function (newValue) {
       if (this.$store.state.transferData.transferValue !== newValue) {
         this.$store.commit('updateTransferValue', newValue)
       }
     },
   },
-  mounted() {
+  async mounted() {
+    if (!this.makerInfoList) {
+      this.getMakerLoading = true
+      await this.getMakerList()
+      this.getMakerLoading = false
+    }
+
     const updateETHPrice = async () => {
       transferCalculate
         .getTokenConvertUsd('ETH')
@@ -1202,29 +1244,33 @@ export default {
           }
         })
       }
-
       updateETHPrice()
-
       this.updateExchangeToUsdPrice()
     }, 10 * 1000)
-
     this.transferValue = this.queryParams.amount
-
-    const getMakerInfoFromGraphReq = {
-      maker: '0',
-    }
-    makerInfo
-      .getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
-      .then((response) => {
+  },
+  created() {
+    setInterval(async () => {
+      await this.getMakerList()
+    }, 30 * 1000)
+  },
+  methods: {
+    async getMakerList() {
+      const getMakerInfoFromGraphReq = {
+        maker: '0',
+      }
+      try {
+        const response = await makerInfo.getMakerInfoFromGraph(
+          getMakerInfoFromGraphReq,
+          true
+        )
         if (response.code === 0) {
           this.makerInfoList = response.data
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log('error =', error)
-      })
-  },
-  methods: {
+      }
+    },
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter((makerInfo) => {
@@ -1532,8 +1578,8 @@ export default {
                 new BigNumber(selectMakerInfo.tradingFee)
               ),
               coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress)
-            }
+              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+            },
           ])
           this.$emit('stateChanged', '2')
         })
@@ -1561,7 +1607,7 @@ export default {
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, this.$store.state.web3.coinbase]
+                params: [params, this.$store.state.web3.coinbase],
               })
               .then(() => {})
               .catch((error) => {

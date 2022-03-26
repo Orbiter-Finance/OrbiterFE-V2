@@ -5,23 +5,23 @@ const AX = axios.create({
   baseURL: this.$env.baseUrl,
   timeout: 30000,
   withCredentials: this.$env.credential,
-  // headers : {
-  //   'Access-Control-Allow-Origin' : '*'
+  // headers: {
+  //   'Access-Control-Allow-Origin': '*'
   // }
 })
 
 // request Interceptor
 AX.interceptors.request.use(
-  function(config) {
+  function (config) {
     const body = config.data
     if (config.method === 'post') {
       config.data = body
     }
     return config
   },
-  function(error) {
+  function (error) {
     return Promise.reject(error)
-  },
+  }
 )
 
 function requestHandle(type, uri, data, config) {

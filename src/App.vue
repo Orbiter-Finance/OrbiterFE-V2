@@ -39,8 +39,8 @@ export default {
   },
   async mounted() {
     setInterval(this.getHistory, 60 * 1000)
-
-    this.getHistory()
+    // tip
+    // this.getHistory()
 
     getZkToken.getSupportZKTokenList()
     if (localStorage.getItem('localLogin') === 'true') {
@@ -77,13 +77,13 @@ export default {
     getHistory(isRefresh = false) {
       if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
         if (isRefresh) {
-          this.$store.commit('updateTransactionList', null) 
+          this.$store.commit('updateTransactionList', null)
         }
 
         var req = {
           address: this.$store.state.web3.coinbase,
           daysAgo: 14,
-          state: 1, //maker/user
+          state: 1,
         }
         getTransactionList
           .getTransactionList(req)

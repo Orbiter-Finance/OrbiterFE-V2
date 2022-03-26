@@ -406,5 +406,4 @@ module.exports = {
   isLimitNumber,
   getToAmountFromUserAmount,
   getDigitByPrecision,
-  isZKChain,
 }
