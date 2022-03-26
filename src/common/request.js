@@ -1,6 +1,14 @@
 import axios from 'axios'
 // import { Loading, Message } from 'element-ui'
 
+
+axios.interceptors.request.use((config) => {
+  if (/get/i.test(config.method)) {
+    config.params = config.params || {};
+    config.params.t = timeStamp;
+  }
+  return config;
+});
 const AX = axios.create({
   baseURL: this.$env.baseUrl,
   timeout: 30000,

@@ -23,7 +23,7 @@ function randomGithubToken() {
 }
 async function subGetMakerList(githubToken) {
     const res = await axios({
-        url: `${apiUrl}/repos/Orbiter-Finance/makerConfiguration/contents/dev/makerList.json`,
+        url: `${apiUrl}/repos/Orbiter-Finance/makerConfiguration/contents/rinkeby/makerList.json`,
         method: "get",
         headers: {
             Accept: "*/*",

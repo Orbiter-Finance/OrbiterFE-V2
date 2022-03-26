@@ -27,12 +27,12 @@
             <loading v-if="getMakerLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem"></loading>
             <span v-else>
               {{
-                showChainName(
-                  this.$store.state.transferData.fromChainID,
-                  this.$env.localChainID_netChainID[
-                  this.$store.state.transferData.fromChainID
-                  ]
-                )
+              showChainName(
+              this.$store.state.transferData.fromChainID,
+              this.$env.localChainID_netChainID[
+              this.$store.state.transferData.fromChainID
+              ]
+              )
               }}
             </span>
             <svg-icon
@@ -67,12 +67,12 @@
             <loading v-if="getMakerLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem"></loading>
             <span v-else>
               {{
-                showChainName(
-                  this.$store.state.transferData.toChainID,
-                  this.$env.localChainID_netChainID[
-                  this.$store.state.transferData.toChainID
-                  ]
-                )
+              showChainName(
+              this.$store.state.transferData.toChainID,
+              this.$env.localChainID_netChainID[
+              this.$store.state.transferData.toChainID
+              ]
+              )
               }}
             </span>
 
@@ -116,7 +116,7 @@
     <o-button style="margin: 2.5rem auto 0" width="29.5rem" height="4rem" :isDisabled="sendBtnInfo ? sendBtnInfo.disabled : 'disabled'" @click="sendTransfer">
       <span class="w700 s16" style="letter-spacing: 0.15rem">
         {{
-          sendBtnInfo && sendBtnInfo.text
+        sendBtnInfo && sendBtnInfo.text
         }}
       </span>
     </o-button>
@@ -213,7 +213,7 @@
             <loading v-if="saveTimeLoading" style="margin: 0 1rem" width="1rem" loadingColor="#FFFFFF" height="1rem"></loading>
             <span style="margin-left: 0.4rem" v-else>
               {{
-                transferSavingTime
+              transferSavingTime
               }}
             </span>
           </div>
@@ -1095,6 +1095,7 @@ export default {
 
       this.updateOriginGasCost()
     },
+    
     transferValue: function (newValue) {
       if (this.$store.state.transferData.transferValue !== newValue) {
         this.$store.commit('updateTransferValue', newValue)
@@ -1153,7 +1154,7 @@ export default {
     this.transferValue = this.queryParams.amount
   },
   created() {
-    setTimeout(async () => {
+    setInterval(async () => {
       await this.getMakerList()
     }, 30 * 1000)
   },
