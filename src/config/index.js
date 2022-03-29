@@ -21,4 +21,4 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-export { getTokenIcon }
+export default { getTokenIcon }
