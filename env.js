@@ -58,6 +58,24 @@ export default {
     88: '3', // ropsten
     99: '5', // loopring(G)
   },
+  crossAddressContracts: {
+    1: '',
+    2: '',
+    3: '',
+    4: '',
+    5: '0xb7661a0865BD56C3Bf25B2B49842D4DdF838BB1b',
+    6: '',
+    7: '',
+    8: '',
+    9: '',
+    22: '',
+    33: '',
+    44: '',
+    66: '',
+    77: '',
+    88: '',
+    99: '',
+  },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
     5: 'https://rinkeby.etherscan.io/tx/', // /tx/  /address/
