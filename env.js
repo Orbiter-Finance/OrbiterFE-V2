@@ -11,6 +11,7 @@ export default {
     2: process.env.VUE_APP_HP_AR,
     6: process.env.VUE_APP_HP_PO,
     7: process.env.VUE_APP_HP_OP,
+    510: process.env.VUE_APP_HP_MT_R,
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -21,6 +22,7 @@ export default {
     22: process.env.VUE_APP_WP_AR_R,
     66: process.env.VUE_APP_WP_PO_G,
     77: process.env.VUE_APP_WP_OP_K,
+    510: process.env.VUE_APP_WP_MT_R,
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -32,6 +34,7 @@ export default {
     '7',
     '8',
     '9',
+    '10',
     '22',
     '33',
     '44',
@@ -39,6 +42,7 @@ export default {
     '77',
     '88',
     '99',
+    '510'
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -50,6 +54,8 @@ export default {
     7: '10', // optimism
     8: '1', // mainnet
     9: '1', // loopring
+    10: '1088',//metis
+    510: '588',//metis test
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -75,6 +81,8 @@ export default {
     88: '', // ImmutableX don't have testnet browser
     9: 'https://explorer.loopring.io/tx/',
     99: 'https://explorer.loopring.io/tx/',
+    10: 'https://andromeda-explorer.metis.io/tx/',
+    510: 'https://stardust-explorer.metis.io/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -93,5 +101,7 @@ export default {
     88: 'https://market.ropsten.immutable.com/inventory/',
     9: 'https://explorer.loopring.io/account/',
     99: 'https://explorer.loopring.io/account/',
+    10: 'https://andromeda-explorer.metis.io/tx/address/',
+    510: 'https://stardust-explorer.metis.io/address/'
   },
 }

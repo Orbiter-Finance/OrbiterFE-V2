@@ -661,13 +661,8 @@ export default {
         isMaker
       )
       return balance
-    } else if (localChainID === 8 || localChainID === 88) {
-      const imxHelper = new IMXHelper(localChainID)
-      const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
-      return Number(balance + '')
-    } else {
+    }else {
       let balance = 0
-
       if (util.isEthTokenAddress(tokenAddress)) {
         // When is ETH
         const web3 = localWeb3(localChainID)

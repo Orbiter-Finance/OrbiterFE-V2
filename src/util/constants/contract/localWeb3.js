@@ -13,6 +13,7 @@ function localWeb3(chainID) {
     if (!provider) {
       return null
     }
+  
     const localWeb3 = new Web3(provider)
     return localWeb3
   } else {

@@ -38,6 +38,10 @@ export default {
         return 'Loopring'
       case 99:
         return 'Loopring(G)'
+      case 10:
+        return 'Metis'
+      case 510:
+        return 'Metis(R)'
     }
 
     const chain = chainList.chainList.filter(
