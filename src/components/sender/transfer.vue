@@ -313,24 +313,25 @@ import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
+import getNonce from '../../core/utils/nonce'
 
 const queryParamsChainMap = {
-  'Mainnet': 1,
-  'Arbitrum': 2,
-  'ZkSync': 3,
-  'StarkNet': 4,
-  'Polygon': 6,
-  'Optimism': 7,
-  'ImmutableX': 8,
-  'Rinkeby': 5,
+  Mainnet: 1,
+  Arbitrum: 2,
+  ZkSync: 3,
+  StarkNet: 4,
+  Polygon: 6,
+  Optimism: 7,
+  ImmutableX: 8,
+  Rinkeby: 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
   'Optimism(K)': 77,
-  'Loopring': 9,
+  Loopring: 9,
   'Loopring(G)': 99,
-  'ImmutableX(R)': 88
+  'ImmutableX(R)': 88,
 }
 
 export default {
@@ -1460,6 +1461,20 @@ export default {
           return
         }
         let selectMakerInfo = this.$store.getters.realSelectMakerInfo
+        let nonce = await getNonce.getNonce(
+          this.$store.state.transferData.fromChainID,
+          this.$store.getters.realSelectMakerInfo.t1Address,
+          this.$store.getters.realSelectMakerInfo.tName,
+          this.$store.state.web3.coinbase
+        )
+        if (nonce > 8999) {
+          this.$notify.error({
+            title: `Address with the nonce over 9000 are not supported by Orbiter`,
+            duration: 3000,
+          })
+          return
+        }
+
         if (
           !this.transferValue ||
           new BigNumber(this.transferValue).comparedTo(
@@ -1536,8 +1551,8 @@ export default {
                 new BigNumber(selectMakerInfo.tradingFee)
               ),
               coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress)
-            }
+              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+            },
           ])
           this.$emit('stateChanged', '2')
         })
@@ -1565,7 +1580,7 @@ export default {
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, this.$store.state.web3.coinbase]
+                params: [params, this.$store.state.web3.coinbase],
               })
               .then(() => {})
               .catch((error) => {
