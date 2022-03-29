@@ -11,7 +11,7 @@ const tokenIcons = {
  * @param {string} token
  * @returns
  */
-export const getTokenIcon = (token) => {
+const getTokenIcon = (token) => {
   if (!token) {
     return ''
   }
@@ -20,3 +20,5 @@ export const getTokenIcon = (token) => {
 
   return tokenIcons[token] || ''
 }
+
+export { getTokenIcon }
