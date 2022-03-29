@@ -620,7 +620,7 @@ export default {
         stateType: 'committed',
       }
       try {
-        let balanceInfo = await thirdapi.getZKBalance(req)
+        let balanceInfo = await thirdapi.getZKAccountInfo(req)
         if (
           !balanceInfo ||
           !balanceInfo.result ||
@@ -661,10 +661,6 @@ export default {
         isMaker
       )
       return balance
-    } else if (localChainID === 8 || localChainID === 88) {
-      const imxHelper = new IMXHelper(localChainID)
-      const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
-      return Number(balance + '')
     } else {
       let balance = 0
 

@@ -314,4 +314,36 @@ export default {
     )
     return LPTransferResult
   },
+
+  getAccountStorageID: async function (address, localChainID, tokenID) {
+    try {
+      const accountResult = await this.accountInfo(address, localChainID)
+      if (!accountResult) {
+        return 0
+      }
+      let acc
+      if (accountResult.code) {
+        return 0
+      } else {
+        acc = accountResult.accountInfo
+      }
+
+      let userApi = this.getUserAPI(localChainID)
+
+      const GetNextStorageIdRequest = {
+        accountId: acc.accountId,
+        sellTokenId: tokenID,
+      }
+      const storageId = await userApi.getNextStorageId(
+        GetNextStorageIdRequest,
+        localChainID == 9
+          ? process.env.VUE_APP_LP_MK_KEY
+          : process.env.VUE_APP_LP_MKTEST_KEY
+      )
+      return storageId
+    } catch (error) {
+      console.warn('getLoopringNonceError =', error)
+      return 0
+    }
+  },
 }
