@@ -29,6 +29,15 @@ const ZK_ETH_DEPOSIT_DEPOSIT_ONL1 = 62599
 const AR_ERC20_DEPOSIT_DEPOSIT_ONL1 = 218291
 const AR_ETH_DEPOSIT_DEPOSIT_ONL1 = 92000
 
+// metis deposit
+const MT_ERC20_DEPOSIT_DEPOSIT_ONL1 = 103937
+const MT_ETH_DEPOSIT_DEPOSIT_ONL1 = 62599
+
+// metis withdraw
+const MT_ERC20_WITHDRAW_ONMT = 801420
+const MT_ERC20_WITHDRAW_ONL1 = 234552
+const MT_ETH_WITHDRAW_ONMT = 666721
+const MT_ETH_WITHDRAW_ONL1 = 161063
 // ar withdraw
 const AR_ERC20_WITHDRAW_ONAR = 801420
 const AR_ERC20_WITHDRAW_ONL1 = 234552
@@ -474,6 +483,18 @@ export default {
         L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
       ethGas = ARWithDrawARGas + ARWithDrawL1Gas
     }
+    if (fromChainID === 10 || fromChainID === 510) {
+      // Ar get
+      let fromGasPrice = await this.getGasPrice(fromChainID)
+      // AR WithDraw
+      let MTWithDrawARGas = fromGasPrice * (isErc20 ? MT_ERC20_WITHDRAW_ONMT : MT_ETH_WITHDRAW_ONMT)
+
+
+      let L1ChainID = fromChainID === 10 ? 1 : 5
+      let L1GasPrice = await this.getGasPrice(L1ChainID)
+      let MTWithDrawL1Gas = L1GasPrice * (isErc20 ? MT_ERC20_WITHDRAW_ONL1 : MT_ETH_WITHDRAW_ONL1)
+      ethGas = MTWithDrawARGas + MTWithDrawL1Gas
+    }
     if (fromChainID === 3 || fromChainID === 33) {
       // zk withdraw
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -552,6 +573,14 @@ export default {
         toGasPrice *
         (isErc20 ? AR_ERC20_DEPOSIT_DEPOSIT_ONL1 : AR_ETH_DEPOSIT_DEPOSIT_ONL1)
       ethGas += arDepositGas
+    }
+    if (toChainID === 10 || toChainID === 510) {
+      // Ar deposit
+      const toGasPrice = await this.getGasPrice(toChainID === 10 ? 1 : 5)
+      const MTDepositGas =
+        toGasPrice *
+        (isErc20 ? MT_ERC20_DEPOSIT_DEPOSIT_ONL1 : MT_ETH_DEPOSIT_DEPOSIT_ONL1)
+      ethGas += MTDepositGas
     }
     if (toChainID === 3 || toChainID === 33) {
       // zk deposit
@@ -661,7 +690,7 @@ export default {
         isMaker
       )
       return balance
-    }else {
+    } else {
       let balance = 0
       if (util.isEthTokenAddress(tokenAddress)) {
         // When is ETH

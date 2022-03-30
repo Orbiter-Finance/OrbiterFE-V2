@@ -377,7 +377,6 @@ export default {
       let { token, tokens, amount, fixed } = query
       amount = new BigNumber(amount)
       tokens = !tokens ? [] : tokens.split(',')
-
       const getMapChainId = (chainName) => {
         if (!chainName) {
           return 0
@@ -392,7 +391,6 @@ export default {
       }
       let source = getMapChainId(query.source)
       let dest = getMapChainId(query.dest)
-
       const getMapChainIds = (chainNames) => {
         const chainIds = []
 
@@ -409,9 +407,9 @@ export default {
 
         return chainIds
       }
+
       let sources = getMapChainIds(query.sources)
       let dests = getMapChainIds(query.dests)
-
       // Tidy source(s) and dest(s)
       const tidyChains = (chainIds) => {
         const newChains = []
@@ -492,7 +490,6 @@ export default {
           }
         }
       }
-
       // Tidy
       if (!token) {
         token = tokens?.[0] || ''
@@ -740,8 +737,12 @@ export default {
       return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
+      // console.log(this.originGasCost, 'this.originGasCost')
+      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
+      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
       let savingValue =
         this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      // console.log(savingValue, 'savingValue')
       if (savingValue > 0) {
         return true
       }
@@ -884,6 +885,7 @@ export default {
             this.toChainArray.push(makerInfo.c2ID)
           }
         }
+
         if (
           makerInfo.c2ID === newValue &&
           this.toChainArray.indexOf(makerInfo.c1ID) === -1
@@ -896,10 +898,8 @@ export default {
           }
         }
       })
-      if (
-        this.toChainArray.indexOf(this.$store.state.transferData.toChainID) ===
-        -1
-      ) {
+
+      if (this.toChainArray.indexOf(this.$store.state.transferData.toChainID) === -1) {
         let _toChainID = this.toChainArray[0]
         if (
           this.queryParams.dest > 0 &&
@@ -917,7 +917,6 @@ export default {
             if (_fromChainID !== fromChainID || _toChainID !== toChainID) {
               return
             }
-
             const { tokens } = this.queryParams
             if (
               tokens.length > 0 &&
@@ -943,7 +942,6 @@ export default {
           pushToken(makerInfo.c1ID, makerInfo.c2ID)
           pushToken(makerInfo.c2ID, makerInfo.c1ID)
         })
-
         // if can's find, use first; else find same name token's makerInfo
         if (
           this.tokenInfoArray.findIndex(
@@ -1299,6 +1297,7 @@ export default {
       this.$store.commit('updateTransferFromChainID', e.localID)
       // Change query params's source
       const { path, query } = this.$route
+
       for (const key in queryParamsChainMap) {
         if (queryParamsChainMap[key] == e.localID) {
           if (!util.equalsIgnoreCase(query.source, key)) {
@@ -1510,14 +1509,13 @@ export default {
       if (!fromChainID || !toChainID) {
         return
       }
-
+      
       try {
         const response = await transferCalculate.transferOrginGasUsd(
           this.$store.state.transferData.fromChainID,
           this.$store.state.transferData.toChainID,
           this.$store.state.transferData.selectTokenInfo.token !== 'ETH'
         )
-
         this.originGasCost = response
       } catch (error) {
         console.log('error =', error)

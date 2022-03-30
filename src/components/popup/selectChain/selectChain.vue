@@ -74,7 +74,8 @@ export default {
         }
         if (item === 9 || item === 99) {
           iconName = 'loopringlogo'
-        } if (item === 10 || item === 510) {
+        }
+        if (item === 10 || item === 510) {
           iconName = 'metislogo'
         }
         var chainData = {

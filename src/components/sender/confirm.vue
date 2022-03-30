@@ -13,84 +13,43 @@
             "
             iconName="back"
           ></svg-icon>
-        </div>
-        Confirm
+        </div>Confirm
       </div>
-      <div
-        style="width: 100%; height: 0.2rem; background: var(--default-black)"
-      ></div>
+      <div style="width: 100%; height: 0.2rem; background: var(--default-black)"></div>
       <div v-for="item in confirmData" :key="item.title" class="contentItem">
         <div class="up">
-          <svg-icon
-            style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem"
-            :iconName="item.icon"
-          ></svg-icon>
-          <span style="margin-right: 1rem; font-weight: 600">{{
-            item.title
-          }}</span>
+          <svg-icon style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem" :iconName="item.icon"></svg-icon>
+          <span style="margin-right: 1rem; font-weight: 600">
+            {{
+              item.title
+            }}
+          </span>
           <o-tooltip placement="topLeft">
             <template v-slot:titleDesc>
               <span>{{ item.notice }}</span>
             </template>
-            <svg-icon
-              v-if="item.notice"
-              style="width: 1.5rem; height: 1.5rem"
-              iconName="help"
-            ></svg-icon>
+            <svg-icon v-if="item.notice" style="width: 1.5rem; height: 1.5rem" iconName="help"></svg-icon>
           </o-tooltip>
-          <span v-if="!item.textBold && item.desc" class="right">{{
-            item.desc
-          }}</span>
-          <span
-            v-else-if="item.textBold && item.desc"
-            class="right"
-            style="font-weight: 600"
-            >{{ item.desc }}</span
-          >
+          <span v-if="!item.textBold && item.desc" class="right">
+            {{
+              item.desc
+            }}
+          </span>
+          <span v-else-if="item.textBold && item.desc" class="right" style="font-weight: 600">{{ item.desc }}</span>
         </div>
-        <div
-          v-if="item.descInfo && item.descInfo.length > 0"
-          class="descBottom"
-        >
-          <div
-            v-for="desc in item.descInfo"
-            :key="desc.no"
-            style="margin-bottom: 1rem"
-          >
+        <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
+          <div v-for="desc in item.descInfo" :key="desc.no" style="margin-bottom: 1rem">
             Send
-            <span
-              class="dColor"
-              style="margin-left: 0.7rem; margin-right: 1.1rem"
-            >
-              {{ desc.amount }}{{ desc.coin }}
-            </span>
+            <span class="dColor" style="margin-left: 0.7rem; margin-right: 1.1rem">{{ desc.amount }}{{ desc.coin }}</span>
             To
-            <span class="dColor" style="margin-left: 0.7rem">
-              {{ desc.toAddress }}
-            </span>
+            <span class="dColor" style="margin-left: 0.7rem">{{ desc.toAddress }}</span>
           </div>
         </div>
         <div v-if="item.haveSep" class="sep"></div>
       </div>
-      <o-button
-        style="margin-top: 2.5rem"
-        width="29.5rem"
-        height="4rem"
-        @click="RealTransfer"
-      >
-        <span
-          v-if="!transferLoading"
-          class="wbold s16"
-          style="letter-spacing: 0.1rem"
-          >CONFIRM AND SEND</span
-        >
-        <loading
-          v-else
-          style="margin: auto"
-          loadingColor="white"
-          width="2rem"
-          height="2rem"
-        ></loading>
+      <o-button style="margin-top: 2.5rem" width="29.5rem" height="4rem" @click="RealTransfer">
+        <span v-if="!transferLoading" class="wbold s16" style="letter-spacing: 0.1rem">CONFIRM AND SEND</span>
+        <loading v-else style="margin: auto" loadingColor="white" width="2rem" height="2rem"></loading>
       </o-button>
     </div>
   </o-box-content>
@@ -211,7 +170,6 @@ export default {
     },
   },
   watch: {},
-  mounted() {},
   methods: {
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(window.ethereum)
@@ -486,7 +444,7 @@ export default {
       var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+        this.$store.state.transferData.fromChainID
         ]
       )
       const switchParams = {
@@ -532,8 +490,8 @@ export default {
               rpcUrls: chain.rpc,
               blockExplorerUrls: [
                 chain.explorers &&
-                chain.explorers.length > 0 &&
-                chain.explorers[0].url
+                  chain.explorers.length > 0 &&
+                  chain.explorers[0].url
                   ? chain.explorers[0].url
                   : chain.infoURL,
               ],
@@ -543,7 +501,7 @@ export default {
                 method: 'wallet_addEthereumChain',
                 params: [params, that.$store.state.web3.coinbase],
               })
-              .then(() => {})
+              .then(() => { })
               .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
@@ -698,7 +656,7 @@ export default {
       if (
         this.$store.state.web3.networkId.toString() !==
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+        this.$store.state.transferData.fromChainID
         ]
       ) {
         this.addChainNetWork()
@@ -771,7 +729,6 @@ export default {
           )
           return
         }
-
         if (util.isEthTokenAddress(tokenAddress)) {
           // When tokenAddress is eth
           this.ethTransfer(
