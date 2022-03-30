@@ -142,6 +142,19 @@ export default {
         }
         return gas.dividedBy(10 ** 18).toString()
       }
+    } else if (!util.isEthTokenAddress(fromTokenAddress)) {
+      if (fromChainID === 10 || fromChainID === 510) {//metis is weth
+        const web3 = localWeb3(fromChainID)
+        if (web3) {
+          const estimateGas = await web3.eth.estimateGas({
+            from: store.state.web3.coinbase,
+            to: makerAddress,
+          })
+          const gasPrice = await web3.eth.getGasPrice()
+          let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
+          return gas.dividedBy(10 ** 18).toString()
+        }
+      }
     }
     return 0
   },
@@ -779,8 +792,8 @@ export default {
     let toChainID = store.state.transferData.toChainID
     var p_text =
       toChainID.toString().length === 1
-        ? '900' + toChainID.toString()
-        : '90' + toChainID.toString()
+        ? '900' + toChainID.toString() : toChainID.toString().length === 2
+          ? '90' + toChainID.toString() : '9' + toChainID.toString()
     return p_text
   },
 
@@ -800,8 +813,8 @@ export default {
     let rAmountValue = rAmount.toFixed()
     var p_text =
       toChainID.toString().length === 1
-        ? '900' + toChainID.toString()
-        : '90' + toChainID.toString()
+        ? '900' + toChainID.toString() : toChainID.toString().length === 2
+          ? '90' + toChainID.toString() : '9' + toChainID.toString()
     var tValue = orbiterCore.getTAmountFromRAmount(
       fromChainID,
       rAmountValue,

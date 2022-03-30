@@ -201,8 +201,9 @@ export default {
         var rAmountValue = rAmount.toFixed()
         var p_text =
           toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+            ? '900' + toChainID.toString() : toChainID.toString().length === 2
+              ? '90' + toChainID.toString() : '9' + toChainID.toString()
+
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -361,8 +362,8 @@ export default {
         var rAmountValue = rAmount.toFixed()
         var p_text =
           toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+            ? '900' + toChainID.toString() : toChainID.toString().length === 2
+              ? '90' + toChainID.toString() : '9' + toChainID.toString()
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -691,10 +692,10 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         const rAmountValue = rAmount.toFixed()
-        const p_text =
+        var p_text =
           toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+            ? '900' + toChainID.toString() : toChainID.toString().length === 2
+              ? '90' + toChainID.toString() : '9' + toChainID.toString()
         const tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,

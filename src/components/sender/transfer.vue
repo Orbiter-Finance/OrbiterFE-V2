@@ -500,7 +500,6 @@ export default {
         amount = ''
       }
       fixed = fixed == 1 // To boolean
-
       return {
         referer,
         source,
@@ -1509,7 +1508,7 @@ export default {
       if (!fromChainID || !toChainID) {
         return
       }
-      
+
       try {
         const response = await transferCalculate.transferOrginGasUsd(
           this.$store.state.transferData.fromChainID,
