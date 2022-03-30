@@ -171,12 +171,14 @@ export default {
       7: 0.001,
       8: 1.7,
       9: 100,
+      10: 7.5,
       22: 0.02,
       33: 100,
       66: 60,
       77: 0.001,
       88: 1.7,
       99: 1,
+      510: 1
     }
     const GasLimitMap = {
       1: 35000,
@@ -188,12 +190,14 @@ export default {
       7: 21000,
       8: 51000,
       9: 75000,
+      10: 840000,
       22: 810000,
       33: 100,
       66: 1500,
       77: 21000,
       88: 51000,
       99: 75000,
+      510: 480000
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -205,12 +209,14 @@ export default {
       7: 'ETH',
       8: 'ETH',
       9: 'ETH',
+      10: 'WETH',
       22: 'AETH',
       33: 'ETH',
       66: 'MATIC',
       77: 'ETH',
       88: 'ETH',
       99: 'ETH',
+      510: 'WETH'
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
