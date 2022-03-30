@@ -1474,17 +1474,16 @@ export default {
           })
           return
         }
-        if (
-          this.$store.state.transferData.fromChainID == 22 ||
-          this.$store.state.transferData.fromChainID == 2
-        ) {
-          this.$notify.error({
-            title: `Affected by the Arbitrum interface issue, the transfer from Arbitrum is suspended.`,
-            duration: 3000,
-          })
-          return
-        }
-
+        // if (
+        //   this.$store.state.transferData.fromChainID == 22 ||
+        //   this.$store.state.transferData.fromChainID == 2
+        // ) {
+        //   this.$notify.error({
+        //     title: `Affected by the Arbitrum interface issue, the transfer from Arbitrum is suspended.`,
+        //     duration: 3000,
+        //   })
+        //   return
+        // }
         if (
           !this.transferValue ||
           new BigNumber(this.transferValue).comparedTo(
