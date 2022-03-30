@@ -243,7 +243,6 @@ import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
-import { cons } from 'fp-ts/lib/NonEmptyArray'
 
 const queryParamsChainMap = {
   'Mainnet': 1,

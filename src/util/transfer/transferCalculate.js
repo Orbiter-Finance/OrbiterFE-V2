@@ -286,6 +286,9 @@ export default {
     if (fromChainID === 2 || fromChainID === 22) {
       timeSpent = 15
     }
+    if (fromChainID === 10 || fromChainID === 510) {
+      timeSpent = 15
+    }
     if (fromChainID === 3 || fromChainID === 33) {
       timeSpent = 5
     }
@@ -346,6 +349,9 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       return '~4 hours'
     }
+    if (fromChainID === 10 || fromChainID === 510) {
+      return '~7 days'
+    }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
@@ -369,6 +375,10 @@ export default {
       }
       if (toChainID === 9 || toChainID === 99) {
         return '~10min'
+      }
+      if (toChainID === 10 || toChainID === 510) {
+        // eth -> metis
+        return '~5min'
       }
     }
   },
@@ -497,9 +507,9 @@ export default {
       ethGas = ARWithDrawARGas + ARWithDrawL1Gas
     }
     if (fromChainID === 10 || fromChainID === 510) {
-      // Ar get
+      // MT get
       let fromGasPrice = await this.getGasPrice(fromChainID)
-      // AR WithDraw
+      // MT WithDraw
       let MTWithDrawARGas = fromGasPrice * (isErc20 ? MT_ERC20_WITHDRAW_ONMT : MT_ETH_WITHDRAW_ONMT)
 
 
