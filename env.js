@@ -11,6 +11,7 @@ export default {
     2: process.env.VUE_APP_HP_AR,
     6: process.env.VUE_APP_HP_PO,
     7: process.env.VUE_APP_HP_OP,
+    10: process.env.VUE_APP_HP_MT,
     510: process.env.VUE_APP_HP_MT_R,
   },
   localWSProvider: {
@@ -22,6 +23,7 @@ export default {
     22: process.env.VUE_APP_WP_AR_R,
     66: process.env.VUE_APP_WP_PO_G,
     77: process.env.VUE_APP_WP_OP_K,
+    10: process.env.VUE_APP_WP_MT,
     510: process.env.VUE_APP_WP_MT_R,
   },
   supportLocalNetWorksIDs: [
@@ -101,7 +103,7 @@ export default {
     88: 'https://market.ropsten.immutable.com/inventory/',
     9: 'https://explorer.loopring.io/account/',
     99: 'https://explorer.loopring.io/account/',
-    10: 'https://andromeda-explorer.metis.io/tx/address/',
+    10: 'https://andromeda-explorer.metis.io/address/',
     510: 'https://stardust-explorer.metis.io/address/'
   },
 }
