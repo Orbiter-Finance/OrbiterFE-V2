@@ -21,7 +21,7 @@
           <svg-icon style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem" :iconName="item.icon"></svg-icon>
           <span style="margin-right: 1rem; font-weight: 600">
             {{
-            item.title
+              item.title
             }}
           </span>
           <o-tooltip placement="topLeft">
@@ -32,7 +32,7 @@
           </o-tooltip>
           <span v-if="!item.textBold && item.desc" class="right">
             {{
-            item.desc
+              item.desc
             }}
           </span>
           <span v-else-if="item.textBold && item.desc" class="right" style="font-weight: 600">{{ item.desc }}</span>
