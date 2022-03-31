@@ -270,7 +270,7 @@ async function getTransactionListMetis(
     for (const i in res.result) {
       if (Object.hasOwnProperty.call(res.result, i)) {
         let mtscanInfo = res.result[i]
-        let txinfo = TxInfo.getTxInfoWithEtherScan(mtscanInfo)
+        let txinfo = TxInfo.getTxInfoWithMetis(mtscanInfo)
         let isMatch = false
 
         for (let j = 0; j < makerList.length; j++) {

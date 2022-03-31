@@ -60,7 +60,7 @@ export default {
         const txList = await this.getTxList(req, chainId, false)
         for (const item of txList.result) {
             // fill tokenSymbol、tokenDecimal
-            item.tokenSymbol = 'WETH'
+            item.tokenSymbol = 'METIS'
             item.tokenDecimal = 18
 
             tokentxList.result.push(item)
