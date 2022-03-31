@@ -32,6 +32,7 @@ export default {
     '7',
     '8',
     '9',
+    '11',
     '22',
     '33',
     '44',
@@ -39,6 +40,7 @@ export default {
     '77',
     '88',
     '99',
+    '511',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -50,6 +52,7 @@ export default {
     7: '10', // optimism
     8: '1', // mainnet
     9: '1', // loopring
+    11: '1', // loopring
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -57,13 +60,14 @@ export default {
     77: '69', // optimism(K)
     88: '3', // ropsten
     99: '5', // loopring(G)
+    511: '3', // dydx(R)
   },
   crossAddressContracts: {
     1: '',
     2: '',
     3: '',
     4: '',
-    5: '0xb7661a0865BD56C3Bf25B2B49842D4DdF838BB1b',
+    5: '0xC7fdb51AeB32AE78d6AE82a614d73580691c5206',
     6: '',
     7: '',
     8: '',

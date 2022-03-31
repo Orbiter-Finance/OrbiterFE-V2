@@ -102,6 +102,9 @@ export default {
         if (item === 9 || item === 99) {
           iconName = 'loopringlogo'
         }
+        if (item === 11 || item === 511) {
+          iconName = 'dydxlogo'
+        }
         var chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),

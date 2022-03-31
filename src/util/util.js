@@ -31,13 +31,17 @@ export default {
       case 44:
         return 'StarkNet(R)'
       case 8:
-        return 'ImmutableX'
+        return 'Immutable X'
       case 88:
-        return 'ImmutableX(R)'
+        return 'Immutable X(R)'
       case 9:
         return 'Loopring'
       case 99:
         return 'Loopring(G)'
+      case 11:
+        return 'dYdX'
+      case 511:
+        return 'dYdX(R)'
     }
 
     const chain = chainList.chainList.filter(
