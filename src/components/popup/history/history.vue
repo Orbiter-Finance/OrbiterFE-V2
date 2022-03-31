@@ -111,7 +111,9 @@ export default {
         return 'imxlogo'
       } else if (chainID == '9' || chainID == '99') {
         return 'loopringlogo'
-      }  else {
+      } else if (chainID == '10' || chainID == '510') {
+        return 'metislogo'
+      } else {
         return 'ethlogo'
       }
     },

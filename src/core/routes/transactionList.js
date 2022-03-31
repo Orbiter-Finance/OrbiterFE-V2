@@ -6,6 +6,7 @@ import {
 } from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
+import metis from '../actions/metis'
 import etherscan from '../actions/etherscan'
 import immutablex from '../actions/immutablex'
 import loopring from '../actions/loopring'
@@ -230,6 +231,116 @@ async function getTransactionListArbitrum(
 
   return { ARFromTxList, ARToTxList }
 }
+
+
+
+async function getTransactionListMetis(
+  userAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const MTFromTxList = []
+  const MTToTxList = []
+
+  let mtScanReq = {
+    timestamp: needTimeStamp,
+    closest: 'before',
+  }
+  let mtScanStartBlock = 0
+  try {
+    let resp = await metis.getBlockNumberWithTimeStamp(mtScanReq, chainID)
+    if (resp.status === '1' && resp.message === 'OK') {
+      mtScanStartBlock = resp.result
+    } else {
+      mtScanStartBlock = 0
+    }
+  } catch (error) {
+    console.log('mtScanStartBlockError =', error)
+    throw error.message
+  }
+
+  let MtscanReq = {
+    maker: userAddress,
+    startblock: mtScanStartBlock,
+    endblock: 999999999,
+  }
+  try {
+    let res = await metis.getTransationList(MtscanReq, chainID)
+    for (const i in res.result) {
+      if (Object.hasOwnProperty.call(res.result, i)) {
+        let mtscanInfo = res.result[i]
+        let txinfo = TxInfo.getTxInfoWithEtherScan(mtscanInfo)
+        let isMatch = false
+
+        for (let j = 0; j < makerList.length; j++) {
+          let makerInfo = makerList[j]
+          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+            continue
+          }
+
+          if (txinfo.tokenName !== makerInfo.tName) {
+            continue
+          }
+
+          let avalibleTimes =
+            chainID === makerInfo.c1ID
+              ? makerInfo.c1AvalibleTimes
+              : makerInfo.c2AvalibleTimes
+          for (let z = 0; z < avalibleTimes.length; z++) {
+            const avalibleTime = avalibleTimes[z]
+
+            if (
+              avalibleTime.startTime <= txinfo.timeStamp &&
+              avalibleTime.endTime >= txinfo.timeStamp
+            ) {
+              isMatch = true
+              break
+            }
+          }
+
+          if (!isMatch) {
+            continue
+          }
+
+          if (txinfo.from === _makerAddress) {
+            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+            let nonce = 0
+            if (pText.state) {
+              nonce = pText.pText
+            }
+            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+              MTToTxList.push(txinfo)
+              break
+            }
+          } else if (txinfo.to === _makerAddress) {
+            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+              let arr2 = [
+                chainID,
+                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+              ]
+              if (judgeArrayEqualFun(arr1, arr2)) {
+                MTFromTxList.push(txinfo)
+                break
+              }
+            }
+          } else {
+            // doNothiing
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('arbitrumError =', error)
+    throw error.message
+  }
+
+  return { MTFromTxList, MTToTxList }
+}
+
 
 async function getTransactionListOptimitic(
   userAddress,
@@ -878,7 +989,7 @@ async function getTransactionListLoopring(
             (lpTransaction.senderAddress.toLowerCase() ==
               userAddress.toLowerCase() ||
               lpTransaction.receiverAddress.toLowerCase() ==
-                userAddress.toLowerCase()) &&
+              userAddress.toLowerCase()) &&
             lpTransaction.symbol == 'ETH'
           ) {
             LPAllTxList.push(lpTransaction)
@@ -983,7 +1094,7 @@ export default {
           supportChains.push(maker.c2ID)
         }
       }
-
+      console.log(supportChains, 'supportChains')
       let nowTimeStamp = Date.parse(new Date()) / 1000
       let needTimeStamp =
         nowTimeStamp - 86400 * (req.daysAgo ? req.daysAgo : 10)
@@ -1023,6 +1134,23 @@ export default {
           originTxList[chainID] = {
             fromList: ARFromTxList,
             toList: ARToTxList,
+          }
+        })
+      }
+
+      // 10 510 Metis
+      if (supportChains.indexOf(10) > -1 || supportChains.indexOf(510) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(10) > -1 ? 10 : 510
+          const { MTFromTxList, MTToTxList } = await getTransactionListMetis(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
+          originTxList[chainID] = {
+            fromList: MTFromTxList,
+            toList: MTToTxList,
           }
         })
       }
@@ -1248,9 +1376,9 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
             ? fromTxInfo.memo % 9000
             : orbiterCore.getToChainIDFromAmount(
-                Number(fromChainID),
-                fromTxInfo.value
-              )
+              Number(fromChainID),
+              fromTxInfo.value
+            )
         let realFromAmount = orbiterCore.getRAmountFromTAmount(
           Number(fromChainID),
           fromTxInfo.value
@@ -1385,15 +1513,15 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           let toAmount =
             toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
               ? orbiterCore.getTAmountFromRAmount(
-                  Number(toChainID),
-                  realToAmount,
-                  '0'
-                ).tAmount
+                Number(toChainID),
+                realToAmount,
+                '0'
+              ).tAmount
               : orbiterCore.getTAmountFromRAmount(
-                  Number(toChainID),
-                  realToAmount,
-                  fromTxInfo.nonce.toString()
-                ).tAmount
+                Number(toChainID),
+                realToAmount,
+                fromTxInfo.nonce.toString()
+              ).tAmount
 
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce

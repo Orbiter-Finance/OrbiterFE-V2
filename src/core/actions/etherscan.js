@@ -59,7 +59,6 @@ export default {
 
   getTransationList: async function (req, chainId) {
     const tokentxList = await this.getTxList(req, chainId)
-
     // contact eth txlist
     const txList = await this.getTxList(req, chainId, false)
     for (const item of txList.result) {
