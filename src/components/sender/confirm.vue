@@ -119,6 +119,7 @@ import {
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
+import { checkStateWhenConfirmTransfer } from '../../util/confirmCheck'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -653,7 +654,7 @@ export default {
           type: ETHTokenType.ETH,
           data: {
             decimals: selectMakerInfo.precision,
-          }
+          },
         }
         if (!util.isEthTokenAddress(contractAddress)) {
           tokenInfo = {
@@ -661,8 +662,8 @@ export default {
             data: {
               symbol: selectMakerInfo.tName,
               decimals: selectMakerInfo.precision,
-              tokenAddress: contractAddress
-            }
+              tokenAddress: contractAddress,
+            },
           }
         }
 
@@ -715,6 +716,20 @@ export default {
       var fromChainID = this.$store.state.transferData.fromChainID
       var toChainID = this.$store.state.transferData.toChainID
       var selectMakerInfo = this.$store.getters.realSelectMakerInfo
+
+      // 增加check币商余额逻辑
+
+      let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
+        new BigNumber(this.$store.state.transferData.transferValue).plus(
+          new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
+        ),
+        this.$store.getters.realSelectMakerInfo,
+        false
+      )
+      if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
+        this.transferLoading = false
+        return
+      }
 
       if (fromChainID === 3 || fromChainID === 33) {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
