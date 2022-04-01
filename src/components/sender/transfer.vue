@@ -323,6 +323,7 @@ const queryParamsChainMap = {
   Polygon: 6,
   Optimism: 7,
   ImmutableX: 8,
+  dYdX: 11,
   Rinkeby: 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
@@ -332,6 +333,7 @@ const queryParamsChainMap = {
   Loopring: 9,
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,
+  'dYdX(R)': 511,
 }
 
 export default {
@@ -624,8 +626,6 @@ export default {
           info.text = 'INSUFFICIENT FUNDS'
           info.disabled = 'disabled'
         } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
-          console.warn('this.toValue =', this.toValue)
-          console.warn('this.makerMaxBalance =', this.makerMaxBalance)
           info.text = 'INSUFFICIENT LIQUIDITY'
           info.disabled = 'disabled'
         }
@@ -1492,101 +1492,79 @@ export default {
             this.$store.state.transferData.fromChainID
           ]
         ) {
-          this.addChainNetWork()
-        } else {
-          // Ensure immutablex's registered
-          const { toChainID } = this.$store.state.transferData
-          if (toChainID == 8 || toChainID == 88) {
-            const imxHelper = new IMXHelper(toChainID)
-            await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+          try {
+            await this.addChainNetWork()
+          } catch (err) {
+            util.showMessage(err.message, 'error')
+            return
           }
-
-          // sendTransfer
-          this.$store.commit('updateConfirmRouteDescInfo', [
-            {
-              no: 1,
-              amount: new BigNumber(this.transferValue).plus(
-                new BigNumber(selectMakerInfo.tradingFee)
-              ),
-              coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
-            },
-          ])
-          this.$emit('stateChanged', '2')
         }
+
+        // Ensure immutablex's registered
+        const { toChainID } = this.$store.state.transferData
+        if (toChainID == 8 || toChainID == 88) {
+          const imxHelper = new IMXHelper(toChainID)
+          await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+        }
+
+        // sendTransfer
+        this.$store.commit('updateConfirmRouteDescInfo', [
+          {
+            no: 1,
+            amount: new BigNumber(this.transferValue).plus(
+              new BigNumber(selectMakerInfo.tradingFee)
+            ),
+            coin: this.$store.state.transferData.selectTokenInfo.token,
+            toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+          },
+        ])
+        this.$emit('stateChanged', '2')
       }
     },
-    addChainNetWork() {
-      var chain = util.getChainInfo(
+    async addChainNetWork() {
+      const chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
           this.$store.state.transferData.fromChainID
         ]
       )
-      let selectMakerInfo = this.$store.getters.realSelectMakerInfo
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum
-        .request({
+
+      try {
+        await window.ethereum.request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
         })
-        .then(async () => {
-          // Ensure immutablex's registered
-          const { toChainID } = this.$store.state.transferData
-          if (toChainID == 8 || toChainID == 88) {
-            const imxHelper = new IMXHelper(toChainID)
-            await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+      } catch (error) {
+        if (error.code === 4902) {
+          // need add net
+          const params = {
+            chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
+            chainName: chain.name,
+            nativeCurrency: {
+              name: chain.nativeCurrency.name,
+              symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+              decimals: chain.nativeCurrency.decimals,
+            },
+            rpcUrls: chain.rpc,
+            blockExplorerUrls: [
+              chain.explorers &&
+              chain.explorers.length > 0 &&
+              chain.explorers[0].url
+                ? chain.explorers[0].url
+                : chain.infoURL,
+            ],
           }
 
-          // switch success
-          this.$store.commit('updateConfirmRouteDescInfo', [
-            {
-              no: 1,
-              amount: new BigNumber(this.transferValue).plus(
-                new BigNumber(selectMakerInfo.tradingFee)
-              ),
-              coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
-            },
-          ])
-          this.$emit('stateChanged', '2')
-        })
-        .catch((error) => {
-          console.log(error)
-          if (error.code === 4902) {
-            // need add net
-            const params = {
-              chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
-              chainName: chain.name,
-              nativeCurrency: {
-                name: chain.nativeCurrency.name,
-                symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-                decimals: chain.nativeCurrency.decimals,
-              },
-              rpcUrls: chain.rpc,
-              blockExplorerUrls: [
-                chain.explorers &&
-                chain.explorers.length > 0 &&
-                chain.explorers[0].url
-                  ? chain.explorers[0].url
-                  : chain.infoURL,
-              ],
-            }
-            window.ethereum
-              .request({
-                method: 'wallet_addEthereumChain',
-                params: [params, this.$store.state.web3.coinbase],
-              })
-              .then(() => {})
-              .catch((error) => {
-                console.log(error)
-                util.showMessage(error.message, 'error')
-              })
-          } else {
-            util.showMessage(error.message, 'error')
-          }
-        })
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [params, this.$store.state.web3.coinbase],
+          })
+        } else {
+          throw error
+        }
+      }
     },
 
     async updateOriginGasCost() {
