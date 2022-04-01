@@ -55,16 +55,16 @@ const test = async () => {
   // )
   // console.warn('resp >>> ', resp);
 
-  const resp1 = await corssAddress.transfer(
-    '0xa9D1Ce03414DF86233B5beCa03C14631474EA234',
-    utils.parseEther('0.01'),
-    {
-      type: '0x01',
-      value: ethers.utils.hexValue(
-        '0x6ce4D9694c1626862234216bA78874dE70903A71'
-      ),
-    }
-  )
-  console.warn('resp1 >>> ', resp1)
+  // const resp1 = await corssAddress.transfer(
+  //   '0xa9D1Ce03414DF86233B5beCa03C14631474EA234',
+  //   utils.parseEther('0.01'),
+  //   {
+  //     type: '0x01',
+  //     value: ethers.utils.hexValue(
+  //       '0x6ce4D9694c1626862234216bA78874dE70903A71'
+  //     ),
+  //   }
+  // )
+  // console.warn('resp1 >>> ', resp1)
 }
 setTimeout(test, 3000)

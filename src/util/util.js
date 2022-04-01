@@ -151,4 +151,12 @@ export default {
       }, ms)
     })
   },
+
+  /**
+   * @param {number} chainId 
+   * @returns 
+   */
+  isSupportEVM(chainId) {
+    return [1, 2, 6, 7, 5, 22, 66, 77].indexOf(Number(chainId)) > -1
+  },
 }

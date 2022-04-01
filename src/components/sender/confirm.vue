@@ -241,10 +241,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+        var p_text = 9000 + Number(toChainID) + ''
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -401,10 +398,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+        var p_text = 9000 + Number(toChainID) + ''
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -653,7 +647,7 @@ export default {
           type: ETHTokenType.ETH,
           data: {
             decimals: selectMakerInfo.precision,
-          }
+          },
         }
         if (!util.isEthTokenAddress(contractAddress)) {
           tokenInfo = {
@@ -661,8 +655,8 @@ export default {
             data: {
               symbol: selectMakerInfo.tName,
               decimals: selectMakerInfo.precision,
-              tokenAddress: contractAddress
-            }
+              tokenAddress: contractAddress,
+            },
           }
         }
 
@@ -689,6 +683,7 @@ export default {
         this.transferLoading = false
       }
     },
+
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
@@ -711,10 +706,20 @@ export default {
       }
 
       // sendTransfer
+      const { fromChainID, toChainID, transferExt } =
+        this.$store.state.transferData
+      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
+
+      // Check fromChainID isSupportEVM
+      if (transferExt && !util.isSupportEVM(fromChainID)) {
+        this.$notify.error({
+          title: `Sorry, this fromChainID: ${fromChainID} no support EVM!`,
+          duration: 3000,
+        })
+        return
+      }
+
       this.transferLoading = true
-      var fromChainID = this.$store.state.transferData.fromChainID
-      var toChainID = this.$store.state.transferData.toChainID
-      var selectMakerInfo = this.$store.getters.realSelectMakerInfo
 
       if (fromChainID === 3 || fromChainID === 33) {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
@@ -733,10 +738,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         const rAmountValue = rAmount.toFixed()
-        const p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+        const p_text = 9000 + Number(toChainID) + ''
         const tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,

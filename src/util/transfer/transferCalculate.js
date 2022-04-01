@@ -749,10 +749,7 @@ export default {
 
   realTransferOPID() {
     let toChainID = store.state.transferData.toChainID
-    var p_text =
-      toChainID.toString().length === 1
-        ? '900' + toChainID.toString()
-        : '90' + toChainID.toString()
+    const p_text = 9000 + Number(toChainID) + ''
     return p_text
   },
 
@@ -770,11 +767,8 @@ export default {
       new BigNumber(10 ** selectMakerInfo.precision)
     )
     let rAmountValue = rAmount.toFixed()
-    var p_text =
-      toChainID.toString().length === 1
-        ? '900' + toChainID.toString()
-        : '90' + toChainID.toString()
-    var tValue = orbiterCore.getTAmountFromRAmount(
+    const p_text = 9000 + Number(toChainID) + ''
+    const tValue = orbiterCore.getTAmountFromRAmount(
       fromChainID,
       rAmountValue,
       p_text

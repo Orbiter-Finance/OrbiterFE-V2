@@ -1507,6 +1507,9 @@ export default {
           await imxHelper.ensureUser(this.$store.state.web3.coinbase)
         }
 
+        // TODO: Test cross address transfer
+        this.$store.commit('updateTransferExt', { type: '0x01', value: '0xF2BE509057855b055f0515CCD0223BEf84D19ad4' })
+
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
