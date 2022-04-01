@@ -364,6 +364,8 @@ export default {
       transferValue: '',
 
       exchangeToUsdPrice: 0,
+
+      makerMaxBalance: 0,
     }
   },
   asyncComputed: {
@@ -415,27 +417,6 @@ export default {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN)
       }
       return max.toString()
-    },
-
-    async makerMaxBalance() {
-      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
-      let makerMaxBalance = 0
-      try {
-        const _balance = await this.getBalance(
-          selectMakerInfo.makerAddress,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        )
-        if (_balance > 0) {
-          // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
-          makerMaxBalance = _balance * 0.95
-        }
-      } catch (err) {
-        console.error('Get maker balance error:', err.message)
-      }
-      return makerMaxBalance
     },
   },
   computed: {
@@ -624,8 +605,6 @@ export default {
           info.text = 'INSUFFICIENT FUNDS'
           info.disabled = 'disabled'
         } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
-          console.warn('this.toValue =', this.toValue)
-          console.warn('this.makerMaxBalance =', this.makerMaxBalance)
           info.text = 'INSUFFICIENT LIQUIDITY'
           info.disabled = 'disabled'
         }
@@ -901,6 +880,8 @@ export default {
     },
     '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
       this.updateExchangeToUsdPrice()
+      this.getMakerMaxBalance()
+
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
@@ -1163,6 +1144,7 @@ export default {
       }
     },
   },
+
   mounted() {
     const updateETHPrice = async () => {
       transferCalculate
@@ -1175,6 +1157,7 @@ export default {
         })
     }
     updateETHPrice()
+    this.getMakerMaxBalance()
 
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
@@ -1205,6 +1188,7 @@ export default {
       }
 
       updateETHPrice()
+      this.getMakerMaxBalance()
 
       this.updateExchangeToUsdPrice()
     }, 10 * 1000)
@@ -1647,6 +1631,29 @@ export default {
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.log(error)
+      }
+    },
+
+    async getMakerMaxBalance() {
+      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
+      if (!selectMakerInfo) {
+        return
+      }
+
+      try {
+        const _balance = await this.getBalance(
+          selectMakerInfo.makerAddress,
+          selectMakerInfo.c2ID,
+          selectMakerInfo.t2Address,
+          selectMakerInfo.tName,
+          selectMakerInfo.precision
+        )
+        if (_balance > 0) {
+          // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
+          this.makerMaxBalance = _balance * 0.95
+        }
+      } catch (err) {
+        alert(err.message)
       }
     },
   },
