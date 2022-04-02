@@ -10,12 +10,12 @@ var zkConfigNet = config.zkSync.Rinkeby
 // var l1ConfigNet = config.L1.Mainnet
 
 export default {
-  getZKBalance: function(req) {
+  getZKAccountInfo: function (req) {
     return new Promise((resolve, reject) => {
       if (req.localChainID !== 3 && req.localChainID !== 33) {
         reject({
           errorCode: 1,
-          errMsg: 'getZKBalanceError_wrongChainID',
+          errMsg: 'getZKAccountError_wrongChainID',
         })
       }
       const url =
@@ -28,7 +28,7 @@ export default {
         req.stateType
       axios
         .get(url)
-        .then(function(response) {
+        .then(function (response) {
           if (response.status === 200) {
             var respData = response.data
             if (respData.status === 'success') {
@@ -43,7 +43,7 @@ export default {
             })
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           reject({
             errorCode: 2,
             errMsg: error,
@@ -52,7 +52,7 @@ export default {
     })
   },
   // get single zk transaction data
-  getZKTransactionData: function(req) {
+  getZKTransactionData: function (req) {
     return new Promise((resolve, reject) => {
       /* req
         account:address / id
@@ -74,7 +74,7 @@ export default {
         '/data'
       axios
         .get(url)
-        .then(function(response) {
+        .then(function (response) {
           if (response.status === 200) {
             var respData = response.data
             if (respData.status === 'success') {
@@ -89,7 +89,7 @@ export default {
             })
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           reject({
             errorCode: 2,
             errMsg: error,
@@ -98,7 +98,7 @@ export default {
     })
   },
   // get an account transactionList
-  getZKInfo: function(req) {
+  getZKInfo: function (req) {
     return new Promise((resolve, reject) => {
       /* req
           localChainID: localChainID,
@@ -129,7 +129,7 @@ export default {
         .get(url, {
           params: params,
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response.status === 200) {
             var respData = response.data
             if (respData.status === 'success') {
@@ -144,7 +144,7 @@ export default {
             })
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           reject({
             errorCode: 2,
             errMsg: error,
@@ -152,7 +152,7 @@ export default {
         })
     })
   },
-  getZKTokenInfo: function(req) {
+  getZKTokenInfo: function (req) {
     return new Promise((resolve, reject) => {
       /* req
         token : id / address
@@ -160,7 +160,7 @@ export default {
       const url = zkConfigNet + '/tokens/' + req.token
       axios
         .get(url)
-        .then(function(response) {
+        .then(function (response) {
           // console.log('respnse =', response)
           if (response.status === 200) {
             var respData = response.data
@@ -176,7 +176,7 @@ export default {
             })
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log('error =', error)
           reject({
             errorCode: 2,
@@ -185,7 +185,7 @@ export default {
         })
     })
   },
-  getZKTokenList: function(req) {
+  getZKTokenList: function (req) {
     return new Promise((resolve, reject) => {
       /* req
         localChainID: localChainID,
@@ -207,7 +207,7 @@ export default {
 
       axios
         .get(url)
-        .then(function(response) {
+        .then(function (response) {
           if (response.status === 200) {
             var respData = response.data
             if (respData.status === 'success') {
@@ -222,7 +222,7 @@ export default {
             })
           }
         })
-        .catch(function(error) {
+        .catch(function (error) {
           console.log('error =', error)
           reject({
             errorCode: 2,

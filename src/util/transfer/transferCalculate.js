@@ -679,7 +679,7 @@ export default {
         stateType: 'committed',
       }
       try {
-        let balanceInfo = await thirdapi.getZKBalance(req)
+        let balanceInfo = await thirdapi.getZKAccountInfo(req)
         if (
           !balanceInfo ||
           !balanceInfo.result ||
