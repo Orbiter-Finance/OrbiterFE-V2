@@ -20,7 +20,7 @@ const state = {
     selectMakerInfo: '',
     fromChainID: '',
     toChainID: '',
-    transferExt: () => null, // {type: string, value: string} | null
+    transferExt: null, // {type: string, value: string} | null
     transferValue: 0,
     gasFee: 0,
     ethPrice: 0,

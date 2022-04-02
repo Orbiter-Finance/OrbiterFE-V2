@@ -119,6 +119,7 @@ import {
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
+import { CrossAddress } from '../../util/cross_address'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -550,6 +551,7 @@ export default {
 
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -595,6 +597,7 @@ export default {
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -631,6 +634,7 @@ export default {
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -677,6 +681,59 @@ export default {
       } catch (error) {
         this.$notify.error({
           title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
+
+    async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        return
+      }
+
+      let contractAddress = selectMakerInfo.t1Address
+      if (selectMakerInfo.c1ID != fromChainID) {
+        contractAddress = selectMakerInfo.t2Address
+      }
+
+      try {
+        const { transferExt } = this.$store.state.transferData
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const crossAddress = new CrossAddress(provider, fromChainID)
+
+        const amount = ethers.BigNumber.from(value)
+        let transactionHash = ''
+        if (util.isEthTokenAddress(contractAddress)) {
+          transactionHash = (
+            await crossAddress.transfer(
+              selectMakerInfo.makerAddress,
+              amount,
+              transferExt
+            )
+          ).hash
+        } else {
+          transactionHash = (
+            await crossAddress.transferERC20(
+              contractAddress,
+              selectMakerInfo.makerAddress,
+              amount,
+              transferExt
+            )
+          ).hash
+        }
+
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          transactionHash
+        )
+      } catch (err) {
+        this.$notify.error({
+          title: err.message,
           duration: 3000,
         })
       } finally {
@@ -771,6 +828,18 @@ export default {
             tValue.tAmount,
             fromChainID
           )
+          return
+        }
+
+        // Cross address transfer
+        if (transferExt) {
+          this.transferCrossAddress(
+            account,
+            selectMakerInfo,
+            tValue.tAmount + 10000000,
+            fromChainID
+          )
+
           return
         }
 

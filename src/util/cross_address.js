@@ -1,5 +1,4 @@
 import { ethers, utils } from 'ethers'
-import { hexDataSlice, isHexString } from 'ethers/lib/utils'
 import env from '../../env'
 import { Coin_ABI } from './constants/contract/contract'
 
@@ -36,12 +35,12 @@ export const CrossAddressTypes = {
 export class CrossAddress {
   /**
    * @param {ethers.providers.JsonRpcProvider} provider
-   * @param {number | undefined} orbiterChainId
+   * @param {number} orbiterChainId
    * @param {ethers.Signer | undefined} signer
    */
   constructor(
     provider,
-    orbiterChainId,
+    orbiterChainId = 5,
     signer = undefined,
   ) {
     this.contractAddress = env.crossAddressContracts[orbiterChainId]
@@ -55,12 +54,12 @@ export class CrossAddress {
   }
 
   async checkNetworkId() {
-    if (!this.currentNetworkId) {
-      this.currentNetworkId = (await this.provider.getNetwork()).chainId
+    if (!this.providerNetworkId) {
+      this.providerNetworkId = (await this.provider.getNetwork()).chainId
     }
-    if (this.currentNetworkId != this.networkId) {
+    if (this.providerNetworkId != this.networkId) {
       throw new Error(
-        `Sorry, currentNetworkId: ${this.currentNetworkId} no equal networkId: ${this.networkId}`
+        `Sorry, currentNetworkId: ${this.providerNetworkId} no equal networkId: ${this.networkId}`
       )
     }
   }
@@ -83,7 +82,7 @@ export class CrossAddress {
    * @param {string} to
    * @param {ethers.BigNumber} amount
    * @param {{type: string, value: string} | undefined} ext
-   * @return
+   * @return {Promise<{hash: string}>}
    */
   async transfer(to, amount, ext = undefined) {
     await this.checkNetworkId()
@@ -98,7 +97,7 @@ export class CrossAddress {
       this.signer
     )
 
-    const extHex = this.encodeExt(ext)
+    const extHex = CrossAddress.encodeExt(ext)
     const options = { value: amount.toHexString() }
 
     return await contract.transfer(to, extHex, options)
@@ -110,7 +109,7 @@ export class CrossAddress {
    * @param {string} to
    * @param {ethers.BigNumber} amount
    * @param {{type: string, value: string} | undefined} ext
-   * @return
+   * @return {Promise<{hash: string}>}
    */
   async transferERC20(tokenAddress, to, amount, ext = undefined) {
     await this.checkNetworkId()
@@ -139,7 +138,7 @@ export class CrossAddress {
       CROSS_ADDRESS_ABI,
       this.signer
     )
-    const extHex = this.encodeExt(ext)
+    const extHex = CrossAddress.encodeExt(ext)
     return await contract.transferERC20(
       tokenAddress,
       to,
@@ -153,8 +152,8 @@ export class CrossAddress {
    * @param {{type: string, value: string} | undefined} ext
    * @returns {string} hex
    */
-  encodeExt(ext) {
-    if (!ext || !isHexString(ext.type)) {
+  static encodeExt(ext) {
+    if (!ext || !utils.isHexString(ext.type)) {
       return '0x'
     }
     if (!ext.value) {
@@ -168,13 +167,36 @@ export class CrossAddress {
    * @param {string} hex
    * @returns {{type: string, value: string} | undefined}
    */
-  decodeExt(hex) {
-    if (isHexString(hex)) {
+  static decodeExt(hex) {
+    if (!utils.isHexString(hex)) {
       return undefined
     }
 
-    const type = hexDataSlice(hex, 0, 1)
-    const value = hexDataSlice(hex, 1)
+    const type = utils.hexDataSlice(hex, 0, 1)
+    const value = utils.hexDataSlice(hex, 1)
     return { type, value }
+  }
+
+
+  /**
+   * @param {string} input 0x...
+   */
+   static parseTransferInput(input) {
+    const [to, ext] = utils.defaultAbiCoder.decode(
+      ['address', 'bytes'],
+      utils.hexDataSlice(input, 4)
+    )
+    return { to, ext: CrossAddress.decodeExt(ext) }
+  }
+
+  /**
+   * @param {string} input 0x...
+   */
+  static parseTransferERC20Input(input) {
+    const [token, to, amount, ext] = utils.defaultAbiCoder.decode(
+      ['address', 'address', 'uint256', 'bytes'],
+      utils.hexDataSlice(input, 4)
+    )
+    return { token, to, amount, ext: CrossAddress.decodeExt(ext) }
   }
 }

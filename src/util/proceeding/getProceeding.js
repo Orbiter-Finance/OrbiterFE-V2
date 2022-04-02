@@ -18,6 +18,7 @@ import { IMXListen } from '../immutablex/imx_listen'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
+import { CrossAddress } from '../cross_address'
 
 let startBlockNumber = ''
 
@@ -327,7 +328,7 @@ async function confirmUserTransaction(
       )
     }
 
-    // main & arbitrum
+    // EVM chains
     const trxConfirmations = await getConfirmations(localChainID, txHash)
     if (!trxConfirmations) {
       return confirmUserTransaction(
@@ -356,15 +357,27 @@ async function confirmUserTransaction(
         ' confirmation(s)'
     )
 
+    // ERC20's transfer input length is 138(include 0x), when the length > 138, it is cross address transfer
     let amountStr = '0'
     let startScanMakerTransferFromAddress = ''
-    if (util.isEthTokenAddress(fromTokenAddress)) {
-      amountStr = Web3.utils.hexToNumberString(Web3.utils.toHex(trx.value))
-      startScanMakerTransferFromAddress = trx.to
+    if (trx.input.length <= 138) {
+      if (util.isEthTokenAddress(fromTokenAddress)) {
+        amountStr = Web3.utils.hexToNumberString(Web3.utils.toHex(trx.value))
+        startScanMakerTransferFromAddress = trx.to
+      } else {
+        const amountHex = '0x' + trx.input.slice(74)
+        amountStr = Web3.utils.hexToNumberString(amountHex)
+        startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
+      }
     } else {
-      const amountHex = '0x' + trx.input.slice(74)
-      amountStr = Web3.utils.hexToNumberString(amountHex)
-      startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
+      // Parse input data
+      const inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      if (!inputData.ext?.value) {
+        return
+      }
+      
+      startScanMakerTransferFromAddress = inputData.to
+      amountStr = inputData.amount.toNumber() + ''
     }
     var amount = orbiterCore.getRAmountFromTAmount(
       localChainID,
@@ -389,27 +402,33 @@ async function confirmUserTransaction(
       }
       storeUpdateProceedState(3)
 
-      var nonce = trx.nonce.toString()
-      let sendRAmount = orbiterCore.getToAmountFromUserAmount(
+      const nonce = trx.nonce.toString()
+      const sendRAmount = orbiterCore.getToAmountFromUserAmount(
         new Bignumber(amount).dividedBy(
           new Bignumber(10 ** makerInfo.precision)
         ),
         makerInfo,
         true
       )
-      let makerTransferChainID =
+      const makerTransferChainID =
         localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
-      let amountToSend = orbiterCore.getTAmountFromRAmount(
+      const amountToSend = orbiterCore.getTAmountFromRAmount(
         makerTransferChainID,
         sendRAmount,
         nonce
       ).tAmount
+      const { transferExt } = store.state.transferData
+      let toAddress = trx.from
+      if (transferExt?.value) {
+        toAddress = transferExt.value
+      }
+
       startScanMakerTransfer(
         txHash,
         makerTransferChainID,
         makerInfo,
         startScanMakerTransferFromAddress,
-        trx.from,
+        toAddress,
         amountToSend,
         nonce
       )
