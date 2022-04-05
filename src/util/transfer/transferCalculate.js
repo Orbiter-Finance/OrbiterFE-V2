@@ -329,6 +329,9 @@ export default {
     if (toChainID === 9 || toChainID === 99) {
       timeSpent = 15
     }
+    if (toChainID === 10 || toChainID === 510) {
+      timeSpent = 15
+    }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
   },
@@ -406,6 +409,9 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       return ' 4 hours'
     }
+    if (fromChainID === 10 || fromChainID === 510) {
+      return ' 7 days'
+    }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
@@ -430,6 +436,10 @@ export default {
       if (toChainID === 9 || toChainID === 99) {
         // eth -> loopring
         return ' 9.25min'
+      }
+      if (toChainID === 10 || toChainID === 510) {
+        // eth -> metis
+        return ' 4.25min'
       }
     }
   },
