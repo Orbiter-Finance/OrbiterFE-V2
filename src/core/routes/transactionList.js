@@ -1094,7 +1094,6 @@ export default {
           supportChains.push(maker.c2ID)
         }
       }
-      console.log(supportChains, 'supportChains')
       let nowTimeStamp = Date.parse(new Date()) / 1000
       let needTimeStamp =
         nowTimeStamp - 86400 * (req.daysAgo ? req.daysAgo : 10)

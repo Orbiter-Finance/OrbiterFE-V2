@@ -29,16 +29,6 @@ const ZK_ETH_DEPOSIT_DEPOSIT_ONL1 = 62599
 const AR_ERC20_DEPOSIT_DEPOSIT_ONL1 = 218291
 const AR_ETH_DEPOSIT_DEPOSIT_ONL1 = 92000
 
-// metis deposit
-const MT_ERC20_DEPOSIT_DEPOSIT_ONL1 = 103937
-const MT_ETH_DEPOSIT_DEPOSIT_ONL1 = 20000
-
-// metis withdraw
-const MT_ERC20_WITHDRAW_ONMT = 801420
-const MT_ERC20_WITHDRAW_ONL1 = 234552
-const MT_ETH_WITHDRAW_ONMT = 666721
-const MT_ETH_WITHDRAW_ONL1 = 161063
-
 // ar withdraw
 const AR_ERC20_WITHDRAW_ONAR = 801420
 const AR_ERC20_WITHDRAW_ONL1 = 234552
@@ -51,6 +41,13 @@ const PG_ERC20_DEPOSIT_DEPOSIT_ONL1 = 77257
 // polygon withdraw
 const PG_ERC20_WITHDRAW_ONPG = 32000
 const PG_ERC20_WITHDRAW_ONL1 = 480000
+
+// metis deposit
+const MT_ERC20_DEPOSIT_DEPOSIT_ONL1 = 170617
+
+// metis withdraw
+const MT_ERC20_WITHDRAW_ONMT = 685768
+const MT_ERC20_WITHDRAW_ONL1 = 234552//to check 
 
 //optimistic deposit
 const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
@@ -513,18 +510,6 @@ export default {
         L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
       ethGas = ARWithDrawARGas + ARWithDrawL1Gas
     }
-    if (fromChainID === 10 || fromChainID === 510) {
-      // MT get
-      let fromGasPrice = await this.getGasPrice(fromChainID)
-      // MT WithDraw
-      let MTWithDrawARGas = fromGasPrice * (isErc20 ? MT_ERC20_WITHDRAW_ONMT : MT_ETH_WITHDRAW_ONMT)
-
-
-      let L1ChainID = fromChainID === 10 ? 1 : 5
-      let L1GasPrice = await this.getGasPrice(L1ChainID)
-      let MTWithDrawL1Gas = L1GasPrice * (isErc20 ? MT_ERC20_WITHDRAW_ONL1 : MT_ETH_WITHDRAW_ONL1)
-      ethGas = MTWithDrawARGas + MTWithDrawL1Gas
-    }
     if (fromChainID === 3 || fromChainID === 33) {
       // zk withdraw
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -554,6 +539,7 @@ export default {
       const PGWithDrawL1Gas = L1GasPrice * PG_ERC20_WITHDRAW_ONL1
       ethGas += PGWithDrawL1Gas
     }
+
     if (fromChainID === 7 || fromChainID === 77) {
       // OP get
       let fromGasPrice = await this.getGasPrice(fromChainID)
@@ -594,7 +580,17 @@ export default {
       )
       ethGas += Number(loopringWithDrawFee)
     }
-
+    if (fromChainID === 10 || fromChainID === 510) {
+      // MT get
+      let fromGasPrice = await this.getGasPrice(fromChainID)
+      // MT WithDraw
+      const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
+      maticGas += MTWithDrawARGas
+      const L1ChainID = fromChainID === 10 ? 1 : 5
+      const L1GasPrice = await this.getGasPrice(L1ChainID)
+      const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
+      ethGas += MTWithDrawL1Gas
+    }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       // Ar deposit
@@ -646,7 +642,13 @@ export default {
       let lpDepositGas = toGasPrice * LP_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += lpDepositGas
     }
-
+    if (toChainID === 10 || toChainID === 510) {
+      // MT deposit
+      let toGasPrice = await this.getGasPrice(toChainID === 10 ? 1 : 5)
+      // MT deposit
+      const mtDepositGas = toGasPrice * MT_ERC20_DEPOSIT_DEPOSIT_ONL1
+      ethGas += mtDepositGas
+    }
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(
