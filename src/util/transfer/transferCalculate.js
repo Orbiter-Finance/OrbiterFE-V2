@@ -600,14 +600,6 @@ export default {
         (isErc20 ? AR_ERC20_DEPOSIT_DEPOSIT_ONL1 : AR_ETH_DEPOSIT_DEPOSIT_ONL1)
       ethGas += arDepositGas
     }
-    if (toChainID === 10 || toChainID === 510) {
-      // Ar deposit
-      const toGasPrice = await this.getGasPrice(toChainID === 10 ? 1 : 5)
-      const MTDepositGas =
-        toGasPrice *
-        (isErc20 ? MT_ERC20_DEPOSIT_DEPOSIT_ONL1 : MT_ETH_DEPOSIT_DEPOSIT_ONL1)
-      ethGas += MTDepositGas
-    }
     if (toChainID === 3 || toChainID === 33) {
       // zk deposit
       const toGasPrice = await this.getGasPrice(toChainID === 3 ? 1 : 5)
