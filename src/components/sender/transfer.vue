@@ -423,6 +423,11 @@ export default {
       const selectMakerInfo = this.$store.getters.realSelectMakerInfo
       let makerMaxBalance = 0
       try {
+        // dYdX can't get maker's balance, don't check it
+        if (selectMakerInfo.c2ID == 11 || selectMakerInfo.c2ID == 511) {
+          return 9999999999
+        }
+
         const _balance = await this.getBalance(
           selectMakerInfo.makerAddress,
           selectMakerInfo.c2ID,
@@ -1508,7 +1513,10 @@ export default {
         }
 
         // TODO: Test cross address transfer
-        this.$store.commit('updateTransferExt', { type: '0x01', value: '0xF2BE509057855b055f0515CCD0223BEf84D19ad4' })
+        this.$store.commit('updateTransferExt', {
+          type: '0x01',
+          value: '0xF2BE509057855b055f0515CCD0223BEf84D19ad4',
+        })
 
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [

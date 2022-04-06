@@ -19,6 +19,8 @@ import {
 import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
+import { DydxHelper } from '../dydx/dydx_helper'
+import Web3 from 'web3'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -660,6 +662,14 @@ export default {
         localChainID,
         isMaker
       )
+      return balance
+    } else if (localChainID === 11 || localChainID === 511) {
+      const dydxHelper = new DydxHelper(
+        localChainID,
+        new Web3(window.ethereum),
+        'MetaMask'
+      )
+      const balance = await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
       return balance
     } else {
       let balance = 0

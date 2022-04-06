@@ -733,7 +733,7 @@ export default {
         )
       } catch (err) {
         this.$notify.error({
-          title: err.message,
+          title: err?.data?.message || err.message,
           duration: 3000,
         })
       } finally {
@@ -836,7 +836,7 @@ export default {
           this.transferCrossAddress(
             account,
             selectMakerInfo,
-            tValue.tAmount + 10000000,
+            tValue.tAmount,
             fromChainID
           )
 
