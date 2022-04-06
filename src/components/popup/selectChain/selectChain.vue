@@ -102,6 +102,9 @@ export default {
         if (item === 9 || item === 99) {
           iconName = 'loopringlogo'
         }
+        if (item === 12 || item === 512) {
+          iconName = 'zkspacelogo'
+        }
         var chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),

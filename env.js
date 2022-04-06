@@ -32,6 +32,7 @@ export default {
     '7',
     '8',
     '9',
+    '12',
     '22',
     '33',
     '44',
@@ -39,6 +40,7 @@ export default {
     '77',
     '88',
     '99',
+    '512',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -50,6 +52,7 @@ export default {
     7: '10', // optimism
     8: '1', // mainnet
     9: '1', // loopring
+    12: '1', // zkspace
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -57,6 +60,7 @@ export default {
     77: '69', // optimism(K)
     88: '3', // ropsten
     99: '5', // loopring(G)
+    512: '4', // zkspace(R)
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -75,6 +79,8 @@ export default {
     88: '', // ImmutableX don't have testnet browser
     9: 'https://explorer.loopring.io/tx/',
     99: 'https://explorer.loopring.io/tx/',
+    12: 'https://zkspace.info/transaction/',
+    512: 'https://v3-rinkeby.zkswap.info/transaction/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -93,5 +99,7 @@ export default {
     88: 'https://market.ropsten.immutable.com/inventory/',
     9: 'https://explorer.loopring.io/account/',
     99: 'https://explorer.loopring.io/account/',
+    12: 'https://zkspace.info/account/',
+    512: 'https://v3-rinkeby.zkswap.info/account/',
   },
 }

@@ -38,6 +38,10 @@ export default {
         return 'Loopring'
       case 99:
         return 'Loopring(G)'
+      case 12:
+        return 'ZKSpace'
+      case 512:
+        return 'ZKSpace(R)'
     }
 
     const chain = chainList.chainList.filter(

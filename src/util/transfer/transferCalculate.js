@@ -661,6 +661,7 @@ export default {
         isMaker
       )
       return balance
+    } else if (localChainID === 12 || localChainID === 512) {
     } else {
       let balance = 0
 

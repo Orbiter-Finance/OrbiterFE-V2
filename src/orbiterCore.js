@@ -9,6 +9,7 @@ const MAX_BITS = {
   optimistic: 256,
   immutablex: 28,
   loopring: 256,
+  zkspace: 35,
 }
 
 const CHAIN_INDEX = {
@@ -28,6 +29,8 @@ const CHAIN_INDEX = {
   88: 'immutablex',
   9: 'loopring',
   99: 'loopring',
+  12: 'zkspace',
+  512: 'zkspace',
 }
 
 const SIZE_OP = {
@@ -39,7 +42,14 @@ const SIZE_OP = {
  * @param {*} chain
  */
 function isZKChain(chain) {
-  if (chain === 3 || chain === 33 || chain === 'zksync') {
+  if (
+    chain === 3 ||
+    chain === 33 ||
+    chain === 'zksync' ||
+    chain == 12 ||
+    chain == 512 ||
+    chain == 'zkspace'
+  ) {
     return true
   }
   return false

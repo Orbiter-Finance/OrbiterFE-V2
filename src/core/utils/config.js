@@ -49,6 +49,12 @@ export default {
     chainID: '8',
     rinkeyChainID: '88',
   },
+  ZKSpace: {
+    Mainnet: 'https://api.zks.app/v3/1',
+    Rinkeby: 'https://api.zks.app/v3/4',
+    chainID: '12',
+    rinkeyChainID: '512',
+  },
   L1: {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',

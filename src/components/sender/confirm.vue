@@ -554,7 +554,6 @@ export default {
           }
         })
     },
-
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
         return
@@ -726,6 +725,12 @@ export default {
         this.$store.getters.realSelectMakerInfo,
         false
       )
+      console.warn(
+        'this.$store.state.transferData.transferValue =',
+        this.$store.state.transferData.transferValue
+      )
+
+      console.warn('shouldReceiveValue =', shouldReceiveValue.toString())
       if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
         this.transferLoading = false
         return
