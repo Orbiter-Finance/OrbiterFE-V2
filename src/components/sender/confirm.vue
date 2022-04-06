@@ -208,6 +208,13 @@ export default {
             "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
           descInfo: this.$store.state.confirmData.routeDescInfo,
         },
+        {
+          icon: 'tips',
+          title:
+            'Modifying the transfer amount in MetaMask will cause the transfer to fail.',
+          desc: '',
+          textBold: false,
+        },
       ]
     },
   },
@@ -690,6 +697,7 @@ export default {
         this.transferLoading = false
       }
     },
+
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
@@ -932,6 +940,35 @@ export default {
         height: 0.1rem;
         border-top: 0.1rem dashed rgba(24, 25, 31, 0.2);
         margin-top: 1.6rem;
+      }
+    }
+    .contentItem:nth-last-child(2) {
+      width: 100%;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      color: var(--default-black);
+      margin: 2rem auto 0 auto;
+      align-items: center;
+      color: red;
+      .up {
+        padding: 0 0.5rem 0 1rem;
+        align-items: center;
+        text-align: left;
+        display: flow-root;
+        .right {
+          color: rgba($color: #18191f, $alpha: 0.7);
+          text-align: right;
+          font-weight: 400;
+          position: absolute;
+          right: 0.5rem;
+        }
+        .svg {
+          width: 1.2rem !important;
+          height: 1.2rem !important;
+        }
+        span {
+          margin-right: 0 !important;
+        }
       }
     }
   }
