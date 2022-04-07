@@ -251,7 +251,7 @@ async function getTransactionListMetis(
   try {
     let resp = await metis.getBlockNumberWithTimeStamp(mtScanReq, chainID)
     if (resp.status === '1' && resp.message === 'OK') {
-      mtScanStartBlock = resp.result
+      mtScanStartBlock = resp.result?.blockNumber
     } else {
       mtScanStartBlock = 0
     }
@@ -259,7 +259,6 @@ async function getTransactionListMetis(
     console.log('mtScanStartBlockError =', error)
     throw error.message
   }
-
   let MtscanReq = {
     maker: userAddress,
     startblock: mtScanStartBlock,
@@ -267,69 +266,64 @@ async function getTransactionListMetis(
   }
   try {
     let res = await metis.getTransationList(MtscanReq, chainID)
-    for (const i in res.result) {
-      if (Object.hasOwnProperty.call(res.result, i)) {
-        let mtscanInfo = res.result[i]
-        let txinfo = TxInfo.getTxInfoWithMetis(mtscanInfo)
-        let isMatch = false
+    for (const item of res.result) {
+      let txinfo = TxInfo.getTxInfoWithMetis(item)
+      let isMatch = false
+      for (let j = 0; j < makerList.length; j++) {
+        let makerInfo = makerList[j]
+        let _makerAddress = makerInfo.makerAddress.toLowerCase()
 
-        for (let j = 0; j < makerList.length; j++) {
-          let makerInfo = makerList[j]
-          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+        if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+          continue
+        }
 
-          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
-            continue
+        if (txinfo.tokenName !== makerInfo.tName) {
+          continue
+        }
+
+        let avalibleTimes =
+          chainID === makerInfo.c1ID
+            ? makerInfo.c1AvalibleTimes
+            : makerInfo.c2AvalibleTimes
+        for (let z = 0; z < avalibleTimes.length; z++) {
+          const avalibleTime = avalibleTimes[z]
+
+          if (
+            avalibleTime.startTime <= txinfo.timeStamp &&
+            avalibleTime.endTime >= txinfo.timeStamp
+          ) {
+            isMatch = true
+            break
           }
+        }
 
-          if (txinfo.tokenName !== makerInfo.tName) {
-            continue
+        if (!isMatch) {
+          continue
+        }
+        if (txinfo.from === _makerAddress) {
+          let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+          let nonce = 0
+          if (pText.state) {
+            nonce = pText.pText
           }
-
-          let avalibleTimes =
-            chainID === makerInfo.c1ID
-              ? makerInfo.c1AvalibleTimes
-              : makerInfo.c2AvalibleTimes
-          for (let z = 0; z < avalibleTimes.length; z++) {
-            const avalibleTime = avalibleTimes[z]
-
-            if (
-              avalibleTime.startTime <= txinfo.timeStamp &&
-              avalibleTime.endTime >= txinfo.timeStamp
-            ) {
-              isMatch = true
+          if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+            MTToTxList.push(txinfo)
+            break
+          }
+        } else if (txinfo.to === _makerAddress) {
+          if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+            let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+            let arr2 = [
+              chainID,
+              orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+            ]
+            if (judgeArrayEqualFun(arr1, arr2)) {
+              MTFromTxList.push(txinfo)
               break
             }
           }
-
-          if (!isMatch) {
-            continue
-          }
-
-          if (txinfo.from === _makerAddress) {
-            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
-            let nonce = 0
-            if (pText.state) {
-              nonce = pText.pText
-            }
-            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
-              MTToTxList.push(txinfo)
-              break
-            }
-          } else if (txinfo.to === _makerAddress) {
-            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
-              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
-              let arr2 = [
-                chainID,
-                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
-              ]
-              if (judgeArrayEqualFun(arr1, arr2)) {
-                MTFromTxList.push(txinfo)
-                break
-              }
-            }
-          } else {
-            // doNothiing
-          }
+        } else {
+          // doNothiing
         }
       }
     }
