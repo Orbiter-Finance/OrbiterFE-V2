@@ -85,31 +85,28 @@ export default {
                 timestamp: req.timestamp,
                 closest: req.closest,
             }
-            axios
-                .get(configNet, { params })
-                .then(function (response) {
-                    if (response.status === 200) {
-                        var respData = response.data
-                        if (respData.status === '1' && respData.message === 'OK') {
-                            cacheMemorySet(cacheKey, respData, 7200000)
+            axios.get(configNet, { params }).then(function (response) {
+                if (response.status === 200) {
+                    var respData = response.data
+                    if (respData.status === '1' && respData.message === 'OK') {
+                        cacheMemorySet(cacheKey, respData, 7200000)
 
-                            resolve(respData)
-                        } else {
-                            reject(respData)
-                        }
+                        resolve(respData)
                     } else {
-                        reject({
-                            errorCode: 1,
-                            errorMsg: 'NetWork Error',
-                        })
+                        reject(respData)
                     }
-                })
-                .catch(function (error) {
+                } else {
                     reject({
-                        errorCode: 2,
-                        errorMsg: error,
+                        errorCode: 1,
+                        errorMsg: 'NetWork Error',
                     })
+                }
+            }).catch(function (error) {
+                reject({
+                    errorCode: 2,
+                    errorMsg: error,
                 })
+            })
         })
     },
 }

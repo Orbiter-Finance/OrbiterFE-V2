@@ -140,19 +140,6 @@ export default {
         }
         return gas.dividedBy(10 ** 18).toString()
       }
-    } else if (!util.isEthTokenAddress(fromTokenAddress)) {
-      if (fromChainID === 10 || fromChainID === 510) {//metis is weth
-        const web3 = localWeb3(fromChainID)
-        if (web3) {
-          const estimateGas = await web3.eth.estimateGas({
-            from: store.state.web3.coinbase,
-            to: makerAddress,
-          })
-          const gasPrice = await web3.eth.getGasPrice()
-          let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
-          return gas.dividedBy(10 ** 18).toString()
-        }
-      }
     }
     return 0
   },
@@ -169,7 +156,7 @@ export default {
       7: 0.001,
       8: 1.7,
       9: 100,
-      10: 7.5,
+      10: 1,
       22: 0.02,
       33: 100,
       66: 60,
@@ -188,14 +175,14 @@ export default {
       7: 21000,
       8: 51000,
       9: 75000,
-      10: 840000,
+      10: 28000,
       22: 810000,
       33: 100,
       66: 1500,
       77: 21000,
       88: 51000,
       99: 75000,
-      510: 480000
+      510: 16000
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -207,14 +194,14 @@ export default {
       7: 'ETH',
       8: 'ETH',
       9: 'ETH',
-      10: 'WETH',
+      10: 'METIS',
       22: 'AETH',
       33: 'ETH',
       66: 'MATIC',
       77: 'ETH',
       88: 'ETH',
       99: 'ETH',
-      510: 'WETH'
+      510: 'METIS'
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -787,6 +774,7 @@ export default {
 
     // Arbitrary recipient address.
     const to = store.state.transferData.selectMakerInfo.makerAddress
+
     // Small amount of WETH to send (in wei).
     const amount = ethers.utils.parseUnits('5', 18)
     // Compute the estimated fee in wei
@@ -798,7 +786,7 @@ export default {
       })
     )
     // console.log(`Estimated L1 fee (in wei): ${l1FeeInWei.toString()}`)
-    return l1FeeInWei
+    return Number(l1FeeInWei)
   },
 
   async getTokenConvertUsd(tokenName) {
