@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import Web3 from 'web3'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,

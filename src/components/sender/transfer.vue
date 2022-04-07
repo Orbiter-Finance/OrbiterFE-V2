@@ -314,6 +314,8 @@ import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
+import { DydxHelper } from '../../util/dydx/dydx_helper'
+import Web3 from 'web3'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -425,7 +427,7 @@ export default {
       try {
         // dYdX can't get maker's balance, don't check it
         if (selectMakerInfo.c2ID == 11 || selectMakerInfo.c2ID == 511) {
-          return 9999999999
+          return Number.MAX_SAFE_INTEGER
         }
 
         const _balance = await this.getBalance(
@@ -1491,6 +1493,39 @@ export default {
           })
           return
         }
+
+        const { toChainID } = this.$store.state.transferData
+
+        // Ensure immutablex's registered
+        if (toChainID == 8 || toChainID == 88) {
+          const imxHelper = new IMXHelper(toChainID)
+          await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+        }
+
+        // To dYdX
+        if (toChainID == 11 || toChainID == 511) {
+          const dydxHelper = new DydxHelper(
+            toChainID,
+            new Web3(window.ethereum),
+            'MetaMask'
+          )
+          const dydxAccount = await dydxHelper.getAccount(
+            this.$store.state.web3.coinbase
+          )
+
+          this.$store.commit('updateTransferExt', {
+            type: '0x02',
+            value: dydxHelper.conactStarkKeyPositionId(
+              '0x' + dydxAccount.starkKey,
+              dydxAccount.positionId
+            ),
+          })
+        } else {
+          // Clear TransferExt
+          this.$store.commit('updateTransferExt', null)
+        }
+
+        // Ensure fromChainId's networkId
         if (
           this.$store.state.web3.networkId.toString() !==
           this.$env.localChainID_netChainID[
@@ -1498,25 +1533,14 @@ export default {
           ]
         ) {
           try {
-            await this.addChainNetWork()
+            await util.ensureMetamaskNetwork(
+              this.$store.state.transferData.fromChainID
+            )
           } catch (err) {
             util.showMessage(err.message, 'error')
             return
           }
         }
-
-        // Ensure immutablex's registered
-        const { toChainID } = this.$store.state.transferData
-        if (toChainID == 8 || toChainID == 88) {
-          const imxHelper = new IMXHelper(toChainID)
-          await imxHelper.ensureUser(this.$store.state.web3.coinbase)
-        }
-
-        // TODO: Test cross address transfer
-        this.$store.commit('updateTransferExt', {
-          type: '0x01',
-          value: '0xF2BE509057855b055f0515CCD0223BEf84D19ad4',
-        })
 
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
@@ -1530,51 +1554,6 @@ export default {
           },
         ])
         this.$emit('stateChanged', '2')
-      }
-    },
-    async addChainNetWork() {
-      const chain = util.getChainInfo(
-        this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
-        ]
-      )
-      const switchParams = {
-        chainId: util.toHex(chain.chainId),
-      }
-
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [switchParams],
-        })
-      } catch (error) {
-        if (error.code === 4902) {
-          // need add net
-          const params = {
-            chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
-            chainName: chain.name,
-            nativeCurrency: {
-              name: chain.nativeCurrency.name,
-              symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-              decimals: chain.nativeCurrency.decimals,
-            },
-            rpcUrls: chain.rpc,
-            blockExplorerUrls: [
-              chain.explorers &&
-              chain.explorers.length > 0 &&
-              chain.explorers[0].url
-                ? chain.explorers[0].url
-                : chain.infoURL,
-            ],
-          }
-
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [params, this.$store.state.web3.coinbase],
-          })
-        } else {
-          throw error
-        }
       }
     },
 

@@ -120,6 +120,7 @@ import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 import { CrossAddress } from '../../util/cross_address'
+import { DydxHelper } from '../../util/dydx/dydx_helper'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -687,6 +688,86 @@ export default {
         this.transferLoading = false
       }
     },
+    async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
+        return
+      }
+
+      try {
+        const dydxHelper = new DydxHelper(
+          fromChainID,
+          new Web3(window.ethereum),
+          'MetaMask'
+        )
+        const dydxMakerInfo = dydxHelper.getMakerInfo(
+          selectMakerInfo.makerAddress
+        )
+        const dydxClient = await dydxHelper.getDydxClient(from, false, true)
+
+        console.warn({
+          amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
+          expiration: new Date(
+            new Date().getTime() + 86400000 * 7
+          ).toISOString(),
+          receiverAccountId: dydxHelper.getAccountId(from),
+          receiverPublicKey: dydxMakerInfo.starkKey,
+          receiverPositionId: String(dydxMakerInfo.positionId),
+        })
+
+        const resp = await dydxClient.private.createTransfer({
+          amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
+          expiration: new Date(
+            new Date().getTime() + 86400000 * 7
+          ).toISOString(),
+          receiverAccountId: dydxHelper.getAccountId(from),
+          receiverPublicKey: dydxMakerInfo.starkKey,
+          receiverPositionId: String(dydxMakerInfo.positionId),
+        })
+
+        console.warn({ resp })
+
+        // let tokenInfo = {
+        //   type: ETHTokenType.ETH,
+        //   data: {
+        //     decimals: selectMakerInfo.precision,
+        //   },
+        // }
+        // if (!util.isEthTokenAddress(contractAddress)) {
+        //   tokenInfo = {
+        //     type: ERC20TokenType.ERC20,
+        //     data: {
+        //       symbol: selectMakerInfo.tName,
+        //       decimals: selectMakerInfo.precision,
+        //       tokenAddress: contractAddress,
+        //     },
+        //   }
+        // }
+
+        // const resp = await imxClient.transfer({
+        //   sender: from,
+        //   token: tokenInfo,
+        //   quantity: ethers.BigNumber.from(value),
+        //   receiver: selectMakerInfo.makerAddress,
+        // })
+
+        // this.onTransferSucceed(
+        //   from,
+        //   selectMakerInfo,
+        //   value,
+        //   fromChainID,
+        //   resp.transfer_id
+        // )
+      } catch (error) {
+        console.error(error)
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
 
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
@@ -823,6 +904,16 @@ export default {
 
         if (fromChainID == 8 || fromChainID == 88) {
           this.imxTransfer(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+          return
+        }
+
+        if (fromChainID == 11 || fromChainID == 511) {
+          this.dydxTransfer(
             account,
             selectMakerInfo,
             tValue.tAmount,
