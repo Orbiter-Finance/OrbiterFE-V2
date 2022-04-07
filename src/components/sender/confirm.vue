@@ -704,26 +704,17 @@ export default {
           selectMakerInfo.makerAddress
         )
         const dydxClient = await dydxHelper.getDydxClient(from, false, true)
-
-        console.warn({
-          amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
-          expiration: new Date(
-            new Date().getTime() + 86400000 * 7
-          ).toISOString(),
-          receiverAccountId: dydxHelper.getAccountId(from),
-          receiverPublicKey: dydxMakerInfo.starkKey,
-          receiverPositionId: String(dydxMakerInfo.positionId),
-        })
+        const dydxAccount = await dydxHelper.getAccount(from)
 
         const resp = await dydxClient.private.createTransfer({
           amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
           expiration: new Date(
             new Date().getTime() + 86400000 * 7
           ).toISOString(),
-          receiverAccountId: dydxHelper.getAccountId(from),
+          receiverAccountId: dydxHelper.getAccountId(selectMakerInfo.makerAddress),
           receiverPublicKey: dydxMakerInfo.starkKey,
           receiverPositionId: String(dydxMakerInfo.positionId),
-        })
+        }, dydxAccount.positionId)
 
         console.warn({ resp })
 
