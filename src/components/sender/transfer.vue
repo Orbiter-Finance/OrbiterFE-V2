@@ -317,11 +317,11 @@ export default {
       }
 
       const transferGasFee =
-        await transferCalculate.getTransferGasLimit(
+        (await transferCalculate.getTransferGasLimit(
           this.$store.state.transferData.fromChainID,
           selectMakerInfo.makerAddress,
           selectMakerInfo.t1Address
-        ) || 0
+        )) || 0
 
       let avalibleDigit = orbiterCore.getDigitByPrecision(
         selectMakerInfo.precision
