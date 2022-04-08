@@ -705,10 +705,7 @@ export default {
         )
         const dydxClient = await dydxHelper.getDydxClient(from, false, true)
         const dydxAccount = await dydxHelper.getAccount(from)
-
-        console.warn('dydxClient.starkPrivateKey >>> ', dydxClient.starkPrivateKey);
-
-
+        
         const params = {
           clientId: dydxHelper.generateClientId(from),
           amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
