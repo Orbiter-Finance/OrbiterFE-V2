@@ -6,6 +6,7 @@ import {
   ChainId,
   generateKeyPair,
   UserAPI,
+  VALID_UNTIL,
   OffchainFeeReqType,
   //   WhitelistedUserAPI,
 } from '@loopring-web/loopring-sdk'
@@ -161,9 +162,9 @@ export default {
         accInfo.keySeed && accInfo.keySeed !== ''
           ? accInfo.keySeed
           : GlobalAPI.KEY_MESSAGE.replace(
-            '${exchangeAddress}',
-            exchangeInfo.exchangeAddress
-          ).replace('${nonce}', (accInfo.nonce - 1).toString()),
+              '${exchangeAddress}',
+              exchangeInfo.exchangeAddress
+            ).replace('${nonce}', (accInfo.nonce - 1).toString()),
       walletType: ConnectorNames.MetaMask,
       chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
     }
@@ -206,10 +207,9 @@ export default {
         tokenId: 0,
         volume: '94000000000000000',
       },
-      validUntil: Math.round(Date.now() / 1000) + 30 * 86400,
+      validUntil: VALID_UNTIL,
       memo: memo,
     }
-
     const response = await userApi.submitInternalTransfer({
       request: OriginTransferRequestV3,
       web3: web3,
