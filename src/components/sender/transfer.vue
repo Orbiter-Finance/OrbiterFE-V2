@@ -327,10 +327,13 @@ export default {
         selectMakerInfo.precision
       )
       let opBalance = 10 ** -avalibleDigit
+      let preGasDigit = 3
+      let preGas = 10 ** -preGasDigit
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
         .minus(new BigNumber(opBalance))
         .minus(new BigNumber(transferGasFee))
+        .minus(new BigNumber(preGas))
       let userMax =
         useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
           ? useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)

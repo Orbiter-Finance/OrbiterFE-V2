@@ -681,7 +681,7 @@ export default {
         const balances = balanceInfo.result.balances
         return balances[tokenName] ? balances[tokenName] : 0
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKBalanceError'
       }
     } else if (localChainID === 4 || localChainID === 44) {
@@ -830,7 +830,7 @@ export default {
       p_text
     )
     if (!tValue.state) {
-      console.log('getTralTransferAmountError')
+      console.warn('getTralTransferAmountError')
       return userValue
     } else {
       return new BigNumber(tValue.tAmount).dividedBy(
