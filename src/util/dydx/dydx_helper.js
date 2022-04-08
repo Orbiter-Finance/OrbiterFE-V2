@@ -62,6 +62,9 @@ export class DydxHelper {
 
     if (clientOld && !alwaysNew) {
       if (alwaysDeriveStarkKey && ethereumAddress) {
+        // Reset DyDxClient.private, It will new when use
+        clientOld._private = null
+
         clientOld.starkPrivateKey = await clientOld.onboarding.deriveStarkKey(
           ethereumAddress,
           this.signingMethod
@@ -218,6 +221,31 @@ export class DydxHelper {
     return { starkKey, positionId: String(positionId) }
   }
 
+  /**
+   * @param {string} ethereumAddress 0x...
+   * @returns {string}
+   */
+  generateClientId(ethereumAddress) {
+    const time = new Date().getTime()
+    const rand = parseInt(Math.random() * 899 + 100)
+    let sourceStr = `${ethereumAddress}${time}${rand}`
+    if (sourceStr.length % 2 != 0) {
+      sourceStr += '0'
+    }
+    sourceStr = sourceStr.replace(/^0x/i, '')
+
+    return Buffer.from(sourceStr, 'hex').toString('base64')
+  }
+
+  /**
+   * @param {string} clientId base64 string
+   * @returns {string} 0x...
+   */
+  getEthereumAddressFromClientId(clientId) {
+    const sourceStr = Buffer.from(clientId, 'base64').toString('hex')
+    return utils.hexDataSlice('0x' + sourceStr, 0, 20)
+  }
+
   // /**
   //  * IMX transfer => Eth transaction
   //  * @param {any} transfer IMX transfer
@@ -250,27 +278,27 @@ export class DydxHelper {
   //   return transaction
   // }
 
-  // /**
-  //  * The api does not return the nonce value, timestamp(ms) last three number is the nonce
-  //  *  (warnning: there is a possibility of conflict)
-  //  * @param {number | string} timestamp ms
-  //  * @returns {string}
-  //  */
-  // timestampToNonce(timestamp) {
-  //   let nonce = 0
+  /**
+   * The api does not return the nonce value, timestamp(ms) last three number is the nonce
+   *  (warnning: there is a possibility of conflict)
+   * @param {number | string} timestamp ms
+   * @returns {string}
+   */
+  timestampToNonce(timestamp) {
+    let nonce = 0
 
-  //   if (timestamp) {
-  //     timestamp = String(timestamp)
-  //     const match = timestamp.match(/(\d{3})$/i)
-  //     if (match && match.length > 1) {
-  //       nonce = Number(match[1]) || 0
-  //     }
+    if (timestamp) {
+      timestamp = String(timestamp)
+      const match = timestamp.match(/(\d{3})$/i)
+      if (match && match.length > 1) {
+        nonce = Number(match[1]) || 0
+      }
 
-  //     if (nonce > 900) {
-  //       nonce = nonce - 100
-  //     }
-  //   }
+      if (nonce > 900) {
+        nonce = nonce - 100
+      }
+    }
 
-  //   return nonce + ''
-  // }
+    return nonce + ''
+  }
 }

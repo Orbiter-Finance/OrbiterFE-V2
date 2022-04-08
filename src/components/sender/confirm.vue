@@ -706,49 +706,33 @@ export default {
         const dydxClient = await dydxHelper.getDydxClient(from, false, true)
         const dydxAccount = await dydxHelper.getAccount(from)
 
-        const resp = await dydxClient.private.createTransfer({
+        console.warn('dydxClient.starkPrivateKey >>> ', dydxClient.starkPrivateKey);
+
+
+        const params = {
+          clientId: dydxHelper.generateClientId(from),
           amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
           expiration: new Date(
-            new Date().getTime() + 86400000 * 7
+            new Date().getTime() + 86400000 * 30
           ).toISOString(),
-          receiverAccountId: dydxHelper.getAccountId(selectMakerInfo.makerAddress),
+          receiverAccountId: dydxHelper.getAccountId(
+            selectMakerInfo.makerAddress
+          ),
           receiverPublicKey: dydxMakerInfo.starkKey,
           receiverPositionId: String(dydxMakerInfo.positionId),
-        }, dydxAccount.positionId)
+        }
+        const resp = await dydxClient.private.createTransfer(
+          params,
+          dydxAccount.positionId
+        )
 
-        console.warn({ resp })
-
-        // let tokenInfo = {
-        //   type: ETHTokenType.ETH,
-        //   data: {
-        //     decimals: selectMakerInfo.precision,
-        //   },
-        // }
-        // if (!util.isEthTokenAddress(contractAddress)) {
-        //   tokenInfo = {
-        //     type: ERC20TokenType.ERC20,
-        //     data: {
-        //       symbol: selectMakerInfo.tName,
-        //       decimals: selectMakerInfo.precision,
-        //       tokenAddress: contractAddress,
-        //     },
-        //   }
-        // }
-
-        // const resp = await imxClient.transfer({
-        //   sender: from,
-        //   token: tokenInfo,
-        //   quantity: ethers.BigNumber.from(value),
-        //   receiver: selectMakerInfo.makerAddress,
-        // })
-
-        // this.onTransferSucceed(
-        //   from,
-        //   selectMakerInfo,
-        //   value,
-        //   fromChainID,
-        //   resp.transfer_id
-        // )
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          resp.transfer.id
+        )
       } catch (error) {
         console.error(error)
         this.$notify.error({
