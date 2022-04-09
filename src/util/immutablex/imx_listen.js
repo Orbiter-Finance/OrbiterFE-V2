@@ -50,7 +50,6 @@ export class IMXListen {
         if (this.isFirstTicker) {
           continue
         }
-        item.transaction_id
 
         this.doTransfer(item)
       }

@@ -11,7 +11,7 @@ import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
-  getProviderByChainId
+  getProviderByChainId,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
 import { IMXListen } from '../immutablex/imx_listen'
@@ -19,6 +19,7 @@ import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
+import { DydxListen } from '../dydx/dydx_listen'
 
 let startBlockNumber = ''
 
@@ -108,7 +109,7 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
-          storeUpdateProceedState(3)          
+          storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
             zk_makerTransferChainID,
@@ -116,7 +117,7 @@ async function confirmUserTransaction(
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
             zk_amountToSend,
-            zk_nonce,
+            zk_nonce
           )
           return
         }
@@ -375,7 +376,7 @@ async function confirmUserTransaction(
       if (!inputData.ext?.value) {
         return
       }
-      
+
       startScanMakerTransferFromAddress = inputData.to
       amountStr = inputData.amount.toNumber() + ''
     }
@@ -430,7 +431,8 @@ async function confirmUserTransaction(
         startScanMakerTransferFromAddress,
         toAddress,
         amountToSend,
-        nonce
+        nonce,
+        trx.from
       )
       return
     }
@@ -532,7 +534,8 @@ function startScanMakerTransfer(
   from,
   to,
   amount,
-  nonce
+  nonce,
+  ownerAddress = ''
 ) {
   if (!isCurrentTransaction(transactionID)) {
     return
@@ -559,7 +562,8 @@ function startScanMakerTransfer(
     from,
     to,
     amount,
-    nonce
+    nonce,
+    ownerAddress
   )
 }
 
@@ -572,7 +576,8 @@ function ScanMakerTransfer(
   from,
   to,
   amount,
-  nonce
+  nonce,
+  ownerAddress = ''
 ) {
   const duration = 10 * 1000
   const ticker = async () => {
@@ -585,6 +590,7 @@ function ScanMakerTransfer(
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
         return false
       }
+
       if (
         _from.toLowerCase() === from.toLowerCase() &&
         _to.toLowerCase() === to.toLowerCase() &&
@@ -647,7 +653,7 @@ function ScanMakerTransfer(
       asyncStarknet()
       return
     }
-    
+
     // immutablex
     if (localChainID == 8 || localChainID == 88) {
       const imxListen = new IMXListen(localChainID, to, false)
@@ -750,6 +756,33 @@ function ScanMakerTransfer(
         }
       }
       setTimeout(() => ticker(), duration)
+      return
+    }
+
+    // dydx
+    if (localChainID == 11 || localChainID == 511) {
+      const dydxWeb3 = new Web3(window.ethereum)
+      const dydxListen = new DydxListen(localChainID, dydxWeb3, ownerAddress, false)
+      dydxListen.transfer(
+        { to: ownerAddress },
+        {
+          onReceived: async (transaction) => {
+            if (checkData(from, to, transaction.value, '')) {
+              store.commit(
+                'updateProceedingMakerTransferTxid',
+                transaction.hash
+              )
+              storeUpdateProceedState(4)
+            }
+          },
+          onConfirmation: async (transaction) => {
+            if (checkData(from, to, transaction.value, '')) {
+              storeUpdateProceedState(5)
+              dydxListen.destroy()
+            }
+          },
+        }
+      )
       return
     }
 

@@ -1,12 +1,9 @@
 import { DydxClient } from '@dydxprotocol/v3-client'
 import { getAccountId } from '@dydxprotocol/v3-client/build/src/lib/db'
+import BigNumber from 'bignumber.js'
 import { ethers, utils } from 'ethers'
+import config from '../../core/utils/config'
 import util from '../util'
-
-const HOSTS = {
-  ropsten: 'https://api.stage.dydx.exchange',
-  mainnet: 'https://api.dydx.exchange',
-}
 
 const DYDX_MAKERS = {
   '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5': {
@@ -34,11 +31,11 @@ export class DydxHelper {
   constructor(chainId, web3, signingMethod = 'TypedData') {
     if (chainId == 11) {
       this.networkId = 1
-      this.host = HOSTS.mainnet
+      this.host = config.dydx.Mainnet
     }
     if (chainId == 511) {
       this.networkId = 3
-      this.host = HOSTS.ropsten
+      this.host = config.dydx.Rinkeby
     }
 
     this.chainId = chainId
@@ -57,7 +54,7 @@ export class DydxHelper {
     alwaysNew = false,
     alwaysDeriveStarkKey = false
   ) {
-    const dydxClientKey = String(ethereumAddress)
+    const dydxClientKey = ethereumAddress.toLowerCase()
     const clientOld = DYDX_CLIENTS[dydxClientKey]
 
     if (clientOld && !alwaysNew) {
@@ -246,37 +243,41 @@ export class DydxHelper {
     return utils.hexDataSlice('0x' + sourceStr, 0, 20)
   }
 
-  // /**
-  //  * IMX transfer => Eth transaction
-  //  * @param {any} transfer IMX transfer
-  //  * @returns
-  //  */
-  // toTransaction(transfer) {
-  //   const timeStampMs = transfer.timestamp.getTime()
-  //   const nonce = this.timestampToNonce(timeStampMs)
+  /**
+   * DYDX transfer => Eth transaction
+   * @param {any} transfer dYdX transfer
+   * @param {string} ethereumAddress 0x...
+   * @returns
+   */
+  static toTransaction(transfer, ethereumAddress) {
+    const timeStampMs = new Date(transfer.createdAt).getTime()
+    const nonce = DydxHelper.timestampToNonce(timeStampMs)
 
-  //   // When it is ETH
-  //   let contractAddress = transfer.token.data.token_address
-  //   if (transfer.token.type == ETHTokenType.ETH) {
-  //     contractAddress = '0x0000000000000000000000000000000000000000'
-  //   }
+    const transaction = {
+      timeStamp: parseInt(timeStampMs / 1000),
+      hash: transfer.id,
+      nonce,
+      blockHash: '',
+      transactionIndex: 0,
+      from: '',
+      to: '',
+      value: new BigNumber(transfer.creditAmount)
+        .multipliedBy(10 ** 6)
+        .toString(), // Only usdc
+      txreceipt_status: transfer.status,
+      contractAddress: '', // Only usdc
+      confirmations: 0,
+    }
 
-  //   const transaction = {
-  //     timeStamp: parseInt(timeStampMs / 1000),
-  //     hash: transfer.transaction_id,
-  //     nonce,
-  //     blockHash: '',
-  //     transactionIndex: 0,
-  //     from: transfer.user,
-  //     to: transfer.receiver,
-  //     value: transfer.token.data.quantity + '',
-  //     txreceipt_status: transfer.status,
-  //     contractAddress,
-  //     confirmations: 0,
-  //   }
+    if (util.equalsIgnoreCase('TRANSFER_IN', transfer.type)) {
+      transaction.to = ethereumAddress
+    }
+    if (util.equalsIgnoreCase('TRANSFER_OUT', transfer.type)) {
+      transaction.from = ethereumAddress
+    }
 
-  //   return transaction
-  // }
+    return transaction
+  }
 
   /**
    * The api does not return the nonce value, timestamp(ms) last three number is the nonce
@@ -284,7 +285,7 @@ export class DydxHelper {
    * @param {number | string} timestamp ms
    * @returns {string}
    */
-  timestampToNonce(timestamp) {
+  static timestampToNonce(timestamp) {
     let nonce = 0
 
     if (timestamp) {

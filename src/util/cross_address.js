@@ -1,6 +1,7 @@
 import { ethers, utils } from 'ethers'
 import env from '../../env'
 import { Coin_ABI } from './constants/contract/contract'
+import util from './util'
 
 const CROSS_ADDRESS_ABI = [
   {
@@ -38,11 +39,7 @@ export class CrossAddress {
    * @param {number} orbiterChainId
    * @param {ethers.Signer | undefined} signer
    */
-  constructor(
-    provider,
-    orbiterChainId = 5,
-    signer = undefined,
-  ) {
+  constructor(provider, orbiterChainId = 5, signer = undefined) {
     this.contractAddress = env.crossAddressContracts[orbiterChainId]
     if (!this.contractAddress) {
       throw new Error('Sorry, miss param [contractAddress]')
@@ -65,6 +62,18 @@ export class CrossAddress {
   }
 
   /**
+   * @param {Contract} contractErc20
+   */
+  async getAllowance(contractErc20) {
+    const ownerAddress = await this.signer.getAddress()
+    const allowance = await contractErc20.allowance(
+      ownerAddress,
+      this.contractAddress
+    )
+    return allowance
+  }
+
+  /**
    *
    * @param {string} tokenAddress 0x...
    * @param {ethers.BigNumber} amount
@@ -74,6 +83,16 @@ export class CrossAddress {
 
     const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
     await contract.approve(this.contractAddress, amount)
+
+    // Waitting approve succeed
+    for (let index = 0; index < 5000; index++) {
+      const allowance = await this.getAllowance(contract)
+      if (amount.lte(allowance)) {
+        break
+      }
+
+      await util.sleep(2000)
+    }
   }
 
   /**
@@ -124,11 +143,7 @@ export class CrossAddress {
       Coin_ABI,
       this.provider
     )
-    const ownerAddress = await this.signer.getAddress()
-    const allowance = await contractErc20.allowance(
-      ownerAddress,
-      this.contractAddress
-    )
+    const allowance = await this.getAllowance(contractErc20)
     if (amount.gt(allowance)) {
       await this.approveERC20(tokenAddress)
     }
@@ -177,11 +192,10 @@ export class CrossAddress {
     return { type, value }
   }
 
-
   /**
    * @param {string} input 0x...
    */
-   static parseTransferInput(input) {
+  static parseTransferInput(input) {
     const [to, ext] = utils.defaultAbiCoder.decode(
       ['address', 'bytes'],
       utils.hexDataSlice(input, 4)

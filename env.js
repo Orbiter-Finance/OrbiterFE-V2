@@ -97,6 +97,8 @@ export default {
     88: '', // ImmutableX don't have testnet browser
     9: 'https://explorer.loopring.io/tx/',
     99: 'https://explorer.loopring.io/tx/',
+    11: 'https://trade.dydx.exchange/',
+    511: 'https://trade.stage.dydx.exchange/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -115,5 +117,7 @@ export default {
     88: 'https://market.ropsten.immutable.com/inventory/',
     9: 'https://explorer.loopring.io/account/',
     99: 'https://explorer.loopring.io/account/',
+    11: 'https://trade.dydx.exchange/',
+    511: 'https://trade.stage.dydx.exchange/',
   },
 }

@@ -1,20 +1,22 @@
 import util from '../util'
-import { IMXHelper } from './imx_helper'
+import { DydxHelper } from './dydx_helper'
 
-const IMX_LISTEN_TRANSFER_DURATION = 5 * 1000
+const DYDX_LISTEN_TRANSFER_DURATION = 5 * 1000
 
 export class DydxListen {
   chainId = 0
-  receiver = undefined
+  web3 = undefined
+  ethereumAddress = undefined
   isFirstTicker = true
   transferReceivedHashs = {}
   transferConfirmationedHashs = {}
   listens = []
   tickerTimer = null
 
-  constructor(chainId, receiver = undefined, isFirstTicker = true) {
+  constructor(chainId, web3, ethereumAddress, isFirstTicker = true) {
     this.chainId = chainId
-    this.receiver = receiver
+    this.web3 = web3
+    this.ethereumAddress = ethereumAddress
     this.isFirstTicker = isFirstTicker
 
     this.start()
@@ -22,26 +24,20 @@ export class DydxListen {
 
   start() {
     const ticker = async () => {
-      const imxHelper = new IMXHelper(this.chainId)
+      const dydxHelper = new DydxHelper(this.chainId, this.web3, 'MetaMask')
+      const dydxClient = await dydxHelper.getDydxClient(this.ethereumAddress)
 
-      const imxClient = await imxHelper.getImmutableXClient()
-
-      const transfers = await imxClient.getTransfers({
-        page_size: 200,
-        direction: 'desc',
-        receiver: this.receiver,
-      })
-
-      if (!transfers.result) {
+      const transfers = await dydxClient.private.getTransfers({ limit: 10 })
+      if (!transfers.transfers) {
         return
       }
 
-      for (const item of transfers.result) {
-        const hash = item.transaction_id
+      for (const item of transfers.transfers) {
+        const hash = item.id
 
-        if (this.transferReceivedHashs[hash] !== undefined) {
-          continue
-        }
+        // if (this.transferReceivedHashs[hash] !== undefined) {
+        //   continue
+        // }
 
         // Set transferReceivedHashs[hash] = false
         this.transferReceivedHashs[hash] = false
@@ -50,7 +46,6 @@ export class DydxListen {
         if (this.isFirstTicker) {
           continue
         }
-        item.transaction_id
 
         this.doTransfer(item)
       }
@@ -59,52 +54,23 @@ export class DydxListen {
     }
     ticker()
 
-    this.tickerTimer = setInterval(ticker, IMX_LISTEN_TRANSFER_DURATION)
+    this.tickerTimer = setInterval(ticker, DYDX_LISTEN_TRANSFER_DURATION)
   }
 
   /**
    * @param {any} transfer
-   * @param {number} retryCount
    * @returns
    */
-  async doTransfer(transfer, retryCount = 0) {
-    const { transaction_id } = transfer
-    if (!transaction_id) {
+  async doTransfer(transfer) {
+    const { id } = transfer
+    if (!id) {
       return
     }
-    const imxHelper = new IMXHelper(this.chainId)
 
-    // When retryCount > 0, get new data
-    if (retryCount > 0) {
-      try {
-        const imxClient = await imxHelper.getImmutableXClient()
-        transfer = await imxClient.getTransfer({ id: transfer.transaction_id })
-      } catch (err) {
-        console.error(
-          `Get imx transaction [${transaction_id}] failed: ${err.message}, retryCount: ${retryCount}`
-        )
-
-        // Out max retry count
-        if (retryCount >= 10) {
-          return
-        }
-
-        await util.sleep(10000)
-        return this.doTransfer(transfer, (retryCount += 1))
-      }
-
-      if (!transfer) {
-        return
-      }
-    }
-
-    const transaction = imxHelper.toTransaction(transfer)
+    const transaction = DydxHelper.toTransaction(transfer, this.ethereumAddress)
     const { hash, from, to, txreceipt_status } = transaction
 
-    const isConfirmed =
-      util.equalsIgnoreCase(txreceipt_status, 'confirmed') ||
-      util.equalsIgnoreCase(txreceipt_status, 'success')
-    const isRejected = util.equalsIgnoreCase(txreceipt_status, 'rejected')
+    const isConfirmed = util.equalsIgnoreCase(txreceipt_status, 'CONFIRMED')
 
     for (const item of this.listens) {
       const { filter, callbacks } = item
@@ -137,9 +103,6 @@ export class DydxListen {
 
     if (isConfirmed) {
       this.transferConfirmationedHashs[transaction.hash] = true
-    } else if (!isRejected) {
-      await util.sleep(2000)
-      this.doTransfer(transfer)
     }
   }
 
@@ -162,24 +125,21 @@ const factorys = {}
 /**
  *
  * @param {number} chainId
- * @param {string} receiver
+ * @param {Web3} receiver
  * @param {boolean} isFirstTicker
- * @returns {IMXListen}
+ * @returns {DydxListen}
  */
-export function factoryIMXListen(
+export function factoryDydxListen(
   chainId,
-  receiver = undefined,
+  web3,
+  ethereumAddress,
   isFirstTicker = true
 ) {
-  const factoryKey = `${chainId}:${receiver}:${isFirstTicker}`
+  const factoryKey = `${chainId}:${ethereumAddress}:${isFirstTicker}`
 
   if (factorys[factoryKey]) {
     return factorys[factoryKey]
   } else {
-    return (factorys[factoryKey] = new IMXListen(
-      chainId,
-      receiver,
-      isFirstTicker
-    ))
+    return (factorys[factoryKey] = new DydxListen(chainId, web3, isFirstTicker))
   }
 }

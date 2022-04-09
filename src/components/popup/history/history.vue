@@ -72,7 +72,26 @@ export default {
   watch: {},
   computed: {
     historyData() {
-      return this.$store.state.transactionList
+      const { transactionList } = this.$store.state
+      if (!transactionList) {
+        return transactionList
+      }
+
+      // Hide dydx (from and to)
+      const list = []
+      for (const item of transactionList) {
+        if (
+          item.fromChainID == 11 ||
+          item.fromChainID == 511 ||
+          item.toChainID == 11 ||
+          item.toChainID == 511
+        ) {
+          continue
+        }
+        list.push(item)
+      }
+
+      return list
     },
   },
   mounted() {},
@@ -111,7 +130,9 @@ export default {
         return 'imxlogo'
       } else if (chainID == '9' || chainID == '99') {
         return 'loopringlogo'
-      }  else {
+      } else if (chainID == '11' || chainID == '511') {
+        return 'dydxlogo'
+      } else {
         return 'ethlogo'
       }
     },
