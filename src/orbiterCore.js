@@ -9,6 +9,7 @@ const MAX_BITS = {
   optimistic: 256,
   immutablex: 28,
   loopring: 256,
+  metis: 256
 }
 
 const CHAIN_INDEX = {
@@ -28,6 +29,8 @@ const CHAIN_INDEX = {
   88: 'immutablex',
   9: 'loopring',
   99: 'loopring',
+  10: 'metis',
+  510: 'metis'
 }
 
 const SIZE_OP = {

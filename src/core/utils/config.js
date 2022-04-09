@@ -17,6 +17,12 @@ export default {
     chainID: '4',
     rinkeyChainID: '44',
   },
+  metis: {
+    Mainnet: 'https://andromeda-explorer.metis.io/api',
+    Rinkeby: 'https://stardust-explorer.metis.io/api',
+    chainID: '10',
+    rinkeyChainID: '510',
+  },
   arbitrum: {
     Mainnet: 'https://api.arbiscan.io/api',
     Rinkeby: 'https://api-testnet.arbiscan.io/api',

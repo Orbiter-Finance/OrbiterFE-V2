@@ -42,6 +42,13 @@ const PG_ERC20_DEPOSIT_DEPOSIT_ONL1 = 77257
 const PG_ERC20_WITHDRAW_ONPG = 32000
 const PG_ERC20_WITHDRAW_ONL1 = 480000
 
+// metis deposit
+const MT_ERC20_DEPOSIT_DEPOSIT_ONL1 = 170617
+
+// metis withdraw
+const MT_ERC20_WITHDRAW_ONMT = 685768
+const MT_ERC20_WITHDRAW_ONL1 = 234552 //to check
+
 //optimistic deposit
 const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
 
@@ -149,12 +156,14 @@ export default {
       7: 0.001,
       8: 1.7,
       9: 100,
+      10: 1,
       22: 0.02,
       33: 100,
       66: 60,
       77: 0.001,
       88: 1.7,
       99: 1,
+      510: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -166,12 +175,14 @@ export default {
       7: 21000,
       8: 51000,
       9: 75000,
+      10: 28000,
       22: 810000,
       33: 100,
       66: 1500,
       77: 21000,
       88: 51000,
       99: 75000,
+      510: 16000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -183,12 +194,14 @@ export default {
       7: 'ETH',
       8: 'ETH',
       9: 'ETH',
+      10: 'METIS',
       22: 'AETH',
       33: 'ETH',
       66: 'MATIC',
       77: 'ETH',
       88: 'ETH',
       99: 'ETH',
+      510: 'METIS',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -264,6 +277,9 @@ export default {
     if (fromChainID === 2 || fromChainID === 22) {
       timeSpent = 15
     }
+    if (fromChainID === 10 || fromChainID === 510) {
+      timeSpent = 15
+    }
     if (fromChainID === 3 || fromChainID === 33) {
       timeSpent = 5
     }
@@ -300,6 +316,9 @@ export default {
     if (toChainID === 9 || toChainID === 99) {
       timeSpent = 15
     }
+    if (toChainID === 10 || toChainID === 510) {
+      timeSpent = 15
+    }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
   },
@@ -323,6 +342,9 @@ export default {
     }
     if (fromChainID === 9 || fromChainID === 99) {
       return '~4 hours'
+    }
+    if (fromChainID === 10 || fromChainID === 510) {
+      return '~7 days'
     }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -348,6 +370,10 @@ export default {
       if (toChainID === 9 || toChainID === 99) {
         return '~10min'
       }
+      if (toChainID === 10 || toChainID === 510) {
+        // eth -> metis
+        return '~5min'
+      }
     }
   },
 
@@ -369,6 +395,9 @@ export default {
     }
     if (fromChainID === 9 || fromChainID === 99) {
       return ' 4 hours'
+    }
+    if (fromChainID === 10 || fromChainID === 510) {
+      return ' 7 days'
     }
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -394,6 +423,10 @@ export default {
       if (toChainID === 9 || toChainID === 99) {
         // eth -> loopring
         return ' 9.25min'
+      }
+      if (toChainID === 10 || toChainID === 510) {
+        // eth -> metis
+        return ' 4.25min'
       }
     }
   },
@@ -505,6 +538,7 @@ export default {
       const PGWithDrawL1Gas = L1GasPrice * PG_ERC20_WITHDRAW_ONL1
       ethGas += PGWithDrawL1Gas
     }
+
     if (fromChainID === 7 || fromChainID === 77) {
       // OP get
       let fromGasPrice = await this.getGasPrice(fromChainID)
@@ -543,6 +577,17 @@ export default {
         fromChainID
       )
       ethGas += Number(loopringWithDrawFee)
+    }
+    if (fromChainID === 10 || fromChainID === 510) {
+      // MT get
+      let fromGasPrice = await this.getGasPrice(fromChainID)
+      // MT WithDraw
+      const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
+      maticGas += MTWithDrawARGas
+      const L1ChainID = fromChainID === 10 ? 1 : 5
+      const L1GasPrice = await this.getGasPrice(L1ChainID)
+      const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
+      ethGas += MTWithDrawL1Gas
     }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
@@ -587,7 +632,13 @@ export default {
       let lpDepositGas = toGasPrice * LP_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += lpDepositGas
     }
-
+    if (toChainID === 10 || toChainID === 510) {
+      // MT deposit
+      let toGasPrice = await this.getGasPrice(toChainID === 10 ? 1 : 5)
+      // MT deposit
+      const mtDepositGas = toGasPrice * MT_ERC20_DEPOSIT_DEPOSIT_ONL1
+      ethGas += mtDepositGas
+    }
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(
@@ -620,7 +671,7 @@ export default {
         stateType: 'committed',
       }
       try {
-        let balanceInfo = await thirdapi.getZKBalance(req)
+        let balanceInfo = await thirdapi.getZKAccountInfo(req)
         if (
           !balanceInfo ||
           !balanceInfo.result ||
@@ -661,13 +712,8 @@ export default {
         isMaker
       )
       return balance
-    } else if (localChainID === 8 || localChainID === 88) {
-      const imxHelper = new IMXHelper(localChainID)
-      const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
-      return Number(balance + '')
     } else {
       let balance = 0
-
       if (util.isEthTokenAddress(tokenAddress)) {
         // When is ETH
         const web3 = localWeb3(localChainID)
@@ -729,6 +775,7 @@ export default {
 
     // Arbitrary recipient address.
     const to = store.state.transferData.selectMakerInfo.makerAddress
+
     // Small amount of WETH to send (in wei).
     const amount = ethers.utils.parseUnits('5', 18)
     // Compute the estimated fee in wei
@@ -740,7 +787,7 @@ export default {
       })
     )
     // console.log(`Estimated L1 fee (in wei): ${l1FeeInWei.toString()}`)
-    return l1FeeInWei
+    return Number(l1FeeInWei)
   },
 
   async getTokenConvertUsd(tokenName) {
@@ -756,7 +803,9 @@ export default {
     var p_text =
       toChainID.toString().length === 1
         ? '900' + toChainID.toString()
-        : '90' + toChainID.toString()
+        : toChainID.toString().length === 2
+        ? '90' + toChainID.toString()
+        : '9' + toChainID.toString()
     return p_text
   },
 
@@ -777,7 +826,9 @@ export default {
     var p_text =
       toChainID.toString().length === 1
         ? '900' + toChainID.toString()
-        : '90' + toChainID.toString()
+        : toChainID.toString().length === 2
+        ? '90' + toChainID.toString()
+        : '9' + toChainID.toString()
     var tValue = orbiterCore.getTAmountFromRAmount(
       fromChainID,
       rAmountValue,

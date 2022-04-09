@@ -347,6 +347,7 @@ import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
+import getNonce from '../../core/utils/nonce'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -365,6 +366,8 @@ const queryParamsChainMap = {
   Loopring: 9,
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,
+  'Metis': 10,
+  'Metis(R)': 510
 }
 
 export default {
@@ -398,6 +401,8 @@ export default {
       transferValue: '',
 
       exchangeToUsdPrice: 0,
+
+      makerMaxBalance: 0,
     }
   },
   asyncComputed: {
@@ -450,27 +455,6 @@ export default {
       }
       return max.toString()
     },
-
-    async makerMaxBalance() {
-      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
-      let makerMaxBalance = 0
-      try {
-        const _balance = await this.getBalance(
-          selectMakerInfo.makerAddress,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        )
-        if (_balance > 0) {
-          // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
-          makerMaxBalance = _balance * 0.95
-        }
-      } catch (err) {
-        console.error('Get maker balance error:', err.message)
-      }
-      return makerMaxBalance
-    },
   },
   computed: {
     queryParams() {
@@ -479,7 +463,6 @@ export default {
       let { token, tokens, amount, fixed } = query
       amount = new BigNumber(amount)
       tokens = !tokens ? [] : tokens.split(',')
-
       const getMapChainId = (chainName) => {
         if (!chainName) {
           return 0
@@ -494,7 +477,6 @@ export default {
       }
       let source = getMapChainId(query.source)
       let dest = getMapChainId(query.dest)
-
       const getMapChainIds = (chainNames) => {
         const chainIds = []
 
@@ -511,9 +493,9 @@ export default {
 
         return chainIds
       }
+
       let sources = getMapChainIds(query.sources)
       let dests = getMapChainIds(query.dests)
-
       // Tidy source(s) and dest(s)
       const tidyChains = (chainIds) => {
         const newChains = []
@@ -594,7 +576,6 @@ export default {
           }
         }
       }
-
       // Tidy
       if (!token) {
         token = tokens?.[0] || ''
@@ -605,7 +586,6 @@ export default {
         amount = ''
       }
       fixed = fixed == 1 // To boolean
-
       return {
         referer,
         source,
@@ -658,8 +638,6 @@ export default {
           info.text = 'INSUFFICIENT FUNDS'
           info.disabled = 'disabled'
         } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
-          console.warn('this.toValue =', this.toValue)
-          console.warn('this.makerMaxBalance =', this.makerMaxBalance)
           info.text = 'INSUFFICIENT LIQUIDITY'
           info.disabled = 'disabled'
         }
@@ -704,13 +682,11 @@ export default {
       return `In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information when you transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.`
     },
     timeSpenToolTip() {
-      return `It will take about ${
-        this.originTimeSpent
-          ? this.originTimeSpent.replace('~', '')
-          : this.originTimeSpent
-      } by traditional way, but only take about ${
-        this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
-      } with Orbiter.`
+      return `It will take about ${this.originTimeSpent
+        ? this.originTimeSpent.replace('~', '')
+        : this.originTimeSpent
+        } by traditional way, but only take about ${this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
+        } with Orbiter.`
     },
     gasFeeToolTip() {
       const gasFee = `<b>The cost before using Orbiter</b><br />Gas Fee: $${this.originGasCost.toFixed(
@@ -719,14 +695,13 @@ export default {
       const tradingFee = ` <br /><b>The cost after using Orbiter</b><br />Trading Fee: $${(
         this.orbiterTradingFee * this.exchangeToUsdPrice
       ).toFixed(2)}`
-      const withholdingGasFee = `<br />Withholding Fee: $${
-        this.$store.getters.realSelectMakerInfo
-          ? (
-              this.$store.getters.realSelectMakerInfo.tradingFee *
-              this.exchangeToUsdPrice
-            ).toFixed(2)
-          : 0
-      }`
+      const withholdingGasFee = `<br />Withholding Fee: $${this.$store.getters.realSelectMakerInfo
+        ? (
+          this.$store.getters.realSelectMakerInfo.tradingFee *
+          this.exchangeToUsdPrice
+        ).toFixed(2)
+        : 0
+        }`
       const total = `<br /><br /><b>Total: $${(
         this.gasTradingTotal * this.exchangeToUsdPrice
       ).toFixed(2)}</b>`
@@ -802,8 +777,8 @@ export default {
       return (
         Math.ceil(
           this.$store.state.transferData.gasFee *
-            this.$store.state.transferData.ethPrice *
-            10
+          this.$store.state.transferData.ethPrice *
+          10
         ) / 10
       ).toFixed(2)
     },
@@ -845,8 +820,12 @@ export default {
       return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
+      // console.log(this.originGasCost, 'this.originGasCost')
+      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
+      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
       let savingValue =
         this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      // console.log(savingValue, 'savingValue')
       if (savingValue > 0) {
         return true
       }
@@ -935,6 +914,8 @@ export default {
     },
     '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
       this.updateExchangeToUsdPrice()
+      this.getMakerMaxBalance()
+
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
@@ -989,6 +970,7 @@ export default {
             this.toChainArray.push(makerInfo.c2ID)
           }
         }
+
         if (
           makerInfo.c2ID === newValue &&
           this.toChainArray.indexOf(makerInfo.c1ID) === -1
@@ -1001,10 +983,8 @@ export default {
           }
         }
       })
-      if (
-        this.toChainArray.indexOf(this.$store.state.transferData.toChainID) ===
-        -1
-      ) {
+
+      if (this.toChainArray.indexOf(this.$store.state.transferData.toChainID) === -1) {
         let _toChainID = this.toChainArray[0]
         if (
           this.queryParams.dest > 0 &&
@@ -1022,7 +1002,6 @@ export default {
             if (_fromChainID !== fromChainID || _toChainID !== toChainID) {
               return
             }
-
             const { tokens } = this.queryParams
             if (
               tokens.length > 0 &&
@@ -1048,7 +1027,6 @@ export default {
           pushToken(makerInfo.c1ID, makerInfo.c2ID)
           pushToken(makerInfo.c2ID, makerInfo.c1ID)
         })
-
         // if can's find, use first; else find same name token's makerInfo
         if (
           this.tokenInfoArray.findIndex(
@@ -1073,11 +1051,11 @@ export default {
               (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
                 makerInfo.c2ID === this.$store.state.transferData.toChainID &&
                 makerInfo.tName ===
-                  this.$store.state.transferData.selectTokenInfo.token) ||
+                this.$store.state.transferData.selectTokenInfo.token) ||
               (makerInfo.c2ID === this.$store.state.transferData.fromChainID &&
                 makerInfo.c1ID === this.$store.state.transferData.toChainID &&
                 makerInfo.tName ===
-                  this.$store.state.transferData.selectTokenInfo.token)
+                this.$store.state.transferData.selectTokenInfo.token)
             ) {
               this.$store.commit('updateTransferMakerInfo', makerInfo)
             }
@@ -1160,11 +1138,11 @@ export default {
             (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
               makerInfo.c2ID === this.$store.state.transferData.toChainID &&
               makerInfo.tName ===
-                this.$store.state.transferData.selectTokenInfo.token) ||
+              this.$store.state.transferData.selectTokenInfo.token) ||
             (makerInfo.c2ID === this.$store.state.transferData.fromChainID &&
               makerInfo.c1ID === this.$store.state.transferData.toChainID &&
               makerInfo.tName ===
-                this.$store.state.transferData.selectTokenInfo.token)
+              this.$store.state.transferData.selectTokenInfo.token)
           ) {
             this.$store.commit('updateTransferMakerInfo', makerInfo)
           }
@@ -1216,6 +1194,7 @@ export default {
         })
     }
     updateETHPrice()
+    this.getMakerMaxBalance()
 
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
@@ -1245,6 +1224,7 @@ export default {
         })
       }
       updateETHPrice()
+      this.getMakerMaxBalance()
       this.updateExchangeToUsdPrice()
     }, 10 * 1000)
     this.transferValue = this.queryParams.amount
@@ -1413,9 +1393,9 @@ export default {
     },
     getFromChainInfo(e) {
       this.$store.commit('updateTransferFromChainID', e.localID)
-
       // Change query params's source
       const { path, query } = this.$route
+
       for (const key in queryParamsChainMap) {
         if (queryParamsChainMap[key] == e.localID) {
           if (!util.equalsIgnoreCase(query.source, key)) {
@@ -1502,6 +1482,20 @@ export default {
           return
         }
         let selectMakerInfo = this.$store.getters.realSelectMakerInfo
+        let nonce = await getNonce.getNonce(
+          this.$store.state.transferData.fromChainID,
+          this.$store.getters.realSelectMakerInfo.t1Address,
+          this.$store.getters.realSelectMakerInfo.tName,
+          this.$store.state.web3.coinbase
+        )
+        if (nonce > 8999) {
+          this.$notify.error({
+            title: `Address with the nonce over 9000 are not supported by Orbiter`,
+            duration: 3000,
+          })
+          return
+        }
+
         if (
           !this.transferValue ||
           new BigNumber(this.transferValue).comparedTo(
@@ -1520,7 +1514,7 @@ export default {
         if (
           this.$store.state.web3.networkId.toString() !==
           this.$env.localChainID_netChainID[
-            this.$store.state.transferData.fromChainID
+          this.$store.state.transferData.fromChainID
           ]
         ) {
           this.addChainNetWork()
@@ -1550,7 +1544,7 @@ export default {
     addChainNetWork() {
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+        this.$store.state.transferData.fromChainID
         ]
       )
       let selectMakerInfo = this.$store.getters.realSelectMakerInfo
@@ -1598,8 +1592,8 @@ export default {
               rpcUrls: chain.rpc,
               blockExplorerUrls: [
                 chain.explorers &&
-                chain.explorers.length > 0 &&
-                chain.explorers[0].url
+                  chain.explorers.length > 0 &&
+                  chain.explorers[0].url
                   ? chain.explorers[0].url
                   : chain.infoURL,
               ],
@@ -1609,7 +1603,7 @@ export default {
                 method: 'wallet_addEthereumChain',
                 params: [params, this.$store.state.web3.coinbase],
               })
-              .then(() => {})
+              .then(() => { })
               .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
@@ -1634,7 +1628,6 @@ export default {
           this.$store.state.transferData.toChainID,
           this.$store.state.transferData.selectTokenInfo.token !== 'ETH'
         )
-
         this.originGasCost = response
       } catch (error) {
         console.log('error =', error)
@@ -1678,6 +1671,29 @@ export default {
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.log(error)
+      }
+    },
+
+    async getMakerMaxBalance() {
+      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
+      if (!selectMakerInfo) {
+        return
+      }
+
+      try {
+        const _balance = await this.getBalance(
+          selectMakerInfo.makerAddress,
+          selectMakerInfo.c2ID,
+          selectMakerInfo.t2Address,
+          selectMakerInfo.tName,
+          selectMakerInfo.precision
+        )
+        if (_balance > 0) {
+          // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
+          this.makerMaxBalance = _balance * 0.95
+        }
+      } catch (err) {
+        alert(err.message)
       }
     },
   },
