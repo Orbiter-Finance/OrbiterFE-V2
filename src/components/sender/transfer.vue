@@ -127,7 +127,17 @@
             <div>{{ toValue }}</div>
           </div>
         </div>
-        <div v-if="!queryParams.fixed" class="middleImge" @click="transfer_mid">
+
+        <!-- When queryParams.fixed or toChain is dydx, hide it! -->
+        <div
+          v-if="
+            !queryParams.fixed &&
+            $store.state.transferData.toChainID != 11 &&
+            $store.state.transferData.toChainID != 511
+          "
+          class="middleImge"
+          @click="transfer_mid"
+        >
           <img
             src="../../assets/middleIcon.png"
             style="width: 100%; height: 100%"
@@ -1236,6 +1246,16 @@ export default {
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter((makerInfo) => {
+        // Don't show dydx
+        if (
+          makerInfo.c1ID == 11 ||
+          makerInfo.c1ID == 511 ||
+          makerInfo.c2ID == 11 ||
+          makerInfo.c2ID == 511
+        ) {
+          return
+        }
+
         if (this.fromChainArray.indexOf(makerInfo.c1ID) === -1) {
           // sources fiter
           if (

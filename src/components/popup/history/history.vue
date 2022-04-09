@@ -23,6 +23,10 @@
       <div
         style="width: 100%; height: 0.15rem; background: var(--default-black)"
       ></div>
+      <div class="dydx-limit" v-if="isShowDydxLimit">
+        Limited by the dydx mechanism, the history of dYdX cannot be queried
+        temporarily
+      </div>
       <loading
         v-if="!historyData"
         style="margin: auto; margin-top: 5rem"
@@ -93,6 +97,19 @@ export default {
 
       return list
     },
+
+    isShowDydxLimit() {
+      const { transactionList } = this.$store.state
+      if (!this.historyData || !transactionList) {
+        return false
+      }
+
+      if (this.historyData.length < transactionList.length) {
+        return true
+      }
+
+      return false
+    }
   },
   mounted() {},
   methods: {
@@ -153,6 +170,13 @@ export default {
       var(--bottom-nav-height)
   );
   overflow-y: scroll;
+
+  .dydx-limit {
+    color: #e85e24;
+    font-size: 14px;
+    padding-top: 8px;
+  }
+
   .historyContent {
     margin: 1rem 1.5rem;
     position: relative;

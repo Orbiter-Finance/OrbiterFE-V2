@@ -62,6 +62,10 @@ const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 126000
 // Testnet withdraw contract: 0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef
 const IMX_ETH_WITHDRAW_ONL1 = 510000
 
+// dydx deposit
+// Mainnet deposit contract: 0x8e8bd01b5A9eb272CC3892a2E40E64A716aa2A40
+const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
+
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   // min ~ max
@@ -151,12 +155,14 @@ export default {
       7: 0.001,
       8: 1.7,
       9: 100,
+      11: 1,
       22: 0.02,
       33: 100,
       66: 60,
       77: 0.001,
       88: 1.7,
       99: 1,
+      511: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -168,12 +174,14 @@ export default {
       7: 21000,
       8: 51000,
       9: 75000,
+      11: 100000,
       22: 810000,
       33: 100,
       66: 1500,
       77: 21000,
       88: 51000,
       99: 75000,
+      511: 100000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -184,6 +192,7 @@ export default {
       6: 'MATIC',
       7: 'ETH',
       8: 'ETH',
+      11: 'ETH',
       9: 'ETH',
       22: 'AETH',
       33: 'ETH',
@@ -191,6 +200,7 @@ export default {
       77: 'ETH',
       88: 'ETH',
       99: 'ETH',
+      511: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -302,6 +312,9 @@ export default {
     if (toChainID === 9 || toChainID === 99) {
       timeSpent = 15
     }
+    if (toChainID === 11 || toChainID === 511) {
+      timeSpent += 5
+    }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
   },
@@ -350,6 +363,9 @@ export default {
       if (toChainID === 9 || toChainID === 99) {
         return '~10min'
       }
+      if (toChainID === 11 || toChainID === 511) {
+        return '~20min'
+      }
     }
   },
 
@@ -396,6 +412,10 @@ export default {
       if (toChainID === 9 || toChainID === 99) {
         // eth -> loopring
         return ' 9.25min'
+      }
+      if (toChainID === 11 || toChainID === 511) {
+        // eth -> dydx
+        return ' 19.95min'
       }
     }
   },
@@ -588,6 +608,12 @@ export default {
       let toGasPrice = await this.getGasPrice(toChainID === 9 ? 1 : 5)
       let lpDepositGas = toGasPrice * LP_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += lpDepositGas
+    }
+    if (toChainID === 11 || toChainID === 511) {
+      // dydx deposit
+      const toGasPrice = await this.getGasPrice(toChainID === 11 ? 1 : 5)
+      const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
+      ethGas += dydxDepositGas
     }
 
     let usd = new BigNumber(0)
