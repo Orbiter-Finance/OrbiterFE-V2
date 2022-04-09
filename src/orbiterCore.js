@@ -68,6 +68,9 @@ function isLimitNumber(chain) {
   if (chain === 8 || chain === 88 || chain === 'immutablex') {
     return true
   }
+  if (chain === 12 || chain === 512 || chain === 'zkspace') {
+    return true
+  }
   return false
 }
 

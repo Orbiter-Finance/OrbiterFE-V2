@@ -118,8 +118,11 @@ import {
 } from '../../util/constants/starknet/helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
-import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
+import { ERC20TokenType, ETHTokenType, sign } from '@imtbl/imx-sdk'
 import { checkStateWhenConfirmTransfer } from '../../util/confirmCheck'
+import { sign_musig } from 'zksync-crypto'
+import zkpace from '../../core/actions/zkspace'
+import zkspace from '../../core/actions/zkspace'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -214,6 +217,142 @@ export default {
   watch: {},
   mounted() {},
   methods: {
+    async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
+      // let provider = new ethers.providers.Web3Provider(window.ethereum)
+      const walletAccount = this.$store.state.web3.coinbase
+
+      // const signer = provider.getSigner()
+      // const msg =
+      //   'Access ZKSwap account.\n\nOnly sign this message for a trusted client!'
+      // const signature = await signer.signMessage(msg)
+      // console.warn('signature=', signature)
+      // const seed = ethers.utils.arrayify(signature)
+      // console.warn('seed=', seed)
+      // const privateKey = await zksync.crypto.privateKeyFromSeed(seed)
+      // console.warn('privateKey=', privateKey)
+      // const pubkeyHash = await zksync.crypto.privateKeyToPubKeyHash(privateKey)
+      // console.warn('publicKey=', pubkeyHash)
+      var rAmount = new BigNumber(this.$store.state.transferData.transferValue)
+        .plus(new BigNumber(selectMakerInfo.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
+      var rAmountValue = rAmount.toFixed()
+      var p_text
+      switch (toChainID.toString().length) {
+        case 1:
+          p_text = '900' + toChainID.toString()
+          break
+        case 2:
+          p_text = '90' + toChainID.toString()
+          break
+        case 3:
+          p_text = '9' + toChainID.toString()
+          break
+      }
+      var tValue = orbiterCore.getTAmountFromRAmount(
+        fromChainID,
+        rAmountValue,
+        p_text
+      )
+      if (!tValue.state) {
+        this.$notify.error({
+          title: tValue.error,
+          duration: 3000,
+        })
+        this.transferLoading = false
+        return
+      }
+      // let accountInfo
+      // try {
+      //   accountInfo = await zkspace.getZKAccountInfo(fromChainID, walletAccount)
+      // } catch (error) {
+      //   console.warn('getZKAccountInfoError =', error)
+      //   return
+      // }
+      // let transferFee
+      // try {
+      //   transferFee = await zkpace.getZKTransferGasFee(
+      //     fromChainID,
+      //     walletAccount
+      //   )
+      // } catch (error) {
+      //   console.warn('getZKTransferGasFeeError =', error)
+      //   return
+      // }
+
+      // const msgBytes = ethers.utils.concat([
+      //   '0x05',
+      //   ethers.utils.hexlify(accountInfo.id),
+      //   walletAccount,
+      //   selectMakerInfo.makerAddress,
+      //   ethers.utils.hexlify(0),
+      //   Web3.utils.toHex(tValue.tAmount),
+      //   ethers.utils.hexlify(0),
+      //   ethers.utils.hexlify(transferFee * 10 ** selectMakerInfo.precision),
+      //   ethers.utils.hexlify(128),
+      //   ethers.utils.hexlify(accountInfo.nonce),
+      // ])
+      // console.warn(
+      //   'ethers.utils.hexlify(accountInfo.id) =',
+      //   ethers.utils.hexlify(accountInfo.id)
+      // )
+      // console.warn(
+      //   'Web3.utils.toHex(tValue.tAmount) =',
+      //   Web3.utils.toHex(tValue.tAmount)
+      // )
+      // console.warn(
+      //   'ethers.utils.hexlify(transferFee * 10 ** selectMakerInfo.precision) =',
+      //   ethers.utils.hexlify(transferFee * 10 ** selectMakerInfo.precision)
+      // )
+      // console.warn('ethers.utils.hexlify(128) =', ethers.utils.hexlify(128))
+      // console.warn(
+      //   'ethers.utils.hexlify(accountInfo.nonce) =',
+      //   ethers.utils.hexlify(accountInfo.nonce)
+      // )
+
+      // console.warn('msgBytes =', msgBytes)
+      // const signaturePacked = sign_musig(privateKey, msgBytes)
+      // const pubKey = ethers.utils
+      //   .hexlify(signaturePacked.slice(0, 32))
+      //   .substr(2)
+      // const signaturer = ethers.utils
+      //   .hexlify(signaturePacked.slice(32))
+      //   .substr(2)
+      // console.warn('pubKey=', pubKey)
+      // console.warn('signaturer=', signaturer)
+      // const params = {
+      //   type: 'Transfer',
+      //   accountId: accountInfo.id,
+      //   from: walletAccount,
+      //   to: selectMakerInfo.makerAddress,
+      //   token: 0,
+      //   amount: tValue.tAmount,
+      //   feeToken: 0,
+      //   fee: (transferFee * 10 ** selectMakerInfo.precision).toString(),
+      //   chainId: 128,
+      //   nonce: accountInfo.nonce,
+      //   signature: {
+      //     pubKey: pubKey,
+      //     signature: signaturer,
+      //   },
+      // }
+      // const req = {
+      //   localChainID: fromChainID,
+      //   tx: params,
+      //   signature: '0x' + signaturer,
+      //   // signature: {
+      //   //   type: 'EthereumSignature',
+      //   //   signature: '0x' + signaturer,
+      //   // },
+      // }
+      // zkpace.sendTransfer(req)
+      this.onTransferSucceed(
+        walletAccount,
+        selectMakerInfo,
+        tValue.tAmount.toString(),
+        fromChainID,
+        '0xa213a9063a862882303223de8370c2d70fc7c411a9a3b381a12404c496cc081a'
+      )
+    },
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(window.ethereum)
       const walletAccount = this.$store.state.web3.coinbase
@@ -242,10 +381,18 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+        var p_text
+        switch (toChainID.toString().length) {
+          case 1:
+            p_text = '900' + toChainID.toString()
+            break
+          case 2:
+            p_text = '90' + toChainID.toString()
+            break
+          case 3:
+            p_text = '9' + toChainID.toString()
+            break
+        }
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -402,10 +549,18 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+        var p_text
+        switch (toChainID.toString().length) {
+          case 1:
+            p_text = '900' + toChainID.toString()
+            break
+          case 2:
+            p_text = '90' + toChainID.toString()
+            break
+          case 3:
+            p_text = '9' + toChainID.toString()
+            break
+        }
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -725,12 +880,7 @@ export default {
         this.$store.getters.realSelectMakerInfo,
         false
       )
-      console.warn(
-        'this.$store.state.transferData.transferValue =',
-        this.$store.state.transferData.transferValue
-      )
 
-      console.warn('shouldReceiveValue =', shouldReceiveValue.toString())
       if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
         this.transferLoading = false
         return
@@ -740,6 +890,8 @@ export default {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 9 || fromChainID === 99) {
         this.loopringTransfer(fromChainID, toChainID, selectMakerInfo)
+      } else if (fromChainID === 12 || fromChainID === 512) {
+        this.zkspceTransfer(fromChainID, toChainID, selectMakerInfo)
       } else {
         const tokenAddress =
           selectMakerInfo.c1ID === fromChainID
@@ -753,10 +905,18 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         const rAmountValue = rAmount.toFixed()
-        const p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString()
-            : '90' + toChainID.toString()
+        var p_text
+        switch (toChainID.toString().length) {
+          case 1:
+            p_text = '900' + toChainID.toString()
+            break
+          case 2:
+            p_text = '90' + toChainID.toString()
+            break
+          case 3:
+            p_text = '9' + toChainID.toString()
+            break
+        }
         const tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,

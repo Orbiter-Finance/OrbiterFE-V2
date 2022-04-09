@@ -11,13 +11,14 @@ import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
-  getProviderByChainId
+  getProviderByChainId,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
 import { IMXListen } from '../immutablex/imx_listen'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
+import zkspace from '../../core/actions/zkspace'
 
 let startBlockNumber = ''
 
@@ -107,7 +108,7 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
-          storeUpdateProceedState(3)          
+          storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
             zk_makerTransferChainID,
@@ -115,7 +116,7 @@ async function confirmUserTransaction(
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
             zk_amountToSend,
-            zk_nonce,
+            zk_nonce
           )
           return
         }
@@ -327,6 +328,67 @@ async function confirmUserTransaction(
       )
     }
 
+    if (localChainID === 12 || localChainID === 512) {
+      try {
+        let zkspaceTransactionData = await zkspace.getZKSpaceTransactionData(
+          localChainID,
+          txHash
+        )
+        if (
+          zkspaceTransactionData.success === true &&
+          zkspaceTransactionData.data.success === true &&
+          zkspaceTransactionData.data.tx_type === 'Transfer' &&
+          (zkspaceTransactionData.data.status === 'verified' ||
+            zkspaceTransactionData.data.status === 'finalized')
+        ) {
+          let time = zkspaceTransactionData.data.createdAt
+          let zkspac_amount = orbiterCore.getRAmountFromTAmount(
+            localChainID,
+            zkspaceTransactionData.data.amount
+          ).rAmount
+          let zkspace_nonce = zkspaceTransactionData.data.nonce.toString()
+          let zkspace_SendRAmount = orbiterCore.getToAmountFromUserAmount(
+            new Bignumber(zkspac_amount).dividedBy(
+              new Bignumber(10 ** makerInfo.precision)
+            ),
+            makerInfo,
+            true
+          )
+          let zkspace_makerTransferChainID =
+            localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
+          var zkspace_amountToSend = orbiterCore.getTAmountFromRAmount(
+            zkspace_makerTransferChainID,
+            zkspace_SendRAmount,
+            zkspace_nonce
+          ).tAmount
+          if (!isCurrentTransaction(txHash)) {
+            return
+          }
+          store.commit('updateProceedingUserTransferTimeStamp', time)
+          storeUpdateProceedState(3)
+          startScanMakerTransfer(
+            txHash,
+            zkspace_makerTransferChainID,
+            makerInfo,
+            zkspaceTransactionData.data.to,
+            zkspaceTransactionData.data.from,
+            zkspace_amountToSend,
+            zkspace_nonce
+          )
+          return
+        }
+      } catch (error) {
+        console.log('error =', error)
+        throw 'getZKTransactionDataError'
+      }
+      return confirmUserTransaction(
+        localChainID,
+        makerInfo,
+        txHash,
+        confirmations
+      )
+    }
+
     // main & arbitrum
     const trxConfirmations = await getConfirmations(localChainID, txHash)
     if (!trxConfirmations) {
@@ -425,6 +487,88 @@ async function confirmUserTransaction(
 }
 
 function ScanZKMakerTransfer(
+  transactionID,
+  localChainID,
+  makerInfo,
+  from,
+  to,
+  amount
+) {
+  setTimeout(async () => {
+    if (!isCurrentTransaction(transactionID)) {
+      return
+    }
+    let req = {
+      localChainID: localChainID,
+      account: from,
+      from: 'latest',
+      limit: 30,
+      direction: 'older',
+    }
+    try {
+      let zkTransactions = await thirdapi.getZKInfo(req)
+      let zkTransactionList
+      if (
+        zkTransactions.status === 'success' &&
+        zkTransactions.result.list.length !== 0
+      ) {
+        zkTransactionList = zkTransactions.result.list
+      }
+      for (let index = 0; index < zkTransactionList.length; index++) {
+        const zkInfo = zkTransactionList[index]
+        if (
+          zkInfo.failReason === null &&
+          zkInfo.op.type == 'Transfer' &&
+          zkInfo.op.from?.toLowerCase() == from.toLowerCase() &&
+          zkInfo.op.to?.toLowerCase() == to.toLowerCase() &&
+          zkInfo.op.amount === amount
+        ) {
+          // shifou bijiao daibi
+          let zkTokenList =
+            localChainID === 3
+              ? store.state.zktokenList.mainnet
+              : store.state.zktokenList.rinkeby
+          let tokenAddress =
+            localChainID === makerInfo.c1ID
+              ? makerInfo.t1Address
+              : makerInfo.t2Address
+          var tokenList = zkTokenList.filter(
+            (item) => item.address === tokenAddress
+          )
+          let resultToken = tokenList.length > 0 ? tokenList[0] : null
+          if (!resultToken) {
+            break
+          }
+          if (zkInfo.op.token !== resultToken.id) {
+            break
+          }
+          if (!isCurrentTransaction(transactionID)) {
+            return
+          }
+          store.commit('updateProceedingMakerTransferTxid', zkInfo.txHash)
+          storeUpdateProceedState(4)
+          if (zkInfo.status === 'committed' || zkInfo.status === 'finalized') {
+            storeUpdateProceedState(5)
+            return
+          }
+        }
+      }
+    } catch (error) {
+      console.log('error =', error)
+      throw 'getZKTransactionListError'
+    }
+    return ScanZKMakerTransfer(
+      transactionID,
+      localChainID,
+      makerInfo,
+      from,
+      to,
+      amount
+    )
+  }, 10 * 1000)
+}
+
+function ScanZKSpaceMakerTransfer(
   transactionID,
   localChainID,
   makerInfo,
@@ -628,7 +772,7 @@ function ScanMakerTransfer(
       asyncStarknet()
       return
     }
-    
+
     // immutablex
     if (localChainID == 8 || localChainID == 88) {
       const imxListen = new IMXListen(localChainID, to, false)
