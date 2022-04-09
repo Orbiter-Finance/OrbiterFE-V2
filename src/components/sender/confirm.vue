@@ -79,6 +79,8 @@ import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 import { checkStateWhenConfirmTransfer } from '../../util/confirmCheck'
+import { CrossAddress } from '../../util/cross_address'
+import { DydxHelper } from '../../util/dydx/dydx_helper'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -200,11 +202,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString() : toChainID.toString().length === 2
-              ? '90' + toChainID.toString() : '9' + toChainID.toString()
-
+        var p_text = 9000 + Number(toChainID) + ''
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -361,10 +359,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString() : toChainID.toString().length === 2
-              ? '90' + toChainID.toString() : '9' + toChainID.toString()
+        var p_text = 9000 + Number(toChainID) + ''
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -516,6 +511,7 @@ export default {
 
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -561,6 +557,7 @@ export default {
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -597,6 +594,7 @@ export default {
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -649,6 +647,112 @@ export default {
         this.transferLoading = false
       }
     },
+    async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
+        return
+      }
+
+      try {
+        const dydxHelper = new DydxHelper(
+          fromChainID,
+          new Web3(window.ethereum),
+          'MetaMask'
+        )
+        const dydxMakerInfo = dydxHelper.getMakerInfo(
+          selectMakerInfo.makerAddress
+        )
+        const dydxClient = await dydxHelper.getDydxClient(from, false, true)
+        const dydxAccount = await dydxHelper.getAccount(from)
+        
+        const params = {
+          clientId: dydxHelper.generateClientId(from),
+          amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
+          expiration: new Date(
+            new Date().getTime() + 86400000 * 30
+          ).toISOString(),
+          receiverAccountId: dydxHelper.getAccountId(
+            selectMakerInfo.makerAddress
+          ),
+          receiverPublicKey: dydxMakerInfo.starkKey,
+          receiverPositionId: String(dydxMakerInfo.positionId),
+        }
+        const resp = await dydxClient.private.createTransfer(
+          params,
+          dydxAccount.positionId
+        )
+
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          resp.transfer.id
+        )
+      } catch (error) {
+        console.error(error)
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
+
+    async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        return
+      }
+
+      let contractAddress = selectMakerInfo.t1Address
+      if (selectMakerInfo.c1ID != fromChainID) {
+        contractAddress = selectMakerInfo.t2Address
+      }
+
+      try {
+        const { transferExt } = this.$store.state.transferData
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const crossAddress = new CrossAddress(provider, fromChainID)
+
+        const amount = ethers.BigNumber.from(value)
+        let transactionHash = ''
+        if (util.isEthTokenAddress(contractAddress)) {
+          transactionHash = (
+            await crossAddress.transfer(
+              selectMakerInfo.makerAddress,
+              amount,
+              transferExt
+            )
+          ).hash
+        } else {
+          transactionHash = (
+            await crossAddress.transferERC20(
+              contractAddress,
+              selectMakerInfo.makerAddress,
+              amount,
+              transferExt
+            )
+          ).hash
+        }
+
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          transactionHash
+        )
+      } catch (err) {
+        this.$notify.error({
+          title: err?.data?.message || err.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
+
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
@@ -671,10 +775,20 @@ export default {
       }
 
       // sendTransfer
+      const { fromChainID, toChainID, transferExt } =
+        this.$store.state.transferData
+      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
+
+      // Check fromChainID isSupportEVM
+      if (transferExt && !util.isSupportEVM(fromChainID)) {
+        this.$notify.error({
+          title: `Sorry, this fromChainID: ${fromChainID} no support EVM!`,
+          duration: 3000,
+        })
+        return
+      }
+
       this.transferLoading = true
-      var fromChainID = this.$store.state.transferData.fromChainID
-      var toChainID = this.$store.state.transferData.toChainID
-      var selectMakerInfo = this.$store.getters.realSelectMakerInfo
 
       // 增加check币商余额逻辑
 
@@ -707,10 +821,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         const rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString() : toChainID.toString().length === 2
-              ? '90' + toChainID.toString() : '9' + toChainID.toString()
+        const p_text = 9000 + Number(toChainID) + ''
         const tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -745,6 +856,29 @@ export default {
           )
           return
         }
+
+        if (fromChainID == 11 || fromChainID == 511) {
+          this.dydxTransfer(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+          return
+        }
+
+        // Cross address transfer
+        if (transferExt) {
+          this.transferCrossAddress(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+
+          return
+        }
+
         if (util.isEthTokenAddress(tokenAddress)) {
           // When tokenAddress is eth
           this.ethTransfer(

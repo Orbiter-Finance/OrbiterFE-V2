@@ -41,6 +41,8 @@ export default {
         return (nonceObj.offchainId - 1) / 2
       }
       return 0
+    } else if (localChainID === 11 || localChainID === 511) {
+      return 0
     } else {
       let nonce = 0
       const web3 = localWeb3(localChainID)

@@ -22,11 +22,13 @@
 </template>
 
 <script>
+import Web3 from 'web3'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
   getStarknetAccount,
 } from '../../../util/constants/starknet/helper'
+import { DydxHelper } from '../../../util/dydx/dydx_helper'
 import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
 import Loading from '../../loading/loading.vue'
@@ -78,6 +80,9 @@ export default {
         if (item === 10 || item === 510) {
           iconName = 'metislogo'
         }
+        if (item === 11 || item === 511) {
+          iconName = 'dydxlogo'
+        }
         var chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),
@@ -125,6 +130,18 @@ export default {
             await imxHelper.ensureUser(coinbase)
           }
 
+          // dydx
+          if (e.localID == 11 || e.localID == 511) {
+            this.loadingIndex = index
+            const { coinbase } = this.$store.state.web3
+            const dydxHelper = new DydxHelper(
+              e.localID,
+              new Web3(window.ethereum),
+              'MetaMask'
+            )
+            await dydxHelper.getDydxClient(coinbase)
+          }
+
           this.loadingIndex = -1
         } catch (err) {
           this.$notify.error({
@@ -148,7 +165,7 @@ export default {
     },
     checkKeyWord() { },
     isStarkSystem(chainId) {
-      return [4, 44, 8, 88].indexOf(chainId) > -1
+      return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1
     },
   },
 }

@@ -161,7 +161,17 @@
             <div>{{ toValue }}</div>
           </div>
         </div>
-        <div v-if="!queryParams.fixed" class="middleImge" @click="transfer_mid">
+
+        <!-- When queryParams.fixed or toChain is dydx, hide it! -->
+        <div
+          v-if="
+            !queryParams.fixed &&
+            $store.state.transferData.toChainID != 11 &&
+            $store.state.transferData.toChainID != 511
+          "
+          class="middleImge"
+          @click="transfer_mid"
+        >
           <img
             src="../../assets/middleIcon.png"
             style="width: 100%; height: 100%"
@@ -348,6 +358,8 @@ import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
+import { DydxHelper } from '../../util/dydx/dydx_helper'
+import Web3 from 'web3'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -357,6 +369,7 @@ const queryParamsChainMap = {
   Polygon: 6,
   Optimism: 7,
   ImmutableX: 8,
+  dYdX: 11,
   Rinkeby: 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
@@ -367,7 +380,8 @@ const queryParamsChainMap = {
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,
   'Metis': 10,
-  'Metis(R)': 510
+  'Metis(R)': 510,
+  'dYdX(R)': 511,
 }
 
 export default {
@@ -1254,6 +1268,16 @@ export default {
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter((makerInfo) => {
+        // Don't show dydx
+        if (
+          makerInfo.c1ID == 11 ||
+          makerInfo.c1ID == 511 ||
+          makerInfo.c2ID == 11 ||
+          makerInfo.c2ID == 511
+        ) {
+          return
+        }
+
         if (this.fromChainArray.indexOf(makerInfo.c1ID) === -1) {
           // sources fiter
           if (
@@ -1511,107 +1535,68 @@ export default {
           })
           return
         }
+
+        const { toChainID } = this.$store.state.transferData
+
+        // Ensure immutablex's registered
+        if (toChainID == 8 || toChainID == 88) {
+          const imxHelper = new IMXHelper(toChainID)
+          await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+        }
+
+        // To dYdX
+        if (toChainID == 11 || toChainID == 511) {
+          const dydxHelper = new DydxHelper(
+            toChainID,
+            new Web3(window.ethereum),
+            'MetaMask'
+          )
+          const dydxAccount = await dydxHelper.getAccount(
+            this.$store.state.web3.coinbase
+          )
+
+          this.$store.commit('updateTransferExt', {
+            type: '0x02',
+            value: dydxHelper.conactStarkKeyPositionId(
+              '0x' + dydxAccount.starkKey,
+              dydxAccount.positionId
+            ),
+          })
+        } else {
+          // Clear TransferExt
+          this.$store.commit('updateTransferExt', null)
+        }
+
+        // Ensure fromChainId's networkId
         if (
           this.$store.state.web3.networkId.toString() !==
           this.$env.localChainID_netChainID[
           this.$store.state.transferData.fromChainID
           ]
         ) {
-          this.addChainNetWork()
-        } else {
-          // Ensure immutablex's registered
-          const { toChainID } = this.$store.state.transferData
-          if (toChainID == 8 || toChainID == 88) {
-            const imxHelper = new IMXHelper(toChainID)
-            await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+          try {
+            await util.ensureMetamaskNetwork(
+              this.$store.state.transferData.fromChainID
+            )
+          } catch (err) {
+            util.showMessage(err.message, 'error')
+            return
           }
-
-          // sendTransfer
-          this.$store.commit('updateConfirmRouteDescInfo', [
-            {
-              no: 1,
-              amount: new BigNumber(this.transferValue).plus(
-                new BigNumber(selectMakerInfo.tradingFee)
-              ),
-              coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
-            },
-          ])
-          this.$emit('stateChanged', '2')
         }
-      }
-    },
-    addChainNetWork() {
-      var chain = util.getChainInfo(
-        this.$env.localChainID_netChainID[
-        this.$store.state.transferData.fromChainID
-        ]
-      )
-      let selectMakerInfo = this.$store.getters.realSelectMakerInfo
-      const switchParams = {
-        chainId: util.toHex(chain.chainId),
-      }
-      window.ethereum
-        .request({
-          method: 'wallet_switchEthereumChain',
-          params: [switchParams],
-        })
-        .then(async () => {
-          // Ensure immutablex's registered
-          const { toChainID } = this.$store.state.transferData
-          if (toChainID == 8 || toChainID == 88) {
-            const imxHelper = new IMXHelper(toChainID)
-            await imxHelper.ensureUser(this.$store.state.web3.coinbase)
-          }
 
-          // switch success
-          this.$store.commit('updateConfirmRouteDescInfo', [
-            {
-              no: 1,
-              amount: new BigNumber(this.transferValue).plus(
-                new BigNumber(selectMakerInfo.tradingFee)
-              ),
-              coin: this.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(selectMakerInfo.makerAddress),
-            },
-          ])
-          this.$emit('stateChanged', '2')
-        })
-        .catch((error) => {
-          console.log(error)
-          if (error.code === 4902) {
-            // need add net
-            const params = {
-              chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
-              chainName: chain.name,
-              nativeCurrency: {
-                name: chain.nativeCurrency.name,
-                symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-                decimals: chain.nativeCurrency.decimals,
-              },
-              rpcUrls: chain.rpc,
-              blockExplorerUrls: [
-                chain.explorers &&
-                  chain.explorers.length > 0 &&
-                  chain.explorers[0].url
-                  ? chain.explorers[0].url
-                  : chain.infoURL,
-              ],
-            }
-            window.ethereum
-              .request({
-                method: 'wallet_addEthereumChain',
-                params: [params, this.$store.state.web3.coinbase],
-              })
-              .then(() => { })
-              .catch((error) => {
-                console.log(error)
-                util.showMessage(error.message, 'error')
-              })
-          } else {
-            util.showMessage(error.message, 'error')
-          }
-        })
+        // sendTransfer
+        this.$store.commit('updateConfirmRouteDescInfo', [
+          {
+            no: 1,
+            amount: new BigNumber(this.transferValue).plus(
+              new BigNumber(selectMakerInfo.tradingFee)
+            ),
+            coin: this.$store.state.transferData.selectTokenInfo.token,
+            toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+          },
+        ])
+        this.$emit('stateChanged', '2')
+      }
     },
 
     async updateOriginGasCost() {
@@ -1677,6 +1662,12 @@ export default {
     async getMakerMaxBalance() {
       const selectMakerInfo = this.$store.getters.realSelectMakerInfo
       if (!selectMakerInfo) {
+        return
+      }
+
+      // dYdX can't get maker's balance, don't check it
+      if (selectMakerInfo.c2ID == 11 || selectMakerInfo.c2ID == 511) {
+        this.makerMaxBalance = Number.MAX_SAFE_INTEGER
         return
       }
 
