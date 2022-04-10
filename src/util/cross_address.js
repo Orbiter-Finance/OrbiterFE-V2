@@ -1,3 +1,4 @@
+import { Notification } from 'element-ui'
 import { ethers, utils } from 'ethers'
 import env from '../../env'
 import { Coin_ABI } from './constants/contract/contract'
@@ -84,14 +85,26 @@ export class CrossAddress {
     const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
     await contract.approve(this.contractAddress, amount)
 
-    // Waitting approve succeed
-    for (let index = 0; index < 5000; index++) {
-      const allowance = await this.getAllowance(contract)
-      if (amount.lte(allowance)) {
-        break
+    const n = Notification({
+      duration: 0,
+      title: 'Approving...',
+      type: 'warning',
+    })
+    try {
+      // Waitting approve succeed
+      for (let index = 0; index < 5000; index++) {
+        const allowance = await this.getAllowance(contract)
+        if (amount.lte(allowance)) {
+          break
+        }
+
+        await util.sleep(2000)
       }
 
-      await util.sleep(2000)
+      n.close()
+    } catch (error) {
+      n.close()
+      throw error
     }
   }
 
