@@ -490,7 +490,7 @@ export default {
   async transferOrginGasUsd(fromChainID, toChainID, isErc20 = true) {
     let ethGas = 0
     let maticGas = 0
-
+    let metisGas = 0
     const selectMakerInfo = store.getters.realSelectMakerInfo
 
     // withdraw
@@ -582,7 +582,7 @@ export default {
       let fromGasPrice = await this.getGasPrice(fromChainID)
       // MT WithDraw
       const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
-      maticGas += MTWithDrawARGas
+      metisGas += MTWithDrawARGas
       const L1ChainID = fromChainID === 10 ? 1 : 5
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
@@ -652,7 +652,14 @@ export default {
         )
       )
     }
-
+    if (metisGas > 0) {
+      usd = usd.plus(
+        await exchangeToUsd(
+          new BigNumber(metisGas).dividedBy(10 ** 18),
+          'METIS'
+        )
+      )
+    }
     return usd.toNumber()
   },
 
