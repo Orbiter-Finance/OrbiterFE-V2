@@ -378,6 +378,8 @@ export default {
       transferValue: '',
 
       exchangeToUsdPrice: 0,
+
+      makerMaxBalance: 0,
     }
   },
   asyncComputed: {
@@ -407,10 +409,13 @@ export default {
         selectMakerInfo.precision
       )
       let opBalance = 10 ** -avalibleDigit
+      let preGasDigit = 3
+      let preGas = 10 ** -preGasDigit
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
         .minus(new BigNumber(opBalance))
         .minus(new BigNumber(transferGasFee))
+        .minus(new BigNumber(preGas))
       let userMax =
         useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
           ? useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
@@ -429,32 +434,6 @@ export default {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN)
       }
       return max.toString()
-    },
-
-    async makerMaxBalance() {
-      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
-      let makerMaxBalance = 0
-      try {
-        // dYdX can't get maker's balance, don't check it
-        if (selectMakerInfo.c2ID == 11 || selectMakerInfo.c2ID == 511) {
-          return Number.MAX_SAFE_INTEGER
-        }
-
-        const _balance = await this.getBalance(
-          selectMakerInfo.makerAddress,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        )
-        if (_balance > 0) {
-          // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
-          makerMaxBalance = _balance * 0.95
-        }
-      } catch (err) {
-        console.error('Get maker balance error:', err.message)
-      }
-      return makerMaxBalance
     },
   },
   computed: {
@@ -918,6 +897,8 @@ export default {
     },
     '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
       this.updateExchangeToUsdPrice()
+      this.getMakerMaxBalance()
+
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
@@ -1180,6 +1161,7 @@ export default {
       }
     },
   },
+
   mounted() {
     const updateETHPrice = async () => {
       transferCalculate
@@ -1192,6 +1174,7 @@ export default {
         })
     }
     updateETHPrice()
+    this.getMakerMaxBalance()
 
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
@@ -1222,6 +1205,7 @@ export default {
       }
 
       updateETHPrice()
+      this.getMakerMaxBalance()
 
       this.updateExchangeToUsdPrice()
     }, 10 * 1000)
@@ -1635,6 +1619,35 @@ export default {
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.log(error)
+      }
+    },
+
+    async getMakerMaxBalance() {
+      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
+      if (!selectMakerInfo) {
+        return
+      }
+      
+      // dYdX can't get maker's balance, don't check it
+      if (selectMakerInfo.c2ID == 11 || selectMakerInfo.c2ID == 511) {
+        this.makerMaxBalance = Number.MAX_SAFE_INTEGER
+        return
+      }
+
+      try {
+        const _balance = await this.getBalance(
+          selectMakerInfo.makerAddress,
+          selectMakerInfo.c2ID,
+          selectMakerInfo.t2Address,
+          selectMakerInfo.tName,
+          selectMakerInfo.precision
+        )
+        if (_balance > 0) {
+          // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
+          this.makerMaxBalance = _balance * 0.95
+        }
+      } catch (err) {
+        alert(err.message)
       }
     },
   },

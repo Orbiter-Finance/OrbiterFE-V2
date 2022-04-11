@@ -121,6 +121,7 @@ import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 import { CrossAddress } from '../../util/cross_address'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
+import { checkStateWhenConfirmTransfer } from '../../util/confirmCheck'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -208,6 +209,13 @@ export default {
           notice:
             "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
           descInfo: this.$store.state.confirmData.routeDescInfo,
+        },
+        {
+          icon: 'tips',
+          title:
+            'Modifying the transfer amount in MetaMask will cause the transfer to fail.',
+          desc: '',
+          textBold: false,
         },
       ]
     },
@@ -831,6 +839,21 @@ export default {
 
       this.transferLoading = true
 
+      // 增加check币商余额逻辑, To dydx no check
+      if (toChainID != 11 && toChainID != 511) {
+        let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
+          new BigNumber(this.$store.state.transferData.transferValue).plus(
+            new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
+          ),
+          this.$store.getters.realSelectMakerInfo,
+          false
+        )
+        if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
+          this.transferLoading = false
+          return
+        }
+      }
+
       if (fromChainID === 3 || fromChainID === 33) {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 9 || fromChainID === 99) {
@@ -1051,6 +1074,35 @@ export default {
         height: 0.1rem;
         border-top: 0.1rem dashed rgba(24, 25, 31, 0.2);
         margin-top: 1.6rem;
+      }
+    }
+    .contentItem:nth-last-child(2) {
+      width: 100%;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      color: var(--default-black);
+      margin: 2rem auto 0 auto;
+      align-items: center;
+      color: red;
+      .up {
+        padding: 0 0.5rem 0 1rem;
+        align-items: center;
+        text-align: left;
+        display: flow-root;
+        .right {
+          color: rgba($color: #18191f, $alpha: 0.7);
+          text-align: right;
+          font-weight: 400;
+          position: absolute;
+          right: 0.5rem;
+        }
+        .svg {
+          width: 1.2rem !important;
+          height: 1.2rem !important;
+        }
+        span {
+          margin-right: 0 !important;
+        }
       }
     }
   }
