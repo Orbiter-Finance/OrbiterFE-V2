@@ -52,7 +52,7 @@ export default {
     7: '10', // optimism
     8: '1', // mainnet
     9: '1', // loopring
-    11: '1', // loopring
+    11: '1', // dydx
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
