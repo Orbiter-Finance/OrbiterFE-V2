@@ -4,6 +4,39 @@ Axios.axios()
 const nowMakerList = [
   {
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    c1ID: 1,
+    c2ID: 3,
+    c1Name: 'mainnet',
+    c2Name: 'zksync',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 3,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 3,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0008,
+    c2TradingFee: 0.0035,
+    c1GasFee: 0.3,
+    c2GasFee: 1,
+    c1AvalibleTimes: [
+      {
+        startTime: 1649577601,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1649577601,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 3,
     c2ID: 9,
     c1Name: 'zksync',
@@ -154,39 +187,6 @@ const nowMakerList = [
     c2TradingFee: 0.0007,
     c1GasFee: 0.3,
     c2GasFee: 2.5,
-    c1AvalibleTimes: [
-      {
-        startTime: 1649577601,
-        endTime: 99999999999999,
-      },
-    ],
-    c2AvalibleTimes: [
-      {
-        startTime: 1649577601,
-        endTime: 99999999999999,
-      },
-    ],
-  },
-  {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
-    c1ID: 1,
-    c2ID: 3,
-    c1Name: 'mainnet',
-    c2Name: 'zksync',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
-    c1MinPrice: 0.005,
-    c1MaxPrice: 3,
-    c2MinPrice: 0.005,
-    c2MaxPrice: 3,
-    precision: 18,
-    c1AvalibleDeposit: 1000,
-    c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0008,
-    c2TradingFee: 0.0035,
-    c1GasFee: 0.3,
-    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1649577601,
