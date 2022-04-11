@@ -20,12 +20,12 @@ export class DydxHelper {
   chainId = 0
   networkId = 0
   host = ''
-  web3 = null
+  web3 = undefined
   signingMethod = ''
 
   /**
    * @param {number} chainId
-   * @param {Web3} web3
+   * @param {Web3 | undefined} web3
    * @param {string} signingMethod TypedData | MetaMask
    */
   constructor(chainId, web3, signingMethod = 'TypedData') {
