@@ -253,15 +253,20 @@ export class DydxHelper {
     const timeStampMs = new Date(transfer.createdAt).getTime()
     const nonce = DydxHelper.timestampToNonce(timeStampMs)
 
+    const isTransferIn = util.equalsIgnoreCase('TRANSFER_IN', transfer.type)
+    const isTransferOut = util.equalsIgnoreCase('TRANSFER_OUT', transfer.type)
+
     const transaction = {
-      timeStamp: parseInt(timeStampMs / 1000),
+      timeStamp: parseInt(timeStampMs / 1000 + ''),
       hash: transfer.id,
       nonce,
       blockHash: '',
       transactionIndex: 0,
       from: '',
       to: '',
-      value: new BigNumber(transfer.creditAmount)
+      value: new BigNumber(
+        isTransferIn ? transfer.creditAmount : transfer.debitAmount
+      )
         .multipliedBy(10 ** 6)
         .toString(), // Only usdc
       txreceipt_status: transfer.status,
@@ -269,10 +274,10 @@ export class DydxHelper {
       confirmations: 0,
     }
 
-    if (util.equalsIgnoreCase('TRANSFER_IN', transfer.type)) {
+    if (isTransferIn) {
       transaction.to = ethereumAddress
     }
-    if (util.equalsIgnoreCase('TRANSFER_OUT', transfer.type)) {
+    if (isTransferOut) {
       transaction.from = ethereumAddress
     }
 
