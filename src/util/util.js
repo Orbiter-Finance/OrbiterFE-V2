@@ -1,5 +1,6 @@
-import chainList from '../config/chains.json'
 import { Message } from 'element-ui'
+import env from '../../env'
+import chainList from '../config/chains.json'
 
 export default {
   showMessage(message, type) {
@@ -31,13 +32,17 @@ export default {
       case 44:
         return 'StarkNet(R)'
       case 8:
-        return 'ImmutableX'
+        return 'Immutable X'
       case 88:
-        return 'ImmutableX(R)'
+        return 'Immutable X(R)'
       case 9:
         return 'Loopring'
       case 99:
         return 'Loopring(G)'
+      case 11:
+        return 'dYdX'
+      case 511:
+        return 'dYdX(R)'
     }
 
     const chain = chainList.chainList.filter(
@@ -146,5 +151,58 @@ export default {
         resolve(null)
       }, ms)
     })
+  },
+
+  /**
+   * @param {number} chainId
+   * @returns
+   */
+  isSupportEVM(chainId) {
+    return [1, 2, 6, 7, 5, 22, 66, 77].indexOf(Number(chainId)) > -1
+  },
+
+  /**
+   * @param {number} chainId
+   */
+  async ensureMetamaskNetwork(chainId) {
+    const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
+    const switchParams = {
+      chainId: this.toHex(chain.chainId),
+    }
+
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [switchParams],
+      })
+    } catch (error) {
+      if (error.code === 4902) {
+        // need add net
+        const params = {
+          chainId: this.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
+          chainName: chain.name,
+          nativeCurrency: {
+            name: chain.nativeCurrency.name,
+            symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+            decimals: chain.nativeCurrency.decimals,
+          },
+          rpcUrls: chain.rpc,
+          blockExplorerUrls: [
+            chain.explorers &&
+            chain.explorers.length > 0 &&
+            chain.explorers[0].url
+              ? chain.explorers[0].url
+              : chain.infoURL,
+          ],
+        }
+
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [params],
+        })
+      } else {
+        throw error
+      }
+    }
   },
 }

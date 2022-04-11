@@ -22,6 +22,10 @@
       <div
         style="width: 100%; height: 0.15rem; background: var(--default-black)"
       ></div>
+      <div class="dydx-limit" v-if="isShowDydxLimit">
+        Limited by the dydx mechanism, the history of dYdX cannot be queried
+        temporarily
+      </div>
       <loading
         v-if="!historyData"
         style="margin: auto; margin-top: 5rem"
@@ -71,8 +75,40 @@ export default {
   watch: {},
   computed: {
     historyData() {
-      return this.$store.state.transactionList
+      const { transactionList } = this.$store.state
+      if (!transactionList) {
+        return transactionList
+      }
+
+      // Hide dydx (from and to)
+      const list = []
+      for (const item of transactionList) {
+        if (
+          item.fromChainID == 11 ||
+          item.fromChainID == 511 ||
+          item.toChainID == 11 ||
+          item.toChainID == 511
+        ) {
+          continue
+        }
+        list.push(item)
+      }
+
+      return list
     },
+
+    isShowDydxLimit() {
+      const { transactionList } = this.$store.state
+      if (!this.historyData || !transactionList) {
+        return false
+      }
+
+      if (this.historyData.length < transactionList.length) {
+        return true
+      }
+
+      return false
+    }
   },
   mounted() {},
   methods: {
@@ -110,7 +146,9 @@ export default {
         return 'imxlogo'
       } else if (chainID == '9' || chainID == '99') {
         return 'loopringlogo'
-      }  else {
+      } else if (chainID == '11' || chainID == '511') {
+        return 'dydxlogo'
+      } else {
         return 'ethlogo'
       }
     },
@@ -131,6 +169,13 @@ export default {
       var(--bottom-nav-height)
   );
   overflow-y: scroll;
+
+  .dydx-limit {
+    color: #e85e24;
+    font-size: 14px;
+    padding-top: 8px;
+  }
+
   .historyContent {
     margin: 1rem 1.5rem;
     position: relative;
