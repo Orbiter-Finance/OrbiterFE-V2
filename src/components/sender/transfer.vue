@@ -1485,16 +1485,17 @@ export default {
           })
           return
         }
-        // if (
-        //   this.$store.state.transferData.fromChainID == 22 ||
-        //   this.$store.state.transferData.fromChainID == 2
-        // ) {
-        //   this.$notify.error({
-        //     title: `Affected by the Arbitrum interface issue, the transfer from Arbitrum is suspended.`,
-        //     duration: 3000,
-        //   })
-        //   return
-        // }
+
+        if (
+          this.$store.state.transferData.fromChainID == 77 ||
+          this.$store.state.transferData.fromChainID == 7
+        ) {
+          this.$notify.error({
+            title: `Affected by the Optimism interface issue, the transfer from Optimism is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
         if (
           !this.transferValue ||
           new BigNumber(this.transferValue).comparedTo(
@@ -1640,7 +1641,7 @@ export default {
       if (!selectMakerInfo) {
         return
       }
-      
+
       // dYdX can't get maker's balance, don't check it
       if (selectMakerInfo.c2ID == 11 || selectMakerInfo.c2ID == 511) {
         this.makerMaxBalance = Number.MAX_SAFE_INTEGER
