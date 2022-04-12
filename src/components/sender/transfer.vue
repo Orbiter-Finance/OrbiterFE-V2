@@ -1485,17 +1485,16 @@ export default {
           })
           return
         }
-
-        if (
-          this.$store.state.transferData.fromChainID == 77 ||
-          this.$store.state.transferData.fromChainID == 7
-        ) {
-          this.$notify.error({
-            title: `Affected by the Optimism interface issue, the transfer from Optimism is suspended.`,
-            duration: 3000,
-          })
-          return
-        }
+        // if (
+        //   this.$store.state.transferData.fromChainID == 77 ||
+        //   this.$store.state.transferData.fromChainID == 7
+        // ) {
+        //   this.$notify.error({
+        //     title: `Affected by the Optimism interface issue, the transfer from Optimism is suspended.`,
+        //     duration: 3000,
+        //   })
+        //   return
+        // }
         if (
           !this.transferValue ||
           new BigNumber(this.transferValue).comparedTo(
