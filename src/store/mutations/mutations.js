@@ -78,6 +78,9 @@ export default {
   updateTransferValue(state, value) {
     state.transferData.transferValue = value
   },
+  updateTransferExt(state, ext) {
+    state.transferData.transferExt = ext
+  },
   updateTransferTokenInfo(state, tokenInfo) {
     state.transferData.selectTokenInfo = tokenInfo
   },

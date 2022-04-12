@@ -37,6 +37,7 @@ export default {
     '8',
     '9',
     '10',
+    '11',
     '22',
     '33',
     '44',
@@ -44,7 +45,8 @@ export default {
     '77',
     '88',
     '99',
-    '510'
+    '510',
+    '511',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -56,8 +58,9 @@ export default {
     7: '10', // optimism
     8: '1', // mainnet
     9: '1', // loopring
-    10: '1088',//metis
-    510: '588',//metis test
+    10: '1088', //metis
+    510: '588', //metis test
+    11: '1', // dydx
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -65,6 +68,25 @@ export default {
     77: '69', // optimism(K)
     88: '3', // ropsten
     99: '5', // loopring(G)
+    511: '3', // dydx(R)
+  },
+  crossAddressContracts: {
+    1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    2: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    3: '',
+    4: '',
+    5: '0x783703C20dF627893952d59DF40f556A172d1719',
+    6: '',
+    7: '',
+    8: '',
+    9: '',
+    22: '0x721fBB2C2C9cdFa5547feE6b683949c20F175457',
+    33: '',
+    44: '',
+    66: '0x40eC19690ebEd534e9b9C58e341727028cF143c0',
+    77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
+    88: '',
+    99: '',
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -84,7 +106,9 @@ export default {
     9: 'https://explorer.loopring.io/tx/',
     99: 'https://explorer.loopring.io/tx/',
     10: 'https://andromeda-explorer.metis.io/tx/',
-    510: 'https://stardust-explorer.metis.io/tx/'
+    510: 'https://stardust-explorer.metis.io/tx/',
+    11: 'https://trade.dydx.exchange/',
+    511: 'https://trade.stage.dydx.exchange/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -104,6 +128,8 @@ export default {
     9: 'https://explorer.loopring.io/account/',
     99: 'https://explorer.loopring.io/account/',
     10: 'https://andromeda-explorer.metis.io/address/',
-    510: 'https://stardust-explorer.metis.io/address/'
+    510: 'https://stardust-explorer.metis.io/address/',
+    11: 'https://trade.dydx.exchange/',
+    511: 'https://trade.stage.dydx.exchange/',
   },
 }
