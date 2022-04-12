@@ -104,7 +104,6 @@ export class DydxHelper {
             this.signingMethod
           )
         client.apiKeyCredentials = apiCredentials
-        console.warn('apiKeyCredentials >>> ', client.apiKeyCredentials);
       } else {
         const keyPair = await client.onboarding.deriveStarkKey(
           ethereumAddress,
