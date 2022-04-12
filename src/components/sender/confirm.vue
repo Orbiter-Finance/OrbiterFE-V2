@@ -25,9 +25,9 @@
             style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem"
             :iconName="item.icon"
           ></svg-icon>
-          <span style="margin-right: 1rem; font-weight: 600">{{
-            item.title
-          }}</span>
+          <span style="margin-right: 1rem; font-weight: 600">
+            {{ item.title }}
+          </span>
           <o-tooltip placement="topLeft">
             <template v-slot:titleDesc>
               <span>{{ item.notice }}</span>
@@ -38,9 +38,9 @@
               iconName="help"
             ></svg-icon>
           </o-tooltip>
-          <span v-if="!item.textBold && item.desc" class="right">{{
-            item.desc
-          }}</span>
+          <span v-if="!item.textBold && item.desc" class="right">
+            {{ item.desc }}
+          </span>
           <span
             v-else-if="item.textBold && item.desc"
             class="right"
@@ -61,13 +61,12 @@
             <span
               class="dColor"
               style="margin-left: 0.7rem; margin-right: 1.1rem"
+              >{{ desc.amount }}{{ desc.coin }}</span
             >
-              {{ desc.amount }}{{ desc.coin }}
-            </span>
             To
-            <span class="dColor" style="margin-left: 0.7rem">
-              {{ desc.toAddress }}
-            </span>
+            <span class="dColor" style="margin-left: 0.7rem">{{
+              desc.toAddress
+            }}</span>
           </div>
         </div>
         <div v-if="item.haveSep" class="sep"></div>
@@ -221,7 +220,6 @@ export default {
     },
   },
   watch: {},
-  mounted() {},
   methods: {
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(window.ethereum)
@@ -713,7 +711,7 @@ export default {
         )
         const dydxClient = await dydxHelper.getDydxClient(from, false, true)
         const dydxAccount = await dydxHelper.getAccount(from)
-        
+
         const params = {
           clientId: dydxHelper.generateClientId(from),
           amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!

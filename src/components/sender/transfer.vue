@@ -11,7 +11,7 @@
           class="token_icon"
           v-if="this.$store.state.transferData.selectTokenInfo.icon"
           :src="this.$store.state.transferData.selectTokenInfo.icon"
-          alt=""
+          alt
         />
         <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
         <div class="token_name">
@@ -70,7 +70,7 @@
             :maxlength="18"
             :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
           />
-          <el-button @click="fromMax" class="maxBtn" style="">Max</el-button>
+          <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
         </div>
       </div>
       <div class="subContent">
@@ -144,7 +144,7 @@
             alt=""
           />
           <!-- <svg-icon style="width:100%;height:100%"
-                    iconName="transfer_mid"></svg-icon> -->
+          iconName="transfer_mid"></svg-icon>-->
         </div>
       </div>
     </div>
@@ -155,9 +155,9 @@
       :isDisabled="sendBtnInfo ? sendBtnInfo.disabled : 'disabled'"
       @click="sendTransfer"
     >
-      <span class="w700 s16" style="letter-spacing: 0.15rem">{{
-        sendBtnInfo && sendBtnInfo.text
-      }}</span>
+      <span class="w700 s16" style="letter-spacing: 0.15rem">
+        {{ sendBtnInfo && sendBtnInfo.text }}
+      </span>
     </o-button>
     <div class="notice">
       <div v-if="isShowMax" class="item" style="margin-top: 1.5rem">
@@ -190,8 +190,8 @@
                 margin-left: 0.3rem;
               "
               iconName="gas_cost"
-            ></svg-icon>
-            Gas Fee Saved
+            ></svg-icon
+            >Gas Fee Saved
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
@@ -235,8 +235,8 @@
                 margin-left: 0.2rem;
               "
               iconName="time_spent"
-            ></svg-icon>
-            Time Spend
+            ></svg-icon
+            >Time Spend
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
@@ -270,9 +270,9 @@
               loadingColor="#FFFFFF"
               height="1rem"
             ></loading>
-            <span style="margin-left: 0.4rem" v-else>{{
-              transferSavingTime
-            }}</span>
+            <span style="margin-left: 0.4rem" v-else>
+              {{ transferSavingTime }}
+            </span>
           </div>
         </div>
       </div>
@@ -335,6 +335,7 @@ const queryParamsChainMap = {
   Polygon: 6,
   Optimism: 7,
   ImmutableX: 8,
+  Metis: 10,
   dYdX: 11,
   Rinkeby: 5,
   'Arbitrum(R)': 22,
@@ -345,6 +346,7 @@ const queryParamsChainMap = {
   Loopring: 9,
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,
+  'Metis(R)': 510,
   'dYdX(R)': 511,
 }
 
@@ -443,7 +445,6 @@ export default {
       let { token, tokens, amount, fixed } = query
       amount = new BigNumber(amount)
       tokens = !tokens ? [] : tokens.split(',')
-
       const getMapChainId = (chainName) => {
         if (!chainName) {
           return 0
@@ -458,7 +459,6 @@ export default {
       }
       let source = getMapChainId(query.source)
       let dest = getMapChainId(query.dest)
-
       const getMapChainIds = (chainNames) => {
         const chainIds = []
 
@@ -475,9 +475,9 @@ export default {
 
         return chainIds
       }
+
       let sources = getMapChainIds(query.sources)
       let dests = getMapChainIds(query.dests)
-
       // Tidy source(s) and dest(s)
       const tidyChains = (chainIds) => {
         const newChains = []
@@ -558,7 +558,6 @@ export default {
           }
         }
       }
-
       // Tidy
       if (!token) {
         token = tokens?.[0] || ''
@@ -569,7 +568,6 @@ export default {
         amount = ''
       }
       fixed = fixed == 1 // To boolean
-
       return {
         referer,
         source,
@@ -807,8 +805,12 @@ export default {
       return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
+      // console.log(this.originGasCost, 'this.originGasCost')
+      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
+      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
       let savingValue =
         this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      // console.log(savingValue, 'savingValue')
       if (savingValue > 0) {
         return true
       }
@@ -957,6 +959,7 @@ export default {
             this.toChainArray.push(makerInfo.c2ID)
           }
         }
+
         if (
           makerInfo.c2ID === newValue &&
           this.toChainArray.indexOf(makerInfo.c1ID) === -1
@@ -969,6 +972,7 @@ export default {
           }
         }
       })
+
       if (
         this.toChainArray.indexOf(this.$store.state.transferData.toChainID) ===
         -1
@@ -990,7 +994,6 @@ export default {
             if (_fromChainID !== fromChainID || _toChainID !== toChainID) {
               return
             }
-
             const { tokens } = this.queryParams
             if (
               tokens.length > 0 &&
@@ -1016,7 +1019,6 @@ export default {
           pushToken(makerInfo.c1ID, makerInfo.c2ID)
           pushToken(makerInfo.c2ID, makerInfo.c1ID)
         })
-
         // if can's find, use first; else find same name token's makerInfo
         if (
           this.tokenInfoArray.findIndex(
@@ -1383,9 +1385,9 @@ export default {
     },
     getFromChainInfo(e) {
       this.$store.commit('updateTransferFromChainID', e.localID)
-
       // Change query params's source
       const { path, query } = this.$route
+
       for (const key in queryParamsChainMap) {
         if (queryParamsChainMap[key] == e.localID) {
           if (!util.equalsIgnoreCase(query.source, key)) {
@@ -1588,7 +1590,6 @@ export default {
           this.$store.state.transferData.toChainID,
           this.$store.state.transferData.selectTokenInfo.token !== 'ETH'
         )
-
         this.originGasCost = response
       } catch (error) {
         console.log('error =', error)

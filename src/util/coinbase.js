@@ -9,21 +9,31 @@ let exchangeRates = null
  * @returns
  */
 async function cacheExchangeRates(currency = 'USD') {
+  // cache
+  exchangeRates = await getRates(currency)
+  if (exchangeRates) {
+    let metisExchangeRates = await getRates('metis')
+    if (metisExchangeRates && metisExchangeRates["USD"]) {
+      let usdToMetis = 1 / Number(metisExchangeRates["USD"])
+      exchangeRates["METIS"] = String(usdToMetis)
+    }
+  } else {
+    return undefined
+  }
+}
+
+async function getRates(currency) {
   const resp = await axios.get(
     `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
   )
   const data = resp.data?.data
-
   // check
   if (!data || !util.equalsIgnoreCase(data.currency, currency) || !data.rates) {
     return undefined
   }
-
-  // cache
-  exchangeRates = data.rates
-
   return data.rates
 }
+
 setInterval(() => cacheExchangeRates(), 10 * 1000)
 
 /**

@@ -99,6 +99,9 @@ export default {
         if (item === 9 || item === 99) {
           iconName = 'loopringlogo'
         }
+        if (item === 10 || item === 510) {
+          iconName = 'metislogo'
+        }
         if (item === 11 || item === 511) {
           iconName = 'dydxlogo'
         }

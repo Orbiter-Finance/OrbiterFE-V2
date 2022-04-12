@@ -881,7 +881,7 @@ function ScanMakerTransfer(
         return
       }
       if (error) {
-        console.log('111Error =', error)
+        console.log('Error =', error)
       } else {
         for (let index = 0; index < events.length; index++) {
           const txinfo = events[index]

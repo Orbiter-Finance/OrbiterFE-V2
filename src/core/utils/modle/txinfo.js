@@ -35,7 +35,27 @@ export default {
     }
     return txInfo
   },
+  getTxInfoWithMetis: function (scanInfo) {
+    // tokenName WETH to ETH
+    let tokenName = scanInfo.tokenSymbol
+    if (tokenName?.toUpperCase() == 'WETH') {
+      tokenName = 'ETH'
+    }
 
+    const txInfo = {
+      from: scanInfo.from.toLowerCase(),
+      to: scanInfo.to.toLowerCase(),
+      tokenAddress: scanInfo.contractAddress.toLowerCase(),
+      timeStamp: scanInfo.timeStamp,
+      tokenName,
+      value: scanInfo.value,
+      tokenDecimal: scanInfo.tokenDecimal,
+      hash: scanInfo.hash,
+      nonce: scanInfo.nonce,
+      dataFrom: 'metis',
+    }
+    return txInfo
+  },
   getTxInfoWithZksync: function (zkSyncInfo, zkTokenInfo) {
     const txInfo = {
       from: zkSyncInfo.op.from.toLowerCase(),
