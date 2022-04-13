@@ -23,15 +23,19 @@ async function cacheExchangeRates(currency = 'USD') {
 }
 
 async function getRates(currency) {
-  const resp = await axios.get(
-    `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
-  )
-  const data = resp.data?.data
-  // check
-  if (!data || !util.equalsIgnoreCase(data.currency, currency) || !data.rates) {
+  try {
+    const resp = await axios.get(
+      `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
+    )
+    const data = resp.data?.data
+    // check
+    if (!data || !util.equalsIgnoreCase(data.currency, currency) || !data.rates) {
+      return undefined
+    }
+    return data.rates
+  } catch (error) {
     return undefined
   }
-  return data.rates
 }
 
 setInterval(() => cacheExchangeRates(), 10 * 1000)
