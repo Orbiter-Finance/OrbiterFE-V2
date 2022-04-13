@@ -1755,6 +1755,7 @@ export default {
           color: #2c2d32;
           display: flex;
           line-height: 2.9rem;
+          white-space: nowrap;
         }
         .right {
           width: 100%;
