@@ -13,10 +13,11 @@ async function cacheExchangeRates(currency = 'USD') {
   exchangeRates = await getRates(currency)
   if (exchangeRates) {
     let metisExchangeRates = await getRates('metis')
-    if (metisExchangeRates && metisExchangeRates["USD"]) {
-      let usdToMetis = 1 / Number(metisExchangeRates["USD"])
-      exchangeRates["METIS"] = String(usdToMetis)
+    if (metisExchangeRates && metisExchangeRates['USD']) {
+      let usdToMetis = 1 / Number(metisExchangeRates['USD'])
+      exchangeRates['METIS'] = String(usdToMetis)
     }
+    return exchangeRates
   } else {
     return undefined
   }
@@ -29,7 +30,11 @@ async function getRates(currency) {
     )
     const data = resp.data?.data
     // check
-    if (!data || !util.equalsIgnoreCase(data.currency, currency) || !data.rates) {
+    if (
+      !data ||
+      !util.equalsIgnoreCase(data.currency, currency) ||
+      !data.rates
+    ) {
       return undefined
     }
     return data.rates
