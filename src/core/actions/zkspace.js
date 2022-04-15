@@ -97,7 +97,7 @@ export default {
         })
     })
   },
-  getZKWithDrawGasFee: function (localChainID, account) {
+  getZKSpaceWithDrawGasFee: function (localChainID, account) {
     let ethPrice = store.state.transferData.ethPrice
       ? store.state.transferData.ethPrice
       : 1000
@@ -191,25 +191,23 @@ export default {
         })
     })
   },
-  sendTransfer: async function (req) {
-    if (req.localChainID !== 12 && req.localChainID !== 512) {
+  sendTransfer: async function (localChainID, req) {
+    if (localChainID !== 12 && localChainID !== 512) {
       return {
         code: '1',
         error: 'sendZKSpaceTransferError_wrongChainID',
       }
     }
-    const url =
-      (req.localChainID === 512
-        ? config.ZKSpace.Rinkeby
-        : config.ZKSpace.Mainnet) + '/tx'
-    const params = {
-      tx: req.tx,
-      signature: req.signature,
-      fastProcessing: null,
-    }
-    console.log('params =', params)
-    let response = await axios.post(url, params)
-    console.log('response =', response)
+    let response = await axios.post(
+      (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
+        '/tx',
+      {
+        signature: req.signature,
+        fastProcessing: req.fastProcessing,
+        tx: req.tx,
+      }
+    )
+    return response
   },
   getZKSpaceTransactionData: async function (localChainID, txHash) {
     return new Promise((resolve, reject) => {
@@ -229,6 +227,58 @@ export default {
         .get(url)
         .then(function (response) {
           console.warn('response =', response)
+          if (response.status === 200 && response.statusText === 'OK') {
+            var respData = response.data
+            if (respData.success === true) {
+              resolve(respData)
+            } else {
+              reject(respData)
+            }
+          } else {
+            reject({
+              errorCode: 1,
+              errMsg: 'NetWorkError',
+            })
+          }
+        })
+        .catch(function (error) {
+          reject({
+            errorCode: 2,
+            errMsg: error,
+          })
+        })
+    })
+  },
+  getZKSapceTxList: async function (
+    address,
+    localChainID,
+    startIndex,
+    tokenID,
+    limit
+  ) {
+    return new Promise((resolve, reject) => {
+      if (localChainID !== 12 && localChainID !== 512) {
+        reject({
+          errorCode: 1,
+          errMsg: 'getZKSTransactinListError_wrongChainID',
+        })
+      }
+      const url =
+        (localChainID === 512
+          ? config.ZKSpace.Rinkeby
+          : config.ZKSpace.Mainnet) +
+        '/txs' +
+        '?types=Transfer&address=' +
+        address +
+        '&token=' +
+        tokenID +
+        '&start=' +
+        startIndex +
+        '&limit =' +
+        limit
+      axios
+        .get(url)
+        .then(function (response) {
           if (response.status === 200 && response.statusText === 'OK') {
             var respData = response.data
             if (respData.success === true) {

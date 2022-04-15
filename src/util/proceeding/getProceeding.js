@@ -339,7 +339,7 @@ async function confirmUserTransaction(
           zkspaceTransactionData.data.success === true &&
           zkspaceTransactionData.data.tx_type === 'Transfer' &&
           (zkspaceTransactionData.data.status === 'verified' ||
-            zkspaceTransactionData.data.status === 'finalized')
+            zkspaceTransactionData.data.status === 'pending')
         ) {
           let time = zkspaceTransactionData.data.createdAt
           let zkspac_amount = orbiterCore.getRAmountFromTAmount(
@@ -580,66 +580,51 @@ function ScanZKSpaceMakerTransfer(
     if (!isCurrentTransaction(transactionID)) {
       return
     }
-    let req = {
-      localChainID: localChainID,
-      account: from,
-      from: 'latest',
-      limit: 30,
-      direction: 'older',
-    }
     try {
-      let zkTransactions = await thirdapi.getZKInfo(req)
-      let zkTransactionList
-      if (
-        zkTransactions.status === 'success' &&
-        zkTransactions.result.list.length !== 0
-      ) {
-        zkTransactionList = zkTransactions.result.list
+      let zksTransactions = await zkspace.getZKSapceTxList(
+        from,
+        localChainID,
+        0,
+        0,
+        50
+      )
+      if (!zksTransactions || !zksTransactions.success) {
+        // dosome
       }
-      for (let index = 0; index < zkTransactionList.length; index++) {
-        const zkInfo = zkTransactionList[index]
-        if (
-          zkInfo.failReason === null &&
-          zkInfo.op.type == 'Transfer' &&
-          zkInfo.op.from?.toLowerCase() == from.toLowerCase() &&
-          zkInfo.op.to?.toLowerCase() == to.toLowerCase() &&
-          zkInfo.op.amount === amount
-        ) {
-          // shifou bijiao daibi
-          let zkTokenList =
-            localChainID === 3
-              ? store.state.zktokenList.mainnet
-              : store.state.zktokenList.rinkeby
-          let tokenAddress =
-            localChainID === makerInfo.c1ID
-              ? makerInfo.t1Address
-              : makerInfo.t2Address
-          var tokenList = zkTokenList.filter(
-            (item) => item.address === tokenAddress
-          )
-          let resultToken = tokenList.length > 0 ? tokenList[0] : null
-          if (!resultToken) {
-            break
-          }
-          if (zkInfo.op.token !== resultToken.id) {
-            break
-          }
-          if (!isCurrentTransaction(transactionID)) {
-            return
-          }
-          store.commit('updateProceedingMakerTransferTxid', zkInfo.txHash)
-          storeUpdateProceedState(4)
-          if (zkInfo.status === 'committed' || zkInfo.status === 'finalized') {
-            storeUpdateProceedState(5)
-            return
+      if (zksTransactions.success && zksTransactions.data?.data?.length !== 0) {
+        let transacionts = zksTransactions.data.data
+        for (let index = 0; index < transacionts.length; index++) {
+          const zkspaceTransaction = transacionts[index]
+          if (
+            zkspaceTransaction?.tx_type == 'Transfer' &&
+            zkspaceTransaction?.fail_reason == '' &&
+            (zkspaceTransaction?.from?.toLowerCase() == from.toLowerCase() ||
+              zkspaceTransaction?.to?.toLowerCase() == to.toLowerCase()) &&
+            zkspaceTransaction.token.symbol == 'ETH' &&
+            zkspaceTransaction.amount === amount
+          ) {
+            if (!isCurrentTransaction(transactionID)) {
+              return
+            }
+            store.commit(
+              'updateProceedingMakerTransferTxid',
+              zkspaceTransaction.txHash
+            )
+            if (
+              zkspaceTransaction.status === 'pending' ||
+              zkspaceTransaction.status === 'verified'
+            ) {
+              storeUpdateProceedState(5)
+              return
+            }
           }
         }
       }
     } catch (error) {
       console.log('error =', error)
-      throw 'getZKTransactionListError'
+      throw 'getZKSTransactionListError'
     }
-    return ScanZKMakerTransfer(
+    return ScanZKSpaceMakerTransfer(
       transactionID,
       localChainID,
       makerInfo,
@@ -664,6 +649,16 @@ function startScanMakerTransfer(
   }
   if (localChainID === 3 || localChainID === 33) {
     return ScanZKMakerTransfer(
+      transactionID,
+      localChainID,
+      makerInfo,
+      from,
+      to,
+      amount
+    )
+  }
+  if (localChainID === 12 || localChainID === 512) {
+    return ScanZKSpaceMakerTransfer(
       transactionID,
       localChainID,
       makerInfo,
@@ -704,7 +699,6 @@ function ScanMakerTransfer(
     if (!isCurrentTransaction(transactionID)) {
       return
     }
-
     // checkData
     const checkData = (_from, _to, _amount, _address) => {
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
@@ -1094,6 +1088,10 @@ function isCurrentTransaction(txid) {
 
 export default {
   UserTransferReady(user, maker, amount, localChainID, makerInfo, txHash) {
+    if (localChainID == 12 || localChainID == 512) {
+      txHash = txHash.replace('sync-tx:', '0x')
+      console.warn('txHash =', txHash)
+    }
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)

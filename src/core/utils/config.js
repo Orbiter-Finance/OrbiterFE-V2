@@ -54,6 +54,8 @@ export default {
     Rinkeby: 'https://api.zks.app/v3/4',
     chainID: '12',
     rinkeyChainID: '512',
+    zksChainID: 13,
+    zksrinkebyChainID: 133,
   },
   L1: {
     Mainnet:

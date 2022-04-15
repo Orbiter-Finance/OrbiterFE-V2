@@ -246,14 +246,17 @@ export default {
       return (loopringFee / 10 ** 18).toFixed(6)
     }
     if (fromChainID === 12 || fromChainID === 512) {
+      let selectMakerInfo = store.getters.realSelectMakerInfo
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKTransferGasFee(
           fromChainID,
           store.state.web3.coinbase
+            ? store.state.web3.coinbase
+            : selectMakerInfo.makerAddress
         )
       } catch (error) {
-        console.warn('getZKTransferGasFeeError =', error)
+        console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee.toFixed(6)
     }
@@ -600,9 +603,11 @@ export default {
     }
     if (fromChainID === 12 || fromChainID === 512) {
       // api获取
-      let zkspaceWithDrawFee = await zkspace.getZKWithDrawGasFee(
+      let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
         fromChainID,
         store.state.web3.coinbase
+          ? store.state.web3.coinbase
+          : selectMakerInfo.makerAddress
       )
       ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
     }
@@ -843,18 +848,7 @@ export default {
 
   realTransferOPID() {
     let toChainID = store.state.transferData.toChainID
-    var p_text
-    switch (toChainID.toString().length) {
-      case 1:
-        p_text = '900' + toChainID.toString()
-        break
-      case 2:
-        p_text = '90' + toChainID.toString()
-        break
-      case 3:
-        p_text = '9' + toChainID.toString()
-        break
-    }
+    var p_text = 9000 + Number(toChainID) + ''
     return p_text
   },
 
@@ -872,18 +866,7 @@ export default {
       new BigNumber(10 ** selectMakerInfo.precision)
     )
     let rAmountValue = rAmount.toFixed()
-    var p_text
-    switch (toChainID.toString().length) {
-      case 1:
-        p_text = '900' + toChainID.toString()
-        break
-      case 2:
-        p_text = '90' + toChainID.toString()
-        break
-      case 3:
-        p_text = '9' + toChainID.toString()
-        break
-    }
+    var p_text = 9000 + Number(toChainID) + ''
     var tValue = orbiterCore.getTAmountFromRAmount(
       fromChainID,
       rAmountValue,
