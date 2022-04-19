@@ -1,43 +1,30 @@
 import axios from 'axios'
-const apiUrl = "https://api.github.com"
-
-async function getMakerListData() {
+const apiUrl = "https://maker-list.s3.amazonaws.com"
+async function getNewMakerList(count = 0) {
     try {
-        return await subGetMakerList()
+        return await getNewMakerListOnce()
     } catch (error) {
-        return await subGetMakerList(randomGithubToken())
+        errorLogger.error(
+            `getNewMakerList error=${error.message},try again ${count}`
+        )
+        count++
+        if (count < 5) {
+            return await getNewMakerList(count)
+        }
     }
 }
-function randomGithubToken() {
-    let randomNumber = parseInt(Math.random() * 4 + 1)
-    switch (randomNumber) {
-        case 1:
-            return "token " + process.env.VUE_APP_GITHUBTOKEN_ONE
-        case 2:
-            return "token " + process.env.VUE_APP_GITHUBTOKEN_TWO
-        case 3:
-            return "token " + process.env.VUE_APP_GITHUBTOKEN_THREE
-        default:
-            return ''
-    }
-}
-async function subGetMakerList(githubToken) {
+
+async function getNewMakerListOnce() {
     const res = await axios({
-        url: `${apiUrl}/repos/Orbiter-Finance/makerConfiguration/contents/rinkeby/makerList.json`,
-        method: "get",
-        headers: {
-            Accept: "*/*",
-            Authorization: githubToken ? githubToken : '',
-        },
+        url: `${apiUrl}/maker_list.json`,
+        method: "get"
     });
-    const base64Data = res.data.content;
-    const makerListBuffer = Buffer.from(base64Data, 'base64')
-    const makerListString = makerListBuffer.toString()
-    const data = JSON.parse(makerListString);
-    const makerList = data.makerList
-    const historyMakerList = data.historyMakerList
-    return { makerList, historyMakerList };
+    if (res.status == 200) {
+        return { ...res.data }
+    } else {
+        throw new Error("pull maker_list nothing")
+    }
 }
 export default {
-    getMakerListData
+    getNewMakerList
 }

@@ -26,11 +26,11 @@ function filterHistoryMakerList(daysAgo) {
 }
 
 export default {
-  getMakerInfo: async function (req, next) {
+  getMakerInfo: async function () {
     var res = {}
     res.code = 0
     let { makerList, historyMakerList: theHistoryMakerList } =
-      await getMakelist.getMakerListData()
+      await getMakelist.getNewMakerList()
     nowMakerList = makerList
     historyMakerList = theHistoryMakerList
     res.data = nowMakerList
