@@ -352,7 +352,7 @@ export default {
           type: 'EthereumSignature',
           signature: ethSignature,
         },
-        // fastProcessing: true,
+        fastProcessing: true,
         tx: txParams,
         netWorkId: this.$store.state.web3.networkId,
       }
