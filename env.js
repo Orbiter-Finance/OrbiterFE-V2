@@ -58,9 +58,9 @@ export default {
     7: '10', // optimism
     8: '1', // mainnet
     9: '1', // loopring
-    10: '1088',//metis
-    510: '588',//metis test
-    11: '1', // loopring
+    10: '1088', //metis
+    510: '588', //metis test
+    11: '1', // dydx
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -71,8 +71,8 @@ export default {
     511: '3', // dydx(R)
   },
   crossAddressContracts: {
-    1: '',
-    2: '',
+    1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    2: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
     3: '',
     4: '',
     5: '0x783703C20dF627893952d59DF40f556A172d1719',

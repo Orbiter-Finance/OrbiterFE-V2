@@ -49,7 +49,7 @@ const MT_ERC20_DEPOSIT_DEPOSIT_ONL1 = 170617
 
 // metis withdraw
 const MT_ERC20_WITHDRAW_ONMT = 685768
-const MT_ERC20_WITHDRAW_ONL1 = 234552 //to check
+const MT_ERC20_WITHDRAW_ONL1 = 21000
 
 //optimistic deposit
 const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
@@ -326,10 +326,10 @@ export default {
       timeSpent += 5
     }
     if (toChainID === 9 || toChainID === 99) {
-      timeSpent = 15
+      timeSpent += 15
     }
     if (toChainID === 10 || toChainID === 510) {
-      timeSpent = 15
+      timeSpent += 15
     }
     if (toChainID === 11 || toChainID === 511) {
       timeSpent += 5
@@ -512,7 +512,7 @@ export default {
   async transferOrginGasUsd(fromChainID, toChainID, isErc20 = true) {
     let ethGas = 0
     let maticGas = 0
-
+    let metisGas = 0
     const selectMakerInfo = store.getters.realSelectMakerInfo
 
     // withdraw
@@ -605,7 +605,7 @@ export default {
       let fromGasPrice = await this.getGasPrice(fromChainID)
       // MT WithDraw
       const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
-      maticGas += MTWithDrawARGas
+      metisGas += MTWithDrawARGas
       const L1ChainID = fromChainID === 10 ? 1 : 5
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
@@ -682,7 +682,14 @@ export default {
         )
       )
     }
-
+    if (metisGas > 0) {
+      usd = usd.plus(
+        await exchangeToUsd(
+          new BigNumber(metisGas).dividedBy(10 ** 18),
+          'METIS'
+        )
+      )
+    }
     return usd.toNumber()
   },
 
@@ -711,7 +718,7 @@ export default {
         const balances = balanceInfo.result.balances
         return balances[tokenName] ? balances[tokenName] : 0
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKBalanceError'
       }
     } else if (localChainID === 4 || localChainID === 44) {
@@ -862,7 +869,7 @@ export default {
       p_text
     )
     if (!tValue.state) {
-      console.log('getTralTransferAmountError')
+      console.warn('getTralTransferAmountError')
       return userValue
     } else {
       return new BigNumber(tValue.tAmount).dividedBy(

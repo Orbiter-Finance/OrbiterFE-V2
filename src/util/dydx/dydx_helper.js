@@ -20,12 +20,12 @@ export class DydxHelper {
   chainId = 0
   networkId = 0
   host = ''
-  web3 = null
+  web3 = undefined
   signingMethod = ''
 
   /**
    * @param {number} chainId
-   * @param {Web3} web3
+   * @param {Web3 | undefined} web3
    * @param {string} signingMethod TypedData | MetaMask
    */
   constructor(chainId, web3, signingMethod = 'TypedData') {
@@ -74,9 +74,9 @@ export class DydxHelper {
     if (!this.host) {
       throw new Error('Sorry, miss param [host]')
     }
-    if (!this.web3) {
-      throw new Error('Sorry, miss param [web3]')
-    }
+    // if (!this.web3) {
+    //   throw new Error('Sorry, miss param [web3]')
+    // }
 
     // Ensure network
     await util.ensureMetamaskNetwork(this.chainId)
@@ -85,7 +85,7 @@ export class DydxHelper {
       networkId: this.networkId,
       web3: this.web3,
     })
-    if (ethereumAddress) {
+    if (ethereumAddress && this.web3) {
       const userExists = await client.public.doesUserExistWithAddress(
         ethereumAddress
       )
@@ -253,15 +253,20 @@ export class DydxHelper {
     const timeStampMs = new Date(transfer.createdAt).getTime()
     const nonce = DydxHelper.timestampToNonce(timeStampMs)
 
+    const isTransferIn = util.equalsIgnoreCase('TRANSFER_IN', transfer.type)
+    const isTransferOut = util.equalsIgnoreCase('TRANSFER_OUT', transfer.type)
+
     const transaction = {
-      timeStamp: parseInt(timeStampMs / 1000),
+      timeStamp: parseInt(timeStampMs / 1000 + ''),
       hash: transfer.id,
       nonce,
       blockHash: '',
       transactionIndex: 0,
       from: '',
       to: '',
-      value: new BigNumber(transfer.creditAmount)
+      value: new BigNumber(
+        isTransferIn ? transfer.creditAmount : transfer.debitAmount
+      )
         .multipliedBy(10 ** 6)
         .toString(), // Only usdc
       txreceipt_status: transfer.status,
@@ -269,10 +274,10 @@ export class DydxHelper {
       confirmations: 0,
     }
 
-    if (util.equalsIgnoreCase('TRANSFER_IN', transfer.type)) {
+    if (isTransferIn) {
       transaction.to = ethereumAddress
     }
-    if (util.equalsIgnoreCase('TRANSFER_OUT', transfer.type)) {
+    if (isTransferOut) {
       transaction.from = ethereumAddress
     }
 

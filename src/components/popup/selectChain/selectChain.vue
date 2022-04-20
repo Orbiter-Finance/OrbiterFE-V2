@@ -4,18 +4,45 @@
       <div class="topItem">
         <span>Select a Chain</span>
         <div @click="closerButton">
-          <svg-icon style="width: 1.5rem; height: 1.5rem" iconName="close"></svg-icon>
+          <svg-icon
+            style="width: 1.5rem; height: 1.5rem"
+            iconName="close"
+          ></svg-icon>
         </div>
       </div>
       <div style="width: 100%; position: relative">
-        <input type="text" v-model="keyword" class="input" @input="checkKeyWord()" :placeholder="`input search text`" />
-        <svg-icon @click="search" class="searchIcon" iconName="search"></svg-icon>
+        <input
+          type="text"
+          v-model="keyword"
+          class="input"
+          @input="checkKeyWord()"
+          :placeholder="`input search text`"
+        />
+        <svg-icon
+          @click="search"
+          class="searchIcon"
+          iconName="search"
+        ></svg-icon>
       </div>
 
-      <div v-for="(item, index) in newChainData" :key="item.chain" @click="getChainInfo(item, index)" class="contentItem">
-        <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+      <div
+        v-for="(item, index) in newChainData"
+        :key="item.chain"
+        @click="getChainInfo(item, index)"
+        class="contentItem"
+      >
+        <svg-icon
+          class="logo"
+          style="margin-right: 1.5rem"
+          :iconName="item.icon"
+        ></svg-icon>
         <span>{{ item.chain }}</span>
-        <loading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem" height="1.5rem"></loading>
+        <loading
+          v-if="loadingIndex == index"
+          style="left: 1rem; top: 0rem"
+          width="1.5rem"
+          height="1.5rem"
+        ></loading>
       </div>
     </div>
   </o-box-content>
@@ -103,7 +130,7 @@ export default {
     },
   },
   watch: {},
-  mounted() { },
+  mounted() {},
   methods: {
     closerButton() {
       this.$emit('closeSelect')
@@ -163,7 +190,7 @@ export default {
     search() {
       console.log('search')
     },
-    checkKeyWord() { },
+    checkKeyWord() {},
     isStarkSystem(chainId) {
       return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1
     },

@@ -369,6 +369,7 @@ const queryParamsChainMap = {
   Polygon: 6,
   Optimism: 7,
   ImmutableX: 8,
+  Metis: 10,
   dYdX: 11,
   Rinkeby: 5,
   'Arbitrum(R)': 22,
@@ -379,7 +380,6 @@ const queryParamsChainMap = {
   Loopring: 9,
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,
-  'Metis': 10,
   'Metis(R)': 510,
   'dYdX(R)': 511,
 }
@@ -446,10 +446,13 @@ export default {
         selectMakerInfo.precision
       )
       let opBalance = 10 ** -avalibleDigit
+      let preGasDigit = 3
+      let preGas = 10 ** -preGasDigit
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
         .minus(new BigNumber(opBalance))
         .minus(new BigNumber(transferGasFee))
+        .minus(new BigNumber(preGas))
       let userMax =
         useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
           ? useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
@@ -696,11 +699,13 @@ export default {
       return `In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information when you transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.`
     },
     timeSpenToolTip() {
-      return `It will take about ${this.originTimeSpent
-        ? this.originTimeSpent.replace('~', '')
-        : this.originTimeSpent
-        } by traditional way, but only take about ${this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
-        } with Orbiter.`
+      return `It will take about ${
+        this.originTimeSpent
+          ? this.originTimeSpent.replace('~', '')
+          : this.originTimeSpent
+      } by traditional way, but only take about ${
+        this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
+      } with Orbiter.`
     },
     gasFeeToolTip() {
       const gasFee = `<b>The cost before using Orbiter</b><br />Gas Fee: $${this.originGasCost.toFixed(
@@ -709,13 +714,14 @@ export default {
       const tradingFee = ` <br /><b>The cost after using Orbiter</b><br />Trading Fee: $${(
         this.orbiterTradingFee * this.exchangeToUsdPrice
       ).toFixed(2)}`
-      const withholdingGasFee = `<br />Withholding Fee: $${this.$store.getters.realSelectMakerInfo
-        ? (
-          this.$store.getters.realSelectMakerInfo.tradingFee *
-          this.exchangeToUsdPrice
-        ).toFixed(2)
-        : 0
-        }`
+      const withholdingGasFee = `<br />Withholding Fee: $${
+        this.$store.getters.realSelectMakerInfo
+          ? (
+              this.$store.getters.realSelectMakerInfo.tradingFee *
+              this.exchangeToUsdPrice
+            ).toFixed(2)
+          : 0
+      }`
       const total = `<br /><br /><b>Total: $${(
         this.gasTradingTotal * this.exchangeToUsdPrice
       ).toFixed(2)}</b>`
@@ -791,8 +797,8 @@ export default {
       return (
         Math.ceil(
           this.$store.state.transferData.gasFee *
-          this.$store.state.transferData.ethPrice *
-          10
+            this.$store.state.transferData.ethPrice *
+            10
         ) / 10
       ).toFixed(2)
     },
@@ -998,7 +1004,10 @@ export default {
         }
       })
 
-      if (this.toChainArray.indexOf(this.$store.state.transferData.toChainID) === -1) {
+      if (
+        this.toChainArray.indexOf(this.$store.state.transferData.toChainID) ===
+        -1
+      ) {
         let _toChainID = this.toChainArray[0]
         if (
           this.queryParams.dest > 0 &&
@@ -1065,11 +1074,11 @@ export default {
               (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
                 makerInfo.c2ID === this.$store.state.transferData.toChainID &&
                 makerInfo.tName ===
-                this.$store.state.transferData.selectTokenInfo.token) ||
+                  this.$store.state.transferData.selectTokenInfo.token) ||
               (makerInfo.c2ID === this.$store.state.transferData.fromChainID &&
                 makerInfo.c1ID === this.$store.state.transferData.toChainID &&
                 makerInfo.tName ===
-                this.$store.state.transferData.selectTokenInfo.token)
+                  this.$store.state.transferData.selectTokenInfo.token)
             ) {
               this.$store.commit('updateTransferMakerInfo', makerInfo)
             }
@@ -1152,11 +1161,11 @@ export default {
             (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
               makerInfo.c2ID === this.$store.state.transferData.toChainID &&
               makerInfo.tName ===
-              this.$store.state.transferData.selectTokenInfo.token) ||
+                this.$store.state.transferData.selectTokenInfo.token) ||
             (makerInfo.c2ID === this.$store.state.transferData.fromChainID &&
               makerInfo.c1ID === this.$store.state.transferData.toChainID &&
               makerInfo.tName ===
-              this.$store.state.transferData.selectTokenInfo.token)
+                this.$store.state.transferData.selectTokenInfo.token)
           ) {
             this.$store.commit('updateTransferMakerInfo', makerInfo)
           }
@@ -1571,7 +1580,7 @@ export default {
         if (
           this.$store.state.web3.networkId.toString() !==
           this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+            this.$store.state.transferData.fromChainID
           ]
         ) {
           try {
@@ -1778,6 +1787,7 @@ export default {
           color: #2c2d32;
           display: flex;
           line-height: 2.9rem;
+          white-space: nowrap;
         }
         .right {
           width: 100%;

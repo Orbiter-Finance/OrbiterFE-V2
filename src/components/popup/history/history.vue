@@ -109,7 +109,7 @@ export default {
       }
 
       return false
-    }
+    },
   },
   mounted() {},
   methods: {
