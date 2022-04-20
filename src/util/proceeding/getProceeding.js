@@ -18,6 +18,8 @@ import { IMXListen } from '../immutablex/imx_listen'
 import { EthListen } from './eth_listen'
 import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
+import { CrossAddress } from '../cross_address'
+import { DydxListen } from '../dydx/dydx_listen'
 
 let startBlockNumber = ''
 
@@ -115,7 +117,7 @@ async function confirmUserTransaction(
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
             zk_amountToSend,
-            zk_nonce,
+            zk_nonce
           )
           return
         }
@@ -326,7 +328,7 @@ async function confirmUserTransaction(
       )
     }
 
-    // main & arbitrum
+    // EVM chains
     const trxConfirmations = await getConfirmations(localChainID, txHash)
     if (!trxConfirmations) {
       return confirmUserTransaction(
@@ -355,15 +357,27 @@ async function confirmUserTransaction(
         ' confirmation(s)'
     )
 
+    // ERC20's transfer input length is 138(include 0x), when the length > 138, it is cross address transfer
     let amountStr = '0'
     let startScanMakerTransferFromAddress = ''
-    if (util.isEthTokenAddress(fromTokenAddress)) {
-      amountStr = Web3.utils.hexToNumberString(Web3.utils.toHex(trx.value))
-      startScanMakerTransferFromAddress = trx.to
+    if (trx.input.length <= 138) {
+      if (util.isEthTokenAddress(fromTokenAddress)) {
+        amountStr = Web3.utils.hexToNumberString(Web3.utils.toHex(trx.value))
+        startScanMakerTransferFromAddress = trx.to
+      } else {
+        const amountHex = '0x' + trx.input.slice(74)
+        amountStr = Web3.utils.hexToNumberString(amountHex)
+        startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
+      }
     } else {
-      const amountHex = '0x' + trx.input.slice(74)
-      amountStr = Web3.utils.hexToNumberString(amountHex)
-      startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
+      // Parse input data
+      const inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      if (!inputData.ext?.value) {
+        return
+      }
+
+      startScanMakerTransferFromAddress = inputData.to
+      amountStr = inputData.amount.toNumber() + ''
     }
     var amount = orbiterCore.getRAmountFromTAmount(
       localChainID,
@@ -388,29 +402,36 @@ async function confirmUserTransaction(
       }
       storeUpdateProceedState(3)
 
-      var nonce = trx.nonce.toString()
-      let sendRAmount = orbiterCore.getToAmountFromUserAmount(
+      const nonce = trx.nonce.toString()
+      const sendRAmount = orbiterCore.getToAmountFromUserAmount(
         new Bignumber(amount).dividedBy(
           new Bignumber(10 ** makerInfo.precision)
         ),
         makerInfo,
         true
       )
-      let makerTransferChainID =
+      const makerTransferChainID =
         localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
-      let amountToSend = orbiterCore.getTAmountFromRAmount(
+      const amountToSend = orbiterCore.getTAmountFromRAmount(
         makerTransferChainID,
         sendRAmount,
         nonce
       ).tAmount
+      const { transferExt } = store.state.transferData
+      let toAddress = trx.from
+      if (transferExt?.value) {
+        toAddress = transferExt.value
+      }
+
       startScanMakerTransfer(
         txHash,
         makerTransferChainID,
         makerInfo,
         startScanMakerTransferFromAddress,
-        trx.from,
+        toAddress,
         amountToSend,
-        nonce
+        nonce,
+        trx.from
       )
       return
     }
@@ -512,7 +533,8 @@ function startScanMakerTransfer(
   from,
   to,
   amount,
-  nonce
+  nonce,
+  ownerAddress = ''
 ) {
   if (!isCurrentTransaction(transactionID)) {
     return
@@ -539,7 +561,8 @@ function startScanMakerTransfer(
     from,
     to,
     amount,
-    nonce
+    nonce,
+    ownerAddress
   )
 }
 
@@ -552,7 +575,8 @@ function ScanMakerTransfer(
   from,
   to,
   amount,
-  nonce
+  nonce,
+  ownerAddress = ''
 ) {
   const duration = 10 * 1000
   const ticker = async () => {
@@ -565,6 +589,7 @@ function ScanMakerTransfer(
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
         return false
       }
+
       if (
         _from.toLowerCase() === from.toLowerCase() &&
         _to.toLowerCase() === to.toLowerCase() &&
@@ -627,7 +652,7 @@ function ScanMakerTransfer(
       asyncStarknet()
       return
     }
-    
+
     // immutablex
     if (localChainID == 8 || localChainID == 88) {
       const imxListen = new IMXListen(localChainID, to, false)
@@ -732,6 +757,34 @@ function ScanMakerTransfer(
       setTimeout(() => ticker(), duration)
       return
     }
+
+    // dydx
+    if (localChainID == 11 || localChainID == 511) {
+      const dydxWeb3 = new Web3(window.ethereum)
+      const dydxListen = new DydxListen(localChainID, dydxWeb3, ownerAddress, false)
+      dydxListen.transfer(
+        { to: ownerAddress },
+        {
+          onReceived: async (transaction) => {
+            if (checkData(from, to, transaction.value, '')) {
+              store.commit(
+                'updateProceedingMakerTransferTxid',
+                transaction.hash
+              )
+              storeUpdateProceedState(4)
+            }
+          },
+          onConfirmation: async (transaction) => {
+            if (checkData(from, to, transaction.value, '')) {
+              storeUpdateProceedState(5)
+              dydxListen.destroy()
+            }
+          },
+        }
+      )
+      return
+    }
+
     // when is eth tokenAddress
     if (util.isEthTokenAddress(tokenAddress)) {
       let api = null

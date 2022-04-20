@@ -13,43 +13,83 @@
             "
             iconName="back"
           ></svg-icon>
-        </div>Confirm
+        </div>
+        Confirm
       </div>
-      <div style="width: 100%; height: 0.2rem; background: var(--default-black)"></div>
+      <div
+        style="width: 100%; height: 0.2rem; background: var(--default-black)"
+      ></div>
       <div v-for="item in confirmData" :key="item.title" class="contentItem">
         <div class="up">
-          <svg-icon style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem" :iconName="item.icon"></svg-icon>
+          <svg-icon
+            style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem"
+            :iconName="item.icon"
+          ></svg-icon>
           <span style="margin-right: 1rem; font-weight: 600">
-            {{
-              item.title
-            }}
+            {{ item.title }}
           </span>
           <o-tooltip placement="topLeft">
             <template v-slot:titleDesc>
               <span>{{ item.notice }}</span>
             </template>
-            <svg-icon v-if="item.notice" style="width: 1.5rem; height: 1.5rem" iconName="help"></svg-icon>
+            <svg-icon
+              v-if="item.notice"
+              style="width: 1.5rem; height: 1.5rem"
+              iconName="help"
+            ></svg-icon>
           </o-tooltip>
           <span v-if="!item.textBold && item.desc" class="right">
-            {{
-              item.desc
-            }}
+            {{ item.desc }}
           </span>
-          <span v-else-if="item.textBold && item.desc" class="right" style="font-weight: 600">{{ item.desc }}</span>
+          <span
+            v-else-if="item.textBold && item.desc"
+            class="right"
+            style="font-weight: 600"
+            >{{ item.desc }}</span
+          >
         </div>
-        <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
-          <div v-for="desc in item.descInfo" :key="desc.no" style="margin-bottom: 1rem">
+        <div
+          v-if="item.descInfo && item.descInfo.length > 0"
+          class="descBottom"
+        >
+          <div
+            v-for="desc in item.descInfo"
+            :key="desc.no"
+            style="margin-bottom: 1rem"
+          >
             Send
-            <span class="dColor" style="margin-left: 0.7rem; margin-right: 1.1rem">{{ desc.amount }}{{ desc.coin }}</span>
+            <span
+              class="dColor"
+              style="margin-left: 0.7rem; margin-right: 1.1rem"
+              >{{ desc.amount }}{{ desc.coin }}</span
+            >
             To
-            <span class="dColor" style="margin-left: 0.7rem">{{ desc.toAddress }}</span>
+            <span class="dColor" style="margin-left: 0.7rem">{{
+              desc.toAddress
+            }}</span>
           </div>
         </div>
         <div v-if="item.haveSep" class="sep"></div>
       </div>
-      <o-button style="margin-top: 2.5rem" width="29.5rem" height="4rem" @click="RealTransfer">
-        <span v-if="!transferLoading" class="wbold s16" style="letter-spacing: 0.1rem">CONFIRM AND SEND</span>
-        <loading v-else style="margin: auto" loadingColor="white" width="2rem" height="2rem"></loading>
+      <o-button
+        style="margin-top: 2.5rem"
+        width="29.5rem"
+        height="4rem"
+        @click="RealTransfer"
+      >
+        <span
+          v-if="!transferLoading"
+          class="wbold s16"
+          style="letter-spacing: 0.1rem"
+          >CONFIRM AND SEND</span
+        >
+        <loading
+          v-else
+          style="margin: auto"
+          loadingColor="white"
+          width="2rem"
+          height="2rem"
+        ></loading>
       </o-button>
     </div>
   </o-box-content>
@@ -78,6 +118,8 @@ import {
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
+import { CrossAddress } from '../../util/cross_address'
+import { DydxHelper } from '../../util/dydx/dydx_helper'
 import { checkStateWhenConfirmTransfer } from '../../util/confirmCheck'
 
 const ethers = require('ethers')
@@ -167,6 +209,13 @@ export default {
             "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
           descInfo: this.$store.state.confirmData.routeDescInfo,
         },
+        {
+          icon: 'tips',
+          title:
+            'Modifying the transfer amount in MetaMask will cause the transfer to fail.',
+          desc: '',
+          textBold: false,
+        },
       ]
     },
   },
@@ -200,11 +249,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString() : toChainID.toString().length === 2
-              ? '90' + toChainID.toString() : '9' + toChainID.toString()
-
+        var p_text = 9000 + Number(toChainID) + ''
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -361,10 +406,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString() : toChainID.toString().length === 2
-              ? '90' + toChainID.toString() : '9' + toChainID.toString()
+        var p_text = 9000 + Number(toChainID) + ''
         var tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -446,7 +488,7 @@ export default {
       var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
-        this.$store.state.transferData.fromChainID
+          this.$store.state.transferData.fromChainID
         ]
       )
       const switchParams = {
@@ -492,8 +534,8 @@ export default {
               rpcUrls: chain.rpc,
               blockExplorerUrls: [
                 chain.explorers &&
-                  chain.explorers.length > 0 &&
-                  chain.explorers[0].url
+                chain.explorers.length > 0 &&
+                chain.explorers[0].url
                   ? chain.explorers[0].url
                   : chain.infoURL,
               ],
@@ -503,7 +545,7 @@ export default {
                 method: 'wallet_addEthereumChain',
                 params: [params, that.$store.state.web3.coinbase],
               })
-              .then(() => { })
+              .then(() => {})
               .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
@@ -516,6 +558,7 @@ export default {
 
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -561,6 +604,7 @@ export default {
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -597,6 +641,7 @@ export default {
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
         return
       }
 
@@ -649,6 +694,112 @@ export default {
         this.transferLoading = false
       }
     },
+    async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        this.transferLoading = false
+        return
+      }
+
+      try {
+        const dydxHelper = new DydxHelper(
+          fromChainID,
+          new Web3(window.ethereum),
+          'MetaMask'
+        )
+        const dydxMakerInfo = dydxHelper.getMakerInfo(
+          selectMakerInfo.makerAddress
+        )
+        const dydxClient = await dydxHelper.getDydxClient(from, false, true)
+        const dydxAccount = await dydxHelper.getAccount(from)
+
+        const params = {
+          clientId: dydxHelper.generateClientId(from),
+          amount: new BigNumber(value).dividedBy(10 ** 6).toString(), // Only usdc now!
+          expiration: new Date(
+            new Date().getTime() + 86400000 * 30
+          ).toISOString(),
+          receiverAccountId: dydxHelper.getAccountId(
+            selectMakerInfo.makerAddress
+          ),
+          receiverPublicKey: dydxMakerInfo.starkKey,
+          receiverPositionId: String(dydxMakerInfo.positionId),
+        }
+        const resp = await dydxClient.private.createTransfer(
+          params,
+          dydxAccount.positionId
+        )
+
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          resp.transfer.id
+        )
+      } catch (error) {
+        console.error(error)
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
+
+    async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
+      if (!this.$store.state.web3.isInstallMeta) {
+        return
+      }
+
+      let contractAddress = selectMakerInfo.t1Address
+      if (selectMakerInfo.c1ID != fromChainID) {
+        contractAddress = selectMakerInfo.t2Address
+      }
+
+      try {
+        const { transferExt } = this.$store.state.transferData
+        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const crossAddress = new CrossAddress(provider, fromChainID)
+
+        const amount = ethers.BigNumber.from(value)
+        let transactionHash = ''
+        if (util.isEthTokenAddress(contractAddress)) {
+          transactionHash = (
+            await crossAddress.transfer(
+              selectMakerInfo.makerAddress,
+              amount,
+              transferExt
+            )
+          ).hash
+        } else {
+          transactionHash = (
+            await crossAddress.transferERC20(
+              contractAddress,
+              selectMakerInfo.makerAddress,
+              amount,
+              transferExt
+            )
+          ).hash
+        }
+
+        this.onTransferSucceed(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          transactionHash
+        )
+      } catch (err) {
+        this.$notify.error({
+          title: err?.data?.message || err.message,
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+    },
+
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
@@ -658,7 +809,7 @@ export default {
       if (
         this.$store.state.web3.networkId.toString() !==
         this.$env.localChainID_netChainID[
-        this.$store.state.transferData.fromChainID
+          this.$store.state.transferData.fromChainID
         ]
       ) {
         this.addChainNetWork()
@@ -671,23 +822,34 @@ export default {
       }
 
       // sendTransfer
-      this.transferLoading = true
-      var fromChainID = this.$store.state.transferData.fromChainID
-      var toChainID = this.$store.state.transferData.toChainID
-      var selectMakerInfo = this.$store.getters.realSelectMakerInfo
+      const { fromChainID, toChainID, transferExt } =
+        this.$store.state.transferData
+      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
 
-      // 增加check币商余额逻辑
-
-      let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
-        new BigNumber(this.$store.state.transferData.transferValue).plus(
-          new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
-        ),
-        this.$store.getters.realSelectMakerInfo,
-        false
-      )
-      if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
-        this.transferLoading = false
+      // Check fromChainID isSupportEVM
+      if (transferExt && !util.isSupportEVM(fromChainID)) {
+        this.$notify.error({
+          title: `Sorry, this fromChainID: ${fromChainID} no support EVM!`,
+          duration: 3000,
+        })
         return
+      }
+
+      this.transferLoading = true
+
+      // 增加check币商余额逻辑, To dydx no check
+      if (toChainID != 11 && toChainID != 511) {
+        let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
+          new BigNumber(this.$store.state.transferData.transferValue).plus(
+            new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
+          ),
+          this.$store.getters.realSelectMakerInfo,
+          false
+        )
+        if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
+          this.transferLoading = false
+          return
+        }
       }
 
       if (fromChainID === 3 || fromChainID === 33) {
@@ -707,10 +869,7 @@ export default {
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         const rAmountValue = rAmount.toFixed()
-        var p_text =
-          toChainID.toString().length === 1
-            ? '900' + toChainID.toString() : toChainID.toString().length === 2
-              ? '90' + toChainID.toString() : '9' + toChainID.toString()
+        const p_text = 9000 + Number(toChainID) + ''
         const tValue = orbiterCore.getTAmountFromRAmount(
           fromChainID,
           rAmountValue,
@@ -745,6 +904,29 @@ export default {
           )
           return
         }
+
+        if (fromChainID == 11 || fromChainID == 511) {
+          this.dydxTransfer(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+          return
+        }
+
+        // Cross address transfer
+        if (transferExt) {
+          this.transferCrossAddress(
+            account,
+            selectMakerInfo,
+            tValue.tAmount,
+            fromChainID
+          )
+
+          return
+        }
+
         if (util.isEthTokenAddress(tokenAddress)) {
           // When tokenAddress is eth
           this.ethTransfer(
@@ -890,6 +1072,35 @@ export default {
         height: 0.1rem;
         border-top: 0.1rem dashed rgba(24, 25, 31, 0.2);
         margin-top: 1.6rem;
+      }
+    }
+    .contentItem:nth-last-child(2) {
+      width: 100%;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      color: var(--default-black);
+      margin: 2rem auto 0 auto;
+      align-items: center;
+      color: red;
+      .up {
+        padding: 0 0.5rem 0 1rem;
+        align-items: center;
+        text-align: left;
+        display: flow-root;
+        .right {
+          color: rgba($color: #18191f, $alpha: 0.7);
+          text-align: right;
+          font-weight: 400;
+          position: absolute;
+          right: 0.5rem;
+        }
+        .svg {
+          width: 1.2rem !important;
+          height: 1.2rem !important;
+        }
+        span {
+          margin-right: 0 !important;
+        }
       }
     }
   }

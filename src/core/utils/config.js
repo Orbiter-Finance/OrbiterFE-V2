@@ -55,6 +55,12 @@ export default {
     chainID: '8',
     rinkeyChainID: '88',
   },
+  dydx: {
+    Mainnet: 'https://api.dydx.exchange',
+    Rinkeby: 'https://api.stage.dydx.exchange',
+    chainID: '11',
+    rinkeyChainID: '511',
+  },
   L1: {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',

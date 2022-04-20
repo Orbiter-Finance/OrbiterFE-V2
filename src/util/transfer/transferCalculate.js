@@ -19,6 +19,8 @@ import {
 import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
+import { DydxHelper } from '../dydx/dydx_helper'
+import Web3 from 'web3'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -47,7 +49,7 @@ const MT_ERC20_DEPOSIT_DEPOSIT_ONL1 = 170617
 
 // metis withdraw
 const MT_ERC20_WITHDRAW_ONMT = 685768
-const MT_ERC20_WITHDRAW_ONL1 = 234552 //to check
+const MT_ERC20_WITHDRAW_ONL1 = 21000
 
 //optimistic deposit
 const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
@@ -66,6 +68,10 @@ const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 126000
 // immutablex withdraw
 // Testnet withdraw contract: 0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef
 const IMX_ETH_WITHDRAW_ONL1 = 510000
+
+// dydx deposit
+// Mainnet deposit contract: 0x8e8bd01b5A9eb272CC3892a2E40E64A716aa2A40
+const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
@@ -157,6 +163,7 @@ export default {
       8: 1.7,
       9: 100,
       10: 1,
+      11: 1,
       22: 0.02,
       33: 100,
       66: 60,
@@ -164,6 +171,7 @@ export default {
       88: 1.7,
       99: 1,
       510: 1,
+      511: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -176,6 +184,7 @@ export default {
       8: 51000,
       9: 75000,
       10: 28000,
+      11: 100000,
       22: 810000,
       33: 100,
       66: 1500,
@@ -183,6 +192,7 @@ export default {
       88: 51000,
       99: 75000,
       510: 16000,
+      511: 100000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -193,6 +203,7 @@ export default {
       6: 'MATIC',
       7: 'ETH',
       8: 'ETH',
+      11: 'ETH',
       9: 'ETH',
       10: 'METIS',
       22: 'AETH',
@@ -202,6 +213,7 @@ export default {
       88: 'ETH',
       99: 'ETH',
       510: 'METIS',
+      511: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -314,10 +326,13 @@ export default {
       timeSpent += 5
     }
     if (toChainID === 9 || toChainID === 99) {
-      timeSpent = 15
+      timeSpent += 15
     }
     if (toChainID === 10 || toChainID === 510) {
-      timeSpent = 15
+      timeSpent += 15
+    }
+    if (toChainID === 11 || toChainID === 511) {
+      timeSpent += 5
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -374,6 +389,9 @@ export default {
         // eth -> metis
         return '~5min'
       }
+      if (toChainID === 11 || toChainID === 511) {
+        return '~20min'
+      }
     }
   },
 
@@ -427,6 +445,10 @@ export default {
       if (toChainID === 10 || toChainID === 510) {
         // eth -> metis
         return ' 4.25min'
+      }
+      if (toChainID === 11 || toChainID === 511) {
+        // eth -> dydx
+        return ' 19.95min'
       }
     }
   },
@@ -490,7 +512,7 @@ export default {
   async transferOrginGasUsd(fromChainID, toChainID, isErc20 = true) {
     let ethGas = 0
     let maticGas = 0
-
+    let metisGas = 0
     const selectMakerInfo = store.getters.realSelectMakerInfo
 
     // withdraw
@@ -583,7 +605,7 @@ export default {
       let fromGasPrice = await this.getGasPrice(fromChainID)
       // MT WithDraw
       const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
-      maticGas += MTWithDrawARGas
+      metisGas += MTWithDrawARGas
       const L1ChainID = fromChainID === 10 ? 1 : 5
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
@@ -639,6 +661,13 @@ export default {
       const mtDepositGas = toGasPrice * MT_ERC20_DEPOSIT_DEPOSIT_ONL1
       ethGas += mtDepositGas
     }
+    if (toChainID === 11 || toChainID === 511) {
+      // dydx deposit
+      const toGasPrice = await this.getGasPrice(toChainID === 11 ? 1 : 5)
+      const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
+      ethGas += dydxDepositGas
+    }
+
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(
@@ -653,7 +682,14 @@ export default {
         )
       )
     }
-
+    if (metisGas > 0) {
+      usd = usd.plus(
+        await exchangeToUsd(
+          new BigNumber(metisGas).dividedBy(10 ** 18),
+          'METIS'
+        )
+      )
+    }
     return usd.toNumber()
   },
 
@@ -682,7 +718,7 @@ export default {
         const balances = balanceInfo.result.balances
         return balances[tokenName] ? balances[tokenName] : 0
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKBalanceError'
       }
     } else if (localChainID === 4 || localChainID === 44) {
@@ -711,6 +747,14 @@ export default {
         localChainID,
         isMaker
       )
+      return balance
+    } else if (localChainID === 11 || localChainID === 511) {
+      const dydxHelper = new DydxHelper(
+        localChainID,
+        new Web3(window.ethereum),
+        'MetaMask'
+      )
+      const balance = await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
       return balance
     } else {
       let balance = 0
@@ -800,12 +844,7 @@ export default {
 
   realTransferOPID() {
     let toChainID = store.state.transferData.toChainID
-    var p_text =
-      toChainID.toString().length === 1
-        ? '900' + toChainID.toString()
-        : toChainID.toString().length === 2
-        ? '90' + toChainID.toString()
-        : '9' + toChainID.toString()
+    const p_text = 9000 + Number(toChainID) + ''
     return p_text
   },
 
@@ -823,19 +862,14 @@ export default {
       new BigNumber(10 ** selectMakerInfo.precision)
     )
     let rAmountValue = rAmount.toFixed()
-    var p_text =
-      toChainID.toString().length === 1
-        ? '900' + toChainID.toString()
-        : toChainID.toString().length === 2
-        ? '90' + toChainID.toString()
-        : '9' + toChainID.toString()
-    var tValue = orbiterCore.getTAmountFromRAmount(
+    const p_text = 9000 + Number(toChainID) + ''
+    const tValue = orbiterCore.getTAmountFromRAmount(
       fromChainID,
       rAmountValue,
       p_text
     )
     if (!tValue.state) {
-      console.log('getTralTransferAmountError')
+      console.warn('getTralTransferAmountError')
       return userValue
     } else {
       return new BigNumber(tValue.tAmount).dividedBy(
