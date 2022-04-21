@@ -341,10 +341,12 @@ async function confirmUserTransaction(
           (zkspaceTransactionData.data.status === 'verified' ||
             zkspaceTransactionData.data.status === 'pending')
         ) {
-          let time = zkspaceTransactionData.data.createdAt
+          let time = zkspaceTransactionData.data.created_at
           let zkspac_amount = orbiterCore.getRAmountFromTAmount(
             localChainID,
-            zkspaceTransactionData.data.amount
+            new Bignumber(zkspaceTransactionData.data.amount).multipliedBy(
+              new Bignumber(10 ** makerInfo.precision)
+            )
           ).rAmount
           let zkspace_nonce = zkspaceTransactionData.data.nonce.toString()
           let zkspace_SendRAmount = orbiterCore.getToAmountFromUserAmount(
@@ -412,10 +414,10 @@ async function confirmUserTransaction(
     )
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
 
     let amountStr = '0'
@@ -844,9 +846,9 @@ function ScanMakerTransfer(
           if (
             lpTransaction.txType == 'TRANSFER' &&
             lpTransaction.senderAddress.toLowerCase() ==
-              makerInfo.makerAddress.toLowerCase() &&
+            makerInfo.makerAddress.toLowerCase() &&
             lpTransaction.receiverAddress.toLowerCase() ==
-              store.state.proceeding.userTransfer.from.toLowerCase() &&
+            store.state.proceeding.userTransfer.from.toLowerCase() &&
             lpTransaction.symbol == 'ETH' &&
             lpTransaction.amount == rAmount &&
             lpTransaction.memo == memo
@@ -1026,10 +1028,10 @@ async function confirmMakerTransaction(
     }
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
     if (trxConfirmations.confirmations >= confirmations) {
       console.log(

@@ -219,7 +219,7 @@ function getRAmountFromTAmount(chain, amount) {
       error: "the token doesn't support that many decimal digits",
     }
   }
-
+  
   let validDigit = AmountValidDigits(chain, amount) // 10 11
   var amountLength = amount.toString().length
   if (amountLength < SIZE_OP.P_NUMBER) {
@@ -232,7 +232,7 @@ function getRAmountFromTAmount(chain, amount) {
     let rAmount =
       amount.toString().slice(0, validDigit - SIZE_OP.P_NUMBER) +
       pText +
-      amount.slice(validDigit)
+      amount.toString().slice(validDigit)
     return {
       state: true,
       rAmount: rAmount,
