@@ -200,7 +200,7 @@ export default {
     }
     let response = await axios.post(
       (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
-        '/tx',
+      '/tx',
       {
         signature: req.signature,
         fastProcessing: req.fastProcessing,
@@ -274,7 +274,7 @@ export default {
         tokenID +
         '&start=' +
         startIndex +
-        '&limit =' +
+        '&limit=' +
         limit
       axios
         .get(url)

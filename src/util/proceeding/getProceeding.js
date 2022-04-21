@@ -578,6 +578,7 @@ function ScanZKSpaceMakerTransfer(
   to,
   amount
 ) {
+  let startPoint = 0
   setTimeout(async () => {
     if (!isCurrentTransaction(transactionID)) {
       return
@@ -586,7 +587,7 @@ function ScanZKSpaceMakerTransfer(
       let zksTransactions = await zkspace.getZKSapceTxList(
         from,
         localChainID,
-        0,
+        startPoint,
         0,
         50
       )
@@ -595,6 +596,7 @@ function ScanZKSpaceMakerTransfer(
       }
       if (zksTransactions.success && zksTransactions.data?.data?.length !== 0) {
         let transacionts = zksTransactions.data.data
+        startPoint = transacionts.length == 50 ? startPoint + 50 : 0
         for (let index = 0; index < transacionts.length; index++) {
           const zkspaceTransaction = transacionts[index]
           if (
@@ -603,14 +605,14 @@ function ScanZKSpaceMakerTransfer(
             (zkspaceTransaction?.from?.toLowerCase() == from.toLowerCase() ||
               zkspaceTransaction?.to?.toLowerCase() == to.toLowerCase()) &&
             zkspaceTransaction.token.symbol == 'ETH' &&
-            zkspaceTransaction.amount === amount
+            new Bignumber(zkspaceTransaction.amount).multipliedBy(10 ** makerInfo.precision).toString() == amount
           ) {
             if (!isCurrentTransaction(transactionID)) {
               return
             }
             store.commit(
               'updateProceedingMakerTransferTxid',
-              zkspaceTransaction.txHash
+              zkspaceTransaction.tx_hash
             )
             if (
               zkspaceTransaction.status === 'pending' ||
@@ -969,7 +971,7 @@ function ScanMakerTransfer(
         return
       }
       if (error) {
-        console.log('111Error =', error)
+        console.log('Error =', error)
       } else {
         for (let index = 0; index < events.length; index++) {
           const txinfo = events[index]
