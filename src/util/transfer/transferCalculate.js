@@ -821,7 +821,6 @@ export default {
     const ETH = getContractFactory('WETH9')
       .attach(predeploys.WETH9)
       .connect(provider)
-
     // Arbitrary recipient address.
     const to = store.state.transferData.selectMakerInfo.makerAddress
     // Small amount of WETH to send (in wei).
@@ -835,7 +834,7 @@ export default {
       })
     )
     // console.log(`Estimated L1 fee (in wei): ${l1FeeInWei.toString()}`)
-    return l1FeeInWei
+    return Number(l1FeeInWei)
   },
 
   async getTokenConvertUsd(tokenName) {
