@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 export default {
   getTxInfoWithEtherScan: function (etherScanInfo) {
     const txInfo = {
@@ -106,6 +108,7 @@ export default {
     }
     return txInfo
   },
+
   getTxInfoWithImmutableX: function (immutableX) {
     const txInfo = {
       from: immutableX.from.toLowerCase(),
@@ -118,6 +121,24 @@ export default {
       hash: immutableX.hash,
       nonce: immutableX.nonce,
       dataFrom: 'ImmutableX',
+    }
+    return txInfo
+  },
+
+  getTxInfoWithZkSpace: function (zkspaceInfo) {
+    const txInfo = {
+      from: zkspaceInfo.from.toLowerCase(),
+      to: zkspaceInfo.to.toLowerCase(),
+      tokenAddress: zkspaceInfo.token.id,
+      timeStamp: zkspaceInfo.created_at,
+      tokenName: zkspaceInfo.token.symbol,
+      value: new BigNumber(zkspaceInfo.amount)
+        .multipliedBy(new BigNumber(10 ** 18))
+        .toString(),
+      tokenDecimal: 18,
+      hash: zkspaceInfo.tx_hash,
+      nonce: zkspaceInfo.nonce,
+      dataFrom: 'zkspace',
     }
     return txInfo
   },

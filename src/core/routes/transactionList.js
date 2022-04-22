@@ -15,6 +15,7 @@ import polygon from '../actions/polygon'
 import mStarknet from '../actions/starknet'
 import thegraph from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
+import zkspace from '../actions/zkspace'
 import TxInfo from '../utils/modle/txinfo'
 
 async function getTransactionListEtherscan(
@@ -1057,6 +1058,127 @@ async function getTransactionListLoopring(
   return { LPFromTxList, LPToTxList }
 }
 
+async function getTransactionListZkSpace(
+  userAddress,
+  chainID,
+  tokenID,
+  makerList
+) {
+  const zkSpaceFromTxList = []
+  const zkSpaceToTxList = []
+
+  let isContiue = true
+  let limit = 50
+  let startIndex = 0
+  let ZKSAllTxList = []
+  while (isContiue) {
+    try {
+      let ZKSTransferResult = await zkspace.getZKSapceTxList(
+        userAddress,
+        chainID,
+        startIndex,
+        tokenID,
+        limit
+      )
+      if (!ZKSTransferResult || !ZKSTransferResult.success) {
+        isContiue = false
+        break
+      }
+      if (
+        ZKSTransferResult.success &&
+        ZKSTransferResult.data?.data?.length !== 0
+      ) {
+        if (ZKSTransferResult.data?.data?.length !== limit) {
+          isContiue = false
+        } else {
+          startIndex += limit
+        }
+        let transacionts = ZKSTransferResult.data.data
+        for (let index = 0; index < transacionts?.length; index++) {
+          const zkspaceTransaction = transacionts[index]
+          if (
+            zkspaceTransaction.tx_type == 'Transfer' &&
+            zkspaceTransaction.fail_reason == '' &&
+            (zkspaceTransaction.from.toLowerCase() ==
+              userAddress.toLowerCase() ||
+              zkspaceTransaction.to.toLowerCase() ==
+                userAddress.toLowerCase()) &&
+            zkspaceTransaction.token.symbol == 'ETH'
+          ) {
+            ZKSAllTxList.push(zkspaceTransaction)
+          }
+        }
+      } else {
+        break
+      }
+    } catch (error) {
+      console.log('zksError =', error)
+      throw error.message
+    }
+  }
+  for (let index = 0; index < ZKSAllTxList.length; index++) {
+    let tx = ZKSAllTxList[index]
+    let txinfo = TxInfo.getTxInfoWithZkSpace(tx)
+    for (let j = 0; j < makerList.length; j++) {
+      let makerInfo = makerList[j]
+      let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+      if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+        continue
+      }
+
+      if (txinfo.tokenName !== makerInfo.tName) {
+        continue
+      }
+
+      let avalibleTimes =
+        chainID === makerInfo.c1ID
+          ? makerInfo.c1AvalibleTimes
+          : makerInfo.c2AvalibleTimes
+      let isMatch = false
+      for (let z = 0; z < avalibleTimes.length; z++) {
+        let avalibleTime = avalibleTimes[z]
+
+        if (
+          avalibleTime.startTime <= txinfo.timeStamp &&
+          avalibleTime.endTime >= txinfo.timeStamp
+        ) {
+          isMatch = true
+          break
+        }
+      }
+
+      if (!isMatch) {
+        continue
+      }
+
+      if (txinfo.from === _makerAddress) {
+        let nonce = txinfo.memo
+        if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+          zkSpaceToTxList.push(txinfo)
+          break
+        }
+      } else if (txinfo.to === _makerAddress) {
+        if (txinfo.dataFrom == 'zkspace') {
+          let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+          let arr2 = [
+            chainID,
+            orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+          ]
+          if (judgeArrayEqualFun(arr1, arr2)) {
+            zkSpaceFromTxList.push(txinfo)
+            break
+          }
+        }
+      } else {
+        // doNothiing
+      }
+    }
+  }
+
+  return { zkSpaceFromTxList, zkSpaceToTxList }
+}
+
 export default {
   getTransactionList: async function (req) {
     /*
@@ -1256,6 +1378,19 @@ export default {
         })
       }
 
+      if (supportChains.indexOf(12) > -1 || supportChains.indexOf(512) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(12) > -1 ? 12 : 512
+          const { zkSpaceFromTxList, zkSpaceToTxList } =
+            await getTransactionListZkSpace(req.address, chainID, 0, makerList)
+
+          originTxList[chainID] = {
+            fromList: zkSpaceFromTxList,
+            toList: zkSpaceToTxList,
+          }
+        })
+      }
+
       // waitting all promise end
       const maxRetryCount = 3
       for (let index = 0; index < maxRetryCount; index++) {
@@ -1273,6 +1408,7 @@ export default {
 
       //=============================================================================
     }
+
     const transactionList = getTrasactionListFromTxList(
       originTxList,
       req.state,

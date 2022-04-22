@@ -121,6 +121,10 @@ import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 import { CrossAddress } from '../../util/cross_address'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import { checkStateWhenConfirmTransfer } from '../../util/confirmCheck'
+import { sign_musig } from 'zksync-crypto'
+import zkpace from '../../core/actions/zkspace'
+import zkspace from '../../core/actions/zkspace'
+import config from '../../core/utils/config'
 
 const ethers = require('ethers')
 const zksync = require('zksync')
@@ -221,6 +225,177 @@ export default {
   },
   watch: {},
   methods: {
+    async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
+      let provider = new ethers.providers.Web3Provider(window.ethereum)
+      const walletAccount = this.$store.state.web3.coinbase
+
+      const signer = provider.getSigner()
+      const msg =
+        'Access ZKSwap account.\n\nOnly sign this message for a trusted client!'
+      const signature = await signer.signMessage(msg)
+      console.warn('signature=', signature)
+      const seed = ethers.utils.arrayify(signature)
+      console.warn('seed=', seed)
+      const privateKey = await zksync.crypto.privateKeyFromSeed(seed)
+      console.warn('privateKey=', privateKey)
+      const pubkeyHash = await zksync.crypto.privateKeyToPubKeyHash(privateKey)
+      console.warn('publicKey=', pubkeyHash)
+
+      var rAmount = new BigNumber(this.$store.state.transferData.transferValue)
+        .plus(new BigNumber(selectMakerInfo.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
+      var rAmountValue = rAmount.toFixed()
+      var p_text = 9000 + Number(toChainID) + ''
+      var tValue = orbiterCore.getTAmountFromRAmount(
+        fromChainID,
+        rAmountValue,
+        p_text
+      )
+      if (!tValue.state) {
+        this.$notify.error({
+          title: tValue.error,
+          duration: 3000,
+        })
+        this.transferLoading = false
+        return
+      }
+      const transferValue = zksync.utils.closestPackableTransactionAmount(
+        tValue.tAmount
+      )
+      let accountInfo
+      try {
+        accountInfo = await zkspace.getZKAccountInfo(fromChainID, walletAccount)
+      } catch (error) {
+        console.warn('getZKAccountInfoError =', error)
+        return
+      }
+      const tokenId = 0
+      const feeTokenId = 0
+      const zksChainID =
+        fromChainID === 512
+          ? config.ZKSpace.zksrinkebyChainID
+          : config.ZKSpace.zksChainID
+      let fee
+      try {
+        fee = await zkpace.getZKTransferGasFee(fromChainID, walletAccount)
+      } catch (error) {
+        console.warn('getZKTransferGasFeeError =', error)
+        return
+      }
+      console.warn('fee =', fee)
+
+      const transferFee = zksync.utils.closestPackableTransactionFee(
+        ethers.utils.parseUnits(fee.toString(), 18)
+      )
+
+      console.warn('transferFee =', transferFee.toString())
+      console.warn('transferValue =', transferValue.toString())
+
+      const msgBytes = ethers.utils.concat([
+        '0x05',
+        zksync.utils.numberToBytesBE(accountInfo.id, 4),
+        walletAccount,
+        selectMakerInfo.makerAddress,
+        zksync.utils.numberToBytesBE(tokenId, 2),
+        zksync.utils.packAmountChecked(transferValue),
+        zksync.utils.numberToBytesBE(feeTokenId, 1),
+        zksync.utils.packFeeChecked(transferFee),
+        zksync.utils.numberToBytesBE(zksChainID, 1),
+        zksync.utils.numberToBytesBE(accountInfo.nonce, 4),
+      ])
+      console.warn('msgBytes =', ethers.utils.hexlify(msgBytes))
+
+      const signaturePacked = sign_musig(privateKey, msgBytes)
+      const pubKey = ethers.utils
+        .hexlify(signaturePacked.slice(0, 32))
+        .substr(2)
+      const l2Signature = ethers.utils
+        .hexlify(signaturePacked.slice(32))
+        .substr(2)
+      console.warn('pubKey=', pubKey)
+      console.warn('l2Signature=', l2Signature)
+
+      const tx = {
+        accountId: accountInfo.id,
+        to: selectMakerInfo.makerAddress,
+        tokenSymbol: 'ETH',
+        tokenAmount: ethers.utils.formatUnits(transferValue, 18),
+        feeSymbol: 'ETH',
+        fee: fee.toString(),
+        zksChainID,
+        nonce: accountInfo.nonce,
+      }
+      console.warn('tx =', tx)
+      const l2Msg =
+        `Transfer ${tx.tokenAmount} ${tx.tokenSymbol}\n` +
+        `To: ${tx.to.toLowerCase()}\n` +
+        `Chain Id: ${tx.zksChainID}\n` +
+        `Nonce: ${tx.nonce}\n` +
+        `Fee: ${tx.fee} ${tx.feeSymbol}\n` +
+        `Account Id: ${tx.accountId}`
+
+      console.warn('l2Msg =', l2Msg)
+      const ethSignature = await signer.signMessage(l2Msg)
+
+      const txParams = {
+        type: 'Transfer',
+        accountId: accountInfo.id,
+        from: walletAccount,
+        to: selectMakerInfo.makerAddress,
+        token: tokenId,
+        amount: transferValue.toString(),
+        feeToken: feeTokenId,
+        fee: transferFee.toString(),
+        chainId: zksChainID,
+        nonce: accountInfo.nonce,
+        signature: {
+          pubKey: pubKey,
+          signature: l2Signature,
+        },
+      }
+      console.warn('txParams =', txParams)
+      const req = {
+        signature: {
+          type: 'EthereumSignature',
+          signature: ethSignature,
+        },
+        fastProcessing: false,
+        tx: txParams,
+        netWorkId: this.$store.state.web3.networkId,
+      }
+
+      try {
+        let transferResult = await zkpace.sendTransfer(fromChainID, req)
+        if (
+          transferResult &&
+          transferResult.data &&
+          transferResult.status == 200 &&
+          transferResult.statusText == 'OK' &&
+          transferResult.data.success == true
+        ) {
+          console.log(
+            '---------------------transferResult-----------------------',
+            transferResult.data.data
+          )
+          this.onTransferSucceed(
+            walletAccount,
+            selectMakerInfo,
+            tValue.tAmount.toString(),
+            fromChainID,
+            transferResult.data.data
+          )
+          this.transferLoading = false
+        }
+      } catch (error) {
+        this.transferLoading = false
+        console.log('zkspaceError =', error.message)
+        this.transferLoading = false
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      }
+    },
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(window.ethereum)
       const walletAccount = this.$store.state.web3.coinbase
@@ -555,7 +730,6 @@ export default {
           }
         })
     },
-
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
         this.transferLoading = false
@@ -837,6 +1011,21 @@ export default {
 
       this.transferLoading = true
 
+      // 增加check币商余额逻辑
+
+      let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
+        new BigNumber(this.$store.state.transferData.transferValue).plus(
+          new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
+        ),
+        this.$store.getters.realSelectMakerInfo,
+        false
+      )
+
+      if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
+        this.transferLoading = false
+        return
+      }
+
       // 增加check币商余额逻辑, To dydx no check
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
@@ -856,6 +1045,8 @@ export default {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 9 || fromChainID === 99) {
         this.loopringTransfer(fromChainID, toChainID, selectMakerInfo)
+      } else if (fromChainID === 12 || fromChainID === 512) {
+        this.zkspceTransfer(fromChainID, toChainID, selectMakerInfo)
       } else {
         const tokenAddress =
           selectMakerInfo.c1ID === fromChainID

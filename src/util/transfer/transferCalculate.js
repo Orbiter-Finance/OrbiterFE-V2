@@ -5,6 +5,7 @@ import { ethers } from 'ethers'
 import * as zksync from 'zksync'
 import env from '../../../env'
 import thirdapi from '../../core/actions/thirdapi'
+import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
 import { exchangeToUsd } from '../coinbase'
@@ -26,6 +27,9 @@ import Web3 from 'web3'
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
 const ZK_ERC20_DEPOSIT_DEPOSIT_ONL1 = 103937
 const ZK_ETH_DEPOSIT_DEPOSIT_ONL1 = 62599
+
+// zkspace deposit
+const ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1 = 160000
 
 // ar deposit
 const AR_ERC20_DEPOSIT_DEPOSIT_ONL1 = 218291
@@ -124,6 +128,17 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
+    } else if (fromChainID === 12 || fromChainID === 512) {
+      let transferFee = 0
+      try {
+        transferFee = await zkspace.getZKTransferGasFee(
+          fromChainID,
+          store.state.web3.coinbase
+        )
+      } catch (error) {
+        console.warn('getZKTransferGasFeeError =', error)
+      }
+      return transferFee
     } else if (util.isEthTokenAddress(fromTokenAddress)) {
       if (fromChainID == 9 || fromChainID == 99) {
         let loopringFee = await loopring.getTransferFee(
@@ -255,6 +270,21 @@ export default {
       )
       return (loopringFee / 10 ** 18).toFixed(6)
     }
+    if (fromChainID === 12 || fromChainID === 512) {
+      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let transferFee = 0
+      try {
+        transferFee = await zkspace.getZKTransferGasFee(
+          fromChainID,
+          store.state.web3.coinbase
+            ? store.state.web3.coinbase
+            : selectMakerInfo.makerAddress
+        )
+      } catch (error) {
+        console.warn('getZKSpaceTransferGasFeeError =', error)
+      }
+      return transferFee.toFixed(6)
+    }
     if (
       GasPriceMap[fromChainID.toString()] &&
       GasLimitMap[fromChainID.toString()] &&
@@ -292,7 +322,12 @@ export default {
     if (fromChainID === 10 || fromChainID === 510) {
       timeSpent = 15
     }
-    if (fromChainID === 3 || fromChainID === 33) {
+    if (
+      fromChainID === 3 ||
+      fromChainID === 33 ||
+      fromChainID === 12 ||
+      fromChainID === 512
+    ) {
       timeSpent = 5
     }
     if (fromChainID === 6 || fromChainID === 66) {
@@ -313,7 +348,12 @@ export default {
     if (toChainID === 2 || toChainID === 22) {
       timeSpent += 15
     }
-    if (toChainID === 3 || toChainID === 33) {
+    if (
+      toChainID === 3 ||
+      toChainID === 33 ||
+      toChainID === 12 ||
+      toChainID === 512
+    ) {
       timeSpent += 5
     }
     if (toChainID === 6 || toChainID === 66) {
@@ -342,7 +382,12 @@ export default {
     if (fromChainID === 2 || fromChainID === 22) {
       return '~7 days'
     }
-    if (fromChainID === 3 || fromChainID === 33) {
+    if (
+      fromChainID === 3 ||
+      fromChainID === 33 ||
+      fromChainID === 12 ||
+      fromChainID === 512
+    ) {
       return '~4 hours'
     }
     // https://docs.polygon.technology/docs/develop/ethereum-polygon/getting-started/
@@ -366,7 +411,12 @@ export default {
         //  eth ->  ar
         return '~10min'
       }
-      if (toChainID === 3 || toChainID === 33) {
+      if (
+        toChainID === 3 ||
+        toChainID === 33 ||
+        toChainID === 12 ||
+        toChainID === 512
+      ) {
         // eth -> zk
         return '~10min'
       }
@@ -399,7 +449,12 @@ export default {
     if (fromChainID === 2 || fromChainID === 22) {
       return ' 7 days'
     }
-    if (fromChainID === 3 || fromChainID === 33) {
+    if (
+      fromChainID === 3 ||
+      fromChainID === 33 ||
+      fromChainID === 12 ||
+      fromChainID === 512
+    ) {
       return ' 4 hours'
     }
     if (fromChainID === 6 || fromChainID === 66) {
@@ -422,7 +477,12 @@ export default {
         //  eth ->  ar
         return ' 9.25min'
       }
-      if (toChainID === 3 || toChainID === 33) {
+      if (
+        toChainID === 3 ||
+        toChainID === 33 ||
+        toChainID === 12 ||
+        toChainID === 512
+      ) {
         // eth -> zk
         return ' 9.5min'
       }
@@ -591,7 +651,6 @@ export default {
       const IMXWithDrawL1Gas = L1GasPrice * IMX_ETH_WITHDRAW_ONL1
       ethGas += IMXWithDrawL1Gas
     }
-
     if (fromChainID === 9 || fromChainID === 99) {
       // api获取
       let loopringWithDrawFee = await loopring.getWithDrawFee(
@@ -610,6 +669,16 @@ export default {
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
       ethGas += MTWithDrawL1Gas
+    }
+    if (fromChainID === 12 || fromChainID === 512) {
+      // api获取
+      let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
+        fromChainID,
+        store.state.web3.coinbase
+          ? store.state.web3.coinbase
+          : selectMakerInfo.makerAddress
+      )
+      ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
     }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
@@ -666,6 +735,11 @@ export default {
       const toGasPrice = await this.getGasPrice(toChainID === 11 ? 1 : 5)
       const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += dydxDepositGas
+    }
+    if (toChainID === 12 || toChainID === 512) {
+      let toGasPrice = await this.getGasPrice(toChainID === 12 ? 1 : 5)
+      let zkspaceDepositGas = toGasPrice * ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1
+      ethGas += zkspaceDepositGas
     }
 
     let usd = new BigNumber(0)
@@ -756,6 +830,33 @@ export default {
       )
       const balance = await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
       return balance
+    } else if (localChainID === 12 || localChainID === 512) {
+      var zkReq = {
+        account: userAddress,
+        localChainID: localChainID,
+      }
+      try {
+        let selectMakerInfo = store.getters.realSelectMakerInfo
+        let balanceInfo = await zkspace.getZKspaceBalance(zkReq)
+        if (
+          !balanceInfo ||
+          !balanceInfo.length ||
+          balanceInfo.findIndex((item) => item.id == 0) == -1
+        ) {
+          return 0
+        }
+        let defaultIndex = balanceInfo.findIndex((item) => item.id == 0)
+        if (defaultIndex < 0) {
+          return 0
+        }
+
+        const balances =
+          balanceInfo[defaultIndex].amount * 10 ** selectMakerInfo.precision
+        return balances
+      } catch (error) {
+        console.log('error =', error)
+        throw 'getZKBalanceError'
+      }
     } else {
       let balance = 0
       if (util.isEthTokenAddress(tokenAddress)) {
@@ -816,7 +917,6 @@ export default {
     const ETH = getContractFactory('WETH9')
       .attach(predeploys.WETH9)
       .connect(provider)
-
     // Arbitrary recipient address.
     const to = store.state.transferData.selectMakerInfo.makerAddress
 
