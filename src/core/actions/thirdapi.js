@@ -98,15 +98,16 @@ export default {
     })
   },
   // get an account transactionList
+  /* req
+    localChainID: localChainID,
+    account: from,
+    from: 'latest',
+    limit: 30,
+    direction: 'older',
+  */
   getZKInfo: function (req) {
     return new Promise((resolve, reject) => {
-      /* req
-          localChainID: localChainID,
-          account: from,
-          from: 'latest',
-          limit: 30,
-          direction: 'older',
-      */
+
       if (req.localChainID !== 3 && req.localChainID !== 33) {
         reject({
           errorCode: 1,

@@ -4,9 +4,7 @@ import axios from 'axios'
 import config from '../utils/config'
 import { store } from '../../store'
 const BigNumber = require('bignumber.js')
-
 Axios.axios()
-
 export default {
   getZKspaceBalance: function (req) {
     return new Promise((resolve, reject) => {
@@ -249,56 +247,36 @@ export default {
         })
     })
   },
-  getZKSapceTxList: async function (
-    address,
-    localChainID,
-    startIndex,
-    tokenID,
-    limit
-  ) {
-    return new Promise((resolve, reject) => {
-      if (localChainID !== 12 && localChainID !== 512) {
-        reject({
-          errorCode: 1,
-          errMsg: 'getZKSTransactinListError_wrongChainID',
-        })
+
+  getZKSapceTxList: async (address, localChainID, startIndex, tokenID, limit) => {
+    if (localChainID !== 12 && localChainID !== 512) {
+      throw {
+        errorCode: 1,
+        errMsg: 'getZKSTransactinListError_wrongChainID',
       }
-      const url =
-        (localChainID === 512
-          ? config.ZKSpace.Rinkeby
-          : config.ZKSpace.Mainnet) +
-        '/txs' +
-        '?types=Transfer&address=' +
-        address +
-        '&token=' +
-        tokenID +
-        '&start=' +
-        startIndex +
-        '&limit=' +
-        limit
-      axios
-        .get(url)
-        .then(function (response) {
-          if (response.status === 200 && response.statusText === 'OK') {
-            var respData = response.data
-            if (respData.success === true) {
-              resolve(respData)
-            } else {
-              reject(respData)
-            }
-          } else {
-            reject({
-              errorCode: 1,
-              errMsg: 'NetWorkError',
-            })
-          }
-        })
-        .catch(function (error) {
-          reject({
-            errorCode: 2,
-            errMsg: error,
-          })
-        })
-    })
-  },
+    }
+    let baseUrl = localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+    const url = `${baseUrl}/txs?types=Transfer&address=${address}&token=${tokenID}&start=${startIndex}&limit=${limit}`
+    try {
+      const response = await axios.get(url)
+      if (response.status === 200 && response.statusText === 'OK') {
+        var respData = response.data
+        if (respData.success === true) {
+          return respData
+        } else {
+          throw respData
+        }
+      } else {
+        throw {
+          errorCode: 1,
+          errMsg: 'NetWorkError',
+        }
+      }
+    } catch (error) {
+      throw {
+        errorCode: 2,
+        errMsg: error.message,
+      }
+    }
+  }
 }

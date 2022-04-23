@@ -958,11 +958,11 @@ async function getTransactionListZkSpace(
   userAddress,
   chainID,
   tokenID,
+  needTimeStamp,
   makerList
 ) {
   const zkSpaceFromTxList = []
   const zkSpaceToTxList = []
-
   let isContiue = true
   let limit = 50
   let startIndex = 0
@@ -990,7 +990,7 @@ async function getTransactionListZkSpace(
           startIndex += limit
         }
         let transacionts = ZKSTransferResult.data.data
-        for (let index = 0; index < transacionts?.length; index++) {
+        for (let index = 0; index < transacionts.length; index++) {
           const zkspaceTransaction = transacionts[index]
           if (
             zkspaceTransaction.tx_type == 'Transfer' &&
@@ -998,10 +998,13 @@ async function getTransactionListZkSpace(
             (zkspaceTransaction.from.toLowerCase() ==
               userAddress.toLowerCase() ||
               zkspaceTransaction.to.toLowerCase() ==
-                userAddress.toLowerCase()) &&
+              userAddress.toLowerCase()) &&
             zkspaceTransaction.token.symbol == 'ETH'
+            && zkspaceTransaction.created_at > needTimeStamp
           ) {
             ZKSAllTxList.push(zkspaceTransaction)
+          } else {
+            isContiue = false
           }
         }
       } else {
@@ -1262,7 +1265,7 @@ export default {
         allPromises.push(async () => {
           let chainID = supportChains.indexOf(12) > -1 ? 12 : 512
           const { zkSpaceFromTxList, zkSpaceToTxList } =
-            await getTransactionListZkSpace(req.address, chainID, 0, makerList)
+            await getTransactionListZkSpace(req.address, chainID, 0, needTimeStamp, makerList)
 
           originTxList[chainID] = {
             fromList: zkSpaceFromTxList,
@@ -1285,7 +1288,6 @@ export default {
           }
         }
       }
-
       //=============================================================================
     }
 
@@ -1369,15 +1371,10 @@ function judgeArrayEqualFun(arr1, arr2) {
 function getTrasactionListFromTxList(origin, state, makerList) {
   let transactionList = []
   if (state) {
-    for (let i = 0; i < Object.keys(origin).length; i++) {
-      let fromChainID = Object.keys(origin)[i]
-      let fromList = origin[fromChainID].fromList
-      if (fromList.length === 0) {
-        continue
-      }
-      for (let j = 0; j < fromList.length; j++) {
-        let transaction
-        let fromTxInfo = fromList[j]
+    for (let key in origin) {
+      let fromChainID = key
+      for (let fromTxInfo of origin[key].fromList) {
+        let transaction;
         let now = parseInt(new Date().getTime() / 1000)
         let state = now - fromTxInfo.timeStamp > 86400 ? 2 : 1
         let toChainID =

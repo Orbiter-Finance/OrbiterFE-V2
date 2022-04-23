@@ -7,7 +7,10 @@
           :src="this.$store.state.transferData.selectTokenInfo.icon" alt="" />
         <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
         <div class="token_name">
-          {{ this.$store.state.transferData.selectTokenInfo.token }}
+          <loading v-if="getMakerLoading" style="top: 10px" width="1.2rem" height="1.2rem"></loading>
+          <span v-else>{{
+              this.$store.state.transferData.selectTokenInfo.token
+          }}</span>
         </div>
         <svg-icon v-if="tokenInfoArray.length > 1" class="arrow_icon" iconName="arrow_down"></svg-icon>
       </button>
@@ -25,7 +28,8 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeFromChain">
-            <span>
+            <loading v-if="getMakerLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem"></loading>
+            <span v-else>
               {{
                   showChainName(
                     this.$store.state.transferData.fromChainID,
@@ -41,6 +45,12 @@
                 width: 2rem;
                 height: 2rem;
               " iconName="arrow_down"></svg-icon>
+          </div>
+          <div style="display: flex; justify-content: center; align-items: center">
+            <loading v-if="getMakerLoading" width="1.2rem" height="1.2rem"></loading>
+            <input v-else type="text" v-model="transferValue" class="right" @input="checkTransferValue()"
+              :maxlength="18" :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`" />
+            <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
           </div>
           <input type="text" v-model="transferValue" class="right" @input="checkTransferValue()" :maxlength="18"
             :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`" />
@@ -58,14 +68,18 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            {{
-                showChainName(
-                  this.$store.state.transferData.toChainID,
-                  this.$env.localChainID_netChainID[
-                  this.$store.state.transferData.toChainID
-                  ]
-                )
-            }}
+            <loading v-if="getMakerLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem"></loading>
+            <span v-else>
+              {{
+                  showChainName(
+                    this.$store.state.transferData.toChainID,
+                    this.$env.localChainID_netChainID[
+                    this.$store.state.transferData.toChainID
+                    ]
+                  )
+              }}
+            </span>
+
             <svg-icon v-if="queryParams.dests.length > 1" style="
                 margin-left: 0.5rem;
                 margin-top: 0.5rem;
@@ -89,8 +103,14 @@
             <div>{{ toValue }}</div>
           </div>
         </div>
-        <div v-if="!queryParams.fixed" class="middleImge" @click="transfer_mid">
-          <img src="../../assets/middleIcon.png" style="width: 100%; height: 100%" alt="" />
+
+        <!-- When queryParams.fixed or toChain is dydx, hide it! -->
+        <div v-if="
+          !queryParams.fixed &&
+          $store.state.transferData.toChainID != 11 &&
+          $store.state.transferData.toChainID != 511
+        " class="middleImge" @click="transfer_mid">
+          <img src="../../assets/middleIcon.png" style="width: 100%; height: 100%" alt />
           <!-- <svg-icon style="width:100%;height:100%"
                     iconName="transfer_mid"></svg-icon> -->
         </div>
@@ -98,9 +118,9 @@
     </div>
     <o-button style="margin: 2.5rem auto 0" width="29.5rem" height="4rem"
       :isDisabled="sendBtnInfo ? sendBtnInfo.disabled : 'disabled'" @click="sendTransfer">
-      <span class="w700 s16" style="letter-spacing: 0.15rem">{{
-          sendBtnInfo && sendBtnInfo.text
-      }}</span>
+      <span class="w700 s16" style="letter-spacing: 0.15rem">
+        {{ sendBtnInfo && sendBtnInfo.text }}
+      </span>
     </o-button>
     <div class="notice">
       <div v-if="isShowMax" class="item" style="margin-top: 1.5rem">
@@ -127,8 +147,7 @@
                 left: 1.5rem;
                 margin-right: 0.8rem;
                 margin-left: 0.3rem;
-              " iconName="gas_cost"></svg-icon>
-            Gas Fee Saved
+              " iconName="gas_cost"></svg-icon>Gas Fee Saved
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
@@ -154,13 +173,8 @@
       <div class="item" style="margin-top: 1rem">
         <div class="left">
           <div style="display: flex">
-            <svg-icon style="
-                width: 1.6rem;
-                height: 1.6rem;
-                margin-right: 0.8rem;
-                margin-left: 0.2rem;
-              " iconName="time_spent"></svg-icon>
-            Time Spend
+            <svg-icon style="width: 1.6rem;height: 1.6rem;margin-right: 0.8rem;margin-left: 0.2rem;"
+              iconName="time_spent"></svg-icon>Time Spend
           </div>
           <o-tooltip placement="bottom">
             <template v-slot:titleDesc>
@@ -182,9 +196,9 @@
             save
             <loading v-if="saveTimeLoading" style="margin: 0 1rem" width="1rem" loadingColor="#FFFFFF" height="1rem">
             </loading>
-            <span style="margin-left: 0.4rem" v-else>{{
-                transferSavingTime
-            }}</span>
+            <span style="margin-left: 0.4rem" v-else>
+              {{ transferSavingTime }}
+            </span>
           </div>
         </div>
       </div>
@@ -246,6 +260,10 @@ const queryParamsChainMap = {
   Loopring: 9,
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,
+  'Metis(R)': 510,
+  'dYdX(R)': 511,
+  zkspace: 12,
+  'zkspace(R)': 512
 }
 
 export default {
@@ -325,7 +343,7 @@ export default {
         userMax.comparedTo(new BigNumber(selectMakerInfo.maxPrice)) > 0
           ? new BigNumber(selectMakerInfo.maxPrice)
           : userMax
-                console.log(max, '------777-----')
+      console.log(max, '------777-----')
       if (
         (selectMakerInfo.c1ID == 9 ||
           selectMakerInfo.c1ID == 99 ||
@@ -569,8 +587,8 @@ export default {
     },
     timeSpenToolTip() {
       return `It will take about ${this.originTimeSpent
-        ? this.originTimeSpent.replace('~', '')
-        : this.originTimeSpent
+          ? this.originTimeSpent.replace('~', '')
+          : this.originTimeSpent
         } by traditional way, but only take about ${this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
         } with Orbiter.`
     },
@@ -582,11 +600,11 @@ export default {
         this.orbiterTradingFee * this.exchangeToUsdPrice
       ).toFixed(2)}`
       const withholdingGasFee = `<br />Withholding Fee: $${this.$store.getters.realSelectMakerInfo
-        ? (
-          this.$store.getters.realSelectMakerInfo.tradingFee *
-          this.exchangeToUsdPrice
-        ).toFixed(2)
-        : 0
+          ? (
+            this.$store.getters.realSelectMakerInfo.tradingFee *
+            this.exchangeToUsdPrice
+          ).toFixed(2)
+          : 0
         }`
       const total = `<br /><br /><b>Total: $${(
         this.gasTradingTotal * this.exchangeToUsdPrice
