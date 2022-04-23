@@ -310,7 +310,6 @@ export default {
       if (selectMakerInfo.precision === undefined) {
         return '0'
       }
-      console.log('------111-----')
       // check fromBalance
       if (!this.fromBalance) {
         return '0'
@@ -322,28 +321,22 @@ export default {
           selectMakerInfo.makerAddress,
           selectMakerInfo.t1Address
         )) || 0
-      console.log(transferGasFee, '------222-----')
       let avalibleDigit = orbiterCore.getDigitByPrecision(
         selectMakerInfo.precision
       )
-      console.log(avalibleDigit, '------333-----')
       let opBalance = 10 ** -avalibleDigit
-      console.log(opBalance, '------444-----')
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
         .minus(new BigNumber(opBalance))
         .minus(new BigNumber(transferGasFee))
-      console.log(useBalanle, '------555-----')
       let userMax =
         useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
           ? useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
           : new BigNumber(0)
-      console.log(userMax, '------666-----')
       let max =
         userMax.comparedTo(new BigNumber(selectMakerInfo.maxPrice)) > 0
           ? new BigNumber(selectMakerInfo.maxPrice)
           : userMax
-      console.log(max, '------777-----')
       if (
         (selectMakerInfo.c1ID == 9 ||
           selectMakerInfo.c1ID == 99 ||

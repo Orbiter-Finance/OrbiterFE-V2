@@ -158,69 +158,66 @@ async function getTransactionListArbitrum(
   }
   try {
     let res = await arbitrum.getTransationList(ArscanReq, chainID)
-    for (const i in res.result) {
-      if (Object.hasOwnProperty.call(res.result, i)) {
-        let arscanInfo = res.result[i]
-        let txinfo = TxInfo.getTxInfoWithEtherScan(arscanInfo)
-        let isMatch = false
+    for (const arscanInfo of res.result) {
+      let txinfo = TxInfo.getTxInfoWithEtherScan(arscanInfo)
+      let isMatch = false
 
-        for (let j = 0; j < makerList.length; j++) {
-          let makerInfo = makerList[j]
-          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+      for (let j = 0; j < makerList.length; j++) {
+        let makerInfo = makerList[j]
+        let _makerAddress = makerInfo.makerAddress.toLowerCase()
 
-          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
-            continue
+        if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+          continue
+        }
+
+        if (txinfo.tokenName !== makerInfo.tName) {
+          continue
+        }
+
+        let avalibleTimes =
+          chainID === makerInfo.c1ID
+            ? makerInfo.c1AvalibleTimes
+            : makerInfo.c2AvalibleTimes
+        for (let z = 0; z < avalibleTimes.length; z++) {
+          const avalibleTime = avalibleTimes[z]
+
+          if (
+            avalibleTime.startTime <= txinfo.timeStamp &&
+            avalibleTime.endTime >= txinfo.timeStamp
+          ) {
+            isMatch = true
+            break
           }
+        }
 
-          if (txinfo.tokenName !== makerInfo.tName) {
-            continue
+        if (!isMatch) {
+          continue
+        }
+
+        if (txinfo.from === _makerAddress) {
+          let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+          let nonce = 0
+          if (pText.state) {
+            nonce = pText.pText
           }
-
-          let avalibleTimes =
-            chainID === makerInfo.c1ID
-              ? makerInfo.c1AvalibleTimes
-              : makerInfo.c2AvalibleTimes
-          for (let z = 0; z < avalibleTimes.length; z++) {
-            const avalibleTime = avalibleTimes[z]
-
-            if (
-              avalibleTime.startTime <= txinfo.timeStamp &&
-              avalibleTime.endTime >= txinfo.timeStamp
-            ) {
-              isMatch = true
+          if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+            ARToTxList.push(txinfo)
+            break
+          }
+        } else if (txinfo.to === _makerAddress) {
+          if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+            let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+            let arr2 = [
+              chainID,
+              orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+            ]
+            if (judgeArrayEqualFun(arr1, arr2)) {
+              ARFromTxList.push(txinfo)
               break
             }
           }
-
-          if (!isMatch) {
-            continue
-          }
-
-          if (txinfo.from === _makerAddress) {
-            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
-            let nonce = 0
-            if (pText.state) {
-              nonce = pText.pText
-            }
-            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
-              ARToTxList.push(txinfo)
-              break
-            }
-          } else if (txinfo.to === _makerAddress) {
-            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
-              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
-              let arr2 = [
-                chainID,
-                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
-              ]
-              if (judgeArrayEqualFun(arr1, arr2)) {
-                ARFromTxList.push(txinfo)
-                break
-              }
-            }
-          } else {
-            // doNothiing
-          }
+        } else {
+          // doNothiing
         }
       }
     }
@@ -228,7 +225,6 @@ async function getTransactionListArbitrum(
     console.warn('arbitrumError =', error)
     throw error.message
   }
-
   return { ARFromTxList, ARToTxList }
 }
 
@@ -879,7 +875,7 @@ async function getTransactionListLoopring(
             (lpTransaction.senderAddress.toLowerCase() ==
               userAddress.toLowerCase() ||
               lpTransaction.receiverAddress.toLowerCase() ==
-                userAddress.toLowerCase()) &&
+              userAddress.toLowerCase()) &&
             lpTransaction.symbol == 'ETH'
           ) {
             LPAllTxList.push(lpTransaction)
@@ -1050,9 +1046,8 @@ async function getTransactionListZkSpace(
       if (!isMatch) {
         continue
       }
-
       if (txinfo.from === _makerAddress) {
-        let nonce = txinfo.memo
+        let nonce = txinfo.nonce
         if (Number(nonce) < 9000 && Number(nonce) >= 0) {
           zkSpaceToTxList.push(txinfo)
           break
@@ -1144,7 +1139,6 @@ export default {
             needTimeStamp,
             makerList
           )
-
           originTxList[chainID] = {
             fromList: ARFromTxList,
             toList: ARToTxList,
@@ -1381,9 +1375,9 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
             ? fromTxInfo.memo % 9000
             : orbiterCore.getToChainIDFromAmount(
-                Number(fromChainID),
-                fromTxInfo.value
-              )
+              Number(fromChainID),
+              fromTxInfo.value
+            )
         let realFromAmount = orbiterCore.getRAmountFromTAmount(
           Number(fromChainID),
           fromTxInfo.value
@@ -1518,15 +1512,15 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           let toAmount =
             toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
               ? orbiterCore.getTAmountFromRAmount(
-                  Number(toChainID),
-                  realToAmount,
-                  '0'
-                ).tAmount
+                Number(toChainID),
+                realToAmount,
+                '0'
+              ).tAmount
               : orbiterCore.getTAmountFromRAmount(
-                  Number(toChainID),
-                  realToAmount,
-                  fromTxInfo.nonce.toString()
-                ).tAmount
+                Number(toChainID),
+                realToAmount,
+                fromTxInfo.nonce.toString()
+              ).tAmount
 
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce
