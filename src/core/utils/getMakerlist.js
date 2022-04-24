@@ -5,9 +5,7 @@ async function getNewMakerList(count = 0) {
   try {
     return await getNewMakerListOnce()
   } catch (error) {
-    errorLogger.error(
-      `getNewMakerList error=${error.message},try again ${count}`
-    )
+    console.warn(`getNewMakerList error=${error.message},try again ${count}`)
     count++
     if (count < 5) {
       return await getNewMakerList(count)
@@ -17,7 +15,7 @@ async function getNewMakerList(count = 0) {
 
 async function getNewMakerListOnce() {
   const res = await axios({
-    url: `${apiUrl}/rinkeby/makerList.json`,
+    url: `${apiUrl}/rinkeby/makerList.json?t=${new Date().getTime()}`,
     method: 'get',
   })
   if (res.status == 200) {
