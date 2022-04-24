@@ -875,7 +875,7 @@ async function getTransactionListLoopring(
             (lpTransaction.senderAddress.toLowerCase() ==
               userAddress.toLowerCase() ||
               lpTransaction.receiverAddress.toLowerCase() ==
-              userAddress.toLowerCase()) &&
+                userAddress.toLowerCase()) &&
             lpTransaction.symbol == 'ETH'
           ) {
             LPAllTxList.push(lpTransaction)
@@ -988,19 +988,21 @@ async function getTransactionListZkSpace(
         let transacionts = ZKSTransferResult.data.data
         for (let index = 0; index < transacionts.length; index++) {
           const zkspaceTransaction = transacionts[index]
+          if (zkspaceTransaction.created_at <= needTimeStamp) {
+            isContiue = false
+            break
+          }
           if (
             zkspaceTransaction.tx_type == 'Transfer' &&
             zkspaceTransaction.fail_reason == '' &&
             (zkspaceTransaction.from.toLowerCase() ==
               userAddress.toLowerCase() ||
               zkspaceTransaction.to.toLowerCase() ==
-              userAddress.toLowerCase()) &&
-            zkspaceTransaction.token.symbol == 'ETH'
-            && zkspaceTransaction.created_at > needTimeStamp
+                userAddress.toLowerCase()) &&
+            zkspaceTransaction.token.symbol == 'ETH' &&
+            zkspaceTransaction.created_at > needTimeStamp
           ) {
             ZKSAllTxList.push(zkspaceTransaction)
-          } else {
-            isContiue = false
           }
         }
       } else {
@@ -1259,7 +1261,13 @@ export default {
         allPromises.push(async () => {
           let chainID = supportChains.indexOf(12) > -1 ? 12 : 512
           const { zkSpaceFromTxList, zkSpaceToTxList } =
-            await getTransactionListZkSpace(req.address, chainID, 0, needTimeStamp, makerList)
+            await getTransactionListZkSpace(
+              req.address,
+              chainID,
+              0,
+              needTimeStamp,
+              makerList
+            )
 
           originTxList[chainID] = {
             fromList: zkSpaceFromTxList,
@@ -1368,16 +1376,16 @@ function getTrasactionListFromTxList(origin, state, makerList) {
     for (let key in origin) {
       let fromChainID = key
       for (let fromTxInfo of origin[key].fromList) {
-        let transaction;
+        let transaction
         let now = parseInt(new Date().getTime() / 1000)
         let state = now - fromTxInfo.timeStamp > 86400 ? 2 : 1
         let toChainID =
           fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
             ? fromTxInfo.memo % 9000
             : orbiterCore.getToChainIDFromAmount(
-              Number(fromChainID),
-              fromTxInfo.value
-            )
+                Number(fromChainID),
+                fromTxInfo.value
+              )
         let realFromAmount = orbiterCore.getRAmountFromTAmount(
           Number(fromChainID),
           fromTxInfo.value
@@ -1512,15 +1520,15 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           let toAmount =
             toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
               ? orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                '0'
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  '0'
+                ).tAmount
               : orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                fromTxInfo.nonce.toString()
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  fromTxInfo.nonce.toString()
+                ).tAmount
 
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce
