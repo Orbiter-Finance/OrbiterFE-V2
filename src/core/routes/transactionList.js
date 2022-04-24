@@ -159,69 +159,66 @@ async function getTransactionListArbitrum(
   }
   try {
     let res = await arbitrum.getTransationList(ArscanReq, chainID)
-    for (const i in res.result) {
-      if (Object.hasOwnProperty.call(res.result, i)) {
-        let arscanInfo = res.result[i]
-        let txinfo = TxInfo.getTxInfoWithEtherScan(arscanInfo)
-        let isMatch = false
+    for (const arscanInfo of res.result) {
+      let txinfo = TxInfo.getTxInfoWithEtherScan(arscanInfo)
+      let isMatch = false
 
-        for (let j = 0; j < makerList.length; j++) {
-          let makerInfo = makerList[j]
-          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+      for (let j = 0; j < makerList.length; j++) {
+        let makerInfo = makerList[j]
+        let _makerAddress = makerInfo.makerAddress.toLowerCase()
 
-          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
-            continue
+        if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+          continue
+        }
+
+        if (txinfo.tokenName !== makerInfo.tName) {
+          continue
+        }
+
+        let avalibleTimes =
+          chainID === makerInfo.c1ID
+            ? makerInfo.c1AvalibleTimes
+            : makerInfo.c2AvalibleTimes
+        for (let z = 0; z < avalibleTimes.length; z++) {
+          const avalibleTime = avalibleTimes[z]
+
+          if (
+            avalibleTime.startTime <= txinfo.timeStamp &&
+            avalibleTime.endTime >= txinfo.timeStamp
+          ) {
+            isMatch = true
+            break
           }
+        }
 
-          if (txinfo.tokenName !== makerInfo.tName) {
-            continue
+        if (!isMatch) {
+          continue
+        }
+
+        if (txinfo.from === _makerAddress) {
+          let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+          let nonce = 0
+          if (pText.state) {
+            nonce = pText.pText
           }
-
-          let avalibleTimes =
-            chainID === makerInfo.c1ID
-              ? makerInfo.c1AvalibleTimes
-              : makerInfo.c2AvalibleTimes
-          for (let z = 0; z < avalibleTimes.length; z++) {
-            const avalibleTime = avalibleTimes[z]
-
-            if (
-              avalibleTime.startTime <= txinfo.timeStamp &&
-              avalibleTime.endTime >= txinfo.timeStamp
-            ) {
-              isMatch = true
+          if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+            ARToTxList.push(txinfo)
+            break
+          }
+        } else if (txinfo.to === _makerAddress) {
+          if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+            let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+            let arr2 = [
+              chainID,
+              orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+            ]
+            if (judgeArrayEqualFun(arr1, arr2)) {
+              ARFromTxList.push(txinfo)
               break
             }
           }
-
-          if (!isMatch) {
-            continue
-          }
-
-          if (txinfo.from === _makerAddress) {
-            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
-            let nonce = 0
-            if (pText.state) {
-              nonce = pText.pText
-            }
-            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
-              ARToTxList.push(txinfo)
-              break
-            }
-          } else if (txinfo.to === _makerAddress) {
-            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
-              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
-              let arr2 = [
-                chainID,
-                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
-              ]
-              if (judgeArrayEqualFun(arr1, arr2)) {
-                ARFromTxList.push(txinfo)
-                break
-              }
-            }
-          } else {
-            // doNothiing
-          }
+        } else {
+          // doNothiing
         }
       }
     }
@@ -229,11 +226,8 @@ async function getTransactionListArbitrum(
     console.warn('arbitrumError =', error)
     throw error.message
   }
-
   return { ARFromTxList, ARToTxList }
 }
-
-
 
 async function getTransactionListMetis(
   userAddress,
@@ -335,7 +329,6 @@ async function getTransactionListMetis(
 
   return { MTFromTxList, MTToTxList }
 }
-
 
 async function getTransactionListOptimitic(
   userAddress,
@@ -983,7 +976,7 @@ async function getTransactionListLoopring(
             (lpTransaction.senderAddress.toLowerCase() ==
               userAddress.toLowerCase() ||
               lpTransaction.receiverAddress.toLowerCase() ==
-              userAddress.toLowerCase()) &&
+                userAddress.toLowerCase()) &&
             lpTransaction.symbol == 'ETH'
           ) {
             LPAllTxList.push(lpTransaction)
@@ -1062,11 +1055,11 @@ async function getTransactionListZkSpace(
   userAddress,
   chainID,
   tokenID,
+  needTimeStamp,
   makerList
 ) {
   const zkSpaceFromTxList = []
   const zkSpaceToTxList = []
-
   let isContiue = true
   let limit = 50
   let startIndex = 0
@@ -1094,8 +1087,12 @@ async function getTransactionListZkSpace(
           startIndex += limit
         }
         let transacionts = ZKSTransferResult.data.data
-        for (let index = 0; index < transacionts?.length; index++) {
+        for (let index = 0; index < transacionts.length; index++) {
           const zkspaceTransaction = transacionts[index]
+          if (zkspaceTransaction.created_at <= needTimeStamp) {
+            isContiue = false
+            break
+          }
           if (
             zkspaceTransaction.tx_type == 'Transfer' &&
             zkspaceTransaction.fail_reason == '' &&
@@ -1103,7 +1100,8 @@ async function getTransactionListZkSpace(
               userAddress.toLowerCase() ||
               zkspaceTransaction.to.toLowerCase() ==
                 userAddress.toLowerCase()) &&
-            zkspaceTransaction.token.symbol == 'ETH'
+            zkspaceTransaction.token.symbol == 'ETH' &&
+            zkspaceTransaction.created_at > needTimeStamp
           ) {
             ZKSAllTxList.push(zkspaceTransaction)
           }
@@ -1151,9 +1149,8 @@ async function getTransactionListZkSpace(
       if (!isMatch) {
         continue
       }
-
       if (txinfo.from === _makerAddress) {
-        let nonce = txinfo.memo
+        let nonce = txinfo.nonce
         if (Number(nonce) < 9000 && Number(nonce) >= 0) {
           zkSpaceToTxList.push(txinfo)
           break
@@ -1244,7 +1241,6 @@ export default {
             needTimeStamp,
             makerList
           )
-
           originTxList[chainID] = {
             fromList: ARFromTxList,
             toList: ARToTxList,
@@ -1382,7 +1378,13 @@ export default {
         allPromises.push(async () => {
           let chainID = supportChains.indexOf(12) > -1 ? 12 : 512
           const { zkSpaceFromTxList, zkSpaceToTxList } =
-            await getTransactionListZkSpace(req.address, chainID, 0, makerList)
+            await getTransactionListZkSpace(
+              req.address,
+              chainID,
+              0,
+              needTimeStamp,
+              makerList
+            )
 
           originTxList[chainID] = {
             fromList: zkSpaceFromTxList,
@@ -1405,7 +1407,6 @@ export default {
           }
         }
       }
-
       //=============================================================================
     }
 
@@ -1489,24 +1490,19 @@ function judgeArrayEqualFun(arr1, arr2) {
 function getTrasactionListFromTxList(origin, state, makerList) {
   let transactionList = []
   if (state) {
-    for (let i = 0; i < Object.keys(origin).length; i++) {
-      let fromChainID = Object.keys(origin)[i]
-      let fromList = origin[fromChainID].fromList
-      if (fromList.length === 0) {
-        continue
-      }
-      for (let j = 0; j < fromList.length; j++) {
+    for (let key in origin) {
+      let fromChainID = key
+      for (let fromTxInfo of origin[key].fromList) {
         let transaction
-        let fromTxInfo = fromList[j]
         let now = parseInt(new Date().getTime() / 1000)
         let state = now - fromTxInfo.timeStamp > 86400 ? 2 : 1
         let toChainID =
           fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
             ? fromTxInfo.memo % 9000
             : orbiterCore.getToChainIDFromAmount(
-              Number(fromChainID),
-              fromTxInfo.value
-            )
+                Number(fromChainID),
+                fromTxInfo.value
+              )
         let realFromAmount = orbiterCore.getRAmountFromTAmount(
           Number(fromChainID),
           fromTxInfo.value
@@ -1641,15 +1637,15 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           let toAmount =
             toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
               ? orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                '0'
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  '0'
+                ).tAmount
               : orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                fromTxInfo.nonce.toString()
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  fromTxInfo.nonce.toString()
+                ).tAmount
 
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce

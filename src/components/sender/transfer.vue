@@ -382,6 +382,8 @@ const queryParamsChainMap = {
   'ImmutableX(R)': 88,
   'Metis(R)': 510,
   'dYdX(R)': 511,
+  zkspace: 12,
+  'zkspace(R)': 512,
 }
 
 export default {

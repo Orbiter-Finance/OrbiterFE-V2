@@ -224,6 +224,7 @@ export default {
     },
   },
   watch: {},
+  mounted() {},
   methods: {
     async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
       let provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -1217,9 +1218,11 @@ export default {
       var(--bottom-nav-height)
   );
   overflow-y: scroll;
+
   .confirmContent {
     margin: 0.5rem 1rem 2rem;
     position: relative;
+
     .topItem {
       width: 100%;
       height: 2rem;
@@ -1231,6 +1234,7 @@ export default {
       padding: 0 1rem;
       margin-bottom: 1rem;
     }
+
     .contentItem {
       width: 100%;
       font-size: 1.4rem;
@@ -1238,10 +1242,12 @@ export default {
       color: var(--default-black);
       margin: 2rem auto 0 auto;
       align-items: center;
+
       .up {
         padding: 0 0.5rem;
         align-items: center;
         display: flex;
+
         .right {
           color: rgba($color: #18191f, $alpha: 0.7);
           text-align: right;
@@ -1250,6 +1256,7 @@ export default {
           right: 0.5rem;
         }
       }
+
       .descBottom {
         max-height: 9.2rem;
         padding: 1rem 1.5rem 0 2.5rem;
@@ -1257,6 +1264,7 @@ export default {
         margin: 1rem 0.5rem 0;
         text-align: left;
       }
+
       .sep {
         box-sizing: border-box;
         background-color: #ffece6;
