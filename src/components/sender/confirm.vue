@@ -183,7 +183,7 @@ export default {
 
         const { transferValue, tValue } = await zkspace.getTransferValue(selectMakerInfo, fromChainID, toChainID)
 
-        const accountInfo = await zkspace.getAccountInfo(fromChainID, walletAccount)
+        const accountInfo = await zkspace.getAccountInfo(fromChainID, privateKey, signer, walletAccount)
 
         const tokenId = 0
         const feeTokenId = 0
@@ -223,17 +223,17 @@ export default {
             },
           }
         }
-
         const transferResult = await zkspace.sendTransfer(fromChainID, req)
         const txHash = transferResult.data.data.replace('sync-tx:', '0x')
 
         const firstResult = await this.getFristResult(fromChainID, txHash)
+
         this.onTransferSucceed(
           walletAccount,
           selectMakerInfo,
           tValue.tAmount.toString(),
           fromChainID,
-          firstResult.data.data
+          firstResult.data.tx_hash
         )
         this.transferLoading = false
 
@@ -252,6 +252,7 @@ export default {
         setTimeout(async () => {
           const firstResult = await zkspace.getZKSpaceTransactionData(fromChainID, txHash)
           if (firstResult.success && !firstResult.data.fail_reason && !firstResult.data.success && !firstResult.data.amount) {
+
             resolve(await this.getFristResult(fromChainID, txHash))
           } else if (firstResult.success && !firstResult.data.fail_reason && firstResult.data.success && firstResult.data.amount) {
             resolve(firstResult)

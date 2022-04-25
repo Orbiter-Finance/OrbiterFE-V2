@@ -55,7 +55,7 @@ export default {
   getZKTransferGasFee: function (localChainID, account) {
     let ethPrice = store.state.transferData.ethPrice
       ? store.state.transferData.ethPrice
-      : 1000
+      : 2000
     return new Promise((resolve, reject) => {
       if (localChainID !== 12 && localChainID !== 512) {
         reject({
@@ -326,12 +326,13 @@ export default {
     const l2SignatureOne = ethers.utils.hexlify(signaturePacked.slice(32)).substr(2)
     return { pubKey, l2SignatureOne }
   },
-  async getAccountInfo(fromChainID, walletAccount) {
+  async getAccountInfo(fromChainID, privateKey, signer, walletAccount) {
     try {
       const accountInfo = await this.getZKAccountInfo(fromChainID, walletAccount)
       if (accountInfo.pub_key_hash == 'sync:0000000000000000000000000000000000000000') {
         const new_pub_key_hash = await this.registerAccount(accountInfo, privateKey, fromChainID, signer, walletAccount)
         accountInfo.pub_key_hash = new_pub_key_hash
+        accountInfo.nonce = accountInfo.nonce + 1
       }
       return accountInfo
     } catch (error) {
@@ -396,7 +397,6 @@ account id: ${hexlifiedAccountId}
 Only sign this message for a trusted client!`
 
       const registerSignature = await signer.signMessage(resgiterMsg)
-
       const url = `${fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet}/tx`
       let transferResult = await axios.post(url,
         {
@@ -418,7 +418,7 @@ Only sign this message for a trusted client!`
           },
         }
       )
-      if (transferResult.success) {
+      if (transferResult.status == 200 && transferResult.data.success) {
         return transferResult.data
       } else {
         throw new Error("registerAccount fail")
