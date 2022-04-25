@@ -3,7 +3,6 @@ import Axios from '../utils/Axios'
 Axios.axios()
 
 const nowMakerList = [
-  // ETH
   {
     makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
     c1ID: 33,
@@ -1133,6 +1132,39 @@ const nowMakerList = [
   //     },
   //   ],
   // },
+  {
+    makerAddress: '0x8A3214F28946A797088944396c476f014F88Dd37',
+    c1ID: 28,
+    c2ID: 5,
+    c1Name: 'boba_rinkeby',
+    c2Name: 'rinkeby',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0001,
+    c1MaxPrice: 10,
+    c2MinPrice: 0.0001,
+    c2MaxPrice: 10,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.001,
+    c2TradingFee: 0.001,
+    c1GasFee: 1.5,
+    c2GasFee: 1.5,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+  },
 ]
 
 export default {

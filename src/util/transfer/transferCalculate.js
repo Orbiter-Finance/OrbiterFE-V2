@@ -73,6 +73,11 @@ const IMX_ETH_WITHDRAW_ONL1 = 510000
 // Mainnet deposit contract: 0x8e8bd01b5A9eb272CC3892a2E40E64A716aa2A40
 const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
 
+// boba
+const BOBA_TRANSFER_OUT_LIMIT= 10123935
+const BOBA_TRANSFER_IN_LIMIT= 1787707
+
+
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   // min ~ max
@@ -172,6 +177,8 @@ export default {
       99: 1,
       510: 1,
       511: 1,
+      28:1,
+      288: 1
     }
     const GasLimitMap = {
       1: 35000,
@@ -214,6 +221,8 @@ export default {
       99: 'ETH',
       510: 'METIS',
       511: 'ETH',
+      28:'ETH',
+      288: 'ETH'
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -307,6 +316,9 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       timeSpent = 15
     }
+    if (fromChainID === 28 || fromChainID  === 288) {
+      timeSpent = 15
+    }
     if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
       timeSpent += 30
     }
@@ -333,6 +345,10 @@ export default {
     }
     if (toChainID === 11 || toChainID === 511) {
       timeSpent += 5
+    }
+ 
+    if (toChainID === 28 || toChainID === 288) {
+      timeSpent+=5;
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -361,6 +377,7 @@ export default {
     if (fromChainID === 10 || fromChainID === 510) {
       return '~7 days'
     }
+    
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
@@ -392,6 +409,12 @@ export default {
       if (toChainID === 11 || toChainID === 511) {
         return '~20min'
       }
+    }
+    if (fromChainID === 28 || fromChainID === 288) {
+      return '~7 days'
+    }
+    if (toChainID === 28 || toChainID === 288) {
+      return '~10min'
     }
   },
 
@@ -451,6 +474,9 @@ export default {
         return ' 19.95min'
       }
     }
+    if (fromChainID === 28 || fromChainID === 288) {
+      return ' 7 days'
+    }
   },
   /**
    * @deprecated Move to transferOrginGasUsd
@@ -509,7 +535,7 @@ export default {
     return resultGas / 10 ** 18
   },
 
-  async transferOrginGasUsd(fromChainID, toChainID, isErc20 = true) {
+  async   transferOrginGasUsd(fromChainID, toChainID, isErc20 = true) {
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0
@@ -610,7 +636,12 @@ export default {
       const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
       ethGas += MTWithDrawL1Gas
     }
-    // deposit
+    if (fromChainID === 28 || fromChainID === 288) {
+      // BOBA get
+      const fromGasPrice = await this.getGasPrice(fromChainID)
+      ethGas = fromGasPrice * BOBA_TRANSFER_OUT_LIMIT
+    }
+     // deposit
     if (toChainID === 2 || toChainID === 22) {
       // Ar deposit
       const toGasPrice = await this.getGasPrice(toChainID === 2 ? 1 : 5)
@@ -665,6 +696,14 @@ export default {
       const toGasPrice = await this.getGasPrice(toChainID === 11 ? 1 : 5)
       const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += dydxDepositGas
+    }
+
+
+    if (toChainID === 28 || toChainID === 288) {
+      // BOBA deposit
+      let toGasPrice = await this.getGasPrice(toChainID)
+      const depositGas = toGasPrice * BOBA_TRANSFER_IN_LIMIT
+      ethGas += depositGas
     }
 
     let usd = new BigNumber(0)

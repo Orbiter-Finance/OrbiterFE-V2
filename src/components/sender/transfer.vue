@@ -349,6 +349,8 @@ const queryParamsChainMap = {
   'ImmutableX(R)': 88,
   'Metis(R)': 510,
   'dYdX(R)': 511,
+  'Boba(R)': 28,
+  'Boba(M)': 288
 }
 
 export default {
@@ -1484,9 +1486,8 @@ export default {
           })
           return
         }
-        if (
-          !(await netStateBlock(this.$store.state.transferData.fromChainID))
-        ) {
+
+        if (!netStateBlock(this.$store.state.transferData.fromChainID)) {
           this.$notify.error({
             title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
             duration: 3000,

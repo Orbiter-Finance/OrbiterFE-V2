@@ -47,6 +47,10 @@ export default {
         return 'dYdX'
       case 511:
         return 'dYdX(R)'
+      case 28:
+        return 'Boba(R)'
+      case 288:
+        return 'Boba(M)'
     }
 
     const chain = chainList.chainList.filter(

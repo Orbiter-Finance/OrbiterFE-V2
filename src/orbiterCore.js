@@ -11,6 +11,7 @@ const MAX_BITS = {
   loopring: 256,
   metis: 256,
   dydx: 28,
+  boba: 256
 }
 
 const CHAIN_INDEX = {
@@ -34,6 +35,8 @@ const CHAIN_INDEX = {
   510: 'metis',
   11: 'dydx',
   511: 'dydx',
+  28: 'boba',
+  288: 'boba',
 }
 
 const SIZE_OP = {

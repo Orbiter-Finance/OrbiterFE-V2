@@ -61,6 +61,12 @@ export default {
     chainID: '11',
     rinkeyChainID: '511',
   },
+  boba: {
+    Mainnet: 'https://blockexplorer.boba.network/api',
+    Rinkeby: 'https://api-rinkeby.etherscan.io/api',
+    chainID: '288',
+    rinkeyChainID: '28',
+  },
   L1: {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',
