@@ -1488,8 +1488,9 @@ export default {
           })
           return
         }
-
-        if (!netStateBlock(this.$store.state.transferData.fromChainID)) {
+        if (
+          !(await netStateBlock(this.$store.state.transferData.fromChainID))
+        ) {
           this.$notify.error({
             title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
             duration: 3000,
