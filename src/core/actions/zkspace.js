@@ -451,7 +451,7 @@ Only sign this message for a trusted client!`
         strArr[i--] = num.toString();
       }
     }
-    strArr.unshift(['0', 'x'])
+    strArr.unshift('0x')
     var hex = strArr.join('');
     return hex;
   }
