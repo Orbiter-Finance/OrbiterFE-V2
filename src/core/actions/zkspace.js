@@ -203,7 +203,7 @@ export default {
     }
     let response = await axios.post(
       (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
-        '/tx',
+      '/tx',
       {
         signature: req.signature,
         fastProcessing: req.fastProcessing,
@@ -213,43 +213,25 @@ export default {
     return response
   },
   getZKSpaceTransactionData: async function (localChainID, txHash) {
-    return new Promise((resolve, reject) => {
-      if (localChainID !== 12 && localChainID !== 512) {
-        reject({
-          errorCode: 1,
-          errMsg: 'getZKTransactionDataError_wrongChainID',
-        })
+    if (localChainID !== 12 && localChainID !== 512) {
+      reject({
+        errorCode: 1,
+        errMsg: 'getZKTransactionDataError_wrongChainID',
+      })
+    }
+    const url = (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) + '/tx/' + txHash
+    const response = await axios.get(url)
+
+    if (response.status === 200 && response.statusText === 'OK') {
+      var respData = response.data
+      if (respData.success === true) {
+        return respData
+      } else {
+        throw new Error(respData)
       }
-      const url =
-        (localChainID === 512
-          ? config.ZKSpace.Rinkeby
-          : config.ZKSpace.Mainnet) +
-        '/tx/' +
-        txHash
-      axios
-        .get(url)
-        .then(function (response) {
-          if (response.status === 200 && response.statusText === 'OK') {
-            var respData = response.data
-            if (respData.success === true) {
-              resolve(respData)
-            } else {
-              reject(respData)
-            }
-          } else {
-            reject({
-              errorCode: 1,
-              errMsg: 'getZKSpaceTransactionData NetWorkError',
-            })
-          }
-        })
-        .catch(function (error) {
-          reject({
-            errorCode: 2,
-            errMsg: error,
-          })
-        })
-    })
+    } else {
+      throw new Error("getZKSpaceTransactionData NetWorkError")
+    }
   },
 
   getZKSapceTxList: async (
@@ -444,9 +426,8 @@ account id: ${hexlifiedAccountId}
 Only sign this message for a trusted client!`
 
       const registerSignature = await signer.signMessage(resgiterMsg)
-      const url = `${
-        fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
-      }/tx`
+      const url = `${fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+        }/tx`
       let transferResult = await axios.post(
         url,
         {

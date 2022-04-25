@@ -3,28 +3,20 @@
     <div class="confirmContent">
       <div class="topItem">
         <div @click="closerButton">
-          <svg-icon
-            style="
+          <svg-icon style="
               width: 1.5rem;
               height: 1.5rem;
               margin-bottom: 0.2rem;
               position: absolute;
               left: 1rem;
-            "
-            iconName="back"
-          ></svg-icon>
+            " iconName="back"></svg-icon>
         </div>
         Confirm
       </div>
-      <div
-        style="width: 100%; height: 0.2rem; background: var(--default-black)"
-      ></div>
+      <div style="width: 100%; height: 0.2rem; background: var(--default-black)"></div>
       <div v-for="item in confirmData" :key="item.title" class="contentItem">
         <div class="up">
-          <svg-icon
-            style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem"
-            :iconName="item.icon"
-          ></svg-icon>
+          <svg-icon style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem" :iconName="item.icon"></svg-icon>
           <span style="margin-right: 1rem; font-weight: 600">
             {{ item.title }}
           </span>
@@ -32,64 +24,29 @@
             <template v-slot:titleDesc>
               <span>{{ item.notice }}</span>
             </template>
-            <svg-icon
-              v-if="item.notice"
-              style="width: 1.5rem; height: 1.5rem"
-              iconName="help"
-            ></svg-icon>
+            <svg-icon v-if="item.notice" style="width: 1.5rem; height: 1.5rem" iconName="help"></svg-icon>
           </o-tooltip>
           <span v-if="!item.textBold && item.desc" class="right">
             {{ item.desc }}
           </span>
-          <span
-            v-else-if="item.textBold && item.desc"
-            class="right"
-            style="font-weight: 600"
-            >{{ item.desc }}</span
-          >
+          <span v-else-if="item.textBold && item.desc" class="right" style="font-weight: 600">{{ item.desc }}</span>
         </div>
-        <div
-          v-if="item.descInfo && item.descInfo.length > 0"
-          class="descBottom"
-        >
-          <div
-            v-for="desc in item.descInfo"
-            :key="desc.no"
-            style="margin-bottom: 1rem"
-          >
+        <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
+          <div v-for="desc in item.descInfo" :key="desc.no" style="margin-bottom: 1rem">
             Send
-            <span
-              class="dColor"
-              style="margin-left: 0.7rem; margin-right: 1.1rem"
-              >{{ desc.amount }}{{ desc.coin }}</span
-            >
+            <span class="dColor" style="margin-left: 0.7rem; margin-right: 1.1rem">{{ desc.amount }}{{ desc.coin
+            }}</span>
             To
             <span class="dColor" style="margin-left: 0.7rem">{{
-              desc.toAddress
+                desc.toAddress
             }}</span>
           </div>
         </div>
         <div v-if="item.haveSep" class="sep"></div>
       </div>
-      <o-button
-        style="margin-top: 2.5rem"
-        width="29.5rem"
-        height="4rem"
-        @click="RealTransfer"
-      >
-        <span
-          v-if="!transferLoading"
-          class="wbold s16"
-          style="letter-spacing: 0.1rem"
-          >CONFIRM AND SEND</span
-        >
-        <loading
-          v-else
-          style="margin: auto"
-          loadingColor="white"
-          width="2rem"
-          height="2rem"
-        ></loading>
+      <o-button style="margin-top: 2.5rem" width="29.5rem" height="4rem" @click="RealTransfer">
+        <span v-if="!transferLoading" class="wbold s16" style="letter-spacing: 0.1rem">CONFIRM AND SEND</span>
+        <loading v-else style="margin: auto" loadingColor="white" width="2rem" height="2rem"></loading>
       </o-button>
     </div>
   </o-box-content>
@@ -221,7 +178,7 @@ export default {
     },
   },
   watch: {},
-  mounted() {},
+  mounted() { },
   methods: {
     async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
@@ -278,6 +235,7 @@ export default {
           fee,
           zksChainID
         )
+        console.log(11111111111111111)
         const req = {
           signature: {
             type: 'EthereumSignature',
@@ -301,8 +259,9 @@ export default {
             },
           },
         }
+
         const transferResult = await zkspace.sendTransfer(fromChainID, req)
-        const txHash = transferResult.data.data.replace('sync-tx:', '0x')
+        const txHash = transferResult.data?.data.replace('sync-tx:', '0x')
 
         const firstResult = await this.getFristResult(fromChainID, txHash)
 
@@ -324,32 +283,30 @@ export default {
         return
       }
     },
-    getFristResult(fromChainID, txHash) {
-      return new Promise((resolve, reject) => {
-        setTimeout(async () => {
-          const firstResult = await zkspace.getZKSpaceTransactionData(
-            fromChainID,
-            txHash
-          )
-          if (
-            firstResult.success &&
-            !firstResult.data.fail_reason &&
-            !firstResult.data.success &&
-            !firstResult.data.amount
-          ) {
-            resolve(await this.getFristResult(fromChainID, txHash))
-          } else if (
-            firstResult.success &&
-            !firstResult.data.fail_reason &&
-            firstResult.data.success &&
-            firstResult.data.amount
-          ) {
-            resolve(firstResult)
-          } else {
-            reject(new Error('zks sendResult is error, do not care'))
-          }
-        }, 300)
-      })
+    async getFristResult(fromChainID, txHash) {
+
+      const firstResult = await zkspace.getZKSpaceTransactionData(
+        fromChainID,
+        txHash
+      )
+      if (
+        firstResult.success &&
+        !firstResult.data.fail_reason &&
+        !firstResult.data.success &&
+        !firstResult.data.amount
+      ) {
+        await util.sleep(300)
+        return await this.getFristResult(fromChainID, txHash)
+      } else if (
+        firstResult.success &&
+        !firstResult.data.fail_reason &&
+        firstResult.data.success &&
+        firstResult.data.amount
+      ) {
+        return firstResult
+      } else {
+        throw new Error('zks sendResult is error, do not care')
+      }
     },
 
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
@@ -619,7 +576,7 @@ export default {
       var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+        this.$store.state.transferData.fromChainID
         ]
       )
       const switchParams = {
@@ -665,8 +622,8 @@ export default {
               rpcUrls: chain.rpc,
               blockExplorerUrls: [
                 chain.explorers &&
-                chain.explorers.length > 0 &&
-                chain.explorers[0].url
+                  chain.explorers.length > 0 &&
+                  chain.explorers[0].url
                   ? chain.explorers[0].url
                   : chain.infoURL,
               ],
@@ -676,7 +633,7 @@ export default {
                 method: 'wallet_addEthereumChain',
                 params: [params, that.$store.state.web3.coinbase],
               })
-              .then(() => {})
+              .then(() => { })
               .catch((error) => {
                 console.log(error)
                 util.showMessage(error.message, 'error')
@@ -939,7 +896,7 @@ export default {
       if (
         this.$store.state.web3.networkId.toString() !==
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+        this.$store.state.transferData.fromChainID
         ]
       ) {
         this.addChainNetWork()
@@ -1165,13 +1122,8 @@ export default {
 <style lang="scss" scoped>
 .confirmbody {
   margin: 4.2rem auto;
-  max-height: calc(
-    100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
-  );
-  max-height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
-  );
+  max-height: calc(100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
+  max-height: calc(var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
   overflow-y: scroll;
 
   .confirmContent {
@@ -1228,6 +1180,7 @@ export default {
         margin-top: 1.6rem;
       }
     }
+
     .contentItem:nth-last-child(2) {
       width: 100%;
       font-size: 1.4rem;
@@ -1236,11 +1189,13 @@ export default {
       margin: 2rem auto 0 auto;
       align-items: center;
       color: red;
+
       .up {
         padding: 0 0.5rem 0 1rem;
         align-items: center;
         text-align: left;
         display: flow-root;
+
         .right {
           color: rgba($color: #18191f, $alpha: 0.7);
           text-align: right;
@@ -1248,10 +1203,12 @@ export default {
           position: absolute;
           right: 0.5rem;
         }
+
         .svg {
           width: 1.2rem !important;
           height: 1.2rem !important;
         }
+
         span {
           margin-right: 0 !important;
         }
