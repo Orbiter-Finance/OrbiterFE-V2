@@ -203,7 +203,7 @@ export default {
     }
     let response = await axios.post(
       (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
-      '/tx',
+        '/tx',
       {
         signature: req.signature,
         fastProcessing: req.fastProcessing,
@@ -214,12 +214,12 @@ export default {
   },
   getZKSpaceTransactionData: async function (localChainID, txHash) {
     if (localChainID !== 12 && localChainID !== 512) {
-      reject({
-        errorCode: 1,
-        errMsg: 'getZKTransactionDataError_wrongChainID',
-      })
+      throw new Error('getZKTransactionDataError_wrongChainID')
     }
-    const url = (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) + '/tx/' + txHash
+    const url =
+      (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
+      '/tx/' +
+      txHash
     const response = await axios.get(url)
 
     if (response.status === 200 && response.statusText === 'OK') {
@@ -230,7 +230,7 @@ export default {
         throw new Error(respData)
       }
     } else {
-      throw new Error("getZKSpaceTransactionData NetWorkError")
+      throw new Error('getZKSpaceTransactionData NetWorkError')
     }
   },
 
@@ -426,8 +426,9 @@ account id: ${hexlifiedAccountId}
 Only sign this message for a trusted client!`
 
       const registerSignature = await signer.signMessage(resgiterMsg)
-      const url = `${fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
-        }/tx`
+      const url = `${
+        fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+      }/tx`
       let transferResult = await axios.post(
         url,
         {
