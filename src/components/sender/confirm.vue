@@ -198,7 +198,6 @@ export default {
 
         const { pubKey, l2SignatureOne } = zkspace.getL2SigOneAndPK(privateKey, accountInfo, walletAccount, selectMakerInfo, tokenId, transferValue, feeTokenId, transferFee, zksChainID)
 
-
         const l2SignatureTwo = await zkspace.getL2SigTwoAndPK(signer, accountInfo, selectMakerInfo, transferValue, fee, zksChainID)
         const req = {
           signature: {
