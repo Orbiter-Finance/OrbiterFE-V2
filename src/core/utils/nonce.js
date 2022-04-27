@@ -1,5 +1,6 @@
 import thirdapi from '../actions/thirdapi'
 import loopring from '../actions/loopring'
+import zkspace from '../actions/zkspace'
 import { localWeb3 } from '../../util/constants/contract/localWeb3'
 
 export default {
@@ -42,6 +43,15 @@ export default {
       }
       return 0
     } else if (localChainID === 11 || localChainID === 511) {
+      return 0
+    } else if (localChainID === 12 || localChainID === 512) {
+      const accountInfo = await zkspace.getZKAccountInfo(
+        localChainID,
+        userAddress
+      )
+      if (accountInfo) {
+        return accountInfo.nonce
+      }
       return 0
     } else {
       let nonce = 0

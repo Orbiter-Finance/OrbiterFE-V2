@@ -20,6 +20,7 @@ import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
+import zkspace from '../../core/actions/zkspace'
 
 let startBlockNumber = ''
 
@@ -329,7 +330,70 @@ async function confirmUserTransaction(
       )
     }
 
+    if (localChainID === 12 || localChainID === 512) {
+      try {
+        let zkspaceTransactionData = await zkspace.getZKSpaceTransactionData(
+          localChainID,
+          txHash
+        )
+        if (
+          zkspaceTransactionData.success === true &&
+          zkspaceTransactionData.data.success === true &&
+          zkspaceTransactionData.data.tx_type === 'Transfer' &&
+          (zkspaceTransactionData.data.status === 'verified' ||
+            zkspaceTransactionData.data.status === 'pending')
+        ) {
+          let time = zkspaceTransactionData.data.created_at
+          let zkspac_amount = orbiterCore.getRAmountFromTAmount(
+            localChainID,
+            new Bignumber(zkspaceTransactionData.data.amount).multipliedBy(
+              new Bignumber(10 ** makerInfo.precision)
+            )
+          ).rAmount
+          let zkspace_nonce = zkspaceTransactionData.data.nonce.toString()
+          let zkspace_SendRAmount = orbiterCore.getToAmountFromUserAmount(
+            new Bignumber(zkspac_amount).dividedBy(
+              new Bignumber(10 ** makerInfo.precision)
+            ),
+            makerInfo,
+            true
+          )
+          let zkspace_makerTransferChainID =
+            localChainID === makerInfo.c1ID ? makerInfo.c2ID : makerInfo.c1ID
+          var zkspace_amountToSend = orbiterCore.getTAmountFromRAmount(
+            zkspace_makerTransferChainID,
+            zkspace_SendRAmount,
+            zkspace_nonce
+          ).tAmount
+          if (!isCurrentTransaction(txHash)) {
+            return
+          }
+          store.commit('updateProceedingUserTransferTimeStamp', time)
+          storeUpdateProceedState(3)
+          startScanMakerTransfer(
+            txHash,
+            zkspace_makerTransferChainID,
+            makerInfo,
+            zkspaceTransactionData.data.to,
+            zkspaceTransactionData.data.from,
+            zkspace_amountToSend,
+            zkspace_nonce
+          )
+          return
+        }
+      } catch (error) {
+        console.log('error =', error)
+        throw 'getZKTransactionDataError'
+      }
+      return confirmUserTransaction(
+        localChainID,
+        makerInfo,
+        txHash,
+        confirmations
+      )
+    }
     // EVM chains
+    // main & arbitrum
     const trxConfirmations = await getConfirmations(localChainID, txHash)
     if (!trxConfirmations) {
       return confirmUserTransaction(
@@ -527,6 +591,77 @@ function ScanZKMakerTransfer(
   }, 10 * 1000)
 }
 
+function ScanZKSpaceMakerTransfer(
+  transactionID,
+  localChainID,
+  makerInfo,
+  from,
+  to,
+  amount
+) {
+  let startPoint = 0
+  setTimeout(async () => {
+    if (!isCurrentTransaction(transactionID)) {
+      return
+    }
+    try {
+      let zksTransactions = await zkspace.getZKSapceTxList(
+        from,
+        localChainID,
+        startPoint,
+        0,
+        50
+      )
+      if (!zksTransactions || !zksTransactions.success) {
+        // dosome
+      }
+      if (zksTransactions.success && zksTransactions.data?.data?.length !== 0) {
+        let transacionts = zksTransactions.data.data
+        startPoint = transacionts.length == 50 ? startPoint + 50 : 0
+        for (let index = 0; index < transacionts.length; index++) {
+          const zkspaceTransaction = transacionts[index]
+          if (
+            zkspaceTransaction?.tx_type == 'Transfer' &&
+            zkspaceTransaction?.fail_reason == '' &&
+            (zkspaceTransaction?.from?.toLowerCase() == from.toLowerCase() ||
+              zkspaceTransaction?.to?.toLowerCase() == to.toLowerCase()) &&
+            zkspaceTransaction.token.symbol == 'ETH' &&
+            new Bignumber(zkspaceTransaction.amount)
+              .multipliedBy(10 ** makerInfo.precision)
+              .toString() == amount
+          ) {
+            if (!isCurrentTransaction(transactionID)) {
+              return
+            }
+            store.commit(
+              'updateProceedingMakerTransferTxid',
+              zkspaceTransaction.tx_hash
+            )
+            if (
+              zkspaceTransaction.status === 'pending' ||
+              zkspaceTransaction.status === 'verified'
+            ) {
+              storeUpdateProceedState(5)
+              return
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.log('error =', error)
+      throw 'getZKSTransactionListError'
+    }
+    return ScanZKSpaceMakerTransfer(
+      transactionID,
+      localChainID,
+      makerInfo,
+      from,
+      to,
+      amount
+    )
+  }, 10 * 1000)
+}
+
 function startScanMakerTransfer(
   transactionID,
   localChainID,
@@ -542,6 +677,16 @@ function startScanMakerTransfer(
   }
   if (localChainID === 3 || localChainID === 33) {
     return ScanZKMakerTransfer(
+      transactionID,
+      localChainID,
+      makerInfo,
+      from,
+      to,
+      amount
+    )
+  }
+  if (localChainID === 12 || localChainID === 512) {
+    return ScanZKSpaceMakerTransfer(
       transactionID,
       localChainID,
       makerInfo,
@@ -584,7 +729,6 @@ function ScanMakerTransfer(
     if (!isCurrentTransaction(transactionID)) {
       return
     }
-
     // checkData
     const checkData = (_from, _to, _amount, _address) => {
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
@@ -762,7 +906,12 @@ function ScanMakerTransfer(
     // dydx
     if (localChainID == 11 || localChainID == 511) {
       const dydxWeb3 = new Web3(window.ethereum)
-      const dydxListen = new DydxListen(localChainID, dydxWeb3, ownerAddress, false)
+      const dydxListen = new DydxListen(
+        localChainID,
+        dydxWeb3,
+        ownerAddress,
+        false
+      )
       dydxListen.transfer(
         { to: ownerAddress },
         {
@@ -1002,6 +1151,10 @@ function isCurrentTransaction(txid) {
 
 export default {
   UserTransferReady(user, maker, amount, localChainID, makerInfo, txHash) {
+    if (localChainID == 12 || localChainID == 512) {
+      txHash = txHash.replace('sync-tx:', '0x')
+      console.warn('txHash =', txHash)
+    }
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)
