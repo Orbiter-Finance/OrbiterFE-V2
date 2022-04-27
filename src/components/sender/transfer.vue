@@ -1510,6 +1510,17 @@ export default {
         }
 
         if (
+          this.$store.state.transferData.fromChainID == 10 ||
+          this.$store.state.transferData.fromChainID == 510
+        ) {
+          this.$notify.error({
+            title: `Affected by the metis interface issue, the transfer from metis is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
+
+        if (
           !this.transferValue ||
           new BigNumber(this.transferValue).comparedTo(
             new BigNumber(this.userMaxPrice)
