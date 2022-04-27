@@ -47,6 +47,10 @@ export default {
         return 'dYdX'
       case 511:
         return 'dYdX(R)'
+      case 12:
+        return 'ZKSpace'
+      case 512:
+        return 'ZKSpace(R)'
     }
 
     const chain = chainList.chainList.filter(

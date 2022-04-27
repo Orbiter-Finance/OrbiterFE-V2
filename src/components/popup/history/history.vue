@@ -150,6 +150,8 @@ export default {
         return 'metislogo'
       } else if (chainID == '11' || chainID == '511') {
         return 'dydxlogo'
+      } else if (chainID == '12' || chainID == '512') {
+        return 'zkspacelogo'
       } else {
         return 'ethlogo'
       }

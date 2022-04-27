@@ -121,9 +121,10 @@ import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
 import { CrossAddress } from '../../util/cross_address'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import { checkStateWhenConfirmTransfer } from '../../util/confirmCheck'
-
-const ethers = require('ethers')
-const zksync = require('zksync')
+import zkspace from '../../core/actions/zkspace'
+import config from '../../core/utils/config'
+import * as ethers from 'ethers'
+import * as zksync from 'zksync'
 
 export default {
   name: 'Confirm',
@@ -220,7 +221,137 @@ export default {
     },
   },
   watch: {},
+  mounted() {},
   methods: {
+    async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
+      try {
+        let provider = new ethers.providers.Web3Provider(window.ethereum)
+        const walletAccount = this.$store.state.web3.coinbase
+        const signer = provider.getSigner()
+
+        const privateKey = await zkspace.getL1SigAndPriVateKey(signer)
+
+        const { transferValue, tValue } = await zkspace.getTransferValue(
+          selectMakerInfo,
+          fromChainID,
+          toChainID
+        )
+
+        const accountInfo = await zkspace.getAccountInfo(
+          fromChainID,
+          privateKey,
+          signer,
+          walletAccount
+        )
+
+        const tokenId = 0
+        const feeTokenId = 0
+
+        const zksChainID =
+          fromChainID === 512
+            ? config.ZKSpace.zksrinkebyChainID
+            : config.ZKSpace.zksChainID
+
+        let fee = await zkspace.getZKTransferGasFee(fromChainID, walletAccount)
+
+        const transferFee = zksync.utils.closestPackableTransactionFee(
+          ethers.utils.parseUnits(fee.toString(), 18)
+        )
+
+        const { pubKey, l2SignatureOne } = zkspace.getL2SigOneAndPK(
+          privateKey,
+          accountInfo,
+          walletAccount,
+          selectMakerInfo,
+          tokenId,
+          transferValue,
+          feeTokenId,
+          transferFee,
+          zksChainID
+        )
+
+        const l2SignatureTwo = await zkspace.getL2SigTwoAndPK(
+          signer,
+          accountInfo,
+          selectMakerInfo,
+          transferValue,
+          fee,
+          zksChainID
+        )
+        const req = {
+          signature: {
+            type: 'EthereumSignature',
+            signature: l2SignatureTwo,
+          },
+          fastProcessing: false,
+          tx: {
+            type: 'Transfer',
+            accountId: accountInfo.id,
+            from: walletAccount,
+            to: selectMakerInfo.makerAddress,
+            token: tokenId,
+            amount: transferValue.toString(),
+            feeToken: feeTokenId,
+            fee: transferFee.toString(),
+            chainId: zksChainID,
+            nonce: accountInfo.nonce,
+            signature: {
+              pubKey: pubKey,
+              signature: l2SignatureOne,
+            },
+          },
+        }
+        const transferResult = await zkspace.sendTransfer(fromChainID, req)
+        const txHash = transferResult.data.data.replace('sync-tx:', '0x')
+
+        const firstResult = await this.getFristResult(fromChainID, txHash)
+
+        this.onTransferSucceed(
+          walletAccount,
+          selectMakerInfo,
+          tValue.tAmount.toString(),
+          fromChainID,
+          firstResult.data.tx_hash
+        )
+        this.transferLoading = false
+      } catch (error) {
+        this.transferLoading = false
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+        console.warn('zkspceTransfer =', error.message)
+        return
+      }
+    },
+    getFristResult(fromChainID, txHash) {
+      return new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          const firstResult = await zkspace.getZKSpaceTransactionData(
+            fromChainID,
+            txHash
+          )
+          if (
+            firstResult.success &&
+            !firstResult.data.fail_reason &&
+            !firstResult.data.success &&
+            !firstResult.data.amount
+          ) {
+            resolve(await this.getFristResult(fromChainID, txHash))
+          } else if (
+            firstResult.success &&
+            !firstResult.data.fail_reason &&
+            firstResult.data.success &&
+            firstResult.data.amount
+          ) {
+            resolve(firstResult)
+          } else {
+            reject(new Error('zks sendResult is error, do not care'))
+          }
+        }, 300)
+      })
+    },
+
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(window.ethereum)
       const walletAccount = this.$store.state.web3.coinbase
@@ -555,7 +686,6 @@ export default {
           }
         })
     },
-
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
         this.transferLoading = false
@@ -834,9 +964,7 @@ export default {
         })
         return
       }
-
       this.transferLoading = true
-
       // 增加check币商余额逻辑, To dydx no check
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
@@ -856,6 +984,8 @@ export default {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 9 || fromChainID === 99) {
         this.loopringTransfer(fromChainID, toChainID, selectMakerInfo)
+      } else if (fromChainID === 12 || fromChainID === 512) {
+        this.zkspceTransfer(fromChainID, toChainID, selectMakerInfo)
       } else {
         const tokenAddress =
           selectMakerInfo.c1ID === fromChainID
@@ -1025,9 +1155,11 @@ export default {
       var(--bottom-nav-height)
   );
   overflow-y: scroll;
+
   .confirmContent {
     margin: 0.5rem 1rem 2rem;
     position: relative;
+
     .topItem {
       width: 100%;
       height: 2rem;
@@ -1039,6 +1171,7 @@ export default {
       padding: 0 1rem;
       margin-bottom: 1rem;
     }
+
     .contentItem {
       width: 100%;
       font-size: 1.4rem;
@@ -1046,10 +1179,12 @@ export default {
       color: var(--default-black);
       margin: 2rem auto 0 auto;
       align-items: center;
+
       .up {
         padding: 0 0.5rem;
         align-items: center;
         display: flex;
+
         .right {
           color: rgba($color: #18191f, $alpha: 0.7);
           text-align: right;
@@ -1058,6 +1193,7 @@ export default {
           right: 0.5rem;
         }
       }
+
       .descBottom {
         max-height: 9.2rem;
         padding: 1rem 1.5rem 0 2.5rem;
@@ -1065,6 +1201,7 @@ export default {
         margin: 1rem 0.5rem 0;
         text-align: left;
       }
+
       .sep {
         box-sizing: border-box;
         background-color: #ffece6;

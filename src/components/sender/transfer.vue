@@ -15,7 +15,9 @@
         />
         <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
         <div class="token_name">
-          {{ this.$store.state.transferData.selectTokenInfo.token }}
+          <span>{{
+            this.$store.state.transferData.selectTokenInfo.token
+          }}</span>
         </div>
         <svg-icon
           v-if="tokenInfoArray.length > 1"
@@ -35,7 +37,8 @@
               style="left: 0.3rem; top: 0.2rem"
               width="1.2rem"
               height="1.2rem"
-            ></loading>
+            >
+            </loading>
             <span v-else>{{ fromBalance }}</span>
           </div>
         </div>
@@ -62,15 +65,19 @@
               iconName="arrow_down"
             ></svg-icon>
           </div>
-          <input
-            type="text"
-            v-model="transferValue"
-            class="right"
-            @input="checkTransferValue()"
-            :maxlength="18"
-            :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
-          />
-          <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <input
+              type="text"
+              v-model="transferValue"
+              class="right"
+              @input="checkTransferValue()"
+              :maxlength="18"
+              :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
+            />
+            <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          </div>
         </div>
       </div>
       <div class="subContent">
@@ -89,14 +96,17 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            {{
-              showChainName(
-                this.$store.state.transferData.toChainID,
-                this.$env.localChainID_netChainID[
-                  this.$store.state.transferData.toChainID
-                ]
-              )
-            }}
+            <span>
+              {{
+                showChainName(
+                  this.$store.state.transferData.toChainID,
+                  this.$env.localChainID_netChainID[
+                    this.$store.state.transferData.toChainID
+                  ]
+                )
+              }}
+            </span>
+
             <svg-icon
               v-if="queryParams.dests.length > 1"
               style="
@@ -217,7 +227,8 @@
               width="1rem"
               loadingColor="#FFFFFF"
               height="1rem"
-            ></loading>
+            >
+            </loading>
             <span style="margin-left: 0.4rem" v-else
               >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
             >
@@ -349,6 +360,8 @@ const queryParamsChainMap = {
   'ImmutableX(R)': 88,
   'Metis(R)': 510,
   'dYdX(R)': 511,
+  zkspace: 12,
+  'zkspace(R)': 512,
 }
 
 export default {
@@ -395,7 +408,6 @@ export default {
       if (selectMakerInfo.precision === undefined) {
         return '0'
       }
-
       // check fromBalance
       if (!this.fromBalance) {
         return '0'
@@ -407,7 +419,6 @@ export default {
           selectMakerInfo.makerAddress,
           selectMakerInfo.t1Address
         )) || 0
-
       let avalibleDigit = orbiterCore.getDigitByPrecision(
         selectMakerInfo.precision
       )
@@ -1593,7 +1604,7 @@ export default {
         )
         this.originGasCost = response
       } catch (error) {
-        console.log('error =', error)
+        console.log('updateOriginGasCost error =', error)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -1684,13 +1695,16 @@ export default {
   text-align: left;
   font-size: 2rem;
   overflow-y: scroll;
+
   .header {
     display: flex;
     align-items: center;
+
     .left {
       margin: 1.85rem 0 0 2.5rem;
       font-weight: 900;
     }
+
     .right {
       margin: 2rem 1.5rem 0 auto;
       padding: 0;
@@ -1702,11 +1716,13 @@ export default {
       border-color: black;
       border-style: solid;
       border-radius: 2rem;
+
       .token_icon {
         margin: 0.5rem 0 0.5rem 1rem;
         width: 2.2rem;
         height: 2.2rem;
       }
+
       .token_name {
         margin-left: 1rem;
         font-size: 1.8rem;
@@ -1714,6 +1730,7 @@ export default {
         font-weight: 500;
         height: 100%;
       }
+
       .arrow_icon {
         width: 2rem;
         height: 2rem;
@@ -1721,10 +1738,12 @@ export default {
       }
     }
   }
+
   .content {
     margin: 2.1rem auto 0;
     width: 29.5rem;
     text-align: center;
+
     .subContent {
       position: relative;
       height: 5.7rem;
@@ -1733,17 +1752,20 @@ export default {
       text-align: left;
       font-weight: 400;
       font-size: 1.2rem;
+
       .topItem {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         margin: 0.6rem 2.4rem 0 2rem;
         color: #616266;
+
         .right {
           display: flex;
           text-align: right;
         }
       }
+
       .bottomItem {
         display: flex;
         flex-direction: row;
@@ -1752,12 +1774,14 @@ export default {
         font-size: 1.6rem;
         font-weight: 550;
         height: 2.9rem;
+
         .left {
           color: #2c2d32;
           display: flex;
           line-height: 2.9rem;
           white-space: nowrap;
         }
+
         .right {
           width: 100%;
           color: var(--primary-color);
@@ -1769,14 +1793,17 @@ export default {
           transition: all 0.2s ease 0s;
           flex-direction: row-reverse;
         }
+
         input {
           font-weight: 600;
         }
+
         input::placeholder {
           color: #adadb0;
           font-size: 1.4rem;
           font-weight: 400;
         }
+
         .maxBtn {
           padding: 0.1rem 0.3rem;
           font-size: 1rem;
@@ -1787,6 +1814,7 @@ export default {
           border-color: rgba($color: #18191f, $alpha: 0.6);
           background: #ffffff;
         }
+
         .maxBtn:hover {
           color: rgba($color: #18191f, $alpha: 0.6);
           border-color: rgba($color: #18191f, $alpha: 0.6);
@@ -1794,8 +1822,10 @@ export default {
         }
       }
     }
+
     .subContent:last-child {
       margin-top: 1.8rem;
+
       .middleImge {
         position: absolute;
         width: 3.8rem;
@@ -1806,9 +1836,11 @@ export default {
       }
     }
   }
+
   .notice {
     margin: 3rem auto 3rem;
     width: 27rem;
+
     .item {
       display: flex;
       flex-direction: row;
@@ -1816,14 +1848,17 @@ export default {
       font-size: 1.2rem;
       color: #78797d;
       text-align: left;
+
       .left {
         display: flex;
         // line-height: 100%;
       }
+
       .right {
         display: flex;
         text-align: right;
         align-items: center;
+
         .item {
           height: 1.5rem;
           padding: 0.1rem 0.2rem;
