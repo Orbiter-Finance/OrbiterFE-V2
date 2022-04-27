@@ -965,23 +965,6 @@ export default {
         return
       }
       this.transferLoading = true
-      // 增加check币商余额逻辑
-
-      let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
-        new BigNumber(this.$store.state.transferData.transferValue).plus(
-          new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
-        ),
-        this.$store.getters.realSelectMakerInfo,
-        false
-      )
-
-      if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
-        this.transferLoading = false
-        return
-      }
-
-      this.transferLoading = true
-
       // 增加check币商余额逻辑, To dydx no check
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
