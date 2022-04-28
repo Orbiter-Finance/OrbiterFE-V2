@@ -1374,14 +1374,6 @@ export default {
             fromList: FromTxList,
             toList: ToTxList,
           }
-          console.log(
-            FromTxList,
-            '===============',
-            ToTxList,
-            originTxList,
-            '=====',
-            chainID
-          )
         })
       }
 
