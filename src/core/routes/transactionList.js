@@ -48,7 +48,7 @@ async function getTransactionListEtherscan(
   let ethscanReq = {
     maker: userAddress,
     startblock: ethScanStartBlock,
-    endblock: 999999999,
+    endblock: 999999999,  
   }
   try {
     let res = await etherscan.getTransationList(ethscanReq, chainID)
@@ -344,25 +344,23 @@ async function getTransactionListBoba(
   needTimeStamp,
   makerList
 ) {
-  const MTFromTxList = []
-  const MTToTxList = []
-
+  const L1FromTxList = []
+  const L1ToTxList = []
   let mtScanReq = {
     timestamp: needTimeStamp,
     closest: 'before',
   }
   let mtScanStartBlock = 0
-  try {
-    let resp = await boba.getBlockNumberWithTimeStamp(mtScanReq, chainID)
-    if (resp.status === '1' && resp.message === 'OK') {
-      mtScanStartBlock = resp.result?.blockNumber
-    } else {
-      mtScanStartBlock = 0
-    }
-  } catch (error) {
-    console.log('boba ScanStartBlockError =', error)
-    throw error.message
-  }
+  // try {
+  //   let resp = await boba.getBlockNumberWithTimeStamp(mtScanReq, chainID)
+  //   if (resp.status === '1' && resp.message === 'OK') {
+  //     mtScanStartBlock = resp.result?.blockNumber
+  //   } else {
+  //     mtScanStartBlock = 0
+  //   }
+  // } catch (error) {
+  //   console.log('boba ScanStartBlockError =', error)
+  // }
   let MtscanReq = {
     maker: userAddress,
     startblock: mtScanStartBlock,
@@ -370,73 +368,78 @@ async function getTransactionListBoba(
   }
   try {
     let res = await boba.getTransationList(MtscanReq, chainID)
-    for (const item of res.result) {
-      let txinfo = TxInfo.getTxInfoWithMetis(item)
-      let isMatch = false
-      for (let j = 0; j < makerList.length; j++) {
-        let makerInfo = makerList[j]
-        let _makerAddress = makerInfo.makerAddress.toLowerCase()
+    for (const i in res.result) {
+      if (Object.hasOwnProperty.call(res.result, i)) {
+        let etherscanInfo = res.result[i]
+        let txinfo = TxInfo.getTxInfoWithBoba(etherscanInfo)
+        let isMatch = false
 
-        if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
-          continue
-        }
+        for (let j = 0; j < makerList.length; j++) {
+          let makerInfo = makerList[j]
+          let _makerAddress = makerInfo.makerAddress.toLowerCase()
 
-        if (txinfo.tokenName !== makerInfo.tName) {
-          continue
-        }
-
-        let avalibleTimes =
-          chainID === makerInfo.c1ID
-            ? makerInfo.c1AvalibleTimes
-            : makerInfo.c2AvalibleTimes
-        for (let z = 0; z < avalibleTimes.length; z++) {
-          const avalibleTime = avalibleTimes[z]
-
-          if (
-            avalibleTime.startTime <= txinfo.timeStamp &&
-            avalibleTime.endTime >= txinfo.timeStamp
-          ) {
-            isMatch = true
-            break
+          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+            continue
           }
-        }
 
-        if (!isMatch) {
-          continue
-        }
-        if (txinfo.from === _makerAddress) {
-          let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
-          let nonce = 0
-          if (pText.state) {
-            nonce = pText.pText
+          if (txinfo.tokenName !== makerInfo.tName) {
+            continue
           }
-          if (Number(nonce) < 9000 && Number(nonce) >= 0) {
-            MTToTxList.push(txinfo)
-            break
-          }
-        } else if (txinfo.to === _makerAddress) {
-          if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
-            let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
-            let arr2 = [
-              chainID,
-              orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
-            ]
-            if (judgeArrayEqualFun(arr1, arr2)) {
-              MTFromTxList.push(txinfo)
+
+          let avalibleTimes =
+            chainID === makerInfo.c1ID
+              ? makerInfo.c1AvalibleTimes
+              : makerInfo.c2AvalibleTimes
+          for (let z = 0; z < avalibleTimes.length; z++) {
+            const avalibleTime = avalibleTimes[z]
+
+            if (
+              avalibleTime.startTime <= txinfo.timeStamp &&
+              avalibleTime.endTime >= txinfo.timeStamp
+            ) {
+              isMatch = true
               break
             }
           }
-        } else {
-          // doNothiing
+
+          if (!isMatch) {
+            continue
+          }
+          if (txinfo.from === _makerAddress) {
+            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+            let nonce = 0
+            if (pText.state) {
+              nonce = pText.pText
+            }
+            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+              L1ToTxList.push(txinfo)
+              break
+            }
+          } else if (txinfo.to === _makerAddress) {
+            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+              let arr2 = [
+                chainID,
+                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+              ]
+              if (judgeArrayEqualFun(arr1, arr2)) {
+                L1FromTxList.push(txinfo)
+                break
+              }
+            }
+          } else {
+            // doNothiing
+          }
         }
       }
     }
   } catch (error) {
-    console.warn('arbitrumError =', error)
+    console.warn('boba error =', error)
     throw error.message
   }
-
-  return { MTFromTxList, MTToTxList }
+  console.log(`L1FromTxList = `, L1FromTxList)
+  console.log(`L1ToTxList = `, L1ToTxList)
+  return { FromTxList: L1FromTxList, ToTxList: L1ToTxList }
 }
 
 
@@ -1365,16 +1368,17 @@ export default {
       if (supportChains.indexOf(28) > -1 || supportChains.indexOf(288) > -1) {
         allPromises.push(async () => {
           let chainID = supportChains.indexOf(28) > -1 ? 28 : 288
-          const { MTFromTxList, MTToTxList } = await getTransactionListBoba(
+          const { FromTxList, ToTxList } = await getTransactionListBoba(
             req.address,
             chainID,
             needTimeStamp,
             makerList
           )
           originTxList[chainID] = {
-            fromList: MTFromTxList,
-            toList: MTToTxList,
+            fromList: FromTxList,
+            toList: ToTxList,
           }
+          console.log(FromTxList, '===============', ToTxList, originTxList, '=====',chainID );
         })
       }
 
@@ -1384,7 +1388,7 @@ export default {
         try {
           await Promise.all(allPromises.map((item) => item()))
         } catch (err) {
-          console.warn(err)
+          console.warn('警告：', err)
           if (index < maxRetryCount) {
             await util.sleep(2000)
           } else {

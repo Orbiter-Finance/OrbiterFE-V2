@@ -63,7 +63,7 @@ export default {
   },
   boba: {
     Mainnet: 'https://blockexplorer.boba.network/api',
-    Rinkeby: 'https://api-rinkeby.etherscan.io/api',
+    Rinkeby: 'https://blockexplorer.rinkeby.boba.network/api',
     chainID: '288',
     rinkeyChainID: '28',
   },
