@@ -110,7 +110,7 @@ export default {
         if (item === 11 || item === 511) {
           iconName = 'dydxlogo'
         }
-        if (item === 28 || item === 288) {
+        if (item === 13 || item === 513) {
           iconName = 'bobalogo'
         }
         var chainData = {

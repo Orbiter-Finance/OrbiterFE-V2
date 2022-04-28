@@ -349,8 +349,8 @@ const queryParamsChainMap = {
   'ImmutableX(R)': 88,
   'Metis(R)': 510,
   'dYdX(R)': 511,
-  'Boba(R)': 28,
-  'Boba(M)': 288
+  'Boba(R)': 513,
+  Boba: 13,
 }
 
 export default {

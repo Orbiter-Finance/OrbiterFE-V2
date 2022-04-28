@@ -151,9 +151,9 @@ export default {
         return 'metislogo'
       } else if (chainID == '11' || chainID == '511') {
         return 'dydxlogo'
-      }else if (chainID == '28' || chainID == '288') {
+      } else if (chainID == '13' || chainID == '513') {
         return 'bobalogo'
-      }  else {
+      } else {
         return 'ethlogo'
       }
     },

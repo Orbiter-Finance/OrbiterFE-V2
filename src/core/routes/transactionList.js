@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import orbiterCore from '../../orbiterCore'
 import {
   getL2AddressByL1,
-  getNetworkIdByChainId
+  getNetworkIdByChainId,
 } from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
@@ -48,7 +48,7 @@ async function getTransactionListEtherscan(
   let ethscanReq = {
     maker: userAddress,
     startblock: ethScanStartBlock,
-    endblock: 999999999,  
+    endblock: 999999999,
   }
   try {
     let res = await etherscan.getTransationList(ethscanReq, chainID)
@@ -233,8 +233,6 @@ async function getTransactionListArbitrum(
   return { ARFromTxList, ARToTxList }
 }
 
-
-
 async function getTransactionListMetis(
   userAddress,
   chainID,
@@ -335,7 +333,6 @@ async function getTransactionListMetis(
 
   return { MTFromTxList, MTToTxList }
 }
-
 
 // boba
 async function getTransactionListBoba(
@@ -441,7 +438,6 @@ async function getTransactionListBoba(
   console.log(`L1ToTxList = `, L1ToTxList)
   return { FromTxList: L1FromTxList, ToTxList: L1ToTxList }
 }
-
 
 async function getTransactionListOptimitic(
   userAddress,
@@ -1090,7 +1086,7 @@ async function getTransactionListLoopring(
             (lpTransaction.senderAddress.toLowerCase() ==
               userAddress.toLowerCase() ||
               lpTransaction.receiverAddress.toLowerCase() ==
-              userAddress.toLowerCase()) &&
+                userAddress.toLowerCase()) &&
             lpTransaction.symbol == 'ETH'
           ) {
             LPAllTxList.push(lpTransaction)
@@ -1364,10 +1360,10 @@ export default {
         })
       }
 
-      // 28 & 288 boba
-      if (supportChains.indexOf(28) > -1 || supportChains.indexOf(288) > -1) {
+      // 13 & 513 boba
+      if (supportChains.indexOf(13) > -1 || supportChains.indexOf(513) > -1) {
         allPromises.push(async () => {
-          let chainID = supportChains.indexOf(28) > -1 ? 28 : 288
+          let chainID = supportChains.indexOf(13) > -1 ? 13 : 513
           const { FromTxList, ToTxList } = await getTransactionListBoba(
             req.address,
             chainID,
@@ -1378,7 +1374,14 @@ export default {
             fromList: FromTxList,
             toList: ToTxList,
           }
-          console.log(FromTxList, '===============', ToTxList, originTxList, '=====',chainID );
+          console.log(
+            FromTxList,
+            '===============',
+            ToTxList,
+            originTxList,
+            '=====',
+            chainID
+          )
         })
       }
 
@@ -1494,9 +1497,9 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
             ? fromTxInfo.memo % 9000
             : orbiterCore.getToChainIDFromAmount(
-              Number(fromChainID),
-              fromTxInfo.value
-            )
+                Number(fromChainID),
+                fromTxInfo.value
+              )
         let realFromAmount = orbiterCore.getRAmountFromTAmount(
           Number(fromChainID),
           fromTxInfo.value
@@ -1631,15 +1634,15 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           let toAmount =
             toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
               ? orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                '0'
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  '0'
+                ).tAmount
               : orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                fromTxInfo.nonce.toString()
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  fromTxInfo.nonce.toString()
+                ).tAmount
 
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce

@@ -13,8 +13,8 @@ export default {
     7: process.env.VUE_APP_HP_OP,
     10: process.env.VUE_APP_HP_MT,
     510: process.env.VUE_APP_HP_MT_R,
-    28: process.env.VUE_APP_HP_BOBA_R,
-    288: process.env.VUE_APP_HP_BOBA
+    13: process.env.VUE_APP_HP_BOBA,
+    513: process.env.VUE_APP_HP_BOBA_R,
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -27,8 +27,8 @@ export default {
     77: process.env.VUE_APP_WP_OP_K,
     10: process.env.VUE_APP_WP_MT,
     510: process.env.VUE_APP_WP_MT_R,
-    28: process.env.VUE_APP_WP_BOBA_R,
-    288: process.env.VUE_APP_WP_BOBA
+    13: process.env.VUE_APP_WP_BOBA,
+    513: process.env.VUE_APP_WP_BOBA_R,
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -51,8 +51,8 @@ export default {
     '99',
     '510',
     '511',
-    '28',
-    '288',
+    '13',
+    '513',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -75,8 +75,8 @@ export default {
     88: '3', // ropsten
     99: '5', // loopring(G)
     511: '3', // dydx(R)
-    28: '28',// boba rinkeby
-    288: '288',// boba mainnet
+    13: '288', // boba mainnet
+    513: '28', // boba rinkeby
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -117,8 +117,8 @@ export default {
     510: 'https://stardust-explorer.metis.io/tx/',
     11: 'https://trade.dydx.exchange/',
     511: 'https://trade.stage.dydx.exchange/',
-    28: 'https://blockexplorer.rinkeby.boba.network/tx/',
-    288: 'https://blockexplorer.boba.network/tx/'
+    13: 'https://blockexplorer.boba.network/tx/',
+    513: 'https://blockexplorer.rinkeby.boba.network/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -141,7 +141,7 @@ export default {
     510: 'https://stardust-explorer.metis.io/address/',
     11: 'https://trade.dydx.exchange/',
     511: 'https://trade.stage.dydx.exchange/',
-    28: 'https://blockexplorer.rinkeby.boba.network/address/',
-    288: 'https://blockexplorer.boba.network/address/'
+    13: 'https://blockexplorer.boba.network/address/',
+    513: 'https://blockexplorer.rinkeby.boba.network/address/',
   },
 }

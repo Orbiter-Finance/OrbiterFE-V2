@@ -64,8 +64,8 @@ export default {
   boba: {
     Mainnet: 'https://blockexplorer.boba.network/api',
     Rinkeby: 'https://blockexplorer.rinkeby.boba.network/api',
-    chainID: '288',
-    rinkeyChainID: '28',
+    chainID: '13',
+    rinkeyChainID: '513',
   },
   L1: {
     Mainnet:
