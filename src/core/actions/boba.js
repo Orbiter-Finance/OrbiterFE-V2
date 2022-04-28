@@ -7,7 +7,7 @@ Axios.axios()
 
 export default {
   getTxByHash:async function (hash, chainId) {
-    const api = chainId == 28? 'https://blockexplorer.rinkeby.boba.network/api' : 'https://blockexplorer.boba.network/api';
+    const api = chainId == 513 ? 'https://blockexplorer.rinkeby.boba.network/api' : 'https://blockexplorer.boba.network/api';
     const resp = await axios.get(api, {
       params: {
         module: 'transaction',
