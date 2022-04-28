@@ -19,7 +19,7 @@ export default {
   },
    getTxList: async function  (req, chainId, isTokentx = true){
     const trxList = [];
-    const apiUrl = chainId == 28 ? 'https://api-watcher.rinkeby.boba.network/get.l2.transactions' : 'https://api-watcher.mainnet.boba.network/get.l2.transactions'
+    const apiUrl = chainId == 513 ? 'https://api-watcher.rinkeby.boba.network/get.l2.transactions' : 'https://api-watcher.mainnet.boba.network/get.l2.transactions'
     const list = await axios.post(apiUrl, {"address":req.maker,"fromRange":0,"toRange":1000}).then(res=> res.data)
     for (const row of list) {
       const trx = await this.getTxByHash(row.hash, chainId);
@@ -79,7 +79,7 @@ export default {
         // apikey: config.polygon.key,
       }
       const configNet =
-        chainId === 28 ? config.boba.Rinkeby : config.boba.Mainnet
+        chainId === 513 ? config.boba.Rinkeby : config.boba.Mainnet
       axios
         .get(configNet, { params })
         .then(function (response) {
