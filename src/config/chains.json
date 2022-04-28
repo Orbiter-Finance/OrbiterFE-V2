@@ -224,8 +224,8 @@
       "shortName": "BOBA",
       "networkId": 288,
       "nativeCurrency": {
-        "name": "BOBA",
-        "symbol": "BOBA",
+        "name": "Ether",
+        "symbol": "ETH",
         "decimals": 18
       },
       
@@ -242,8 +242,8 @@
       "shortName": "BOBA",
       "networkId": 28,
       "nativeCurrency": {
-        "name": "BOBA",
-        "symbol": "BOBA",
+        "name": "Ether",
+        "symbol": "ETH",
         "decimals": 18
       },
       
