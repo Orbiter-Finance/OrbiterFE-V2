@@ -113,6 +113,9 @@ export default {
         if (item === 12 || item === 512) {
           iconName = 'zkspacelogo'
         }
+        if (item === 13 || item === 513) {
+          iconName = 'bobalogo'
+        }
         var chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),

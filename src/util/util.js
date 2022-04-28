@@ -51,6 +51,10 @@ export default {
         return 'ZKSpace'
       case 512:
         return 'ZKSpace(R)'
+      case 13:
+        return 'Boba'
+      case 513:
+        return 'Boba(R)'
     }
 
     const chain = chainList.chainList.filter(

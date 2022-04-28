@@ -360,6 +360,7 @@ import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
+import { netStateBlock } from '../../util/confirmCheck'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -384,6 +385,8 @@ const queryParamsChainMap = {
   'dYdX(R)': 511,
   zkspace: 12,
   'zkspace(R)': 512,
+  'Boba(R)': 513,
+  Boba: 13,
 }
 
 export default {
@@ -1515,6 +1518,14 @@ export default {
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
+            duration: 3000,
+          })
+          return
+        }
+
+        if (!netStateBlock(this.$store.state.transferData.fromChainID)) {
+          this.$notify.error({
+            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
             duration: 3000,
           })
           return

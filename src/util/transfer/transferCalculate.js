@@ -77,6 +77,10 @@ const IMX_ETH_WITHDRAW_ONL1 = 510000
 // Mainnet deposit contract: 0x8e8bd01b5A9eb272CC3892a2E40E64A716aa2A40
 const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
 
+// boba
+const BOBA_TRANSFER_OUT_LIMIT = 10123935
+const BOBA_TRANSFER_IN_LIMIT = 1787707
+
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   // min ~ max
@@ -187,6 +191,8 @@ export default {
       99: 1,
       510: 1,
       511: 1,
+      13: 1,
+      513: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -229,6 +235,8 @@ export default {
       99: 'ETH',
       510: 'METIS',
       511: 'ETH',
+      13: 'ETH',
+      513: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -342,6 +350,9 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       timeSpent = 15
     }
+    if (fromChainID === 13 || fromChainID === 513) {
+      timeSpent = 15
+    }
     if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
       timeSpent += 30
     }
@@ -372,6 +383,10 @@ export default {
       timeSpent += 15
     }
     if (toChainID === 11 || toChainID === 511) {
+      timeSpent += 5
+    }
+
+    if (toChainID === 13 || toChainID === 513) {
       timeSpent += 5
     }
     let timeSpentStr = timeSpent + 's'
@@ -406,6 +421,7 @@ export default {
     if (fromChainID === 10 || fromChainID === 510) {
       return '~7 days'
     }
+
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
@@ -442,6 +458,12 @@ export default {
       if (toChainID === 11 || toChainID === 511) {
         return '~20min'
       }
+    }
+    if (fromChainID === 13 || fromChainID === 513) {
+      return '~7 days'
+    }
+    if (toChainID === 13 || toChainID === 513) {
+      return '~10min'
     }
   },
 
@@ -510,6 +532,9 @@ export default {
         // eth -> dydx
         return ' 19.95min'
       }
+    }
+    if (fromChainID === 13 || fromChainID === 513) {
+      return ' 7 days'
     }
   },
   /**
@@ -680,6 +705,11 @@ export default {
       )
       ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
     }
+    if (fromChainID === 13 || fromChainID === 513) {
+      // BOBA get
+      const fromGasPrice = await this.getGasPrice(fromChainID)
+      ethGas = fromGasPrice * BOBA_TRANSFER_OUT_LIMIT
+    }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       // Ar deposit
@@ -740,6 +770,13 @@ export default {
       let toGasPrice = await this.getGasPrice(toChainID === 12 ? 1 : 5)
       let zkspaceDepositGas = toGasPrice * ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1
       ethGas += zkspaceDepositGas
+    }
+
+    if (toChainID === 13 || toChainID === 513) {
+      // BOBA deposit
+      let toGasPrice = await this.getGasPrice(toChainID)
+      const depositGas = toGasPrice * BOBA_TRANSFER_IN_LIMIT
+      ethGas += depositGas
     }
 
     let usd = new BigNumber(0)
