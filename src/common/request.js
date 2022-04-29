@@ -35,7 +35,6 @@ function requestHandle(type, uri, data, config) {
   return new Promise((resolve, reject) => {
     AX[type](uri, data)
       .then((res = {}) => {
-        // console.log('response:', res)
         const resCode = res.status
         const resData = res.data || {}
         if (resCode === 200) {
