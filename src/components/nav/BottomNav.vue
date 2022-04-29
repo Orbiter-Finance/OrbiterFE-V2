@@ -1,60 +1,62 @@
 <template>
   <div class="BottomNav">
-    <div v-if="isWeb"
-         class="bottom">
+    <div v-if="isWeb" class="bottom">
       <div>
-        <svg-icon class="nav-logo"
-                  iconName="orbiterLogo"></svg-icon>
+        <svg-icon class="nav-logo" iconName="orbiterLogo"></svg-icon>
       </div>
       <div class="bottomContent">
         <div class="github">
-          <a href="https://github.com"
-             rel="noreferrer noopener"
-             target="_blank">
-            <svg viewBox="0 0 18 18"
-                 focusable="false"
-                 class="githunbIcon">
-              <path d="M9 0C4.0275 0 0 4.13211 0 9.22838C0 13.3065 2.5785 16.7648 6.15375 17.9841C6.60375 18.0709 6.76875 17.7853 6.76875 17.5403C6.76875 17.3212 6.76125 16.7405 6.7575 15.9712C4.254 16.5277 3.726 14.7332 3.726 14.7332C3.3165 13.6681 2.72475 13.3832 2.72475 13.3832C1.9095 12.8111 2.78775 12.8229 2.78775 12.8229C3.6915 12.887 4.16625 13.7737 4.16625 13.7737C4.96875 15.1847 6.273 14.777 6.7875 14.5414C6.8685 13.9443 7.10025 13.5381 7.3575 13.3073C5.35875 13.0764 3.258 12.2829 3.258 8.74709C3.258 7.73988 3.60675 6.91659 4.18425 6.27095C4.083 6.03774 3.77925 5.0994 4.263 3.82846C4.263 3.82846 5.01675 3.58116 6.738 4.77462C7.458 4.56958 8.223 4.46785 8.988 4.46315C9.753 4.46785 10.518 4.56958 11.238 4.77462C12.948 3.58116 13.7017 3.82846 13.7017 3.82846C14.1855 5.0994 13.8818 6.03774 13.7917 6.27095C14.3655 6.91659 14.7142 7.73988 14.7142 8.74709C14.7142 12.2923 12.6105 13.0725 10.608 13.2995C10.923 13.5765 11.2155 14.1423 11.2155 15.0071C11.2155 16.242 11.2043 17.2344 11.2043 17.5341C11.2043 17.7759 11.3617 18.0647 11.823 17.9723C15.4237 16.7609 18 13.3002 18 9.22838C18 4.13211 13.9703 0 9 0Z"
-                    fill="currentColor">
-              </path>
+          <a
+            href="https://github.com"
+            rel="noreferrer noopener"
+            target="_blank"
+          >
+            <svg viewBox="0 0 18 18" focusable="false" class="githunbIcon">
+              <path
+                d="M9 0C4.0275 0 0 4.13211 0 9.22838C0 13.3065 2.5785 16.7648 6.15375 17.9841C6.60375 18.0709 6.76875 17.7853 6.76875 17.5403C6.76875 17.3212 6.76125 16.7405 6.7575 15.9712C4.254 16.5277 3.726 14.7332 3.726 14.7332C3.3165 13.6681 2.72475 13.3832 2.72475 13.3832C1.9095 12.8111 2.78775 12.8229 2.78775 12.8229C3.6915 12.887 4.16625 13.7737 4.16625 13.7737C4.96875 15.1847 6.273 14.777 6.7875 14.5414C6.8685 13.9443 7.10025 13.5381 7.3575 13.3073C5.35875 13.0764 3.258 12.2829 3.258 8.74709C3.258 7.73988 3.60675 6.91659 4.18425 6.27095C4.083 6.03774 3.77925 5.0994 4.263 3.82846C4.263 3.82846 5.01675 3.58116 6.738 4.77462C7.458 4.56958 8.223 4.46785 8.988 4.46315C9.753 4.46785 10.518 4.56958 11.238 4.77462C12.948 3.58116 13.7017 3.82846 13.7017 3.82846C14.1855 5.0994 13.8818 6.03774 13.7917 6.27095C14.3655 6.91659 14.7142 7.73988 14.7142 8.74709C14.7142 12.2923 12.6105 13.0725 10.608 13.2995C10.923 13.5765 11.2155 14.1423 11.2155 15.0071C11.2155 16.242 11.2043 17.2344 11.2043 17.5341C11.2043 17.7759 11.3617 18.0647 11.823 17.9723C15.4237 16.7609 18 13.3002 18 9.22838C18 4.13211 13.9703 0 9 0Z"
+                fill="currentColor"
+              ></path>
             </svg>
           </a>
         </div>
         <div class="bottomSep"></div>
-        <p style="margin-left:1rem">Build By Orbiter</p>
+        <p style="margin-left: 1rem">Build By Orbiter</p>
       </div>
     </div>
-    <div v-if="!isWeb"
-         class="BottomContainer">
+    <div v-if="!isWeb" class="BottomContainer">
       <div class="LoginBox">
-        <svg-icon v-if="isLogin"
-                  class="LoginImg"
-                  :iconName="loginBoxIconName()"></svg-icon>
-        <button v-if="isLogin"
-                class="LoginBtn"
-                @click="unlogin">{{ showAddress }}</button>
-        <button v-if="!isLogin"
-                class="unLoginBtn"
-                @click="login">Connect a Wallet</button>
+        <svg-icon
+          v-if="isLogin"
+          class="LoginImg"
+          :iconName="loginBoxIconName()"
+        ></svg-icon>
+        <button v-if="isLogin" class="LoginBtn" @click="unlogin">
+          {{ showAddress }}
+        </button>
+        <button v-if="!isLogin" class="unLoginBtn" @click="login">
+          Connect a Wallet
+        </button>
       </div>
       <div class="LoginRBox">
-        <o-button v-if="isLogin"
-                  width="8rem"
-                  height="3.2rem"
-                  @click="toHistory">
+        <o-button
+          v-if="isLogin"
+          width="8rem"
+          height="3.2rem"
+          @click="toHistory"
+        >
           <span class="s14">History</span>
         </o-button>
-        <div v-if="isLogin"
-             @click="clickHoriz"
-             class="horiz">
-          <svg-icon style="width:100%;height:100%"
-                    iconName="more_horiz"></svg-icon>
+        <div v-if="isLogin" @click="clickHoriz" class="horiz">
+          <svg-icon
+            style="width: 100%; height: 100%"
+            iconName="more_horiz"
+          ></svg-icon>
         </div>
-        <div v-if="!isLogin"
-             @click="clickHoriz"
-             class="horiz_unlogin">
-          <svg-icon style="width:100%;height:100%"
-                    iconName="more_horiz"></svg-icon>
+        <div v-if="!isLogin" @click="clickHoriz" class="horiz_unlogin">
+          <svg-icon
+            style="width: 100%; height: 100%"
+            iconName="more_horiz"
+          ></svg-icon>
         </div>
         <!-- <div @click="clickHoriz"
              class="horiz_unlogin">
@@ -64,126 +66,167 @@
       </div>
       <div class="canvas"></div>
     </div>
-    <CustomPopup v-if="!isWeb"
-                 ref="OrbiterInfo">
-      <div slot="PoperContent"
-           @click.stop="stopPenetrate"
-           class="LoginInfoPopContentView">
+    <CustomPopup v-if="!isWeb" ref="OrbiterInfo">
+      <div
+        slot="PoperContent"
+        @click.stop="stopPenetrate"
+        class="LoginInfoPopContentView"
+      >
         <div class="topItem">
           <span>Orbiter Information</span>
           <div @click="closerButton('orbiterInfo')">
-            <svg-icon style="width:1.5rem;height:1.5rem"
-                      iconName="close"></svg-icon>
+            <svg-icon
+              style="width: 1.5rem; height: 1.5rem"
+              iconName="close"
+            ></svg-icon>
           </div>
         </div>
-        <div v-for="item in orbiterInfoData"
-             :key="item.title"
-             class="contentItem">
-          <div style="display:flex">
-            <svg-icon style="width:2.4rem;height:2.4rem"
-                      :iconName="item.icon"></svg-icon>
-            <span style="margin-left:1rem"
-                  class="MediaName"
-                  @click="JumpToMedia(item.value)">{{item.title}}</span>
+        <div
+          v-for="item in orbiterInfoData"
+          :key="item.title"
+          class="contentItem"
+        >
+          <div style="display: flex">
+            <svg-icon
+              style="width: 2.4rem; height: 2.4rem"
+              :iconName="item.icon"
+            ></svg-icon>
+            <span
+              style="margin-left: 1rem"
+              class="MediaName"
+              @click="JumpToMedia(item.value)"
+              >{{ item.title }}</span
+            >
           </div>
-          <o-button v-if="!item.isConnect"
-                    class="right"
-                    width='8.6rem'
-                    height='2.8rem'
-                    boxShadow="0 0.1rem 0.3rem 0px #ec201e"
-                    data-wallet="item.title"
-                    @click="JumpToMedia(item.value)">
+          <o-button
+            v-if="!item.isConnect"
+            class="right"
+            width="8.6rem"
+            height="2.8rem"
+            boxShadow="0 0.1rem 0.3rem 0px #ec201e"
+            data-wallet="item.title"
+            @click="JumpToMedia(item.value)"
+          >
             <span class="s14">Link</span>
           </o-button>
         </div>
+        <div class="terms">
+          <span @click="openTerms">Terms of Use</span>
+        </div>
       </div>
     </CustomPopup>
-    <CustomPopup v-if="!isWeb"
-                 ref="showLoginInfo">
-      <div slot="PoperContent"
-           @click.stop="stopPenetrate"
-           class="LoginInfoPopContentView">
+    <CustomPopup v-if="!isWeb" ref="showLoginInfo">
+      <div
+        slot="PoperContent"
+        @click.stop="stopPenetrate"
+        class="LoginInfoPopContentView"
+      >
         <div class="topItem">
           <span>Connect Information</span>
           <div @click="closerButton('loginInfo')">
-            <svg-icon style="width:1.5rem;height:1.5rem"
-                      iconName="close"></svg-icon>
+            <svg-icon
+              style="width: 1.5rem; height: 1.5rem"
+              iconName="close"
+            ></svg-icon>
           </div>
         </div>
-        <div v-for="item in loginInfoData"
-             :key="item.title"
-             class="contentItem">
-          <div style="display:flex">
-            <svg-icon style="width:2.4rem;height:2.4rem"
-                      :iconName="item.icon"></svg-icon>
-            <span style="margin-left:1rem">{{item.title}}</span>
+        <div
+          v-for="item in loginInfoData"
+          :key="item.title"
+          class="contentItem"
+        >
+          <div style="display: flex">
+            <svg-icon
+              style="width: 2.4rem; height: 2.4rem"
+              :iconName="item.icon"
+            ></svg-icon>
+            <span style="margin-left: 1rem">{{ item.title }}</span>
           </div>
-          <div style="text-align:right; color:#E85E24; display: flex">
+          <div style="text-align: right; color: #e85e24; display: flex">
             <span>{{ item.value }}</span>
-            <div v-if="item.title === 'Address'"
-                 v-clipboard:copy="copyAddress"
-                 v-clipboard:success="onCopy"
-                 v-clipboard:error="onError"
-                 style="width:1.8rem;height:1.8rem;display:inline-block">
-              <svg-icon style="width:100%;height:100%"
-                        iconName="copy"></svg-icon>
+            <div
+              v-if="item.title === 'Address'"
+              v-clipboard:copy="copyAddress"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+              style="width: 1.8rem; height: 1.8rem; display: inline-block"
+            >
+              <svg-icon
+                style="width: 100%; height: 100%"
+                iconName="copy"
+              ></svg-icon>
             </div>
           </div>
-
         </div>
 
-        <o-button v-if="this.isLogin"
-                  style="margin: 2.5rem auto;"
-                  width='29.5rem'
-                  height='4rem'
-                  boxShadow="0 0.1rem 0.3rem 0px #ec201e"
-                  @click="disconnect">Disconnect</o-button>
-
+        <o-button
+          v-if="this.isLogin"
+          style="margin: 2.5rem auto"
+          width="29.5rem"
+          height="4rem"
+          boxShadow="0 0.1rem 0.3rem 0px #ec201e"
+          @click="disconnect"
+          >Disconnect</o-button
+        >
       </div>
     </CustomPopup>
-    <CustomPopup v-if="!isWeb"
-                 ref="showLogin">
-      <div @click.stop="stopPenetrate"
-           slot="PoperContent"
-           class="LoginStatePopContentView">
+    <CustomPopup v-if="!isWeb" ref="showLogin">
+      <div
+        @click.stop="stopPenetrate"
+        slot="PoperContent"
+        class="LoginStatePopContentView"
+      >
         <div class="topItem">
           <span>Connect a Wallet</span>
           <div @click="closerButton('login')">
-            <svg-icon style="width:1.5rem;height:1.5rem"
-                      iconName="close"></svg-icon>
+            <svg-icon
+              style="width: 1.5rem; height: 1.5rem"
+              iconName="close"
+            ></svg-icon>
           </div>
         </div>
-        <div v-for="item in loginData"
-             :key="item.title"
-             class="contentItem">
-          <svg-icon v-if="item.isConnect"
-                    style="margin-right:1rem;width:1.9rem;height:1.9rem;color:red"
-                    iconName="success"></svg-icon>
-          <svg-icon style="margin-right:0.8rem;width:3rem;height:2.7rem"
-                    :iconName="item.icon"></svg-icon>
-          <span>{{item.title}}</span>
-          <span v-if="item.isConnect"
-                class="right"
-                style="font-size:1.4rem;color:#E85E24;">Connected</span>
-          <o-button v-if="!item.isConnect"
-                    class="right"
-                    width='8.6rem'
-                    height='2.8rem'
-                    boxShadow="0 0.1rem 0.3rem 0px #ec201e"
-                    data-wallet="item.title"
-                    @click="Connect(item.title)">
+        <div v-for="item in loginData" :key="item.title" class="contentItem">
+          <svg-icon
+            v-if="item.isConnect"
+            style="
+              margin-right: 1rem;
+              width: 1.9rem;
+              height: 1.9rem;
+              color: red;
+            "
+            iconName="success"
+          ></svg-icon>
+          <svg-icon
+            style="margin-right: 0.8rem; width: 3rem; height: 2.7rem"
+            :iconName="item.icon"
+          ></svg-icon>
+          <span>{{ item.title }}</span>
+          <span
+            v-if="item.isConnect"
+            class="right"
+            style="font-size: 1.4rem; color: #e85e24"
+            >Connected</span
+          >
+          <o-button
+            v-if="!item.isConnect"
+            class="right"
+            width="8.6rem"
+            height="2.8rem"
+            boxShadow="0 0.1rem 0.3rem 0px #ec201e"
+            data-wallet="item.title"
+            @click="Connect(item.title)"
+          >
             <span class="s14">Connect</span>
           </o-button>
-
         </div>
       </div>
     </CustomPopup>
-    <CustomPopup v-if="!isWeb"
-                 ref="HistoryPopupRef">
-      <div slot="PoperContent"
-           style="padding-bottom:var(--bottom-nav-height)">
-        <History v-on:getHistoryInfo="getHistoryInfo"
-                 v-on:closeHistory="closeHistoryPopupClick()" />
+    <CustomPopup v-if="!isWeb" ref="HistoryPopupRef">
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <History
+          v-on:getHistoryInfo="getHistoryInfo"
+          v-on:closeHistory="closeHistoryPopupClick()"
+        />
       </div>
     </CustomPopup>
   </div>
@@ -199,30 +242,26 @@ import check from '../../util/check/check.js'
 
 export default {
   name: 'BottomNav',
-  props: {
-  },
+  props: {},
   components: {
     CustomPopup,
-    History
+    History,
   },
   data() {
-    return {
-
-    }
+    return {}
   },
   mounted() {
     var that = this
-    Middle.$on('connectWallet', state => {
+    Middle.$on('connectWallet', (state) => {
       if (state) {
         that.openLoginPop()
       }
     })
-    Middle.$on('showHistory', state => {
+    Middle.$on('showHistory', (state) => {
       if (state) {
         that.toHistory()
       }
     })
-
   },
   computed: {
     copyAddress() {
@@ -234,7 +273,7 @@ export default {
           isConnect: this.isLogin && check.checkIsMetaMask(),
           icon: 'metamask',
           title: 'MetaMask',
-        }
+        },
       ]
     },
     loginInfoData() {
@@ -242,18 +281,18 @@ export default {
         {
           icon: 'network',
           title: 'Network',
-          value: util.chainName('0', this.$store.state.web3.networkId)
+          value: util.chainName('0', this.$store.state.web3.networkId),
         },
         {
           icon: 'wallet',
           title: 'Wallet',
-          value: 'MetaMask'
+          value: 'MetaMask',
         },
         {
           icon: 'address',
           title: 'Address',
-          value: this.showAddress
-        }
+          value: this.showAddress,
+        },
       ]
     },
     orbiterInfoData() {
@@ -261,27 +300,31 @@ export default {
         {
           icon: 'book',
           title: 'Docs ',
-          value: 'https://docs.orbiter.finance/'
+          value: 'https://docs.orbiter.finance/',
         },
         {
           icon: 'github',
           title: 'Github ',
-          value: 'https://github.com/OrbiterCross'
+          value: 'https://github.com/OrbiterCross',
         },
         {
           icon: 'twitter',
           title: 'Twitter  ',
-          value: 'https://twitter.com/Orbiter_Finance'
+          value: 'https://twitter.com/Orbiter_Finance',
         },
         {
           icon: 'medium',
           title: 'Medium',
-          value: 'https://orbiter-finance.medium.com/'
+          value: 'https://orbiter-finance.medium.com/',
         },
       ]
     },
     isLogin() {
-      return this.$store.state.web3.isInstallMeta && this.$store.state.web3.isInjected && this.$store.state.web3.localLogin
+      return (
+        this.$store.state.web3.isInstallMeta &&
+        this.$store.state.web3.isInjected &&
+        this.$store.state.web3.localLogin
+      )
     },
     isWeb() {
       if (this.$store.state.innerWH.innerWidth > 10000) {
@@ -299,8 +342,7 @@ export default {
       return ''
     },
   },
-  watch: {
-  },
+  watch: {},
   methods: {
     stopPenetrate(e) {
       e.stopPropagation
@@ -328,8 +370,14 @@ export default {
         })
       }
     },
+    openTerms() {
+      window.open(
+        'https://get.orbiter.finance/Orbiter_Finance_Terms_of_Use.pdf',
+        '_blank'
+      )
+    },
     JumpToMedia(e) {
-      window.open(e, '_blank');
+      window.open(e, '_blank')
     },
     async disconnect() {
       // await window.ethereum.request({
@@ -359,54 +407,54 @@ export default {
       }
     },
     showOrbiterInfoPopupClick() {
-      this.$refs.OrbiterInfo.showCustom();
+      this.$refs.OrbiterInfo.showCustom()
     },
     closeOrbiterInfoPop() {
-      this.$refs.OrbiterInfo.maskClick();
+      this.$refs.OrbiterInfo.maskClick()
     },
     // open pop
     openLoginInfoPop() {
-      this.$refs.showLoginInfo.showCustom();
+      this.$refs.showLoginInfo.showCustom()
     },
     // close pop
     closeLoginInfoPop() {
-      this.$refs.showLoginInfo.maskClick();
+      this.$refs.showLoginInfo.maskClick()
     },
     // open pop
     openLoginPop() {
-      this.$refs.showLogin.showCustom();
+      this.$refs.showLogin.showCustom()
     },
     // close pop
     closeLoginPop() {
-      this.$refs.showLogin.maskClick();
+      this.$refs.showLogin.maskClick()
     },
     //open history
     showHistoryPopupClick() {
-      this.$refs.HistoryPopupRef.showCustom();
+      this.$refs.HistoryPopupRef.showCustom()
     },
     //close history
     closeHistoryPopupClick() {
-      this.$refs.HistoryPopupRef.maskClick();
+      this.$refs.HistoryPopupRef.maskClick()
     },
     //copy success
     onCopy() {
       this.$notify({
         title: 'copy success',
         type: 'success',
-        duration: 2000
-      });
+        duration: 2000,
+      })
     },
     //copy error
     onError() {
       this.$notify.error({
         title: 'copy faild',
-        duration: 2000
-      });
+        duration: 2000,
+      })
     },
     loginBoxIconName() {
       return check.checkIsMetaMask() ? 'metamask' : 'tokenLogo'
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -541,6 +589,12 @@ export default {
         color: #e85e24;
       }
     }
+    .terms {
+      text-align: center;
+      font-size: 1.4rem;
+      color: black;
+      text-decoration: underline;
+    }
   }
   .LoginStatePopContentView {
     height: 30rem;
@@ -643,4 +697,3 @@ export default {
   }
 }
 </style>
-
