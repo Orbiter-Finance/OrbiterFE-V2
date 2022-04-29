@@ -45,7 +45,6 @@ async function getTransactionListEtherscan(
     console.log('ethScanStartBlockError =', error)
     throw error.message
   }
-
   let ethscanReq = {
     maker: userAddress,
     startblock: ethScanStartBlock,
@@ -367,7 +366,6 @@ async function getTransactionListBoba(
         let etherscanInfo = res.result[i]
         let txinfo = TxInfo.getTxInfoWithBoba(etherscanInfo)
         let isMatch = false
-
         for (let j = 0; j < makerList.length; j++) {
           let makerInfo = makerList[j]
           let _makerAddress = makerInfo.makerAddress.toLowerCase()
@@ -431,8 +429,6 @@ async function getTransactionListBoba(
     console.warn('boba error =', error)
     throw error.message
   }
-  console.log(`L1FromTxList = `, L1FromTxList)
-  console.log(`L1ToTxList = `, L1ToTxList)
   return { FromTxList: L1FromTxList, ToTxList: L1ToTxList }
 }
 
@@ -1329,8 +1325,7 @@ export default {
               needTimeStamp,
               makerList
             )
-
-          originTxList[chainID] = {
+            originTxList[chainID] = {
             fromList: L1FromTxList,
             toList: L1ToTxList,
           }
@@ -1500,6 +1495,7 @@ export default {
       }
       // 13 & 513 boba
       if (supportChains.indexOf(13) > -1 || supportChains.indexOf(513) > -1) {
+
         allPromises.push(async () => {
           let chainID = supportChains.indexOf(13) > -1 ? 13 : 513
           const { FromTxList, ToTxList } = await getTransactionListBoba(
@@ -1521,7 +1517,7 @@ export default {
         try {
           await Promise.all(allPromises.map((item) => item()))
         } catch (err) {
-          console.warn('警告：', err)
+          console.warn('allPromises exec error：', err)
           if (index < maxRetryCount) {
             await util.sleep(2000)
           } else {
@@ -1632,7 +1628,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
         let userAmount = new BigNumber(realFromAmount).dividedBy(
           new BigNumber(10 ** fromTxInfo.tokenDecimal)
         )
-
+   
         if (!origin[toChainID] || origin[toChainID].toList.length === 0) {
           transaction = {
             fromChainID: Number(fromChainID),
@@ -1652,10 +1648,11 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           continue
         }
         let toList = origin[toChainID].toList
+      
         let isMatch = false
         for (let z = 0; z < toList.length; z++) {
           let toTxInfo = toList[z]
-
+        
           let nonce = 0
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             nonce = toTxInfo.memo
@@ -1675,7 +1672,6 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           ) {
             continue
           }
-
           let makerAddress = fromTxInfo.to
           let txChainIDS = [Number(fromChainID), Number(toChainID)]
 
@@ -1755,7 +1751,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
             useMakerInfo,
             true
           )
-
+         
           let toAmount =
             toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
               ? orbiterCore.getTAmountFromRAmount(
@@ -1772,7 +1768,6 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce
           }
-
           if (toAmount.toString() !== toTxInfo.value) {
             continue
           } else {
