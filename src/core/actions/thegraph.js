@@ -1326,39 +1326,39 @@ const nowMakerList = [
       },
     ],
   },
-  {
-    makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
-    c1ID: 2,
-    c2ID: 11,
-    c1Name: 'arbitrum',
-    c2Name: 'dydx',
-    t1Address: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
-    t2Address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    tName: 'USDC',
-    c1MinPrice: 0.1,
-    c1MaxPrice: 500,
-    c2MinPrice: 0.1,
-    c2MaxPrice: 500,
-    precision: 6,
-    c1AvalibleDeposit: 1000,
-    c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.2,
-    c2TradingFee: 5.5,
-    c1GasFee: 1,
-    c2GasFee: 3,
-    c1AvalibleTimes: [
-      {
-        startTime: 1642393801,
-        endTime: 99999999999999,
-      },
-    ],
-    c2AvalibleTimes: [
-      {
-        startTime: 1642393801,
-        endTime: 99999999999999,
-      },
-    ],
-  },
+  // {
+  //   makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
+  //   c1ID: 2,
+  //   c2ID: 11,
+  //   c1Name: 'arbitrum',
+  //   c2Name: 'dydx',
+  //   t1Address: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
+  //   t2Address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  //   tName: 'USDC',
+  //   c1MinPrice: 0.1,
+  //   c1MaxPrice: 500,
+  //   c2MinPrice: 0.1,
+  //   c2MaxPrice: 500,
+  //   precision: 6,
+  //   c1AvalibleDeposit: 1000,
+  //   c2AvalibleDeposit: 1000,
+  //   c1TradingFee: 1.2,
+  //   c2TradingFee: 5.5,
+  //   c1GasFee: 1,
+  //   c2GasFee: 3,
+  //   c1AvalibleTimes: [
+  //     {
+  //       startTime: 1642393801,
+  //       endTime: 99999999999999,
+  //     },
+  //   ],
+  //   c2AvalibleTimes: [
+  //     {
+  //       startTime: 1642393801,
+  //       endTime: 99999999999999,
+  //     },
+  //   ],
+  // },
 ]
 
 export default {
