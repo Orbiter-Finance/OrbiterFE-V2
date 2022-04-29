@@ -4,29 +4,70 @@ import { cacheMemoryGet, cacheMemorySet } from '../../util/cache/memory'
 import Axios from '../utils/Axios'
 import config from '../utils/config'
 Axios.axios()
-
+import { GraphQLClient, gql } from 'graphql-request'
 export default {
-  getTxByHash:async function (hash, chainId) {
-    const api = chainId == 513 ? 'https://blockexplorer.rinkeby.boba.network/api' : 'https://blockexplorer.boba.network/api';
-    const resp = await axios.get(api, {
-      params: {
-        module: 'transaction',
-        action: 'gettxinfo',
-        txhash: hash
+  async queryAddressTrxList(graphQLClient, address) {
+    const query = gql`
+      query ($hash: AddressHash!) {
+        address(hash: $hash) {
+          transactions(first: 5) {
+            edges {
+              node {
+                nonce,
+                hash
+              }
+            }
+          }
+        }
       }
-    }).then(result => result.data)
-    return resp.result;
+    `
+
+    const resp = await graphQLClient.request(query, {
+      hash: address,
+    })
+    if (
+      resp.address &&
+      resp.address.transactions &&
+      resp.address.transactions.edges
+    ) {
+      return resp.address.transactions.edges.map((item) => {
+        return {
+          hash: item.node.hash,
+          nonce: item.node.nonce
+        }
+      })
+    }
   },
-   getTxList: async function  (req, chainId, isTokentx = true){
-    const trxList = [];
-    const apiUrl = chainId == 513 ? 'https://api-watcher.rinkeby.boba.network/get.l2.transactions' : 'https://api-watcher.mainnet.boba.network/get.l2.transactions'
-    const list = await axios.post(apiUrl, {"address":req.maker,"fromRange":0,"toRange":1000}).then(res=> res.data)
-    for (const row of list) {
-      const trx = await this.getTxByHash(row.hash, chainId);
+  getTxByHash: async function (hash, chainId) {
+    const api =
+      chainId == 513
+        ? 'https://blockexplorer.rinkeby.boba.network/api'
+        : 'https://blockexplorer.boba.network/api'
+    const resp = await axios
+      .get(api, {
+        params: {
+          module: 'transaction',
+          action: 'gettxinfo',
+          txhash: hash,
+        },
+      })
+      .then((result) => result.data)
+    return resp.result
+  },
+  getTxList: async function (req, chainId, isTokentx = true) {
+    const endpoint = chainId == 513 ? 'https://blockexplorer.rinkeby.boba.network/graphiql' : 'https://blockexplorer.boba.network/graphiql'
+    const graphQLClient = new GraphQLClient(endpoint, {})
+    const result = await this.queryAddressTrxList(
+      graphQLClient,
+      req.maker
+    )
+    const trxList = []
+    for (const row of result) {
+      const trx = await this.getTxByHash(row.hash, chainId)
       if (trx) {
         trxList.push({
           blockNumber: trx.blockNumber,
-          timeStamp:Number(trx.timeStamp),
+          timeStamp: Number(trx.timeStamp),
           hash: trx.hash,
           blockHash: trx.blockHash,
           transactionIndex: trx.transactionIndex,
@@ -35,19 +76,18 @@ export default {
           value: trx.value,
           gas: trx.gas,
           gasPrice: trx.gasPrice,
-          nonce: trx.nonce,
+          nonce:row.nonce,
           isError: '0',
           txreceipt_status: '',
           input: trx.input,
           contractAddress: '',
           cumulativeGasUsed: '',
-          gasUsed: row.gasUsed,
+          gasUsed: trx.gasUsed,
           confirmations: trx.confirmations,
         })
       }
-      
     }
-    return trxList;
+    return trxList
   },
   getTransationList: async function (req, chainId) {
     // const tokentxList = await this.getTxList(req, chainId)
@@ -60,7 +100,7 @@ export default {
       // tokentxList.result.push(item)
     }
     return {
-      result: txList
+      result: txList,
     }
   },
   getBlockNumberWithTimeStamp: function (req, chainId) {

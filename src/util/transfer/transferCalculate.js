@@ -191,6 +191,7 @@ export default {
       9: 75000,
       10: 28000,
       11: 100000,
+      13: 646496,
       22: 810000,
       33: 100,
       66: 1500,
@@ -199,6 +200,7 @@ export default {
       99: 75000,
       510: 16000,
       511: 100000,
+      513: 646496
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -316,7 +318,7 @@ export default {
       timeSpent = 15
     }
     if (fromChainID === 13 || fromChainID === 513) {
-      timeSpent = 15
+      timeSpent = 20 // boba 转出预估时间
     }
     if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
       timeSpent += 30
@@ -347,7 +349,7 @@ export default {
     }
 
     if (toChainID === 13 || toChainID === 513) {
-      timeSpent += 5
+      timeSpent += 20
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -471,6 +473,10 @@ export default {
       if (toChainID === 11 || toChainID === 511) {
         // eth -> dydx
         return ' 19.95min'
+      }
+      if (toChainID === 13 || toChainID === 513) {
+        // eth -> dydx
+        return ' 10 min'
       }
     }
     if (fromChainID === 13 || fromChainID === 513) {
