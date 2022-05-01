@@ -1030,7 +1030,7 @@ function ScanMakerTransfer(
         return
       }
       if (error) {
-        console.log('Error =', error)
+        console.warn('tokenContract getPastEvents-Transfer Error =', error)
       } else {
         for (let index = 0; index < events.length; index++) {
           const txinfo = events[index]
