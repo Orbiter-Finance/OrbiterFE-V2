@@ -110,6 +110,8 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
+          const timeStr = time.toString()
+          const realTimeStr = timeStr.slice(0, 10)
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -118,7 +120,9 @@ async function confirmUserTransaction(
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
             zk_amountToSend,
-            zk_nonce
+            realTimeStr,
+            zk_nonce,
+
           )
           return
         }
@@ -173,6 +177,8 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', block.timestamp)
+          const timeStr = block.timestamp.toString()
+          const realTimeStr = timeStr.slice(0, 10)
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -181,7 +187,9 @@ async function confirmUserTransaction(
             makerInfo.makerAddress,
             store.state.web3.coinbase,
             sn_amountToSend,
-            sn_nonce
+            realTimeStr,
+            sn_nonce,
+
           )
           return
         }
@@ -233,6 +241,8 @@ async function confirmUserTransaction(
             'updateProceedingUserTransferTimeStamp',
             transfer.timestamp
           )
+          const timeStr = transfer.timestamp.toString()
+          const realTimeStr = timeStr.slice(0, 10)
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -240,7 +250,8 @@ async function confirmUserTransaction(
             makerInfo,
             makerInfo.makerAddress,
             store.state.web3.coinbase,
-            imx_amountToSend
+            imx_amountToSend,
+            realTimeStr,
           )
           return
         }
@@ -305,6 +316,8 @@ async function confirmUserTransaction(
               return
             }
             store.commit('updateProceedingUserTransferTimeStamp', time)
+            const timeStr = time.toString()
+            const realTimeStr = timeStr.slice(0, 10)
             storeUpdateProceedState(3)
             startScanMakerTransfer(
               txHash,
@@ -313,6 +326,7 @@ async function confirmUserTransaction(
               lpTransaction.receiverAddress,
               lpTransaction.senderAddress,
               lp_amountToSend,
+              realTimeStr,
               lp_nonce
             )
             return
@@ -369,6 +383,8 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
+          const timeStr = time.toString()
+          const realTimeStr = timeStr.slice(0, 10)
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -377,6 +393,7 @@ async function confirmUserTransaction(
             zkspaceTransactionData.data.to,
             zkspaceTransactionData.data.from,
             zkspace_amountToSend,
+            realTimeStr,
             zkspace_nonce
           )
           return
@@ -416,10 +433,10 @@ async function confirmUserTransaction(
     )
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
 
     // ERC20's transfer input length is 138(include 0x), when the length > 138, it is cross address transfer
@@ -488,6 +505,9 @@ async function confirmUserTransaction(
         toAddress = transferExt.value
       }
 
+      const timeStr = trxConfirmations.timestamp.toString()
+      const realTimeStr = timeStr.slice(0, 10)
+
       startScanMakerTransfer(
         txHash,
         makerTransferChainID,
@@ -495,6 +515,7 @@ async function confirmUserTransaction(
         startScanMakerTransferFromAddress,
         toAddress,
         amountToSend,
+        realTimeStr,
         nonce,
         trx.from
       )
@@ -515,7 +536,8 @@ function ScanZKMakerTransfer(
   makerInfo,
   from,
   to,
-  amount
+  amount,
+  timeStampStr
 ) {
   setTimeout(async () => {
     if (!isCurrentTransaction(transactionID)) {
@@ -669,6 +691,7 @@ function startScanMakerTransfer(
   from,
   to,
   amount,
+  timeStampStr,//only for second,not for millisecond
   nonce,
   ownerAddress = ''
 ) {
@@ -682,7 +705,8 @@ function startScanMakerTransfer(
       makerInfo,
       from,
       to,
-      amount
+      amount,
+      timeStampStr
     )
   }
   if (localChainID === 12 || localChainID === 512) {
@@ -692,7 +716,8 @@ function startScanMakerTransfer(
       makerInfo,
       from,
       to,
-      amount
+      amount,
+      timeStampStr
     )
   }
   const web3 = localWeb3(localChainID)
@@ -708,6 +733,7 @@ function startScanMakerTransfer(
     to,
     amount,
     nonce,
+    timeStampStr,
     ownerAddress
   )
 }
@@ -722,6 +748,7 @@ function ScanMakerTransfer(
   to,
   amount,
   nonce,
+  timeStampStr,
   ownerAddress = ''
 ) {
   const duration = 10 * 1000
