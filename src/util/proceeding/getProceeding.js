@@ -902,9 +902,9 @@ function ScanMakerTransfer(
           if (
             lpTransaction.txType == 'TRANSFER' &&
             lpTransaction.senderAddress.toLowerCase() ==
-              makerInfo.makerAddress.toLowerCase() &&
+            makerInfo.makerAddress.toLowerCase() &&
             lpTransaction.receiverAddress.toLowerCase() ==
-              store.state.proceeding.userTransfer.from.toLowerCase() &&
+            store.state.proceeding.userTransfer.from.toLowerCase() &&
             lpTransaction.symbol == 'ETH' &&
             lpTransaction.amount == rAmount &&
             lpTransaction.memo == memo
@@ -1059,7 +1059,9 @@ function ScanMakerTransfer(
       if (error) {
         console.warn('tokenContract getPastEvents-Transfer Error =', error)
       } else {
-        for (let index = 0; index < events.length; index++) {
+        console.warn(currentBlock, '------currentBlock-----')
+        console.warn(events, '--------events-------')
+        for (let index = events.length - 1; index >= 0; index--) {
           const txinfo = events[index]
           if (
             checkData(
@@ -1116,10 +1118,10 @@ async function confirmMakerTransaction(
     }
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
     if (trxConfirmations.confirmations >= confirmations) {
       console.log(
