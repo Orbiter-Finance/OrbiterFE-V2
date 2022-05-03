@@ -4,8 +4,9 @@ import thirdapi from '../../core/actions/thirdapi'
 import getTransactionList from '../../core/routes/transactionList'
 import config from '../../core/utils/config'
 import orbiterCore from '../../orbiterCore'
-import { store } from '../../store'
 import util from '../../util/util'
+import zkspace from '../../core/actions/zkspace'
+import { store } from '../../store'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
@@ -20,7 +21,7 @@ import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
-import zkspace from '../../core/actions/zkspace'
+import { getTimeStampInfo } from './get_tx_by_hash'
 
 let startBlockNumber = ''
 
@@ -111,7 +112,8 @@ async function confirmUserTransaction(
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
           const timeStr = time.toString()
-          const realTimeStr = timeStr.slice(0, 10)
+          let realTimeStr = timeStr.slice(0, 10)
+          realTimeStr = Number(realTimeStr - 600).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -178,7 +180,8 @@ async function confirmUserTransaction(
           }
           store.commit('updateProceedingUserTransferTimeStamp', block.timestamp)
           const timeStr = block.timestamp.toString()
-          const realTimeStr = timeStr.slice(0, 10)
+          let realTimeStr = timeStr.slice(0, 10)
+          realTimeStr = Number(realTimeStr - 600).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -242,7 +245,8 @@ async function confirmUserTransaction(
             transfer.timestamp
           )
           const timeStr = transfer.timestamp.toString()
-          const realTimeStr = timeStr.slice(0, 10)
+          let realTimeStr = timeStr.slice(0, 10)
+          realTimeStr = Number(realTimeStr - 600).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -317,7 +321,8 @@ async function confirmUserTransaction(
             }
             store.commit('updateProceedingUserTransferTimeStamp', time)
             const timeStr = time.toString()
-            const realTimeStr = timeStr.slice(0, 10)
+            let realTimeStr = timeStr.slice(0, 10)
+            realTimeStr = Number(realTimeStr - 600).toString()
             storeUpdateProceedState(3)
             startScanMakerTransfer(
               txHash,
@@ -384,7 +389,8 @@ async function confirmUserTransaction(
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
           const timeStr = time.toString()
-          const realTimeStr = timeStr.slice(0, 10)
+          let realTimeStr = timeStr.slice(0, 10)
+          realTimeStr = Number(realTimeStr - 600).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -1041,7 +1047,6 @@ function ScanMakerTransfer(
     }
 
     const currentBlock = await web3.eth.getBlockNumber()
-
     const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
     // Generate filter options
     const options = {
@@ -1052,37 +1057,39 @@ function ScanMakerTransfer(
       fromBlock: currentBlock - 100,
       toBlock: 'latest',
     }
-    tokenContract.getPastEvents('Transfer', options, function (error, events) {
+    tokenContract.getPastEvents('Transfer', options, async function (error, events) {
       if (!isCurrentTransaction(transactionID)) {
         return
       }
       if (error) {
         console.warn('tokenContract getPastEvents-Transfer Error =', error)
       } else {
-        console.warn(currentBlock, '------currentBlock-----')
-        console.warn(events, '--------events-------')
         for (let index = events.length - 1; index >= 0; index--) {
+
+
           const txinfo = events[index]
-          if (
-            checkData(
-              txinfo.returnValues.from,
-              txinfo.returnValues.to,
-              txinfo.returnValues.amount,
-              txinfo.address
-            )
-          ) {
-            store.commit(
-              'updateProceedingMakerTransferTxid',
-              txinfo.transactionHash
-            )
-            storeUpdateProceedState(4)
-            confirmMakerTransaction(
-              transactionID,
-              localChainID,
-              makerInfo,
-              txinfo.transactionHash
-            )
-            return
+          if (checkData(
+            txinfo.returnValues.from,
+            txinfo.returnValues.to,
+            txinfo.returnValues.amount,
+            txinfo.address
+          )) {
+            let txTimeStamp = undefined;
+            txTimeStamp = await getTimeStampInfo(localChainID, txinfo.transactionHash, txinfo.blockNumber,)
+            if (!txTimeStamp || (txTimeStamp && timeStampStr < txTimeStamp)) {
+              store.commit(
+                'updateProceedingMakerTransferTxid',
+                txinfo.transactionHash
+              )
+              storeUpdateProceedState(4)
+              confirmMakerTransaction(
+                transactionID,
+                localChainID,
+                makerInfo,
+                txinfo.transactionHash
+              )
+              return
+            }
           }
         }
       }
