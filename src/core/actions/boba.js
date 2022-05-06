@@ -10,7 +10,7 @@ export default {
     const query = gql`
       query ($hash: AddressHash!) {
         address(hash: $hash) {
-          transactions(first: 5) {
+          transactions(first: 14) {
             edges {
               node {
                 nonce,
@@ -83,7 +83,7 @@ export default {
           contractAddress: '',
           cumulativeGasUsed: '',
           gasUsed: trx.gasUsed,
-          confirmations: trx.confirmations,
+          confirmations:Number(trx.confirmations),
         })
       }
     }

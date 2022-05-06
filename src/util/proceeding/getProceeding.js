@@ -21,6 +21,7 @@ import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
 import zkspace from '../../core/actions/zkspace'
+import { BobaListen } from '../boba/boba_listen'
 
 let startBlockNumber = ''
 
@@ -933,6 +934,51 @@ function ScanMakerTransfer(
         }
       )
       return
+    }
+
+    // boba
+    if (localChainID == 13 || localChainID == 513) {
+      new BobaListen(
+        localChainID,
+        config.boba,
+        to,
+        async () => startBlockNumber
+      )
+        .setTransferBreaker(() => isCurrentTransaction(transactionID))
+        .transfer(
+          { from, to },
+          {
+            onReceived: (transaction) => {
+              if (
+                checkData(
+                  transaction.from,
+                  transaction.to,
+                  transaction.value,
+                  ''
+                )
+              ) {
+                store.commit(
+                  'updateProceedingMakerTransferTxid',
+                  transaction.hash
+                )
+                storeUpdateProceedState(4)
+              }
+            },
+            onConfirmation: (transaction) => {
+              if (
+                checkData(
+                  transaction.from,
+                  transaction.to,
+                  transaction.value,
+                  ''
+                )
+              ) {
+                storeUpdateProceedState(5)
+              }
+            },
+          },
+          1
+        )
     }
 
     // when is eth tokenAddress
