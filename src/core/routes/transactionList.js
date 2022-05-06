@@ -7,6 +7,7 @@ import {
 import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
 import metis from '../actions/metis'
+import boba from '../actions/boba'
 import etherscan from '../actions/etherscan'
 import immutablex from '../actions/immutablex'
 import loopring from '../actions/loopring'
@@ -44,7 +45,6 @@ async function getTransactionListEtherscan(
     console.log('ethScanStartBlockError =', error)
     throw error.message
   }
-
   let ethscanReq = {
     maker: userAddress,
     startblock: ethScanStartBlock,
@@ -229,8 +229,6 @@ async function getTransactionListArbitrum(
   return { ARFromTxList, ARToTxList }
 }
 
-
-
 async function getTransactionListMetis(
   userAddress,
   chainID,
@@ -332,6 +330,107 @@ async function getTransactionListMetis(
   return { MTFromTxList, MTToTxList }
 }
 
+// boba
+async function getTransactionListBoba(
+  userAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  const L1FromTxList = []
+  const L1ToTxList = []
+  let mtScanReq = {
+    timestamp: needTimeStamp,
+    closest: 'before',
+  }
+  let mtScanStartBlock = 0
+  // try {
+  //   let resp = await boba.getBlockNumberWithTimeStamp(mtScanReq, chainID)
+  //   if (resp.status === '1' && resp.message === 'OK') {
+  //     mtScanStartBlock = resp.result?.blockNumber
+  //   } else {
+  //     mtScanStartBlock = 0
+  //   }
+  // } catch (error) {
+  //   console.log('boba ScanStartBlockError =', error)
+  // }
+  let MtscanReq = {
+    maker: userAddress,
+    startblock: mtScanStartBlock,
+    endblock: 999999999,
+  }
+  try {
+    let res = await boba.getTransationList(MtscanReq, chainID)
+    for (const i in res.result) {
+      if (Object.hasOwnProperty.call(res.result, i)) {
+        let etherscanInfo = res.result[i]
+        let txinfo = TxInfo.getTxInfoWithBoba(etherscanInfo)
+        let isMatch = false
+        for (let j = 0; j < makerList.length; j++) {
+          let makerInfo = makerList[j]
+          let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+          if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+            continue
+          }
+
+          if (txinfo.tokenName !== makerInfo.tName) {
+            continue
+          }
+
+          let avalibleTimes =
+            chainID === makerInfo.c1ID
+              ? makerInfo.c1AvalibleTimes
+              : makerInfo.c2AvalibleTimes
+          for (let z = 0; z < avalibleTimes.length; z++) {
+            const avalibleTime = avalibleTimes[z]
+
+            if (
+              avalibleTime.startTime <= txinfo.timeStamp &&
+              avalibleTime.endTime >= txinfo.timeStamp
+            ) {
+              isMatch = true
+              break
+            }
+          }
+
+          if (!isMatch) {
+            continue
+          }
+          if (txinfo.from === _makerAddress) {
+            let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+            let nonce = 0
+            if (pText.state) {
+              nonce = pText.pText
+            }
+            if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+              L1ToTxList.push(txinfo)
+              break
+            }
+          } else if (txinfo.to === _makerAddress) {
+            if (orbiterCore.getToChainIDFromAmount(chainID, txinfo.value)) {
+              let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+              let arr2 = [
+                chainID,
+                orbiterCore.getToChainIDFromAmount(chainID, txinfo.value),
+              ]
+              if (judgeArrayEqualFun(arr1, arr2)) {
+                L1FromTxList.push(txinfo)
+                break
+              }
+            }
+          } else {
+            // doNothiing
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('boba error =', error)
+    throw error.message
+  }
+  return { FromTxList: L1FromTxList, ToTxList: L1ToTxList }
+}
 
 async function getTransactionListOptimitic(
   userAddress,
@@ -980,7 +1079,7 @@ async function getTransactionListLoopring(
             (lpTransaction.senderAddress.toLowerCase() ==
               userAddress.toLowerCase() ||
               lpTransaction.receiverAddress.toLowerCase() ==
-              userAddress.toLowerCase()) &&
+                userAddress.toLowerCase()) &&
             lpTransaction.symbol == 'ETH'
           ) {
             LPAllTxList.push(lpTransaction)
@@ -1227,7 +1326,6 @@ export default {
               needTimeStamp,
               makerList
             )
-
           originTxList[chainID] = {
             fromList: L1FromTxList,
             toList: L1ToTxList,
@@ -1396,6 +1494,22 @@ export default {
           }
         })
       }
+      // 13 & 513 boba
+      if (supportChains.indexOf(13) > -1 || supportChains.indexOf(513) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(13) > -1 ? 13 : 513
+          const { FromTxList, ToTxList } = await getTransactionListBoba(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
+          originTxList[chainID] = {
+            fromList: FromTxList,
+            toList: ToTxList,
+          }
+        })
+      }
 
       // waitting all promise end
       const maxRetryCount = 3
@@ -1403,7 +1517,7 @@ export default {
         try {
           await Promise.all(allPromises.map((item) => item()))
         } catch (err) {
-          console.warn(err)
+          console.warn('allPromises exec error：', err)
           if (index < maxRetryCount) {
             await util.sleep(2000)
           } else {
@@ -1504,9 +1618,9 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
             ? fromTxInfo.memo % 9000
             : orbiterCore.getToChainIDFromAmount(
-              Number(fromChainID),
-              fromTxInfo.value
-            )
+                Number(fromChainID),
+                fromTxInfo.value
+              )
         let realFromAmount = orbiterCore.getRAmountFromTAmount(
           Number(fromChainID),
           fromTxInfo.value
@@ -1534,6 +1648,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           continue
         }
         let toList = origin[toChainID].toList
+
         let isMatch = false
         for (let z = 0; z < toList.length; z++) {
           let toTxInfo = toList[z]
@@ -1557,7 +1672,6 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           ) {
             continue
           }
-
           let makerAddress = fromTxInfo.to
           let txChainIDS = [Number(fromChainID), Number(toChainID)]
 
@@ -1641,20 +1755,19 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           let toAmount =
             toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
               ? orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                '0'
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  '0'
+                ).tAmount
               : orbiterCore.getTAmountFromRAmount(
-                Number(toChainID),
-                realToAmount,
-                fromTxInfo.nonce.toString()
-              ).tAmount
+                  Number(toChainID),
+                  realToAmount,
+                  fromTxInfo.nonce.toString()
+                ).tAmount
 
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce
           }
-
           if (toAmount.toString() !== toTxInfo.value) {
             continue
           } else {
