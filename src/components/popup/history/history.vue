@@ -152,6 +152,8 @@ export default {
         return 'dydxlogo'
       } else if (chainID == '12' || chainID == '512') {
         return 'zkspacelogo'
+      } else if (chainID == '13' || chainID == '513') {
+        return 'bobalogo'
       } else {
         return 'ethlogo'
       }

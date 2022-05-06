@@ -69,6 +69,12 @@ export default {
     zksChainID: 13,
     zksrinkebyChainID: 133,
   },
+  boba: {
+    Mainnet: 'https://blockexplorer.boba.network/api',
+    Rinkeby: 'https://blockexplorer.rinkeby.boba.network/api',
+    chainID: '13',
+    rinkeyChainID: '513',
+  },
   L1: {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',
