@@ -339,10 +339,10 @@ async function getTransactionListBoba(
 ) {
   const L1FromTxList = []
   const L1ToTxList = []
-  let mtScanReq = {
-    timestamp: needTimeStamp,
-    closest: 'before',
-  }
+  // let mtScanReq = {
+  //   timestamp: needTimeStamp,
+  //   closest: 'before',
+  // }
   let mtScanStartBlock = 0
   // try {
   //   let resp = await boba.getBlockNumberWithTimeStamp(mtScanReq, chainID)
