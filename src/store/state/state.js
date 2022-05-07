@@ -53,6 +53,10 @@ const state = {
     rinkeby: [],
     mainnet: [],
   },
+  zksTokenList: {
+    rinkeby: [],
+    mainnet: [],
+  },
   transactionList: null,
   lpAccountInfo: null,
   lpApiKey: null,

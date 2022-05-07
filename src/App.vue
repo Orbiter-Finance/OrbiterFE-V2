@@ -20,6 +20,7 @@
 import TopNav from './components/nav/TopNav.vue'
 import BottomNav from './components/nav/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
+import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getTransactionList from './core/routes/transactionList'
 
 export default {
@@ -43,6 +44,7 @@ export default {
     this.getHistory()
 
     getZkToken.getSupportZKTokenList()
+    getZksToken.getSupportZksTokenList()
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {
         // console.log('==============')
