@@ -143,7 +143,9 @@
           v-if="
             !queryParams.fixed &&
             $store.state.transferData.toChainID != 11 &&
-            $store.state.transferData.toChainID != 511
+            $store.state.transferData.toChainID != 511 &&
+            $store.state.transferData.toChainID != 6 &&
+            $store.state.transferData.toChainID != 66
           "
           class="middleImge"
           @click="transfer_mid"
@@ -1255,7 +1257,11 @@ export default {
           makerInfo.c1ID == 11 ||
           makerInfo.c1ID == 511 ||
           makerInfo.c2ID == 11 ||
-          makerInfo.c2ID == 511
+          makerInfo.c2ID == 511 ||
+          makerInfo.c1ID == 6 ||
+          makerInfo.c1ID == 66 ||
+          makerInfo.c2ID == 6 ||
+          makerInfo.c2ID == 66
         ) {
           return
         }
