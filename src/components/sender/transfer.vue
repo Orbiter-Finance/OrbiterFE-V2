@@ -328,7 +328,7 @@ export default {
         // get rate
         const ethRate = await getExchangeToUsdRate()
         const selectTokenRate = await getExchangeToUsdRate(selectMakerInfo.tName)
-        // translate to selected tName
+        // translate eth to selected tName
         if (ethRate && selectTokenRate) {
           transferGasFee = selectTokenRate / ethRate * transferGasFee
         }
@@ -404,6 +404,7 @@ export default {
 
       let sources = getMapChainIds(query.sources)
       let dests = getMapChainIds(query.dests)
+
       // Tidy source(s) and dest(s)
       const tidyChains = (chainIds) => {
         const newChains = []
