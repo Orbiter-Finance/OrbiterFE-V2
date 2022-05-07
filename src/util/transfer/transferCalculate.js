@@ -144,7 +144,7 @@ export default {
         console.warn('getZKTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (util.isEthTokenAddress(fromTokenAddress) || isPolygon || isMetis) {//like polygon or metis
+    } else if (util.isEthTokenAddress(fromTokenAddress) || isPolygon || isMetis) {
       if (fromChainID == 9 || fromChainID == 99) {
         let loopringFee = await loopring.getTransferFee(
           store.state.web3.coinbase,
