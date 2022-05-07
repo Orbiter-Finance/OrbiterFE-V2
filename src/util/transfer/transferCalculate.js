@@ -79,8 +79,13 @@ const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
+
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
+    const isPolygon = (fromChainID == 6 || fromChainID == 66)
+      && fromTokenAddress == '0x0000000000000000000000000000000000001010'
+    const isMetis = (fromChainID == 10 || fromChainID == 510)
+      && fromTokenAddress == '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000'
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
@@ -128,7 +133,7 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
-    } else if (fromChainID === 12 || fromChainID === 512) {
+    } else if (fromChainID === 12 || fromChainID === 512) {//zkspace
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKTransferGasFee(
@@ -139,7 +144,7 @@ export default {
         console.warn('getZKTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (util.isEthTokenAddress(fromTokenAddress)) {
+    } else if (util.isEthTokenAddress(fromTokenAddress) || isPolygon || isMetis) {//like polygon or metis
       if (fromChainID == 9 || fromChainID == 99) {
         let loopringFee = await loopring.getTransferFee(
           store.state.web3.coinbase,

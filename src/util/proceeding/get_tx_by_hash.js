@@ -3,7 +3,7 @@ import config from '../../core/utils/config'
 import util from "../util"
 
 
-export async function getTimeStampInfo(chainId, hash,blockNo, count = 30) {
+export async function getTimeStampInfo(chainId, hash, blockNo, count = 30) {
     try {
         switch (chainId) {
             case 3:
@@ -11,10 +11,10 @@ export async function getTimeStampInfo(chainId, hash,blockNo, count = 30) {
                 return await zkSyncTimeStampInfo(chainId, hash)
             case 1:
             case 5:
-                return await ethOrRinkebyTimeStampInfo(chainId, hash)
+                return await ethOrRinkebyTimeStampInfo(chainId, blockNo)
             case 2:
             case 22:
-                return await arbitrumTimeStampInfo(chainId, hash)
+                return await arbitrumTimeStampInfo(chainId, blockNo)
             case 6:
             case 66:
                 return await polygonTimeStampInfo(chainId, blockNo)
@@ -28,31 +28,33 @@ export async function getTimeStampInfo(chainId, hash,blockNo, count = 30) {
         console.warn(`count`, count)
         if (count >= 0) {
             await util.sleep(1000)
-            return await getTimeStampInfo(chainId, hash,blockNo, count)
+            return await getTimeStampInfo(chainId, hash, blockNo, count)
         } else {
-            throw new Error(`get timeStamp error --> chainId: ${chainId},hash: ${hash}`)
+            return undefined
         }
     }
 
 }
 
 
-async function ethOrRinkebyTimeStampInfo(chainId, hash) {
+async function ethOrRinkebyTimeStampInfo(chainId, blockNo) {
     const url = `${chainId === 5 ? config.etherscan.Rinkeby : config.etherscan.Mainnet
-        }?module=account&action=txlistinternal&txhash=${hash}&apikey=${process.env.VUE_APP_ETH_KEY}`
+        }?module=block&action=getblockreward&blockno=${blockNo}&apikey=${process.env.VUE_APP_ETH_KEY}`
+
     const response = await axios.get(url)
-    if (response.status === 200) {
-        return response.data[0]
+
+    if (response.status === 200 && response.data.status == 1) {
+        return response.data.result?.timeStamp
     } else {
         throw new Error("zkSynctimeStampInfo get error")
     }
 }
-async function arbitrumTimeStampInfo(chainId, hash) {
+async function arbitrumTimeStampInfo(chainId, blockNo) {
     const url = `${chainId === 22 ? config.arbitrum.Rinkeby : config.arbitrum.Mainnet
-        }?module=account&action=txlistinternal&txhash=${hash}&apikey=${process.env.VUE_APP_AR_KEY}`
+        }?module=block&action=getblockreward&blockno=${blockNo}&apikey=${process.env.VUE_APP_AR_KEY}`
     const response = await axios.get(url)
     if (response.status === 200) {
-        return response.data[0]
+        return response.data.result?.timeStamp
     } else {
         throw new Error("zkSynctimeStampInfo get error")
     }
@@ -61,9 +63,7 @@ async function polygonTimeStampInfo(chainId, blockNo) {
 
     const url = `${chainId === 66 ? config.polygon.Rinkeby : config.polygon.Mainnet
         }?module=block&action=getblockreward&blockno=${blockNo}&apikey=${process.env.VUE_APP_PO_KEY}`
-    console.warn(chainId, url, '----chainId---url--------')
     const response = await axios.get(url)
-    console.warn(chainId, response, '-----chainId---response-----')
     if (response.status === 200 && response.data.status == 1) {
         return response.data.result?.timeStamp
     } else {
@@ -86,8 +86,9 @@ async function zkSyncTimeStampInfo(chainId, hash) {
         : config.zkSync.Mainnet
         }/transactions/${hash} /data`
     const response = await axios.get(url)
-    if (response.status === 200) {
-        return response.data
+    if (response.status === 200 && response.data.status == 'success') {
+        return response.data.result && response.data.result.tx ?
+            Date.parse(new Date(response.data.result.tx.createdAt)) / 1000 : undefined
     } else {
         throw new Error("zkSynctimeStampInfo get error")
     }
