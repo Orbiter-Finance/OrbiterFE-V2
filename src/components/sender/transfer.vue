@@ -143,9 +143,7 @@
           v-if="
             !queryParams.fixed &&
             $store.state.transferData.toChainID != 11 &&
-            $store.state.transferData.toChainID != 511 &&
-            $store.state.transferData.toChainID != 6 &&
-            $store.state.transferData.toChainID != 66
+            $store.state.transferData.toChainID != 511
           "
           class="middleImge"
           @click="transfer_mid"
@@ -1257,11 +1255,7 @@ export default {
           makerInfo.c1ID == 11 ||
           makerInfo.c1ID == 511 ||
           makerInfo.c2ID == 11 ||
-          makerInfo.c2ID == 511 ||
-          makerInfo.c1ID == 6 ||
-          makerInfo.c1ID == 66 ||
-          makerInfo.c2ID == 6 ||
-          makerInfo.c2ID == 66
+          makerInfo.c2ID == 511
         ) {
           return
         }
@@ -1500,17 +1494,19 @@ export default {
           this.$store.getters.realSelectMakerInfo.tName,
           this.$store.state.web3.coinbase
         )
-        if (nonce > 8999) {
+        if (
+          !(await netStateBlock(this.$store.state.transferData.fromChainID))
+        ) {
           this.$notify.error({
-            title: `Address with the nonce over 9000 are not supported by Orbiter`,
+            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
             duration: 3000,
           })
           return
         }
 
-        if (!netStateBlock(this.$store.state.transferData.fromChainID)) {
+        if (nonce > 8999) {
           this.$notify.error({
-            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
+            title: `Address with the nonce over 9000 are not supported by Orbiter`,
             duration: 3000,
           })
           return
