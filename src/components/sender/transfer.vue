@@ -241,7 +241,7 @@ import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
-import { getExchangeToUsdRate } from "../../util/coinbase"
+import { asyncGetExchangeToUsdRate } from "../../util/coinbase"
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -316,23 +316,12 @@ export default {
       if (!this.fromBalance) {
         return '0'
       }
-
       let transferGasFee =
         await transferCalculate.getTransferGasLimit(
           this.$store.state.transferData.fromChainID,
           selectMakerInfo.makerAddress,
           selectMakerInfo.t1Address
         ) || 0
-
-      if (this.fromChainID != 3 || this.fromChainID != 33) {
-        // get rate
-        const ethRate = await getExchangeToUsdRate()
-        const selectTokenRate = await getExchangeToUsdRate(selectMakerInfo.tName)
-        // translate eth to selected tName
-        if (ethRate && selectTokenRate) {
-          transferGasFee = selectTokenRate / ethRate * transferGasFee
-        }
-      }
       let avalibleDigit = orbiterCore.getDigitByPrecision(
         selectMakerInfo.precision
       )
@@ -671,26 +660,6 @@ export default {
         return this.c1Balance
       }
     },
-    gasCost() {
-      if (
-        this.$store.state.transferData.fromChainID === 3 ||
-        this.$store.state.transferData.fromChainID === 33
-      ) {
-        if (this.$store.state.transferData.selectTokenInfo.token !== 'ETH') {
-          return (
-            Math.ceil(Number(this.$store.state.transferData.gasFee * 10)) / 10
-          ).toFixed(2)
-        }
-      }
-
-      return (
-        Math.ceil(
-          this.$store.state.transferData.gasFee *
-          this.$store.state.transferData.ethPrice *
-          10
-        ) / 10
-      ).toFixed(2)
-    },
     timeSpent() {
       return transferCalculate.transferSpentTime(
         this.$store.state.transferData.fromChainID,
@@ -728,28 +697,23 @@ export default {
       let savingTokenName = '$'
       return savingTokenName + savingValue.toFixed(2).toString()
     },
-    showSaveGas() {
-      // console.log(this.originGasCost, 'this.originGasCost')
-      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
-      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
-      let savingValue =
-        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      // console.log(savingValue, 'savingValue')
-      if (savingValue > 0) {
-        return true
-      }
-      return false
-    },
     gasSavingMin() {
-      let savingValue =
-        this.originGasCost -
-        this.gasTradingTotal * this.exchangeToUsdPrice -
-        this.gasCost.toString()
+      const gasCost = this.gasCost()
+      let savingValue = this.originGasCost -
+        this.gasTradingTotal * this.exchangeToUsdPrice - gasCost
       if (savingValue < 0) {
         savingValue = 0
       }
       let savingTokenName = '$'
       return savingTokenName + savingValue.toFixed(2).toString()
+    },
+    showSaveGas() {
+      let savingValue =
+        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      if (savingValue > 0) {
+        return true
+      }
+      return false
     },
     saveGasLoading() {
       return this.originGasLoading
@@ -1080,6 +1044,20 @@ export default {
       })
 
       this.updateOriginGasCost()
+      if (newValue) {
+        let that = this
+        this.gasCostLoading = true
+        transferCalculate
+          .transferSpentGas(this.$store.state.transferData.fromChainID)
+          .then((response) => {
+            this.$store.commit('updateTransferGasFee', response)
+            that.gasCostLoading = false
+          })
+          .catch((error) => {
+            that.gasCostLoading = false
+            console.log('GetGasFeeError =', error)
+          })
+      }
     },
     transferValue: function (newValue) {
       if (this.$store.state.transferData.transferValue !== newValue) {
@@ -1583,6 +1561,23 @@ export default {
       } catch (err) {
         alert(err.message)
       }
+    },
+    gasCost() {
+      if (
+        (this.$store.state.transferData.fromChainID === 3 ||
+          this.$store.state.transferData.fromChainID === 33)
+      ) {
+        const selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let transferGasFee = this.$store.state.transferData.gasFee
+        const selectTokenRate = asyncGetExchangeToUsdRate(selectMakerInfo.tName)
+        if (selectTokenRate > 0) {
+          // switch to usd
+          transferGasFee = transferGasFee / selectTokenRate
+        }
+        return Math.ceil(Number(transferGasFee * 10)) / 10
+      }
+      return Math.ceil(this.$store.state.transferData.gasFee *
+        this.$store.state.transferData.ethPrice * 10) / 10
     },
   },
 }

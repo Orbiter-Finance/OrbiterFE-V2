@@ -82,10 +82,10 @@ export default {
 
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
-    const isPolygon = (fromChainID == 6 || fromChainID == 66)
-      && fromTokenAddress == '0x0000000000000000000000000000000000001010'
-    const isMetis = (fromChainID == 10 || fromChainID == 510)
-      && fromTokenAddress == '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000'
+    const isPolygon = (fromChainID == 6 || fromChainID == 66)//if transfer matic,need to consider reduce matic
+      && fromTokenAddress == '0x0000000000000000000000000000000000001010' //matic token address
+    const isMetis = (fromChainID == 10 || fromChainID == 510)//if transfer metis,need to consider reduce metis
+      && fromTokenAddress == '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000'  //metis token address
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
@@ -136,7 +136,7 @@ export default {
     } else if (fromChainID === 12 || fromChainID === 512) {//zkspace
       let transferFee = 0
       try {
-        transferFee = await zkspace.getZKTransferGasFee(
+        transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
           store.state.web3.coinbase
         )
@@ -279,7 +279,7 @@ export default {
       let selectMakerInfo = store.getters.realSelectMakerInfo
       let transferFee = 0
       try {
-        transferFee = await zkspace.getZKTransferGasFee(
+        transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
           store.state.web3.coinbase
             ? store.state.web3.coinbase
@@ -600,8 +600,6 @@ export default {
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
       let transferAddress = selectMakerInfo.makerAddress
-        ? selectMakerInfo.makerAddress
-        : null
       if (transferAddress) {
         const zkWithDrawFee = await syncHttpProvider.getTransactionFee(
           'Withdraw',
@@ -841,24 +839,20 @@ export default {
       try {
         let selectMakerInfo = store.getters.realSelectMakerInfo
         let balanceInfo = await zkspace.getZKspaceBalance(zkReq)
-        if (
-          !balanceInfo ||
-          !balanceInfo.length ||
-          balanceInfo.findIndex((item) => item.id == 0) == -1
-        ) {
+        if (!balanceInfo) {
           return 0
         }
-        let defaultIndex = balanceInfo.findIndex((item) => item.id == 0)
-        if (defaultIndex < 0) {
+        const zksTokenInfos = localChainID === 12 ? store.state.zksTokenList.mainnet
+          : store.state.zksTokenList.rinkeby
+        let tokenIndex = zksTokenInfos.findIndex(item => item.address == tokenAddress)
+        let defaultIndex = balanceInfo.findIndex((item) => item.id == zksTokenInfos[tokenIndex].id)
+        if (defaultIndex == -1) {
           return 0
         }
-
-        const balances =
-          balanceInfo[defaultIndex].amount * 10 ** selectMakerInfo.precision
-        return balances
+        return balanceInfo[defaultIndex].amount * 10 ** selectMakerInfo.precision
       } catch (error) {
-        console.log('error =', error)
-        throw 'getZKBalanceError'
+        console.log('getZKSBalanceError =', error.message)
+        throw new Error(`getZKSBalanceError,${error.message}`)
       }
     } else {
       let balance = 0

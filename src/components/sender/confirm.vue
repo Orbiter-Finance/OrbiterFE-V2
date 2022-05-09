@@ -252,7 +252,7 @@ export default {
             ? config.ZKSpace.zksrinkebyChainID
             : config.ZKSpace.zksChainID
 
-        let fee = await zkspace.getZKTransferGasFee(fromChainID, walletAccount)
+        let fee = await zkspace.getZKSpaceTransferGasFee(fromChainID, walletAccount)
 
         const transferFee = zksync.utils.closestPackableTransactionFee(
           ethers.utils.parseUnits(fee.toString(), 18)
