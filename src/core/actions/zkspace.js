@@ -221,13 +221,14 @@ export default {
       }
     }
   },
-  async getL2SigTwoAndPK(signer, accountInfo, selectMakerInfo, transferValue, fee, zksChainID) {
+  async getL2SigTwoAndPK(signer, accountInfo, selectMakerInfo, transferValue, fee, zksChainID, tokenInfo) {
+
     try {
       const l2MsgParams = {
         accountId: accountInfo.id,
         to: selectMakerInfo.makerAddress,
-        tokenSymbol: 'ETH',
-        tokenAmount: ethers.utils.formatUnits(transferValue, 18),
+        tokenSymbol: tokenInfo ? tokenInfo.symbol : 'ETH',
+        tokenAmount: ethers.utils.formatUnits(transferValue, tokenInfo.decimals),
         feeSymbol: 'ETH',
         fee: fee.toString(),
         zksChainID,

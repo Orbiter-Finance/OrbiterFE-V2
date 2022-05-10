@@ -738,48 +738,30 @@ export default {
         this.initChainArray()
       }
     },
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
-      if (!newValue || newValue === '0x') {
-        this.c1Balance = 0
-        this.c2Balance = 0
-      }
+    '$store.state.web3.coinbase': async function (newValue, oldValue) {
       if (oldValue !== newValue && newValue !== '0x') {
-        this.c1Balance = null
-        this.c2Balance = null
-        let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
-        transferCalculate
-          .getTransferBalance(
+        try {
+          this.c1Balance = null
+          this.c2Balance = null
+          let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+          const c1Response = await transferCalculate.getTransferBalance(
             selectMakerInfo.c1ID,
             selectMakerInfo.t1Address,
             selectMakerInfo.tName,
             this.$store.state.web3.coinbase
           )
-          .then((response) => {
-            this.c1Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
-          })
-          .catch((error) => {
-            console.log(error)
-            return
-          })
-        transferCalculate
-          .getTransferBalance(
+          this.c1Balance = (c1Response / 10 ** selectMakerInfo.precision).toFixed(6)
+          const c2Response = await transferCalculate.getTransferBalance(
             selectMakerInfo.c2ID,
             selectMakerInfo.t2Address,
             selectMakerInfo.tName,
             this.$store.state.web3.coinbase
           )
-          .then((response) => {
-            this.c2Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+          this.c2Balance = (c2Response / 10 ** selectMakerInfo.precision).toFixed(6)
+        } catch (error) {
+          console.error(`get balance error ${error.message}`)
+          return
+        }
       } else {
         this.c1Balance = 0
         this.c2Balance = 0

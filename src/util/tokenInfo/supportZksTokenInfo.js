@@ -31,7 +31,7 @@ async function getAllZksTokenList(localChainID) {
             if (zksList.length !== 100) {
                 isContiue = false
             } else {
-                startID = result.result.list[99].id + 1
+                startID = zksList[99].id + 1
             }
             zksTokenAllList = zksTokenAllList.concat(zksList)
         }

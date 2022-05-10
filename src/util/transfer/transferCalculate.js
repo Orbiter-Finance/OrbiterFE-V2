@@ -133,17 +133,6 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
-    } else if (fromChainID === 12 || fromChainID === 512) {//zkspace
-      let transferFee = 0
-      try {
-        transferFee = await zkspace.getZKSpaceTransferGasFee(
-          fromChainID,
-          store.state.web3.coinbase
-        )
-      } catch (error) {
-        console.warn('getZKTransferGasFeeError =', error)
-      }
-      return transferFee
     } else if (util.isEthTokenAddress(fromTokenAddress) || isPolygon || isMetis) {
       if (fromChainID == 9 || fromChainID == 99) {
         let loopringFee = await loopring.getTransferFee(
@@ -151,6 +140,18 @@ export default {
           fromChainID
         )
         return loopringFee / 10 ** 18
+      }
+      if (fromChainID === 12 || fromChainID === 512) {//zkspace
+        let transferFee = 0
+        try {
+          transferFee = await zkspace.getZKSpaceTransferGasFee(
+            fromChainID,
+            store.state.web3.coinbase
+          )
+        } catch (error) {
+          console.warn('getZKTransferGasFeeError =', error)
+        }
+        return transferFee
       }
       const web3 = localWeb3(fromChainID)
       if (web3) {
