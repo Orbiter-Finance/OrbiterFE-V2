@@ -215,9 +215,7 @@ export default {
         const zksTokenInfos = fromChainID === 12 ? this.$store.state.zksTokenList.mainnet
           : this.$store.state.zksTokenList.rinkeby
         const tokenAddress = fromChainID == selectMakerInfo.c1ID ? selectMakerInfo.t1Address : selectMakerInfo.t2Address
-        const tokenIndex = zksTokenInfos.findIndex(item => item.address == tokenAddress)
-        const tokenInfo = tokenIndex ? zksTokenInfos[tokenIndex] : null
-
+        const tokenInfo = zksTokenInfos.find(item => item.address == tokenAddress)
         const { pubKey, l2SignatureOne } = zkspace.getL2SigOneAndPK(
           privateKey,
           accountInfo,

@@ -21,7 +21,14 @@ export default {
       state.zksTokenList.rinkeby = obj.tokenList
     }
   },
-  
+  updateLpTokenList(state, obj) {
+    if (obj.chainID === 9) {
+      state.lpTokenList.mainnet = obj.tokenList
+    }
+    if (obj.chainID === 99) {
+      state.lpTokenList.rinkeby = obj.tokenList
+    }
+  },
   updateProceedTxID(state, txid) {
     state.proceedTXID = txid
     state.proceedState = 1

@@ -242,6 +242,7 @@ import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
 import { asyncGetExchangeToUsdRate } from "../../util/coinbase"
+import { cons } from 'fp-ts/lib/NonEmptyArray'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -1545,10 +1546,10 @@ export default {
       }
     },
     gasCost() {
-      if (
-        (this.$store.state.transferData.fromChainID === 3 ||
-          this.$store.state.transferData.fromChainID === 33)
-      ) {
+      if (this.$store.state.transferData.fromChainID === 3 ||
+        this.$store.state.transferData.fromChainID === 33 ||
+        this.$store.state.transferData.fromChainID === 9 ||
+        this.$store.state.transferData.fromChainID === 99) {
         const selectMakerInfo = this.$store.state.transferData.selectMakerInfo
         let transferGasFee = this.$store.state.transferData.gasFee
         const selectTokenRate = asyncGetExchangeToUsdRate(selectMakerInfo.tName)

@@ -57,6 +57,10 @@ const state = {
     rinkeby: [],
     mainnet: [],
   },
+  lpTokenList: {
+    rinkeby: [],
+    mainnet: [],
+  },
   transactionList: null,
   lpAccountInfo: null,
   lpApiKey: null,

@@ -241,9 +241,8 @@ async function confirmUserTransaction(
             'updateProceedingUserTransferTimeStamp',
             transfer.timestamp
           )
-          const timeStr = transfer.timestamp.toString()
-          let realTimeStr = timeStr.slice(0, 10)
-          realTimeStr = Number(realTimeStr - 1800).toString()
+          let compareProceedTxTimeStr = Date.parse(new Date(transfer.timestamp)) / 1000
+          compareProceedTxTimeStr = Number(compareProceedTxTimeStr - 1800).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -252,13 +251,13 @@ async function confirmUserTransaction(
             makerInfo.makerAddress,
             store.state.web3.coinbase,
             imx_amountToSend,
-            realTimeStr,
+            compareProceedTxTimeStr,
           )
           return
         }
       } catch (error) {
-        console.log('error =', error)
-        throw 'getImmutableXTransactionDataError'
+        console.log('getImmutableXTransactionData Error =', error)
+        throw new Error('getImmutableXTransactionDataError')
       }
       return confirmUserTransaction(
         localChainID,
@@ -632,10 +631,9 @@ function ScanZKSpaceMakerTransfer(
     const zksTokenInfos = localChainID === 12 ? store.state.zksTokenList.mainnet
       : store.state.zksTokenList.rinkeby
     const tokenAddress = localChainID === makerInfo.c1ID ? makerInfo.t1Address : makerInfo.t2Address
-    const tokenIndex = zksTokenInfos.findIndex((item) => {
-      return item.address == tokenAddress
-    })
-    const tokenId = zksTokenInfos[tokenIndex] ? zksTokenInfos[tokenIndex].id : 0
+    const tokenInfo = zksTokenInfos.find(item => item.address == tokenAddress)
+    const tokenId = tokenInfo ? tokenInfo.id : 0
+
     try {
       let zksTransactions = await zkspace.getZKSapceTxList(
         from,
@@ -655,7 +653,7 @@ function ScanZKSpaceMakerTransfer(
             zkspaceTransaction?.fail_reason == '' &&
             (zkspaceTransaction?.from?.toLowerCase() == from.toLowerCase() ||
               zkspaceTransaction?.to?.toLowerCase() == to.toLowerCase()) &&
-            zkspaceTransaction.token.symbol == zksTokenInfos[tokenIndex].symbol &&
+            zkspaceTransaction.token.symbol == tokenInfo.symbol &&
             new Bignumber(zkspaceTransaction.amount)
               .multipliedBy(10 ** makerInfo.precision)
               .toString() == amount
@@ -861,6 +859,9 @@ function ScanMakerTransfer(
 
     // loopring
     if (localChainID == 9 || localChainID == 99) {
+      const lpTokenInfos = localChainID === 9 ? store.state.lpTokenList.mainnet
+        : store.state.lpTokenList.rinkeby
+      const tokenInfo = lpTokenInfos.find(item => item.address == tokenAddress)
       let accountResult = await loopring.accountInfo(
         makerInfo.makerAddress,
         localChainID
@@ -891,7 +892,7 @@ function ScanMakerTransfer(
         end: 99999999999999,
         status: 'processed,processing,received',
         limit: 50,
-        tokenSymbol: 'ETH',
+        tokenSymbol: tokenInfo ? tokenInfo.symbol : 'ETH',
         transferTypes: 'transfer',
       }
       const LPTransferResult = await userApi.getUserTransferList(
@@ -907,13 +908,14 @@ function ScanMakerTransfer(
         let transacionts = LPTransferResult.userTransfers
         for (let index = 0; index < transacionts.length; index++) {
           const lpTransaction = transacionts[index]
+
           if (
             lpTransaction.txType == 'TRANSFER' &&
             lpTransaction.senderAddress.toLowerCase() ==
             makerInfo.makerAddress.toLowerCase() &&
             lpTransaction.receiverAddress.toLowerCase() ==
             store.state.proceeding.userTransfer.from.toLowerCase() &&
-            lpTransaction.symbol == 'ETH' &&
+            lpTransaction.symbol == tokenInfo.symbol &&
             lpTransaction.amount == rAmount &&
             lpTransaction.memo == memo
           ) {

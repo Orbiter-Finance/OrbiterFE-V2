@@ -134,14 +134,7 @@ export default {
       }
       return totalFee / 10 ** resultToken.decimals
     } else if (util.isEthTokenAddress(fromTokenAddress) || isPolygon || isMetis) {
-      if (fromChainID == 9 || fromChainID == 99) {
-        let loopringFee = await loopring.getTransferFee(
-          store.state.web3.coinbase,
-          fromChainID
-        )
-        return loopringFee / 10 ** 18
-      }
-      if (fromChainID === 12 || fromChainID === 512) {//zkspace
+      if (fromChainID === 12 || fromChainID === 512) {//zkspace can only use eth as fee
         let transferFee = 0
         try {
           transferFee = await zkspace.getZKSpaceTransferGasFee(
@@ -152,6 +145,19 @@ export default {
           console.warn('getZKTransferGasFeeError =', error)
         }
         return transferFee
+      } else if (fromChainID == 9 || fromChainID == 99) {// loopring fee can only use eth。other erc20 fee will be error
+        try {
+          const lpTokenInfo = await loopring.getLpTokenInfo(fromChainID, fromTokenAddress)
+          let loopringFee = await loopring.getTransferFee(
+            store.state.web3.coinbase,
+            fromChainID,
+            lpTokenInfo
+          )
+          const decimals = lpTokenInfo ? lpTokenInfo.decimals : 18
+          return Number(loopringFee) / 10 ** decimals
+        } catch (error) {
+          console.warn(`lp getTransferFeeerror: ${error.message}`)
+        }
       }
       const web3 = localWeb3(fromChainID)
       if (web3) {
@@ -270,11 +276,16 @@ export default {
       return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
     }
     if (fromChainID == 9 || fromChainID == 99) {
+      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let tokenAddress = fromChainID === selectMakerInfo.c1ID ?
+        selectMakerInfo.t1Address : selectMakerInfo.t2Address
+      const lpTokenInfo = await loopring.getLpTokenInfo(fromChainID, tokenAddress)
       let loopringFee = await loopring.getTransferFee(
         store.state.web3.coinbase,
-        fromChainID
+        fromChainID,
+        lpTokenInfo
       )
-      return (loopringFee / 10 ** 18).toFixed(6)
+      return (Number(loopringFee) / 10 ** lpTokenInfo.decimals).toFixed(6)
     }
     if (fromChainID === 12 || fromChainID === 512) {
       let selectMakerInfo = store.getters.realSelectMakerInfo
@@ -817,11 +828,12 @@ export default {
       const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
       return Number(balance + '')
     } else if (localChainID === 9 || localChainID === 99) {
-      // https://api3.loopring.io/api/v3/user/balances?accountId=1&tokens=0,1
+      const lpTokenInfo = await loopring.getLpTokenInfo(localChainID, tokenAddress)
       const balance = await loopring.getLoopringBalance(
         userAddress,
         localChainID,
-        isMaker
+        isMaker,
+        lpTokenInfo
       )
       return balance
     } else if (localChainID === 11 || localChainID === 511) {
@@ -845,12 +857,9 @@ export default {
         }
         const zksTokenInfos = localChainID === 12 ? store.state.zksTokenList.mainnet
           : store.state.zksTokenList.rinkeby
-        let tokenIndex = zksTokenInfos.findIndex(item => item.address == tokenAddress)
-        let defaultIndex = balanceInfo.findIndex((item) => item.id == zksTokenInfos[tokenIndex].id)
-        if (defaultIndex == -1) {
-          return 0
-        }
-        return balanceInfo[defaultIndex].amount * 10 ** selectMakerInfo.precision
+        const tokenInfo = zksTokenInfos.find(item => item.address == tokenAddress)
+        const theBalanceInfo = balanceInfo.find(item => item.id == tokenInfo.id)
+        return theBalanceInfo ? theBalanceInfo.amount * 10 ** selectMakerInfo.precision : 0
       } catch (error) {
         console.log('getZKSBalanceError =', error.message)
         throw new Error(`getZKSBalanceError,${error.message}`)
