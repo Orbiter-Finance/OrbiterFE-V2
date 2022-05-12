@@ -131,9 +131,7 @@ export default {
       tokenAddress: zkspaceInfo.token.id,
       timeStamp: zkspaceInfo.created_at,
       tokenName: zkspaceInfo.token.symbol,
-      value: new BigNumber(zkspaceInfo.amount)
-        .multipliedBy(new BigNumber(10 ** 18))
-        .toString(),
+      value: zkspaceInfo.amount,
       tokenDecimal: 18,
       hash: zkspaceInfo.tx_hash,
       nonce: zkspaceInfo.nonce,

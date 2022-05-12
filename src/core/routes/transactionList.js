@@ -1161,11 +1161,13 @@ async function getTransactionListZkSpace(
           break
         }
       }
-
       if (!isMatch) {
         continue
       }
-      txinfo.tokenDecimal = makerInfo.precision
+      txinfo.value = new BigNumber(txinfo.value)
+        .multipliedBy(new BigNumber(10 ** makerInfo.precision))
+        .toString(),
+        txinfo.tokenDecimal = makerInfo.precision
       if (txinfo.from === _makerAddress) {
         let nonce = txinfo.nonce
         if (Number(nonce) < 9000 && Number(nonce) >= 0) {
