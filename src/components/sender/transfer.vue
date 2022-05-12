@@ -1473,7 +1473,7 @@ export default {
         )
         this.originGasCost = response
       } catch (error) {
-        console.log('updateOriginGasCost error =', error)
+        console.warn('updateOriginGasCost error =', error.message)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,

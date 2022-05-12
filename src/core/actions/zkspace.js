@@ -58,53 +58,32 @@ export default {
       throw new Error("getZKSpaceGasFee->network error")
     }
   },
-  getZKSpaceWithDrawGasFee: function (localChainID, account) {
+  getZKSpaceWithDrawGasFee: async function (localChainID, account) {
+    if (!account) {
+      return
+    }
     let ethPrice = store.state.transferData.ethPrice
-      ? store.state.transferData.ethPrice
-      : 1000
-    return new Promise((resolve, reject) => {
-      if (localChainID !== 12 && localChainID !== 512) {
-        reject({
-          errorCode: 1,
-          errMsg: 'getZKSpaceGasFeeError_wrongChainID',
-        })
+      ? store.state.transferData.ethPrice : 1000
+
+    if (localChainID !== 12 && localChainID !== 512) {
+      throw new Error('getZKSpaceGasFeeError：wrongChainID')
+    }
+    const url = `${localChainID === 512 ? config.ZKSpace.Rinkeby
+      : config.ZKSpace.Mainnet}/account/${account}/fee`
+    const response = await axios.get(url)
+    try {
+      if (response.status === 200 && response.statusText == 'OK' && response.data.success) {
+        var respData = response.data
+        const gasFee = new BigNumber(respData.data.withdraw).dividedBy(
+          new BigNumber(ethPrice)
+        )
+        let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
+        return Number(gasFee_fix)
       }
-      const url =
-        (localChainID === 512
-          ? config.ZKSpace.Rinkeby
-          : config.ZKSpace.Mainnet) +
-        '/account/' +
-        account +
-        '/' +
-        'fee'
-      axios
-        .get(url)
-        .then(function (response) {
-          if (response.status === 200 && response.statusText == 'OK') {
-            var respData = response.data
-            if (respData.success == true) {
-              const gasFee = new BigNumber(respData.data.withdraw).dividedBy(
-                new BigNumber(ethPrice)
-              )
-              let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
-              resolve(Number(gasFee_fix))
-            } else {
-              reject(respData.data)
-            }
-          } else {
-            reject({
-              errorCode: 1,
-              errMsg: 'NetWorkError',
-            })
-          }
-        })
-        .catch(function (error) {
-          reject({
-            errorCode: 2,
-            errMsg: error,
-          })
-        })
-    })
+      throw new Error(`getZKSpaceWithDrawGasFee response.status not 200`)
+    } catch (error) {
+      throw new Error(`getZKSpaceWithDrawGasFee error：${error.message}`)
+    }
   },
   /**
    *
