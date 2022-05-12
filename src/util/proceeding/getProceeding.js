@@ -1071,7 +1071,6 @@ function ScanMakerTransfer(
       if (error) {
         console.warn('tokenContract getPastEvents-Transfer Error =', error)
       } else {
-        console.warn(events, '-------events-------')
         for (let index = events.length - 1; index >= 0; index--) {
 
           const txinfo = events[index]
@@ -1082,8 +1081,6 @@ function ScanMakerTransfer(
             txinfo.address
           )) {
             let txTimeStamp = await getTimeStampInfo(localChainID, txinfo.transactionHash, txinfo.blockNumber,)
-            console.warn(txTimeStamp, '-----txTimeStamp--------')
-            console.warn(timeStampStr, '-----timeStampStr--------')
             if (!txTimeStamp || (txTimeStamp && timeStampStr < txTimeStamp)) {
               store.commit(
                 'updateProceedingMakerTransferTxid',

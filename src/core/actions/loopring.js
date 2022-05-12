@@ -218,22 +218,16 @@ export default {
       validUntil: VALID_UNTIL,
       memo: memo,
     }
-    try {
-      const response = await userApi.submitInternalTransfer({
-        request: OriginTransferRequestV3,
-        web3: web3,
-        chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
-        walletType: ConnectorNames.MetaMask,
-        eddsaKey: eddsaKey.sk,
-        apiKey: apiKey,
-        isHWAddr: false,
-      })
-      return response
-    } catch (error) {
-      console.warn(error, 1111111111)
-    }
-
-
+    const response = await userApi.submitInternalTransfer({
+      request: OriginTransferRequestV3,
+      web3: web3,
+      chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
+      walletType: ConnectorNames.MetaMask,
+      eddsaKey: eddsaKey.sk,
+      apiKey: apiKey,
+      isHWAddr: false,
+    })
+    return response
   },
 
   getWithDrawFee: async function (address, localChainID) {
