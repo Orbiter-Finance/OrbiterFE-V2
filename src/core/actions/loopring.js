@@ -287,6 +287,7 @@ export default {
 
   getLoopringTxList: async function (
     address,
+    tokenName,
     localChainID,
     startTime,
     endTime,
@@ -308,7 +309,7 @@ export default {
       status: 'processed,processing,received',
       limit: limit,
       offset: offset,
-      tokenSymbol: 'ETH',
+      tokenSymbol: tokenName,
       transferTypes: 'transfer',
     }
     const LPTransferResult = await userApi.getUserTransferList(

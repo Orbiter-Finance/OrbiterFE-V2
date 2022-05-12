@@ -161,6 +161,7 @@ export class IMXHelper {
       value: transfer.token.data.quantity + '',
       txreceipt_status: transfer.status,
       contractAddress,
+      tokenDecimal: transfer.token.data.decimals,
       confirmations: 0,
     }
 
