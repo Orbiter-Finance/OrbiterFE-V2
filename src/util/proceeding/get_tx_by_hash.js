@@ -23,13 +23,12 @@ export async function getTimeStampInfo(chainId, hash, blockNo, count = 30) {
                 return await metisTimeStampInfo(chainId, hash)
         }
     } catch (error) {
-        console.warn(`chainId${chainId}:get TimeStamp error`, error.message)
         count--;
-        console.warn(`count`, count)
         if (count >= 0) {
             await util.sleep(1000)
             return await getTimeStampInfo(chainId, hash, blockNo, count)
         } else {
+            console.warn(`chainId${chainId}:get TimeStamp error`, error.message)
             return undefined
         }
     }
