@@ -112,9 +112,9 @@ export default {
       var zkTokenInfo
       try {
         zkTokenInfo = await thirdapi.getZKTokenInfo(zkTokenInfoReq, next)
-        console.log('tokenInfo =', zkTokenInfo)
+        console.log('zk tokenInfo =', zkTokenInfo)
       } catch (error) {
-        console.log('zkError =', error)
+        console.log('zk zkTokenInfo Error =', error)
       }
 
       var lastHash = 0
