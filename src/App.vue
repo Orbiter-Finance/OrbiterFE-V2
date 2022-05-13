@@ -79,7 +79,6 @@ export default {
         if (isRefresh) {
           this.$store.commit('updateTransactionList', null)
         }
-
         var req = {
           address: this.$store.state.web3.coinbase,
           daysAgo: 14,
