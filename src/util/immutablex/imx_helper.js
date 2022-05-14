@@ -79,11 +79,11 @@ export class IMXHelper {
    * @param {string} s
    * @returns {Promise<ethers.BigNumber>}
    */
-  async getBalanceBySymbol(user, s = 'ETH') {
+  async getBalanceBySymbol(user, tokenName = 'ETH') {
     if (!user) {
       throw new Error('Sorry, miss param [user]')
     }
-    if (!s) {
+    if (!tokenName) {
       throw new Error('Sorry, miss param [s]')
     }
 
@@ -98,7 +98,7 @@ export class IMXHelper {
       }
 
       for (const item of data.result) {
-        if (item.symbol.toUpperCase() != s.toUpperCase()) {
+        if (item.symbol.toUpperCase() != tokenName.toUpperCase()) {
           continue
         }
 
@@ -161,6 +161,7 @@ export class IMXHelper {
       value: transfer.token.data.quantity + '',
       txreceipt_status: transfer.status,
       contractAddress,
+      tokenDecimal: transfer.token.data.decimals,
       confirmations: 0,
     }
 

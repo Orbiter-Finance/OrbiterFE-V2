@@ -243,31 +243,42 @@ export default {
           signer,
           walletAccount
         )
-
-        const tokenId = 0
         const feeTokenId = 0
-
-        const zksChainID =
+        const zksNetWorkID =
           fromChainID === 512
             ? config.ZKSpace.zksrinkebyChainID
             : config.ZKSpace.zksChainID
 
-        let fee = await zkspace.getZKTransferGasFee(fromChainID, walletAccount)
+        let fee = await zkspace.getZKSpaceTransferGasFee(
+          fromChainID,
+          walletAccount
+        )
 
         const transferFee = zksync.utils.closestPackableTransactionFee(
           ethers.utils.parseUnits(fee.toString(), 18)
         )
 
+        const zksTokenInfos =
+          fromChainID === 12
+            ? this.$store.state.zksTokenList.mainnet
+            : this.$store.state.zksTokenList.rinkeby
+        const tokenAddress =
+          fromChainID == selectMakerInfo.c1ID
+            ? selectMakerInfo.t1Address
+            : selectMakerInfo.t2Address
+        const tokenInfo = zksTokenInfos.find(
+          (item) => item.address == tokenAddress
+        )
         const { pubKey, l2SignatureOne } = zkspace.getL2SigOneAndPK(
           privateKey,
           accountInfo,
           walletAccount,
           selectMakerInfo,
-          tokenId,
+          tokenInfo ? tokenInfo.id : 0,
           transferValue,
           feeTokenId,
           transferFee,
-          zksChainID
+          zksNetWorkID
         )
 
         const l2SignatureTwo = await zkspace.getL2SigTwoAndPK(
@@ -276,7 +287,8 @@ export default {
           selectMakerInfo,
           transferValue,
           fee,
-          zksChainID
+          zksNetWorkID,
+          tokenInfo
         )
         const req = {
           signature: {
@@ -289,11 +301,11 @@ export default {
             accountId: accountInfo.id,
             from: walletAccount,
             to: selectMakerInfo.makerAddress,
-            token: tokenId,
+            token: tokenInfo ? tokenInfo.id : 0,
             amount: transferValue.toString(),
             feeToken: feeTokenId,
             fee: transferFee.toString(),
-            chainId: zksChainID,
+            chainId: zksNetWorkID,
             nonce: accountInfo.nonce,
             signature: {
               pubKey: pubKey,
@@ -346,7 +358,7 @@ export default {
       ) {
         return firstResult
       } else {
-        throw new Error('zks sendResult is error, do not care')
+        throw new Error('zks sendResult is error')
       }
     },
 

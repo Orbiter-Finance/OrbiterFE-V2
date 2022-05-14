@@ -22,9 +22,9 @@
             width="1.2rem"
             height="1.2rem"
           ></loading>
-          <span v-else>{{
-            this.$store.state.transferData.selectTokenInfo.token
-          }}</span>
+          <span v-else>
+            {{ this.$store.state.transferData.selectTokenInfo.token }}</span
+          >
         </div>
         <svg-icon
           v-if="tokenInfoArray.length > 1"
@@ -175,7 +175,7 @@
           <img
             src="../../assets/middleIcon.png"
             style="width: 100%; height: 100%"
-            alt
+            alt=""
           />
           <!-- <svg-icon style="width:100%;height:100%"
           iconName="transfer_mid"></svg-icon>-->
@@ -361,6 +361,7 @@ import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
+import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -438,8 +439,7 @@ export default {
       if (!this.fromBalance) {
         return '0'
       }
-
-      const transferGasFee =
+      let transferGasFee =
         (await transferCalculate.getTransferGasLimit(
           this.$store.state.transferData.fromChainID,
           selectMakerInfo.makerAddress,
@@ -516,6 +516,7 @@ export default {
 
       let sources = getMapChainIds(query.sources)
       let dests = getMapChainIds(query.dests)
+
       // Tidy source(s) and dest(s)
       const tidyChains = (chainIds) => {
         const newChains = []
@@ -785,26 +786,6 @@ export default {
         return this.c1Balance
       }
     },
-    gasCost() {
-      if (
-        this.$store.state.transferData.fromChainID === 3 ||
-        this.$store.state.transferData.fromChainID === 33
-      ) {
-        if (this.$store.state.transferData.selectTokenInfo.token !== 'ETH') {
-          return (
-            Math.ceil(Number(this.$store.state.transferData.gasFee * 10)) / 10
-          ).toFixed(2)
-        }
-      }
-
-      return (
-        Math.ceil(
-          this.$store.state.transferData.gasFee *
-            this.$store.state.transferData.ethPrice *
-            10
-        ) / 10
-      ).toFixed(2)
-    },
     timeSpent() {
       return transferCalculate.transferSpentTime(
         this.$store.state.transferData.fromChainID,
@@ -842,28 +823,25 @@ export default {
       let savingTokenName = '$'
       return savingTokenName + savingValue.toFixed(2).toString()
     },
-    showSaveGas() {
-      // console.log(this.originGasCost, 'this.originGasCost')
-      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
-      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
-      let savingValue =
-        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      // console.log(savingValue, 'savingValue')
-      if (savingValue > 0) {
-        return true
-      }
-      return false
-    },
     gasSavingMin() {
+      const gasCost = this.gasCost()
       let savingValue =
         this.originGasCost -
         this.gasTradingTotal * this.exchangeToUsdPrice -
-        this.gasCost.toString()
+        gasCost
       if (savingValue < 0) {
         savingValue = 0
       }
       let savingTokenName = '$'
       return savingTokenName + savingValue.toFixed(2).toString()
+    },
+    showSaveGas() {
+      let savingValue =
+        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      if (savingValue > 0) {
+        return true
+      }
+      return false
     },
     saveGasLoading() {
       return this.originGasLoading
@@ -888,48 +866,36 @@ export default {
         this.initChainArray()
       }
     },
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
-      if (!newValue || newValue === '0x') {
-        this.c1Balance = 0
-        this.c2Balance = 0
-      }
+    '$store.state.web3.coinbase': async function (newValue, oldValue) {
       if (oldValue !== newValue && newValue !== '0x') {
-        this.c1Balance = null
-        this.c2Balance = null
-        let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
-        transferCalculate
-          .getTransferBalance(
+        try {
+          this.c1Balance = null
+          this.c2Balance = null
+          let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+          const c1Response = await transferCalculate.getTransferBalance(
             selectMakerInfo.c1ID,
             selectMakerInfo.t1Address,
             selectMakerInfo.tName,
             this.$store.state.web3.coinbase
           )
-          .then((response) => {
-            this.c1Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
-          })
-          .catch((error) => {
-            console.log(error)
-            return
-          })
-        transferCalculate
-          .getTransferBalance(
+          this.c1Balance = (
+            c1Response /
+            10 ** selectMakerInfo.precision
+          ).toFixed(6)
+          const c2Response = await transferCalculate.getTransferBalance(
             selectMakerInfo.c2ID,
             selectMakerInfo.t2Address,
             selectMakerInfo.tName,
             this.$store.state.web3.coinbase
           )
-          .then((response) => {
-            this.c2Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+          this.c2Balance = (
+            c2Response /
+            10 ** selectMakerInfo.precision
+          ).toFixed(6)
+        } catch (error) {
+          console.error(`get balance error ${error.message}`)
+          return
+        }
       } else {
         this.c1Balance = 0
         this.c2Balance = 0
@@ -1179,7 +1145,7 @@ export default {
         this.updateOriginGasCost()
       }
     },
-    '$store.state.transferData.selectTokenInfo': function (newValue) {
+    '$store.state.transferData.selectTokenInfo': function (newValue, oldValue) {
       this.makerInfoList.filter((makerInfo) => {
         if (
           (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
@@ -1194,6 +1160,20 @@ export default {
       })
 
       this.updateOriginGasCost()
+      if (newValue != oldValue) {
+        let that = this
+        this.gasCostLoading = true
+        transferCalculate
+          .transferSpentGas(this.$store.state.transferData.fromChainID)
+          .then((response) => {
+            this.$store.commit('updateTransferGasFee', response)
+            that.gasCostLoading = false
+          })
+          .catch((error) => {
+            that.gasCostLoading = false
+            console.log('GetGasFeeError =', error)
+          })
+      }
     },
 
     transferValue: function (newValue) {
@@ -1698,7 +1678,7 @@ export default {
         )
         this.originGasCost = response
       } catch (error) {
-        console.log('updateOriginGasCost error =', error)
+        console.warn('updateOriginGasCost error =', error.message)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -1769,6 +1749,28 @@ export default {
       } catch (err) {
         alert(err.message)
       }
+    },
+    gasCost() {
+      if (
+        this.$store.state.transferData.fromChainID === 3 ||
+        this.$store.state.transferData.fromChainID === 33
+      ) {
+        const selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let transferGasFee = this.$store.state.transferData.gasFee
+        const selectTokenRate = asyncGetExchangeToUsdRate(selectMakerInfo.tName)
+        if (selectTokenRate > 0) {
+          // switch to usd
+          transferGasFee = transferGasFee / selectTokenRate
+        }
+        return Math.ceil(Number(transferGasFee * 10)) / 10
+      }
+      return (
+        Math.ceil(
+          this.$store.state.transferData.gasFee *
+            this.$store.state.transferData.ethPrice *
+            10
+        ) / 10
+      )
     },
   },
 }
