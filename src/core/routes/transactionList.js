@@ -939,6 +939,7 @@ async function getTransactionListLoopring(
   userAddress,
   chainID,
   needTimeStamp,
+  makerTokenNames,
   makerList
 ) {
   const LPFromTxList = []
@@ -947,6 +948,10 @@ async function getTransactionListLoopring(
     store.state.lpTokenList.rinkeby
   let LPAllTxList = []
   for (let item of lpTokenList) {
+    const tokenName = item.symbol.toUpperCase()
+    if (!makerTokenNames[tokenName]) {
+      continue
+    }
     let isContiue = true
     let limit = 50
     let offset = 0
@@ -1064,17 +1069,20 @@ async function getTransactionListZkSpace(
   userAddress,
   chainID,
   needTimeStamp,
+  makerTokenNames,
   makerList
 ) {
   const zkSpaceFromTxList = []
   const zkSpaceToTxList = []
   let ZKSAllTxList = []
 
-
   let zksTokenList = chainID == 12 ? store.state.zksTokenList.mainnet :
     store.state.zksTokenList.rinkeby
-
   for (let item of zksTokenList) {
+    const tokenName = item.symbol.toUpperCase()
+    if (!makerTokenNames[tokenName]) {
+      continue
+    }
     const tokenID = item.id
     let isContiue = true
     let limit = 50
@@ -1165,8 +1173,8 @@ async function getTransactionListZkSpace(
       }
       txinfo.value = new BigNumber(txinfo.value)
         .multipliedBy(new BigNumber(10 ** makerInfo.precision))
-        .toString(),
-        txinfo.tokenDecimal = makerInfo.precision
+        .toString();
+      txinfo.tokenDecimal = makerInfo.precision
       if (txinfo.from === _makerAddress) {
         let nonce = txinfo.nonce
         if (Number(nonce) < 9000 && Number(nonce) >= 0) {
@@ -1202,10 +1210,12 @@ export default {
      */
     var originTxList = {}
     let makerList = []
+    let makerTokenNames = {}
     if (req.state === 1) {
       try {
-        const makerListRes = await thegraph.getAllMakerList(req, true)
+        const makerListRes = await thegraph.getMakerInfo(req, true)
         makerList = makerListRes.data
+        makerTokenNames = thegraph.getMakerTokenNames(makerList)
       } catch (error) {
         throw new Error(`get makerList error`)
       }
@@ -1377,6 +1387,7 @@ export default {
             req.address,
             chainID,
             needTimeStamp,
+            makerTokenNames,
             makerList
           )
 
@@ -1395,6 +1406,7 @@ export default {
               req.address,
               chainID,
               needTimeStamp,
+              makerTokenNames,
               makerList
             )
           originTxList[chainID] = {
@@ -1499,210 +1511,210 @@ function judgeArrayEqualFun(arr1, arr2) {
 */
 function getTrasactionListFromTxList(origin, state, makerList) {
   let transactionList = []
-  // if (state) {
-  for (let key in origin) {
-    let fromChainID = key
-    for (let fromTxInfo of origin[key].fromList) {
-      let transaction
-      let now = parseInt(new Date().getTime() / 1000)
-      let state = now - fromTxInfo.timeStamp > 86400 ? 2 : 1
-      let toChainID =
-        fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
-          ? fromTxInfo.memo % 9000
-          : orbiterCore.getToChainIDFromAmount(
-            Number(fromChainID),
-            fromTxInfo.value
-          )
-      let realFromAmount = orbiterCore.getRAmountFromTAmount(
-        Number(fromChainID),
-        fromTxInfo.value
-      ).rAmount
-      let userAmount = new BigNumber(realFromAmount).dividedBy(
-        new BigNumber(10 ** fromTxInfo.tokenDecimal)
-      )
+  if (state) {
+    for (let key in origin) {
+      let fromChainID = key
+      for (let fromTxInfo of origin[key].fromList) {
+        let transaction
+        let now = parseInt(new Date().getTime() / 1000)
+        let state = now - fromTxInfo.timeStamp > 86400 ? 2 : 1
+        let toChainID =
+          fromTxInfo.dataFrom == 'loopring' && fromTxInfo.memo
+            ? fromTxInfo.memo % 9000
+            : orbiterCore.getToChainIDFromAmount(
+              Number(fromChainID),
+              fromTxInfo.value
+            )
+        let realFromAmount = orbiterCore.getRAmountFromTAmount(
+          Number(fromChainID),
+          fromTxInfo.value
+        ).rAmount
+        let userAmount = new BigNumber(realFromAmount).dividedBy(
+          new BigNumber(10 ** fromTxInfo.tokenDecimal)
+        )
 
-      if (!origin[toChainID] || origin[toChainID].toList.length === 0) {
-        transaction = {
-          fromChainID: Number(fromChainID),
-          toChainID: Number(toChainID),
-          userAddress: shortAddress(fromTxInfo.from),
-          makerAddress: shortAddress(fromTxInfo.to),
-          userAmount: userAmount,
-          fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
-          sortTimeStamp: Number(fromTxInfo.timeStamp),
-          toTimeStamp: 0,
-          tokenName: fromTxInfo.tokenName,
-          fromTxHash: fromTxInfo.hash,
-          toTxHash: '0',
-          state: state,
-        }
-        transactionList.push(transaction)
-        continue
-      }
-      let toList = origin[toChainID].toList
-      let isMatch = false
-      for (let z = 0; z < toList.length; z++) {
-        let toTxInfo = toList[z]
-        let nonce = 0
-        if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
-          nonce = toTxInfo.memo
-        } else {
-          let pText = orbiterCore.getPTextFromTAmount(
-            toChainID,
-            toTxInfo.value
-          )
-          if (pText.state) {
-            nonce = pText.pText
+        if (!origin[toChainID] || origin[toChainID].toList.length === 0) {
+          transaction = {
+            fromChainID: Number(fromChainID),
+            toChainID: Number(toChainID),
+            userAddress: shortAddress(fromTxInfo.from),
+            makerAddress: shortAddress(fromTxInfo.to),
+            userAmount: userAmount,
+            fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
+            sortTimeStamp: Number(fromTxInfo.timeStamp),
+            toTimeStamp: 0,
+            tokenName: fromTxInfo.tokenName,
+            fromTxHash: fromTxInfo.hash,
+            toTxHash: '0',
+            state: state,
           }
-        }
-
-        if (
-          toTxInfo.from !== fromTxInfo.to ||
-          Number(nonce) !== Number(fromTxInfo.nonce) ||
-          toTxInfo.tokenName !== fromTxInfo.tokenName
-        ) {
+          transactionList.push(transaction)
           continue
         }
-        let makerAddress = fromTxInfo.to
-        let txChainIDS = [Number(fromChainID), Number(toChainID)]
-        let makerIndex = -1
-        for (let index = 0; index < makerList.length; index++) {
-          const item = makerList[index]
+        let toList = origin[toChainID].toList
+        let isMatch = false
+        for (let z = 0; z < toList.length; z++) {
+          let toTxInfo = toList[z]
+          let nonce = 0
+          if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
+            nonce = toTxInfo.memo
+          } else {
+            let pText = orbiterCore.getPTextFromTAmount(
+              toChainID,
+              toTxInfo.value
+            )
+            if (pText.state) {
+              nonce = pText.pText
+            }
+          }
+
           if (
-            item.makerAddress.toLowerCase() === makerAddress &&
-            item.tName.toLowerCase() === fromTxInfo.tokenName.toLowerCase() &&
-            judgeArrayEqualFun(txChainIDS, [item.c1ID, item.c2ID])
+            toTxInfo.from !== fromTxInfo.to ||
+            Number(nonce) !== Number(fromTxInfo.nonce) ||
+            toTxInfo.tokenName !== fromTxInfo.tokenName
           ) {
-            let avalibleTimes =
-              item.c1ID === fromChainID
-                ? item.c1AvalibleTimes
-                : item.c2AvalibleTimes
-            for (let j = 0; j < avalibleTimes.length; j++) {
-              const avalibleTime = avalibleTimes[j]
-              if (
-                avalibleTime.startTime <= fromTxInfo.timeStamp &&
-                avalibleTime.endTime >= fromTxInfo.timeStamp
-              ) {
-                makerIndex = index
+            continue
+          }
+          let makerAddress = fromTxInfo.to
+          let txChainIDS = [Number(fromChainID), Number(toChainID)]
+          let makerIndex = -1
+          for (let index = 0; index < makerList.length; index++) {
+            const item = makerList[index]
+            if (
+              item.makerAddress.toLowerCase() === makerAddress &&
+              item.tName.toLowerCase() === fromTxInfo.tokenName.toLowerCase() &&
+              judgeArrayEqualFun(txChainIDS, [item.c1ID, item.c2ID])
+            ) {
+              let avalibleTimes =
+                item.c1ID === fromChainID
+                  ? item.c1AvalibleTimes
+                  : item.c2AvalibleTimes
+              for (let j = 0; j < avalibleTimes.length; j++) {
+                const avalibleTime = avalibleTimes[j]
+                if (
+                  avalibleTime.startTime <= fromTxInfo.timeStamp &&
+                  avalibleTime.endTime >= fromTxInfo.timeStamp
+                ) {
+                  makerIndex = index
+                  break
+                }
+              }
+              if (makerIndex !== -1) {
                 break
               }
             }
-            if (makerIndex !== -1) {
-              break
+          }
+          if (makerIndex === -1) {
+            continue
+          }
+          let originMakerInfo = makerList[makerIndex]
+          let useMakerInfo
+          if (originMakerInfo.c1ID.toString() === fromChainID.toString()) {
+            useMakerInfo = {
+              makerAddress: originMakerInfo.makerAddress,
+              c1ID: originMakerInfo.c1ID,
+              c2ID: originMakerInfo.c2ID,
+              c1Name: originMakerInfo.c1Name,
+              c2Name: originMakerInfo.c2Name,
+              t1Address: originMakerInfo.t1Address,
+              t2Address: originMakerInfo.t2Address,
+              tName: originMakerInfo.tName,
+              minPrice: originMakerInfo.c1MinPrice,
+              maxPrice: originMakerInfo.c1MaxPrice,
+              precision: originMakerInfo.precision,
+              avalibleDeposit: originMakerInfo.c1AvalibleDeposit,
+              tradingFee: originMakerInfo.c1TradingFee,
+              gasFee: originMakerInfo.c1GasFee,
+              avalibleTimes: originMakerInfo.c1AvalibleTimes,
+            }
+          } else {
+            useMakerInfo = {
+              makerAddress: originMakerInfo.makerAddress,
+              c1ID: originMakerInfo.c2ID,
+              c2ID: originMakerInfo.c1ID,
+              c1Name: originMakerInfo.c2Name,
+              c2Name: originMakerInfo.c1Name,
+              t1Address: originMakerInfo.t2Address,
+              t2Address: originMakerInfo.t1Address,
+              tName: originMakerInfo.tName,
+              minPrice: originMakerInfo.c2MinPrice,
+              maxPrice: originMakerInfo.c2MaxPrice,
+              precision: originMakerInfo.precision,
+              avalibleDeposit: originMakerInfo.c2AvalibleDeposit,
+              tradingFee: originMakerInfo.c2TradingFee,
+              gasFee: originMakerInfo.c2GasFee,
+              avalibleTimes: originMakerInfo.c2AvalibleTimes,
             }
           }
-        }
-        if (makerIndex === -1) {
-          continue
-        }
-        let originMakerInfo = makerList[makerIndex]
-        let useMakerInfo
-        if (originMakerInfo.c1ID.toString() === fromChainID.toString()) {
-          useMakerInfo = {
-            makerAddress: originMakerInfo.makerAddress,
-            c1ID: originMakerInfo.c1ID,
-            c2ID: originMakerInfo.c2ID,
-            c1Name: originMakerInfo.c1Name,
-            c2Name: originMakerInfo.c2Name,
-            t1Address: originMakerInfo.t1Address,
-            t2Address: originMakerInfo.t2Address,
-            tName: originMakerInfo.tName,
-            minPrice: originMakerInfo.c1MinPrice,
-            maxPrice: originMakerInfo.c1MaxPrice,
-            precision: originMakerInfo.precision,
-            avalibleDeposit: originMakerInfo.c1AvalibleDeposit,
-            tradingFee: originMakerInfo.c1TradingFee,
-            gasFee: originMakerInfo.c1GasFee,
-            avalibleTimes: originMakerInfo.c1AvalibleTimes,
+          let realToAmount = orbiterCore.getToAmountFromUserAmount(
+            new BigNumber(realFromAmount).dividedBy(
+              new BigNumber(10 ** makerList[makerIndex].precision)
+            ),
+            useMakerInfo,
+            true
+          )
+
+          let toAmount =
+            toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
+              ? orbiterCore.getTAmountFromRAmount(
+                Number(toChainID),
+                realToAmount,
+                '0'
+              ).tAmount
+              : orbiterCore.getTAmountFromRAmount(
+                Number(toChainID),
+                realToAmount,
+                fromTxInfo.nonce.toString()
+              ).tAmount
+
+          if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
+            toTxInfo.memo = fromTxInfo.nonce
           }
-        } else {
-          useMakerInfo = {
-            makerAddress: originMakerInfo.makerAddress,
-            c1ID: originMakerInfo.c2ID,
-            c2ID: originMakerInfo.c1ID,
-            c1Name: originMakerInfo.c2Name,
-            c2Name: originMakerInfo.c1Name,
-            t1Address: originMakerInfo.t2Address,
-            t2Address: originMakerInfo.t1Address,
-            tName: originMakerInfo.tName,
-            minPrice: originMakerInfo.c2MinPrice,
-            maxPrice: originMakerInfo.c2MaxPrice,
-            precision: originMakerInfo.precision,
-            avalibleDeposit: originMakerInfo.c2AvalibleDeposit,
-            tradingFee: originMakerInfo.c2TradingFee,
-            gasFee: originMakerInfo.c2GasFee,
-            avalibleTimes: originMakerInfo.c2AvalibleTimes,
+
+          if (toAmount.toString() !== toTxInfo.value) {
+            continue
+          } else {
+            toList.splice(z, 1)
+            transaction = {
+              fromChainID: fromChainID,
+              toChainID: toChainID,
+              userAddress: shortAddress(fromTxInfo.from),
+              makerAddress: shortAddress(makerAddress),
+              userAmount: userAmount,
+              fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
+              sortTimeStamp: Number(fromTxInfo.timeStamp),
+              toTimeStamp: timeStampToTime(toTxInfo.timeStamp),
+              tokenName: fromTxInfo.tokenName,
+              fromTxHash: fromTxInfo.hash,
+              toTxHash: toTxInfo.hash,
+              state: 0,
+            }
+            transactionList.push(transaction)
+            isMatch = true
+            break
           }
         }
-        let realToAmount = orbiterCore.getToAmountFromUserAmount(
-          new BigNumber(realFromAmount).dividedBy(
-            new BigNumber(10 ** makerList[makerIndex].precision)
-          ),
-          useMakerInfo,
-          true
-        )
-
-        let toAmount =
-          toTxInfo.dataFrom == 'loopring' && toTxInfo.memo
-            ? orbiterCore.getTAmountFromRAmount(
-              Number(toChainID),
-              realToAmount,
-              '0'
-            ).tAmount
-            : orbiterCore.getTAmountFromRAmount(
-              Number(toChainID),
-              realToAmount,
-              fromTxInfo.nonce.toString()
-            ).tAmount
-
-        if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
-          toTxInfo.memo = fromTxInfo.nonce
-        }
-
-        if (toAmount.toString() !== toTxInfo.value) {
-          continue
-        } else {
-          toList.splice(z, 1)
+        if (!isMatch) {
           transaction = {
             fromChainID: fromChainID,
             toChainID: toChainID,
             userAddress: shortAddress(fromTxInfo.from),
-            makerAddress: shortAddress(makerAddress),
+            makerAddress: shortAddress(fromTxInfo.to),
             userAmount: userAmount,
             fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
             sortTimeStamp: Number(fromTxInfo.timeStamp),
-            toTimeStamp: timeStampToTime(toTxInfo.timeStamp),
+            toTimeStamp: 0,
             tokenName: fromTxInfo.tokenName,
             fromTxHash: fromTxInfo.hash,
-            toTxHash: toTxInfo.hash,
-            state: 0,
+            toTxHash: '0',
+            state: state,
           }
           transactionList.push(transaction)
-          isMatch = true
-          break
+          continue
         }
-      }
-      if (!isMatch) {
-        transaction = {
-          fromChainID: fromChainID,
-          toChainID: toChainID,
-          userAddress: shortAddress(fromTxInfo.from),
-          makerAddress: shortAddress(fromTxInfo.to),
-          userAmount: userAmount,
-          fromTimeStamp: timeStampToTime(Number(fromTxInfo.timeStamp)),
-          sortTimeStamp: Number(fromTxInfo.timeStamp),
-          toTimeStamp: 0,
-          tokenName: fromTxInfo.tokenName,
-          fromTxHash: fromTxInfo.hash,
-          toTxHash: '0',
-          state: state,
-        }
-        transactionList.push(transaction)
-        continue
       }
     }
   }
-  // }
   transactionList.sort(sortBy('sortTimeStamp'))
   return {
     list: transactionList,

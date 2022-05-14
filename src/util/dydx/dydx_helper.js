@@ -266,9 +266,7 @@ export class DydxHelper {
       to: '',
       value: new BigNumber(
         isTransferIn ? transfer.creditAmount : transfer.debitAmount
-      )
-        .multipliedBy(10 ** 6)
-        .toString(), // Only usdc
+      ).multipliedBy(10 ** 6).toString(),// Only usdc
       txreceipt_status: transfer.status,
       contractAddress: '', // Only usdc
       confirmations: 0,

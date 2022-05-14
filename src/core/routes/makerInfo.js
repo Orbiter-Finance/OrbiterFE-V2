@@ -3,7 +3,7 @@ export default {
   getMakerInfoFromGraph: function(req, next) {
     return new Promise((resolve, reject) => {
       thegraph
-        .getAllMakerList(req, next)
+        .getMakerInfo(req, next)
         .then((response) => {
           resolve(response)
         })
