@@ -30,7 +30,8 @@ const ZK_ETH_DEPOSIT_DEPOSIT_ONL1 = 62599
 
 // zkspace deposit
 const ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1 = 160000
-
+//https://rinkeby.etherscan.io/tx/0x6b6c2eacf0cdc5ff70b7923d6225456b8f6d26008de12beec611f7ab81eb2775
+const ZKSPACE_ERC20_DEPOSIT_DEPOSIT_ONL1 = 100325 
 // ar deposit
 const AR_ERC20_DEPOSIT_DEPOSIT_ONL1 = 218291
 const AR_ETH_DEPOSIT_DEPOSIT_ONL1 = 92000
@@ -57,22 +58,30 @@ const MT_ERC20_WITHDRAW_ONL1 = 21000
 
 //optimistic deposit
 const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
-
-// optimistic withdraw
 const OP_ETH_WITHDRAW_ONOP_L2 = 137000
 const OP_ETH_WITHDRAW_ONL1 = 820000
 
+// https://ropsten.etherscan.io/tx/0x6182c35a69951a8443d6b7670ecccd7c8327d95faea95d7e949fc96ab6e7e0d7
+const OP_ERC20_DEPOSIT_DEPOSIT_ONL1 = 77921
+// optimistic withdraw
+// https://kovan-optimistic.etherscan.io/tx/0x1df81e482369067c63c20f40d9ce1b8b75813f11957ff90c2fa967feef66e7a7
+const OP_ERC20_WITHDRAW_ONOP_L2 = 115340
+const OP_ERC20_WITHDRAW_ONL1 = 820000  //not get wanted 
+
 // loopring depost
 const LP_ETH_DEPOSIT_DEPOSIT_ONL1 = 75000
-
+// https://goerli.etherscan.io/tx/0x2571fa4a6ef7b69e143a9055877319014a770e30f22caec13bb540e0c9daee1e
+const LP_ERC20_DEPOSIT_DEPOSIT_ONL1 = 91795
 // immutablex deposit
 // Testnet deposit contract: 0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864
 const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 126000
-
+// https://ropsten.etherscan.io/tx/0x3e197cf0122e70aeccc7f7acbdc5418024f2e1e6161ed4f635a2c17e427f52c5
+const IMX_ERC20_DEPOSIT_DEPOSIT_ONL1 = 116893
 // immutablex withdraw
 // Testnet withdraw contract: 0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef
 const IMX_ETH_WITHDRAW_ONL1 = 510000
-
+// https://ropsten.etherscan.io/tx/0x791dfb4ed33a12dd0e58febd7de4f00ec3ca396dedc5d7f6ac3fd5291cd706c4
+const IMX_ERC20_WITHDRAW_ONL1 = 91304
 // dydx deposit
 // Mainnet deposit contract: 0x8e8bd01b5A9eb272CC3892a2E40E64A716aa2A40
 const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
@@ -652,13 +661,13 @@ export default {
         // OP get
         let fromGasPrice = await this.getGasPrice(fromChainID)
         // op WithDraw
-        let OPWithDrawOPGas = fromGasPrice * OP_ETH_WITHDRAW_ONOP_L2
+        let OPWithDrawOPGas = fromGasPrice * (isErc20 ? OP_ERC20_WITHDRAW_ONOP_L2 : OP_ETH_WITHDRAW_ONOP_L2)
 
         let L1ChainID = fromChainID === 7 ? 1 : 5
 
         let L1GasPrice = await this.getGasPrice(L1ChainID)
 
-        let OPWithDrawL1Gas = L1GasPrice * OP_ETH_WITHDRAW_ONL1
+        let OPWithDrawL1Gas = L1GasPrice * (isErc20 ? OP_ERC20_WITHDRAW_ONL1 : OP_ETH_WITHDRAW_ONL1)
 
         let OPWithDrawOP_L1 = await this.getOPFee(fromChainID)
 
@@ -680,7 +689,7 @@ export default {
       try {
         const L1ChainID = fromChainID === 8 ? 1 : 5
         const L1GasPrice = await this.getGasPrice(L1ChainID)
-        const IMXWithDrawL1Gas = L1GasPrice * IMX_ETH_WITHDRAW_ONL1
+        const IMXWithDrawL1Gas = L1GasPrice * (isErc20 ? IMX_ERC20_WITHDRAW_ONL1 : IMX_ETH_WITHDRAW_ONL1)
         ethGas += IMXWithDrawL1Gas
       } catch (error) {
         throw new Error(`imx withdraw error`)
@@ -688,10 +697,10 @@ export default {
     }
     if (fromChainID === 9 || fromChainID === 99) {
       try {
-        // api获取
         let loopringWithDrawFee = await loopring.getWithDrawFee(
           store.state.web3.coinbase,
-          fromChainID
+          fromChainID,
+          selectMakerInfo.tName
         )
         ethGas += Number(loopringWithDrawFee)
       } catch (error) {
@@ -768,7 +777,7 @@ export default {
       try {
         // op deposit
         let toGasPrice = await this.getGasPrice(toChainID === 7 ? 1 : 5)
-        let opDepositGas = toGasPrice * OP_ETH_DEPOSIT_DEPOSIT_ONL1
+        let opDepositGas = toGasPrice * (isErc20 ? OP_ERC20_DEPOSIT_DEPOSIT_ONL1 : OP_ETH_DEPOSIT_DEPOSIT_ONL1)
         ethGas += opDepositGas
       } catch (error) {
         throw new Error(`op deposit error`)
@@ -778,7 +787,7 @@ export default {
       try {
         // imx deposit
         const toGasPrice = await this.getGasPrice(toChainID === 8 ? 1 : 5)
-        const imxDepositGas = toGasPrice * IMX_ETH_DEPOSIT_DEPOSIT_ONL1
+        const imxDepositGas = toGasPrice * (isErc20 ? IMX_ERC20_DEPOSIT_DEPOSIT_ONL1 : IMX_ETH_DEPOSIT_DEPOSIT_ONL1)
         ethGas += imxDepositGas
       } catch (error) {
         throw new Error(`imx deposit error`)
@@ -788,7 +797,7 @@ export default {
       try {
         //loopring deposit
         let toGasPrice = await this.getGasPrice(toChainID === 9 ? 1 : 5)
-        let lpDepositGas = toGasPrice * LP_ETH_DEPOSIT_DEPOSIT_ONL1
+        let lpDepositGas = toGasPrice * (isErc20 ? LP_ERC20_DEPOSIT_DEPOSIT_ONL1 : LP_ETH_DEPOSIT_DEPOSIT_ONL1)
         ethGas += lpDepositGas
       } catch (error) {
         throw new Error(`loopring deposit error`)
@@ -819,7 +828,7 @@ export default {
     if (toChainID === 12 || toChainID === 512) {
       try {
         let toGasPrice = await this.getGasPrice(toChainID === 12 ? 1 : 5)
-        let zkspaceDepositGas = toGasPrice * ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1
+        let zkspaceDepositGas = toGasPrice * (isErc20 ? ZKSPACE_ERC20_DEPOSIT_DEPOSIT_ONL1 : ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1)
         ethGas += zkspaceDepositGas
       } catch (error) {
         throw new Error(`zkspace deposit error`)

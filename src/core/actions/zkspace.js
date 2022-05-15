@@ -63,7 +63,7 @@ export default {
       return
     }
     let ethPrice = store.state.transferData.ethPrice
-      ? store.state.transferData.ethPrice : 1000
+      ? store.state.transferData.ethPrice : 2000
 
     if (localChainID !== 12 && localChainID !== 512) {
       throw new Error('getZKSpaceGasFeeError：wrongChainID')
