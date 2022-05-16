@@ -4,6 +4,9 @@ const tokenIcons = {
   USDT: require('../assets/usdtlogo.png'),
   TUSD: require('../assets/tusdlogo.png'),
   MCO: require('../assets/mcologo.png'),
+  METIS: require('../assets/metislogo.png'),
+  ZKS: require('../assets/metislogo.png'),
+  LRC: require('../assets/metislogo.png'),
 }
 
 /**
