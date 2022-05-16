@@ -69,11 +69,19 @@ export default {
     zksChainID: 13,
     zksrinkebyChainID: 133,
   },
+
   boba: {
     Mainnet: 'https://blockexplorer.boba.network/api',
     Rinkeby: 'https://blockexplorer.rinkeby.boba.network/api',
     chainID: '13',
     rinkeyChainID: '513',
+  },
+
+  zkSync2: {
+    Mainnet: '',
+    Rinkeby: '',
+    chainID: '14',
+    rinkeyChainID: '514',
   },
   L1: {
     Mainnet:
