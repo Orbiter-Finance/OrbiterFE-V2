@@ -215,7 +215,6 @@ async function confirmUserTransaction(
         const imxHelper = new IMXHelper(localChainID)
         const imxClient = await imxHelper.getImmutableXClient()
         const transfer = await imxClient.getTransfer({ id: txHash })
-
         if (transfer.status.toLowerCase() == 'success') {
           const imx_amount = orbiterCore.getRAmountFromTAmount(
             localChainID,
@@ -258,7 +257,8 @@ async function confirmUserTransaction(
             makerInfo.makerAddress,
             store.state.web3.coinbase,
             imx_amountToSend,
-            compareProceedTxTimeStr
+            compareProceedTxTimeStr,
+            imx_nonce
           )
           return
         }
@@ -919,6 +919,7 @@ function ScanMakerTransfer(
           ? process.env.VUE_APP_LP_MK_KEY
           : process.env.VUE_APP_LP_MKTEST_KEY
       )
+      console.warn(LPTransferResult, '-------LPTransferResult--------')
       if (
         LPTransferResult.totalNum !== 0 &&
         LPTransferResult.userTransfers?.length !== 0

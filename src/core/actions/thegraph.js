@@ -36,6 +36,13 @@ export default {
     res.data = nowMakerList
     return res
   },
+  getMakerTokenNames: function (maketList) {
+    let makerTokenNames = {}
+    for (let item of maketList) {
+      makerTokenNames[item.tName] = true
+    }
+    return makerTokenNames
+  },
   getAllMakerList: function (req, next) {
     return new Promise((resolve, reject) => {
       var res = {}

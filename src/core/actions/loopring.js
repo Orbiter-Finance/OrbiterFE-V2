@@ -245,7 +245,7 @@ export default {
     return response
   },
 
-  getWithDrawFee: async function (address, localChainID) {
+  getWithDrawFee: async function (address, localChainID,tokenName) {
     const accountResult = await this.accountInfo(address, localChainID)
     if (!accountResult) {
       return 0
@@ -260,7 +260,7 @@ export default {
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-      tokenSymbol: 'ETH',
+      tokenSymbol: tokenName,
       amount: sendAmount,
     }
     let userApi = this.getUserAPI(localChainID)

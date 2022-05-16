@@ -1040,6 +1040,7 @@ async function getTransactionListLoopring(
   userAddress,
   chainID,
   needTimeStamp,
+  makerTokenNames,
   makerList
 ) {
   const LPFromTxList = []
@@ -1050,6 +1051,10 @@ async function getTransactionListLoopring(
       : store.state.lpTokenList.rinkeby
   let LPAllTxList = []
   for (let item of lpTokenList) {
+    const tokenName = item.symbol.toUpperCase()
+    if (!makerTokenNames[tokenName]) {
+      continue
+    }
     let isContiue = true
     let limit = 50
     let offset = 0
@@ -1166,6 +1171,7 @@ async function getTransactionListZkSpace(
   userAddress,
   chainID,
   needTimeStamp,
+  makerTokenNames,
   makerList
 ) {
   const zkSpaceFromTxList = []
@@ -1178,6 +1184,10 @@ async function getTransactionListZkSpace(
       : store.state.zksTokenList.rinkeby
 
   for (let item of zksTokenList) {
+    const tokenName = item.symbol.toUpperCase()
+    if (!makerTokenNames[tokenName]) {
+      continue
+    }
     const tokenID = item.id
     let isContiue = true
     let limit = 50
@@ -1305,10 +1315,12 @@ export default {
      */
     var originTxList = {}
     let makerList = []
+    let makerTokenNames = {}
     if (req.state === 1) {
       try {
-        const makerListRes = await thegraph.getAllMakerList(req, true)
+        const makerListRes = await thegraph.getMakerInfo(req, true)
         makerList = makerListRes.data
+        makerTokenNames = thegraph.getMakerTokenNames(makerList)
       } catch (error) {
         throw new Error(`get makerList error`)
       }
@@ -1479,6 +1491,7 @@ export default {
             req.address,
             chainID,
             needTimeStamp,
+            makerTokenNames,
             makerList
           )
 
@@ -1497,6 +1510,7 @@ export default {
               req.address,
               chainID,
               needTimeStamp,
+              makerTokenNames,
               makerList
             )
           originTxList[chainID] = {

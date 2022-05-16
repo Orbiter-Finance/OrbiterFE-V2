@@ -1,6 +1,15 @@
 import thegraph from '../actions/thegraph'
 export default {
-  getMakerInfoFromGraph: async function (req, next) {
-    return await thegraph.getMakerInfo(req, next)
+  getMakerInfoFromGraph: function (req, next) {
+    return new Promise((resolve, reject) => {
+      thegraph
+        .getMakerInfo(req, next)
+        .then((response) => {
+          resolve(response)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
   },
 }
