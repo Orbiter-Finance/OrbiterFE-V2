@@ -253,6 +253,24 @@
       ],
       "faucets": [],
       "infoURL": "https://gateway.boba.network/"
+    },
+    {
+      "name": "ZKSYNC2(R)",
+      "chainId": 280,
+      "shortName": "ZKSYNC2",
+      "networkId": 28,
+      "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      
+      "rpc": [
+        "https://zksync2-testnet.zksync.dev",
+        "wss://zksync2-testnet.zksync.dev/ws"
+      ],
+      "faucets": [],
+      "infoURL": "https://zksync2-testnet.zkscan.io/"
     }
   ]
 }
