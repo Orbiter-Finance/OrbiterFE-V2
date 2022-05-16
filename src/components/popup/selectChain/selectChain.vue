@@ -125,8 +125,8 @@ export default {
         localID: 44,
       })
       const chainOrderIds = [
-        1, 5, 3, 33, 9, 99, 2, 22, 6, 66, 7, 77, 8, 88, 10, 510, 11, 511, 12,
-        512, 13, 513, 4, 44,
+        3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
+        511, 13, 513, 4, 44,
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
