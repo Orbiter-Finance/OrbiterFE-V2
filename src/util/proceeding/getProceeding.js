@@ -901,7 +901,6 @@ function ScanMakerTransfer(
           ? process.env.VUE_APP_LP_MK_KEY
           : process.env.VUE_APP_LP_MKTEST_KEY
       )
-      console.warn(LPTransferResult, '-------LPTransferResult--------')
       if (
         LPTransferResult.totalNum !== 0 &&
         LPTransferResult.userTransfers?.length !== 0
