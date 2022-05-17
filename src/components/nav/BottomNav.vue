@@ -305,7 +305,7 @@ export default {
         {
           icon: 'github',
           title: 'Github ',
-          value: 'https://github.com/OrbiterCross',
+          value: 'https://github.com/Orbiter-Finance',
         },
         {
           icon: 'twitter',
