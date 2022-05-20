@@ -5,6 +5,8 @@ import { ethers } from 'ethers'
 import * as zksync from 'zksync'
 import env from '../../../env'
 import thirdapi from '../../core/actions/thirdapi'
+// import zksync2 from '../../core/actions/zksync2'
+import Web3 from 'web3'
 import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
@@ -21,8 +23,8 @@ import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
-import Web3 from 'web3'
 
+import { Coin_ABI } from '../constants/contract/contract'
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
 const ZK_ERC20_DEPOSIT_DEPOSIT_ONL1 = 103937
@@ -80,6 +82,14 @@ const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
 // boba
 const BOBA_TRANSFER_OUT_LIMIT = 10123935
 const BOBA_TRANSFER_IN_LIMIT = 1787707
+
+// zksync2 deposit
+const ZK2_ETH_DEPOSIT_DEPOSIT_ONL1 = 170617
+const ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1 = 117858
+// zksync2 withdraw
+const ZK2_ETH_WITHDRAW_ONZK2 = 10560
+const ZK2_ERC20_WITHDRAW_ONZK2 = 10560//same with eth
+
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
@@ -140,10 +150,12 @@ export default {
           store.state.web3.coinbase
         )
       } catch (error) {
-        console.warn('getZKTransferGasFeeError =', error)
+        console.warn('getZKSTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (util.isEthTokenAddress(fromTokenAddress)) {
+    } else if (util.isEthTokenAddress(fromTokenAddress) ||
+      ((fromChainID == 14 || fromChainID == 514) &&
+        fromTokenAddress.toUpperCase() == `0X${"E".repeat(40)}`)) {
       if (fromChainID == 9 || fromChainID == 99) {
         let loopringFee = await loopring.getTransferFee(
           store.state.web3.coinbase,
@@ -153,10 +165,31 @@ export default {
       }
       const web3 = localWeb3(fromChainID)
       if (web3) {
-        const estimateGas = await web3.eth.estimateGas({
-          from: store.state.web3.coinbase,
-          to: makerAddress,
-        })
+        let estimateGas = 0
+        //zk2 get estimateGas by contract
+        if (fromChainID == 14 || fromChainID == 514) {
+          let gasLimit = 0
+          const ABI = Coin_ABI
+          const ecourseContractInstance = new web3.eth.Contract(ABI, fromTokenAddress)
+          if (!ecourseContractInstance) {
+            return gasLimit
+          }
+          try {
+            gasLimit = await ecourseContractInstance.methods
+              .transfer(makerAddress, "100000000000000000")
+              .estimateGas({
+                from: store.state.web3.coinbase,
+              })
+          } catch (error) {
+            console.warn(`get zk2 gas fee error ${error.message}`)
+          }
+          estimateGas = gasLimit
+        } else {
+          estimateGas = await web3.eth.estimateGas({
+            from: store.state.web3.coinbase,
+            to: makerAddress,
+          })
+        }
         const gasPrice = await web3.eth.getGasPrice()
         let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
         if (fromChainID === 7 || fromChainID === 77) {
@@ -193,6 +226,7 @@ export default {
       511: 1,
       13: 1,
       513: 1,
+      514: 0.000028572,
     }
     const GasLimitMap = {
       1: 35000,
@@ -216,6 +250,7 @@ export default {
       510: 16000,
       511: 100000,
       513: 646496,
+      514: 10560,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -239,6 +274,8 @@ export default {
       511: 'ETH',
       13: 'ETH',
       513: 'ETH',
+      14: 'ETH',
+      514: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -355,6 +392,9 @@ export default {
     if (fromChainID === 13 || fromChainID === 513) {
       timeSpent = 20 // boba 转出预估时间
     }
+    if (fromChainID === 14 || fromChainID === 514) {
+      timeSpent = 15
+    }
     if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
       timeSpent += 30
     }
@@ -387,9 +427,11 @@ export default {
     if (toChainID === 11 || toChainID === 511) {
       timeSpent += 5
     }
-
     if (toChainID === 13 || toChainID === 513) {
       timeSpent += 20
+    }
+    if (toChainID === 14 || toChainID === 514) {
+      timeSpent += 15
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -400,11 +442,9 @@ export default {
       return '~7 days'
     }
     if (
-      fromChainID === 3 ||
-      fromChainID === 33 ||
-      fromChainID === 12 ||
-      fromChainID === 512
-    ) {
+      fromChainID === 3 || fromChainID === 33 ||
+      fromChainID === 12 || fromChainID === 512 ||
+      fromChainID === 14 || fromChainID === 514) {
       return '~4 hours'
     }
     // https://docs.polygon.technology/docs/develop/ethereum-polygon/getting-started/
@@ -430,11 +470,9 @@ export default {
         return '~10min'
       }
       if (
-        toChainID === 3 ||
-        toChainID === 33 ||
-        toChainID === 12 ||
-        toChainID === 512
-      ) {
+        toChainID === 3 || toChainID === 33 ||
+        toChainID === 12 || toChainID === 512 ||
+        toChainID === 14 || toChainID === 514) {
         // eth -> zk
         return '~10min'
       }
@@ -714,6 +752,12 @@ export default {
       const fromGasPrice = await this.getGasPrice(fromChainID)
       ethGas = fromGasPrice * BOBA_TRANSFER_OUT_LIMIT
     }
+    if (fromChainID === 14 || fromChainID === 514) {
+      // zk2 widthdraw
+      const fromGasPrice = await this.getGasPrice(fromChainID)
+      ethGas = fromGasPrice * (isErc20 ? ZK2_ERC20_WITHDRAW_ONZK2 : ZK2_ETH_WITHDRAW_ONZK2)
+    }
+
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       // Ar deposit
@@ -781,6 +825,12 @@ export default {
       let toGasPrice = await this.getGasPrice(toChainID)
       const depositGas = toGasPrice * BOBA_TRANSFER_IN_LIMIT
       ethGas += depositGas
+    }
+
+    if (toChainID === 14 || toChainID === 514) {
+      // zk2 get
+      const toGasPrice = await this.getGasPrice(toChainID === 14 ? 1 : 5)
+      ethGas = toGasPrice * (isErc20 ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1 : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
 
     let usd = new BigNumber(0)
@@ -910,7 +960,6 @@ export default {
         if (!tokenContract) {
           throw 'getBalance_tokenContractError'
         }
-
         balance = await tokenContract.methods.balanceOf(userAddress).call()
       }
 
@@ -1010,12 +1059,34 @@ export default {
       p_text
     )
     if (!tValue.state) {
-      console.warn('getTralTransferAmountError')
       return userValue
     } else {
       return new BigNumber(tValue.tAmount).dividedBy(
         new BigNumber(10 ** selectMakerInfo.precision)
       )
     }
+  },
+  async getTokenList(fromChainID, count = 10) {
+    let tokenList = fromChainID === 14 ?
+      store.state.zk2tokenList.mainnet : store.state.zk2tokenList.rinkeby
+    if (tokenList.length == 0) {
+      await util.sleep(300)
+      count--;
+      if (count >= 0) {
+        return await this.getTokenList(fromChainID, count)
+      }
+    }
+    return tokenList
+  },
+  getMakerInfo: async function (fromChainID, count = 10) {
+    let selectMakerInfo = store.getters.realSelectMakerInfo
+    if (!selectMakerInfo) {
+      await util.sleep(300)
+      count--;
+      if (count >= 0) {
+        return await this.getMakerInfo(fromChainID, count)
+      }
+    }
+    return selectMakerInfo
   },
 }

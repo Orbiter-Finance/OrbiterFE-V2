@@ -4,15 +4,10 @@
       <div class="topItem">
         <span>History</span>
         <div @click="closerButton">
-          <svg-icon
-            style="width: 1.5rem; height: 1.5rem"
-            iconName="close"
-          ></svg-icon>
+          <svg-icon style="width: 1.5rem; height: 1.5rem" iconName="close"></svg-icon>
         </div>
       </div>
-      <div
-        style="width: 100%; height: 0.3rem; background: var(--default-black)"
-      ></div>
+      <div style="width: 100%; height: 0.3rem; background: var(--default-black)"></div>
 
       <div class="contentTopItem">
         <span style="width: 34%">Time</span>
@@ -20,43 +15,25 @@
         <span style="width: 18%">From</span>
         <span style="width: 18%">To</span>
       </div>
-      <div
-        style="width: 100%; height: 0.15rem; background: var(--default-black)"
-      ></div>
+      <div style="width: 100%; height: 0.15rem; background: var(--default-black)"></div>
       <div class="dydx-limit" v-if="isShowDydxLimit">
         Limited by the dydx mechanism, the history of dYdX cannot be queried
         temporarily
       </div>
-      <loading
-        v-if="!historyData"
-        style="margin: auto; margin-top: 5rem"
-        loadingColor="#E85E24"
-        width="4rem"
-        height="4rem"
-      ></loading>
-      <div
-        v-else-if="historyData && historyData.length !== 0"
-        v-for="(item, index) in historyData"
-        :key="index"
-        @click="getHistoryInfo(item)"
-        class="contentItem"
-      >
+      <loading v-if="!historyData" style="margin: auto; margin-top: 5rem" loadingColor="#E85E24" width="4rem"
+        height="4rem"></loading>
+      <div v-else-if="historyData && historyData.length !== 0" v-for="(item, index) in historyData" :key="index"
+        @click="getHistoryInfo(item)" class="contentItem">
         <svg-icon class="logo" :iconName="iconName(item)"></svg-icon>
         <span style="width: 28%">{{ item.fromTimeStamp }}</span>
         <span style="width: 30%; text-align: center">{{
-          item.userAmount + item.tokenName
+            item.userAmount + item.tokenName
         }}</span>
         <span style="width: 18%; text-align: center">
-          <svg-icon
-            :iconName="logoName(item.fromChainID)"
-            style="width: 1.6rem; height: 1.6rem"
-          ></svg-icon>
+          <svg-icon :iconName="logoName(item.fromChainID)" style="width: 1.6rem; height: 1.6rem"></svg-icon>
         </span>
         <span style="width: 18%; text-align: center">
-          <svg-icon
-            :iconName="logoName(item.toChainID)"
-            style="width: 1.6rem; height: 1.6rem"
-          ></svg-icon>
+          <svg-icon :iconName="logoName(item.toChainID)" style="width: 1.6rem; height: 1.6rem"></svg-icon>
         </span>
       </div>
       <div v-else class="noContentItem">No history</div>
@@ -111,7 +88,7 @@ export default {
       return false
     },
   },
-  mounted() {},
+  mounted() { },
   methods: {
     closerButton() {
       this.$emit('closeHistory')
@@ -155,6 +132,8 @@ export default {
         return 'zkspacelogo'
       } else if (chainID == '13' || chainID == '513') {
         return 'bobalogo'
+      } else if (chainID == '14' || chainID == '514') {
+        return 'zk2logo'
       } else {
         return 'ethlogo'
       }
@@ -168,13 +147,8 @@ export default {
 .historybody {
   background-color: #fff;
   margin: 4.2rem auto;
-  height: calc(
-    100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
-  );
-  height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
-  );
+  height: calc(100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
+  height: calc(var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
   overflow-y: scroll;
 
   .dydx-limit {
@@ -186,6 +160,7 @@ export default {
   .historyContent {
     margin: 1rem 1.5rem;
     position: relative;
+
     .topItem {
       width: 100%;
       height: 2rem;
@@ -198,6 +173,7 @@ export default {
       padding: 0 1rem;
       margin-bottom: 1.5rem;
     }
+
     .contentTopItem {
       width: 100%;
       font-size: 1.4rem;
@@ -211,6 +187,7 @@ export default {
       margin: 2rem 0 1.5rem;
       text-align: center;
     }
+
     .contentItem {
       width: 100%;
       font-size: 1.4rem;
@@ -223,6 +200,7 @@ export default {
       justify-content: space-between;
       position: relative;
       text-align: left;
+
       .logo {
         // position: absolute;
         // left: -1.2rem;
@@ -232,6 +210,7 @@ export default {
         margin-right: 0.5rem;
       }
     }
+
     .noContentItem {
       color: rgba($color: #18191f, $alpha: 0.15);
       font-size: 1.4rem;

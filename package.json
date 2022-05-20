@@ -23,7 +23,7 @@
     "echarts": "^4.9.0",
     "element-ui": "^2.14.1",
     "eth-proof": "^2.1.6",
-    "ethers": "^5.5.4",
+    "ethers": "^5.6.6",
     "graphql": "^16.4.0",
     "graphql-request": "^4.2.0",
     "https": "^1.0.0",
@@ -35,7 +35,8 @@
     "vue-clipboard2": "^0.3.3",
     "vue-router": "^3.0.7",
     "vuex": "^3.6.0",
-    "zksync": "^0.11.3"
+    "zksync": "^0.11.3",
+    "zksync-web3": "^0.4.0"
   },
   "devDependencies": {
     "@types/web3": "^1.2.2",

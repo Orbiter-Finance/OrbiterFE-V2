@@ -241,6 +241,7 @@ import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
+import { asyncGetExchangeToUsdRate } from "../../util/coinbase"
 
 const queryParamsChainMap = {
   "Mainnet": 1,
@@ -266,7 +267,8 @@ const queryParamsChainMap = {
   "zkspace": 12,
   "zkspace(R)": 512,
   "Boba(R)": 513,
-  "Boba": 13
+  "Boba": 13,
+  "ZkSync2(R)": 514,
 }
 
 export default {
@@ -317,7 +319,6 @@ export default {
       if (!this.fromBalance) {
         return '0'
       }
-
       const transferGasFee =
         (await transferCalculate.getTransferGasLimit(
           this.$store.state.transferData.fromChainID,
@@ -582,8 +583,8 @@ export default {
     },
     timeSpenToolTip() {
       return `It will take about ${this.originTimeSpent
-          ? this.originTimeSpent.replace('~', '')
-          : this.originTimeSpent
+        ? this.originTimeSpent.replace('~', '')
+        : this.originTimeSpent
         } by traditional way, but only take about ${this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
         } with Orbiter.`
     },
@@ -595,11 +596,11 @@ export default {
         this.orbiterTradingFee * this.exchangeToUsdPrice
       ).toFixed(2)}`
       const withholdingGasFee = `<br />Withholding Fee: $${this.$store.getters.realSelectMakerInfo
-          ? (
-            this.$store.getters.realSelectMakerInfo.tradingFee *
-            this.exchangeToUsdPrice
-          ).toFixed(2)
-          : 0
+        ? (
+          this.$store.getters.realSelectMakerInfo.tradingFee *
+          this.exchangeToUsdPrice
+        ).toFixed(2)
+        : 0
         }`
       const total = `<br /><br /><b>Total: $${(
         this.gasTradingTotal * this.exchangeToUsdPrice
@@ -666,13 +667,15 @@ export default {
         this.$store.state.transferData.fromChainID === 3 ||
         this.$store.state.transferData.fromChainID === 33
       ) {
-        if (this.$store.state.transferData.selectTokenInfo.token !== 'ETH') {
-          return (
-            Math.ceil(Number(this.$store.state.transferData.gasFee * 10)) / 10
-          ).toFixed(2)
+        const selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let transferGasFee = this.$store.state.transferData.gasFee
+        const selectTokenRate = asyncGetExchangeToUsdRate(selectMakerInfo.tName)
+        if (selectTokenRate > 0) {
+          // switch to usd
+          transferGasFee = transferGasFee / selectTokenRate
         }
+        return (Math.ceil(Number(transferGasFee * 10)) / 10).toFixed(2)
       }
-
       return (
         Math.ceil(
           this.$store.state.transferData.gasFee *
@@ -1146,12 +1149,10 @@ export default {
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter((makerInfo) => {
-        // Don't show dydx
+        // Don't show dydx and zksync2
         if (
-          makerInfo.c1ID == 11 ||
-          makerInfo.c1ID == 511 ||
-          makerInfo.c2ID == 11 ||
-          makerInfo.c2ID == 511
+          makerInfo.c1ID == 11 || makerInfo.c1ID == 511 ||
+          makerInfo.c2ID == 11 || makerInfo.c2ID == 511
         ) {
           return
         }

@@ -13,6 +13,15 @@ export default {
       state.zktokenList.rinkeby = obj.tokenList
     }
   },
+  updateZk2TokenList(state, obj) {
+    if (obj.chainID === 14) {
+      state.zk2tokenList.mainnet = obj.tokenList
+    }
+    if (obj.chainID === 514) {
+      state.zk2tokenList.rinkeby = obj.tokenList
+    }
+  },
+
   updateProceedTxID(state, txid) {
     state.proceedTXID = txid
     state.proceedState = 1

@@ -22,7 +22,6 @@ async function cacheExchangeRates(currency = 'USD') {
     return undefined
   }
 }
-
 async function getRates(currency) {
   try {
     const resp = await axios.get(
@@ -69,7 +68,15 @@ export async function getExchangeToUsdRate(sourceCurrency = 'ETH') {
 
   return new BigNumber(rate)
 }
-
+export function asyncGetExchangeToUsdRate(sourceCurrency = 'ETH') {
+  // toUpperCase
+  sourceCurrency = sourceCurrency.toUpperCase()
+  let rate = -1
+  if (exchangeRates?.[sourceCurrency]) {
+    rate = exchangeRates[sourceCurrency]
+  }
+  return new BigNumber(rate)
+}
 /**
  * @param value
  * @param sourceCurrency

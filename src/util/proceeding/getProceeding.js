@@ -53,7 +53,7 @@ async function confirmUserTransaction(
   localChainID,
   makerInfo,
   txHash,
-  confirmations = 1
+  confirmations = 1,
 ) {
   let fromTokenAddress = makerInfo.t1Address
   let toLocalChainID = makerInfo.c2ID
@@ -404,10 +404,7 @@ async function confirmUserTransaction(
         confirmations
       )
     }
-    if (!isCurrentTransaction(txHash)) {
-      return
-    }
-    var trx = trxConfirmations.trx
+    const trx = trxConfirmations.trx
     if (!isCurrentTransaction(txHash)) {
       return
     }
@@ -417,10 +414,10 @@ async function confirmUserTransaction(
     )
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
 
     // ERC20's transfer input length is 138(include 0x), when the length > 138, it is cross address transfer
@@ -435,13 +432,25 @@ async function confirmUserTransaction(
         amountStr = Web3.utils.hexToNumberString(amountHex)
         startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
       }
+    } else if (localChainID == 14 || localChainID == 514) {
+      const makerAddress = makerInfo.makerAddress
+      const theMakerAddress = makerAddress.toLowerCase().substr(2, makerAddress.length - 1)
+      let amountIndex = 0
+      const thekeyIndex = trx.input.indexOf(theMakerAddress)
+      if (thekeyIndex > -1) {
+        amountIndex = thekeyIndex + theMakerAddress.length
+        const hexAmount = trx.input.slice(amountIndex, amountIndex + 64)
+        amountStr = Web3.utils.hexToNumberString('0x' + hexAmount)
+      } else {
+        console.warn("from zk2 the amount is incorrect")
+        return
+      }
+
     } else {
-      // Parse input data
       const inputData = CrossAddress.parseTransferERC20Input(trx.input)
       if (!inputData.ext?.value) {
         return
       }
-
       startScanMakerTransferFromAddress = inputData.to
       amountStr = inputData.amount.toNumber() + ''
     }
@@ -488,7 +497,6 @@ async function confirmUserTransaction(
       if (transferExt?.value) {
         toAddress = transferExt.value
       }
-
       startScanMakerTransfer(
         txHash,
         makerTransferChainID,
@@ -876,9 +884,9 @@ function ScanMakerTransfer(
           if (
             lpTransaction.txType == 'TRANSFER' &&
             lpTransaction.senderAddress.toLowerCase() ==
-              makerInfo.makerAddress.toLowerCase() &&
+            makerInfo.makerAddress.toLowerCase() &&
             lpTransaction.receiverAddress.toLowerCase() ==
-              store.state.proceeding.userTransfer.from.toLowerCase() &&
+            store.state.proceeding.userTransfer.from.toLowerCase() &&
             lpTransaction.symbol == 'ETH' &&
             lpTransaction.amount == rAmount &&
             lpTransaction.memo == memo
@@ -1058,9 +1066,7 @@ function ScanMakerTransfer(
         )
       return
     }
-
     const currentBlock = await web3.eth.getBlockNumber()
-
     const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
     // Generate filter options
     const options = {
@@ -1068,7 +1074,7 @@ function ScanMakerTransfer(
         from: from,
         to: to,
       },
-      fromBlock: currentBlock - 100,
+      fromBlock: currentBlock - 80,
       toBlock: 'latest',
     }
     tokenContract.getPastEvents('Transfer', options, function (error, events) {
@@ -1135,10 +1141,10 @@ async function confirmMakerTransaction(
     }
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
     if (trxConfirmations.confirmations >= confirmations) {
       console.log(
@@ -1208,7 +1214,7 @@ export default {
     if (realAmount.state) {
       realAmount = realAmount.rAmount
     } else {
-      throw realAmount.rAmount.error
+      throw new Error(`UserTransferReady error: ${realAmount.error}`)
     }
     store.commit('updateProceedingUserTransferAmount', realAmount)
     confirmUserTransaction(localChainID, makerInfo, txHash)

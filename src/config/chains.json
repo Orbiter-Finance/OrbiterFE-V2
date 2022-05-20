@@ -210,7 +210,6 @@
         "symbol": "tMETIS",
         "decimals": 18
       },
-      
       "rpc": [
         "https://stardust.metis.io/?owner=588",
         "wss://stardust-ws.metis.io/"
@@ -228,7 +227,6 @@
         "symbol": "ETH",
         "decimals": 18
       },
-      
       "rpc": [
         "https://mainnet.boba.network",
         "wss://ws.mainnet.boba.network"
@@ -246,7 +244,6 @@
         "symbol": "ETH",
         "decimals": 18
       },
-      
       "rpc": [
         "https://mainnet.boba.network",
         "wss://ws.mainnet.boba.network"
@@ -255,16 +252,15 @@
       "infoURL": "https://gateway.boba.network/"
     },
     {
-      "name": "ZKSYNC2(R)",
+      "name": "Zksync2(R)",
       "chainId": 280,
-      "shortName": "ZKSYNC2",
-      "networkId": 28,
+      "shortName": "Zksync2",
+      "networkId": 280,
       "nativeCurrency": {
         "name": "Ether",
         "symbol": "ETH",
         "decimals": 18
       },
-      
       "rpc": [
         "https://zksync2-testnet.zksync.dev",
         "wss://zksync2-testnet.zksync.dev/ws"

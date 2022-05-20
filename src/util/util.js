@@ -55,6 +55,10 @@ export default {
         return 'Boba'
       case 513:
         return 'Boba(R)'
+      case 14:
+        return 'zkSync2'
+      case 514:
+        return 'zkSync2(R)'
     }
 
     const chain = chainList.chainList.filter(
@@ -201,8 +205,8 @@ export default {
           rpcUrls: chain.rpc,
           blockExplorerUrls: [
             chain.explorers &&
-            chain.explorers.length > 0 &&
-            chain.explorers[0].url
+              chain.explorers.length > 0 &&
+              chain.explorers[0].url
               ? chain.explorers[0].url
               : chain.infoURL,
           ],
