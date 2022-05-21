@@ -441,6 +441,7 @@ async function confirmUserTransaction(
         amountIndex = thekeyIndex + theMakerAddress.length
         const hexAmount = trx.input.slice(amountIndex, amountIndex + 64)
         amountStr = Web3.utils.hexToNumberString('0x' + hexAmount)
+        startScanMakerTransferFromAddress = makerAddress
       } else {
         console.warn("from zk2 the amount is incorrect")
         return

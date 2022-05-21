@@ -33,43 +33,50 @@ export default {
                 partTxinfoUrl = `https://zksync2-testnet.zkscan.io${partTxInfos.next_page_path}&type=JSON`
             }
             const allPromiseTx = partTxInfos.items.map(async (item) => {
-                const dom = window.document.createElement("div");
-                dom.innerHTML = item;
-                let txType = dom.getElementsByClassName("tile-label")[0].textContent
-                let txStatus = dom.getElementsByClassName("tile-status-label")[0].textContent
-                if (!txType || txType.trim() != "Token Transfer" || !txStatus || txStatus.trim() != "Success") {
-                    return
-                }
-                let hash = dom.getElementsByClassName("tile")[0].getAttribute("data-identifier-hash")
-                let timeString = dom.getElementsByClassName("mr-2 mr-md-0 order-2")[0].getAttribute("data-from-now")
+                try {
+                    const dom = window.document.createElement("div");
+                    dom.innerHTML = item;
+                    let txType = dom.getElementsByClassName("tile-label")[0].textContent
+                    let txStatus = dom.getElementsByClassName("tile-status-label")[0].textContent
+                    if (!txType || txType.trim() != "Token Transfer" || !txStatus || txStatus.trim() != "Success") {
+                        return
+                    }
+                    let hash = dom.getElementsByClassName("tile")[0].getAttribute("data-identifier-hash")
+                    let timeString = dom.getElementsByClassName("mr-2 mr-md-0 order-2")[0].getAttribute("data-from-now")
 
-                let tokenAddress = dom.getElementsByClassName("col-xs-12 col-lg-4 ml-3 ml-sm-0")[0].getElementsByTagName("a")[0].getAttribute("href")
-                tokenAddress = tokenAddress ? tokenAddress.slice(-42) : null
-                let from = dom.getElementsByClassName("tile-type-token-transfer-short-name")[0].getElementsByTagName("span")[0].getAttribute("data-address-hash")
-                let to = dom.getElementsByClassName("tile-type-token-transfer-short-name")[1].getElementsByTagName("span")[0].getAttribute("data-address-hash")
-                let value = dom.getElementsByClassName("col-xs-12 col-lg-4 ml-3 ml-sm-0")[0].firstChild?.nodeValue
-                let tokenName = dom.getElementsByClassName("col-xs-12 col-lg-4 ml-3 ml-sm-0")[0].getElementsByTagName("a")[0].textContent
-                const nonce = await this.getNonce(hash)
-                const theTimeStamp = timeString ? Date.parse(timeString) / 1000 : 0
-                const txInfo = {
-                    hash: hash ? hash.trim() : null,
-                    timeString: theTimeStamp ? theTimeStamp + "" : null,
-                    txStatus: txStatus && txStatus.trim() == "Success" ? "finalized" : null,
-                    tokenAddress: tokenAddress ? tokenAddress.trim() : null,
-                    from: from ? from.trim() : null,
-                    to: to ? to.trim() : null,
-                    value: value ? value.trim() : null,
-                    tokenName: tokenName ? tokenName.trim() : null,
-                    nonce: nonce
-                }
-                if (theTimeStamp < timeStamp) {
-                    isContinue = false
+                    let tokenAddress = dom.getElementsByClassName("col-xs-12 col-lg-4 ml-3 ml-sm-0")[0].getElementsByTagName("a")[0].getAttribute("href")
+                    tokenAddress = tokenAddress ? tokenAddress.slice(-42) : null
+                    let from = dom.getElementsByClassName("tile-type-token-transfer-short-name")[0].getElementsByTagName("span")[0].getAttribute("data-address-hash")
+                    let to = dom.getElementsByClassName("tile-type-token-transfer-short-name")[1].getElementsByTagName("span")[0].getAttribute("data-address-hash")
+                    if (to == "0xde03a0b5963f75f1c8485b355ff6d30f3093bde7") {
+                        to = dom.getElementsByClassName("tile-type-token-transfer-short-name")[1].getElementsByTagName("span")[3].getAttribute("data-address-hash")
+                    }
+                    let value = dom.getElementsByClassName("col-xs-12 col-lg-4 ml-3 ml-sm-0")[0].firstChild?.nodeValue
+                    let tokenName = dom.getElementsByClassName("col-xs-12 col-lg-4 ml-3 ml-sm-0")[0].getElementsByTagName("a")[0].textContent
+                    const nonce = await this.getNonce(hash)
+                    const theTimeStamp = timeString ? Date.parse(timeString) / 1000 : 0
+                    const txInfo = {
+                        hash: hash ? hash.trim() : null,
+                        timeString: theTimeStamp ? theTimeStamp + "" : null,
+                        txStatus: txStatus && txStatus.trim() == "Success" ? "finalized" : null,
+                        tokenAddress: tokenAddress ? tokenAddress.trim() : null,
+                        from: from ? from.trim() : null,
+                        to: to ? to.trim() : null,
+                        value: value ? value.trim() : null,
+                        tokenName: tokenName ? tokenName.trim() : null,
+                        nonce: nonce
+                    }
+                    if (theTimeStamp < timeStamp) {
+                        isContinue = false
 
-                } else {
-                    txHashs.push(txInfo)
+                    } else {
+                        txHashs.push(txInfo)
+                    }
+                } catch (error) {
+                    console.warn(`get zk2 one tx error${error}`)
                 }
             })
-            Promise.all(allPromiseTx)
+            await Promise.all(allPromiseTx)
         }
         return txHashs
     },
