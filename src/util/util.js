@@ -58,7 +58,7 @@ export default {
       case 14:
         return 'zkSync2'
       case 514:
-        return 'zkSync2(R)'
+        return 'zkSync2(G)'
     }
 
     const chain = chainList.chainList.filter(

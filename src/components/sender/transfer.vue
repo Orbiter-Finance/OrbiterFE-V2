@@ -268,7 +268,7 @@ const queryParamsChainMap = {
   "zkspace(R)": 512,
   "Boba(R)": 513,
   "Boba": 13,
-  "ZkSync2(R)": 514,
+  "ZkSync2(G)": 514,
 }
 
 export default {

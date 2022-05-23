@@ -100,7 +100,7 @@ export default {
         }
         newArray.push(chainData)
       }
-      const chainOrderIds = [1, 5, 3, 33, 9, 99, 2, 22, 6, 66, 7, 77, 8, 88, 10, 510, 4, 44, 11, 511, 12, 512]
+      const chainOrderIds = [1, 5, 3, 33, 9, 99, 2, 22, 6, 66, 7, 77, 8, 88, 10, 510, 4, 44, 11, 511, 12, 512,514]
       return this.orderChainIds(chainOrderIds, newArray)
     },
     newChainData: function () {

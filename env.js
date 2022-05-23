@@ -84,7 +84,7 @@ export default {
     511: '3', // dydx(R)
     512: '4', // zkspace(R)s
     513: '28', // boba rinkeby
-    514: '280'//zksync2
+    514: '280'//zksync2(G)
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
