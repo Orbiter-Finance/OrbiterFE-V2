@@ -15,6 +15,7 @@ export default {
     510: process.env.VUE_APP_HP_MT_R,
     13: process.env.VUE_APP_HP_BOBA,
     513: process.env.VUE_APP_HP_BOBA_R,
+    514: "https://zksync2-testnet.zksync.dev",
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -29,6 +30,7 @@ export default {
     510: process.env.VUE_APP_WP_MT_R,
     13: process.env.VUE_APP_WP_BOBA,
     513: process.env.VUE_APP_WP_BOBA_R,
+    514: 'wss://zksync2-testnet.zksync.dev/ws',
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -55,6 +57,7 @@ export default {
     '511',
     '512',
     '513',
+    '514'
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -69,6 +72,7 @@ export default {
     10: '1088', //metis
     11: '1', // dydx
     12: '1', // zkspace
+    13: '288', // boba mainnet
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -76,11 +80,11 @@ export default {
     77: '69', // optimism(K)
     88: '3', // ropsten
     99: '5', // loopring(G)
-    511: '3', // dydx(R)
     510: '588', //metis test
-    512: '4', // zkspace(R)
-    13: '288', // boba mainnet
+    511: '3', // dydx(R)
+    512: '4', // zkspace(R)s
     513: '28', // boba rinkeby
+    514: '280'//zksync2
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -125,6 +129,7 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
+    514: 'https://zksync2-testnet.zkscan.io/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -151,5 +156,6 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/account/',
     13: 'https://blockexplorer.boba.network/address/',
     513: 'https://blockexplorer.rinkeby.boba.network/address/',
+    514: 'https://zksync2-testnet.zkscan.io/address/',
   },
 }

@@ -2,7 +2,11 @@
   <div id="app">
     <TopNav />
     <keep-alive>
-      <router-view v-if="$route.meta.keepAlive" class="router" id="aliveRouter" />
+      <router-view
+        v-if="$route.meta.keepAlive"
+        class="router"
+        id="aliveRouter"
+      />
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
     <BottomNav />
@@ -18,6 +22,7 @@ import BottomNav from './components/nav/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
+import getZk2Token from './util/tokenInfo/supportZk2TokenInfo'
 import getTransactionList from './core/routes/transactionList'
 
 export default {
@@ -43,6 +48,7 @@ export default {
     getZkToken.getSupportZKTokenList()
     getZksToken.getSupportZksTokenList()
     getLpToken.getSupportLpTokenList()
+    getZk2Token.getSupportZk2TokenList()
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {
         // console.log('==============')
@@ -177,7 +183,9 @@ p {
 .router {
   padding-bottom: var(--bottom-nav-height);
   height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height));
-  height: calc(var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height));
+  height: calc(
+    var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height)
+  );
 
   width: 100%;
 }

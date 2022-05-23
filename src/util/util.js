@@ -55,8 +55,11 @@ export default {
         return 'Boba'
       case 513:
         return 'Boba(R)'
+      case 14:
+        return 'zkSync2'
+      case 514:
+        return 'zkSync2(G)'
     }
-
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
     )

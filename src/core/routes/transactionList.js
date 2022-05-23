@@ -17,6 +17,7 @@ import mStarknet from '../actions/starknet'
 import thegraph from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
 import zkspace from '../actions/zkspace'
+import zksync2 from '../actions/zksync2'
 import TxInfo from '../utils/modle/txinfo'
 import { store } from '../../store'
 
@@ -329,7 +330,88 @@ async function getTransactionListMetis(
 
   return { MTFromTxList, MTToTxList }
 }
+//zksync2
+async function getTransactionListZK2(
+  userAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  try {
+    const ZK2FromTxList = []
+    const ZK2ToTxList = []
+    const zk2AllTxList = await zksync2.getTxList(userAddress, needTimeStamp)
+    for (let zk2Info of zk2AllTxList) {
+      let txinfo = TxInfo.getTxInfoWithZksync2(zk2Info)
 
+      for (let j = 0; j < makerList.length; j++) {
+        let makerInfo = makerList[j]
+        let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+        if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+          continue
+        }
+
+        if (txinfo.tokenName !== makerInfo.tName) {
+          continue
+        }
+
+        let avalibleTimes =
+          chainID === makerInfo.c1ID
+            ? makerInfo.c1AvalibleTimes
+            : makerInfo.c2AvalibleTimes
+        let isMatch = false
+        for (let z = 0; z < avalibleTimes.length; z++) {
+          let avalibleTime = avalibleTimes[z]
+
+          if (
+            avalibleTime.startTime <= txinfo.timeStamp &&
+            avalibleTime.endTime >= txinfo.timeStamp
+          ) {
+            isMatch = true
+            break
+          }
+        }
+        if (!isMatch) {
+          continue
+        }
+        txinfo.tokenDecimal = makerInfo.precision
+        const theValue = new BigNumber(txinfo.value)
+          .multipliedBy(10 ** makerInfo.precision)
+          .toString()
+        if (txinfo.from === _makerAddress) {
+          let pText = orbiterCore.getPTextFromTAmount(chainID, theValue)
+          let nonce = 0
+          if (pText.state) {
+            nonce = pText.pText
+          }
+          if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+            txinfo.value = theValue
+            ZK2ToTxList.push(txinfo)
+            break
+          }
+        } else if (txinfo.to === _makerAddress) {
+          const toChainId = orbiterCore.getToChainIDFromAmount(
+            chainID,
+            theValue
+          )
+          if (toChainId) {
+            let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+            let arr2 = [chainID, toChainId]
+            if (judgeArrayEqualFun(arr1, arr2)) {
+              txinfo.value = theValue
+              ZK2FromTxList.push(txinfo)
+              break
+            }
+          }
+        }
+      }
+    }
+    return { ZK2FromTxList, ZK2ToTxList }
+  } catch (error) {
+    console.warn(error, 44444)
+  }
+}
 // boba
 async function getTransactionListBoba(
   userAddress,
@@ -1391,7 +1473,22 @@ export default {
           }
         })
       }
-
+      // 14 514 zksync2
+      if (supportChains.indexOf(14) > -1 || supportChains.indexOf(514) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(14) > -1 ? 14 : 514
+          const { ZK2FromTxList, ZK2ToTxList } = await getTransactionListZK2(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
+          originTxList[chainID] = {
+            fromList: ZK2FromTxList,
+            toList: ZK2ToTxList,
+          }
+        })
+      }
       // 6.66 pg
       if (supportChains.indexOf(6) > -1 || supportChains.indexOf(66) > -1) {
         allPromises.push(async () => {

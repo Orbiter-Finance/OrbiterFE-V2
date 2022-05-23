@@ -5,7 +5,6 @@ import getTransactionList from '../../core/routes/transactionList'
 import config from '../../core/utils/config'
 import orbiterCore from '../../orbiterCore'
 import util from '../../util/util'
-import zkspace from '../../core/actions/zkspace'
 import { store } from '../../store'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
@@ -22,6 +21,8 @@ import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
 import { getTimeStampInfo } from './get_tx_by_hash'
+import zkspace from '../../core/actions/zkspace'
+import { BobaListen } from '../boba/boba_listen'
 
 let startBlockNumber = ''
 
@@ -428,10 +429,7 @@ async function confirmUserTransaction(
         confirmations
       )
     }
-    if (!isCurrentTransaction(txHash)) {
-      return
-    }
-    var trx = trxConfirmations.trx
+    const trx = trxConfirmations.trx
     if (!isCurrentTransaction(txHash)) {
       return
     }
@@ -459,13 +457,27 @@ async function confirmUserTransaction(
         amountStr = Web3.utils.hexToNumberString(amountHex)
         startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
       }
+    } else if (localChainID == 14 || localChainID == 514) {
+      const makerAddress = makerInfo.makerAddress
+      const theMakerAddress = makerAddress
+        .toLowerCase()
+        .substr(2, makerAddress.length - 1)
+      let amountIndex = 0
+      const thekeyIndex = trx.input.indexOf(theMakerAddress)
+      if (thekeyIndex > -1) {
+        amountIndex = thekeyIndex + theMakerAddress.length
+        const hexAmount = trx.input.slice(amountIndex, amountIndex + 64)
+        amountStr = Web3.utils.hexToNumberString('0x' + hexAmount)
+        startScanMakerTransferFromAddress = makerAddress
+      } else {
+        console.warn('from zk2 the amount is incorrect')
+        return
+      }
     } else {
-      // Parse input data
       const inputData = CrossAddress.parseTransferERC20Input(trx.input)
       if (!inputData.ext?.value) {
         return
       }
-
       startScanMakerTransferFromAddress = inputData.to
       amountStr = inputData.amount.toNumber() + ''
     }
@@ -993,6 +1005,52 @@ function ScanMakerTransfer(
     //   && tokenAddress == '0x0000000000000000000000000000000000001010'
     // const isMetis = (localChainID == 10 || localChainID == 510)
     //   && tokenAddress == '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000'
+
+    // boba
+    if (localChainID == 13 || localChainID == 513) {
+      new BobaListen(
+        localChainID,
+        config.boba,
+        to,
+        async () => startBlockNumber
+      )
+        .setTransferBreaker(() => isCurrentTransaction(transactionID))
+        .transfer(
+          { from, to },
+          {
+            onReceived: (transaction) => {
+              if (
+                checkData(
+                  transaction.from,
+                  transaction.to,
+                  transaction.value,
+                  ''
+                )
+              ) {
+                store.commit(
+                  'updateProceedingMakerTransferTxid',
+                  transaction.hash
+                )
+                storeUpdateProceedState(4)
+              }
+            },
+            onConfirmation: (transaction) => {
+              if (
+                checkData(
+                  transaction.from,
+                  transaction.to,
+                  transaction.value,
+                  ''
+                )
+              ) {
+                storeUpdateProceedState(5)
+              }
+            },
+          },
+          1
+        )
+    }
+
     // when is eth tokenAddress
     if (util.isEthTokenAddress(tokenAddress)) {
       let api = null
@@ -1078,7 +1136,7 @@ function ScanMakerTransfer(
         from: from,
         to: to,
       },
-      fromBlock: currentBlock - 100,
+      fromBlock: currentBlock - 80,
       toBlock: 'latest',
     }
     tokenContract.getPastEvents(
@@ -1229,7 +1287,7 @@ export default {
     if (realAmount.state) {
       realAmount = realAmount.rAmount
     } else {
-      throw realAmount.rAmount.error
+      throw new Error(`UserTransferReady error: ${realAmount.error}`)
     }
     store.commit('updateProceedingUserTransferAmount', realAmount)
     confirmUserTransaction(localChainID, makerInfo, txHash)

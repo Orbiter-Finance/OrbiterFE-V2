@@ -116,6 +116,9 @@ export default {
         if (item === 13 || item === 513) {
           iconName = 'bobalogo'
         }
+        if (item === 14 || item === 514) {
+          iconName = 'zk2logo'
+        }
         var chainData = {
           icon: iconName,
           chain: util.chainName(item, this.$env.localChainID_netChainID[item]),
@@ -123,7 +126,11 @@ export default {
         }
         newArray.push(chainData)
       }
-      return newArray
+      const chainOrderIds = [
+        1, 5, 3, 33, 9, 99, 2, 22, 6, 66, 7, 77, 8, 88, 10, 510, 4, 44, 11, 511,
+        12, 512,
+      ]
+      return this.orderChainIds(chainOrderIds, newArray)
     },
     newChainData: function () {
       if (!this.keyword || this.keyword === '') {
@@ -138,6 +145,15 @@ export default {
   watch: {},
   mounted() {},
   methods: {
+    orderChainIds: function (chainOrderIds, theArray) {
+      theArray.sort((chainInfo, nextChainInfo) => {
+        return (
+          chainOrderIds.indexOf(chainInfo.localID) -
+          chainOrderIds.indexOf(nextChainInfo.localID)
+        )
+      })
+      return theArray
+    },
     closerButton() {
       this.$emit('closeSelect')
     },
@@ -217,9 +233,11 @@ export default {
       var(--bottom-nav-height)
   );
   overflow-y: scroll;
+
   .selectChainContent {
     margin: 1rem 1.5rem;
     position: relative;
+
     .topItem {
       width: 100%;
       height: 2rem;
@@ -232,6 +250,7 @@ export default {
       padding: 0 1rem;
       margin-bottom: 1.5rem;
     }
+
     .input {
       position: relative;
       border-width: 0.15rem 0.2rem 0.3rem 0.2rem;
@@ -246,10 +265,12 @@ export default {
       font-size: 1.4rem;
       padding: 0 4rem 0 2rem;
     }
+
     input::placeholder {
       color: #adadb0;
       font-size: 1.4rem;
     }
+
     .searchIcon {
       position: absolute;
       right: 1.2rem;
@@ -257,6 +278,7 @@ export default {
       width: 2.4rem;
       height: 2.4rem;
     }
+
     .contentItem {
       width: 100%;
       font-size: 1.4rem;
@@ -266,6 +288,7 @@ export default {
       align-items: center;
       display: flex;
       position: relative;
+
       .logo {
         width: 2.4rem;
         height: 2.4rem;
@@ -273,6 +296,7 @@ export default {
         background: rgba($color: #000000, $alpha: 0.05);
         padding: 0.2rem;
       }
+
       .right {
         text-align: right;
         position: absolute;

@@ -155,6 +155,8 @@ export default {
         return 'zkspacelogo'
       } else if (chainID == '13' || chainID == '513') {
         return 'bobalogo'
+      } else if (chainID == '14' || chainID == '514') {
+        return 'zk2logo'
       } else {
         return 'ethlogo'
       }
@@ -186,6 +188,7 @@ export default {
   .historyContent {
     margin: 1rem 1.5rem;
     position: relative;
+
     .topItem {
       width: 100%;
       height: 2rem;
@@ -198,6 +201,7 @@ export default {
       padding: 0 1rem;
       margin-bottom: 1.5rem;
     }
+
     .contentTopItem {
       width: 100%;
       font-size: 1.4rem;
@@ -211,6 +215,7 @@ export default {
       margin: 2rem 0 1.5rem;
       text-align: center;
     }
+
     .contentItem {
       width: 100%;
       font-size: 1.4rem;
@@ -223,6 +228,7 @@ export default {
       justify-content: space-between;
       position: relative;
       text-align: left;
+
       .logo {
         // position: absolute;
         // left: -1.2rem;
@@ -232,6 +238,7 @@ export default {
         margin-right: 0.5rem;
       }
     }
+
     .noContentItem {
       color: rgba($color: #18191f, $alpha: 0.15);
       font-size: 1.4rem;

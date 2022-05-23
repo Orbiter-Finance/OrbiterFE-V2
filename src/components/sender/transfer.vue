@@ -303,7 +303,8 @@
               width="1rem"
               loadingColor="#FFFFFF"
               height="1rem"
-            ></loading>
+            >
+            </loading>
             <span style="margin-left: 0.4rem" v-else>
               {{ transferSavingTime }}
             </span>
@@ -388,6 +389,7 @@ const queryParamsChainMap = {
   'zkspace(R)': 512,
   'Boba(R)': 513,
   Boba: 13,
+  'ZkSync2(G)': 514,
 }
 
 export default {
@@ -439,7 +441,7 @@ export default {
       if (!this.fromBalance) {
         return '0'
       }
-      let transferGasFee =
+      const transferGasFee =
         (await transferCalculate.getTransferGasLimit(
           this.$store.state.transferData.fromChainID,
           selectMakerInfo.makerAddress,
@@ -1251,7 +1253,7 @@ export default {
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter((makerInfo) => {
-        // Don't show dydx
+        // Don't show dydx and zksync2
         if (
           makerInfo.c1ID == 11 ||
           makerInfo.c1ID == 511 ||
