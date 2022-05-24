@@ -40,7 +40,7 @@ export default {
     this.getHistory()
 
     getZkToken.getSupportZKTokenList()
-    getZk2Token.getSupportZk2TokenList()
+    // getZk2Token.getSupportZk2TokenList()
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {
         // console.log('==============')
