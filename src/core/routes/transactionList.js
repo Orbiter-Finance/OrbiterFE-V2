@@ -409,7 +409,7 @@ async function getTransactionListZK2(
     }
     return { ZK2FromTxList, ZK2ToTxList }
   } catch (error) {
-    console.warn(error, 44444)
+    console.warn(error)
   }
 }
 // boba
