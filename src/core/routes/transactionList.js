@@ -340,10 +340,33 @@ async function getTransactionListZK2(
   try {
     const ZK2FromTxList = []
     const ZK2ToTxList = []
-    const zk2AllTxList = await zksync2.getTxList(userAddress, needTimeStamp)
-    for (let zk2Info of zk2AllTxList) {
-      let txinfo = TxInfo.getTxInfoWithZksync2(zk2Info)
 
+    let zk2ScanReq = {
+      timestamp: needTimeStamp,
+      closest: 'before',
+    }
+    let zk2ScanStartBlock = 0
+
+    try {
+      let resp = await zksync2.getBlockNumberWithTimeStamp(zk2ScanReq, chainID)
+      if (resp.status === '1' && resp.message === 'OK') {
+        zk2ScanStartBlock = resp.result?.blockNumber
+      } else {
+        zk2ScanStartBlock = 0
+      }
+    } catch (error) {
+      console.log('zk2ScanStartBlockError =', error)
+      throw error.message
+    }
+    let zk2scanReq = {
+      maker: userAddress,
+      startblock: zk2ScanStartBlock,
+      endblock: 999999999,
+    }
+    let res = await zksync2.getTransationList(zk2scanReq, chainID)
+    for (let zk2Info of res.result) {
+      let txinfo = TxInfo.getTxInfoWithZksync2(zk2Info)
+      let isMatch = false
       for (let j = 0; j < makerList.length; j++) {
         let makerInfo = makerList[j]
         let _makerAddress = makerInfo.makerAddress.toLowerCase()
@@ -360,7 +383,6 @@ async function getTransactionListZK2(
           chainID === makerInfo.c1ID
             ? makerInfo.c1AvalibleTimes
             : makerInfo.c2AvalibleTimes
-        let isMatch = false
         for (let z = 0; z < avalibleTimes.length; z++) {
           let avalibleTime = avalibleTimes[z]
 
@@ -375,31 +397,25 @@ async function getTransactionListZK2(
         if (!isMatch) {
           continue
         }
-        txinfo.tokenDecimal = makerInfo.precision
-        const theValue = new BigNumber(txinfo.value)
-          .multipliedBy(10 ** makerInfo.precision)
-          .toString()
         if (txinfo.from === _makerAddress) {
-          let pText = orbiterCore.getPTextFromTAmount(chainID, theValue)
+          let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
           let nonce = 0
           if (pText.state) {
             nonce = pText.pText
           }
           if (Number(nonce) < 9000 && Number(nonce) >= 0) {
-            txinfo.value = theValue
             ZK2ToTxList.push(txinfo)
             break
           }
         } else if (txinfo.to === _makerAddress) {
           const toChainId = orbiterCore.getToChainIDFromAmount(
             chainID,
-            theValue
+            txinfo.value
           )
           if (toChainId) {
             let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
             let arr2 = [chainID, toChainId]
             if (judgeArrayEqualFun(arr1, arr2)) {
-              txinfo.value = theValue
               ZK2FromTxList.push(txinfo)
               break
             }
