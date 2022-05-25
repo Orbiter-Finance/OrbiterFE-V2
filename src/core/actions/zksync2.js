@@ -24,7 +24,7 @@ export default {
             configNet = config.zkSync2.Rinkeby
         }
         try {
-            const respData = await axiosPlus("get", configNet, { params })
+            const respData = await axiosPlus("get", configNet, params)
             if ((respData.status === '1' && respData.message === 'OK') || (respData.status === '0' && respData.message === 'No transactions found')) {
                 return respData
             } else {
@@ -50,7 +50,7 @@ export default {
             closest: req.closest,
         }
         try {
-            const respData = await axiosPlus("get", configNet, { params })
+            const respData = await axiosPlus("get", configNet, params)
             if (respData.status === '1' && respData.message === 'OK') {
                 cacheMemorySet(cacheKey, respData, 7200000)
                 return respData

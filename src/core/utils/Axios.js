@@ -13,7 +13,7 @@ async function axiosPlus(method, url, params = {}, count = 5) {
   try {
     let resp;
     if (method.toLowerCase() == 'get') {
-      resp = await axios.get(url, params)
+      resp = await axios.get(url, { params })
     } else {
       resp = await axios.post(url, params)
     }
