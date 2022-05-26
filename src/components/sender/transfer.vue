@@ -643,28 +643,26 @@ export default {
         disabled: null,
       }
       if (this.isLogin) {
-        info.text = 'INSUFFICIENT FUNDS'
-        info.disabled = 'disabled'
-        // info.text = 'SEND'
-        // if (transferValue.comparedTo(0) < 0) {
-        //   info.disabled = 'disabled'
-        // } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
-        //   info.disabled = 'disabled'
-        // }
-        // if (transferValue.comparedTo(userMax) > 0) {
-        //   info.text = 'INSUFFICIENT FUNDS'
-        // } else if (transferValue.comparedTo(makerMax) > 0) {
-        //   info.text = 'INSUFFICIENT LIQUIDITY'
-        // } else if (transferValue.comparedTo(makerMin) < 0) {
-        //   info.text = 'INSUFFICIENT FUNDS'
-        //   info.disabled = 'disabled'
-        // } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
-        //   info.text = 'INSUFFICIENT FUNDS'
-        //   info.disabled = 'disabled'
-        // } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
-        //   info.text = 'INSUFFICIENT LIQUIDITY'
-        //   info.disabled = 'disabled'
-        // }
+        info.text = 'SEND'
+        if (transferValue.comparedTo(0) < 0) {
+          info.disabled = 'disabled'
+        } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
+          info.disabled = 'disabled'
+        }
+        if (transferValue.comparedTo(userMax) > 0) {
+          info.text = 'INSUFFICIENT FUNDS'
+        } else if (transferValue.comparedTo(makerMax) > 0) {
+          info.text = 'INSUFFICIENT LIQUIDITY'
+        } else if (transferValue.comparedTo(makerMin) < 0) {
+          info.text = 'INSUFFICIENT FUNDS'
+          info.disabled = 'disabled'
+        } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
+          info.text = 'INSUFFICIENT FUNDS'
+          info.disabled = 'disabled'
+        } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
+          info.text = 'INSUFFICIENT LIQUIDITY'
+          info.disabled = 'disabled'
+        }
       }
 
       return info
