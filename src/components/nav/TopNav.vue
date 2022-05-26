@@ -46,19 +46,6 @@
       ⚠️ Orbiter doesn't collect or record the private key and public key of
       your StarkNet account. Feel free to test! The private key and public key
       of your StarkNet account will be stored in your browser's cache.
-      <br />
-      <br />
-      <o-button
-        style="margin: 2.5rem auto 0"
-        width="29.5rem"
-        height="4rem"
-        class="mainBtn"
-        @click="gotoMain"
-      >
-        <span class="w700 s16" style="letter-spacing: 0.15rem">
-          Go to Orbiter Mainnet
-        </span>
-      </o-button>
     </div>
   </div>
 </template>
@@ -183,9 +170,6 @@ export default {
     },
     toHistory() {},
     clickHoriz() {},
-    gotoMain() {
-      window.open('https://www.orbiter.finance')
-    },
   },
 }
 </script>
@@ -264,9 +248,6 @@ export default {
     width: 30rem;
     font-size: 10px;
     text-align: left;
-    .mainBtn {
-      border-width: 0.1rem 0.1rem 0.3rem;
-    }
   }
   @media (max-width: 900px) {
     .nav-tips {

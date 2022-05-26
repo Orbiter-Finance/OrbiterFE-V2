@@ -1,16 +1,34 @@
 <template>
   <div class="senderContent">
     <keep-alive>
-      <Transfer v-on:stateChanged="changeState"
-                v-if="status === '1' && !showDetail" />
+      <Transfer
+        v-on:stateChanged="changeState"
+        v-if="status === '1' && !showDetail"
+      />
     </keep-alive>
-    <Confirm v-on:stateChanged="changeState"
-             v-if="status === '2' && !showDetail" />
-    <Proceed v-on:stateChanged="changeState"
-             v-if="status === '3' && !showDetail" />
-    <Detail :detailData="detailData"
-            v-on:stateChanged="changeState"
-            v-if="showDetail" />
+    <Confirm
+      v-on:stateChanged="changeState"
+      v-if="status === '2' && !showDetail"
+    />
+    <Proceed
+      v-on:stateChanged="changeState"
+      v-if="status === '3' && !showDetail"
+    />
+    <Detail
+      :detailData="detailData"
+      v-on:stateChanged="changeState"
+      v-if="showDetail"
+    />
+    <o-button
+      style="margin: 2.5rem auto 0; border-width: 0.1rem 0.1rem 0.3rem"
+      width="29.5rem"
+      height="4rem"
+      @click="gotoMain"
+    >
+      <span class="w700 s16" style="letter-spacing: 0.15rem">
+        Interact on Orbiter Mainnet
+      </span>
+    </o-button>
   </div>
 </template>
 
@@ -23,44 +41,44 @@ import Middle from '../util/middle/middle'
 
 export default {
   name: 'Sender',
-  props: {
-  },
+  props: {},
   components: {
     Transfer,
     Confirm,
     Proceed,
-    Detail
+    Detail,
   },
   data() {
     return {
       status: '1', // 1 2.confirm 3.proceed
       showDetail: false,
-      detailData: null
+      detailData: null,
     }
   },
-  watch: {
-  },
+  watch: {},
   mounted() {
-    Middle.$on('showDetail', state => {
+    Middle.$on('showDetail', (state) => {
       if (state) {
         this.showDetail = true
         this.detailData = state
       }
     })
   },
-  computed: {
-  },
+  computed: {},
   methods: {
+    gotoMain() {
+      window.open('https://www.orbiter.finance', '_self')
+    },
     changeState(e) {
       if (e !== '1' && e !== '2' && e !== '3') {
         this.showDetail = false
       } else {
         if (this.status !== e) {
-          this.status = e;
+          this.status = e
         }
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
