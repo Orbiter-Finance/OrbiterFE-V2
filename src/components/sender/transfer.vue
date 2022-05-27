@@ -617,7 +617,6 @@ export default {
       }
       if (this.isLogin) {
         info.text = 'SEND'
-
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled'
         } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
