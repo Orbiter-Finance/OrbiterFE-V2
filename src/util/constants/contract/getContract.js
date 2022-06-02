@@ -6,9 +6,10 @@ import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
 
 const sourceAddress = {
-  5: '0x11d3985F79EC388077C930A9F8619CeDBB22b840',
-  22: '0x27a4DcB2846bebcE415b6fc406cF8bFCB5d1055c',
-  77: '0xf3c3988609cB90b0C64e5De511eE27D3A6d703f1',
+  5: "0x36DeF6b0e0adf483619aB8A6c9Fba982853Daf5f",
+  // TODO Watting Arbiturm netwrok ok
+  // 22: "0xd131370ae51E1E784023a800E6b7761FB04152ed",
+  77: "0x929fD178Bbb3270BE58510ba3b6083eB8EfB4382",
 }
 // Get a token contract on the L2 network
 function getLocalCoinContract(localChainID, tokenAddress, state) {
@@ -119,4 +120,5 @@ export {
   getLocalCoinContract,
   getTransferGasLimit,
   getSourceContract,
+  sourceAddress,
 }
