@@ -7,7 +7,7 @@ import util from '../../util'
 
 const sourceAddress = {
   5: "0x8C5484C03283401FE7b5Ae2901D45Eaf621dDc5e",
-  22: "0xAe60819A0258e8D34580bf26C755331e8B4B79b4",
+  22: "0xeD8a756317699A30a1f2b7a6A7887be33e053781",
   77: "0x5377c210524F0BCcF510Af6f1631f79618b3e356",
 }
 // Get a token contract on the L2 network
