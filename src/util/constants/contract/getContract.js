@@ -7,8 +7,7 @@ import util from '../../util'
 
 const sourceAddress = {
   5: "0x8C5484C03283401FE7b5Ae2901D45Eaf621dDc5e",
-  // TODO Watting Arbiturm netwrok ok
-  // 22: "0xd131370ae51E1E784023a800E6b7761FB04152ed",
+  22: "0xAe60819A0258e8D34580bf26C755331e8B4B79b4",
   77: "0x5377c210524F0BCcF510Af6f1631f79618b3e356",
 }
 // Get a token contract on the L2 network
