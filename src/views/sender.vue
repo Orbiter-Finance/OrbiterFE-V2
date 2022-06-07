@@ -32,7 +32,11 @@
         ><br />
         <a href="https://github.com/0xbbPizza/OrbiterFE-V2"
           >🏄frontend (power by eric)</a
-        >
+        ><br />
+        <p>
+          🚰Get rinkeby DAI token from
+          <a href="https://mint.zksync.dev/mint" target="_blank">this faucet</a>
+        </p>
       </span>
     </div>
   </div>
