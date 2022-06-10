@@ -14,6 +14,66 @@ import util from '../../util'
 import starknetAccountContract from './account.json'
 import erc20Abi from './erc20_abi.json'
 
+import {
+  getStarknet,
+  connect as getStarknetWallet,
+  disconnect as disStarknetWallet,
+} from 'get-starknet-wallet'
+
+import * as starknet from 'starknet'
+
+export async function connectStarkNetWallet() {
+  if (!getStarknet().isConnected) {
+    const wallet = await getStarknetWallet()
+    if (!wallet) {
+      return
+    }
+    const enabled = await wallet
+      .enable({ showModal: true })
+      .then((address) => !!address?.length)
+
+    if (enabled) {
+      console.log('wallet.name =', wallet.name)
+      console.log('wallet.icon =', wallet.icon)
+      this.isConnected = getStarknet().isConnected
+      this.CurrentChainId = this.getCurrentChainId()
+      this.userAddress = getStarknet().selectedAddress
+      getStarknet().on('accountsChanged', (e) => {
+        console.log('on =', e)
+        console.log('isConnected =', getStarknet().isConnected)
+        console.log('selectedAddress =', getStarknet().selectedAddress)
+        console.log('account =', getStarknet().account)
+        console.log('getCurrentChainId =', this.getCurrentChainId())
+      })
+    }
+    // getStarknet().enable({ showModal: true });
+  } else {
+    console.log('isConnected =', getStarknet().isConnected)
+    console.log('selectedAddress =', getStarknet().selectedAddress)
+    console.log('account =', getStarknet().account)
+    console.log('getCurrentChainId =', this.getCurrentChainId())
+  }
+}
+
+export function getStarkNetCurrentChainId() {
+  const { baseUrl } = getStarknet().provider
+  console.log('baseUrl =', baseUrl)
+  if (baseUrl.includes('alpha-mainnet.starknet.io')) {
+    return 'starkMain'
+  } else if (baseUrl.includes('alpha4.starknet.io')) {
+    return 'starkGoerli'
+  } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
+    return 'localhost'
+  } else {
+    return 'unlogin'
+  }
+}
+
+export async function disConnectStarkNetWallet() {
+  const dis = await disStarknetWallet()
+  console.log('dis =', dis)
+}
+
 const L1_SWAP_L2_CONTRACT_ADDRESS = {
   'mainnet-alpha': '',
   'georli-alpha':
