@@ -77,7 +77,7 @@ const nowMakerList = [
     c1Name: 'starknet_test',
     c2Name: 'loopring_test',
     t1Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
@@ -343,7 +343,7 @@ const nowMakerList = [
     c2Name: 'starknet_test',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     tName: 'ETH',
     c1MinPrice: 0.005,
     c1MaxPrice: 0.01,
@@ -575,7 +575,7 @@ const nowMakerList = [
     c2Name: 'starknet_test',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     tName: 'ETH',
     c1MinPrice: 0.005,
     c1MaxPrice: 0.01,
@@ -641,7 +641,7 @@ const nowMakerList = [
     c1Name: 'starknet_test',
     c2Name: 'polygon_test',
     t1Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     t2Address: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
     tName: 'ETH',
     c1MinPrice: 0.005,
@@ -807,7 +807,7 @@ const nowMakerList = [
     c1Name: 'starknet_test',
     c2Name: 'rinkeby',
     t1Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
@@ -841,7 +841,7 @@ const nowMakerList = [
     c1Name: 'starknet_test',
     c2Name: 'arbitrum_test',
     t1Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
@@ -875,7 +875,7 @@ const nowMakerList = [
     c1Name: 'starknet_test',
     c2Name: 'zksync_test',
     t1Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
@@ -1042,7 +1042,7 @@ const nowMakerList = [
     c2Name: 'starknet_test',
     t1Address: '0x420000000000000000000000000000000000000A',
     t2Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     tName: 'ETH',
     c1MinPrice: 0.005,
     c1MaxPrice: 0.01,
@@ -1307,7 +1307,7 @@ const nowMakerList = [
     c2Name: 'starknet_test',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     tName: 'ETH',
     c1MinPrice: 0.005,
     c1MaxPrice: 0.01,
@@ -1341,7 +1341,7 @@ const nowMakerList = [
     c2Name: 'starknet_test',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address:
-      '0x2dd93e385742984bf2fc887cd5d8b5ec6917d80af09cf7a00a63710ad51ba53',
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     tName: 'ETH',
     c1MinPrice: 0.005,
     c1MaxPrice: 0.01,

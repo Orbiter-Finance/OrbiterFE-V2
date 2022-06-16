@@ -140,21 +140,18 @@ async function confirmUserTransaction(
       try {
         const starknetProvider = getProviderByChainId(localChainID)
         const resp = await starknetProvider.getTransaction(txHash)
-
         if (
           resp.status == 'ACCEPTED_ON_L1' ||
           resp.status == 'ACCEPTED_ON_L2'
         ) {
           const transaction = resp.transaction
-
           const block = await starknetProvider.getBlock()
-
           const sn_amount = orbiterCore.getRAmountFromTAmount(
             localChainID,
-            transaction.calldata?.[4]
+            new Bignumber(transaction.calldata?.[8])
           ).rAmount
           const sn_nonce = String(
-            transaction.nonce || transaction.calldata?.[6] || 0
+            transaction.nonce || new Bignumber(transaction.calldata?.[11]) || 0
           )
           const sn_SendRAmount = orbiterCore.getToAmountFromUserAmount(
             new Bignumber(sn_amount).dividedBy(
@@ -1199,7 +1196,6 @@ export default {
   UserTransferReady(user, maker, amount, localChainID, makerInfo, txHash) {
     if (localChainID == 12 || localChainID == 512) {
       txHash = txHash.replace('sync-tx:', '0x')
-      console.warn('txHash =', txHash)
     }
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)

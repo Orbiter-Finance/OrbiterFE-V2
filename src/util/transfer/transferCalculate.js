@@ -13,8 +13,6 @@ import { getLocalCoinContract } from '../constants/contract/getContract'
 import { localWeb3 } from '../constants/contract/localWeb3'
 import {
   getErc20Balance,
-  getStarknetAccountSingle,
-  getL2AddressByL1,
   getNetworkIdByChainId,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
@@ -839,17 +837,21 @@ export default {
     } else if (localChainID === 4 || localChainID === 44) {
       const networkId = getNetworkIdByChainId(localChainID)
 
-      let starknetAddress = await getL2AddressByL1(userAddress, networkId)
-      if (!starknetAddress || starknetAddress == '0x0') {
-        const account = await getStarknetAccountSingle(userAddress, networkId)
-        starknetAddress = account.starknetAddress
-      }
+      let starknetAddress = store.state.web3.starkNet.starkNetAddress
 
+      if (!starknetAddress) {
+        // util.showMessage(
+        //   'you need refresh the page to connect starkNetWallet',
+        //   'error'
+        // )
+        return 0
+      }
       const balance = await getErc20Balance(
         starknetAddress,
         tokenAddress,
         networkId
       )
+
       return balance
     } else if (localChainID === 8 || localChainID === 88) {
       const imxHelper = new IMXHelper(localChainID)

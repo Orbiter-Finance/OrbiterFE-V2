@@ -137,7 +137,6 @@
             <div>{{ toValue }}</div>
           </div>
         </div>
-
         <!-- When queryParams.fixed or toChain is dydx, hide it! -->
         <div
           v-if="
@@ -158,6 +157,7 @@
         </div>
       </div>
     </div>
+    <div class="s12">{{ this.$store.state.web3.starkNet.starkNetAddress }}</div>
     <o-button
       style="margin: 2.5rem auto 0"
       width="29.5rem"
@@ -338,6 +338,8 @@ import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
+import thirdapi from '../../core/actions/thirdapi'
+import { connectStarkNetWallet } from '../../util/constants/starknet/helper'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -863,6 +865,46 @@ export default {
         this.initChainArray()
       }
     },
+    '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
+      if (newValue) {
+        let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        if (
+          this.$store.state.web3.fromChianID == 4 ||
+          this.$store.state.web3.fromChianID == 44
+        ) {
+          this.c1Balance = null
+          this.getBalance(
+            this.$store.state.web3.coinbase,
+            selectMakerInfo.c1ID,
+            selectMakerInfo.t1Address,
+            selectMakerInfo.tName,
+            selectMakerInfo.precision
+          ).then((v) => {
+            if (v) {
+              this.c1Balance = v
+            }
+          })
+        }
+
+        if (
+          this.$store.state.web3.toChainID == 4 ||
+          this.$store.state.web3.toChainID == 44
+        ) {
+          this.c2Balance = null
+          this.getBalance(
+            this.$store.state.web3.coinbase,
+            selectMakerInfo.c2ID,
+            selectMakerInfo.t2Address,
+            selectMakerInfo.tName,
+            selectMakerInfo.precision
+          ).then((v) => {
+            if (v) {
+              this.c2Balance = v
+            }
+          })
+        }
+      }
+    },
     '$store.state.web3.coinbase': function (newValue, oldValue) {
       if (!newValue || newValue === '0x') {
         this.c1Balance = 0
@@ -910,9 +952,47 @@ export default {
         this.c2Balance = 0
       }
     },
-    '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
+    '$store.state.transferData.selectMakerInfo': async function (
+      newValue,
+      oldValue
+    ) {
       this.updateExchangeToUsdPrice()
       this.getMakerMaxBalance()
+
+      if (
+        newValue.c1ID == 4 ||
+        newValue.c1ID == 44 ||
+        newValue.c2ID == 4 ||
+        newValue.c2ID == 44
+      ) {
+        const { starkNetIsConnect, starkNetAddress } =
+          this.$store.state.web3.starkNet
+        if (!starkNetIsConnect || !starkNetAddress) {
+          // 登录starkNet
+          await connectStarkNetWallet()
+          if (
+            !this.$store.state.web3.starkNet.starkIsConnected &&
+            !this.$store.state.web3.starkNet.starkNetAddress
+          ) {
+            const makerInfo = this.makerInfoList[0]
+            this.$store.commit('updateTransferFromChainID', makerInfo.c1ID)
+            // Change query params's source
+            const { path, query } = this.$route
+
+            for (const key in queryParamsChainMap) {
+              if (queryParamsChainMap[key] == makerInfo.c1ID) {
+                if (!util.equalsIgnoreCase(query.source, key)) {
+                  this.$router.replace({
+                    path,
+                    query: { ...query, source: key },
+                  })
+                  break
+                }
+              }
+            }
+          }
+        }
+      }
 
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
@@ -1521,7 +1601,7 @@ export default {
           return
         }
 
-        const { toChainID } = this.$store.state.transferData
+        const { fromChainID, toChainID } = this.$store.state.transferData
 
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
@@ -1541,7 +1621,7 @@ export default {
           )
 
           this.$store.commit('updateTransferExt', {
-            type: '0x02',
+            type: '0x02', // for dydx
             value: dydxHelper.conactStarkKeyPositionId(
               '0x' + dydxAccount.starkKey,
               dydxAccount.positionId
@@ -1552,23 +1632,64 @@ export default {
           this.$store.commit('updateTransferExt', null)
         }
 
-        // Ensure fromChainId's networkId
-        if (
-          this.$store.state.web3.networkId.toString() !==
-          this.$env.localChainID_netChainID[
-            this.$store.state.transferData.fromChainID
-          ]
-        ) {
-          try {
-            await util.ensureMetamaskNetwork(
-              this.$store.state.transferData.fromChainID
-            )
-          } catch (err) {
-            util.showMessage(err.message, 'error')
+        // To starkNet
+        if (toChainID == 4 || toChainID == 44) {
+          const { starkIsConnected, starkNetAddress } =
+            this.$store.state.web3.starkNet
+          if (starkNetAddress && starkIsConnected) {
+            this.$store.commit('updateTransferExt', {
+              type: '0x03', // for starkNet
+              value: starkNetAddress,
+            })
+          } else {
+            console.warn('connect starkNet')
             return
           }
+        } else {
+          // Clear TransferExt
+          this.$store.commit('updateTransferExt', null)
         }
 
+        if (fromChainID == 4 || fromChainID == 44) {
+          const { starkChain } = this.$store.state.web3.starkNet
+          console.log('starkChain =', starkChain)
+
+          if (!starkChain || starkChain == 'unlogin') {
+            console.warn('please connect starkNetWallet')
+            return
+          }
+          if (
+            fromChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            console.warn('please switch starkNetWallet to mainnet')
+            return
+          }
+          if (
+            fromChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            console.warn('please switch starkNetWallet to testNet')
+            return
+          }
+        } else {
+          // Ensure fromChainId's networkId
+          if (
+            this.$store.state.web3.networkId.toString() !==
+            this.$env.localChainID_netChainID[
+              this.$store.state.transferData.fromChainID
+            ]
+          ) {
+            try {
+              await util.ensureMetamaskNetwork(
+                this.$store.state.transferData.fromChainID
+              )
+            } catch (err) {
+              util.showMessage(err.message, 'error')
+              return
+            }
+          }
+        }
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -1638,6 +1759,7 @@ export default {
           makerAddress,
           true
         )
+
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.log(error)

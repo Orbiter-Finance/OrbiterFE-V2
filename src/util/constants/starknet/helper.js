@@ -1,18 +1,9 @@
-import { keyPairFromData } from '@dydxprotocol/starkex-lib'
 import BigNumber from 'bignumber.js'
-import {
-  compileCalldata,
-  Contract,
-  ec,
-  Provider,
-  Signer,
-  uint256,
-} from 'starknet'
-import { getSelectorFromName } from 'starknet/dist/utils/stark'
-import Web3 from 'web3'
+import { Contract, Provider, uint256, stark } from 'starknet'
 import util from '../../util'
-import starknetAccountContract from './account.json'
 import erc20Abi from './erc20_abi.json'
+import starkNetCrossAbi from './ob_source_abi.json'
+import { Notification } from 'element-ui'
 
 import {
   getStarknet,
@@ -20,7 +11,26 @@ import {
   disconnect as disStarknetWallet,
 } from 'get-starknet-wallet'
 
-import * as starknet from 'starknet'
+import { store } from '../../../store'
+
+const STARKNET_CROSS_CONTRACT_ADDRESS = {
+  'mainnet-alpha': '',
+  'georli-alpha':
+    '0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3',
+}
+
+const L1_TO_L2_ADDRESSES = {
+  '0x0043d60e87c5dd08c86c3123340705a1556c4719': {
+    'mainnet-alpha': '',
+    'georli-alpha':
+      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+  },
+  '0x694434ec84b7a8ad8efc57327ddd0a428e23f8d5': {
+    'mainnet-alpha': '',
+    'georli-alpha':
+      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+  },
+}
 
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
@@ -29,39 +39,33 @@ export async function connectStarkNetWallet() {
       return
     }
     const enabled = await wallet
-      .enable({ showModal: true })
+      .enable({ showModal: false })
       .then((address) => !!address?.length)
 
     if (enabled) {
-      console.log('wallet.name =', wallet.name)
-      console.log('wallet.icon =', wallet.icon)
-      this.isConnected = getStarknet().isConnected
-      this.CurrentChainId = this.getCurrentChainId()
-      this.userAddress = getStarknet().selectedAddress
+      store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
+      store.commit('updateStarkNetWalletName', wallet.name)
+      store.commit('updateStarkNetWalletIcon', wallet.icon)
+      store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
+      store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
       getStarknet().on('accountsChanged', (e) => {
-        console.log('on =', e)
-        console.log('isConnected =', getStarknet().isConnected)
-        console.log('selectedAddress =', getStarknet().selectedAddress)
-        console.log('account =', getStarknet().account)
-        console.log('getCurrentChainId =', this.getCurrentChainId())
+        store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
+        store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
+        store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
+        if (e.length == 0) {
+          console.warn('disconnect starkNetWallet')
+        }
       })
     }
-    // getStarknet().enable({ showModal: true });
-  } else {
-    console.log('isConnected =', getStarknet().isConnected)
-    console.log('selectedAddress =', getStarknet().selectedAddress)
-    console.log('account =', getStarknet().account)
-    console.log('getCurrentChainId =', this.getCurrentChainId())
   }
 }
 
 export function getStarkNetCurrentChainId() {
   const { baseUrl } = getStarknet().provider
-  console.log('baseUrl =', baseUrl)
   if (baseUrl.includes('alpha-mainnet.starknet.io')) {
-    return 'starkMain'
+    return '4'
   } else if (baseUrl.includes('alpha4.starknet.io')) {
-    return 'starkGoerli'
+    return '44'
   } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
     return 'localhost'
   } else {
@@ -71,34 +75,140 @@ export function getStarkNetCurrentChainId() {
 
 export async function disConnectStarkNetWallet() {
   const dis = await disStarknetWallet()
-  console.log('dis =', dis)
-}
-
-const L1_SWAP_L2_CONTRACT_ADDRESS = {
-  'mainnet-alpha': '',
-  'georli-alpha':
-    '0x021c6bbdabdfbf86997471f547d4aa5362787f18b76dad8d3e6b8f3d7471395a',
-}
-
-const L1_TO_L2_ADDRESSES = {
-  '0x0043d60e87c5dd08c86c3123340705a1556c4719': {
-    'mainnet-alpha': '',
-    'georli-alpha':
-      '0x2b31ce585a1f407cb3b414e2a71ee45c4430b4df36c8528ab42c0bcee97a887',
-  },
-  '0x694434ec84b7a8ad8efc57327ddd0a428e23f8d5': {
-    'mainnet-alpha': '',
-    'georli-alpha':
-      '0x16be82b640500a9b877cef93f9bee5e4aa962220ea5468fcc3c5889742162af',
-  },
-}
-
-function stripHexPrefix(input) {
-  if (input.indexOf('0x') === 0) {
-    return input.substr(2)
+  if (dis) {
+    store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
+    store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
   }
-  return input
 }
+
+/**
+ *
+ * @param {string} l1Address ethAddress
+ * @param {string} tokenAddress
+ * @param {string} receiverAddress
+ * @param {number} amount
+ */
+export async function sendTransfer(
+  l1Address,
+  tokenAddress,
+  makerAddress,
+  amount,
+  chainID
+) {
+  l1Address = l1Address.toLowerCase()
+  tokenAddress = tokenAddress.toLowerCase()
+  makerAddress = makerAddress.toLowerCase()
+
+  console.log('sendTransfer')
+  let networkID = getNetworkIdByChainId(chainID)
+
+  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
+
+  const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
+
+  const tokenContract = new Contract(
+    erc20Abi,
+    tokenAddress,
+    getStarknet().provider
+  )
+
+  const allowance = await getAllowance(tokenContract, contractAddress)
+
+  if (amount.gt(allowance)) {
+    try {
+      await approveERC20(tokenContract, contractAddress, amount)
+    } catch (error) {
+      util.showMessage(error.message, 'error')
+      return 0
+    }
+  }
+  const crossContract = new Contract(
+    starkNetCrossAbi,
+    contractAddress,
+    getStarknet().provider
+  )
+
+  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
+  try {
+    const calldata = stark.compileCalldata({
+      token: tokenAddress,
+      to: receiverAddress,
+      amount: getUint256CalldataFromBN(String(amount)),
+      ext: l1Address,
+    })
+    const transaction = {
+      contractAddress: crossContract.address,
+      entrypoint: 'transferERC20',
+      calldata,
+    }
+    const txhash = await getStarknet().account.execute(transaction)
+    console.log('txhash =', txhash)
+    if (txhash?.code == 'TRANSACTION_RECEIVED') {
+      return txhash.transaction_hash
+    }
+    return 0
+  } catch (ex) {
+    util.showMessage(ex.message, 'error')
+    return 0
+  }
+}
+
+/**
+ * @param {Contract} contractErc20
+ */
+export async function getAllowance(contractErc20, contractAddress) {
+  const ownerAddress = getStarknet().selectedAddress
+  const allowance = await contractErc20.allowance(ownerAddress, contractAddress)
+  return allowance['remaining']['low']
+}
+
+/**
+ *
+ * @param {string} tokenAddress 0x...
+ * @param {ethers.BigNumber} amount
+ */
+export async function approveERC20(tokenContract, contractAddress, amount) {
+  let n
+  try {
+    const calldata = stark.compileCalldata({
+      spender: contractAddress,
+      amount: getUint256CalldataFromBN(String(amount)),
+    })
+
+    const approveTransaction = {
+      contractAddress: tokenContract.address,
+      entrypoint: 'approve',
+      calldata,
+    }
+
+    n = Notification({
+      duration: 0,
+      title: 'Approving...',
+      type: 'warning',
+    })
+
+    await getStarknet().account.execute(approveTransaction)
+
+    // Waitting approve succeed
+    for (let index = 0; index < 5000; index++) {
+      const allowance = await getAllowance(tokenContract, contractAddress)
+      if (amount.lte(allowance)) {
+        break
+      }
+      await util.sleep(2000)
+    }
+    n.close()
+  } catch (error) {
+    n.close()
+    throw error
+  }
+}
+// function stripHexPrefix(input) {
+//   if (input.indexOf('0x') === 0) {
+//     return input.substr(2)
+//   }
+//   return input
+// }
 
 function getUint256CalldataFromBN(bn) {
   return { type: 'struct', ...uint256.bnToUint256(bn) }
@@ -111,281 +221,6 @@ function getUint256CalldataFromBN(bn) {
  */
 export function getNetworkIdByChainId(chainId) {
   return chainId == 4 ? 1 : 5
-}
-
-/**
- *
- * @param {string} l1Address ethAddress
- * @param {number} networkId
- * @returns { Promise<{ privateKey: string, publicKey: string, publicKeyYCoordinate: string, starknetAddress: string }> }
- */
-export async function getStarknetAccount(l1Address, networkId = 1) {
-  if (!l1Address) {
-    throw new Error('Sorry, miss l1 address!')
-  }
-
-  const storageKey = `starknetAccount:${networkId}:${l1Address}`
-  const localValue = localStorage.getItem(storageKey)
-  if (localValue) {
-    try {
-      const _sAccount = JSON.parse(localValue)
-      if (
-        _sAccount.privateKey &&
-        _sAccount.publicKey &&
-        _sAccount.publicKeyYCoordinate &&
-        _sAccount.starknetAddress
-      ) {
-        return _sAccount
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const web3 = new Web3(window.ethereum)
-
-  // Change matemask chainId
-  const nowNetworkId = await web3.eth.net.getId()
-  if (nowNetworkId != networkId) {
-    const switchParams = {
-      chainId: web3.utils.toHex(networkId),
-    }
-    await window.ethereum.request({
-      method: 'wallet_switchEthereumChain',
-      params: [switchParams],
-    })
-  }
-
-  const msgParams = {
-    types: {
-      EIP712Domain: [
-        { name: 'name', type: 'string' },
-        { name: 'version', type: 'string' },
-        { name: 'chainId', type: 'uint256' },
-        { name: 'verifyingContract', type: 'address' },
-      ],
-      Message: [
-        { name: 'action', type: 'string' },
-        { name: 'onlySignOn', type: 'string' },
-      ],
-    },
-    primaryType: 'Message',
-    domain: {
-      name: 'Orbiter',
-      version: '1',
-      chainId: networkId,
-      verifyingContract: '',
-    },
-    message: {
-      action: 'Orbiter STARK Key',
-    },
-  }
-  if (networkId == 1) {
-    msgParams.message['onlySignOn'] =
-      'https://app.orbiter.finance or https://orbiter.finance'
-  }
-
-  const params = [l1Address, JSON.stringify(msgParams)]
-  const method = 'eth_signTypedData_v3'
-
-  const getKeyPair = () => {
-    return new Promise((resolve, reject) => {
-      web3.currentProvider.sendAsync(
-        {
-          method,
-          params,
-          coinbase: l1Address,
-          jsonrpc: '2.0',
-          id: Date.now(),
-        },
-        (err, response) => {
-          if (err) {
-            reject(err)
-            return
-          }
-          if (!response.result) {
-            reject(new Error('Sorry, metamask no result!'))
-          }
-
-          const keypPair = keyPairFromData(
-            Buffer.from(stripHexPrefix(response.result), 'hex')
-          )
-
-          resolve(keypPair)
-        }
-      )
-    })
-  }
-
-  const keyPair = await getKeyPair()
-  keyPair.publicKey = '0x' + keyPair.publicKey
-  keyPair.privateKey = '0x' + keyPair.privateKey
-  keyPair.publicKeyYCoordinate = '0x' + keyPair.publicKeyYCoordinate
-
-  // Deploy account contract
-  const provider = new Provider({
-    network: networkId == 1 ? 'mainnet-alpha' : 'georli-alpha',
-  })
-  const deployTransaction = await provider.deployContract(
-    starknetAccountContract,
-    compileCalldata({ signer: keyPair.publicKey, guardian: '0' }),
-    keyPair.privateKey
-  )
-
-  if (
-    deployTransaction.code !== 'TRANSACTION_RECEIVED' ||
-    !deployTransaction.address
-  ) {
-    throw new Error('Deploy starknet account failed!')
-  }
-
-  const starknetAccount = {
-    ...keyPair,
-    starknetAddress: deployTransaction.address,
-  }
-  localStorage.setItem(storageKey, JSON.stringify(starknetAccount))
-
-  // Save L1 <=> L2 on background
-  saveMappingL1AndL2(l1Address, networkId)
-
-  return starknetAccount
-}
-
-const starknetAccountSingleLock = {}
-export async function getStarknetAccountSingle(l1Address, networkId = 1) {
-  const lockKey = `${l1Address}:${networkId}`
-
-  if (starknetAccountSingleLock[lockKey] === undefined) {
-    try {
-      starknetAccountSingleLock[lockKey] = ''
-      const account = await getStarknetAccount(l1Address, networkId)
-      starknetAccountSingleLock[lockKey] = account
-
-      return account
-    } catch (err) {
-      delete starknetAccountSingleLock[lockKey]
-      throw err
-    }
-  } else {
-    while (starknetAccountSingleLock[lockKey] === '') {
-      await util.sleep(1000)
-    }
-    return starknetAccountSingleLock[lockKey]
-  }
-}
-
-/**
- *
- * @param {string} l1Address ethAddress
- * @param {number} networkId
- * @returns {Promise<Signer>}
- */
-export async function getStarknetSigner(l1Address, networkId = 1) {
-  const starknetAccount = await getStarknetAccount(l1Address, networkId)
-
-  const network = networkId == 1 ? 'mainnet-alpha' : 'georli-alpha'
-  const provider = new Provider({ network })
-  return new Signer(
-    provider,
-    starknetAccount.starknetAddress,
-    ec.getKeyPair(starknetAccount.privateKey)
-  )
-}
-
-/**
- *
- * @param {string} l1Address ethAddress
- * @param {number} networkId
- */
-export async function saveMappingL1AndL2(l1Address, networkId = 1) {
-  if (!l1Address) {
-    throw new Error('Sorry, miss l1 address!')
-  }
-
-  const network = networkId == 1 ? 'mainnet-alpha' : 'georli-alpha'
-  const contractAddress = L1_SWAP_L2_CONTRACT_ADDRESS[network]
-
-  const starknetSigner = await getStarknetSigner(l1Address, networkId)
-
-  // Wait account deploy
-  const now = new Date().getTime()
-  while (new Date().getTime() - now < 1000000) {
-    try {
-      const provider = new Provider({ network })
-      const resp = await provider.callContract({
-        contract_address: starknetSigner.address,
-        entry_point_selector: getSelectorFromName('get_nonce'),
-      })
-
-      if (typeof resp.result?.[0] !== 'undefined') {
-        console.log(
-          'Starknet account deploy succeed: ' + starknetSigner.address
-        )
-        break
-      }
-    } catch (err) {
-      console.warn('Starknet account deploy failed or waiting: ' + err.message)
-    }
-
-    await util.sleep(1000)
-  }
-
-  const resp = await starknetSigner.invokeFunction(
-    contractAddress,
-    getSelectorFromName('save_address'),
-    compileCalldata({ l1: l1Address })
-  )
-
-  if (resp.code != 'TRANSACTION_RECEIVED') {
-    throw new Error('MappingL1AndL2 failed!')
-  }
-
-  return resp.transaction_hash
-}
-
-/**
- *
- * @param {string} l1Address ethAddress
- * @param {number} networkId
- * @returns { Promise<string|undefined> }
- */
-export async function getL2AddressByL1(l1Address, networkId = 1) {
-  if (!l1Address) {
-    throw new Error('Sorry, miss l1 address!')
-  }
-  l1Address = l1Address.toLowerCase()
-
-  const network = networkId == 1 ? 'mainnet-alpha' : 'georli-alpha'
-
-  // When l1 address on L1_TO_L2_ADDRESSES, get it
-  if (L1_TO_L2_ADDRESSES[l1Address]?.[network]) {
-    return L1_TO_L2_ADDRESSES[l1Address][network]
-  }
-
-  // When l1 address on localStorage, get it
-  const storageKey = `starknetAccount:${networkId}:${l1Address}`
-  const localValue = localStorage.getItem(storageKey)
-  if (localValue) {
-    try {
-      const _sAccount = JSON.parse(localValue)
-      if (_sAccount.starknetAddress) {
-        return _sAccount.starknetAddress
-      }
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  const provider = new Provider({ network })
-  const contractAddress = L1_SWAP_L2_CONTRACT_ADDRESS[network]
-
-  const resp = await provider.callContract({
-    contract_address: contractAddress,
-    entry_point_selector: getSelectorFromName('get_l2_address'),
-    calldata: compileCalldata({ l1: l1Address }),
-  })
-
-  return resp?.result?.[0]
 }
 
 /**
@@ -405,11 +240,8 @@ export async function getErc20Balance(
   }
   const network = networkId == 1 ? 'mainnet-alpha' : 'georli-alpha'
   const provider = new Provider({ network })
-
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
-  const resp = await tokenContract.call('balanceOf', {
-    user: starknetAddress,
-  })
+  const resp = await tokenContract.balanceOf(starknetAddress)
   if (!resp || !resp.balance || !resp.balance['low']) {
     return 0
   }
@@ -432,44 +264,6 @@ export async function getErc20BalanceByL1(
   const starknetAddress = await getL2AddressByL1(l1Address, networkId)
 
   return await getErc20Balance(starknetAddress, contractAddress, networkId)
-}
-
-/**
- *
- * @param {string} l1Address ethAddress
- * @param {string} contractAddress
- * @param {string} receiverStarknetAddress
- * @param {number} amount
- * @param {number} networkId
- */
-export async function sendTransaction(
-  l1Address,
-  contractAddress,
-  receiverStarknetAddress,
-  amount,
-  networkId = 1
-) {
-  if (!contractAddress || !receiverStarknetAddress) {
-    throw new Error('Sorry, Miss params!')
-  }
-  if (amount <= 0) {
-    throw new Error('Sorry, amount is less than 0!')
-  }
-
-  const starknetSigner = await getStarknetSigner(l1Address, networkId)
-  const resp = await starknetSigner.invokeFunction(
-    contractAddress,
-    getSelectorFromName('transfer'),
-    compileCalldata({
-      receiver: receiverStarknetAddress,
-      amount: getUint256CalldataFromBN(String(amount)),
-    })
-  )
-  if (resp.code != 'TRANSACTION_RECEIVED') {
-    throw new Error('Starknet sendTransaction failed!')
-  }
-
-  return resp.transaction_hash
 }
 
 /**

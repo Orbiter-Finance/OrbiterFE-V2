@@ -4,19 +4,45 @@
       <div class="topItem">
         <span>Select a Chain</span>
         <div @click="closerButton">
-          <svg-icon style="width: 1.5rem; height: 1.5rem" iconName="close"></svg-icon>
+          <svg-icon
+            style="width: 1.5rem; height: 1.5rem"
+            iconName="close"
+          ></svg-icon>
         </div>
       </div>
       <div style="width: 100%; position: relative">
-        <input type="text" v-model="keyword" class="input" @input="checkKeyWord()" :placeholder="`input search text`" />
-        <svg-icon @click="search" class="searchIcon" iconName="search"></svg-icon>
+        <input
+          type="text"
+          v-model="keyword"
+          class="input"
+          @input="checkKeyWord()"
+          :placeholder="`input search text`"
+        />
+        <svg-icon
+          @click="search"
+          class="searchIcon"
+          iconName="search"
+        ></svg-icon>
       </div>
 
-      <div v-for="(item, index) in newChainData" :key="item.chain" @click="getChainInfo(item, index)"
-        class="contentItem">
-        <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+      <div
+        v-for="(item, index) in newChainData"
+        :key="item.chain"
+        @click="getChainInfo(item, index)"
+        class="contentItem"
+      >
+        <svg-icon
+          class="logo"
+          style="margin-right: 1.5rem"
+          :iconName="item.icon"
+        ></svg-icon>
         <span>{{ item.chain }}</span>
-        <loading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem" height="1.5rem"></loading>
+        <loading
+          v-if="loadingIndex == index"
+          style="left: 1rem; top: 0rem"
+          width="1.5rem"
+          height="1.5rem"
+        ></loading>
       </div>
     </div>
   </o-box-content>
@@ -24,11 +50,7 @@
 
 <script>
 import Web3 from 'web3'
-import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
-  getStarknetAccount,
-} from '../../../util/constants/starknet/helper'
+import { connectStarkNetWallet } from '../../../util/constants/starknet/helper'
 import { DydxHelper } from '../../../util/dydx/dydx_helper'
 import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
@@ -97,7 +119,10 @@ export default {
         }
         newArray.push(chainData)
       }
-      const chainOrderIds = [1, 5, 3, 33, 9, 99, 2, 22, 6, 66, 7, 77, 8, 88, 10, 510, 4, 44, 11, 511, 12, 512]
+      const chainOrderIds = [
+        1, 5, 3, 33, 9, 99, 2, 22, 6, 66, 7, 77, 8, 88, 10, 510, 4, 44, 11, 511,
+        12, 512,
+      ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
     newChainData: function () {
@@ -111,15 +136,19 @@ export default {
     },
   },
   watch: {},
-  mounted() { },
+  mounted() {},
   methods: {
     orderChainIds: function (chainOrderIds, theArray) {
       theArray.sort((chainInfo, nextChainInfo) => {
-        return chainOrderIds.indexOf(chainInfo.localID) - chainOrderIds.indexOf(nextChainInfo.localID)
+        return (
+          chainOrderIds.indexOf(chainInfo.localID) -
+          chainOrderIds.indexOf(nextChainInfo.localID)
+        )
       })
       return theArray
     },
     closerButton() {
+      this.loadingIndex = -1
       this.$emit('closeSelect')
     },
     async getChainInfo(e, index) {
@@ -128,12 +157,16 @@ export default {
         try {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
-            this.loadingIndex = index
-            const { coinbase } = this.$store.state.web3
-            const networkId = getNetworkIdByChainId(e.localID)
-            const l2Address = await getL2AddressByL1(coinbase, networkId)
-            if (!l2Address || l2Address == '0x0') {
-              await getStarknetAccount(coinbase, networkId)
+            const { starkIsConnected, starkNetAddress } =
+              this.$store.state.web3.starkNet
+            if (!starkIsConnected && !starkNetAddress) {
+              await connectStarkNetWallet()
+              if (
+                !this.$store.state.web3.starkNet.starkIsConnected &&
+                !this.$store.state.web3.starkNet.starkNetAddress
+              ) {
+                return
+              }
             }
           }
 
@@ -175,10 +208,8 @@ export default {
     stopPenetrate(e) {
       e.stopPropagation
     },
-    search() {
-      console.log('search')
-    },
-    checkKeyWord() { },
+    search() {},
+    checkKeyWord() {},
     isStarkSystem(chainId) {
       return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1
     },
@@ -191,8 +222,13 @@ export default {
 .selectChainBody {
   background-color: #fff;
   margin: 4.2rem auto;
-  height: calc(100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
-  height: calc(var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
+  height: calc(
+    100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
+  );
+  height: calc(
+    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
+      var(--bottom-nav-height)
+  );
   overflow-y: scroll;
 
   .selectChainContent {

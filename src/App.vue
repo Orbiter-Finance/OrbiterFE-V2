@@ -77,7 +77,7 @@ export default {
     getHistory(isRefresh = false) {
       if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
         if (isRefresh) {
-          this.$store.commit('updateTransactionList', null) 
+          this.$store.commit('updateTransactionList', null)
         }
 
         var req = {
@@ -114,6 +114,10 @@ export default {
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.s-dialog {
+  z-index: 9999 !important;
 }
 
 #app {
