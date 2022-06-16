@@ -157,7 +157,6 @@
         </div>
       </div>
     </div>
-    <div class="s12">{{ this.$store.state.web3.starkNet.starkNetAddress }}</div>
     <o-button
       style="margin: 2.5rem auto 0"
       width="29.5rem"
