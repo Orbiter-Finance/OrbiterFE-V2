@@ -340,6 +340,7 @@ import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
 import thirdapi from '../../core/actions/thirdapi'
 import { connectStarkNetWallet } from '../../util/constants/starknet/helper'
+import { sleep } from 'zksync/build/utils'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -820,12 +821,8 @@ export default {
       return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
-      // console.log(this.originGasCost, 'this.originGasCost')
-      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
-      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
       let savingValue =
         this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      // console.log(savingValue, 'savingValue')
       if (savingValue > 0) {
         return true
       }
@@ -868,40 +865,51 @@ export default {
     '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let fromChianID = selectMakerInfo.c1ID
+        let toChainID = selectMakerInfo.c2ID
         if (
-          this.$store.state.web3.fromChianID == 4 ||
-          this.$store.state.web3.fromChianID == 44
+          fromChianID == 4 ||
+          fromChianID == 44 ||
+          toChainID == 4 ||
+          toChainID == 44
         ) {
           this.c1Balance = null
-          this.getBalance(
-            this.$store.state.web3.coinbase,
-            selectMakerInfo.c1ID,
-            selectMakerInfo.t1Address,
-            selectMakerInfo.tName,
-            selectMakerInfo.precision
-          ).then((v) => {
-            if (v) {
-              this.c1Balance = v
-            }
-          })
-        }
-
-        if (
-          this.$store.state.web3.toChainID == 4 ||
-          this.$store.state.web3.toChainID == 44
-        ) {
           this.c2Balance = null
-          this.getBalance(
-            this.$store.state.web3.coinbase,
-            selectMakerInfo.c2ID,
-            selectMakerInfo.t2Address,
-            selectMakerInfo.tName,
-            selectMakerInfo.precision
-          ).then((v) => {
-            if (v) {
-              this.c2Balance = v
-            }
-          })
+          transferCalculate
+            .getTransferBalance(
+              selectMakerInfo.c1ID,
+              selectMakerInfo.t1Address,
+              selectMakerInfo.tName,
+              this.$store.state.web3.coinbase
+            )
+            .then((response) => {
+              this.c1Balance = (
+                response /
+                10 ** selectMakerInfo.precision
+              ).toFixed(6)
+            })
+            .catch((error) => {
+              this.c1Balance = 0
+              console.warn(error)
+              return
+            })
+          transferCalculate
+            .getTransferBalance(
+              selectMakerInfo.c2ID,
+              selectMakerInfo.t2Address,
+              selectMakerInfo.tName,
+              this.$store.state.web3.coinbase
+            )
+            .then((response) => {
+              this.c2Balance = (
+                response /
+                10 ** selectMakerInfo.precision
+              ).toFixed(6)
+            })
+            .catch((error) => {
+              this.c2Balance = 0
+              console.warn(error)
+            })
         }
       }
     },
@@ -928,7 +936,7 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
-            console.log(error)
+            console.warn(error)
             return
           })
         transferCalculate
@@ -945,7 +953,7 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
-            console.log(error)
+            console.warn(error)
           })
       } else {
         this.c1Balance = 0
@@ -1016,7 +1024,7 @@ export default {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
-            console.log(error)
+            console.warn(error)
           })
         transferCalculate
           .getTransferBalance(
@@ -1029,7 +1037,7 @@ export default {
             this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
-            console.log(error)
+            console.warn(error)
           })
       }
     },
@@ -1157,7 +1165,7 @@ export default {
           })
           .catch((error) => {
             that.gasCostLoading = false
-            console.log('GetGasFeeError =', error)
+            console.warn('GetGasFeeError =', error)
           })
       }
     },
@@ -1265,7 +1273,7 @@ export default {
           this.$store.commit('updateETHPrice', response)
         })
         .catch((error) => {
-          console.log('GetETHPriceError =', error)
+          console.warn('GetETHPriceError =', error)
         })
     }
     updateETHPrice()
@@ -1274,29 +1282,38 @@ export default {
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
       if (selectMakerInfo && this.isLogin) {
-        this.getBalance(
-          this.$store.state.web3.coinbase,
-          selectMakerInfo.c1ID,
-          selectMakerInfo.t1Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        ).then((v) => {
-          if (v) {
-            this.c1Balance = v
-          }
-        })
-
-        this.getBalance(
-          this.$store.state.web3.coinbase,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        ).then((v) => {
-          if (v) {
-            this.c2Balance = v
-          }
-        })
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c1ID,
+            selectMakerInfo.t1Address,
+            selectMakerInfo.tName,
+            this.$store.state.web3.coinbase
+          )
+          .then((response) => {
+            this.c1Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch(() => {
+            return
+          })
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c2ID,
+            selectMakerInfo.t2Address,
+            selectMakerInfo.tName,
+            this.$store.state.web3.coinbase
+          )
+          .then((response) => {
+            this.c2Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch(() => {
+            return
+          })
       }
 
       updateETHPrice()
@@ -1318,7 +1335,7 @@ export default {
         }
       })
       .catch((error) => {
-        console.log('error =', error)
+        console.warn('error =', error)
       })
   },
   methods: {
@@ -1634,15 +1651,33 @@ export default {
 
         // To starkNet
         if (toChainID == 4 || toChainID == 44) {
-          const { starkIsConnected, starkNetAddress } =
+          const { starkIsConnected, starkNetAddress, starkChain } =
             this.$store.state.web3.starkNet
+          if (!starkChain || starkChain == 'unlogin') {
+            util.showMessage('please connect starkNetWallet', 'error')
+            return
+          }
+          if (
+            toChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            util.showMessage('please switch starkNetWallet to mainnet', 'error')
+            return
+          }
+          if (
+            toChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            util.showMessage('please switch starkNetWallet to testNet', 'error')
+            return
+          }
           if (starkNetAddress && starkIsConnected) {
             this.$store.commit('updateTransferExt', {
               type: '0x03',
               value: starkNetAddress,
             })
           } else {
-            console.warn('connect starkNet')
+            util.showMessage('please connect starkNetWallet', 'error')
             return
           }
         } else {
@@ -1652,24 +1687,22 @@ export default {
 
         if (fromChainID == 4 || fromChainID == 44) {
           const { starkChain } = this.$store.state.web3.starkNet
-          console.log('starkChain =', starkChain)
-
           if (!starkChain || starkChain == 'unlogin') {
-            console.warn('please connect starkNetWallet')
+            util.showMessage('please connect starkNetWallet', 'error')
             return
           }
           if (
             fromChainID == 4 &&
             (starkChain == 44 || starkChain == 'localhost')
           ) {
-            console.warn('please switch starkNetWallet to mainnet')
+            util.showMessage('please switch starkNetWallet to mainnet', 'error')
             return
           }
           if (
             fromChainID == 44 &&
             (starkChain == 4 || starkChain == 'localhost')
           ) {
-            console.warn('please switch starkNetWallet to testNet')
+            util.showMessage('please switch starkNetWallet to testNet', 'error')
             return
           }
         } else {
@@ -1721,7 +1754,7 @@ export default {
         )
         this.originGasCost = response
       } catch (error) {
-        console.log('updateOriginGasCost error =', error)
+        console.warn('updateOriginGasCost error =', error)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -1759,10 +1792,9 @@ export default {
           makerAddress,
           true
         )
-
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
-        console.log(error)
+        console.warn(error)
       }
     },
 

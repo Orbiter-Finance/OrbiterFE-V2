@@ -45,10 +45,7 @@ export default {
     getZkToken.getSupportZKTokenList()
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {
-        // console.log('==============')
-        // if (this.$store.state.web3.isInjected) {
-        //   console.log('isInjected')
-        // }
+        
       })
     }
   },

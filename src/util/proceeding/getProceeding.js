@@ -9,8 +9,7 @@ import util from '../../util/util'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
+  getStarkMakerAddress,
   getProviderByChainId,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
@@ -39,7 +38,7 @@ const getHistory = () => {
         }
       })
       .catch((error) => {
-        console.log('error =', error)
+        console.warn('error =', error)
       })
   }
 }
@@ -124,7 +123,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKTransactionDataError'
       }
       return confirmUserTransaction(
@@ -184,7 +183,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getStarknetTransactionDataError'
       }
       return confirmUserTransaction(
@@ -243,7 +242,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getImmutableXTransactionDataError'
       }
       return confirmUserTransaction(
@@ -317,7 +316,7 @@ async function confirmUserTransaction(
           }
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getLPTransactionDataError'
       }
       return confirmUserTransaction(
@@ -380,7 +379,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKTransactionDataError'
       }
       return confirmUserTransaction(
@@ -441,7 +440,6 @@ async function confirmUserTransaction(
       } else {
         inputData = CrossAddress.parseTransferERC20Input(trx.input)
       }
-      console.log('inputData =', inputData.ext?.value)
       if (!inputData.ext?.value) {
         return
       }
@@ -586,7 +584,7 @@ function ScanZKMakerTransfer(
         }
       }
     } catch (error) {
-      console.log('error =', error)
+      console.warn('error =', error)
       throw 'getZKTransactionListError'
     }
     return ScanZKMakerTransfer(
@@ -657,7 +655,7 @@ function ScanZKSpaceMakerTransfer(
         }
       }
     } catch (error) {
-      console.log('error =', error)
+      console.warn('error =', error)
       throw 'getZKSTransactionListError'
     }
     return ScanZKSpaceMakerTransfer(
@@ -760,25 +758,16 @@ function ScanMakerTransfer(
     // starknet
     if (localChainID == 4 || localChainID == 44) {
       const asyncStarknet = async () => {
-        const networkId = getNetworkIdByChainId(localChainID)
-        const fromStarknetAddress = await getL2AddressByL1(from, networkId)
-        let toStarknetAddress = ''
-
-        // Wait toStarknetAddress deploy
-        while (!toStarknetAddress) {
-          toStarknetAddress = await getL2AddressByL1(to, networkId)
-          if (toStarknetAddress) {
-            break
-          }
-
-          await util.sleep(5000)
-        }
-
+        //todo
+        const fromStarknetAddress = store.state.web3.starkNet.starkNetAddress
+        let toStarknetAddress = getStarkMakerAddress(
+          makerInfo.makerAddress,
+          localChainID
+        )
         let api = config.starknet.Mainnet
         if (localChainID == 44) {
           api = config.starknet.Rinkeby
         }
-
         const skl = factoryStarknetListen(
           { endPoint: api },
           fromStarknetAddress
@@ -1186,7 +1175,7 @@ async function getConfirmations(localChainID, txHash) {
     }
     return { confirmations: 0, trx: trx, timestamp: 0 }
   } catch (error) {
-    console.log(error)
+    console.warn(error)
   }
 }
 

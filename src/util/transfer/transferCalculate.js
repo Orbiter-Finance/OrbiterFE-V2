@@ -14,12 +14,14 @@ import { localWeb3 } from '../constants/contract/localWeb3'
 import {
   getErc20Balance,
   getNetworkIdByChainId,
+  getStarkMakerAddress,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
+import { stark } from 'starknet'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -836,15 +838,13 @@ export default {
       }
     } else if (localChainID === 4 || localChainID === 44) {
       const networkId = getNetworkIdByChainId(localChainID)
-
       let starknetAddress = store.state.web3.starkNet.starkNetAddress
-
-      if (!starknetAddress) {
-        // util.showMessage(
-        //   'you need refresh the page to connect starkNetWallet',
-        //   'error'
-        // )
-        return 0
+      if (!isMaker) {
+        if (!starknetAddress) {
+          return 0
+        }
+      } else {
+        starknetAddress = await getStarkMakerAddress(userAddress, localChainID)
       }
       const balance = await getErc20Balance(
         starknetAddress,
@@ -897,7 +897,7 @@ export default {
           balanceInfo[defaultIndex].amount * 10 ** selectMakerInfo.precision
         return balances
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKBalanceError'
       }
     } else {

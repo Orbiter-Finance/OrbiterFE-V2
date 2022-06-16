@@ -131,14 +131,10 @@ export class CrossAddress {
       CROSS_ADDRESS_ABI,
       this.signer
     )
-    console.log('contract =', contract)
-    console.log('ext =', ext)
 
     const extHex = CrossAddress.encodeExt(ext)
-    console.log('extHex =', extHex)
 
     const options = { value: amount.toHexString() }
-    console.log('options =', options)
 
     return await contract.transfer(to, extHex, options)
   }

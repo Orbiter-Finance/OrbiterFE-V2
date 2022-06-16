@@ -71,7 +71,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 44,
     c2ID: 99,
     c1Name: 'starknet_test',
@@ -336,7 +336,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 88,
     c2ID: 44,
     c1Name: 'immutableX_test',
@@ -568,7 +568,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 77,
     c2ID: 44,
     c1Name: 'optimism_test',
@@ -635,7 +635,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 44,
     c2ID: 66,
     c1Name: 'starknet_test',
@@ -801,7 +801,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 44,
     c2ID: 5,
     c1Name: 'starknet_test',
@@ -835,7 +835,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 44,
     c2ID: 22,
     c1Name: 'starknet_test',
@@ -869,7 +869,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 44,
     c2ID: 33,
     c1Name: 'starknet_test',
@@ -1035,7 +1035,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 510,
     c2ID: 44,
     c1Name: 'metis_test',
@@ -1300,7 +1300,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 512,
     c2ID: 44,
     c1Name: 'zkspace_test',
@@ -1334,7 +1334,7 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5',
+    makerAddress: '0x8a3214f28946a797088944396c476f014f88dd37',
     c1ID: 512,
     c2ID: 44,
     c1Name: 'zkspace_test',

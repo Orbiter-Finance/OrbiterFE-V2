@@ -24,7 +24,7 @@ export default {
         const nonce = accountInfo.result.nonce
         return nonce
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         return 0
       }
     } else if (localChainID === 4 || localChainID === 44) {

@@ -44,6 +44,6 @@ async function getTokenList(localChainID) {
     }
     store.commit('updateZKTokenList', zkTokenResult)
   } catch (error) {
-    console.log('zk_TokenListGetError =', error)
+    console.warn('zk_TokenListGetError =', error)
   }
 }

@@ -30,6 +30,19 @@ const L1_TO_L2_ADDRESSES = {
     'georli-alpha':
       '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
   },
+  '0x8a3214f28946a797088944396c476f014f88dd37': {
+    'mainnet-alpha': '',
+    'georli-alpha':
+      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+  },
+}
+
+export async function getStarkMakerAddress(makerAddress, chainID) {
+  makerAddress = makerAddress.toLowerCase()
+  let networkID = getNetworkIdByChainId(chainID)
+  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
+  return receiverAddress
 }
 
 export async function connectStarkNetWallet() {
@@ -99,7 +112,6 @@ export async function sendTransfer(
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
 
-  console.log('sendTransfer')
   let networkID = getNetworkIdByChainId(chainID)
 
   const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
@@ -142,7 +154,6 @@ export async function sendTransfer(
       calldata,
     }
     const txhash = await getStarknet().account.execute(transaction)
-    console.log('txhash =', txhash)
     if (txhash?.code == 'TRANSACTION_RECEIVED') {
       return txhash.transaction_hash
     }
@@ -247,23 +258,6 @@ export async function getErc20Balance(
   }
 
   return new BigNumber(resp.balance['low']).toNumber()
-}
-
-/**
- *
- * @param {string} l1Address ethAddress
- * @param {string} contractAddress
- * @param {number} networkId
- * @returns { Promise<number> }
- */
-export async function getErc20BalanceByL1(
-  l1Address,
-  contractAddress,
-  networkId = 1
-) {
-  const starknetAddress = await getL2AddressByL1(l1Address, networkId)
-
-  return await getErc20Balance(starknetAddress, contractAddress, networkId)
 }
 
 /**

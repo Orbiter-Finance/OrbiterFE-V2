@@ -42,7 +42,7 @@ async function getTransactionListEtherscan(
       ethScanStartBlock = 0
     }
   } catch (error) {
-    console.log('ethScanStartBlockError =', error)
+    console.warn('ethScanStartBlockError =', error)
     throw error.message
   }
   let ethscanReq = {
@@ -148,7 +148,7 @@ async function getTransactionListArbitrum(
       arScanStartBlock = 0
     }
   } catch (error) {
-    console.log('arScanStartBlockError =', error)
+    console.warn('arScanStartBlockError =', error)
     throw error.message
   }
 
@@ -251,7 +251,7 @@ async function getTransactionListMetis(
       mtScanStartBlock = 0
     }
   } catch (error) {
-    console.log('mtScanStartBlockError =', error)
+    console.warn('mtScanStartBlockError =', error)
     throw error.message
   }
   let MtscanReq = {
@@ -454,7 +454,7 @@ async function getTransactionListOptimitic(
       opScanStartBlock = 0
     }
   } catch (error) {
-    console.log('opScanStartBlockError =', error)
+    console.warn('opScanStartBlockError =', error)
     throw error.message
   }
 
@@ -561,7 +561,7 @@ async function getTransactionListPolygon(
       startBlockNumber = 0
     }
   } catch (error) {
-    console.log('pgScanStartBlockError =', error)
+    console.warn('pgScanStartBlockError =', error)
     throw error.message
   }
 
@@ -656,7 +656,7 @@ async function getTransactionListZksync(
   try {
     zkTokenList = await getZKTokenAllList(chainID)
   } catch (err) {
-    console.log('tokenlistError =', err)
+    console.warn('tokenlistError =', err)
   }
   let isContiue = true
   let lastHash = 0
@@ -706,7 +706,7 @@ async function getTransactionListZksync(
         }
       }
     } catch (error) {
-      console.log('zkError =', error)
+      console.warn('zkError =', error)
       throw error.message
     }
   }
@@ -1089,7 +1089,7 @@ async function getTransactionListLoopring(
         break
       }
     } catch (error) {
-      console.log('lpError =', error)
+      console.warn('lpError =', error)
       throw error.message
     }
   }
@@ -1213,7 +1213,7 @@ async function getTransactionListZkSpace(
         break
       }
     } catch (error) {
-      console.log('zksError =', error)
+      console.warn('zksError =', error)
       throw error.message
     }
   }
@@ -1296,7 +1296,7 @@ export default {
           makerList = response.data
         })
         .catch((error) => {
-          console.log('getMakerListError =', error)
+          console.warn('getMakerListError =', error)
           throw error.message
         })
 
