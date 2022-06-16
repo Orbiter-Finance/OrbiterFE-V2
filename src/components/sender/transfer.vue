@@ -1638,7 +1638,7 @@ export default {
             this.$store.state.web3.starkNet
           if (starkNetAddress && starkIsConnected) {
             this.$store.commit('updateTransferExt', {
-              type: '0x02',
+              type: '0x03',
               value: starkNetAddress,
             })
           } else {
