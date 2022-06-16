@@ -433,14 +433,25 @@ async function confirmUserTransaction(
         startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
       }
     } else {
+      let inputData
       // Parse input data
-      const inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      if (util.isEthTokenAddress(fromTokenAddress)) {
+        inputData = CrossAddress.parseTransferInput(trx.input)
+        inputData.amount = trx.value
+      } else {
+        inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      }
+      console.log('inputData =', inputData.ext?.value)
       if (!inputData.ext?.value) {
         return
       }
 
       startScanMakerTransferFromAddress = inputData.to
-      amountStr = inputData.amount.toNumber() + ''
+      if (typeof inputData.amount == 'string') {
+        amountStr = Number(inputData.amount) + ''
+      } else {
+        amountStr = inputData.amount.toString() + ''
+      }
     }
     var amount = orbiterCore.getRAmountFromTAmount(
       localChainID,

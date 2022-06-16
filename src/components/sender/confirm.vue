@@ -910,11 +910,6 @@ export default {
 
         const amount = ethers.BigNumber.from(value)
         let transactionHash = ''
-        console.log('contractAddress =', contractAddress)
-        console.log(
-          'selectMakerInfo.makerAddress =',
-          selectMakerInfo.makerAddress
-        )
 
         if (util.isEthTokenAddress(contractAddress)) {
           transactionHash = (
