@@ -19,6 +19,7 @@ import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import getTransactionList from './core/routes/transactionList'
+import { getTransactionsHistory } from './core/routes/transactions'
 
 export default {
   name: 'App',
@@ -70,6 +71,20 @@ export default {
   },
   methods: {
     getHistory(isRefresh = false) {
+      if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
+        getTransactionsHistory({
+          userAddress: this.$store.state.web3.coinbase,
+          // daysAgo: 30,
+          // state: 1, // 0 maker 1 user
+          current: 1,
+          size: 30,
+        })
+          .then(res => {
+            this.$store.commit('updateTransactionList', res)
+          })
+      }
+    },
+    getHistory0(isRefresh = false) {
       if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
         if (isRefresh) {
           this.$store.commit('updateTransactionList', null)
