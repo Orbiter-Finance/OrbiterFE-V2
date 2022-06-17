@@ -240,6 +240,9 @@ import util from '../../util/util'
 
 import check from '../../util/check/check.js'
 
+// wallets resolvers
+import { walletsSupportConnectMap } from "../../util/walletsConnectDispatcher/index";
+
 export default {
   name: 'BottomNav',
   props: {},
@@ -274,6 +277,11 @@ export default {
           icon: 'metamask',
           title: 'MetaMask',
         },
+        {
+          isConnect: false,
+          icon: "walletConnect",
+          title: "WalletConnect"
+        }
       ]
     },
     loginInfoData() {
@@ -359,16 +367,9 @@ export default {
     clickHoriz() {
       this.showOrbiterInfoPopupClick()
     },
-    Connect(e) {
+    Connect(walletName) {
       this.closeLoginPop()
-      if (e === 'MetaMask') {
-        this.$store.dispatch('registerWeb3').then(() => {
-          // console.log('==============')
-          // if (this.$store.state.web3.isInjected) {
-          //   console.log('isInjected')
-          // }
-        })
-      }
+      walletsSupportConnectMap[walletName](this.$store);
     },
     openTerms() {
       window.open(
