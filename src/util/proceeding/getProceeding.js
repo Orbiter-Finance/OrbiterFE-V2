@@ -23,26 +23,14 @@ import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
 import { BobaListen } from '../boba/boba_listen'
 import { getTimeStampInfo } from './get_tx_by_hash'
-import { getTransactionsHistory } from '../../core/routes/transactions'
 
 let startBlockNumber = ''
 
 const getHistory = () => {
   if (store.getters.realSelectMakerInfo) {
-    // getTransactionList.getTransactionList
-    getTransactionsHistory({
-        address: store.state.web3.coinbase,
-        daysAgo: 14,
-        state: 1, //maker/user
-      })
-      .then((response) => {
-        if (response.state === 1) {
-          store.commit('updateTransactionList', response.list)
-        }
-      })
-      .catch((error) => {
-        console.warn('error =', error)
-      })
+    store.dispatch('getTransactionsHistory', {
+      current: 1,
+    })
   }
 }
 

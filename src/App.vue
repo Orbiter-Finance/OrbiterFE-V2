@@ -25,11 +25,8 @@ export default {
   name: 'App',
   computed: {
     isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
+      const web3 = this.$store.state.web3
+      return web3.isInstallMeta && web3.isInjected && web3.localLogin
     },
   },
   components: {
@@ -38,72 +35,32 @@ export default {
   },
   async mounted() {
     setInterval(this.getHistory, 60 * 1000)
-
     this.getHistory()
-
     getZkToken.getSupportZKTokenList()
     getZksToken.getSupportZksTokenList()
     getLpToken.getSupportLpTokenList()
-    if (localStorage.getItem('localLogin') === 'true') {
-      this.$store.dispatch('registerWeb3').then(() => {})
-    }
+    localStorage.getItem('localLogin') === 'true' && this.$store.dispatch('registerWeb3')
   },
   watch: {
     isLogin: function (newValue) {
-      if (!newValue) {
-        this.$store.commit('updateTransactionList', [])
-      } else {
-        this.getHistory(true)
-      }
+      !newValue ? this.$store.commit('updateTransactionList', []) : this.getHistory(true)
     },
-
     '$store.state.web3.coinbase': function (newValue, oldValue) {
-      if (oldValue && newValue && newValue !== '0x') {
-        this.getHistory(true)
-      }
+      oldValue && newValue && newValue !== '0x' && this.getHistory(true)
     },
-
     '$store.getters.realSelectMakerInfo': function (newValue) {
-      if (newValue) {
-        this.getHistory()
-      }
+      newValue && this.getHistory()
     },
   },
   methods: {
     getHistory(isRefresh = false) {
       if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
-        getTransactionsHistory({
-          userAddress: this.$store.state.web3.coinbase,
-          // daysAgo: 30,
-          // state: 1, // 0 maker 1 user
-          current: 1,
-          size: 30,
-        })
-          .then(res => {
-            this.$store.commit('updateTransactionList', res)
-          })
-      }
-    },
-    getHistory0(isRefresh = false) {
-      if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
         if (isRefresh) {
           this.$store.commit('updateTransactionList', null)
         }
-        var req = {
-          address: this.$store.state.web3.coinbase,
-          daysAgo: 14,
-          state: 1, //maker/user
-        }
-        getTransactionList
-          .getTransactionList(req)
-          .then((response) => {
-            if (response.state === 1) {
-              this.$store.commit('updateTransactionList', response.list)
-            }
-          })
-          .catch((error) => {
-            console.warn('error =', error)
-          })
+        this.$store.dispatch('getTransactionsHistory', {
+          current: 1,
+        })
       }
     },
   },

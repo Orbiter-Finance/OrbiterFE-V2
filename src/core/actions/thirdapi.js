@@ -191,20 +191,11 @@ export default {
         limit: 100,
         direction: 'newer',
       */
+      const zkSync = config.zkSync
+      const baseUrl = req.localChainID === 33 ? zkSync.Rinkeby : zkSync.Mainnet
+      const url = `${baseUrl}/tokens?from=${req.from}&limit=${req.limit}&direction=${req.direction}`
 
-      const url =
-        (req.localChainID === 33
-          ? config.zkSync.Rinkeby
-          : config.zkSync.Mainnet) +
-        '/tokens?from=' +
-        req.from +
-        '&limit=' +
-        req.limit +
-        '&direction=' +
-        req.direction
-
-      axios
-        .get(url)
+      axios.get(url)
         .then(function (response) {
           if (response.status === 200) {
             var respData = response.data

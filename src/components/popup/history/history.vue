@@ -1,5 +1,5 @@
 <template>
-  <o-box-content class="historybody" style="width: 34.5rem">
+  <o-box-content class="historybody" style="width: 34.5rem;position:relative;">
     <div @click.stop="stopPenetrate" class="historyContent">
       <div class="topItem">
         <span>History</span>
@@ -10,19 +10,18 @@
           ></svg-icon>
         </div>
       </div>
-      <div
-        style="width: 100%; height: 0.3rem; background: var(--default-black)"
-      ></div>
-
-      <div class="contentTopItem">
-        <span style="width: 34%">Time</span>
-        <span style="width: 30%">Value</span>
-        <span style="width: 18%">From</span>
-        <span style="width: 18%">To</span>
+      <div style="position:sticky;top:0;z-index:1;">
+        <div style="width: 100%; height: 0.3rem; background: var(--default-black)"></div>
+        <div class="contentTopItem">
+          <svg-icon v-if="$store.state.transactionListInfo.current > 1" @click.native="prevHistory" style="width: 1.5rem; height: 1.5rem;cursor:pointer;" iconName="back"></svg-icon>
+          <span style="width: 34%">Time</span>
+          <span style="width: 30%">Value</span>
+          <span style="width: 18%">From</span>
+          <span style="width: 18%">To</span>
+          <svg-icon v-if="$store.state.transactionListInfo.current < $store.state.transactionListInfo.pages" @click.native="nextHistory" style="width: 1.5rem; height: 1.5rem;cursor:pointer;transform: rotate(180deg);" iconName="back"></svg-icon>
+        </div>
+        <div style="width: 100%; height: 0.15rem; background: var(--default-black)"></div>
       </div>
-      <div
-        style="width: 100%; height: 0.15rem; background: var(--default-black)"
-      ></div>
       <div class="dydx-limit" v-if="isShowDydxLimit">
         Limited by the dydx mechanism, the history of dYdX cannot be queried
         temporarily
@@ -51,16 +50,10 @@
           item.userAmount + item.tokenName
         }}</span>
         <span style="width: 18%; text-align: center">
-          <svg-icon
-            :iconName="logoName(item.fromChainID)"
-            style="width: 1.6rem; height: 1.6rem"
-          ></svg-icon>
+          <ChainLogoIcon :id="item.fromChainID" />
         </span>
         <span style="width: 18%; text-align: center">
-          <svg-icon
-            :iconName="logoName(item.toChainID)"
-            style="width: 1.6rem; height: 1.6rem"
-          ></svg-icon>
+          <ChainLogoIcon :id="item.toChainID" />
         </span>
       </div>
       <div v-else class="noContentItem">No history</div>
@@ -70,21 +63,20 @@
 
 <script>
 import Loading from '../../loading/loading.vue'
+import ChainLogoIcon from '../../ChainLogoIcon'
 
 export default {
   name: 'History',
-  props: {},
   components: {
     Loading,
+    ChainLogoIcon,
   },
-  watch: {},
   computed: {
     historyData() {
       const { transactionList } = this.$store.state
       if (!transactionList) {
         return transactionList
       }
-
       // Hide dydx (from and to)
       const list = []
       for (const item of transactionList) {
@@ -98,25 +90,32 @@ export default {
         }
         list.push(item)
       }
-
       return list
     },
-
     isShowDydxLimit() {
       const { transactionList } = this.$store.state
       if (!this.historyData || !transactionList) {
         return false
       }
-
       if (this.historyData.length < transactionList.length) {
         return true
       }
-
       return false
     },
   },
-  mounted() {},
   methods: {
+    prevHistory() {
+      const info = this.$store.state.transactionListInfo
+      info.current > 1 && this.$store.dispatch('getTransactionsHistory', {
+        current: info.current - 1
+      })
+    },
+    nextHistory() {
+      const info = this.$store.state.transactionListInfo
+      this.$store.dispatch('getTransactionsHistory', {
+        current: info.current + 1
+      })
+    },
     closerButton() {
       this.$emit('closeHistory')
     },
@@ -134,33 +133,6 @@ export default {
         return 'history_waiting'
       } else {
         return 'history_fail'
-      }
-    },
-    logoName(chainID) {
-      if (chainID == '2' || chainID == '22') {
-        return 'arblogo'
-      } else if (chainID == '3' || chainID == '33') {
-        return 'zklogo'
-      } else if (chainID == '4' || chainID == '44') {
-        return 'sknlogo'
-      } else if (chainID == '6' || chainID == '66') {
-        return 'pglogo'
-      } else if (chainID == '7' || chainID == '77') {
-        return 'oplogo'
-      } else if (chainID == '8' || chainID == '88') {
-        return 'imxlogo'
-      } else if (chainID == '9' || chainID == '99') {
-        return 'loopringlogo'
-      } else if (chainID == '10' || chainID == '510') {
-        return 'metislogo'
-      } else if (chainID == '11' || chainID == '511') {
-        return 'dydxlogo'
-      } else if (chainID == '12' || chainID == '512') {
-        return 'zkspacelogo'
-      } else if (chainID == '13' || chainID == '513') {
-        return 'bobalogo'
-      } else {
-        return 'ethlogo'
       }
     },
   },

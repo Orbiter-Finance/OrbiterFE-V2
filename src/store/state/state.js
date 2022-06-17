@@ -69,6 +69,12 @@ const state = {
     mainnet: [],
   },
   transactionList: null,
+  transactionListInfo: {
+    current: 1,
+    size: 30,
+    total: 0,
+    pages: 1
+  },
   lpAccountInfo: null,
   lpApiKey: null,
 }

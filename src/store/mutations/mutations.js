@@ -118,6 +118,9 @@ export default {
   updateTransactionList(state, transactionList) {
     state.transactionList = transactionList
   },
+  updateTransactionListInfo(state, newInfo) {
+    state.transactionListInfo = newInfo
+  },
   updateIsInstallMeta(state, isInstallMeta) {
     state.web3.isInstallMeta = isInstallMeta
   },
