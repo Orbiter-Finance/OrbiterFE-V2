@@ -119,9 +119,6 @@ export default {
   components: {
     Loading,
   },
-  data() {
-    return {}
-  },
   computed: {
     FromChainName() {
       return (
@@ -181,8 +178,6 @@ export default {
       ]
     },
   },
-  watch: {},
-  mounted() {},
   methods: {
     switchNetWork(e) {
       let chainID

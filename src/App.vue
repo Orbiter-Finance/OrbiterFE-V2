@@ -6,9 +6,6 @@
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
     <BottomNav />
-
-    <!-- Load tooltip.png ahead of time -->
-    <img style="display: none" src="./assets/tooltip.png" />
   </div>
 </template>
 
@@ -55,9 +52,7 @@ export default {
   methods: {
     getHistory(isRefresh = false) {
       if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
-        if (isRefresh) {
-          this.$store.commit('updateTransactionList', null)
-        }
+        if (isRefresh) this.$store.commit('updateTransactionList', null)
         this.$store.dispatch('getTransactionsHistory', {
           current: 1,
         })

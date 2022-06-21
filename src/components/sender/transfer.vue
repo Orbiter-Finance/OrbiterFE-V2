@@ -399,7 +399,6 @@ const queryParamsChainMap = {
 
 export default {
   name: 'Transfer',
-  props: {},
   components: {
     SelectToken,
     SelectChain,
@@ -1339,7 +1338,6 @@ export default {
       }
     },
   },
-
   mounted() {
     const updateETHPrice = async () => {
       transferCalculate
@@ -1399,11 +1397,9 @@ export default {
 
     this.transferValue = this.queryParams.amount
 
-    const getMakerInfoFromGraphReq = {
+    makerInfo.getMakerInfoFromGraph({
       maker: '0',
-    }
-    makerInfo
-      .getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
+    }, true)
       .then((response) => {
         if (response.code === 0) {
           this.makerInfoList = response.data
@@ -1540,10 +1536,7 @@ export default {
       }
     },
     selectToken() {
-      if (this.tokenInfoArray.length <= 1) {
-        return
-      }
-
+      if (this.tokenInfoArray.length <= 1) return
       this.showCustomPopupClick()
     },
     getTokenInfo(e) {

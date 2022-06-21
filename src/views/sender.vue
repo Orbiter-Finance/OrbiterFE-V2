@@ -1,16 +1,11 @@
 <template>
   <div class="senderContent">
     <keep-alive>
-      <Transfer v-on:stateChanged="changeState"
-                v-if="status === '1' && !showDetail" />
+      <Transfer v-if="status === '1' && !showDetail" v-on:stateChanged="changeState" />
     </keep-alive>
-    <Confirm v-on:stateChanged="changeState"
-             v-if="status === '2' && !showDetail" />
-    <Proceed v-on:stateChanged="changeState"
-             v-if="status === '3' && !showDetail" />
-    <Detail :detailData="detailData"
-            v-on:stateChanged="changeState"
-            v-if="showDetail" />
+    <Confirm v-if="status === '2' && !showDetail" v-on:stateChanged="changeState" />
+    <Proceed v-if="status === '3' && !showDetail" v-on:stateChanged="changeState" />
+    <Detail v-if="showDetail" :detailData="detailData" v-on:stateChanged="changeState" />
   </div>
 </template>
 
@@ -19,12 +14,10 @@ import Transfer from '../components/sender/transfer'
 import Confirm from '../components/sender/confirm'
 import Proceed from '../components/sender/proceed'
 import Detail from '../components/sender/detail'
-import Middle from '../util/middle/middle'
+import Bus from '../util/middle/middle'
 
 export default {
   name: 'Sender',
-  props: {
-  },
   components: {
     Transfer,
     Confirm,
@@ -38,26 +31,20 @@ export default {
       detailData: null
     }
   },
-  watch: {
-  },
   mounted() {
-    Middle.$on('showDetail', state => {
+    Bus.$on('showDetail', state => {
       if (state) {
         this.showDetail = true
         this.detailData = state
       }
     })
   },
-  computed: {
-  },
   methods: {
     changeState(e) {
-      if (e !== '1' && e !== '2' && e !== '3') {
+      if (['1', '2', '3'].indexOf(e) < 0) {
         this.showDetail = false
       } else {
-        if (this.status !== e) {
-          this.status = e;
-        }
+        this.status = e;
       }
     }
   }
