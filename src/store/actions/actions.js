@@ -35,13 +35,13 @@ export default {
           "toChainID": +v.toChain,
           "userAddress": v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
           "makerAddress": v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
-          "userAmount": v.fromAmount,
-          "fromTimeStamp": v.fromTimeStamp,
+          "userAmount": (v.fromValue/Math.pow(10, 18)).toFixed(6),
+          "fromTimeStamp": v.fromTimeStamp.replace(/\..*/g, '').replace('T', ' ').slice(5, -3),
           "toTimeStamp": v.toTimeStamp,
           "tokenName": v.tokenName,
           "fromTxHash": v.fromTx,
           "toTxHash": v.toTx,
-          "state": v.status // 0 success 1 waiting 2 fail
+          "state": v.status == 1 ? 0 : (v.status == 0 ? 1 : 2) // 0 success 1 waiting 2 fail
         }
       })
       commit('updateTransactionListInfo', resInfo)
