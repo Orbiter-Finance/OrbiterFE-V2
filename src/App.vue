@@ -21,6 +21,8 @@ import TopNav from './components/nav/TopNav.vue'
 import BottomNav from './components/nav/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getTransactionList from './core/routes/transactionList'
+import { getCurrentLoginInfoFromLocalStorage, METAMASK, walletDispatchersOnInit, WALLETCONNECT } from "./util/walletsDispatchers"
+import { compatibleGlobalWalletConf } from "./composition/walletsResponsiveData";
 
 export default {
   name: 'App',
@@ -32,6 +34,9 @@ export default {
         this.$store.state.web3.localLogin
       )
     },
+    walletAddress: () => {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
+    }
   },
   components: {
     TopNav,
@@ -43,14 +48,19 @@ export default {
     this.getHistory()
 
     getZkToken.getSupportZKTokenList()
-    if (localStorage.getItem('localLogin') === 'true') {
-      this.$store.dispatch('registerWeb3').then(() => {
-        // console.log('==============')
-        // if (this.$store.state.web3.isInjected) {
-        //   console.log('isInjected')
-        // }
-      })
-    }
+
+    // init wallet info by the localStorage
+    this.performInitCurrentLoginWallet();
+
+    // if there is nothing wrong with the test, the following code can be removed
+    // if (localStorage.getItem('localLogin') === 'true') {
+    //   this.$store.dispatch('registerWeb3').then(() => {
+    //     // console.log('==============')
+    //     // if (this.$store.state.web3.isInjected) {
+    //     //   console.log('isInjected')
+    //     // }
+    //   })
+    // }
   },
   watch: {
     isLogin: function (newValue) {
@@ -61,7 +71,7 @@ export default {
       }
     },
 
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
+    walletAddress: function (newValue, oldValue) {
       if (oldValue && newValue && newValue !== '0x') {
         this.getHistory(true)
       }
@@ -81,7 +91,7 @@ export default {
         }
 
         var req = {
-          address: this.$store.state.web3.coinbase,
+          address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
           daysAgo: 14,
           state: 1, //maker/user
         }
@@ -97,6 +107,21 @@ export default {
           })
       }
     },
+    performInitCurrentLoginWallet() {
+      // When user connects a wallet, the information of this wallet will be added
+      // to the localStorage, when user refreshes the page, the localStorage can help
+      // us locate last wallet that user connected
+      // so localStorage is only used for initialization!!! 
+      const cacheWalletInfo  = getCurrentLoginInfoFromLocalStorage();
+      if (!cacheWalletInfo) return; // if there is no wallet connected
+      const { walletType } = cacheWalletInfo;
+
+      // according to different wallet types to do their own initialization
+      // but eventually they all update a global responsive data: globalSelectWalletConf
+      // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
+      if (walletType === METAMASK) walletDispatchersOnInit[METAMASK]();
+      if (walletType === WALLETCONNECT) walletDispatchersOnInit[WALLETCONNECT]();
+    }
   },
 }
 </script>

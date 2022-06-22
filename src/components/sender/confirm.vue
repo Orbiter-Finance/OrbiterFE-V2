@@ -125,6 +125,8 @@ import zkspace from '../../core/actions/zkspace'
 import config from '../../core/utils/config'
 import * as ethers from 'ethers'
 import * as zksync from 'zksync'
+import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { walletDispatchersOnSignature, walletDispatchersOnAddChain } from "../../util/walletsDispatchers";
 
 export default {
   name: 'Confirm',
@@ -139,13 +141,6 @@ export default {
   },
   asyncComputed: {},
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
     confirmData() {
       // 0.000120000000009022 to 0.000120...09022
       let realTransferAmount = transferCalculate.realTransferAmount().toString()
@@ -226,7 +221,7 @@ export default {
     async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
         let provider = new ethers.providers.Web3Provider(window.ethereum)
-        const walletAccount = this.$store.state.web3.coinbase
+        const walletAccount = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         const signer = provider.getSigner()
 
         const privateKey = await zkspace.getL1SigAndPriVateKey(signer)
@@ -354,7 +349,7 @@ export default {
 
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(window.ethereum)
-      const walletAccount = this.$store.state.web3.coinbase
+      const walletAccount = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       var tokenAddress =
         selectMakerInfo.c1ID === fromChainID
           ? selectMakerInfo.t1Address
@@ -554,7 +549,7 @@ export default {
         const amount = tValue.tAmount
         try {
           const response = await loopring.sendTransfer(
-            this.$store.state.web3.coinbase,
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress,
             this.$store.state.transferData.fromChainID,
             selectMakerInfo.makerAddress,
             0,
@@ -564,7 +559,7 @@ export default {
           )
           if (response.hash && response.status == 'processing') {
             this.onTransferSucceed(
-              this.$store.state.web3.coinbase,
+              compatibleGlobalWalletConf.value.walletPayload.walletAddress,
               selectMakerInfo,
               amount,
               fromChainID,
@@ -674,7 +669,7 @@ export default {
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],
               })
               .then(() => {})
               .catch((error) => {
@@ -687,6 +682,14 @@ export default {
         })
     },
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
+
+      const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
+      if (matchSignatureDispatcher) {
+        matchSignatureDispatcher(from, selectMakerInfo, value, fromChainID, this.onTransferSucceed);
+        return;
+      }
+
+
       if (!this.$store.state.web3.isInstallMeta) {
         this.transferLoading = false
         return
@@ -931,17 +934,22 @@ export default {
     },
 
     async RealTransfer() {
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true)
         return
       }
 
       if (
-        this.$store.state.web3.networkId.toString() !==
+        compatibleGlobalWalletConf.value.walletPayload.chainId.toString() !==
         this.$env.localChainID_netChainID[
           this.$store.state.transferData.fromChainID
         ]
       ) {
+        const matchAddChainDispatcher = walletDispatchersOnAddChain[compatibleGlobalWalletConf.value.walletType];
+        if (matchAddChainDispatcher) {
+          matchAddChainDispatcher();
+          return;
+        }
         this.addChainNetWork()
         return
       }
@@ -1013,8 +1021,7 @@ export default {
           this.transferLoading = false
           return
         }
-        const account = this.$store.state.web3.coinbase
-
+        const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (fromChainID == 4 || fromChainID == 44) {
           this.starknetTransfer(
             account,

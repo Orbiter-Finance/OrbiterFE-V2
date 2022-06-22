@@ -57,9 +57,9 @@ function getTransferContract(localChainID, makerInfo) {
   }
 }
 
-async function getTransferGasLimit(localChainID, makerInfo, from, to, value) {
-  if (store.state.web3.isInstallMeta) {
-    const web3 = new Web3(window.ethereum)
+async function getTransferGasLimit(localChainID, makerInfo, from, to, value, provider = null) {
+  if (store.state.web3.isInstallMeta || provider) {
+    const web3 = new Web3(provider || window.ethereum)
     let tokenAddress = null
     if (makerInfo.c1ID === localChainID) {
       tokenAddress = makerInfo.t1Address
@@ -75,6 +75,7 @@ async function getTransferGasLimit(localChainID, makerInfo, from, to, value) {
           to: makerInfo.makerAddress,
           value,
         })
+        console.log("gaslimit update", gaslimit);
         return gasLimit
       } else {
         const ABI = Coin_ABI

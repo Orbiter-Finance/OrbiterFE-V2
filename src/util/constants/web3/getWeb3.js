@@ -4,6 +4,7 @@ import { Message } from 'element-ui'
 import pollWeb3 from './pollWeb3'
 
 async function installWeb3() {
+  console.log("installWeb3 triggered");
   var web3js = window.web3
   var web3Provider
   if (window.ethereum) {
@@ -40,7 +41,7 @@ async function getWeb3() {
       store.commit('updateCoinbase', '')
       return
     } else {
-      // console.log('netWorkId=', netWorkId, typeof (netWorkId))
+      console.log('netWorkId=', netWorkId, typeof (netWorkId))
       store.commit('updateNetWorkId', netWorkId.toString())
     }
   })
@@ -80,4 +81,6 @@ const showMessage = function(message, type) {
   })
 }
 
-export { installWeb3, getWeb3 }
+const userDeniedMessage = () => showMessage('User denied account access', 'error');
+
+export { installWeb3, getWeb3, showMessage, userDeniedMessage }

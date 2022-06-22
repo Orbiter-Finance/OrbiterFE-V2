@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import AsyncComputed from 'vue-async-computed'
 import router from './router'
+import "./composition";
 import { store } from './store'
 import './config/global.css'
 import env from '../env'

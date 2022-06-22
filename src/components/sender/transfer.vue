@@ -30,7 +30,7 @@
       <div class="subContent">
         <div class="topItem">
           <div class="left">From</div>
-          <div v-if="isLogin" class="right">
+          <div v-if="walletIsLogin" class="right">
             Balance:
             <loading
               v-if="fromBalanceLoading"
@@ -83,7 +83,7 @@
       <div class="subContent">
         <div class="topItem">
           <div class="left">To</div>
-          <div v-if="isLogin" class="right">
+          <div v-if="walletIsLogin" class="right">
             Balance:
             <loading
               v-if="toBalanceLoading"
@@ -166,7 +166,7 @@
       @click="sendTransfer"
     >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
-        {{ sendBtnInfo && sendBtnInfo.text }}
+        {{ sendBtnInfo && sendBtnInfo.text }}2
       </span>
     </o-button>
     <div class="notice">
@@ -339,6 +339,10 @@ import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
 
+// composition
+import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"; 
+import { globalSelectWalletConf, METAMASK } from "../../util/walletsDispatchers";
+
 const queryParamsChainMap = {
   Mainnet: 1,
   Arbitrum: 2,
@@ -375,6 +379,11 @@ export default {
     CustomPopup,
     Loading,
   },
+  setup() {
+    return {
+      walletIsLogin
+    }
+  },
   data() {
     return {
       // loading
@@ -402,7 +411,7 @@ export default {
   },
   asyncComputed: {
     async userMaxPrice() {
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         return this.$store.getters.realSelectMakerInfo.maxPrice
       }
       // check selectMakerInfo
@@ -615,7 +624,7 @@ export default {
         text: 'CONNECT A WALLET',
         disabled: null,
       }
-      if (this.isLogin) {
+      if (walletIsLogin.value) {
         info.text = 'SEND'
 
         if (transferValue.comparedTo(0) < 0) {
@@ -706,13 +715,6 @@ export default {
       ).toFixed(2)}</b>`
 
       return gasFee + tradingFee + withholdingGasFee + total
-    },
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
     },
     toValue() {
       if (
@@ -864,7 +866,7 @@ export default {
         this.initChainArray()
       }
     },
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
+    compatibleGlobalWalletConf: function (newValue, oldValue) {
       if (!newValue || newValue === '0x') {
         this.c1Balance = 0
         this.c2Balance = 0
@@ -878,7 +880,7 @@ export default {
             selectMakerInfo.c1ID,
             selectMakerInfo.t1Address,
             selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c1Balance = (
@@ -895,7 +897,7 @@ export default {
             selectMakerInfo.c2ID,
             selectMakerInfo.t2Address,
             selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c2Balance = (
@@ -915,7 +917,7 @@ export default {
       this.updateExchangeToUsdPrice()
       this.getMakerMaxBalance()
 
-      if (this.isLogin && oldValue !== newValue) {
+      if (walletIsLogin.value && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
         if (
@@ -931,7 +933,7 @@ export default {
             newValue.c1ID,
             newValue.t1Address,
             newValue.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
@@ -944,7 +946,7 @@ export default {
             newValue.c2ID,
             newValue.t2Address,
             newValue.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
@@ -1194,9 +1196,9 @@ export default {
 
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
-      if (selectMakerInfo && this.isLogin) {
+      if (selectMakerInfo && walletIsLogin.value) {
         this.getBalance(
-          this.$store.state.web3.coinbase,
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress,
           selectMakerInfo.c1ID,
           selectMakerInfo.t1Address,
           selectMakerInfo.tName,
@@ -1208,7 +1210,7 @@ export default {
         })
 
         this.getBalance(
-          this.$store.state.web3.coinbase,
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress,
           selectMakerInfo.c2ID,
           selectMakerInfo.t2Address,
           selectMakerInfo.tName,
@@ -1289,7 +1291,7 @@ export default {
       this.$store.commit('updateTransferFromChainID', fromChainID)
     },
     fromMax() {
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         this.transferValue = '0'
         return
       }
@@ -1466,7 +1468,7 @@ export default {
     },
     async sendTransfer() {
       // if unlogin  login first
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true)
       } else {
         if (!check.checkPrice(this.transferValue)) {
@@ -1488,7 +1490,7 @@ export default {
           this.$store.state.transferData.fromChainID,
           this.$store.getters.realSelectMakerInfo.t1Address,
           this.$store.getters.realSelectMakerInfo.tName,
-          this.$store.state.web3.coinbase
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
         if (nonce > 8999) {
           this.$notify.error({
@@ -1527,7 +1529,7 @@ export default {
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
           const imxHelper = new IMXHelper(toChainID)
-          await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+          await imxHelper.ensureUser(compatibleGlobalWalletConf.value.walletPayload.walletAddress)
         }
 
         // To dYdX
@@ -1538,7 +1540,7 @@ export default {
             'MetaMask'
           )
           const dydxAccount = await dydxHelper.getAccount(
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
 
           this.$store.commit('updateTransferExt', {
@@ -1552,21 +1554,24 @@ export default {
           // Clear TransferExt
           this.$store.commit('updateTransferExt', null)
         }
-
         // Ensure fromChainId's networkId
         if (
-          this.$store.state.web3.networkId.toString() !==
+          compatibleGlobalWalletConf.value.walletPayload.chainId.toString() !==
           this.$env.localChainID_netChainID[
             this.$store.state.transferData.fromChainID
           ]
         ) {
-          try {
-            await util.ensureMetamaskNetwork(
-              this.$store.state.transferData.fromChainID
-            )
-          } catch (err) {
-            util.showMessage(err.message, 'error')
-            return
+          if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+            try {
+              await util.ensureMetamaskNetwork(
+                this.$store.state.transferData.fromChainID
+              )
+            } catch (err) {
+              util.showMessage(err.message, 'error')
+              return
+            }
+          } {
+            // perform other wallets
           }
         }
 

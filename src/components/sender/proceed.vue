@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import {
   getL2AddressByL1,
   getNetworkIdByChainId,
@@ -219,7 +220,7 @@ export default {
       const { fromChainID } = this.$store.state.transferData
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState === 1) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (fromChainID == 4 || fromChainID == 44) {
           userAddress = await getL2AddressByL1(
             userAddress,
@@ -253,7 +254,7 @@ export default {
       const { toChainID } = this.$store.state.transferData
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState < 4) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (toChainID == 4 || toChainID == 44) {
           userAddress = await getL2AddressByL1(
             userAddress,
@@ -331,7 +332,7 @@ export default {
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],
               })
               .then(() => {})
               .catch((error) => {

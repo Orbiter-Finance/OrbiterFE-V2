@@ -26,33 +26,33 @@
     <div v-if="!isWeb" class="BottomContainer">
       <div class="LoginBox">
         <svg-icon
-          v-if="isLogin"
+          v-if="walletIsLogin"
           class="LoginImg"
           :iconName="loginBoxIconName()"
         ></svg-icon>
-        <button v-if="isLogin" class="LoginBtn" @click="unlogin">
+        <button v-if="walletIsLogin" class="LoginBtn" @click="unlogin">
           {{ showAddress }}
         </button>
-        <button v-if="!isLogin" class="unLoginBtn" @click="login">
+        <button v-if="!walletIsLogin" class="unLoginBtn" @click="login">
           Connect a Wallet
         </button>
       </div>
       <div class="LoginRBox">
         <o-button
-          v-if="isLogin"
+          v-if="walletIsLogin"
           width="8rem"
           height="3.2rem"
           @click="toHistory"
         >
           <span class="s14">History</span>
         </o-button>
-        <div v-if="isLogin" @click="clickHoriz" class="horiz">
+        <div v-if="walletIsLogin" @click="clickHoriz" class="horiz">
           <svg-icon
             style="width: 100%; height: 100%"
             iconName="more_horiz"
           ></svg-icon>
         </div>
-        <div v-if="!isLogin" @click="clickHoriz" class="horiz_unlogin">
+        <div v-if="!walletIsLogin" @click="clickHoriz" class="horiz_unlogin">
           <svg-icon
             style="width: 100%; height: 100%"
             iconName="more_horiz"
@@ -160,7 +160,7 @@
         </div>
 
         <o-button
-          v-if="this.isLogin"
+          v-if="walletIsLogin"
           style="margin: 2.5rem auto"
           width="29.5rem"
           height="4rem"
@@ -241,7 +241,15 @@ import util from '../../util/util'
 import check from '../../util/check/check.js'
 
 // wallets resolvers
-import { walletsSupportConnectMap } from "../../util/walletsConnectDispatcher/index";
+import { 
+  walletDispatchersOnInit, 
+  METAMASK,
+  loginStatusCheckerOfWallets,
+  walletDispatchersOnDisconnect,
+  globalSelectWalletConf
+} from "../../util/walletsDispatchers";
+import { toRefs } from "../../composition";
+import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 
 export default {
   name: 'BottomNav',
@@ -252,6 +260,11 @@ export default {
   },
   data() {
     return {}
+  },
+  setup() {
+    return {
+      walletIsLogin
+    }
   },
   mounted() {
     var that = this
@@ -268,12 +281,12 @@ export default {
   },
   computed: {
     copyAddress() {
-      return this.$store.state.web3.coinbase
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     loginData() {
       return [
         {
-          isConnect: this.isLogin && check.checkIsMetaMask(),
+          isConnect: walletIsLogin.value && check.checkIsMetaMask(),
           icon: 'metamask',
           title: 'MetaMask',
         },
@@ -281,6 +294,11 @@ export default {
           isConnect: false,
           icon: "walletConnect",
           title: "WalletConnect"
+        },
+        {
+          isConnect: false,
+          icon: "coinbase",
+          title: "Coinbase"
         }
       ]
     },
@@ -289,12 +307,14 @@ export default {
         {
           icon: 'network',
           title: 'Network',
-          value: util.chainName('0', this.$store.state.web3.networkId),
+          value: globalSelectWalletConf.walletType === METAMASK ? 
+                  util.chainName('0', this.$store.state.web3.networkId) : 
+                  util.chainName("0", globalSelectWalletConf.walletPayload.chainId),
         },
         {
           icon: 'wallet',
           title: 'Wallet',
-          value: 'MetaMask',
+          value:  globalSelectWalletConf.walletType,
         },
         {
           icon: 'address',
@@ -327,13 +347,6 @@ export default {
         },
       ]
     },
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
     isWeb() {
       if (this.$store.state.innerWH.innerWidth > 10000) {
         return true
@@ -341,7 +354,7 @@ export default {
       return false
     },
     showAddress() {
-      var address = this.$store.state.web3.coinbase
+      var address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       if (address && address.length > 5) {
         var subStr1 = address.substr(0, 4)
         var subStr2 = address.substr(address.length - 4, 4)
@@ -369,7 +382,7 @@ export default {
     },
     Connect(walletName) {
       this.closeLoginPop()
-      walletsSupportConnectMap[walletName](this.$store);
+      walletDispatchersOnInit[walletName](this.$store);
     },
     openTerms() {
       window.open(
@@ -390,8 +403,8 @@ export default {
       //   ]
       // });
       this.closeLoginInfoPop()
-      this.$store.commit('updateLocalLogin', false)
-      localStorage.setItem('localLogin', false)
+      walletDispatchersOnDisconnect[globalSelectWalletConf.walletType]();
+
     },
     getHistoryInfo(e) {
       Middle.$emit('showDetail', e)
@@ -453,7 +466,8 @@ export default {
       })
     },
     loginBoxIconName() {
-      return check.checkIsMetaMask() ? 'metamask' : 'tokenLogo'
+      const { walletType: walletTypeRef } = toRefs(globalSelectWalletConf);
+      return walletTypeRef.value.toLowerCase() || 'tokenLogo';
     },
   },
 }

@@ -109,6 +109,7 @@ import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 import Middle from '../../util/middle/middle'
 import { getL2AddressByL1, getNetworkIdByChainId } from '../../util/constants/starknet/helper'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
 export default {
   name: 'Detail',
@@ -233,7 +234,7 @@ export default {
       const { accountExploreUrl, txExploreUrl } = this.$env
 
       if (state !== 0) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress =  compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (toChainID == 4 || toChainID == 44) {
           userAddress = await getL2AddressByL1(userAddress, getNetworkIdByChainId(toChainID))
         }
@@ -324,7 +325,7 @@ export default {
             window.ethereum
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],
               })
               .then(() => {})
               .catch((error) => {
