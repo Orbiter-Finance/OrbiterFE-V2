@@ -411,7 +411,7 @@ async function confirmUserTransaction(
       'updateProceedingUserTransferTimeStamp',
       trxConfirmations.timestamp
     )
-    console.log(
+    console.warn(
       'Transaction with hash ' +
         txHash +
         ' has ' +

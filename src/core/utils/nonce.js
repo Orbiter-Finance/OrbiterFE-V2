@@ -2,6 +2,7 @@ import thirdapi from '../actions/thirdapi'
 import loopring from '../actions/loopring'
 import zkspace from '../actions/zkspace'
 import { localWeb3 } from '../../util/constants/contract/localWeb3'
+import { getStarkNonce } from '../../util/constants/starknet/helper'
 
 export default {
   getNonce: async function (
@@ -28,7 +29,12 @@ export default {
         return 0
       }
     } else if (localChainID === 4 || localChainID === 44) {
-      return 0
+      try {
+        let nonce = Number(await getStarkNonce())
+        return nonce
+      } catch (error) {
+        return 0
+      }
     } else if (localChainID === 8 || localChainID === 88) {
       return 0
     } else if (localChainID === 9 || localChainID === 99) {

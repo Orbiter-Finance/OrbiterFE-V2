@@ -142,7 +142,8 @@
           v-if="
             !queryParams.fixed &&
             $store.state.transferData.toChainID != 11 &&
-            $store.state.transferData.toChainID != 511
+            $store.state.transferData.toChainID != 511 &&
+            !starkMid
           "
           class="middleImge"
           @click="transfer_mid"
@@ -337,9 +338,7 @@ import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
-import thirdapi from '../../core/actions/thirdapi'
 import { connectStarkNetWallet } from '../../util/constants/starknet/helper'
-import { sleep } from 'zksync/build/utils'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -455,6 +454,24 @@ export default {
     },
   },
   computed: {
+    starkMid() {
+      const fromChainID = this.$store.state.transferData.fromChainID
+      const toChainID = this.$store.state.transferData.toChainID
+      if (
+        (fromChainID == 4 || fromChainID == 44) &&
+        toChainID != 1 &&
+        toChainID != 5 &&
+        toChainID != 2 &&
+        toChainID != 22 &&
+        toChainID != 6 &&
+        toChainID != 66 &&
+        toChainID != 7 &&
+        toChainID != 77
+      ) {
+        return true
+      }
+      return false
+    },
     queryParams() {
       const { query } = this.$route
       const { referer } = query
@@ -652,7 +669,6 @@ export default {
         ? true
         : false
     },
-
     userMinPrice() {
       return this.$store.getters.realSelectMakerInfo.minPrice
     },
@@ -1068,6 +1084,26 @@ export default {
           }
         }
       })
+
+      if (
+        newValue != 1 &&
+        newValue != 5 &&
+        newValue != 2 &&
+        newValue != 22 &&
+        newValue != 6 &&
+        newValue != 66 &&
+        newValue != 7 &&
+        newValue != 77
+      ) {
+        if (this.toChainArray.indexOf(4) != -1) {
+          let index = this.toChainArray.indexOf(4)
+          this.toChainArray.splice(index, 1)
+        }
+        if (this.toChainArray.indexOf(44) != -1) {
+          let index = this.toChainArray.indexOf(44)
+          this.toChainArray.splice(index, 1)
+        }
+      }
 
       if (
         this.toChainArray.indexOf(this.$store.state.transferData.toChainID) ===

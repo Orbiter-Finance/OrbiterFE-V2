@@ -44,9 +44,7 @@ export default {
 
     getZkToken.getSupportZKTokenList()
     if (localStorage.getItem('localLogin') === 'true') {
-      this.$store.dispatch('registerWeb3').then(() => {
-        
-      })
+      this.$store.dispatch('registerWeb3').then(() => {})
     }
   },
   watch: {
@@ -90,7 +88,7 @@ export default {
             }
           })
           .catch((error) => {
-            console.log('error =', error)
+            console.warn('error =', error)
           })
       }
     },

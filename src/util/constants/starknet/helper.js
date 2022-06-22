@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { Contract, Provider, uint256, stark } from 'starknet'
+import { ec, Account, Contract, Provider, uint256, stark } from 'starknet'
 import util from '../../util'
 import erc20Abi from './erc20_abi.json'
 import starkNetCrossAbi from './ob_source_abi.json'
@@ -12,6 +12,7 @@ import {
 } from 'get-starknet-wallet'
 
 import { store } from '../../../store'
+import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha': '',
@@ -34,6 +35,25 @@ const L1_TO_L2_ADDRESSES = {
     'mainnet-alpha': '',
     'georli-alpha':
       '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+  },
+  '0x80c67432656d59144ceff962e8faf8926599bcf8': {
+    'mainnet-alpha':
+      '0x07c57808B9CEA7130C44aaB2F8CA6147B04408943b48c6d8C3C83eB8Cfdd8C0b',
+    'georli-alpha':
+      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+  },
+}
+
+const GAS_ADDRESS = {
+  'mainnet-alpha': {
+    address: '',
+    privateKey: '',
+  },
+  'georli-alpha': {
+    address:
+      '0x00e99e130053ae185ab9a3f1fd059e1c3eb58eb1037a7a9b91c945456bcfbc0d',
+    privateKey:
+      '0x9de8163ea816b568c2dcd50511e8a21cb3c3f7b57464d1b8ee84ea7e7bdab8',
   },
 }
 
@@ -173,6 +193,71 @@ export async function getAllowance(contractErc20, contractAddress) {
   return allowance['remaining']['low']
 }
 
+export async function getStarkNonce() {
+  try {
+    const nonce = await getStarknet().account.getNonce()
+    return nonce
+  } catch (error) {
+    return 0
+  }
+}
+
+export async function getStarkTransferFee(
+  l1Address,
+  tokenAddress,
+  makerAddress,
+  amount,
+  chainID
+) {
+  l1Address = l1Address.toLowerCase()
+  tokenAddress = tokenAddress.toLowerCase()
+  makerAddress = makerAddress.toLowerCase()
+
+  let networkID = getNetworkIdByChainId(chainID)
+  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
+
+  const provider = new Provider({ network: network })
+  const userSender = new Account(
+    provider,
+    GAS_ADDRESS[network].address,
+    ec.getKeyPair(GAS_ADDRESS[network].privateKey)
+  )
+
+  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
+  const ethContract = new Contract(erc20Abi, tokenAddress, userSender)
+  const crossContract = new Contract(
+    starkNetCrossAbi,
+    contractAddress,
+    userSender
+  )
+  let fee = 0
+  try {
+    const est1 = await ethContract.estimate('approve', [
+      contractAddress,
+      getUint256CalldataFromBN(String(UINT_256_MAX)),
+    ])
+    fee += Number(est1.amount)
+  } catch (error) {
+    console.warn('est1Error:', error)
+    return fee
+  }
+
+  try {
+    let est2 = await crossContract.estimate('transferERC20', [
+      tokenAddress,
+      receiverAddress,
+      getUint256CalldataFromBN(String(0)),
+      l1Address,
+    ])
+    fee += Number(est2.amount)
+  } catch (error) {
+    console.warn('est2Error: ', error)
+    return fee
+  }
+  return fee
+}
+
 /**
  *
  * @param {string} tokenAddress 0x...
@@ -183,7 +268,7 @@ export async function approveERC20(tokenContract, contractAddress, amount) {
   try {
     const calldata = stark.compileCalldata({
       spender: contractAddress,
-      amount: getUint256CalldataFromBN(String(amount)),
+      amount: getUint256CalldataFromBN(String(UINT_256_MAX)),
     })
 
     const approveTransaction = {
@@ -214,12 +299,6 @@ export async function approveERC20(tokenContract, contractAddress, amount) {
     throw error
   }
 }
-// function stripHexPrefix(input) {
-//   if (input.indexOf('0x') === 0) {
-//     return input.substr(2)
-//   }
-//   return input
-// }
 
 function getUint256CalldataFromBN(bn) {
   return { type: 'struct', ...uint256.bnToUint256(bn) }
