@@ -1495,6 +1495,16 @@ export default {
           this.$store.state.web3.coinbase
         )
         if (
+          this.$store.state.transferData.fromChainID == 3 ||
+          this.$store.state.transferData.toChainID == 3
+        ) {
+          this.$notify.error({
+            title: `Affected by the zksync interface issue, the transfer from zksync is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
+        if (
           !(await netStateBlock(this.$store.state.transferData.fromChainID))
         ) {
           this.$notify.error({
