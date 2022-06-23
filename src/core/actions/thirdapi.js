@@ -107,7 +107,6 @@ export default {
   */
   getZKInfo: function (req) {
     return new Promise((resolve, reject) => {
-
       if (req.localChainID !== 3 && req.localChainID !== 33) {
         reject({
           errorCode: 1,
@@ -162,7 +161,6 @@ export default {
       axios
         .get(url)
         .then(function (response) {
-          // console.log('respnse =', response)
           if (response.status === 200) {
             var respData = response.data
             if (respData.status === 'success') {
@@ -178,7 +176,6 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log('error =', error)
           reject({
             errorCode: 2,
             errMsg: error,
@@ -224,7 +221,6 @@ export default {
           }
         })
         .catch(function (error) {
-          console.log('error =', error)
           reject({
             errorCode: 2,
             errMsg: error,

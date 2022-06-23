@@ -3,20 +3,28 @@
     <div class="confirmContent">
       <div class="topItem">
         <div @click="closerButton">
-          <svg-icon style="
+          <svg-icon
+            style="
               width: 1.5rem;
               height: 1.5rem;
               margin-bottom: 0.2rem;
               position: absolute;
               left: 1rem;
-            " iconName="back"></svg-icon>
+            "
+            iconName="back"
+          ></svg-icon>
         </div>
         Confirm
       </div>
-      <div style="width: 100%; height: 0.2rem; background: var(--default-black)"></div>
+      <div
+        style="width: 100%; height: 0.2rem; background: var(--default-black)"
+      ></div>
       <div v-for="item in confirmData" :key="item.title" class="contentItem">
         <div class="up">
-          <svg-icon style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem" :iconName="item.icon"></svg-icon>
+          <svg-icon
+            style="margin-right: 1.4rem; width: 1.5rem; height: 1.5rem"
+            :iconName="item.icon"
+          ></svg-icon>
           <span style="margin-right: 1rem; font-weight: 600">
             {{ item.title }}
           </span>
@@ -24,29 +32,64 @@
             <template v-slot:titleDesc>
               <span>{{ item.notice }}</span>
             </template>
-            <svg-icon v-if="item.notice" style="width: 1.5rem; height: 1.5rem" iconName="help"></svg-icon>
+            <svg-icon
+              v-if="item.notice"
+              style="width: 1.5rem; height: 1.5rem"
+              iconName="help"
+            ></svg-icon>
           </o-tooltip>
           <span v-if="!item.textBold && item.desc" class="right">
             {{ item.desc }}
           </span>
-          <span v-else-if="item.textBold && item.desc" class="right" style="font-weight: 600">{{ item.desc }}</span>
+          <span
+            v-else-if="item.textBold && item.desc"
+            class="right"
+            style="font-weight: 600"
+            >{{ item.desc }}</span
+          >
         </div>
-        <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
-          <div v-for="desc in item.descInfo" :key="desc.no" style="margin-bottom: 1rem">
+        <div
+          v-if="item.descInfo && item.descInfo.length > 0"
+          class="descBottom"
+        >
+          <div
+            v-for="desc in item.descInfo"
+            :key="desc.no"
+            style="margin-bottom: 1rem"
+          >
             Send
-            <span class="dColor" style="margin-left: 0.7rem; margin-right: 1.1rem">{{ desc.amount }}{{ desc.coin
-            }}</span>
+            <span
+              class="dColor"
+              style="margin-left: 0.7rem; margin-right: 1.1rem"
+              >{{ desc.amount }}{{ desc.coin }}</span
+            >
             To
             <span class="dColor" style="margin-left: 0.7rem">{{
-                desc.toAddress
+              desc.toAddress
             }}</span>
           </div>
         </div>
         <div v-if="item.haveSep" class="sep"></div>
       </div>
-      <o-button style="margin-top: 2.5rem" width="29.5rem" height="4rem" @click="RealTransfer">
-        <span v-if="!transferLoading" class="wbold s16" style="letter-spacing: 0.1rem">CONFIRM AND SEND</span>
-        <loading v-else style="margin: auto" loadingColor="white" width="2rem" height="2rem"></loading>
+      <o-button
+        style="margin-top: 2.5rem"
+        width="29.5rem"
+        height="4rem"
+        @click="RealTransfer"
+      >
+        <span
+          v-if="!transferLoading"
+          class="wbold s16"
+          style="letter-spacing: 0.1rem"
+          >CONFIRM AND SEND</span
+        >
+        <loading
+          v-else
+          style="margin: auto"
+          loadingColor="white"
+          width="2rem"
+          height="2rem"
+        ></loading>
       </o-button>
     </div>
   </o-box-content>
@@ -67,11 +110,7 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
-import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
-  sendTransaction,
-} from '../../util/constants/starknet/helper'
+import { sendTransfer } from '../../util/constants/starknet/helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
@@ -82,7 +121,7 @@ import zkspace from '../../core/actions/zkspace'
 import config from '../../core/utils/config'
 import env from '../../../env'
 import * as ethers from 'ethers'
-import * as zksync2 from "zksync-web3";
+import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
 
 export default {
@@ -180,7 +219,7 @@ export default {
     },
   },
   watch: {},
-  mounted() { },
+  mounted() {},
   methods: {
     async zkspaceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
@@ -321,15 +360,18 @@ export default {
       }
     },
     async zk2Transfer(fromChainID, toChainID, selectMakerInfo) {
-      const zksync2Provider = new zksync2.Provider(env.localProvider[fromChainID]);
-      const tokenAddress = fromChainID == selectMakerInfo.c1ID ?
-        selectMakerInfo.t1Address : selectMakerInfo.t2Address
-      if (!await zksync2Provider.isTokenLiquid(tokenAddress)) {
-        throw new Error("the token can not be used for fee")
+      const zksync2Provider = new zksync2.Provider(
+        env.localProvider[fromChainID]
+      )
+      const tokenAddress =
+        fromChainID == selectMakerInfo.c1ID
+          ? selectMakerInfo.t1Address
+          : selectMakerInfo.t2Address
+      if (!(await zksync2Provider.isTokenLiquid(tokenAddress))) {
+        throw new Error('the token can not be used for fee')
       }
-      var rAmount = new BigNumber(
-        this.$store.state.transferData.transferValue
-      ).plus(new BigNumber(selectMakerInfo.tradingFee))
+      var rAmount = new BigNumber(this.$store.state.transferData.transferValue)
+        .plus(new BigNumber(selectMakerInfo.tradingFee))
         .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
       var rAmountValue = rAmount.toFixed()
       var p_text = 9000 + Number(toChainID) + ''
@@ -346,14 +388,14 @@ export default {
         this.transferLoading = false
         return
       }
-      const provider = new zksync2.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
+      const provider = new zksync2.Web3Provider(window.ethereum)
+      const signer = provider.getSigner()
       const transferResult = await signer.transfer({
         to: selectMakerInfo.makerAddress,
         token: tokenAddress,
         amount: tValue.tAmount + '',
         // feeToken: tokenAddress,//because can not get fee of feetoken,so use eth
-      });
+      })
       if (transferResult.hash) {
         this.onTransferSucceed(
           this.$store.state.web3.coinbase,
@@ -520,7 +562,7 @@ export default {
             }
             this.transferLoading = false
           } catch (error) {
-            console.log('inError =', error.message)
+            console.warn('inError =', error.message)
             this.transferLoading = false
             this.$notify.error({
               title: error.message,
@@ -529,7 +571,7 @@ export default {
           }
         }
       } catch (error) {
-        console.log('outError =', error.message)
+        console.warn('outError =', error.message)
         this.transferLoading = false
         this.$notify.error({
           title: error.message,
@@ -620,7 +662,7 @@ export default {
           }
         }
       } catch (error) {
-        console.log('outError =', error.message)
+        console.warn('outError =', error.message)
         this.transferLoading = false
         this.$notify.error({
           title: error.message,
@@ -632,7 +674,7 @@ export default {
       var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
-        this.$store.state.transferData.fromChainID
+          this.$store.state.transferData.fromChainID
         ]
       )
       const switchParams = {
@@ -664,7 +706,7 @@ export default {
           this.RealTransfer()
         })
         .catch((error) => {
-          console.log(error)
+          console.warn(error)
           if (error.code === 4902) {
             // need add net
             const params = {
@@ -678,8 +720,8 @@ export default {
               rpcUrls: chain.rpc,
               blockExplorerUrls: [
                 chain.explorers &&
-                  chain.explorers.length > 0 &&
-                  chain.explorers[0].url
+                chain.explorers.length > 0 &&
+                chain.explorers[0].url
                   ? chain.explorers[0].url
                   : chain.infoURL,
               ],
@@ -689,9 +731,9 @@ export default {
                 method: 'wallet_addEthereumChain',
                 params: [params, that.$store.state.web3.coinbase],
               })
-              .then(() => { })
+              .then(() => {})
               .catch((error) => {
-                console.log(error)
+                console.warn(error)
                 util.showMessage(error.message, 'error')
               })
           } else {
@@ -751,28 +793,48 @@ export default {
         return
       }
 
+      if (fromChainID == 4 || fromChainID == 44) {
+        const { starkChain } = this.$store.state.web3.starkNet
+        if (!starkChain || starkChain == 'unlogin') {
+          console.warn('请连接starkNetWallet')
+          return
+        }
+        if (
+          fromChainID == 4 &&
+          (starkChain == 44 || starkChain == 'localhost')
+        ) {
+          console.warn('请切换starkNetWallet到主网')
+          return
+        }
+        if (
+          fromChainID == 44 &&
+          (starkChain == 4 || starkChain == 'localhost')
+        ) {
+          console.warn('请切换starkNetWallet到测试网')
+          return
+        }
+      }
+
       try {
         let contractAddress = selectMakerInfo.t1Address
         if (selectMakerInfo.c1ID != fromChainID) {
           contractAddress = selectMakerInfo.t2Address
         }
-
-        const networkId = getNetworkIdByChainId(fromChainID)
-
-        const receiverStarknetAddress = await getL2AddressByL1(
-          selectMakerInfo.makerAddress,
-          networkId
-        )
-
-        const hash = await sendTransaction(
+        const hash = await sendTransfer(
           from,
           contractAddress,
-          receiverStarknetAddress,
-          value,
-          networkId
+          selectMakerInfo.makerAddress,
+          new BigNumber(value)
         )
-
-        this.onTransferSucceed(from, selectMakerInfo, value, fromChainID, hash)
+        if (hash) {
+          this.onTransferSucceed(
+            from,
+            selectMakerInfo,
+            value,
+            fromChainID,
+            hash
+          )
+        }
       } catch (error) {
         this.$notify.error({
           title: error.message,
@@ -907,6 +969,7 @@ export default {
 
         const amount = ethers.BigNumber.from(value)
         let transactionHash = ''
+
         if (util.isEthTokenAddress(contractAddress)) {
           transactionHash = (
             await crossAddress.transfer(
@@ -948,25 +1011,24 @@ export default {
         Middle.$emit('connectWallet', true)
         return
       }
+      const { fromChainID, toChainID, transferExt } =
+        this.$store.state.transferData
 
-      if (
-        this.$store.state.web3.networkId.toString() !==
-        this.$env.localChainID_netChainID[
-        this.$store.state.transferData.fromChainID
-        ]
-      ) {
-        this.addChainNetWork()
-        return
+      if (fromChainID != 4 && fromChainID != 44) {
+        if (
+          this.$store.state.web3.networkId.toString() !==
+          this.$env.localChainID_netChainID[fromChainID]
+        ) {
+          this.addChainNetWork()
+          return
+        }
       }
-
       // Only one
       if (this.transferLoading) {
         return
       }
 
       // sendTransfer
-      const { fromChainID, toChainID, transferExt } =
-        this.$store.state.transferData
       const selectMakerInfo = this.$store.getters.realSelectMakerInfo
 
       // Check fromChainID isSupportEVM
@@ -1180,8 +1242,13 @@ export default {
 <style lang="scss" scoped>
 .confirmbody {
   margin: 4.2rem auto;
-  max-height: calc(100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
-  max-height: calc(var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
+  max-height: calc(
+    100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
+  );
+  max-height: calc(
+    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
+      var(--bottom-nav-height)
+  );
   overflow-y: scroll;
 
   .confirmContent {

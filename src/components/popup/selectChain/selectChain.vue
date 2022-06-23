@@ -50,11 +50,7 @@
 
 <script>
 import Web3 from 'web3'
-import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
-  getStarknetAccount,
-} from '../../../util/constants/starknet/helper'
+import { connectStarkNetWallet } from '../../../util/constants/starknet/helper'
 import { DydxHelper } from '../../../util/dydx/dydx_helper'
 import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
@@ -155,6 +151,7 @@ export default {
       return theArray
     },
     closerButton() {
+      this.loadingIndex = -1
       this.$emit('closeSelect')
     },
     async getChainInfo(e, index) {
@@ -163,12 +160,16 @@ export default {
         try {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
-            this.loadingIndex = index
-            const { coinbase } = this.$store.state.web3
-            const networkId = getNetworkIdByChainId(e.localID)
-            const l2Address = await getL2AddressByL1(coinbase, networkId)
-            if (!l2Address || l2Address == '0x0') {
-              await getStarknetAccount(coinbase, networkId)
+            const { starkIsConnected, starkNetAddress } =
+              this.$store.state.web3.starkNet
+            if (!starkIsConnected && !starkNetAddress) {
+              await connectStarkNetWallet()
+              if (
+                !this.$store.state.web3.starkNet.starkIsConnected &&
+                !this.$store.state.web3.starkNet.starkNetAddress
+              ) {
+                return
+              }
             }
           }
           // immutableX
@@ -209,9 +210,7 @@ export default {
     stopPenetrate(e) {
       e.stopPropagation
     },
-    search() {
-      console.log('search')
-    },
+    search() {},
     checkKeyWord() {},
     isStarkSystem(chainId) {
       return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1

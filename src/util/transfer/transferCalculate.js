@@ -15,9 +15,9 @@ import { getLocalCoinContract } from '../constants/contract/getContract'
 import { localWeb3 } from '../constants/contract/localWeb3'
 import {
   getErc20Balance,
-  getStarknetAccountSingle,
-  getL2AddressByL1,
   getNetworkIdByChainId,
+  getStarkMakerAddress,
+  getStarkTransferFee,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
@@ -98,6 +98,9 @@ const ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1 = 117858
 // zksync2 withdraw
 const ZK2_ETH_WITHDRAW_ONZK2 = 10560
 const ZK2_ERC20_WITHDRAW_ONZK2 = 10560 //same with eth
+// starkNet
+const STARKNET_ETH_DEPOSIT_ONL1 = 110000
+const STARKNET_ETH_WITHDRAW_ONL1 = 60000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
@@ -155,6 +158,44 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
+    } else if (fromChainID === 12 || fromChainID === 512) {
+      let transferFee = 0
+      try {
+        transferFee = await zkspace.getZKTransferGasFee(
+          fromChainID,
+          store.state.web3.coinbase
+        )
+      } catch (error) {
+        console.warn('getZKTransferGasFeeError =', error)
+      }
+      return transferFee
+    } else if (fromChainID == 4 || fromChainID == 44) {
+      let realTransferAmount = this.realTransferAmount().toString()
+      let starkFee = await getStarkTransferFee(
+        store.state.web3.coinbase,
+        fromTokenAddress,
+        makerAddress,
+        realTransferAmount,
+        fromChainID
+      )
+      return starkFee
+    } else if (fromChainID == 9 || fromChainID == 99) {
+      // loopring fee can only use eth。other erc20 fee will be error
+      try {
+        const lpTokenInfo = await loopring.getLpTokenInfo(
+          fromChainID,
+          fromTokenAddress
+        )
+        let loopringFee = await loopring.getTransferFee(
+          store.state.web3.coinbase,
+          fromChainID,
+          lpTokenInfo
+        )
+        const decimals = 18 // loopringFee must be use eth
+        return Number(loopringFee) / 10 ** decimals
+      } catch (error) {
+        console.warn(`lp getTransferFeeerror:`)
+      }
     } else if (
       util.isEthTokenAddress(fromTokenAddress) ||
       isPolygon ||
@@ -162,36 +203,6 @@ export default {
       ((fromChainID == 14 || fromChainID == 514) &&
         fromTokenAddress.toUpperCase() == `0X${'E'.repeat(40)}`)
     ) {
-      if (fromChainID === 12 || fromChainID === 512) {
-        //zkspace can only use eth as fee
-        let transferFee = 0
-        try {
-          transferFee = await zkspace.getZKSpaceTransferGasFee(
-            fromChainID,
-            store.state.web3.coinbase
-          )
-        } catch (error) {
-          console.warn('getZKTransferGasFeeError =', error)
-        }
-        return transferFee
-      } else if (fromChainID == 9 || fromChainID == 99) {
-        // loopring fee can only use eth。other erc20 fee will be error
-        try {
-          const lpTokenInfo = await loopring.getLpTokenInfo(
-            fromChainID,
-            fromTokenAddress
-          )
-          let loopringFee = await loopring.getTransferFee(
-            store.state.web3.coinbase,
-            fromChainID,
-            lpTokenInfo
-          )
-          const decimals = 18 // loopringFee must be use eth
-          return Number(loopringFee) / 10 ** decimals
-        } catch (error) {
-          console.warn(`lp getTransferFeeerror:`)
-        }
-      }
       const web3 = localWeb3(fromChainID)
       if (web3) {
         let estimateGas = 0
@@ -240,7 +251,7 @@ export default {
       1: 100,
       2: 1.9,
       3: 100,
-      4: 1,
+      4: 100,
       5: 1,
       6: 60,
       7: 0.001,
@@ -250,6 +261,7 @@ export default {
       11: 1,
       22: 0.02,
       33: 100,
+      44: 50,
       66: 60,
       77: 0.001,
       88: 1.7,
@@ -275,6 +287,7 @@ export default {
       13: 646496,
       22: 810000,
       33: 100,
+      44: 35000,
       66: 1500,
       77: 21000,
       88: 51000,
@@ -298,6 +311,7 @@ export default {
       10: 'METIS',
       22: 'AETH',
       33: 'ETH',
+      44: 'ETH',
       66: 'MATIC',
       77: 'ETH',
       88: 'ETH',
@@ -371,9 +385,29 @@ export default {
             : selectMakerInfo.makerAddress
         )
       } catch (error) {
-        console.warn('getZKSpaceTransferGasFeeError =', error.message)
+        console.warn('getZKSpaceTransferGasFeeError =', error)
+        return 0
       }
       return transferFee.toFixed(6)
+    }
+    if (fromChainID == 4 || fromChainID == 44) {
+      let realTransferAmount = this.realTransferAmount().toString()
+      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let makerAddress = selectMakerInfo.makerAddress
+        ? selectMakerInfo.makerAddress
+        : null
+      let fromTokenAddress =
+        fromChainID === selectMakerInfo.c1ID
+          ? selectMakerInfo.t1Address
+          : selectMakerInfo.t2Address
+      let starkFee = await getStarkTransferFee(
+        store.state.web3.coinbase,
+        fromTokenAddress,
+        makerAddress,
+        realTransferAmount,
+        fromChainID
+      )
+      return (starkFee / 10 ** 18).toFixed(6)
     }
     if (
       GasPriceMap[fromChainID.toString()] &&
@@ -435,10 +469,13 @@ export default {
     if (fromChainID === 13 || fromChainID === 513) {
       timeSpent = 20 // boba 转出预估时间
     }
-    if (fromChainID === 14 || fromChainID === 514) {
-      timeSpent = 15
+    if (fromChainID === 4 || fromChainID === 44) {
+      timeSpent = 180
     }
-    if (toChainID === 1 || toChainID === 4 || toChainID === 5) {
+    if (toChainID === 4 || toChainID === 44) {
+      timeSpent = 180
+    }
+    if (toChainID === 1 || toChainID === 5) {
       timeSpent += 30
     }
     if (toChainID === 2 || toChainID === 22) {
@@ -484,6 +521,9 @@ export default {
     if (fromChainID === 2 || fromChainID === 22) {
       return '~7 days'
     }
+    if (fromChainID === 4 || fromChainID === 44) {
+      return '~24 hours'
+    }
     if (
       fromChainID === 3 ||
       fromChainID === 33 ||
@@ -511,8 +551,12 @@ export default {
       return '~7 days'
     }
 
-    if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
+    if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
+        //  eth ->  ar
+        return '~10min'
+      }
+      if (toChainID === 4 || toChainID === 44) {
         //  eth ->  ar
         return '~10min'
       }
@@ -585,7 +629,10 @@ export default {
     if (fromChainID === 10 || fromChainID === 510) {
       return ' 7 days'
     }
-    if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
+    if (fromChainID === 4 || fromChainID === 44) {
+      return ' 24 hours'
+    }
+    if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
         return ' 9.25min'
@@ -626,6 +673,9 @@ export default {
       if (toChainID === 13 || toChainID === 513) {
         // eth -> dydx
         return ' 10 min'
+      }
+      if (toChainID === 4 || toChainID === 44) {
+        return ' 7 min'
       }
     }
     if (fromChainID === 13 || fromChainID === 513) {
@@ -733,6 +783,14 @@ export default {
         throw new Error(`zksync withdraw error`)
       }
     }
+    if (fromChainID === 4 || fromChainID === 44) {
+      // stark上调用合约花费的钱
+      // 主网上调用合约withdraw的钱
+      const L1ChainID = fromChainID == 4 ? 1 : 5
+      const L1GasPrice = await this.getGasPrice(L1ChainID)
+      const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
+      ethGas += SNWithDrawL1Gas
+    }
     if (fromChainID === 6 || fromChainID === 66) {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
@@ -749,7 +807,6 @@ export default {
         throw new Error(`po withdraw error`)
       }
     }
-
     if (fromChainID === 7 || fromChainID === 77) {
       try {
         // OP get
@@ -875,6 +932,13 @@ export default {
       } catch (error) {
         throw new Error(`zksync deposit error`)
       }
+    }
+    if (toChainID === 4 || toChainID === 44) {
+      // 主网上调用合约deposit的钱
+      const L1ChainID = toChainID == 4 ? 1 : 5
+      const L1GasPrice = await this.getGasPrice(L1ChainID)
+      const SNDepositL1Gas = L1GasPrice * STARKNET_ETH_DEPOSIT_ONL1
+      ethGas += SNDepositL1Gas
     }
     if (toChainID === 6 || toChainID === 66) {
       try {
@@ -1034,18 +1098,20 @@ export default {
       }
     } else if (localChainID === 4 || localChainID === 44) {
       const networkId = getNetworkIdByChainId(localChainID)
-
-      let starknetAddress = await getL2AddressByL1(userAddress, networkId)
-      if (!starknetAddress || starknetAddress == '0x0') {
-        const account = await getStarknetAccountSingle(userAddress, networkId)
-        starknetAddress = account.starknetAddress
+      let starknetAddress = store.state.web3.starkNet.starkNetAddress
+      if (!isMaker) {
+        if (!starknetAddress) {
+          return 0
+        }
+      } else {
+        starknetAddress = await getStarkMakerAddress(userAddress, localChainID)
       }
-
       const balance = await getErc20Balance(
         starknetAddress,
         tokenAddress,
         networkId
       )
+
       return balance
     } else if (localChainID === 8 || localChainID === 88) {
       const imxHelper = new IMXHelper(localChainID)

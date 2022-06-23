@@ -7,6 +7,13 @@ const state = {
     coinbase: null,
     error: null,
     localLogin: true,
+    starkNet: {
+      starkNetAddress: '',
+      starkWalletName: '',
+      starkWalletIcon: '',
+      starkIsConnected: false,
+      starkChain: '',
+    },
   },
   innerWH: {
     innerWidth: window.innerWidth,

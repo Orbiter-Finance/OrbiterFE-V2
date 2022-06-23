@@ -49,12 +49,7 @@ export default {
     getLpToken.getSupportLpTokenList()
     // getZk2Token.getSupportZk2TokenList()
     if (localStorage.getItem('localLogin') === 'true') {
-      this.$store.dispatch('registerWeb3').then(() => {
-        // console.log('==============')
-        // if (this.$store.state.web3.isInjected) {
-        //   console.log('isInjected')
-        // }
-      })
+      this.$store.dispatch('registerWeb3').then(() => {})
     }
   },
   watch: {
@@ -97,7 +92,7 @@ export default {
             }
           })
           .catch((error) => {
-            console.log('error =', error)
+            console.warn('error =', error)
           })
       }
     },
@@ -120,6 +115,10 @@ export default {
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.s-dialog {
+  z-index: 9999 !important;
 }
 
 #app {

@@ -9,8 +9,7 @@ import { store } from '../../store'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
+  getStarkMakerAddress,
   getProviderByChainId,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
@@ -40,7 +39,7 @@ const getHistory = () => {
         }
       })
       .catch((error) => {
-        console.log('error =', error)
+        console.warn('error =', error)
       })
   }
 }
@@ -130,7 +129,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKTransactionDataError'
       }
       return confirmUserTransaction(
@@ -146,21 +145,18 @@ async function confirmUserTransaction(
       try {
         const starknetProvider = getProviderByChainId(localChainID)
         const resp = await starknetProvider.getTransaction(txHash)
-
         if (
           resp.status == 'ACCEPTED_ON_L1' ||
           resp.status == 'ACCEPTED_ON_L2'
         ) {
           const transaction = resp.transaction
-
           const block = await starknetProvider.getBlock()
-
           const sn_amount = orbiterCore.getRAmountFromTAmount(
             localChainID,
-            transaction.calldata?.[4]
+            new Bignumber(transaction.calldata?.[8])
           ).rAmount
           const sn_nonce = String(
-            transaction.nonce || transaction.calldata?.[6] || 0
+            transaction.nonce || new Bignumber(transaction.calldata?.[11]) || 0
           )
           const sn_SendRAmount = orbiterCore.getToAmountFromUserAmount(
             new Bignumber(sn_amount).dividedBy(
@@ -199,7 +195,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getStarknetTransactionDataError'
       }
       return confirmUserTransaction(
@@ -264,7 +260,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('getImmutableXTransactionData Error =', error)
+        console.warn('getImmutableXTransactionData Error =', error)
         throw new Error('getImmutableXTransactionDataError')
       }
       return confirmUserTransaction(
@@ -341,7 +337,7 @@ async function confirmUserTransaction(
           }
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getLPTransactionDataError'
       }
       return confirmUserTransaction(
@@ -408,7 +404,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKTransactionDataError'
       }
       return confirmUserTransaction(
@@ -437,7 +433,7 @@ async function confirmUserTransaction(
       'updateProceedingUserTransferTimeStamp',
       trxConfirmations.timestamp
     )
-    console.log(
+    console.warn(
       'Transaction with hash ' +
         txHash +
         ' has ' +
@@ -474,12 +470,23 @@ async function confirmUserTransaction(
         return
       }
     } else {
-      const inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      let inputData
+      // Parse input data
+      if (util.isEthTokenAddress(fromTokenAddress)) {
+        inputData = CrossAddress.parseTransferInput(trx.input)
+        inputData.amount = trx.value
+      } else {
+        inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      }
       if (!inputData.ext?.value) {
         return
       }
       startScanMakerTransferFromAddress = inputData.to
-      amountStr = inputData.amount.toNumber() + ''
+      if (typeof inputData.amount == 'string') {
+        amountStr = Number(inputData.amount) + ''
+      } else {
+        amountStr = inputData.amount.toString() + ''
+      }
     }
     var amount = orbiterCore.getRAmountFromTAmount(
       localChainID,
@@ -622,7 +629,8 @@ function ScanZKMakerTransfer(
         }
       }
     } catch (error) {
-      console.log('getZKTransactionListError =', error)
+      console.warn('error =', error)
+      throw 'getZKTransactionListError'
     }
     return ScanZKMakerTransfer(
       transactionID,
@@ -641,8 +649,8 @@ function ScanZKSpaceMakerTransfer(
   makerInfo,
   from,
   to,
-  amount,
-  timeStampStr
+  amount
+  // timeStampStr
 ) {
   let startPoint = 0
   setTimeout(async () => {
@@ -702,7 +710,7 @@ function ScanZKSpaceMakerTransfer(
         }
       }
     } catch (error) {
-      console.log('error =', error)
+      console.warn('error =', error)
       throw 'getZKSTransactionListError'
     }
     return ScanZKSpaceMakerTransfer(
@@ -748,8 +756,8 @@ function startScanMakerTransfer(
       makerInfo,
       from,
       to,
-      amount,
-      timeStampStr
+      amount
+      // timeStampStr
     )
   }
   const web3 = localWeb3(localChainID)
@@ -810,25 +818,16 @@ function ScanMakerTransfer(
     // starknet
     if (localChainID == 4 || localChainID == 44) {
       const asyncStarknet = async () => {
-        const networkId = getNetworkIdByChainId(localChainID)
-        const fromStarknetAddress = await getL2AddressByL1(from, networkId)
-        let toStarknetAddress = ''
-
-        // Wait toStarknetAddress deploy
-        while (!toStarknetAddress) {
-          toStarknetAddress = await getL2AddressByL1(to, networkId)
-          if (toStarknetAddress) {
-            break
-          }
-
-          await util.sleep(5000)
-        }
-
+        //todo
+        const fromStarknetAddress = store.state.web3.starkNet.starkNetAddress
+        let toStarknetAddress = getStarkMakerAddress(
+          makerInfo.makerAddress,
+          localChainID
+        )
         let api = config.starknet.Mainnet
         if (localChainID == 44) {
           api = config.starknet.Rinkeby
         }
-
         const skl = factoryStarknetListen(
           { endPoint: api },
           fromStarknetAddress
@@ -1257,7 +1256,7 @@ async function getConfirmations(localChainID, txHash) {
     }
     return { confirmations: 0, trx: trx, timestamp: 0 }
   } catch (error) {
-    console.log(error)
+    console.warn(error)
   }
 }
 
@@ -1278,7 +1277,6 @@ export default {
   UserTransferReady(user, maker, amount, localChainID, makerInfo, txHash) {
     if (localChainID == 12 || localChainID == 512) {
       txHash = txHash.replace('sync-tx:', '0x')
-      console.warn('txHash =', txHash)
     }
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)

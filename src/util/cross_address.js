@@ -1,5 +1,7 @@
 import { Notification } from 'element-ui'
 import { ethers, utils } from 'ethers'
+import { exit } from 'process'
+import { stark } from 'starknet'
 import env from '../../env'
 import { Coin_ABI } from './constants/contract/contract'
 import util from './util'
@@ -31,7 +33,8 @@ const CROSS_ADDRESS_ABI = [
 
 export const CrossAddressTypes = {
   '0x01': 'Cross Ethereum Address',
-  '0x02': 'Cross Stark Address',
+  '0x02': 'Cross Dydx Address',
+  '0x03': 'Cross Stark Address',
 }
 
 export class CrossAddress {
@@ -130,6 +133,7 @@ export class CrossAddress {
     )
 
     const extHex = CrossAddress.encodeExt(ext)
+
     const options = { value: amount.toHexString() }
 
     return await contract.transfer(to, extHex, options)
@@ -186,6 +190,15 @@ export class CrossAddress {
     }
     if (!ext.value) {
       return ext.type
+    }
+
+    if (
+      ext.type == '0x03' &&
+      utils.isHexString(ext.value) &&
+      ext.value.length % 2 == 1
+    ) {
+      let starkAddress = ext.value.substring(2)
+      ext.value = '0x0' + starkAddress
     }
     return utils.hexConcat([ext.type, ext.value])
   }

@@ -308,7 +308,7 @@ export default {
           util.showMessage('switch success', 'success')
         })
         .catch((error) => {
-          console.log(error)
+          console.warn(error)
           if (error.code === 4902) {
             // need add net
             const params = {
@@ -335,7 +335,7 @@ export default {
               })
               .then(() => {})
               .catch((error) => {
-                console.log(error)
+                console.warn(error)
                 util.showMessage(error.message, 'error')
               })
           } else {

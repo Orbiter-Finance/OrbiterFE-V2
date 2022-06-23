@@ -16,12 +16,12 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
       tokenAddress
     )
     if (!ecourseContractInstance) {
-      console.log('getLocalCoinContract_ecourseContractInstance')
+      console.warn('getLocalCoinContract_ecourseContractInstance')
       return null
     }
     return ecourseContractInstance
   } else {
-    console.log('getLocalCoinContract_noWeb3')
+    console.warn('getLocalCoinContract_noWeb3')
     return null
   }
 }
@@ -29,11 +29,9 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
 function getTransferContract(localChainID, makerInfo) {
   // if localChain = 3 || 33
   if (localChainID === 3 || localChainID === 33) {
-    console.log('doZK')
     return
   }
   if (localChainID === 4 || localChainID === 44) {
-    console.log('doStarknet')
     return
   }
   if (store.state.web3.isInstallMeta) {
@@ -45,8 +43,6 @@ function getTransferContract(localChainID, makerInfo) {
     } else {
       Address = makerInfo.t2Address
     }
-    console.log('Address =', Address)
-    console.log('web3 =', web3)
     const ecourseContractInstance = new web3.eth.Contract(ABI, Address)
     if (!ecourseContractInstance) {
       return null

@@ -49,7 +49,7 @@ async function getWeb3() {
     if (error || !coinbase) {
       showMessage(
         'get coinbase failed，please unlock metamask or generate a new address',
-        'error',
+        'error'
       )
       window.ethereum
         .send('eth_requestAccounts')
@@ -71,7 +71,7 @@ async function getWeb3() {
   pollWeb3()
 }
 
-const showMessage = function(message, type) {
+const showMessage = function (message, type) {
   Message({
     showClose: true,
     duration: 2000,
