@@ -56,9 +56,6 @@ async function getBalance(
 }
 
 async function netStateBlock(fromChainID) {
-  if (fromChainID == 6 || fromChainID == 66) {
-    return false
-  }
   const netStateUrl = 'https://api.orbiter.finance/chains'
   let response
   try {
