@@ -1,7 +1,5 @@
 import { Notification } from 'element-ui'
 import { ethers, utils } from 'ethers'
-import { exit } from 'process'
-import { stark } from 'starknet'
 import env from '../../env'
 import { Coin_ABI } from './constants/contract/contract'
 import util from './util'

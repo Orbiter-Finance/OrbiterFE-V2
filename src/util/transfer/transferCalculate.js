@@ -880,7 +880,6 @@ export default {
     }
     if (fromChainID === 12 || fromChainID === 512) {
       try {
-        // api获取
         let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
           store.state.web3.coinbase
