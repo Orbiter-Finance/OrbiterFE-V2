@@ -15,23 +15,14 @@ import { store } from '../../../store'
 import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
-  'mainnet-alpha': '',
+  'mainnet-alpha':
+    '0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b',
   'georli-alpha':
     '0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3',
 }
 
 const L1_TO_L2_ADDRESSES = {
   '0x0043d60e87c5dd08c86c3123340705a1556c4719': {
-    'mainnet-alpha': '',
-    'georli-alpha':
-      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
-  },
-  '0x694434ec84b7a8ad8efc57327ddd0a428e23f8d5': {
-    'mainnet-alpha': '',
-    'georli-alpha':
-      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
-  },
-  '0x8a3214f28946a797088944396c476f014f88dd37': {
     'mainnet-alpha': '',
     'georli-alpha':
       '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
@@ -46,8 +37,10 @@ const L1_TO_L2_ADDRESSES = {
 
 const GAS_ADDRESS = {
   'mainnet-alpha': {
-    address: '',
-    privateKey: '',
+    address:
+      '0x07a4ef69a3d7c647d8d99da0aa0f296c84a22148fa8665e9a52179418b8de54e',
+    privateKey:
+      '0x53ea9a5da3c9c1232dddf771b4660d07ebea36bfba1ce3619f3e867cb1c49b0',
   },
   'georli-alpha': {
     address:
@@ -86,7 +79,7 @@ export async function connectStarkNetWallet() {
         store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
         store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
         if (e.length == 0) {
-          console.warn('disconnect starkNetWallet')
+          util.showMessage('disconnect starkNetWallet', 'error')
         }
       })
     }

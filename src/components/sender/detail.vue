@@ -108,10 +108,6 @@
 import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 import Middle from '../../util/middle/middle'
-import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
-} from '../../util/constants/starknet/helper'
 
 export default {
   name: 'Detail',
@@ -238,10 +234,7 @@ export default {
       if (state !== 0) {
         let userAddress = this.$store.state.web3.coinbase
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = await getL2AddressByL1(
-            userAddress,
-            getNetworkIdByChainId(toChainID)
-          )
+          userAddress = this.$store.state.web3.starkNet.starkNetAddress
         }
         let url = accountExploreUrl[toChainID] + userAddress
 
