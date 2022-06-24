@@ -11,6 +11,7 @@ import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getStarkMakerAddress,
   getProviderByChainId,
+  getStarkNetValidAddress,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
 import { IMXListen } from '../immutablex/imx_listen'
@@ -798,6 +799,10 @@ function ScanMakerTransfer(
     }
     // checkData
     const checkData = (_from, _to, _amount, _address) => {
+      if (localChainID == 4 || localChainID == 44) {
+        tokenAddress = getStarkNetValidAddress(tokenAddress)
+        _address = getStarkNetValidAddress(tokenAddress)
+      }
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
         return false
       }
@@ -805,7 +810,7 @@ function ScanMakerTransfer(
       if (
         _from.toLowerCase() === from.toLowerCase() &&
         _to.toLowerCase() === to.toLowerCase() &&
-        _amount === amount
+        _amount == amount
       ) {
         if (!isCurrentTransaction(transactionID)) {
           return false
@@ -819,11 +824,13 @@ function ScanMakerTransfer(
     if (localChainID == 4 || localChainID == 44) {
       const asyncStarknet = async () => {
         //todo
-        const fromStarknetAddress = store.state.web3.starkNet.starkNetAddress
-        let toStarknetAddress = getStarkMakerAddress(
+        const toStarknetAddress = store.state.web3.starkNet.starkNetAddress
+
+        let fromStarknetAddress = await getStarkMakerAddress(
           makerInfo.makerAddress,
           localChainID
         )
+
         let api = config.starknet.Mainnet
         if (localChainID == 44) {
           api = config.starknet.Rinkeby
@@ -836,7 +843,14 @@ function ScanMakerTransfer(
           { from: fromStarknetAddress, to: toStarknetAddress },
           {
             onReceived: async (transaction) => {
-              if (checkData(from, to, transaction.value, '')) {
+              if (
+                checkData(
+                  from,
+                  to,
+                  transaction.value,
+                  transaction.contractAddress
+                )
+              ) {
                 store.commit(
                   'updateProceedingMakerTransferTxid',
                   transaction.hash
@@ -845,7 +859,14 @@ function ScanMakerTransfer(
               }
             },
             onConfirmation: async (transaction) => {
-              if (checkData(from, to, transaction.value, '')) {
+              if (
+                checkData(
+                  from,
+                  to,
+                  transaction.value,
+                  transaction.contractAddress
+                )
+              ) {
                 storeUpdateProceedState(5)
               }
             },

@@ -44,9 +44,9 @@ const GAS_ADDRESS = {
   },
   'georli-alpha': {
     address:
-      '0x00e99e130053ae185ab9a3f1fd059e1c3eb58eb1037a7a9b91c945456bcfbc0d',
+      '0x07a4ef69a3d7c647d8d99da0aa0f296c84a22148fa8665e9a52179418b8de54e',
     privateKey:
-      '0x9de8163ea816b568c2dcd50511e8a21cb3c3f7b57464d1b8ee84ea7e7bdab8',
+      '0x53ea9a5da3c9c1232dddf771b4660d07ebea36bfba1ce3619f3e867cb1c49b0',
   },
 }
 
@@ -56,6 +56,16 @@ export async function getStarkMakerAddress(makerAddress, chainID) {
   const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
   const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
   return receiverAddress
+}
+
+export function getStarkNetValidAddress(address) {
+  if (address.length == 65) {
+    return `0x0${address.substring(2)}`
+  }
+  if (address.length == 64) {
+    return `0x00${address.substring(2)}`
+  }
+  return address
 }
 
 export async function connectStarkNetWallet() {

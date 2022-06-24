@@ -178,7 +178,7 @@ export default {
         realTransferAmount,
         fromChainID
       )
-      return starkFee
+      return starkFee / 10 ** 18
     } else if (fromChainID == 9 || fromChainID == 99) {
       // loopring fee can only use eth。other erc20 fee will be error
       try {
