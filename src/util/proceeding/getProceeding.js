@@ -1303,6 +1303,7 @@ export default {
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)
     var realAmount = orbiterCore.getRAmountFromTAmount(localChainID, amount)
+
     if (realAmount.state) {
       realAmount = realAmount.rAmount
     } else {

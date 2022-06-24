@@ -796,25 +796,24 @@ export default {
       if (fromChainID == 4 || fromChainID == 44) {
         const { starkChain } = this.$store.state.web3.starkNet
         if (!starkChain || starkChain == 'unlogin') {
-          console.warn('请连接starkNetWallet')
+          util.showMessage('please connect starkNetWallet', 'error')
           return
         }
         if (
           fromChainID == 4 &&
           (starkChain == 44 || starkChain == 'localhost')
         ) {
-          console.warn('请切换starkNetWallet到主网')
+          util.showMessage('please switch starkNetWallet to mainnet', 'error')
           return
         }
         if (
           fromChainID == 44 &&
           (starkChain == 4 || starkChain == 'localhost')
         ) {
-          console.warn('请切换starkNetWallet到测试网')
+          util.showMessage('please switch starkNetWallet to testNet', 'error')
           return
         }
       }
-
       try {
         let contractAddress = selectMakerInfo.t1Address
         if (selectMakerInfo.c1ID != fromChainID) {
@@ -1042,8 +1041,6 @@ export default {
 
       this.transferLoading = true
 
-      // 增加check币商余额逻辑
-
       let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
         new BigNumber(this.$store.state.transferData.transferValue).plus(
           new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
@@ -1057,7 +1054,6 @@ export default {
         return
       }
 
-      // 增加check币商余额逻辑, To dydx no check
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
           new BigNumber(this.$store.state.transferData.transferValue).plus(
