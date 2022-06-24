@@ -98,7 +98,7 @@ export default {
       return timestamp
     }
     if (timestamp.toString().length === 10) {
-      timestamp = timestamp * 1000
+      timestamp = Number(timestamp) * 1000
     }
     var date = new Date(timestamp)
     var Y = date.getFullYear() + '-'

@@ -390,7 +390,7 @@ export default {
       timeSpent = 15
     }
     if (fromChainID === 13 || fromChainID === 513) {
-      timeSpent = 20 // boba 转出预估时间
+      timeSpent = 20
     }
     if (fromChainID === 4 || fromChainID === 44) {
       timeSpent = 180

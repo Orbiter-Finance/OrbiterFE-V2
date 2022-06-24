@@ -991,7 +991,6 @@ export default {
         const { starkNetIsConnect, starkNetAddress } =
           this.$store.state.web3.starkNet
         if (!starkNetIsConnect || !starkNetAddress) {
-          // 登录starkNet
           await connectStarkNetWallet()
           if (
             !this.$store.state.web3.starkNet.starkIsConnected &&
