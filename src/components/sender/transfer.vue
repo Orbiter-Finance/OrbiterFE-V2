@@ -862,14 +862,6 @@ export default {
       let savingTokenName = '$'
       return savingTokenName + savingValue.toFixed(2).toString()
     },
-    showSaveGas() {
-      let savingValue =
-        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      if (savingValue > 0) {
-        return true
-      }
-      return false
-    },
     saveGasLoading() {
       return this.originGasLoading
     },
