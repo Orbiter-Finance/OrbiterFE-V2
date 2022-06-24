@@ -694,8 +694,9 @@ export default {
       }
     }
     if (fromChainID === 4 || fromChainID === 44) {
-      // stark上调用合约花费的钱
-      // 主网上调用合约withdraw的钱
+      // stark cost
+      ethGas = 200000000000000
+      // mainnet cost
       const L1ChainID = fromChainID == 4 ? 1 : 5
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
@@ -797,7 +798,6 @@ export default {
       ethGas += zkDepositGas
     }
     if (toChainID === 4 || toChainID === 44) {
-      // 主网上调用合约deposit的钱
       const L1ChainID = toChainID == 4 ? 1 : 5
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const SNDepositL1Gas = L1GasPrice * STARKNET_ETH_DEPOSIT_ONL1
