@@ -1,9 +1,5 @@
 import BigNumber from 'bignumber.js'
 import orbiterCore from '../../orbiterCore'
-import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
-} from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import arbitrum from '../actions/arbitrum'
 import metis from '../actions/metis'
@@ -13,7 +9,6 @@ import immutablex from '../actions/immutablex'
 import loopring from '../actions/loopring'
 import optimistic from '../actions/optimistic'
 import polygon from '../actions/polygon'
-import mStarknet from '../actions/starknet'
 import thegraph from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
 import zkspace from '../actions/zkspace'
@@ -339,10 +334,10 @@ async function getTransactionListBoba(
 ) {
   const L1FromTxList = []
   const L1ToTxList = []
-  let mtScanReq = {
-    timestamp: needTimeStamp,
-    closest: 'before',
-  }
+  // let mtScanReq = {
+  //   timestamp: needTimeStamp,
+  //   closest: 'before',
+  // }
   let mtScanStartBlock = 0
   // try {
   //   let resp = await boba.getBlockNumberWithTimeStamp(mtScanReq, chainID)

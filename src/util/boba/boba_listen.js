@@ -1,4 +1,3 @@
-import axios from 'axios'
 import boba from '../../core/actions/boba'
 const ETHLISTEN_TRANSFER_DURATION = 5 * 1000
 

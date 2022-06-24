@@ -745,7 +745,6 @@ export default {
       ethGas += IMXWithDrawL1Gas
     }
     if (fromChainID === 9 || fromChainID === 99) {
-      // api获取
       let loopringWithDrawFee = await loopring.getWithDrawFee(
         store.state.web3.coinbase,
         fromChainID
@@ -764,7 +763,6 @@ export default {
       ethGas += MTWithDrawL1Gas
     }
     if (fromChainID === 12 || fromChainID === 512) {
-      // api获取
       let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
         fromChainID,
         store.state.web3.coinbase
