@@ -1,4 +1,3 @@
-// util/ethersca.js
 import axios from 'axios'
 import { cacheMemoryGet, cacheMemorySet } from '../../util/cache/memory'
 import Axios from '../utils/Axios'
@@ -13,7 +12,7 @@ export default {
           transactions(first: 14) {
             edges {
               node {
-                nonce,
+                nonce
                 hash
               }
             }
@@ -33,7 +32,7 @@ export default {
       return resp.address.transactions.edges.map((item) => {
         return {
           hash: item.node.hash,
-          nonce: item.node.nonce
+          nonce: item.node.nonce,
         }
       })
     }
@@ -55,12 +54,12 @@ export default {
     return resp.result
   },
   getTxList: async function (req, chainId, isTokentx = true) {
-    const endpoint = chainId == 513 ? 'https://blockexplorer.rinkeby.boba.network/graphiql' : 'https://blockexplorer.boba.network/graphiql'
+    const endpoint =
+      chainId == 513
+        ? 'https://blockexplorer.rinkeby.boba.network/graphiql'
+        : 'https://blockexplorer.boba.network/graphiql'
     const graphQLClient = new GraphQLClient(endpoint, {})
-    const result = await this.queryAddressTrxList(
-      graphQLClient,
-      req.maker
-    )
+    const result = await this.queryAddressTrxList(graphQLClient, req.maker)
     const trxList = []
     for (const row of result) {
       const trx = await this.getTxByHash(row.hash, chainId)
@@ -76,14 +75,14 @@ export default {
           value: trx.value,
           gas: trx.gas,
           gasPrice: trx.gasPrice,
-          nonce:row.nonce,
+          nonce: row.nonce,
           isError: '0',
           txreceipt_status: '',
           input: trx.input,
           contractAddress: '',
           cumulativeGasUsed: '',
           gasUsed: trx.gasUsed,
-          confirmations:Number(trx.confirmations),
+          confirmations: Number(trx.confirmations),
         })
       }
     }
