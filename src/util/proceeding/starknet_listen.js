@@ -1,6 +1,6 @@
 import axios from 'axios'
 import * as starknet from 'starknet'
-import { getSelectorFromName } from 'starknet/dist/utils/stark'
+import { getSelectorFromName } from 'starknet/dist/utils/hash'
 import util from '../util'
 
 const STARKNET_LISTEN_TRANSFER_DURATION = 5 * 1000
@@ -9,9 +9,8 @@ class StarknetListen {
   constructor(api, apiParamsTo = '') {
     this.api = api
     this.apiParamsTo = apiParamsTo
-    this.selectorDec = starknet.number.hexToDecimalString(
-      getSelectorFromName('transfer')
-    )
+    this.selectorDec = getSelectorFromName('transfer')
+
     this.isFirstTicker = true
     this.transferReceivedHashs = {}
     this.transferConfirmationedHashs = {}
@@ -23,10 +22,9 @@ class StarknetListen {
   start() {
     const ticker = async (p = 1) => {
       const resp = await axios.get(
-        `${this.api.endPoint}/api/txns?to=${this.apiParamsTo}&ps=10&p=${p}`
+        `${this.api.endPoint}/txns?to=${this.apiParamsTo}&ps=10&p=${p}`
       )
       const { data } = resp
-
       if (!data?.items) {
         return
       }
@@ -78,7 +76,7 @@ class StarknetListen {
 
     let header, calldata
     try {
-      const resp = await axios.get(`${this.api.endPoint}/api/txn/${hash}`)
+      const resp = await axios.get(`${this.api.endPoint}/txn/${hash}`)
       header = resp.data?.header
       calldata = resp.data?.calldata
     } catch (err) {
@@ -94,14 +92,12 @@ class StarknetListen {
       await util.sleep(10000)
       return this.getTransaction(hash, (retryCount += 1))
     }
-
     // Check data
     if (!header || !calldata || calldata.length < 7) {
       return
     }
-
     // Check selector
-    if (calldata[1] != this.selectorDec) {
+    if (calldata[2] != this.selectorDec) {
       return
     }
 
@@ -109,25 +105,23 @@ class StarknetListen {
     const from = starknet.number.toHex(
       starknet.number.toBN(starknet.number.hexToDecimalString(header.to))
     )
-    const to = starknet.number.toHex(starknet.number.toBN(calldata[3]))
+    const to = starknet.number.toHex(starknet.number.toBN(calldata[6]))
     const contractAddress = starknet.number.toHex(
-      starknet.number.toBN(calldata[0])
+      starknet.number.toBN(calldata[1])
     )
-
     const transaction = {
       timeStamp: header.timestamp,
       hash: header.hash,
-      nonce: calldata[6],
+      nonce: calldata[9],
       blockHash: header.blockId,
       transactionIndex: header.index,
       from,
       to,
-      value: calldata[4],
+      value: Number(calldata[7]),
       txreceipt_status: header.status,
       contractAddress,
       confirmations: 0,
     }
-
     const isConfirmed =
       util.equalsIgnoreCase(transaction.txreceipt_status, 'Accepted on L2') ||
       util.equalsIgnoreCase(transaction.txreceipt_status, 'Accepted on L1')

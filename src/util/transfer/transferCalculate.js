@@ -156,7 +156,7 @@ export default {
         realTransferAmount,
         fromChainID
       )
-      return starkFee
+      return starkFee / 10 ** 18
     } else if (util.isEthTokenAddress(fromTokenAddress)) {
       if (fromChainID == 9 || fromChainID == 99) {
         let loopringFee = await loopring.getTransferFee(
