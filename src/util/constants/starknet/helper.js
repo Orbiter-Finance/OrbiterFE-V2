@@ -13,6 +13,7 @@ import Web3 from 'web3'
 import util from '../../util'
 import starknetAccountContract from './account.json'
 import erc20Abi from './erc20_abi.json'
+import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";
 
 const L1_SWAP_L2_CONTRACT_ADDRESS = {
   'mainnet-alpha': '',
@@ -82,7 +83,7 @@ export async function getStarknetAccount(l1Address, networkId = 1) {
     }
   }
 
-  const web3 = new Web3(window.ethereum)
+  const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
 
   // Change matemask chainId
   const nowNetworkId = await web3.eth.net.getId()
@@ -90,7 +91,7 @@ export async function getStarknetAccount(l1Address, networkId = 1) {
     const switchParams = {
       chainId: web3.utils.toHex(networkId),
     }
-    await window.ethereum.request({
+    await compatibleGlobalWalletConf.value.walletPayload.provider.request({
       method: 'wallet_switchEthereumChain',
       params: [switchParams],
     })

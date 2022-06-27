@@ -22,6 +22,7 @@ import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
 import zkspace from '../../core/actions/zkspace'
 import { BobaListen } from '../boba/boba_listen'
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 
 let startBlockNumber = ''
 
@@ -906,7 +907,7 @@ function ScanMakerTransfer(
 
     // dydx
     if (localChainID == 11 || localChainID == 511) {
-      const dydxWeb3 = new Web3(window.ethereum)
+      const dydxWeb3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
       const dydxListen = new DydxListen(
         localChainID,
         dydxWeb3,

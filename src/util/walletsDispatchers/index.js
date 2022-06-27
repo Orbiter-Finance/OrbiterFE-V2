@@ -5,6 +5,8 @@
  * this file will export some api to connect wallet 
  */
 import { METAMASK, WALLETCONNECT, COINBASE } from "./constants";
+import standardWalletLoader from "./standardWalletLoader";
+import standardWalletConf from "./standardWalletConf";
 
 // wallet connect 
 import { 
@@ -12,20 +14,20 @@ import {
     walletConnectDispatcherOnInit,
     walletConnectDispatcherOnSignature,
     walletConnectDispatcherOnAddChain,
-    loginStatusCheckerOfWalletConnect
 } from "./walletConnectDispatcher";
 
 // metamask
 import { 
-    loginStatusCheckerOfMetaMask, 
     metaMaskDispatcherOnInit, 
     metaMaskDispatcherOnDisconnect,
 } from "./metaMaskDispatcher";
 
 // coinbase
 import {
-    coinbaseDispatcherOnInit
+    coinbaseDispatcherOnInit,
+    coinbaseDispatcherOnDisconnect
 } from "./coinbaseDispatcher";
+import { fetchTargetWalletLoginStatus } from "./utils";
 
 export { 
     globalSelectWalletConf,
@@ -37,22 +39,30 @@ export {
 export { WALLETCONNECT, METAMASK, LOCALLOGIN } from "./constants";
 export { modifyLocalLoginState, getCurrentLoginInfoFromLocalStorage } from "./utils";
 
+const {
+    standardLoginStatusCheckerOfWallets,
+    standardWalletDispatchersOnInit,
+    standardWalletDispatchersOnDisconnect
+} = standardWalletLoader(standardWalletConf); // load standard wallet conf
+
 // init method for each supported wallet 
 export const walletDispatchersOnInit = {
     [METAMASK]: metaMaskDispatcherOnInit,
     [WALLETCONNECT]: walletConnectDispatcherOnInit,
-    [COINBASE]: coinbaseDispatcherOnInit
+    ...standardWalletDispatchersOnInit
 }
 // disconnect method for each supported wallet
 export const walletDispatchersOnDisconnect = {
     [METAMASK]: metaMaskDispatcherOnDisconnect,
-    [WALLETCONNECT]: walletConnectDispatcherOnDisconnect
+    [WALLETCONNECT]: walletConnectDispatcherOnDisconnect,
+    ...standardWalletDispatchersOnDisconnect    
 }
 
 // check login status method for each supported wallet
 export const loginStatusCheckerOfWallets = {
-    [METAMASK]: loginStatusCheckerOfMetaMask,
-    [WALLETCONNECT]: loginStatusCheckerOfWalletConnect
+    [METAMASK]: () => fetchTargetWalletLoginStatus(METAMASK),
+    [WALLETCONNECT]: () => fetchTargetWalletLoginStatus(WALLETCONNECT),
+    ...standardLoginStatusCheckerOfWallets
 }
 
 // when users confirm the transaction information is correct

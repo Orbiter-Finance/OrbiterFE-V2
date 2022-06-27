@@ -4,6 +4,7 @@ import { Coin_ABI } from './contract.js'
 import { store } from '../../../store'
 import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
+import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";  
 
 // Get a token contract on the L2 network
 function getLocalCoinContract(localChainID, tokenAddress, state) {
@@ -37,7 +38,7 @@ function getTransferContract(localChainID, makerInfo) {
     return
   }
   if (store.state.web3.isInstallMeta) {
-    const web3 = new Web3(window.ethereum)
+    const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
     var ABI = Coin_ABI
     var Address = null
     if (makerInfo.c1ID === localChainID) {
@@ -75,7 +76,6 @@ async function getTransferGasLimit(localChainID, makerInfo, from, to, value, pro
           to: makerInfo.makerAddress,
           value,
         })
-        console.log("gaslimit update", gaslimit);
         return gasLimit
       } else {
         const ABI = Coin_ABI

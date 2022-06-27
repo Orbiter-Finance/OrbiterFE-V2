@@ -22,6 +22,7 @@ import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -866,7 +867,7 @@ export default {
     } else if (localChainID === 11 || localChainID === 511) {
       const dydxHelper = new DydxHelper(
         localChainID,
-        new Web3(window.ethereum),
+        new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
         'MetaMask'
       )
       const balance = await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc

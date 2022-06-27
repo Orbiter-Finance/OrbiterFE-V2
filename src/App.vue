@@ -23,17 +23,12 @@ import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getTransactionList from './core/routes/transactionList'
 import { getCurrentLoginInfoFromLocalStorage, METAMASK, walletDispatchersOnInit, WALLETCONNECT } from "./util/walletsDispatchers"
 import { compatibleGlobalWalletConf } from "./composition/walletsResponsiveData";
+import { walletIsLogin } from "./composition/walletsResponsiveData"; 
+import { wallet } from 'zksync'
 
 export default {
   name: 'App',
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
     walletAddress: () => {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     }
@@ -63,7 +58,7 @@ export default {
     // }
   },
   watch: {
-    isLogin: function (newValue) {
+    walletIsLogin: function (newValue) {
       if (!newValue) {
         this.$store.commit('updateTransactionList', [])
       } else {
@@ -85,7 +80,7 @@ export default {
   },
   methods: {
     getHistory(isRefresh = false) {
-      if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
+      if (walletIsLogin.value && this.$store.getters.realSelectMakerInfo) {
         if (isRefresh) {
           this.$store.commit('updateTransactionList', null) 
         }
@@ -119,8 +114,8 @@ export default {
       // according to different wallet types to do their own initialization
       // but eventually they all update a global responsive data: globalSelectWalletConf
       // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
-      if (walletType === METAMASK) walletDispatchersOnInit[METAMASK]();
-      if (walletType === WALLETCONNECT) walletDispatchersOnInit[WALLETCONNECT]();
+      const matchInitDispatcher = walletDispatchersOnInit[walletType];
+      matchInitDispatcher && matchInitDispatcher();
     }
   },
 }

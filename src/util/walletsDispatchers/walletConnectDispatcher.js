@@ -30,7 +30,7 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
         const { _accounts = [], _chainId = "", _peerId = "", _peerMeta = {} } = payload;
         return {
             walletAddress: _accounts[0] || "",
-            chainId: _chainId,
+            networkId: _chainId,
             peerId: _peerId,
             peerMeta: _peerMeta
 
@@ -42,7 +42,7 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
     const [ walletAddress = "" ] = accounts;
     return {
         walletAddress,
-        chainId,
+        networkId: chainId,
         peerId,
         peerMeta
     }
@@ -89,7 +89,7 @@ export const walletConnectDispatcherOnInit = async () => {
         bridge: "https://bridge.walletconnect.org",
         qrcodeModal: QRCodeModule
     })
-
+    
     if (connector.connected) {
         // if it's already connected, invoke onConnectSuccessCallback for the data init
         onConnectSuccessCallback(null, connector, true);
@@ -105,11 +105,6 @@ export const walletConnectDispatcherOnInit = async () => {
 export const walletConnectDispatcherOnDisconnect = withPerformInterruptWallet((shouldKill = true) => {
     shouldKill && connector.killSession();
 });
-
-export const loginStatusCheckerOfWalletConnect = () => {
-    const { walletType: walletTypeRef, loginSuccess: loginSuccessRef } = toRefs(globalSelectWalletConf);
-    return walletTypeRef.value === WALLETCONNECT && loginSuccessRef.value === true;
-}
 
 export const walletConnectDispatcherOnSignature = async (from, selectMakerInfo, value, fromChainID, onTransferSucceed) => {
     const _web3 = localWeb3(fromChainID);    
@@ -135,6 +130,7 @@ export const walletConnectDispatcherOnSignature = async (from, selectMakerInfo, 
           )
     }).catch(err => {
         console.log("err", err);
+        showMessage(err, "error");
     })
 }
 

@@ -19,4 +19,5 @@ export const metaMaskDispatcherOnInit = () => {
         loginSuccess: true,
         walletPayload: {}
     });
+    // universalWalletInitHandler(METAMASK);
 }

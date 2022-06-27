@@ -309,7 +309,7 @@ export default {
           title: 'Network',
           value: globalSelectWalletConf.walletType === METAMASK ? 
                   util.chainName('0', this.$store.state.web3.networkId) : 
-                  util.chainName("0", globalSelectWalletConf.walletPayload.chainId),
+                  util.chainName("0", globalSelectWalletConf.walletPayload.networkId),
         },
         {
           icon: 'wallet',

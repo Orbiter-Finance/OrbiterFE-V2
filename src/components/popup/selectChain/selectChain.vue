@@ -33,6 +33,7 @@ import { DydxHelper } from '../../../util/dydx/dydx_helper'
 import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
 import Loading from '../../loading/loading.vue'
+import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";
 
 export default {
   name: 'SelectChain',
@@ -151,7 +152,7 @@ export default {
             const { coinbase } = this.$store.state.web3
             const dydxHelper = new DydxHelper(
               e.localID,
-              new Web3(window.ethereum),
+              new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
               'MetaMask'
             )
             await dydxHelper.getDydxClient(coinbase)

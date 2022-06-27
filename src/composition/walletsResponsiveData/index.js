@@ -1,6 +1,7 @@
 import { computed, reactive } from "../index";
 import { store } from "../../store";
 import { globalSelectWalletConf, loginStatusCheckerOfWallets, METAMASK } from "../../util/walletsDispatchers";
+import { findMatchWeb3ProviderByWalletType } from "../../util/walletsDispatchers/utils";
 
 // if there is a wallet connect with Oribiter
 // it will affect the ui changes in each route
@@ -31,8 +32,9 @@ export const compatibleGlobalWalletConf = computed(() => {
         walletType: METAMASK,
         walletPayload: {
             walletAddress: store.state.web3.coinbase,
-            chainId: store.state.web3.networkId,
+            provider: findMatchWeb3ProviderByWalletType(METAMASK),
             ...store.state.web3,
+            networkId: globalSelectWalletConf.walletPayload.networkId || store.state.web3.networkId,
         },
         loginSuccess: true
     }

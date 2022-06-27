@@ -292,7 +292,7 @@ export default {
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum
+      compatibleGlobalWalletConf.value.walletPayload.provider
         .request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
@@ -322,7 +322,7 @@ export default {
                   : chain.infoURL,
               ],
             }
-            window.ethereum
+            compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
                 params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],

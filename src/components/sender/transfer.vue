@@ -1536,7 +1536,7 @@ export default {
         if (toChainID == 11 || toChainID == 511) {
           const dydxHelper = new DydxHelper(
             toChainID,
-            new Web3(window.ethereum),
+            new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
             'MetaMask'
           )
           const dydxAccount = await dydxHelper.getAccount(
@@ -1556,21 +1556,21 @@ export default {
         }
         // Ensure fromChainId's networkId
         if (
-          compatibleGlobalWalletConf.value.walletPayload.chainId.toString() !==
+          compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
           this.$env.localChainID_netChainID[
             this.$store.state.transferData.fromChainID
           ]
         ) {
           if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
             try {
-              await util.ensureMetamaskNetwork(
+              await util.ensureWalletNetwork(
                 this.$store.state.transferData.fromChainID
               )
             } catch (err) {
               util.showMessage(err.message, 'error')
               return
             }
-          } {
+          } else {
             // perform other wallets
           }
         }
