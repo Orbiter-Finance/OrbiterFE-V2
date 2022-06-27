@@ -289,7 +289,7 @@ export default {
     },
 
     copyStarkAddress() {
-      return this.$store.state.web3.starkNet.starkAddress
+      return this.$store.state.web3.starkNet.starkNetAddress
     },
     loginData() {
       return [
