@@ -21,7 +21,11 @@
       ></div>
       <div class="header">
         <span class="left">To Chain</span>
-        <button @click="selectToChain" class="right" style="width: 150px">
+        <button
+          @click="selectToChain"
+          class="right"
+          style="padding-left: 5px; padding-right: 5px; width: auto"
+        >
           <div class="token_name">
             {{
               showChainName(toChainId, $env.localChainID_netChainID[toChainId])
@@ -300,7 +304,6 @@ export default {
         pushToken(makerInfo.c1ID, makerInfo.c2ID)
         pushToken(makerInfo.c2ID, makerInfo.c1ID)
       })
-      console.warn('tokenInfoArray: ', this.tokenInfoArray)
       this.tokenInfo = this.tokenInfoArray[0]
     },
 
@@ -454,6 +457,7 @@ export default {
       width: 100px;
       border-bottom: 2px solid #e8e8e8;
       margin-right: 5px;
+      text-align: center;
     }
     .moneyConfirmContent {
       padding-top: 2rem;
