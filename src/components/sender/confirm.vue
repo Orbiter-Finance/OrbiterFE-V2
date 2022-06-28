@@ -126,7 +126,7 @@ import config from '../../core/utils/config'
 import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
-import { walletDispatchersOnSignature, walletDispatchersOnAddChain } from "../../util/walletsDispatchers";
+import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
 
 export default {
   name: 'Confirm',
@@ -944,13 +944,14 @@ export default {
           this.$store.state.transferData.fromChainID
         ]
       ) {
-        const matchAddChainDispatcher = walletDispatchersOnAddChain[compatibleGlobalWalletConf.value.walletType];
+        console.log("还是不一致", compatibleGlobalWalletConf.value.walletPayload.networkId,  this.$env.localChainID_netChainID[
+          this.$store.state.transferData.fromChainID
+        ]);
+        const matchAddChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
         if (matchAddChainDispatcher) {
-          matchAddChainDispatcher();
+          matchAddChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider);
           return;
         }
-        this.addChainNetWork()
-        return
       }
 
       // Only one

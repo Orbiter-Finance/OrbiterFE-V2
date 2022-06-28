@@ -42,7 +42,9 @@ export { modifyLocalLoginState, getCurrentLoginInfoFromLocalStorage } from "./ut
 const {
     standardLoginStatusCheckerOfWallets,
     standardWalletDispatchersOnInit,
-    standardWalletDispatchersOnDisconnect
+    standardWalletDispatchersOnDisconnect,
+    standardWalletDispatchersOnAddChain,
+    standardWalletDispatchersOnSwitchChain
 } = standardWalletLoader(standardWalletConf); // load standard wallet conf
 
 // init method for each supported wallet 
@@ -72,5 +74,11 @@ export const walletDispatchersOnSignature = {
 }
 
 export const walletDispatchersOnAddChain = {
-    [WALLETCONNECT]: walletConnectDispatcherOnAddChain
+    [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
+    ...standardWalletDispatchersOnAddChain
+}
+
+export const walletDispatchersOnSwitchChain = {
+    [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
+    ...standardWalletDispatchersOnSwitchChain
 }

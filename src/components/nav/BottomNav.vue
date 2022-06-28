@@ -299,6 +299,11 @@ export default {
           isConnect: false,
           icon: "coinbase",
           title: "Coinbase"
+        },
+        {
+          isConnect: false,
+          icon: "brave",
+          title: "Brave"
         }
       ]
     },
@@ -382,6 +387,7 @@ export default {
     },
     Connect(walletName) {
       this.closeLoginPop()
+      console.log("walletName", walletName);
       walletDispatchersOnInit[walletName](this.$store);
     },
     openTerms() {
@@ -612,7 +618,7 @@ export default {
     }
   }
   .LoginStatePopContentView {
-    height: 30rem;
+    height: 38rem;
     width: 35.1rem;
     margin: 0 auto;
     background: #fff8d4;

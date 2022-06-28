@@ -1,4 +1,4 @@
-import { universalWalletInitHandler } from "./standardWalletAPI";
+import { universalWalletInitHandler, universalWalletAddChainHandler, universalWalletSwitchChainHandler } from "./standardWalletAPI";
 import { withPerformInterruptWallet, fetchTargetWalletLoginStatus } from "./utils"; 
 
 /**
@@ -11,23 +11,29 @@ import { withPerformInterruptWallet, fetchTargetWalletLoginStatus } from "./util
  */
 
 const standardWalletLoader = (standardWalletConf) => {
-    // returns 3 aggregate objects by standardWalletConf
+    // returns 5 aggregate objects by standardWalletConf
     const walletDispatchersOnInit = {};
     const walletDispatchersOnDisconnect = {};
     const loginStatusCheckerOfWallets = {};
+    const walletDispatchersOnAddChain = {};
+    const walletDispatchersOnSwitchChain = {};
 
     // mount configuration
     for (const walletConf of standardWalletConf) {
         const { walletType, initDispatcher, disconnectDispatcher } = walletConf;
-        walletDispatchersOnInit[walletType] = initDispatcher ? () => initDispatcher(universalWalletInitHandler) : () => universalWalletInitHandler(walletType);
+        walletDispatchersOnInit[walletType] = initDispatcher ? () => initDispatcher(walletConf, universalWalletInitHandler) : () => universalWalletInitHandler(walletConf);
         walletDispatchersOnDisconnect[walletType] = disconnectDispatcher ? () => withPerformInterruptWallet(disconnectDispatcher) : withPerformInterruptWallet(() => {});
-        loginStatusCheckerOfWallets[walletType] = () => fetchTargetWalletLoginStatus(walletType);
+        loginStatusCheckerOfWallets[walletType] = () => fetchTargetWalletLoginStatus(walletConf);
+        walletDispatchersOnAddChain[walletType] = (walletProvider, ...args) => universalWalletAddChainHandler(walletConf, walletProvider, ...args);
+        walletDispatchersOnSwitchChain[walletType] = (walletProvider, ...args) => universalWalletSwitchChainHandler(walletConf, walletProvider, ...args);
     }
 
     return {
         standardWalletDispatchersOnInit: walletDispatchersOnInit,
         standardWalletDispatchersOnDisconnect: walletDispatchersOnDisconnect,
-        standardLoginStatusCheckerOfWallets: loginStatusCheckerOfWallets
+        standardLoginStatusCheckerOfWallets: loginStatusCheckerOfWallets,
+        standardWalletDispatchersOnAddChain: walletDispatchersOnAddChain,
+        standardWalletDispatchersOnSwitchChain: walletDispatchersOnSwitchChain
     }
 }
 

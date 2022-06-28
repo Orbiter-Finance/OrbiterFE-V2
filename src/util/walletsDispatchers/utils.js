@@ -1,4 +1,4 @@
-import { COINBASE, METAMASK } from "./constants";
+import { COINBASE, METAMASK, BRAVE } from "./constants";
 import { LOCALLOGINDATA } from "./constants"
 import { updateGlobalSelectWalletConf, globalSelectWalletConf } from "./walletsCoreData";
 import { toRefs } from "../../composition";
@@ -36,9 +36,11 @@ export const withPerformInterruptWallet = (fn) => {
 // wallet type & ethereum fit checker
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     if (!walletType || !ethereum) return false;
-    if (walletType === METAMASK) return ethereum.isMetaMask;
+    if (walletType === METAMASK) return ethereum.isMetaMask && !ethereum.isBraveWallet;
     if (walletType === COINBASE) return ethereum.isCoinbaseWallet;
-    // we nerve care wallet connect 
+    if (walletType === BRAVE) return ethereum.isBraveWallet;
+    // we never care wallet connect, because it's a protocol, not a wallet
+    // so it doesn't follow the Ethereum standard api
 }
 
 // check if coinbase extension is installed, coinbase extension will affect something!!
@@ -51,24 +53,27 @@ export const checkEthereumConflicts = () => {
 
 // because coinbase also injects a global variable with the same name "ethereum" into browser
 // according to the coinbase official, we can get all the provider by accessing ethereum.providers
-export const findMatchWeb3ProviderByWalletType = (walletType) => {
-    const walletResolvers = {
-        [METAMASK]: (provider) => provider.isMetaMask === true,
-        [COINBASE]: (provider) => provider.isCoinbaseWallet === true,
-    }
+export const findMatchWeb3ProviderByWalletType = (walletType, walletIsInstalledInvestigator) => {
+
     if (!checkEthereumConflicts()) {
         // if there is no conflict, there's only one "ethereum" instance in window
         // so we should confirm one thing: this "ethereum" object fits our wallet type
         if (ethereumWalletTypeFitChecker(walletType, window.ethereum)) return window.ethereum;
         return null
     }
-    const matchResolver = walletResolvers[walletType];
-    if (!matchResolver) return null;
-    return window.ethereum.providers.find(matchResolver);
+
+    // because metamask is still based on old code, i haven't had time to plug into the standard API
+    // so we can do a special treatment for metamask, for temporary use and will be removed in the feature!
+    if (!walletIsInstalledInvestigator && walletType === METAMASK) {
+        walletIsInstalledInvestigator = (provider) => provider.isMetaMask && !provider.isBraveWallet;
+    }
+
+    if (!walletIsInstalledInvestigator) return null;
+    return window.ethereum.providers.find(walletIsInstalledInvestigator);
 }
 
 // login status checker
-export const fetchTargetWalletLoginStatus = (walletType) => {
+export const fetchTargetWalletLoginStatus = ({ walletType }) => {
     const { walletType: walletTypeRef, loginSuccess: loginSuccessRef } = toRefs(globalSelectWalletConf);
     return walletTypeRef.value === walletType && loginSuccessRef.value === true;
 }

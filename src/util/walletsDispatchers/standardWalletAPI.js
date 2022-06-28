@@ -10,39 +10,41 @@ import Web3 from "web3";
 import { findMatchWeb3ProviderByWalletType, modifyLocalLoginInfo } from "./utils";
 import { updateGlobalSelectWalletConf, updateSelectWalletAddress, updateSelectWalletConfPayload } from "./walletsCoreData";
 import { showMessage } from "../constants/web3/getWeb3";
+import { getChainInfo, getNetworkIdByChainId } from "../chainUtils";
+import util from "../util";
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
 // otherwise it will throw error;
-export const installWallet = (walletType) => {
+export const installWallet = (walletType, walletIsInstalledInvestigator) => {
     return new Promise(async (resolve) => {
         if (window.ethereum) {
             try {
                 // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
-                const matchProvider = findMatchWeb3ProviderByWalletType(walletType);
-                if(!matchProvider) {
+                const matchProvider = findMatchWeb3ProviderByWalletType(walletType, walletIsInstalledInvestigator);
+                if (!matchProvider) {
                     resolve(null);
                     return;
                 };
                 await matchProvider.enable();
                 resolve(matchProvider);
-            } catch(error) {
+            } catch (error) {
                 const errorMsg = 'User denied account access';
                 showMessage(errorMsg, "error");
                 resolve(null);
             }
-        }  else {
+        } else {
             const errorMsg = `not install ${walletType}`;
             showMessage(errorMsg, "error");
             resolve(null);
         }
     })
-} 
+}
 
 // get network id , wallet address , etc ...  by invoke this method
-export const performWalletInformation = async (walletType) => {
-    const matchWalletProvider = await installWallet(walletType);
-    if (!matchWalletProvider) throw new Error("not install coinbase");
+export const performWalletInformation = async (walletType, walletIsInstalledInvestigator) => {
+    const matchWalletProvider = await installWallet(walletType, walletIsInstalledInvestigator);
+    if (!matchWalletProvider) throw new Error(`not install ${walletType}`);
     const performResult = {
         walletType,
         isInstalled: true, // matchWalletProvider !== null, web extension definitely be installed
@@ -53,8 +55,8 @@ export const performWalletInformation = async (walletType) => {
     const networkId = await matchWalletWeb3Provider.eth.net.getId();
     if (!networkId) showMessage('get netWorkID failed, refresh and try again', 'error');
     else performResult.networkId = networkId;
-    const walletAddress = await matchWalletWeb3Provider.eth.getCoinbase();
-    if (!walletAddress) showMessage(`get coinbase failed，please unlock ${walletType} or generate a new address`,'error',);
+    const [walletAddress] = await matchWalletWeb3Provider.eth.requestAccounts();
+    if (!walletAddress) showMessage(`get coinbase failed，please unlock ${walletType} or generate a new address`, 'error',);
     else performResult.walletAddress = walletAddress;
     return {
         performResult,
@@ -64,8 +66,9 @@ export const performWalletInformation = async (walletType) => {
 
 // this method can init wallet config directly if the wallet type
 // passed is a standard compliant wallet
-export const universalWalletInitHandler = (walletType) => {
-    performWalletInformation(walletType).then(({ performResult, provider }) => {
+export const universalWalletInitHandler = (walletConf) => {
+    const { walletType, walletIsInstalledInvestigator } = walletConf;
+    performWalletInformation(walletType, walletIsInstalledInvestigator).then(({ performResult, provider }) => {
         /**
          * result contains following properties
          * 1. walletAddress
@@ -87,23 +90,84 @@ export const universalWalletInitHandler = (walletType) => {
         modifyLocalLoginInfo(legalWalletConfig);
 
         // listen for changes
-        walletInfoChangeListener(provider);
+        walletInfoChangeWatcher(walletConf, provider);
     }).catch(err => {
         console.log(`%c ${walletType} init err`, "color: #fff; background: red", err);
+        showMessage(err, "error");
     });
 }
 
-const walletInfoChangeListener = (walletProvider) => {
+// observe chain id and account changes and update global wallet config
+// when they r changed
+const walletInfoChangeWatcher = (walletConf, walletProvider) => {
+    const { chainIdTransfer = (chainId) => chainId } = walletConf;
     walletProvider.autoRefreshOnNetworkChange = false;
     console.log(`%c wallet provider listening....`, "color: #fff; background: blue", walletProvider.on);
     walletProvider.on("chainChanged", chainId => {
-        console.log(`%c chainId updated`, "color: #fff; background: green", chainId);
+        console.log(`%c chainId updated, convert result %c`, "color: #fff; background: green", chainId, chainIdTransfer(chainId));
         updateSelectWalletConfPayload({
-            networkId: chainId
+            networkId: chainIdTransfer(chainId)
         });
     })
     walletProvider.on("accountsChanged", ([newWalletAddress = ""]) => {
         console.log(`%c user wallet address updated`, "color: #fff; background: green", chainId);
         updateSelectWalletAddress(newWalletAddress);
+    })
+}
+
+// if the current wallet doesn't have the chain selected by the user,
+// calling this method can wake up the browser wallet extensions and 
+// directs the user to append the chain 
+export const universalWalletSwitchChainHandler = (walletConf, walletProvider, successCallback = () => { }, failCallback = () => { }) => {
+    const presentNetWorkId = getNetworkIdByChainId();
+    // const matchChainConf = getChainInfo(presentNetWorkId);
+    const switchParams = {
+        chainId: util.toHex(presentNetWorkId)
+    }
+    console.log("walletProvider", walletProvider);
+    walletProvider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [switchParams],
+    }).then(successCallback).catch(reason => {
+        const { code, message } = reason;
+
+        // if switch failed, and the error code was 4902, it shows that
+        // the user doesn't have this chain in his browser wallet, we can
+        // direct user to add by invoke universalWalletAddChainHandler
+        if (code === 4902) universalWalletAddChainHandler(walletConf, walletProvider);
+        else util.showMessage(message, "error");
+    })
+}
+
+// if the chain where current wallet selected is different from the chain
+// selected by user, calling this method can wake up the browser wallet 
+// extensions and directs the user to change the chain
+export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
+    const presentNetWorkId = getNetworkIdByChainId();
+    const matchChainConf = getChainInfo(presentNetWorkId);
+    const { name, nativeCurrency, explorers, chainId, rpc, infoURL } = matchChainConf;
+    const addParams = {
+        chainId: util.toHex(chainId), // A 0x-prefixed hexadecimal string
+        chainName: name,
+        nativeCurrency: {
+            name: nativeCurrency.name,
+            symbol: nativeCurrency.symbol, // 2-6 characters long
+            decimals: nativeCurrency.decimals,
+        },
+        rpcUrls: rpc,
+        blockExplorerUrls: [
+            explorers &&
+                explorers.length > 0 &&
+                explorers[0].url
+                ? explorers[0].url
+                : infoURL,
+        ],
+    }
+    walletProvider.request({
+        method: 'wallet_addEthereumChain',
+        params: [ addParams, walletProvider.walletPayload.walletAddress ],
+    }).catch(reason => {
+        const { message } = reason;
+        util.showMessage(message, "error");
     })
 }
