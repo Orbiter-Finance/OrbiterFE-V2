@@ -2,12 +2,14 @@
   <div class="makerContent">
     <unloginMaker v-if="!isLogin" />
     <loginMaker
+      :dTokenAddresses="dTokenAddresses"
       :makerInfoList="makerInfoList"
       @stateChanged="changeState"
       v-if="isLogin && status === '1'"
     />
 
     <AddLiquidity
+      :dTokenAddresses="dTokenAddresses"
       :makerInfoList="makerInfoList"
       @stateChanged="changeState"
       v-if="isLogin && status === '2'"
@@ -32,6 +34,11 @@ export default {
   data() {
     return {
       status: '1',
+      dTokenAddresses: {
+        5: '0x6ce4D9694c1626862234216bA78874dE70903A71',
+        22: '0xF2BE509057855b055f0515CCD0223BEf84D19ad4',
+        77: '0xa9D1Ce03414DF86233B5beCa03C14631474EA234',
+      },
       makerInfoList: [],
     }
   },

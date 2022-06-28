@@ -86,7 +86,7 @@ import echarts from 'echarts'
 
 export default {
   name: 'loginMaker',
-  props: { makerInfoList: Array },
+  props: { dTokenAddresses: Object, makerInfoList: Array },
   data() {
     return {
       charts: '',
@@ -131,7 +131,6 @@ export default {
   components: {},
   watch: {},
   mounted() {
-    console.warn('makerInfoList: ', this.makerInfoList);
     // this.$nextTick(function () {
     // this.draw('report')
     // });

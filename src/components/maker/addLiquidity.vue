@@ -137,7 +137,9 @@
           />{{ tokenInfo ? tokenInfo.token : '-' }}
         </div>
         <span class="s14 wbolder" style="margin-top: 1.9rem"
-          >to Orbiter LP Contract (0x8765…9988)</span
+          >to Orbiter LP Contract ({{
+            shortAddress(dTokenAddresses[toChainId])
+          }})</span
         >
       </div>
       <div class="sep"></div>
@@ -201,9 +203,7 @@ import SelectToken from '../popup/selectToken/selectToken.vue'
 
 export default {
   name: 'AddLiquidity',
-  props: {
-    makerInfoList: Array,
-  },
+  props: { dTokenAddresses: Object, makerInfoList: Array },
   data() {
     return {
       amount: '',
@@ -360,9 +360,14 @@ export default {
     onChange(checkedValues) {
       console.log('checked = ', checkedValues)
     },
-
     showChainName(localChainID, netChainID) {
       return util.chainName(localChainID, netChainID)
+    },
+    shortAddress(address) {
+      if (!address) {
+        return address
+      }
+      return address.replace(/^(.{6}).*?(.{4})$/i, '$1...$2')
     },
   },
 }
