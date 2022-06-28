@@ -1,28 +1,28 @@
 <template>
   <div class="makerContent">
-    <unloginMaker />
-    <!-- <unloginMaker v-if="!isLogin" /> -->
-    <!-- <loginMaker v-on:stateChanged="changeState"
+    <unloginMaker v-if="!isLogin" />
+    <loginMaker v-on:stateChanged="changeState"
                 v-if="isLogin && status === '1'" />
-    <AddLiquidity v-on:stateChanged="changeState"
-                  v-if="isLogin && status === '2'" /> -->
+               
+    <AddLiquidity
+      v-on:stateChanged="changeState"
+      v-if="isLogin && status === '2'"
+    />
   </div>
 </template>
 
 <script>
-
 import unloginMaker from '../components/maker/unloginMaker.vue'
-// import loginMaker from '../components/maker/loginMaker.vue'
-// import AddLiquidity from '../components/maker/addLiquidity.vue'
+import loginMaker from '../components/maker/loginMaker.vue'
+import AddLiquidity from '../components/maker/addLiquidity.vue'
 
 export default {
   name: 'Maker',
-  props: {
-  },
+  props: {},
   components: {
     unloginMaker,
-    // loginMaker,
-    // AddLiquidity
+    loginMaker,
+    AddLiquidity
   },
   data() {
     return {
@@ -31,23 +31,24 @@ export default {
   },
   computed: {
     isLogin() {
-      return this.$store.state.web3.isInstallMeta && this.$store.state.web3.isInjected && this.$store.state.web3.localLogin
-    }
+      return (
+        this.$store.state.web3.isInstallMeta &&
+        this.$store.state.web3.isInjected &&
+        this.$store.state.web3.localLogin
+      )
+    },
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     changeState(e) {
       if (this.status !== e) {
-        this.status = e;
+        this.status = e
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

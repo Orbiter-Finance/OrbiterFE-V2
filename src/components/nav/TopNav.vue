@@ -75,9 +75,9 @@ export default {
       if (to.path === from.path) {
         return
       }
-      // if (to.path === '/maker' && this.selected !== 'maker') {
-      //   this.selected = 'maker'
-      // }
+      if (to.path === '/maker' && this.selected !== 'maker') {
+        this.selected = 'maker'
+      }
       if (
         (to.path === '/' || to.path === '/sender') &&
         this.selected !== 'sender'
@@ -94,12 +94,12 @@ export default {
           })
         }
       } else {
-        // if (this.$route.path !== '/maker') {
-        //   this.$router.push({
-        //     path: '/maker',
-        //     query: this.$route.query,
-        //   })
-        // }
+        if (this.$route.path !== '/maker') {
+          this.$router.push({
+            path: '/maker',
+            query: this.$route.query,
+          })
+        }
       }
     },
   },

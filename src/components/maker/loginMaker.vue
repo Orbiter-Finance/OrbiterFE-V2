@@ -3,7 +3,7 @@
     <!-- <div id="report"
          style="width: 1000px;height: 400px;"></div> -->
 
-    <o-box-content class="makerLoginTop"
+    <!-- <o-box-content class="makerLoginTop"
                    style="width:34.5rem">
       <div class="dataContent">
         <div style="margin-left:0.4rem">
@@ -36,33 +36,45 @@
       <div class="charts"
            id="report"
            style="width:29.5rem;height:6.5rem">This is bar graph</div>
-    </o-box-content>
-    <o-box-content class="makerLoginBottom"
-                   style="width:34.5rem">
-      <span class="wbolder"
-            style="margin-left:1.5rem">My Liquidity</span>
-      <div style="margin-top:1.5rem;height:0.2rem;backgroundColor:var(--default-black)"></div>
+    </o-box-content> -->
+    <o-box-content
+      class="makerLoginBottom"
+      style="width: 34.5rem; margin: 50px auto"
+    >
+      <span class="wbolder" style="margin-left: 1.5rem">My Liquidity</span>
+      <div
+        style="
+          margin-top: 1.5rem;
+          height: 0.2rem;
+          backgroundcolor: var(--default-black);
+        "
+      ></div>
 
-      <div v-for="item in liquidityData"
-           :key="item.no"
-           class="itemContent">
-        <div class="s12 wlighter nColor7"
-             style="margin-bottom:1.5rem">
-          {{item.chainOne}} | {{item.chainTwo}}
+      <div
+        v-for="(item, index) in liquidityData"
+        :key="index"
+        class="itemContent"
+      >
+        <div class="s12 wlighter nColor7" style="margin-bottom: 1.5rem">
+          {{ item.chainName }}
         </div>
-        <div style="display:flex;margin-bottom:1.5rem">
-          <span>{{item.tokenName}}</span>
-          <span class="dColor"
-                style="margin-left:1.2rem">{{item.amount}}</span>
-          <div class="removeContent tcenter s12"
-               @click="removeLiquidity(item)">Remove</div>
+        <div style="display: flex; margin-bottom: 1.5rem">
+          <span>{{ item.tokenName }}</span>
+          <span class="dColor" style="margin-left: 1.2rem">{{
+            item.amount
+          }}</span>
+          <div class="removeContent tcenter s12" @click="redeemLiquidity(item)">
+            Redeem
+          </div>
         </div>
         <div class="removeSep"></div>
       </div>
-      <o-button width="29.5rem"
-                height="4rem"
-                style="margin-top:2.5rem"
-                @click="addnewLiquidity">
+      <o-button
+        width="29.5rem"
+        height="4rem"
+        style="margin-top: 2.5rem"
+        @click="addnewLiquidity"
+      >
         <span class="wbold s16">ADD NEW LIQUIDITY</span>
       </o-button>
     </o-box-content>
@@ -70,117 +82,106 @@
 </template>
 
 <script>
-import echarts from "echarts";
+import echarts from 'echarts'
 
 export default {
   name: 'loginMaker',
-  props: {
-  },
+  props: {},
   data() {
     return {
-      charts: "",
+      charts: '',
       source: [
-        ["1.31", 450],
-        ["2.1", 330],
-        ["2.2", 230],
-        ["2.3", 300],
-        ["2.4", 145],
-        ["2.5", 0],
-        ["2.6", 100],
-        ["2.7", 160],
-        ["2.8", 120],
-        ["2.9", 180]
+        ['1.31', 450],
+        ['2.1', 330],
+        ['2.2', 230],
+        ['2.3', 300],
+        ['2.4', 145],
+        ['2.5', 0],
+        ['2.6', 100],
+        ['2.7', 160],
+        ['2.8', 120],
+        ['2.9', 180],
       ],
-      toolTipDesc: "Average reaction time is your pingjun jiedan sudu. meige dingdan xiangying sudu:<br />① t ≤ 1min, huode 100% jiangli;<br />② 1min < t ≤ 10min, huode xx% jiangli;<br />③ 10min < t, meiyou jiangli qie huode $xx chengfa.",
+      toolTipDesc:
+        'Average reaction time is your pingjun jiedan sudu. meige dingdan xiangying sudu:<br />① t ≤ 1min, huode 100% jiangli;<br />② 1min < t ≤ 10min, huode xx% jiangli;<br />③ 10min < t, meiyou jiangli qie huode $xx chengfa.',
       liquidityData: [
         {
-          no: 1,
-          chainOne: 'Arbitrum',
-          chainTwo: 'Optimistic',
+          chainName: 'Ethereum',
           tokenName: 'BTC',
           amount: '200',
         },
         {
-          no: 2,
-          chainOne: 'Zksync',
-          chainTwo: 'Optimistic',
+          chainName: 'Arbitrum',
           tokenName: 'ETH',
           amount: '1500',
         },
         {
-          no: 3,
-          chainOne: 'Arbitrum',
-          chainTwo: 'Zksync',
+          chainName: 'Polygon',
           tokenName: 'USDC',
           amount: '15000',
         },
         {
-          no: 4,
-          chainOne: 'Optimistic',
-          chainTwo: 'Zksync',
+          chainName: 'Optimistic',
           tokenName: 'USDT',
           amount: '11000',
-        }
-      ]
+        },
+      ],
     }
   },
-  components: {
-  },
-  watch: {
-  },
+  components: {},
+  watch: {},
   mounted() {
     // this.$nextTick(function () {
-    this.draw("report");
+    // this.draw('report')
     // });
   },
   methods: {
     addnewLiquidity() {
-      this.$emit("stateChanged", "2");
+      this.$emit('stateChanged', '2')
     },
-    removeLiquidity(item) {
+    redeemLiquidity(item) {
       console.log('item =', item)
     },
 
     draw(id) {
-      this.charts = echarts.init(document.getElementById(id));
+      this.charts = echarts.init(document.getElementById(id))
       function remFontSize(rem) {
-        var fontSize = document.documentElement.style.fontSize;
-        return Math.floor(rem * fontSize.replace('px', ''));
+        var fontSize = document.documentElement.style.fontSize
+        return Math.floor(rem * fontSize.replace('px', ''))
       }
       var myCharts = this.charts
       myCharts.setOption({
         legend: {},
         dataset: {
-          source: this.source
+          source: this.source,
         },
         xAxis: {
-          type: "category",
+          type: 'category',
           show: false,
           axisLine: {
             lineStyle: {
-              show: false
-            }
+              show: false,
+            },
           },
           splitLine: {
-            show: false
+            show: false,
           },
         },
         yAxis: {
           show: false,
           splitLine: {
-            show: false
+            show: false,
           },
         },
         grid: {
-          x: "0%",//x offset
-          y: "15%", // y offset
-          width: "100%", // width
-          height: "65%"// height
+          x: '0%', //x offset
+          y: '15%', // y offset
+          width: '100%', // width
+          height: '65%', // height
         },
-        series:
-        {
-          type: "bar",
-          barCategoryGap: "15%",
+        series: {
+          type: 'bar',
+          barCategoryGap: '15%',
           label: {
             normal: {
               show: false,
@@ -192,34 +193,37 @@ export default {
                 return '$' + value
               },
               show: true,
-              position: "top",
+              position: 'top',
               textStyle: {
-                fontWeight: "bolder",
+                fontWeight: 'bolder',
                 fontSize: remFontSize(1.2),
-                color: "#18191f"
-              }
-            }
+                color: '#18191f',
+              },
+            },
           },
           itemStyle: {
             normal: {
-              color: "#FB7355",
-            }
+              color: '#FB7355',
+            },
           },
           emphasis: {
             itemStyle: {
-              borderColor: "#000",
+              borderColor: '#000',
               borderWidth: remFontSize(0.1),
-            }
-          }
+            },
+          },
         },
-      });
+      })
       myCharts.on('click', function (params) {
-        myCharts.dispatchAction({ type: 'highlight', seriesIndex: params.dataIndex, dataIndex: params.dataIndex });
+        myCharts.dispatchAction({
+          type: 'highlight',
+          seriesIndex: params.dataIndex,
+          dataIndex: params.dataIndex,
+        })
         //params.seriesIndex
-      });
-
-    }
-  }
+      })
+    },
+  },
 }
 </script>
 

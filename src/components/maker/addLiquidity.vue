@@ -1,33 +1,43 @@
 <template>
   <div class="addLiquidityContent">
-    <o-box-content class="addLiquidityBottom"
-                   style="width:34.5rem">
-      <div style="display:flex;justify-content: space-between; padding:1.5rem">
-        <span class="wbolder"
-              style="margin-left:1.5rem">Add Liquidity</span>
+    <o-box-content class="addLiquidityBottom" style="width: 34.5rem">
+      <div
+        style="display: flex; justify-content: space-between; padding: 1.5rem"
+      >
+        <span class="wbolder" style="margin-left: 1.5rem">Add Liquidity</span>
         <div @click="closerButton">
-          <svg-icon style="width:2rem;height:2rem"
-                    iconName="close"></svg-icon>
+          <svg-icon
+            style="width: 2rem; height: 2rem"
+            iconName="close"
+          ></svg-icon>
         </div>
       </div>
-      <div style="height:0.2rem;background-color:var(--default-black);border-top:0.2rem dashed var(--default-black);"></div>
+      <div
+        style="
+          height: 0.2rem;
+          background-color: var(--default-black);
+          border-top: 0.2rem dashed var(--default-black);
+        "
+      ></div>
       <div class="header">
         <span class="left">Token</span>
-        <button @click="selectToken"
-                class="right">
-          <svg-icon class="token_icon"
-                    iconName="tokenLogo"></svg-icon>
+        <button @click="selectToken" class="right">
+          <svg-icon class="token_icon" iconName="tokenLogo"></svg-icon>
           <div class="token_name">token</div>
-          <svg-icon v-if="isSelected"
-                    class="arrow_icon"
-                    iconName="arrow_down"></svg-icon>
-          <svg-icon v-else
-                    class="arrow_icon"
-                    iconName="arrow_up"></svg-icon>
+          <svg-icon class="arrow_icon" iconName="arrow_down"></svg-icon>
         </button>
       </div>
       <div class="sep"></div>
-      <div class="netContent">
+      <div class="header">
+        <span class="left">To Chain</span>
+        <button @click="selectToChain" class="right">
+          <svg-icon class="token_icon" iconName="tokenLogo"></svg-icon>
+          <div class="token_name">token</div>
+          <svg-icon class="arrow_icon" iconName="arrow_down"></svg-icon>
+        </button>
+      </div>
+      <div class="sep"></div>
+      <!-- <div class="netContent">
         <span class="s14 wbolder"
               style="margin-top:2rem">Select Network</span>
         <div class="s14 wbolder"
@@ -62,8 +72,8 @@
           </div>
         </a-checkbox-group>
       </div>
-      <div class="sep"></div>
-      <div class="batchContent">
+      <div class="sep"></div> -->
+      <!-- <div class="batchContent">
         <div style="display:flex;align-items:center; margin-top:2rem">
           <span class="s14 wbolder">One Batch Value</span>
           <o-tooltip placement="bottom">
@@ -89,8 +99,8 @@
                 style="margin:0 0.5rem 0 auto">1000</span>
         </div>
       </div>
-      <div class="sep"></div>
-      <div class="timeContent">
+      <div class="sep"></div> -->
+      <!-- <div class="timeContent">
         <div style="display:flex;align-items:center;">
           <span class="s14 wbolder">Start Time</span>
           <div class="s14 tright"
@@ -101,57 +111,82 @@
           </div>
         </div>
       </div>
-      <div class="sep"></div>
+      <div class="sep"></div> -->
       <div class="moneyConfirmContent tcenter">
-        <span class="s14 wbolder">Become a Maker will need to send</span>
-        <span class="s20 wnormal dColor"
-              style="margin-top:1.9rem">33000 USDC</span>
-        <span class="s14 wbolder"
-              style="margin-top:1.9rem">to Orbiter Maker Contract (0x8765…9988)</span>
+        <span class="s14 wbolder">Become a Maker and send</span>
+        <div class="s20 wnormal dColor amount-input" style="margin-top: 1.9rem">
+          <input
+            type="text"
+            v-model="amount"
+            class="right dColor"
+            @input="checkAmount()"
+            :placeholder="`0`"
+          />USDC
+        </div>
+        <span class="s14 wbolder" style="margin-top: 1.9rem"
+          >to Orbiter Maker Contract (0x8765…9988)</span
+        >
       </div>
       <div class="sep"></div>
       <div class="timeContent">
-        <div style="display:flex;align-items:center;justify-content: space-between;">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          "
+        >
           <span class="s14 wbolder">Estimated APY</span>
           <span class="dColor s14 wnormal">410%</span>
         </div>
       </div>
       <div class="sep"></div>
       <div class="confirmContent">
-        <div class="agreementContent tcenter">
+        <!-- <div class="agreementContent tcenter">
           <a-checkbox @change="agreement">
           </a-checkbox>
           <span class="agreemetTitle s14 wnormal"
                 @click="clickAgreement">Read Agreements</span>
-        </div>
-        <o-button width="29.5rem"
-                  height="4rem"
-                  style="margin-top:2rem"
-                  @click="confirmAddLiquidity">
+        </div> -->
+        <o-button
+          width="29.5rem"
+          height="4rem"
+          style="margin-top: 2rem"
+          @click="confirmAddLiquidity"
+        >
           <span class="wbold s16">CONFIRM AND SEND</span>
         </o-button>
       </div>
-
     </o-box-content>
-    <CustomPopup ref="LiquiditySelectTokenPopupRef">
-      <div slot="PoperContent"
-           style="padding-bottom:var(--bottom-nav-height)">
-        <Select v-on:getTokenInfo="getTokenInfo"
-                v-on:closeSelect="closeSelectPopupClick()" />
+    <CustomPopup ref="liquiditySelectTokenPopupRef">
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <SelectToken
+          :tokenData="tokenInfoArray"
+          @getTokenInfo="getTokenInfo"
+          @closeSelect="closeTokenPopupClick()"
+        />
+      </div>
+    </CustomPopup>
+    <CustomPopup ref="liquiditySelectChainPopupRef">
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <SelectChain
+          :ChainData="toChainArray"
+          @getChainInfo="getToChainInfo"
+          @closeSelect="closeToChainPopupClick()"
+        />
       </div>
     </CustomPopup>
   </div>
 </template>
 
 <script>
-
-import Select from '../popup/selectToken/selectToken.vue'
+import SelectToken from '../popup/selectToken/selectToken.vue'
+import SelectChain from '../popup/selectChain/selectChain.vue'
 import CustomPopup from '../popup/bottomPop'
 
 export default {
   name: 'AddLiquidity',
-  props: {
-  },
+  props: {},
   data() {
     return {
       amount: '',
@@ -165,47 +200,49 @@ export default {
           chainOne: 'Polygon',
           value: '0',
           Fee: '0',
-          isContractNet: true
+          isContractNet: true,
         },
         {
           no: 1,
           chainOne: 'ETH Main',
           value: '0',
           Fee: '0',
-          isContractNet: false
+          isContractNet: false,
         },
         {
           no: 2,
           chainOne: 'Optimistic',
           value: '0',
           Fee: '0',
-          isContractNet: false
+          isContractNet: false,
         },
         {
           no: 3,
           chainOne: 'Arbitrum',
           value: '0',
           Fee: '0',
-          isContractNet: false
+          isContractNet: false,
         },
         {
           no: 4,
           chainOne: 'zkSync',
           value: '0',
           Fee: '0',
-          isContractNet: false
-        }
-      ]
+          isContractNet: false,
+        },
+      ],
+
+      tokenInfoArray: [],
+      toChainArray: [],
     }
   },
   components: {
-    Select,
-    CustomPopup
+    SelectToken,
+    SelectChain,
+    CustomPopup,
   },
-  watch: {
-  },
-  mounted() {
-  },
+  watch: {},
+  mounted() {},
   methods: {
     changeFee() {
       console.log('fee =', this.fee)
@@ -215,26 +252,37 @@ export default {
     },
     closerButton() {
       console.log('addLiquidity close')
-      this.$emit("stateChanged", "1");
+      this.$emit('stateChanged', '1')
     },
     // open selectPop
-    showSelectPopupClick() {
-      this.$refs.LiquiditySelectTokenPopupRef.showCustom();
+    showTokenPopupClick() {
+      this.$refs.liquiditySelectTokenPopupRef.showCustom()
     },
     // close selectPop
-    closeSelectPopupClick() {
-      this.$refs.LiquiditySelectTokenPopupRef.maskClick();
-      this.isSelected = false
+    closeTokenPopupClick() {
+      this.$refs.liquiditySelectTokenPopupRef.maskClick()
     },
+
+    // open selectChain
+    showToChainPopupClick() {
+      this.$refs.liquiditySelectChainPopupRef.showCustom()
+    },
+    // close selectChain
+    closeToChainPopupClick() {
+      this.$refs.liquiditySelectChainPopupRef.maskClick()
+    },
+
     selectToken() {
-      this.isSelected = !this.isSelected
-      this.showSelectPopupClick()
+      this.showTokenPopupClick()
+    },
+    selectToChain() {
+      this.showToChainPopupClick()
     },
     getTokenInfo(e) {
       console.log('getTokenInfo =', e)
     },
     agreement(e) {
-      console.log(`agreement = ${e.target.checked}`);
+      console.log(`agreement = ${e.target.checked}`)
     },
     clickAgreement() {
       console.log('clickAgreement')
@@ -243,9 +291,10 @@ export default {
       console.log('confirmAddLiquidity')
     },
     onChange(checkedValues) {
-      console.log('checked = ', checkedValues);
+      console.log('checked = ', checkedValues)
     },
-  }
+    getToChainInfo() {},
+  },
 }
 </script>
 
@@ -330,6 +379,14 @@ export default {
     }
     .timeContent {
       padding-top: 2rem;
+    }
+    .amount-input input {
+      border: none;
+      outline: none;
+      display: inline;
+      width: 100px;
+      border-bottom: 2px solid #e8e8e8;
+      margin-right: 5px;
     }
     .moneyConfirmContent {
       padding-top: 2rem;
