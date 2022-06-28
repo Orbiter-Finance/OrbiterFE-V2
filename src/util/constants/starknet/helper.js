@@ -29,7 +29,7 @@ const L1_TO_L2_ADDRESSES = {
   },
   '0x80c67432656d59144ceff962e8faf8926599bcf8': {
     'mainnet-alpha':
-      '0x07c57808B9CEA7130C44aaB2F8CA6147B04408943b48c6d8C3C83eB8Cfdd8C0b',
+      '0x07c57808b9cea7130c44aab2f8ca6147b04408943b48c6d8c3c83eb8cfdd8c0b',
     'georli-alpha':
       '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
   },
