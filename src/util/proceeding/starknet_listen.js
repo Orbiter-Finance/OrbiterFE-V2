@@ -2,11 +2,15 @@ import axios from 'axios'
 import * as starknet from 'starknet'
 import { getSelectorFromName } from 'starknet/dist/utils/hash'
 import util from '../util'
+import {
+  getProviderByChainId,
+  getStarkNetValidAddress,
+} from '../constants/starknet/helper'
 
 const STARKNET_LISTEN_TRANSFER_DURATION = 5 * 1000
 
 class StarknetListen {
-  constructor(api, apiParamsTo = '') {
+  constructor(api, apiParamsTo = '', localChainID) {
     this.api = api
     this.apiParamsTo = apiParamsTo
     this.selectorDec = getSelectorFromName('transfer')
@@ -15,57 +19,184 @@ class StarknetListen {
     this.transferReceivedHashs = {}
     this.transferConfirmationedHashs = {}
     this.listens = []
+    this.provider = getProviderByChainId(localChainID)
+    this.localChainID = localChainID
 
     this.start()
   }
 
   start() {
-    const ticker = async (p = 1) => {
-      const resp = await axios.get(
-        `${this.api.endPoint}/txns?to=${this.apiParamsTo}&ps=10&p=${p}`
-      )
-      const { data } = resp
-      if (!data?.items) {
-        return
-      }
+    const ticker = async () => {
+      // if (this.localChainID == 11) {
+      //   const resp = await axios.get(
+      //     `${this.api.endPoint}/txns?to=${this.apiParamsTo}&ps=10&p=${p}`
+      //   )
+      //   const { data } = resp
+      //   if (!data?.items) {
+      //     return
+      //   }
 
-      let isGetNextPage = true
+      //   let isGetNextPage = true
 
-      for (const item of data.items) {
-        const { hash, type } = item
+      //   for (const item of data.items) {
+      //     const { hash, type } = item
 
-        if (!util.equalsIgnoreCase(type, 'invoke')) {
-          continue
-        }
-        if (this.transferReceivedHashs[hash] !== undefined) {
-          isGetNextPage = false
-          continue
-        }
+      //     if (!util.equalsIgnoreCase(type, 'invoke')) {
+      //       continue
+      //     }
+      //     if (this.transferReceivedHashs[hash] !== undefined) {
+      //       isGetNextPage = false
+      //       continue
+      //     }
 
-        // Set transferReceivedHashs[hash] = false
-        this.transferReceivedHashs[hash] = false
+      //     // Set transferReceivedHashs[hash] = false
+      //     this.transferReceivedHashs[hash] = false
 
-        // Ignore first ticker
-        if (this.isFirstTicker) {
-          isGetNextPage = false
-          continue
-        }
+      //     // Ignore first ticker
+      //     if (this.isFirstTicker) {
+      //       isGetNextPage = false
+      //       continue
+      //     }
 
-        this.getTransaction(hash).catch((err) => {
-          console.error(
-            `Starknet getTransaction faild [${hash}]: ${err.message}`
+      //     this.getTransaction(hash).catch((err) => {
+      //       console.error(
+      //         `Starknet getTransaction faild [${hash}]: ${err.message}`
+      //       )
+      //     })
+      //   }
+
+      //   if (isGetNextPage) {
+      //     await ticker((p += 1))
+      //   }
+
+      //   this.isFirstTicker = false
+      // } else {
+      const blockInfo = await this.provider.getBlock('pending')
+      console.log('blockInfo =', blockInfo)
+      if (blockInfo) {
+        const transactions = blockInfo.transactions
+        console.log('transactions =', transactions)
+
+        console.log(
+          'getStarkNetValidAddress(this.apiParamsTo) =',
+          getStarkNetValidAddress(this.apiParamsTo)
+        )
+
+        for (const tx of transactions.filter(
+          (tx) =>
+            tx.type === 'INVOKE_FUNCTION' &&
+            getStarkNetValidAddress(tx.contract_address) ==
+              getStarkNetValidAddress(this.apiParamsTo)
+        )) {
+          console.log('calldata =', tx.calldata)
+          console.log('selectorDec =', this.selectorDec)
+
+          console.log(
+            'from =',
+            starknet.number.toHex(
+              starknet.number.toBN(
+                starknet.number.hexToDecimalString(tx.contract_address)
+              )
+            )
           )
-        })
-      }
 
-      if (isGetNextPage) {
-        await ticker((p += 1))
-      }
+          let calldata = tx.calldata
+          // Check data
+          if (!calldata || calldata.length < 7) {
+            break
+          }
+          // Check selector
+          if (calldata[2] != this.selectorDec) {
+            break
+          }
 
-      this.isFirstTicker = false
+          console.log(
+            'to =',
+            starknet.number.toHex(starknet.number.toBN(calldata[6]))
+          )
+
+          console.log(
+            'contractAddress =',
+            starknet.number.toHex(starknet.number.toBN(calldata[1]))
+          )
+
+          // Clear front zero
+          const from = starknet.number.toHex(
+            starknet.number.toBN(
+              starknet.number.hexToDecimalString(tx.contract_address)
+            )
+          )
+          const to = starknet.number.toHex(starknet.number.toBN(calldata[6]))
+          const contractAddress = starknet.number.toHex(
+            starknet.number.toBN(calldata[1])
+          )
+          const transaction = {
+            timeStamp: Number(blockInfo.timestamp),
+            hash: tx.transaction_hash,
+            nonce: calldata[9],
+            blockHash: '',
+            transactionIndex: '',
+            from,
+            to,
+            value: Number(calldata[7]),
+            txreceipt_status: blockInfo.status,
+            contractAddress,
+            confirmations: 0,
+          }
+
+          console.log('transaction =', transaction)
+          const isConfirmed =
+            util.equalsIgnoreCase(
+              transaction.txreceipt_status,
+              'ACCEPTED_ON_L2'
+            ) ||
+            util.equalsIgnoreCase(
+              transaction.txreceipt_status,
+              'ACCEPTED_ON_L2'
+            ) ||
+            util.equalsIgnoreCase(transaction.txreceipt_status, 'PENDING')
+
+          for (const item of this.listens) {
+            const { filter, callbacks } = item
+
+            if (filter) {
+              if (
+                filter.from &&
+                filter.from.toUpperCase() != from.toUpperCase()
+              ) {
+                continue
+              }
+              if (filter.to && filter.to.toUpperCase() != to.toUpperCase()) {
+                continue
+              }
+            }
+
+            if (this.transferReceivedHashs[tx.transaction_hash] !== true) {
+              this.transferReceivedHashs[tx.transaction_hash] = true
+              callbacks &&
+                callbacks.onReceived &&
+                callbacks.onReceived(transaction)
+            }
+
+            if (
+              this.transferConfirmationedHashs[transaction.hash] ===
+                undefined &&
+              isConfirmed
+            ) {
+              if (isConfirmed) {
+                this.transferConfirmationedHashs[transaction.hash] = true
+              }
+              console.warn(`Transaction [${transaction.hash}] was confirmed.`)
+              callbacks &&
+                callbacks.onConfirmation &&
+                callbacks.onConfirmation(transaction)
+            }
+          }
+        }
+      }
+      // }
     }
     ticker()
-
     setInterval(ticker, STARKNET_LISTEN_TRANSFER_DURATION)
   }
 
@@ -175,12 +306,16 @@ const factorys = {}
  * @param {string} apiParamsTo
  * @returns {StarknetListen}
  */
-export function factoryStarknetListen(api, apiParamsTo = '') {
-  const factoryKey = `${api.endPoint}:${api.key}:${apiParamsTo}`
+export function factoryStarknetListen(api, apiParamsTo = '', localChainID) {
+  const factoryKey = `${api.endPoint}:${api.key}:${apiParamsTo}:${localChainID}`
 
   if (factorys[factoryKey]) {
     return factorys[factoryKey]
   } else {
-    return (factorys[factoryKey] = new StarknetListen(api, apiParamsTo))
+    return (factorys[factoryKey] = new StarknetListen(
+      api,
+      apiParamsTo,
+      localChainID
+    ))
   }
 }

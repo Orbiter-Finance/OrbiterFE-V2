@@ -837,7 +837,8 @@ function ScanMakerTransfer(
         }
         const skl = factoryStarknetListen(
           { endPoint: api },
-          fromStarknetAddress
+          fromStarknetAddress,
+          localChainID
         )
         skl.transfer(
           { from: fromStarknetAddress, to: toStarknetAddress },
