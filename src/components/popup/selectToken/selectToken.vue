@@ -38,7 +38,11 @@
           style="margin-right: 1.5rem; margin-left: 1rem"
           alt=""
         />
-        <svg-icon v-else class="logo token_icon" iconName="tokenLogo"></svg-icon>
+        <svg-icon
+          v-else
+          class="logo token_icon"
+          iconName="tokenLogo"
+        ></svg-icon>
 
         <span style="margin-top: 0.2rem">{{ item.token }}</span>
         <!-- <span class="right">{{item.amount}}</span> -->
@@ -49,7 +53,7 @@
 
 <script>
 export default {
-  name: "SelectToken",
+  name: 'SelectToken',
   props: {
     tokenData: {
       type: Array,
@@ -58,37 +62,35 @@ export default {
   },
   data() {
     return {
-      keyword: "",
-    };
+      keyword: '',
+    }
   },
   computed: {
     newTokenData: function () {
-      if (!this.keyword || this.keyword === "") {
-        return this.tokenData;
+      if (!this.keyword || this.keyword === '') {
+        return this.tokenData
       }
       return this.tokenData.filter(
         (item) =>
           item.token.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1
-      );
+      )
     },
   },
-  watch: {},
-  mounted() {},
   methods: {
     closerButton() {
-      this.$emit("closeSelect");
+      this.$emit('closeSelect')
     },
     getTokenInfo(e) {
-      this.$emit("getTokenInfo", e);
-      this.closerButton();
+      this.$emit('getTokenInfo', e)
+      this.closerButton()
     },
     stopPenetrate(e) {
-      e.stopPropagation;
+      e.stopPropagation
     },
     search() {},
     checkKeyWord() {},
   },
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

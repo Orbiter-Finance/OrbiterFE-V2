@@ -20,19 +20,28 @@
         "
       ></div>
       <div class="header">
-        <span class="left">Token</span>
-        <button @click="selectToken" class="right">
-          <svg-icon class="token_icon" iconName="tokenLogo"></svg-icon>
-          <div class="token_name">token</div>
+        <span class="left">To Chain</span>
+        <button @click="selectToChain" class="right" style="width: 150px">
+          <div class="token_name">
+            {{
+              showChainName(toChainId, $env.localChainID_netChainID[toChainId])
+            }}
+          </div>
           <svg-icon class="arrow_icon" iconName="arrow_down"></svg-icon>
         </button>
       </div>
       <div class="sep"></div>
       <div class="header">
-        <span class="left">To Chain</span>
-        <button @click="selectToChain" class="right">
-          <svg-icon class="token_icon" iconName="tokenLogo"></svg-icon>
-          <div class="token_name">token</div>
+        <span class="left">Token</span>
+        <button @click="selectToken" class="right">
+          <img
+            class="token_icon"
+            v-if="tokenInfo && tokenInfo.icon"
+            :src="tokenInfo.icon"
+            alt=""
+          />
+          <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
+          <div class="token_name">{{ tokenInfo ? tokenInfo.token : '-' }}</div>
           <svg-icon class="arrow_icon" iconName="arrow_down"></svg-icon>
         </button>
       </div>
@@ -113,7 +122,7 @@
       </div>
       <div class="sep"></div> -->
       <div class="moneyConfirmContent tcenter">
-        <span class="s14 wbolder">Become a Maker and send</span>
+        <span class="s14 wbolder">Become a maker and send</span>
         <div class="s20 wnormal dColor amount-input" style="margin-top: 1.9rem">
           <input
             type="text"
@@ -121,10 +130,10 @@
             class="right dColor"
             @input="checkAmount()"
             :placeholder="`0`"
-          />USDC
+          />{{ tokenInfo ? tokenInfo.token : '-' }}
         </div>
         <span class="s14 wbolder" style="margin-top: 1.9rem"
-          >to Orbiter Maker Contract (0x8765…9988)</span
+          >to Orbiter LP Contract (0x8765…9988)</span
         >
       </div>
       <div class="sep"></div>
@@ -180,20 +189,23 @@
 </template>
 
 <script>
-import SelectToken from '../popup/selectToken/selectToken.vue'
-import SelectChain from '../popup/selectChain/selectChain.vue'
+import config from '../../config'
+import util from '../../util/util'
 import CustomPopup from '../popup/bottomPop'
+import SelectChain from '../popup/selectChain/selectChain.vue'
+import SelectToken from '../popup/selectToken/selectToken.vue'
 
 export default {
   name: 'AddLiquidity',
-  props: {},
+  props: {
+    makerInfoList: Array,
+  },
   data() {
     return {
       amount: '',
       fee: '',
       toolTipDesc1: 'One Batch Value',
       toolTipDesc2: 'One Batch Limit',
-      isSelected: false,
       liquidityData: [
         {
           no: 0,
@@ -232,7 +244,9 @@ export default {
         },
       ],
 
+      tokenInfo: null,
       tokenInfoArray: [],
+      toChainId: 0,
       toChainArray: [],
     }
   },
@@ -242,8 +256,54 @@ export default {
     CustomPopup,
   },
   watch: {},
-  mounted() {},
+  mounted() {
+    // Init chain
+    this.toChainArray = []
+    this.makerInfoList.filter((makerInfo) => {
+      if (this.toChainArray.indexOf(makerInfo.c2ID) === -1) {
+        this.toChainArray.push(makerInfo.c2ID)
+      }
+      if (this.toChainArray.indexOf(makerInfo.c1ID) === -1) {
+        this.toChainArray.push(makerInfo.c1ID)
+      }
+    })
+    this.toChainId = this.toChainArray[0]
+    console.warn('this.toChainId: ', this.toChainId)
+
+    // Init token
+    this.freshTokens()
+  },
   methods: {
+    freshTokens() {
+      this.tokenInfoArray = []
+      this.makerInfoList.filter((makerInfo) => {
+        const pushToken = (_fromChainID, _toChainID) => {
+          if (
+            _fromChainID !== this.toChainId &&
+            _toChainID !== this.toChainId
+          ) {
+            return
+          }
+
+          if (
+            this.tokenInfoArray.findIndex(
+              (tokenInfo) => tokenInfo.token === makerInfo.tName
+            ) == -1
+          ) {
+            this.tokenInfoArray.push({
+              icon: config.getTokenIcon(makerInfo.tName),
+              token: makerInfo.tName,
+              amount: 0,
+            })
+          }
+        }
+        pushToken(makerInfo.c1ID, makerInfo.c2ID)
+        pushToken(makerInfo.c2ID, makerInfo.c1ID)
+      })
+      console.warn('tokenInfoArray: ', this.tokenInfoArray)
+      this.tokenInfo = this.tokenInfoArray[0]
+    },
+
     changeFee() {
       console.log('fee =', this.fee)
     },
@@ -278,8 +338,12 @@ export default {
     selectToChain() {
       this.showToChainPopupClick()
     },
-    getTokenInfo(e) {
-      console.log('getTokenInfo =', e)
+    getTokenInfo(info) {
+      this.tokenInfo = info
+    },
+    getToChainInfo(info) {
+      this.toChainId = info.localID
+      this.freshTokens()
     },
     agreement(e) {
       console.log(`agreement = ${e.target.checked}`)
@@ -293,7 +357,10 @@ export default {
     onChange(checkedValues) {
       console.log('checked = ', checkedValues)
     },
-    getToChainInfo() {},
+
+    showChainName(localChainID, netChainID) {
+      return util.chainName(localChainID, netChainID)
+    },
   },
 }
 </script>

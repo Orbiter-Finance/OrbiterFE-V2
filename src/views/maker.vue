@@ -1,20 +1,25 @@
 <template>
   <div class="makerContent">
     <unloginMaker v-if="!isLogin" />
-    <loginMaker v-on:stateChanged="changeState"
-                v-if="isLogin && status === '1'" />
-               
+    <loginMaker
+      :makerInfoList="makerInfoList"
+      @stateChanged="changeState"
+      v-if="isLogin && status === '1'"
+    />
+
     <AddLiquidity
-      v-on:stateChanged="changeState"
+      :makerInfoList="makerInfoList"
+      @stateChanged="changeState"
       v-if="isLogin && status === '2'"
     />
   </div>
 </template>
 
 <script>
-import unloginMaker from '../components/maker/unloginMaker.vue'
-import loginMaker from '../components/maker/loginMaker.vue'
+import makerInfo from '../core/routes/makerInfo'
 import AddLiquidity from '../components/maker/addLiquidity.vue'
+import loginMaker from '../components/maker/loginMaker.vue'
+import unloginMaker from '../components/maker/unloginMaker.vue'
 
 export default {
   name: 'Maker',
@@ -22,11 +27,12 @@ export default {
   components: {
     unloginMaker,
     loginMaker,
-    AddLiquidity
+    AddLiquidity,
   },
   data() {
     return {
       status: '1',
+      makerInfoList: [],
     }
   },
   computed: {
@@ -34,12 +40,23 @@ export default {
       return (
         this.$store.state.web3.isInstallMeta &&
         this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
+        this.$store.state.web3.localLogin &&
+        this.makerInfoList.length > 0
       )
     },
   },
-  watch: {},
-  mounted() {},
+  async mounted() {
+    const getMakerInfoFromGraphReq = {
+      maker: '0',
+    }
+    const response = await makerInfo.getMakerInfoFromGraph(
+      getMakerInfoFromGraphReq,
+      true
+    )
+    if (response.code === 0) {
+      this.makerInfoList = response.data
+    }
+  },
   methods: {
     changeState(e) {
       if (this.status !== e) {
