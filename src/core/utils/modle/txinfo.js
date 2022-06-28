@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-
 export default {
   getTxInfoWithEtherScan: function (etherScanInfo) {
     const txInfo = {
