@@ -29,7 +29,20 @@
     <div class="content">
       <div class="subContent">
         <div class="topItem">
-          <div class="left">From</div>
+          <div class="left">
+            <o-tooltip
+              v-if="
+                this.$store.state.transferData.fromChainID == 4 ||
+                this.$store.state.transferData.fromChainID == 44
+              "
+            >
+              <template v-slot:titleDesc>
+                <span v-html="starkAddress"></span>
+              </template>
+              From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}
+            </o-tooltip>
+            <div v-else>From</div>
+          </div>
           <div v-if="isLogin" class="right">
             Balance:
             <loading
@@ -82,7 +95,20 @@
       </div>
       <div class="subContent">
         <div class="topItem">
-          <div class="left">To</div>
+          <div class="left">
+            <o-tooltip
+              v-if="
+                this.$store.state.transferData.toChainID == 4 ||
+                this.$store.state.transferData.toChainID == 44
+              "
+            >
+              <template v-slot:titleDesc>
+                <span v-html="starkAddress"></span>
+              </template>
+              To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}
+            </o-tooltip>
+            <div v-else>To</div>
+          </div>
           <div v-if="isLogin" class="right">
             Balance:
             <loading
@@ -133,7 +159,6 @@
                 iconName="help"
               ></svg-icon>
             </o-tooltip>
-
             <div>{{ toValue }}</div>
           </div>
         </div>
@@ -454,6 +479,22 @@ export default {
     },
   },
   computed: {
+    starkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (!stark) {
+        return ''
+      }
+      return stark
+    },
+    shortStarkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (stark && stark.length > 5) {
+        var subStr1 = stark.substr(0, 4)
+        var subStr2 = stark.substr(stark.length - 4, 4)
+        return subStr1 + '...' + subStr2
+      }
+      return 'not connected'
+    },
     starkMid() {
       const fromChainID = this.$store.state.transferData.fromChainID
       const toChainID = this.$store.state.transferData.toChainID
