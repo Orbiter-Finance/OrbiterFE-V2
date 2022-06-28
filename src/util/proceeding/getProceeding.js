@@ -154,10 +154,10 @@ async function confirmUserTransaction(
           const block = await starknetProvider.getBlock()
           const sn_amount = orbiterCore.getRAmountFromTAmount(
             localChainID,
-            new Bignumber(transaction.calldata?.[8])
+            new Bignumber(transaction.calldata?.[7])
           ).rAmount
           const sn_nonce = String(
-            transaction.nonce || new Bignumber(transaction.calldata?.[11]) || 0
+            transaction.nonce || new Bignumber(transaction.calldata?.[9]) || 0
           )
           const sn_SendRAmount = orbiterCore.getToAmountFromUserAmount(
             new Bignumber(sn_amount).dividedBy(
