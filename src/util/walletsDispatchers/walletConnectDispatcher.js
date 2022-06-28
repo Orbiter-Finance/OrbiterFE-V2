@@ -3,8 +3,7 @@ import QRCodeModule from "@walletconnect/qrcode-modal";
 import { toRefs } from "../../composition";
 
 import { userDeniedMessage, showMessage } from "../constants/web3/getWeb3"
-import { updateGlobalSelectWalletConf } from "./walletsCoreData";
-import { globalSelectWalletConf } from "./walletsCoreData";
+import { globalSelectWalletConf, updateSelectWalletConfPayload, updateGlobalSelectWalletConf } from "./walletsCoreData";
 import { WALLETCONNECT } from "./constants";
 import { 
     modifyLocalLoginInfo, 
@@ -73,6 +72,16 @@ const onDisconnectCallback = withErrorCatcher(payload => {
 
 const onSessionUpdateCallback = withErrorCatcher(payload => {
     console.log(`%c WalletConnect session updated`, "color: #fff; background: orange", payload);
+    const { params = [] } = payload;
+    const [chainIdAndAccountInfo = {}] = params;
+    const { chainId, accounts } = chainIdAndAccountInfo;
+    if (chainId !== globalSelectWalletConf.walletPayload.networkId) {
+        updateSelectWalletConfPayload({networkId: chainId}); // UPDATE chainId
+    }
+    const [walletAddress] = accounts;
+    if (walletAddress !== globalSelectWalletConf.walletPayload.walletAddress) {
+        updateSelectWalletConfPayload({walletAddress: walletAddress}); // UPDATE address
+    }
 })
 
 const subscribeWalletEvents = () => {

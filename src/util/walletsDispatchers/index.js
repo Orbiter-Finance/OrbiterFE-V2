@@ -62,8 +62,8 @@ export const walletDispatchersOnDisconnect = {
 
 // check login status method for each supported wallet
 export const loginStatusCheckerOfWallets = {
-    [METAMASK]: () => fetchTargetWalletLoginStatus(METAMASK),
-    [WALLETCONNECT]: () => fetchTargetWalletLoginStatus(WALLETCONNECT),
+    [METAMASK]: () => fetchTargetWalletLoginStatus({ walletType: METAMASK }),
+    [WALLETCONNECT]: () => fetchTargetWalletLoginStatus({ walletType: WALLETCONNECT }),
     ...standardLoginStatusCheckerOfWallets
 }
 
