@@ -43,7 +43,6 @@ export default {
       window.open('https://docs.orbiter.finance/', '_blank')
     },
     connectWallet() {
-      console.log('connectWallet')
       Middle.$emit('connectWallet', true)
     },
   },

@@ -9,9 +9,9 @@ import util from '../../util/util'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
+  getStarkMakerAddress,
   getProviderByChainId,
+  getStarkNetValidAddress,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
 import { IMXListen } from '../immutablex/imx_listen'
@@ -124,7 +124,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKTransactionDataError'
       }
       return confirmUserTransaction(
@@ -140,21 +140,18 @@ async function confirmUserTransaction(
       try {
         const starknetProvider = getProviderByChainId(localChainID)
         const resp = await starknetProvider.getTransaction(txHash)
-
         if (
           resp.status == 'ACCEPTED_ON_L1' ||
           resp.status == 'ACCEPTED_ON_L2'
         ) {
           const transaction = resp.transaction
-
           const block = await starknetProvider.getBlock()
-
           const sn_amount = orbiterCore.getRAmountFromTAmount(
             localChainID,
-            transaction.calldata?.[4]
+            new Bignumber(transaction.calldata?.[8])
           ).rAmount
           const sn_nonce = String(
-            transaction.nonce || transaction.calldata?.[6] || 0
+            transaction.nonce || new Bignumber(transaction.calldata?.[11]) || 0
           )
           const sn_SendRAmount = orbiterCore.getToAmountFromUserAmount(
             new Bignumber(sn_amount).dividedBy(
@@ -187,7 +184,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getStarknetTransactionDataError'
       }
       return confirmUserTransaction(
@@ -246,7 +243,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getImmutableXTransactionDataError'
       }
       return confirmUserTransaction(
@@ -320,7 +317,7 @@ async function confirmUserTransaction(
           }
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getLPTransactionDataError'
       }
       return confirmUserTransaction(
@@ -383,7 +380,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('error =', error)
+        console.warn('error =', error)
         throw 'getZKTransactionDataError'
       }
       return confirmUserTransaction(
@@ -415,7 +412,7 @@ async function confirmUserTransaction(
       'updateProceedingUserTransferTimeStamp',
       trxConfirmations.timestamp
     )
-    console.log(
+    console.warn(
       'Transaction with hash ' +
         txHash +
         ' has ' +
@@ -436,14 +433,24 @@ async function confirmUserTransaction(
         startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
       }
     } else {
+      let inputData
       // Parse input data
-      const inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      if (util.isEthTokenAddress(fromTokenAddress)) {
+        inputData = CrossAddress.parseTransferInput(trx.input)
+        inputData.amount = trx.value
+      } else {
+        inputData = CrossAddress.parseTransferERC20Input(trx.input)
+      }
       if (!inputData.ext?.value) {
         return
       }
 
       startScanMakerTransferFromAddress = inputData.to
-      amountStr = inputData.amount.toNumber() + ''
+      if (typeof inputData.amount == 'string') {
+        amountStr = Number(inputData.amount) + ''
+      } else {
+        amountStr = inputData.amount.toString() + ''
+      }
     }
     var amount = orbiterCore.getRAmountFromTAmount(
       localChainID,
@@ -578,7 +585,7 @@ function ScanZKMakerTransfer(
         }
       }
     } catch (error) {
-      console.log('error =', error)
+      console.warn('error =', error)
       throw 'getZKTransactionListError'
     }
     return ScanZKMakerTransfer(
@@ -649,7 +656,7 @@ function ScanZKSpaceMakerTransfer(
         }
       }
     } catch (error) {
-      console.log('error =', error)
+      console.warn('error =', error)
       throw 'getZKSTransactionListError'
     }
     return ScanZKSpaceMakerTransfer(
@@ -732,6 +739,10 @@ function ScanMakerTransfer(
     }
     // checkData
     const checkData = (_from, _to, _amount, _address) => {
+      if (localChainID == 4 || localChainID == 44) {
+        tokenAddress = getStarkNetValidAddress(tokenAddress)
+        _address = getStarkNetValidAddress(tokenAddress)
+      }
       if (_address && _address.toLowerCase() !== tokenAddress.toLowerCase()) {
         return false
       }
@@ -739,7 +750,7 @@ function ScanMakerTransfer(
       if (
         _from.toLowerCase() === from.toLowerCase() &&
         _to.toLowerCase() === to.toLowerCase() &&
-        _amount === amount
+        _amount == amount
       ) {
         if (!isCurrentTransaction(transactionID)) {
           return false
@@ -752,25 +763,18 @@ function ScanMakerTransfer(
     // starknet
     if (localChainID == 4 || localChainID == 44) {
       const asyncStarknet = async () => {
-        const networkId = getNetworkIdByChainId(localChainID)
-        const fromStarknetAddress = await getL2AddressByL1(from, networkId)
-        let toStarknetAddress = ''
+        //todo
+        const toStarknetAddress = store.state.web3.starkNet.starkNetAddress
 
-        // Wait toStarknetAddress deploy
-        while (!toStarknetAddress) {
-          toStarknetAddress = await getL2AddressByL1(to, networkId)
-          if (toStarknetAddress) {
-            break
-          }
-
-          await util.sleep(5000)
-        }
+        let fromStarknetAddress = await getStarkMakerAddress(
+          makerInfo.makerAddress,
+          localChainID
+        )
 
         let api = config.starknet.Mainnet
         if (localChainID == 44) {
           api = config.starknet.Rinkeby
         }
-
         const skl = factoryStarknetListen(
           { endPoint: api },
           fromStarknetAddress
@@ -779,7 +783,14 @@ function ScanMakerTransfer(
           { from: fromStarknetAddress, to: toStarknetAddress },
           {
             onReceived: async (transaction) => {
-              if (checkData(from, to, transaction.value, '')) {
+              if (
+                checkData(
+                  from,
+                  to,
+                  transaction.value,
+                  transaction.contractAddress
+                )
+              ) {
                 store.commit(
                   'updateProceedingMakerTransferTxid',
                   transaction.hash
@@ -788,7 +799,14 @@ function ScanMakerTransfer(
               }
             },
             onConfirmation: async (transaction) => {
-              if (checkData(from, to, transaction.value, '')) {
+              if (
+                checkData(
+                  from,
+                  to,
+                  transaction.value,
+                  transaction.contractAddress
+                )
+              ) {
                 storeUpdateProceedState(5)
               }
             },
@@ -1178,7 +1196,7 @@ async function getConfirmations(localChainID, txHash) {
     }
     return { confirmations: 0, trx: trx, timestamp: 0 }
   } catch (error) {
-    console.log(error)
+    console.warn(error)
   }
 }
 
@@ -1199,12 +1217,12 @@ export default {
   UserTransferReady(user, maker, amount, localChainID, makerInfo, txHash) {
     if (localChainID == 12 || localChainID == 512) {
       txHash = txHash.replace('sync-tx:', '0x')
-      console.warn('txHash =', txHash)
     }
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)
     var realAmount = orbiterCore.getRAmountFromTAmount(localChainID, amount)
+
     if (realAmount.state) {
       realAmount = realAmount.rAmount
     } else {

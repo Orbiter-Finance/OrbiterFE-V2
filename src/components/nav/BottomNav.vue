@@ -156,6 +156,18 @@
                 iconName="copy"
               ></svg-icon>
             </div>
+            <div
+              v-if="item.title === 'StarkNetAddress'"
+              v-clipboard:copy="copyStarkAddress"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+              style="width: 1.8rem; height: 1.8rem; display: inline-block"
+            >
+              <svg-icon
+                style="width: 100%; height: 100%"
+                iconName="copy"
+              ></svg-icon>
+            </div>
           </div>
         </div>
 
@@ -264,8 +276,20 @@ export default {
     })
   },
   computed: {
+    showStarkNet() {
+      const { starkNetAddress, starkIsConnected } =
+        this.$store.state.web3.starkNet
+      if (!starkIsConnected || starkNetAddress.length == 0) {
+        return false
+      }
+      return true
+    },
     copyAddress() {
       return this.$store.state.web3.coinbase
+    },
+
+    copyStarkAddress() {
+      return this.$store.state.web3.starkNet.starkNetAddress
     },
     loginData() {
       return [
@@ -277,23 +301,48 @@ export default {
       ]
     },
     loginInfoData() {
-      return [
-        {
-          icon: 'network',
-          title: 'Network',
-          value: util.chainName('0', this.$store.state.web3.networkId),
-        },
-        {
-          icon: 'wallet',
-          title: 'Wallet',
-          value: 'MetaMask',
-        },
-        {
-          icon: 'address',
-          title: 'Address',
-          value: this.showAddress,
-        },
-      ]
+      if (this.showStarkNet) {
+        return [
+          {
+            icon: 'network',
+            title: 'Network',
+            value: util.chainName('0', this.$store.state.web3.networkId),
+          },
+          {
+            icon: 'wallet',
+            title: 'Wallet',
+            value: 'MetaMask',
+          },
+          {
+            icon: 'address',
+            title: 'Address',
+            value: this.showAddress,
+          },
+          {
+            icon: 'address',
+            title: 'StarkNetAddress',
+            value: this.starkAddress,
+          },
+        ]
+      } else {
+        return [
+          {
+            icon: 'network',
+            title: 'Network',
+            value: util.chainName('0', this.$store.state.web3.networkId),
+          },
+          {
+            icon: 'wallet',
+            title: 'Wallet',
+            value: 'MetaMask',
+          },
+          {
+            icon: 'address',
+            title: 'Address',
+            value: this.showAddress,
+          },
+        ]
+      }
     },
     orbiterInfoData() {
       return [
@@ -340,6 +389,15 @@ export default {
         return subStr1 + '...' + subStr2
       }
       return ''
+    },
+    starkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (stark && stark.length > 5) {
+        var subStr1 = stark.substr(0, 4)
+        var subStr2 = stark.substr(stark.length - 4, 4)
+        return subStr1 + '...' + subStr2
+      }
+      return 'not connected'
     },
   },
   watch: {},

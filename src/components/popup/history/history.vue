@@ -26,6 +26,10 @@
         Limited by the dydx mechanism, the history of dYdX cannot be queried
         temporarily
       </div>
+      <div class="dydx-limit">
+        Limited by the starkNet mechanism, the history of starkNet cannot be
+        queried temporarily
+      </div>
       <loading
         v-if="!historyData"
         style="margin: auto; margin-top: 5rem"

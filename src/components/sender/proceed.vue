@@ -115,10 +115,6 @@
 </template>
 
 <script>
-import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
-} from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 
@@ -178,7 +174,7 @@ export default {
         if (transferData.toChainID == 8 || transferData.toChainID == 88) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
-        
+
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
@@ -221,10 +217,7 @@ export default {
       if (this.$store.state.proceedState === 1) {
         let userAddress = this.$store.state.web3.coinbase
         if (fromChainID == 4 || fromChainID == 44) {
-          userAddress = await getL2AddressByL1(
-            userAddress,
-            getNetworkIdByChainId(fromChainID)
-          )
+          userAddress = this.$store.state.web3.starkNet.starkNetAddress
         }
         let url = accountExploreUrl[fromChainID] + userAddress
 
@@ -233,7 +226,7 @@ export default {
           url = accountExploreUrl[fromChainID]
         }
 
-        window.open(url, '_blank');
+        window.open(url, '_blank')
       } else {
         let txid = this.$store.state.proceeding.userTransfer.txid
         let url =
@@ -255,10 +248,7 @@ export default {
       if (this.$store.state.proceedState < 4) {
         let userAddress = this.$store.state.web3.coinbase
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = await getL2AddressByL1(
-            userAddress,
-            getNetworkIdByChainId(toChainID)
-          )
+          userAddress = this.$store.state.web3.starkNet.starkNetAddress
         }
         let url = accountExploreUrl[toChainID] + userAddress
 
@@ -267,20 +257,20 @@ export default {
           url = accountExploreUrl[toChainID]
         }
 
-        window.open(url, '_blank');
+        window.open(url, '_blank')
       } else {
         let txid = this.$store.state.proceeding.makerTransfer.txid
         let url =
           txExploreUrl[toChainID] +
           txid +
           (toChainID == 9 || toChainID == 99 ? '-transfer' : '')
-        
+
         // ImmutableX don't have testnet browser
         if (toChainID == 88) {
           url = accountExploreUrl[toChainID]
         }
 
-        window.open(url, '_blank');
+        window.open(url, '_blank')
       }
     },
     closerButton() {
@@ -308,7 +298,7 @@ export default {
           util.showMessage('switch success', 'success')
         })
         .catch((error) => {
-          console.log(error)
+          console.warn(error)
           if (error.code === 4902) {
             // need add net
             const params = {
@@ -335,7 +325,7 @@ export default {
               })
               .then(() => {})
               .catch((error) => {
-                console.log(error)
+                console.warn(error)
                 util.showMessage(error.message, 'error')
               })
           } else {

@@ -55,7 +55,7 @@ function requestHandle(type, uri, data, config) {
         // useLoading && loading.close()
       })
   }).catch((err) => {
-    console.log('err =', err)
+    console.warn('err =', err)
     // const msg = err.message || err || 'network error'
     // Message({
     //   type: 'error',

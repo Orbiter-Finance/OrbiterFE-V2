@@ -50,6 +50,7 @@
 
 <script>
 import Web3 from 'web3'
+import { connectStarkNetWallet } from '../../../util/constants/starknet/helper'
 import { DydxHelper } from '../../../util/dydx/dydx_helper'
 import { IMXHelper } from '../../../util/immutablex/imx_helper'
 import util from '../../../util/util'
@@ -118,15 +119,9 @@ export default {
         }
         newArray.push(chainData)
       }
-
-      newArray.push({
-        icon: 'sknlogo',
-        chain: 'StarkNet(Goerli)',
-        localID: 44,
-      })
       const chainOrderIds = [
-        3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
-        511, 13, 513, 4, 44,
+        1, 5, 3, 33, 2, 22, 6, 66, 7, 77, 9, 99, 8, 88, 10, 510, 4, 44, 11, 511,
+        12, 512, 13, 513,
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
@@ -153,6 +148,7 @@ export default {
       return theArray
     },
     closerButton() {
+      this.loadingIndex = -1
       this.$emit('closeSelect')
     },
     async getChainInfo(e, index) {
@@ -161,9 +157,17 @@ export default {
         try {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
-            // To rinkeby.orbiter.finance
-            window.open('https://rinkeby.orbiter.finance', '_blank')
-            return
+            const { starkIsConnected, starkNetAddress } =
+              this.$store.state.web3.starkNet
+            if (!starkIsConnected && !starkNetAddress) {
+              await connectStarkNetWallet()
+              if (
+                !this.$store.state.web3.starkNet.starkIsConnected &&
+                !this.$store.state.web3.starkNet.starkNetAddress
+              ) {
+                return
+              }
+            }
           }
 
           // immutableX
@@ -204,9 +208,7 @@ export default {
     stopPenetrate(e) {
       e.stopPropagation
     },
-    search() {
-      console.log('search')
-    },
+    search() {},
     checkKeyWord() {},
     isStarkSystem(chainId) {
       return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1

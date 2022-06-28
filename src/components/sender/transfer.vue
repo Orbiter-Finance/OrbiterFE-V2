@@ -29,7 +29,20 @@
     <div class="content">
       <div class="subContent">
         <div class="topItem">
-          <div class="left">From</div>
+          <div class="left">
+            <o-tooltip
+              v-if="
+                this.$store.state.transferData.fromChainID == 4 ||
+                this.$store.state.transferData.fromChainID == 44
+              "
+            >
+              <template v-slot:titleDesc>
+                <span v-html="starkAddress"></span>
+              </template>
+              From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}
+            </o-tooltip>
+            <div v-else>From</div>
+          </div>
           <div v-if="isLogin" class="right">
             Balance:
             <loading
@@ -82,7 +95,20 @@
       </div>
       <div class="subContent">
         <div class="topItem">
-          <div class="left">To</div>
+          <div class="left">
+            <o-tooltip
+              v-if="
+                this.$store.state.transferData.toChainID == 4 ||
+                this.$store.state.transferData.toChainID == 44
+              "
+            >
+              <template v-slot:titleDesc>
+                <span v-html="starkAddress"></span>
+              </template>
+              To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}
+            </o-tooltip>
+            <div v-else>To</div>
+          </div>
           <div v-if="isLogin" class="right">
             Balance:
             <loading
@@ -133,17 +159,16 @@
                 iconName="help"
               ></svg-icon>
             </o-tooltip>
-
             <div>{{ toValue }}</div>
           </div>
         </div>
-
         <!-- When queryParams.fixed or toChain is dydx, hide it! -->
         <div
           v-if="
             !queryParams.fixed &&
             $store.state.transferData.toChainID != 11 &&
-            $store.state.transferData.toChainID != 511
+            $store.state.transferData.toChainID != 511 &&
+            !starkMid
           "
           class="middleImge"
           @click="transfer_mid"
@@ -338,6 +363,7 @@ import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
+import { connectStarkNetWallet } from '../../util/constants/starknet/helper'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -453,6 +479,40 @@ export default {
     },
   },
   computed: {
+    starkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (!stark) {
+        return ''
+      }
+      return stark
+    },
+    shortStarkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (stark && stark.length > 5) {
+        var subStr1 = stark.substr(0, 4)
+        var subStr2 = stark.substr(stark.length - 4, 4)
+        return subStr1 + '...' + subStr2
+      }
+      return 'not connected'
+    },
+    starkMid() {
+      const fromChainID = this.$store.state.transferData.fromChainID
+      const toChainID = this.$store.state.transferData.toChainID
+      if (
+        (fromChainID == 4 || fromChainID == 44) &&
+        toChainID != 1 &&
+        toChainID != 5 &&
+        toChainID != 2 &&
+        toChainID != 22 &&
+        toChainID != 6 &&
+        toChainID != 66 &&
+        toChainID != 7 &&
+        toChainID != 77
+      ) {
+        return true
+      }
+      return false
+    },
     queryParams() {
       const { query } = this.$route
       const { referer } = query
@@ -617,7 +677,6 @@ export default {
       }
       if (this.isLogin) {
         info.text = 'SEND'
-
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled'
         } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
@@ -651,7 +710,6 @@ export default {
         ? true
         : false
     },
-
     userMinPrice() {
       return this.$store.getters.realSelectMakerInfo.minPrice
     },
@@ -819,12 +877,8 @@ export default {
       return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
-      // console.log(this.originGasCost, 'this.originGasCost')
-      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
-      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
       let savingValue =
         this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      // console.log(savingValue, 'savingValue')
       if (savingValue > 0) {
         return true
       }
@@ -862,6 +916,57 @@ export default {
     makerInfoList: function (newValue, oldValue) {
       if (oldValue === '' && newValue !== '') {
         this.initChainArray()
+      }
+    },
+    '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
+      if (newValue) {
+        let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let fromChianID = selectMakerInfo.c1ID
+        let toChainID = selectMakerInfo.c2ID
+        if (
+          fromChianID == 4 ||
+          fromChianID == 44 ||
+          toChainID == 4 ||
+          toChainID == 44
+        ) {
+          this.c1Balance = null
+          this.c2Balance = null
+          transferCalculate
+            .getTransferBalance(
+              selectMakerInfo.c1ID,
+              selectMakerInfo.t1Address,
+              selectMakerInfo.tName,
+              this.$store.state.web3.coinbase
+            )
+            .then((response) => {
+              this.c1Balance = (
+                response /
+                10 ** selectMakerInfo.precision
+              ).toFixed(6)
+            })
+            .catch((error) => {
+              this.c1Balance = 0
+              console.warn(error)
+              return
+            })
+          transferCalculate
+            .getTransferBalance(
+              selectMakerInfo.c2ID,
+              selectMakerInfo.t2Address,
+              selectMakerInfo.tName,
+              this.$store.state.web3.coinbase
+            )
+            .then((response) => {
+              this.c2Balance = (
+                response /
+                10 ** selectMakerInfo.precision
+              ).toFixed(6)
+            })
+            .catch((error) => {
+              this.c2Balance = 0
+              console.warn(error)
+            })
+        }
       }
     },
     '$store.state.web3.coinbase': function (newValue, oldValue) {
@@ -913,9 +1018,46 @@ export default {
         this.c2Balance = 0
       }
     },
-    '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
+    '$store.state.transferData.selectMakerInfo': async function (
+      newValue,
+      oldValue
+    ) {
       this.updateExchangeToUsdPrice()
       this.getMakerMaxBalance()
+
+      if (
+        newValue.c1ID == 4 ||
+        newValue.c1ID == 44 ||
+        newValue.c2ID == 4 ||
+        newValue.c2ID == 44
+      ) {
+        const { starkNetIsConnect, starkNetAddress } =
+          this.$store.state.web3.starkNet
+        if (!starkNetIsConnect || !starkNetAddress) {
+          await connectStarkNetWallet()
+          if (
+            !this.$store.state.web3.starkNet.starkIsConnected &&
+            !this.$store.state.web3.starkNet.starkNetAddress
+          ) {
+            const makerInfo = this.makerInfoList[0]
+            this.$store.commit('updateTransferFromChainID', makerInfo.c1ID)
+            // Change query params's source
+            const { path, query } = this.$route
+
+            for (const key in queryParamsChainMap) {
+              if (queryParamsChainMap[key] == makerInfo.c1ID) {
+                if (!util.equalsIgnoreCase(query.source, key)) {
+                  this.$router.replace({
+                    path,
+                    query: { ...query, source: key },
+                  })
+                  break
+                }
+              }
+            }
+          }
+        }
+      }
 
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
@@ -986,6 +1128,26 @@ export default {
           }
         }
       })
+
+      if (
+        newValue != 1 &&
+        newValue != 5 &&
+        newValue != 2 &&
+        newValue != 22 &&
+        newValue != 6 &&
+        newValue != 66 &&
+        newValue != 7 &&
+        newValue != 77
+      ) {
+        if (this.toChainArray.indexOf(4) != -1) {
+          let index = this.toChainArray.indexOf(4)
+          this.toChainArray.splice(index, 1)
+        }
+        if (this.toChainArray.indexOf(44) != -1) {
+          let index = this.toChainArray.indexOf(44)
+          this.toChainArray.splice(index, 1)
+        }
+      }
 
       if (
         this.toChainArray.indexOf(this.$store.state.transferData.toChainID) ===
@@ -1082,7 +1244,7 @@ export default {
           })
           .catch((error) => {
             that.gasCostLoading = false
-            console.log('GetGasFeeError =', error)
+            console.warn('GetGasFeeError =', error)
           })
       }
     },
@@ -1199,29 +1361,38 @@ export default {
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
       if (selectMakerInfo && this.isLogin) {
-        this.getBalance(
-          this.$store.state.web3.coinbase,
-          selectMakerInfo.c1ID,
-          selectMakerInfo.t1Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        ).then((v) => {
-          if (v) {
-            this.c1Balance = v
-          }
-        })
-
-        this.getBalance(
-          this.$store.state.web3.coinbase,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        ).then((v) => {
-          if (v) {
-            this.c2Balance = v
-          }
-        })
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c1ID,
+            selectMakerInfo.t1Address,
+            selectMakerInfo.tName,
+            this.$store.state.web3.coinbase
+          )
+          .then((response) => {
+            this.c1Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch(() => {
+            return
+          })
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c2ID,
+            selectMakerInfo.t2Address,
+            selectMakerInfo.tName,
+            this.$store.state.web3.coinbase
+          )
+          .then((response) => {
+            this.c2Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch(() => {
+            return
+          })
       }
 
       updateETHPrice()
@@ -1243,7 +1414,7 @@ export default {
         }
       })
       .catch((error) => {
-        console.log('error =', error)
+        console.warn('error =', error)
       })
   },
   methods: {
@@ -1539,7 +1710,7 @@ export default {
           return
         }
 
-        const { toChainID } = this.$store.state.transferData
+        const { fromChainID, toChainID } = this.$store.state.transferData
 
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
@@ -1559,7 +1730,7 @@ export default {
           )
 
           this.$store.commit('updateTransferExt', {
-            type: '0x02',
+            type: '0x02', // for dydx
             value: dydxHelper.conactStarkKeyPositionId(
               '0x' + dydxAccount.starkKey,
               dydxAccount.positionId
@@ -1570,23 +1741,80 @@ export default {
           this.$store.commit('updateTransferExt', null)
         }
 
-        // Ensure fromChainId's networkId
-        if (
-          this.$store.state.web3.networkId.toString() !==
-          this.$env.localChainID_netChainID[
-            this.$store.state.transferData.fromChainID
-          ]
-        ) {
-          try {
-            await util.ensureMetamaskNetwork(
-              this.$store.state.transferData.fromChainID
-            )
-          } catch (err) {
-            util.showMessage(err.message, 'error')
+        // To starkNet
+        if (toChainID == 4 || toChainID == 44) {
+          const { starkIsConnected, starkNetAddress, starkChain } =
+            this.$store.state.web3.starkNet
+          if (!starkChain || starkChain == 'unlogin') {
+            util.showMessage('please connect starkNetWallet', 'error')
             return
           }
+          if (
+            toChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            util.showMessage('please switch starkNetWallet to mainnet', 'error')
+            return
+          }
+          if (
+            toChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            util.showMessage('please switch starkNetWallet to testNet', 'error')
+            return
+          }
+          if (starkNetAddress && starkIsConnected) {
+            this.$store.commit('updateTransferExt', {
+              type: '0x03',
+              value: starkNetAddress,
+            })
+          } else {
+            util.showMessage('please connect starkNetWallet', 'error')
+            return
+          }
+        } else {
+          // Clear TransferExt
+          this.$store.commit('updateTransferExt', null)
         }
 
+        if (fromChainID == 4 || fromChainID == 44) {
+          const { starkChain } = this.$store.state.web3.starkNet
+          if (!starkChain || starkChain == 'unlogin') {
+            util.showMessage('please connect starkNetWallet', 'error')
+            return
+          }
+          if (
+            fromChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            util.showMessage('please switch starkNetWallet to mainnet', 'error')
+            return
+          }
+          if (
+            fromChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            util.showMessage('please switch starkNetWallet to testNet', 'error')
+            return
+          }
+        } else {
+          // Ensure fromChainId's networkId
+          if (
+            this.$store.state.web3.networkId.toString() !==
+            this.$env.localChainID_netChainID[
+              this.$store.state.transferData.fromChainID
+            ]
+          ) {
+            try {
+              await util.ensureMetamaskNetwork(
+                this.$store.state.transferData.fromChainID
+              )
+            } catch (err) {
+              util.showMessage(err.message, 'error')
+              return
+            }
+          }
+        }
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -1618,7 +1846,7 @@ export default {
         )
         this.originGasCost = response
       } catch (error) {
-        console.log('updateOriginGasCost error =', error)
+        console.warn('updateOriginGasCost error =', error)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -1658,6 +1886,7 @@ export default {
         )
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
+        console.warn(error)
         return 0
       }
     },

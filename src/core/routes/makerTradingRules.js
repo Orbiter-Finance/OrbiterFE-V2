@@ -7,7 +7,7 @@ var process = require('../utils/process')
 var TxInfo = require('../utils/modle/txinfo')
 
 export default {
-  getMakerPoolRealDepositAmount: async function(req, next) {
+  getMakerPoolRealDepositAmount: async function (req, next) {
     /*
       Req:
       maker: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
@@ -55,9 +55,8 @@ export default {
         } else {
           ethScanStartBlock = 0
         }
-        console.log('ethScanStartBlock =', ethScanStartBlock)
       } catch (error) {
-        console.log('ethScanStartBlockError =', error)
+        console.warn('ethScanStartBlockError =', error)
       }
 
       var ethscanReq = {
@@ -76,7 +75,6 @@ export default {
             if (txinfo.from === req.maker) {
               L1FromTxList.push(txinfo)
             } else if (txinfo.to === req.maker) {
-
               var isMatch = false
               for (const j in avalibleTimes) {
                 if (Object.hasOwnProperty.call(avalibleTimes, j)) {
@@ -98,11 +96,9 @@ export default {
           }
         }
       } catch (error) {
-        console.log('ethError =', error)
+        console.warn('ethError =', error)
       }
     }
-    console.log('L1FromTxList =', L1FromTxList.length)
-    console.log('L1ToTxList =', L1ToTxList.length)
 
     if (req.pool.c1ID === 3 || req.pool.c2ID === 3) {
       ZKReady = true
@@ -112,9 +108,8 @@ export default {
       var zkTokenInfo
       try {
         zkTokenInfo = await thirdapi.getZKTokenInfo(zkTokenInfoReq, next)
-        console.log('tokenInfo =', zkTokenInfo)
       } catch (error) {
-        console.log('zkError =', error)
+        console.warn('zkError =', error)
       }
 
       var lastHash = 0
@@ -153,16 +148,14 @@ export default {
                   strtime
                     .replace(/-/g, '/')
                     .replace(/T/g, '/')
-                    .replace(/Z/g, '/'),
+                    .replace(/Z/g, '/')
                 )
                 var timestamp = Date.parse(date) / 1000
-                console.log('timestamp =', timestamp)
-                console.log('needTimeStamp =', needTimeStamp)
                 if (timestamp >= needTimeStamp) {
                   tx.timestamp = timestamp
                   var zk_txinfo = TxInfo.getTxInfoWithZksync(
                     tx,
-                    zkTokenInfo.result,
+                    zkTokenInfo.result
                   )
                   if (zk_txinfo.from === req.zkParam.maker) {
                     ZKFromTxList.push(zk_txinfo)
@@ -193,13 +186,10 @@ export default {
             }
           }
         } catch (error) {
-          console.log('zkError =', error)
+          console.warn('zkError =', error)
         }
       }
     }
-    console.log('ZKFromTxList =', ZKFromTxList.length)
-    console.log('ZKToTxList =', ZKToTxList.length)
-
     // 4
     if (req.pool.c1ID === 2 || req.pool.c2ID === 2) {
       var arTokenAddress =
@@ -218,15 +208,14 @@ export default {
         } else {
           ArScanStartBlock = 0
         }
-        console.log('ArScanStartBlock =', ArScanStartBlock)
       } catch (error) {
-        console.log('ArScanStartBlockError =', error)
+        console.warn('ArScanStartBlockError =', error)
       }
 
       var ArReq = {
         maker: req.maker,
         tokenAddress: arTokenAddress,
-        startblock: ethScanStartBlock,
+        startblock: ArScanStartBlock,
         endblock: 999999999,
       }
       try {
@@ -239,7 +228,6 @@ export default {
             if (ArTxinfo.from === req.maker) {
               ARFromTxList.push(ArTxinfo)
             } else if (ArTxinfo.to === req.maker) {
-              
               var ArIsMatch = false
               for (const j in ArAvalibleTimes) {
                 if (Object.hasOwnProperty.call(ArAvalibleTimes, j)) {
@@ -261,11 +249,9 @@ export default {
           }
         }
       } catch (error) {
-        console.log('ethError =', error)
+        console.warn('ethError =', error)
       }
     }
-    console.log('ARFromTxList =', ARFromTxList.length)
-    console.log('ARToTxList =', ARToTxList.length)
 
     var match1, firstToList, match2, secondToList
     if (!L1Ready) {
@@ -291,18 +277,16 @@ export default {
       if (Object.hasOwnProperty.call(firstToList, i)) {
         const tx = firstToList[i]
         toBeReturnedAmount += parseInt(
-          process.realAmount(tx.value, tx.tokenDecimal, 5),
+          process.realAmount(tx.value, tx.tokenDecimal, 5)
         )
-        console.log('toBeReturnedAmount =', toBeReturnedAmount)
       }
     }
     for (const j in secondToList) {
       if (Object.hasOwnProperty.call(secondToList, j)) {
         const tx = secondToList[j]
         toBeReturnedAmount += parseInt(
-          process.realAmount(tx.value, tx.tokenDecimal, 5),
+          process.realAmount(tx.value, tx.tokenDecimal, 5)
         )
-        console.log('toBeReturnedAmount =', toBeReturnedAmount)
       }
     }
     return toBeReturnedAmount
@@ -328,21 +312,19 @@ function matchTx(toList, fromList, pool) {
             var fromAmount = fromTxInfo.value
             var isMatch = fromAmount.endsWith(toNonce)
             if (isMatch) {
-              
               if (fromTxInfo.to === toTxInfo.from) {
                 var realToAmount = process.realAmount(
                   toTxInfo.value,
                   toTxInfo.tokenDecimal,
-                  5,
+                  5
                 )
                 var realFromAmount = process.realAmount(
                   fromAmount,
                   fromTxInfo.tokenDecimal,
-                  5,
+                  5
                 )
 
                 if (realToAmount * (1 - pool.fee / 10000) === realFromAmount) {
-
                   var toIndex = process.getIndexInArr(newToList, toTxInfo)
                   var fromIndex = process.getIndexInArr(newFromList, fromTxInfo)
                   if ((toIndex !== -1) & (fromIndex !== -1)) {
