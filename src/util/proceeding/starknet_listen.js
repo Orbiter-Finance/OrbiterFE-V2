@@ -21,8 +21,6 @@ class StarknetListen {
     this.listens = []
     this.provider = getProviderByChainId(localChainID)
     this.localChainID = localChainID
-
-    this.start()
   }
 
   start() {

@@ -840,6 +840,7 @@ function ScanMakerTransfer(
           fromStarknetAddress,
           localChainID
         )
+        skl.start()
         skl.transfer(
           { from: fromStarknetAddress, to: toStarknetAddress },
           {
