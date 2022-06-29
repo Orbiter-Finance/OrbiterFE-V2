@@ -1110,13 +1110,16 @@ export default {
             return
           }
 
-          const gasLimit = await getTransferGasLimit(
+          let gasLimit = await getTransferGasLimit(
             fromChainID,
             selectMakerInfo,
             account,
             to,
             tValue.tAmount
           )
+          if (gasLimit < 21000) {
+            gasLimit = 21000
+          }
           const objOption = { from: account, gas: gasLimit }
           transferContract.methods
             .transfer(to, tValue.tAmount)
