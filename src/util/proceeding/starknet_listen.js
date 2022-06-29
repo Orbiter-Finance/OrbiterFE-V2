@@ -127,12 +127,17 @@ class StarknetListen {
 
             if (filter) {
               if (
-                filter.from &&
-                filter.from.toUpperCase() != from.toUpperCase()
+                getStarkNetValidAddress(filter.from) &&
+                getStarkNetValidAddress(filter.from).toUpperCase() !=
+                  getStarkNetValidAddress(from).toUpperCase()
               ) {
                 continue
               }
-              if (filter.to && filter.to.toUpperCase() != to.toUpperCase()) {
+              if (
+                getStarkNetValidAddress(filter.to) &&
+                getStarkNetValidAddress(filter.to).toUpperCase() !=
+                  getStarkNetValidAddress(to).toUpperCase()
+              ) {
                 continue
               }
               if (filter.amount != transaction.value) {
