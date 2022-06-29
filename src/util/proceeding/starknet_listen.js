@@ -26,6 +26,7 @@ class StarknetListen {
   }
 
   start() {
+    let clearTiker
     const ticker = async () => {
       // if (this.localChainID == 11) {
       //   const resp = await axios.get(
@@ -72,34 +73,14 @@ class StarknetListen {
       //   this.isFirstTicker = false
       // } else {
       const blockInfo = await this.provider.getBlock('pending')
-      console.log('blockInfo =', blockInfo)
       if (blockInfo) {
         const transactions = blockInfo.transactions
-        console.log('transactions =', transactions)
-
-        console.log(
-          'getStarkNetValidAddress(this.apiParamsTo) =',
-          getStarkNetValidAddress(this.apiParamsTo)
-        )
-
         for (const tx of transactions.filter(
           (tx) =>
             tx.type === 'INVOKE_FUNCTION' &&
             getStarkNetValidAddress(tx.contract_address) ==
               getStarkNetValidAddress(this.apiParamsTo)
         )) {
-          console.log('calldata =', tx.calldata)
-          console.log('selectorDec =', this.selectorDec)
-
-          console.log(
-            'from =',
-            starknet.number.toHex(
-              starknet.number.toBN(
-                starknet.number.hexToDecimalString(tx.contract_address)
-              )
-            )
-          )
-
           let calldata = tx.calldata
           // Check data
           if (!calldata || calldata.length < 7) {
@@ -109,17 +90,6 @@ class StarknetListen {
           if (calldata[2] != this.selectorDec) {
             break
           }
-
-          console.log(
-            'to =',
-            starknet.number.toHex(starknet.number.toBN(calldata[6]))
-          )
-
-          console.log(
-            'contractAddress =',
-            starknet.number.toHex(starknet.number.toBN(calldata[1]))
-          )
-
           // Clear front zero
           const from = starknet.number.toHex(
             starknet.number.toBN(
@@ -143,8 +113,6 @@ class StarknetListen {
             contractAddress,
             confirmations: 0,
           }
-
-          console.log('transaction =', transaction)
           const isConfirmed =
             util.equalsIgnoreCase(
               transaction.txreceipt_status,
@@ -187,6 +155,9 @@ class StarknetListen {
                 this.transferConfirmationedHashs[transaction.hash] = true
               }
               console.warn(`Transaction [${transaction.hash}] was confirmed.`)
+              if (clearTiker) {
+                clearInterval(clearTiker)
+              }
               callbacks &&
                 callbacks.onConfirmation &&
                 callbacks.onConfirmation(transaction)
@@ -197,7 +168,7 @@ class StarknetListen {
       // }
     }
     ticker()
-    setInterval(ticker, STARKNET_LISTEN_TRANSFER_DURATION)
+    clearTiker = setInterval(ticker, STARKNET_LISTEN_TRANSFER_DURATION)
   }
 
   async getTransaction(hash, retryCount = 0) {
