@@ -148,7 +148,8 @@ async function confirmUserTransaction(
         const resp = await starknetProvider.getTransaction(txHash)
         if (
           resp.status == 'ACCEPTED_ON_L1' ||
-          resp.status == 'ACCEPTED_ON_L2'
+          resp.status == 'ACCEPTED_ON_L2' ||
+          resp.status == 'PENDING'
         ) {
           const transaction = resp.transaction
           const block = await starknetProvider.getBlock()
