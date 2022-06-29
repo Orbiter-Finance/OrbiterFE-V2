@@ -135,6 +135,9 @@ class StarknetListen {
               if (filter.to && filter.to.toUpperCase() != to.toUpperCase()) {
                 continue
               }
+              if (filter.amount != transaction.value) {
+                continue
+              }
             }
 
             if (this.transferReceivedHashs[tx.transaction_hash] !== true) {

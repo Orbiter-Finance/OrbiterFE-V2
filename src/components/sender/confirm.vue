@@ -110,7 +110,10 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
-import { sendTransfer } from '../../util/constants/starknet/helper'
+import {
+  sendTransfer,
+  getStarkMakerAddress,
+} from '../../util/constants/starknet/helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
@@ -686,6 +689,18 @@ export default {
           params: [switchParams],
         })
         .then(() => {
+          let fromChainID = this.$store.state.transferData.fromChainID
+          let toAddress = util.shortAddress(
+            that.$store.getters.realSelectMakerInfo.makerAddress
+          )
+          if (fromChainID == 4 || fromChainID == 44) {
+            toAddress = util.shortAddress(
+              getStarkMakerAddress(
+                that.$store.getters.realSelectMakerInfo.makerAddress,
+                fromChainID
+              )
+            )
+          }
           // switch success
           that.$store.commit('updateConfirmRouteDescInfo', [
             {
@@ -698,9 +713,7 @@ export default {
                 )
               ),
               coin: that.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(
-                that.$store.getters.realSelectMakerInfo.makerAddress
-              ),
+              toAddress: toAddress,
             },
           ])
           this.RealTransfer()
@@ -750,13 +763,16 @@ export default {
       try {
         const web3 = new Web3(window.ethereum)
 
-        const gasLimit = await getTransferGasLimit(
+        let gasLimit = await getTransferGasLimit(
           fromChainID,
           selectMakerInfo,
           from,
           selectMakerInfo.makerAddress,
           value
         )
+        if (gasLimit < 21000) {
+          gasLimit = 21000
+        }
         await web3.eth.sendTransaction(
           {
             from,
