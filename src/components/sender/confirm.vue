@@ -780,7 +780,8 @@ export default {
           from,
           contractAddress,
           selectMakerInfo.makerAddress,
-          new BigNumber(value)
+          new BigNumber(value),
+          fromChainID
         )
         if (hash) {
           this.onTransferSucceed(

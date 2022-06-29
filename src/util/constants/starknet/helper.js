@@ -134,9 +134,7 @@ export async function sendTransfer(
   l1Address = l1Address.toLowerCase()
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
-
   let networkID = getNetworkIdByChainId(chainID)
-
   const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
