@@ -695,13 +695,16 @@ export default {
       try {
         const web3 = new Web3(window.ethereum)
 
-        const gasLimit = await getTransferGasLimit(
+        let gasLimit = await getTransferGasLimit(
           fromChainID,
           selectMakerInfo,
           from,
           selectMakerInfo.makerAddress,
           value
         )
+        if (fromChainID == 2 && gasLimit < 21000) {
+          gasLimit = 21000
+        }
         await web3.eth.sendTransaction(
           {
             from,
@@ -1078,13 +1081,16 @@ export default {
             return
           }
 
-          const gasLimit = await getTransferGasLimit(
+          let gasLimit = await getTransferGasLimit(
             fromChainID,
             selectMakerInfo,
             account,
             to,
             tValue.tAmount
           )
+          if (fromChainID == 2 && gasLimit < 21000) {
+            gasLimit = 21000
+          }
           const objOption = { from: account, gas: gasLimit }
           transferContract.methods
             .transfer(to, tValue.tAmount)
