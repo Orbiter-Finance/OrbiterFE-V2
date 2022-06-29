@@ -363,7 +363,10 @@ import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
-import { connectStarkNetWallet } from '../../util/constants/starknet/helper'
+import {
+  connectStarkNetWallet,
+  getStarkMakerAddress,
+} from '../../util/constants/starknet/helper'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -1798,6 +1801,12 @@ export default {
             }
           }
         }
+        let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
+        if (fromChainID == 4 || fromChainID == 44) {
+          toAddress = util.shortAddress(
+            getStarkMakerAddress(selectMakerInfo.makerAddress, fromChainID)
+          )
+        }
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -1806,7 +1815,7 @@ export default {
               new BigNumber(selectMakerInfo.tradingFee)
             ),
             coin: this.$store.state.transferData.selectTokenInfo.token,
-            toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+            toAddress: toAddress,
           },
         ])
         this.$emit('stateChanged', '2')

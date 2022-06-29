@@ -50,7 +50,7 @@ const GAS_ADDRESS = {
   },
 }
 
-export async function getStarkMakerAddress(makerAddress, chainID) {
+export function getStarkMakerAddress(makerAddress, chainID) {
   makerAddress = makerAddress.toLowerCase()
   let networkID = getNetworkIdByChainId(chainID)
   const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'

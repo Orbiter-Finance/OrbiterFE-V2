@@ -912,7 +912,7 @@ export default {
           return 0
         }
       } else {
-        starknetAddress = await getStarkMakerAddress(userAddress, localChainID)
+        starknetAddress = getStarkMakerAddress(userAddress, localChainID)
       }
       const balance = await getErc20Balance(
         starknetAddress,
