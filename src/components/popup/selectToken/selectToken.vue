@@ -4,10 +4,7 @@
       <div class="topItem">
         <span>Select a Token</span>
         <div @click="closerButton">
-          <svg-icon
-            style="width: 1.5rem; height: 1.5rem"
-            iconName="close"
-          ></svg-icon>
+          <svg-icon style="width: 1.5rem; height: 1.5rem" iconName="close"></svg-icon>
         </div>
       </div>
       <div style="width: 100%; position: relative">
@@ -15,14 +12,9 @@
           type="text"
           v-model="keyword"
           class="input"
-          @input="checkKeyWord()"
           :placeholder="`More tokens will be supported soon.`"
         />
-        <svg-icon
-          @click="search"
-          class="searchIcon"
-          iconName="search"
-        ></svg-icon>
+        <svg-icon class="searchIcon" iconName="search"></svg-icon>
       </div>
 
       <div
@@ -39,9 +31,7 @@
           alt=""
         />
         <svg-icon v-else class="logo token_icon" iconName="tokenLogo"></svg-icon>
-
         <span style="margin-top: 0.2rem">{{ item.token }}</span>
-        <!-- <span class="right">{{item.amount}}</span> -->
       </div>
     </div>
   </o-box-content>
@@ -72,8 +62,6 @@ export default {
       );
     },
   },
-  watch: {},
-  mounted() {},
   methods: {
     closerButton() {
       this.$emit("closeSelect");
@@ -85,8 +73,6 @@ export default {
     stopPenetrate(e) {
       e.stopPropagation;
     },
-    search() {},
-    checkKeyWord() {},
   },
 };
 </script>

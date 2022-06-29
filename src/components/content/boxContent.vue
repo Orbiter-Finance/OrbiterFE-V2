@@ -8,19 +8,6 @@
 
 export default {
   name: 'o-box-content',
-  props: {
-  },
-  data() {
-    return {
-    }
-  },
-  mounted() {
-
-  },
-  watch: {
-  },
-  methods: {
-  }
 }
 </script>
 

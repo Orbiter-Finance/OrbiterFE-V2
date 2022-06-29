@@ -8,7 +8,7 @@ export default {
   async getTransactionsHistory({ commit, state }, params) {
     const res = await getTransactionsHistoryApi({
       userAddress: state.web3.coinbase,
-      size: 30,
+      size: 10,
       ...params,
     })
 

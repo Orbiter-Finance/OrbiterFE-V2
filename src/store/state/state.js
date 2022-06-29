@@ -77,5 +77,7 @@ const state = {
   },
   lpAccountInfo: null,
   lpApiKey: null,
+  themeMode: localStorage.getItem('themeMode') || 'light', // light dark
+  historyPanelVisible: false,
 }
 export default state

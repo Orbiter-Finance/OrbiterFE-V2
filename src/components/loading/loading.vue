@@ -51,7 +51,6 @@ export default {
       default: '2rem'
     },
     loadingColor: { type: String, default: "#e85e24" },
-
   },
   data() {
     return {

@@ -3,6 +3,7 @@ import App from './App.vue'
 import AsyncComputed from 'vue-async-computed'
 import router from './router'
 import { store } from './store'
+import './config/theme.scss'
 import './config/global.css'
 import env from '../env'
 

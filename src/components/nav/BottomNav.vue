@@ -381,7 +381,7 @@ export default {
       this.openLoginPop()
     },
     toHistory() {
-      this.showHistoryPopupClick()
+      this.$store.commit('toggleHistoryPanelVisible', true)
     },
     clickHoriz() {
       this.showOrbiterInfoPopupClick()

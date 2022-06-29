@@ -51,22 +51,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-@media screen and (min-width: 5000px) {
-  .senderContent {
-    display: flex;
-    justify-content: space-between;
-    padding: 8.8% 0 0 0;
-    margin: 0 auto;
-    width: 100%;
-    max-width: 128rem;
-    .left {
-      margin-left: 6.7%;
-    }
-    .right {
-      margin-right: 6.7%;
-    }
-  }
-}
+<style scoped lang="scss">
+
 </style>

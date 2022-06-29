@@ -2002,41 +2002,48 @@ const nowMakerList = [
     ],
   },
 ]
-
-export default {
-  getMakerInfo: function (req, next) {
-    return new Promise((resolve, reject) => {
-      var res = {}
-      res.code = 0
-      res.data = nowMakerList
-      if (next) {
-        resolve(res)
-      } else {
-        reject(res)
-      }
-    })
-  },
-  getMakerTokenNames: function (maketList) {
-    let makerTokenNames = {}
-    for (let item of maketList) {
-      makerTokenNames[item.tName] = true
+function getMakerInfo(req, next) {
+  return new Promise((resolve, reject) => {
+    var res = {}
+    res.code = 0
+    res.data = nowMakerList
+    if (next) {
+      resolve(res)
+    } else {
+      reject(res)
     }
-    return makerTokenNames
-  },
-  getAllMakerList: function (req, next) {
-    return new Promise((resolve, reject) => {
-      var res = {}
-      res.code = 0
-      res.data = []
+  })
+}
+function getMakerTokenNames(maketList) {
+  let makerTokenNames = {}
+  for (let item of maketList) {
+    makerTokenNames[item.tName] = true
+  }
+  return makerTokenNames
+}
+function getAllMakerList(req, next) {
+  return new Promise((resolve, reject) => {
+    var res = {}
+    res.code = 0
+    res.data = []
 
-      // push now makerList
-      res.data = res.data.concat(nowMakerList)
+    // push now makerList
+    res.data = res.data.concat(nowMakerList)
 
-      if (next) {
-        resolve(res)
-      } else {
-        reject(res)
-      }
-    })
-  },
+    if (next) {
+      resolve(res)
+    } else {
+      reject(res)
+    }
+  })
+}
+export default {
+  getMakerInfo,
+  getMakerTokenNames,
+  getAllMakerList
+}
+export {
+  getMakerInfo,
+  getMakerTokenNames,
+  getAllMakerList
 }
