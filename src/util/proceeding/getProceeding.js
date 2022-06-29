@@ -766,7 +766,7 @@ function ScanMakerTransfer(
         //todo
         const toStarknetAddress = store.state.web3.starkNet.starkNetAddress
 
-        let fromStarknetAddress = await getStarkMakerAddress(
+        let fromStarknetAddress = getStarkMakerAddress(
           makerInfo.makerAddress,
           localChainID
         )
@@ -777,10 +777,12 @@ function ScanMakerTransfer(
         }
         const skl = factoryStarknetListen(
           { endPoint: api },
-          fromStarknetAddress
+          fromStarknetAddress,
+          localChainID
         )
+        skl.start()
         skl.transfer(
-          { from: fromStarknetAddress, to: toStarknetAddress },
+          { from: fromStarknetAddress, to: toStarknetAddress, amount: amount },
           {
             onReceived: async (transaction) => {
               if (
