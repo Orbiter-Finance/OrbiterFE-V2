@@ -1677,18 +1677,6 @@ export default {
           })
           return
         }
-
-        if (
-          this.$store.state.transferData.toChainID == 4 ||
-          this.$store.state.transferData.toChainID == 44
-        ) {
-          this.$notify.error({
-            title: `Affected by the starkNet interface issue, the transfer to starkNet is suspended.`,
-            duration: 3000,
-          })
-          return
-        }
-
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
