@@ -711,7 +711,7 @@ export default {
           selectMakerInfo.makerAddress,
           value
         )
-        if (gasLimit < 21000) {
+        if (fromChainID == 2 && gasLimit < 21000) {
           gasLimit = 21000
         }
         await web3.eth.sendTransaction(
@@ -1117,7 +1117,7 @@ export default {
             to,
             tValue.tAmount
           )
-          if (gasLimit < 21000) {
+          if (fromChainID == 2 && gasLimit < 21000) {
             gasLimit = 21000
           }
           const objOption = { from: account, gas: gasLimit }
