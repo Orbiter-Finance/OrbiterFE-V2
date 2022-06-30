@@ -222,7 +222,7 @@ export default {
           {
             icon: 'tips',
             title:
-              'Modifying the transfer amount in MetaMask will cause the transfer ',
+              'StarkNet is still in alpha version, the transaction on it maybe will be done in 1~2 hours. Orbiter keeps your funds safe.',
             desc: '',
             textBold: false,
           },
