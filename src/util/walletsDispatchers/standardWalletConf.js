@@ -1,3 +1,4 @@
+import { showMessage } from "../constants/web3/getWeb3";
 import { COINBASE, BRAVE } from "./constants";
 
 /**
@@ -27,6 +28,16 @@ export default [
         walletType: BRAVE,
         icon: BRAVE,
         walletIsInstalledInvestigator: provider => provider.isBraveWallet,
-        chainIdTransfer: chainId => parseInt(chainId, 16)
+        chainIdTransfer: chainId => parseInt(chainId, 16),
+        walletNotInstallReducer: () => {
+            // because brave is special, his provider maybe overridden by metamask
+            // so even if the user is in the brave browser, he may still not have 
+            // access the provider of brave wallet
+            
+            // maybe we can popup a window to prompt the user to disable the metamask wallet
+            // extension? (to avoid user confusion);
+
+            showMessage("The Brave Wallet is only available in the brave browser, so make sure u r in the brave browser, and the brave wallet will conflict with the metamask wallet, so u must disable the metamask wallet extension in your browser if u want to access the brave wallet", "warning");
+        }
     }
 ]

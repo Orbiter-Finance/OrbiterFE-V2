@@ -1,10 +1,6 @@
 /**
- * Author: echo
- * Date: 2022/06/23
- * 
  * this file exports a set of common wallet apis
  * using these apis, it's very easy to access a compliant wallet without extra code
- * 
  */
 import Web3 from "web3";
 import { findMatchWeb3ProviderByWalletType, modifyLocalLoginInfo } from "./utils";
@@ -34,8 +30,8 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
                 resolve(null);
             }
         } else {
-            const errorMsg = `not install ${walletType}`;
-            showMessage(errorMsg, "error");
+            // const errorMsg = `not install ${walletType}`;
+            // showMessage(errorMsg, "error");
             resolve(null);
         }
     })
@@ -67,7 +63,8 @@ export const performWalletInformation = async (walletType, walletIsInstalledInve
 // this method can init wallet config directly if the wallet type
 // passed is a standard compliant wallet
 export const universalWalletInitHandler = (walletConf) => {
-    const { walletType, walletIsInstalledInvestigator } = walletConf;
+    const { walletType, walletIsInstalledInvestigator, walletNotInstallReducer } = walletConf;
+
     performWalletInformation(walletType, walletIsInstalledInvestigator).then(({ performResult, provider }) => {
         /**
          * result contains following properties
@@ -92,6 +89,10 @@ export const universalWalletInitHandler = (walletConf) => {
         // listen for changes
         walletInfoChangeWatcher(walletConf, provider);
     }).catch(err => {
+        if (walletNotInstallReducer) {
+            walletNotInstallReducer();
+            return;
+        }
         console.log(`%c ${walletType} init err`, "color: #fff; background: red", err);
         showMessage(err, "error");
     });
@@ -102,13 +103,22 @@ export const universalWalletInitHandler = (walletConf) => {
 const walletInfoChangeWatcher = (walletConf, walletProvider) => {
     const { chainIdTransfer = (chainId) => chainId } = walletConf;
     walletProvider.autoRefreshOnNetworkChange = false;
-    console.log(`%c wallet provider listening....`, "color: #fff; background: blue", walletProvider.on);
+    // why call Object.assign? because "window.ethereum" is frozen in brave browser
+    // so we defrosted it to ensure that the emit can be assign again
+    window.ethereum = Object.assign({}, window.ethereum);
+    // rewrite ethereum.emit because when a wallet extension switches networks
+    // the window.ethereum.emit method will be called, due to multiple wallets 
+    // will generate the ethereum injection conflict, so the emit that wallet extension
+    // called maybe not pure
+    window.ethereum.emit = walletProvider.emit; 
+    console.log(`%c wallet provider listening....`, "color: #fff; background: blue", walletProvider);
     walletProvider.on("chainChanged", chainId => {
         console.log(`%c chainId updated, convert result %c`, "color: #fff; background: green", chainId, chainIdTransfer(chainId));
         updateSelectWalletConfPayload({
             networkId: chainIdTransfer(chainId)
         });
     })
+
     walletProvider.on("accountsChanged", ([newWalletAddress = ""]) => {
         console.log(`%c user wallet address updated`, "color: #fff; background: green", chainId);
         updateSelectWalletAddress(newWalletAddress);
@@ -124,7 +134,6 @@ export const universalWalletSwitchChainHandler = (walletConf, walletProvider, su
     const switchParams = {
         chainId: util.toHex(presentNetWorkId)
     }
-    console.log("walletProvider", walletProvider);
     walletProvider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],

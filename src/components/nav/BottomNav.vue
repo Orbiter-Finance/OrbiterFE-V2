@@ -250,6 +250,7 @@ import {
 } from "../../util/walletsDispatchers";
 import { toRefs } from "../../composition";
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { isBraveBrowser } from "../../util/browserUtils";
 
 export default {
   name: 'BottomNav',
@@ -284,7 +285,7 @@ export default {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     loginData() {
-      return [
+      const wallets = [
         {
           isConnect: walletIsLogin.value && check.checkIsMetaMask(),
           icon: 'metamask',
@@ -306,6 +307,10 @@ export default {
           title: "Brave"
         }
       ]
+      // the brave wallet is exclusive to the brave browser
+      // so if in other browsers, we should hide brave wallet connect option to users
+      if (!isBraveBrowser()) return wallets.filter(wallet => wallet.title !== "Brave");
+      return wallets;
     },
     loginInfoData() {
       return [

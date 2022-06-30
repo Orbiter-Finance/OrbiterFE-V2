@@ -42,15 +42,6 @@ async function getWeb3() {
       store.commit('updateNetWorkId', netWorkId.toString())
     }
   })
-  console.log("web3", web3);
-  const sresult = await web3.eth.requestAccounts();
-  
-  console.log("resyult", sresult)
-  compatibleGlobalWalletConf.value.walletPayload.provider.request({
-    method: "eth_coinbase"
-  }).then(r => {
-    console.log("123232", r);
-  })
   const result = await web3.eth.getCoinbase((error, coinbase) => {
     console.log('coinbase=', coinbase, error)
     if (error || !coinbase) {
