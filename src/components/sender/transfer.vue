@@ -166,7 +166,7 @@
       @click="sendTransfer"
     >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
-        {{ sendBtnInfo && sendBtnInfo.text }}2
+        {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
     </o-button>
     <div class="notice">
