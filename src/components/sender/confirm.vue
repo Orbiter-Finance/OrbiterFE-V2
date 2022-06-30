@@ -152,6 +152,87 @@ export default {
         /(.*?0)0{4,}(0.*?)/,
         '$1...$2'
       )
+      const { fromChainID, toChainID } = this.$store.state.transferData
+      if (
+        fromChainID == 4 ||
+        fromChainID == 44 ||
+        toChainID == 4 ||
+        toChainID == 44
+      ) {
+        return [
+          {
+            icon: 'withholding_gas_cost',
+            title: 'Withholding Fee',
+            notice:
+              'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
+            desc:
+              (this.$store.getters.realSelectMakerInfo
+                ? this.$store.getters.realSelectMakerInfo.tradingFee
+                : 0) +
+              ' ' +
+              this.$store.getters.realSelectMakerInfo.tName,
+          },
+          {
+            icon: 'security',
+            title: 'Security Code',
+            notice:
+              'In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information for the transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.',
+            desc: transferCalculate.realTransferOPID(),
+            haveSep: true,
+          },
+          {
+            icon: 'send',
+            title: 'Total Send',
+            notice:
+              'Include the amount transferred by Sender and withholding gas fee.',
+            desc:
+              realTransferAmount +
+              ' ' +
+              this.$store.getters.realSelectMakerInfo.tName,
+            textBold: true,
+          },
+          {
+            icon: 'receive',
+            title: 'Received',
+            desc:
+              orbiterCore.getToAmountFromUserAmount(
+                new BigNumber(
+                  this.$store.state.transferData.transferValue
+                ).plus(
+                  new BigNumber(
+                    this.$store.getters.realSelectMakerInfo.tradingFee
+                  )
+                ),
+                this.$store.getters.realSelectMakerInfo,
+                false
+              ) +
+              ' ' +
+              this.$store.getters.realSelectMakerInfo.tName,
+            textBold: true,
+          },
+          {
+            icon: 'router',
+            title: 'Maker Routes',
+            notice:
+              "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
+            descInfo: this.$store.state.confirmData.routeDescInfo,
+          },
+          {
+            icon: 'tips',
+            title:
+              'Modifying the transfer amount in MetaMask will cause the transfer ',
+            desc: '',
+            textBold: false,
+          },
+          {
+            icon: 'tips',
+            title:
+              'Modifying the transfer amount in MetaMask will cause the transfer to fail.',
+            desc: '',
+            textBold: false,
+          },
+        ]
+      }
 
       return [
         {
@@ -753,21 +834,21 @@ export default {
       if (fromChainID == 4 || fromChainID == 44) {
         const { starkChain } = this.$store.state.web3.starkNet
         if (!starkChain || starkChain == 'unlogin') {
-          util.showMessage('please connect starkNetWallet', 'error')
+          util.showMessage('please connect StarkNet Wallet', 'error')
           return
         }
         if (
           fromChainID == 4 &&
           (starkChain == 44 || starkChain == 'localhost')
         ) {
-          util.showMessage('please switch starkNetWallet to mainnet', 'error')
+          util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
           return
         }
         if (
           fromChainID == 44 &&
           (starkChain == 4 || starkChain == 'localhost')
         ) {
-          util.showMessage('please switch starkNetWallet to testNet', 'error')
+          util.showMessage('please switch StarkNet Wallet to testNet', 'error')
           return
         }
       }
@@ -1260,6 +1341,35 @@ export default {
       }
     }
     .contentItem:nth-last-child(2) {
+      width: 100%;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      color: var(--default-black);
+      margin: 2rem auto 0 auto;
+      align-items: center;
+      color: red;
+      .up {
+        padding: 0 0.5rem 0 1rem;
+        align-items: center;
+        text-align: left;
+        display: flow-root;
+        .right {
+          color: rgba($color: #18191f, $alpha: 0.7);
+          text-align: right;
+          font-weight: 400;
+          position: absolute;
+          right: 0.5rem;
+        }
+        .svg {
+          width: 1.2rem !important;
+          height: 1.2rem !important;
+        }
+        span {
+          margin-right: 0 !important;
+        }
+      }
+    }
+    .contentItem:nth-child(8) {
       width: 100%;
       font-size: 1.4rem;
       line-height: 2rem;
