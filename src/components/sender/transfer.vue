@@ -1678,6 +1678,17 @@ export default {
           return
         }
 
+        if (
+          this.$store.state.transferData.toChainID == 4 ||
+          this.$store.state.transferData.toChainID == 44
+        ) {
+          this.$notify.error({
+            title: `Affected by the starkNet interface issue, the transfer to starkNet is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
+
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
@@ -1756,14 +1767,20 @@ export default {
             toChainID == 4 &&
             (starkChain == 44 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
             return
           }
           if (
             toChainID == 44 &&
             (starkChain == 4 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to testNet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
             return
           }
           if (starkNetAddress && starkIsConnected) {
@@ -1790,14 +1807,20 @@ export default {
             fromChainID == 4 &&
             (starkChain == 44 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
             return
           }
           if (
             fromChainID == 44 &&
             (starkChain == 4 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to testNet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
             return
           }
         } else {
