@@ -1755,21 +1755,21 @@ export default {
           const { starkIsConnected, starkNetAddress, starkChain } =
             this.$store.state.web3.starkNet
           if (!starkChain || starkChain == 'unlogin') {
-            util.showMessage('please connect starkNetWallet', 'error')
+            util.showMessage('please connect StarkNet Wallet', 'error')
             return
           }
           if (
             toChainID == 4 &&
             (starkChain == 44 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch starkNetWallet to mainnet', 'error')
+            util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
             return
           }
           if (
             toChainID == 44 &&
             (starkChain == 4 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch starkNetWallet to testNet', 'error')
+            util.showMessage('please switch StarkNet Wallet to testNet', 'error')
             return
           }
           if (starkNetAddress && starkIsConnected) {
@@ -1778,7 +1778,7 @@ export default {
               value: starkNetAddress,
             })
           } else {
-            util.showMessage('please connect starkNetWallet', 'error')
+            util.showMessage('please connect StarkNet Wallet', 'error')
             return
           }
         } else {
@@ -1789,21 +1789,21 @@ export default {
         if (fromChainID == 4 || fromChainID == 44) {
           const { starkChain } = this.$store.state.web3.starkNet
           if (!starkChain || starkChain == 'unlogin') {
-            util.showMessage('please connect starkNetWallet', 'error')
+            util.showMessage('please connect StarkNet Wallet', 'error')
             return
           }
           if (
             fromChainID == 4 &&
             (starkChain == 44 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch starkNetWallet to mainnet', 'error')
+            util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
             return
           }
           if (
             fromChainID == 44 &&
             (starkChain == 4 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch starkNetWallet to testNet', 'error')
+            util.showMessage('please switch StarkNet Wallet to testNet', 'error')
             return
           }
         } else {
