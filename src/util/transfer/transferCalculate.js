@@ -385,7 +385,7 @@ export default {
             : selectMakerInfo.makerAddress
         )
       } catch (error) {
-        console.warn('getZKSpaceTransferGasFeeError =', error)
+        console.warn('getZKSpaceTransferGasFeeError =', error.message)
         return 0
       }
       return transferFee.toFixed(6)

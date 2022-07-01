@@ -749,7 +749,7 @@ async function getTransactionListZksync(
   try {
     zkTokenList = await getZKTokenAllList(chainID)
   } catch (err) {
-    console.warn('tokenlistError =', err)
+    console.log('zk tokenlistError =', err.message)
   }
   let isContiue = true
   let lastHash = 0
@@ -1274,7 +1274,6 @@ async function getTransactionListZkSpace(
     chainID == 12
       ? store.state.zksTokenList.mainnet
       : store.state.zksTokenList.rinkeby
-
   for (let item of zksTokenList) {
     const tokenName = item.symbol.toUpperCase()
     if (!makerTokenNames[tokenName]) {
@@ -1409,13 +1408,15 @@ export default {
     let makerList = []
     let makerTokenNames = {}
     if (req.state === 1) {
-      try {
-        const makerListRes = await thegraph.getMakerInfo(req, true)
-        makerList = makerListRes.data
-        makerTokenNames = thegraph.getMakerTokenNames(makerList)
-      } catch (error) {
-        throw new Error(`get makerList error`)
-      }
+      await thegraph
+        .getAllMakerList(req, true)
+        .then((response) => {
+          makerList = response.data
+        })
+        .catch((error) => {
+          console.warn('getMakerListError =', error)
+          throw error.message
+        })
 
       let supportChains = []
       for (const maker of makerList) {
@@ -1653,7 +1654,7 @@ export default {
           if (index < maxRetryCount) {
             await util.sleep(2000)
           } else {
-            throw new Error(`getTransactionList err`)
+            throw new Error(`getTransactionList err ${err.message}`)
           }
         }
       }

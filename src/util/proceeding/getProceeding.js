@@ -631,8 +631,7 @@ function ScanZKMakerTransfer(
         }
       }
     } catch (error) {
-      console.warn('error =', error)
-      throw 'getZKTransactionListError'
+      console.log('getZKTransactionListError =', error)
     }
     return ScanZKMakerTransfer(
       transactionID,
@@ -1024,10 +1023,6 @@ function ScanMakerTransfer(
       )
       return
     }
-    // const isPolygon = (localChainID == 6 || localChainID == 66)
-    //   && tokenAddress == '0x0000000000000000000000000000000000001010'
-    // const isMetis = (localChainID == 10 || localChainID == 510)
-    //   && tokenAddress == '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000'
 
     // boba
     if (localChainID == 13 || localChainID == 513) {

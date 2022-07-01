@@ -16,15 +16,9 @@
         <svg-icon v-else class="token_icon" iconName="tokenLogo"></svg-icon>
 
         <div class="token_name">
-          <loading
-            v-if="getMakerLoading"
-            style="top: 10px"
-            width="1.2rem"
-            height="1.2rem"
-          ></loading>
-          <span v-else>
-            {{ this.$store.state.transferData.selectTokenInfo.token }}</span
-          >
+          <span>{{
+            this.$store.state.transferData.selectTokenInfo.token
+          }}</span>
         </div>
         <svg-icon
           v-if="tokenInfoArray.length > 1"
@@ -57,19 +51,14 @@
               style="left: 0.3rem; top: 0.2rem"
               width="1.2rem"
               height="1.2rem"
-            ></loading>
+            >
+            </loading>
             <span v-else>{{ fromBalance }}</span>
           </div>
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeFromChain">
-            <loading
-              v-if="getMakerLoading"
-              style="left: 0.3rem; top: 0.2rem"
-              width="1.2rem"
-              height="1.2rem"
-            ></loading>
-            <span v-else>
+            <span>
               {{
                 showChainName(
                   this.$store.state.transferData.fromChainID,
@@ -93,13 +82,7 @@
           <div
             style="display: flex; justify-content: center; align-items: center"
           >
-            <loading
-              v-if="getMakerLoading"
-              width="1.2rem"
-              height="1.2rem"
-            ></loading>
             <input
-              v-else
               type="text"
               v-model="transferValue"
               class="right"
@@ -140,13 +123,7 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            <loading
-              v-if="getMakerLoading"
-              style="left: 0.3rem; top: 0.2rem"
-              width="1.2rem"
-              height="1.2rem"
-            ></loading>
-            <span v-else>
+            <span>
               {{
                 showChainName(
                   this.$store.state.transferData.toChainID,
@@ -276,7 +253,8 @@
               width="1rem"
               loadingColor="#FFFFFF"
               height="1rem"
-            ></loading>
+            >
+            </loading>
             <span style="margin-left: 0.4rem" v-else
               >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
             >
@@ -433,7 +411,6 @@ export default {
   data() {
     return {
       // loading
-      getMakerLoading: true,
       timeSpenLoading: false,
       gasCostLoading: false,
       originGasLoading: false,
@@ -470,7 +447,7 @@ export default {
       if (!this.fromBalance) {
         return '0'
       }
-      const transferGasFee =
+      let transferGasFee =
         (await transferCalculate.getTransferGasLimit(
           this.$store.state.transferData.fromChainID,
           selectMakerInfo.makerAddress,
@@ -880,6 +857,18 @@ export default {
     gasSavingMax() {
       let savingValue =
         this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      if (savingValue < 0) {
+        savingValue = 0
+      }
+      let savingTokenName = '$'
+      return savingTokenName + savingValue.toFixed(2).toString()
+    },
+    gasSavingMin() {
+      const gasCost = this.gasCost()
+      let savingValue =
+        this.originGasCost -
+        this.gasTradingTotal * this.exchangeToUsdPrice -
+        gasCost
       if (savingValue < 0) {
         savingValue = 0
       }
@@ -1366,12 +1355,6 @@ export default {
     },
   },
   async mounted() {
-    if (!this.makerInfoList) {
-      this.getMakerLoading = true
-      await this.getMakerList()
-      this.getMakerLoading = false
-    }
-
     const updateETHPrice = async () => {
       transferCalculate
         .getTokenConvertUsd('ETH')
@@ -1424,22 +1407,24 @@ export default {
       updateETHPrice()
       this.getMakerMaxBalance()
       this.updateExchangeToUsdPrice()
-      await this.getMakerList()
     }, 10 * 1000)
     this.transferValue = this.queryParams.amount
-  },
-
-  methods: {
-    async getMakerList() {
-      try {
-        const response = await makerInfo.getMakerInfoFromGraph()
+    const getMakerInfoFromGraphReq = {
+      maker: '0',
+    }
+    makerInfo
+      .getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
+      .then((response) => {
         if (response.code === 0) {
           this.makerInfoList = response.data
         }
-      } catch (error) {
-        console.log('error =', error)
-      }
-    },
+      })
+      .catch((error) => {
+        console.warn('error =', error)
+      })
+  },
+
+  methods: {
     initChainArray() {
       this.fromChainArray = []
       this.makerInfoList.filter((makerInfo) => {
@@ -1762,14 +1747,20 @@ export default {
             toChainID == 4 &&
             (starkChain == 44 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
             return
           }
           if (
             toChainID == 44 &&
             (starkChain == 4 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to testNet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
             return
           }
           if (starkNetAddress && starkIsConnected) {
@@ -1796,14 +1787,20 @@ export default {
             fromChainID == 4 &&
             (starkChain == 44 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
             return
           }
           if (
             fromChainID == 44 &&
             (starkChain == 4 || starkChain == 'localhost')
           ) {
-            util.showMessage('please switch StarkNet Wallet to testNet', 'error')
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
             return
           }
         } else {
@@ -1933,7 +1930,7 @@ export default {
         )
         this.originGasCost = response
       } catch (error) {
-        console.warn('updateOriginGasCost error =', error)
+        console.warn('updateOriginGasCost error =', error.message)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -2008,7 +2005,9 @@ export default {
     gasCost() {
       if (
         this.$store.state.transferData.fromChainID === 3 ||
-        this.$store.state.transferData.fromChainID === 33
+        this.$store.state.transferData.fromChainID === 33 ||
+        this.$store.state.transferData.fromChainID === 9 ||
+        this.$store.state.transferData.fromChainID === 99
       ) {
         const selectMakerInfo = this.$store.state.transferData.selectMakerInfo
         let transferGasFee = this.$store.state.transferData.gasFee
