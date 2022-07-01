@@ -37,7 +37,7 @@
       !queryParams.fixed &&
       $store.state.transferData.toChainID != 11 &&
       $store.state.transferData.toChainID != 511
-    " class="exchange-icon" iconName="exchange"></svg-icon>
+    " class="exchange-icon" iconName="exchange" @click="transfer_mid"></svg-icon>
   <div class="to-area">
     <div class="topItem">
       <div class="left">To</div>
@@ -1587,6 +1587,7 @@ export default {
     margin: 8px 0;
     width: 28px;
     height: 28px;
+    cursor: pointer;
   }
   .to-area {
     margin-top: -10px;

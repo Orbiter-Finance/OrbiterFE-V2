@@ -149,13 +149,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
   .history-content {
     padding: 18px 20px;
     width: 600px;
     // height: 740px;
-    min-height: 600px;
+    min-height: 630px;
     border-radius: 20px;
     position: relative;
+    overflow: scroll;
     .title {
       font-weight: 700;
       font-size: 16px;

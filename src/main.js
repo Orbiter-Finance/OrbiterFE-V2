@@ -14,15 +14,11 @@ import element from './config/Element'
 import VueClipboard from 'vue-clipboard2'
 
 import '../src/util/resize/onresize'
-import Button from './components/btn/orbiterBtn.vue'
-import boxcontent from './components/content/boxContent.vue'
-import otooltip from './components/tooltip/oTooltip.vue'
+import { CommTooltip } from './components'
 import loading from './components/loading/loading.vue'
 
 Vue.component('loading', loading)
-Vue.component('o-box-content', boxcontent)
-Vue.component('o-button', Button)
-Vue.component('o-tooltip', otooltip)
+Vue.component('o-tooltip', CommTooltip)
 Vue.config.productionTip = false
 Vue.use(AsyncComputed)
 Vue.use(ant)

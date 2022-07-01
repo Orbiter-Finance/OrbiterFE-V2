@@ -1,5 +1,5 @@
 <template>
-  <svg-icon :class="showedCls" :iconName="showedIconName" :color="color"></svg-icon>
+  <svg-icon :class="showedCls" :style="styles" :iconName="showedIconName" :color="color"></svg-icon>
 </template>
 
 <script>
@@ -31,7 +31,17 @@ export default {
       default: 0.4
     }
   },
-  computed: {
+  computed: {    
+    styles() {
+      const styles = {}
+      if (this.$attrs.width) {
+        styles.width = this.$attrs.width
+      }
+      if (this.$attrs.height) {
+        styles.height = this.$attrs.height
+      }
+      return styles
+    },
     showedCls() {
       return `svg-icon-${this.size}`
     },

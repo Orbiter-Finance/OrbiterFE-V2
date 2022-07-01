@@ -1,8 +1,9 @@
 const baseUrl = `https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com`
+const historyApiUrl = `http://api.orbiter.finance:3000`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
   baseUrl,
-  baseTraddingUrl: process.env.NODE_ENV === 'production' ? `${baseUrl}:3000` : 'http://localhost:3000',
+  baseTraddingUrl: process.env.NODE_ENV === 'production' ? historyApiUrl : 'http://localhost:3000',
   credential: false,
   localProvider: {
     5: process.env.VUE_APP_HP_R, // rinkeby

@@ -18,20 +18,22 @@
         <SvgIconThemed @click="search" class="searchIcon" icon="search" />
       </div>
     </div>
-    <div
-      v-for="(item, index) in newChainData"
-      :key="item.chain"
-      @click="getChainInfo(item, index)"
-      class="contentItem"
-    >
-      <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
-      <span>{{ item.chain }}</span>
-      <CommLoading
-        v-if="loadingIndex == index"
-        style="left: 1rem; top: 0rem"
-        width="1.5rem"
-        height="1.5rem"
-      />
+    <div class="list-content">
+      <div
+        v-for="(item, index) in newChainData"
+        :key="item.chain"
+        @click="getChainInfo(item, index)"
+        class="contentItem"
+      >
+        <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+        <span>{{ item.chain }}</span>
+        <CommLoading
+          v-if="loadingIndex == index"
+          style="left: 1rem; top: 0rem"
+          width="1.5rem"
+          height="1.5rem"
+        />
+      </div>
     </div>
   </div>
 </template>
