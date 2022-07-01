@@ -35,7 +35,11 @@
     "vue-clipboard2": "^0.3.3",
     "vue-router": "^3.0.7",
     "vuex": "^3.6.0",
-    "zksync": "^0.11.3"
+    "zksync": "^0.11.3",
+    "@vue/composition-api": "^1.6.3",
+    "@walletconnect/client": "^1.7.8",
+    "@walletconnect/qrcode-modal": "^1.7.8"
+
   },
   "devDependencies": {
     "@types/web3": "^1.2.2",

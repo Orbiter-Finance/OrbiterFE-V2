@@ -13,7 +13,7 @@ import util from "../util";
 // if installed, the provider of this wallet will be return
 // otherwise it will throw error;
 export const installWallet = (walletType, walletIsInstalledInvestigator) => {
-    return new Promise(async (resolve) => {
+    return new Promise((resolve) => {
         if (window.ethereum) {
             try {
                 // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
@@ -21,9 +21,8 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
                 if (!matchProvider) {
                     resolve(null);
                     return;
-                };
-                await matchProvider.enable();
-                resolve(matchProvider);
+                }
+                matchProvider.enable().then(() => resolve(matchProvider));
             } catch (error) {
                 const errorMsg = 'User denied account access';
                 showMessage(errorMsg, "error");
@@ -120,7 +119,7 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
     })
 
     walletProvider.on("accountsChanged", ([newWalletAddress = ""]) => {
-        console.log(`%c user wallet address updated`, "color: #fff; background: green", chainId);
+        console.log(`%c user wallet address updated`, "color: #fff; background: green", newWalletAddress);
         updateSelectWalletAddress(newWalletAddress);
     })
 }
@@ -144,7 +143,10 @@ export const universalWalletSwitchChainHandler = (walletConf, walletProvider, su
         // the user doesn't have this chain in his browser wallet, we can
         // direct user to add by invoke universalWalletAddChainHandler
         if (code === 4902) universalWalletAddChainHandler(walletConf, walletProvider);
-        else util.showMessage(message, "error");
+        else {
+            util.showMessage(message, "error");
+            failCallback();
+        }
     })
 }
 

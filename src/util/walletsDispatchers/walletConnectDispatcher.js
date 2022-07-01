@@ -1,6 +1,5 @@
 import WalletConnect from "@walletconnect/client";
 import QRCodeModule from "@walletconnect/qrcode-modal";
-import { toRefs } from "../../composition";
 
 import { userDeniedMessage, showMessage } from "../constants/web3/getWeb3"
 import { globalSelectWalletConf, updateSelectWalletConfPayload, updateGlobalSelectWalletConf } from "./walletsCoreData";

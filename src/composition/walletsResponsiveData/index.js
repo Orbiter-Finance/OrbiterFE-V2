@@ -1,4 +1,4 @@
-import { computed, reactive } from "../index";
+import { computed } from "../index";
 import { store } from "../../store";
 import { globalSelectWalletConf, loginStatusCheckerOfWallets, METAMASK } from "../../util/walletsDispatchers";
 import { findMatchWeb3ProviderByWalletType } from "../../util/walletsDispatchers/utils";

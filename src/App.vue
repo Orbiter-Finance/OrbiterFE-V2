@@ -21,10 +21,9 @@ import TopNav from './components/nav/TopNav.vue'
 import BottomNav from './components/nav/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getTransactionList from './core/routes/transactionList'
-import { getCurrentLoginInfoFromLocalStorage, METAMASK, walletDispatchersOnInit, WALLETCONNECT } from "./util/walletsDispatchers"
+import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
 import { compatibleGlobalWalletConf } from "./composition/walletsResponsiveData";
 import { walletIsLogin } from "./composition/walletsResponsiveData"; 
-import { wallet } from 'zksync'
 
 export default {
   name: 'App',

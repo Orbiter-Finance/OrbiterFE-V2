@@ -4,7 +4,7 @@
  * Description: 
  * this file will export some api to connect wallet 
  */
-import { METAMASK, WALLETCONNECT, COINBASE } from "./constants";
+import { METAMASK, WALLETCONNECT } from "./constants";
 import standardWalletLoader from "./standardWalletLoader";
 import standardWalletConf from "./standardWalletConf";
 
@@ -23,10 +23,10 @@ import {
 } from "./metaMaskDispatcher";
 
 // coinbase
-import {
-    coinbaseDispatcherOnInit,
-    coinbaseDispatcherOnDisconnect
-} from "./coinbaseDispatcher";
+// import {
+//     coinbaseDispatcherOnInit,
+//     coinbaseDispatcherOnDisconnect
+// } from "./coinbaseDispatcher";
 import { fetchTargetWalletLoginStatus } from "./utils";
 
 export { 

@@ -42,7 +42,7 @@ async function getWeb3() {
       store.commit('updateNetWorkId', netWorkId.toString())
     }
   })
-  const result = await web3.eth.getCoinbase((error, coinbase) => {
+  await web3.eth.getCoinbase((error, coinbase) => {
     console.log('coinbase=', coinbase, error)
     if (error || !coinbase) {
       showMessage(

@@ -1237,6 +1237,7 @@ export default {
       .getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
       .then((response) => {
         if (response.code === 0) {
+          console.log("Response.data", response.data);
           this.makerInfoList = response.data
         }
       })
@@ -1371,6 +1372,7 @@ export default {
       }
     },
     selectToken() {
+      console.log("this.tokenInfoArray", this.tokenInfoArray);
       if (this.tokenInfoArray.length <= 1) {
         return
       }

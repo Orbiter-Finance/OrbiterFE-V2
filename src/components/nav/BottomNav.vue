@@ -244,7 +244,6 @@ import check from '../../util/check/check.js'
 import { 
   walletDispatchersOnInit, 
   METAMASK,
-  loginStatusCheckerOfWallets,
   walletDispatchersOnDisconnect,
   globalSelectWalletConf
 } from "../../util/walletsDispatchers";
