@@ -24,6 +24,10 @@
       </div>
     </div>
   </div>
+  <div v-if="isStarkNetChain" style="padding:0 30px;display:flex;text-align:left;padding-top: 8px;">
+    <SvgIconThemed style="margin-right:10px;" icon="info" />
+    <span style="color:#DF2E2D">StarkNet is still in alpha version, the transaction on it maybe will be done in 1~2 hours. Orbiter keeps your funds safe.</span>
+  </div>
   <div style="padding:0 30px;display:flex;text-align:left;padding-top: 8px;">
     <SvgIconThemed style="margin-right:10px;" icon="info" />
     <span style="color:#DF2E2D">Modifying the transfer amount in MetaMask will cause the transfer to fail.</span>
@@ -62,7 +66,10 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
-import { sendTransfer } from '../../util/constants/starknet/helper'
+import {
+  sendTransfer,
+  getStarkMakerAddress,
+} from '../../util/constants/starknet/helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
@@ -73,7 +80,6 @@ import zkspace from '../../core/actions/zkspace'
 import config from '../../core/utils/config'
 import env from '../../../env'
 import * as ethers from 'ethers'
-import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
 
 export default {
@@ -92,6 +98,13 @@ export default {
         this.$store.state.web3.localLogin
       )
     },
+    isStarkNetChain() {
+      const { fromChainID, toChainID } = this.$store.state.transferData
+      return fromChainID == 4 ||
+        fromChainID == 44 ||
+        toChainID == 4 ||
+        toChainID == 44
+    },
     confirmData() {
       // 0.000120000000009022 to 0.000120...09022
       let realTransferAmount = transferCalculate.realTransferAmount().toString()
@@ -99,10 +112,71 @@ export default {
         /(.*?0)0{4,}(0.*?)/,
         '$1...$2'
       )
+      if (this.isStarkNetChain) {
+        return [
+          {
+            icon: 'withholding_gas_cost',
+            title: 'Withholding Fee',
+            notice:
+              'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
+            desc:
+              (this.$store.getters.realSelectMakerInfo
+                ? this.$store.getters.realSelectMakerInfo.tradingFee
+                : 0) +
+              ' ' +
+              this.$store.getters.realSelectMakerInfo.tName,
+          },
+          {
+            icon: 'security',
+            title: 'Security Code',
+            notice:
+              'In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information for the transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.',
+            desc: transferCalculate.realTransferOPID(),
+            haveSep: true,
+          },
+          {
+            icon: 'send',
+            title: 'Total Send',
+            notice:
+              'Include the amount transferred by Sender and withholding gas fee.',
+            desc:
+              realTransferAmount +
+              ' ' +
+              this.$store.getters.realSelectMakerInfo.tName,
+            textBold: true,
+          },
+          {
+            icon: 'receive',
+            title: 'Received',
+            desc:
+              orbiterCore.getToAmountFromUserAmount(
+                new BigNumber(
+                  this.$store.state.transferData.transferValue
+                ).plus(
+                  new BigNumber(
+                    this.$store.getters.realSelectMakerInfo.tradingFee
+                  )
+                ),
+                this.$store.getters.realSelectMakerInfo,
+                false
+              ) +
+              ' ' +
+              this.$store.getters.realSelectMakerInfo.tName,
+            textBold: true,
+          },
+          {
+            icon: 'router',
+            title: 'Maker Routes',
+            notice:
+              "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
+            descInfo: this.$store.state.confirmData.routeDescInfo,
+          },
+        ]
+      }
 
       return [
         {
-          icon: 'withholding',
+          icon: 'withholding_gas_cost',
           title: 'Withholding Fee',
           notice:
             'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
@@ -133,7 +207,7 @@ export default {
           textBold: true,
         },
         {
-          icon: 'received',
+          icon: 'receive',
           title: 'Received',
           desc:
             orbiterCore.getToAmountFromUserAmount(
@@ -150,7 +224,7 @@ export default {
           textBold: true,
         },
         {
-          icon: 'exchange',
+          icon: 'router',
           title: 'Maker Routes',
           notice:
             "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
@@ -160,7 +234,7 @@ export default {
     },
   },
   methods: {
-    async zkspaceTransfer(fromChainID, toChainID, selectMakerInfo) {
+    async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
         let provider = new ethers.providers.Web3Provider(window.ethereum)
         const walletAccount = this.$store.state.web3.coinbase
@@ -250,9 +324,8 @@ export default {
             },
           },
         }
-
         const transferResult = await zkspace.sendTransfer(fromChainID, req)
-        const txHash = transferResult.data?.data.replace('sync-tx:', '0x')
+        const txHash = transferResult.data.data.replace('sync-tx:', '0x')
 
         const firstResult = await this.getFristResult(fromChainID, txHash)
 
@@ -270,82 +343,38 @@ export default {
           title: error.message,
           duration: 3000,
         })
-        console.warn('zkspaceTransfer =', error.message)
+        console.warn('zkspceTransfer =', error.message)
         return
       }
     },
-    async getFristResult(fromChainID, txHash) {
-      const firstResult = await zkspace.getZKSpaceTransactionData(
-        fromChainID,
-        txHash
-      )
-      if (
-        firstResult.success &&
-        !firstResult.data.fail_reason &&
-        !firstResult.data.success &&
-        !firstResult.data.amount
-      ) {
-        await util.sleep(300)
-        return await this.getFristResult(fromChainID, txHash)
-      } else if (
-        firstResult.success &&
-        !firstResult.data.fail_reason &&
-        firstResult.data.success &&
-        firstResult.data.amount
-      ) {
-        return firstResult
-      } else {
-        throw new Error('zks sendResult is error')
-      }
-    },
-    async zk2Transfer(fromChainID, toChainID, selectMakerInfo) {
-      const zksync2Provider = new zksync2.Provider(
-        env.localProvider[fromChainID]
-      )
-      const tokenAddress =
-        fromChainID == selectMakerInfo.c1ID
-          ? selectMakerInfo.t1Address
-          : selectMakerInfo.t2Address
-      if (!(await zksync2Provider.isTokenLiquid(tokenAddress))) {
-        throw new Error('the token can not be used for fee')
-      }
-      var rAmount = new BigNumber(this.$store.state.transferData.transferValue)
-        .plus(new BigNumber(selectMakerInfo.tradingFee))
-        .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
-      var rAmountValue = rAmount.toFixed()
-      var p_text = 9000 + Number(toChainID) + ''
-      var tValue = orbiterCore.getTAmountFromRAmount(
-        fromChainID,
-        rAmountValue,
-        p_text
-      )
-      if (!tValue.state) {
-        this.$notify.error({
-          title: tValue.error,
-          duration: 3000,
-        })
-        this.transferLoading = false
-        return
-      }
-      const provider = new zksync2.Web3Provider(window.ethereum)
-      const signer = provider.getSigner()
-      const transferResult = await signer.transfer({
-        to: selectMakerInfo.makerAddress,
-        token: tokenAddress,
-        amount: tValue.tAmount + '',
-        // feeToken: tokenAddress,//because can not get fee of feetoken,so use eth
+    getFristResult(fromChainID, txHash) {
+      return new Promise((resolve, reject) => {
+        setTimeout(async () => {
+          const firstResult = await zkspace.getZKSpaceTransactionData(
+            fromChainID,
+            txHash
+          )
+          if (
+            firstResult.success &&
+            !firstResult.data.fail_reason &&
+            !firstResult.data.success &&
+            !firstResult.data.amount
+          ) {
+            resolve(await this.getFristResult(fromChainID, txHash))
+          } else if (
+            firstResult.success &&
+            !firstResult.data.fail_reason &&
+            firstResult.data.success &&
+            firstResult.data.amount
+          ) {
+            resolve(firstResult)
+          } else {
+            reject(new Error('zks sendResult is error, do not care'))
+          }
+        }, 300)
       })
-      if (transferResult.hash) {
-        this.onTransferSucceed(
-          this.$store.state.web3.coinbase,
-          selectMakerInfo,
-          tValue.tAmount,
-          fromChainID,
-          transferResult.hash
-        )
-      }
-      this.transferLoading = false
     },
+
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(window.ethereum)
       const walletAccount = this.$store.state.web3.coinbase
@@ -625,6 +654,18 @@ export default {
           params: [switchParams],
         })
         .then(() => {
+          let fromChainID = this.$store.state.transferData.fromChainID
+          let toAddress = util.shortAddress(
+            that.$store.getters.realSelectMakerInfo.makerAddress
+          )
+          if (fromChainID == 4 || fromChainID == 44) {
+            toAddress = util.shortAddress(
+              getStarkMakerAddress(
+                that.$store.getters.realSelectMakerInfo.makerAddress,
+                fromChainID
+              )
+            )
+          }
           // switch success
           that.$store.commit('updateConfirmRouteDescInfo', [
             {
@@ -637,9 +678,7 @@ export default {
                 )
               ),
               coin: that.$store.state.transferData.selectTokenInfo.token,
-              toAddress: util.shortAddress(
-                that.$store.getters.realSelectMakerInfo.makerAddress
-              ),
+              toAddress: toAddress,
             },
           ])
           this.RealTransfer()
@@ -689,13 +728,16 @@ export default {
       try {
         const web3 = new Web3(window.ethereum)
 
-        const gasLimit = await getTransferGasLimit(
+        let gasLimit = await getTransferGasLimit(
           fromChainID,
           selectMakerInfo,
           from,
           selectMakerInfo.makerAddress,
           value
         )
+        if (gasLimit < 21000) {
+          gasLimit = 21000
+        }
         await web3.eth.sendTransaction(
           {
             from,
@@ -735,21 +777,21 @@ export default {
       if (fromChainID == 4 || fromChainID == 44) {
         const { starkChain } = this.$store.state.web3.starkNet
         if (!starkChain || starkChain == 'unlogin') {
-          util.showMessage('please connect starkNetWallet', 'error')
+          util.showMessage('please connect StarkNet Wallet', 'error')
           return
         }
         if (
           fromChainID == 4 &&
           (starkChain == 44 || starkChain == 'localhost')
         ) {
-          util.showMessage('please switch starkNetWallet to mainnet', 'error')
+          util.showMessage('please switch StarkNet Wallet to mainnet', 'error')
           return
         }
         if (
           fromChainID == 44 &&
           (starkChain == 4 || starkChain == 'localhost')
         ) {
-          util.showMessage('please switch starkNetWallet to testNet', 'error')
+          util.showMessage('please switch StarkNet Wallet to testNet', 'error')
           return
         }
       }
@@ -762,7 +804,8 @@ export default {
           from,
           contractAddress,
           selectMakerInfo.makerAddress,
-          new BigNumber(value)
+          new BigNumber(value),
+          fromChainID
         )
         if (hash) {
           this.onTransferSucceed(
@@ -889,6 +932,7 @@ export default {
         this.transferLoading = false
       }
     },
+
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
       if (!this.$store.state.web3.isInstallMeta) {
         return
@@ -942,6 +986,7 @@ export default {
         this.transferLoading = false
       }
     },
+
     async RealTransfer() {
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
@@ -975,7 +1020,6 @@ export default {
         })
         return
       }
-
       this.transferLoading = true
 
       let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
@@ -1007,12 +1051,10 @@ export default {
 
       if (fromChainID === 3 || fromChainID === 33) {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
-      } else if (fromChainID === 14 || fromChainID === 514) {
-        this.zk2Transfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 9 || fromChainID === 99) {
         this.loopringTransfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 12 || fromChainID === 512) {
-        this.zkspaceTransfer(fromChainID, toChainID, selectMakerInfo)
+        this.zkspceTransfer(fromChainID, toChainID, selectMakerInfo)
       } else {
         const tokenAddress =
           selectMakerInfo.c1ID === fromChainID
@@ -1106,13 +1148,16 @@ export default {
             return
           }
 
-          const gasLimit = await getTransferGasLimit(
+          let gasLimit = await getTransferGasLimit(
             fromChainID,
             selectMakerInfo,
             account,
             to,
             tValue.tAmount
           )
+          if (gasLimit < 21000) {
+            gasLimit = 21000
+          }
           const objOption = { from: account, gas: gasLimit }
           transferContract.methods
             .transfer(to, tValue.tAmount)

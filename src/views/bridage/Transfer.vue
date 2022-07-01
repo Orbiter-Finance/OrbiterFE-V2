@@ -160,6 +160,11 @@ import Web3 from 'web3'
 import { netStateBlock } from '../../util/confirmCheck'
 import { chain2idMap } from '../../util/chain2id'
 import { chain2icon } from '../../util'
+import {
+  connectStarkNetWallet,
+  getStarkMakerAddress,
+} from '../../util/constants/starknet/helper'
+import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 
 const queryParamsChainMap = chain2idMap
 
@@ -209,8 +214,7 @@ export default {
       if (!this.fromBalance) {
         return '0'
       }
-
-      const transferGasFee =
+      let transferGasFee =
         (await transferCalculate.getTransferGasLimit(
           this.$store.state.transferData.fromChainID,
           selectMakerInfo.makerAddress,
@@ -259,6 +263,40 @@ export default {
         }
       })
     },
+    starkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (!stark) {
+        return ''
+      }
+      return stark
+    },
+    shortStarkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (stark && stark.length > 5) {
+        var subStr1 = stark.substr(0, 4)
+        var subStr2 = stark.substr(stark.length - 4, 4)
+        return subStr1 + '...' + subStr2
+      }
+      return 'not connected'
+    },
+    starkMid() {
+      const fromChainID = this.$store.state.transferData.fromChainID
+      const toChainID = this.$store.state.transferData.toChainID
+      if (
+        (fromChainID == 4 || fromChainID == 44) &&
+        toChainID != 1 &&
+        toChainID != 5 &&
+        toChainID != 2 &&
+        toChainID != 22 &&
+        toChainID != 6 &&
+        toChainID != 66 &&
+        toChainID != 7 &&
+        toChainID != 77
+      ) {
+        return true
+      }
+      return false
+    },
     queryParams() {
       const { query } = this.$route
       const { referer } = query
@@ -298,6 +336,7 @@ export default {
 
       let sources = getMapChainIds(query.sources)
       let dests = getMapChainIds(query.dests)
+
       // Tidy source(s) and dest(s)
       const tidyChains = (chainIds) => {
         const newChains = []
@@ -418,14 +457,11 @@ export default {
       let transferValue = new BigNumber(this.transferValue)
 
       const info = {
-        // text: 'CONNECT A WALLET',
-        text: 'SEND',
-        disabled: 'disabled',
+        text: 'CONNECT A WALLET',
+        disabled: null,
       }
       if (this.isLogin) {
         info.text = 'SEND'
-        info.disabled = null
-
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled'
         } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
@@ -459,7 +495,6 @@ export default {
         ? true
         : false
     },
-
     userMinPrice() {
       return this.$store.getters.realSelectMakerInfo.minPrice
     },
@@ -554,9 +589,9 @@ export default {
         this.$store.state.transferData.selectMakerInfo.c1ID ===
         this.$store.state.transferData.fromChainID
       ) {
-        return this.naNString(this.c1Balance) || 0.000000
+        return this.c1Balance
       } else {
-        return this.naNString(this.c2Balance) || 0.000000
+        return this.c2Balance
       }
     },
     toBalance() {
@@ -564,30 +599,10 @@ export default {
         this.$store.state.transferData.selectMakerInfo.c1ID ===
         this.$store.state.transferData.fromChainID
       ) {
-        return this.naNString(this.c2Balance) || 0.000000
+        return this.c2Balance
       } else {
-        return this.naNString(this.c1Balance) || 0.000000
+        return this.c1Balance
       }
-    },
-    gasCost() {
-      if (
-        this.$store.state.transferData.fromChainID === 3 ||
-        this.$store.state.transferData.fromChainID === 33
-      ) {
-        if (this.$store.state.transferData.selectTokenInfo.token !== 'ETH') {
-          return (
-            Math.ceil(Number(this.$store.state.transferData.gasFee * 10)) / 10
-          ).toFixed(2)
-        }
-      }
-
-      return (
-        Math.ceil(
-          this.$store.state.transferData.gasFee *
-            this.$store.state.transferData.ethPrice *
-            10
-        ) / 10
-      ).toFixed(2)
     },
     timeSpent() {
       return transferCalculate.transferSpentTime(
@@ -626,28 +641,25 @@ export default {
       let savingTokenName = '$'
       return savingTokenName + savingValue.toFixed(2).toString()
     },
-    showSaveGas() {
-      // console.log(this.originGasCost, 'this.originGasCost')
-      // console.log(this.gasTradingTotal, 'this.gasTradingTotal')
-      // console.log(this.exchangeToUsdPrice, 'this.exchangeToUsdPrice')
-      let savingValue =
-        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      // console.log(savingValue, 'savingValue')
-      if (savingValue > 0) {
-        return true
-      }
-      return false
-    },
     gasSavingMin() {
+      const gasCost = this.gasCost()
       let savingValue =
         this.originGasCost -
         this.gasTradingTotal * this.exchangeToUsdPrice -
-        this.gasCost.toString()
+        gasCost
       if (savingValue < 0) {
         savingValue = 0
       }
       let savingTokenName = '$'
       return savingTokenName + savingValue.toFixed(2).toString()
+    },
+    showSaveGas() {
+      let savingValue =
+        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      if (savingValue > 0) {
+        return true
+      }
+      return false
     },
     saveGasLoading() {
       return this.originGasLoading
@@ -670,6 +682,57 @@ export default {
     makerInfoList: function (newValue, oldValue) {
       if (oldValue === '' && newValue !== '') {
         this.initChainArray()
+      }
+    },
+    '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
+      if (newValue) {
+        let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let fromChianID = selectMakerInfo.c1ID
+        let toChainID = selectMakerInfo.c2ID
+        if (
+          fromChianID == 4 ||
+          fromChianID == 44 ||
+          toChainID == 4 ||
+          toChainID == 44
+        ) {
+          this.c1Balance = null
+          this.c2Balance = null
+          transferCalculate
+            .getTransferBalance(
+              selectMakerInfo.c1ID,
+              selectMakerInfo.t1Address,
+              selectMakerInfo.tName,
+              this.$store.state.web3.coinbase
+            )
+            .then((response) => {
+              this.c1Balance = (
+                response /
+                10 ** selectMakerInfo.precision
+              ).toFixed(6)
+            })
+            .catch((error) => {
+              this.c1Balance = 0
+              console.warn(error)
+              return
+            })
+          transferCalculate
+            .getTransferBalance(
+              selectMakerInfo.c2ID,
+              selectMakerInfo.t2Address,
+              selectMakerInfo.tName,
+              this.$store.state.web3.coinbase
+            )
+            .then((response) => {
+              this.c2Balance = (
+                response /
+                10 ** selectMakerInfo.precision
+              ).toFixed(6)
+            })
+            .catch((error) => {
+              this.c2Balance = 0
+              console.warn(error)
+            })
+        }
       }
     },
     '$store.state.web3.coinbase': function (newValue, oldValue) {
@@ -695,7 +758,6 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
-            this.c1Balance = 0
             console.warn(error)
             return
           })
@@ -713,7 +775,6 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
-            this.c2Balance = 0
             console.warn(error)
           })
       } else {
@@ -721,9 +782,46 @@ export default {
         this.c2Balance = 0
       }
     },
-    '$store.state.transferData.selectMakerInfo': function (newValue, oldValue) {
+    '$store.state.transferData.selectMakerInfo': async function (
+      newValue,
+      oldValue
+    ) {
       this.updateExchangeToUsdPrice()
       this.getMakerMaxBalance()
+
+      if (
+        newValue.c1ID == 4 ||
+        newValue.c1ID == 44 ||
+        newValue.c2ID == 4 ||
+        newValue.c2ID == 44
+      ) {
+        const { starkNetIsConnect, starkNetAddress } =
+          this.$store.state.web3.starkNet
+        if (!starkNetIsConnect || !starkNetAddress) {
+          await connectStarkNetWallet()
+          if (
+            !this.$store.state.web3.starkNet.starkIsConnected &&
+            !this.$store.state.web3.starkNet.starkNetAddress
+          ) {
+            const makerInfo = this.makerInfoList[0]
+            this.$store.commit('updateTransferFromChainID', makerInfo.c1ID)
+            // Change query params's source
+            const { path, query } = this.$route
+
+            for (const key in queryParamsChainMap) {
+              if (queryParamsChainMap[key] == makerInfo.c1ID) {
+                if (!util.equalsIgnoreCase(query.source, key)) {
+                  this.$router.replace({
+                    path,
+                    query: { ...query, source: key },
+                  })
+                  break
+                }
+              }
+            }
+          }
+        }
+      }
 
       if (this.isLogin && oldValue !== newValue) {
         this.c1Balance = null
@@ -747,7 +845,6 @@ export default {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
-            this.c1Balance = 0
             console.warn(error)
           })
         transferCalculate
@@ -761,14 +858,13 @@ export default {
             this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
-            this.c2Balance = 0
             console.warn(error)
           })
       }
     },
     '$store.state.transferData.fromChainID': function (newValue) {
       this.toChainArray = []
-      this.makerInfoList.forEach((makerInfo) => {
+      this.makerInfoList.filter((makerInfo) => {
         if (
           makerInfo.c1ID === newValue &&
           this.toChainArray.indexOf(makerInfo.c2ID) === -1
@@ -796,6 +892,26 @@ export default {
       })
 
       if (
+        newValue != 1 &&
+        newValue != 5 &&
+        newValue != 2 &&
+        newValue != 22 &&
+        newValue != 6 &&
+        newValue != 66 &&
+        newValue != 7 &&
+        newValue != 77
+      ) {
+        if (this.toChainArray.indexOf(4) != -1) {
+          let index = this.toChainArray.indexOf(4)
+          this.toChainArray.splice(index, 1)
+        }
+        if (this.toChainArray.indexOf(44) != -1) {
+          let index = this.toChainArray.indexOf(44)
+          this.toChainArray.splice(index, 1)
+        }
+      }
+
+      if (
         this.toChainArray.indexOf(this.$store.state.transferData.toChainID) ===
         -1
       ) {
@@ -810,7 +926,7 @@ export default {
         this.$store.commit('updateTransferToChainID', _toChainID)
       } else {
         this.tokenInfoArray = []
-        this.makerInfoList.forEach((makerInfo) => {
+        this.makerInfoList.filter((makerInfo) => {
           const { fromChainID, toChainID } = this.$store.state.transferData
           const pushToken = (_fromChainID, _toChainID) => {
             if (_fromChainID !== fromChainID || _toChainID !== toChainID) {
@@ -860,7 +976,7 @@ export default {
             this.tokenInfoArray[defaultIndex]
           )
         } else {
-          this.makerInfoList.forEach((makerInfo) => {
+          this.makerInfoList.filter((makerInfo) => {
             if (
               (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
                 makerInfo.c2ID === this.$store.state.transferData.toChainID &&
@@ -890,13 +1006,13 @@ export default {
           })
           .catch((error) => {
             that.gasCostLoading = false
-            console.log('GetGasFeeError =', error)
+            console.warn('GetGasFeeError =', error)
           })
       }
     },
     '$store.state.transferData.toChainID': function (newValue) {
       this.tokenInfoArray = []
-      this.makerInfoList.forEach((makerInfo) => {
+      this.makerInfoList.filter((makerInfo) => {
         const { fromChainID, toChainID } = this.$store.state.transferData
         const pushToken = (_fromChainID, _toChainID) => {
           if (_fromChainID !== fromChainID || _toChainID !== toChainID) {
@@ -947,7 +1063,7 @@ export default {
           this.tokenInfoArray[defaultIndex]
         )
       } else {
-        this.makerInfoList.forEach((makerInfo) => {
+        this.makerInfoList.filter((makerInfo) => {
           if (
             (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
               makerInfo.c2ID === this.$store.state.transferData.toChainID &&
@@ -968,7 +1084,7 @@ export default {
       }
     },
     '$store.state.transferData.selectTokenInfo': function (newValue) {
-      this.makerInfoList.forEach((makerInfo) => {
+      this.makerInfoList.filter((makerInfo) => {
         if (
           (makerInfo.c1ID === this.$store.state.transferData.fromChainID &&
             makerInfo.c2ID === this.$store.state.transferData.toChainID &&
@@ -982,6 +1098,20 @@ export default {
       })
 
       this.updateOriginGasCost()
+      if (newValue) {
+        let that = this
+        this.gasCostLoading = true
+        transferCalculate
+          .transferSpentGas(this.$store.state.transferData.fromChainID)
+          .then((response) => {
+            this.$store.commit('updateTransferGasFee', response)
+            that.gasCostLoading = false
+          })
+          .catch((error) => {
+            that.gasCostLoading = false
+            console.log('GetGasFeeError =', error)
+          })
+      }
     },
     transferValue: function (newValue) {
       if (this.$store.state.transferData.transferValue !== newValue) {
@@ -1006,29 +1136,38 @@ export default {
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
       if (selectMakerInfo && this.isLogin) {
-        this.getBalance(
-          this.$store.state.web3.coinbase,
-          selectMakerInfo.c1ID,
-          selectMakerInfo.t1Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        ).then((v) => {
-          if (v) {
-            this.c1Balance = v
-          }
-        })
-
-        this.getBalance(
-          this.$store.state.web3.coinbase,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
-        ).then((v) => {
-          if (v) {
-            this.c2Balance = v
-          }
-        })
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c1ID,
+            selectMakerInfo.t1Address,
+            selectMakerInfo.tName,
+            this.$store.state.web3.coinbase
+          )
+          .then((response) => {
+            this.c1Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch(() => {
+            return
+          })
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c2ID,
+            selectMakerInfo.t2Address,
+            selectMakerInfo.tName,
+            this.$store.state.web3.coinbase
+          )
+          .then((response) => {
+            this.c2Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch(() => {
+            return
+          })
       }
 
       updateETHPrice()
@@ -1039,26 +1178,37 @@ export default {
 
     this.transferValue = this.queryParams.amount
 
-    makerInfo.getMakerInfoFromGraph({ maker: '0', }, true)
+    makerInfo.getMakerInfoFromGraph({
+      maker: '0',
+    }, true)
       .then((response) => {
         if (response.code === 0) {
           this.makerInfoList = response.data
         }
       })
       .catch((error) => {
-        console.log('error =', error)
+        console.warn('error =', error)
       })
   },
   methods: {
     naNString(tar) {
       return typeof tar === 'string' && tar === 'NaN' ? 0 : tar
     },
+    showChainName(isFrom = true) {
+      const localChainID = this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
+      const netChainID = this.$env.localChainID_netChainID[localChainID]
+      return util.chainName(localChainID, netChainID)
+    },
+    showChainIcon(isFrom = true) {
+      const localChainID = this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
+      return chain2icon(localChainID)
+    },
     selectedTokenChange(val) {
       this.$store.commit('updateTransferTokenInfo', this.tokens.find(v => v.value == val) || {})
     },
     initChainArray() {
       this.fromChainArray = []
-      this.makerInfoList.forEach((makerInfo) => {
+      this.makerInfoList.filter((makerInfo) => {
         // Don't show dydx
         if (
           makerInfo.c1ID == 11 ||
@@ -1133,15 +1283,6 @@ export default {
       }
       this.transferValue = max.toString()
     },
-    showChainName(isFrom = true) {
-      const localChainID = this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
-      const netChainID = this.$env.localChainID_netChainID[localChainID]
-      return util.chainName(localChainID, netChainID)
-    },
-    showChainIcon(isFrom = true) {
-      const localChainID = this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
-      return chain2icon(localChainID)
-    },
     transfer_mid() {
       const { fromChainID, toChainID, selectTokenInfo } =
         this.$store.state.transferData
@@ -1186,6 +1327,21 @@ export default {
           this.$router.replace({ path, query: newQuery })
         }
       }
+    },
+    selectToken() {
+      if (this.tokenInfoArray.length <= 1) return
+      this.showCustomPopupClick()
+    },
+    getTokenInfo(e) {
+      this.$store.commit('updateTransferTokenInfo', e)
+    },
+    // open pop
+    showCustomPopupClick() {
+      this.$refs.SelectTokenPopupRef.showCustom()
+    },
+    // close pop
+    closeSelectPopupClick() {
+      this.$refs.SelectTokenPopupRef.maskClick()
     },
     changeFromChain() {
       if (this.queryParams.sources.length <= 1) {
@@ -1268,11 +1424,7 @@ export default {
     async sendTransfer() {
       // if unlogin  login first
       if (!this.isLogin) {
-        // Middle.$emit('connectWallet', true)
-        this.$notify.info({
-          title: `Should connect a wallet first.`,
-          duration: 1000,
-        })
+        Middle.$emit('connectWallet', true)
       } else {
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({
@@ -1295,16 +1447,6 @@ export default {
           this.$store.getters.realSelectMakerInfo.tName,
           this.$store.state.web3.coinbase
         )
-        if (
-          !(await netStateBlock(this.$store.state.transferData.fromChainID))
-        ) {
-          this.$notify.error({
-            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
-            duration: 3000,
-          })
-          return
-        }
-
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
@@ -1313,12 +1455,9 @@ export default {
           return
         }
 
-        if (
-          this.$store.state.transferData.fromChainID == 10 ||
-          this.$store.state.transferData.fromChainID == 510
-        ) {
+        if (!netStateBlock(this.$store.state.transferData.fromChainID)) {
           this.$notify.error({
-            title: `Affected by the metis interface issue, the transfer from metis is suspended.`,
+            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
             duration: 3000,
           })
           return
@@ -1340,7 +1479,7 @@ export default {
           return
         }
 
-        const { toChainID } = this.$store.state.transferData
+        const { fromChainID, toChainID } = this.$store.state.transferData
 
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
@@ -1360,7 +1499,7 @@ export default {
           )
 
           this.$store.commit('updateTransferExt', {
-            type: '0x02',
+            type: '0x02', // for dydx
             value: dydxHelper.conactStarkKeyPositionId(
               '0x' + dydxAccount.starkKey,
               dydxAccount.positionId
@@ -1371,23 +1510,98 @@ export default {
           this.$store.commit('updateTransferExt', null)
         }
 
-        // Ensure fromChainId's networkId
-        if (
-          this.$store.state.web3.networkId.toString() !==
-          this.$env.localChainID_netChainID[
-            this.$store.state.transferData.fromChainID
-          ]
-        ) {
-          try {
-            await util.ensureMetamaskNetwork(
-              this.$store.state.transferData.fromChainID
-            )
-          } catch (err) {
-            util.showMessage(err.message, 'error')
+        // To starkNet
+        if (toChainID == 4 || toChainID == 44) {
+          const { starkIsConnected, starkNetAddress, starkChain } =
+            this.$store.state.web3.starkNet
+          if (!starkChain || starkChain == 'unlogin') {
+            util.showMessage('please connect StarkNet Wallet', 'error')
             return
           }
+          if (
+            toChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
+            return
+          }
+          if (
+            toChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
+            return
+          }
+          if (starkNetAddress && starkIsConnected) {
+            this.$store.commit('updateTransferExt', {
+              type: '0x03',
+              value: starkNetAddress,
+            })
+          } else {
+            util.showMessage('please connect StarkNet Wallet', 'error')
+            return
+          }
+        } else {
+          // Clear TransferExt
+          this.$store.commit('updateTransferExt', null)
         }
 
+        if (fromChainID == 4 || fromChainID == 44) {
+          const { starkChain } = this.$store.state.web3.starkNet
+          if (!starkChain || starkChain == 'unlogin') {
+            util.showMessage('please connect StarkNet Wallet', 'error')
+            return
+          }
+          if (
+            fromChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
+            return
+          }
+          if (
+            fromChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
+            return
+          }
+        } else {
+          // Ensure fromChainId's networkId
+          if (
+            this.$store.state.web3.networkId.toString() !==
+            this.$env.localChainID_netChainID[
+              this.$store.state.transferData.fromChainID
+            ]
+          ) {
+            try {
+              await util.ensureMetamaskNetwork(
+                this.$store.state.transferData.fromChainID
+              )
+            } catch (err) {
+              util.showMessage(err.message, 'error')
+              return
+            }
+          }
+        }
+        let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
+        if (fromChainID == 4 || fromChainID == 44) {
+          toAddress = util.shortAddress(
+            getStarkMakerAddress(selectMakerInfo.makerAddress, fromChainID)
+          )
+        }
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -1396,7 +1610,7 @@ export default {
               new BigNumber(selectMakerInfo.tradingFee)
             ),
             coin: this.$store.state.transferData.selectTokenInfo.token,
-            toAddress: util.shortAddress(selectMakerInfo.makerAddress),
+            toAddress: toAddress,
           },
         ])
         this.$emit('stateChanged', '2')
@@ -1419,7 +1633,7 @@ export default {
         )
         this.originGasCost = response
       } catch (error) {
-        console.log('updateOriginGasCost error =', error)
+        console.warn('updateOriginGasCost error =', error.message)
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -1459,7 +1673,7 @@ export default {
         )
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
-        return 0
+        console.warn(error)
       }
     },
 
@@ -1490,6 +1704,30 @@ export default {
       } catch (err) {
         alert(err.message)
       }
+    },
+    gasCost() {
+      if (
+        this.$store.state.transferData.fromChainID === 3 ||
+        this.$store.state.transferData.fromChainID === 33 ||
+        this.$store.state.transferData.fromChainID === 9 ||
+        this.$store.state.transferData.fromChainID === 99
+      ) {
+        const selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let transferGasFee = this.$store.state.transferData.gasFee
+        const selectTokenRate = asyncGetExchangeToUsdRate(selectMakerInfo.tName)
+        if (selectTokenRate > 0) {
+          // switch to usd
+          transferGasFee = transferGasFee / selectTokenRate
+        }
+        return Math.ceil(Number(transferGasFee * 10)) / 10
+      }
+      return (
+        Math.ceil(
+          this.$store.state.transferData.gasFee *
+            this.$store.state.transferData.ethPrice *
+            10
+        ) / 10
+      )
     },
   },
 }
