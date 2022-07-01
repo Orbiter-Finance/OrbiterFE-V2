@@ -195,12 +195,16 @@
 </template>
 
 <script>
+import { ethers } from 'ethers'
 import config from '../../config'
 import util from '../../util/util'
+import { getDTokenContractABI } from '../../util/constants/contract/getContract'
 import CustomPopup from '../popup/bottomPop'
 import SelectChain from '../popup/selectChain/selectChain.vue'
 import SelectToken from '../popup/selectToken/selectToken.vue'
-
+// import Web3 from 'web3'
+const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+const singer = provider.getSigner()
 export default {
   name: 'AddLiquidity',
   props: { dTokenAddresses: Object, makerInfoList: Array },
@@ -334,7 +338,6 @@ export default {
     closeToChainPopupClick() {
       this.$refs.liquiditySelectChainPopupRef.maskClick()
     },
-
     selectToken() {
       this.showTokenPopupClick()
     },
@@ -344,9 +347,63 @@ export default {
     getTokenInfo(info) {
       this.tokenInfo = info
     },
-    getToChainInfo(info) {
-      this.toChainId = info.localID
-      this.freshTokens()
+    async getToChainInfo(info) {
+      if (info === undefined) {
+        info = {
+          localID: this.toChainId,
+        }
+      }
+      let that = this
+      let chain = util.getChainInfo(
+        that.$env.localChainID_netChainID[info.localID]
+      )
+      const switchParams = {
+        chainId: util.toHex(chain.chainId),
+      }
+      try {
+        await provider.provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [switchParams],
+        })
+        // switch success
+        that.toChainId = info.localID
+      } catch (error) {
+        console.log(error)
+        if (error.code === 4902) {
+          // need add net
+          const params = {
+            chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
+            chainName: chain.name,
+            nativeCurrency: {
+              name: chain.nativeCurrency.name,
+              symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+              decimals: chain.nativeCurrency.decimals,
+            },
+            rpcUrls: chain.rpc,
+            blockExplorerUrls: [
+              chain.explorers &&
+              chain.explorers.length > 0 &&
+              chain.explorers[0].url
+                ? chain.explorers[0].url
+                : chain.infoURL,
+            ],
+          }
+          try {
+            await provider.provider.request({
+              method: 'wallet_addEthereumChain',
+              params: [params, that.$store.state.web3.coinbase],
+            })
+          } catch (error) {
+            console.log(error)
+            util.showMessage(error.message, 'error')
+          }
+        } else {
+          util.showMessage(error.message, 'error')
+        }
+      } finally {
+        that.closeToChainPopupClick()
+        that.freshTokens()
+      }
     },
     agreement(e) {
       console.log(`agreement = ${e.target.checked}`)
@@ -354,8 +411,28 @@ export default {
     clickAgreement() {
       console.log('clickAgreement')
     },
-    confirmAddLiquidity() {
+    async confirmAddLiquidity() {
       console.log('confirmAddLiquidity')
+      try {
+        const dTokenInstance = new ethers.Contract(
+          this.dTokenAddresses[this.toChainId],
+          getDTokenContractABI(),
+          provider
+        )
+        const account = await singer.getAddress()
+        const allowanceAmount = await dTokenInstance.allowance(
+          account,
+          this.dTokenAddresses[this.toChainId]
+        )
+        console.log(allowanceAmount)
+        // 判断授权允许的金额与需要的金额关系
+        console.log('amount', this.amount)
+      } catch (error) {
+        // Determine whether the current network is the selected network
+        if (error.code === 'CALL_EXCEPTION') {
+          await this.getToChainInfo()
+        }
+      }
     },
     onChange(checkedValues) {
       console.log('checked = ', checkedValues)

@@ -99,7 +99,7 @@ export default {
     },
     getChainInfo(e) {
       this.$emit('getChainInfo', e)
-      this.closerButton()
+      // this.closerButton()
     },
     stopPenetrate(e) {
       e.stopPropagation

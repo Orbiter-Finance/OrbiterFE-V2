@@ -1,6 +1,6 @@
 import Web3 from 'web3'
 
-import { Coin_ABI, sourceABI } from './contract.js'
+import { Coin_ABI, sourceABI, dTokenABI } from './contract.js'
 import { store } from '../../../store'
 import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
@@ -114,10 +114,15 @@ function getSourceContract(chainID) {
   }
 }
 
+function getDTokenContractABI() {
+  return dTokenABI
+}
+
 export {
   getTransferContract,
   getLocalCoinContract,
   getTransferGasLimit,
+  getDTokenContractABI,
   getSourceContract,
   sourceAddress,
 }

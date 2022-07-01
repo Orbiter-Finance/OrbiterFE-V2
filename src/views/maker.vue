@@ -35,9 +35,9 @@ export default {
     return {
       status: '1',
       dTokenAddresses: {
-        5: '0x6ce4D9694c1626862234216bA78874dE70903A71',
-        22: '0xF2BE509057855b055f0515CCD0223BEf84D19ad4',
-        77: '0xa9D1Ce03414DF86233B5beCa03C14631474EA234',
+        5: '0x3965B0ef3E00D4cBbba74Ad4ec77ed0a195CD678', // Rinkeby
+        22: '0xe5371F7dbBC11475B3e2B30F59a74fC5750c4Ff4', // ARB(Rinkeby)
+        77: '0x6F14a1513Bf9EDa2Eb3cF628f5b3e98f388f5Bc9', // OP(Kovan)
       },
       makerInfoList: [],
     }
