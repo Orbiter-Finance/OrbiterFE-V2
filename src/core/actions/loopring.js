@@ -8,13 +8,14 @@ import {
   UserAPI,
   VALID_UNTIL,
   OffchainFeeReqType,
+  sleep,
   //   WhitelistedUserAPI,
 } from '@loopring-web/loopring-sdk'
 import axios from 'axios'
 import config from '../utils/config'
 import Web3 from 'web3'
 import { store } from '../../store'
-var configNet = config.loopring.Mainnet
+let configNet = config.loopring.Mainnet
 
 export default {
   getUserAPI: function (localChainID) {
@@ -26,41 +27,51 @@ export default {
     let netWorkID = localChainID == 9 ? 1 : 5
     return new ExchangeAPI({ chainId: netWorkID })
   },
-
-  getLoopringBalance: async function (address, localChainID, isMaker) {
-    let accountInfo
-    if (isMaker) {
-      const exchangeApi = this.getExchangeAPI(localChainID)
-      let GetAccountRequest = {
-        owner: address,
-      }
-      let response = await exchangeApi.getAccount(GetAccountRequest)
-      if (response.accInfo && response.raw_data) {
-        accountInfo = response.accInfo
+  getLpTokenInfoOnce(fromChainID, tokenAddress) {
+    const lpTokenInfos = fromChainID === 9 ? store.state.lpTokenList.mainnet
+      : store.state.lpTokenList.rinkeby
+    return lpTokenInfos.find(item => item.address == tokenAddress)
+  },
+  async getLpTokenInfo(fromChainID, tokenAddress, count = 10) {
+    const theLpTokenInfo = this.getLpTokenInfoOnce(fromChainID, tokenAddress)
+    if (theLpTokenInfo) {
+      return theLpTokenInfo
+    } else {
+      await sleep(100)
+      count--
+      if (count > 0) {
+        await this.getLpTokenInfo(fromChainID, tokenAddress, count)
       } else {
-        if (response.code == 101002) {
-          return 0
+        return 0
+      }
+    }
+  },
+  getLoopringBalance: async function (address, localChainID, isMaker, lpTokenInfo) {
+    try {
+      let accountInfo
+      if (isMaker) {
+        const exchangeApi = this.getExchangeAPI(localChainID)
+        let GetAccountRequest = {
+          owner: address,
+        }
+        let response = await exchangeApi.getAccount(GetAccountRequest)
+        if (response.accInfo && response.raw_data) {
+          accountInfo = response.accInfo
         } else {
           return 0
         }
-      }
-    } else {
-      const accountResult = await this.accountInfo(address, localChainID)
-      if (!accountResult) {
-        return 0
-      }
-      if (accountResult.code) {
-        return 0
       } else {
+        const accountResult = await this.accountInfo(address, localChainID)
+        if (!accountResult || accountResult.code) {
+          return 0
+        }
         accountInfo = accountResult.accountInfo
       }
-    }
-    if (localChainID == 99) {
-      configNet = config.loopring.Rinkeby
-    }
-    try {
+      if (localChainID == 99) {
+        configNet = config.loopring.Rinkeby
+      }
       const resp = await axios.get(
-        `${configNet}/api/v3/user/balances?accountId=${accountInfo.accountId}&tokens=0`
+        `${configNet}/api/v3/user/balances?accountId=${accountInfo.accountId}&tokens=${lpTokenInfo ? lpTokenInfo.tokenId : 0}`
       )
       if (resp.status == 200 && resp.statusText == 'OK') {
         if (!Array.isArray(resp.data)) {
@@ -70,10 +81,10 @@ export default {
           return 0
         }
         let balanceMap = resp.data[0]
-        let totalBalance = balanceMap.total ? balanceMap.total : 0
-        let locked = balanceMap.locked ? balanceMap.locked : 0
-        let withDraw = balanceMap.withDraw ? balanceMap.withDraw : 0
-        return totalBalance - locked - withDraw
+        let totalBalance = balanceMap.total ? Number(balanceMap.total) : 0
+        let locked = Number(balanceMap.locked)
+        let withdraw = Number(balanceMap.pending.withdraw)
+        return totalBalance - locked - withdraw
       }
     } catch (err) {
       console.error(`Get loopring balance failed: ${err.message}`)
@@ -91,32 +102,26 @@ export default {
     if (!address || !localChainID) {
       return null
     }
-    const exchangeApi = this.getExchangeAPI(localChainID)
-    let GetAccountRequest = {
-      owner: address,
-    }
-    let response = await exchangeApi.getAccount(GetAccountRequest)
-    if (response.accInfo && response.raw_data) {
-      let info = {
-        accountInfo: response.accInfo,
-        code: 0,
-      }
-      store.commit('updatelpAccountInfo', response.accInfo)
-      return info
-    } else {
-      if (response.code == 101002) {
+    try {
+      const exchangeApi = this.getExchangeAPI(localChainID)
+      let response = await exchangeApi.getAccount({ owner: address, })
+      if (response.accInfo && response.raw_data) {
         let info = {
-          code: 101002,
-          errorMessage: 'noAccount',
+          accountInfo: response.accInfo,
+          code: 0,
         }
+        store.commit('updatelpAccountInfo', response.accInfo)
         return info
       } else {
         let info = {
-          code: response.code,
-          errorMessage: response.message,
+          code: 101002,
+          errorMessage: response.code == 101002 ? 'noAccount' : response.message,
         }
         return info
       }
+    } catch (error) {
+      console.warn(`get lp accountInfo error:${error.message}`)
+      return null
     }
   },
 
@@ -129,6 +134,7 @@ export default {
     amount,
     memo
   ) {
+
     const exchangeApi = this.getExchangeAPI(localChainID)
     const userApi = this.getUserAPI(localChainID)
     const accountResult = await this.accountInfo(address, localChainID)
@@ -162,9 +168,9 @@ export default {
         accInfo.keySeed && accInfo.keySeed !== ''
           ? accInfo.keySeed
           : GlobalAPI.KEY_MESSAGE.replace(
-              '${exchangeAddress}',
-              exchangeInfo.exchangeAddress
-            ).replace('${nonce}', (accInfo.nonce - 1).toString()),
+            '${exchangeAddress}',
+            exchangeInfo.exchangeAddress
+          ).replace('${nonce}', (accInfo.nonce - 1).toString()),
       walletType: ConnectorNames.MetaMask,
       chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
     }
@@ -183,14 +189,16 @@ export default {
     }
     store.commit('updatelpApiKey', apiKey)
     // step 3 get storageId
+    const lpTokenInfo = await this.getLpTokenInfo(localChainID, tokenAddress)
     const GetNextStorageIdRequest = {
       accountId: accInfo.accountId,
-      sellTokenId: 0,
+      sellTokenId: lpTokenInfo.tokenId,
     }
     const storageId = await userApi.getNextStorageId(
       GetNextStorageIdRequest,
       apiKey
     )
+
     // step 4 transfer
     const OriginTransferRequestV3 = {
       exchange: exchangeInfo.exchangeAddress,
@@ -200,7 +208,7 @@ export default {
       payeeId: toAddressID,
       storageId: storageId.offchainId,
       token: {
-        tokenId: 0,
+        tokenId: lpTokenInfo.tokenId,
         volume: amount + '',
       },
       maxFee: {
@@ -222,7 +230,7 @@ export default {
     return response
   },
 
-  getWithDrawFee: async function (address, localChainID) {
+  getWithDrawFee: async function (address, localChainID,tokenName) {
     const accountResult = await this.accountInfo(address, localChainID)
     if (!accountResult) {
       return 0
@@ -237,7 +245,7 @@ export default {
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
-      tokenSymbol: 'ETH',
+      tokenSymbol: tokenName,
       amount: sendAmount,
     }
     let userApi = this.getUserAPI(localChainID)
@@ -251,7 +259,7 @@ export default {
     return 0
   },
 
-  getTransferFee: async function (address, localChainID) {
+  getTransferFee: async function (address, localChainID, lpTokenInfo) {
     const accountResult = await this.accountInfo(address, localChainID)
     if (!accountResult) {
       return 0
@@ -266,7 +274,7 @@ export default {
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.TRANSFER,
-      tokenSymbol: 'ETH',
+      tokenSymbol: lpTokenInfo ? lpTokenInfo.symbol : 'ETH',
       amount: sendAmount,
     }
     let userApi = this.getUserAPI(localChainID)
@@ -274,14 +282,12 @@ export default {
       GetOffchainFeeAmtRequest,
       ''
     )
-    if (response?.fees?.ETH?.fee) {
-      return response.fees.ETH.fee
-    }
-    return 0
+    return response && lpTokenInfo && response.fees[lpTokenInfo.symbol] ? response.fees[lpTokenInfo.symbol].fee : 0
   },
 
   getLoopringTxList: async function (
     address,
+    tokenName,
     localChainID,
     startTime,
     endTime,
@@ -303,7 +309,7 @@ export default {
       status: 'processed,processing,received',
       limit: limit,
       offset: offset,
-      tokenSymbol: 'ETH',
+      tokenSymbol: tokenName,
       transferTypes: 'transfer',
     }
     const LPTransferResult = await userApi.getUserTransferList(

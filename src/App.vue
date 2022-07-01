@@ -2,11 +2,7 @@
   <div id="app">
     <TopNav />
     <keep-alive>
-      <router-view
-        v-if="$route.meta.keepAlive"
-        class="router"
-        id="aliveRouter"
-      />
+      <router-view v-if="$route.meta.keepAlive" class="router" id="aliveRouter" />
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
     <BottomNav />
@@ -20,6 +16,8 @@
 import TopNav from './components/nav/TopNav.vue'
 import BottomNav from './components/nav/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
+import getZksToken from './util/tokenInfo/supportZksTokenInfo'
+import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import getTransactionList from './core/routes/transactionList'
 
 export default {
@@ -43,6 +41,8 @@ export default {
     this.getHistory()
 
     getZkToken.getSupportZKTokenList()
+    getZksToken.getSupportZksTokenList()
+    getLpToken.getSupportLpTokenList()
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {})
     }
@@ -74,7 +74,6 @@ export default {
         if (isRefresh) {
           this.$store.commit('updateTransactionList', null)
         }
-
         var req = {
           address: this.$store.state.web3.coinbase,
           daysAgo: 14,
@@ -102,10 +101,12 @@ export default {
   height: 3px;
   background-color: transparent;
 }
+
 ::-webkit-scrollbar-track {
   border-radius: 3px;
   background-color: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background-color: rgba(0, 0, 0, 0.3);
@@ -141,17 +142,21 @@ body {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none; /*IE10*/
+  -ms-user-select: none;
+  /*IE10*/
   user-select: none;
 }
+
 input {
   -webkit-user-select: auto;
   user-select: auto;
 }
+
 textarea {
   -webkit-user-select: auto;
   user-select: auto;
 }
+
 p {
   display: block;
   margin-block-start: 1em;
@@ -171,9 +176,7 @@ p {
 .router {
   padding-bottom: var(--bottom-nav-height);
   height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height));
-  height: calc(
-    var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height)
-  );
+  height: calc(var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height));
 
   width: 100%;
 }

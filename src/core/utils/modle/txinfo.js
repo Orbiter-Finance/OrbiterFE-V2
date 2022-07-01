@@ -128,9 +128,8 @@ export default {
       to: immutableX.to.toLowerCase(),
       tokenAddress: immutableX.contractAddress,
       timeStamp: immutableX.timeStamp,
-      tokenName: 'ETH', // Now only eth
       value: immutableX.value,
-      tokenDecimal: 18,
+      tokenDecimal: immutableX.tokenDecimal,
       hash: immutableX.hash,
       nonce: immutableX.nonce,
       dataFrom: 'ImmutableX',
@@ -145,9 +144,7 @@ export default {
       tokenAddress: zkspaceInfo.token.id,
       timeStamp: zkspaceInfo.created_at,
       tokenName: zkspaceInfo.token.symbol,
-      value: new BigNumber(zkspaceInfo.amount)
-        .multipliedBy(new BigNumber(10 ** 18))
-        .toString(),
+      value: zkspaceInfo.amount,
       tokenDecimal: 18,
       hash: zkspaceInfo.tx_hash,
       nonce: zkspaceInfo.nonce,
