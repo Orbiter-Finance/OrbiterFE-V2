@@ -341,7 +341,7 @@ import { netStateBlock } from '../../util/confirmCheck'
 
 // composition
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"; 
-import { globalSelectWalletConf, METAMASK } from "../../util/walletsDispatchers";
+import { METAMASK } from "../../util/walletsDispatchers";
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -1237,7 +1237,6 @@ export default {
       .getMakerInfoFromGraph(getMakerInfoFromGraphReq, true)
       .then((response) => {
         if (response.code === 0) {
-          console.log("Response.data", response.data);
           this.makerInfoList = response.data
         }
       })
@@ -1372,7 +1371,6 @@ export default {
       }
     },
     selectToken() {
-      console.log("this.tokenInfoArray", this.tokenInfoArray);
       if (this.tokenInfoArray.length <= 1) {
         return
       }
