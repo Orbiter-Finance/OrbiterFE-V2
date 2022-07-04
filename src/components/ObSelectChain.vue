@@ -78,11 +78,6 @@ export default {
         newArray.push(chainData)
       }
 
-      newArray.push({
-        icon: 'sknlogo',
-        chain: 'StarkNet(Goerli)',
-        localID: 44,
-      })
       const chainOrderIds = [
         3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
         511, 13, 513, 4, 44,
