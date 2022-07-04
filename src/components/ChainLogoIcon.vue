@@ -35,6 +35,8 @@ export default {
         return 'zkspacelogo'
       } else if (chainID == '13' || chainID == '513') {
         return 'bobalogo'
+      } else if (chainID == '14' || chainID == '514') { // zksync2
+        return 'zk2logo'
       } else {
         return 'ethlogo'
       }
