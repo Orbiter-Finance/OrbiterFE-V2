@@ -21,25 +21,23 @@
         <SvgIconThemed @click="search" class="searchIcon" icon="search" />
       </div>
     </div>
-    <div class="list-content">
-      <div
-        v-for="(item, index) in newChainData"
-        :key="item.chain"
-        @click="getChainInfo(item, index)"
-        class="contentItem"
-      >
-        <svg-icon
-          class="logo"
-          style="margin-right: 1.5rem"
-          :iconName="item.icon"
-        ></svg-icon>
-        <span>{{ item.chain }}</span>
-        <CommLoading
-          v-if="loadingIndex == index"
-          style="left: 1rem; top: 0rem"
-          width="1.5rem"
-          height="1.5rem"
-        />
+    <div class="list-content-box">
+      <div class="list-content">
+        <div
+          v-for="(item, index) in newChainData"
+          :key="item.chain"
+          @click="getChainInfo(item, index)"
+          class="contentItem"
+        >
+          <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+          <span>{{ item.chain }}</span>
+          <CommLoading
+            v-if="loadingIndex == index"
+            style="left: 1rem; top: 0rem"
+            width="1.5rem"
+            height="1.5rem"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -196,7 +194,6 @@ export default {
     var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
       var(--bottom-nav-height)
   );
-  overflow-y: scroll;
   width: 320px;
   border-radius: 20px;
   padding: 20px 0;
@@ -242,6 +239,11 @@ export default {
       left: 20px;
       top: 10px;
     }
+  }
+
+  .list-content-box {
+    overflow-y: scroll;
+    height: calc(100% - 90px);
   }
 
   .contentItem {
