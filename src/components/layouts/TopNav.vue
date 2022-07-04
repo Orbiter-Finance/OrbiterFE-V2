@@ -13,6 +13,10 @@
     <CommBtn ref="connectBtn" v-if="!isLogin" @click="connectAWallet" style="margin-right: 10px;">Connect a Wallet</CommBtn>
     <template v-else>
       <span @click="showHistory" class="ops-item">History</span>
+      <div v-if="isSelectedStarkNet" ref="connectedStarkNetBtn" @click="connectStarkNetWallet" class="ops-item" style="display:inline-flex;justify-content:center;align-items:center;">
+        <svg-icon style="width:2rem;height:2rem;" iconName="sknlogo"></svg-icon>
+        <span style="margin-left:4px;font-weight: 700;font-size: 16px;line-height: 24px;">{{starkAddress}}</span>
+      </div>
       <div ref="connectedBtn" @click="connectAWallet" class="ops-item" style="display:inline-flex;justify-content:center;align-items:center;">
         <svg-icon style="width:2rem;height:2rem;" :iconName="selectedWallet.icon"></svg-icon>
         <span style="margin-left:4px;font-weight: 700;font-size: 16px;line-height: 24px;">{{showAddress}}</span>
@@ -21,7 +25,7 @@
     <div @click="toggleThemeMode" class="ops-mode">
       <SvgIconThemed class="mode-icon" icon="mode" />
     </div>
-    <div ref="navDialog" :style="{display: selectWalletDialogVisible ? 'block' : 'none'}" class="ops-toolbox">
+    <div ref="navDialog" :style="{display: selectWalletDialogVisible ? 'block' : 'none', right: isStarkNetDialog ? '160px' : '20px'}" class="ops-toolbox">
       <div class="toolbox-header">
         <span class="toolbox-title">{{ isLogin ? 'Connect information' : 'Connect a Wallet'}}</span>
         <SvgIconThemed @click.native="closeSelectWalletDialog" class="toolbox-close" iconName="close" />
@@ -54,7 +58,7 @@
             </div>
           </div>
         </div>
-        <CommBtn class="wallet-btn" @click="disconnect">Disconnect</CommBtn>
+        <CommBtn v-if="!isStarkNetDialog" class="wallet-btn" @click="disconnect">Disconnect</CommBtn>
       </template>
     </div>
   </div>
@@ -71,9 +75,11 @@ export default {
   name: 'TopNav',
   components: { CommBtn, SvgIconThemed },
   data() {
+    const selectedWallet = JSON.parse(localStorage.getItem('selectedWallet') || '{}')
     return {
       selectWalletDialogVisible: false,
-      selectedWallet: {}
+      selectedWallet,
+      isStarkNetDialog: false,
     }
   },
   computed: {
@@ -93,24 +99,53 @@ export default {
         },
       ]
     },
+    isSelectedStarkNet() {
+      const transferData = this.$store.state.transferData
+      return transferData.fromChainID == 4 || transferData.fromChainID == 44 || transferData.toChainID == 4 || transferData.toChainID == 44
+    },
     loginInfoData() {
-      return [
-        {
-          icon: 'network-v2',
-          title: 'Network',
-          value: util.chainName('0', this.$store.state.web3.networkId),
-        },
-        {
-          icon: 'wallet-v2',
-          title: 'Wallet',
-          value: 'MetaMask',
-        },
-        {
-          icon: 'address-v2',
-          title: 'Address',
-          value: this.showAddress,
-        },
-      ]
+      if (this.isStarkNetDialog) {
+        return [
+          {
+            icon: 'network',
+            title: 'Network',
+            value: util.chainName('0', this.$store.state.web3.networkId),
+          },
+          {
+            icon: 'wallet',
+            title: 'Wallet',
+            value: 'MetaMask',
+          },
+          {
+            icon: 'address',
+            title: 'Address',
+            value: this.showAddress,
+          },
+          {
+            icon: 'address',
+            title: 'StarkNetAddress',
+            value: this.starkAddress,
+          },
+        ]
+      } else {
+        return [
+          {
+            icon: 'network',
+            title: 'Network',
+            value: util.chainName('0', this.$store.state.web3.networkId),
+          },
+          {
+            icon: 'wallet',
+            title: 'Wallet',
+            value: 'MetaMask',
+          },
+          {
+            icon: 'address',
+            title: 'Address',
+            value: this.showAddress,
+          },
+        ]
+      }
     },
     showAddress() {
       var address = this.$store.state.web3.coinbase
@@ -120,6 +155,15 @@ export default {
         return subStr1 + '...' + subStr2
       }
       return ''
+    },
+    starkAddress() {
+      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      if (stark && stark.length > 5) {
+        var subStr1 = stark.substr(0, 4)
+        var subStr2 = stark.substr(stark.length - 4, 4)
+        return subStr1 + '...' + subStr2
+      }
+      return 'not connected'
     },
   },
   methods: {
@@ -134,7 +178,12 @@ export default {
         path: tar || '/'
       })
     },
+    connectStarkNetWallet() {
+      this.isStarkNetDialog = true
+      this.selectWalletDialogVisible = true
+    },
     connectAWallet() {
+      this.isStarkNetDialog = false
       this.selectWalletDialogVisible = true
     },
     closeSelectWalletDialog() {
@@ -143,6 +192,7 @@ export default {
     connectWallet(item) {
       this.closeSelectWalletDialog()
       this.selectedWallet = item
+      localStorage.setItem('selectedWallet', JSON.stringify(item))
       if (item.title === 'MetaMask') {
         this.$store.dispatch('registerWeb3')
       }
@@ -150,6 +200,7 @@ export default {
     disconnect() {
       this.closeSelectWalletDialog()
       this.selectedWallet = {}
+      localStorage.setItem('selectedWallet', JSON.stringify({}))
       this.$store.commit('updateLocalLogin', false)
       localStorage.setItem('localLogin', false)
     },
@@ -169,10 +220,11 @@ export default {
         const dialog = this.$refs.navDialog
         const btn1 = this.$refs.connectBtn
         const btn2 = this.$refs.connectedBtn
+        const btn3 = this.$refs.connectedStarkNetBtn
         let cur = e.target
         let hasFind = false
         while(cur && !hasFind) {
-          if (cur === dialog || cur === btn1?.$el || cur === btn2) {
+          if (cur === dialog || cur === btn1?.$el || cur === btn2 || cur === btn3) {
             hasFind = true
           }
           cur = cur.parentElement
@@ -270,7 +322,7 @@ $navsWidth: 272px;
       z-index: 10000;
       position: absolute;
       top: 75px;
-      right: 20px;
+      // right: 20px;
       width: 320px;
       height: 280px;
       box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);

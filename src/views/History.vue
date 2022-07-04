@@ -14,6 +14,10 @@
         Limited by the dydx mechanism, the history of dYdX cannot be queried
         temporarily
       </div>
+      <div class="dydx-limit">
+        Limited by the starkNet mechanism, the history of starkNet cannot be
+        queried temporarily
+      </div>
       <CommLoading v-if="!historyData" style="margin: auto; margin-top: 5rem" width="4rem" height="4rem" />
       <div
         v-else-if="historyData && historyData.length !== 0"

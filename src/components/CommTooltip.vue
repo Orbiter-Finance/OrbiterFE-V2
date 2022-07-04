@@ -32,6 +32,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    word-break: break-all;
   }
   .tooltip {
     width: 4rem;

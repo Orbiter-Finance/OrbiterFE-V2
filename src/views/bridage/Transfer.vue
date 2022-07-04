@@ -6,7 +6,18 @@
   </div>
   <div class="from-area">
     <div class="topItem">
-      <div class="left">From</div>
+      <o-tooltip
+        v-if="
+          this.$store.state.transferData.fromChainID == 4 ||
+          this.$store.state.transferData.fromChainID == 44
+        "
+      >
+        <template v-slot:titleDesc>
+          <span v-html="starkAddress"></span>
+        </template>
+        <div class="left">From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
+      </o-tooltip>
+      <div v-else class="left">From</div>
       <div v-if="isLogin" class="right">
         Balance:
         <CommLoading v-if="fromBalanceLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem" />
@@ -36,11 +47,22 @@
   <svg-icon v-if="
       !queryParams.fixed &&
       $store.state.transferData.toChainID != 11 &&
-      $store.state.transferData.toChainID != 511
+      $store.state.transferData.toChainID != 511 && !starkMid
     " class="exchange-icon" iconName="exchange" @click="transfer_mid"></svg-icon>
   <div class="to-area">
     <div class="topItem">
-      <div class="left">To</div>
+      <o-tooltip
+        v-if="
+          this.$store.state.transferData.toChainID == 4 ||
+          this.$store.state.transferData.toChainID == 44
+        "
+      >
+        <template v-slot:titleDesc>
+          <span v-html="starkAddress"></span>
+        </template>
+        <div class="left">To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
+      </o-tooltip>
+      <div v-else class="left">To</div>
       <div v-if="isLogin" class="right">
         Balance:
         <CommLoading

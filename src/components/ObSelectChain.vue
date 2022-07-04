@@ -45,6 +45,7 @@ import { IMXHelper } from '../util/immutablex/imx_helper'
 import util from '../util/util'
 import { chain2icon } from '../util'
 import { SvgIconThemed, CommLoading } from './'
+import { connectStarkNetWallet } from '../util/constants/starknet/helper'
 
 export default {
   name: 'ObSelectChain',
@@ -119,9 +120,17 @@ export default {
         try {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
-            // To rinkeby.orbiter.finance
-            window.open('https://rinkeby.orbiter.finance', '_blank')
-            return
+            const { starkIsConnected, starkNetAddress } =
+              this.$store.state.web3.starkNet
+            if (!starkIsConnected && !starkNetAddress) {
+              await connectStarkNetWallet()
+              if (
+                !this.$store.state.web3.starkNet.starkIsConnected &&
+                !this.$store.state.web3.starkNet.starkNetAddress
+              ) {
+                return
+              }
+            }
           }
 
           // immutableX
@@ -155,6 +164,8 @@ export default {
           return
         }
       }
+
+      console.log('getChainInfo: ', e)
 
       this.$emit('getChainInfo', e)
       this.closerButton()
