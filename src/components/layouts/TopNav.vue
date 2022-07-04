@@ -104,23 +104,34 @@ export default {
       return transferData.fromChainID == 4 || transferData.fromChainID == 44 || transferData.toChainID == 4 || transferData.toChainID == 44
     },
     loginInfoData() {
+      console.log('this.$store.state.starkNet: ', this.$store.state.starkNet)
       if (this.isStarkNetDialog) {
+        const starkChain = this.$store.state.starkNet?.starkChain
+        let networkName = ''
+        if (starkChain) {
+          if (starkChain == 4) {
+            networkName = 'Ethereum Mainnet'
+          } else if (starkChain == 44) {
+            networkName = 'Goerli Testnet'
+          }
+        }
+
         return [
           {
             icon: 'network',
             title: 'Network',
-            value: util.chainName('0', this.$store.state.web3.networkId),
+            value: networkName,
           },
           {
             icon: 'wallet',
             title: 'Wallet',
-            value: 'MetaMask',
+            value: this.$store.state.starkNet?.starkWalletName,
           },
-          {
-            icon: 'address',
-            title: 'Address',
-            value: this.showAddress,
-          },
+          // {
+          //   icon: 'address',
+          //   title: 'Address',
+          //   value: this.showAddress,
+          // },
           {
             icon: 'address',
             title: 'StarkNetAddress',
