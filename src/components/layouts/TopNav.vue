@@ -323,7 +323,6 @@ $navsWidth: 272px;
     .ops-mode {
       width: 40px;
       height: 40px;
-      background: white;
       border-radius: 50%;
       display: flex;
       justify-content: center;
