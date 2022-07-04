@@ -116,7 +116,6 @@ export default {
       return transferData.fromChainID == 4 || transferData.fromChainID == 44 || transferData.toChainID == 4 || transferData.toChainID == 44
     },
     loginInfoData() {
-      console.log('this.$store.state.starkNet: ', this.$store.state.starkNet)
       if (this.isStarkNetDialog) {
         const starkChain = this.$store.state.starkNet?.starkChain
         let networkName = ''
