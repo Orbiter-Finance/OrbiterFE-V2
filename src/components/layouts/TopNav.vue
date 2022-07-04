@@ -56,6 +56,18 @@
             >
               <SvgIconThemed style="width: 100%; height: 100%" iconName="copy" />
             </div>
+            <div
+              v-if="item.title === 'StarkNetAddress'"
+              v-clipboard:copy="$store.state.web3.starkNet.starkNetAddress"
+              v-clipboard:success="onCopy"
+              v-clipboard:error="onError"
+              style="width: 1.8rem; height: 1.8rem; display: inline-block"
+            >
+              <svg-icon
+                style="width: 100%; height: 100%"
+                iconName="copy"
+              ></svg-icon>
+            </div>
           </div>
         </div>
         <CommBtn v-if="!isStarkNetDialog" class="wallet-btn" @click="disconnect">Disconnect</CommBtn>
