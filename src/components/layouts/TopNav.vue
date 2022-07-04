@@ -335,7 +335,6 @@ $navsWidth: 272px;
     }
     .ops-item {
       padding: 8px 24px;
-      background: #FFFFFF;
       border-radius: 20px;
       font-weight: 700;
       font-size: 16px;
