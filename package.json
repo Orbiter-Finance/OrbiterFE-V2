@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development vue-cli-service serve",
+    "build:rinkeby": "cross-env NODE_ENV=development npm run clear && vue-cli-service build",
     "build": "cross-env NODE_ENV=production npm run clear && vue-cli-service build",
     "clear": "rimraf ./dist",
     "lint": "eslint --ext .js --ext .jsx --ext .vue src/",

@@ -24,6 +24,9 @@ export const chain2idMap = {
   'zkspace(R)': 512,
   'Boba(R)': 513,
   Boba: 13,
+  'zkSync2(G)': 514,
+  // TODO: when mainnet is ready
+  // 'zkSync2(G)': 14,
 }
 
 export const chain2icon = item => {
@@ -60,6 +63,9 @@ export const chain2icon = item => {
   }
   if (item === 13 || item === 513) {
     iconName = 'bobalogo'
+  }
+  if (item === 14 || item === 514) {
+    iconName = 'zk2logo'
   }
   return iconName
 }

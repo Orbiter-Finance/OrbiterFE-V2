@@ -9,7 +9,8 @@ services:
   frontend:
     build: ./
     # command: yarn run dev
-    # environment:
+    environment:
+      NODE_ENV: production # development production
     #   BACKEND_API: 'http://ec2-18-177-135-205.ap-northeast-1.compute.amazonaws.com:3002/'
     # volumes:
     # - './frontend:/app'
