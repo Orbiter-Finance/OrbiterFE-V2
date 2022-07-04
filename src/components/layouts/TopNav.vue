@@ -248,13 +248,15 @@ $navsWidth: 272px;
 
 .top-nav {
   height: 72px;
-  overflow: hidden;
+  // overflow: hidden;
+  display: flex;
+  justify-content: space-between;
   .logo {
     width: $logoWidth;
     height:40px;
     margin-top:16px;
     margin-left:21px;
-    float: left;
+    // float: left;
     cursor: pointer;
   }
   .navs {
@@ -263,8 +265,8 @@ $navsWidth: 272px;
     font-weight: 700;
     font-size: 16px;
     line-height: 24px;
-    float: left;
-    margin-left: calc(50% - $navsWidth / 2 - $logoWidth);
+    // float: left;
+    // margin-left: calc(50% - $navsWidth / 2 - $logoWidth);
     .nav-item {
       height:24px;
       margin-right: 39px;
