@@ -48,7 +48,7 @@
       !queryParams.fixed &&
       $store.state.transferData.toChainID != 11 &&
       $store.state.transferData.toChainID != 511 && !starkMid
-    " class="exchange-icon" iconName="exchange" @click="transfer_mid"></svg-icon>
+    " class="exchange-icon" iconName="exchange" @click.native="transfer_mid"></svg-icon>
   <div class="to-area">
     <div class="topItem">
       <o-tooltip
