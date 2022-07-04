@@ -133,7 +133,7 @@
             v-model="amount"
             class="right dColor"
             @input="checkAmount()"
-            :placeholder="`0`"
+            :placeholder="sendInputValue"
           />{{ tokenInfo ? tokenInfo.token : '-' }}
         </div>
         <span class="s14 wbolder" style="margin-top: 1.9rem"
@@ -153,6 +153,7 @@
         >
           <span class="s14 wbolder">Estimated APY</span>
           <span class="dColor s14 wnormal">410%</span>
+          <!-- 参数：流动性（现金）,总存款 -->
         </div>
       </div>
       <div class="sep"></div>
@@ -169,10 +170,20 @@
           style="margin-top: 2rem"
           @click="confirmAddLiquidity"
         >
-          <span class="wbold s16">CONFIRM AND SEND</span>
+          <span v-if="!addLiquidityLoading" class="wbold s16" 
+            >CONFIRM AND SEND</span
+          >
+          <loading
+            v-else
+            style="margin: auto"
+            loadingColor="white"
+            width="2rem"
+            height="2rem"
+          ></loading>
         </o-button>
       </div>
     </o-box-content>
+
     <CustomPopup ref="liquiditySelectTokenPopupRef">
       <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
         <SelectToken
@@ -198,7 +209,10 @@
 import { ethers } from 'ethers'
 import config from '../../config'
 import util from '../../util/util'
-import { getDTokenContractABI } from '../../util/constants/contract/getContract'
+import {
+  getDTokenContractABI,
+  getBasicContractABI,
+} from '../../util/constants/contract/getContract'
 import CustomPopup from '../popup/bottomPop'
 import SelectChain from '../popup/selectChain/selectChain.vue'
 import SelectToken from '../popup/selectToken/selectToken.vue'
@@ -249,11 +263,12 @@ export default {
           isContractNet: false,
         },
       ],
-
       tokenInfo: null,
       tokenInfoArray: [],
       toChainId: 0,
       toChainArray: [],
+      sendInputValue: '0',
+      addLiquidityLoading: false,
     }
   },
   components: {
@@ -261,7 +276,18 @@ export default {
     SelectChain,
     CustomPopup,
   },
-  watch: {},
+  watch: {
+    // 'amount':function(newValue,oldValue){
+    //   console.log('oldValue: ', oldValue);
+    //   console.log(ethers.BigNumber.from(newValue).gt('12'));
+    //   if(ethers.BigNumber.from(newValue).gt('12')){
+    //     this.isShowMax = true
+    //   }
+    // }
+  },
+  computed:{
+
+  },
   mounted() {
     // Init chain
     this.toChainArray = []
@@ -274,7 +300,6 @@ export default {
       }
     })
     this.toChainId = this.toChainArray[0]
-    console.warn('this.toChainId: ', this.toChainId)
 
     // Init token
     this.freshTokens()
@@ -358,23 +383,74 @@ export default {
     async confirmAddLiquidity() {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const singer = provider.getSigner()
-      console.log('confirmAddLiquidity')
       await util.ensureMetamaskNetwork(
         this.$env.localChainID_netChainID[this.toChainId]
+      )
+      const basicToken = new ethers.Contract(
+        '0x2e055eEe18284513B993dB7568A592679aB13188',
+        getBasicContractABI(),
+        singer
       )
       const dTokenInstance = new ethers.Contract(
         this.dTokenAddresses[this.toChainId],
         getDTokenContractABI(),
-        provider
+        singer
       )
       const account = await singer.getAddress()
-      const allowanceAmount = await dTokenInstance.allowance(
+      const allowanceAmount = await basicToken.allowance(
         account,
         this.dTokenAddresses[this.toChainId]
       )
-      console.log(allowanceAmount._hex)
-      // 判断授权允许的金额与需要的金额关系
-      console.log('amount', this.amount)
+      const basicBalance = await basicToken.balanceOf(account)
+      if (ethers.utils.parseEther(this.amount).isZero()) return
+      if (
+        ethers.BigNumber.from(ethers.utils.parseEther(this.amount)).gt(
+          basicBalance
+        )
+      ) {
+        util.showMessage(
+          'Your account balance is ' + ethers.utils.formatEther(basicBalance) + ' DAI',
+          'warning'
+        )
+        return
+      }
+      if (
+        ethers.BigNumber.from(allowanceAmount).lt(
+          ethers.utils.parseEther(this.amount)
+        )
+      ) {
+        await basicToken.approve(
+          this.dTokenAddresses[this.toChainId],
+          ethers.constants.MaxUint256
+        )
+      } else {
+        this.addLiquidityLoading = true
+        let overrides = {
+          from: account,
+          gasLimit: 1000000,
+        }
+        try {
+          let tx = await dTokenInstance.mint(
+            ethers.utils.parseEther(this.amount),
+            overrides
+          )
+          this.$notify.success({
+            title: tx.hash,
+            duration: 3000,
+          })
+          await tx.wait()
+          util.showMessage('AddLiquidity Success', 'success')
+          this.amount = ''
+        } catch (error) {
+          console.log(error)
+          this.$notify.error({
+            title: error.message,
+            duration: 3000,
+          })
+        } finally {
+          this.addLiquidityLoading = false
+        }
+      }
     },
     onChange(checkedValues) {
       console.log('checked = ', checkedValues)
@@ -508,5 +584,37 @@ export default {
   height: 1.5rem;
   border-radius: 0.5rem;
   border-color: var(--default-black);
+}
+.notice {
+  margin: 3rem auto 3rem;
+  width: 27rem;
+  .item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    color: #78797d;
+    text-align: left;
+    .left {
+      display: flex;
+      // line-height: 100%;
+    }
+    .right {
+      display: flex;
+      text-align: right;
+      align-items: center;
+      .item {
+        height: 1.5rem;
+        padding: 0.1rem 0.2rem;
+        background-color: #ff9675;
+        color: #ffffff;
+        font-size: 1rem;
+        line-height: 1.5rem;
+        text-align: left;
+        border-radius: 0.3rem;
+        margin-left: 0.7rem;
+      }
+    }
+  }
 }
 </style>

@@ -55,5 +55,25 @@ const state = {
     mainnet: [],
   },
   transactionList: null,
+  liquidityData: [
+    {
+      chainName: 'Arbitrum',
+      tokenName: 'ETH',
+      amount: 'loading...',
+      redeemLoading: false, 
+    },
+    {
+      chainName: 'Polygon',
+      tokenName: 'USDC',
+      amount: 'loading...',
+      redeemLoading: false,
+    },
+    {
+      chainName: 'Optimistic',
+      tokenName: 'USDT',
+      amount: 'loading...',
+      redeemLoading: false,
+    },
+  ],
 }
 export default state

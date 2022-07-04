@@ -42,5 +42,5 @@ export default {
         avalibleTimes: selectMakerInfo.c2AvalibleTimes,
       }
     }
-  },
+  }
 }

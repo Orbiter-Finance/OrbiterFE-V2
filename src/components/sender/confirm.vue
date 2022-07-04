@@ -203,7 +203,7 @@ export default {
   watch: {},
   mounted() {},
   methods: {
-    addChainNetWork() {
+   addChainNetWork() {
       var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
@@ -213,7 +213,7 @@ export default {
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum
+       window.ethereum
         .request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],

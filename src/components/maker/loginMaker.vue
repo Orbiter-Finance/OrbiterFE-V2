@@ -64,7 +64,14 @@
             item.amount
           }}</span>
           <div class="removeContent tcenter s12" @click="redeemLiquidity(item)">
-            Redeem
+            <span v-if="!item.redeemLoading"> Redeem </span>
+            <loading
+              v-else
+              style="margin: auto"
+              loadingColor="rgb(254, 126, 110)"
+              width="2rem"
+              height="2rem"
+            ></loading>
           </div>
         </div>
         <div class="removeSep"></div>
@@ -83,7 +90,12 @@
 
 <script>
 import echarts from 'echarts'
-
+import { ethers } from 'ethers'
+import util from '../../util/util'
+import { getDTokenContractABI } from '../../util/constants/contract/getContract'
+import { mapMutations, mapState } from 'vuex'
+const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+const singer = provider.getSigner()
 export default {
   name: 'loginMaker',
   props: { dTokenAddresses: Object, makerInfoList: Array },
@@ -102,31 +114,13 @@ export default {
         ['2.8', 120],
         ['2.9', 180],
       ],
+      toChainArray: [],
       toolTipDesc:
         'Average reaction time is your pingjun jiedan sudu. meige dingdan xiangying sudu:<br />① t ≤ 1min, huode 100% jiangli;<br />② 1min < t ≤ 10min, huode xx% jiangli;<br />③ 10min < t, meiyou jiangli qie huode $xx chengfa.',
-      liquidityData: [
-        {
-          chainName: 'Ethereum',
-          tokenName: 'BTC',
-          amount: '200',
-        },
-        {
-          chainName: 'Arbitrum',
-          tokenName: 'ETH',
-          amount: '1500',
-        },
-        {
-          chainName: 'Polygon',
-          tokenName: 'USDC',
-          amount: '15000',
-        },
-        {
-          chainName: 'Optimistic',
-          tokenName: 'USDT',
-          amount: '11000',
-        },
-      ],
     }
+  },
+  computed: {
+    ...mapState(['liquidityData']),
   },
   components: {},
   watch: {},
@@ -134,13 +128,67 @@ export default {
     // this.$nextTick(function () {
     // this.draw('report')
     // });
+    this.toChainArray = []
+    this.makerInfoList.filter((makerInfo) => {
+      if (this.toChainArray.indexOf(makerInfo.c2ID) === -1) {
+        this.toChainArray.push(makerInfo.c2ID)
+      }
+      if (this.toChainArray.indexOf(makerInfo.c1ID) === -1) {
+        this.toChainArray.push(makerInfo.c1ID)
+      }
+    })
+    this.getLquidityData()
   },
   methods: {
+    ...mapMutations(['updateLiquidityData']),
     addnewLiquidity() {
       this.$emit('stateChanged', '2')
     },
-    redeemLiquidity(item) {
-      console.log('item =', item)
+    async redeemLiquidity(item) {
+      if (
+        ethers.BigNumber.from(ethers.utils.parseEther(item.amount)).isZero()
+      ) {
+        util.showMessage(
+          'Your account balance of 0 for ' + item.tokenName,
+          'warning'
+        )
+        return
+      }
+      item.redeemLoading = true
+      await util.ensureMetamaskNetwork(
+        this.$env.localChainID_netChainID[item.localID]
+      )
+      const account = await singer.getAddress()
+      const dTokenInstance = new ethers.Contract(
+        this.dTokenAddresses[item.localID],
+        getDTokenContractABI(),
+        singer
+      )
+      let overrides = {
+        from: account,
+        gasLimit: 1000000,
+      }
+      try {
+        let tx = await dTokenInstance.redeem(
+          ethers.utils.parseEther(item.amount),
+          overrides
+        )
+        this.$notify.success({
+          title: tx.hash,
+          duration: 3000,
+        })
+        await tx.wait()
+        util.showMessage('RedeemLiquidity Success', 'success')
+        this.getLquidityData()
+      } catch (error) {
+        console.log(error)
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        item.redeemLoading = false
+      }
     },
 
     draw(id) {
@@ -222,6 +270,36 @@ export default {
         })
         //params.seriesIndex
       })
+    },
+
+    async getLquidityData() {
+      var newArray = []
+      for (let index = 0; index < this.toChainArray.length; index++) {
+        const item = this.toChainArray[index]
+        let customProvider = new ethers.providers.JsonRpcProvider(
+          util.correspondingProvider(item)
+        )
+        const dTokenInstance = new ethers.Contract(
+          this.dTokenAddresses[item],
+          getDTokenContractABI(),
+          customProvider
+        )
+        const balanceAmount = await dTokenInstance.balanceOf(
+          singer.getAddress()
+        )
+        var chainData = {
+          chainName: util.chainName(
+            item,
+            this.$env.localChainID_netChainID[item]
+          ),
+          localID: item,
+          tokenName: await dTokenInstance.symbol(),
+          amount: ethers.utils.formatEther(balanceAmount),
+          redeemLoading: false,
+        }
+        newArray.push(chainData)
+      }
+      this.updateLiquidityData(newArray)
     },
   },
 }

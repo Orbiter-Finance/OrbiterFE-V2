@@ -1,4 +1,7 @@
 export default {
+  updateLiquidityData(state,liquidityDataList){
+    state.liquidityData = liquidityDataList
+  },
   updateZKTokenList(state, obj) {
     if (obj.chainID === 3) {
       state.zktokenList.mainnet = obj.tokenList
