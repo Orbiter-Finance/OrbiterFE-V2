@@ -2489,140 +2489,43 @@ const nowMakerList = [
   },
 ]
 
-export default {
-  getMakerInfo: function (req, next) {
-    return new Promise((resolve, reject) => {
-      var res = {}
-      res.code = 0
-      res.data = nowMakerList
-      if (next) {
-        resolve(res)
-      } else {
-        reject(res)
-      }
-    })
-  },
-  getMakerTokenNames: function (maketList) {
-    let makerTokenNames = {}
-    for (let item of maketList) {
-      makerTokenNames[item.tName] = true
+function getMakerInfo(req, next) {
+  return new Promise((resolve, reject) => {
+    var res = {}
+    res.code = 0
+    res.data = nowMakerList
+    if (next) {
+      resolve(res)
+    } else {
+      reject(res)
     }
-    return makerTokenNames
-  },
-  getAllMakerList: function (req, next) {
-    return new Promise((resolve, reject) => {
-      var res = {}
-      res.code = 0
-      res.data = [
-        {
-          makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
-          c1ID: 22,
-          c2ID: 33,
-          c1Name: 'arbitrum_test',
-          c2Name: 'zksync_test',
-          t1Address: '0x0000000000000000000000000000000000000000',
-          t2Address: '0x0000000000000000000000000000000000000000',
-          tName: 'ETH',
-          c1MinPrice: 0.005,
-          c1MaxPrice: 0.01,
-          c2MinPrice: 0.005,
-          c2MaxPrice: 0.01,
-          precision: 18,
-          c1AvalibleDeposit: 1000,
-          c2AvalibleDeposit: 1000,
-          c1TradingFee: 0.0003,
-          c2TradingFee: 0.0003,
-          c1GasFee: 2,
-          c2GasFee: 2,
-          c1AvalibleTimes: [
-            {
-              startTime: 1650598283,
-              endTime: 1650599334,
-            },
-          ],
-          c2AvalibleTimes: [
-            {
-              startTime: 1650598283,
-              endTime: 1650599334,
-            },
-          ],
-        },
-        {
-          makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
-          c1ID: 22,
-          c2ID: 33,
-          c1Name: 'arbitrum_test',
-          c2Name: 'zksync_test',
-          t1Address: '0x0000000000000000000000000000000000000000',
-          t2Address: '0x0000000000000000000000000000000000000000',
-          tName: 'ETH',
-          c1MinPrice: 0.005,
-          c1MaxPrice: 0.01,
-          c2MinPrice: 0.005,
-          c2MaxPrice: 0.01,
-          precision: 18,
-          c1AvalibleDeposit: 1000,
-          c2AvalibleDeposit: 1000,
-          c1TradingFee: 0.0002,
-          c2TradingFee: 0.0002,
-          c1GasFee: 2,
-          c2GasFee: 2,
-          c1AvalibleTimes: [
-            {
-              startTime: 1650524205,
-              endTime: 1650598282,
-            },
-          ],
-          c2AvalibleTimes: [
-            {
-              startTime: 1650524205,
-              endTime: 1650598282,
-            },
-          ],
-        },
-        {
-          makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
-          c1ID: 22,
-          c2ID: 33,
-          c1Name: 'arbitrum_test',
-          c2Name: 'zksync_test',
-          t1Address: '0x0000000000000000000000000000000000000000',
-          t2Address: '0x0000000000000000000000000000000000000000',
-          tName: 'ETH',
-          c1MinPrice: 0.005,
-          c1MaxPrice: 0.01,
-          c2MinPrice: 0.005,
-          c2MaxPrice: 0.01,
-          precision: 18,
-          c1AvalibleDeposit: 1000,
-          c2AvalibleDeposit: 1000,
-          c1TradingFee: 0.0001,
-          c2TradingFee: 0.0001,
-          c1GasFee: 2,
-          c2GasFee: 2,
-          c1AvalibleTimes: [
-            {
-              startTime: 1648284764,
-              endTime: 1650524204,
-            },
-          ],
-          c2AvalibleTimes: [
-            {
-              startTime: 1648284764,
-              endTime: 1650524204,
-            },
-          ],
-        },
-      ]
-
-      // push now makerList
-      res.data = res.data.concat(nowMakerList)
-
-      if (next) {
-        resolve(res)
-      } else {
-        reject(res)
-      }
-    })
-  },
+  })
 }
+function getMakerTokenNames(maketList) {
+  let makerTokenNames = {}
+  for (let item of maketList) {
+    makerTokenNames[item.tName] = true
+  }
+  return makerTokenNames
+}
+function getAllMakerList(req, next) {
+  return new Promise((resolve, reject) => {
+    var res = {}
+    res.code = 0
+    res.data = []
+    // push now makerList
+    res.data = res.data.concat(nowMakerList)
+
+    if (next) {
+      resolve(res)
+    } else {
+      reject(res)
+    }
+  })
+}
+export default {
+  getMakerInfo,
+  getMakerTokenNames,
+  getAllMakerList,
+}
+export { getMakerInfo, getMakerTokenNames, getAllMakerList }

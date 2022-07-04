@@ -75,3 +75,9 @@ input {
 .tright {
   text-align: right;
 }
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

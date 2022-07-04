@@ -127,6 +127,9 @@ export default {
   updateTransactionList(state, transactionList) {
     state.transactionList = transactionList
   },
+  updateTransactionListInfo(state, newInfo) {
+    state.transactionListInfo = newInfo
+  },
   updateIsInstallMeta(state, isInstallMeta) {
     state.web3.isInstallMeta = isInstallMeta
   },
@@ -203,4 +206,19 @@ export default {
     state.innerWH.innerWidth = innerWidth
     state.innerWH.innerHeight = innerHeight
   },
+  toggleThemeMode(state, mode) {
+    if (typeof mode === 'string' && mode) {
+      state.themeMode = mode
+    } else {
+      if (state.themeMode === 'light') {
+        state.themeMode = 'dark'
+      } else {
+        state.themeMode = 'light'
+      }
+    }
+    localStorage.setItem('themeMode', state.themeMode )
+  },
+  toggleHistoryPanelVisible(state, isVisible) {
+    state.historyPanelVisible = isVisible
+  }
 }

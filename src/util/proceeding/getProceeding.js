@@ -28,20 +28,9 @@ let startBlockNumber = ''
 
 const getHistory = () => {
   if (store.getters.realSelectMakerInfo) {
-    getTransactionList
-      .getTransactionList({
-        address: store.state.web3.coinbase,
-        daysAgo: 14,
-        state: 1, //maker/user
-      })
-      .then((response) => {
-        if (response.state === 1) {
-          store.commit('updateTransactionList', response.list)
-        }
-      })
-      .catch((error) => {
-        console.warn('error =', error)
-      })
+    store.dispatch('getTransactionsHistory', {
+      current: 1,
+    })
   }
 }
 
