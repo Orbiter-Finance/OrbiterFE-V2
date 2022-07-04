@@ -10,3 +10,6 @@ requireAll(req)
 
 const req2 = require.context('./v2', false, /\.svg$/)
 requireAll(req2)
+
+const req3 = require.context('./tokenlogos', false, /\.svg$/)
+requireAll(req3)
