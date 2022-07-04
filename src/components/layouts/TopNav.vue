@@ -42,7 +42,8 @@
       <template v-else>
         <div v-for="item in loginInfoData" :key="item.title" class="wallet-item" style="font-weight: 400;font-size: 14px;line-height: 20px;">
           <div style="display: flex;justify-content:center;align-items:center;">
-            <svg-icon style="width: 2.4rem; height: 2.4rem" :iconName="item.icon"></svg-icon>
+            <!-- <svg-icon style="width: 2.4rem; height: 2.4rem" :iconName="item.icon"></svg-icon> -->
+            <SvgIconThemed style="width: 2.4rem; height: 2.4rem" :iconName="item.icon" />
             <span class="wallet-item-title" style="margin-left:1rem">{{ item.title }}</span>
           </div>
           <div style="text-align: right; display: flex">
