@@ -116,7 +116,7 @@ export default {
       if (this.isStarkNetChain) {
         return [
           {
-            icon: 'withholding_gas_cost',
+            icon: 'withholding',
             title: 'Withholding Fee',
             notice:
               'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
@@ -147,7 +147,7 @@ export default {
             textBold: true,
           },
           {
-            icon: 'receive',
+            icon: 'Received',
             title: 'Received',
             desc:
               orbiterCore.getToAmountFromUserAmount(
@@ -166,7 +166,7 @@ export default {
             textBold: true,
           },
           {
-            icon: 'router',
+            icon: 'exchange',
             title: 'Maker Routes',
             notice:
               "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
@@ -177,7 +177,7 @@ export default {
 
       return [
         {
-          icon: 'withholding_gas_cost',
+          icon: 'withholding',
           title: 'Withholding Fee',
           notice:
             'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
@@ -208,7 +208,7 @@ export default {
           textBold: true,
         },
         {
-          icon: 'receive',
+          icon: 'received',
           title: 'Received',
           desc:
             orbiterCore.getToAmountFromUserAmount(
@@ -225,7 +225,7 @@ export default {
           textBold: true,
         },
         {
-          icon: 'router',
+          icon: 'exchange',
           title: 'Maker Routes',
           notice:
             "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
