@@ -9,7 +9,7 @@ import {
   getStarknet,
   connect as getStarknetWallet,
   disconnect as disStarknetWallet,
-} from 'get-starknet-wallet'
+} from 'get-starknet'
 
 import { store } from '../../../store'
 import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
@@ -70,7 +70,7 @@ export function getStarkNetValidAddress(address) {
 
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
-    const wallet = await getStarknetWallet()
+    const wallet = await getStarknetWallet({ order: ['argentX'] })
     if (!wallet) {
       return
     }
