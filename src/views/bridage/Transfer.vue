@@ -1,171 +1,217 @@
 <template>
-<div class="transfer-box">
-  <div class="top-area">
-    <span class="title">Token</span>
-    <ObSelect :datas="tokens" v-model="selectedToken" @input="selectedTokenChange"></ObSelect>
-  </div>
-  <div class="from-area">
-    <div class="topItem">
-      <o-tooltip
-        v-if="
-          this.$store.state.transferData.fromChainID == 4 ||
-          this.$store.state.transferData.fromChainID == 44
-        "
-      >
-        <template v-slot:titleDesc>
-          <span v-html="starkAddress"></span>
-        </template>
-        <div class="left">From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
-      </o-tooltip>
-      <div v-else class="left">From</div>
-      <div v-if="walletIsLogin" class="right">
-        Balance:
-        <CommLoading v-if="fromBalanceLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem" />
-        <span v-else>{{ fromBalance }}</span>
-      </div>
+  <div class="transfer-box">
+    <div class="top-area">
+      <span class="title">Token</span>
+      <ObSelect
+        :datas="tokens"
+        v-model="selectedToken"
+        @input="selectedTokenChange"
+      ></ObSelect>
     </div>
-    <div class="bottomItem">
-      <div class="left" @click="changeFromChain">
-        <svg-icon :iconName="showChainIcon()" style="width: 24px;height: 24px;margin-right:4px;"></svg-icon>
-        <span>{{ showChainName() }}</span>
-        <SvgIconThemed v-if="queryParams.sources.length > 1" />
-      </div>
-      <div style="display: flex; justify-content: center; align-items: center">
-        <input
-          type="text"
-          v-model="transferValue"
-          class="right"
-          @input="checkTransferValue()"
-          :maxlength="18"
-          :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
-        />
-        <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
-      </div>
-    </div>
-  </div>
-  <!-- When queryParams.fixed or toChain is dydx, hide it! -->
-  <svg-icon v-if="
-      !queryParams.fixed &&
-      $store.state.transferData.toChainID != 11 &&
-      $store.state.transferData.toChainID != 511 && !starkMid
-    " class="exchange-icon" iconName="exchange" @click.native="transfer_mid"></svg-icon>
-  <div class="to-area">
-    <div class="topItem">
-      <o-tooltip
-        v-if="
-          this.$store.state.transferData.toChainID == 4 ||
-          this.$store.state.transferData.toChainID == 44
-        "
-      >
-        <template v-slot:titleDesc>
-          <span v-html="starkAddress"></span>
-        </template>
-        <div class="left">To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
-      </o-tooltip>
-      <div v-else class="left">To</div>
-      <div v-if="walletIsLogin" class="right">
-        Balance:
-        <CommLoading
-          v-if="toBalanceLoading"
-          style="left: 0.3rem; top: 0.2rem"
-          width="1.2rem"
-          height="1.2rem"
-        />
-        <span v-else>{{ toBalance }}</span>
-      </div>
-    </div>
-    <div class="bottomItem">
-      <div class="left" @click="changeToChain">
-        <svg-icon :iconName="showChainIcon(false)" style="width: 24px;height: 24px;margin-right:4px;"></svg-icon>
-        <span>{{ showChainName(false) }}</span>
-        <SvgIconThemed v-if="queryParams.dests.length > 1" />
-      </div>
-      <div style="display: flex; align-items: center" class="right">
-        <o-tooltip>
+    <div class="from-area">
+      <div class="topItem">
+        <o-tooltip
+          v-if="
+            this.$store.state.transferData.fromChainID == 4 ||
+            this.$store.state.transferData.fromChainID == 44
+          "
+        >
           <template v-slot:titleDesc>
-            <span v-html="toValueToolTip"></span>
+            <span v-html="starkAddress"></span>
+          </template>
+          <div class="left">From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
+        </o-tooltip>
+        <div v-else class="left">From</div>
+        <div v-if="isLogin" class="right">
+          Balance:
+          <CommLoading
+            v-if="fromBalanceLoading"
+            style="left: 0.3rem; top: 0.2rem"
+            width="1.2rem"
+            height="1.2rem"
+          />
+          <span v-else>{{ fromBalance }}</span>
+        </div>
+      </div>
+      <div class="bottomItem">
+        <div class="left" @click="changeFromChain">
+          <svg-icon
+            :iconName="showChainIcon()"
+            style="width: 24px; height: 24px; margin-right: 4px"
+          ></svg-icon>
+          <span>{{ showChainName() }}</span>
+          <SvgIconThemed v-if="queryParams.sources.length > 1" />
+        </div>
+        <div
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <input
+            type="text"
+            v-model="transferValue"
+            class="right"
+            @input="checkTransferValue()"
+            :maxlength="18"
+            :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
+          />
+          <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+        </div>
+      </div>
+    </div>
+    <!-- When queryParams.fixed or toChain is dydx, hide it! -->
+    <svg-icon
+      v-if="
+        !queryParams.fixed &&
+        $store.state.transferData.toChainID != 11 &&
+        $store.state.transferData.toChainID != 511 &&
+        !starkMid
+      "
+      class="exchange-icon"
+      iconName="exchange"
+      @click.native="transfer_mid"
+    ></svg-icon>
+    <div class="to-area">
+      <div class="topItem">
+        <o-tooltip
+          v-if="
+            this.$store.state.transferData.toChainID == 4 ||
+            this.$store.state.transferData.toChainID == 44
+          "
+        >
+          <template v-slot:titleDesc>
+            <span v-html="starkAddress"></span>
+          </template>
+          <div class="left">To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
+        </o-tooltip>
+        <div v-else class="left">To</div>
+        <div v-if="isLogin" class="right">
+          Balance:
+          <CommLoading
+            v-if="toBalanceLoading"
+            style="left: 0.3rem; top: 0.2rem"
+            width="1.2rem"
+            height="1.2rem"
+          />
+          <span v-else>{{ toBalance }}</span>
+        </div>
+      </div>
+      <div class="bottomItem">
+        <div class="left" @click="changeToChain">
+          <svg-icon
+            :iconName="showChainIcon(false)"
+            style="width: 24px; height: 24px; margin-right: 4px"
+          ></svg-icon>
+          <span>{{ showChainName(false) }}</span>
+          <SvgIconThemed v-if="queryParams.dests.length > 1" />
+        </div>
+        <div style="display: flex; align-items: center" class="right">
+          <o-tooltip>
+            <template v-slot:titleDesc>
+              <span v-html="toValueToolTip"></span>
+            </template>
+            <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
+          </o-tooltip>
+          <div class="right-value">{{ toValue }}</div>
+        </div>
+      </div>
+    </div>
+    <CommBtn
+      @click="sendTransfer"
+      :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
+      class="btn select-wallet-dialog"
+    >
+      <span class="w700 s16" style="letter-spacing: 0.15rem">
+        {{ sendBtnInfo && sendBtnInfo.text }}
+      </span>
+    </CommBtn>
+    <div class="info-box">
+      <div v-if="isShowMax" class="info-item">
+        <svg-icon class="info-icon" iconName="info"></svg-icon>
+        <span class="red">
+          Makers provide {{ maxPrice }}
+          {{ this.$store.state.transferData.selectTokenInfo.token }} for
+          liquidity.
+        </span>
+      </div>
+      <div v-if="showSaveGas" class="gas-save info-item">
+        <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
+        <span>Gas Fee Saved &nbsp;</span>
+        <span class="red">
+          save
+          <CommLoading
+            v-if="saveGasLoading"
+            style="margin: 0 1rem"
+            width="1rem"
+            height="1rem"
+          />
+          <span v-else style="margin-left: 0.4rem"
+            >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
+          >
+        </span>
+        <o-tooltip placement="bottom">
+          <template v-slot:titleDesc>
+            <span v-html="gasFeeToolTip"></span>
           </template>
           <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
         </o-tooltip>
-        <div class="right-value">{{ toValue }}</div>
+      </div>
+      <div class="time-save info-item">
+        <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
+        <span>
+          Time Spend
+          <CommLoading v-if="timeSpenLoading" width="1.2rem" height="1.2rem" />
+          <span v-else>{{ timeSpent }}</span>
+        </span>
+        <span class="red">
+          &nbsp; save
+          <CommLoading
+            v-if="saveTimeLoading"
+            style="margin: 0 1rem"
+            width="1rem"
+            height="1rem"
+          />
+          <span v-else style="margin-left: 0.4rem">
+            {{ transferSavingTime }}
+          </span>
+        </span>
+        <o-tooltip placement="bottom">
+          <template v-slot:titleDesc>
+            <span v-html="timeSpenToolTip"></span>
+          </template>
+          <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
+        </o-tooltip>
       </div>
     </div>
-  </div>
-  <CommBtn @click="sendTransfer" :disabled="sendBtnInfo ? sendBtnInfo.disabled : true" class="btn select-wallet-dialog">
-    <span class="w700 s16" style="letter-spacing: 0.15rem">
-      {{ sendBtnInfo && sendBtnInfo.text }}
-    </span>
-  </CommBtn>
-  <div class="info-box">
-    <div v-if="isShowMax" class="info-item">
-      <svg-icon class="info-icon" iconName="info"></svg-icon>
-      <span class="red">
-        Makers provide {{ maxPrice }}
-        {{ this.$store.state.transferData.selectTokenInfo.token }} for
-        liquidity.
-      </span>
-    </div>
-    <div v-if="showSaveGas" class="gas-save info-item">
-      <SvgIconThemed style="margin-right: 6px;" icon="orbiter" size="sm" />
-      <span>Gas Fee Saved &nbsp;</span>
-      <span class="red">
-        save 
-        <CommLoading v-if="saveGasLoading" style="margin: 0 1rem" width="1rem" height="1rem" />
-        <span v-else style="margin-left: 0.4rem">{{ gasSavingMin }} ~ {{ gasSavingMax }}</span>
-      </span>
-      <o-tooltip placement="bottom">
-        <template v-slot:titleDesc>
-          <span v-html="gasFeeToolTip"></span>
-        </template>
-        <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
-      </o-tooltip>
-    </div>
-    <div class="time-save info-item">
-      <SvgIconThemed style="margin-right: 6px;" icon="clock" size="sm" />
-      <span>
-        Time Spend
-        <CommLoading v-if="timeSpenLoading" width="1.2rem" height="1.2rem" />
-        <span v-else>{{ timeSpent }}</span>
-      </span>
-      <span class="red">
-        &nbsp; save 
-        <CommLoading v-if="saveTimeLoading" style="margin: 0 1rem" width="1rem" height="1rem" />
-        <span v-else style="margin-left: 0.4rem">
-          {{ transferSavingTime }}
-        </span>
-      </span>
-      <o-tooltip placement="bottom">
-        <template v-slot:titleDesc>
-          <span v-html="timeSpenToolTip"></span>
-        </template>
-        <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
-      </o-tooltip>
-    </div>
-  </div>
 
-  <CommDialog ref="SelectFromChainPopupRef">
-    <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
-      <ObSelectChain
-        :ChainData="fromChainArray"
-        v-on:getChainInfo="getFromChainInfo"
-        v-on:closeSelect="closeFromChainPopupClick()"
-      />
-    </div>
-  </CommDialog>
-  <CommDialog ref="SelectToChainPopupRef">
-    <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
-      <ObSelectChain
-        :ChainData="toChainArray"
-        v-on:getChainInfo="getToChainInfo"
-        v-on:closeSelect="closeToChainPopupClick()"
-      />
-    </div>
-  </CommDialog>
-</div>
+    <CommDialog ref="SelectFromChainPopupRef">
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <ObSelectChain
+          :ChainData="fromChainArray"
+          v-on:getChainInfo="getFromChainInfo"
+          v-on:closeSelect="closeFromChainPopupClick()"
+        />
+      </div>
+    </CommDialog>
+    <CommDialog ref="SelectToChainPopupRef">
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+        <ObSelectChain
+          :ChainData="toChainArray"
+          v-on:getChainInfo="getToChainInfo"
+          v-on:closeSelect="closeToChainPopupClick()"
+        />
+      </div>
+    </CommDialog>
+  </div>
 </template>
 
 <script>
-import { ObSelect, CommBtn, ObSelectChain, CommDialog, SvgIconThemed, CommLoading } from '../../components'
+import {
+  ObSelect,
+  CommBtn,
+  ObSelectChain,
+  CommDialog,
+  SvgIconThemed,
+  CommLoading,
+} from '../../components'
 import makerInfo from '../../core/routes/makerInfo'
 import util from '../../util/util'
 import check from '../../util/check/check'
@@ -189,20 +235,21 @@ import {
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 
 // composition
-import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"; 
-import { METAMASK } from "../../util/walletsDispatchers";
+import {
+  walletIsLogin,
+  compatibleGlobalWalletConf,
+} from '../../composition/walletsResponsiveData'
 const queryParamsChainMap = chain2idMap
 
 export default {
   name: 'Transfer',
-  components: { 
-    ObSelect, CommBtn, ObSelectChain, SvgIconThemed,
-    CommDialog, CommLoading,
-  },
-  setup() {
-    return {
-      walletIsLogin
-    }
+  components: {
+    ObSelect,
+    CommBtn,
+    ObSelectChain,
+    SvgIconThemed,
+    CommDialog,
+    CommLoading,
   },
   data() {
     return {
@@ -282,14 +329,17 @@ export default {
     },
   },
   computed: {
+    isLogin() {
+      return walletIsLogin.value
+    },
     tokens() {
-      return this.tokenInfoArray.map(v => {
+      return this.tokenInfoArray.map((v) => {
         return {
           ...v,
           icon: v.icon || 'tokenLogo',
           label: v.token,
           value: v.token,
-          iconType: 'img'
+          iconType: 'img',
         }
       })
     },
@@ -707,7 +757,7 @@ export default {
         this.initChainArray()
       }
     },
-        '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
+    '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
         let fromChianID = selectMakerInfo.c1ID
@@ -1201,9 +1251,13 @@ export default {
 
     this.transferValue = this.queryParams.amount
 
-    makerInfo.getMakerInfoFromGraph({
-      maker: '0',
-    }, true)
+    makerInfo
+      .getMakerInfoFromGraph(
+        {
+          maker: '0',
+        },
+        true
+      )
       .then((response) => {
         if (response.code === 0) {
           this.makerInfoList = response.data
@@ -1218,24 +1272,28 @@ export default {
       return typeof tar === 'string' && tar === 'NaN' ? 0 : tar
     },
     showChainName(isFrom = true) {
-      const localChainID = this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
+      const localChainID =
+        this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
       const netChainID = this.$env.localChainID_netChainID[localChainID]
       return util.chainName(localChainID, netChainID)
     },
     showChainIcon(isFrom = true) {
-      const localChainID = this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
+      const localChainID =
+        this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`]
       return chain2icon(localChainID)
     },
     selectedTokenChange(val) {
-      const tar = this.tokens.find(v => v.value == val)
+      const tar = this.tokens.find((v) => v.value == val)
       this.selectedToken = val || 'ETH'
-      this.$store.commit('updateTransferTokenInfo',  tar || {})
+      this.$store.commit('updateTransferTokenInfo', tar || {})
     },
     setDefaultTokenWhenNotSupport() {
       this.$nextTick(() => {
-        const st = this.tokenInfoArray.some(v => v.token == this.selectedToken)
+        const st = this.tokenInfoArray.some(
+          (v) => v.token == this.selectedToken
+        )
         if (!st) {
-          this.selectedTokenChange("ETH")
+          this.selectedTokenChange('ETH')
         }
       })
     },
@@ -1523,7 +1581,9 @@ export default {
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
           const imxHelper = new IMXHelper(toChainID)
-          await imxHelper.ensureUser(compatibleGlobalWalletConf.value.walletPayload.walletAddress)
+          await imxHelper.ensureUser(
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+          )
         }
 
         // To dYdX
@@ -1800,7 +1860,8 @@ export default {
       margin-right: 10px;
     }
   }
-  .from-area, .to-area {
+  .from-area,
+  .to-area {
     margin-top: 20px;
     height: 96px;
     border-radius: 20px;
@@ -1835,7 +1896,7 @@ export default {
 
       .right {
         width: 100%;
-        color: #DF2E2D;
+        color: #df2e2d;
         text-align: right;
         border: 0;
         outline: 0px;
@@ -1874,7 +1935,6 @@ export default {
         margin-left: 8px;
       }
     }
-
   }
   .exchange-icon {
     margin: 8px 0;
@@ -1910,7 +1970,7 @@ export default {
     }
   }
   .red {
-    color: #DF2E2D;
+    color: #df2e2d;
   }
 }
 </style>

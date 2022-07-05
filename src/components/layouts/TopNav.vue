@@ -1,81 +1,187 @@
 <template>
-<div class="top-nav">
-  <SvgIconThemed @click.native="toHome" class="logo" icon="logo" />
-  <div class="navs">
-    <span @click="route2('/')" :class="['nav-item', {selected: $route.path === '/'}]">L2 Bridge</span>
-    <span @click="route2('/data')" :class="['nav-item', {selected: $route.path === '/data'}]">L2 Data</span>
-    <span class="nav-item">
-      More
-      <SvgIconThemed />
-    </span>
-  </div>
-  <div class="right-ops">
-    <CommBtn ref="connectBtn" v-if="!walletIsLogin" @click="connectAWallet" style="margin-right: 10px;">Connect a Wallet</CommBtn>
-    <template v-else>
-      <span @click="showHistory" class="ops-item">History</span>
-      <div v-if="isSelectedStarkNet" ref="connectedStarkNetBtn" @click="connectStarkNetWallet" class="ops-item" style="display:inline-flex;justify-content:center;align-items:center;">
-        <svg-icon style="width:2rem;height:2rem;" iconName="sknlogo"></svg-icon>
-        <span style="margin-left:4px;font-weight: 700;font-size: 16px;line-height: 24px;">{{starkAddress}}</span>
-      </div>
-      <div ref="connectedBtn" @click="connectAWallet" class="ops-item" style="display:inline-flex;justify-content:center;align-items:center;">
-        <svg-icon style="width:2rem;height:2rem;" :iconName="compatibleGlobalWalletConf.walletType.toLowerCase()"></svg-icon>
-        <span style="margin-left:4px;font-weight: 700;font-size: 16px;line-height: 24px;">{{showAddress}}</span>
-      </div>
-    </template>
-    <div @click="toggleThemeMode" class="ops-mode">
-      <SvgIconThemed class="mode-icon" icon="mode" />
+  <div class="top-nav">
+    <SvgIconThemed @click.native="toHome" class="logo" icon="logo" />
+    <div class="navs">
+      <span
+        @click="route2('/')"
+        :class="['nav-item', { selected: $route.path === '/' }]"
+        >L2 Bridge</span
+      >
+      <span
+        @click="route2('/data')"
+        :class="['nav-item', { selected: $route.path === '/data' }]"
+        >L2 Data</span
+      >
+      <span class="nav-item">
+        More
+        <SvgIconThemed />
+      </span>
     </div>
-    <div ref="navDialog" :style="{display: selectWalletDialogVisible ? 'block' : 'none', right: isStarkNetDialog ? '160px' : '20px'}" class="ops-toolbox">
-      <div class="toolbox-header">
-        <span class="toolbox-title">{{ walletIsLogin ? 'Connect information' : 'Connect a Wallet'}}</span>
-        <SvgIconThemed @click.native="closeSelectWalletDialog" class="toolbox-close" iconName="close" />
-      </div>
-      <template v-if="!walletIsLogin">
-        <div v-for="item in loginData" :key="item.title" class="wallet-item">
-          <div class="wallet-item-left">
-            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-            <span class="wallet-title">{{item.title}}</span>
-          </div>
-          <CommBtn class="wallet-btn" @click="connectWallet(item)">Connect</CommBtn>
-        </div>
-      </template>
+    <div class="right-ops">
+      <CommBtn
+        ref="connectBtn"
+        v-if="!isLogin"
+        @click="connectAWallet"
+        style="margin-right: 10px"
+        >Connect a Wallet</CommBtn
+      >
       <template v-else>
-        <div v-for="item in loginInfoData" :key="item.title" :class="['wallet-item', 'item-' + item.icon]" style="font-weight: 400;font-size: 14px;line-height: 20px;">
-          <div style="display: flex;justify-content:center;align-items:center;">
-            <!-- <svg-icon style="width: 2.4rem; height: 2.4rem" :iconName="item.icon"></svg-icon> -->
-            <SvgIconThemed style="width: 2.4rem; height: 2.4rem" :iconName="item.icon" />
-            <span class="wallet-item-title" style="margin-left:1rem">{{ item.title }}</span>
-          </div>
-          <div style="text-align: right; display: flex">
-            <span>{{ item.value }}</span>
-            <div
-              v-if="item.title === 'Address'"
-              v-clipboard:copy="$store.state.web3.coinbase"
-              v-clipboard:success="onCopy"
-              v-clipboard:error="onError"
-              style="width: 1.8rem; height: 1.8rem; display: inline-block;margin-left: 6px;cursor:pointer;"
-            >
-              <SvgIconThemed style="width: 100%; height: 100%" iconName="copy" />
-            </div>
-            <div
-              v-if="item.title === 'StarkNetAddress'"
-              v-clipboard:copy="$store.state.web3.starkNet.starkNetAddress"
-              v-clipboard:success="onCopy"
-              v-clipboard:error="onError"
-              style="width: 1.8rem; height: 1.8rem; display: inline-block;margin-left: 6px;cursor:pointer;"
-            >
-              <svg-icon
-                style="width: 100%; height: 100%"
-                iconName="copy"
-              ></svg-icon>
-            </div>
-          </div>
+        <span @click="showHistory" class="ops-item">History</span>
+        <div
+          v-if="isSelectedStarkNet"
+          ref="connectedStarkNetBtn"
+          @click="connectStarkNetWallet"
+          class="ops-item"
+          style="
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <svg-icon
+            style="width: 2rem; height: 2rem"
+            iconName="sknlogo"
+          ></svg-icon>
+          <span
+            style="
+              margin-left: 4px;
+              font-weight: 700;
+              font-size: 16px;
+              line-height: 24px;
+            "
+            >{{ starkAddress }}</span
+          >
         </div>
-        <CommBtn v-if="!isStarkNetDialog" class="wallet-btn" @click="disconnect">Disconnect</CommBtn>
+        <div
+          ref="connectedBtn"
+          @click="connectAWallet"
+          class="ops-item"
+          style="
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+          "
+        >
+          <svg-icon
+            style="width: 2rem; height: 2rem"
+            :iconName="globalSelectWalletConf?.walletType?.toLowerCase()"
+          ></svg-icon>
+          <span
+            style="
+              margin-left: 4px;
+              font-weight: 700;
+              font-size: 16px;
+              line-height: 24px;
+            "
+            >{{ showAddress }}</span
+          >
+        </div>
       </template>
+      <div @click="toggleThemeMode" class="ops-mode">
+        <SvgIconThemed class="mode-icon" icon="mode" />
+      </div>
+      <div
+        ref="navDialog"
+        :style="{
+          display: selectWalletDialogVisible ? 'block' : 'none',
+          right: isStarkNetDialog ? '160px' : '20px',
+        }"
+        class="ops-toolbox"
+      >
+        <div class="toolbox-header">
+          <span class="toolbox-title">{{
+            isLogin ? 'Connect information' : 'Connect a Wallet'
+          }}</span>
+          <SvgIconThemed
+            @click.native="closeSelectWalletDialog"
+            class="toolbox-close"
+            iconName="close"
+          />
+        </div>
+        <template v-if="!isLogin">
+          <div v-for="item in loginData" :key="item.title" class="wallet-item">
+            <div class="wallet-item-left">
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
+            <CommBtn class="wallet-btn" @click="connectWallet(item)"
+              >Connect</CommBtn
+            >
+          </div>
+        </template>
+        <template v-else>
+          <div
+            v-for="item in loginInfoData"
+            :key="item.title"
+            :class="['wallet-item', 'item-' + item.icon]"
+            style="font-weight: 400; font-size: 14px; line-height: 20px"
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+              "
+            >
+              <!-- <svg-icon style="width: 2.4rem; height: 2.4rem" :iconName="item.icon"></svg-icon> -->
+              <SvgIconThemed
+                style="width: 2.4rem; height: 2.4rem"
+                :iconName="item.icon"
+              />
+              <span class="wallet-item-title" style="margin-left: 1rem">{{
+                item.title
+              }}</span>
+            </div>
+            <div style="text-align: right; display: flex">
+              <span>{{ item.value }}</span>
+              <div
+                v-if="item.title === 'Address'"
+                v-clipboard:copy="$store.state.web3.coinbase"
+                v-clipboard:success="onCopy"
+                v-clipboard:error="onError"
+                style="
+                  width: 1.8rem;
+                  height: 1.8rem;
+                  display: inline-block;
+                  margin-left: 6px;
+                  cursor: pointer;
+                "
+              >
+                <SvgIconThemed
+                  style="width: 100%; height: 100%"
+                  iconName="copy"
+                />
+              </div>
+              <div
+                v-if="item.title === 'StarkNetAddress'"
+                v-clipboard:copy="$store.state.web3.starkNet.starkNetAddress"
+                v-clipboard:success="onCopy"
+                v-clipboard:error="onError"
+                style="
+                  width: 1.8rem;
+                  height: 1.8rem;
+                  display: inline-block;
+                  margin-left: 6px;
+                  cursor: pointer;
+                "
+              >
+                <svg-icon
+                  style="width: 100%; height: 100%"
+                  iconName="copy"
+                ></svg-icon>
+              </div>
+            </div>
+          </div>
+          <CommBtn
+            v-if="!isStarkNetDialog"
+            class="wallet-btn"
+            @click="disconnect"
+            >Disconnect</CommBtn
+          >
+        </template>
+      </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
@@ -83,29 +189,44 @@ import { mapMutations } from 'vuex'
 import { CommBtn, SvgIconThemed } from '../'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
-import { isBraveBrowser } from "../../util/browserUtils"
-import { compatibleGlobalWalletConf, walletIsLogin } from "../../composition/walletsResponsiveData"
-import { walletDispatchersOnInit, walletDispatchersOnDisconnect } from "../../util/walletsDispatchers"
+import { isBraveBrowser } from '../../util/browserUtils'
+import {
+  compatibleGlobalWalletConf,
+  walletIsLogin,
+} from '../../composition/walletsResponsiveData'
+import {
+  walletDispatchersOnInit,
+  walletDispatchersOnDisconnect,
+  globalSelectWalletConf,
+} from '../../util/walletsDispatchers'
 import Middle from '../../util/middle/middle'
 
 export default {
   name: 'TopNav',
   components: { CommBtn, SvgIconThemed },
   data() {
-    const selectedWallet = JSON.parse(localStorage.getItem('selectedWallet') || '{}')
+    const selectedWallet = JSON.parse(
+      localStorage.getItem('selectedWallet') || '{}'
+    )
     return {
       selectWalletDialogVisible: false,
       selectedWallet,
       isStarkNetDialog: false,
     }
   },
-  setup() {
-    return {
-      walletIsLogin,
-      compatibleGlobalWalletConf
-    }
-  },
+  // setup() {
+  //   return {
+  //     walletIsLogin,
+  //     compatibleGlobalWalletConf,
+  //   }
+  // },
   computed: {
+    isLogin() {
+      return walletIsLogin.value
+    },
+    globalSelectWalletConf() {
+      return compatibleGlobalWalletConf.value
+    },
     loginData() {
       const wallets = [
         {
@@ -115,28 +236,34 @@ export default {
         },
         {
           isConnect: false,
-          icon: "walletConnect",
-          title: "WalletConnect"
+          icon: 'walletConnect',
+          title: 'WalletConnect',
         },
         {
           isConnect: false,
-          icon: "coinbase",
-          title: "Coinbase"
+          icon: 'coinbase',
+          title: 'Coinbase',
         },
         {
           isConnect: false,
-          icon: "brave",
-          title: "Brave"
-        }
+          icon: 'brave',
+          title: 'Brave',
+        },
       ]
       // the brave wallet is exclusive to the brave browser
       // so if in other browsers, we should hide brave wallet connect option to users
-      if (!isBraveBrowser()) return wallets.filter(wallet => wallet.title !== "Brave");
-      return wallets;
+      if (!isBraveBrowser())
+        return wallets.filter((wallet) => wallet.title !== 'Brave')
+      return wallets
     },
     isSelectedStarkNet() {
       const transferData = this.$store.state.transferData
-      return transferData.fromChainID == 4 || transferData.fromChainID == 44 || transferData.toChainID == 4 || transferData.toChainID == 44
+      return (
+        transferData.fromChainID == 4 ||
+        transferData.fromChainID == 44 ||
+        transferData.toChainID == 4 ||
+        transferData.toChainID == 44
+      )
     },
     loginInfoData() {
       if (this.isStarkNetDialog) {
@@ -177,7 +304,10 @@ export default {
           {
             icon: 'network',
             title: 'Network',
-            value: util.chainName('0', compatibleGlobalWalletConf.value.walletPayload.networkId),
+            value: util.chainName(
+              '0',
+              compatibleGlobalWalletConf.value.walletPayload.networkId
+            ),
           },
           {
             icon: 'wallet',
@@ -193,7 +323,7 @@ export default {
       }
     },
     showAddress() {
-      var address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      var address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
       if (address && address.length > 5) {
         var subStr1 = address.substr(0, 4)
         var subStr2 = address.substr(address.length - 4, 4)
@@ -215,13 +345,14 @@ export default {
     ...mapMutations(['toggleThemeMode']),
     toHome() {
       Middle.$emit('resetCurTab')
-      this.$route.path !== '/' && this.$router.push({
-        path: '/',
-      })
+      this.$route.path !== '/' &&
+        this.$router.push({
+          path: '/',
+        })
     },
     route2(tar) {
       this.$router.push({
-        path: tar || '/'
+        path: tar || '/',
       })
     },
     connectStarkNetWallet() {
@@ -237,7 +368,7 @@ export default {
     },
     connectWallet(walletConf) {
       this.closeSelectWalletDialog()
-      walletDispatchersOnInit[walletConf.title](this.$store);
+      walletDispatchersOnInit[walletConf.title](this.$store)
     },
     disconnect() {
       this.closeSelectWalletDialog()
@@ -245,18 +376,20 @@ export default {
       localStorage.setItem('selectedWallet', JSON.stringify({}))
       this.$store.commit('updateLocalLogin', false)
       localStorage.setItem('localLogin', false)
-      walletDispatchersOnDisconnect[compatibleGlobalWalletConf.value.walletType]();
+      walletDispatchersOnDisconnect[
+        compatibleGlobalWalletConf.value.walletType
+      ]()
     },
     showHistory() {
       this.$store.commit('toggleHistoryPanelVisible', true)
     },
     //copy success
     onCopy() {
-      this.$notify({ title: 'copy success', type: 'success', duration: 2000, })
+      this.$notify({ title: 'copy success', type: 'success', duration: 2000 })
     },
     //copy error
     onError() {
-      this.$notify.error({ title: 'copy faild', duration: 2000, })
+      this.$notify.error({ title: 'copy faild', duration: 2000 })
     },
     handlerDialogOutsideClick(e) {
       if (this.selectWalletDialogVisible) {
@@ -264,11 +397,19 @@ export default {
         const btn1 = this.$refs.connectBtn
         const btn2 = this.$refs.connectedBtn
         const btn3 = this.$refs.connectedStarkNetBtn
-        const eceptDoms = Array.from(document.querySelectorAll('.select-wallet-dialog'))
+        const eceptDoms = Array.from(
+          document.querySelectorAll('.select-wallet-dialog')
+        )
         let cur = e.target
         let hasFind = false
-        while(cur && !hasFind) {
-          if (cur === dialog || cur === btn1?.$el || cur === btn2 || cur === btn3 || eceptDoms.some(v => v === cur)) {
+        while (cur && !hasFind) {
+          if (
+            cur === dialog ||
+            cur === btn1?.$el ||
+            cur === btn2 ||
+            cur === btn3 ||
+            eceptDoms.some((v) => v === cur)
+          ) {
             hasFind = true
           }
           cur = cur.parentElement
@@ -278,7 +419,8 @@ export default {
     },
   },
   mounted() {
-    Middle.$on('connectWallet', state => {
+    Middle.$on('connectWallet', (state) => {
+      console.warn('state =', state)
       this.selectWalletDialogVisible = true
     })
     document.addEventListener('click', this.handlerDialogOutsideClick)
@@ -300,22 +442,22 @@ $navsWidth: 272px;
   justify-content: space-between;
   .logo {
     width: $logoWidth;
-    height:40px;
-    margin-top:16px;
-    margin-left:21px;
+    height: 40px;
+    margin-top: 16px;
+    margin-left: 21px;
     // float: left;
     cursor: pointer;
   }
   .navs {
     margin-top: 24px;
-    height:40px;
+    height: 40px;
     font-weight: 700;
     font-size: 16px;
     line-height: 24px;
     // float: left;
     // margin-left: calc(50% - $navsWidth / 2 - $logoWidth);
     .nav-item {
-      height:24px;
+      height: 24px;
       margin-right: 39px;
       cursor: pointer;
       position: relative;
@@ -331,7 +473,7 @@ $navsWidth: 272px;
       position: absolute;
       width: 40px;
       height: 6px;
-      background: #DF2E2D;
+      background: #df2e2d;
       bottom: -10px;
       left: calc(50% - 20px);
       border-radius: 11px;
@@ -352,8 +494,8 @@ $navsWidth: 272px;
       align-items: center;
       cursor: pointer;
       .mode-icon {
-        width:16px;
-        height:16px;
+        width: 16px;
+        height: 16px;
       }
     }
     .ops-item {
@@ -375,29 +517,52 @@ $navsWidth: 272px;
       box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
       border-radius: 20px;
       .toolbox-header {
-        height:24px;margin-top:18px;text-align:center;position:relative;line-height:24px;margin-bottom:22px;
+        height: 24px;
+        margin-top: 18px;
+        text-align: center;
+        position: relative;
+        line-height: 24px;
+        margin-bottom: 22px;
         .toolbox-title {
-          font-weight: 700;font-size: 16px;line-height: 24px;
+          font-weight: 700;
+          font-size: 16px;
+          line-height: 24px;
         }
         .toolbox-close {
-          width:1.5rem; height:1.5rem;position:absolute;top:4.5px;right:26px;opacity:0.6;
+          width: 1.5rem;
+          height: 1.5rem;
+          position: absolute;
+          top: 4.5px;
+          right: 26px;
+          opacity: 0.6;
           cursor: pointer;
         }
       }
       .wallet-item {
-        height:36px;padding: 0px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;
+        height: 36px;
+        padding: 0px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
         .wallet-item-left {
-          display:flex;justify-content:center;align-items:center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
           .wallet-icon {
-            width: 2.2rem;height: 2.2rem;
+            width: 2.2rem;
+            height: 2.2rem;
           }
           .wallet-title {
-            font-weight: 400;font-size: 14px;line-height: 24px;margin-left:8px;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 24px;
+            margin-left: 8px;
           }
         }
         .wallet-btn {
-          height:36px;
-          line-height:20px;
+          height: 36px;
+          line-height: 20px;
         }
       }
     }
