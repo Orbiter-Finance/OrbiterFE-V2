@@ -15,6 +15,8 @@ export default {
     510: process.env.VUE_APP_HP_MT_R,
     13: process.env.VUE_APP_HP_BOBA,
     513: process.env.VUE_APP_HP_BOBA_R,
+    97: process.env.VUE_APP_HP_BSC_R,
+    56: process.env.VUE_APP_HP_BSC
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -29,6 +31,8 @@ export default {
     510: process.env.VUE_APP_WP_MT_R,
     13: process.env.VUE_APP_WP_BOBA,
     513: process.env.VUE_APP_WP_BOBA_R,
+    97: process.env.VUE_APP_WP_BSC_R,
+    56: process.env.VUE_APP_WP_BSC
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -55,6 +59,8 @@ export default {
     '511',
     '512',
     '513',
+    "97",
+    "56"
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -81,6 +87,7 @@ export default {
     511: '3', // dydx(R)
     512: '4', // zkspace(R)s
     513: '28', // boba rinkeby
+    97: "97", // bsc test
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -99,6 +106,7 @@ export default {
     77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
     88: '',
     99: '',
+    97: "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -125,6 +133,7 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
+    97: "https://www.bscscan.com/tx/"
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -151,5 +160,6 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/account/',
     13: 'https://blockexplorer.boba.network/address/',
     513: 'https://blockexplorer.rinkeby.boba.network/address/',
+    97: "https://www.bscscan.com/address/"
   },
 }

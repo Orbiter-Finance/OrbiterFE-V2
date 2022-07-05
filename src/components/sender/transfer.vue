@@ -395,6 +395,7 @@ const queryParamsChainMap = {
   'zkspace(R)': 512,
   'Boba(R)': 513,
   Boba: 13,
+  "bsc(R)": 97
 }
 
 export default {
@@ -470,6 +471,7 @@ export default {
         userMax.comparedTo(new BigNumber(selectMakerInfo.maxPrice)) > 0
           ? new BigNumber(selectMakerInfo.maxPrice)
           : userMax
+      console.log("userMax", userMax.toString(), max.toString());
       if (
         (selectMakerInfo.c1ID == 9 ||
           selectMakerInfo.c1ID == 99 ||
@@ -479,6 +481,7 @@ export default {
       ) {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN)
       }
+      console.log("max.tostring", max.toString(), selectMakerInfo, max.decimalPlaces(5, BigNumber.ROUND_DOWN).toString());
       return max.toString()
     },
   },
@@ -815,6 +818,7 @@ export default {
       }
     },
     toBalance() {
+      console.log("this.$store.state.transferData.selectMakerInfo", this.$store.state.transferData.selectMakerInfo, this.c1Balance, this.c2Balance);
       if (
         this.$store.state.transferData.selectMakerInfo.c1ID ===
         this.$store.state.transferData.fromChainID
@@ -917,6 +921,7 @@ export default {
         ) {
           this.c1Balance = null
           this.c2Balance = null
+          console.log("c1MakerInfo", selectMakerInfo)
           transferCalculate
             .getTransferBalance(
               selectMakerInfo.c1ID,
@@ -956,6 +961,7 @@ export default {
       }
     },
     '$store.state.web3.coinbase': function (newValue, oldValue) {
+      console.log("我开始计算咯");
       if (!newValue || newValue === '0x') {
         this.c1Balance = 0
         this.c2Balance = 0
@@ -1006,6 +1012,7 @@ export default {
       newValue,
       oldValue
     ) {
+      console.log("我要计算selectMaker咯")
       this.updateExchangeToUsdPrice()
       this.getMakerMaxBalance()
 
@@ -1065,6 +1072,7 @@ export default {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
+            console.log("i am warning error", error, newValue.c1ID, newValue.t1Address, newValue.tName);
             console.warn(error)
           })
         transferCalculate
@@ -1075,6 +1083,7 @@ export default {
             this.$store.state.web3.coinbase
           )
           .then((response) => {
+            console.log("this.c2balance结果", response)
             this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {

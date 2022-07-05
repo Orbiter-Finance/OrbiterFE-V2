@@ -1063,7 +1063,7 @@ export default {
       }
       const { fromChainID, toChainID, transferExt } =
         this.$store.state.transferData
-
+      console.log("fromChainId", fromChainID, toChainID);
       if (fromChainID != 4 && fromChainID != 44) {
         if (
           this.$store.state.web3.networkId.toString() !==
@@ -1185,6 +1185,7 @@ export default {
 
         // Cross address transfer
         if (transferExt) {
+          console.log("cross address transfer");
           this.transferCrossAddress(
             account,
             selectMakerInfo,
@@ -1196,6 +1197,7 @@ export default {
         }
 
         if (util.isEthTokenAddress(tokenAddress)) {
+          console.log("ethTransfer");
           // When tokenAddress is eth
           this.ethTransfer(
             account,
@@ -1228,6 +1230,7 @@ export default {
             gasLimit = 21000
           }
           const objOption = { from: account, gas: gasLimit }
+          console.log("我会走这个transferContract的逻辑", transferContract);
           transferContract.methods
             .transfer(to, tValue.tAmount)
             .send(objOption, (error, transactionHash) => {

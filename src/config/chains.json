@@ -253,6 +253,42 @@
       ],
       "faucets": [],
       "infoURL": "https://gateway.boba.network/"
+    },
+    {
+      "name": "BSC(R)",
+      "chainId": 97,
+      "shortName": "BSC",
+      "networkId": 97,
+      "nativeCurrency": {
+        "name": "BNB",
+        "symbol": "BNB",
+        "decimals": 18
+      },
+      
+      "rpc": [
+        "https://apis.ankr.com/efaf2c4bf9464a3081ac0efef84edb7e/0835c09efa6182fad4264b37a4ac2144/binance/full/test",
+        "wss://apis.ankr.com/wss/efaf2c4bf9464a3081ac0efef84edb7e/0835c09efa6182fad4264b37a4ac2144/binance/full/test"
+      ],
+      "faucets": [],
+      "infoURL": "https://bscscan.com/"
+    },
+    {
+      "name": "BSC",
+      "chainId": 56,
+      "shortName": "BSC",
+      "networkId": 56,
+      "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      
+      "rpc": [
+        "https://apis.ankr.com/c19ccaa33ee845ca9c3b6b891ab7cd21/0835c09efa6182fad4264b37a4ac2144/binance/full/main",
+        "wss://apis.ankr.com/wss/c19ccaa33ee845ca9c3b6b891ab7cd21/0835c09efa6182fad4264b37a4ac2144/binance/full/main"
+      ],
+      "faucets": [],
+      "infoURL": "https://bscscan.com/"
     }
   ]
 }

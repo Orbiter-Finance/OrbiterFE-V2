@@ -27,6 +27,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
 }
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, makerInfo) {
+  console.log("localChainId", makerInfo, localChainID);
   // if localChain = 3 || 33
   if (localChainID === 3 || localChainID === 33) {
     return
