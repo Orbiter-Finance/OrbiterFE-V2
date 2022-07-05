@@ -31,13 +31,12 @@ import { fetchTargetWalletLoginStatus } from "./utils";
 
 export { 
     globalSelectWalletConf,
-    walletIsLogin
 } from "./walletsCoreData";
 export { 
     isMetaMaskLogin // reactive data
 } from "./metaMaskDispatcher";
 export { WALLETCONNECT, METAMASK, LOCALLOGIN } from "./constants";
-export { modifyLocalLoginState, getCurrentLoginInfoFromLocalStorage } from "./utils";
+export { modifyLocalLoginInfo, getCurrentLoginInfoFromLocalStorage } from "./utils";
 
 const {
     standardLoginStatusCheckerOfWallets,
