@@ -91,7 +91,7 @@
       </div>
     </div>
   </div>
-  <CommBtn @click="sendTransfer" :disabled="sendBtnInfo && walletIsLogin ? sendBtnInfo.disabled : true" class="btn select-wallet-dialog">
+  <CommBtn @click="sendTransfer" :disabled="sendBtnInfo ? sendBtnInfo.disabled : true" class="btn select-wallet-dialog">
     <span class="w700 s16" style="letter-spacing: 0.15rem">
       {{ sendBtnInfo && sendBtnInfo.text }}
     </span>
