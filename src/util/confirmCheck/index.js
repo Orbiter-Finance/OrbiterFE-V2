@@ -3,6 +3,7 @@ import { store } from '../../store'
 import util from '../../util/util'
 import transferCalculate from '../../util/transfer/transferCalculate'
 import axios from 'axios'
+import { netStateUrl } from '../../../env'
 
 async function checkStateWhenConfirmTransfer(transferBalance) {
   const selectMakerInfo = store.getters.realSelectMakerInfo
@@ -56,10 +57,9 @@ async function getBalance(
 }
 
 async function netStateBlock(fromChainID) {
-  const netStateUrl = 'https://api.orbiter.finance/chains'
   let response
   try {
-    response = await axios.get(netStateUrl)
+    response = await axios.get(`${netStateUrl}/chains`)
     if (response.status == 200 && response.statusText == 'OK') {
       let netDic = response.data
       let netArr = Object.values(netDic)

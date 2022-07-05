@@ -100,8 +100,10 @@ export default {
   color: var(--default-black);
   font-size: 2rem;
   /* font-family: "Open Sans", sans-serif; */
+  // height: calc(var(--vh, 1vh) * 100);
+  // height: auto !important;
   height: 100%;
-  height: calc(var(--vh, 1vh) * 100);
+  overflow-y: scroll;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
   // url('./assets/bgtop.svg'), 

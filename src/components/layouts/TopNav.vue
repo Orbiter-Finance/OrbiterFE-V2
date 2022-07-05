@@ -40,7 +40,7 @@
         </div>
       </template>
       <template v-else>
-        <div v-for="item in loginInfoData" :key="item.title" class="wallet-item" style="font-weight: 400;font-size: 14px;line-height: 20px;">
+        <div v-for="item in loginInfoData" :key="item.title" :class="['wallet-item', 'item-' + item.icon]" style="font-weight: 400;font-size: 14px;line-height: 20px;">
           <div style="display: flex;justify-content:center;align-items:center;">
             <!-- <svg-icon style="width: 2.4rem; height: 2.4rem" :iconName="item.icon"></svg-icon> -->
             <SvgIconThemed style="width: 2.4rem; height: 2.4rem" :iconName="item.icon" />
@@ -53,7 +53,7 @@
               v-clipboard:copy="$store.state.web3.coinbase"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
-              style="width: 1.8rem; height: 1.8rem; display: inline-block"
+              style="width: 1.8rem; height: 1.8rem; display: inline-block;margin-left: 6px;cursor:pointer;"
             >
               <SvgIconThemed style="width: 100%; height: 100%" iconName="copy" />
             </div>
@@ -62,7 +62,7 @@
               v-clipboard:copy="$store.state.web3.starkNet.starkNetAddress"
               v-clipboard:success="onCopy"
               v-clipboard:error="onError"
-              style="width: 1.8rem; height: 1.8rem; display: inline-block"
+              style="width: 1.8rem; height: 1.8rem; display: inline-block;margin-left: 6px;cursor:pointer;"
             >
               <svg-icon
                 style="width: 100%; height: 100%"
@@ -362,7 +362,6 @@ $navsWidth: 272px;
       }
       .wallet-item {
         height:36px;padding: 0px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;
-        cursor: pointer;
         .wallet-item-left {
           display:flex;justify-content:center;align-items:center;
           .wallet-icon {

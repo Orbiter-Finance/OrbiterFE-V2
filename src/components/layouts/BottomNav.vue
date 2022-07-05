@@ -72,9 +72,9 @@ export default {
     display: flex;
     justify-content: center;
     align-content: center;
-    margin-bottom: 10px;
+    // margin-bottom: 10px;
     .links-content {
-      height: 16.6px;
+      // height: 16.6px;
       .links-item {
         margin-right: 25px;
         .links-icon {
