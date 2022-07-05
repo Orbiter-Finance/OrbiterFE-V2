@@ -36,12 +36,13 @@ import { Transfer, Confirm, Proceed } from './'
 import Middle from '../../util/middle/middle'
 
 export default {
-  name: 'Bridage',
+  name: 'Bridge',
   components: { Transfer, Confirm, Proceed },
   data() {
+    const curTab = localStorage.getItem('Bridge-curTab') || 'Sender'
     return {
       status: '1', // 1 2.confirm 3.proceed
-      curTab: 'Sender', // Sender Maker
+      curTab: curTab, // Sender Maker
       showDetail: false,
       detailData: null,
     }
@@ -52,6 +53,9 @@ export default {
         this.showDetail = true
         this.detailData = state
       }
+    })
+    Middle.$on('resetCurTab', () => {
+      this.curTab = 'Sender'
     })
   },
   computed: {

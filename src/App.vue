@@ -1,5 +1,8 @@
 <template>
-  <div id="app" :class="$store.state.themeMode + '-theme app-theme'">
+  <div id="app" :class="$store.state.themeMode + '-theme app-theme'" :style="{
+    'background-image': `url(${isLightMode ? lightbg : darkbg})`
+  }">
+      <!-- background-image: url('./assets/v2/dark-bg.png'); -->
     <div class="app-content">
       <keep-alive>
         <TopNav />
@@ -31,12 +34,17 @@ import { walletIsLogin } from "./composition/walletsResponsiveData";
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
+import * as lightbg from './assets/v2/light-bg.png'
+import * as darkbg from './assets/v2/dark-bg.png'
 
 export default {
   name: 'App',
   computed: {
     walletAddress: () => {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
+    },
+    isLightMode() {
+      return this.$store.state.themeMode === 'light'
     }
   },
   components: {
@@ -109,21 +117,21 @@ export default {
 </script>
 
 <style lang="scss">
-::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-  background-color: transparent;
-}
+// ::-webkit-scrollbar {
+//   width: 3px;
+//   height: 3px;
+//   background-color: transparent;
+// }
 
-::-webkit-scrollbar-track {
-  border-radius: 3px;
-  background-color: transparent;
-}
+// ::-webkit-scrollbar-track {
+//   border-radius: 3px;
+//   background-color: transparent;
+// }
 
-::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.3);
-}
+// ::-webkit-scrollbar-thumb {
+//   border-radius: 3px;
+//   background-color: rgba(0, 0, 0, 0.3);
+// }
 
 .s-dialog {
   z-index: 9999 !important;
@@ -160,12 +168,12 @@ export default {
   }
 }
 .light-theme {
-  background-image: url('./assets/v2/light-bg.png');
+  // background-image: url('./assets/v2/light-bg.png');
   background-size: 100% 274px;
   background-color: #F5F5F5;
 }
 .dark-theme {
-  background-image: url('./assets/v2/dark-bg.png');
+  // background-image: url('./assets/v2/dark-bg.png');
   background-size: 100% 360px;
   background-color: #28293D;
 }

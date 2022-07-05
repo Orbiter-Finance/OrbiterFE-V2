@@ -91,7 +91,7 @@
       </div>
     </div>
   </div>
-  <CommBtn @click="sendTransfer" :disabled="sendBtnInfo && walletIsLogin ? sendBtnInfo.disabled : true" class="btn">
+  <CommBtn @click="sendTransfer" :disabled="sendBtnInfo && walletIsLogin ? sendBtnInfo.disabled : true" class="btn select-wallet-dialog">
     <span class="w700 s16" style="letter-spacing: 0.15rem">
       {{ sendBtnInfo && sendBtnInfo.text }}
     </span>
@@ -1227,7 +1227,17 @@ export default {
       return chain2icon(localChainID)
     },
     selectedTokenChange(val) {
-      this.$store.commit('updateTransferTokenInfo', this.tokens.find(v => v.value == val) || {})
+      const tar = this.tokens.find(v => v.value == val)
+      this.selectedToken = val || 'ETH'
+      this.$store.commit('updateTransferTokenInfo',  tar || {})
+    },
+    setDefaultTokenWhenNotSupport() {
+      this.$nextTick(() => {
+        const st = this.tokenInfoArray.some(v => v.token == this.selectedToken)
+        if (!st) {
+          this.selectedTokenChange("ETH")
+        }
+      })
     },
     initChainArray() {
       this.fromChainArray = []
@@ -1386,6 +1396,7 @@ export default {
           }
         }
       }
+      this.setDefaultTokenWhenNotSupport()
     },
     // open selectChain
     showFromChainPopupClick() {
@@ -1415,6 +1426,7 @@ export default {
           }
         }
       }
+      this.setDefaultTokenWhenNotSupport()
     },
     // open selectChain
     showToChainPopupClick() {
@@ -1445,10 +1457,8 @@ export default {
       }
     },
     async sendTransfer() {
-      if (this.sendBtnInfo && walletIsLogin) {
-        if (this.sendBtnInfo.disabled === 'disabled') {
-          return
-        }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return
       }
       // if unlogin  login first
       if (!walletIsLogin.value) {

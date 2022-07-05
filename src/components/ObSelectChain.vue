@@ -163,8 +163,6 @@ export default {
         }
       }
 
-      console.log('getChainInfo: ', e)
-
       this.$emit('getChainInfo', e)
       this.closerButton()
     },

@@ -86,7 +86,8 @@ import util from '../../util/util'
 import { isBraveBrowser } from "../../util/browserUtils"
 import { compatibleGlobalWalletConf, walletIsLogin } from "../../composition/walletsResponsiveData"
 import { walletDispatchersOnInit, walletDispatchersOnDisconnect } from "../../util/walletsDispatchers"
-console.log("compatibleGlobalWalletConf", compatibleGlobalWalletConf);
+import Middle from '../../util/middle/middle'
+
 export default {
   name: 'TopNav',
   components: { CommBtn, SvgIconThemed },
@@ -213,8 +214,9 @@ export default {
   methods: {
     ...mapMutations(['toggleThemeMode']),
     toHome() {
+      Middle.$emit('resetCurTab')
       this.$route.path !== '/' && this.$router.push({
-        path: '/'
+        path: '/',
       })
     },
     route2(tar) {
@@ -262,10 +264,11 @@ export default {
         const btn1 = this.$refs.connectBtn
         const btn2 = this.$refs.connectedBtn
         const btn3 = this.$refs.connectedStarkNetBtn
+        const eceptDoms = Array.from(document.querySelectorAll('.select-wallet-dialog'))
         let cur = e.target
         let hasFind = false
         while(cur && !hasFind) {
-          if (cur === dialog || cur === btn1?.$el || cur === btn2 || cur === btn3) {
+          if (cur === dialog || cur === btn1?.$el || cur === btn2 || cur === btn3 || eceptDoms.some(v => v === cur)) {
             hasFind = true
           }
           cur = cur.parentElement
@@ -275,6 +278,9 @@ export default {
     },
   },
   mounted() {
+    Middle.$on('connectWallet', state => {
+      this.selectWalletDialogVisible = true
+    })
     document.addEventListener('click', this.handlerDialogOutsideClick)
   },
   unmounted() {

@@ -78,8 +78,8 @@ export default {
       .links-item {
         margin-right: 25px;
         .links-icon {
-          width: 16.6px; 
-          height: 16.6px;
+          width: 25px; 
+          height: 25px;
           opacity: 0.4;
           cursor: pointer;
         }
@@ -94,7 +94,7 @@ export default {
   }
   .terms {
     font-weight: 400;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 20px;
     cursor: pointer;
   }

@@ -33,7 +33,7 @@
     <span style="color:#DF2E2D">Modifying the transfer amount in MetaMask will cause the transfer to fail.</span>
   </div>
 
-  <CommBtn @click="RealTransfer" style="width:420px;margin-top:20px;height:50px;line-height:34px;">
+  <CommBtn @click="RealTransfer" class="select-wallet-dialog" style="width:420px;margin-top:20px;height:50px;line-height:34px;">
     <span
       v-if="!transferLoading"
       class="wbold s16"
