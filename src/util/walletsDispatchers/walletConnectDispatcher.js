@@ -93,6 +93,7 @@ const subscribeWalletEvents = () => {
 
 // wake up the wallet connect modal by invoke this method
 export const walletConnectDispatcherOnInit = async () => {
+    console.log("walletConnect init triggered")
     connector = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
         qrcodeModal: QRCodeModule

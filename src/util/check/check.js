@@ -1,4 +1,5 @@
 // var WAValidator = require('wallet-address-validator')
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
 export default {
   checkPrice: function(text) {
     const reg = /^(?!0$|0\.$|0\.0$|0\.00$)(?![1-9]\d*\.$)(0?|[1-9]\d*)(\.\d{0,6})?$/
@@ -26,16 +27,16 @@ export default {
     }
   },
   checkIsImToken: function() {
-    if (window.ethereum) {
-      if (window.ethereum.isImToken) {
+    if (compatibleGlobalWalletConf.value.walletPayload.provider) {
+      if (compatibleGlobalWalletConf.value.walletPayload.provider.isImToken) {
         return true
       }
     }
     return false
   },
   checkIsMetaMask: function() {
-    if (window.ethereum) {
-      if (window.ethereum.isMetaMask) {
+    if (compatibleGlobalWalletConf.value.walletPayload.provider) {
+      if (compatibleGlobalWalletConf.value.walletPayload.provider.isMetaMask) {
         return true
       }
     }

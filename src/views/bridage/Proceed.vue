@@ -68,6 +68,7 @@ import { SvgIconThemed, CommBoxHeader, CommBtn, CommLoading } from '../../compon
 import util from '../../util/util'
 import { chain2icon } from '../../util'
 import Middle from '../../util/middle/middle'
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
 
 export default {
   name: 'Proceed',
@@ -365,7 +366,7 @@ export default {
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum
+      compatibleGlobalWalletConf.value.walletPayload.provider
         .request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
@@ -395,7 +396,7 @@ export default {
                   : chain.infoURL,
               ],
             }
-            window.ethereum
+            compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
                 params: [params, that.$store.state.web3.coinbase],

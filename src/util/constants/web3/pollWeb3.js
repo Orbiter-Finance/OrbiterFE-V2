@@ -2,7 +2,7 @@ import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsi
 import { store } from '../../../store'
 
 const pollWeb3 = function () {
-  window.ethereum.autoRefreshOnNetworkChange = false
+  compatibleGlobalWalletConf.value.walletPayload.provider.autoRefreshOnNetworkChange = false
   compatibleGlobalWalletConf.value.walletPayload.provider.on('chainChanged', (chainId) => {
     console.log('networkChanged = ' + chainId)
     console.log('networkChanged = ' + parseInt(chainId, 16).toString())

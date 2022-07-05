@@ -10,7 +10,7 @@
     </span>
   </div>
   <div class="right-ops">
-    <CommBtn ref="connectBtn" v-if="!isLogin" @click="connectAWallet" style="margin-right: 10px;">Connect a Wallet</CommBtn>
+    <CommBtn ref="connectBtn" v-if="!walletIsLogin" @click="connectAWallet" style="margin-right: 10px;">Connect a Wallet</CommBtn>
     <template v-else>
       <span @click="showHistory" class="ops-item">History</span>
       <div v-if="isSelectedStarkNet" ref="connectedStarkNetBtn" @click="connectStarkNetWallet" class="ops-item" style="display:inline-flex;justify-content:center;align-items:center;">
@@ -18,7 +18,7 @@
         <span style="margin-left:4px;font-weight: 700;font-size: 16px;line-height: 24px;">{{starkAddress}}</span>
       </div>
       <div ref="connectedBtn" @click="connectAWallet" class="ops-item" style="display:inline-flex;justify-content:center;align-items:center;">
-        <svg-icon style="width:2rem;height:2rem;" :iconName="selectedWallet.icon"></svg-icon>
+        <svg-icon style="width:2rem;height:2rem;" :iconName="compatibleGlobalWalletConf.walletType.toLowerCase()"></svg-icon>
         <span style="margin-left:4px;font-weight: 700;font-size: 16px;line-height: 24px;">{{showAddress}}</span>
       </div>
     </template>
@@ -27,10 +27,10 @@
     </div>
     <div ref="navDialog" :style="{display: selectWalletDialogVisible ? 'block' : 'none', right: isStarkNetDialog ? '160px' : '20px'}" class="ops-toolbox">
       <div class="toolbox-header">
-        <span class="toolbox-title">{{ isLogin ? 'Connect information' : 'Connect a Wallet'}}</span>
+        <span class="toolbox-title">{{ walletIsLogin ? 'Connect information' : 'Connect a Wallet'}}</span>
         <SvgIconThemed @click.native="closeSelectWalletDialog" class="toolbox-close" iconName="close" />
       </div>
-      <template v-if="!isLogin">
+      <template v-if="!walletIsLogin">
         <div v-for="item in loginData" :key="item.title" class="wallet-item">
           <div class="wallet-item-left">
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
@@ -83,7 +83,10 @@ import { mapMutations } from 'vuex'
 import { CommBtn, SvgIconThemed } from '../'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
-
+import { isBraveBrowser } from "../../util/browserUtils"
+import { compatibleGlobalWalletConf, walletIsLogin } from "../../composition/walletsResponsiveData"
+import { walletDispatchersOnInit, walletDispatchersOnDisconnect } from "../../util/walletsDispatchers"
+console.log("compatibleGlobalWalletConf", compatibleGlobalWalletConf);
 export default {
   name: 'TopNav',
   components: { CommBtn, SvgIconThemed },
@@ -95,22 +98,40 @@ export default {
       isStarkNetDialog: false,
     }
   },
+  setup() {
+    return {
+      walletIsLogin,
+      compatibleGlobalWalletConf
+    }
+  },
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
     loginData() {
-      return [
+      const wallets = [
         {
-          isConnect: this.isLogin && check.checkIsMetaMask(),
+          isConnect: walletIsLogin.value && check.checkIsMetaMask(),
           icon: 'metamask',
           title: 'MetaMask',
         },
+        {
+          isConnect: false,
+          icon: "walletConnect",
+          title: "WalletConnect"
+        },
+        {
+          isConnect: false,
+          icon: "coinbase",
+          title: "Coinbase"
+        },
+        {
+          isConnect: false,
+          icon: "brave",
+          title: "Brave"
+        }
       ]
+      // the brave wallet is exclusive to the brave browser
+      // so if in other browsers, we should hide brave wallet connect option to users
+      if (!isBraveBrowser()) return wallets.filter(wallet => wallet.title !== "Brave");
+      return wallets;
     },
     isSelectedStarkNet() {
       const transferData = this.$store.state.transferData
@@ -212,13 +233,9 @@ export default {
     closeSelectWalletDialog() {
       this.selectWalletDialogVisible = false
     },
-    connectWallet(item) {
+    connectWallet(walletConf) {
       this.closeSelectWalletDialog()
-      this.selectedWallet = item
-      localStorage.setItem('selectedWallet', JSON.stringify(item))
-      if (item.title === 'MetaMask') {
-        this.$store.dispatch('registerWeb3')
-      }
+      walletDispatchersOnInit[walletConf.title](this.$store);
     },
     disconnect() {
       this.closeSelectWalletDialog()
@@ -226,6 +243,7 @@ export default {
       localStorage.setItem('selectedWallet', JSON.stringify({}))
       this.$store.commit('updateLocalLogin', false)
       localStorage.setItem('localLogin', false)
+      walletDispatchersOnDisconnect[compatibleGlobalWalletConf.value.walletType]();
     },
     showHistory() {
       this.$store.commit('toggleHistoryPanelVisible', true)

@@ -23,6 +23,9 @@ export const walletIsLogin = computed(() => {
 /**
  * It works exactly the same purpose as "globalSelectWalletConf"
  * mainly for compatibility with metamask, it may be deprecated later
+ * walletType
+ * walletPayload
+ * loginSuccess
  */
 export const compatibleGlobalWalletConf = computed(() => {
     if (globalSelectWalletConf.walletType && globalSelectWalletConf.walletType !== METAMASK) {

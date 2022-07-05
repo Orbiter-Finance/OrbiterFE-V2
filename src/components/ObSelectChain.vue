@@ -42,19 +42,13 @@
 
 <script>
 import Web3 from 'web3'
-import {
-  getL2AddressByL1,
-  getNetworkIdByChainId,
-  getStarknetAccount,
-} from '../../../util/constants/starknet/helper'
-import { DydxHelper } from '../../../util/dydx/dydx_helper'
-import { IMXHelper } from '../../../util/immutablex/imx_helper'
-import util from '../../../util/util'
-import Loading from '../../loading/loading.vue'
-import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";
+import { DydxHelper } from '../util/dydx/dydx_helper'
+import { IMXHelper } from '../util/immutablex/imx_helper'
+import util from '../util/util.js';
+import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
 import { chain2icon } from '../util'
 import { SvgIconThemed, CommLoading } from './'
-import { connectStarkNetWallet } from '../util/constants/starknet/helper'
+import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 
 export default {
   name: 'ObSelectChain',

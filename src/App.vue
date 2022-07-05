@@ -37,11 +37,7 @@ export default {
   computed: {
     walletAddress: () => {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
-    },
-    isLogin() {
-      const web3 = this.$store.state.web3
-      return web3.isInstallMeta && web3.isInjected && web3.localLogin
-    },
+    }
   },
   components: {
     TopNav,

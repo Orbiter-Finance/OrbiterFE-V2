@@ -2,7 +2,6 @@ import BigNumber from 'bignumber.js'
 import { ec, Account, Contract, Provider, uint256, stark } from 'starknet'
 import util from '../../util'
 import erc20Abi from './erc20_abi.json'
-import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";
 import starkNetCrossAbi from './ob_source_abi.json'
 import { Notification } from 'element-ui'
 
