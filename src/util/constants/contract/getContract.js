@@ -56,7 +56,7 @@ function getTransferContract(localChainID, makerInfo) {
 
 async function getTransferGasLimit(localChainID, makerInfo, from, to, value, provider = null) {
   if (store.state.web3.isInstallMeta || provider) {
-    const web3 = new Web3(provider || window.ethereum)
+    const web3 = new Web3(provider || compatibleGlobalWalletConf.value.walletPayload.provider)
     let tokenAddress = null
     if (makerInfo.c1ID === localChainID) {
       tokenAddress = makerInfo.t1Address
