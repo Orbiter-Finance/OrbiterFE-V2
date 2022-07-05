@@ -15,7 +15,8 @@ import axios from 'axios'
 import config from '../utils/config'
 import Web3 from 'web3'
 import { store } from '../../store'
-let configNet = config.loopring.Mainnet
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
+var configNet = config.loopring.Mainnet
 
 export default {
   getUserAPI: function (localChainID) {
@@ -175,7 +176,7 @@ export default {
       throw Error('User account is frozen')
     }
     const { exchangeInfo } = await exchangeApi.getExchangeInfo()
-    const web3 = new Web3(window.ethereum)
+    const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
     let options = {
       web3,
       address: accInfo.owner,

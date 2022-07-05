@@ -1,6 +1,7 @@
 import { Message } from 'element-ui'
 import env from '../../env'
 import chainList from '../config/chains.json'
+import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
 
 export default {
   showMessage(message, type) {
@@ -179,14 +180,14 @@ export default {
   /**
    * @param {number} chainId
    */
-  async ensureMetamaskNetwork(chainId) {
+  async ensureWalletNetwork(chainId) {
     const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
     const switchParams = {
       chainId: this.toHex(chain.chainId),
     }
 
     try {
-      await window.ethereum.request({
+      await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
       })
@@ -211,7 +212,7 @@ export default {
           ],
         }
 
-        await window.ethereum.request({
+        await compatibleGlobalWalletConf.value.walletPayload.provider.request({
           method: 'wallet_addEthereumChain',
           params: [params],
         })

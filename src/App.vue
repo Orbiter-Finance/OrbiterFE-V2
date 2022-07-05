@@ -27,6 +27,10 @@
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
+import getTransactionList from './core/routes/transactionList'
+import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
+import { compatibleGlobalWalletConf } from "./composition/walletsResponsiveData";
+import { walletIsLogin } from "./composition/walletsResponsiveData"; 
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
@@ -36,9 +40,8 @@ import * as darkbg from './assets/v2/dark-bg.png'
 export default {
   name: 'App',
   computed: {
-    isLogin() {
-      const web3 = this.$store.state.web3
-      return web3.isInstallMeta && web3.isInjected && web3.localLogin
+    walletAddress: () => {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
@@ -58,16 +61,33 @@ export default {
     setInterval(this.getHistory, 60 * 1000)
     this.getHistory()
     getZkToken.getSupportZKTokenList()
-    getZksToken.getSupportZksTokenList()
-    getLpToken.getSupportLpTokenList()
-    localStorage.getItem('localLogin') === 'true' && this.$store.dispatch('registerWeb3')
+
+    // init wallet info by the localStorage
+    this.performInitCurrentLoginWallet();
+
+    // if there is nothing wrong with the test, the following code can be removed
+    // if (localStorage.getItem('localLogin') === 'true') {
+    //   this.$store.dispatch('registerWeb3').then(() => {
+    //     // console.log('==============')
+    //     // if (this.$store.state.web3.isInjected) {
+    //     //   console.log('isInjected')
+    //     // }
+    //   })
+    // }
   },
   watch: {
-    isLogin: function (newValue) {
-      !newValue ? this.$store.commit('updateTransactionList', []) : this.getHistory(true)
+    walletIsLogin: function (newValue) {
+      if (!newValue) {
+        this.$store.commit('updateTransactionList', [])
+      } else {
+        this.getHistory(true)
+      }
     },
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
-      oldValue && newValue && newValue !== '0x' && this.getHistory(true)
+
+    walletAddress: function (newValue, oldValue) {
+      if (oldValue && newValue && newValue !== '0x') {
+        this.getHistory(true)
+      }
     },
     '$store.getters.realSelectMakerInfo': function (newValue) {
       newValue && this.getHistory()
@@ -75,11 +95,28 @@ export default {
   },
   methods: {
     getHistory(isRefresh = false) {
-      if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
+      if (walletIsLogin.value && this.$store.getters.realSelectMakerInfo) {
         if (isRefresh) this.$store.commit('updateTransactionList', null)
         this.$store.dispatch('getTransactionsHistory', { current: 1, })
       }
     },
+    performInitCurrentLoginWallet() {
+      getZksToken.getSupportZksTokenList()
+      getLpToken.getSupportLpTokenList()
+      // When user connects a wallet, the information of this wallet will be added
+      // to the localStorage, when user refreshes the page, the localStorage can help
+      // us locate last wallet that user connected
+      // so localStorage is only used for initialization!!! 
+      const cacheWalletInfo  = getCurrentLoginInfoFromLocalStorage();
+      if (!cacheWalletInfo) return; // if there is no wallet connected
+      const { walletType } = cacheWalletInfo;
+
+      // according to different wallet types to do their own initialization
+      // but eventually they all update a global responsive data: globalSelectWalletConf
+      // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
+      const matchInitDispatcher = walletDispatchersOnInit[walletType];
+      matchInitDispatcher && matchInitDispatcher();
+    }
   },
 }
 </script>

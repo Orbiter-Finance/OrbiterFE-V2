@@ -6,7 +6,6 @@ import * as zksync from 'zksync'
 import env from '../../../env'
 import thirdapi from '../../core/actions/thirdapi'
 // import zksync2 from '../../core/actions/zksync2'
-import Web3 from 'web3'
 import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
@@ -23,6 +22,8 @@ import { IMXHelper } from '../immutablex/imx_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
+import Web3 from 'web3'
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 
 import { Coin_ABI } from '../constants/contract/contract'
 // zk deposit
@@ -1131,7 +1132,7 @@ export default {
     } else if (localChainID === 11 || localChainID === 511) {
       const dydxHelper = new DydxHelper(
         localChainID,
-        new Web3(window.ethereum),
+        new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
         'MetaMask'
       )
       const balance = await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc

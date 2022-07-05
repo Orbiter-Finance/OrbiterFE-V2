@@ -2,6 +2,7 @@ import { ETHTokenType, ImmutableXClient } from '@imtbl/imx-sdk'
 import { ethers, providers } from 'ethers'
 import Web3 from 'web3'
 import config from '../../core/utils/config'
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 
 const CONTRACTS = {
   ropsten: {
@@ -60,7 +61,7 @@ export class IMXHelper {
 
     let signer = undefined
     if (addressOrIndex) {
-      const web3Provider = new Web3(window.ethereum)
+      const web3Provider = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
       const provider = new providers.Web3Provider(web3Provider.currentProvider)
       signer = provider.getSigner(addressOrIndex)
     }

@@ -82,6 +82,8 @@ import env from '../../../env'
 import * as ethers from 'ethers'
 import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
+import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
 
 export default {
   name: 'Confirm',
@@ -92,13 +94,6 @@ export default {
     }
   },
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
     isStarkNetChain() {
       const { fromChainID, toChainID } = this.$store.state.transferData
       return fromChainID == 4 ||
@@ -237,8 +232,8 @@ export default {
   methods: {
     async zkspaceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
-        let provider = new ethers.providers.Web3Provider(window.ethereum)
-        const walletAccount = this.$store.state.web3.coinbase
+        let provider = new ethers.providers.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider)
+        const walletAccount = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         const signer = provider.getSigner()
 
         const privateKey = await zkspace.getL1SigAndPriVateKey(signer)
@@ -422,8 +417,8 @@ export default {
       this.transferLoading = false
     },
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
-      const web3Provider = new Web3(window.ethereum)
-      const walletAccount = this.$store.state.web3.coinbase
+      const web3Provider = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
+      const walletAccount = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       var tokenAddress =
         selectMakerInfo.c1ID === fromChainID
           ? selectMakerInfo.t1Address
@@ -623,7 +618,7 @@ export default {
         const amount = tValue.tAmount
         try {
           const response = await loopring.sendTransfer(
-            this.$store.state.web3.coinbase,
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress,
             this.$store.state.transferData.fromChainID,
             selectMakerInfo.makerAddress,
             0,
@@ -633,7 +628,7 @@ export default {
           )
           if (response.hash && response.status == 'processing') {
             this.onTransferSucceed(
-              this.$store.state.web3.coinbase,
+              compatibleGlobalWalletConf.value.walletPayload.walletAddress,
               selectMakerInfo,
               amount,
               fromChainID,
@@ -693,9 +688,8 @@ export default {
       )
       const switchParams = {
         chainId: util.toHex(chain.chainId),
-      }
-      window.ethereum
-        .request({
+      } 
+        compatibleGlobalWalletConf.value.walletPayload.provider.request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
         })
@@ -750,10 +744,10 @@ export default {
                   : chain.infoURL,
               ],
             }
-            window.ethereum
+            compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],
               })
               .then(() => {})
               .catch((error) => {
@@ -766,13 +760,21 @@ export default {
         })
     },
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!this.$store.state.web3.isInstallMeta) {
+
+      const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
+      if (matchSignatureDispatcher) {
+        matchSignatureDispatcher(from, selectMakerInfo, value, fromChainID, this.onTransferSucceed);
+        return;
+      }
+
+
+      if ((!compatibleGlobalWalletConf.value.walletPayload.isInstalled) && (!this.$store.state.web3.isInstallMeta)) {
         this.transferLoading = false
         return
       }
 
       try {
-        const web3 = new Web3(window.ethereum)
+        const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
 
         let gasLimit = await getTransferGasLimit(
           fromChainID,
@@ -815,7 +817,7 @@ export default {
       }
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
         this.transferLoading = false
         return
       }
@@ -872,7 +874,7 @@ export default {
       }
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
         this.transferLoading = false
         return
       }
@@ -927,7 +929,7 @@ export default {
       }
     },
     async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
         this.transferLoading = false
         return
       }
@@ -935,7 +937,7 @@ export default {
       try {
         const dydxHelper = new DydxHelper(
           fromChainID,
-          new Web3(window.ethereum),
+          new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
           'MetaMask'
         )
         const dydxMakerInfo = dydxHelper.getMakerInfo(
@@ -980,7 +982,7 @@ export default {
     },
 
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
-      if (!this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
         return
       }
 
@@ -991,7 +993,7 @@ export default {
 
       try {
         const { transferExt } = this.$store.state.transferData
-        const provider = new ethers.providers.Web3Provider(window.ethereum)
+        const provider = new ethers.providers.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider)
         const crossAddress = new CrossAddress(provider, fromChainID)
 
         const amount = ethers.BigNumber.from(value)
@@ -1034,7 +1036,7 @@ export default {
     },
 
     async RealTransfer() {
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true)
         return
       }
@@ -1043,13 +1045,19 @@ export default {
 
       if (fromChainID != 4 && fromChainID != 44) {
         if (
-          this.$store.state.web3.networkId.toString() !==
-          this.$env.localChainID_netChainID[fromChainID]
-        ) {
-          this.addChainNetWork()
-          return
+        compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+        this.$env.localChainID_netChainID[
+          this.$store.state.transferData.fromChainID
+        ]
+      ) {
+          const matchAddChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
+          if (matchAddChainDispatcher) {
+            matchAddChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider);
+            return;
+          }
         }
       }
+        
       // Only one
       if (this.transferLoading) {
         return
@@ -1131,8 +1139,7 @@ export default {
           this.transferLoading = false
           return
         }
-        const account = this.$store.state.web3.coinbase
-
+        const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (fromChainID == 4 || fromChainID == 44) {
           this.starknetTransfer(
             account,

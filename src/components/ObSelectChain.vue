@@ -47,10 +47,11 @@
 import Web3 from 'web3'
 import { DydxHelper } from '../util/dydx/dydx_helper'
 import { IMXHelper } from '../util/immutablex/imx_helper'
-import util from '../util/util'
+import util from '../util/util.js';
+import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
 import { chain2icon } from '../util'
 import { SvgIconThemed, CommLoading } from './'
-import { connectStarkNetWallet } from '../util/constants/starknet/helper'
+import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 
 export default {
   name: 'ObSelectChain',
@@ -146,7 +147,7 @@ export default {
             const { coinbase } = this.$store.state.web3
             const dydxHelper = new DydxHelper(
               e.localID,
-              new Web3(window.ethereum),
+              new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
               'MetaMask'
             )
             await dydxHelper.getDydxClient(coinbase)

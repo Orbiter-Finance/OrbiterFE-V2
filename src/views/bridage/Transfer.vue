@@ -18,7 +18,7 @@
         <div class="left">From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
       </o-tooltip>
       <div v-else class="left">From</div>
-      <div v-if="isLogin" class="right">
+      <div v-if="walletIsLogin" class="right">
         Balance:
         <CommLoading v-if="fromBalanceLoading" style="left: 0.3rem; top: 0.2rem" width="1.2rem" height="1.2rem" />
         <span v-else>{{ fromBalance }}</span>
@@ -63,7 +63,7 @@
         <div class="left">To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
       </o-tooltip>
       <div v-else class="left">To</div>
-      <div v-if="isLogin" class="right">
+      <div v-if="walletIsLogin" class="right">
         Balance:
         <CommLoading
           v-if="toBalanceLoading"
@@ -91,7 +91,7 @@
       </div>
     </div>
   </div>
-  <CommBtn @click="sendTransfer" :disabled="sendBtnInfo ? sendBtnInfo.disabled : true" class="btn select-wallet-dialog">
+  <CommBtn @click="sendTransfer" :disabled="sendBtnInfo && walletIsLogin ? sendBtnInfo.disabled : true" class="btn select-wallet-dialog">
     <span class="w700 s16" style="letter-spacing: 0.15rem">
       {{ sendBtnInfo && sendBtnInfo.text }}
     </span>
@@ -188,6 +188,9 @@ import {
 } from '../../util/constants/starknet/helper'
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 
+// composition
+import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"; 
+import { METAMASK } from "../../util/walletsDispatchers";
 const queryParamsChainMap = chain2idMap
 
 export default {
@@ -195,6 +198,11 @@ export default {
   components: { 
     ObSelect, CommBtn, ObSelectChain, SvgIconThemed,
     CommDialog, CommLoading,
+  },
+  setup() {
+    return {
+      walletIsLogin
+    }
   },
   data() {
     return {
@@ -224,7 +232,7 @@ export default {
   },
   asyncComputed: {
     async userMaxPrice() {
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         return this.$store.getters.realSelectMakerInfo.maxPrice
       }
       // check selectMakerInfo
@@ -482,7 +490,7 @@ export default {
         text: 'CONNECT A WALLET',
         disabled: null,
       }
-      if (this.isLogin) {
+      if (walletIsLogin.value) {
         info.text = 'SEND'
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled'
@@ -571,13 +579,6 @@ export default {
       ).toFixed(2)}</b>`
 
       return gasFee + tradingFee + withholdingGasFee + total
-    },
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
     },
     toValue() {
       if (
@@ -706,7 +707,7 @@ export default {
         this.initChainArray()
       }
     },
-    '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
+        '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
         let fromChianID = selectMakerInfo.c1ID
@@ -757,7 +758,7 @@ export default {
         }
       }
     },
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
+    compatibleGlobalWalletConf: function (newValue, oldValue) {
       if (!newValue || newValue === '0x') {
         this.c1Balance = 0
         this.c2Balance = 0
@@ -771,7 +772,7 @@ export default {
             selectMakerInfo.c1ID,
             selectMakerInfo.t1Address,
             selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c1Balance = (
@@ -788,7 +789,7 @@ export default {
             selectMakerInfo.c2ID,
             selectMakerInfo.t2Address,
             selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c2Balance = (
@@ -845,7 +846,7 @@ export default {
         }
       }
 
-      if (this.isLogin && oldValue !== newValue) {
+      if (walletIsLogin.value && oldValue !== newValue) {
         this.c1Balance = null
         this.c2Balance = null
         if (
@@ -861,7 +862,7 @@ export default {
             newValue.c1ID,
             newValue.t1Address,
             newValue.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
@@ -874,7 +875,7 @@ export default {
             newValue.c2ID,
             newValue.t2Address,
             newValue.tName,
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
             this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
@@ -1157,7 +1158,7 @@ export default {
 
     setInterval(() => {
       let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
-      if (selectMakerInfo && this.isLogin) {
+      if (selectMakerInfo && walletIsLogin.value) {
         transferCalculate
           .getTransferBalance(
             selectMakerInfo.c1ID,
@@ -1284,7 +1285,7 @@ export default {
       this.$store.commit('updateTransferFromChainID', fromChainID)
     },
     fromMax() {
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         this.transferValue = '0'
         return
       }
@@ -1460,7 +1461,7 @@ export default {
         return
       }
       // if unlogin  login first
-      if (!this.isLogin) {
+      if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true)
         return
       } else {
@@ -1483,7 +1484,7 @@ export default {
           this.$store.state.transferData.fromChainID,
           this.$store.getters.realSelectMakerInfo.t1Address,
           this.$store.getters.realSelectMakerInfo.tName,
-          this.$store.state.web3.coinbase
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
         if (nonce > 8999) {
           this.$notify.error({
@@ -1522,18 +1523,18 @@ export default {
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
           const imxHelper = new IMXHelper(toChainID)
-          await imxHelper.ensureUser(this.$store.state.web3.coinbase)
+          await imxHelper.ensureUser(compatibleGlobalWalletConf.value.walletPayload.walletAddress)
         }
 
         // To dYdX
         if (toChainID == 11 || toChainID == 511) {
           const dydxHelper = new DydxHelper(
             toChainID,
-            new Web3(window.ethereum),
+            new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
             'MetaMask'
           )
           const dydxAccount = await dydxHelper.getAccount(
-            this.$store.state.web3.coinbase
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
 
           this.$store.commit('updateTransferExt', {
@@ -1547,6 +1548,22 @@ export default {
           // Clear TransferExt
           this.$store.commit('updateTransferExt', null)
         }
+        //    if (
+        //   compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+        //   this.$env.localChainID_netChainID[
+        //     this.$store.state.transferData.fromChainID
+        //   ]
+        // ) {
+        //   if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+        //     try {
+        //       await util.ensureWalletNetwork(
+        //         this.$store.state.transferData.fromChainID
+        //       )
+        //     } catch (err) {
+        //       util.showMessage(err.message, 'error')
+        //       return
+        //     }
+        //   } else {
 
         // To starkNet
         if (toChainID == 4 || toChainID == 44) {
@@ -1619,13 +1636,13 @@ export default {
         } else {
           // Ensure fromChainId's networkId
           if (
-            this.$store.state.web3.networkId.toString() !==
+            compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
             this.$env.localChainID_netChainID[
               this.$store.state.transferData.fromChainID
             ]
           ) {
             try {
-              await util.ensureMetamaskNetwork(
+              await util.ensureWalletNetwork(
                 this.$store.state.transferData.fromChainID
               )
             } catch (err) {
