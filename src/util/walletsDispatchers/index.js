@@ -35,7 +35,7 @@ export {
 export { 
     isMetaMaskLogin // reactive data
 } from "./metaMaskDispatcher";
-export { WALLETCONNECT, METAMASK, LOCALLOGIN } from "./constants";
+export { WALLETCONNECT, METAMASK, LOCALLOGINDATA } from "./constants";
 export { modifyLocalLoginInfo, getCurrentLoginInfoFromLocalStorage } from "./utils";
 
 const {
