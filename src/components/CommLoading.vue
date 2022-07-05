@@ -1,5 +1,5 @@
 <template>
-<loading class="right" :loadingColor="isLightMode?'rgba(51, 51, 51, 0.8)':'rgba(255, 255, 255, 0.6)'" :width="$attrs.width || '1.2rem'" :height="$attrs.height || '1.2rem'"></loading>
+<loading class="loading" :loadingColor="isLightMode?'rgba(51, 51, 51, 0.8)':'rgba(255, 255, 255, 0.6)'" :width="$attrs.width || '1.2rem'" :height="$attrs.height || '1.2rem'"></loading>
 </template>
 
 <script>
@@ -15,3 +15,9 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.loading {
+  display: inline-block;
+}
+</style>

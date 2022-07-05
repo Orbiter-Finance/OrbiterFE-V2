@@ -1,5 +1,7 @@
 const baseUrl = `https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com`
+const baseDomain = `https://api.orbiter.finance`
 const historyApiUrl = `http://api.orbiter.finance:3000`
+export const netStateUrl = `${baseDomain}/chains`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
   baseUrl,

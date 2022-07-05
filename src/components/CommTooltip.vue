@@ -4,7 +4,7 @@
             :overlayClassName="$store.state.themeMode + '-comm_tooltip'">
   <template slot="title">
     <div class="tooltip-title">
-      <SvgIconThemed style="margin-right:8px;" size="xs" height="20px" icon="info" />
+      <SvgIconThemed class="icon" style="margin-right:8px;margin-top: 2px;" size="xs" width="16px" height="16px" icon="info" />
       <slot name="titleDesc"></slot>
     </div>
   </template>
@@ -29,10 +29,17 @@ export default {
 <style lang="scss">
 .light-comm_tooltip, .dark-comm_tooltip {
   .tooltip-title {
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    word-break: break-all;
+    // display: flex;
+    // justify-content: center;
+    // align-items: flex-start;
+    word-break: keep-all;
+    padding-left: 26px;
+    position: relative;
+    .icon {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
   }
   .tooltip {
     width: 4rem;

@@ -1,7 +1,7 @@
 <template>
 <div class="transfer-box">
   <div class="top-area">
-    <span class="title">token</span>
+    <span class="title">Token</span>
     <ObSelect :datas="tokens" v-model="selectedToken" @input="selectedTokenChange"></ObSelect>
   </div>
   <div class="from-area">
@@ -1444,9 +1444,15 @@ export default {
       }
     },
     async sendTransfer() {
+      if (this.sendBtnInfo && this.isLogin) {
+        if (this.sendBtnInfo.disabled === 'disabled') {
+          return
+        }
+      }
       // if unlogin  login first
       if (!this.isLogin) {
         Middle.$emit('connectWallet', true)
+        return
       } else {
         if (!check.checkPrice(this.transferValue)) {
           this.$notify.error({

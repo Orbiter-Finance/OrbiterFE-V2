@@ -16,7 +16,7 @@ export default new Router({
       path: '/',
       component: (resolve) => require(['./views/bridage/Bridage'], resolve),
       meta: {
-        title: 'Orbiter Bridage',
+        title: 'Orbiter',
         keepAlive: true,
       },
     },

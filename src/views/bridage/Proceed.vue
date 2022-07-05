@@ -25,7 +25,7 @@
           <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
           <span>{{ FromTx }}</span>
         </div>
-        <div class="switch-btn" @click="switchNetWork('from')">Switch Network</div>
+        <div class="switch-btn" @click="() => switchNetWork()">Switch Network</div>
       </div>
       <div class="middle-icon">
         <div :class="['rocket-box', {'rocket-box-bg': isProcee}]">
@@ -56,7 +56,7 @@
           </template>
           <span>{{ ToTx }}</span>
         </div>
-        <div class="switch-btn" @click="switchNetWork('to')">Switch Network</div>
+        <div class="switch-btn" @click="() => switchNetWork(false)">Switch Network</div>
       </div>
     </div>
   </div>
