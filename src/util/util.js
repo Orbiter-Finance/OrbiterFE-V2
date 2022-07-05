@@ -141,13 +141,17 @@ export default {
     const switchParams = {
       chainId: this.toHex(chain.chainId),
     }
-
     try {
-      await window.ethereum.request({
-        method: 'wallet_switchEthereumChain',
-        params: [switchParams],
+      const nowChainId = await window.ethereum.request({
+        method: 'eth_chainId',
       })
-      this.showMessage('Switch Success', 'success')
+      if (switchParams.chainId !== nowChainId) {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [switchParams],
+        })
+        this.showMessage('Switch Success', 'success')
+      }
     } catch (error) {
       if (error.code === 4902) {
         // need add net
@@ -177,21 +181,6 @@ export default {
         this.showMessage(error.message, 'error')
         throw error
       }
-    }
-  },
-  /**
-   * 
-   * @param {number} chainId 
-   * @returns 
-   */
-  correspondingProvider(chainId) {
-    switch (chainId) {
-      case 5:
-        return 'https://eth-rinkeby.alchemyapi.io/v2/MmFUvs2HfYhB4NC9vYNKXLpZpZfliz5q'
-      case 22:
-        return 'https://rinkeby.arbitrum.io/rpc'
-      case 77:
-        return 'https://opt-kovan.g.alchemy.com/v2/rS3DfLJRdaQyZAJSvj8lYK_9rwWhpeGV'
     }
   },
 }

@@ -94,8 +94,6 @@ import { ethers } from 'ethers'
 import util from '../../util/util'
 import { getDTokenContractABI } from '../../util/constants/contract/getContract'
 import { mapMutations, mapState } from 'vuex'
-const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-const singer = provider.getSigner()
 export default {
   name: 'loginMaker',
   props: { dTokenAddresses: Object, makerInfoList: Array },
@@ -144,7 +142,13 @@ export default {
     addnewLiquidity() {
       this.$emit('stateChanged', '2')
     },
+    getProviderSigner() {
+      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+      const singer = provider.getSigner()
+      return singer
+    },
     async redeemLiquidity(item) {
+      let singer = this.getProviderSigner()
       if (
         ethers.BigNumber.from(ethers.utils.parseEther(item.amount)).isZero()
       ) {
@@ -273,11 +277,12 @@ export default {
     },
 
     async getLquidityData() {
+      let singer = this.getProviderSigner()
       var newArray = []
       for (let index = 0; index < this.toChainArray.length; index++) {
         const item = this.toChainArray[index]
         let customProvider = new ethers.providers.JsonRpcProvider(
-          util.correspondingProvider(item)
+          process.env[this.$env.localProvider[item]]
         )
         const dTokenInstance = new ethers.Contract(
           this.dTokenAddresses[item],

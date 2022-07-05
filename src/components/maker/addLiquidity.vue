@@ -152,7 +152,7 @@
           "
         >
           <span class="s14 wbolder">Estimated APY</span>
-          <span class="dColor s14 wnormal">410%</span>
+          <span class="dColor s14 wnormal">{{ apy }} %</span>
           <!-- 参数：流动性（现金）,总存款 -->
         </div>
       </div>
@@ -168,9 +168,10 @@
           width="29.5rem"
           height="4rem"
           style="margin-top: 2rem"
+          :isDisabled="sendInputValueIsZero"
           @click="confirmAddLiquidity"
         >
-          <span v-if="!addLiquidityLoading" class="wbold s16" 
+          <span v-if="!addLiquidityLoading" class="wbold s16"
             >CONFIRM AND SEND</span
           >
           <loading
@@ -211,12 +212,11 @@ import config from '../../config'
 import util from '../../util/util'
 import {
   getDTokenContractABI,
-  getBasicContractABI,
+  getCoinContractABI,
 } from '../../util/constants/contract/getContract'
 import CustomPopup from '../popup/bottomPop'
 import SelectChain from '../popup/selectChain/selectChain.vue'
 import SelectToken from '../popup/selectToken/selectToken.vue'
-// import BigNumber from 'bignumber.js'
 export default {
   name: 'AddLiquidity',
   props: { dTokenAddresses: Object, makerInfoList: Array },
@@ -267,8 +267,10 @@ export default {
       tokenInfoArray: [],
       toChainId: 0,
       toChainArray: [],
+      toChainAddress: {},
       sendInputValue: '0',
       addLiquidityLoading: false,
+      apy: 410,
     }
   },
   components: {
@@ -277,16 +279,18 @@ export default {
     CustomPopup,
   },
   watch: {
-    // 'amount':function(newValue,oldValue){
-    //   console.log('oldValue: ', oldValue);
-    //   console.log(ethers.BigNumber.from(newValue).gt('12'));
-    //   if(ethers.BigNumber.from(newValue).gt('12')){
-    //     this.isShowMax = true
-    //   }
-    // }
+    toChainId: function (newValue) {
+      if (newValue !== 0) {
+        this.$nextTick(() => {
+          this.getSupplyRatePerBlock()
+        })
+      }
+    },
   },
-  computed:{
-
+  computed: {
+    sendInputValueIsZero() {
+      return this.amount === '' ? 'disabled' : null
+    },
   },
   mounted() {
     // Init chain
@@ -294,13 +298,14 @@ export default {
     this.makerInfoList.filter((makerInfo) => {
       if (this.toChainArray.indexOf(makerInfo.c2ID) === -1) {
         this.toChainArray.push(makerInfo.c2ID)
+        this.toChainAddress[makerInfo.c2ID] = makerInfo.t2Address
       }
       if (this.toChainArray.indexOf(makerInfo.c1ID) === -1) {
         this.toChainArray.push(makerInfo.c1ID)
+        this.toChainAddress[makerInfo.c1ID] = makerInfo.t1Address
       }
     })
     this.toChainId = this.toChainArray[0]
-
     // Init token
     this.freshTokens()
   },
@@ -380,36 +385,44 @@ export default {
     clickAgreement() {
       console.log('clickAgreement')
     },
-    async confirmAddLiquidity() {
+    getProviderSigner() {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-      const singer = provider.getSigner()
+      return provider.getSigner()
+    },
+    getDTokenContract(toChainId) {
+      return new ethers.Contract(
+        this.dTokenAddresses[toChainId],
+        getDTokenContractABI(),
+        this.getProviderSigner()
+      )
+    },
+    async confirmAddLiquidity() {
+      let singer = this.getProviderSigner()
       await util.ensureMetamaskNetwork(
         this.$env.localChainID_netChainID[this.toChainId]
       )
-      const basicToken = new ethers.Contract(
-        '0x2e055eEe18284513B993dB7568A592679aB13188',
-        getBasicContractABI(),
+      const coinToken = new ethers.Contract(
+        this.toChainAddress[this.toChainId],
+        getCoinContractABI(),
         singer
       )
-      const dTokenInstance = new ethers.Contract(
-        this.dTokenAddresses[this.toChainId],
-        getDTokenContractABI(),
-        singer
-      )
+      const dTokenInstance = this.getDTokenContract(this.toChainId)
       const account = await singer.getAddress()
-      const allowanceAmount = await basicToken.allowance(
+      const allowanceAmount = await coinToken.allowance(
         account,
         this.dTokenAddresses[this.toChainId]
       )
-      const basicBalance = await basicToken.balanceOf(account)
+      const coinBalance = await coinToken.balanceOf(account)
       if (ethers.utils.parseEther(this.amount).isZero()) return
       if (
         ethers.BigNumber.from(ethers.utils.parseEther(this.amount)).gt(
-          basicBalance
+          coinBalance
         )
       ) {
         util.showMessage(
-          'Your account balance is ' + ethers.utils.formatEther(basicBalance) + ' DAI',
+          'Your account balance is ' +
+            ethers.utils.formatEther(coinBalance) +
+            ' DAI ',
           'warning'
         )
         return
@@ -419,7 +432,7 @@ export default {
           ethers.utils.parseEther(this.amount)
         )
       ) {
-        await basicToken.approve(
+        await coinToken.approve(
           this.dTokenAddresses[this.toChainId],
           ethers.constants.MaxUint256
         )
@@ -451,6 +464,22 @@ export default {
           this.addLiquidityLoading = false
         }
       }
+    },
+    async getSupplyRatePerBlock() {
+      const blocksPerYear = 2102400
+      const divParam = ethers.utils.parseEther('1')
+      let calculationApy = 410
+      await util.ensureMetamaskNetwork(
+        this.$env.localChainID_netChainID[this.toChainId]
+      )
+      try {
+        const APY = this.getDTokenContract(this.toChainId)
+        calculationApy = await APY.supplyRatePerBlock()
+        calculationApy = ((calculationApy * blocksPerYear) / divParam) * 100
+      } catch (error) {
+        console.log(error)
+      }
+      this.apy = calculationApy
     },
     onChange(checkedValues) {
       console.log('checked = ', checkedValues)
