@@ -1,49 +1,82 @@
 import thirdapi from '../../core/actions/thirdapi'
 import { store } from '../../store'
 
+let isWaitingMainnetZKTokenApiResponse = false
+let isWaitingRinkebyZKTokenApiResponse = false
+let zkTokenTimer = null;
 export default {
   async getSupportZKTokenList() {
-    getTokenList(3)
-    getTokenList(33)
-    setInterval(async () => {
-      getTokenList(3)
-      getTokenList(33)
+    getAllZKTokenList()
+    clearInterval(zkTokenTimer)
+    zkTokenTimer = setInterval(async () => {
+      getAllZKTokenList()
     }, 30 * 1000)
+    return zkTokenTimer
   },
 }
 
+async function getAllZKTokenList() {
+  !isWaitingMainnetZKTokenApiResponse && getMainnetZKTokenList();
+  !isWaitingRinkebyZKTokenApiResponse && getRinkebyZKTokenList();
+}
+async function getMainnetZKTokenList() {
+  getTokenList(3)
+}
+async function getRinkebyZKTokenList() {
+  getTokenList(33)
+}
+function isMainnetZKToken(id) {
+  return id == 3
+}
+function setWaitingFlag(isMainnet, isWaiting = false) {
+  isMainnet ? (isWaitingMainnetZKTokenApiResponse = isWaiting) : (isWaitingRinkebyZKTokenApiResponse = isWaiting)
+}
 async function getTokenList(localChainID) {
   if (localChainID !== 3 && localChainID !== 33) {
     return
   }
-  var isContiue = true
-  var startID = 0
-  var zkTokenAllList = []
+  let isContiue = true
+  // var startID = 0
+  const isMainnet = isMainnetZKToken(localChainID)
+  const zktokenList = store.state.zktokenList || {}
+  const list = (isMainnet ? zktokenList.mainnet : zktokenList.rinkeby) || []
+  let startID = (list[list.length - 1] || {}).id || 0
+  startID = startID > 0 ? startID + 1 : 0
+  let zkTokenAllList = list.concat()
   try {
+    let hasMore = true
     while (isContiue) {
-      var zkTokenListReq = {
+      setWaitingFlag(isMainnet, true)
+      let result = await thirdapi.getZKTokenList({
         from: startID,
         limit: 100,
         direction: 'newer',
         localChainID: localChainID,
-      }
-      let result = await thirdapi.getZKTokenList(zkTokenListReq)
-      if (result.status === 'success' && result.result.list.length !== 0) {
-        let zk_list = result.result.list
-        if (zk_list.length !== 100) {
-          isContiue = false
+      })
+      if (result.status === 'success') {
+        if (result.result.list.length !== 0) {
+          let zk_list = result.result.list
+          if (zk_list.length !== 100) {
+            isContiue = false
+          } else {
+            startID = result.result.list[99].id + 1
+          }
+          zkTokenAllList = zkTokenAllList.concat(zk_list)
         } else {
-          startID = result.result.list[99].id + 1
+          hasMore = false
+          isContiue = false
         }
-        zkTokenAllList = zkTokenAllList.concat(zk_list)
+      } else {
+        isContiue = false
       }
+      setWaitingFlag(isMainnet)
     }
-    let zkTokenResult = {
+    hasMore && store.commit('updateZKTokenList', {
       chainID: localChainID,
       tokenList: zkTokenAllList,
-    }
-    store.commit('updateZKTokenList', zkTokenResult)
+    })
   } catch (error) {
     console.log('zk_TokenListGetError =', error)
+    setWaitingFlag(isMainnet)
   }
 }

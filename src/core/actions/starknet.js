@@ -1,6 +1,5 @@
 import axios from 'axios'
 import * as starknet from 'starknet'
-import { getSelectorFromName } from 'starknet/dist/utils/stark'
 import util from '../../util/util'
 import Axios from '../utils/Axios'
 import config from '../utils/config'
@@ -8,10 +7,10 @@ import config from '../utils/config'
 Axios.axios()
 
 let configNet = config.starknet.Mainnet
-const transferSelector = starknet.number.hexToDecimalString(
-  getSelectorFromName('transfer')
-)
-
+// const transferSelector = starknet.number.hexToDecimalString(
+//   getSelectorFromName('transfer')
+// )
+const transferSelector = 'transfer'
 const TRANSACTION_CACHES = {}
 const getTransaction = async (hash, chainId, retryCount = 0) => {
   // From cache

@@ -7,6 +7,13 @@ const state = {
     coinbase: null,
     error: null,
     localLogin: true,
+    starkNet: {
+      starkNetAddress: '',
+      starkWalletName: '',
+      starkWalletIcon: '',
+      starkIsConnected: false,
+      starkChain: '',
+    },
   },
   innerWH: {
     innerWidth: window.innerWidth,
@@ -53,8 +60,24 @@ const state = {
     rinkeby: [],
     mainnet: [],
   },
+  zksTokenList: {
+    rinkeby: [],
+    mainnet: [],
+  },
+  lpTokenList: {
+    rinkeby: [],
+    mainnet: [],
+  },
   transactionList: null,
+  transactionListInfo: {
+    current: 1,
+    size: 30,
+    total: 0,
+    pages: 1
+  },
   lpAccountInfo: null,
   lpApiKey: null,
+  themeMode: localStorage.getItem('themeMode') || 'light', // light dark
+  historyPanelVisible: false,
 }
 export default state

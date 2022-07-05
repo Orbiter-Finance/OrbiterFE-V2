@@ -1,6 +1,11 @@
+const baseUrl = `https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com`
+const baseDomain = `https://api.orbiter.finance`
+const historyApiUrl = `http://api.orbiter.finance:3000`
+export const netStateUrl = `${baseDomain}/chains`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
-  baseUrl: 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com',
+  baseUrl,
+  baseTraddingUrl: process.env.NODE_ENV === 'production' ? historyApiUrl : 'http://localhost:3000',
   credential: false,
   localProvider: {
     5: process.env.VUE_APP_HP_R, // rinkeby
@@ -88,8 +93,8 @@ export default {
     3: '',
     4: '',
     5: '0x783703C20dF627893952d59DF40f556A172d1719',
-    6: '',
-    7: '',
+    6: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
+    7: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
     8: '',
     9: '',
     22: '0x721fBB2C2C9cdFa5547feE6b683949c20F175457',

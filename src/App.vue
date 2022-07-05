@@ -1,46 +1,56 @@
 <template>
-  <div id="app">
-    <TopNav />
-    <keep-alive>
-      <router-view
-        v-if="$route.meta.keepAlive"
-        class="router"
-        id="aliveRouter"
-      />
-    </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
-    <BottomNav />
-
-    <!-- Load tooltip.png ahead of time -->
-    <img style="display: none" src="./assets/tooltip.png" />
+  <div id="app" :class="$store.state.themeMode + '-theme app-theme'">
+    <div class="app-content">
+      <keep-alive>
+        <TopNav />
+      </keep-alive>
+      <div class="main">
+        <keep-alive>
+          <router-view v-if="$route.meta.keepAlive" class="router" />
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive" class="router" />
+        <div v-if="$store.state.historyPanelVisible" class="global-dialog">
+          <History></History>
+        </div>
+      </div>
+      <keep-alive>
+        <BottomNav />
+      </keep-alive>
+    </div>
   </div>
 </template>
 
 <script>
-import TopNav from './components/nav/TopNav.vue'
-import BottomNav from './components/nav/BottomNav.vue'
+import TopNav from './components/layouts/TopNav.vue'
+import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import getTransactionList from './core/routes/transactionList'
 import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
 import { compatibleGlobalWalletConf } from "./composition/walletsResponsiveData";
 import { walletIsLogin } from "./composition/walletsResponsiveData"; 
+import getZksToken from './util/tokenInfo/supportZksTokenInfo'
+import getLpToken from './util/tokenInfo/supportLpTokenInfo'
+import History from './views/History.vue'
 
 export default {
   name: 'App',
   computed: {
     walletAddress: () => {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
-    }
+    },
+    isLogin() {
+      const web3 = this.$store.state.web3
+      return web3.isInstallMeta && web3.isInjected && web3.localLogin
+    },
   },
   components: {
     TopNav,
     BottomNav,
+    History, 
   },
   async mounted() {
     setInterval(this.getHistory, 60 * 1000)
-
     this.getHistory()
-
     getZkToken.getSupportZKTokenList()
 
     // init wallet info by the localStorage
@@ -70,38 +80,20 @@ export default {
         this.getHistory(true)
       }
     },
-
     '$store.getters.realSelectMakerInfo': function (newValue) {
-      if (newValue) {
-        this.getHistory()
-      }
+      newValue && this.getHistory()
     },
   },
   methods: {
     getHistory(isRefresh = false) {
       if (walletIsLogin.value && this.$store.getters.realSelectMakerInfo) {
-        if (isRefresh) {
-          this.$store.commit('updateTransactionList', null) 
-        }
-
-        var req = {
-          address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
-          daysAgo: 14,
-          state: 1, //maker/user
-        }
-        getTransactionList
-          .getTransactionList(req)
-          .then((response) => {
-            if (response.state === 1) {
-              this.$store.commit('updateTransactionList', response.list)
-            }
-          })
-          .catch((error) => {
-            console.log('error =', error)
-          })
+        if (isRefresh) this.$store.commit('updateTransactionList', null)
+        this.$store.dispatch('getTransactionsHistory', { current: 1, })
       }
     },
     performInitCurrentLoginWallet() {
+      getZksToken.getSupportZksTokenList()
+      getLpToken.getSupportLpTokenList()
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
       // us locate last wallet that user connected
@@ -120,19 +112,25 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 ::-webkit-scrollbar {
   width: 3px;
   height: 3px;
   background-color: transparent;
 }
+
 ::-webkit-scrollbar-track {
   border-radius: 3px;
   background-color: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+.s-dialog {
+  z-index: 9999 !important;
 }
 
 #app {
@@ -143,35 +141,63 @@ export default {
   color: var(--default-black);
   font-size: 2rem;
   /* font-family: "Open Sans", sans-serif; */
+  // height: calc(var(--vh, 1vh) * 100);
+  // height: auto !important;
   height: 100%;
-  height: calc(var(--vh, 1vh) * 100);
+  overflow-y: scroll;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  background-image: url('./assets/bgtop.svg');
-  background-size: 100% 40%;
+  // url('./assets/bgtop.svg'), 
+  // 100% 650px, 
+  // left top, 
+  background-position: left bottom;
   background-repeat: no-repeat;
+  .app-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .main {
+      flex-grow: 1;
+      padding-top: 24px;
+    }
+  }
+}
+.light-theme {
+  background-image: url('./assets/v2/light-bg.png');
+  background-size: 100% 274px;
+  background-color: #F5F5F5;
+}
+.dark-theme {
+  background-image: url('./assets/v2/dark-bg.png');
+  background-size: 100% 360px;
+  background-color: #28293D;
 }
 
-body {
-  background-color: #fff;
-}
+// body {
+//   background-color: #fff;
+// }
 
 * {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none; /*IE10*/
+  -ms-user-select: none;
+  /*IE10*/
   user-select: none;
 }
+
 input {
   -webkit-user-select: auto;
   user-select: auto;
 }
+
 textarea {
   -webkit-user-select: auto;
   user-select: auto;
 }
+
 p {
   display: block;
   margin-block-start: 1em;
@@ -189,13 +215,22 @@ p {
 }
 
 .router {
-  padding-bottom: var(--bottom-nav-height);
-  height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height));
-  height: calc(
-    var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height)
-  );
+  // padding-bottom: var(--bottom-nav-height);
+  // height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height));
+  // height: calc(
+  //   var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height)
+  // );
 
   width: 100%;
+}
+.global-dialog {
+  position: absolute;
+  top: 96px;
+  z-index: 1001;
+  width: 100%;
+  // height: 100%;
+  height: 740px;
+  overflow: hidden;
 }
 
 @media screen and (min-width: 5000px) {

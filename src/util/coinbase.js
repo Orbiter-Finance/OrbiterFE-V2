@@ -71,6 +71,20 @@ export async function getExchangeToUsdRate(sourceCurrency = 'ETH') {
 }
 
 /**
+ * @param sourceCurrency
+ * @returns BigNumber
+ */
+export function asyncGetExchangeToUsdRate(sourceCurrency = 'ETH') {
+  // toUpperCase
+  sourceCurrency = sourceCurrency.toUpperCase()
+  let rate = -1
+  if (exchangeRates?.[sourceCurrency]) {
+    rate = exchangeRates[sourceCurrency]
+  }
+  return new BigNumber(rate)
+}
+
+/**
  * @param value
  * @param sourceCurrency
  * @returns {Promise<BigNumber>}

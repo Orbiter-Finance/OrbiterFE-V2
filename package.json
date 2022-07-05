@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "cross-env NODE_ENV=development vue-cli-service serve",
+    "build:rinkeby": "cross-env NODE_ENV=development npm run clear && vue-cli-service build",
     "build": "cross-env NODE_ENV=production npm run clear && vue-cli-service build",
     "clear": "rimraf ./dist",
     "lint": "eslint --ext .js --ext .jsx --ext .vue src/",
@@ -24,10 +25,11 @@
     "element-ui": "^2.14.1",
     "eth-proof": "^2.1.6",
     "ethers": "^5.5.4",
+    "get-starknet-wallet": "^0.0.8",
     "graphql": "^16.4.0",
-    "graphql-request": "^4.2.0",
+    "graphql-request": "^4.3.0",
     "https": "^1.0.0",
-    "starknet": "2.5.0",
+    "starknet": "^3.10.0",
     "truffle-privatekey-provider": "^1.5.0",
     "tunnel": "0.0.6",
     "vue": "^2.6.11",
@@ -38,8 +40,8 @@
     "zksync": "^0.11.3",
     "@vue/composition-api": "^1.6.3",
     "@walletconnect/client": "^1.7.8",
-    "@walletconnect/qrcode-modal": "^1.7.8"
-
+    "@walletconnect/qrcode-modal": "^1.7.8",
+    "zksync-web3": "^0.4.0"
   },
   "devDependencies": {
     "@types/web3": "^1.2.2",

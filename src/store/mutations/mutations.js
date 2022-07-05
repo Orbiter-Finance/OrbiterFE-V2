@@ -13,6 +13,22 @@ export default {
       state.zktokenList.rinkeby = obj.tokenList
     }
   },
+  updateZksTokenList(state, obj) {
+    if (obj.chainID === 12) {
+      state.zksTokenList.mainnet = obj.tokenList
+    }
+    if (obj.chainID === 512) {
+      state.zksTokenList.rinkeby = obj.tokenList
+    }
+  },
+  updateLpTokenList(state, obj) {
+    if (obj.chainID === 9) {
+      state.lpTokenList.mainnet = obj.tokenList
+    }
+    if (obj.chainID === 99) {
+      state.lpTokenList.rinkeby = obj.tokenList
+    }
+  },
   updateProceedTxID(state, txid) {
     state.proceedTXID = txid
     state.proceedState = 1
@@ -102,6 +118,9 @@ export default {
   updateTransactionList(state, transactionList) {
     state.transactionList = transactionList
   },
+  updateTransactionListInfo(state, newInfo) {
+    state.transactionListInfo = newInfo
+  },
   updateIsInstallMeta(state, isInstallMeta) {
     state.web3.isInstallMeta = isInstallMeta
   },
@@ -124,6 +143,46 @@ export default {
     state.lpApiKey = null
     state.web3.coinbase = coinbase
   },
+  updateStarkNetAddress(state, starkNetAddress) {
+    if (!starkNetAddress || starkNetAddress.length === 0) {
+      starkNetAddress = ''
+      state.web3.starkNet.starkIsConnected = false
+      state.web3.starkNet.starkWalletName = ''
+      state.web3.starkNet.starkWalletIcon = ''
+      state.web3.starkNet.starkChain = ''
+    } else {
+      state.web3.starkNet.starkIsConnected = true
+    }
+    state.web3.starkNet.starkNetAddress = starkNetAddress
+  },
+
+  updateStarkNetIsConnect(state, starkNetIsConnect) {
+    if (!starkNetIsConnect) {
+      state.web3.starkNet.starkWalletName = ''
+      state.web3.starkNet.starkWalletIcon = ''
+      state.web3.starkNet.starkChain = ''
+      state.web3.starkNet.starkNetAddress = ''
+    }
+    state.web3.starkNet.starkNetIsConnect = starkNetIsConnect
+  },
+  updateStarkNetWalletName(state, starkNetWalletName) {
+    if (!starkNetWalletName || starkNetWalletName.length === 0) {
+      starkNetWalletName = ''
+    }
+    state.web3.starkNet.starkNetWalletName = starkNetWalletName
+  },
+  updateStarkNetWalletIcon(state, starkNetWalletIcon) {
+    if (!starkNetWalletIcon || starkNetWalletIcon.length === 0) {
+      starkNetWalletIcon = ''
+    }
+    state.web3.starkNet.starkNetWalletIcon = starkNetWalletIcon
+  },
+  updateStarkNetChain(state, starkChain) {
+    if (!starkChain || starkChain.length === 0) {
+      starkChain = ''
+    }
+    state.web3.starkNet.starkChain = starkChain
+  },
   updateNetWorkId(state, netWorkId) {
     state.web3.networkId = netWorkId
     state.lpAccountInfo = null
@@ -138,4 +197,19 @@ export default {
     state.innerWH.innerWidth = innerWidth
     state.innerWH.innerHeight = innerHeight
   },
+  toggleThemeMode(state, mode) {
+    if (typeof mode === 'string' && mode) {
+      state.themeMode = mode
+    } else {
+      if (state.themeMode === 'light') {
+        state.themeMode = 'dark'
+      } else {
+        state.themeMode = 'light'
+      }
+    }
+    localStorage.setItem('themeMode', state.themeMode )
+  },
+  toggleHistoryPanelVisible(state, isVisible) {
+    state.historyPanelVisible = isVisible
+  }
 }
