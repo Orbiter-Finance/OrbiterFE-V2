@@ -316,14 +316,14 @@ export default {
         {
           icon: 'network',
           title: 'Network',
-          value: globalSelectWalletConf.walletType === METAMASK ? 
-                  util.chainName('0', this.$store.state.web3.networkId) : 
-                  util.chainName("0", globalSelectWalletConf.walletPayload.networkId),
+          value: compatibleGlobalWalletConf.value.walletType === METAMASK ? 
+                  util.chainName('0', compatibleGlobalWalletConf.value.walletPayload.networkId) : 
+                  util.chainName("0", compatibleGlobalWalletConf.value.walletPayload.networkId),
         },
         {
           icon: 'wallet',
           title: 'Wallet',
-          value:  globalSelectWalletConf.walletType,
+          value:  compatibleGlobalWalletConf.value.walletType,
         },
         {
           icon: 'address',

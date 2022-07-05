@@ -177,12 +177,12 @@ export default {
           {
             icon: 'network',
             title: 'Network',
-            value: util.chainName('0', this.$store.state.web3.networkId),
+            value: util.chainName('0', compatibleGlobalWalletConf.value.walletPayload.networkId),
           },
           {
             icon: 'wallet',
             title: 'Wallet',
-            value: 'MetaMask',
+            value: compatibleGlobalWalletConf.value.walletType,
           },
           {
             icon: 'address',
@@ -193,7 +193,7 @@ export default {
       }
     },
     showAddress() {
-      var address = this.$store.state.web3.coinbase
+      var address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       if (address && address.length > 5) {
         var subStr1 = address.substr(0, 4)
         var subStr2 = address.substr(address.length - 4, 4)

@@ -47,6 +47,12 @@ export default {
       return this.$store.state.themeMode === 'light'
     }
   },
+  data() {
+    return {
+      lightbg,
+      darkbg
+    }
+  },
   components: {
     TopNav,
     BottomNav,

@@ -1636,13 +1636,13 @@ export default {
         } else {
           // Ensure fromChainId's networkId
           if (
-            this.$store.state.web3.networkId.toString() !==
+            compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
             this.$env.localChainID_netChainID[
               this.$store.state.transferData.fromChainID
             ]
           ) {
             try {
-              await util.ensureMetamaskNetwork(
+              await util.ensureWalletNetwork(
                 this.$store.state.transferData.fromChainID
               )
             } catch (err) {
