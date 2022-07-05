@@ -10,7 +10,7 @@
     <div class="chainDataContent">
       <div class="item left">
         <div class="chain-name from">
-          <span class="label">From </span>
+          <!-- <span class="label">From </span> -->
           <span>{{ FromChainName }}</span>
         </div>
         <div class="chain">
@@ -37,7 +37,7 @@
       </div>
       <div class="item right">
         <div class="chain-name to">
-          <span class="label">To </span>
+          <!-- <span class="label">To </span> -->
           <span>{{ toChainName }}</span>
         </div>
         <div class="chain">
@@ -461,7 +461,6 @@ export default {
           font-weight: 700;
           font-size: 16px;
           line-height: 24px;
-          width: 50%;
           text-align: center;
           margin-bottom: 20px;
           white-space: nowrap;
