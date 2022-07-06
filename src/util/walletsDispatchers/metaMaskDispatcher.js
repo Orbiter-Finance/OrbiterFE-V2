@@ -12,6 +12,7 @@ export const metaMaskDispatcherOnDisconnect = withPerformInterruptWallet(() => {
 })
 
 export const metaMaskDispatcherOnInit = () => {
+    console.log("metamask init");
     store.dispatch('registerWeb3');
     updateGlobalSelectWalletConf(METAMASK);
     modifyLocalLoginInfo({

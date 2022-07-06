@@ -812,12 +812,7 @@ export default {
         }
       }
     },
-<<<<<<< HEAD:src/components/sender/transfer.vue
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
-      console.log("我开始计算咯");
-=======
     compatibleGlobalWalletConf: function (newValue, oldValue) {
->>>>>>> @{-1}:src/views/bridage/Transfer.vue
       if (!newValue || newValue === '0x') {
         this.c1Balance = 0
         this.c2Balance = 0

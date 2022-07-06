@@ -64,7 +64,7 @@
         >
           <svg-icon
             style="width: 2rem; height: 2rem"
-            :iconName="globalSelectWalletConf?.walletType?.toLowerCase()"
+            :iconName="globalSelectWalletConf.walletType && globalSelectWalletConf.walletType.toLowerCase()"
           ></svg-icon>
           <span
             style="

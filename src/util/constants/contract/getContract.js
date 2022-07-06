@@ -7,7 +7,7 @@ import util from '../../util'
 import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";  
 
 // Get a token contract on the L2 network
-function getLocalCoinContract(localChainID, tokenAddress, state) {
+function getLocalCoinContract(localChainID, tokenAddress, state) {  
   // 0 : http   1: ws
   // localChainID => rpcurl => web3Provider
   const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
@@ -16,6 +16,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
       Coin_ABI,
       tokenAddress
     )
+    console.log("ecourseContractInstance", ecourseContractInstance);
     if (!ecourseContractInstance) {
       console.warn('getLocalCoinContract_ecourseContractInstance')
       return null
