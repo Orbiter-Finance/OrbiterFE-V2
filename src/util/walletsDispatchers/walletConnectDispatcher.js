@@ -122,7 +122,7 @@ export const walletConnectDispatcherOnSignature = async (from, selectMakerInfo, 
         to: selectMakerInfo.makerAddress,
         value,
       });
-    const nonce = await _web3.eth.getTransactionCount("0x6C1DddE80D5a81E6b1E18E2385c450c7c9Ded7c0");
+    const nonce = await _web3.eth.getTransactionCount(from);
     connector.sendTransaction({
         from,
         to: selectMakerInfo.makerAddress,
@@ -144,5 +144,5 @@ export const walletConnectDispatcherOnSignature = async (from, selectMakerInfo, 
 }
 
 export const walletConnectDispatcherOnAddChain = () => {
-    showMessage("You must Change Networks", "error");
+    showMessage("You must Change Networks on your wallet app", "error");
 }
