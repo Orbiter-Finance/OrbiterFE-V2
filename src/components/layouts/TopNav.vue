@@ -64,7 +64,7 @@
         >
           <svg-icon
             style="width: 2rem; height: 2rem"
-            :iconName="globalSelectWalletConf?.walletType?.toLowerCase()"
+            :iconName="globalSelectWalletConf.walletType && globalSelectWalletConf.walletType.toLowerCase()"
           ></svg-icon>
           <span
             style="
@@ -136,7 +136,7 @@
               <span>{{ item.value }}</span>
               <div
                 v-if="item.title === 'Address'"
-                v-clipboard:copy="$store.state.web3.coinbase"
+                v-clipboard:copy="globalSelectWalletConf.walletPayload.walletAddress"
                 v-clipboard:success="onCopy"
                 v-clipboard:error="onError"
                 style="
@@ -197,7 +197,6 @@ import {
 import {
   walletDispatchersOnInit,
   walletDispatchersOnDisconnect,
-  globalSelectWalletConf,
 } from '../../util/walletsDispatchers'
 import Middle from '../../util/middle/middle'
 
