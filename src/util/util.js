@@ -158,6 +158,10 @@ export default {
     return /^0x0+$/i.test(tokenAddress)
   },
 
+  isBNBTokenAddress(chainId) {
+    return chainId == 97 || chainId == 56;
+  },
+
   /**
    * @param {number} ms Sleep millisecond
    * @returns

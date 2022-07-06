@@ -270,7 +270,7 @@
         "wss://apis.ankr.com/wss/efaf2c4bf9464a3081ac0efef84edb7e/0835c09efa6182fad4264b37a4ac2144/binance/full/test"
       ],
       "faucets": [],
-      "infoURL": "https://bscscan.com/"
+      "infoURL": "https://testnet.bscscan.com/"
     },
     {
       "name": "BSC",

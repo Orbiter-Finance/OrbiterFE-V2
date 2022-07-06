@@ -1114,6 +1114,14 @@ export default {
         // When is ETH
         const web3 = localWeb3(localChainID)
         balance = Number(await web3.eth.getBalance(userAddress)) || 0
+      } else if (util.isBNBTokenAddress(localChainID)) {
+        console.log("isBNB", userAddress);
+        // When is BNB
+        const web3 = localWeb3(localChainID)
+        if (web3) {
+          balance = await web3.eth.getBalance(userAddress);
+          console.log("bnb web3", balance, tokenAddress);
+        }
       } else {
         console.log("isERC20地址", tokenAddress, localChainID, tokenName, userAddress);
         // When is ERC20

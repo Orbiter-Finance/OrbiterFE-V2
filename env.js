@@ -111,7 +111,7 @@ export default {
     77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
     88: '',
     99: '',
-    97: "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+    97: "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
