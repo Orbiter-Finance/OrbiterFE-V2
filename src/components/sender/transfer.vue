@@ -1738,13 +1738,8 @@ export default {
               dydxAccount.positionId
             ),
           })
-        } else {
-          // Clear TransferExt
-          this.$store.commit('updateTransferExt', null)
-        }
-
-        // To starkNet
-        if (toChainID == 4 || toChainID == 44) {
+        } // To starkNet
+        else if (toChainID == 4 || toChainID == 44) {
           const { starkIsConnected, starkNetAddress, starkChain } =
             this.$store.state.web3.starkNet
           if (!starkChain || starkChain == 'unlogin') {
