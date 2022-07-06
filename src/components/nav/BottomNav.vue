@@ -391,7 +391,6 @@ export default {
     },
     Connect(walletName) {
       this.closeLoginPop()
-      console.log("walletName", walletName);
       walletDispatchersOnInit[walletName](this.$store);
     },
     openTerms() {
