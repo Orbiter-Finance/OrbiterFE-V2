@@ -239,6 +239,8 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
+import { walletDispatchersOnSwitchChain } from '../../util/walletsDispatchers'
+import { METAMASK } from "../../util/walletsDispatchers/index"
 const queryParamsChainMap = chain2idMap
 
 export default {
@@ -1604,7 +1606,13 @@ export default {
               dydxAccount.positionId
             ),
           })
-        } else if (toChainID == 4 || toChainID == 44) {
+        } else {
+          // Clear TransferExt
+          this.$store.commit('updateTransferExt', null)
+        }
+
+        // To starkNet
+        if (toChainID == 4 || toChainID == 44) {
           const { starkIsConnected, starkNetAddress, starkChain } =
             this.$store.state.web3.starkNet
           if (!starkChain || starkChain == 'unlogin') {
@@ -1673,20 +1681,45 @@ export default {
           }
         } else {
           // Ensure fromChainId's networkId
+                 //    if (
+        //   compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+        //   this.$env.localChainID_netChainID[
+        //     this.$store.state.transferData.fromChainID
+        //   ]
+        // ) {
+        //   if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+        //     try {
+        //       await util.ensureWalletNetwork(
+        //         this.$store.state.transferData.fromChainID
+        //       )
+        //     } catch (err) {
+        //       util.showMessage(err.message, 'error')
+        //       return
+        //     }
+        //   } else {
           if (
             compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
             this.$env.localChainID_netChainID[
               this.$store.state.transferData.fromChainID
             ]
           ) {
-            try {
-              await util.ensureWalletNetwork(
-                this.$store.state.transferData.fromChainID
-              )
-            } catch (err) {
-              util.showMessage(err.message, 'error')
-              return
-            }
+              if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+                try {
+                  await util.ensureWalletNetwork(
+                    this.$store.state.transferData.fromChainID
+                  )
+                } catch (err) {
+                  util.showMessage(err.message, 'error')
+                  return
+                }
+              } else {
+                 const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
+                 if (matchSwitchChainDispatcher) {
+                    matchSwitchChainDispatcher();
+                    return
+                 }
+              }
+          
           }
         }
         let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
