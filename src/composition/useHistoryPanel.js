@@ -41,7 +41,7 @@ export async function getTransactionsHistory(params = {}) {
   const res = await getTransactionsHistoryApi({
     // next line is just for local test only
     // userAddress: '0x6BB0366423a6f0F6C16715278483Dd9321ED5f66',
-    userAddress: state.web3.coinbase,
+    userAddress: store.state.web3.coinbase,
     size: 10,
     ...params,
   })
