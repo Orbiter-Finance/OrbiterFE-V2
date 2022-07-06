@@ -348,7 +348,6 @@ export default {
     closerButton() {
       if (this.detailData) {
         Middle.$emit('showHistory', true)
-        // this.$store.commit('toggleHistoryPanelVisible', true)
         this.$emit('stateChanged', '4')
       } else {
         this.$store.commit('updateProceedTxID', null)

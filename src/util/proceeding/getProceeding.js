@@ -27,17 +27,8 @@ import { getTimeStampInfo } from './get_tx_by_hash'
 
 let startBlockNumber = ''
 
-const getHistory = () => {
-  if (store.getters.realSelectMakerInfo) {
-    store.dispatch('getTransactionsHistory', {
-      current: 1,
-    })
-  }
-}
-
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
-  getHistory()
 }
 
 async function confirmUserTransaction(

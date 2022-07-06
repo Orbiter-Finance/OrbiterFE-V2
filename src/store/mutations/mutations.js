@@ -115,12 +115,6 @@ export default {
   updateETHPrice(state, price) {
     state.transferData.ethPrice = price
   },
-  updateTransactionList(state, transactionList) {
-    state.transactionList = transactionList
-  },
-  updateTransactionListInfo(state, newInfo) {
-    state.transactionListInfo = newInfo
-  },
   updateIsInstallMeta(state, isInstallMeta) {
     state.web3.isInstallMeta = isInstallMeta
   },
@@ -209,7 +203,4 @@ export default {
     }
     localStorage.setItem('themeMode', state.themeMode )
   },
-  toggleHistoryPanelVisible(state, isVisible) {
-    state.historyPanelVisible = isVisible
-  }
 }

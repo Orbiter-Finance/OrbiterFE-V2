@@ -2,7 +2,6 @@
   <div id="app" :class="$store.state.themeMode + '-theme app-theme'" :style="{
     'background-image': `url(${isLightMode ? lightbg : darkbg})`
   }">
-      <!-- background-image: url('./assets/v2/dark-bg.png'); -->
     <div class="app-content">
       <keep-alive>
         <TopNav />
@@ -12,7 +11,7 @@
           <router-view v-if="$route.meta.keepAlive" class="router" />
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
-        <div v-if="$store.state.historyPanelVisible" class="global-dialog">
+        <div v-if="isHistoryPanelVisible" class="global-dialog">
           <History></History>
         </div>
       </div>
@@ -27,10 +26,8 @@
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
-import getTransactionList from './core/routes/transactionList'
 import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
-import { compatibleGlobalWalletConf } from "./composition/walletsResponsiveData";
-import { walletIsLogin } from "./composition/walletsResponsiveData"; 
+import { isHistoryPanelVisible, getTraddingHistory } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
@@ -40,17 +37,17 @@ import * as darkbg from './assets/v2/dark-bg.png'
 export default {
   name: 'App',
   computed: {
-    walletAddress: () => {
-      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
-    },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
+    },
+    isHistoryPanelVisible() {
+      return isHistoryPanelVisible.value
     }
   },
   data() {
     return {
       lightbg,
-      darkbg
+      darkbg,
     }
   },
   components: {
@@ -59,48 +56,18 @@ export default {
     History, 
   },
   async mounted() {
-    setInterval(this.getHistory, 60 * 1000)
-    this.getHistory()
     getZkToken.getSupportZKTokenList()
 
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet();
-
-    // if there is nothing wrong with the test, the following code can be removed
-    // if (localStorage.getItem('localLogin') === 'true') {
-    //   this.$store.dispatch('registerWeb3').then(() => {
-    //     // console.log('==============')
-    //     // if (this.$store.state.web3.isInjected) {
-    //     //   console.log('isInjected')
-    //     // }
-    //   })
-    // }
   },
   watch: {
-    walletIsLogin: function (newValue) {
-      if (!newValue) {
-        this.$store.commit('updateTransactionList', [])
-      } else {
-        this.getHistory(true)
-      }
-    },
-
-    walletAddress: function (newValue, oldValue) {
-      if (oldValue && newValue && newValue !== '0x') {
-        this.getHistory(true)
-      }
-    },
+    // TODO: should improve
     '$store.getters.realSelectMakerInfo': function (newValue) {
-      newValue && this.getHistory()
+      newValue && getTraddingHistory()
     },
   },
   methods: {
-    getHistory(isRefresh = false) {
-      if (walletIsLogin.value && this.$store.getters.realSelectMakerInfo) {
-        if (isRefresh) this.$store.commit('updateTransactionList', null)
-        this.$store.dispatch('getTransactionsHistory', { current: 1, })
-      }
-    },
     performInitCurrentLoginWallet() {
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
