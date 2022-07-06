@@ -275,36 +275,42 @@ export default {
         //params.seriesIndex
       })
     },
-
-    async getLquidityData() {
+    async getLData(toChainId) {
       let singer = this.getProviderSigner()
-      var newArray = []
-      for (let index = 0; index < this.toChainArray.length; index++) {
-        const item = this.toChainArray[index]
-        let customProvider = new ethers.providers.JsonRpcProvider(
-          process.env[this.$env.localProvider[item]]
-        )
-        const dTokenInstance = new ethers.Contract(
-          this.dTokenAddresses[item],
-          getDTokenContractABI(),
-          customProvider
-        )
-        const balanceAmount = await dTokenInstance.balanceOf(
-          singer.getAddress()
-        )
-        var chainData = {
-          chainName: util.chainName(
-            item,
-            this.$env.localChainID_netChainID[item]
-          ),
-          localID: item,
-          tokenName: await dTokenInstance.symbol(),
-          amount: ethers.utils.formatEther(balanceAmount),
-          redeemLoading: false,
-        }
-        newArray.push(chainData)
+      let customProvider = new ethers.providers.JsonRpcProvider(
+        process.env[this.$env.localProvider[toChainId]],
+    )
+      console.log('customProvider',customProvider);
+      const dTokenInstance = new ethers.Contract(
+        this.dTokenAddresses[toChainId],
+        getDTokenContractABI(),
+        customProvider
+      )
+      const balanceAmount = await dTokenInstance.balanceOf(singer.getAddress())
+      var chainData = {
+        chainName: util.chainName(
+          toChainId,
+          this.$env.localChainID_netChainID[toChainId]
+        ),
+        localID: toChainId,
+        tokenName: await dTokenInstance.symbol(),
+        amount: ethers.utils.formatEther(balanceAmount),
+        redeemLoading: false,
       }
-      this.updateLiquidityData(newArray)
+      return chainData
+    },
+    async getLquidityData() {
+      try {
+        let res = await Promise.all([
+          this.getLData(5),
+          this.getLData(22),
+          this.getLData(77),
+        ])
+        this.updateLiquidityData(res)
+      } catch (error) {
+        console.log(error, 'error')
+        util.showMessage('Failed to get data', 'error')
+      }
     },
   },
 }

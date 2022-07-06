@@ -389,11 +389,11 @@ export default {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       return provider.getSigner()
     },
-    getDTokenContract(toChainId) {
+    getDTokenContract(toChainId,provider) {
       return new ethers.Contract(
         this.dTokenAddresses[toChainId],
         getDTokenContractABI(),
-        this.getProviderSigner()
+        provider
       )
     },
     async confirmAddLiquidity() {
@@ -406,7 +406,7 @@ export default {
         getCoinContractABI(),
         singer
       )
-      const dTokenInstance = this.getDTokenContract(this.toChainId)
+      const dTokenInstance = this.getDTokenContract(this.toChainId,singer)
       const account = await singer.getAddress()
       const allowanceAmount = await coinToken.allowance(
         account,
@@ -469,11 +469,11 @@ export default {
       const blocksPerYear = 2102400
       const divParam = ethers.utils.parseEther('1')
       let calculationApy = 410
-      await util.ensureMetamaskNetwork(
-        this.$env.localChainID_netChainID[this.toChainId]
-      )
+      let customProvider = new ethers.providers.JsonRpcProvider(
+          process.env[this.$env.localProvider[this.toChainId]]
+        )
       try {
-        const APY = this.getDTokenContract(this.toChainId)
+        const APY = this.getDTokenContract(this.toChainId,customProvider)
         calculationApy = await APY.supplyRatePerBlock()
         calculationApy = ((calculationApy * blocksPerYear) / divParam) * 100
       } catch (error) {
