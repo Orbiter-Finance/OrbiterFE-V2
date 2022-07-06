@@ -277,10 +277,9 @@ export default {
     },
     async getLData(toChainId) {
       let singer = this.getProviderSigner()
-      let customProvider = new ethers.providers.JsonRpcProvider(
-        process.env[this.$env.localProvider[toChainId]],
-    )
-      console.log('customProvider',customProvider);
+      let customProvider = new ethers.providers.StaticJsonRpcProvider(
+        process.env[this.$env.localProvider[toChainId]]
+      )
       const dTokenInstance = new ethers.Contract(
         this.dTokenAddresses[toChainId],
         getDTokenContractABI(),
@@ -301,11 +300,12 @@ export default {
     },
     async getLquidityData() {
       try {
-        let res = await Promise.all([
-          this.getLData(5),
-          this.getLData(22),
-          this.getLData(77),
-        ])
+        let promiseList = []
+        for (let index = 0; index < this.toChainArray.length; index++) {
+          const item = this.toChainArray[index]
+          promiseList.push(() => this.getLData(item))
+        }
+        let res = await Promise.all(promiseList.map((fun) => fun()))
         this.updateLiquidityData(res)
       } catch (error) {
         console.log(error, 'error')
