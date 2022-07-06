@@ -1604,29 +1604,7 @@ export default {
               dydxAccount.positionId
             ),
           })
-        } else {
-          // Clear TransferExt
-          this.$store.commit('updateTransferExt', null)
-        }
-        //    if (
-        //   compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-        //   this.$env.localChainID_netChainID[
-        //     this.$store.state.transferData.fromChainID
-        //   ]
-        // ) {
-        //   if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
-        //     try {
-        //       await util.ensureWalletNetwork(
-        //         this.$store.state.transferData.fromChainID
-        //       )
-        //     } catch (err) {
-        //       util.showMessage(err.message, 'error')
-        //       return
-        //     }
-        //   } else {
-
-        // To starkNet
-        if (toChainID == 4 || toChainID == 44) {
+        } else if (toChainID == 4 || toChainID == 44) {
           const { starkIsConnected, starkNetAddress, starkChain } =
             this.$store.state.web3.starkNet
           if (!starkChain || starkChain == 'unlogin') {
