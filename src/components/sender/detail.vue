@@ -108,6 +108,8 @@
 import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 import Middle from '../../util/middle/middle'
+import { getL2AddressByL1, getNetworkIdByChainId } from '../../util/constants/starknet/helper'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
 export default {
   name: 'Detail',
@@ -232,9 +234,9 @@ export default {
       const { accountExploreUrl, txExploreUrl } = this.$env
 
       if (state !== 0) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress =  compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = await getL2AddressByL1(userAddress, getNetworkIdByChainId(toChainID))
         }
         let url = accountExploreUrl[toChainID] + userAddress
 
@@ -243,7 +245,7 @@ export default {
           url = accountExploreUrl[toChainID]
         }
 
-        window.open(url, '_blank')
+        window.open(url, '_blank');
       } else {
         let txid = this.detailData.toTxHash
         let url = txExploreUrl[toChainID] + txid
@@ -290,7 +292,7 @@ export default {
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum
+      compatibleGlobalWalletConf.value.walletPayload.provider
         .request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
@@ -300,7 +302,7 @@ export default {
           util.showMessage('switch success', 'success')
         })
         .catch((error) => {
-          console.warn(error)
+          console.log(error)
           if (error.code === 4902) {
             // need add net
             const params = {
@@ -320,14 +322,14 @@ export default {
                   : chain.infoURL,
               ],
             }
-            window.ethereum
+            compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],
               })
               .then(() => {})
               .catch((error) => {
-                console.warn(error)
+                console.log(error)
                 util.showMessage(error.message, 'error')
               })
           } else {

@@ -67,13 +67,6 @@ export default {
       }
       return false
     },
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
       const { href } = window.location

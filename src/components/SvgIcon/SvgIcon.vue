@@ -10,13 +10,18 @@ export default {
     iconName: {
       type: String,
       require: true
-    }
+    },
+    // className: {
+    //   type: String,
+    //   default: ''
+    // },
   }
 }
 </script>
 <style lang="scss">
 .svg {
   outline: none;
+  fill: currentColor;
 }
 </style>
 

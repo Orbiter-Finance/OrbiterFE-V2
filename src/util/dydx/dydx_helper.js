@@ -79,7 +79,7 @@ export class DydxHelper {
     // }
 
     // Ensure network
-    await util.ensureMetamaskNetwork(this.chainId)
+    await util.ensureWalletNetwork(this.chainId)
 
     const client = new DydxClient(this.host, {
       networkId: this.networkId,

@@ -115,6 +115,11 @@
 </template>
 
 <script>
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import {
+  getL2AddressByL1,
+  getNetworkIdByChainId,
+} from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import Loading from '../loading/loading.vue'
 
@@ -174,7 +179,7 @@ export default {
         if (transferData.toChainID == 8 || transferData.toChainID == 88) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
-
+        
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
@@ -215,9 +220,12 @@ export default {
       const { fromChainID } = this.$store.state.transferData
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState === 1) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (fromChainID == 4 || fromChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = await getL2AddressByL1(
+            userAddress,
+            getNetworkIdByChainId(fromChainID)
+          )
         }
         let url = accountExploreUrl[fromChainID] + userAddress
 
@@ -226,7 +234,7 @@ export default {
           url = accountExploreUrl[fromChainID]
         }
 
-        window.open(url, '_blank')
+        window.open(url, '_blank');
       } else {
         let txid = this.$store.state.proceeding.userTransfer.txid
         let url =
@@ -246,9 +254,12 @@ export default {
       const { toChainID } = this.$store.state.transferData
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState < 4) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = await getL2AddressByL1(
+            userAddress,
+            getNetworkIdByChainId(toChainID)
+          )
         }
         let url = accountExploreUrl[toChainID] + userAddress
 
@@ -257,20 +268,20 @@ export default {
           url = accountExploreUrl[toChainID]
         }
 
-        window.open(url, '_blank')
+        window.open(url, '_blank');
       } else {
         let txid = this.$store.state.proceeding.makerTransfer.txid
         let url =
           txExploreUrl[toChainID] +
           txid +
           (toChainID == 9 || toChainID == 99 ? '-transfer' : '')
-
+        
         // ImmutableX don't have testnet browser
         if (toChainID == 88) {
           url = accountExploreUrl[toChainID]
         }
 
-        window.open(url, '_blank')
+        window.open(url, '_blank');
       }
     },
     closerButton() {
@@ -288,7 +299,7 @@ export default {
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-      window.ethereum
+      compatibleGlobalWalletConf.value.walletPayload.provider
         .request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
@@ -298,7 +309,7 @@ export default {
           util.showMessage('switch success', 'success')
         })
         .catch((error) => {
-          console.warn(error)
+          console.log(error)
           if (error.code === 4902) {
             // need add net
             const params = {
@@ -318,14 +329,14 @@ export default {
                   : chain.infoURL,
               ],
             }
-            window.ethereum
+            compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],
               })
               .then(() => {})
               .catch((error) => {
-                console.warn(error)
+                console.log(error)
                 util.showMessage(error.message, 'error')
               })
           } else {

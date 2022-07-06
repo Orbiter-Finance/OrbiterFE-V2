@@ -29,11 +29,6 @@ export default {
       status: '1',
     }
   },
-  computed: {
-    isLogin() {
-      return this.$store.state.web3.isInstallMeta && this.$store.state.web3.isInjected && this.$store.state.web3.localLogin
-    }
-  },
   watch: {
   },
   mounted() {

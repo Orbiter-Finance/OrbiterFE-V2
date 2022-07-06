@@ -26,33 +26,33 @@
     <div v-if="!isWeb" class="BottomContainer">
       <div class="LoginBox">
         <svg-icon
-          v-if="isLogin"
+          v-if="walletIsLogin"
           class="LoginImg"
           :iconName="loginBoxIconName()"
         ></svg-icon>
-        <button v-if="isLogin" class="LoginBtn" @click="unlogin">
+        <button v-if="walletIsLogin" class="LoginBtn" @click="unlogin">
           {{ showAddress }}
         </button>
-        <button v-if="!isLogin" class="unLoginBtn" @click="login">
+        <button v-if="!walletIsLogin" class="unLoginBtn" @click="login">
           Connect a Wallet
         </button>
       </div>
       <div class="LoginRBox">
         <o-button
-          v-if="isLogin"
+          v-if="walletIsLogin"
           width="8rem"
           height="3.2rem"
           @click="toHistory"
         >
           <span class="s14">History</span>
         </o-button>
-        <div v-if="isLogin" @click="clickHoriz" class="horiz">
+        <div v-if="walletIsLogin" @click="clickHoriz" class="horiz">
           <svg-icon
             style="width: 100%; height: 100%"
             iconName="more_horiz"
           ></svg-icon>
         </div>
-        <div v-if="!isLogin" @click="clickHoriz" class="horiz_unlogin">
+        <div v-if="!walletIsLogin" @click="clickHoriz" class="horiz_unlogin">
           <svg-icon
             style="width: 100%; height: 100%"
             iconName="more_horiz"
@@ -156,23 +156,11 @@
                 iconName="copy"
               ></svg-icon>
             </div>
-            <div
-              v-if="item.title === 'StarkNetAddress'"
-              v-clipboard:copy="copyStarkAddress"
-              v-clipboard:success="onCopy"
-              v-clipboard:error="onError"
-              style="width: 1.8rem; height: 1.8rem; display: inline-block"
-            >
-              <svg-icon
-                style="width: 100%; height: 100%"
-                iconName="copy"
-              ></svg-icon>
-            </div>
           </div>
         </div>
 
         <o-button
-          v-if="this.isLogin"
+          v-if="walletIsLogin"
           style="margin: 2.5rem auto"
           width="29.5rem"
           height="4rem"
@@ -252,6 +240,17 @@ import util from '../../util/util'
 
 import check from '../../util/check/check.js'
 
+// wallets resolvers
+import { 
+  walletDispatchersOnInit, 
+  METAMASK,
+  walletDispatchersOnDisconnect,
+  globalSelectWalletConf
+} from "../../util/walletsDispatchers";
+import { toRefs } from "../../composition";
+import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { isBraveBrowser } from "../../util/browserUtils";
+
 export default {
   name: 'BottomNav',
   props: {},
@@ -261,6 +260,11 @@ export default {
   },
   data() {
     return {}
+  },
+  setup() {
+    return {
+      walletIsLogin
+    }
   },
   mounted() {
     var that = this
@@ -276,73 +280,57 @@ export default {
     })
   },
   computed: {
-    showStarkNet() {
-      const { starkNetAddress, starkIsConnected } =
-        this.$store.state.web3.starkNet
-      if (!starkIsConnected || starkNetAddress.length == 0) {
-        return false
-      }
-      return true
-    },
     copyAddress() {
-      return this.$store.state.web3.coinbase
-    },
-
-    copyStarkAddress() {
-      return this.$store.state.web3.starkNet.starkNetAddress
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     loginData() {
-      return [
+      const wallets = [
         {
-          isConnect: this.isLogin && check.checkIsMetaMask(),
+          isConnect: walletIsLogin.value && check.checkIsMetaMask(),
           icon: 'metamask',
           title: 'MetaMask',
         },
+        {
+          isConnect: false,
+          icon: "walletConnect",
+          title: "WalletConnect"
+        },
+        {
+          isConnect: false,
+          icon: "coinbase",
+          title: "Coinbase"
+        },
+        {
+          isConnect: false,
+          icon: "brave",
+          title: "Brave"
+        }
       ]
+      // the brave wallet is exclusive to the brave browser
+      // so if in other browsers, we should hide brave wallet connect option to users
+      if (!isBraveBrowser()) return wallets.filter(wallet => wallet.title !== "Brave");
+      return wallets;
     },
     loginInfoData() {
-      if (this.showStarkNet) {
-        return [
-          {
-            icon: 'network',
-            title: 'Network',
-            value: util.chainName('0', this.$store.state.web3.networkId),
-          },
-          {
-            icon: 'wallet',
-            title: 'Wallet',
-            value: 'MetaMask',
-          },
-          {
-            icon: 'address',
-            title: 'Address',
-            value: this.showAddress,
-          },
-          {
-            icon: 'address',
-            title: 'StarkNetAddress',
-            value: this.starkAddress,
-          },
-        ]
-      } else {
-        return [
-          {
-            icon: 'network',
-            title: 'Network',
-            value: util.chainName('0', this.$store.state.web3.networkId),
-          },
-          {
-            icon: 'wallet',
-            title: 'Wallet',
-            value: 'MetaMask',
-          },
-          {
-            icon: 'address',
-            title: 'Address',
-            value: this.showAddress,
-          },
-        ]
-      }
+      return [
+        {
+          icon: 'network',
+          title: 'Network',
+          value: compatibleGlobalWalletConf.value.walletType === METAMASK ? 
+                  util.chainName('0', compatibleGlobalWalletConf.value.walletPayload.networkId) : 
+                  util.chainName("0", compatibleGlobalWalletConf.value.walletPayload.networkId),
+        },
+        {
+          icon: 'wallet',
+          title: 'Wallet',
+          value:  compatibleGlobalWalletConf.value.walletType,
+        },
+        {
+          icon: 'address',
+          title: 'Address',
+          value: this.showAddress,
+        },
+      ]
     },
     orbiterInfoData() {
       return [
@@ -368,13 +356,6 @@ export default {
         },
       ]
     },
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
     isWeb() {
       if (this.$store.state.innerWH.innerWidth > 10000) {
         return true
@@ -382,22 +363,13 @@ export default {
       return false
     },
     showAddress() {
-      var address = this.$store.state.web3.coinbase
+      var address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       if (address && address.length > 5) {
         var subStr1 = address.substr(0, 4)
         var subStr2 = address.substr(address.length - 4, 4)
         return subStr1 + '...' + subStr2
       }
       return ''
-    },
-    starkAddress() {
-      var stark = this.$store.state.web3.starkNet.starkNetAddress
-      if (stark && stark.length > 5) {
-        var subStr1 = stark.substr(0, 4)
-        var subStr2 = stark.substr(stark.length - 4, 4)
-        return subStr1 + '...' + subStr2
-      }
-      return 'not connected'
     },
   },
   watch: {},
@@ -417,16 +389,10 @@ export default {
     clickHoriz() {
       this.showOrbiterInfoPopupClick()
     },
-    Connect(e) {
+    Connect(walletName) {
       this.closeLoginPop()
-      if (e === 'MetaMask') {
-        this.$store.dispatch('registerWeb3').then(() => {
-          // console.log('==============')
-          // if (this.$store.state.web3.isInjected) {
-          //   console.log('isInjected')
-          // }
-        })
-      }
+      console.log("walletName", walletName);
+      walletDispatchersOnInit[walletName](this.$store);
     },
     openTerms() {
       window.open(
@@ -447,8 +413,8 @@ export default {
       //   ]
       // });
       this.closeLoginInfoPop()
-      this.$store.commit('updateLocalLogin', false)
-      localStorage.setItem('localLogin', false)
+      walletDispatchersOnDisconnect[globalSelectWalletConf.walletType]();
+
     },
     getHistoryInfo(e) {
       Middle.$emit('showDetail', e)
@@ -510,7 +476,8 @@ export default {
       })
     },
     loginBoxIconName() {
-      return check.checkIsMetaMask() ? 'metamask' : 'tokenLogo'
+      const { walletType: walletTypeRef } = toRefs(globalSelectWalletConf);
+      return walletTypeRef.value.toLowerCase() || 'tokenLogo';
     },
   },
 }
@@ -655,7 +622,7 @@ export default {
     }
   }
   .LoginStatePopContentView {
-    height: 30rem;
+    height: 38rem;
     width: 35.1rem;
     margin: 0 auto;
     background: #fff8d4;

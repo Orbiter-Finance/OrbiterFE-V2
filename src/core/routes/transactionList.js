@@ -10,10 +10,12 @@ import loopring from '../actions/loopring'
 import optimistic from '../actions/optimistic'
 import polygon from '../actions/polygon'
 import thegraph from '../actions/thegraph'
+import { getAllMakerList } from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
 import zkspace from '../actions/zkspace'
 import TxInfo from '../utils/modle/txinfo'
 import { store } from '../../store'
+import { isProd } from '../../util'
 
 async function getTransactionListEtherscan(
   userAddress,
@@ -1311,15 +1313,24 @@ export default {
     let makerList = []
     let makerTokenNames = {}
     if (req.state === 1) {
-      await thegraph
-        .getAllMakerList(req, true)
-        .then((response) => {
-          makerList = response.data
-        })
-        .catch((error) => {
-          console.warn('getMakerListError =', error)
-          throw error.message
-        })
+      if (isProd()) {
+        await getAllMakerList(req, true)
+          .then((response) => {
+            makerList = response.data
+          })
+          .catch((error) => {
+            console.log('getMakerListError =', error)
+            throw error.message
+          })
+      } else {
+        try {
+          const makerListRes = await thegraph.getMakerInfo(req, true)
+          makerList = makerListRes.data
+          makerTokenNames = thegraph.getMakerTokenNames(makerList)
+        } catch (error) {
+          throw new Error(`get makerList error`)
+        }
+      }
 
       let supportChains = []
       for (const maker of makerList) {
