@@ -199,6 +199,7 @@ import {
   walletDispatchersOnDisconnect,
 } from '../../util/walletsDispatchers'
 import Middle from '../../util/middle/middle'
+import { historyPanelState } from '../../composition/hooks'
 
 export default {
   name: 'TopNav',
@@ -380,7 +381,7 @@ export default {
       ]()
     },
     showHistory() {
-      this.$store.commit('toggleHistoryPanelVisible', true)
+      historyPanelState.historyPanelVisible = true
     },
     //copy success
     onCopy() {

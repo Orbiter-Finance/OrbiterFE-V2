@@ -18,7 +18,7 @@
         Limited by the starkNet mechanism, the history of starkNet cannot be
         queried temporarily
       </div>
-      <CommLoading v-if="!historyData" style="margin: auto; margin-top: 5rem" width="4rem" height="4rem" />
+      <CommLoading v-if="isApiLoading" style="margin: auto; margin-top: 5rem" width="4rem" height="4rem" />
       <div
         v-else-if="historyData && historyData.length !== 0"
         v-for="(item, index) in historyData"
@@ -42,8 +42,12 @@
         ></svg-icon>
       </div>
     </div>
-    <NoData v-if="historyData && historyData.length === 0">No history</NoData>
-    <el-pagination v-if="historyData && historyData.length !== 0" @current-change="curChange" class="pagination" layout="prev, pager, next" :total="$store.state.transactionListInfo.total">
+    <NoData v-if="!isApiLoading && historyData && historyData.length === 0">No history</NoData>
+    <el-pagination 
+      v-if="!isApiLoading && historyData && historyData.length !== 0" 
+      @current-change="curChange" class="pagination" layout="prev, pager, next" 
+      :current-page.sync="currentPage"
+      :total="transactionListInfo.total">
     </el-pagination>
 
     <svg-icon @click.native="closeDialog" class="close" iconName="close"></svg-icon>
@@ -54,6 +58,7 @@
 <script>
 import { NoData, CommLoading } from '../components'
 import Middle from '../util/middle/middle'
+import { historyPanelState, getTransactionsHistory } from '../composition/hooks'
 
 export default {
   name: 'History',
@@ -61,8 +66,11 @@ export default {
     CommLoading, NoData
   },
   computed: {
+    currentPage() {
+      return this.transactionListInfo.current
+    },
     historyData() {
-      const { transactionList } = this.$store.state
+      const { transactionList } = historyPanelState
       if (!transactionList) {
         return transactionList
       }
@@ -82,7 +90,7 @@ export default {
       return list
     },
     isShowDydxLimit() {
-      const { transactionList } = this.$store.state
+      const { transactionList } = historyPanelState
       if (!this.historyData || !transactionList) {
         return false
       }
@@ -91,15 +99,19 @@ export default {
       }
       return false
     },
+    isApiLoading() {
+      return historyPanelState.isLoading
+    },
+    transactionListInfo() {
+      return historyPanelState.transactionListInfo
+    }
   },
   methods: {
     curChange(cur) {
-      this.$store.dispatch('getTransactionsHistory', {
-        current: cur
-      })
+      getTransactionsHistory({ current: cur })
     },
     closeDialog() {
-      this.$store.commit('toggleHistoryPanelVisible', false)
+      historyPanelState.historyPanelVisible = false
     },
     getHistoryInfo(e) {
       Middle.$emit('showDetail', e)

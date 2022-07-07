@@ -1,8 +1,11 @@
 <template>
-  <div id="app" :class="$store.state.themeMode + '-theme app-theme'" :style="{
-    'background-image': `url(${isLightMode ? lightbg : darkbg})`
-  }">
-      <!-- background-image: url('./assets/v2/dark-bg.png'); -->
+  <div
+    id="app"
+    :class="$store.state.themeMode + '-theme app-theme'"
+    :style="{
+      'background-image': `url(${isLightMode ? lightbg : darkbg})`,
+    }"
+  >
     <div class="app-content">
       <keep-alive>
         <TopNav />
@@ -12,7 +15,7 @@
           <router-view v-if="$route.meta.keepAlive" class="router" />
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
-        <div v-if="$store.state.historyPanelVisible" class="global-dialog">
+        <div v-if="isHistoryPanelVisible" class="global-dialog">
           <History></History>
         </div>
       </div>
@@ -27,10 +30,11 @@
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
-import getTransactionList from './core/routes/transactionList'
-import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
-import { compatibleGlobalWalletConf } from "./composition/walletsResponsiveData";
-import { walletIsLogin } from "./composition/walletsResponsiveData"; 
+import {
+  getCurrentLoginInfoFromLocalStorage,
+  walletDispatchersOnInit,
+} from './util/walletsDispatchers'
+import { isHistoryPanelVisible, getTraddingHistory } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
@@ -40,83 +44,54 @@ import * as darkbg from './assets/v2/dark-bg.png'
 export default {
   name: 'App',
   computed: {
-    walletAddress: () => {
-      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
-    },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
-    }
+    },
+    isHistoryPanelVisible() {
+      return isHistoryPanelVisible.value
+    },
   },
   data() {
     return {
-      lightbg, darkbg
+      lightbg,
+      darkbg,
     }
   },
   components: {
     TopNav,
     BottomNav,
-    History, 
+    History,
   },
   async mounted() {
-    setInterval(this.getHistory, 60 * 1000)
-    this.getHistory()
     getZkToken.getSupportZKTokenList()
 
     // init wallet info by the localStorage
-    this.performInitCurrentLoginWallet();
-
-    // if there is nothing wrong with the test, the following code can be removed
-    // if (localStorage.getItem('localLogin') === 'true') {
-    //   this.$store.dispatch('registerWeb3').then(() => {
-    //     // console.log('==============')
-    //     // if (this.$store.state.web3.isInjected) {
-    //     //   console.log('isInjected')
-    //     // }
-    //   })
-    // }
+    this.performInitCurrentLoginWallet()
   },
   watch: {
-    walletIsLogin: function (newValue) {
-      if (!newValue) {
-        this.$store.commit('updateTransactionList', [])
-      } else {
-        this.getHistory(true)
-      }
-    },
-
-    walletAddress: function (newValue, oldValue) {
-      if (oldValue && newValue && newValue !== '0x') {
-        this.getHistory(true)
-      }
-    },
+    // TODO: should improve
     '$store.getters.realSelectMakerInfo': function (newValue) {
-      newValue && this.getHistory()
+      newValue && getTraddingHistory()
     },
   },
   methods: {
-    getHistory(isRefresh = false) {
-      if (walletIsLogin.value && this.$store.getters.realSelectMakerInfo) {
-        if (isRefresh) this.$store.commit('updateTransactionList', null)
-        this.$store.dispatch('getTransactionsHistory', { current: 1, })
-      }
-    },
     performInitCurrentLoginWallet() {
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
       // us locate last wallet that user connected
-      // so localStorage is only used for initialization!!! 
-      const cacheWalletInfo  = getCurrentLoginInfoFromLocalStorage();
-      if (!cacheWalletInfo) return; // if there is no wallet connected
-      const { walletType } = cacheWalletInfo;
+      // so localStorage is only used for initialization!!!
+      const cacheWalletInfo = getCurrentLoginInfoFromLocalStorage()
+      if (!cacheWalletInfo) return // if there is no wallet connected
+      const { walletType } = cacheWalletInfo
 
       // according to different wallet types to do their own initialization
       // but eventually they all update a global responsive data: globalSelectWalletConf
       // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
-      const matchInitDispatcher = walletDispatchersOnInit[walletType];
-      matchInitDispatcher && matchInitDispatcher();
-    }
+      const matchInitDispatcher = walletDispatchersOnInit[walletType]
+      matchInitDispatcher && matchInitDispatcher()
+    },
   },
 }
 </script>
@@ -156,9 +131,9 @@ export default {
   overflow-y: scroll;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  // url('./assets/bgtop.svg'), 
-  // 100% 650px, 
-  // left top, 
+  // url('./assets/bgtop.svg'),
+  // 100% 650px,
+  // left top,
   background-position: left bottom;
   background-repeat: no-repeat;
   .app-content {
@@ -175,12 +150,12 @@ export default {
 .light-theme {
   // background-image: url('./assets/v2/light-bg.png');
   background-size: 100% 274px;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
 }
 .dark-theme {
   // background-image: url('./assets/v2/dark-bg.png');
   background-size: 100% 360px;
-  background-color: #28293D;
+  background-color: #28293d;
 }
 
 // body {

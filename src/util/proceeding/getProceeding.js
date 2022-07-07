@@ -27,17 +27,8 @@ import { BobaListen } from '../boba/boba_listen'
 
 let startBlockNumber = ''
 
-const getHistory = () => {
-  if (store.getters.realSelectMakerInfo) {
-    store.dispatch('getTransactionsHistory', {
-      current: 1,
-    })
-  }
-}
-
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
-  getHistory()
 }
 
 async function confirmUserTransaction(

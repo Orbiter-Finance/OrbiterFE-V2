@@ -72,16 +72,8 @@ const state = {
     rinkeby: [],
     mainnet: [],
   },
-  transactionList: null,
-  transactionListInfo: {
-    current: 1,
-    size: 30,
-    total: 0,
-    pages: 1
-  },
   lpAccountInfo: null,
   lpApiKey: null,
   themeMode: localStorage.getItem('themeMode') || 'light', // light dark
-  historyPanelVisible: false,
 }
 export default state
