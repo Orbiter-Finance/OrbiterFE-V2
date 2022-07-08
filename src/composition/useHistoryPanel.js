@@ -13,7 +13,7 @@ export const historyPanelState = reactive({
     total: 0,
     pages: 1
   },
-  transactionList: null
+  transactionList: []
   // TODO: other state from vuex should replaced.
   // ...
 })
