@@ -14,11 +14,13 @@ import ant from './config/Ant'
 import element from './config/Element'
 import VueClipboard from 'vue-clipboard2'
 
-import '../src/util/resize/onresize'
+import { init } from '../src/util/resize/onresize'
 import { CommTooltip } from './components'
 import loading from './components/loading/loading.vue'
+import CommLoading from './components/CommLoading.vue'
 
 Vue.component('loading', loading)
+Vue.component('CommLoading', CommLoading)
 Vue.component('o-tooltip', CommTooltip)
 Vue.config.productionTip = false
 Vue.use(AsyncComputed)
@@ -37,4 +39,7 @@ export default new Vue({
   router,
   store,
   render: (h) => h(App),
+  mounted() {
+    init()
+  }
 }).$mount('#app')

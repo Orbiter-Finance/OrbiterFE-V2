@@ -3,14 +3,13 @@
   <CommBoxHeader :back="closerButton">{{detailData ? 'Detail' : 'Proceeding'}}</CommBoxHeader>
   <div class="ProceedContent">
     <div v-for="item in proceedData" :key="item.title" class="contentItem">
-      <span style="width:100px;text-align:left;">{{ item.title }}</span>
+      <span class="item-title" style="width:100px;text-align:left;">{{ item.title }}</span>
       <span class="item-value right" v-if="item.desc || item.descInfo">{{ item.desc }}</span>
       <CommLoading v-else class="right" width="1.2rem" height="1.2rem" />
     </div>
     <div class="chainDataContent">
       <div class="item left">
         <div class="chain-name from">
-          <!-- <span class="label">From </span> -->
           <span>{{ FromChainName }}</span>
         </div>
         <div class="chain">
@@ -28,16 +27,15 @@
         <div class="switch-btn" @click="() => switchNetWork()">Switch Network</div>
       </div>
       <div class="middle-icon">
-        <div :class="['rocket-box', {'rocket-box-bg': isProcee}]">
+        <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
           <SvgIconThemed v-if="!isProcee" icon="rocket" size="xs" />
         </div>
-        <div class="rocket-line-box">
+        <div v-if="!isMobile" class="rocket-line-box">
           <SvgIconThemed icon="rocket-line" style="width:157px;height:10px;margin-top:10px;" />
         </div>
       </div>
       <div class="item right">
         <div class="chain-name to">
-          <!-- <span class="label">To </span> -->
           <span>{{ toChainName }}</span>
         </div>
         <div class="chain">
@@ -64,11 +62,12 @@
 </template>
 
 <script>
-import { SvgIconThemed, CommBoxHeader, CommBtn, CommLoading } from '../../components'
+import { SvgIconThemed, CommBoxHeader, CommBtn } from '../../components'
 import util from '../../util/util'
 import { chain2icon } from '../../util'
 import Middle from '../../util/middle/middle'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
+import { isMobile } from '../../composition/hooks'
 
 export default {
   name: 'Proceed',
@@ -80,9 +79,12 @@ export default {
     },
   },
   components: {
-    CommLoading, SvgIconThemed, CommBoxHeader, CommBtn
+    SvgIconThemed, CommBoxHeader, CommBtn
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     isProcee() {
       if (this.detailData) {
         return this.detailData.state == 1
@@ -415,9 +417,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app {
+  .proceed-box {
+    width: 600px;
+    height: 568px;
+    margin: 0 auto;
+    .ProceedContent {
+      padding: 0 40px;
+      .chainDataContent {
+        padding: 20px 41px;
+        width: 520px;
+      }
+    }
+  }
+}
+.app-mobile {
+  .proceed-box {
+    width: 100%;
+    height: 100%;
+    .ProceedContent {
+      padding: 0 20px;
+      .chainDataContent {
+        padding: 20px 6px;
+        width: 100%;
+        height: 100%;
+        .middle-icon {
+          width: 65px;
+        }
+      }
+    }
+  }
+}
 .proceed-box {
-  width: 600px;
-  height: 568px;
   border-radius: 20px;
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
@@ -433,20 +464,12 @@ export default {
   .ProceedContent {
     margin-top: 8px;
     position: relative;
-    padding: 0 40px;
     .contentItem {
       width: 100%;
       display: flex;
       margin-bottom: 12px;
-      // .right {
-      //   color: #e85e24;
-      //   text-align: right;
-      //   font-weight: lighter;
-      // }
     }
     .chainDataContent {
-      padding: 20px 41px;
-      width: 520px;
       height: 280px;
       border-radius: 20px;
       position: relative;

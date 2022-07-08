@@ -1,11 +1,8 @@
 <template>
 <div class="bridage-page">
   <template>
-    <div v-show="status === '1' && !showDetail" class="sub-tabs">
-      <div class="tab-toggle-btn">
-        <span @click="toggleTab" :class="['tab-btn-item', {selected: isSenderTab}]">Sender</span>
-        <span @click="toggleTab('Maker')" :class="['tab-btn-item', {selected: !isSenderTab}]">Maker</span>
-      </div>
+    <div v-show="!isMobile && status === '1' && !showDetail" class="sub-tabs">
+      <ToggleBtn @input="toggleTab" />
     </div>
     <div v-show="isSenderTab && status === '1' && !showDetail" class="sender-box">
       <keep-alive>
@@ -21,7 +18,7 @@
       </div>
     </div>
   </template>
-  <div v-show="status !== '1' || showDetail">
+  <div v-show="status !== '1' || showDetail" style="width:100%;height:100%;">
     <Proceed v-if="showDetail" :detailData="detailData" @stateChanged="changeState" />
     <template v-else>
       <Confirm v-if="status === '2'" @stateChanged="changeState" />
@@ -33,18 +30,26 @@
 
 <script>
 import { Transfer, Confirm, Proceed } from './'
+import { ToggleBtn } from '../../components'
 import Middle from '../../util/middle/middle'
+import { isMobile, curPageTabState, togglePageTab } from '../../composition/hooks'
 
 export default {
   name: 'Bridge',
-  components: { Transfer, Confirm, Proceed },
+  components: { Transfer, Confirm, Proceed, ToggleBtn },
   data() {
-    const curTab = localStorage.getItem('Bridge-curTab') || 'Sender'
     return {
       status: '1', // 1 2.confirm 3.proceed
-      curTab: curTab, // Sender Maker
       showDetail: false,
       detailData: null,
+    }
+  },
+  computed: {
+    isMobile() {
+      return isMobile.value
+    },
+    isSenderTab() {
+      return curPageTabState.value === 'Sender'
     }
   },
   mounted() {
@@ -54,19 +59,11 @@ export default {
         this.detailData = state
       }
     })
-    Middle.$on('resetCurTab', () => {
-      this.curTab = 'Sender'
-    })
-  },
-  computed: {
-    isSenderTab() {
-      return this.curTab === 'Sender'
-    }
   },
   methods: {
-    toggleTab(target) {
+    toggleTab() {
       this.status = '1'
-      this.curTab = typeof target === 'string' && target || 'Sender'
+      togglePageTab()
     },
     clickLearnMore() {
       window.open('https://docs.orbiter.finance/', '_blank')
@@ -85,6 +82,38 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.app {
+  .bridage-page {
+    .maker-box {
+      width: 480px;
+      height: 331px;
+      .maker-content {
+        .maker-foot-btn {
+          width: 400px;
+        }
+      }
+    }
+    .sender-box {
+      width: 480px;
+      height: 540px;
+      padding: 24px 20px;
+    }
+  }
+}
+.app-mobile {
+  .bridage-page {
+    height: 100%;
+    .maker-box {
+      height: 100%;
+      width: 100%;
+    }
+    .sender-box {
+      width: 100%;
+      height: 100%;
+      padding: 24px 20px;
+    }
+  }
+}
 .bridage-page {
   display: flex;
   justify-content: center;
@@ -108,24 +137,20 @@ export default {
         font-size: 16px;
         height: 100%;
         line-height: 40px;
-        border-radius: 40px;
+        border-radius: 20px;
         cursor: pointer;
       }
       .tab-btn-item.selected {
         background: #DF2E2D;
         color: #FFFFFF;
+        box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
       }
     }
   }
   .sender-box {
-    width: 480px;
-    height: 540px;
     border-radius: 20px;
-    padding: 24px 20px;
   }
   .maker-box {
-    width: 480px;
-    height: 331px;
     border-radius: 20px;
     padding: 34px 40px;
     text-align: left;
@@ -148,7 +173,6 @@ export default {
         cursor: pointer;
       }
       .maker-foot-btn {
-        width: 400px;
         height: 50px;
         box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
         border-radius: 40px;

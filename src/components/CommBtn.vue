@@ -28,6 +28,9 @@ export default {
   cursor:pointer;
   display: inline-block;
 }
+.comm-btn:hover {
+  background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
+}
 .comm-btn:not(.disabled):hover {
   background: #CA2221;
 }

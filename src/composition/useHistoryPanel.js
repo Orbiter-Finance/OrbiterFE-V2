@@ -14,8 +14,6 @@ export const historyPanelState = reactive({
     pages: 1
   },
   transactionList: null
-  // TODO: other state from vuex should replaced.
-  // ...
 })
 export const isHistoryPanelVisible = computed(() => historyPanelState.historyPanelVisible)
 

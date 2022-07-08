@@ -24,7 +24,7 @@ export default {
     },
     maskClick() {
       this.showCommDialog = false;
-      document.body.className = "scroll"
+      // document.body.className = "scroll"
     }
   }
 }

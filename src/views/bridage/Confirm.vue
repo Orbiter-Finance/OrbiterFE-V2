@@ -1,6 +1,6 @@
 <template>
 <div class="confirm-box">
-  <CommBoxHeader :back="closerButton" style="margin-bottom:30px;">Confirm</CommBoxHeader>
+  <CommBoxHeader :back="closerButton" :style="isMobile?'':'margin-bottom:30px;'">Confirm</CommBoxHeader>
   <div v-for="item in confirmData" :key="item.title" class="confirm-item" :style="{marginBottom: item.haveSep ? '46px' : '22px'}">
     <div class="item-left">
       <SvgIconThemed :icon="item.icon" />
@@ -33,7 +33,7 @@
     <span style="color:#DF2E2D">Modifying the transfer amount in MetaMask will cause the transfer to fail.</span>
   </div>
 
-  <CommBtn @click="RealTransfer" class="select-wallet-dialog" style="width:420px;margin-top:20px;height:50px;line-height:34px;">
+  <CommBtn @click="RealTransfer" class="select-wallet-dialog">
     <span
       v-if="!transferLoading"
       class="wbold s16"
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { SvgIconThemed, CommBoxHeader, CommBtn, CommLoading } from '../../components'
+import { SvgIconThemed, CommBoxHeader, CommBtn } from '../../components'
 import BigNumber from 'bignumber.js'
 import getProceeding from '../../util/proceeding/getProceeding'
 import {
@@ -83,16 +83,20 @@ import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
+import { isMobile } from '../../composition/hooks'
 
 export default {
   name: 'Confirm',
-  components: { SvgIconThemed, CommBoxHeader, CommBtn, CommLoading, },
+  components: { SvgIconThemed, CommBoxHeader, CommBtn, },
   data() {
     return {
       transferLoading: false,
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     isStarkNetChain() {
       const { fromChainID, toChainID } = this.$store.state.transferData
       return fromChainID == 4 ||
@@ -1224,9 +1228,32 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.app {
+  .confirm-box {
+    width: 480px;
+    height: 540px;
+    .confirm-item {
+      margin: 22px 0;
+    }
+  }
+  .select-wallet-dialog {
+    width:420px;
+  }
+}
+.app-mobile {
+  .confirm-box {
+    width: 100%;
+    // height: calc(100% - );
+    padding: 0 20px;
+    .confirm-item {
+      margin: 12px 0;
+    }
+  }
+  .select-wallet-dialog {
+    width: 100%;
+  }
+}
 .confirm-box {
-  width: 480px;
-  height: 540px;
   border-radius: 20px;
   font-weight: 400;
   font-size: 14px;
@@ -1234,7 +1261,6 @@ export default {
   .confirm-item {
     overflow: hidden;
     padding: 0 30px;
-    margin: 22px 0;
     .item-left {
       float: left;
       display: flex;
@@ -1256,11 +1282,16 @@ export default {
 
     .descBottom {
       max-height: 9.2rem;
-      overflow-y: scroll;
+      // overflow-y: scroll;
       text-align: center;
       clear: both;
       padding-top: 20px;
     }
+  }
+  .select-wallet-dialog {
+    margin-top:20px;
+    height:50px;
+    line-height:34px;
   }
 }
 </style>
