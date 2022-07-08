@@ -13,20 +13,20 @@ export const historyPanelState = reactive({
     total: 0,
     pages: 1
   },
-  transactionList: null
+  transactionList: []
   // TODO: other state from vuex should replaced.
   // ...
 })
 export const isHistoryPanelVisible = computed(() => historyPanelState.historyPanelVisible)
 
-watchEffect(() => {
-  !walletIsLogin.value && (historyPanelState.transactionList = [])
-  const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-  // TODO: should improve in deep
-  if (walletIsLogin.value && (store.getters.realSelectMakerInfo || isHistoryPanelVisible.value || (walletAddress && walletAddress !== '0x'))) {
-    getTraddingHistory(true)
-  }
-})
+// watchEffect(() => {
+//   !walletIsLogin.value && (historyPanelState.transactionList = [])
+//   const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+//   // TODO: should improve in deep
+//   if (walletIsLogin.value && (store.getters.realSelectMakerInfo || isHistoryPanelVisible.value || (walletAddress && walletAddress !== '0x'))) {
+//     getTraddingHistory(true)
+//   }
+// })
 
 export function getTraddingHistory(isRefresh = false) {
   // TODO: replace the vuex store
