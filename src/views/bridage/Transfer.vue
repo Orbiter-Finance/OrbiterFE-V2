@@ -920,6 +920,7 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
+            console.log("response", response);
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
