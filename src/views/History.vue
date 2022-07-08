@@ -4,7 +4,7 @@
     <div class="title">History</div>
     <div class="table historyContent">
       <div class="table-header">
-        <span class="col col-1"></span>
+        <span class="col col-1">&nbsp;</span>
         <span class="col col-2">Time</span>
         <span class="col col-3">Value</span>
         <span class="col col-4">From</span>
@@ -46,7 +46,7 @@
     <el-pagination 
       v-if="!isApiLoading && historyData && historyData.length !== 0" 
       @current-change="curChange" class="pagination" layout="prev, pager, next" 
-      :current-page.sync="currentPage"
+      :current-page="currentPage"
       :total="transactionListInfo.total">
     </el-pagination>
 
@@ -56,14 +56,14 @@
 </template>
 
 <script>
-import { NoData, CommLoading } from '../components'
+import { NoData } from '../components'
 import Middle from '../util/middle/middle'
 import { historyPanelState, getTransactionsHistory } from '../composition/hooks'
 
 export default {
   name: 'History',
   components: {
-    CommLoading, NoData
+    NoData
   },
   computed: {
     currentPage() {
@@ -161,19 +161,53 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.app {
+  .history-page {
+    .history-content {
+      min-height: 630px;
+      .table {
+        .contentItem {
+          .col-val {
+            margin-right: 26px;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}
+.app-mobile {
+  .history-page {
+    .history-content {
+      .table {
+        .table-header {
+          width: 335px;
+          height: 32px;
+        }
+        .contentItem {
+          width: 335px;
+          .col-val {
+            margin-right: 26px;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}
 .history-page {
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  width: 100%;
+  height: 100%;
   .history-content {
     padding: 18px 20px;
     width: 600px;
-    // height: 740px;
-    min-height: 630px;
+    height: 100%;
     border-radius: 20px;
     position: relative;
-    overflow: scroll;
     .title {
       font-weight: 700;
       font-size: 16px;
@@ -181,6 +215,9 @@ export default {
     }
     .table {
       margin-top: 26px;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 24px;
       .table-header {
         height: 32px;
         border-radius: 8px;
@@ -189,13 +226,6 @@ export default {
         align-items: center;
       }
       .col {
-        margin-right: 26px;
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 24px;
-        text-align: left;
-      }
-      .col-val {
         margin-right: 26px;
         text-align: left;
       }

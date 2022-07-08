@@ -1,11 +1,7 @@
 <template>
-  <div
-    id="app"
-    :class="$store.state.themeMode + '-theme app-theme'"
-    :style="{
-      'background-image': `url(${isLightMode ? lightbg : darkbg})`,
-    }"
-  >
+  <div id="app" :class="[`${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="!isMobile ? {
+    'background-image': `url(${isLightMode ? lightbg : darkbg})`
+  } : {}">
     <div class="app-content">
       <keep-alive>
         <TopNav />
@@ -15,14 +11,15 @@
           <router-view v-if="$route.meta.keepAlive" class="router" />
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
-        <div v-if="isHistoryPanelVisible" class="global-dialog">
-          <History></History>
-        </div>
       </div>
       <keep-alive>
         <BottomNav />
       </keep-alive>
     </div>
+    <div v-if="isHistoryPanelVisible" class="global-dialog">
+      <History></History>
+    </div>
+    <HeaderDialog />
   </div>
 </template>
 
@@ -30,20 +27,21 @@
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
-import {
-  getCurrentLoginInfoFromLocalStorage,
-  walletDispatchersOnInit,
-} from './util/walletsDispatchers'
-import { isHistoryPanelVisible, getTraddingHistory } from './composition/hooks'
+import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
+import { isHistoryPanelVisible, getTraddingHistory, isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
+import HeaderDialog from './components/layouts/HeaderDialog.vue'
 
 export default {
   name: 'App',
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
@@ -58,9 +56,7 @@ export default {
     }
   },
   components: {
-    TopNav,
-    BottomNav,
-    History,
+    TopNav, BottomNav, History, HeaderDialog
   },
   async mounted() {
     getZkToken.getSupportZKTokenList()
@@ -97,43 +93,40 @@ export default {
 </script>
 
 <style lang="scss">
-// ::-webkit-scrollbar {
-//   width: 3px;
-//   height: 3px;
-//   background-color: transparent;
-// }
-
-// ::-webkit-scrollbar-track {
-//   border-radius: 3px;
-//   background-color: transparent;
-// }
-
-// ::-webkit-scrollbar-thumb {
-//   border-radius: 3px;
-//   background-color: rgba(0, 0, 0, 0.3);
-// }
-
-.s-dialog {
-  z-index: 9999 !important;
+.app {
+  .app-content {
+    .main {
+      padding-top: 24px;
+    }
+  }
+  .global-dialog {
+    top: 94px;
+    height: calc(100% - 96px - 66px - 72px);
+  }
 }
-
+.app-mobile {
+  .app-content {
+    .main {
+      height: calc(100% - 83px - 96px);
+      border-radius: 20px;
+    }
+  }
+  .global-dialog {
+    top: 80px;
+    height: calc(100% - 96px - 84px);
+  }
+}
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  // font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--default-black);
   font-size: 2rem;
-  /* font-family: "Open Sans", sans-serif; */
-  // height: calc(var(--vh, 1vh) * 100);
-  // height: auto !important;
   height: 100%;
   overflow-y: scroll;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  // url('./assets/bgtop.svg'),
-  // 100% 650px,
-  // left top,
   background-position: left bottom;
   background-repeat: no-repeat;
   .app-content {
@@ -143,85 +136,7 @@ export default {
     flex-direction: column;
     .main {
       flex-grow: 1;
-      padding-top: 24px;
     }
-  }
-}
-.light-theme {
-  // background-image: url('./assets/v2/light-bg.png');
-  background-size: 100% 274px;
-  background-color: #f5f5f5;
-}
-.dark-theme {
-  // background-image: url('./assets/v2/dark-bg.png');
-  background-size: 100% 360px;
-  background-color: #28293d;
-}
-
-// body {
-//   background-color: #fff;
-// }
-
-* {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  /*IE10*/
-  user-select: none;
-}
-
-input {
-  -webkit-user-select: auto;
-  user-select: auto;
-}
-
-textarea {
-  -webkit-user-select: auto;
-  user-select: auto;
-}
-
-p {
-  display: block;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-}
-
-.noScroll {
-  overflow-y: hidden;
-}
-
-.scroll {
-  overflow-y: scroll;
-}
-
-.router {
-  // padding-bottom: var(--bottom-nav-height);
-  // height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height));
-  // height: calc(
-  //   var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height)
-  // );
-
-  width: 100%;
-}
-.global-dialog {
-  position: absolute;
-  top: 96px;
-  z-index: 1001;
-  width: 100%;
-  // height: 100%;
-  height: 740px;
-  overflow: hidden;
-}
-
-@media screen and (min-width: 5000px) {
-  .router {
-    padding: 0;
-    height: calc(100% - var(--top-nav-height));
-    width: 100%;
   }
 }
 </style>
