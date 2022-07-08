@@ -1,7 +1,7 @@
-import { reactive, watchEffect, computed } from ".";
-import { walletIsLogin } from './walletsResponsiveData';
-import { store } from "../store";
-import { compatibleGlobalWalletConf } from "./walletsResponsiveData";
+import { reactive, watchEffect, computed } from '.'
+import { walletIsLogin } from './walletsResponsiveData'
+import { store } from '../store'
+import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
@@ -11,22 +11,30 @@ export const historyPanelState = reactive({
     current: 1,
     size: 30,
     total: 0,
-    pages: 1
+    pages: 1,
   },
-  transactionList: []
+  transactionList: [],
   // TODO: other state from vuex should replaced.
   // ...
 })
-export const isHistoryPanelVisible = computed(() => historyPanelState.historyPanelVisible)
+export const isHistoryPanelVisible = computed(
+  () => historyPanelState.historyPanelVisible
+)
 
-// watchEffect(() => {
-//   !walletIsLogin.value && (historyPanelState.transactionList = [])
-//   const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-//   // TODO: should improve in deep
-//   if (walletIsLogin.value && (store.getters.realSelectMakerInfo || isHistoryPanelVisible.value || (walletAddress && walletAddress !== '0x'))) {
-//     getTraddingHistory(true)
-//   }
-// })
+watchEffect(() => {
+  !walletIsLogin.value && (historyPanelState.transactionList = [])
+  const walletAddress =
+    compatibleGlobalWalletConf.value.walletPayload.walletAddress
+  // TODO: should improve in deep
+  if (
+    walletIsLogin.value &&
+    (store.getters.realSelectMakerInfo ||
+      isHistoryPanelVisible.value ||
+      (walletAddress && walletAddress !== '0x'))
+  ) {
+    getTraddingHistory(true)
+  }
+})
 
 export function getTraddingHistory(isRefresh = false) {
   // TODO: replace the vuex store
@@ -49,8 +57,8 @@ export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = false
 
   if (res.data.code === 0) {
-    const { code, data = [], ...resInfo } = res.data;
-    const list = data.map(v => {
+    const { code, data = [], ...resInfo } = res.data
+    const list = data.map((v) => {
       /*
         {
           "fromChainID": 33,
@@ -67,17 +75,23 @@ export async function getTransactionsHistory(params = {}) {
         }
       */
       return {
-        "fromChainID": +v.fromChain,
-        "toChainID": +v.toChain,
-        "userAddress": v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
-        "makerAddress": v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
-        "userAmount": v.fromValueFormat,
-        "fromTimeStamp": v.fromTimeStamp?.replace(/\..*/g, '')?.replace('T', ' ')?.slice(5, -3) || '',
-        "toTimeStamp": v.toTimeStamp,
-        "tokenName": v.tokenName,
-        "fromTxHash": v.fromTx,
-        "toTxHash": v.toTx,
-        "state": v.status == 1 ? 0 : (v.status == 0 ? 1 : 2) // 0 success 1 waiting 2 fail
+        fromChainID: +v.fromChain,
+        toChainID: +v.toChain,
+        userAddress:
+          v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
+        makerAddress:
+          v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
+        userAmount: v.fromValueFormat,
+        fromTimeStamp:
+          v.fromTimeStamp
+            ?.replace(/\..*/g, '')
+            ?.replace('T', ' ')
+            ?.slice(5, -3) || '',
+        toTimeStamp: v.toTimeStamp,
+        tokenName: v.tokenName,
+        fromTxHash: v.fromTx,
+        toTxHash: v.toTx,
+        state: v.status == 1 ? 0 : v.status == 0 ? 1 : 2, // 0 success 1 waiting 2 fail
       }
     })
     historyPanelState.transactionListInfo = resInfo
