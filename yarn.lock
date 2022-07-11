@@ -1940,10 +1940,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@loopring-web/loopring-sdk@^1.8.17":
-  version "1.10.4"
-  resolved "https://registry.npmmirror.com/@loopring-web/loopring-sdk/-/loopring-sdk-1.10.4.tgz#2c0f9ba12df7d39d45e5db3d70dba940b53c227e"
-  integrity sha512-WnYg2eg1tRuF+2SE5zOFE9At6/oJrKJUyWjtnim0HRsfsFBINnVx9w1aQ0CnaNqWbhID32xBNkAxrnen8+B8HQ==
+"@loopring-web/loopring-sdk@1.8.17":
+  version "1.8.17"
+  resolved "https://registry.npmmirror.com/@loopring-web/loopring-sdk/-/loopring-sdk-1.8.17.tgz#0e918181b43fca3a4841ec449daca21c02a6b2a6"
+  integrity sha512-XcCR2dcO0kn2OyIzQsBmnim1qIipAUVSpbQ4A6BvBqFzCxmNAl77ngiaLkShxg9vHuOhCfYVBXCVm5BcccGhQw==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
