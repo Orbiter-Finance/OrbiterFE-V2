@@ -10,6 +10,16 @@
   --light-page-color: #333;
 }
 
+/* override the element component style */
+.dark-body .el-notification {
+  // width: 490px;
+  background-color: var(--dark-page-bg);
+  border: 1px solid var(--dark-page-bg);
+  .el-notification__title {
+    color: var(--dark-page-color);
+  }
+}
+
 .dark-theme {
   &.app-mobile {
     .top-nav {

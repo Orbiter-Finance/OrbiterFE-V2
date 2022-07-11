@@ -84,6 +84,7 @@ import * as zksync from 'zksync'
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
 import { isMobile } from '../../composition/hooks'
+import { notifyLg } from '../../util'
 
 export default {
   name: 'Confirm',
@@ -1213,11 +1214,11 @@ export default {
       if (fromChainID == 8 || fromChainID == 88) {
         title = 'TransferId: ' + title
       }
-
-      this.$notify.success({
-        title,
-        duration: 3000,
-      })
+      notifyLg.call(this, title)
+      // this.$notify.success({
+      //   title,
+      //   duration: 3000,
+      // })
       this.$emit('stateChanged', '3')
     },
     closerButton() {

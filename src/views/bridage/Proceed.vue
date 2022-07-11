@@ -27,8 +27,8 @@
         <div class="switch-btn" @click="() => switchNetWork()">Switch Network</div>
       </div>
       <div class="middle-icon">
-        <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
-          <SvgIconThemed v-if="!isProcee" icon="rocket" size="xs" />
+        <div :class="['rocket-box', {'rocket-box-bg': isProcee}]">
+          <SvgIconThemed v-if="!isProcee" iconName="satellite" size="xs" />
         </div>
         <div v-if="!isMobile" class="rocket-line-box">
           <SvgIconThemed icon="rocket-line" style="width:157px;height:10px;margin-top:10px;" />
@@ -427,6 +427,12 @@ export default {
       .chainDataContent {
         padding: 20px 41px;
         width: 520px;
+        .middle-icon {
+          .rocket-box {
+            margin-top: 18px;
+            background-size: 100%;
+          }
+        }
       }
     }
   }
@@ -443,6 +449,13 @@ export default {
         height: 100%;
         .middle-icon {
           width: 65px;
+        }
+        .middle-icon {
+          .rocket-box {
+            // margin-top: 24px;
+            margin-top: 50px;
+            background-size: 200%;
+          }
         }
       }
     }
@@ -521,6 +534,9 @@ export default {
             margin-right: 4px;
           }
         }
+        .tx:hover {
+          text-decoration: underline;
+        }
         .switch-btn {
           width: 128px;
           height: 28px;
@@ -535,11 +551,10 @@ export default {
         flex: 1;
         .rocket-box {
           height: 60px;
-          margin-top: 39px;
-          background-size: 100%;
           display: flex;
           align-items: flex-end;
           justify-content: center;
+          background-repeat: no-repeat;
         }
       }
     }
