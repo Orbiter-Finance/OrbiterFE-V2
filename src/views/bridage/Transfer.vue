@@ -1993,7 +1993,6 @@ export default {
       margin-bottom: 12px;
       .border {
         margin-right:8px;
-        border-right:2px solid #ccc;
         padding-right:8px;
       }
     }

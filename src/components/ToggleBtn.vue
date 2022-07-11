@@ -6,30 +6,19 @@
 </template>
 
 <script>
-import Middle from '../util/middle/middle'
+import { isSenderTab } from '../composition/hooks'
 
 export default {
   name: 'ToggleBtn',
-  data() {
-    return {
-      curTab: 'Sender', // Sender Maker
-    }
-  },
-  mounted() {
-    Middle.$on('resetCurTab', () => {
-      this.curTab = 'Sender'
-      this.$emit('input', this.curTab)
-    })
-  },
   computed: {
     isSenderTab() {
-      return this.curTab === 'Sender'
+      return isSenderTab()
     }
   },
   methods: {
     toggleTab(target) {
-      this.curTab = typeof target === 'string' && target || 'Sender'
-      this.$emit('input', this.curTab)
+      const tab = typeof target === 'string' && target || 'Sender'
+      this.$emit('input', tab)
     },
   }
 }

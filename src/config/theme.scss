@@ -138,6 +138,13 @@
         }
       }
     }
+    .info-box {
+      .info-item {
+        .border {
+          border-right:1px solid #888;
+        }
+      }
+    }
   }
   // ---------- transfer component / end ----------
   // ---------- ObSelectChain component / start ----------
@@ -388,6 +395,13 @@
         }
         .maxBtn {
           color: #3183FF;
+        }
+      }
+    }
+    .info-box {
+      .info-item {
+        .border {
+          border-right:1px solid #ccc;
         }
       }
     }
