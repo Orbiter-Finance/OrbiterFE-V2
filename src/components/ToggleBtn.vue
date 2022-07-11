@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { isSenderTab } from '../composition/hooks'
+import { isSenderTab, isMobile } from '../composition/hooks'
 
 export default {
   name: 'ToggleBtn',
@@ -19,6 +19,10 @@ export default {
     toggleTab(target) {
       const tab = typeof target === 'string' && target || 'Sender'
       this.$emit('input', tab)
+      if (isMobile.value) {
+        const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
+        this.$route.path != last.path && this.$router.push(last)
+      }
     },
   }
 }

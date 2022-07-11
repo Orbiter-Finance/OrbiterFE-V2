@@ -39,7 +39,7 @@ export default {
   components: { Transfer, Confirm, Proceed, ToggleBtn },
   data() {
     return {
-      status: '1', // 1 2.confirm 3.proceed
+      status: '3', // 1 2.confirm 3.proceed
       showDetail: false,
       detailData: null,
     }

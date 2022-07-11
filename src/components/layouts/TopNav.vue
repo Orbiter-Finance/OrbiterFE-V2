@@ -9,7 +9,7 @@
     </template>
     <template v-else>
       <SvgIconThemed @click.native="toHome" class="logo" :style="navIcons.style" :icon="navIcons.logo" />
-      <ToggleBtn v-if="$route.path === '/'" @input="toggleTab" />
+      <ToggleBtn v-if="showToggleBtn()" @input="toggleTab" />
       <div @click="() => drawerVisible = true" class="center menu-outline" style="width:44px;height:44px;border-radius: 8px;">
         <SvgIconThemed icon="menu" style="width:26px;height:22px;" />
       </div>
@@ -68,9 +68,10 @@ export default {
         logo_web: 'logo',
         logo_webStyle: { width: '153px', height: '40px' },
       }
-      if (this.isRinkeby) {
-        icons.logo_web = 'orbiterLogo_web--rinkeby'
-      }
+      // TODO: when rinkeby logo is add, uncomment blow
+      // if (this.isRinkeby) {
+      //   icons.logo_web = 'orbiterLogo_web--rinkeby'
+      // }
       switch (this.refererUpper) {
         case 'ZKSYNC':
           icons.logo = 'orbiterAsZksyncLogo'
@@ -108,6 +109,9 @@ export default {
     },
     toggleTab(tab) {
       setPageTab(tab)
+    },
+    showToggleBtn() {
+      return this.$route.path === '/' || this.$route.path === '/history'
     }
   },
 }

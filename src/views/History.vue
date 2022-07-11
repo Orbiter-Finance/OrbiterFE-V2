@@ -106,12 +106,18 @@ export default {
       return historyPanelState.transactionListInfo
     }
   },
+  beforeRouteEnter(to, from, next) {
+    next(() => {
+      getTransactionsHistory()
+    })
+  },
   methods: {
     curChange(cur) {
       getTransactionsHistory({ current: cur })
     },
     closeDialog() {
-      historyPanelState.historyPanelVisible = false
+      const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
+      this.$router.push(last)
     },
     getHistoryInfo(e) {
       Middle.$emit('showDetail', e)
@@ -190,7 +196,7 @@ export default {
     .history-content {
       min-width: 335px;
       height: 100%;
-      overflow-y: scroll;
+      // overflow-y: scroll;
       // overflow-x: hidden;
       .table {
         .col-1 {
@@ -226,7 +232,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  // overflow: hidden;
   width: 100%;
   height: 100%;
   .history-content {
@@ -326,5 +332,8 @@ export default {
 .dark-theme .history-page >>> .el-pagination .btn-next, .dark-theme .history-page >>> .el-pagination .btn-prev {
   background: center center no-repeat #373951;
   color: rgba(255, 255, 255, 0.6);
+}
+.app-mobile .history-page >>> .el-pager li {
+  min-width: 30px !important;
 }
 </style>

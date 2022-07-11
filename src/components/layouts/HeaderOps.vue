@@ -84,8 +84,17 @@ export default {
       this.$emit('closeDrawer')
     },
     showHistory() {
-      historyPanelState.historyPanelVisible = true
       this.$emit('closeDrawer')
+
+      const route = this.$route
+      localStorage.setItem('last_page_before_history', JSON.stringify({
+        path: route.path,
+        params: route.params,
+        query: route.query,
+      }))
+      this.$router.push({
+        path: '/history'
+      })
     },
   },
 }

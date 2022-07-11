@@ -8,6 +8,14 @@
       <CommLoading v-else class="right" width="1.2rem" height="1.2rem" />
     </div>
     <div class="chainDataContent">
+      <div v-if="isMobile" class="middle-icon-abs">
+        <div :class="['rocket-box', {'rocket-box-bg': isProcee}]">
+          <SvgIconThemed v-if="!isProcee" iconName="satellite" size="xs" />
+        </div>
+        <div class="rocket-line-box">
+          <SvgIconThemed icon="rocket-line" style="width:157px;height:10px;margin-top:10px;" />
+        </div>
+      </div>
       <div class="item left">
         <div class="chain-name from">
           <span>{{ FromChainName }}</span>
@@ -27,7 +35,7 @@
         <div class="switch-btn" @click="() => switchNetWork()">Switch Network</div>
       </div>
       <div class="middle-icon">
-        <div :class="['rocket-box', {'rocket-box-bg': isProcee}]">
+        <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
           <SvgIconThemed v-if="!isProcee" iconName="satellite" size="xs" />
         </div>
         <div v-if="!isMobile" class="rocket-line-box">
@@ -447,10 +455,31 @@ export default {
         padding: 20px 6px;
         width: 100%;
         height: 100%;
-        .middle-icon {
-          width: 65px;
+        position: relative;
+        .middle-icon-abs {
+          position: absolute;
+          // top: 115px;
+          left: calc(50% - 78px);
+          height: 100%;
+          .rocket-box {
+            // margin-top: 24px;
+            background-size: 200%;
+            background-repeat: no-repeat;
+            height: 100px;
+            width: 115px;
+            margin-left: 10px;
+            margin-top: 30px;
+            .svg {
+              margin-top: 30px;
+              margin-left: 20px;
+            }
+          }
+          .rocket-line-box {
+            margin-top: -30px;
+          }
         }
         .middle-icon {
+          width: 65px;
           .rocket-box {
             // margin-top: 24px;
             margin-top: 50px;
