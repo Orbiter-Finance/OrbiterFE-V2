@@ -64,7 +64,7 @@ export default {
     },
     navIcons() {
       const icons = {
-        logo: 'logo',
+        logo: 'logo-mobile',
         logoStyle: { width: '41px', height: '40px' },
         logo_web: 'logo',
         logo_webStyle: { width: '153px', height: '40px' },
@@ -119,9 +119,15 @@ export default {
   justify-content: space-between;
   align-items: center;
   .logo {
-    margin-top: 16px;
-    margin-left: 21px;
     cursor: pointer;
+  }
+}
+.app {
+  .top-nav {
+    .logo {
+      margin-top: 16px;
+      margin-left: 21px;
+    }
   }
 }
 .app-mobile {

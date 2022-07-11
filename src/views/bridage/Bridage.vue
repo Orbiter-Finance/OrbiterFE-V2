@@ -18,7 +18,7 @@
       </div>
     </div>
   </template>
-  <div v-show="status !== '1' || showDetail" style="width:100%;height:100%;">
+  <div v-show="status !== '1' || showDetail" style="width:100%;height:100%;" class="center">
     <Proceed v-if="showDetail" :detailData="detailData" @stateChanged="changeState" />
     <template v-else>
       <Confirm v-if="status === '2'" @stateChanged="changeState" />

@@ -7,7 +7,8 @@ import {
   MessageBox,
   Button,
   Pagination,
-  Drawer
+  Drawer,
+  // Table
 } from 'element-ui'
 const element = {
   install: function(Vue) {
@@ -18,6 +19,7 @@ const element = {
     Vue.use(Button)
     Vue.use(Pagination)
     Vue.use(Drawer)
+    // Vue.use(Table)
     // Vue.prototype.$message = Message
     Vue.prototype.$notify = Notification
     Vue.prototype.$msgbox = MessageBox

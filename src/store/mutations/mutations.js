@@ -1,3 +1,5 @@
+import { toggleBodyCls } from '../../util'
+
 export default {
   updatelpAccountInfo(state, accountInfo) {
     state.lpAccountInfo = accountInfo
@@ -210,6 +212,7 @@ export default {
         state.themeMode = 'light'
       }
     }
+    toggleBodyCls()
     localStorage.setItem('themeMode', state.themeMode )
   },
 }

@@ -112,7 +112,7 @@ export default {
     }
   }
   .global-dialog {
-    top: 80px;
+    top: 70px;
     height: calc(100% - 96px - 84px);
   }
 }

@@ -1,5 +1,6 @@
 import { store } from '../../store'
 import { setMobileOrNot } from '../../composition/hooks'
+import { toggleBodyCls } from '../'
 
 // set init function
 export function init() {
@@ -19,6 +20,8 @@ export function init() {
   // We execute the same script as before
   let vh = window.innerHeight * 0.01
   document.documentElement.style.setProperty('--vh', `${vh}px`)
+
+  toggleBodyCls()
 }
 
 // ms

@@ -136,7 +136,7 @@
       </div>
       <div v-if="showSaveGas" class="gas-save info-item">
         <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
-        <span>Gas Fee Saved &nbsp;</span>
+        <span class="border">Gas Fee Saved </span>
         <span class="red">
           save
           <CommLoading
@@ -158,13 +158,13 @@
       </div>
       <div class="time-save info-item">
         <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
-        <span>
+        <span class="border">
           Time Spend
           <CommLoading v-if="timeSpenLoading" width="1.2rem" height="1.2rem" />
           <span v-else>{{ timeSpent }}</span>
         </span>
         <span class="red">
-          &nbsp; save
+          save
           <CommLoading
             v-if="saveTimeLoading"
             style="margin: 0 1rem"
@@ -1991,6 +1991,11 @@ export default {
       display: flex;
       align-items: center;
       margin-bottom: 12px;
+      .border {
+        margin-right:8px;
+        border-right:2px solid #ccc;
+        padding-right:8px;
+      }
     }
     .info-icon {
       width: 16px;

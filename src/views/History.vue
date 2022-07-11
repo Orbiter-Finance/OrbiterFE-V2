@@ -163,10 +163,19 @@ export default {
 <style scoped lang="scss">
 .app {
   .history-page {
+    border-radius: 20px;
     .history-content {
       min-height: 630px;
+      width: 600px;
       .table {
+        .table-header {
+          padding: 4px 20px;
+        }
+        .col {
+          margin-right: 26px;
+        }
         .contentItem {
+          padding: 4px 20px;
           .col-val {
             margin-right: 26px;
             text-align: left;
@@ -179,15 +188,33 @@ export default {
 .app-mobile {
   .history-page {
     .history-content {
+      min-width: 335px;
+      height: 100%;
+      overflow-y: scroll;
+      // overflow-x: hidden;
       .table {
-        .table-header {
-          width: 335px;
-          height: 32px;
+        .col-1 {
+          width: 16px;
+          height: 16px;
+          margin-left: 12px;
+          margin-right: 10px;
+        }
+        .col-2 {
+          width: 100px;
+        }
+        .col-3 {
+          width: 120px;
+        }
+        .col-4 {
+          width: 33px;
+          margin-right: 8px;
+        }
+        .col-5 {
+          width: 32px;
         }
         .contentItem {
           width: 335px;
           .col-val {
-            margin-right: 26px;
             text-align: left;
           }
         }
@@ -204,7 +231,6 @@ export default {
   height: 100%;
   .history-content {
     padding: 18px 20px;
-    width: 600px;
     height: 100%;
     border-radius: 20px;
     position: relative;
@@ -221,12 +247,10 @@ export default {
       .table-header {
         height: 32px;
         border-radius: 8px;
-        padding: 4px 20px;
         display: flex;
         align-items: center;
       }
       .col {
-        margin-right: 26px;
         text-align: left;
       }
       .col-1 {
@@ -275,7 +299,6 @@ export default {
       line-height: 32px;
       margin-top: 8px;
       margin-bottom: 8px;
-      padding: 4px 20px;
       cursor: pointer;
     }
     .contentItem:hover {
