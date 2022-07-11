@@ -9,11 +9,10 @@
     </div>
     <div class="chainDataContent">
       <div v-if="isMobile" class="middle-icon-abs">
-        <div :class="['rocket-box', {'rocket-box-bg': isProcee}]">
-          <SvgIconThemed v-if="!isProcee" iconName="satellite" size="xs" />
+        <div v-if="isProcee" :class="[{'rocket-box-bg': isProcee}]">
         </div>
-        <div class="rocket-line-box">
-          <SvgIconThemed icon="rocket-line" style="width:157px;height:10px;margin-top:10px;" />
+        <div v-else :class="['rocket-box']">
+          <SvgIconThemed v-if="true" iconName="satellite" size="xs" />
         </div>
       </div>
       <div class="item left">
@@ -456,22 +455,52 @@ export default {
         width: 100%;
         height: 100%;
         position: relative;
+        overflow: hidden;
         .middle-icon-abs {
           position: absolute;
-          // top: 115px;
-          left: calc(50% - 78px);
+          top: 0;
+          left: 0;
+          height: 100%;
+          // width: calc(100% - 12px);
+          width: 100%;
+          .rocket-box {
+            background-repeat: no-repeat;
+            background-size: 50%;
+            margin-top: 90px;
+          }
+          .rocket-box-bg {
+            background-repeat: no-repeat;
+            background-size: 100%;
+            margin-top: 80px;
+            background-origin: content-box;
+            height: calc(100% - 90px);
+            padding-left: 120px;
+            padding-right: 120px;
+          }
+        }
+        // TODO: should remove
+        .middle-icon-abs0 {
+          position: absolute;
+          // left: calc(50% - 78px);
           height: 100%;
           .rocket-box {
-            // margin-top: 24px;
-            background-size: 200%;
             background-repeat: no-repeat;
-            height: 100px;
-            width: 115px;
-            margin-left: 10px;
+
+            // background-size: 200%;
+            // height: 100px;
+            // width: 115px;
+            // margin-left: 10px;
+            // margin-top: 30px;
+
+            background-size: 50%;
+            height: 200px;
+            width: 300px;
+            margin-left: 90px;
             margin-top: 30px;
             .svg {
               margin-top: 30px;
-              margin-left: 20px;
+              // margin-left: 20px;
+              margin-left: -140px;
             }
           }
           .rocket-line-box {
