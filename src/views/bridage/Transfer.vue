@@ -6,6 +6,7 @@
         :datas="tokens"
         v-model="selectedToken"
         @input="selectedTokenChange"
+        @show="() => isRaiseUpSelectVisible = true"
       ></ObSelect>
     </div>
     <div class="from-area">
@@ -118,6 +119,7 @@
       @click="sendTransfer"
       :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
       class="btn select-wallet-dialog"
+      style="border-radius: 40px;"
     >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
         {{ sendBtnInfo && sendBtnInfo.text }}
@@ -200,6 +202,11 @@
         />
       </div>
     </CommDialog>
+    <RaiseUpSelect 
+      :iconType="'img'"
+      :visible="isRaiseUpSelectVisible" @hiden="() => isRaiseUpSelectVisible = false"
+      :datas="tokenInfoArray" :value="selectedToken" @input="selectedTokenChange" :keyMaps="{value:'token',label:'token'}" 
+    />
   </div>
 </template>
 
@@ -210,7 +217,6 @@ import {
   ObSelectChain,
   CommDialog,
   SvgIconThemed,
-  CommLoading,
 } from '../../components'
 import makerInfo from '../../core/routes/makerInfo'
 import util from '../../util/util'
@@ -241,20 +247,18 @@ import {
 } from '../../composition/walletsResponsiveData'
 import { walletDispatchersOnSwitchChain } from '../../util/walletsDispatchers'
 import { METAMASK } from "../../util/walletsDispatchers/index"
+import { RaiseUpSelect } from '../../components'
+
 const queryParamsChainMap = chain2idMap
 
 export default {
   name: 'Transfer',
   components: {
-    ObSelect,
-    CommBtn,
-    ObSelectChain,
-    SvgIconThemed,
-    CommDialog,
-    CommLoading,
+    ObSelect, CommBtn, ObSelectChain, SvgIconThemed, CommDialog, RaiseUpSelect
   },
   data() {
     return {
+      isRaiseUpSelectVisible: false,
       selectedToken: 'ETH',
       // loading
       timeSpenLoading: false,
@@ -1860,6 +1864,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app {
+  .transfer-box {
+    .btn {
+      width: 440px;
+    }
+  }
+}
+.app-mobile {
+  .transfer-box {
+    .btn {
+      width: 100%;
+    }
+  }
+}
 .transfer-box {
   .top-area {
     display: flex;
@@ -1869,6 +1887,7 @@ export default {
       font-size: 20px;
       line-height: 20px;
       margin-right: 10px;
+      font-family: 'Inter';
     }
   }
   .from-area,
@@ -1959,7 +1978,6 @@ export default {
   .btn {
     margin-top: 32px;
     height: 50px;
-    width: 440px;
     display: inline-block;
     line-height: 34px;
     margin-bottom: 20px;
