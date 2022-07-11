@@ -2,7 +2,7 @@
   <div id="app" :class="[`${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="!isMobile ? {
     'background-image': `url(${isLightMode ? lightbg : darkbg})`
   } : {}">
-    <div class="app-content" :style="styles">
+    <div class="app-content">
       <keep-alive>
         <TopNav />
       </keep-alive>
@@ -42,9 +42,6 @@ export default {
     isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
-    styles() {
-      return this.$route.path != '/history' ? {height: '100%'} : {}
-    }
   },
   data() {
     return {
@@ -128,7 +125,7 @@ export default {
   background-repeat: no-repeat;
   .app-content {
     width: 100%;
-    // height: 100%;
+    min-height: 100%;
     display: flex;
     flex-direction: column;
     .main {

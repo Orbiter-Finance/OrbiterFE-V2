@@ -42,7 +42,7 @@
         ></svg-icon>
       </div>
     </div>
-    <NoData v-if="!isApiLoading && historyData && historyData.length === 0">No history</NoData>
+    <NoData v-if="!isApiLoading && historyData && historyData.length === 0" style="padding-top: 200px;">No history</NoData>
     <el-pagination 
       v-if="!isApiLoading && historyData && historyData.length !== 0" 
       @current-change="curChange" class="pagination" layout="prev, pager, next" 
@@ -196,6 +196,7 @@ export default {
     .history-content {
       min-width: 335px;
       height: 100%;
+      min-height: 300px;
       // overflow-y: scroll;
       // overflow-x: hidden;
       .table {
