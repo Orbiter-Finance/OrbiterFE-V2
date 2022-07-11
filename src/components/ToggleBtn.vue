@@ -16,7 +16,10 @@ export default {
     }
   },
   mounted() {
-    Middle.$on('resetCurTab', () => this.curTab = 'Sender')
+    Middle.$on('resetCurTab', () => {
+      this.curTab = 'Sender'
+      this.$emit('input', this.curTab)
+    })
   },
   computed: {
     isSenderTab() {
