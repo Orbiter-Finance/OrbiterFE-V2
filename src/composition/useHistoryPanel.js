@@ -5,7 +5,6 @@ import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
-  historyPanelVisible: false,
   isLoading: false,
   transactionListInfo: {
     current: 1,
@@ -15,21 +14,13 @@ export const historyPanelState = reactive({
   },
   transactionList: [],
 })
-export const isHistoryPanelVisible = computed(
-  () => historyPanelState.historyPanelVisible
-)
 
 watchEffect(() => {
   !walletIsLogin.value && (historyPanelState.transactionList = [])
   const walletAddress =
     compatibleGlobalWalletConf.value.walletPayload.walletAddress
   // TODO: should improve in deep
-  if (
-    walletIsLogin.value &&
-    (store.getters.realSelectMakerInfo ||
-      isHistoryPanelVisible.value ||
-      (walletAddress && walletAddress !== '0x'))
-  ) {
+  if (walletIsLogin.value && (store.getters.realSelectMakerInfo || (walletAddress && walletAddress !== '0x'))) {
     getTraddingHistory(true)
   }
 })

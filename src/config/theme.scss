@@ -266,7 +266,7 @@
             color: var(--dark-page-box-color);
           }
         }
-        .middle-icon {
+        .middle-icon, .middle-icon-abs {
           .rocket-box-bg {
             background-image: url('../assets/v2/dark-rocket.gif');
           }
@@ -526,7 +526,7 @@
             color: rgba(51, 51, 51, 0.8);
           }
         }
-        .middle-icon {
+        .middle-icon, .middle-icon-abs {
           .rocket-box-bg {
             background-image: url('../assets/v2/light-rocket.gif');
           }

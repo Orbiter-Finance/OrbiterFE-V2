@@ -2,7 +2,7 @@
   <div id="app" :class="[`${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="!isMobile ? {
     'background-image': `url(${isLightMode ? lightbg : darkbg})`
   } : {}">
-    <div class="app-content">
+    <div class="app-content" :style="styles">
       <keep-alive>
         <TopNav />
       </keep-alive>
@@ -16,9 +16,6 @@
         <BottomNav />
       </keep-alive>
     </div>
-    <div v-if="isHistoryPanelVisible" class="global-dialog">
-      <History></History>
-    </div>
     <HeaderDialog />
   </div>
 </template>
@@ -28,7 +25,7 @@ import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
-import { isHistoryPanelVisible, getTraddingHistory, isMobile } from './composition/hooks'
+import { getTraddingHistory, isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
@@ -45,9 +42,9 @@ export default {
     isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
-    isHistoryPanelVisible() {
-      return isHistoryPanelVisible.value
-    },
+    styles() {
+      return this.$route.path != '/history' ? {height: '100%'} : {}
+    }
   },
   data() {
     return {
@@ -131,7 +128,7 @@ export default {
   background-repeat: no-repeat;
   .app-content {
     width: 100%;
-    height: 100%;
+    // height: 100%;
     display: flex;
     flex-direction: column;
     .main {
