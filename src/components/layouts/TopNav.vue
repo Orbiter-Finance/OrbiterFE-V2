@@ -32,8 +32,7 @@
 
 <script>
 import { CommBtn, SvgIconThemed, ToggleBtn } from '../'
-import Middle from '../../util/middle/middle'
-import { isMobile, togglePageTab } from '../../composition/hooks'
+import { isMobile, setPageTab, setPageSenderTab } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
 
@@ -104,10 +103,12 @@ export default {
   },
   methods: {
     toHome() {
-      Middle.$emit('resetCurTab')
+      setPageSenderTab()
       this.$route.path !== '/' && this.$router.push({ path: '/', })
     },
-    toggleTab: togglePageTab
+    toggleTab(tab) {
+      setPageTab(tab)
+    }
   },
 }
 </script>
