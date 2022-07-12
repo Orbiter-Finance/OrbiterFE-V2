@@ -1,12 +1,7 @@
 import { toggleBodyCls } from '../../util'
+import { updatelpApiKey, updatelpAccountInfo, web3State } from '../../composition/hooks'
 
 export default {
-  updatelpAccountInfo(state, accountInfo) {
-    state.lpAccountInfo = accountInfo
-  },
-  updatelpApiKey(state, accountInfo) {
-    state.lpApiKey = accountInfo
-  },
   updateZKTokenList(state, obj) {
     if (obj.chainID === 3) {
       state.zktokenList.mainnet = obj.tokenList
@@ -93,77 +88,55 @@ export default {
   updateConfirmRouteDescInfo(state, routeDescInfo) {
     state.confirmData.routeDescInfo = routeDescInfo
   },
-  updateIsInstallMeta(state, isInstallMeta) {
-    state.web3.isInstallMeta = isInstallMeta
-  },
-  updateIsInjected(state, isInjected) {
-    state.web3.isInjected = isInjected
-  },
-  updateWeb3Instance(state, web3Instance) {
-    state.web3.web3Instance = web3Instance
-  },
-  updateCoinbase(state, coinbase) {
-    if (!coinbase || coinbase.length === 0) {
-      state.web3.isInjected = false
-      coinbase = '0x'
-    } else {
-      state.web3.isInjected = true
-      state.web3.localLogin = true
-      localStorage.setItem('localLogin', true)
-    }
-    state.lpAccountInfo = null
-    state.lpApiKey = null
-    state.web3.coinbase = coinbase
-  },
   updateStarkNetAddress(state, starkNetAddress) {
     if (!starkNetAddress || starkNetAddress.length === 0) {
       starkNetAddress = ''
-      state.web3.starkNet.starkIsConnected = false
-      state.web3.starkNet.starkWalletName = ''
-      state.web3.starkNet.starkWalletIcon = ''
-      state.web3.starkNet.starkChain = ''
+      web3State.starkNet.starkIsConnected = false
+      web3State.starkNet.starkWalletName = ''
+      web3State.starkNet.starkWalletIcon = ''
+      web3State.starkNet.starkChain = ''
     } else {
-      state.web3.starkNet.starkIsConnected = true
+      web3State.starkNet.starkIsConnected = true
     }
-    state.web3.starkNet.starkNetAddress = starkNetAddress
+    web3State.starkNet.starkNetAddress = starkNetAddress
   },
 
   updateStarkNetIsConnect(state, starkNetIsConnect) {
     if (!starkNetIsConnect) {
-      state.web3.starkNet.starkWalletName = ''
-      state.web3.starkNet.starkWalletIcon = ''
-      state.web3.starkNet.starkChain = ''
-      state.web3.starkNet.starkNetAddress = ''
+      web3State.starkNet.starkWalletName = ''
+      web3State.starkNet.starkWalletIcon = ''
+      web3State.starkNet.starkChain = ''
+      web3State.starkNet.starkNetAddress = ''
     }
-    state.web3.starkNet.starkNetIsConnect = starkNetIsConnect
+    web3State.starkNet.starkNetIsConnect = starkNetIsConnect
   },
   updateStarkNetWalletName(state, starkNetWalletName) {
     if (!starkNetWalletName || starkNetWalletName.length === 0) {
       starkNetWalletName = ''
     }
-    state.web3.starkNet.starkNetWalletName = starkNetWalletName
+    web3State.starkNet.starkNetWalletName = starkNetWalletName
   },
   updateStarkNetWalletIcon(state, starkNetWalletIcon) {
     if (!starkNetWalletIcon || starkNetWalletIcon.length === 0) {
       starkNetWalletIcon = ''
     }
-    state.web3.starkNet.starkNetWalletIcon = starkNetWalletIcon
+    web3State.starkNet.starkNetWalletIcon = starkNetWalletIcon
   },
   updateStarkNetChain(state, starkChain) {
     if (!starkChain || starkChain.length === 0) {
       starkChain = ''
     }
-    state.web3.starkNet.starkChain = starkChain
+    web3State.starkNet.starkChain = starkChain
   },
   updateNetWorkId(state, netWorkId) {
-    state.web3.networkId = netWorkId
-    state.lpAccountInfo = null
-    state.lpApiKey = null
+    web3State.networkId = netWorkId
+    updatelpAccountInfo(null)
+    updatelpApiKey(null)
   },
   updateLocalLogin(state, localLogin) {
-    state.web3.localLogin = localLogin
-    state.lpAccountInfo = null
-    state.lpApiKey = null
+    web3State.localLogin = localLogin
+    updatelpAccountInfo(null)
+    updatelpApiKey(null)
   },
   setInnerWH(state, { innerWidth, innerHeight }) {
     state.innerWH.innerWidth = innerWidth

@@ -1,4 +1,4 @@
-import { store } from "../store";
+import { web3State } from "../composition/hooks";
 import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 
 export function showAddress() {
@@ -11,7 +11,7 @@ export function showAddress() {
   return ''
 }
 export function starkAddress() {
-  var stark = store.state.web3.starkNet.starkNetAddress
+  var stark = web3State.starkNet.starkNetAddress
   if (stark && stark.length > 5) {
     var subStr1 = stark.substr(0, 4)
     var subStr2 = stark.substr(stark.length - 4, 4)

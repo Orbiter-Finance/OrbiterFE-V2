@@ -83,7 +83,7 @@ import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
-import { isMobile, transferDataState, realSelectMakerInfo } from '../../composition/hooks'
+import { isMobile, transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 import { notifyLg } from '../../util'
 
 export default {
@@ -727,7 +727,7 @@ export default {
       }
 
 
-      if ((!compatibleGlobalWalletConf.value.walletPayload.isInstalled) && (!this.$store.state.web3.isInstallMeta)) {
+      if ((!compatibleGlobalWalletConf.value.walletPayload.isInstalled) && (!web3State.isInstallMeta)) {
         this.transferLoading = false
         return
       }
@@ -776,13 +776,13 @@ export default {
       }
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
         this.transferLoading = false
         return
       }
 
       if (fromChainID == 4 || fromChainID == 44) {
-        const { starkChain } = this.$store.state.web3.starkNet
+        const { starkChain } = web3State.starkNet
         if (!starkChain || starkChain == 'unlogin') {
           util.showMessage('please connect StarkNet Wallet', 'error')
           return
@@ -833,7 +833,7 @@ export default {
       }
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
         this.transferLoading = false
         return
       }
@@ -888,7 +888,7 @@ export default {
       }
     },
     async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
         this.transferLoading = false
         return
       }
@@ -941,7 +941,7 @@ export default {
     },
 
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || this.$store.state.web3.isInstallMeta) {
+      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
         return
       }
 

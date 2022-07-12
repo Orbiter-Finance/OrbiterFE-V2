@@ -23,7 +23,7 @@ import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
-import { transferDataState, realSelectMakerInfo } from '../../composition/hooks'
+import { transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -139,12 +139,12 @@ export default {
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
         const addressState = await syncHttpProvider.getState(
-          store.state.web3.coinbase
+          web3State.coinbase
         )
         if (!addressState.committed || addressState.committed?.nonce == 0) {
           const changePubKeyFee = await syncHttpProvider.getTransactionFee(
             { ChangePubKey: { onchainPubkeyAuth: false } },
-            store.state.web3.coinbase,
+            web3State.coinbase,
             resultToken.id
           )
           totalFee = totalFee.add(changePubKeyFee.totalFee)
@@ -156,7 +156,7 @@ export default {
     } else if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
@@ -174,7 +174,7 @@ export default {
         try {
           transferFee = await zkspace.getZKSpaceTransferGasFee(
             fromChainID,
-            store.state.web3.coinbase
+            web3State.coinbase
           )
         } catch (error) {
           console.warn('getZKTransferGasFeeError =', error)
@@ -188,7 +188,7 @@ export default {
             fromTokenAddress
           )
           let loopringFee = await loopring.getTransferFee(
-            store.state.web3.coinbase,
+            web3State.coinbase,
             fromChainID,
             lpTokenInfo
           )
@@ -201,7 +201,7 @@ export default {
       const web3 = localWeb3(fromChainID)
       if (web3) {
         const estimateGas = await web3.eth.estimateGas({
-          from: store.state.web3.coinbase,
+          from: web3State.coinbase,
           to: makerAddress,
         })
         const gasPrice = await web3.eth.getGasPrice()
@@ -334,7 +334,7 @@ export default {
         tokenAddress
       )
       let loopringFee = await loopring.getTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromChainID,
         lpTokenInfo
       )
@@ -346,8 +346,8 @@ export default {
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
-          store.state.web3.coinbase
-            ? store.state.web3.coinbase
+          web3State.coinbase
+            ? web3State.coinbase
             : selectMakerInfo.makerAddress
         )
       } catch (error) {
@@ -367,7 +367,7 @@ export default {
           ? selectMakerInfo.t1Address
           : selectMakerInfo.t2Address
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
@@ -814,7 +814,7 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       try {
         let loopringWithDrawFee = await loopring.getWithDrawFee(
-          store.state.web3.coinbase,
+          web3State.coinbase,
           fromChainID,
           selectMakerInfo.tName
         )
@@ -843,8 +843,8 @@ export default {
         // api获取
         let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
-          store.state.web3.coinbase
-            ? store.state.web3.coinbase
+          web3State.coinbase
+            ? web3State.coinbase
             : selectMakerInfo.makerAddress
         )
         ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
@@ -1041,7 +1041,7 @@ export default {
       }
     } else if (localChainID === 4 || localChainID === 44) {
       const networkId = getNetworkIdByChainId(localChainID)
-      let starknetAddress = store.state.web3.starkNet.starkNetAddress
+      let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
         if (!starknetAddress) {
           return 0

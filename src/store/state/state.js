@@ -1,20 +1,4 @@
 const state = {
-  web3: {
-    isInstallMeta: false,
-    isInjected: false,
-    web3Instance: null,
-    networkId: null,
-    coinbase: null,
-    error: null,
-    localLogin: true,
-    starkNet: {
-      starkNetAddress: '',
-      starkWalletName: '',
-      starkWalletIcon: '',
-      starkIsConnected: false,
-      starkChain: '',
-    },
-  },
   innerWH: {
     innerWidth: window.innerWidth,
     innerHeight: window.innerHeight,
@@ -58,8 +42,6 @@ const state = {
     rinkeby: [],
     mainnet: [],
   },
-  lpAccountInfo: null,
-  lpApiKey: null,
   themeMode: localStorage.getItem('themeMode') || 'light', // light dark
 }
 export default state

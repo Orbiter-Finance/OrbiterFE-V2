@@ -49,6 +49,7 @@ import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData
 import { chain2icon } from '../util'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
+import { web3State } from '../composition/hooks'
 
 export default {
   name: 'ObSelectChain',
@@ -119,12 +120,12 @@ export default {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
             const { starkIsConnected, starkNetAddress } =
-              this.$store.state.web3.starkNet
+              web3State.starkNet
             if (!starkIsConnected && !starkNetAddress) {
               await connectStarkNetWallet()
               if (
-                !this.$store.state.web3.starkNet.starkIsConnected &&
-                !this.$store.state.web3.starkNet.starkNetAddress
+                !web3State.starkNet.starkIsConnected &&
+                !web3State.starkNet.starkNetAddress
               ) {
                 return
               }
@@ -134,7 +135,7 @@ export default {
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index
-            const { coinbase } = this.$store.state.web3
+            const { coinbase } = web3State
             const imxHelper = new IMXHelper(e.localID)
             await imxHelper.ensureUser(coinbase)
           }
@@ -142,7 +143,7 @@ export default {
           // dydx
           if (e.localID == 11 || e.localID == 511) {
             this.loadingIndex = index
-            const { coinbase } = this.$store.state.web3
+            const { coinbase } = web3State
             const dydxHelper = new DydxHelper(
               e.localID,
               new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
