@@ -240,6 +240,7 @@ export default {
 
     input::placeholder {
       font-size: 1.4rem;
+      font-family: 'Inter Regular';
     }
 
     .searchIcon {

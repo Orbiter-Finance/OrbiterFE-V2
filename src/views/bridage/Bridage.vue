@@ -160,6 +160,7 @@ export default {
       line-height: 20px;
     }
     .maker-content {
+      font-family: 'Inter Regular';
       font-weight: 400;
       font-size: 14px;
       line-height: 20px;
@@ -183,6 +184,7 @@ export default {
         margin-top: 40px;
         text-align: center;
         line-height: 50px;
+        font-family: 'Inter';
       }
     }
   }

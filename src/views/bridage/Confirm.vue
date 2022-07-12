@@ -1304,6 +1304,7 @@ export default {
   }
 }
 .confirm-box {
+  font-family: 'Inter Regular';
   border-radius: 20px;
   font-weight: 400;
   font-size: 14px;
@@ -1339,6 +1340,7 @@ export default {
     }
   }
   .select-wallet-dialog {
+    font-family: 'Inter';
     margin-top:20px;
     height:50px;
     line-height:34px;

@@ -101,7 +101,6 @@ export default {
 
 <style scoped lang="scss">
 .header-ops {
-  margin-top: 19px;
   margin-right: 16px;
   display: flex;
   align-items: center;
@@ -141,6 +140,7 @@ export default {
 }
 .app-mobile {
   .header-ops {
+    margin-top: 19px;
     .ops-item {
       width: 100%;
       margin-bottom: 30px;

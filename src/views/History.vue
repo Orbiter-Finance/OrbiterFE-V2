@@ -230,6 +230,7 @@ export default {
   }
 }
 .history-page {
+  font-family: 'Inter Regular';
   display: flex;
   justify-content: center;
   align-items: center;
@@ -245,6 +246,7 @@ export default {
       font-weight: 700;
       font-size: 16px;
       line-height: 24px;
+      font-family: 'Inter';
     }
     .table {
       margin-top: 26px;

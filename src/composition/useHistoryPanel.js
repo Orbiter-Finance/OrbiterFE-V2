@@ -34,8 +34,6 @@ export function getTraddingHistory(isRefresh = false) {
 export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = true
   const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-  // const userAddress = store.state.web3.coinbase
-  console.log('getTransactionsHistory userAddress: ', walletAddress)
   if (!walletAddress) {
     historyPanelState.isLoading = false
     return
