@@ -93,30 +93,6 @@ export default {
   updateConfirmRouteDescInfo(state, routeDescInfo) {
     state.confirmData.routeDescInfo = routeDescInfo
   },
-  updateTransferValue(state, value) {
-    state.transferData.transferValue = value
-  },
-  updateTransferExt(state, ext) {
-    state.transferData.transferExt = ext
-  },
-  updateTransferTokenInfo(state, tokenInfo) {
-    state.transferData.selectTokenInfo = tokenInfo
-  },
-  updateTransferMakerInfo(state, makerInfo) {
-    state.transferData.selectMakerInfo = makerInfo
-  },
-  updateTransferFromChainID(state, chainID) {
-    state.transferData.fromChainID = chainID
-  },
-  updateTransferToChainID(state, chainID) {
-    state.transferData.toChainID = chainID
-  },
-  updateTransferGasFee(state, gasFee) {
-    state.transferData.gasFee = gasFee
-  },
-  updateETHPrice(state, price) {
-    state.transferData.ethPrice = price
-  },
   updateIsInstallMeta(state, isInstallMeta) {
     state.web3.isInstallMeta = isInstallMeta
   },

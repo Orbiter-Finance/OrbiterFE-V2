@@ -22,16 +22,6 @@ const state = {
   confirmData: {
     routeDescInfo: [],
   },
-  transferData: {
-    selectTokenInfo: '',
-    selectMakerInfo: '',
-    fromChainID: '',
-    toChainID: '',
-    transferExt: null, // {type: string, value: string} | null
-    transferValue: 0,
-    gasFee: 0,
-    ethPrice: 0,
-  },
   proceedState: 1,
   proceedTXID: null,
   proceeding: {

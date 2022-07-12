@@ -15,6 +15,7 @@ import axios from 'axios'
 import config from '../utils/config'
 import Web3 from 'web3'
 import { store } from '../../store'
+import { transferDataState } from '../../composition/hooks'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
 var configNet = config.loopring.Mainnet
 
@@ -242,7 +243,7 @@ export default {
     } else {
       acc = accountResult.accountInfo
     }
-    let sendAmount = store.state.transferData.transferValue
+    let sendAmount = transferDataState.transferValue
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
@@ -271,7 +272,7 @@ export default {
     } else {
       acc = accountResult.accountInfo
     }
-    let sendAmount = store.state.transferData.transferValue
+    let sendAmount = transferDataState.transferValue
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.TRANSFER,

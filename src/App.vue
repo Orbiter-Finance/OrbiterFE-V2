@@ -58,12 +58,11 @@ export default {
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet();
   },
-  watch: {
-    // TODO: should improve
-    '$store.getters.realSelectMakerInfo': function (newValue) {
-      newValue && getTraddingHistory()
-    },
-  },
+  // watch: {
+  //   '$store.getters.realSelectMakerInfo': function (newValue) {
+  //     newValue && getTraddingHistory()
+  //   },
+  // },
   methods: {
     performInitCurrentLoginWallet() {
       getZksToken.getSupportZksTokenList()

@@ -23,6 +23,7 @@ import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { transferDataState, realSelectMakerInfo } from '../../composition/hooks'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -109,7 +110,7 @@ export default {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       if (!makerAddress) {
         return null
       }
@@ -293,7 +294,7 @@ export default {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let transferAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
@@ -323,7 +324,7 @@ export default {
       return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
     }
     if (fromChainID == 9 || fromChainID == 99) {
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let tokenAddress =
         fromChainID === selectMakerInfo.c1ID
           ? selectMakerInfo.t1Address
@@ -340,7 +341,7 @@ export default {
       return (Number(loopringFee) / 10 ** lpTokenInfo.decimals).toFixed(6)
     }
     if (fromChainID === 12 || fromChainID === 512) {
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
@@ -357,7 +358,7 @@ export default {
     }
     if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let makerAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
@@ -646,7 +647,7 @@ export default {
    */
   async transferOrginGas(fromChainID, toChainID, isErc20 = true) {
     let resultGas = 0
-    let selectMakerInfo = store.getters.realSelectMakerInfo
+    let selectMakerInfo = realSelectMakerInfo.value
     if (fromChainID === 2 || fromChainID === 22) {
       // Ar get
       let fromGasPrice = await this.getGasPrice(fromChainID)
@@ -702,7 +703,7 @@ export default {
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0
-    const selectMakerInfo = store.getters.realSelectMakerInfo
+    const selectMakerInfo = realSelectMakerInfo.value
 
     // withdraw
     if (fromChainID === 2 || fromChainID === 22) {
@@ -1085,7 +1086,7 @@ export default {
         localChainID: localChainID,
       }
       try {
-        let selectMakerInfo = store.getters.realSelectMakerInfo
+        let selectMakerInfo = realSelectMakerInfo.value
         let balanceInfo = await zkspace.getZKspaceBalance(zkReq)
         if (!balanceInfo) {
           return 0
@@ -1168,7 +1169,7 @@ export default {
       .attach(predeploys.WETH9)
       .connect(provider)
     // Arbitrary recipient address.
-    const to = store.state.transferData.selectMakerInfo.makerAddress
+    const to = transferDataState.selectMakerInfo.makerAddress
 
     // Small amount of WETH to send (in wei).
     const amount = ethers.utils.parseUnits('5', 18)
@@ -1193,16 +1194,16 @@ export default {
   },
 
   realTransferOPID() {
-    let toChainID = store.state.transferData.toChainID
+    let toChainID = transferDataState.toChainID
     const p_text = 9000 + Number(toChainID) + ''
     return p_text
   },
 
   realTransferAmount() {
-    let fromChainID = store.state.transferData.fromChainID
-    let toChainID = store.state.transferData.toChainID
-    let selectMakerInfo = store.getters.realSelectMakerInfo
-    let userValue = new BigNumber(store.state.transferData.transferValue).plus(
+    let fromChainID = transferDataState.fromChainID
+    let toChainID = transferDataState.toChainID
+    let selectMakerInfo = realSelectMakerInfo.value
+    let userValue = new BigNumber(transferDataState.transferValue).plus(
       new BigNumber(selectMakerInfo.tradingFee)
     )
     if (!fromChainID || !userValue) {

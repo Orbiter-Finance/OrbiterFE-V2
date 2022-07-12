@@ -83,7 +83,7 @@ import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
-import { isMobile } from '../../composition/hooks'
+import { isMobile, transferDataState, realSelectMakerInfo } from '../../composition/hooks'
 import { notifyLg } from '../../util'
 
 export default {
@@ -99,7 +99,7 @@ export default {
       return isMobile.value
     },
     isStarkNetChain() {
-      const { fromChainID, toChainID } = this.$store.state.transferData
+      const { fromChainID, toChainID } = transferDataState
       return fromChainID == 4 ||
         fromChainID == 44 ||
         toChainID == 4 ||
@@ -120,11 +120,11 @@ export default {
             notice:
               'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
             desc:
-              (this.$store.getters.realSelectMakerInfo
-                ? this.$store.getters.realSelectMakerInfo.tradingFee
+              (realSelectMakerInfo.value
+                ? realSelectMakerInfo.value.tradingFee
                 : 0) +
               ' ' +
-              this.$store.getters.realSelectMakerInfo.tName,
+              realSelectMakerInfo.value.tName,
           },
           {
             icon: 'security',
@@ -142,7 +142,7 @@ export default {
             desc:
               realTransferAmount +
               ' ' +
-              this.$store.getters.realSelectMakerInfo.tName,
+              realSelectMakerInfo.value.tName,
             textBold: true,
           },
           {
@@ -151,17 +151,17 @@ export default {
             desc:
               orbiterCore.getToAmountFromUserAmount(
                 new BigNumber(
-                  this.$store.state.transferData.transferValue
+                  transferDataState.transferValue
                 ).plus(
                   new BigNumber(
-                    this.$store.getters.realSelectMakerInfo.tradingFee
+                    realSelectMakerInfo.value.tradingFee
                   )
                 ),
-                this.$store.getters.realSelectMakerInfo,
+                realSelectMakerInfo.value,
                 false
               ) +
               ' ' +
-              this.$store.getters.realSelectMakerInfo.tName,
+              realSelectMakerInfo.value.tName,
             textBold: true,
           },
           {
@@ -181,11 +181,11 @@ export default {
           notice:
             'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
           desc:
-            (this.$store.getters.realSelectMakerInfo
-              ? this.$store.getters.realSelectMakerInfo.tradingFee
+            (realSelectMakerInfo.value
+              ? realSelectMakerInfo.value.tradingFee
               : 0) +
             ' ' +
-            this.$store.getters.realSelectMakerInfo.tName,
+            realSelectMakerInfo.value.tName,
         },
         {
           icon: 'security',
@@ -203,7 +203,7 @@ export default {
           desc:
             realTransferAmount +
             ' ' +
-            this.$store.getters.realSelectMakerInfo.tName,
+            realSelectMakerInfo.value.tName,
           textBold: true,
         },
         {
@@ -211,16 +211,16 @@ export default {
           title: 'Received',
           desc:
             orbiterCore.getToAmountFromUserAmount(
-              new BigNumber(this.$store.state.transferData.transferValue).plus(
+              new BigNumber(transferDataState.transferValue).plus(
                 new BigNumber(
-                  this.$store.getters.realSelectMakerInfo.tradingFee
+                  realSelectMakerInfo.value.tradingFee
                 )
               ),
-              this.$store.getters.realSelectMakerInfo,
+              realSelectMakerInfo.value,
               false
             ) +
             ' ' +
-            this.$store.getters.realSelectMakerInfo.tName,
+            realSelectMakerInfo.value.tName,
           textBold: true,
         },
         {
@@ -398,7 +398,7 @@ export default {
         // const state = await syncWallet.getAccountState();
 
         var rAmount = new BigNumber(
-          this.$store.state.transferData.transferValue
+          transferDataState.transferValue
         )
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
@@ -555,7 +555,7 @@ export default {
 
       try {
         var rAmount = new BigNumber(
-          this.$store.state.transferData.transferValue
+          transferDataState.transferValue
         )
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
@@ -578,7 +578,7 @@ export default {
         try {
           const response = await loopring.sendTransfer(
             compatibleGlobalWalletConf.value.walletPayload.walletAddress,
-            this.$store.state.transferData.fromChainID,
+            transferDataState.fromChainID,
             selectMakerInfo.makerAddress,
             0,
             tokenAddress,
@@ -642,7 +642,7 @@ export default {
       var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+          transferDataState.fromChainID
         ]
       )
       const switchParams = {
@@ -653,14 +653,14 @@ export default {
           params: [switchParams],
         })
         .then(() => {
-          let fromChainID = this.$store.state.transferData.fromChainID
+          let fromChainID = transferDataState.fromChainID
           let toAddress = util.shortAddress(
-            that.$store.getters.realSelectMakerInfo.makerAddress
+            realSelectMakerInfo.value.makerAddress
           )
           if (fromChainID == 4 || fromChainID == 44) {
             toAddress = util.shortAddress(
               getStarkMakerAddress(
-                that.$store.getters.realSelectMakerInfo.makerAddress,
+                realSelectMakerInfo.value.makerAddress,
                 fromChainID
               )
             )
@@ -670,13 +670,13 @@ export default {
             {
               no: 1,
               amount: new BigNumber(
-                that.$store.state.transferData.transferValue
+                transferDataState.transferValue
               ).plus(
                 new BigNumber(
-                  that.$store.getters.realSelectMakerInfo.tradingFee
+                  realSelectMakerInfo.value.tradingFee
                 )
               ),
-              coin: that.$store.state.transferData.selectTokenInfo.token,
+              coin: transferDataState.selectTokenInfo.token,
               toAddress: toAddress,
             },
           ])
@@ -951,7 +951,7 @@ export default {
       }
 
       try {
-        const { transferExt } = this.$store.state.transferData
+        const { transferExt } = transferDataState
         const provider = new ethers.providers.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider)
         const crossAddress = new CrossAddress(provider, fromChainID)
 
@@ -1000,13 +1000,13 @@ export default {
         return
       }
       const { fromChainID, toChainID, transferExt } =
-        this.$store.state.transferData
+        transferDataState
 
       if (fromChainID != 4 && fromChainID != 44) {
         if (
         compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+          transferDataState.fromChainID
         ]
       ) {
           const matchAddChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
@@ -1023,7 +1023,7 @@ export default {
       }
 
       // sendTransfer
-      const selectMakerInfo = this.$store.getters.realSelectMakerInfo
+      const selectMakerInfo = realSelectMakerInfo.value
 
       // Check fromChainID isSupportEVM
       if (transferExt && !util.isSupportEVM(fromChainID)) {
@@ -1036,10 +1036,10 @@ export default {
       this.transferLoading = true
 
       let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
-        new BigNumber(this.$store.state.transferData.transferValue).plus(
-          new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
+        new BigNumber(transferDataState.transferValue).plus(
+          new BigNumber(realSelectMakerInfo.value.tradingFee)
         ),
-        this.$store.getters.realSelectMakerInfo,
+        realSelectMakerInfo.value,
         false
       )
 
@@ -1050,10 +1050,10 @@ export default {
 
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
-          new BigNumber(this.$store.state.transferData.transferValue).plus(
-            new BigNumber(this.$store.getters.realSelectMakerInfo.tradingFee)
+          new BigNumber(transferDataState.transferValue).plus(
+            new BigNumber(realSelectMakerInfo.value.tradingFee)
           ),
-          this.$store.getters.realSelectMakerInfo,
+          realSelectMakerInfo.value,
           false
         )
         if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
@@ -1076,7 +1076,7 @@ export default {
 
         const to = selectMakerInfo.makerAddress
         const rAmount = new BigNumber(
-          this.$store.state.transferData.transferValue
+          transferDataState.transferValue
         )
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
