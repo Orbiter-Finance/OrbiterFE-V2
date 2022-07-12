@@ -309,6 +309,7 @@ export default {
   }
 }
 .header-dialog-box {
+  font-family: 'Inter Regular';
   position: absolute;
   top: 0;
   left: 0;
@@ -325,6 +326,7 @@ export default {
       line-height: 24px;
       margin-bottom: 22px;
       .toolbox-title {
+        font-family: 'Inter';
         font-weight: 700;
         font-size: 16px;
         line-height: 24px;
