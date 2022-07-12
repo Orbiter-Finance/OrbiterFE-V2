@@ -1109,7 +1109,7 @@ export default {
       }
     } else {
       let balance = 0
-      if (util.isEthTokenAddress(tokenAddress) || util.isBNBTokenAddress(localChainID)) {
+      if (util.isEthTokenAddress(tokenAddress)) {
         console.log("isEthTokenAddress", tokenAddress, localChainID, tokenName, userAddress);
         // When is ETH
         const web3 = localWeb3(localChainID)
@@ -1122,7 +1122,9 @@ export default {
           throw 'getBalance_tokenContractError'
         }
 
-        balance = await tokenContract.methods.balanceOf(userAddress).call()
+        balance = await tokenContract.methods.balanceOf(userAddress).call().catch(err => {
+          console.log("get balance err", err, userAddress, tokenAddress, localChainID);
+        })
         console.log("22222balance", balance);
       }
 

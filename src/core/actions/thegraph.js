@@ -2041,7 +2041,7 @@ const nowMakerList = [
     c2ID: 22,
     c1Name: 'bsc_test',
     c2Name: 'arbitrum_test',
-    t1Address: '0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3',
+    t1Address: '0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,

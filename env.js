@@ -92,7 +92,7 @@ export default {
     511: '3', // dydx(R)
     512: '4', // zkspace(R)s
     513: '28', // boba rinkeby
-    97: "97", // bsc test
+    514: "97", // bsc test
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -111,7 +111,7 @@ export default {
     77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
     88: '',
     99: '',
-    97: "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3"
+    514: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -138,7 +138,7 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
-    97: "https://www.bscscan.com/tx/"
+    514: "https://www.bscscan.com/tx/"
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -165,6 +165,6 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/account/',
     13: 'https://blockexplorer.boba.network/address/',
     513: 'https://blockexplorer.rinkeby.boba.network/address/',
-    97: "https://www.bscscan.com/address/"
+    514: "https://www.bscscan.com/address/"
   },
 }

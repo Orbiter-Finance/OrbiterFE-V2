@@ -12,6 +12,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
   // localChainID => rpcurl => web3Provider
   const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
   if (web3) {
+    console.log("tokenAddress---------------------", tokenAddress);
     const ecourseContractInstance = new web3.eth.Contract(
       Coin_ABI,
       tokenAddress
