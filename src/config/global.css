@@ -7,10 +7,23 @@
 
   --bottom-nav-height: 8rem;
 }
+
+/* fonts:
+  url('../assets/fonts/Inter-Bold-4.otf'), 
+  url('../assets/fonts/Inter-Medium-8.otf'), 
+  url('../assets/fonts/Inter-Regular-9.otf'), 
+  url('../assets/fonts/Inter-Thin-11.otf'); 
+*/
+/* default is Inter Bold */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
-  /* src: url('../assets/fonts/Inter-Bold-4.otf'), url('../assets/fonts/Inter-Medium-8.otf'), url('../assets/fonts/Inter-Regular-9.otf'), url('../assets/fonts/Inter-Thin-11.otf'); */
+  src: url('../assets/fonts/Inter-Bold-4.otf');
+  font-stretch: 100%;
+}
+@font-face {
+  font-family: 'Inter Regular';
+  font-style: normal;
   src: url('../assets/fonts/Inter-Regular-9.otf');
   font-stretch: 100%;
 }

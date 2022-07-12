@@ -185,7 +185,7 @@
     </div>
 
     <CommDialog ref="SelectFromChainPopupRef">
-      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height);width:100%;height:100%;">
         <ObSelectChain
           :ChainData="fromChainArray"
           v-on:getChainInfo="getFromChainInfo"
@@ -194,7 +194,7 @@
       </div>
     </CommDialog>
     <CommDialog ref="SelectToChainPopupRef">
-      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height)">
+      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height);width:100%;height:100%;">
         <ObSelectChain
           :ChainData="toChainArray"
           v-on:getChainInfo="getToChainInfo"
@@ -1888,7 +1888,6 @@ export default {
       font-size: 20px;
       line-height: 20px;
       margin-right: 10px;
-      font-family: 'Inter';
     }
   }
   .from-area,
@@ -1906,6 +1905,7 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      font-family: 'Inter Regular';
     }
 
     .bottomItem {
@@ -1984,6 +1984,7 @@ export default {
     margin-bottom: 20px;
   }
   .info-box {
+    font-family: 'Inter Regular';
     margin-left: 20px;
     .info-item {
       font-weight: 400;

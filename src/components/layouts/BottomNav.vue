@@ -110,6 +110,7 @@ export default {
     line-height: 20px;
     cursor: pointer;
     opacity: 0.6;
+    font-family: 'Inter Regular';
   }
   .terms:hover {
     text-decoration: underline;

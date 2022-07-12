@@ -520,6 +520,7 @@ export default {
   }
 }
 .proceed-box {
+  font-family: 'Inter Regular';
   border-radius: 20px;
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
@@ -552,6 +553,7 @@ export default {
         width: 128px;
         height: 100%;
         .chain-name {
+          font-family: 'Inter';
           font-weight: 700;
           font-size: 16px;
           line-height: 24px;
