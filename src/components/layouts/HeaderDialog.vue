@@ -68,7 +68,7 @@
         </div>
         <div
           v-if="item.title === 'StarkNetAddress'"
-          v-clipboard:copy="$store.state.web3.starkNet.starkNetAddress"
+          v-clipboard:copy="web3State.starkNet.starkNetAddress"
           v-clipboard:success="onCopySuccess"
           v-clipboard:error="onCopyError"
           style="
@@ -113,12 +113,13 @@ import {
   walletDispatchersOnDisconnect,
 } from '../../util/walletsDispatchers'
 import { onCopySuccess, onCopyError } from '../../util'
-import { isStarkNetDialog, selectWalletDialogVisible, setSelectWalletDialogVisible } from '../../composition/hooks'
+import { isStarkNetDialog, selectWalletDialogVisible, setSelectWalletDialogVisible, web3State } from '../../composition/hooks'
 
 export default {
   name: 'HeaderDialog',
   components: { CommBtn, SvgIconThemed, ToggleBtn },
   computed: {
+    web3State() { return web3State },
     isStarkNetDialog() { return isStarkNetDialog.value },
     selectWalletDialogVisible() { return selectWalletDialogVisible.value },
     isMobile() { return isMobile.value },

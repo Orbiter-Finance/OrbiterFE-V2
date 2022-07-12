@@ -15,7 +15,7 @@ import axios from 'axios'
 import config from '../utils/config'
 import Web3 from 'web3'
 import { store } from '../../store'
-import { transferDataState } from '../../composition/hooks'
+import { transferDataState, lpAccountInfo, updatelpAccountInfo, updatelpApiKey  } from '../../composition/hooks'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
 var configNet = config.loopring.Mainnet
 
@@ -94,7 +94,7 @@ export default {
   },
 
   accountInfo: async function (address, localChainID) {
-    let accountInfo = store.state.lpAccountInfo
+    let accountInfo = lpAccountInfo.value
     if (accountInfo) {
       return {
         accountInfo: accountInfo,
@@ -112,7 +112,7 @@ export default {
           accountInfo: response.accInfo,
           code: 0,
         }
-        store.commit('updatelpAccountInfo', response.accInfo)
+        updatelpAccountInfo(response.accInfo)
         return info
       } else {
         let info = {
@@ -189,7 +189,7 @@ export default {
     if (!apiKey) {
       throw Error('Get Loopring ApiKey Error')
     }
-    store.commit('updatelpApiKey', apiKey)
+    updatelpApiKey(apiKey)
     // step 3 get storageId
     const lpTokenInfo = await this.getLpTokenInfo(localChainID, tokenAddress)
     const GetNextStorageIdRequest = {
