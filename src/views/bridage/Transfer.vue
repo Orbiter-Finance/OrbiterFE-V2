@@ -239,6 +239,7 @@ import {
   getStarkMakerAddress,
 } from '../../util/constants/starknet/helper'
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
+import { RaiseUpSelect } from '../../components'
 
 // composition
 import {
@@ -247,13 +248,13 @@ import {
 } from '../../composition/walletsResponsiveData'
 import { walletDispatchersOnSwitchChain } from '../../util/walletsDispatchers'
 import { METAMASK } from "../../util/walletsDispatchers/index"
-import { RaiseUpSelect } from '../../components'
 import { 
   transferDataState, realSelectMakerInfo, updateTransferMakerInfo,
   updateTransferValue, updateTransferExt, updateTransferTokenInfo,
   updateTransferFromChainID, updateTransferToChainID, updateTransferGasFee,
-  updateETHPrice
+  updateETHPrice, web3State
 } from '../../composition/hooks'
+import { watchEffect } from '../../composition'
 
 const queryParamsChainMap = chain2idMap
 
@@ -341,12 +342,9 @@ export default {
     },
   },
   computed: {
-    transferDataState() {
-      return transferDataState
-    },
-    isLogin() {
-      return walletIsLogin.value
-    },
+    transferDataState() { return transferDataState },
+    web3State() { return web3State },
+    isLogin() { return walletIsLogin.value },
     tokens() {
       return this.tokenInfoArray.map((v) => {
         return {
@@ -359,14 +357,14 @@ export default {
       })
     },
     starkAddress() {
-      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      var stark = web3State.starkNet.starkNetAddress
       if (!stark) {
         return ''
       }
       return stark
     },
     shortStarkAddress() {
-      var stark = this.$store.state.web3.starkNet.starkNetAddress
+      var stark = web3State.starkNet.starkNetAddress
       if (stark && stark.length > 5) {
         var subStr1 = stark.substr(0, 4)
         var subStr2 = stark.substr(stark.length - 4, 4)
@@ -590,12 +588,8 @@ export default {
         ? true
         : false
     },
-    userMinPrice() {
-      return realSelectMakerInfo.value.minPrice
-    },
-    realTransferValue() {
-      return transferCalculate.realTransferOPID()
-    },
+    userMinPrice() { return realSelectMakerInfo.value.minPrice },
+    realTransferValue() { return transferCalculate.realTransferOPID() },
     realPtext() {
       let ptextResult = orbiterCore.getPTextFromTAmount(
         transferDataState.fromChainID,
@@ -660,37 +654,17 @@ export default {
         false
       )
     },
-    fromBalanceLoading() {
-      if (this.fromBalance === null) {
-        return true
-      }
-      return false
-    },
-    toBalanceLoading() {
-      if (this.toBalance === null) {
-        return true
-      }
-      return false
-    },
+    fromBalanceLoading() { return this.fromBalance === null },
+    toBalanceLoading() { return this.toBalance === null },
     fromBalance() {
-      if (
-        transferDataState.selectMakerInfo.c1ID ===
-        transferDataState.fromChainID
-      ) {
-        return this.c1Balance
-      } else {
-        return this.c2Balance
-      }
+      const c1 = transferDataState.selectMakerInfo.c1ID
+      const from = transferDataState.fromChainID
+      return c1 === from ? this.c1Balance : this.c2Balance
     },
     toBalance() {
-      if (
-        transferDataState.selectMakerInfo.c1ID ===
-        transferDataState.fromChainID
-      ) {
-        return this.c2Balance
-      } else {
-        return this.c1Balance
-      }
+      const c1 = transferDataState.selectMakerInfo.c1ID
+      const from = transferDataState.fromChainID
+      return c1 === from ? this.c2Balance : this.c1Balance
     },
     timeSpent() {
       return transferCalculate.transferSpentTime(
@@ -742,16 +716,9 @@ export default {
       return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
-      let savingValue =
-        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      if (savingValue > 0) {
-        return true
-      }
-      return false
+      return this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice > 0
     },
-    saveGasLoading() {
-      return this.originGasLoading
-    },
+    saveGasLoading() { return this.originGasLoading },
     transferSavingTime() {
       return transferCalculate.transferSavingTime(
         transferDataState.fromChainID,
@@ -768,11 +735,9 @@ export default {
       this.initChainArray()
     },
     makerInfoList: function (newValue, oldValue) {
-      if (oldValue === '' && newValue !== '') {
-        this.initChainArray()
-      }
+      oldValue === '' && newValue !== '' && this.initChainArray()
     },
-    '$store.state.web3.starkNet.starkNetAddress': function (newValue) {
+    'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         let selectMakerInfo = transferDataState.selectMakerInfo
         let fromChianID = selectMakerInfo.c1ID
@@ -790,7 +755,7 @@ export default {
               selectMakerInfo.c1ID,
               selectMakerInfo.t1Address,
               selectMakerInfo.tName,
-              this.$store.state.web3.coinbase
+              web3State.coinbase
             )
             .then((response) => {
               this.c1Balance = (
@@ -808,7 +773,7 @@ export default {
               selectMakerInfo.c2ID,
               selectMakerInfo.t2Address,
               selectMakerInfo.tName,
-              this.$store.state.web3.coinbase
+              web3State.coinbase
             )
             .then((response) => {
               this.c2Balance = (
@@ -884,12 +849,12 @@ export default {
         newValue.c2ID == 44
       ) {
         const { starkNetIsConnect, starkNetAddress } =
-          this.$store.state.web3.starkNet
+          web3State.starkNet
         if (!starkNetIsConnect || !starkNetAddress) {
           await connectStarkNetWallet()
           if (
-            !this.$store.state.web3.starkNet.starkIsConnected &&
-            !this.$store.state.web3.starkNet.starkNetAddress
+            !web3State.starkNet.starkIsConnected &&
+            !web3State.starkNet.starkNetAddress
           ) {
             const makerInfo = this.makerInfoList[0]
             updateTransferFromChainID(makerInfo.c1ID)
@@ -1195,85 +1160,53 @@ export default {
       }
     },
     transferValue: function (newValue) {
-      if (transferDataState.transferValue !== newValue) {
-        updateTransferValue(newValue)
-      }
+      transferDataState.transferValue !== newValue && updateTransferValue(newValue)
     },
   },
   mounted() {
     const updateETHPriceI = async () => {
       transferCalculate
         .getTokenConvertUsd('ETH')
-        .then((response) => {
-          updateETHPrice(response)
-        })
-        .catch((error) => {
-          console.warn('GetETHPriceError =', error)
-        })
+        .then(response => updateETHPrice(response))
+        .catch(error => console.warn('GetETHPriceError =', error))
     }
+    const getTransferBalance = (idx = 1) => {
+      const selectMakerInfo = transferDataState.selectMakerInfo
+      const id = selectMakerInfo[`c${idx}ID`] // c1ID
+      const addr = selectMakerInfo[`t${idx}Address`] // t1Address
+      const name = selectMakerInfo.tName
+      // const oldVal = this[`c${idx}Balance`]
+      this[`c${idx}Balance`] = null
+      transferCalculate.getTransferBalance(id, addr, name, web3State.coinbase)
+        .then((response) => this[`c${idx}Balance`] = (response / 10 ** selectMakerInfo.precision).toFixed(6))
+        .catch(() => this[`c${idx}Balance`] = 0)
+    }
+
+    watchEffect(() => {
+      if (transferDataState.selectMakerInfo && walletIsLogin.value) {
+        getTransferBalance()
+        getTransferBalance(2)
+      }
+    })
+
     updateETHPriceI()
     this.getMakerMaxBalance()
 
     setInterval(() => {
-      let selectMakerInfo = transferDataState.selectMakerInfo
-      if (selectMakerInfo && walletIsLogin.value) {
-        transferCalculate
-          .getTransferBalance(
-            selectMakerInfo.c1ID,
-            selectMakerInfo.t1Address,
-            selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
-          )
-          .then((response) => {
-            this.c1Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
-          })
-          .catch(() => {
-            return
-          })
-        transferCalculate
-          .getTransferBalance(
-            selectMakerInfo.c2ID,
-            selectMakerInfo.t2Address,
-            selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
-          )
-          .then((response) => {
-            this.c2Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
-          })
-          .catch(() => {
-            return
-          })
-      }
-
       updateETHPriceI()
       this.getMakerMaxBalance()
-
       this.updateExchangeToUsdPrice()
     }, 10 * 1000)
 
     this.transferValue = this.queryParams.amount
 
-    makerInfo
-      .getMakerInfoFromGraph(
-        {
-          maker: '0',
-        },
-        true
-      )
+    makerInfo.getMakerInfoFromGraph({ maker: '0', }, true)
       .then((response) => {
         if (response.code === 0) {
           this.makerInfoList = response.data
         }
       })
-      .catch((error) => {
-        console.warn('error =', error)
-      })
+      .catch(error => console.warn('error =', error))
   },
   methods: {
     naNString(tar) {
@@ -1430,9 +1363,7 @@ export default {
       if (this.tokenInfoArray.length <= 1) return
       this.showCustomPopupClick()
     },
-    getTokenInfo(e) {
-      updateTransferTokenInfo(e)
-    },
+    getTokenInfo(e) { updateTransferTokenInfo(e) },
     // open pop
     showCustomPopupClick() {
       this.$refs.SelectTokenPopupRef.showCustom()
@@ -1445,7 +1376,6 @@ export default {
       if (this.queryParams.sources.length <= 1) {
         return
       }
-
       this.showFromChainPopupClick()
     },
     getFromChainInfo(e) {
@@ -1475,7 +1405,6 @@ export default {
       if (this.queryParams.dests.length <= 1) {
         return
       }
-
       this.showToChainPopupClick()
     },
     getToChainInfo(e) {
@@ -1619,7 +1548,7 @@ export default {
         // To starkNet
         if (toChainID == 4 || toChainID == 44) {
           const { starkIsConnected, starkNetAddress, starkChain } =
-            this.$store.state.web3.starkNet
+            web3State.starkNet
           if (!starkChain || starkChain == 'unlogin') {
             util.showMessage('please connect StarkNet Wallet', 'error')
             return
@@ -1659,7 +1588,7 @@ export default {
         }
 
         if (fromChainID == 4 || fromChainID == 44) {
-          const { starkChain } = this.$store.state.web3.starkNet
+          const { starkChain } = web3State.starkNet
           if (!starkChain || starkChain == 'unlogin') {
             util.showMessage('please connect StarkNet Wallet', 'error')
             return
@@ -1747,7 +1676,6 @@ export default {
         this.$emit('stateChanged', '2')
       }
     },
-
     async updateOriginGasCost() {
       this.originGasLoading = true
       const { fromChainID, toChainID } = transferDataState
@@ -1773,17 +1701,13 @@ export default {
       }
       this.originGasLoading = false
     },
-
     async updateExchangeToUsdPrice() {
       const selectMakerInfo = realSelectMakerInfo.value
-
       const price = (await exchangeToUsd(1, selectMakerInfo.tName)).toNumber()
-
       if (price > 0) {
         this.exchangeToUsdPrice = price
       }
     },
-
     async getBalance(
       makerAddress,
       chainId,
@@ -1807,7 +1731,6 @@ export default {
         console.warn(error)
       }
     },
-
     async getMakerMaxBalance() {
       const selectMakerInfo = realSelectMakerInfo.value
       if (!selectMakerInfo) {

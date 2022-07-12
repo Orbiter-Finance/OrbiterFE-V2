@@ -74,7 +74,7 @@ import util from '../../util/util'
 import { chain2icon } from '../../util'
 import Middle from '../../util/middle/middle'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
-import { isMobile, transferDataState, realSelectMakerInfo } from '../../composition/hooks'
+import { isMobile, transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
 export default {
   name: 'Proceed',
@@ -257,9 +257,9 @@ export default {
       const { fromChainID } = transferDataState
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState === 1) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = web3State.coinbase
         if (fromChainID == 4 || fromChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = web3State.starkNet.starkNetAddress
         }
         url = accountExploreUrl[fromChainID] + userAddress
 
@@ -293,9 +293,9 @@ export default {
       let url = null;
 
       const commHandler = () => {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = web3State.coinbase
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = web3State.starkNet.starkNetAddress
         }
         url = accountExploreUrl[toChainID] + userAddress
 
@@ -407,7 +407,7 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, web3State.coinbase],
               })
               .then(() => {})
               .catch((error) => {

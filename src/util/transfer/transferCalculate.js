@@ -24,7 +24,7 @@ import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
-import { transferDataState, realSelectMakerInfo } from '../../composition/hooks'
+import { transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
 import { Coin_ABI } from '../constants/contract/contract'
 // zk deposit
@@ -146,12 +146,12 @@ export default {
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
         const addressState = await syncHttpProvider.getState(
-          store.state.web3.coinbase
+          web3State.coinbase
         )
         if (!addressState.committed || addressState.committed?.nonce == 0) {
           const changePubKeyFee = await syncHttpProvider.getTransactionFee(
             { ChangePubKey: { onchainPubkeyAuth: false } },
-            store.state.web3.coinbase,
+            web3State.coinbase,
             resultToken.id
           )
           totalFee = totalFee.add(changePubKeyFee.totalFee)
@@ -174,7 +174,7 @@ export default {
     } else if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
@@ -205,36 +205,42 @@ export default {
       ((fromChainID == 14 || fromChainID == 514) &&
         fromTokenAddress.toUpperCase() == `0X${'E'.repeat(40)}`)
     ) {
-      const web3 = localWeb3(fromChainID)
-      if (web3) {
-        let estimateGas = 0
-        //zk2 get estimateGas by contract
-        if (fromChainID == 14 || fromChainID == 514) {
-          let gasLimit = 0
-          const ABI = Coin_ABI
-          const ecourseContractInstance = new web3.eth.Contract(
-            ABI,
+      if (fromChainID === 12 || fromChainID === 512) {
+        //zkspace can only use eth as fee
+        let transferFee = 0
+        try {
+          transferFee = await zkspace.getZKSpaceTransferGasFee(
+            fromChainID,
+            web3State.coinbase
+          )
+        } catch (error) {
+          console.warn('getZKTransferGasFeeError =', error)
+        }
+        return transferFee
+      } else if (fromChainID == 9 || fromChainID == 99) {
+        // loopring fee can only use eth。other erc20 fee will be error
+        try {
+          const lpTokenInfo = await loopring.getLpTokenInfo(
+            fromChainID,
             fromTokenAddress
           )
-          if (!ecourseContractInstance) {
-            return gasLimit
-          }
-          try {
-            gasLimit = await ecourseContractInstance.methods
-              .transfer(makerAddress, '100000000000000000')
-              .estimateGas({
-                from: store.state.web3.coinbase,
-              })
-          } catch (error) {
-            console.warn(`get zk2 gas fee error ${error.message}`)
-          }
-          estimateGas = gasLimit
-        } else {
-          estimateGas = await web3.eth.estimateGas({
-            from: store.state.web3.coinbase,
-            to: makerAddress,
-          })
+          let loopringFee = await loopring.getTransferFee(
+            web3State.coinbase,
+            fromChainID,
+            lpTokenInfo
+          )
+          const decimals = lpTokenInfo ? lpTokenInfo.decimals : 18
+          return Number(loopringFee) / 10 ** decimals
+        } catch (error) {
+          console.warn(`lp getTransferFeeerror:`)
         }
+      }
+      const web3 = localWeb3(fromChainID)
+      if (web3) {
+        const estimateGas = await web3.eth.estimateGas({
+          from: web3State.coinbase,
+          to: makerAddress,
+        })
         const gasPrice = await web3.eth.getGasPrice()
         let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
         if (fromChainID === 7 || fromChainID === 77) {
@@ -369,7 +375,7 @@ export default {
         tokenAddress
       )
       let loopringFee = await loopring.getTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromChainID,
         lpTokenInfo
       )
@@ -382,8 +388,8 @@ export default {
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
-          store.state.web3.coinbase
-            ? store.state.web3.coinbase
+          web3State.coinbase
+            ? web3State.coinbase
             : selectMakerInfo.makerAddress
         )
       } catch (error) {
@@ -403,7 +409,7 @@ export default {
           ? selectMakerInfo.t1Address
           : selectMakerInfo.t2Address
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
@@ -856,7 +862,7 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       try {
         let loopringWithDrawFee = await loopring.getWithDrawFee(
-          store.state.web3.coinbase,
+          web3State.coinbase,
           fromChainID,
           selectMakerInfo.tName
         )
@@ -884,8 +890,8 @@ export default {
       try {
         let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
-          store.state.web3.coinbase
-            ? store.state.web3.coinbase
+          web3State.coinbase
+            ? web3State.coinbase
             : selectMakerInfo.makerAddress
         )
         ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
@@ -1099,7 +1105,7 @@ export default {
       }
     } else if (localChainID === 4 || localChainID === 44) {
       const networkId = getNetworkIdByChainId(localChainID)
-      let starknetAddress = store.state.web3.starkNet.starkNetAddress
+      let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
         if (!starknetAddress) {
           return 0
