@@ -1,7 +1,6 @@
-import { reactive, watchEffect, computed } from '.'
-import { walletIsLogin } from './walletsResponsiveData'
-import { store } from '../store'
-import { compatibleGlobalWalletConf } from './walletsResponsiveData'
+import { reactive, watchEffect } from ".";
+import { walletIsLogin } from './walletsResponsiveData';
+import { compatibleGlobalWalletConf } from "./walletsResponsiveData";
 import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
@@ -17,17 +16,16 @@ export const historyPanelState = reactive({
 
 watchEffect(() => {
   !walletIsLogin.value && (historyPanelState.transactionList = [])
-  const walletAddress =
-    compatibleGlobalWalletConf.value.walletPayload.walletAddress
-  // TODO: should improve in deep
-  if (walletIsLogin.value && (store.getters.realSelectMakerInfo || (walletAddress && walletAddress !== '0x'))) {
+  const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+  // TODO: should check `realSelectMakerInfo`
+  if (walletIsLogin.value && (walletAddress && walletAddress !== '0x')) {
     getTraddingHistory(true)
   }
 })
 
 export function getTraddingHistory(isRefresh = false) {
-  // TODO: replace the vuex store
-  if (walletIsLogin.value && store.getters.realSelectMakerInfo) {
+  // TODO: should check `realSelectMakerInfo`
+  if (walletIsLogin.value) {
     if (isRefresh) historyPanelState.transactionList = []
     getTransactionsHistory({ current: 1 })
   }
@@ -35,10 +33,18 @@ export function getTraddingHistory(isRefresh = false) {
 
 export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = true
+  const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+  // const userAddress = store.state.web3.coinbase
+  console.log('getTransactionsHistory userAddress: ', walletAddress)
+  if (!walletAddress) {
+    historyPanelState.isLoading = false
+    return
+  }
   const res = await getTransactionsHistoryApi({
     // next line is just for local test only
     // userAddress: '0x6BB0366423a6f0F6C16715278483Dd9321ED5f66',
-    userAddress: store.state.web3.coinbase,
+    // userAddress: '0x8a700FdB6121A57C59736041D9aa21dfd8820660',
+    userAddress: walletAddress,
     size: 10,
     ...params,
   })

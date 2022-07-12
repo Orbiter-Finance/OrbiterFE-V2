@@ -23,7 +23,7 @@
 <script>
 import { mapMutations } from 'vuex'
 import { CommBtn, SvgIconThemed, ToggleBtn } from '../'
-import { historyPanelState, isMobile } from '../../composition/hooks'
+import { transferDataState, isMobile } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
   walletIsLogin,
@@ -53,12 +53,11 @@ export default {
       return walletIsLogin.value
     },
     isSelectedStarkNet() {
-      const transferData = this.$store.state.transferData
       return (
-        transferData.fromChainID == 4 ||
-        transferData.fromChainID == 44 ||
-        transferData.toChainID == 4 ||
-        transferData.toChainID == 44
+        transferDataState.fromChainID == 4 ||
+        transferDataState.fromChainID == 44 ||
+        transferDataState.toChainID == 4 ||
+        transferDataState.toChainID == 44
       )
     },
     starkAddress() { return starkAddress() },
