@@ -30,9 +30,7 @@ import {
 import { fetchTargetWalletLoginStatus } from './utils'
 
 export { globalSelectWalletConf } from './walletsCoreData'
-// export {
-//     isMetaMaskLogin // reactive data
-// } from "./metaMaskDispatcher";
+
 export { WALLETCONNECT, METAMASK, LOCALLOGINDATA } from './constants'
 export {
   modifyLocalLoginInfo,

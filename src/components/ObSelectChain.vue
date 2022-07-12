@@ -47,12 +47,12 @@ import { IMXHelper } from '../util/immutablex/imx_helper'
 import util from '../util/util.js';
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
 import { chain2icon } from '../util'
-import { SvgIconThemed, CommLoading } from './'
+import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 
 export default {
   name: 'ObSelectChain',
-  components: { CommLoading, SvgIconThemed },
+  components: { SvgIconThemed },
   props: {
     ChainData: {
       type: Array,
@@ -182,6 +182,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.app {
+  .obSelectChainBody {
+    width: 320px;
+  }
+}
+.app-mobile {
+  .obSelectChainBody {
+    width: calc(100% - 30px);
+  }
+}
 .obSelectChainBody {
   margin: 4.2rem auto;
   height: calc(
@@ -191,7 +201,6 @@ export default {
     var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
       var(--bottom-nav-height)
   );
-  width: 320px;
   border-radius: 20px;
   padding: 20px 0;
 

@@ -4,7 +4,7 @@
     <div class="title">History</div>
     <div class="table historyContent">
       <div class="table-header">
-        <span class="col col-1"></span>
+        <span class="col col-1">&nbsp;</span>
         <span class="col col-2">Time</span>
         <span class="col col-3">Value</span>
         <span class="col col-4">From</span>
@@ -18,7 +18,7 @@
         Limited by the starkNet mechanism, the history of starkNet cannot be
         queried temporarily
       </div>
-      <CommLoading v-if="!historyData" style="margin: auto; margin-top: 5rem" width="4rem" height="4rem" />
+      <CommLoading v-if="isApiLoading" style="margin: auto; margin-top: 5rem" width="4rem" height="4rem" />
       <div
         v-else-if="historyData && historyData.length !== 0"
         v-for="(item, index) in historyData"
@@ -42,8 +42,12 @@
         ></svg-icon>
       </div>
     </div>
-    <NoData v-if="historyData && historyData.length === 0">No history</NoData>
-    <el-pagination v-if="historyData && historyData.length !== 0" @current-change="curChange" class="pagination" layout="prev, pager, next" :total="$store.state.transactionListInfo.total">
+    <NoData v-if="!isApiLoading && historyData && historyData.length === 0" style="padding-top: 200px;">No history</NoData>
+    <el-pagination 
+      v-if="!isApiLoading && historyData && historyData.length !== 0" 
+      @current-change="curChange" class="pagination" layout="prev, pager, next" 
+      :current-page="currentPage"
+      :total="transactionListInfo.total">
     </el-pagination>
 
     <svg-icon @click.native="closeDialog" class="close" iconName="close"></svg-icon>
@@ -52,17 +56,21 @@
 </template>
 
 <script>
-import { NoData, CommLoading } from '../components'
+import { NoData } from '../components'
 import Middle from '../util/middle/middle'
+import { historyPanelState, getTransactionsHistory } from '../composition/hooks'
 
 export default {
   name: 'History',
   components: {
-    CommLoading, NoData
+    NoData
   },
   computed: {
+    currentPage() {
+      return this.transactionListInfo.current
+    },
     historyData() {
-      const { transactionList } = this.$store.state
+      const { transactionList } = historyPanelState
       if (!transactionList) {
         return transactionList
       }
@@ -82,7 +90,7 @@ export default {
       return list
     },
     isShowDydxLimit() {
-      const { transactionList } = this.$store.state
+      const { transactionList } = historyPanelState
       if (!this.historyData || !transactionList) {
         return false
       }
@@ -91,15 +99,25 @@ export default {
       }
       return false
     },
+    isApiLoading() {
+      return historyPanelState.isLoading
+    },
+    transactionListInfo() {
+      return historyPanelState.transactionListInfo
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(() => {
+      getTransactionsHistory()
+    })
   },
   methods: {
     curChange(cur) {
-      this.$store.dispatch('getTransactionsHistory', {
-        current: cur
-      })
+      getTransactionsHistory({ current: cur })
     },
     closeDialog() {
-      this.$store.commit('toggleHistoryPanelVisible', false)
+      const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
+      this.$router.push(last)
     },
     getHistoryInfo(e) {
       Middle.$emit('showDetail', e)
@@ -149,19 +167,80 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.app {
+  .history-page {
+    border-radius: 20px;
+    .history-content {
+      min-height: 630px;
+      width: 600px;
+      .table {
+        .table-header {
+          padding: 4px 20px;
+        }
+        .col {
+          margin-right: 26px;
+        }
+        .contentItem {
+          padding: 4px 20px;
+          .col-val {
+            margin-right: 26px;
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}
+.app-mobile {
+  .history-page {
+    .history-content {
+      min-width: 335px;
+      height: 100%;
+      min-height: 300px;
+      // overflow-y: scroll;
+      // overflow-x: hidden;
+      .table {
+        .col-1 {
+          width: 16px;
+          height: 16px;
+          margin-left: 12px;
+          margin-right: 10px;
+        }
+        .col-2 {
+          width: 100px;
+        }
+        .col-3 {
+          width: 120px;
+        }
+        .col-4 {
+          width: 33px;
+          margin-right: 8px;
+        }
+        .col-5 {
+          width: 32px;
+        }
+        .contentItem {
+          width: 335px;
+          .col-val {
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+}
 .history-page {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  // overflow: hidden;
+  width: 100%;
+  height: 100%;
   .history-content {
     padding: 18px 20px;
-    width: 600px;
-    // height: 740px;
-    min-height: 630px;
+    height: 100%;
     border-radius: 20px;
     position: relative;
-    overflow: scroll;
     .title {
       font-weight: 700;
       font-size: 16px;
@@ -169,22 +248,16 @@ export default {
     }
     .table {
       margin-top: 26px;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 24px;
       .table-header {
         height: 32px;
         border-radius: 8px;
-        padding: 4px 20px;
         display: flex;
         align-items: center;
       }
       .col {
-        margin-right: 26px;
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 24px;
-        text-align: left;
-      }
-      .col-val {
-        margin-right: 26px;
         text-align: left;
       }
       .col-1 {
@@ -233,7 +306,6 @@ export default {
       line-height: 32px;
       margin-top: 8px;
       margin-bottom: 8px;
-      padding: 4px 20px;
       cursor: pointer;
     }
     .contentItem:hover {
@@ -261,5 +333,8 @@ export default {
 .dark-theme .history-page >>> .el-pagination .btn-next, .dark-theme .history-page >>> .el-pagination .btn-prev {
   background: center center no-repeat #373951;
   color: rgba(255, 255, 255, 0.6);
+}
+.app-mobile .history-page >>> .el-pager li {
+  min-width: 30px !important;
 }
 </style>
