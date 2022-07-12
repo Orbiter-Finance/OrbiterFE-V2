@@ -6,3 +6,9 @@ export const getEnv = (key) => {
   if (key) return process.env[key]
   return process.env
 }
+
+// if u r in a mobile webview environment, return true, otherwise return false
+export const isMobileEnv = () => {
+  const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+  return regex.test(navigator.userAgent);
+}

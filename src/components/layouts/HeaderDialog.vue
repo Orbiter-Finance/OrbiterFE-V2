@@ -232,7 +232,10 @@ export default {
       setSelectWalletDialogVisible(false)
     },
     connectWallet(walletConf) {
+      console.warn("err");
       this.closeSelectWalletDialog()
+      console.log("matchWalletConf", walletConf, compatibleGlobalWalletConf.value);
+
       walletDispatchersOnInit[walletConf.title](this.$store)
     },
     disconnect() {

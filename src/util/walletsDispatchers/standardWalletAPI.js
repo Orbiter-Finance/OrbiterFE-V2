@@ -39,6 +39,7 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
 // get network id , wallet address , etc ...  by invoke this method
 export const performWalletInformation = async (walletType, walletIsInstalledInvestigator) => {
     const matchWalletProvider = await installWallet(walletType, walletIsInstalledInvestigator);
+    console.log("init errr", matchWalletProvider);
     if (!matchWalletProvider) throw new Error(`not install ${walletType}`);
     const performResult = {
         walletType,

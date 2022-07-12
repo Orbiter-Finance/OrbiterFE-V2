@@ -18,6 +18,20 @@ import { init } from '../src/util/resize/onresize'
 import { CommTooltip } from './components'
 import loading from './components/loading/loading.vue'
 import CommLoading from './components/CommLoading.vue'
+import VConsole from "vconsole"
+import { isDev } from "./util/env"
+import eruda from "eruda"
+
+// in some cases, we may need do something in webview(like imToken's webview environment)
+// so construct a VConsole instance to help us debug more convenient with mobile browser or app webview
+// development only!!!
+if (isDev) {
+  const vConsole = new VConsole();
+  eruda.init();
+  // eruda.position("center");
+}
+
+
 
 Vue.component('loading', loading)
 Vue.component('CommLoading', CommLoading)

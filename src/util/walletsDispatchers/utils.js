@@ -2,6 +2,7 @@ import { COINBASE, METAMASK, BRAVE } from "./constants";
 import { LOCALLOGINDATA } from "./constants"
 import { updateGlobalSelectWalletConf, globalSelectWalletConf } from "./walletsCoreData";
 import { toRefs } from "../../composition";
+import { isMobileEnv } from "../env";
 
 
 // update global wallet login status
@@ -59,6 +60,8 @@ export const findMatchWeb3ProviderByWalletType = (walletType, walletIsInstalledI
         // if there is no conflict, there's only one "ethereum" instance in window
         // so we should confirm one thing: this "ethereum" object fits our wallet type
         if (ethereumWalletTypeFitChecker(walletType, window.ethereum)) return window.ethereum;
+        // check if it's in webview env
+        if (isMobileEnv()) return window.ethereum;
         return null
     }
 
