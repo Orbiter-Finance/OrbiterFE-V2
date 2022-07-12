@@ -23,6 +23,7 @@ import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -109,7 +110,7 @@ export default {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       if (!makerAddress) {
         return null
       }
@@ -138,12 +139,12 @@ export default {
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
         const addressState = await syncHttpProvider.getState(
-          store.state.web3.coinbase
+          web3State.coinbase
         )
         if (!addressState.committed || addressState.committed?.nonce == 0) {
           const changePubKeyFee = await syncHttpProvider.getTransactionFee(
             { ChangePubKey: { onchainPubkeyAuth: false } },
-            store.state.web3.coinbase,
+            web3State.coinbase,
             resultToken.id
           )
           totalFee = totalFee.add(changePubKeyFee.totalFee)
@@ -155,7 +156,7 @@ export default {
     } else if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
@@ -173,7 +174,7 @@ export default {
         try {
           transferFee = await zkspace.getZKSpaceTransferGasFee(
             fromChainID,
-            store.state.web3.coinbase
+            web3State.coinbase
           )
         } catch (error) {
           console.warn('getZKTransferGasFeeError =', error)
@@ -187,7 +188,7 @@ export default {
             fromTokenAddress
           )
           let loopringFee = await loopring.getTransferFee(
-            store.state.web3.coinbase,
+            web3State.coinbase,
             fromChainID,
             lpTokenInfo
           )
@@ -200,7 +201,7 @@ export default {
       const web3 = localWeb3(fromChainID)
       if (web3) {
         const estimateGas = await web3.eth.estimateGas({
-          from: store.state.web3.coinbase,
+          from: web3State.coinbase,
           to: makerAddress,
         })
         const gasPrice = await web3.eth.getGasPrice()
@@ -293,7 +294,7 @@ export default {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let transferAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
@@ -323,7 +324,7 @@ export default {
       return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
     }
     if (fromChainID == 9 || fromChainID == 99) {
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let tokenAddress =
         fromChainID === selectMakerInfo.c1ID
           ? selectMakerInfo.t1Address
@@ -333,20 +334,20 @@ export default {
         tokenAddress
       )
       let loopringFee = await loopring.getTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromChainID,
         lpTokenInfo
       )
       return (Number(loopringFee) / 10 ** lpTokenInfo.decimals).toFixed(6)
     }
     if (fromChainID === 12 || fromChainID === 512) {
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
-          store.state.web3.coinbase
-            ? store.state.web3.coinbase
+          web3State.coinbase
+            ? web3State.coinbase
             : selectMakerInfo.makerAddress
         )
       } catch (error) {
@@ -357,7 +358,7 @@ export default {
     }
     if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let makerAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
@@ -366,7 +367,7 @@ export default {
           ? selectMakerInfo.t1Address
           : selectMakerInfo.t2Address
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
@@ -646,7 +647,7 @@ export default {
    */
   async transferOrginGas(fromChainID, toChainID, isErc20 = true) {
     let resultGas = 0
-    let selectMakerInfo = store.getters.realSelectMakerInfo
+    let selectMakerInfo = realSelectMakerInfo.value
     if (fromChainID === 2 || fromChainID === 22) {
       // Ar get
       let fromGasPrice = await this.getGasPrice(fromChainID)
@@ -702,7 +703,7 @@ export default {
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0
-    const selectMakerInfo = store.getters.realSelectMakerInfo
+    const selectMakerInfo = realSelectMakerInfo.value
 
     // withdraw
     if (fromChainID === 2 || fromChainID === 22) {
@@ -813,7 +814,7 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       try {
         let loopringWithDrawFee = await loopring.getWithDrawFee(
-          store.state.web3.coinbase,
+          web3State.coinbase,
           fromChainID,
           selectMakerInfo.tName
         )
@@ -842,8 +843,8 @@ export default {
         // api获取
         let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
-          store.state.web3.coinbase
-            ? store.state.web3.coinbase
+          web3State.coinbase
+            ? web3State.coinbase
             : selectMakerInfo.makerAddress
         )
         ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
@@ -1040,7 +1041,7 @@ export default {
       }
     } else if (localChainID === 4 || localChainID === 44) {
       const networkId = getNetworkIdByChainId(localChainID)
-      let starknetAddress = store.state.web3.starkNet.starkNetAddress
+      let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
         if (!starknetAddress) {
           return 0
@@ -1085,7 +1086,7 @@ export default {
         localChainID: localChainID,
       }
       try {
-        let selectMakerInfo = store.getters.realSelectMakerInfo
+        let selectMakerInfo = realSelectMakerInfo.value
         let balanceInfo = await zkspace.getZKspaceBalance(zkReq)
         if (!balanceInfo) {
           return 0
@@ -1168,7 +1169,7 @@ export default {
       .attach(predeploys.WETH9)
       .connect(provider)
     // Arbitrary recipient address.
-    const to = store.state.transferData.selectMakerInfo.makerAddress
+    const to = transferDataState.selectMakerInfo.makerAddress
 
     // Small amount of WETH to send (in wei).
     const amount = ethers.utils.parseUnits('5', 18)
@@ -1193,16 +1194,16 @@ export default {
   },
 
   realTransferOPID() {
-    let toChainID = store.state.transferData.toChainID
+    let toChainID = transferDataState.toChainID
     const p_text = 9000 + Number(toChainID) + ''
     return p_text
   },
 
   realTransferAmount() {
-    let fromChainID = store.state.transferData.fromChainID
-    let toChainID = store.state.transferData.toChainID
-    let selectMakerInfo = store.getters.realSelectMakerInfo
-    let userValue = new BigNumber(store.state.transferData.transferValue).plus(
+    let fromChainID = transferDataState.fromChainID
+    let toChainID = transferDataState.toChainID
+    let selectMakerInfo = realSelectMakerInfo.value
+    let userValue = new BigNumber(transferDataState.transferValue).plus(
       new BigNumber(selectMakerInfo.tradingFee)
     )
     if (!fromChainID || !userValue) {

@@ -87,7 +87,12 @@ export default {
           }
           break
         case 'ARGENT':
-          // TODO:
+          icons.logo_web = 'argent'
+          icons.logo_webStyle = {
+            width: '17.4rem',
+            height: '3.7rem',
+          }
+          break
       }
       if (this.isMobile) {
         return {

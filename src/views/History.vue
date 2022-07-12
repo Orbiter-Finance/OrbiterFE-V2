@@ -117,7 +117,11 @@ export default {
     },
     closeDialog() {
       const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
-      this.$router.push(last)
+      try {
+        this.$router.push(last)
+      } catch(err) {
+        console.error(err)
+      }
     },
     getHistoryInfo(e) {
       Middle.$emit('showDetail', e)
@@ -201,26 +205,26 @@ export default {
       // overflow-x: hidden;
       .table {
         .col-1 {
-          width: 16px;
-          height: 16px;
+          min-width: 16px;
+          min-height: 16px;
           margin-left: 12px;
           margin-right: 10px;
         }
         .col-2 {
-          width: 100px;
+          min-width: 100px;
         }
         .col-3 {
-          width: 120px;
+          min-width: 120px;
         }
         .col-4 {
-          width: 33px;
+          min-width: 33px;
           margin-right: 8px;
         }
         .col-5 {
-          width: 32px;
+          min-width: 32px;
         }
         .contentItem {
-          width: 335px;
+          min-width: 335px;
           .col-val {
             text-align: left;
           }
@@ -230,6 +234,7 @@ export default {
   }
 }
 .history-page {
+  font-family: 'Inter Regular';
   display: flex;
   justify-content: center;
   align-items: center;
@@ -245,6 +250,7 @@ export default {
       font-weight: 700;
       font-size: 16px;
       line-height: 24px;
+      font-family: 'Inter';
     }
     .table {
       margin-top: 26px;

@@ -74,7 +74,7 @@ import util from '../../util/util'
 import { chain2icon } from '../../util'
 import Middle from '../../util/middle/middle'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
-import { isMobile } from '../../composition/hooks'
+import { isMobile, transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
 export default {
   name: 'Proceed',
@@ -104,17 +104,17 @@ export default {
     },
     FromChainName() {
       return util.chainName(
-        this.$store.state.transferData.fromChainID,
+        transferDataState.fromChainID,
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+          transferDataState.fromChainID
         ]
       )
     },
     toChainName() {
       return util.chainName(
-        this.$store.state.transferData.toChainID,
+        transferDataState.toChainID,
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.toChainID
+          transferDataState.toChainID
         ]
       )
     },
@@ -133,7 +133,7 @@ export default {
         return 'View on Explore'
       } else {
         // immutablex
-        if (transferData.fromChainID == 8 || transferData.fromChainID == 88) {
+        if (transferDataState.fromChainID == 8 || transferDataState.fromChainID == 88) {
           return `TransferId: ${proceeding.userTransfer.txid}`
         }
         return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
@@ -158,7 +158,7 @@ export default {
         return 'View on Explore'
       } else {
         // immutablex
-        if (transferData.toChainID == 8 || transferData.toChainID == 88) {
+        if (transferDataState.toChainID == 8 || transferDataState.toChainID == 88) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
@@ -192,10 +192,10 @@ export default {
           desc:
             (
               this.$store.state.proceeding.userTransfer.amount /
-              10 ** this.$store.getters.realSelectMakerInfo.precision
+              10 ** realSelectMakerInfo.value.precision
             ).toFixed(6) +
             ' ' +
-            this.$store.state.transferData.selectTokenInfo.token,
+            transferDataState.selectTokenInfo.token,
         },
       ]
     },
@@ -205,14 +205,14 @@ export default {
       if (this.detailData) {
         return chain2icon(this.detailData[`${isFrom ? 'from' : 'to'}ChainID`])
       }
-      return chain2icon(this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`])
+      return chain2icon(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`])
     },
     switchNetWork(e = true) {
       let chainID
       if (this.detailData) {
         chainID = this.detailData[`${e ? 'from' : 'to'}ChainID`]
       } else {
-        chainID = this.$store.state.transferData[`${e ? 'from' : 'to'}ChainID`]
+        chainID = transferDataState[`${e ? 'from' : 'to'}ChainID`]
       }
       this.addChainNetWork(chainID)
     },
@@ -254,12 +254,12 @@ export default {
         return
       }
       
-      const { fromChainID } = this.$store.state.transferData
+      const { fromChainID } = transferDataState
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState === 1) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = web3State.coinbase
         if (fromChainID == 4 || fromChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = web3State.starkNet.starkNetAddress
         }
         url = accountExploreUrl[fromChainID] + userAddress
 
@@ -286,16 +286,16 @@ export default {
       if (this.detailData) {
         data = this.detailData
       } else {
-        data = this.$store.state.transferData
+        data = transferDataState
       }
       const { toChainID, state } = data
       const { accountExploreUrl, txExploreUrl } = this.$env
       let url = null;
 
       const commHandler = () => {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = web3State.coinbase
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = web3State.starkNet.starkNetAddress
         }
         url = accountExploreUrl[toChainID] + userAddress
 
@@ -407,7 +407,7 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, web3State.coinbase],
               })
               .then(() => {})
               .catch((error) => {
@@ -520,6 +520,7 @@ export default {
   }
 }
 .proceed-box {
+  font-family: 'Inter Regular';
   border-radius: 20px;
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
@@ -552,6 +553,7 @@ export default {
         width: 128px;
         height: 100%;
         .chain-name {
+          font-family: 'Inter';
           font-weight: 700;
           font-size: 16px;
           line-height: 24px;
