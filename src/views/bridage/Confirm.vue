@@ -82,9 +82,11 @@ import env from '../../../env'
 import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
-import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
+import walletDispatchers from "../../util/walletsDispatchers";
 import { isMobile } from '../../composition/hooks'
 import { notifyLg } from '../../util'
+
+const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } = walletDispatchers;
 
 export default {
   name: 'Confirm',
@@ -725,7 +727,6 @@ export default {
         matchSignatureDispatcher(from, selectMakerInfo, value, fromChainID, this.onTransferSucceed);
         return;
       }
-
 
       if ((!compatibleGlobalWalletConf.value.walletPayload.isInstalled) && (!this.$store.state.web3.isInstallMeta)) {
         this.transferLoading = false

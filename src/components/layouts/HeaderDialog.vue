@@ -88,6 +88,7 @@
     </div>
     <CommBtn
       v-if="!isStarkNetDialog"
+      :disabled="checkIsMobileEnv()"
       class="wallet-btn"
       @click="disconnect"
       >Disconnect</CommBtn
@@ -108,12 +109,14 @@ import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import {
+import walletDispatchers from '../../util/walletsDispatchers'
+import { onCopySuccess, onCopyError, isMobileEnv } from '../../util'
+import { isStarkNetDialog, selectWalletDialogVisible, setSelectWalletDialogVisible } from '../../composition/hooks'
+
+const {
   walletDispatchersOnInit,
   walletDispatchersOnDisconnect,
-} from '../../util/walletsDispatchers'
-import { onCopySuccess, onCopyError } from '../../util'
-import { isStarkNetDialog, selectWalletDialogVisible, setSelectWalletDialogVisible } from '../../composition/hooks'
+} = walletDispatchers;
 
 export default {
   name: 'HeaderDialog',
@@ -232,13 +235,14 @@ export default {
       setSelectWalletDialogVisible(false)
     },
     connectWallet(walletConf) {
-      console.warn("err");
       this.closeSelectWalletDialog()
-      console.log("matchWalletConf", walletConf, compatibleGlobalWalletConf.value);
-
       walletDispatchersOnInit[walletConf.title](this.$store)
     },
+    checkIsMobileEnv() {
+      return isMobileEnv();
+    },
     disconnect() {
+      if (isMobileEnv()) return;
       this.closeSelectWalletDialog()
       this.selectedWallet = {}
       localStorage.setItem('selectedWallet', JSON.stringify({}))

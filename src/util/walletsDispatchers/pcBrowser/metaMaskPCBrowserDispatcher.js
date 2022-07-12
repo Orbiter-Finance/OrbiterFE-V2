@@ -1,7 +1,7 @@
-import { METAMASK } from "./constants";
-import { store } from "../../store";
-import { modifyLocalLoginInfo,  withPerformInterruptWallet } from "./utils";
-import { updateGlobalSelectWalletConf } from "./walletsCoreData";
+import { METAMASK } from "../constants";
+import { store } from "../../../store";
+import { modifyLocalLoginInfo,  withPerformInterruptWallet } from "../utils";
+import { updateGlobalSelectWalletConf } from "../walletsCoreData";
 
 export const loginStatusCheckerOfMetaMask = () => {
     return store.state.web3.isInstallMeta && store.state.web3.isInjected && store.state.web3.localLogin
@@ -12,7 +12,6 @@ export const metaMaskDispatcherOnDisconnect = withPerformInterruptWallet(() => {
 })
 
 export const metaMaskDispatcherOnInit = () => {
-    console.log("我触发了");
     store.dispatch('registerWeb3');
     updateGlobalSelectWalletConf(METAMASK);
     modifyLocalLoginInfo({

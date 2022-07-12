@@ -1,5 +1,5 @@
 import { COINBASE, METAMASK, BRAVE } from "./constants";
-import { LOCALLOGINDATA } from "./constants"
+import { LOCALLOGINDATA, IM_TOKEN_APP, METAMASK_APP, TOKEN_POCKET_APP, BIT_KEEP_APP, COINBASE_APP } from "./constants"
 import { updateGlobalSelectWalletConf, globalSelectWalletConf } from "./walletsCoreData";
 import { toRefs } from "../../composition";
 import { isMobileEnv } from "../env";
@@ -40,6 +40,11 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     if (walletType === METAMASK) return ethereum.isMetaMask && !ethereum.isBraveWallet;
     if (walletType === COINBASE) return ethereum.isCoinbaseWallet;
     if (walletType === BRAVE) return ethereum.isBraveWallet;
+    if (walletType === IM_TOKEN_APP) return ethereum.isImToken;
+    if (walletType === METAMASK_APP) return ethereum.isMetaMask;
+    if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket;
+    if (walletType === BIT_KEEP_APP) return "isBitKeepChrome" in ethereum;
+    if (walletType === COINBASE_APP) return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet;
     // we never care wallet connect, because it's a protocol, not a wallet
     // so it doesn't follow the Ethereum standard api
 }
@@ -60,8 +65,6 @@ export const findMatchWeb3ProviderByWalletType = (walletType, walletIsInstalledI
         // if there is no conflict, there's only one "ethereum" instance in window
         // so we should confirm one thing: this "ethereum" object fits our wallet type
         if (ethereumWalletTypeFitChecker(walletType, window.ethereum)) return window.ethereum;
-        // check if it's in webview env
-        if (isMobileEnv()) return window.ethereum;
         return null
     }
 
@@ -79,4 +82,34 @@ export const findMatchWeb3ProviderByWalletType = (walletType, walletIsInstalledI
 export const fetchTargetWalletLoginStatus = ({ walletType }) => {
     const { walletType: walletTypeRef, loginSuccess: loginSuccessRef } = toRefs(globalSelectWalletConf);
     return walletTypeRef.value === walletType && loginSuccessRef.value === true;
+}
+
+/**
+ * mobile app webview only!!!!!!! don't use in other place!!!!
+ */
+export const getMobileAppTypeByProvider = () => {
+    const provider = window.ethereum;
+    if (provider.isImToken) return IM_TOKEN_APP;
+    if (provider.isTokenPocket) return TOKEN_POCKET_APP
+    if (provider.isMetaMask && !provider.isTokenPocket) return METAMASK_APP;
+    if ("isBitKeepChrome" in provider) return BIT_KEEP_APP;
+    if (provider.isCoinbaseWallet && provider.isCoinbaseBrowser) return COINBASE_APP
+}
+
+/**
+ * if current page is in a webview environment, users will not be allowed to choose
+ * their wallets freely, instead, system will initialize the wallet automatically based
+ * on the wallet type
+ */
+export const performInitMobileAppWallet = () => {
+    if (!isMobileEnv()) return;
+    // in the webview, there's only one web3 provider already init completed, because u can't
+    // install others wallet on current wallet
+    // it was injected by the current wallet, we can get something useful from it
+    const matchAppType = getMobileAppTypeByProvider(window.ethereum);
+    modifyLocalLoginInfo({
+        walletType: matchAppType,
+        loginSuccess: true,
+        walletPayload: {}
+    })
 }

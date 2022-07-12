@@ -8,7 +8,6 @@ import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsi
 
 async function installWeb3() {
   var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK);
-  console.log("match web3Provider", web3Provider);
   if (web3Provider) { 
     try {
       await web3Provider.enable()

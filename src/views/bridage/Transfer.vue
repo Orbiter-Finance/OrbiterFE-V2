@@ -245,11 +245,13 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
-import { walletDispatchersOnSwitchChain } from '../../util/walletsDispatchers'
+import walletDispatchers from '../../util/walletsDispatchers'
 import { METAMASK } from "../../util/walletsDispatchers/index"
 import { RaiseUpSelect } from '../../components'
 
 const queryParamsChainMap = chain2idMap
+
+const { walletDispatchersOnSwitchChain } = walletDispatchers;
 
 export default {
   name: 'Transfer',
@@ -1719,7 +1721,8 @@ export default {
               } else {
                  const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
                  if (matchSwitchChainDispatcher) {
-                    matchSwitchChainDispatcher();
+                    const successCallback = () => this.$emit('stateChanged', '2');
+                    matchSwitchChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider, () => successCallback.bind(this));
                     return
                  }
               }
