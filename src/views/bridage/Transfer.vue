@@ -1519,9 +1519,8 @@ export default {
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
           const imxHelper = new IMXHelper(toChainID)
-          await imxHelper.ensureUser(
-            compatibleGlobalWalletConf.value.walletPayload.walletAddress
-          )
+          const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+          walletAddress && await imxHelper.ensureUser(walletAddress)
         }
 
         // To dYdX

@@ -146,13 +146,9 @@ export default {
     if (typeof mode === 'string' && mode) {
       state.themeMode = mode
     } else {
-      if (state.themeMode === 'light') {
-        state.themeMode = 'dark'
-      } else {
-        state.themeMode = 'light'
-      }
+      state.themeMode = state.themeMode === 'light' ? 'dark' : 'light'
     }
+    localStorage.setItem('themeMode', state.themeMode)
     toggleBodyCls()
-    localStorage.setItem('themeMode', state.themeMode )
   },
 }
