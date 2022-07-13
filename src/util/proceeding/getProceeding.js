@@ -22,7 +22,7 @@ import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { getTimeStampInfo } from './get_tx_by_hash'
-import { lpApiKey, lpAccountInfo, web3State } from '../../composition/hooks'
+import { lpApiKey, lpAccountInfo, web3State, transferDataState } from '../../composition/hooks'
 
 let startBlockNumber = ''
 
@@ -507,7 +507,7 @@ async function confirmUserTransaction(
         sendRAmount,
         nonce
       ).tAmount
-      const { transferExt } = store.state.transferData
+      const { transferExt } = transferDataState
       let toAddress = trx.from
       if (transferExt?.value) {
         toAddress = transferExt.value
