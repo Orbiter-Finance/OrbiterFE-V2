@@ -1,7 +1,5 @@
 <template>
-  <div id="app" :class="[`${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="!isMobile ? {
-    'background-image': `url(${isLightMode ? lightbg : darkbg})`
-  } : {}">
+  <div id="app" :class="[`${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="styles">
     <div class="app-content">
       <keep-alive>
         <TopNav />
@@ -31,6 +29,7 @@ import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
+import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import { performInitMobileAppWallet } from './util/walletsDispatchers/utils'
 
@@ -45,11 +44,41 @@ export default {
     isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
+    styles() {
+      if (!this.isMobile) {
+        if (this.isLightMode) {
+          return {
+            'background-position': 'left bottom, left top',
+            'background-repeat': 'no-repeat',
+            // 'background-size': '100% 36%, 127% 100%',
+            'background-size': '100% 36%, 100% 100%',
+            'background-image': `url(${lightbg}), url(${topbg})`,
+          }
+        } else {
+          return {
+            'background-position': 'left bottom',
+            'background-repeat': 'no-repeat',
+            'background-size': '100% 50%',
+            'background-image': `url(${darkbg})`,
+          }
+        }
+      } else {
+        if (this.isLightMode) {
+          return {
+            'background-position': 'left top',
+            'background-repeat': 'no-repeat',
+            'background-size': '100%',
+            'background-image': `url(${topbg})`,
+          }
+        }
+      }
+    }
   },
   data() {
     return {
-      lightbg,
-      darkbg,
+      // lightbg,
+      // darkbg,
+      // topbg,
     }
   },
   components: {
@@ -126,8 +155,6 @@ export default {
   overflow-y: scroll;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  background-position: left bottom;
-  background-repeat: no-repeat;
   .app-content {
     width: 100%;
     min-height: 100%;

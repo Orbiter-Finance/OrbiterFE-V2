@@ -143,10 +143,10 @@ export default {
 .app-mobile {
   .top-nav {
     padding: 16px 20px;
-    background-image: url('../../assets/v2/mobile-header-bg.png');
-    background-repeat: no-repeat;
-    background-position: right bottom;
-    background-origin: content-box;
+    // background-image: url('../../assets/v2/mobile-header-bg.png');
+    // background-repeat: no-repeat;
+    // background-position: right bottom;
+    // background-origin: content-box;
     .drawer-body {
       width: 100%;
       height: 100%;
