@@ -183,6 +183,19 @@
         </div>
       </div>
     </div>
+    <div style="font-size: 1.2rem;color: #78797d;margin-top:1rem;padding: 0 11px;text-align: center;">
+      <svg-icon
+        style="
+          width: 1rem;
+          height: 1rem;
+          height: 1rem;
+          margin-right: 0.2rem;
+        "
+        iconName="tips"
+      ></svg-icon>
+      Centralized transfer is provided currently and trustless transfer will be launched soon.
+      <a style="text-decoration: underline;" href="https://docs.orbiter.finance/" target="__blank">More</a>
+    </div>
     <o-button
       style="margin: 2.5rem auto 0"
       width="29.5rem"

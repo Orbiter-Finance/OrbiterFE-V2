@@ -7,8 +7,10 @@
       ></svg-icon>
     </div>
 
-    <div v-else class="nav-logo-web" @click="dosome()">
+    <div v-else class="nav-logo-web" :style="!isStarknet?`top: 1.6rem;left: 2.2rem;`:''" @click="dosome()">
+      <img v-if="isStarknet" src="../../assets/v2/starknet-logo.png" style="width:190px;height:80px;" />
       <svg-icon
+        v-else
         :style="navIcons.logo_webStyle"
         :iconName="navIcons.logo_web"
       ></svg-icon>
@@ -86,6 +88,9 @@ export default {
     isRinkeby() {
       const { href } = window.location
       return /rinkeby\.orbiter/i.test(href)
+    },
+    isStarknet() {
+      return this.refererUpper === 'STARKNET'
     },
     navIcons() {
       const icons = {
@@ -190,8 +195,6 @@ export default {
     position: absolute;
   }
   .nav-logo-web {
-    top: 1.6rem;
-    left: 2.2rem;
     position: absolute;
   }
   .ant-radio-group {
