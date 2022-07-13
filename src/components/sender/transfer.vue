@@ -183,7 +183,7 @@
         </div>
       </div>
     </div>
-    <div style="font-size: 1.2rem;color: #78797d;margin-top:1rem;padding: 0 11px;text-align: center;">
+    <div v-if="isStarknet" style="font-size: 1.2rem;color: #78797d;margin-top:1rem;padding: 0 11px;text-align: center;">
       <svg-icon
         style="
           width: 1rem;
@@ -495,6 +495,18 @@ export default {
     },
   },
   computed: {
+    isStarknet() {
+      return this.refererUpper === 'STARKNET'
+    },
+    refererUpper() {
+      // Don't use [$route.query.referer], because it will delay
+      const { href } = window.location
+      const match = href.match(/referer=(\w*)/i)
+      if (match?.[1]) {
+        return match[1].toUpperCase()
+      }
+      return ''
+    },
     starkAddress() {
       var stark = this.$store.state.web3.starkNet.starkNetAddress
       if (!stark) {
