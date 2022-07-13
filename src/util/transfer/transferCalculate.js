@@ -1110,12 +1110,10 @@ export default {
     } else {
       let balance = 0
       if (util.isEthTokenAddress(tokenAddress)) {
-        console.log("isEthTokenAddress", tokenAddress, localChainID, tokenName, userAddress);
         // When is ETH
         const web3 = localWeb3(localChainID)
         balance = Number(await web3.eth.getBalance(userAddress)) || 0
       }else {
-        console.log("isERC20地址", tokenAddress, localChainID, tokenName, userAddress);
         // When is ERC20
         var tokenContract = getLocalCoinContract(localChainID, tokenAddress, 0)
         if (!tokenContract) {
@@ -1125,7 +1123,6 @@ export default {
         balance = await tokenContract.methods.balanceOf(userAddress).call().catch(err => {
           console.log("get balance err", err, userAddress, tokenAddress, localChainID);
         })
-        console.log("22222balance", balance);
       }
 
       return balance

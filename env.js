@@ -36,8 +36,8 @@ export default {
     510: process.env.VUE_APP_WP_MT_R,
     13: process.env.VUE_APP_WP_BOBA,
     513: process.env.VUE_APP_WP_BOBA_R,
-    97: process.env.VUE_APP_WP_BSC_R,
-    56: process.env.VUE_APP_WP_BSC
+    514: process.env.VUE_APP_WP_BSC_R,
+    14: process.env.VUE_APP_WP_BSC
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -64,8 +64,8 @@ export default {
     '511',
     '512',
     '513',
-    "97",
-    "56"
+    "14",
+    "514"
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -80,7 +80,8 @@ export default {
     10: '1088', //metis
     11: '1', // dydx
     12: '1', // zkspace
-    13: '288', // boba mainnet
+    13: '288', // boba mainnet,
+    14: "56", // bsc mainnet,
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -138,7 +139,8 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
-    514: "https://www.bscscan.com/tx/"
+    14: "https://bscscan.com/tx",
+    514: "https://testnet.bscscan.com/tx "
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -165,6 +167,7 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/account/',
     13: 'https://blockexplorer.boba.network/address/',
     513: 'https://blockexplorer.rinkeby.boba.network/address/',
-    514: "https://www.bscscan.com/address/"
+    14: "https://bscscan.com/address",
+    514: "https://testnet.bscscan.com/address/"
   },
 }
