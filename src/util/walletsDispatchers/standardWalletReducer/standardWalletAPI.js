@@ -3,11 +3,11 @@
  * using these apis, it's very easy to access a compliant wallet without extra code
  */
 import Web3 from "web3";
-import { findMatchWeb3ProviderByWalletType, modifyLocalLoginInfo } from "./utils";
-import { updateGlobalSelectWalletConf, updateSelectWalletAddress, updateSelectWalletConfPayload } from "./walletsCoreData";
-import { showMessage } from "../constants/web3/getWeb3";
-import { getChainInfo, getNetworkIdByChainId } from "../chainUtils";
-import util from "../util";
+import { findMatchWeb3ProviderByWalletType, modifyLocalLoginInfo } from "../utils.js";
+import { updateGlobalSelectWalletConf, updateSelectWalletAddress, updateSelectWalletConfPayload, globalSelectWalletConf } from "../walletsCoreData";
+import { showMessage } from "../../constants/web3/getWeb3";
+import { getChainInfo, getNetworkIdByChainId } from "../../chainUtils";
+import util from "../../util";
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
@@ -17,7 +17,7 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
         if (window.ethereum) {
             try {
                 // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
-                const matchProvider = findMatchWeb3ProviderByWalletType(walletType, walletIsInstalledInvestigator);
+                const matchProvider =  findMatchWeb3ProviderByWalletType(walletType, walletIsInstalledInvestigator);
                 if (!matchProvider) {
                     resolve(null);
                     return;
@@ -47,10 +47,28 @@ export const performWalletInformation = async (walletType, walletIsInstalledInve
         walletAddress: null,
     }
     const matchWalletWeb3Provider = new Web3(matchWalletProvider); // inject web3
-    const networkId = await matchWalletWeb3Provider.eth.net.getId();
+    let networkId,
+        walletAddress;
+    if (matchWalletProvider.request) { // provide ethereum standard request method, more compatible, recommend first
+        networkId = await matchWalletProvider.request({
+            method: "net_version"
+        })
+    } else {
+        networkId = await matchWalletWeb3Provider.eth.request({
+            method: "net_version "
+        })
+    }
     if (!networkId) showMessage('get netWorkID failed, refresh and try again', 'error');
     else performResult.networkId = networkId;
-    const [walletAddress] = await matchWalletWeb3Provider.eth.requestAccounts();
+    if (matchWalletProvider.request) {
+        [walletAddress] = await matchWalletProvider.request({
+            method: "eth_accounts"
+        });
+    } else {
+        [walletAddress] = await matchWalletWeb3Provider.eth.request({
+            method: "eth_accounts"
+        });
+    }
     if (!walletAddress) showMessage(`get coinbase failed，please unlock ${walletType} or generate a new address`, 'error',);
     else performResult.walletAddress = walletAddress;
     return {
@@ -176,7 +194,7 @@ export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
     }
     walletProvider.request({
         method: 'wallet_addEthereumChain',
-        params: [ addParams, walletProvider.walletPayload.walletAddress ],
+        params: [ addParams, globalSelectWalletConf.walletPayload.walletAddress ],
     }).catch(reason => {
         const { message } = reason;
         util.showMessage(message, "error");

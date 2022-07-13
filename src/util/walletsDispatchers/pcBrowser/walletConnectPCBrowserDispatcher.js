@@ -1,14 +1,14 @@
 import WalletConnect from "@walletconnect/client";
 import QRCodeModule from "@walletconnect/qrcode-modal";
 
-import { userDeniedMessage, showMessage } from "../constants/web3/getWeb3"
-import { globalSelectWalletConf, updateSelectWalletConfPayload, updateGlobalSelectWalletConf } from "./walletsCoreData";
-import { WALLETCONNECT } from "./constants";
+import { userDeniedMessage, showMessage } from "../../constants/web3/getWeb3"
+import { globalSelectWalletConf, updateSelectWalletConfPayload, updateGlobalSelectWalletConf } from "../walletsCoreData";
+import { WALLETCONNECT } from "../constants";
 import { 
     modifyLocalLoginInfo, 
     withPerformInterruptWallet
-} from "./utils";
-import { localWeb3 } from "../constants/contract/localWeb3";
+} from "../utils";
+import { localWeb3 } from "../../constants/contract/localWeb3";
 
 let connector = null; // when walletconnect connect success, connector will be assigned connector instance
 
@@ -93,7 +93,6 @@ const subscribeWalletEvents = () => {
 
 // wake up the wallet connect modal by invoke this method
 export const walletConnectDispatcherOnInit = async () => {
-    console.log("walletConnect init triggered")
     connector = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
         qrcodeModal: QRCodeModule

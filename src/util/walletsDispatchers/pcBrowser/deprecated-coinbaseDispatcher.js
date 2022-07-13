@@ -4,9 +4,9 @@
  * this file will be deprecated
  * please head over to the standardWalletLoader.js to get more information
  */
-import { COINBASE } from "./constants";
+import { COINBASE } from "../constants";
 import { universalWalletInitHandler } from "./standardWalletAPI";
-import { withPerformInterruptWallet } from "./utils";
+import { withPerformInterruptWallet } from "../utils";
 
 /**
  * @deprecated

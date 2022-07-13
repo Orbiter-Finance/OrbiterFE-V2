@@ -1,5 +1,5 @@
 import { universalWalletInitHandler, universalWalletAddChainHandler, universalWalletSwitchChainHandler } from "./standardWalletAPI";
-import { withPerformInterruptWallet, fetchTargetWalletLoginStatus } from "./utils"; 
+import { withPerformInterruptWallet, fetchTargetWalletLoginStatus } from "../utils"; 
 
 /**
  * 

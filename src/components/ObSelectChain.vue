@@ -122,16 +122,13 @@ export default {
         try {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
-            const { starkIsConnected, starkNetAddress } =
-              web3State.starkNet
+            const { starkIsConnected, starkNetAddress } = web3State.starkNet
             if (!starkIsConnected && !starkNetAddress) {
               await connectStarkNetWallet()
               if (
                 !web3State.starkNet.starkIsConnected &&
                 !web3State.starkNet.starkNetAddress
-              ) {
-                return
-              }
+              ) return
             }
           }
           // immutableX
@@ -139,7 +136,7 @@ export default {
             this.loadingIndex = index
             const { coinbase } = web3State
             const imxHelper = new IMXHelper(e.localID)
-            await imxHelper.ensureUser(coinbase)
+            coinbase && await imxHelper.ensureUser(coinbase)
           }
 
           // dydx
@@ -160,7 +157,6 @@ export default {
             title: err.message,
             duration: 3000,
           })
-
           this.loadingIndex = -1
           return
         }

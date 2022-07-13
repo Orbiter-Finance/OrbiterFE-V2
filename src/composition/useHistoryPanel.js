@@ -11,7 +11,7 @@ export const historyPanelState = reactive({
     total: 0,
     pages: 1,
   },
-  transactionList: [],
+  transactionList: []
 })
 
 watchEffect(() => {

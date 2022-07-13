@@ -1,54 +1,85 @@
 <template>
-<div class="confirm-box">
-  <CommBoxHeader :back="closerButton" :style="isMobile?'':'margin-bottom:30px;'">Confirm</CommBoxHeader>
-  <div v-for="item in confirmData" :key="item.title" class="confirm-item" :style="{marginBottom: item.haveSep ? '46px' : '22px'}">
-    <div class="item-left">
-      <SvgIconThemed :icon="item.icon" />
-      <span class="left-txt">{{item.title}}</span>
-      <o-tooltip placement="topLeft">
-        <template v-slot:titleDesc>
-          <span>{{ item.notice }}</span>
-        </template>
-        <SvgIconThemed v-if="item.notice" icon="help" size="sm" />
-      </o-tooltip>
-    </div>
-    <div class="item-right">
-      <span v-if="item.desc" :class="{textBold: item.textBold}">{{ item.desc }}</span>
-    </div>
-    <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
-      <div v-for="desc in item.descInfo" :key="desc.no" style="margin-bottom: 1rem">
-        Send
-        <span style="margin-left: 0.7rem; margin-right: 1.1rem;color:#DF2E2D;">{{ desc.amount }}{{ desc.coin }}</span>
-        To
-        <span style="margin-left: 0.7rem;color:#DF2E2D;">{{desc.toAddress}}</span>
+  <div class="confirm-box">
+    <CommBoxHeader
+      :back="closerButton"
+      :style="isMobile ? '' : 'margin-bottom:30px;'"
+      >Confirm</CommBoxHeader
+    >
+    <div
+      v-for="item in confirmData"
+      :key="item.title"
+      class="confirm-item"
+      :style="{ marginBottom: item.haveSep ? '46px' : '22px' }"
+    >
+      <div class="item-left">
+        <SvgIconThemed :icon="item.icon" />
+        <span class="left-txt">{{ item.title }}</span>
+        <o-tooltip placement="topLeft">
+          <template v-slot:titleDesc>
+            <span>{{ item.notice }}</span>
+          </template>
+          <SvgIconThemed v-if="item.notice" icon="help" size="sm" />
+        </o-tooltip>
+      </div>
+      <div class="item-right">
+        <span v-if="item.desc" :class="{ textBold: item.textBold }">{{
+          item.desc
+        }}</span>
+      </div>
+      <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
+        <div
+          v-for="desc in item.descInfo"
+          :key="desc.no"
+          style="margin-bottom: 1rem"
+        >
+          Send
+          <span
+            style="margin-left: 0.7rem; margin-right: 1.1rem; color: #df2e2d"
+            >{{ desc.amount }}{{ desc.coin }}</span
+          >
+          To
+          <span style="margin-left: 0.7rem; color: #df2e2d">{{
+            desc.toAddress
+          }}</span>
+        </div>
       </div>
     </div>
-  </div>
-  <div v-if="isStarkNetChain" style="padding:0 30px;display:flex;text-align:left;padding-top: 8px;">
-    <SvgIconThemed style="margin-right:10px;" icon="info" />
-    <span style="color:#DF2E2D">StarkNet is still in alpha version, the transaction on it maybe will be done in 1~2 hours. Orbiter keeps your funds safe.</span>
-  </div>
-  <div style="padding:0 30px;display:flex;text-align:left;padding-top: 8px;">
-    <SvgIconThemed style="margin-right:10px;" icon="info" />
-    <span style="color:#DF2E2D">Modifying the transfer amount in MetaMask will cause the transfer to fail.</span>
-  </div>
-
-  <CommBtn @click="RealTransfer" class="select-wallet-dialog">
-    <span
-      v-if="!transferLoading"
-      class="wbold s16"
-      style="letter-spacing: 0.1rem"
-      >CONFIRM AND SEND</span
+    <div
+      v-if="isStarkNetChain"
+      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
     >
-    <CommLoading
-      v-else
-      style="margin: auto"
-      loadingColor="white"
-      width="2rem"
-      height="2rem"
-    />
-  </CommBtn>
-</div>
+      <SvgIconThemed style="margin-right: 10px" icon="info" />
+      <span style="color: #df2e2d"
+        >StarkNet is still in alpha version, the transaction on it maybe will be
+        done in 1~2 hours. Orbiter keeps your funds safe.</span
+      >
+    </div>
+    <div
+      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
+    >
+      <SvgIconThemed style="margin-right: 10px" icon="info" />
+      <span style="color: #df2e2d"
+        >Modifying the transfer amount in MetaMask will cause the transfer to
+        fail.</span
+      >
+    </div>
+
+    <CommBtn @click="RealTransfer" class="select-wallet-dialog">
+      <span
+        v-if="!transferLoading"
+        class="wbold s16"
+        style="letter-spacing: 0.1rem"
+        >CONFIRM AND SEND</span
+      >
+      <CommLoading
+        v-else
+        style="margin: auto"
+        loadingColor="white"
+        width="2rem"
+        height="2rem"
+      />
+    </CommBtn>
+  </div>
 </template>
 
 <script>
@@ -82,14 +113,25 @@ import env from '../../../env'
 import * as ethers from 'ethers'
 import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
-import { walletIsLogin, compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
-import { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } from "../../util/walletsDispatchers";
-import { isMobile, transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
+import {
+  walletIsLogin,
+  compatibleGlobalWalletConf,
+} from '../../composition/walletsResponsiveData'
+import walletDispatchers from '../../util/walletsDispatchers'
+import {
+  isMobile,
+  transferDataState,
+  realSelectMakerInfo,
+  web3State,
+} from '../../composition/hooks'
 import { notifyLg } from '../../util'
+
+const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
+  walletDispatchers
 
 export default {
   name: 'Confirm',
-  components: { SvgIconThemed, CommBoxHeader, CommBtn, },
+  components: { SvgIconThemed, CommBoxHeader, CommBtn },
   data() {
     return {
       transferLoading: false,
@@ -101,10 +143,12 @@ export default {
     },
     isStarkNetChain() {
       const { fromChainID, toChainID } = transferDataState
-      return fromChainID == 4 ||
+      return (
+        fromChainID == 4 ||
         fromChainID == 44 ||
         toChainID == 4 ||
         toChainID == 44
+      )
     },
     confirmData() {
       // 0.000120000000009022 to 0.000120...09022
@@ -140,10 +184,7 @@ export default {
             title: 'Total Send',
             notice:
               'Include the amount transferred by Sender and withholding gas fee.',
-            desc:
-              realTransferAmount +
-              ' ' +
-              realSelectMakerInfo.value.tName,
+            desc: realTransferAmount + ' ' + realSelectMakerInfo.value.tName,
             textBold: true,
           },
           {
@@ -151,12 +192,8 @@ export default {
             title: 'Received',
             desc:
               orbiterCore.getToAmountFromUserAmount(
-                new BigNumber(
-                  transferDataState.transferValue
-                ).plus(
-                  new BigNumber(
-                    realSelectMakerInfo.value.tradingFee
-                  )
+                new BigNumber(transferDataState.transferValue).plus(
+                  new BigNumber(realSelectMakerInfo.value.tradingFee)
                 ),
                 realSelectMakerInfo.value,
                 false
@@ -201,10 +238,7 @@ export default {
           title: 'Total Send',
           notice:
             'Include the amount transferred by Sender and withholding gas fee.',
-          desc:
-            realTransferAmount +
-            ' ' +
-            realSelectMakerInfo.value.tName,
+          desc: realTransferAmount + ' ' + realSelectMakerInfo.value.tName,
           textBold: true,
         },
         {
@@ -213,9 +247,7 @@ export default {
           desc:
             orbiterCore.getToAmountFromUserAmount(
               new BigNumber(transferDataState.transferValue).plus(
-                new BigNumber(
-                  realSelectMakerInfo.value.tradingFee
-                )
+                new BigNumber(realSelectMakerInfo.value.tradingFee)
               ),
               realSelectMakerInfo.value,
               false
@@ -237,8 +269,11 @@ export default {
   methods: {
     async zkspaceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
-        let provider = new ethers.providers.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider)
-        const walletAccount = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        let provider = new ethers.providers.Web3Provider(
+          compatibleGlobalWalletConf.value.walletPayload.provider
+        )
+        const walletAccount =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         const signer = provider.getSigner()
 
         const privateKey = await zkspace.getL1SigAndPriVateKey(signer)
@@ -422,8 +457,11 @@ export default {
       this.transferLoading = false
     },
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
-      const web3Provider = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
-      const walletAccount = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      const web3Provider = new Web3(
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
+      const walletAccount =
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress
       var tokenAddress =
         selectMakerInfo.c1ID === fromChainID
           ? selectMakerInfo.t1Address
@@ -443,9 +481,7 @@ export default {
         )
         // const state = await syncWallet.getAccountState();
 
-        var rAmount = new BigNumber(
-          transferDataState.transferValue
-        )
+        var rAmount = new BigNumber(transferDataState.transferValue)
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
@@ -600,9 +636,7 @@ export default {
           : selectMakerInfo.t2Address
 
       try {
-        var rAmount = new BigNumber(
-          transferDataState.transferValue
-        )
+        var rAmount = new BigNumber(transferDataState.transferValue)
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         var rAmountValue = rAmount.toFixed()
@@ -687,14 +721,13 @@ export default {
     addChainNetWork() {
       var that = this
       var chain = util.getChainInfo(
-        this.$env.localChainID_netChainID[
-          transferDataState.fromChainID
-        ]
+        this.$env.localChainID_netChainID[transferDataState.fromChainID]
       )
       const switchParams = {
         chainId: util.toHex(chain.chainId),
-      } 
-        compatibleGlobalWalletConf.value.walletPayload.provider.request({
+      }
+      compatibleGlobalWalletConf.value.walletPayload.provider
+        .request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
         })
@@ -715,12 +748,8 @@ export default {
           that.$store.commit('updateConfirmRouteDescInfo', [
             {
               no: 1,
-              amount: new BigNumber(
-                transferDataState.transferValue
-              ).plus(
-                new BigNumber(
-                  realSelectMakerInfo.value.tradingFee
-                )
+              amount: new BigNumber(transferDataState.transferValue).plus(
+                new BigNumber(realSelectMakerInfo.value.tradingFee)
               ),
               coin: transferDataState.selectTokenInfo.token,
               toAddress: toAddress,
@@ -752,7 +781,10 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, compatibleGlobalWalletConf.value.walletPayload.walletAddress],
+                params: [
+                  params,
+                  compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+                ],
               })
               .then(() => {})
               .catch((error) => {
@@ -765,21 +797,33 @@ export default {
         })
     },
     async ethTransfer(from, selectMakerInfo, value, fromChainID) {
-
-      const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
+      const matchSignatureDispatcher =
+        walletDispatchersOnSignature[
+          compatibleGlobalWalletConf.value.walletType
+        ]
       if (matchSignatureDispatcher) {
-        matchSignatureDispatcher(from, selectMakerInfo, value, fromChainID, this.onTransferSucceed);
-        return;
+        matchSignatureDispatcher(
+          from,
+          selectMakerInfo,
+          value,
+          fromChainID,
+          this.onTransferSucceed
+        )
+        return
       }
 
-
-      if ((!compatibleGlobalWalletConf.value.walletPayload.isInstalled) && (!web3State.isInstallMeta)) {
+      if (
+        !compatibleGlobalWalletConf.value.walletPayload.isInstalled &&
+        !web3State.isInstallMeta
+      ) {
         this.transferLoading = false
         return
       }
 
       try {
-        const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
+        const web3 = new Web3(
+          compatibleGlobalWalletConf.value.walletPayload.provider
+        )
 
         let gasLimit = await getTransferGasLimit(
           fromChainID,
@@ -822,7 +866,10 @@ export default {
       }
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
+      if (
+        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
+        web3State.isInstallMeta
+      ) {
         this.transferLoading = false
         return
       }
@@ -879,7 +926,10 @@ export default {
       }
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
+      if (
+        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
+        web3State.isInstallMeta
+      ) {
         this.transferLoading = false
         return
       }
@@ -934,7 +984,10 @@ export default {
       }
     },
     async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
+      if (
+        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
+        web3State.isInstallMeta
+      ) {
         this.transferLoading = false
         return
       }
@@ -987,7 +1040,10 @@ export default {
     },
 
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
-      if (!compatibleGlobalWalletConf.value.walletPayload.isInstalled || web3State.isInstallMeta) {
+      if (
+        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
+        web3State.isInstallMeta
+      ) {
         return
       }
 
@@ -998,7 +1054,9 @@ export default {
 
       try {
         const { transferExt } = transferDataState
-        const provider = new ethers.providers.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider)
+        const provider = new ethers.providers.Web3Provider(
+          compatibleGlobalWalletConf.value.walletPayload.provider
+        )
         const crossAddress = new CrossAddress(provider, fromChainID)
 
         const amount = ethers.BigNumber.from(value)
@@ -1045,24 +1103,26 @@ export default {
         Middle.$emit('connectWallet', true)
         return
       }
-      const { fromChainID, toChainID, transferExt } =
-        transferDataState
+      const { fromChainID, toChainID, transferExt } = transferDataState
 
       if (fromChainID != 4 && fromChainID != 44) {
         if (
-        compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-        this.$env.localChainID_netChainID[
-          transferDataState.fromChainID
-        ]
-      ) {
-          const matchAddChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
+          compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+          this.$env.localChainID_netChainID[transferDataState.fromChainID]
+        ) {
+          const matchAddChainDispatcher =
+            walletDispatchersOnSwitchChain[
+              compatibleGlobalWalletConf.value.walletType
+            ]
           if (matchAddChainDispatcher) {
-            matchAddChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider);
-            return;
+            matchAddChainDispatcher(
+              compatibleGlobalWalletConf.value.walletPayload.provider
+            )
+            return
           }
         }
       }
-        
+
       // Only one
       if (this.transferLoading) {
         return
@@ -1124,9 +1184,7 @@ export default {
             : selectMakerInfo.t2Address
 
         const to = selectMakerInfo.makerAddress
-        const rAmount = new BigNumber(
-          transferDataState.transferValue
-        )
+        const rAmount = new BigNumber(transferDataState.transferValue)
           .plus(new BigNumber(selectMakerInfo.tradingFee))
           .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
         const rAmountValue = rAmount.toFixed()
@@ -1144,7 +1202,8 @@ export default {
           this.transferLoading = false
           return
         }
-        const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        const account =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (fromChainID == 4 || fromChainID == 44) {
           this.starknetTransfer(
             account,
@@ -1287,7 +1346,7 @@ export default {
     }
   }
   .select-wallet-dialog {
-    width:420px;
+    width: 420px;
   }
 }
 .app-mobile {
@@ -1327,7 +1386,7 @@ export default {
       line-height: 24px;
       text-align: right;
       .textBold {
-        font-weight: 600
+        font-weight: 600;
       }
     }
 
@@ -1341,9 +1400,9 @@ export default {
   }
   .select-wallet-dialog {
     font-family: 'Inter';
-    margin-top:20px;
-    height:50px;
-    line-height:34px;
+    margin-top: 20px;
+    height: 50px;
+    line-height: 34px;
   }
 }
 </style>

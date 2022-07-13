@@ -24,7 +24,7 @@
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
-import { getCurrentLoginInfoFromLocalStorage, walletDispatchersOnInit } from "./util/walletsDispatchers"
+import walletDispatchers, { getCurrentLoginInfoFromLocalStorage } from "./util/walletsDispatchers"
 import { getTraddingHistory, isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
@@ -32,6 +32,9 @@ import History from './views/History.vue'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
+import { performInitMobileAppWallet } from './util/walletsDispatchers/utils'
+
+const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
   name: 'App',
@@ -56,7 +59,7 @@ export default {
     getZkToken.getSupportZKTokenList()
 
     // init wallet info by the localStorage
-    this.performInitCurrentLoginWallet()
+    this.performInitCurrentLoginWallet();
   },
   // watch: {
   //   '$store.getters.realSelectMakerInfo': function (newValue) {
@@ -65,6 +68,9 @@ export default {
   // },
   methods: {
     performInitCurrentLoginWallet() {
+
+      performInitMobileAppWallet();
+
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
       // When user connects a wallet, the information of this wallet will be added

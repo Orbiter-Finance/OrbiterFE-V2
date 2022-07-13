@@ -1,8 +1,10 @@
 import { computed } from "../index";
 import { store } from "../../store";
-import { globalSelectWalletConf, loginStatusCheckerOfWallets, METAMASK } from "../../util/walletsDispatchers";
+import walletDispatchers, { globalSelectWalletConf, METAMASK } from "../../util/walletsDispatchers";
 import { findMatchWeb3ProviderByWalletType } from "../../util/walletsDispatchers/utils";
 import { web3State } from '../useCoinbase'
+
+const { loginStatusCheckerOfWallets } = walletDispatchers;
 
 // if there is a wallet connect with Oribiter
 // it will affect the ui changes in each route

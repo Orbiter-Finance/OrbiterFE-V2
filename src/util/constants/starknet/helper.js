@@ -71,9 +71,7 @@ export function getStarkNetValidAddress(address) {
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
     const wallet = await getStarknetWallet()
-    if (!wallet) {
-      return
-    }
+    if (!wallet) return
     const enabled = await wallet
       .enable({ showModal: false })
       .then((address) => !!address?.length)
