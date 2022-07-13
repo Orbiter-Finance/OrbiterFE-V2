@@ -26,4 +26,11 @@ const dispatchersInEachDeviceEnv = {
   [MOBILE_APP]: mobileAppWebviewWalletDispatchers
 }
 
+// provide different wallet methods according to the different user environment
+// at last, this file will export several methods:
+// switch chain
+// add chain
+// init wallet
+// disconnect wallet
+// login status checker
 export default isMobileEnv() ? dispatchersInEachDeviceEnv[MOBILE_APP] : dispatchersInEachDeviceEnv[PC_BROWSER];

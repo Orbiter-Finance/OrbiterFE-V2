@@ -6,6 +6,8 @@ import {
     COINBASE_APP
 } from "../constants";
 
+// open ./pcBrowser/standardPCBrowserWalletConf to get the meaning of each prop member
+// chainIdTransfer maybe can be optimize
 const standardMobileAppConf = [
     {
         walletType: IM_TOKEN_APP,
