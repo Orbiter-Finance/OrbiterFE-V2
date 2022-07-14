@@ -10,9 +10,15 @@
     </template>
     <template v-else>
       <SvgIconThemed @click.native="toHome" class="logo" :style="navIcons.style" :icon="navIcons.logo" />
-      <ToggleBtn v-if="showToggleBtn()" @input="toggleTab" />
-      <div @click="() => drawerVisible = true" class="center menu-outline" style="width:44px;height:44px;border-radius: 8px;">
-        <SvgIconThemed icon="menu" style="width:26px;height:22px;" />
+      <!-- <ToggleBtn v-if="showToggleBtn()" @input="toggleTab" /> -->
+      <div class="center">
+        <div v-if="!isLogin" @click="connectWallet" class="wallet-status connect-wallet-btn">Connect Wallet</div>
+        <div v-else @click="connectAWallet" class="wallet-status wallet-address">
+          {{ showAddress }}
+        </div>
+        <div @click="() => drawerVisible = true" class="center menu-outline" style="width:44px;height:44px;border-radius: 8px;">
+          <SvgIconThemed icon="menu" style="width:26px;height:22px;" />
+        </div>
       </div>
       <el-drawer
         :size="280"
@@ -33,9 +39,14 @@
 
 <script>
 import { CommBtn, SvgIconThemed, ToggleBtn } from '../'
-import { isMobile, setPageTab, setPageSenderTab, } from '../../composition/hooks'
+import { isMobile, setPageTab, setPageSenderTab, showAddress } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
+import {
+  walletIsLogin,
+} from '../../composition/walletsResponsiveData'
+import Middle from '../../util/middle/middle'
+import { setStarkNetDialog, setSelectWalletDialogVisible } from '../../composition/hooks'
 
 export default {
   name: 'TopNav',
@@ -46,6 +57,10 @@ export default {
     }
   },
   computed: {
+    showAddress() { return showAddress() },
+    isLogin() {
+      return walletIsLogin.value
+    },
     isMobile() {
       return isMobile.value
     },
@@ -121,6 +136,13 @@ export default {
     },
     showToggleBtn() {
       return this.$route.path === '/' || this.$route.path === '/history'
+    },
+    connectWallet() {
+      Middle.$emit('connectWallet', true)
+    },
+    connectAWallet() {
+      setStarkNetDialog(false)
+      setSelectWalletDialogVisible(true)
     }
   },
 }
@@ -147,10 +169,30 @@ export default {
 .app-mobile {
   .top-nav {
     padding: 16px 20px;
-    // background-image: url('../../assets/v2/mobile-header-bg.png');
-    // background-repeat: no-repeat;
-    // background-position: right bottom;
-    // background-origin: content-box;
+    .wallet-status {
+      cursor: pointer;
+      margin-right: 15px;
+    }
+    .wallet-address {
+      padding: 8px 24px;
+      // background: #FFFFFF;
+      border-radius: 20px;
+      // color: rgba(51, 51, 51, 0.8);
+    }
+    .connect-wallet-btn {
+      width: 148px;
+      height: 40px;
+      line-height: 40px;
+      background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
+      box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
+      border-radius: 40px;
+      color: #FFFFFF;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      text-align: center;
+    }
+
     .drawer-body {
       width: 100%;
       height: 100%;

@@ -29,6 +29,10 @@
       .drawer-body {
         background: var(--dark-page-bg);
       }
+      .wallet-address {
+        background: var(--dark-page-box-bg);
+        color: var(--dark-page-box-color);
+      }
     }
   }
   background-size: 100% 360px;
@@ -138,6 +142,9 @@
         }
         .maxBtn {
           color: #1DFFF1;
+        }
+        .right {
+          color: rgba(255, 255, 255, 0.8);
         }
       }
     }
@@ -291,10 +298,17 @@
       .drawer-body {
         background: var(--light-page-box-bg);
       }
+      .wallet-address {
+        background: var(--light-page-bg);
+        color: rgba(51, 51, 51, 0.8);
+      }
     }
   }
-  &.app {
-    background-color: #F5F5F5;
+  // &.app {
+  //   background-color: #F5F5F5;
+  // }
+  a {
+    color: var(--light-page-color);
   }
   a {
     color: var(--light-page-color);
@@ -401,6 +415,9 @@
         }
         .maxBtn {
           color: #3183FF;
+        }
+        .right {
+          color: rgba(51, 51, 51, 0.8);
         }
       }
     }

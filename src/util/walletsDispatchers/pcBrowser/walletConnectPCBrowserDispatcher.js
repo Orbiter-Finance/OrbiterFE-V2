@@ -48,7 +48,7 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
 
 const onConnectSuccessCallback = withErrorCatcher((payload, connected = false) => {
     // this console is necessary
-    console.log(`%c WalletConnect connect success`, "color: #fff; background: green", payload);
+    console.successLog("WalletConnect connect success", payload);
     const walletInfo = performWalletConnectAccountInfo(payload, connected);
     updateGlobalSelectWalletConf(WALLETCONNECT, walletInfo, true);
     // if connect successful, set the local login info
@@ -60,7 +60,7 @@ const onConnectSuccessCallback = withErrorCatcher((payload, connected = false) =
 });
 
 const onDisconnectCallback = withErrorCatcher(payload => {
-    console.log(`%c WalletConnect disconnected`, "color: #fff; background: red", payload);
+    console.errorLog("WalletConnect disconnected", payload);
     if (!connector) {
         userDeniedMessage(); // first in
     } else {
@@ -70,7 +70,7 @@ const onDisconnectCallback = withErrorCatcher(payload => {
 });
 
 const onSessionUpdateCallback = withErrorCatcher(payload => {
-    console.log(`%c WalletConnect session updated`, "color: #fff; background: orange", payload);
+    console.warnLog("WalletConnect session updated", payload)
     const { params = [] } = payload;
     const [chainIdAndAccountInfo = {}] = params;
     const { chainId, accounts } = chainIdAndAccountInfo;
