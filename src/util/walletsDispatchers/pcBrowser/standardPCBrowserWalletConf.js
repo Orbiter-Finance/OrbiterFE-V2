@@ -19,6 +19,8 @@ import { COINBASE, BRAVE } from "../constants";
  * to convert them to base 10
  * - 【 walletNotInstallReducer: optional 】, the effect is equals with initDispatcher, but it's used for match wallet was not installed, by default, loader will throw "【wallet】 not installed" error
  * if u want do something else, u can pass this prop
+ * - 【 shouldAddChainCode: optional 】, in different wallet browser extension or different wallet app, if the chain user selected never be added to the wallet environment, this wallet environment will throw an error, the error code is different in different env, so we provide this prop, u can catch should add chain error more accurate in any wallet
+  - 【 chainIdTransferOnInitProcess: optional 】 by default, loader invoke chainIdTransfer method in switch chain process only, if u want loader invoke it in init process, set this prop with "true"
  */
 export default [
     {
