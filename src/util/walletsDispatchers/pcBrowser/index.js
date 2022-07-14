@@ -1,6 +1,7 @@
 import { METAMASK, WALLETCONNECT } from '../constants';
 import standardWalletLoader from '../standardWalletReducer/standardWalletLoader';
 import standardWalletConf from './standardPCBrowserWalletConf';
+import { fetchTargetWalletLoginStatus } from "../utils";
 
 // wallet connect
 import {
