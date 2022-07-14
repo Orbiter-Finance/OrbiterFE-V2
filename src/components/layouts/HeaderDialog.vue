@@ -118,6 +118,7 @@ import {
   isStarkNetDialog,
   selectWalletDialogVisible,
   setSelectWalletDialogVisible,
+  web3State
 } from '../../composition/hooks'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
@@ -176,7 +177,7 @@ export default {
     },
     loginInfoData() {
       if (this.isStarkNetDialog) {
-        const starkChain = this.$store.state.starkNet?.starkChain
+        const starkChain = web3State.starkNet?.starkChain
         let networkName = ''
         if (starkChain) {
           if (starkChain == 4) {
@@ -195,7 +196,7 @@ export default {
           {
             icon: 'wallet',
             title: 'Wallet',
-            value: this.$store.state.starkNet?.starkWalletName,
+            value: web3State.starkNet?.starkNetWalletName,
           },
           // {
           //   icon: 'address',

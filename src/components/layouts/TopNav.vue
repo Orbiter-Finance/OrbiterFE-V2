@@ -2,7 +2,8 @@
   <div class="top-nav">
     <template v-if="!isMobile">
       <div style="height:100%;position:relative;">
-        <SvgIconThemed @click.native="toHome" class="logo" :style="navIcons.style" :icon="navIcons.logo" />
+        <img v-if="isStarknet" src="../../assets/v2/starknet-logo.png" style="width:190px;height: 80px;" />
+        <SvgIconThemed v-else @click.native="toHome" class="logo" :style="navIcons.style" :icon="navIcons.logo" />
         <HeaderLinks style="margin-top: 24px;position:absolute;top:0;left:241px;min-width: 280px;" />
       </div>
       <HeaderOps />
@@ -32,7 +33,7 @@
 
 <script>
 import { CommBtn, SvgIconThemed, ToggleBtn } from '../'
-import { isMobile, setPageTab, setPageSenderTab } from '../../composition/hooks'
+import { isMobile, setPageTab, setPageSenderTab, } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
 
@@ -60,6 +61,9 @@ export default {
     isRinkeby() {
       const { href } = window.location
       return /rinkeby\.orbiter/i.test(href)
+    },
+    isStarknet() {
+      return this.refererUpper === 'STARKNET'
     },
     navIcons() {
       const icons = {
