@@ -92,7 +92,7 @@ export default {
     if (!starkNetAddress || starkNetAddress.length === 0) {
       starkNetAddress = ''
       web3State.starkNet.starkIsConnected = false
-      web3State.starkNet.starkWalletName = ''
+      web3State.starkNet.starkNetWalletName = ''
       web3State.starkNet.starkWalletIcon = ''
       web3State.starkNet.starkChain = ''
     } else {
@@ -103,7 +103,7 @@ export default {
 
   updateStarkNetIsConnect(state, starkNetIsConnect) {
     if (!starkNetIsConnect) {
-      web3State.starkNet.starkWalletName = ''
+      web3State.starkNet.starkNetWalletName = ''
       web3State.starkNet.starkWalletIcon = ''
       web3State.starkNet.starkChain = ''
       web3State.starkNet.starkNetAddress = ''
@@ -146,13 +146,9 @@ export default {
     if (typeof mode === 'string' && mode) {
       state.themeMode = mode
     } else {
-      if (state.themeMode === 'light') {
-        state.themeMode = 'dark'
-      } else {
-        state.themeMode = 'light'
-      }
+      state.themeMode = state.themeMode === 'light' ? 'dark' : 'light'
     }
+    localStorage.setItem('themeMode', state.themeMode)
     toggleBodyCls()
-    localStorage.setItem('themeMode', state.themeMode )
   },
 }

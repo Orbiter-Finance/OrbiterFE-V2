@@ -119,16 +119,13 @@ export default {
         try {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
-            const { starkIsConnected, starkNetAddress } =
-              web3State.starkNet
+            const { starkIsConnected, starkNetAddress } = web3State.starkNet
             if (!starkIsConnected && !starkNetAddress) {
               await connectStarkNetWallet()
               if (
                 !web3State.starkNet.starkIsConnected &&
                 !web3State.starkNet.starkNetAddress
-              ) {
-                return
-              }
+              ) return
             }
           }
 
@@ -137,7 +134,7 @@ export default {
             this.loadingIndex = index
             const { coinbase } = web3State
             const imxHelper = new IMXHelper(e.localID)
-            await imxHelper.ensureUser(coinbase)
+            coinbase && await imxHelper.ensureUser(coinbase)
           }
 
           // dydx
@@ -158,7 +155,6 @@ export default {
             title: err.message,
             duration: 3000,
           })
-
           this.loadingIndex = -1
           return
         }
@@ -195,12 +191,11 @@ export default {
 }
 .obSelectChainBody {
   margin: 4.2rem auto;
+  // height: calc(
+  //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
+  // );
   height: calc(
-    100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
-  );
-  height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
+    100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
   );
   border-radius: 20px;
   padding: 20px 0;

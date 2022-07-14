@@ -286,7 +286,6 @@ export default {
     } catch (error) {
       throw new Error(`getTransferValue error ${error.message}`)
     }
-
   },
   async getL1SigAndPriVateKey(signer) {
     try {
