@@ -95,7 +95,8 @@ export default {
     }
   },
   toHex(num) {
-    return '0x' + num.toString(16)
+    console.log("num-------", num);
+    return '0x' + Number(num).toString(16)
   },
   transferTimeStampToTime(timestamp) {
     if (!timestamp) {
@@ -181,10 +182,13 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
+    console.lo
     const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
     const switchParams = {
       chainId: this.toHex(chain.chainId),
     }
+
+    console.log("switchParams", switchParams);
 
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({

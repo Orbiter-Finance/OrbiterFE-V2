@@ -60,17 +60,12 @@
     </div>
     <!-- When queryParams.fixed or toChain is dydx, hide it! -->
     <svg-icon
-      v-if="
-        !queryParams.fixed &&
-        transferDataState.toChainID != 11 &&
-        transferDataState.toChainID != 511 &&
-        !starkMid
-      "
+      v-if="isShowExchangeIcon"
       class="exchange-icon"
       iconName="exchange"
       @click.native="transfer_mid"
     ></svg-icon>
-    <div class="to-area">
+    <div class="to-area" :style="{marginTop: isShowExchangeIcon ? '4px' : '-2px'}">
       <div class="topItem">
         <o-tooltip
           v-if="
@@ -114,6 +109,19 @@
           <div class="right-value">{{ toValue }}</div>
         </div>
       </div>
+    </div>
+    <div v-if="isStarknet" style="font-size: 1.2rem;color: #78797d;margin-top:1rem;text-align: left;">
+      <svg-icon
+        style="
+          width: 1rem;
+          height: 1rem;
+          height: 1rem;
+          margin-right: 0.2rem;
+        "
+        iconName="tips"
+      ></svg-icon>
+      Centralized transfer is provided currently and trustless transfer will be launched soon.
+      <a style="text-decoration: underline;" href="https://docs.orbiter.finance/" target="__blank">More</a>
     </div>
     <CommBtn
       @click="sendTransfer"
@@ -185,7 +193,7 @@
     </div>
 
     <CommDialog ref="SelectFromChainPopupRef">
-      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height);width:100%;height:100%;">
+      <div slot="PoperContent" style="width:100%;">
         <ObSelectChain
           :ChainData="fromChainArray"
           v-on:getChainInfo="getFromChainInfo"
@@ -194,7 +202,7 @@
       </div>
     </CommDialog>
     <CommDialog ref="SelectToChainPopupRef">
-      <div slot="PoperContent" style="padding-bottom: var(--bottom-nav-height);width:100%;height:100%;">
+      <div slot="PoperContent" style="width:100%;">
         <ObSelectChain
           :ChainData="toChainArray"
           v-on:getChainInfo="getToChainInfo"
@@ -347,6 +355,24 @@ export default {
     transferDataState() { return transferDataState },
     web3State() { return web3State },
     isLogin() { return walletIsLogin.value },
+    isShowExchangeIcon() {
+      return !this.queryParams.fixed &&
+        transferDataState.toChainID != 11 &&
+        transferDataState.toChainID != 511 &&
+        !this.starkMid
+    },
+    isStarknet() {
+      return this.refererUpper === 'STARKNET'
+    },
+    refererUpper() {
+      // Don't use [$route.query.referer], because it will delay
+      const { href } = window.location
+      const match = href.match(/referer=(\w*)/i)
+      if (match?.[1]) {
+        return match[1].toUpperCase()
+      }
+      return ''
+    },
     tokens() {
       return this.tokenInfoArray.map((v) => {
         return {
@@ -1453,6 +1479,7 @@ export default {
       }
     },
     async sendTransfer() {
+      console.log("------------sendTransfer", compatibleGlobalWalletConf.value.walletPayload.networkId);
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return
       }
@@ -1638,6 +1665,9 @@ export default {
               transferDataState.fromChainID
             ]
           ) {
+              console.log("我又进来了——------", compatibleGlobalWalletConf.value.walletPayload.networkId.toString(), this.$env.localChainID_netChainID[
+                  transferDataState.fromChainID
+                  ], compatibleGlobalWalletConf.value.walletType)
               if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
                 try {
                   await util.ensureWalletNetwork(
@@ -1649,6 +1679,7 @@ export default {
                 }
               } else {
                  const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
+                 console.log("matchSwitchChainDispatcher", matchSwitchChainDispatcher);
                  if (matchSwitchChainDispatcher) {
                     const successCallback = () => this.$emit('stateChanged', '2');
                     matchSwitchChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider, () => successCallback.bind(this));
@@ -1815,8 +1846,7 @@ export default {
       margin-right: 10px;
     }
   }
-  .from-area,
-  .to-area {
+  .from-area, .to-area {
     margin-top: 20px;
     height: 96px;
     border-radius: 20px;
@@ -1892,14 +1922,13 @@ export default {
       }
     }
   }
+  .from-area {
+    margin-bottom: 8px;
+  }
   .exchange-icon {
-    margin: 8px 0;
     width: 28px;
     height: 28px;
     cursor: pointer;
-  }
-  .to-area {
-    margin-top: -10px;
   }
   .btn {
     margin-top: 32px;
@@ -1931,6 +1960,12 @@ export default {
   }
   .red {
     color: #df2e2d;
+  }
+  .starknet-tips {
+    font-family: 'Inter Regular';
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
   }
 }
 </style>

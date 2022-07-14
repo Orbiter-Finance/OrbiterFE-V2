@@ -10,7 +10,9 @@ const {
     standardLoginStatusCheckerOfWallets: loginStatusCheckerOfAppWebview,
     standardWalletDispatchersOnAddChain: mobileAppWebviewDispatchersOnAddChain,
     standardWalletDispatchersOnSwitchChain: mobileAppWebviewDispatchersOnSwitchChain
-} = standardWalletLoader(standardMobileAppConf); 
+} = standardWalletLoader(standardMobileAppConf);
+
+console.log("mobileAppWebviewDispatchersOnSwitchChain", mobileAppWebviewDispatchersOnSwitchChain);
 
 export default {
     walletDispatchersOnInit: mobileAppWebviewDispatchersOnInit,

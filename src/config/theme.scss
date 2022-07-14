@@ -33,6 +33,9 @@
   }
   background-size: 100% 360px;
   background-color: #28293D;
+  a {
+    color: var(--dark-page-box-color);
+  }
   // ---------- History page / start ----------
   .history-page {
     .history-content {
@@ -292,6 +295,9 @@
   }
   &.app {
     background-color: #F5F5F5;
+  }
+  a {
+    color: var(--light-page-color);
   }
   // ---------- History page / start ----------
   .history-page {

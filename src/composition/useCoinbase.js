@@ -12,7 +12,7 @@ export const web3State = reactive({
   localLogin: true,
   starkNet: {
     starkNetAddress: '',
-    starkWalletName: '',
+    starkNetWalletName: '',
     starkWalletIcon: '',
     starkIsConnected: false,
     starkChain: '',

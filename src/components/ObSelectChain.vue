@@ -193,12 +193,11 @@ export default {
 }
 .obSelectChainBody {
   margin: 4.2rem auto;
+  // height: calc(
+  //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
+  // );
   height: calc(
-    100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
-  );
-  height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
+    100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
   );
   border-radius: 20px;
   padding: 20px 0;
