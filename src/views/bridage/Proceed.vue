@@ -128,7 +128,7 @@ export default {
         return `Tx:${util.shortAddress(fromTxHash)}`
       } 
       
-      const { proceedState, proceeding, transferData } = this.$store.state
+      const { proceedState, proceeding } = this.$store.state
       if (proceedState === 1) {
         return 'View on Explore'
       } else {
@@ -136,6 +136,7 @@ export default {
         if (transferDataState.fromChainID == 8 || transferDataState.fromChainID == 88) {
           return `TransferId: ${proceeding.userTransfer.txid}`
         }
+        console.log('FromTx: ', proceeding.userTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
       }
     },
@@ -153,7 +154,7 @@ export default {
         }
       } 
 
-      const { proceedState, proceeding, transferData } = this.$store.state
+      const { proceedState, proceeding } = this.$store.state
       if (proceedState < 4) {
         return 'View on Explore'
       } else {
@@ -161,6 +162,7 @@ export default {
         if (transferDataState.toChainID == 8 || transferDataState.toChainID == 88) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
+        console.log('ToTx: ', proceeding.makerTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },

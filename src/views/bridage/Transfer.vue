@@ -1882,7 +1882,7 @@ export default {
 
       .right {
         width: 100%;
-        color: #df2e2d;
+        // color: #df2e2d;
         text-align: right;
         border: 0;
         outline: 0px;
