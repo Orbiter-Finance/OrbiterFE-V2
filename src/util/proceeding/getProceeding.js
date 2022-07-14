@@ -24,20 +24,12 @@ import { DydxListen } from '../dydx/dydx_listen'
 import { BobaListen } from '../boba/boba_listen'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { getTimeStampInfo } from './get_tx_by_hash'
+import { lpApiKey, lpAccountInfo, web3State, transferDataState } from '../../composition/hooks'
 
 let startBlockNumber = ''
 
-const getHistory = () => {
-  if (store.getters.realSelectMakerInfo) {
-    store.dispatch('getTransactionsHistory', {
-      current: 1,
-    })
-  }
-}
-
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
-  getHistory()
 }
 
 async function confirmUserTransaction(
@@ -179,7 +171,7 @@ async function confirmUserTransaction(
             sn_makerTransferChainID,
             makerInfo,
             makerInfo.makerAddress,
-            store.state.web3.coinbase,
+            web3State.coinbase,
             sn_amountToSend,
             compareProceedTxTimeStr,
             sn_nonce
@@ -244,7 +236,7 @@ async function confirmUserTransaction(
             imx_makerTransferChainID,
             makerInfo,
             makerInfo.makerAddress,
-            store.state.web3.coinbase,
+            web3State.coinbase,
             imx_amountToSend,
             compareProceedTxTimeStr,
             imx_nonce
@@ -265,8 +257,8 @@ async function confirmUserTransaction(
 
     // loopring
     if (localChainID == 9 || localChainID == 99) {
-      let apiKey = store.state.lpApiKey
-      let acc = store.state.lpAccountInfo
+      let apiKey = lpApiKey.value
+      let acc = lpAccountInfo.value
       const GetUserTransferListRequest = {
         accountId: acc.accountId,
         hashes: txHash,
@@ -506,7 +498,7 @@ async function confirmUserTransaction(
         sendRAmount,
         nonce
       ).tAmount
-      const { transferExt } = store.state.transferData
+      const { transferExt } = transferDataState
       let toAddress = trx.from
       if (transferExt?.value) {
         toAddress = transferExt.value
@@ -803,7 +795,7 @@ function ScanMakerTransfer(
     if (localChainID == 4 || localChainID == 44) {
       const asyncStarknet = async () => {
         //todo
-        const toStarknetAddress = store.state.web3.starkNet.starkNetAddress
+        const toStarknetAddress = web3State.starkNet.starkNetAddress
 
         let fromStarknetAddress = getStarkMakerAddress(
           makerInfo.makerAddress,

@@ -34,6 +34,7 @@ export default {
   overflow: hidden;
   font-weight: 700;
   font-size: 16px;
+  font-family: 'Inter';
   .header-left {
     float: left;
   }

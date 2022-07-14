@@ -8,6 +8,41 @@
   --bottom-nav-height: 8rem;
 }
 
+/* fonts:
+  url('../assets/fonts/Inter-Bold-4.otf'), 
+  url('../assets/fonts/Inter-Medium-8.otf'), 
+  url('../assets/fonts/Inter-Regular-9.otf'), 
+  url('../assets/fonts/Inter-Thin-11.otf'); 
+*/
+/* default is Inter Bold */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  src: url('../assets/fonts/Inter-Bold-4.otf');
+  font-stretch: 100%;
+}
+@font-face {
+  font-family: 'Inter Regular';
+  font-style: normal;
+  src: url('../assets/fonts/Inter-Regular-9.otf');
+  font-stretch: 100%;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  min-height: 1vh;
+  overflow: hidden;
+  font-family: 'Inter';
+  font-style: normal;
+}
+
+html,body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 input {
   padding: 0;
 }
@@ -80,4 +115,87 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* ::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.3);
+} */
+  
+.s-dialog {
+  z-index: 9999 !important;
+}
+
+/* body {
+  background-color: #fff;
+} */
+
+* {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  /*IE10*/
+  user-select: none;
+}
+
+input {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+textarea {
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+p {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+
+.noScroll {
+  overflow-y: hidden;
+}
+
+.scroll {
+  overflow-y: scroll;
+}
+
+.router {
+  /* // padding-bottom: var(--bottom-nav-height);
+  // height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height));
+  // height: calc(
+  //   var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height)
+  // ); */
+
+  width: 100%;
+}
+.global-dialog {
+  position: absolute;
+  z-index: 1001;
+  width: 100%;
+}
+
+@media screen and (min-width: 5000px) {
+  .router {
+    padding: 0;
+    height: calc(100% - var(--top-nav-height));
+    width: 100%;
+  }
 }

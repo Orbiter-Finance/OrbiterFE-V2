@@ -5,6 +5,7 @@ import pollWeb3 from './pollWeb3'
 import { findMatchWeb3ProviderByWalletType } from '../../walletsDispatchers/utils';
 import { METAMASK } from "../../walletsDispatchers"
 import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData"
+import { updateCoinbase, updateIsInstallMeta } from '../../../composition/hooks'
 
 async function installWeb3() {
   var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK);
@@ -12,14 +13,14 @@ async function installWeb3() {
     try {
       await web3Provider.enable()
     } catch (error) {
-      store.commit('updateIsInstallMeta', true)
-      store.commit('updateCoinbase', '')
+      updateIsInstallMeta(true)
+      updateCoinbase('')
       showMessage('User denied account access', 'error')
       return
     }
   } else {
-    store.commit('updateIsInstallMeta', false)
-    store.commit('updateCoinbase', '')
+    updateIsInstallMeta(false)
+    updateCoinbase('')
     showMessage('not install metamask', 'error')
     return
   }
@@ -31,11 +32,11 @@ async function getWeb3() {
   if (!web3) {
     return
   }
-  store.commit('updateIsInstallMeta', true)
+  updateIsInstallMeta(true)
   await web3.eth.net.getId((error, netWorkId) => {
     if (error || !netWorkId) {
       showMessage('get netWorkID failed, refresh and try again', 'error')
-      store.commit('updateCoinbase', '')
+      updateCoinbase('')
       return
     } else {
       console.log('netWorkId=', netWorkId, typeof (netWorkId))
@@ -53,16 +54,16 @@ async function getWeb3() {
         .send('eth_requestAccounts')
         .then((coin) => {
           // console.log('result =', coin.result)
-          store.commit('updateCoinbase', coin.result[0])
+          updateCoinbase(coin.result[0])
         })
         .catch((err) => {
           console.log('err =', err)
           showMessage(err.message, 'error')
-          store.commit('updateCoinbase', '')
+          updateCoinbase('')
         })
     } else {
       // showMessage(`get address ${coinbase}`, 'success')
-      store.commit('updateCoinbase', coinbase)
+      updateCoinbase(coinbase)
       // console.log('account =', web3.eth.accounts)
     }
   })

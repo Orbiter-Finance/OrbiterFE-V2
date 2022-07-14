@@ -3,12 +3,7 @@
   <div class="links">
     <div class="links-content">
       <span v-for="item in orbiterInfoData" :key="item.title" class="links-item">
-        <!-- <o-tooltip placement="top">
-          <template v-slot:titleDesc>
-            <span>{{item.title}}</span>
-          </template>
-        </o-tooltip> -->
-        <SvgIconThemed @click.native="JumpToMedia(item.value)" :iconName="item.icon" :lightOpacity="0.8" :darkOpacity="0.6" class="links-icon" />
+        <SvgIconThemed @click.native="JumpToMedia(item.value)" :icon="item.icon" class="links-icon" />
       </span>
     </div>
   </div>
@@ -28,7 +23,7 @@ export default {
     return {
       orbiterInfoData: [
         {
-          icon: 'book',
+          icon: 'docs',
           title: 'Docs ',
           value: 'https://docs.orbiter.finance/',
         },
@@ -46,6 +41,11 @@ export default {
           icon: 'medium',
           title: 'Medium',
           value: 'https://orbiter-finance.medium.com/',
+        },
+        {
+          icon: 'discord',
+          title: 'Discord',
+          value: 'https://discord.gg/w36NDkFB',
         },
       ]
     }
@@ -65,26 +65,38 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.app {
+  .bottom-nav {
+    margin-top: 36px;
+    padding-bottom: 12px;
+  }
+}
+.app-mobile {
+  .bottom-nav {
+    margin-top: 20px;
+    padding-bottom: 24px;
+  }
+}
 .bottom-nav {
-  padding-bottom: 12px;
-  margin-top: 36px;
   .links {
     display: flex;
     justify-content: center;
     align-content: center;
-    // margin-bottom: 10px;
+    height: 24px;
+    margin-bottom: 8px;
     .links-content {
-      // height: 16.6px;
       .links-item {
         margin-right: 25px;
+        width: 24px;
+        height: 24px;
+        display: inline-block;
         .links-icon {
-          width: 25px; 
-          height: 25px;
-          opacity: 0.4;
+          width: 24px; 
+          height: 24px;
           cursor: pointer;
         }
         .links-icon:hover {
-          opacity: 1;
+          opacity: 0.8;
         }
       }
       .links-item:last-child {
@@ -97,9 +109,12 @@ export default {
     font-size: 14px;
     line-height: 20px;
     cursor: pointer;
+    opacity: 0.6;
+    font-family: 'Inter Regular';
   }
   .terms:hover {
     text-decoration: underline;
+    opacity: 0.8;
   }
 }
 </style>

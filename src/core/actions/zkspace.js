@@ -7,6 +7,7 @@ import config from '../utils/config'
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
 import { private_key_to_pubkey_hash, sign_musig } from "zksync-crypto"
+import { transferDataState } from '../../composition/hooks'
 
 const BigNumber = require('bignumber.js')
 Axios.axios()
@@ -29,8 +30,8 @@ export default {
     }
   },
   getZKSpaceTransferGasFee: async function (localChainID, account) {
-    let ethPrice = store.state.transferData.ethPrice
-      ? store.state.transferData.ethPrice
+    let ethPrice = transferDataState.ethPrice
+      ? transferDataState.ethPrice
       : 2000
 
     if (localChainID !== 12 && localChainID !== 512) {
@@ -62,8 +63,8 @@ export default {
     if (!account) {
       return
     }
-    let ethPrice = store.state.transferData.ethPrice
-      ? store.state.transferData.ethPrice : 2000
+    let ethPrice = transferDataState.ethPrice
+      ? transferDataState.ethPrice : 2000
 
     if (localChainID !== 12 && localChainID !== 512) {
       throw new Error('getZKSpaceGasFeeError：wrongChainID')
@@ -260,7 +261,7 @@ export default {
   },
   async getTransferValue(selectMakerInfo, fromChainID, toChainID) {
     try {
-      var rAmount = new BigNumber(store.state.transferData.transferValue)
+      var rAmount = new BigNumber(transferDataState.transferValue)
         .plus(new BigNumber(selectMakerInfo.tradingFee))
         .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
       var rAmountValue = rAmount.toFixed()
@@ -285,7 +286,6 @@ export default {
     } catch (error) {
       throw new Error(`getTransferValue error ${error.message}`)
     }
-
   },
   async getL1SigAndPriVateKey(signer) {
     try {

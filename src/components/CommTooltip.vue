@@ -4,7 +4,7 @@
             :overlayClassName="$store.state.themeMode + '-comm_tooltip'">
   <template slot="title">
     <div class="tooltip-title">
-      <SvgIconThemed class="icon" style="margin-right:8px;margin-top: 2px;" size="xs" width="16px" height="16px" icon="info" />
+      <!-- <SvgIconThemed class="icon" style="margin-right:8px;margin-top: 2px;" size="xs" width="16px" height="16px" icon="info" /> -->
       <slot name="titleDesc"></slot>
     </div>
   </template>
@@ -29,9 +29,7 @@ export default {
 <style lang="scss">
 .light-comm_tooltip, .dark-comm_tooltip {
   .tooltip-title {
-    // display: flex;
-    // justify-content: center;
-    // align-items: flex-start;
+    font-family: 'Inter Regular';
     word-break: keep-all;
     padding-left: 26px;
     position: relative;
@@ -58,20 +56,20 @@ export default {
 }
 .light-comm_tooltip {
   .ant-tooltip-inner {
-    color: rgba(255, 255, 255, 0.8);
-    background: #3f4159 !important;
-  }
-  .ant-tooltip-arrow::before {
-    background: #3f4159 !important;
-  }
-}
-.dark-comm_tooltip {
-  .ant-tooltip-inner {
     color: rgba(51, 51, 51, 0.8);
     background: #FFF !important;
   }
   .ant-tooltip-arrow::before {
     background: #FFF !important;
+  }
+}
+.dark-comm_tooltip {
+  .ant-tooltip-inner {
+    color: rgba(255, 255, 255, 0.8);
+    background: #3f4159 !important;
+  }
+  .ant-tooltip-arrow::before {
+    background: #3f4159 !important;
   }
 }
 

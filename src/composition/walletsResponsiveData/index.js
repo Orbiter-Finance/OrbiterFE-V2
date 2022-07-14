@@ -1,7 +1,10 @@
 import { computed } from "../index";
 import { store } from "../../store";
-import { globalSelectWalletConf, loginStatusCheckerOfWallets, METAMASK } from "../../util/walletsDispatchers";
+import walletDispatchers, { globalSelectWalletConf, METAMASK } from "../../util/walletsDispatchers";
 import { findMatchWeb3ProviderByWalletType } from "../../util/walletsDispatchers/utils";
+import { web3State } from '../useCoinbase'
+
+const { loginStatusCheckerOfWallets } = walletDispatchers;
 
 // if there is a wallet connect with Oribiter
 // it will affect the ui changes in each route
@@ -14,9 +17,9 @@ export const walletIsLogin = computed(() => {
     }
 
     return (
-     store.state.web3.isInstallMeta &&
-     store.state.web3.isInjected &&
-     store.state.web3.localLogin
+     web3State.isInstallMeta &&
+     web3State.isInjected &&
+     web3State.localLogin
     )
 })
 
@@ -34,10 +37,10 @@ export const compatibleGlobalWalletConf = computed(() => {
     return {
         walletType: METAMASK,
         walletPayload: {
-            walletAddress: store.state.web3.coinbase,
+            walletAddress: web3State.coinbase,
             provider: findMatchWeb3ProviderByWalletType(METAMASK),
-            ...store.state.web3,
-            networkId: globalSelectWalletConf.walletPayload.networkId || store.state.web3.networkId,
+            ...web3State,
+            networkId: globalSelectWalletConf.walletPayload.networkId || web3State.networkId,
         },
         loginSuccess: true
     }

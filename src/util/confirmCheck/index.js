@@ -4,9 +4,10 @@ import util from '../../util/util'
 import transferCalculate from '../../util/transfer/transferCalculate'
 import axios from 'axios'
 import { netStateUrl } from '../../../env'
+import { realSelectMakerInfo } from '../../composition/hooks'
 
 async function checkStateWhenConfirmTransfer(transferBalance) {
-  const selectMakerInfo = store.getters.realSelectMakerInfo
+  const selectMakerInfo = realSelectMakerInfo.value
   try {
     const _balance = await getBalance(
       selectMakerInfo.makerAddress,

@@ -3,14 +3,20 @@
   <CommBoxHeader :back="closerButton">{{detailData ? 'Detail' : 'Proceeding'}}</CommBoxHeader>
   <div class="ProceedContent">
     <div v-for="item in proceedData" :key="item.title" class="contentItem">
-      <span style="width:100px;text-align:left;">{{ item.title }}</span>
+      <span class="item-title" style="width:100px;text-align:left;">{{ item.title }}</span>
       <span class="item-value right" v-if="item.desc || item.descInfo">{{ item.desc }}</span>
       <CommLoading v-else class="right" width="1.2rem" height="1.2rem" />
     </div>
     <div class="chainDataContent">
+      <div v-if="isMobile" class="middle-icon-abs">
+        <div v-if="isProcee" :class="[{'rocket-box-bg': isProcee}]">
+        </div>
+        <div v-else :class="['rocket-box']">
+          <SvgIconThemed v-if="true" iconName="satellite" size="xs" />
+        </div>
+      </div>
       <div class="item left">
         <div class="chain-name from">
-          <!-- <span class="label">From </span> -->
           <span>{{ FromChainName }}</span>
         </div>
         <div class="chain">
@@ -28,16 +34,15 @@
         <div class="switch-btn" @click="() => switchNetWork()">Switch Network</div>
       </div>
       <div class="middle-icon">
-        <div :class="['rocket-box', {'rocket-box-bg': isProcee}]">
-          <SvgIconThemed v-if="!isProcee" icon="rocket" size="xs" />
+        <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
+          <SvgIconThemed v-if="!isProcee" iconName="satellite" size="xs" />
         </div>
-        <div class="rocket-line-box">
+        <div v-if="!isMobile" class="rocket-line-box">
           <SvgIconThemed icon="rocket-line" style="width:157px;height:10px;margin-top:10px;" />
         </div>
       </div>
       <div class="item right">
         <div class="chain-name to">
-          <!-- <span class="label">To </span> -->
           <span>{{ toChainName }}</span>
         </div>
         <div class="chain">
@@ -64,11 +69,12 @@
 </template>
 
 <script>
-import { SvgIconThemed, CommBoxHeader, CommBtn, CommLoading } from '../../components'
+import { SvgIconThemed, CommBoxHeader, CommBtn } from '../../components'
 import util from '../../util/util'
 import { chain2icon } from '../../util'
 import Middle from '../../util/middle/middle'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
+import { isMobile, transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
 export default {
   name: 'Proceed',
@@ -80,9 +86,12 @@ export default {
     },
   },
   components: {
-    CommLoading, SvgIconThemed, CommBoxHeader, CommBtn
+    SvgIconThemed, CommBoxHeader, CommBtn
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     isProcee() {
       if (this.detailData) {
         return this.detailData.state == 1
@@ -95,17 +104,17 @@ export default {
     },
     FromChainName() {
       return util.chainName(
-        this.$store.state.transferData.fromChainID,
+        transferDataState.fromChainID,
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.fromChainID
+          transferDataState.fromChainID
         ]
       )
     },
     toChainName() {
       return util.chainName(
-        this.$store.state.transferData.toChainID,
+        transferDataState.toChainID,
         this.$env.localChainID_netChainID[
-          this.$store.state.transferData.toChainID
+          transferDataState.toChainID
         ]
       )
     },
@@ -124,7 +133,7 @@ export default {
         return 'View on Explore'
       } else {
         // immutablex
-        if (transferData.fromChainID == 8 || transferData.fromChainID == 88) {
+        if (transferDataState.fromChainID == 8 || transferDataState.fromChainID == 88) {
           return `TransferId: ${proceeding.userTransfer.txid}`
         }
         return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
@@ -149,7 +158,7 @@ export default {
         return 'View on Explore'
       } else {
         // immutablex
-        if (transferData.toChainID == 8 || transferData.toChainID == 88) {
+        if (transferDataState.toChainID == 8 || transferDataState.toChainID == 88) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
@@ -183,10 +192,10 @@ export default {
           desc:
             (
               this.$store.state.proceeding.userTransfer.amount /
-              10 ** this.$store.getters.realSelectMakerInfo.precision
+              10 ** realSelectMakerInfo.value.precision
             ).toFixed(6) +
             ' ' +
-            this.$store.state.transferData.selectTokenInfo.token,
+            transferDataState.selectTokenInfo.token,
         },
       ]
     },
@@ -196,14 +205,14 @@ export default {
       if (this.detailData) {
         return chain2icon(this.detailData[`${isFrom ? 'from' : 'to'}ChainID`])
       }
-      return chain2icon(this.$store.state.transferData[`${isFrom ? 'from' : 'to'}ChainID`])
+      return chain2icon(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`])
     },
     switchNetWork(e = true) {
       let chainID
       if (this.detailData) {
         chainID = this.detailData[`${e ? 'from' : 'to'}ChainID`]
       } else {
-        chainID = this.$store.state.transferData[`${e ? 'from' : 'to'}ChainID`]
+        chainID = transferDataState[`${e ? 'from' : 'to'}ChainID`]
       }
       this.addChainNetWork(chainID)
     },
@@ -245,12 +254,12 @@ export default {
         return
       }
       
-      const { fromChainID } = this.$store.state.transferData
+      const { fromChainID } = transferDataState
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState === 1) {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = web3State.coinbase
         if (fromChainID == 4 || fromChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = web3State.starkNet.starkNetAddress
         }
         url = accountExploreUrl[fromChainID] + userAddress
 
@@ -277,16 +286,16 @@ export default {
       if (this.detailData) {
         data = this.detailData
       } else {
-        data = this.$store.state.transferData
+        data = transferDataState
       }
       const { toChainID, state } = data
       const { accountExploreUrl, txExploreUrl } = this.$env
       let url = null;
 
       const commHandler = () => {
-        let userAddress = this.$store.state.web3.coinbase
+        let userAddress = web3State.coinbase
         if (toChainID == 4 || toChainID == 44) {
-          userAddress = this.$store.state.web3.starkNet.starkNetAddress
+          userAddress = web3State.starkNet.starkNetAddress
         }
         url = accountExploreUrl[toChainID] + userAddress
 
@@ -348,7 +357,6 @@ export default {
     closerButton() {
       if (this.detailData) {
         Middle.$emit('showHistory', true)
-        // this.$store.commit('toggleHistoryPanelVisible', true)
         this.$emit('stateChanged', '4')
       } else {
         this.$store.commit('updateProceedTxID', null)
@@ -399,7 +407,7 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
                 method: 'wallet_addEthereumChain',
-                params: [params, that.$store.state.web3.coinbase],
+                params: [params, web3State.coinbase],
               })
               .then(() => {})
               .catch((error) => {
@@ -416,9 +424,103 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.app {
+  .proceed-box {
+    width: 600px;
+    height: 568px;
+    margin: 0 auto;
+    .ProceedContent {
+      padding: 0 40px;
+      .chainDataContent {
+        padding: 20px 41px;
+        width: 520px;
+        .middle-icon {
+          .rocket-box {
+            margin-top: 18px;
+            background-size: 100%;
+          }
+        }
+      }
+    }
+  }
+}
+.app-mobile {
+  .proceed-box {
+    width: 100%;
+    height: 100%;
+    .ProceedContent {
+      padding: 0 20px;
+      .chainDataContent {
+        padding: 20px 6px;
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        .middle-icon-abs {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          // width: calc(100% - 12px);
+          width: 100%;
+          .rocket-box {
+            background-repeat: no-repeat;
+            background-size: 50%;
+            margin-top: 90px;
+          }
+          .rocket-box-bg {
+            background-repeat: no-repeat;
+            background-size: 100%;
+            margin-top: 80px;
+            background-origin: content-box;
+            height: calc(100% - 90px);
+            padding-left: 120px;
+            padding-right: 120px;
+          }
+        }
+        // TODO: should remove
+        .middle-icon-abs0 {
+          position: absolute;
+          // left: calc(50% - 78px);
+          height: 100%;
+          .rocket-box {
+            background-repeat: no-repeat;
+
+            // background-size: 200%;
+            // height: 100px;
+            // width: 115px;
+            // margin-left: 10px;
+            // margin-top: 30px;
+
+            background-size: 50%;
+            height: 200px;
+            width: 300px;
+            margin-left: 90px;
+            margin-top: 30px;
+            .svg {
+              margin-top: 30px;
+              // margin-left: 20px;
+              margin-left: -140px;
+            }
+          }
+          .rocket-line-box {
+            margin-top: -30px;
+          }
+        }
+        .middle-icon {
+          width: 65px;
+          .rocket-box {
+            // margin-top: 24px;
+            margin-top: 50px;
+            background-size: 200%;
+          }
+        }
+      }
+    }
+  }
+}
 .proceed-box {
-  width: 600px;
-  height: 568px;
+  font-family: 'Inter Regular';
   border-radius: 20px;
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
@@ -434,20 +536,12 @@ export default {
   .ProceedContent {
     margin-top: 8px;
     position: relative;
-    padding: 0 40px;
     .contentItem {
       width: 100%;
       display: flex;
       margin-bottom: 12px;
-      // .right {
-      //   color: #e85e24;
-      //   text-align: right;
-      //   font-weight: lighter;
-      // }
     }
     .chainDataContent {
-      padding: 20px 41px;
-      width: 520px;
       height: 280px;
       border-radius: 20px;
       position: relative;
@@ -459,6 +553,7 @@ export default {
         width: 128px;
         height: 100%;
         .chain-name {
+          font-family: 'Inter';
           font-weight: 700;
           font-size: 16px;
           line-height: 24px;
@@ -499,6 +594,9 @@ export default {
             margin-right: 4px;
           }
         }
+        .tx:hover {
+          text-decoration: underline;
+        }
         .switch-btn {
           width: 128px;
           height: 28px;
@@ -513,11 +611,10 @@ export default {
         flex: 1;
         .rocket-box {
           height: 60px;
-          margin-top: 39px;
-          background-size: 100%;
           display: flex;
           align-items: flex-end;
           justify-content: center;
+          background-repeat: no-repeat;
         }
       }
     }

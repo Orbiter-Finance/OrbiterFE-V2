@@ -47,12 +47,13 @@ import { IMXHelper } from '../util/immutablex/imx_helper'
 import util from '../util/util.js';
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
 import { chain2icon } from '../util'
-import { SvgIconThemed, CommLoading } from './'
+import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
+import { web3State } from '../composition/hooks'
 
 export default {
   name: 'ObSelectChain',
-  components: { CommLoading, SvgIconThemed },
+  components: { SvgIconThemed },
   props: {
     ChainData: {
       type: Array,
@@ -118,31 +119,28 @@ export default {
         try {
           // starknet
           if (e.localID == 4 || e.localID == 44) {
-            const { starkIsConnected, starkNetAddress } =
-              this.$store.state.web3.starkNet
+            const { starkIsConnected, starkNetAddress } = web3State.starkNet
             if (!starkIsConnected && !starkNetAddress) {
               await connectStarkNetWallet()
               if (
-                !this.$store.state.web3.starkNet.starkIsConnected &&
-                !this.$store.state.web3.starkNet.starkNetAddress
-              ) {
-                return
-              }
+                !web3State.starkNet.starkIsConnected &&
+                !web3State.starkNet.starkNetAddress
+              ) return
             }
           }
 
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index
-            const { coinbase } = this.$store.state.web3
+            const { coinbase } = web3State
             const imxHelper = new IMXHelper(e.localID)
-            await imxHelper.ensureUser(coinbase)
+            coinbase && await imxHelper.ensureUser(coinbase)
           }
 
           // dydx
           if (e.localID == 11 || e.localID == 511) {
             this.loadingIndex = index
-            const { coinbase } = this.$store.state.web3
+            const { coinbase } = web3State
             const dydxHelper = new DydxHelper(
               e.localID,
               new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
@@ -157,7 +155,6 @@ export default {
             title: err.message,
             duration: 3000,
           })
-
           this.loadingIndex = -1
           return
         }
@@ -182,16 +179,24 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.app {
+  .obSelectChainBody {
+    width: 320px;
+  }
+}
+.app-mobile {
+  .obSelectChainBody {
+    width: calc(100% - 30px);
+  }
+}
 .obSelectChainBody {
   margin: 4.2rem auto;
+  // height: calc(
+  //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
+  // );
   height: calc(
-    100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
+    100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
   );
-  height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
-  );
-  width: 320px;
   border-radius: 20px;
   padding: 20px 0;
 
@@ -229,6 +234,7 @@ export default {
 
     input::placeholder {
       font-size: 1.4rem;
+      font-family: 'Inter Regular';
     }
 
     .searchIcon {

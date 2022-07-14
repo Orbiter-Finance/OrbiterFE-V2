@@ -1,14 +1,14 @@
 import WalletConnect from "@walletconnect/client";
 import QRCodeModule from "@walletconnect/qrcode-modal";
 
-import { userDeniedMessage, showMessage } from "../constants/web3/getWeb3"
-import { globalSelectWalletConf, updateSelectWalletConfPayload, updateGlobalSelectWalletConf } from "./walletsCoreData";
-import { WALLETCONNECT } from "./constants";
+import { userDeniedMessage, showMessage } from "../../constants/web3/getWeb3"
+import { globalSelectWalletConf, updateSelectWalletConfPayload, updateGlobalSelectWalletConf } from "../walletsCoreData";
+import { WALLETCONNECT } from "../constants";
 import { 
     modifyLocalLoginInfo, 
     withPerformInterruptWallet
-} from "./utils";
-import { localWeb3 } from "../constants/contract/localWeb3";
+} from "../utils";
+import { localWeb3 } from "../../constants/contract/localWeb3";
 
 let connector = null; // when walletconnect connect success, connector will be assigned connector instance
 
@@ -48,7 +48,7 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
 
 const onConnectSuccessCallback = withErrorCatcher((payload, connected = false) => {
     // this console is necessary
-    console.log(`%c WalletConnect connect success`, "color: #fff; background: green", payload);
+    console.successLog("WalletConnect connect success", payload);
     const walletInfo = performWalletConnectAccountInfo(payload, connected);
     updateGlobalSelectWalletConf(WALLETCONNECT, walletInfo, true);
     // if connect successful, set the local login info
@@ -60,7 +60,7 @@ const onConnectSuccessCallback = withErrorCatcher((payload, connected = false) =
 });
 
 const onDisconnectCallback = withErrorCatcher(payload => {
-    console.log(`%c WalletConnect disconnected`, "color: #fff; background: red", payload);
+    console.errorLog("WalletConnect disconnected", payload);
     if (!connector) {
         userDeniedMessage(); // first in
     } else {
@@ -70,7 +70,7 @@ const onDisconnectCallback = withErrorCatcher(payload => {
 });
 
 const onSessionUpdateCallback = withErrorCatcher(payload => {
-    console.log(`%c WalletConnect session updated`, "color: #fff; background: orange", payload);
+    console.warnLog("WalletConnect session updated", payload)
     const { params = [] } = payload;
     const [chainIdAndAccountInfo = {}] = params;
     const { chainId, accounts } = chainIdAndAccountInfo;
@@ -93,7 +93,6 @@ const subscribeWalletEvents = () => {
 
 // wake up the wallet connect modal by invoke this method
 export const walletConnectDispatcherOnInit = async () => {
-    console.log("walletConnect init triggered")
     connector = new WalletConnect({
         bridge: "https://bridge.walletconnect.org",
         qrcodeModal: QRCodeModule
@@ -122,7 +121,7 @@ export const walletConnectDispatcherOnSignature = async (from, selectMakerInfo, 
         to: selectMakerInfo.makerAddress,
         value,
       });
-    const nonce = await _web3.eth.getTransactionCount("0x6C1DddE80D5a81E6b1E18E2385c450c7c9Ded7c0");
+    const nonce = await _web3.eth.getTransactionCount(from);
     connector.sendTransaction({
         from,
         to: selectMakerInfo.makerAddress,
@@ -144,5 +143,5 @@ export const walletConnectDispatcherOnSignature = async (from, selectMakerInfo, 
 }
 
 export const walletConnectDispatcherOnAddChain = () => {
-    showMessage("You must Change Networks", "error");
+    showMessage("You must Change Networks on your wallet app", "error");
 }
