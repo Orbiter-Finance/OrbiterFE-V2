@@ -10,7 +10,6 @@ const LocalNetWorks = env.supportLocalNetWorksIDs
 function localWeb3(chainID) {
   if (LocalNetWorks.indexOf(chainID.toString()) > -1) {
     const provider = env.localProvider[chainID]
-    console.log("provider", provider);
     if (!provider) {
       return null
     }

@@ -707,6 +707,7 @@ function startScanMakerTransfer(
   nonce,
   ownerAddress = ''
 ) {
+  console.log("i am start scaning");
   if (!isCurrentTransaction(transactionID)) {
     return
   }
