@@ -102,7 +102,7 @@ export default {
 }
 .app-mobile {
   .bridage-page {
-    height: 100%;
+    // height: 100%;
     .maker-box {
       height: 100%;
       width: 100%;
