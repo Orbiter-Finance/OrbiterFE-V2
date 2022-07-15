@@ -137,6 +137,7 @@ export default {
     .main {
       height: calc(100% - 83px - 96px);
       border-radius: 20px;
+      display: flex;
     }
   }
   .global-dialog {
@@ -162,7 +163,6 @@ export default {
     flex-direction: column;
     .main {
       flex-grow: 1;
-      display: flex;
     }
   }
 }
