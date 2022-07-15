@@ -1479,7 +1479,6 @@ export default {
       }
     },
     async sendTransfer() {
-      console.log("------------sendTransfer", compatibleGlobalWalletConf.value.walletPayload.networkId);
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return
       }
@@ -1665,9 +1664,6 @@ export default {
               transferDataState.fromChainID
             ]
           ) {
-              console.log("我又进来了——------", compatibleGlobalWalletConf.value.walletPayload.networkId.toString(), this.$env.localChainID_netChainID[
-                  transferDataState.fromChainID
-                  ], compatibleGlobalWalletConf.value.walletType)
               if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
                 try {
                   await util.ensureWalletNetwork(
@@ -1679,7 +1675,6 @@ export default {
                 }
               } else {
                  const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
-                 console.log("matchSwitchChainDispatcher", matchSwitchChainDispatcher);
                  if (matchSwitchChainDispatcher) {
                     const successCallback = () => this.$emit('stateChanged', '2');
                     matchSwitchChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider, () => successCallback.bind(this));
@@ -1882,7 +1877,7 @@ export default {
 
       .right {
         width: 100%;
-        color: #df2e2d;
+        // color: #df2e2d;
         text-align: right;
         border: 0;
         outline: 0px;

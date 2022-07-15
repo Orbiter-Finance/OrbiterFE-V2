@@ -1353,6 +1353,7 @@ export default {
   .confirm-box {
     width: 100%;
     // height: calc(100% - );
+    height: 100%;
     padding: 0 20px;
     .confirm-item {
       margin: 12px 0;

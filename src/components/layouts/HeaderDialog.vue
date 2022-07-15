@@ -121,8 +121,7 @@ import {
   web3State
 } from '../../composition/hooks'
 
-const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
-  walletDispatchers
+const { walletDispatchersOnInit, walletDispatchersOnDisconnect } = walletDispatchers
 
 export default {
   name: 'HeaderDialog',
@@ -252,7 +251,7 @@ export default {
     },
     connectWallet(walletConf) {
       this.closeSelectWalletDialog()
-      walletDispatchersOnInit[walletConf.title](this.$store)
+      walletDispatchersOnInit[walletConf.title]()
     },
     checkIsMobileEnv() {
       return isMobileEnv()
