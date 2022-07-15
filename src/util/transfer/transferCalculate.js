@@ -165,7 +165,7 @@ export default {
       try {
         transferFee = await zkspace.getZKTransferGasFee(
           fromChainID,
-          store.state.web3.coinbase
+          web3State.coinbase
         )
       } catch (error) {
         console.warn('getZKTransferGasFeeError =', error)
@@ -189,7 +189,7 @@ export default {
           fromTokenAddress
         )
         let loopringFee = await loopring.getTransferFee(
-          store.state.web3.coinbase,
+          web3State.coinbase,
           fromChainID,
           lpTokenInfo
         )
