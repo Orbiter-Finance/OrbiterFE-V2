@@ -92,7 +92,6 @@ export default {
     }
   },
   toHex(num) {
-    console.log("num-------", num);
     return '0x' + Number(num).toString(16)
   },
   transferTimeStampToTime(timestamp) {
@@ -184,9 +183,6 @@ export default {
     const switchParams = {
       chainId: this.toHex(chain.chainId),
     }
-
-    console.log("switchParams", switchParams);
-
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
