@@ -39,7 +39,6 @@ async function getWeb3() {
       updateCoinbase('')
       return
     } else {
-      console.log('netWorkId=', netWorkId, typeof (netWorkId))
       store.commit('updateNetWorkId', netWorkId.toString())
     }
   })
