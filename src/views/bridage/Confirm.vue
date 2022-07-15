@@ -419,7 +419,7 @@ export default {
       if (!(await zksync2Provider.isTokenLiquid(tokenAddress))) {
         throw new Error('the token can not be used for fee')
       }
-      var rAmount = new BigNumber(this.$store.state.transferData.transferValue)
+      var rAmount = new BigNumber(transferDataState.transferValue)
         .plus(new BigNumber(selectMakerInfo.tradingFee))
         .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
       var rAmountValue = rAmount.toFixed()
@@ -447,7 +447,7 @@ export default {
       })
       if (transferResult.hash) {
         this.onTransferSucceed(
-          this.$store.state.web3.coinbase,
+          web3State.coinbase,
           selectMakerInfo,
           tValue.tAmount,
           fromChainID,
