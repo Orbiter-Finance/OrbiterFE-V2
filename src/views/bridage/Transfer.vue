@@ -1712,6 +1712,7 @@ export default {
     async updateOriginGasCost() {
       this.originGasLoading = true
       const { fromChainID, toChainID } = transferDataState
+      console.log("transferDataState", transferDataState);
 
       if (!fromChainID || !toChainID) {
         return

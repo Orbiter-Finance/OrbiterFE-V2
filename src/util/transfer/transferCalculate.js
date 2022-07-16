@@ -700,6 +700,7 @@ export default {
   },
 
   async transferOrginGasUsd(fromChainID, toChainID, isErc20 = true) {
+    console.log("isErc20?", isErc20);
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0

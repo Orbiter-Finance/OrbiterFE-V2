@@ -20,8 +20,8 @@ export default {
     510: process.env.VUE_APP_HP_MT_R,
     13: process.env.VUE_APP_HP_BOBA,
     513: process.env.VUE_APP_HP_BOBA_R,
-    97: process.env.VUE_APP_HP_BSC_R,
-    56: process.env.VUE_APP_HP_BSC
+    515: process.env.VUE_APP_HP_BSC_R,
+    15: process.env.VUE_APP_HP_BSC
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -36,8 +36,8 @@ export default {
     510: process.env.VUE_APP_WP_MT_R,
     13: process.env.VUE_APP_WP_BOBA,
     513: process.env.VUE_APP_WP_BOBA_R,
-    514: process.env.VUE_APP_WP_BSC_R,
-    14: process.env.VUE_APP_WP_BSC
+    515: process.env.VUE_APP_WP_BSC_R,
+    15: process.env.VUE_APP_WP_BSC
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -64,8 +64,8 @@ export default {
     '511',
     '512',
     '513',
-    "14",
-    "514"
+    "15",
+    "515"
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -93,7 +93,7 @@ export default {
     511: '3', // dydx(R)
     512: '4', // zkspace(R)s
     513: '28', // boba rinkeby
-    514: "97", // bsc test
+    515: "97", // bsc test
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -112,7 +112,7 @@ export default {
     77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
     88: '',
     99: '',
-    514: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06"
+    515: "0x84b9B910527Ad5C03A9Ca831909E21e236EA7b06"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -140,7 +140,7 @@ export default {
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
     14: "https://bscscan.com/tx",
-    514: "https://testnet.bscscan.com/tx "
+    515: "https://testnet.bscscan.com/tx "
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -168,6 +168,6 @@ export default {
     13: 'https://blockexplorer.boba.network/address/',
     513: 'https://blockexplorer.rinkeby.boba.network/address/',
     14: "https://bscscan.com/address",
-    514: "https://testnet.bscscan.com/address/"
+    515: "https://testnet.bscscan.com/address/"
   },
 }
