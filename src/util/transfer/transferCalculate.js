@@ -96,6 +96,9 @@ const BOBA_TRANSFER_IN_LIMIT = 1787707
 const STARKNET_ETH_DEPOSIT_ONL1 = 110000
 const STARKNET_ETH_WITHDRAW_ONL1 = 60000
 
+const BSC_ERC20_DEPOSIT_ONL1 = 131362;
+
+
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   // min ~ max
@@ -700,7 +703,7 @@ export default {
   },
 
   async transferOrginGasUsd(fromChainID, toChainID, isErc20 = true) {
-    console.log("isErc20?", isErc20);
+    console.log("isErc20?", isErc20, fromChainID, toChainID);
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0
@@ -899,6 +902,7 @@ export default {
         const toGasPrice = await this.getGasPrice(toChainID === 6 ? 1 : 5)
         const pgDepositGas = toGasPrice * PG_ERC20_DEPOSIT_DEPOSIT_ONL1
         ethGas += pgDepositGas
+        console.log("polygon to Gas price", toGasPrice);
       } catch (error) {
         throw new Error(`po deposit error`)
       }
@@ -985,6 +989,13 @@ export default {
       let toGasPrice = await this.getGasPrice(toChainID)
       const depositGas = toGasPrice * BOBA_TRANSFER_IN_LIMIT
       ethGas += depositGas
+    }
+
+    if (toChainID === 515 || toChainID === 15) {
+      let toGasPrice = await this.getGasPrice(toChainID === 515 ? 5 : 1);
+      const bscToGasPrice = toGasPrice * BSC_ERC20_DEPOSIT_ONL1;
+      ethGas += bscToGasPrice;
+      // const depositGas = 
     }
 
     let usd = new BigNumber(0)
@@ -1132,6 +1143,7 @@ export default {
   },
 
   async getGasPrice(fromChainID) {
+    console.log("get Gas Price", fromChainID);
     if (fromChainID === 33 || fromChainID === 3) {
       return null
     }
@@ -1139,7 +1151,7 @@ export default {
       if (!env.localProvider[fromChainID]) {
         return null
       }
-
+      console.log("env.localProvider", env.localProvider[fromChainID], fromChainID)
       let response = await axios.post(env.localProvider[fromChainID], {
         jsonrpc: '2.0',
         method: 'eth_gasPrice',

@@ -13,6 +13,7 @@ const MAX_BITS = {
   dydx: 28,
   zkspace: 35,
   boba: 256,
+  bsc: 256
 }
 
 const CHAIN_INDEX = {
@@ -40,6 +41,8 @@ const CHAIN_INDEX = {
   512: 'zkspace',
   13: 'boba',
   513: 'boba',
+  515: "bsc",
+  15: "bsc"
 }
 
 const SIZE_OP = {
