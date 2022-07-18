@@ -22,7 +22,7 @@
         </o-tooltip>
       </div>
       <div class="item-right">
-        <span v-if="item.desc" :class="{ textBold: item.textBold }">{{
+        <span v-if="item.desc">{{
           item.desc
         }}</span>
       </div>
@@ -68,7 +68,7 @@
       <span
         v-if="!transferLoading"
         class="wbold s16"
-        style="letter-spacing: 0.1rem"
+        style="letter-spacing: 0.1rem;"
         >CONFIRM AND SEND</span
       >
       <CommLoading
@@ -1353,6 +1353,7 @@ export default {
     margin-top: 20px;
     height: 50px;
     line-height: 34px;
+    background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
   }
 }
 </style>

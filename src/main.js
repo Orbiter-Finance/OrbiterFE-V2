@@ -25,7 +25,7 @@ import eruda from 'eruda'
 import "./util/enhancedLogger";
 
 // in some cases, we may need do something in webview(like imToken's webview environment)
-// development only!!!
+// local only!!!
 if (isLocal()) {
   eruda.init()
   // eruda.position("center");

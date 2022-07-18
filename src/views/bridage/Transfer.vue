@@ -146,7 +146,7 @@
         <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
         <span class="border">Gas Fee Saved </span>
         <span class="red">
-          save
+          Save
           <CommLoading
             v-if="saveGasLoading"
             style="margin: 0 1rem"
@@ -172,7 +172,7 @@
           <span v-else>{{ timeSpent }}</span>
         </span>
         <span class="red">
-          save
+          Save
           <CommLoading
             v-if="saveTimeLoading"
             style="margin: 0 1rem"
@@ -1931,6 +1931,7 @@ export default {
     display: inline-block;
     line-height: 34px;
     margin-bottom: 20px;
+    background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
   }
   .info-box {
     font-family: 'Inter Regular';

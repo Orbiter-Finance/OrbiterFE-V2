@@ -30,7 +30,7 @@ import {
 } from '../../composition/walletsResponsiveData'
 import { setStarkNetDialog, setSelectWalletDialogVisible } from '../../composition/hooks'
 
-import { starkAddress, showAddress } from '../../composition/hooks'
+import { starkAddress, showAddress, saveSenderPageWorkingState } from '../../composition/hooks'
 
 export default {
   name: 'HeaderOps',
@@ -91,6 +91,9 @@ export default {
         params: route.params,
         query: route.query,
       }))
+      if (route.path === '/') {
+        saveSenderPageWorkingState()
+      }
       this.$router.push({
         path: '/history'
       })

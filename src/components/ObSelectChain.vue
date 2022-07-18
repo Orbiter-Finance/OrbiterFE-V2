@@ -248,17 +248,15 @@ export default {
     overflow-y: scroll;
     height: calc(100% - 90px);
   }
-  .list-content-box::-webkit-scrollbar {/*滚动条整体样式*/
-    // width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
-    // height: 1px;
+  .list-content-box::-webkit-scrollbar {
     width: 5px;
   }
-  .list-content-box::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+  .list-content-box::-webkit-scrollbar-thumb {
     // border-radius: 10px;
     // -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     // background: #535353;
   }
-  .list-content-box::-webkit-scrollbar-track {/*滚动条里面轨道*/
+  .list-content-box::-webkit-scrollbar-track {
     // -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
     // border-radius: 10px;
     // background: #EDEDED;
