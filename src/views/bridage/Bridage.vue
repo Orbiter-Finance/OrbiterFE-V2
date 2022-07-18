@@ -32,16 +32,28 @@
 import { Transfer, Confirm, Proceed } from './'
 import { ToggleBtn } from '../../components'
 import Middle from '../../util/middle/middle'
-import { isMobile, curPageTabState, togglePageTab } from '../../composition/hooks'
+import { isMobile, curPageTabState, togglePageTab, curPageStatus, changeCurPageStatus } from '../../composition/hooks'
 
 export default {
   name: 'Bridge',
   components: { Transfer, Confirm, Proceed, ToggleBtn },
   data() {
     return {
-      status: '1', // 1 2.confirm 3.proceed
       showDetail: false,
       detailData: null,
+      // detailData: {
+      //   fromChainID: 3,
+      //   fromTimeStamp: "06-11 03:49",
+      //   fromTxHash: "0x91d15798366f2d48384b1d734862384008142fa547ac9b56300f2a1c4632ba5c",
+      //   makerAddress: "0xd7...64fc",
+      //   state: 0,
+      //   toChainID: 6,
+      //   toTimeStamp: "2022-06-11T03:49:08.000Z",
+      //   toTxHash: "0x9ba8de5039d794dfeea1a056bf46d0793a8204bb57a6771c0d363ed22eff523a",
+      //   tokenName: "USDT",
+      //   userAddress: "0x6b...5f66",
+      //   userAmount: "4.509006",
+      // }
     }
   },
   computed: {
@@ -50,6 +62,9 @@ export default {
     },
     isSenderTab() {
       return curPageTabState.value === 'Sender'
+    },
+    status() {
+      return curPageStatus.value
     }
   },
   mounted() {
@@ -62,7 +77,7 @@ export default {
   },
   methods: {
     toggleTab() {
-      this.status = '1'
+      changeCurPageStatus('1')
       togglePageTab()
     },
     clickLearnMore() {
@@ -73,7 +88,7 @@ export default {
         this.showDetail = false
       } else {
         if (this.status !== e) {
-          this.status = e
+          changeCurPageStatus(e)
         }
       }
     },
@@ -102,7 +117,7 @@ export default {
 }
 .app-mobile {
   .bridage-page {
-    height: 100%;
+    // height: 100%;
     .maker-box {
       height: 100%;
       width: 100%;

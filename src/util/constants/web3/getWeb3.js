@@ -1,11 +1,13 @@
 import Web3 from 'web3'
 import { store } from '../../../store'
-import { Message } from 'element-ui'
 import pollWeb3 from './pollWeb3'
 import { findMatchWeb3ProviderByWalletType } from '../../walletsDispatchers/utils';
 import { METAMASK } from "../../walletsDispatchers"
 import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData"
 import { updateCoinbase, updateIsInstallMeta } from '../../../composition/hooks'
+import util from '../../util'
+
+const showMessage = util.showMessage
 
 async function installWeb3() {
   var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK);
@@ -39,7 +41,6 @@ async function getWeb3() {
       updateCoinbase('')
       return
     } else {
-      console.log('netWorkId=', netWorkId, typeof (netWorkId))
       store.commit('updateNetWorkId', netWorkId.toString())
     }
   })
@@ -68,15 +69,6 @@ async function getWeb3() {
     }
   })
   pollWeb3()
-}
-
-const showMessage = function (message, type) {
-  Message({
-    showClose: true,
-    duration: 2000,
-    message: message,
-    type: type,
-  })
 }
 
 const userDeniedMessage = () => showMessage('User denied account access', 'error');

@@ -1,9 +1,9 @@
-export const isLocal = () => !process.env.NODE_ENV
+export const isLocal = () => process.env.NODE_ENV === 'local'
 export const isDev = () => process.env.NODE_ENV === 'development'
 export const isProd = () => process.env.NODE_ENV === 'production'
 
 // TODO: should check by code
-export const isWebSimulation = true
+export const isWebSimulation = false
 
 export const MOBILE_APP = "mobileApp"; // mobile env
 export const PC_BROWSER = "pcBrowser"; // pc browser env

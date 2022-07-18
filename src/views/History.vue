@@ -58,7 +58,7 @@
 <script>
 import { NoData } from '../components'
 import Middle from '../util/middle/middle'
-import { historyPanelState, getTransactionsHistory } from '../composition/hooks'
+import { historyPanelState, getTransactionsHistory, recoverSenderPageWorkingState } from '../composition/hooks'
 
 export default {
   name: 'History',
@@ -119,6 +119,7 @@ export default {
       const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
       try {
         this.$router.push(last)
+        recoverSenderPageWorkingState()
       } catch(err) {
         console.error(err)
       }
@@ -166,7 +167,7 @@ export default {
         return 'ethlogo'
       }
     },
-  },
+  }
 }
 </script>
 

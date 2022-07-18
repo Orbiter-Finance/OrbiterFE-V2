@@ -23,7 +23,7 @@ import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, { getCurrentLoginInfoFromLocalStorage } from "./util/walletsDispatchers"
-import { getTraddingHistory, isMobile } from './composition/hooks'
+import { isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import History from './views/History.vue'
@@ -137,6 +137,7 @@ export default {
     .main {
       height: calc(100% - 83px - 96px);
       border-radius: 20px;
+      display: flex;
     }
   }
   .global-dialog {

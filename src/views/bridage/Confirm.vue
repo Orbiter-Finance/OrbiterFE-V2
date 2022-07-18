@@ -22,7 +22,7 @@
         </o-tooltip>
       </div>
       <div class="item-right">
-        <span v-if="item.desc" :class="{ textBold: item.textBold }">{{
+        <span v-if="item.desc">{{
           item.desc
         }}</span>
       </div>
@@ -68,7 +68,7 @@
       <span
         v-if="!transferLoading"
         class="wbold s16"
-        style="letter-spacing: 0.1rem"
+        style="letter-spacing: 0.1rem;"
         >CONFIRM AND SEND</span
       >
       <CommLoading
@@ -123,7 +123,6 @@ import {
   realSelectMakerInfo,
   web3State,
 } from '../../composition/hooks'
-import { notifyLg } from '../../util'
 
 const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
   walletDispatchers
@@ -1273,11 +1272,10 @@ export default {
       if (fromChainID == 8 || fromChainID == 88) {
         title = 'TransferId: ' + title
       }
-      notifyLg.call(this, title)
-      // this.$notify.success({
-      //   title,
-      //   duration: 3000,
-      // })
+      this.$notify.success({
+        title,
+        duration: 3000,
+      })
       this.$emit('stateChanged', '3')
     },
     closerButton() {
@@ -1304,6 +1302,7 @@ export default {
   .confirm-box {
     width: 100%;
     // height: calc(100% - );
+    height: 100%;
     padding: 0 20px;
     .confirm-item {
       margin: 12px 0;
@@ -1354,6 +1353,7 @@ export default {
     margin-top: 20px;
     height: 50px;
     line-height: 34px;
+    background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
   }
 }
 </style>

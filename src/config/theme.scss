@@ -34,6 +34,12 @@
         color: var(--dark-page-box-color);
       }
     }
+    .nav-item-border-bottom {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .nav-item-border-top {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
   }
   background-size: 100% 360px;
   background-color: #28293D;
@@ -302,6 +308,12 @@
         background: var(--light-page-bg);
         color: rgba(51, 51, 51, 0.8);
       }
+    }
+    .nav-item-border-bottom {
+      border-bottom: 1px solid rgba(51, 51, 51, 0.2);
+    }
+    .nav-item-border-top {
+      border-top: 1px solid rgba(51, 51, 51, 0.2);
     }
   }
   // &.app {

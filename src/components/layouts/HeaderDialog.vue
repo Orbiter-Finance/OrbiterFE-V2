@@ -180,7 +180,7 @@ export default {
         let networkName = ''
         if (starkChain) {
           if (starkChain == 4) {
-            networkName = 'Ethereum Mainnet'
+            networkName = 'StarkNet Mainnet'
           } else if (starkChain == 44) {
             networkName = 'Goerli Testnet'
           }

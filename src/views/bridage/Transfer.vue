@@ -146,7 +146,7 @@
         <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
         <span class="border">Gas Fee Saved </span>
         <span class="red">
-          save
+          Save
           <CommLoading
             v-if="saveGasLoading"
             style="margin: 0 1rem"
@@ -172,7 +172,7 @@
           <span v-else>{{ timeSpent }}</span>
         </span>
         <span class="red">
-          save
+          Save
           <CommLoading
             v-if="saveTimeLoading"
             style="margin: 0 1rem"
@@ -1479,7 +1479,6 @@ export default {
       }
     },
     async sendTransfer() {
-      console.log("------------sendTransfer", compatibleGlobalWalletConf.value.walletPayload.networkId);
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return
       }
@@ -1665,9 +1664,6 @@ export default {
               transferDataState.fromChainID
             ]
           ) {
-              console.log("我又进来了——------", compatibleGlobalWalletConf.value.walletPayload.networkId.toString(), this.$env.localChainID_netChainID[
-                  transferDataState.fromChainID
-                  ], compatibleGlobalWalletConf.value.walletType)
               if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
                 try {
                   await util.ensureWalletNetwork(
@@ -1679,7 +1675,6 @@ export default {
                 }
               } else {
                  const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
-                 console.log("matchSwitchChainDispatcher", matchSwitchChainDispatcher);
                  if (matchSwitchChainDispatcher) {
                     const successCallback = () => this.$emit('stateChanged', '2');
                     matchSwitchChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider, () => successCallback.bind(this));
@@ -1936,6 +1931,7 @@ export default {
     display: inline-block;
     line-height: 34px;
     margin-bottom: 20px;
+    background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
   }
   .info-box {
     font-family: 'Inter Regular';

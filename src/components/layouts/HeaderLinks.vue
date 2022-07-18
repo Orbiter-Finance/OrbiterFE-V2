@@ -10,7 +10,6 @@
       <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
     </div>
     <template v-if="isMobile && nav.children && nav.children.length">
-
       <div 
         v-for="snav in nav.children" 
         :key="nav.name + '_' + snav.name" 
@@ -75,6 +74,7 @@ export default {
       isMobile && this.$emit('closeDrawer')
     },
     subnavClick(nav, snav) {
+      this.route2(nav)
       setPageTab(snav.name)
     },
   }
@@ -104,17 +104,11 @@ export default {
   }
 }
 .app-mobile {
-  .nav-item-border-bottom {
-    border-bottom: 1px solid rgba(51, 51, 51, 0.2);
-  }
-  .nav-item-border-top {
-    border-top: 1px solid rgba(51, 51, 51, 0.2);
-  }
   .nav-item-sub {
     // height: 50px;
     position: relative;
     display: inline-flex;
-    font-family: 'Inter Regular';
+    // font-family: 'Inter Regular';
     line-height: 24px;
     margin-bottom: 12px;
     padding-bottom: 16px;
