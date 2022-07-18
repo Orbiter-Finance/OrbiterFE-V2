@@ -12,7 +12,7 @@
         <div v-if="isProcee" :class="[{'rocket-box-bg': isProcee}]">
         </div>
         <div v-else :class="['rocket-box']">
-          <SvgIconThemed v-if="true" iconName="satellite" size="xs" />
+          <SvgIconThemed v-if="true" icon="satellite" size="xs" />
         </div>
       </div>
       <div class="item left" style="z-index:3;">
@@ -35,10 +35,10 @@
       </div>
       <div class="middle-icon">
         <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
-          <SvgIconThemed v-if="!isProcee" iconName="satellite" size="xs" />
+          <SvgIconThemed v-if="!isProcee" icon="satellite" size="xs" />
         </div>
         <div v-if="!isMobile" class="rocket-line-box">
-          <SvgIconThemed icon="rocket-line" style="width:157px;height:10px;margin-top:10px;" />
+          <SvgIconThemed icon="rocket-line" style="width:161px;height:14px;margin-top:10px;" />
         </div>
       </div>
       <div class="item right" style="z-index:3;">
@@ -72,9 +72,8 @@
 import { SvgIconThemed, CommBoxHeader, CommBtn } from '../../components'
 import util from '../../util/util'
 import { chain2icon } from '../../util'
-import Middle from '../../util/middle/middle'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
-import { isMobile, transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
+import { isMobile, transferDataState, realSelectMakerInfo, web3State, saveSenderPageWorkingState } from '../../composition/hooks'
 
 export default {
   name: 'Proceed',
@@ -103,20 +102,12 @@ export default {
       return this.$store.state.themeMode === 'light'
     },
     FromChainName() {
-      return util.chainName(
-        transferDataState.fromChainID,
-        this.$env.localChainID_netChainID[
-          transferDataState.fromChainID
-        ]
-      )
+      const chainId = this.getChainId()
+      return util.chainName(chainId, this.$env.localChainID_netChainID[chainId])
     },
     toChainName() {
-      return util.chainName(
-        transferDataState.toChainID,
-        this.$env.localChainID_netChainID[
-          transferDataState.toChainID
-        ]
-      )
+      const chainId = this.getChainId(false)
+      return util.chainName(chainId, this.$env.localChainID_netChainID[chainId])
     },
     FromTx() {
       if (this.detailData) {
@@ -209,14 +200,17 @@ export default {
       }
       return chain2icon(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`])
     },
-    switchNetWork(e = true) {
+    getChainId(isFrom = true) {
       let chainID
       if (this.detailData) {
-        chainID = this.detailData[`${e ? 'from' : 'to'}ChainID`]
+        chainID = this.detailData[`${isFrom ? 'from' : 'to'}ChainID`]
       } else {
-        chainID = transferDataState[`${e ? 'from' : 'to'}ChainID`]
+        chainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
       }
-      this.addChainNetWork(chainID)
+      return chainID
+    },
+    switchNetWork(e = true) {
+      this.addChainNetWork(this.getChainId(e))
     },
     async goToExplorFrom() {
       let url;
@@ -358,7 +352,17 @@ export default {
     },
     closerButton() {
       if (this.detailData) {
-        Middle.$emit('showHistory', true)
+        const route = this.$route
+        localStorage.setItem('last_page_before_history', JSON.stringify({
+          path: route.path,
+          params: route.params,
+          query: route.query,
+        }))
+        saveSenderPageWorkingState()
+        this.$router.push({
+          path: '/history'
+        })
+
         this.$emit('stateChanged', '4')
       } else {
         this.$store.commit('updateProceedTxID', null)
@@ -420,7 +424,7 @@ export default {
           }
         })
     },
-  },
+  }
 }
 </script>
 
@@ -562,6 +566,7 @@ export default {
           align-items: center;
           justify-content: center;
           white-space: nowrap;
+          text-decoration: underline;
           .status-icon {
             width: 24px;
             height: 24px;
