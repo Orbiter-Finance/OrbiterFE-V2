@@ -123,7 +123,6 @@ import {
   realSelectMakerInfo,
   web3State,
 } from '../../composition/hooks'
-import { notifyLg } from '../../util'
 
 const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
   walletDispatchers
@@ -1273,11 +1272,10 @@ export default {
       if (fromChainID == 8 || fromChainID == 88) {
         title = 'TransferId: ' + title
       }
-      notifyLg.call(this, title)
-      // this.$notify.success({
-      //   title,
-      //   duration: 3000,
-      // })
+      this.$notify.success({
+        title,
+        duration: 3000,
+      })
       this.$emit('stateChanged', '3')
     },
     closerButton() {
