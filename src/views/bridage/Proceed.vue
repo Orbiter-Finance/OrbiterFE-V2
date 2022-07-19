@@ -531,7 +531,7 @@ export default {
         height: 100%;
         z-index: 3;
         .chain-name {
-          font-family: 'Inter';
+          font-family: 'Inter Bold';
           font-weight: 700;
           font-size: 16px;
           line-height: 24px;
