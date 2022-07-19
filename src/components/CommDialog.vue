@@ -20,7 +20,8 @@ export default {
   methods: {
     showCustom() {
       this.showCommDialog = true;
-      document.body.className = "noScroll"
+      // document.body.className = "noScroll"
+      document.body.classList.add("noScroll")
     },
     maskClick() {
       this.showCommDialog = false;
