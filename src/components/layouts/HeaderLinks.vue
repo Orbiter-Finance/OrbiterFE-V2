@@ -2,7 +2,7 @@
 <div class="header-links-box" :style="`flex-direction: ${verical ? 'column' : 'row'};`">
   <template v-for="(nav, idx) in navs">
     <div :key="nav.name" @click="route2(nav)" :class="['nav-item', 'center', { 
-      selected: !nav.children && $route.path === nav.href,
+      selected: (!isMobile || isMobile && !nav.children) && $route.path === nav.href,
       'nav-item-border-bottom': !(nav.children && nav.children.length > 0),
       'nav-item-border-top': idx > 0 && navs[idx - 1].children && navs[idx - 1].children.length > 0,
     }]">
