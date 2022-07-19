@@ -96,7 +96,8 @@ const BOBA_TRANSFER_IN_LIMIT = 1787707
 const STARKNET_ETH_DEPOSIT_ONL1 = 110000
 const STARKNET_ETH_WITHDRAW_ONL1 = 60000
 
-const BSC_ERC20_DEPOSIT_ONL1 = 131362;
+const BSC_ERC20_DEPOSIT_ONL1 = 131362; // g
+// 
 
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
@@ -992,6 +993,7 @@ export default {
     }
 
     if (toChainID === 515 || toChainID === 15) {
+      // ERC20
       let toGasPrice = await this.getGasPrice(toChainID === 515 ? 5 : 1);
       const bscToGasPrice = toGasPrice * BSC_ERC20_DEPOSIT_ONL1;
       ethGas += bscToGasPrice;

@@ -266,7 +266,7 @@
       },
       
       "rpc": [
-        "https://apis.ankr.com/efaf2c4bf9464a3081ac0efef84edb7e/0835c09efa6182fad4264b37a4ac2144/binance/full/test",
+        "https://data-seed-prebsc-1-s1.binance.org:8545/",
         "wss://apis.ankr.com/wss/efaf2c4bf9464a3081ac0efef84edb7e/0835c09efa6182fad4264b37a4ac2144/binance/full/test"
       ],
       "faucets": [],
