@@ -108,7 +108,7 @@ export default {
     // height: 50px;
     position: relative;
     display: inline-flex;
-    // font-family: 'Inter Regular';
+    font-family: 'Inter Regular';
     line-height: 24px;
     margin-bottom: 12px;
     padding-bottom: 16px;

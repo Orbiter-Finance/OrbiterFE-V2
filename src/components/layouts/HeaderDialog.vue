@@ -348,7 +348,7 @@ export default {
       line-height: 24px;
       margin-bottom: 22px;
       .toolbox-title {
-        font-family: 'Inter';
+        font-family: 'Inter Bold';
         font-weight: 700;
         font-size: 16px;
         line-height: 24px;

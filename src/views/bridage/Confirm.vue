@@ -1398,7 +1398,7 @@ export default {
     }
   }
   .select-wallet-dialog {
-    font-family: 'Inter';
+    font-family: 'Inter Bold';
     margin-top: 20px;
     height: 50px;
     line-height: 34px;

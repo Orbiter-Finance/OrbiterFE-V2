@@ -251,7 +251,7 @@ export default {
       font-weight: 700;
       font-size: 16px;
       line-height: 24px;
-      font-family: 'Inter';
+      font-family: 'Inter Bold';
     }
     .table {
       margin-top: 26px;

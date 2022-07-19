@@ -199,7 +199,7 @@ export default {
         margin-top: 40px;
         text-align: center;
         line-height: 50px;
-        font-family: 'Inter';
+        font-family: 'Inter Bold';
       }
     }
   }
