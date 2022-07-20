@@ -1,6 +1,6 @@
 <template>
 <div class="proceed-box">
-  <CommBoxHeader :back="closerButton">{{detailData ? 'Detail' : 'Proceeding'}}</CommBoxHeader>
+  <CommBoxHeader :back="closerButton">{{detailData ? (isFailed ? 'Transcation Failed' : 'Detail') : (isCompleted ? 'Completed' : 'Proceeding')}}</CommBoxHeader>
   <div class="ProceedContent">
     <div v-for="item in proceedData" :key="item.title" class="contentItem">
       <span class="item-title" style="width:100px;text-align:left;">{{ item.title }}</span>
@@ -88,6 +88,12 @@ export default {
     SvgIconThemed, CommBoxHeader, CommBtn
   },
   computed: {
+    isCompleted() {
+      return !this.detailData && !(this.$store.state.proceedState === 1 || this.$store.state.proceedState === 2) && !(this.$store.state.proceedState === 4 || this.$store.state.proceedState === 5)
+    },
+    isFailed() {
+      return this.detailData && !(this.detailData.state === 1 || this.detailData.state === 0)
+    },
     isMobile() {
       return isMobile.value
     },
@@ -502,10 +508,10 @@ export default {
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
   );
-  max-height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
-  );
+  // max-height: calc(
+  //   var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
+  //     var(--bottom-nav-height)
+  // );
   overflow-y: scroll;
   font-weight: 400;
   font-size: 14px;
@@ -575,6 +581,7 @@ export default {
         }
         .tx:hover {
           text-decoration: underline;
+          color: red;
         }
         .switch-btn {
           width: 128px;

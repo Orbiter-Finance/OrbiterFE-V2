@@ -1,5 +1,4 @@
 import Web3 from 'web3'
-
 import { Coin_ABI } from './contract.js'
 import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
