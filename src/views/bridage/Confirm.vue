@@ -22,9 +22,7 @@
         </o-tooltip>
       </div>
       <div class="item-right">
-        <span v-if="item.desc">{{
-          item.desc
-        }}</span>
+        <span v-if="item.desc">{{ item.desc }}</span>
       </div>
       <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
         <div
@@ -68,7 +66,7 @@
       <span
         v-if="!transferLoading"
         class="wbold s16"
-        style="letter-spacing: 0.1rem;"
+        style="letter-spacing: 0.1rem"
         >CONFIRM AND SEND</span
       >
       <CommLoading
@@ -124,6 +122,7 @@ import {
   realSelectMakerInfo,
   web3State,
 } from '../../composition/hooks'
+import { Coin_ABI } from '../../util/constants/contract/contract.js'
 
 const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
   walletDispatchers
@@ -415,8 +414,9 @@ export default {
         fromChainID == selectMakerInfo.c1ID
           ? selectMakerInfo.t1Address
           : selectMakerInfo.t2Address
-      if (!(await zksync2Provider.isTokenLiquid(tokenAddress))) {
-        throw new Error('the token can not be used for fee')
+      const isTokenLiquid = await zksync2Provider.isTokenLiquid(tokenAddress)
+      if (!isTokenLiquid) {
+        // throw new Error('the token can not be used for fee')
       }
       var rAmount = new BigNumber(transferDataState.transferValue)
         .plus(new BigNumber(selectMakerInfo.tradingFee))
@@ -436,15 +436,43 @@ export default {
         this.transferLoading = false
         return
       }
-      const provider = new zksync2.Web3Provider(window.ethereum)
+      const provider = new zksync2.Web3Provider(
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
       const signer = provider.getSigner()
-      const transferResult = await signer.transfer({
-        to: selectMakerInfo.makerAddress,
-        token: tokenAddress,
-        amount: tValue.tAmount + '',
-        // feeToken: tokenAddress,//because can not get fee of feetoken,so use eth
-      })
+      // const toAddress = '0xEFc6089224068b20197156A91D50132b2A47b908'
+      const toAddress = selectMakerInfo.makerAddress
+      // const amountToSend = '100000000000000'
+      const amountToSend = tValue.tAmount
+      const params = {
+        from: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        txType: 0x71,
+        customData: {
+          feeToken: "",
+        },
+        to: '',
+        value: ethers.BigNumber.from(0),
+        data: '0x',
+      }
+      const isMainCoin = tokenAddress.toLowerCase() === '0x000000000000000000000000000000000000800a';
+      if (!isMainCoin) {
+        console.log('ERC20 Token Transfer');
+        const web3 = new Web3()
+        const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
+        params.data = tokenContract.methods
+          .transfer(toAddress, web3.utils.toHex(amountToSend))
+          .encodeABI()
+        params.to = tokenAddress
+        params.customData.feeToken = tokenAddress;
+      } else {
+        console.log('ETH Transfer');
+        params.value = ethers.BigNumber.from(amountToSend)
+        params.to = toAddress
+        params.customData.feeToken = "0x0000000000000000000000000000000000000000";
+      }
+      const transferResult = await signer.sendTransaction(params)
       if (transferResult.hash) {
+        selectMakerInfo.makerAddress = params.from;
         this.onTransferSucceed(
           web3State.coinbase,
           selectMakerInfo,
@@ -1114,6 +1142,7 @@ export default {
               compatibleGlobalWalletConf.value.walletType
             ]
           if (matchAddChainDispatcher) {
+            console.log('=====', matchAddChainDispatcher)
             matchAddChainDispatcher(
               compatibleGlobalWalletConf.value.walletPayload.provider
             )
@@ -1402,7 +1431,7 @@ export default {
     margin-top: 20px;
     height: 50px;
     line-height: 34px;
-    background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
+    background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
   }
 }
 </style>
