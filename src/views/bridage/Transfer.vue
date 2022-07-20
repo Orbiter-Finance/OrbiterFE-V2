@@ -52,7 +52,7 @@
             class="right"
             @input="checkTransferValue()"
             :maxlength="18"
-            :placeholder="`${this.userMinPrice}~${this.userMaxPrice}`"
+            :placeholder="this.userMinPrice > fromBalance ? `at least ${this.userMinPrice}` : `${this.userMinPrice}~${this.userMaxPrice}`"
           />
           <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
         </div>
@@ -632,25 +632,25 @@ export default {
     toValueToolTip() {
       let value = realSelectMakerInfo.value?.gasFee || 0
       value = parseFloat((value / 10).toFixed(2))
-      return `Sender will pay a ${value}% trading fee for each transfer.`
+      return `Sender pays a ${value}% trading fee for each transfer.`
     },
     securityToolTip() {
       return `In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information when you transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.`
     },
     timeSpenToolTip() {
-      return `It will take about ${
+      return `It takes about ${
         this.originTimeSpent
           ? this.originTimeSpent.replace('~', '')
           : this.originTimeSpent
-      } by traditional way, but only take about ${
+      } moving funds using the native bridge, and it only takes about ${
         this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
-      } with Orbiter.`
+      } using Orbiter.`
     },
     gasFeeToolTip() {
-      const gasFee = `<b>The cost before using Orbiter</b><br />Gas Fee: $${this.originGasCost.toFixed(
+      const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${this.originGasCost.toFixed(
         2
       )}<br />`
-      const tradingFee = ` <br /><b>The cost after using Orbiter</b><br />Trading Fee: $${(
+      const tradingFee = ` <br /><b>Fees using Orbiter costs:</b><br />Trading Fee: $${(
         this.orbiterTradingFee * this.exchangeToUsdPrice
       ).toFixed(2)}`
       const withholdingGasFee = `<br />Withholding Fee: $${
@@ -1914,6 +1914,7 @@ export default {
         text-align: right;
         padding: 0;
         margin-left: 8px;
+        font-family: 'Inter Regular';
       }
     }
   }

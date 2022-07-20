@@ -9,7 +9,7 @@
       v-for="item in confirmData"
       :key="item.title"
       class="confirm-item"
-      :style="{ marginBottom: item.haveSep ? '46px' : '22px' }"
+      :style="{ marginBottom: '22px' }"
     >
       <div class="item-left">
         <SvgIconThemed :icon="item.icon" />
@@ -43,6 +43,7 @@
           }}</span>
         </div>
       </div>
+      <div v-if="item.haveSep" style="border-bottom:2px dashed rgba(0, 0, 0, 0.2);height:43px;"></div>
     </div>
     <div
       v-if="isStarkNetChain"
@@ -58,10 +59,7 @@
       style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
     >
       <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d"
-        >Modifying the transfer amount in MetaMask will cause the transfer to
-        fail.</span
-      >
+      <span style="color: #df2e2d">Please do not modify the transaction or remove the last four digits on the transfer amount in MetaMask as this will cause the transaction to fail.</span>
     </div>
 
     <CommBtn @click="RealTransfer" class="select-wallet-dialog">
@@ -123,6 +121,7 @@ import {
   realSelectMakerInfo,
   web3State,
 } from '../../composition/hooks'
+import { providers } from 'ethers'
 
 const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
   walletDispatchers
@@ -155,13 +154,12 @@ export default {
         /(.*?0)0{4,}(0.*?)/,
         '$1...$2'
       )
-      if (this.isStarkNetChain) {
-        return [
+      const comm = [
           {
             icon: 'withholding',
             title: 'Withholding Fee',
             notice:
-              'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
+              'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
             desc:
               (realSelectMakerInfo.value
                 ? realSelectMakerInfo.value.tradingFee
@@ -171,9 +169,9 @@ export default {
           },
           {
             icon: 'security',
-            title: 'Security Code',
+            title: 'Identification Code',
             notice:
-              'In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information for the transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.',
+              'In Orbiter, each transaction has a four digit identification code. The identification code can be seen at the end of the total amount being transferred as a way to identify the transaction. The identification code will be the evidence in the case that the ‘Maker’ does not send the assets to the target network. This will act as an evidence to claim your funds from the margin contract.',
             desc: transferCalculate.realTransferOPID(),
             haveSep: true,
           },
@@ -181,12 +179,12 @@ export default {
             icon: 'send',
             title: 'Total Send',
             notice:
-              'Include the amount transferred by Sender and withholding gas fee.',
+              'Total amount sent by the ‘Sender’ including the withholding fee.',
             desc: realTransferAmount + ' ' + realSelectMakerInfo.value.tName,
             textBold: true,
           },
           {
-            icon: 'Received',
+            icon: 'received',
             title: 'Received',
             desc:
               orbiterCore.getToAmountFromUserAmount(
@@ -204,63 +202,26 @@ export default {
             icon: 'exchange',
             title: 'Maker Routes',
             notice:
-              "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
+              "After the ‘Sender’ submits the transaction, the assets are transferred to the ‘Maker’s’ address who will provide the liquidity. Orbiter’s contract will ensure the safety of the assets and will make sure that the ‘Sender’ receives the assets to the target network.",
             descInfo: this.$store.state.confirmData.routeDescInfo,
           },
+      ]
+      if (this.isStarkNetChain) {
+        return [
+          ...comm,
+          // below has removed ???
+          // {
+          //   icon: 'tips',
+          //   title:
+          //     'StarkNet is still in alpha version, the transaction on it maybe will be done in 1~2 hours. Orbiter keeps your funds safe.',
+          //   desc: '',
+          //   textBold: false,
+          // },
         ]
       }
 
       return [
-        {
-          icon: 'withholding',
-          title: 'Withholding Fee',
-          notice:
-            'Maker will charge Sender a fixed fee to cover the fluctuant gas fee incurred on the destination network.',
-          desc:
-            (realSelectMakerInfo.value
-              ? realSelectMakerInfo.value.tradingFee
-              : 0) +
-            ' ' +
-            realSelectMakerInfo.value.tName,
-        },
-        {
-          icon: 'security',
-          title: 'Security Code',
-          notice:
-            'In Orbiter, each transaction will have a security code. The code is attached to the end of the transfer amount in the form of a four-digit number to specify the necessary information for the transfer. If a Maker is dishonest, the security code will become the necessary evidence for you to claim money from margin contracts.',
-          desc: transferCalculate.realTransferOPID(),
-          haveSep: true,
-        },
-        {
-          icon: 'send',
-          title: 'Total Send',
-          notice:
-            'Include the amount transferred by Sender and withholding gas fee.',
-          desc: realTransferAmount + ' ' + realSelectMakerInfo.value.tName,
-          textBold: true,
-        },
-        {
-          icon: 'received',
-          title: 'Received',
-          desc:
-            orbiterCore.getToAmountFromUserAmount(
-              new BigNumber(transferDataState.transferValue).plus(
-                new BigNumber(realSelectMakerInfo.value.tradingFee)
-              ),
-              realSelectMakerInfo.value,
-              false
-            ) +
-            ' ' +
-            realSelectMakerInfo.value.tName,
-          textBold: true,
-        },
-        {
-          icon: 'exchange',
-          title: 'Maker Routes',
-          notice:
-            "After a sender submits a transfer application, the asset is transferred to the Maker's address and the Maker will provide liquidity. Orbiter's staking agreement ensures the security of the asset.",
-          descInfo: this.$store.state.confirmData.routeDescInfo,
-        },
+        ...comm,
       ]
     },
   },
@@ -774,46 +735,45 @@ export default {
       }
 
       try {
-        const web3 = new Web3(
-          compatibleGlobalWalletConf.value.walletPayload.provider
-        )
+        const provider = compatibleGlobalWalletConf.value.walletPayload.provider
+        const web3 = new Web3(provider)
 
         let gasLimit = await getTransferGasLimit(
           fromChainID,
           selectMakerInfo,
           from,
           selectMakerInfo.makerAddress,
-          value
+          value,
+          provider
         )
         if (gasLimit < 21000) {
           gasLimit = 21000
         }
-        await web3.eth.sendTransaction(
+        const eprovider = new providers.Web3Provider(web3.currentProvider)
+        const signer = eprovider.getSigner()
+        signer.sendTransaction(
           {
             from,
             to: selectMakerInfo.makerAddress,
             value,
-            gas: gasLimit,
+            gasLimit: gasLimit,
           },
-          (error, hash) => {
-            this.transferLoading = false
-
-            if (!error) {
-              this.onTransferSucceed(
-                from,
-                selectMakerInfo,
-                value,
-                fromChainID,
-                hash
-              )
-            } else {
-              this.$notify.error({
-                title: error.message,
-                duration: 3000,
-              })
-            }
-          }
-        )
+        ).then(res => {
+          this.transferLoading = false
+          this.onTransferSucceed(
+            from,
+            selectMakerInfo,
+            value,
+            fromChainID,
+            res.hash
+          )
+        }).catch(err => {
+          this.transferLoading = false
+          this.$notify.error({
+            title: err.message,
+            duration: 3000,
+          })
+        })
       } catch (error) {
         console.error(error)
       }
@@ -1229,6 +1189,7 @@ export default {
             gasLimit = 21000
           }
           const objOption = { from: account, gas: gasLimit }
+          console.log('transferContract: ', transferContract)
           transferContract.methods
             .transfer(to, tValue.tAmount)
             .send(objOption, (error, transactionHash) => {
