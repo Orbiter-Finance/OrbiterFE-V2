@@ -41,7 +41,7 @@
     "@vue/composition-api": "^1.7.0",
     "@walletconnect/client": "^1.7.8",
     "@walletconnect/qrcode-modal": "^1.7.8",
-    "zksync-web3": "^0.4.0"
+    "zksync-web3": "^0.7.9"
   },
   "devDependencies": {
     "@types/web3": "^1.2.2",
