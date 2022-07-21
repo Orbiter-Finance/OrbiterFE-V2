@@ -104,7 +104,7 @@
             <template v-slot:titleDesc>
               <span v-html="toValueToolTip"></span>
             </template>
-            <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
+            <HelpIcon style="margin-left: 0.5rem" size="sm" />
           </o-tooltip>
           <div class="right-value">{{ toValue }}</div>
         </div>
@@ -134,6 +134,19 @@
       </span>
     </CommBtn>
     <div class="info-box">
+      <!-- <div v-if="isShowMakerMostInfo" class="info-item">
+        <svg-icon class="info-icon" iconName="info"></svg-icon>
+        <span class="red">
+          Maker provider {{maxPrice}}ETH at most for liqudity.
+        </span>
+      </div> -->
+      <div v-if="isShowUnreachMinInfo" class="info-item">
+        <svg-icon class="info-icon" iconName="info"></svg-icon>
+        <span class="red">
+          Less than the minimum transfer amount.
+           <!-- {{userMinPrice}}ETH -->
+        </span>
+      </div>
       <div v-if="isShowMax" class="info-item">
         <svg-icon class="info-icon" iconName="info"></svg-icon>
         <span class="red">
@@ -161,7 +174,7 @@
           <template v-slot:titleDesc>
             <span v-html="gasFeeToolTip"></span>
           </template>
-          <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
+          <HelpIcon style="margin-left: 0.5rem" size="sm" />
         </o-tooltip>
       </div>
       <div class="time-save info-item">
@@ -187,7 +200,7 @@
           <template v-slot:titleDesc>
             <span v-html="timeSpenToolTip"></span>
           </template>
-          <SvgIconThemed style="margin-left: 0.5rem" icon="help" size="sm" />
+          <HelpIcon style="margin-left: 0.5rem" size="sm" />
         </o-tooltip>
       </div>
     </div>
@@ -224,7 +237,7 @@ import {
   CommBtn,
   ObSelectChain,
   CommDialog,
-  SvgIconThemed,
+  SvgIconThemed, HelpIcon
 } from '../../components'
 import makerInfo from '../../core/routes/makerInfo'
 import util from '../../util/util'
@@ -271,7 +284,7 @@ const { walletDispatchersOnSwitchChain } = walletDispatchers;
 export default {
   name: 'Transfer',
   components: {
-    ObSelect, CommBtn, ObSelectChain, SvgIconThemed, CommDialog, RaiseUpSelect
+    ObSelect, CommBtn, ObSelectChain, SvgIconThemed, CommDialog, RaiseUpSelect, HelpIcon
   },
   data() {
     return {
@@ -284,8 +297,8 @@ export default {
 
       saveTimeLoading: false,
 
-      c1Balance: 0,
-      c2Balance: 0,
+      c1Balance: Number(0).toFixed(6),
+      c2Balance: Number(0).toFixed(6),
       originGasCost: 0,
 
       makerInfoList: '',
@@ -592,6 +605,7 @@ export default {
           info.text = 'INSUFFICIENT FUNDS'
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY'
+          info.disabled = 'disabled'
         } else if (transferValue.comparedTo(makerMin) < 0) {
           info.text = 'INSUFFICIENT FUNDS'
           info.disabled = 'disabled'
@@ -602,19 +616,47 @@ export default {
           info.text = 'INSUFFICIENT LIQUIDITY'
           info.disabled = 'disabled'
         }
+
+        if(this.isShowUnreachMinInfo) {
+          info.text = 'SEND'
+          info.disabled = 'disabled'
+        }
       }
 
       return info
     },
-    maxPrice() {
-      return realSelectMakerInfo.value.maxPrice
+    isShowRegionInfo() {
+      // maker in {{userMinPrice}}-{{userMaxPrice}}
+      if (walletIsLogin.value && this.transferValue) {
+        let transferValue = new BigNumber(this.transferValue)
+        let makerMax = new BigNumber(this.maxPrice)
+        const fromBalance = new BigNumber(this.fromBalance)
+        return transferValue.comparedTo(fromBalance) > 0 && transferValue.comparedTo(makerMax) > 0
+      }
+    },
+    isShowMakerMostInfo() {
+      if (walletIsLogin.value && this.transferValue) {
+        let transferValue = new BigNumber(this.transferValue)
+        let makerMax = new BigNumber(this.maxPrice)
+        const fromBalance = new BigNumber(this.fromBalance)
+        return transferValue.comparedTo(fromBalance) <= 0 && transferValue.comparedTo(makerMax) > 0
+      }
     },
     isShowMax() {
       return new BigNumber(this.transferValue).comparedTo(
         new BigNumber(realSelectMakerInfo.value.maxPrice)
       ) > 0
-        ? true
-        : false
+    },
+    isShowUnreachMinInfo() {
+      if (walletIsLogin.value && this.transferValue) {
+        let makerMin = new BigNumber(this.userMinPrice)
+        let transferValue = new BigNumber(this.transferValue)
+        const fromBalance = new BigNumber(this.fromBalance)
+        return transferValue.comparedTo(makerMin) < 0 && transferValue.comparedTo(fromBalance) < 0
+      }
+    },
+    maxPrice() {
+      return realSelectMakerInfo.value.maxPrice
     },
     userMinPrice() { return realSelectMakerInfo.value.minPrice },
     realTransferValue() { return transferCalculate.realTransferOPID() },
@@ -748,10 +790,13 @@ export default {
     },
     saveGasLoading() { return this.originGasLoading },
     transferSavingTime() {
-      return transferCalculate.transferSavingTime(
-        transferDataState.fromChainID,
-        transferDataState.toChainID
-      )
+      return this.originTimeSpent?.replace('~', '')
+      // return transferCalculate.transferSavingTime(
+      //   transferDataState.fromChainID,
+      //   transferDataState.toChainID
+      // )
+
+      // this.originTimeSpent - this.timeSpent
     },
   },
   watch: {
@@ -792,7 +837,7 @@ export default {
               ).toFixed(6)
             })
             .catch((error) => {
-              this.c1Balance = 0
+              this.c1Balance = Number(0).toFixed(6)
               console.warn(error)
               return
             })
@@ -810,7 +855,7 @@ export default {
               ).toFixed(6)
             })
             .catch((error) => {
-              this.c2Balance = 0
+              this.c2Balance = Number(0).toFixed(6)
               console.warn(error)
             })
         }
@@ -818,8 +863,8 @@ export default {
     },
     compatibleGlobalWalletConf: function (newValue, oldValue) {
       if (!newValue || newValue === '0x') {
-        this.c1Balance = 0
-        this.c2Balance = 0
+        this.c1Balance = Number(0).toFixed(6)
+        this.c2Balance = Number(0).toFixed(6)
       }
       if (oldValue !== newValue && newValue !== '0x') {
         this.c1Balance = null
@@ -859,8 +904,8 @@ export default {
             console.warn(error)
           })
       } else {
-        this.c1Balance = 0
-        this.c2Balance = 0
+        this.c1Balance = Number(0).toFixed(6)
+        this.c2Balance = Number(0).toFixed(6)
       }
     },
     'transferDataState.selectMakerInfo': async function (

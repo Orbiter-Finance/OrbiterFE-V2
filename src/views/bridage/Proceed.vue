@@ -12,7 +12,8 @@
         <div v-if="isProcee" :class="[{'rocket-box-bg': isProcee}]">
         </div>
         <div v-else :class="['rocket-box']">
-          <SvgIconThemed v-if="true" icon="satellite" size="xs" />
+          <SvgIconThemed v-if="!detailData" icon="satellite" size="xs" />
+          <SvgIconThemed v-else iconName="succeed" style="width:24px;height:24px;" />
         </div>
       </div>
       <div class="item left" style="z-index:3;">
@@ -35,7 +36,8 @@
       </div>
       <div class="middle-icon">
         <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
-          <SvgIconThemed v-if="!isProcee" icon="satellite" size="xs" />
+          <SvgIconThemed v-if="!isProcee && !detailData" icon="satellite" size="xs" />
+          <SvgIconThemed v-if="!isProcee && detailData" iconName="succeed" style="width:24px;height:24px;" />
         </div>
         <div v-if="!isMobile" class="rocket-line-box">
           <SvgIconThemed icon="rocket-line" style="width:161px;height:14px;margin-top:10px;" />
@@ -512,7 +514,7 @@ export default {
   //   var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
   //     var(--bottom-nav-height)
   // );
-  overflow-y: scroll;
+  // overflow-y: scroll;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;

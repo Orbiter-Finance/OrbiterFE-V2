@@ -11,24 +11,28 @@ export const historyPanelState = reactive({
     total: 0,
     pages: 1
   },
-  transactionList: null
+  transactionList: null,
+  historyInfo: null,
+  isShowHistory: false,
 })
 
 watchEffect(() => {
   !walletIsLogin.value && (historyPanelState.transactionList = [])
   const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-  // TODO: should check `realSelectMakerInfo`
   if (walletIsLogin.value && (walletAddress && walletAddress !== '0x')) {
     getTraddingHistory(true)
   }
 })
 
 export function getTraddingHistory(isRefresh = false) {
-  // TODO: should check `realSelectMakerInfo`
   if (walletIsLogin.value) {
     if (isRefresh) historyPanelState.transactionList = []
     getTransactionsHistory({ current: 1 })
   }
+}
+export function setHistoryInfo(info = {}, isShowHistory = true) {
+  historyPanelState.isShowHistory = isShowHistory
+  historyPanelState.historyInfo = info
 }
 
 export async function getTransactionsHistory(params = {}) {
@@ -40,9 +44,9 @@ export async function getTransactionsHistory(params = {}) {
   }
   const res = await getTransactionsHistoryApi({
     // next line is just for local test only
-    // userAddress: '0x6BB0366423a6f0F6C16715278483Dd9321ED5f66',
+    userAddress: '0x6BB0366423a6f0F6C16715278483Dd9321ED5f66',
     // userAddress: '0x8a700FdB6121A57C59736041D9aa21dfd8820660',
-    userAddress: walletAddress,
+    // userAddress: walletAddress,
     size: 10,
     ...params,
   })
@@ -73,7 +77,8 @@ export async function getTransactionsHistory(params = {}) {
         "userAddress": v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
         "makerAddress": v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
         "userAmount": v.fromValueFormat,
-        "fromTimeStamp": v.fromTimeStamp?.replace(/\..*/g, '')?.replace('T', ' ')?.slice(5, -3) || '',
+        "fromTimeStamp": v.fromTimeStamp, //?.replace(/\..*/g, '')?.replace('T', ' ')?.slice(5, -3) || '',
+        "fromTimeStampShow": v.fromTimeStamp?.slice(5, -3) || '',
         "toTimeStamp": v.toTimeStamp,
         "tokenName": v.tokenName,
         "fromTxHash": v.fromTx,

@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="[`${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="styles">
+  <div id="app" :class="['ob-scrollbar', `${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="styles">
     <div class="app-content">
       <keep-alive>
         <TopNav />

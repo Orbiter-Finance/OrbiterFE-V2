@@ -38,4 +38,8 @@ export default {
   opacity: 0.5;
   cursor: not-allowed;
 }
+.comm-btn:active {
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
+  box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
+}
 </style>
