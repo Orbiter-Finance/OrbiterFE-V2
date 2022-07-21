@@ -44,9 +44,9 @@ export async function getTransactionsHistory(params = {}) {
   }
   const res = await getTransactionsHistoryApi({
     // next line is just for local test only
-    userAddress: '0x6BB0366423a6f0F6C16715278483Dd9321ED5f66',
+    // userAddress: '0x6BB0366423a6f0F6C16715278483Dd9321ED5f66',
     // userAddress: '0x8a700FdB6121A57C59736041D9aa21dfd8820660',
-    // userAddress: walletAddress,
+    userAddress: walletAddress,
     size: 10,
     ...params,
   })
