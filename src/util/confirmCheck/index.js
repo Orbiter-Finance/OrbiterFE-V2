@@ -58,9 +58,6 @@ async function getBalance(
 async function netStateBlock(fromChainID) {
   const netStateUrl = 'https://api.orbiter.finance/chains'
   let response
-  if (['9', '99'].includes(String(fromChainID))) {
-    return false;
-  }
   try {
     response = await axios.get(netStateUrl)
     if (response.status == 200 && response.statusText == 'OK') {
