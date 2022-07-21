@@ -11,24 +11,28 @@ export const historyPanelState = reactive({
     total: 0,
     pages: 1,
   },
-  transactionList: []
+  transactionList: null,
+  historyInfo: null,
+  isShowHistory: false,
 })
 
 watchEffect(() => {
   !walletIsLogin.value && (historyPanelState.transactionList = [])
   const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-  // TODO: should check `realSelectMakerInfo`
   if (walletIsLogin.value && (walletAddress && walletAddress !== '0x')) {
     getTraddingHistory(true)
   }
 })
 
 export function getTraddingHistory(isRefresh = false) {
-  // TODO: should check `realSelectMakerInfo`
   if (walletIsLogin.value) {
     if (isRefresh) historyPanelState.transactionList = []
     getTransactionsHistory({ current: 1 })
   }
+}
+export function setHistoryInfo(info = {}, isShowHistory = true) {
+  historyPanelState.isShowHistory = isShowHistory
+  historyPanelState.historyInfo = info
 }
 
 export async function getTransactionsHistory(params = {}) {
@@ -68,6 +72,7 @@ export async function getTransactionsHistory(params = {}) {
         }
       */
       return {
+<<<<<<< HEAD
         fromChainID: +v.fromChain,
         toChainID: +v.toChain,
         userAddress:
@@ -85,6 +90,20 @@ export async function getTransactionsHistory(params = {}) {
         fromTxHash: v.fromTx,
         toTxHash: v.toTx,
         state: v.status == 1 ? 0 : v.status == 0 ? 1 : 2, // 0 success 1 waiting 2 fail
+=======
+        "fromChainID": +v.fromChain,
+        "toChainID": +v.toChain,
+        "userAddress": v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
+        "makerAddress": v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
+        "userAmount": v.fromValueFormat,
+        "fromTimeStamp": v.fromTimeStamp, //?.replace(/\..*/g, '')?.replace('T', ' ')?.slice(5, -3) || '',
+        "fromTimeStampShow": v.fromTimeStamp?.slice(5, -3) || '',
+        "toTimeStamp": v.toTimeStamp,
+        "tokenName": v.tokenName,
+        "fromTxHash": v.fromTx,
+        "toTxHash": v.toTx,
+        "state": v.status == 1 ? 0 : (v.status == 0 ? 1 : 2) // 0 success 1 waiting 2 fail
+>>>>>>> 8ea086c... fix: new ui bug
       }
     })
     historyPanelState.transactionListInfo = resInfo

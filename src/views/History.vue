@@ -27,7 +27,7 @@
         class="contentItem"
       >
         <svg-icon class="logo col-val col-1" color="#df2e2d" :iconName="iconName(item)"></svg-icon>
-        <span class="col-val col-2">{{ item.fromTimeStamp }}</span>
+        <span class="col-val col-2">{{ item.fromTimeStampShow }}</span>
         <span class="col-val col-3">{{ item.userAmount + item.tokenName }}</span>
         <div class="col-val col-4" style="display:flex;align-items:center;justify-content: center;">
           <svg-icon
@@ -58,8 +58,7 @@
 
 <script>
 import { NoData } from '../components'
-import Middle from '../util/middle/middle'
-import { historyPanelState, getTransactionsHistory, recoverSenderPageWorkingState } from '../composition/hooks'
+import { historyPanelState, getTransactionsHistory, recoverSenderPageWorkingState, setHistoryInfo } from '../composition/hooks'
 
 export default {
   name: 'History',
@@ -119,14 +118,18 @@ export default {
     closeDialog() {
       const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
       try {
-        this.$router.push(last)
-        recoverSenderPageWorkingState()
+        if (last.path) {
+          last.path !== this.$route.path && this.$router.push(last)
+          recoverSenderPageWorkingState()
+        } else {
+          this.$router.push({path: '/'})
+        }
       } catch(err) {
         console.error(err)
       }
     },
     getHistoryInfo(e) {
-      Middle.$emit('showDetail', e)
+      setHistoryInfo(e)
       this.closeDialog()
     },
     stopPenetrate(e) {
@@ -334,6 +337,16 @@ export default {
   background: #DF2E2D;
   border-radius: 8px;
   color: white;
+}
+.history-page >>> .el-pager li:hover {
+  color: rgba(51, 51, 51, 0.8);
+  background: #F5F5F5;
+  border-radius: 8px;
+}
+.dark-theme .history-page >>> .el-pager li:hover {
+  color: rgba(255, 255, 255, 0.6);
+  background: #3F415B;
+  border-radius: 8px;
 }
 .dark-theme .history-page >>> .el-pagination button:disabled {
   background-color: #373951;

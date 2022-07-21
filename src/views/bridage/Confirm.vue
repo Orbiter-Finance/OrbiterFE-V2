@@ -18,7 +18,7 @@
           <template v-slot:titleDesc>
             <span>{{ item.notice }}</span>
           </template>
-          <SvgIconThemed v-if="item.notice" icon="help" size="sm" />
+          <HelpIcon v-if="item.notice" size="sm" />
         </o-tooltip>
       </div>
       <div class="item-right">
@@ -57,7 +57,7 @@
       style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
     >
       <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d">Please do not modify the transaction or remove the last four digits on the transfer amount in MetaMask as this will cause the transaction to fail.</span>
+      <span style="color: #df2e2d;flex:1;">Please do not modify the transaction or remove the last four digits on the transfer amount in MetaMask as this will cause the transaction to fail.</span>
     </div>
 
     <CommBtn @click="RealTransfer" class="select-wallet-dialog">
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { SvgIconThemed, CommBoxHeader, CommBtn } from '../../components'
+import { SvgIconThemed, CommBoxHeader, CommBtn, HelpIcon } from '../../components'
 import BigNumber from 'bignumber.js'
 import getProceeding from '../../util/proceeding/getProceeding'
 import {
@@ -128,7 +128,7 @@ const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
 
 export default {
   name: 'Confirm',
-  components: { SvgIconThemed, CommBoxHeader, CommBtn },
+  components: { SvgIconThemed, CommBoxHeader, CommBtn, HelpIcon },
   data() {
     return {
       transferLoading: false,

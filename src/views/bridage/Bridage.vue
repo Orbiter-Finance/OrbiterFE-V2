@@ -31,17 +31,26 @@
 <script>
 import { Transfer, Confirm, Proceed } from './'
 import { ToggleBtn } from '../../components'
-import Middle from '../../util/middle/middle'
-import { isMobile, curPageTabState, togglePageTab, curPageStatus, changeCurPageStatus } from '../../composition/hooks'
+import { isMobile, curPageTabState, togglePageTab, curPageStatus, changeCurPageStatus, historyPanelState } from '../../composition/hooks'
 
 export default {
   name: 'Bridge',
   components: { Transfer, Confirm, Proceed, ToggleBtn },
-  data() {
-    return {
-      showDetail: false,
-      detailData: null,
-      // detailData: {
+  computed: {
+    isMobile() {
+      return isMobile.value
+    },
+    isSenderTab() {
+      return curPageTabState.value === 'Sender'
+    },
+    status() {
+      return curPageStatus.value
+    },
+    showDetail() {
+      return historyPanelState.isShowHistory
+    },
+    detailData() {
+      // return {
       //   fromChainID: 3,
       //   fromTimeStamp: "06-11 03:49",
       //   fromTxHash: "0x91d15798366f2d48384b1d734862384008142fa547ac9b56300f2a1c4632ba5c",
@@ -54,26 +63,8 @@ export default {
       //   userAddress: "0x6b...5f66",
       //   userAmount: "4.509006",
       // }
+      return historyPanelState.historyInfo
     }
-  },
-  computed: {
-    isMobile() {
-      return isMobile.value
-    },
-    isSenderTab() {
-      return curPageTabState.value === 'Sender'
-    },
-    status() {
-      return curPageStatus.value
-    }
-  },
-  mounted() {
-    Middle.$on('showDetail', (state) => {
-      if (state) {
-        this.showDetail = true
-        this.detailData = state
-      }
-    })
   },
   methods: {
     toggleTab() {
@@ -85,7 +76,7 @@ export default {
     },
     changeState(e) {
       if (e !== '1' && e !== '2' && e !== '3') {
-        this.showDetail = false
+        historyPanelState.isShowHistory = false
       } else {
         if (this.status !== e) {
           changeCurPageStatus(e)

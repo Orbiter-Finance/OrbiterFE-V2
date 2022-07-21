@@ -45,7 +45,7 @@ export default {
         {
           icon: 'discord',
           title: 'Discord',
-          value: 'https://discord.gg/w36NDkFB',
+          value: 'https://discord.gg/hJJvXP7C73',
         },
       ]
     }

@@ -10,6 +10,55 @@
   --light-page-color: #333;
 }
 
+@mixin obScrollbarLight {
+  .ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(51, 51, 51, 0.2);
+  }
+  // .ob-scrollbar::-webkit-scrollbar-track {
+  //   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  //   border-radius: 10px;
+  //   background: #EDEDED;
+  // }
+  &.ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  &.ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(51, 51, 51, 0.2);
+  }
+}
+@mixin obScrollbarDark {
+  .ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.4);
+  }
+  // .ob-scrollbar::-webkit-scrollbar-track {
+  //   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  //   border-radius: 10px;
+  //   background: #535353;
+  // }
+
+  &.ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  &.ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.4);
+  }
+}
+
+
 /* override the element component style */
 .dark-body .el-notification {
   // width: 490px;
@@ -43,6 +92,7 @@
   }
   background-size: 100% 360px;
   background-color: #28293D;
+  @include obScrollbarDark;
   a {
     color: var(--dark-page-box-color);
   }
@@ -316,6 +366,9 @@
       border-top: 1px solid rgba(51, 51, 51, 0.2);
     }
   }
+
+  @include obScrollbarLight;
+
   // &.app {
   //   background-color: #F5F5F5;
   // }
