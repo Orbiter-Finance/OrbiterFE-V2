@@ -183,18 +183,28 @@
         </div>
       </div>
     </div>
-    <div v-if="isStarknet" style="font-size: 1.2rem;color: #78797d;margin-top:1rem;padding: 0 11px;text-align: center;">
+    <div
+      v-if="isStarknet"
+      style="
+        font-size: 1.2rem;
+        color: #78797d;
+        margin-top: 1rem;
+        padding: 0 11px;
+        text-align: center;
+      "
+    >
       <svg-icon
-        style="
-          width: 1rem;
-          height: 1rem;
-          height: 1rem;
-          margin-right: 0.2rem;
-        "
+        style="width: 1rem; height: 1rem; height: 1rem; margin-right: 0.2rem"
         iconName="tips"
       ></svg-icon>
-      Centralized transfer is provided currently and trustless transfer will be launched soon.
-      <a style="text-decoration: underline;" href="https://docs.orbiter.finance/" target="__blank">More</a>
+      Centralized transfer is provided currently and trustless transfer will be
+      launched soon.
+      <a
+        style="text-decoration: underline"
+        href="https://docs.orbiter.finance/"
+        target="__blank"
+        >More</a
+      >
     </div>
     <o-button
       style="margin: 2.5rem auto 0"
@@ -1705,17 +1715,6 @@ export default {
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
-            duration: 3000,
-          })
-          return
-        }
-
-        if (
-          this.$store.state.transferData.fromChainID == 10 ||
-          this.$store.state.transferData.fromChainID == 510
-        ) {
-          this.$notify.error({
-            title: `Affected by the metis interface issue, the transfer from metis is suspended.`,
             duration: 3000,
           })
           return
