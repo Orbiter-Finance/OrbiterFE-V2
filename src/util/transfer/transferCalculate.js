@@ -22,6 +22,8 @@ import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
+import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -30,7 +32,8 @@ const ZK_ETH_DEPOSIT_DEPOSIT_ONL1 = 62599
 
 // zkspace deposit
 const ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1 = 160000
-
+//https://rinkeby.etherscan.io/tx/0x6b6c2eacf0cdc5ff70b7923d6225456b8f6d26008de12beec611f7ab81eb2775
+const ZKSPACE_ERC20_DEPOSIT_DEPOSIT_ONL1 = 100325
 // ar deposit
 const AR_ERC20_DEPOSIT_DEPOSIT_ONL1 = 218291
 const AR_ETH_DEPOSIT_DEPOSIT_ONL1 = 92000
@@ -57,22 +60,30 @@ const MT_ERC20_WITHDRAW_ONL1 = 21000
 
 //optimistic deposit
 const OP_ETH_DEPOSIT_DEPOSIT_ONL1 = 151000
-
-// optimistic withdraw
 const OP_ETH_WITHDRAW_ONOP_L2 = 137000
 const OP_ETH_WITHDRAW_ONL1 = 820000
 
+// https://ropsten.etherscan.io/tx/0x6182c35a69951a8443d6b7670ecccd7c8327d95faea95d7e949fc96ab6e7e0d7
+const OP_ERC20_DEPOSIT_DEPOSIT_ONL1 = 77921
+// optimistic withdraw
+// https://kovan-optimistic.etherscan.io/tx/0x1df81e482369067c63c20f40d9ce1b8b75813f11957ff90c2fa967feef66e7a7
+const OP_ERC20_WITHDRAW_ONOP_L2 = 115340
+const OP_ERC20_WITHDRAW_ONL1 = 820000 //not get wanted
+
 // loopring depost
 const LP_ETH_DEPOSIT_DEPOSIT_ONL1 = 75000
-
+// https://goerli.etherscan.io/tx/0x2571fa4a6ef7b69e143a9055877319014a770e30f22caec13bb540e0c9daee1e
+const LP_ERC20_DEPOSIT_DEPOSIT_ONL1 = 91795
 // immutablex deposit
 // Testnet deposit contract: 0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864
 const IMX_ETH_DEPOSIT_DEPOSIT_ONL1 = 126000
-
+// https://ropsten.etherscan.io/tx/0x3e197cf0122e70aeccc7f7acbdc5418024f2e1e6161ed4f635a2c17e427f52c5
+const IMX_ERC20_DEPOSIT_DEPOSIT_ONL1 = 116893
 // immutablex withdraw
 // Testnet withdraw contract: 0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef
 const IMX_ETH_WITHDRAW_ONL1 = 510000
-
+// https://ropsten.etherscan.io/tx/0x791dfb4ed33a12dd0e58febd7de4f00ec3ca396dedc5d7f6ac3fd5291cd706c4
+const IMX_ERC20_WITHDRAW_ONL1 = 91304
 // dydx deposit
 // Mainnet deposit contract: 0x8e8bd01b5A9eb272CC3892a2E40E64A716aa2A40
 const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
@@ -89,11 +100,17 @@ const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
+    const isPolygon =
+      (fromChainID == 6 || fromChainID == 66) && //if transfer matic,need to consider reduce matic
+      fromTokenAddress == '0x0000000000000000000000000000000000001010' //matic token address
+    const isMetis =
+      (fromChainID == 10 || fromChainID == 510) && //if transfer metis,need to consider reduce metis
+      fromTokenAddress == '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000' //metis token address
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       if (!makerAddress) {
         return null
       }
@@ -122,12 +139,12 @@ export default {
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
         const addressState = await syncHttpProvider.getState(
-          store.state.web3.coinbase
+          web3State.coinbase
         )
         if (!addressState.committed || addressState.committed?.nonce == 0) {
           const changePubKeyFee = await syncHttpProvider.getTransactionFee(
             { ChangePubKey: { onchainPubkeyAuth: false } },
-            store.state.web3.coinbase,
+            web3State.coinbase,
             resultToken.id
           )
           totalFee = totalFee.add(changePubKeyFee.totalFee)
@@ -136,39 +153,55 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
-    } else if (fromChainID === 12 || fromChainID === 512) {
-      let transferFee = 0
-      try {
-        transferFee = await zkspace.getZKTransferGasFee(
-          fromChainID,
-          store.state.web3.coinbase
-        )
-      } catch (error) {
-        console.warn('getZKTransferGasFeeError =', error)
-      }
-      return transferFee
     } else if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
         fromChainID
       )
       return starkFee / 10 ** 18
-    } else if (util.isEthTokenAddress(fromTokenAddress)) {
-      if (fromChainID == 9 || fromChainID == 99) {
-        let loopringFee = await loopring.getTransferFee(
-          store.state.web3.coinbase,
-          fromChainID
-        )
-        return loopringFee / 10 ** 18
+    } else if (
+      util.isEthTokenAddress(fromTokenAddress) ||
+      isPolygon ||
+      isMetis
+    ) {
+      if (fromChainID === 12 || fromChainID === 512) {
+        //zkspace can only use eth as fee
+        let transferFee = 0
+        try {
+          transferFee = await zkspace.getZKSpaceTransferGasFee(
+            fromChainID,
+            web3State.coinbase
+          )
+        } catch (error) {
+          console.warn('getZKTransferGasFeeError =', error)
+        }
+        return transferFee
+      } else if (fromChainID == 9 || fromChainID == 99) {
+        // loopring fee can only use eth。other erc20 fee will be error
+        try {
+          const lpTokenInfo = await loopring.getLpTokenInfo(
+            fromChainID,
+            fromTokenAddress
+          )
+          let loopringFee = await loopring.getTransferFee(
+            web3State.coinbase,
+            fromChainID,
+            lpTokenInfo
+          )
+          const decimals = lpTokenInfo ? lpTokenInfo.decimals : 18
+          return Number(loopringFee) / 10 ** decimals
+        } catch (error) {
+          console.warn(`lp getTransferFeeerror:`)
+        }
       }
       const web3 = localWeb3(fromChainID)
       if (web3) {
         const estimateGas = await web3.eth.estimateGas({
-          from: store.state.web3.coinbase,
+          from: web3State.coinbase,
           to: makerAddress,
         })
         const gasPrice = await web3.eth.getGasPrice()
@@ -261,7 +294,7 @@ export default {
       const syncHttpProvider = await zksync.getDefaultProvider(
         fromChainID === 33 ? 'rinkeby' : 'mainnet'
       )
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let transferAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
@@ -291,31 +324,41 @@ export default {
       return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
     }
     if (fromChainID == 9 || fromChainID == 99) {
-      let loopringFee = await loopring.getTransferFee(
-        store.state.web3.coinbase,
-        fromChainID
+      let selectMakerInfo = realSelectMakerInfo.value
+      let tokenAddress =
+        fromChainID === selectMakerInfo.c1ID
+          ? selectMakerInfo.t1Address
+          : selectMakerInfo.t2Address
+      const lpTokenInfo = await loopring.getLpTokenInfo(
+        fromChainID,
+        tokenAddress
       )
-      return (loopringFee / 10 ** 18).toFixed(6)
+      let loopringFee = await loopring.getTransferFee(
+        web3State.coinbase,
+        fromChainID,
+        lpTokenInfo
+      )
+      return (Number(loopringFee) / 10 ** lpTokenInfo.decimals).toFixed(6)
     }
     if (fromChainID === 12 || fromChainID === 512) {
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let transferFee = 0
       try {
-        transferFee = await zkspace.getZKTransferGasFee(
+        transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
-          store.state.web3.coinbase
-            ? store.state.web3.coinbase
+          web3State.coinbase
+            ? web3State.coinbase
             : selectMakerInfo.makerAddress
         )
       } catch (error) {
-        console.warn('getZKSpaceTransferGasFeeError =', error)
+        console.warn('getZKSpaceTransferGasFeeError =', error.message)
         return 0
       }
       return transferFee.toFixed(6)
     }
     if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
-      let selectMakerInfo = store.getters.realSelectMakerInfo
+      let selectMakerInfo = realSelectMakerInfo.value
       let makerAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
@@ -324,7 +367,7 @@ export default {
           ? selectMakerInfo.t1Address
           : selectMakerInfo.t2Address
       let starkFee = await getStarkTransferFee(
-        store.state.web3.coinbase,
+        web3State.coinbase,
         fromTokenAddress,
         makerAddress,
         realTransferAmount,
@@ -604,7 +647,7 @@ export default {
    */
   async transferOrginGas(fromChainID, toChainID, isErc20 = true) {
     let resultGas = 0
-    let selectMakerInfo = store.getters.realSelectMakerInfo
+    let selectMakerInfo = realSelectMakerInfo.value
     if (fromChainID === 2 || fromChainID === 22) {
       // Ar get
       let fromGasPrice = await this.getGasPrice(fromChainID)
@@ -660,37 +703,44 @@ export default {
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0
-    const selectMakerInfo = store.getters.realSelectMakerInfo
+    const selectMakerInfo = realSelectMakerInfo.value
 
     // withdraw
     if (fromChainID === 2 || fromChainID === 22) {
-      // Ar get
-      let fromGasPrice = await this.getGasPrice(fromChainID)
-      // AR WithDraw
-      let ARWithDrawARGas =
-        fromGasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONAR : AR_ETH_WITHDRAW_ONAR)
+      try {
+        // Ar get
+        let fromGasPrice = await this.getGasPrice(fromChainID)
+        // AR WithDraw
+        let ARWithDrawARGas =
+          fromGasPrice *
+          (isErc20 ? AR_ERC20_WITHDRAW_ONAR : AR_ETH_WITHDRAW_ONAR)
 
-      let L1ChainID = fromChainID === 2 ? 1 : 5
-      let L1GasPrice = await this.getGasPrice(L1ChainID)
-      let ARWithDrawL1Gas =
-        L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
-      ethGas = ARWithDrawARGas + ARWithDrawL1Gas
+        let L1ChainID = fromChainID === 2 ? 1 : 5
+        let L1GasPrice = await this.getGasPrice(L1ChainID)
+        let ARWithDrawL1Gas =
+          L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
+        ethGas = ARWithDrawARGas + ARWithDrawL1Gas
+      } catch (error) {
+        throw new Error(`ar withdraw error`)
+      }
     }
     if (fromChainID === 3 || fromChainID === 33) {
-      // zk withdraw
-      const syncHttpProvider = await zksync.getDefaultProvider(
-        fromChainID === 33 ? 'rinkeby' : 'mainnet'
-      )
-      let transferAddress = selectMakerInfo.makerAddress
-        ? selectMakerInfo.makerAddress
-        : null
-      if (transferAddress) {
-        const zkWithDrawFee = await syncHttpProvider.getTransactionFee(
-          'Withdraw',
-          transferAddress,
-          0
+      try {
+        // zk withdraw
+        const syncHttpProvider = await zksync.getDefaultProvider(
+          fromChainID === 33 ? 'rinkeby' : 'mainnet'
         )
-        ethGas += Number(zkWithDrawFee.totalFee)
+        let transferAddress = selectMakerInfo.makerAddress
+        if (transferAddress) {
+          const zkWithDrawFee = await syncHttpProvider.getTransactionFee(
+            'Withdraw',
+            transferAddress,
+            0
+          )
+          ethGas += Number(zkWithDrawFee.totalFee)
+        }
+      } catch (error) {
+        throw new Error(`zksync withdraw error`)
       }
     }
     if (fromChainID === 4 || fromChainID === 44) {
@@ -703,73 +753,104 @@ export default {
       ethGas += SNWithDrawL1Gas
     }
     if (fromChainID === 6 || fromChainID === 66) {
-      const fromGasPrice = await this.getGasPrice(fromChainID)
+      try {
+        const fromGasPrice = await this.getGasPrice(fromChainID)
 
-      // Polygon WithDraw
-      const PGWithDrawARGas = fromGasPrice * PG_ERC20_WITHDRAW_ONPG
-      maticGas += PGWithDrawARGas
+        // Polygon WithDraw
+        const PGWithDrawARGas = fromGasPrice * PG_ERC20_WITHDRAW_ONPG
+        maticGas += PGWithDrawARGas
 
-      const L1ChainID = fromChainID === 6 ? 1 : 5
-      const L1GasPrice = await this.getGasPrice(L1ChainID)
-      const PGWithDrawL1Gas = L1GasPrice * PG_ERC20_WITHDRAW_ONL1
-      ethGas += PGWithDrawL1Gas
+        const L1ChainID = fromChainID === 6 ? 1 : 5
+        const L1GasPrice = await this.getGasPrice(L1ChainID)
+        const PGWithDrawL1Gas = L1GasPrice * PG_ERC20_WITHDRAW_ONL1
+        ethGas += PGWithDrawL1Gas
+      } catch (error) {
+        throw new Error(`po withdraw error`)
+      }
     }
     if (fromChainID === 7 || fromChainID === 77) {
-      // OP get
-      let fromGasPrice = await this.getGasPrice(fromChainID)
-      // op WithDraw
-      let OPWithDrawOPGas = fromGasPrice * OP_ETH_WITHDRAW_ONOP_L2
+      try {
+        // OP get
+        let fromGasPrice = await this.getGasPrice(fromChainID)
+        // op WithDraw
+        let OPWithDrawOPGas =
+          fromGasPrice *
+          (isErc20 ? OP_ERC20_WITHDRAW_ONOP_L2 : OP_ETH_WITHDRAW_ONOP_L2)
 
-      let L1ChainID = fromChainID === 7 ? 1 : 5
+        let L1ChainID = fromChainID === 7 ? 1 : 5
 
-      let L1GasPrice = await this.getGasPrice(L1ChainID)
+        let L1GasPrice = await this.getGasPrice(L1ChainID)
 
-      let OPWithDrawL1Gas = L1GasPrice * OP_ETH_WITHDRAW_ONL1
+        let OPWithDrawL1Gas =
+          L1GasPrice * (isErc20 ? OP_ERC20_WITHDRAW_ONL1 : OP_ETH_WITHDRAW_ONL1)
 
-      let OPWithDrawOP_L1 = await this.getOPFee(fromChainID)
+        let OPWithDrawOP_L1 = await this.getOPFee(fromChainID)
 
-      ethGas = OPWithDrawOPGas + OPWithDrawL1Gas + Number(OPWithDrawOP_L1)
+        ethGas = OPWithDrawOPGas + OPWithDrawL1Gas + Number(OPWithDrawOP_L1)
 
-      //  let gas = gasPrice * GasLimitMap[fromChainID.toString()]
-      //  if (fromChainID === 7 || fromChainID === 77) {
-      //    let l1GasFee = await this.getOPFee(fromChainID)
-      //    gas += l1GasFee
-      //  }
-      //  gas = gas / 10 ** 18
-      //  return gas.toFixed(6).toString()
+        //  let gas = gasPrice * GasLimitMap[fromChainID.toString()]
+        //  if (fromChainID === 7 || fromChainID === 77) {
+        //    let l1GasFee = await this.getOPFee(fromChainID)
+        //    gas += l1GasFee
+        //  }
+        //  gas = gas / 10 ** 18
+        //  return gas.toFixed(6).toString()
+      } catch (error) {
+        throw new Error(`op withdraw error`)
+      }
     }
     if (fromChainID === 8 || fromChainID === 88) {
-      const L1ChainID = fromChainID === 8 ? 1 : 5
-      const L1GasPrice = await this.getGasPrice(L1ChainID)
-      const IMXWithDrawL1Gas = L1GasPrice * IMX_ETH_WITHDRAW_ONL1
-      ethGas += IMXWithDrawL1Gas
+      try {
+        const L1ChainID = fromChainID === 8 ? 1 : 5
+        const L1GasPrice = await this.getGasPrice(L1ChainID)
+        const IMXWithDrawL1Gas =
+          L1GasPrice *
+          (isErc20 ? IMX_ERC20_WITHDRAW_ONL1 : IMX_ETH_WITHDRAW_ONL1)
+        ethGas += IMXWithDrawL1Gas
+      } catch (error) {
+        throw new Error(`imx withdraw error`)
+      }
     }
     if (fromChainID === 9 || fromChainID === 99) {
-      let loopringWithDrawFee = await loopring.getWithDrawFee(
-        store.state.web3.coinbase,
-        fromChainID
-      )
-      ethGas += Number(loopringWithDrawFee)
+      try {
+        let loopringWithDrawFee = await loopring.getWithDrawFee(
+          web3State.coinbase,
+          fromChainID,
+          selectMakerInfo.tName
+        )
+        ethGas += Number(loopringWithDrawFee)
+      } catch (error) {
+        throw new Error(`loopring withdraw error`)
+      }
     }
     if (fromChainID === 10 || fromChainID === 510) {
-      // MT get
-      let fromGasPrice = await this.getGasPrice(fromChainID)
-      // MT WithDraw
-      const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
-      metisGas += MTWithDrawARGas
-      const L1ChainID = fromChainID === 10 ? 1 : 5
-      const L1GasPrice = await this.getGasPrice(L1ChainID)
-      const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
-      ethGas += MTWithDrawL1Gas
+      try {
+        // MT get
+        let fromGasPrice = await this.getGasPrice(fromChainID)
+        // MT WithDraw
+        const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
+        metisGas += MTWithDrawARGas
+        const L1ChainID = fromChainID === 10 ? 1 : 5
+        const L1GasPrice = await this.getGasPrice(L1ChainID)
+        const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
+        ethGas += MTWithDrawL1Gas
+      } catch (error) {
+        throw new Error(`metis withdraw error`)
+      }
     }
     if (fromChainID === 12 || fromChainID === 512) {
-      let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
-        fromChainID,
-        store.state.web3.coinbase
-          ? store.state.web3.coinbase
-          : selectMakerInfo.makerAddress
-      )
-      ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
+      try {
+        // api获取
+        let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
+          fromChainID,
+          web3State.coinbase
+            ? web3State.coinbase
+            : selectMakerInfo.makerAddress
+        )
+        ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
+      } catch (error) {
+        throw new Error(`zkspace withdraw error`)
+      }
     }
     if (fromChainID === 13 || fromChainID === 513) {
       // BOBA get
@@ -778,22 +859,32 @@ export default {
     }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
-      // Ar deposit
-      const toGasPrice = await this.getGasPrice(toChainID === 2 ? 1 : 5)
-      const arDepositGas =
-        toGasPrice *
-        (isErc20 ? AR_ERC20_DEPOSIT_DEPOSIT_ONL1 : AR_ETH_DEPOSIT_DEPOSIT_ONL1)
-      ethGas += arDepositGas
+      try {
+        // Ar deposit
+        const toGasPrice = await this.getGasPrice(toChainID === 2 ? 1 : 5)
+        const arDepositGas =
+          toGasPrice *
+          (isErc20
+            ? AR_ERC20_DEPOSIT_DEPOSIT_ONL1
+            : AR_ETH_DEPOSIT_DEPOSIT_ONL1)
+        ethGas += arDepositGas
+      } catch (error) {
+        throw new Error(`ar deposit error`)
+      }
     }
     if (toChainID === 3 || toChainID === 33) {
-      // zk deposit
-      const toGasPrice = await this.getGasPrice(toChainID === 3 ? 1 : 5)
-      const zkDepositGas =
-        toGasPrice *
-        (isErc20
-          ? ZK_ERC20_DEPOSIT_APPROVEL_ONL1 + ZK_ERC20_DEPOSIT_DEPOSIT_ONL1
-          : ZK_ETH_DEPOSIT_DEPOSIT_ONL1)
-      ethGas += zkDepositGas
+      try {
+        // zk deposit
+        const toGasPrice = await this.getGasPrice(toChainID === 3 ? 1 : 5)
+        const zkDepositGas =
+          toGasPrice *
+          (isErc20
+            ? ZK_ERC20_DEPOSIT_APPROVEL_ONL1 + ZK_ERC20_DEPOSIT_DEPOSIT_ONL1
+            : ZK_ETH_DEPOSIT_DEPOSIT_ONL1)
+        ethGas += zkDepositGas
+      } catch (error) {
+        throw new Error(`zksync deposit error`)
+      }
     }
     if (toChainID === 4 || toChainID === 44) {
       const L1ChainID = toChainID == 4 ? 1 : 5
@@ -802,46 +893,90 @@ export default {
       ethGas += SNDepositL1Gas
     }
     if (toChainID === 6 || toChainID === 66) {
-      // Polygon deposit
-      const toGasPrice = await this.getGasPrice(toChainID === 6 ? 1 : 5)
-      const pgDepositGas = toGasPrice * PG_ERC20_DEPOSIT_DEPOSIT_ONL1
-      ethGas += pgDepositGas
+      try {
+        // Polygon deposit
+        const toGasPrice = await this.getGasPrice(toChainID === 6 ? 1 : 5)
+        const pgDepositGas = toGasPrice * PG_ERC20_DEPOSIT_DEPOSIT_ONL1
+        ethGas += pgDepositGas
+      } catch (error) {
+        throw new Error(`po deposit error`)
+      }
     }
     if (toChainID === 7 || toChainID === 77) {
-      // op deposit
-      let toGasPrice = await this.getGasPrice(toChainID === 7 ? 1 : 5)
-      let opDepositGas = toGasPrice * OP_ETH_DEPOSIT_DEPOSIT_ONL1
-      ethGas += opDepositGas
+      try {
+        // op deposit
+        let toGasPrice = await this.getGasPrice(toChainID === 7 ? 1 : 5)
+        let opDepositGas =
+          toGasPrice *
+          (isErc20
+            ? OP_ERC20_DEPOSIT_DEPOSIT_ONL1
+            : OP_ETH_DEPOSIT_DEPOSIT_ONL1)
+        ethGas += opDepositGas
+      } catch (error) {
+        throw new Error(`op deposit error`)
+      }
     }
     if (toChainID === 8 || toChainID === 88) {
-      // imx deposit
-      const toGasPrice = await this.getGasPrice(toChainID === 8 ? 1 : 5)
-      const imxDepositGas = toGasPrice * IMX_ETH_DEPOSIT_DEPOSIT_ONL1
-      ethGas += imxDepositGas
+      try {
+        // imx deposit
+        const toGasPrice = await this.getGasPrice(toChainID === 8 ? 1 : 5)
+        const imxDepositGas =
+          toGasPrice *
+          (isErc20
+            ? IMX_ERC20_DEPOSIT_DEPOSIT_ONL1
+            : IMX_ETH_DEPOSIT_DEPOSIT_ONL1)
+        ethGas += imxDepositGas
+      } catch (error) {
+        throw new Error(`imx deposit error`)
+      }
     }
     if (toChainID === 9 || toChainID === 99) {
-      //loopring deposit
-      let toGasPrice = await this.getGasPrice(toChainID === 9 ? 1 : 5)
-      let lpDepositGas = toGasPrice * LP_ETH_DEPOSIT_DEPOSIT_ONL1
-      ethGas += lpDepositGas
+      try {
+        //loopring deposit
+        let toGasPrice = await this.getGasPrice(toChainID === 9 ? 1 : 5)
+        let lpDepositGas =
+          toGasPrice *
+          (isErc20
+            ? LP_ERC20_DEPOSIT_DEPOSIT_ONL1
+            : LP_ETH_DEPOSIT_DEPOSIT_ONL1)
+        ethGas += lpDepositGas
+      } catch (error) {
+        throw new Error(`loopring deposit error`)
+      }
     }
     if (toChainID === 10 || toChainID === 510) {
-      // MT deposit
-      let toGasPrice = await this.getGasPrice(toChainID === 10 ? 1 : 5)
-      // MT deposit
-      const mtDepositGas = toGasPrice * MT_ERC20_DEPOSIT_DEPOSIT_ONL1
-      ethGas += mtDepositGas
+      try {
+        // MT deposit
+        let toGasPrice = await this.getGasPrice(toChainID === 10 ? 1 : 5)
+        // MT deposit
+        const mtDepositGas = toGasPrice * MT_ERC20_DEPOSIT_DEPOSIT_ONL1
+        ethGas += mtDepositGas
+      } catch (error) {
+        throw new Error(`metis deposit error`)
+      }
     }
     if (toChainID === 11 || toChainID === 511) {
-      // dydx deposit
-      const toGasPrice = await this.getGasPrice(toChainID === 11 ? 1 : 5)
-      const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
-      ethGas += dydxDepositGas
+      try {
+        // dydx deposit
+        const toGasPrice = await this.getGasPrice(toChainID === 11 ? 1 : 5)
+        const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
+        ethGas += dydxDepositGas
+      } catch (error) {
+        throw new Error(`metis deposit error`)
+      }
     }
     if (toChainID === 12 || toChainID === 512) {
-      let toGasPrice = await this.getGasPrice(toChainID === 12 ? 1 : 5)
-      let zkspaceDepositGas = toGasPrice * ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1
-      ethGas += zkspaceDepositGas
+      try {
+        let toGasPrice = await this.getGasPrice(toChainID === 12 ? 1 : 5)
+        let zkspaceDepositGas =
+          toGasPrice *
+          (isErc20
+            ? ZKSPACE_ERC20_DEPOSIT_DEPOSIT_ONL1
+            : ZKSPACE_ETH_DEPOSIT_DEPOSIT_ONL1)
+        ethGas += zkspaceDepositGas
+      } catch (error) {
+        throw new Error(`zkspace deposit error`)
+      }
     }
 
     if (toChainID === 13 || toChainID === 513) {
@@ -906,7 +1041,7 @@ export default {
       }
     } else if (localChainID === 4 || localChainID === 44) {
       const networkId = getNetworkIdByChainId(localChainID)
-      let starknetAddress = store.state.web3.starkNet.starkNetAddress
+      let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
         if (!starknetAddress) {
           return 0
@@ -926,17 +1061,21 @@ export default {
       const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
       return Number(balance + '')
     } else if (localChainID === 9 || localChainID === 99) {
-      // https://api3.loopring.io/api/v3/user/balances?accountId=1&tokens=0,1
+      const lpTokenInfo = await loopring.getLpTokenInfo(
+        localChainID,
+        tokenAddress
+      )
       const balance = await loopring.getLoopringBalance(
         userAddress,
         localChainID,
-        isMaker
+        isMaker,
+        lpTokenInfo
       )
       return balance
     } else if (localChainID === 11 || localChainID === 511) {
       const dydxHelper = new DydxHelper(
         localChainID,
-        new Web3(window.ethereum),
+        new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
         'MetaMask'
       )
       const balance = await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
@@ -947,26 +1086,27 @@ export default {
         localChainID: localChainID,
       }
       try {
-        let selectMakerInfo = store.getters.realSelectMakerInfo
+        let selectMakerInfo = realSelectMakerInfo.value
         let balanceInfo = await zkspace.getZKspaceBalance(zkReq)
-        if (
-          !balanceInfo ||
-          !balanceInfo.length ||
-          balanceInfo.findIndex((item) => item.id == 0) == -1
-        ) {
+        if (!balanceInfo) {
           return 0
         }
-        let defaultIndex = balanceInfo.findIndex((item) => item.id == 0)
-        if (defaultIndex < 0) {
-          return 0
-        }
-
-        const balances =
-          balanceInfo[defaultIndex].amount * 10 ** selectMakerInfo.precision
-        return balances
+        const zksTokenInfos =
+          localChainID === 12
+            ? store.state.zksTokenList.mainnet
+            : store.state.zksTokenList.rinkeby
+        const tokenInfo = zksTokenInfos.find(
+          (item) => item.address == tokenAddress
+        )
+        const theBalanceInfo = balanceInfo.find(
+          (item) => item.id == tokenInfo.id
+        )
+        return theBalanceInfo
+          ? theBalanceInfo.amount * 10 ** selectMakerInfo.precision
+          : 0
       } catch (error) {
-        console.warn('error =', error)
-        throw 'getZKBalanceError'
+        console.log('getZKSBalanceError =', error.message)
+        throw new Error(`getZKSBalanceError,${error.message}`)
       }
     } else {
       let balance = 0
@@ -1027,7 +1167,7 @@ export default {
       .attach(predeploys.WETH9)
       .connect(provider)
     // Arbitrary recipient address.
-    const to = store.state.transferData.selectMakerInfo.makerAddress
+    const to = transferDataState.selectMakerInfo.makerAddress
 
     // Small amount of WETH to send (in wei).
     const amount = ethers.utils.parseUnits('5', 18)
@@ -1052,16 +1192,16 @@ export default {
   },
 
   realTransferOPID() {
-    let toChainID = store.state.transferData.toChainID
+    let toChainID = transferDataState.toChainID
     const p_text = 9000 + Number(toChainID) + ''
     return p_text
   },
 
   realTransferAmount() {
-    let fromChainID = store.state.transferData.fromChainID
-    let toChainID = store.state.transferData.toChainID
-    let selectMakerInfo = store.getters.realSelectMakerInfo
-    let userValue = new BigNumber(store.state.transferData.transferValue).plus(
+    let fromChainID = transferDataState.fromChainID
+    let toChainID = transferDataState.toChainID
+    let selectMakerInfo = realSelectMakerInfo.value
+    let userValue = new BigNumber(transferDataState.transferValue).plus(
       new BigNumber(selectMakerInfo.tradingFee)
     )
     if (!fromChainID || !userValue) {

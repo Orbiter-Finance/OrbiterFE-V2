@@ -1,16 +1,29 @@
+import { toggleBodyCls } from '../../util'
+import { updatelpApiKey, updatelpAccountInfo, web3State } from '../../composition/hooks'
+
 export default {
-  updatelpAccountInfo(state, accountInfo) {
-    state.lpAccountInfo = accountInfo
-  },
-  updatelpApiKey(state, accountInfo) {
-    state.lpApiKey = accountInfo
-  },
   updateZKTokenList(state, obj) {
     if (obj.chainID === 3) {
       state.zktokenList.mainnet = obj.tokenList
     }
     if (obj.chainID === 33) {
       state.zktokenList.rinkeby = obj.tokenList
+    }
+  },
+  updateZksTokenList(state, obj) {
+    if (obj.chainID === 12) {
+      state.zksTokenList.mainnet = obj.tokenList
+    }
+    if (obj.chainID === 512) {
+      state.zksTokenList.rinkeby = obj.tokenList
+    }
+  },
+  updateLpTokenList(state, obj) {
+    if (obj.chainID === 9) {
+      state.lpTokenList.mainnet = obj.tokenList
+    }
+    if (obj.chainID === 99) {
+      state.lpTokenList.rinkeby = obj.tokenList
     }
   },
   updateProceedTxID(state, txid) {
@@ -75,107 +88,67 @@ export default {
   updateConfirmRouteDescInfo(state, routeDescInfo) {
     state.confirmData.routeDescInfo = routeDescInfo
   },
-  updateTransferValue(state, value) {
-    state.transferData.transferValue = value
-  },
-  updateTransferExt(state, ext) {
-    state.transferData.transferExt = ext
-  },
-  updateTransferTokenInfo(state, tokenInfo) {
-    state.transferData.selectTokenInfo = tokenInfo
-  },
-  updateTransferMakerInfo(state, makerInfo) {
-    state.transferData.selectMakerInfo = makerInfo
-  },
-  updateTransferFromChainID(state, chainID) {
-    state.transferData.fromChainID = chainID
-  },
-  updateTransferToChainID(state, chainID) {
-    state.transferData.toChainID = chainID
-  },
-  updateTransferGasFee(state, gasFee) {
-    state.transferData.gasFee = gasFee
-  },
-  updateETHPrice(state, price) {
-    state.transferData.ethPrice = price
-  },
-  updateTransactionList(state, transactionList) {
-    state.transactionList = transactionList
-  },
-  updateIsInstallMeta(state, isInstallMeta) {
-    state.web3.isInstallMeta = isInstallMeta
-  },
-  updateIsInjected(state, isInjected) {
-    state.web3.isInjected = isInjected
-  },
-  updateWeb3Instance(state, web3Instance) {
-    state.web3.web3Instance = web3Instance
-  },
-  updateCoinbase(state, coinbase) {
-    if (!coinbase || coinbase.length === 0) {
-      state.web3.isInjected = false
-      coinbase = '0x'
-    } else {
-      state.web3.isInjected = true
-      state.web3.localLogin = true
-      localStorage.setItem('localLogin', true)
-    }
-    state.lpAccountInfo = null
-    state.lpApiKey = null
-    state.web3.coinbase = coinbase
-  },
   updateStarkNetAddress(state, starkNetAddress) {
     if (!starkNetAddress || starkNetAddress.length === 0) {
       starkNetAddress = ''
-      state.web3.starkNet.starkIsConnected = false
-      state.web3.starkNet.starkWalletName = ''
-      state.web3.starkNet.starkWalletIcon = ''
-      state.web3.starkNet.starkChain = ''
+      web3State.starkNet.starkIsConnected = false
+      web3State.starkNet.starkNetWalletName = ''
+      web3State.starkNet.starkWalletIcon = ''
+      web3State.starkNet.starkChain = ''
     } else {
-      state.web3.starkNet.starkIsConnected = true
+      web3State.starkNet.starkIsConnected = true
     }
-    state.web3.starkNet.starkNetAddress = starkNetAddress
+    web3State.starkNet.starkNetAddress = starkNetAddress
   },
 
   updateStarkNetIsConnect(state, starkNetIsConnect) {
     if (!starkNetIsConnect) {
-      state.web3.starkNet.starkWalletName = ''
-      state.web3.starkNet.starkWalletIcon = ''
-      state.web3.starkNet.starkChain = ''
-      state.web3.starkNet.starkNetAddress = ''
+      web3State.starkNet.starkNetWalletName = ''
+      web3State.starkNet.starkWalletIcon = ''
+      web3State.starkNet.starkChain = ''
+      web3State.starkNet.starkNetAddress = ''
     }
-    state.web3.starkNet.starkNetIsConnect = starkNetIsConnect
+    web3State.starkNet.starkNetIsConnect = starkNetIsConnect
   },
   updateStarkNetWalletName(state, starkNetWalletName) {
     if (!starkNetWalletName || starkNetWalletName.length === 0) {
       starkNetWalletName = ''
     }
-    state.web3.starkNet.starkNetWalletName = starkNetWalletName
+    web3State.starkNet.starkNetWalletName = starkNetWalletName
   },
   updateStarkNetWalletIcon(state, starkNetWalletIcon) {
     if (!starkNetWalletIcon || starkNetWalletIcon.length === 0) {
       starkNetWalletIcon = ''
     }
-    state.web3.starkNet.starkNetWalletIcon = starkNetWalletIcon
+    web3State.starkNet.starkNetWalletIcon = starkNetWalletIcon
   },
   updateStarkNetChain(state, starkChain) {
     if (!starkChain || starkChain.length === 0) {
       starkChain = ''
     }
-    state.web3.starkNet.starkChain = starkChain
+    web3State.starkNet.starkChain = starkChain
   },
   updateNetWorkId(state, netWorkId) {
-    state.web3.networkId = netWorkId
-    state.lpAccountInfo = null
-    state.lpApiKey = null
+    web3State.networkId = netWorkId
+    updatelpAccountInfo(null)
+    updatelpApiKey(null)
   },
   updateLocalLogin(state, localLogin) {
-    state.web3.localLogin = localLogin
-    state.lpAccountInfo = null
-    state.lpApiKey = null
+    web3State.localLogin = localLogin
+    updatelpAccountInfo(null)
+    updatelpApiKey(null)
   },
   setInnerWH(state, { innerWidth, innerHeight }) {
     state.innerWH.innerWidth = innerWidth
     state.innerWH.innerHeight = innerHeight
+  },
+  toggleThemeMode(state, mode) {
+    if (typeof mode === 'string' && mode) {
+      state.themeMode = mode
+    } else {
+      state.themeMode = state.themeMode === 'light' ? 'dark' : 'light'
+    }
+    localStorage.setItem('themeMode', state.themeMode)
+    toggleBodyCls()
   },
 }

@@ -1,6 +1,11 @@
+const baseUrl = `https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com`
+const baseDomain = `https://api.orbiter.finance`
+const historyApiUrl = `${baseDomain}/api`
+export const netStateUrl = `${baseDomain}`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
-  baseUrl: 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com',
+  baseUrl,
+  baseTraddingUrl: historyApiUrl, //process.env.NODE_ENV === 'production' ? historyApiUrl : 'http://localhost:3000/api',
   credential: false,
   localProvider: {
     1: process.env.VUE_APP_HP,

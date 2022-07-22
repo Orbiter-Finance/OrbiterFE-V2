@@ -1,188 +1,169 @@
 <template>
-  <div id="app">
-    <TopNav />
-    <keep-alive>
-      <router-view
-        v-if="$route.meta.keepAlive"
-        class="router"
-        id="aliveRouter"
-      />
-    </keep-alive>
-    <router-view v-if="!$route.meta.keepAlive" class="router" id="router" />
-    <BottomNav />
-
-    <!-- Load tooltip.png ahead of time -->
-    <img style="display: none" src="./assets/tooltip.png" />
+  <div id="app" :class="['ob-scrollbar', `${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="styles">
+    <div class="app-content">
+      <keep-alive>
+        <TopNav />
+      </keep-alive>
+      <div class="main">
+        <keep-alive>
+          <router-view v-if="$route.meta.keepAlive" class="router" />
+        </keep-alive>
+        <router-view v-if="!$route.meta.keepAlive" class="router" />
+      </div>
+      <keep-alive>
+        <BottomNav />
+      </keep-alive>
+    </div>
+    <HeaderDialog />
   </div>
 </template>
 
 <script>
-import TopNav from './components/nav/TopNav.vue'
-import BottomNav from './components/nav/BottomNav.vue'
+import TopNav from './components/layouts/TopNav.vue'
+import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
-import getTransactionList from './core/routes/transactionList'
+import walletDispatchers, { getCurrentLoginInfoFromLocalStorage } from "./util/walletsDispatchers"
+import { isMobile } from './composition/hooks'
+import getZksToken from './util/tokenInfo/supportZksTokenInfo'
+import getLpToken from './util/tokenInfo/supportLpTokenInfo'
+import History from './views/History.vue'
+import * as lightbg from './assets/v2/light-bg.png'
+import * as darkbg from './assets/v2/dark-bg.png'
+import * as topbg from './assets/v2/light-top-bg.jpg'
+import HeaderDialog from './components/layouts/HeaderDialog.vue'
+import { performInitMobileAppWallet } from './util/walletsDispatchers/utils'
+
+const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
   name: 'App',
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
+    isMobile() {
+      return isMobile.value
     },
-  },
-  components: {
-    TopNav,
-    BottomNav,
-  },
-  async mounted() {
-    setInterval(this.getHistory, 60 * 1000)
-
-    this.getHistory()
-
-    getZkToken.getSupportZKTokenList()
-    if (localStorage.getItem('localLogin') === 'true') {
-      this.$store.dispatch('registerWeb3').then(() => {})
+    isLightMode() {
+      return this.$store.state.themeMode === 'light'
+    },
+    styles() {
+      if (!this.isMobile) {
+        if (this.isLightMode) {
+          return {
+            'background-position': 'left bottom, left top',
+            'background-repeat': 'no-repeat',
+            // 'background-size': '100% 36%, 127% 100%',
+            'background-size': '100% 36%, 100% 100%',
+            'background-image': `url(${lightbg}), url(${topbg})`,
+          }
+        } else {
+          return {
+            'background-position': 'left bottom',
+            'background-repeat': 'no-repeat',
+            'background-size': '100% 50%',
+            'background-image': `url(${darkbg})`,
+          }
+        }
+      } else {
+        if (this.isLightMode) {
+          return {
+            'background-position': 'left top',
+            'background-repeat': 'no-repeat',
+            'background-size': '100%',
+            'background-image': `url(${topbg})`,
+          }
+        }
+      }
     }
   },
-  watch: {
-    isLogin: function (newValue) {
-      if (!newValue) {
-        this.$store.commit('updateTransactionList', [])
-      } else {
-        this.getHistory(true)
-      }
-    },
-
-    '$store.state.web3.coinbase': function (newValue, oldValue) {
-      if (oldValue && newValue && newValue !== '0x') {
-        this.getHistory(true)
-      }
-    },
-
-    '$store.getters.realSelectMakerInfo': function (newValue) {
-      if (newValue) {
-        this.getHistory()
-      }
-    },
+  data() {
+    return {
+      // lightbg,
+      // darkbg,
+      // topbg,
+    }
   },
-  methods: {
-    getHistory(isRefresh = false) {
-      if (this.isLogin && this.$store.getters.realSelectMakerInfo) {
-        if (isRefresh) {
-          this.$store.commit('updateTransactionList', null)
-        }
+  components: {
+    TopNav, BottomNav, History, HeaderDialog
+  },
+  async mounted() {
+    getZkToken.getSupportZKTokenList()
 
-        var req = {
-          address: this.$store.state.web3.coinbase,
-          daysAgo: 14,
-          state: 1, //maker/user
-        }
-        getTransactionList
-          .getTransactionList(req)
-          .then((response) => {
-            if (response.state === 1) {
-              this.$store.commit('updateTransactionList', response.list)
-            }
-          })
-          .catch((error) => {
-            console.warn('error =', error)
-          })
-      }
-    },
+    // init wallet info by the localStorage
+    this.performInitCurrentLoginWallet();
+  },
+  // watch: {
+  //   '$store.getters.realSelectMakerInfo': function (newValue) {
+  //     newValue && getTraddingHistory()
+  //   },
+  // },
+  methods: {
+    performInitCurrentLoginWallet() {
+
+      performInitMobileAppWallet();
+
+      getZksToken.getSupportZksTokenList()
+      getLpToken.getSupportLpTokenList()
+      // When user connects a wallet, the information of this wallet will be added
+      // to the localStorage, when user refreshes the page, the localStorage can help
+      // us locate last wallet that user connected
+      // so localStorage is only used for initialization!!! 
+      const cacheWalletInfo  = getCurrentLoginInfoFromLocalStorage();
+      if (!cacheWalletInfo) return; // if there is no wallet connected
+      const { walletType } = cacheWalletInfo;
+
+      // according to different wallet types to do their own initialization
+      // but eventually they all update a global responsive data: globalSelectWalletConf
+      // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
+      const matchInitDispatcher = walletDispatchersOnInit[walletType];
+      matchInitDispatcher && matchInitDispatcher();
+    }
   },
 }
 </script>
 
-<style>
-::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
-  background-color: transparent;
+<style lang="scss">
+.app {
+  .app-content {
+    .main {
+      padding-top: 24px;
+    }
+  }
+  .global-dialog {
+    top: 94px;
+    height: calc(100% - 96px - 66px - 72px);
+  }
 }
-::-webkit-scrollbar-track {
-  border-radius: 3px;
-  background-color: transparent;
+.app-mobile {
+  .app-content {
+    .main {
+      height: calc(100% - 83px - 96px);
+      border-radius: 20px;
+      display: flex;
+    }
+  }
+  .global-dialog {
+    top: 70px;
+    height: calc(100% - 96px - 84px);
+  }
 }
-::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.s-dialog {
-  z-index: 9999 !important;
-}
-
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  // font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: var(--default-black);
   font-size: 2rem;
-  /* font-family: "Open Sans", sans-serif; */
   height: 100%;
-  height: calc(var(--vh, 1vh) * 100);
+  overflow-y: scroll;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
-  background-image: url('./assets/bgtop.svg');
-  background-size: 100% 40%;
-  background-repeat: no-repeat;
-}
-
-body {
-  background-color: #fff;
-}
-
-* {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none; /*IE10*/
-  user-select: none;
-}
-input {
-  -webkit-user-select: auto;
-  user-select: auto;
-}
-textarea {
-  -webkit-user-select: auto;
-  user-select: auto;
-}
-p {
-  display: block;
-  margin-block-start: 1em;
-  margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
-}
-
-.noScroll {
-  overflow-y: hidden;
-}
-
-.scroll {
-  overflow-y: scroll;
-}
-
-.router {
-  padding-bottom: var(--bottom-nav-height);
-  height: calc(100% - var(--top-nav-height) - var(--bottom-nav-height));
-  height: calc(
-    var(--vh, 1vh) * 100 - var(--top-nav-height) - var(--bottom-nav-height)
-  );
-
-  width: 100%;
-}
-
-@media screen and (min-width: 5000px) {
-  .router {
-    padding: 0;
-    height: calc(100% - var(--top-nav-height));
+  .app-content {
     width: 100%;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    .main {
+      flex-grow: 1;
+    }
   }
 }
 </style>

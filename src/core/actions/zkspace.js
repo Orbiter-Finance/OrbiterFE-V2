@@ -7,146 +7,84 @@ import config from '../utils/config'
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
 import { private_key_to_pubkey_hash, sign_musig } from "zksync-crypto"
+import { transferDataState } from '../../composition/hooks'
 
 const BigNumber = require('bignumber.js')
 Axios.axios()
 export default {
-  getZKspaceBalance: function (req) {
-    return new Promise((resolve, reject) => {
-      if (req.localChainID !== 12 && req.localChainID !== 512) {
-        reject({
-          errorCode: 1,
-          errMsg: 'getZKSpaceAccountError_wrongChainID',
-        })
+  getZKspaceBalance: async function (req) {
+    if (req.localChainID !== 12 && req.localChainID !== 512) {
+      throw new Error('getZKSpaceBalance Error: wrongChainID')
+    }
+    const url = `${req.localChainID === 512 ? config.ZKSpace.Rinkeby
+      : config.ZKSpace.Mainnet}/account/${req.account}/balances`
+    try {
+      const response = await axios.get(url)
+      if (response.status === 200 && response.data.success) {
+        return response.data.data.balances.tokens
+      } else {
+        throw new Error("getZKSpaceBalance error: response.status not 200")
       }
-      const url =
-        (req.localChainID === 512
-          ? config.ZKSpace.Rinkeby
-          : config.ZKSpace.Mainnet) +
-        '/account/' +
-        req.account +
-        '/' +
-        'balances'
-      axios
-        .get(url)
-        .then(function (response) {
-          if (response.status === 200 && response.statusText == 'OK') {
-            var respData = response.data
-            if (respData.success == true) {
-              resolve(respData.data.balances.tokens)
-            } else {
-              reject(respData.data)
-            }
-          } else {
-            reject({
-              errorCode: 1,
-              errMsg: 'NetWorkError',
-            })
-          }
-        })
-        .catch(function (error) {
-          reject({
-            errorCode: 2,
-            errMsg: error,
-          })
-        })
-    })
+    } catch (error) {
+      throw new Error(`getZKSpaceBalance error: ${error.message}`)
+    }
   },
-  getZKTransferGasFee: function (localChainID, account) {
-    let ethPrice = store.state.transferData.ethPrice
-      ? store.state.transferData.ethPrice
+  getZKSpaceTransferGasFee: async function (localChainID, account) {
+    let ethPrice = transferDataState.ethPrice
+      ? transferDataState.ethPrice
       : 2000
-    return new Promise((resolve, reject) => {
-      if (localChainID !== 12 && localChainID !== 512) {
-        reject({
-          errorCode: 1,
-          errMsg: 'getZKSpaceGasFeeError_wrongChainID',
-        })
+
+    if (localChainID !== 12 && localChainID !== 512) {
+      throw new Error("getZKSpaceTransferGasFee：wrongChainID")
+    }
+    const url = `${localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+      }/account/${account}/fee`
+    try {
+      const response = await axios.get(url)
+      if (response.status === 200 && response.statusText == 'OK') {
+        var respData = response.data
+        if (respData.success == true) {
+          const gasFee = new BigNumber(respData.data.transfer).dividedBy(
+            new BigNumber(ethPrice)
+          )
+          let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
+          return Number(gasFee_fix)
+        } else {
+          throw new Error("getZKSpaceGasFee->respData.success no true")
+        }
+      } else {
+        throw new Error("getZKSpaceGasFee->response.status not 200")
       }
-      const url =
-        (localChainID === 512
-          ? config.ZKSpace.Rinkeby
-          : config.ZKSpace.Mainnet) +
-        '/account/' +
-        account +
-        '/' +
-        'fee'
-      axios
-        .get(url)
-        .then(function (response) {
-          if (response.status === 200 && response.statusText == 'OK') {
-            var respData = response.data
-            if (respData.success == true) {
-              const gasFee = new BigNumber(respData.data.transfer).dividedBy(
-                new BigNumber(ethPrice)
-              )
-              let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
-              resolve(Number(gasFee_fix))
-            } else {
-              reject(respData.data)
-            }
-          } else {
-            reject({
-              errorCode: 1,
-              errMsg: 'NetWorkError',
-            })
-          }
-        })
-        .catch(function (error) {
-          reject({
-            errorCode: 2,
-            errMsg: error.message,
-          })
-        })
-    })
+    } catch (error) {
+      throw new Error("getZKSpaceGasFee->network error")
+    }
   },
-  getZKSpaceWithDrawGasFee: function (localChainID, account) {
-    let ethPrice = store.state.transferData.ethPrice
-      ? store.state.transferData.ethPrice
-      : 1000
-    return new Promise((resolve, reject) => {
-      if (localChainID !== 12 && localChainID !== 512) {
-        reject({
-          errorCode: 1,
-          errMsg: 'getZKSpaceGasFeeError_wrongChainID',
-        })
+  getZKSpaceWithDrawGasFee: async function (localChainID, account) {
+    if (!account) {
+      return
+    }
+    let ethPrice = transferDataState.ethPrice
+      ? transferDataState.ethPrice : 2000
+
+    if (localChainID !== 12 && localChainID !== 512) {
+      throw new Error('getZKSpaceGasFeeError：wrongChainID')
+    }
+    const url = `${localChainID === 512 ? config.ZKSpace.Rinkeby
+      : config.ZKSpace.Mainnet}/account/${account}/fee`
+    const response = await axios.get(url)
+    try {
+      if (response.status === 200 && response.statusText == 'OK' && response.data.success) {
+        var respData = response.data
+        const gasFee = new BigNumber(respData.data.withdraw).dividedBy(
+          new BigNumber(ethPrice)
+        )
+        let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
+        return Number(gasFee_fix)
       }
-      const url =
-        (localChainID === 512
-          ? config.ZKSpace.Rinkeby
-          : config.ZKSpace.Mainnet) +
-        '/account/' +
-        account +
-        '/' +
-        'fee'
-      axios
-        .get(url)
-        .then(function (response) {
-          if (response.status === 200 && response.statusText == 'OK') {
-            var respData = response.data
-            if (respData.success == true) {
-              const gasFee = new BigNumber(respData.data.withdraw).dividedBy(
-                new BigNumber(ethPrice)
-              )
-              let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
-              resolve(Number(gasFee_fix))
-            } else {
-              reject(respData.data)
-            }
-          } else {
-            reject({
-              errorCode: 1,
-              errMsg: 'NetWorkError',
-            })
-          }
-        })
-        .catch(function (error) {
-          reject({
-            errorCode: 2,
-            errMsg: error,
-          })
-        })
-    })
+      throw new Error(`getZKSpaceWithDrawGasFee response.status not 200`)
+    } catch (error) {
+      throw new Error(`getZKSpaceWithDrawGasFee error：${error.message}`)
+    }
   },
   /**
    *
@@ -263,13 +201,14 @@ export default {
       }
     }
   },
-  async getL2SigTwoAndPK(signer, accountInfo, selectMakerInfo, transferValue, fee, zksChainID) {
+  async getL2SigTwoAndPK(signer, accountInfo, selectMakerInfo, transferValue, fee, zksChainID, tokenInfo) {
+
     try {
       const l2MsgParams = {
         accountId: accountInfo.id,
         to: selectMakerInfo.makerAddress,
-        tokenSymbol: 'ETH',
-        tokenAmount: ethers.utils.formatUnits(transferValue, 18),
+        tokenSymbol: tokenInfo ? tokenInfo.symbol : 'ETH',
+        tokenAmount: ethers.utils.formatUnits(transferValue, tokenInfo.decimals),
         feeSymbol: 'ETH',
         fee: fee.toString(),
         zksChainID,
@@ -322,7 +261,7 @@ export default {
   },
   async getTransferValue(selectMakerInfo, fromChainID, toChainID) {
     try {
-      var rAmount = new BigNumber(store.state.transferData.transferValue)
+      var rAmount = new BigNumber(transferDataState.transferValue)
         .plus(new BigNumber(selectMakerInfo.tradingFee))
         .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
       var rAmountValue = rAmount.toFixed()
@@ -347,7 +286,6 @@ export default {
     } catch (error) {
       throw new Error(`getTransferValue error ${error.message}`)
     }
-
   },
   async getL1SigAndPriVateKey(signer) {
     try {
