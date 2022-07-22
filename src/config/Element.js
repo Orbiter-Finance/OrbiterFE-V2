@@ -8,7 +8,9 @@ import {
   Button,
   Pagination,
   Drawer,
-  // Table
+  Table,
+  TableColumn,
+  Popover
 } from 'element-ui'
 const element = {
   install: function(Vue) {
@@ -19,7 +21,9 @@ const element = {
     Vue.use(Button)
     Vue.use(Pagination)
     Vue.use(Drawer)
-    // Vue.use(Table)
+    Vue.use(Table)
+    Vue.use(TableColumn)
+    Vue.use(Popover)
     // Vue.prototype.$message = Message
     Vue.prototype.$notify = Notification
     // Vue.prototype.$msgbox = MessageBox

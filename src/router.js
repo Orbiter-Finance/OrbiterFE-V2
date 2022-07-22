@@ -28,5 +28,24 @@ export default new Router({
         keepAlive: true,
       },
     },
+    {
+      path: '/data',
+      component: (resolve) => require(['./views/data/Index/Index'], resolve),
+      meta: {
+        title: 'Orbiter',
+        keepAlive: true,
+      },
+    },
+    {
+      path: '/transactionsDetail',
+      component: (resolve) =>
+        require([
+          './views/data/transactionsDetail/TransactionsDetail',
+        ], resolve),
+      meta: {
+        title: 'Orbiter',
+        keepAlive: true,
+      },
+    },
   ],
 })
