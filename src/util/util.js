@@ -61,10 +61,10 @@ export default {
         return 'Boba'
       case 513:
         return 'Boba(R)'
-      case 56:
-        return "BSC"
-      case 97:
-        return "BSC(R)"
+      case 15:
+        return "Binance Smart Chain"
+      case 515:
+        return "Binance Smart Chain(R)"
     }
 
     const chain = chainList.chainList.filter(

@@ -1816,7 +1816,7 @@ export default {
         this.makerMaxBalance = Number.MAX_SAFE_INTEGER
         return
       }
-
+      console.log(selectMakerInfo, '==selectMakerInfo')
       try {
         const _balance = await this.getBalance(
           selectMakerInfo.makerAddress,
