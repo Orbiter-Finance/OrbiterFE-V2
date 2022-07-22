@@ -1,6 +1,6 @@
 import { reactive, computed } from './'
 
-export const transferDataState = reactive({
+const defaultTransferDateState = {
   selectTokenInfo: '',
   selectMakerInfo: '',
   fromChainID: '',
@@ -9,7 +9,16 @@ export const transferDataState = reactive({
   transferValue: 0,
   gasFee: 0,
   ethPrice: 0,
+}
+export const transferDataState = reactive({
+  ...defaultTransferDateState
 })
+
+export function updateTransferDataState (obj) {
+  Object.keys(defaultTransferDateState).map(key => {
+    transferDataState[key] = obj[key] || defaultTransferDateState[key]
+  })
+}
 
 export function updateTransferValue(value) {
   transferDataState.transferValue = value

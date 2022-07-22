@@ -1,15 +1,20 @@
-import { Message } from 'element-ui'
+import { Notification } from 'element-ui'
 import env from '../../env'
 import chainList from '../config/chains.json'
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
 
 export default {
   showMessage(message, type) {
-    Message({
-      showClose: true,
+    // Message({
+    //   showClose: true,
+    //   duration: 2000,
+    //   message: message,
+    //   type: type,
+    // })
+    const _type = type || 'success'
+    Notification[_type]({
+      title: message,
       duration: 2000,
-      message: message,
-      type: type,
     })
   },
   getChainInfo(netChainID) {
@@ -96,7 +101,6 @@ export default {
     }
   },
   toHex(num) {
-    console.log("num-------", num);
     return '0x' + Number(num).toString(16)
   },
   transferTimeStampToTime(timestamp) {
@@ -192,9 +196,6 @@ export default {
     const switchParams = {
       chainId: this.toHex(chain.chainId),
     }
-
-    console.log("switchParams", switchParams);
-
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',

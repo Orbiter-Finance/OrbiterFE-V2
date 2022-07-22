@@ -121,8 +121,7 @@ import {
   web3State
 } from '../../composition/hooks'
 
-const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
-  walletDispatchers
+const { walletDispatchersOnInit, walletDispatchersOnDisconnect } = walletDispatchers
 
 export default {
   name: 'HeaderDialog',
@@ -181,7 +180,7 @@ export default {
         let networkName = ''
         if (starkChain) {
           if (starkChain == 4) {
-            networkName = 'Ethereum Mainnet'
+            networkName = 'StarkNet Mainnet'
           } else if (starkChain == 44) {
             networkName = 'Goerli Testnet'
           }
@@ -252,7 +251,7 @@ export default {
     },
     connectWallet(walletConf) {
       this.closeSelectWalletDialog()
-      walletDispatchersOnInit[walletConf.title](this.$store)
+      walletDispatchersOnInit[walletConf.title]()
     },
     checkIsMobileEnv() {
       return isMobileEnv()
@@ -349,7 +348,7 @@ export default {
       line-height: 24px;
       margin-bottom: 22px;
       .toolbox-title {
-        font-family: 'Inter';
+        font-family: 'Inter Bold';
         font-weight: 700;
         font-size: 16px;
         line-height: 24px;

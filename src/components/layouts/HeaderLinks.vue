@@ -1,15 +1,29 @@
 <template>
 <div class="header-links-box" :style="`flex-direction: ${verical ? 'column' : 'row'};`">
-  <div v-for="nav in navs" :key="nav.name" @click="route2(nav)" :class="['nav-item', 'center', { selected: $route.path === nav.href }]">
-    {{nav.name}}
-    <SvgIconThemed v-if="!isMobile && nav.children" />
-  </div>
+  <template v-for="(nav, idx) in navs">
+    <div :key="nav.name" @click="route2(nav)" :class="['nav-item', 'center', { 
+      selected: (!isMobile || isMobile && !nav.children) && $route.path === nav.href,
+      'nav-item-border-bottom': !(nav.children && nav.children.length > 0),
+      'nav-item-border-top': idx > 0 && navs[idx - 1].children && navs[idx - 1].children.length > 0,
+    }]">
+      {{nav.name}}
+      <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
+    </div>
+    <template v-if="isMobile && nav.children && nav.children.length">
+      <div 
+        v-for="snav in nav.children" 
+        :key="nav.name + '_' + snav.name" 
+        @click="subnavClick(nav, snav)" :class="['nav-item-sub', 'center', { selected: $route.path === snav.phref && curPageTabState === snav.name }]">
+        - {{snav.name}}
+      </div>
+    </template>
+  </template>
 </div>
 </template>
 
 <script>
 import { SvgIconThemed  } from '../'
-import { isMobile } from '../../composition/hooks'
+import { isMobile, curPageTabState, setPageTab } from '../../composition/hooks'
 
 export default {
   name: 'HeaderLinks',
@@ -22,7 +36,8 @@ export default {
     }
   },
   computed: {
-    isMobile() { return isMobile.value }
+    isMobile() { return isMobile.value },
+    curPageTabState() { return curPageTabState.value },
   },
   data() {
     return {
@@ -30,6 +45,16 @@ export default {
         {
           name: 'L2 Bridge',
           href: '/',
+          children: [
+            {
+              name: 'Sender',
+              phref: '/',
+            },
+            {
+              name: 'Maker',
+              phref: '/',
+            }
+          ]
         },
         {
           name: 'L2 Data',
@@ -47,6 +72,10 @@ export default {
       const path = tar.href
       this.$route.path !== path && this.$router.push({ path, })
       isMobile && this.$emit('closeDrawer')
+    },
+    subnavClick(nav, snav) {
+      this.route2(nav)
+      setPageTab(snav.name)
     },
   }
 }
@@ -75,8 +104,24 @@ export default {
   }
 }
 .app-mobile {
-  .nav-item {
-    border-bottom: 1px solid rgba(51, 51, 51, 0.2);
+  .nav-item-sub {
+    // height: 50px;
+    position: relative;
+    display: inline-flex;
+    font-family: 'Inter Regular';
+    line-height: 24px;
+    margin-bottom: 12px;
+    padding-bottom: 16px;
+  }
+  .nav-item-sub.selected::after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 6px;
+    background: #df2e2d;
+    bottom: 0px;
+    left: calc(50% - 20px);
+    border-radius: 11px;
   }
 }
 .app {

@@ -31,7 +31,7 @@ export default {
   .tooltip-title {
     font-family: 'Inter Regular';
     word-break: keep-all;
-    padding-left: 26px;
+    padding-left: 20px;
     position: relative;
     .icon {
       position: absolute;
@@ -50,7 +50,7 @@ export default {
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
-    padding: 20px;
+    padding: 15px;
     border-radius: 12px;
   }
 }

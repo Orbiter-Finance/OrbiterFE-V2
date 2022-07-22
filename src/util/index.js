@@ -1,3 +1,5 @@
+// import { isMobile } from '../composition/useMobile'
+
 export * from './chain2id'
 export * from './env'
 
@@ -15,7 +17,14 @@ export function toggleBodyCls() {
   }
 }
 
-export function notifyLg(msg, type = 'success', duration = 3000) {
+/**
+ * deprecate! use 
+ *  .el-notification__title {
+ *   word-break: break-all;
+ *  }
+ * instead in global.css
+ */
+export function notifyLg(msg, type = 'success', duration = 300000) {
   this.$notify[type]({ title: msg, duration})
   this.$nextTick(() => {
     const smsg = msg.split(/\s+/)
@@ -28,8 +37,8 @@ export function notifyLg(msg, type = 'success', duration = 3000) {
     if (max > 25) {
       const doms = document.querySelectorAll('.el-notification')
       Array.from(doms || []).forEach(dom => {
-        const width = 330 + (max - 25) * (160/17)
-        dom.style.width = `${width}px`
+        const width = 330 + (max - 25) * (160/16) + 30
+        // !isMobile.value && (dom.style.width = `${width}px`)
       })
     }
   })

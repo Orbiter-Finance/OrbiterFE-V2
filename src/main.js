@@ -18,15 +18,15 @@ import { init } from '../src/util/resize/onresize'
 import { CommTooltip } from './components'
 import loading from './components/loading/loading.vue'
 import CommLoading from './components/CommLoading.vue'
-import { isDev } from './util/env'
+import { isLocal } from './util/env'
 import eruda from 'eruda'
 
 // inject more powerful log method on the console object
 import "./util/enhancedLogger";
 
 // in some cases, we may need do something in webview(like imToken's webview environment)
-// development only!!!
-if (isDev) {
+// local only!!!
+if (isLocal()) {
   eruda.init()
   // eruda.position("center");
 }

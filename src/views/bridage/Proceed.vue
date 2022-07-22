@@ -1,6 +1,6 @@
 <template>
 <div class="proceed-box">
-  <CommBoxHeader :back="closerButton">{{detailData ? 'Detail' : 'Proceeding'}}</CommBoxHeader>
+  <CommBoxHeader :back="closerButton">{{detailData ? (isFailed ? 'Transcation Failed' : 'Detail') : (isCompleted ? 'Completed' : 'Proceeding')}}</CommBoxHeader>
   <div class="ProceedContent">
     <div v-for="item in proceedData" :key="item.title" class="contentItem">
       <span class="item-title" style="width:100px;text-align:left;">{{ item.title }}</span>
@@ -8,14 +8,15 @@
       <CommLoading v-else class="right" width="1.2rem" height="1.2rem" />
     </div>
     <div class="chainDataContent">
-      <div v-if="isMobile" class="middle-icon-abs">
+      <div v-if="isMobile" class="middle-icon-abs" style="z-index:2;">
         <div v-if="isProcee" :class="[{'rocket-box-bg': isProcee}]">
         </div>
         <div v-else :class="['rocket-box']">
-          <SvgIconThemed v-if="true" iconName="satellite" size="xs" />
+          <SvgIconThemed v-if="!detailData" icon="satellite" size="xs" />
+          <SvgIconThemed v-else iconName="succeed" style="width:24px;height:24px;" />
         </div>
       </div>
-      <div class="item left">
+      <div class="item left" style="z-index:3;">
         <div class="chain-name from">
           <span>{{ FromChainName }}</span>
         </div>
@@ -35,13 +36,14 @@
       </div>
       <div class="middle-icon">
         <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
-          <SvgIconThemed v-if="!isProcee" iconName="satellite" size="xs" />
+          <SvgIconThemed v-if="!isProcee && !detailData" icon="satellite" size="xs" />
+          <SvgIconThemed v-if="!isProcee && detailData" iconName="succeed" style="width:24px;height:24px;" />
         </div>
         <div v-if="!isMobile" class="rocket-line-box">
-          <SvgIconThemed icon="rocket-line" style="width:157px;height:10px;margin-top:10px;" />
+          <SvgIconThemed icon="rocket-line" style="width:161px;height:14px;margin-top:10px;" />
         </div>
       </div>
-      <div class="item right">
+      <div class="item right" style="z-index:3;">
         <div class="chain-name to">
           <span>{{ toChainName }}</span>
         </div>
@@ -72,9 +74,8 @@
 import { SvgIconThemed, CommBoxHeader, CommBtn } from '../../components'
 import util from '../../util/util'
 import { chain2icon } from '../../util'
-import Middle from '../../util/middle/middle'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
-import { isMobile, transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
+import { isMobile, transferDataState, realSelectMakerInfo, web3State, saveSenderPageWorkingState } from '../../composition/hooks'
 
 export default {
   name: 'Proceed',
@@ -89,6 +90,12 @@ export default {
     SvgIconThemed, CommBoxHeader, CommBtn
   },
   computed: {
+    isCompleted() {
+      return !this.detailData && !(this.$store.state.proceedState === 1 || this.$store.state.proceedState === 2) && !(this.$store.state.proceedState === 4 || this.$store.state.proceedState === 5)
+    },
+    isFailed() {
+      return this.detailData && !(this.detailData.state === 1 || this.detailData.state === 0)
+    },
     isMobile() {
       return isMobile.value
     },
@@ -103,20 +110,12 @@ export default {
       return this.$store.state.themeMode === 'light'
     },
     FromChainName() {
-      return util.chainName(
-        transferDataState.fromChainID,
-        this.$env.localChainID_netChainID[
-          transferDataState.fromChainID
-        ]
-      )
+      const chainId = this.getChainId()
+      return util.chainName(chainId, this.$env.localChainID_netChainID[chainId])
     },
     toChainName() {
-      return util.chainName(
-        transferDataState.toChainID,
-        this.$env.localChainID_netChainID[
-          transferDataState.toChainID
-        ]
-      )
+      const chainId = this.getChainId(false)
+      return util.chainName(chainId, this.$env.localChainID_netChainID[chainId])
     },
     FromTx() {
       if (this.detailData) {
@@ -128,7 +127,7 @@ export default {
         return `Tx:${util.shortAddress(fromTxHash)}`
       } 
       
-      const { proceedState, proceeding, transferData } = this.$store.state
+      const { proceedState, proceeding } = this.$store.state
       if (proceedState === 1) {
         return 'View on Explore'
       } else {
@@ -136,6 +135,7 @@ export default {
         if (transferDataState.fromChainID == 8 || transferDataState.fromChainID == 88) {
           return `TransferId: ${proceeding.userTransfer.txid}`
         }
+        console.log('FromTx: ', proceeding.userTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
       }
     },
@@ -153,7 +153,7 @@ export default {
         }
       } 
 
-      const { proceedState, proceeding, transferData } = this.$store.state
+      const { proceedState, proceeding } = this.$store.state
       if (proceedState < 4) {
         return 'View on Explore'
       } else {
@@ -161,6 +161,7 @@ export default {
         if (transferDataState.toChainID == 8 || transferDataState.toChainID == 88) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
+        console.log('ToTx: ', proceeding.makerTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
@@ -207,14 +208,17 @@ export default {
       }
       return chain2icon(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`])
     },
-    switchNetWork(e = true) {
+    getChainId(isFrom = true) {
       let chainID
       if (this.detailData) {
-        chainID = this.detailData[`${e ? 'from' : 'to'}ChainID`]
+        chainID = this.detailData[`${isFrom ? 'from' : 'to'}ChainID`]
       } else {
-        chainID = transferDataState[`${e ? 'from' : 'to'}ChainID`]
+        chainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
       }
-      this.addChainNetWork(chainID)
+      return chainID
+    },
+    switchNetWork(e = true) {
+      this.addChainNetWork(this.getChainId(e))
     },
     async goToExplorFrom() {
       let url;
@@ -356,7 +360,17 @@ export default {
     },
     closerButton() {
       if (this.detailData) {
-        Middle.$emit('showHistory', true)
+        const route = this.$route
+        localStorage.setItem('last_page_before_history', JSON.stringify({
+          path: route.path,
+          params: route.params,
+          query: route.query,
+        }))
+        saveSenderPageWorkingState()
+        this.$router.push({
+          path: '/history'
+        })
+
         this.$emit('stateChanged', '4')
       } else {
         this.$store.commit('updateProceedTxID', null)
@@ -367,7 +381,6 @@ export default {
       console.log('reportError')
     },
     addChainNetWork(useChainID) {
-      var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[useChainID]
       )
@@ -419,7 +432,7 @@ export default {
           }
         })
     },
-  },
+  }
 }
 </script>
 
@@ -463,6 +476,7 @@ export default {
           height: 100%;
           // width: calc(100% - 12px);
           width: 100%;
+          z-index: 2;
           .rocket-box {
             background-repeat: no-repeat;
             background-size: 50%;
@@ -476,35 +490,6 @@ export default {
             height: calc(100% - 90px);
             padding-left: 120px;
             padding-right: 120px;
-          }
-        }
-        // TODO: should remove
-        .middle-icon-abs0 {
-          position: absolute;
-          // left: calc(50% - 78px);
-          height: 100%;
-          .rocket-box {
-            background-repeat: no-repeat;
-
-            // background-size: 200%;
-            // height: 100px;
-            // width: 115px;
-            // margin-left: 10px;
-            // margin-top: 30px;
-
-            background-size: 50%;
-            height: 200px;
-            width: 300px;
-            margin-left: 90px;
-            margin-top: 30px;
-            .svg {
-              margin-top: 30px;
-              // margin-left: 20px;
-              margin-left: -140px;
-            }
-          }
-          .rocket-line-box {
-            margin-top: -30px;
           }
         }
         .middle-icon {
@@ -525,11 +510,11 @@ export default {
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
   );
-  max-height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
-  );
-  overflow-y: scroll;
+  // max-height: calc(
+  //   var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
+  //     var(--bottom-nav-height)
+  // );
+  // overflow-y: scroll;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
@@ -552,8 +537,9 @@ export default {
       .item {
         width: 128px;
         height: 100%;
+        z-index: 3;
         .chain-name {
-          font-family: 'Inter';
+          font-family: 'Inter Bold';
           font-weight: 700;
           font-size: 16px;
           line-height: 24px;
@@ -588,6 +574,7 @@ export default {
           align-items: center;
           justify-content: center;
           white-space: nowrap;
+          text-decoration: underline;
           .status-icon {
             width: 24px;
             height: 24px;
@@ -596,6 +583,7 @@ export default {
         }
         .tx:hover {
           text-decoration: underline;
+          color: red;
         }
         .switch-btn {
           width: 128px;

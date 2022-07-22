@@ -7,8 +7,8 @@
         <span class="col col-1">&nbsp;</span>
         <span class="col col-2">Time</span>
         <span class="col col-3">Value</span>
-        <span class="col col-4">From</span>
-        <span class="col col-5">To</span>
+        <span class="col col-4" style="text-align:center;">From</span>
+        <span class="col col-5" style="text-align:center;">To</span>
       </div>
       <div class="dydx-limit" v-if="isShowDydxLimit">
         Limited by the dydx mechanism, the history of dYdX cannot be queried
@@ -27,19 +27,20 @@
         class="contentItem"
       >
         <svg-icon class="logo col-val col-1" color="#df2e2d" :iconName="iconName(item)"></svg-icon>
-        <span class="col-val col-2">{{ item.fromTimeStamp }}</span>
+        <span class="col-val col-2">{{ item.fromTimeStampShow }}</span>
         <span class="col-val col-3">{{ item.userAmount + item.tokenName }}</span>
-        <div class="col-val col-4" style="display:flex;align-items:center;">
+        <div class="col-val col-4" style="display:flex;align-items:center;justify-content: center;">
           <svg-icon
             :iconName="logoName(item.fromChainID)"
             style="width: 1.6rem; height: 1.6rem"
           ></svg-icon>
         </div>
-        <svg-icon
-          class="col-val col-5"
-          :iconName="logoName(item.toChainID)"
-          style="width: 1.6rem; height: 1.6rem"
-        ></svg-icon>
+        <div class="col-val col-5" style="display:flex;align-items:center;justify-content: center;">
+          <svg-icon
+            :iconName="logoName(item.toChainID)"
+            style="width: 1.6rem; height: 1.6rem"
+          ></svg-icon>
+        </div>
       </div>
     </div>
     <NoData v-if="!isApiLoading && historyData && historyData.length === 0" style="padding-top: 200px;">No history</NoData>
@@ -57,8 +58,7 @@
 
 <script>
 import { NoData } from '../components'
-import Middle from '../util/middle/middle'
-import { historyPanelState, getTransactionsHistory } from '../composition/hooks'
+import { historyPanelState, getTransactionsHistory, recoverSenderPageWorkingState, setHistoryInfo } from '../composition/hooks'
 
 export default {
   name: 'History',
@@ -118,13 +118,18 @@ export default {
     closeDialog() {
       const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
       try {
-        this.$router.push(last)
+        if (last.path) {
+          last.path !== this.$route.path && this.$router.push(last)
+          recoverSenderPageWorkingState()
+        } else {
+          this.$router.push({path: '/'})
+        }
       } catch(err) {
         console.error(err)
       }
     },
     getHistoryInfo(e) {
-      Middle.$emit('showDetail', e)
+      setHistoryInfo(e)
       this.closeDialog()
     },
     stopPenetrate(e) {
@@ -166,7 +171,7 @@ export default {
         return 'ethlogo'
       }
     },
-  },
+  }
 }
 </script>
 
@@ -183,6 +188,9 @@ export default {
         }
         .col {
           margin-right: 26px;
+        }
+        .col-5 {
+          margin-right: 0 !important;
         }
         .contentItem {
           padding: 4px 20px;
@@ -221,7 +229,8 @@ export default {
           margin-right: 8px;
         }
         .col-5 {
-          min-width: 32px;
+          // min-width: 32px;
+          min-width: 38px;
         }
         .contentItem {
           min-width: 335px;
@@ -250,7 +259,7 @@ export default {
       font-weight: 700;
       font-size: 16px;
       line-height: 24px;
-      font-family: 'Inter';
+      font-family: 'Inter Bold';
     }
     .table {
       margin-top: 26px;
@@ -270,18 +279,19 @@ export default {
         width: 16px;
       }
       .col-2, .col-3 {
-        width: 160px;
+        width: 150px;
       }
       .col-4, .col-5 {
         width: 40px;
       }
-      .col:last-child {
-        margin-right: 0px;
-      }
+      // .col:last-child {
+      //   margin-right: 0px;
+      // }
     }
 
     .pagination {
       margin-top: 24px;
+      text-align: right;
     }
     .close {
       position: absolute;
@@ -327,6 +337,16 @@ export default {
   background: #DF2E2D;
   border-radius: 8px;
   color: white;
+}
+.history-page >>> .el-pager li:hover {
+  color: rgba(51, 51, 51, 0.8);
+  background: #F5F5F5;
+  border-radius: 8px;
+}
+.dark-theme .history-page >>> .el-pager li:hover {
+  color: rgba(255, 255, 255, 0.6);
+  background: #3F415B;
+  border-radius: 8px;
 }
 .dark-theme .history-page >>> .el-pagination button:disabled {
   background-color: #373951;

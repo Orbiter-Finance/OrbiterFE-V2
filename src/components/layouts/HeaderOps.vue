@@ -30,7 +30,7 @@ import {
 } from '../../composition/walletsResponsiveData'
 import { setStarkNetDialog, setSelectWalletDialogVisible } from '../../composition/hooks'
 
-import { starkAddress, showAddress } from '../../composition/hooks'
+import { starkAddress, showAddress, saveSenderPageWorkingState } from '../../composition/hooks'
 
 export default {
   name: 'HeaderOps',
@@ -86,12 +86,15 @@ export default {
       this.$emit('closeDrawer')
 
       const route = this.$route
-      localStorage.setItem('last_page_before_history', JSON.stringify({
+      route.path !== '/history' && localStorage.setItem('last_page_before_history', JSON.stringify({
         path: route.path,
         params: route.params,
         query: route.query,
       }))
-      this.$router.push({
+      if (route.path === '/') {
+        saveSenderPageWorkingState()
+      }
+      route.path !== '/history' && this.$router.push({
         path: '/history'
       })
     },

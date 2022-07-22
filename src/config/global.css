@@ -8,6 +8,10 @@
   --bottom-nav-height: 8rem;
 }
 
+/* override the element component style */
+.el-notification__title {
+  word-break: break-all;
+}
 /* fonts:
   url('../assets/fonts/Inter-Bold-4.otf'), 
   url('../assets/fonts/Inter-Medium-8.otf'), 
@@ -16,7 +20,7 @@
 */
 /* default is Inter Bold */
 @font-face {
-  font-family: 'Inter';
+  font-family: 'Inter Bold';
   font-style: normal;
   src: url('../assets/fonts/Inter-Bold-4.otf');
   font-stretch: 100%;
@@ -33,7 +37,7 @@ html, body {
   height: 100%;
   min-height: 1vh;
   overflow: hidden;
-  font-family: 'Inter';
+  font-family: 'Inter Bold';
   font-style: normal;
 }
 

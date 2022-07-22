@@ -173,7 +173,6 @@ export const universalWalletSwitchChainHandler = (walletConf, walletProvider, su
         // direct user to add by invoke universalWalletAddChainHandler
         if (code === currentChainNotAddedErrorCode) universalWalletAddChainHandler(walletConf, walletProvider);
         else {
-            console.errorLog("出错了", reason);
             util.showMessage(message, "error");
             failCallback();
         }
