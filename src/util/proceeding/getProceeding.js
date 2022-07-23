@@ -1081,12 +1081,12 @@ function ScanMakerTransfer(
               key: config.etherscan.Mainnet.key,
             }
             break
-            case 515:
-              api = {
-                endPoint: config.bsc.Rinkeby,
-                key: config.etherscan.Rinkeby.key,
-              }
-              break
+          case 515:
+            api = {
+              endPoint: config.bsc.Rinkeby,
+              key: config.etherscan.Rinkeby.key,
+            }
+            break
       }
       if (!api) {
         return
