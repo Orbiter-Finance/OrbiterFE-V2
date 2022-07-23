@@ -8,14 +8,14 @@ export default {
   baseTraddingUrl: historyApiUrl, //process.env.NODE_ENV === 'production' ? historyApiUrl : 'http://localhost:3000/api',
   credential: false,
   localProvider: {
-    5: process.env.VUE_APP_HP_R, // rinkeby
-    22: process.env.VUE_APP_HP_AR_R,
-    66: process.env.VUE_APP_HP_PO_G,
-    77: process.env.VUE_APP_HP_OP_K,
     1: process.env.VUE_APP_HP,
     2: process.env.VUE_APP_HP_AR,
     6: process.env.VUE_APP_HP_PO,
     7: process.env.VUE_APP_HP_OP,
+    5: process.env.VUE_APP_HP_R, // rinkeby
+    22: process.env.VUE_APP_HP_AR_R,
+    66: process.env.VUE_APP_HP_PO_G,
+    77: process.env.VUE_APP_HP_OP_K,
     10: process.env.VUE_APP_HP_MT,
     510: process.env.VUE_APP_HP_MT_R,
     13: process.env.VUE_APP_HP_BOBA,

@@ -10,8 +10,8 @@ const CONTRACTS = {
     registrationContractAddress: '0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864',
   },
   mainnet: {
-    starkContractAddress: '',
-    registrationContractAddress: '',
+    starkContractAddress: '0x5FDCCA53617f4d2b9134B29090C87D01058e27e9',
+    registrationContractAddress: '0x72a06bf2a1CE5e39cBA06c0CAb824960B587d64c',
   },
 }
 
@@ -113,7 +113,7 @@ export class IMXHelper {
   }
 
   /**
-   * @param {string} user 
+   * @param {string} user
    */
   async ensureUser(user) {
     if (!user) {

@@ -1,4 +1,3 @@
-// util/thegraph.js
 import Axios from '../utils/Axios'
 Axios.axios()
 
@@ -59,18 +58,19 @@ const nowMakerList = [
     c2GasFee: 0.15,
     c1AvalibleTimes: [
       {
-        startTime: 0,
+        startTime: 1655967601,
         endTime: 99999999999999,
       },
     ],
     c2AvalibleTimes: [
       {
-        startTime: 0,
+        startTime: 1655967601,
         endTime: 99999999999999,
       },
     ],
   },
 ]
+
 function getMakerInfo(req, next) {
   return new Promise((resolve, reject) => {
     var res = {}

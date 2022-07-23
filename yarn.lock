@@ -4684,7 +4684,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.4, create-hmac@^1.1.7:
 
 cross-env@^7.0.2:
   version "7.0.3"
-  resolved "https://registry.npmmirror.com/cross-env/-/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
+  resolved "https://registry.yarnpkg.com/cross-env/-/cross-env-7.0.3.tgz#865264b29677dc015ba8418918965dd232fc54cf"
   integrity sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==
   dependencies:
     cross-spawn "^7.0.1"
@@ -6932,6 +6932,13 @@ get-starknet-wallet@^0.0.8:
   version "0.0.8"
   resolved "https://registry.npmmirror.com/get-starknet-wallet/-/get-starknet-wallet-0.0.8.tgz#3c586423fc91817cb262e1b09433d81c9835a7de"
   integrity sha512-VhFY1kXxLri4Vs6G9GwcyjdAPqSLDdNGPqvuCx0VsMdE4fQdJD5qGeOf+BASjO8/ZN2SYIjuEvDfV5SGs3teYA==
+  dependencies:
+    bowser "^2.11.0"
+
+get-starknet@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/get-starknet/-/get-starknet-1.4.2.tgz#fc7aa13506d672229157b357632a3f9b77ecd9d9"
+  integrity sha512-rakk6s5zcE3tM4AJ8g/SLO4V0aPlJDSLbE3zx3mp6PDS5Y7/ndBMTCKehr+bK4lIoj+VQshLxkobpqkXrC2LMA==
   dependencies:
     bowser "^2.11.0"
 

@@ -1141,7 +1141,6 @@ export default {
           console.log("get balance err", err, userAddress, tokenAddress, localChainID);
         })
       }
-
       return balance
     }
   },
