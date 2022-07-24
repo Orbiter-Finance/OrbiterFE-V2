@@ -6,7 +6,7 @@ import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsi
 import { web3State } from '../../../composition/hooks'
 
 // Get a token contract on the L2 network
-function getLocalCoinContract(localChainID, tokenAddress, state) {
+function getLocalCoinContract(localChainID, tokenAddress, state) {  
   // 0 : http   1: ws
   // localChainID => rpcurl => web3Provider
   const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
@@ -27,6 +27,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
 }
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, makerInfo) {
+  console.log("localChainId", makerInfo, localChainID);
   // if localChain = 3 || 33
   if (localChainID === 3 || localChainID === 33) {
     return

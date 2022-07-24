@@ -104,6 +104,8 @@ const ZK2_ERC20_WITHDRAW_ONZK2 = 10560 //same with eth
 const STARKNET_ETH_DEPOSIT_ONL1 = 110000
 const STARKNET_ETH_WITHDRAW_ONL1 = 60000
 
+
+
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   // min ~ max
@@ -267,6 +269,7 @@ export default {
       9: 100,
       10: 1,
       11: 1,
+      15: 1,
       22: 0.02,
       33: 100,
       44: 50,
@@ -279,6 +282,7 @@ export default {
       13: 1,
       513: 1,
       514: 0.000028572,
+      515: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -293,6 +297,7 @@ export default {
       10: 28000,
       11: 100000,
       13: 646496,
+      15: 150000,
       22: 810000,
       33: 100,
       44: 35000,
@@ -304,6 +309,7 @@ export default {
       511: 100000,
       513: 646496,
       514: 10560,
+      515: 150000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -317,6 +323,7 @@ export default {
       11: 'ETH',
       9: 'ETH',
       10: 'METIS',
+      15: 'BNB',
       22: 'AETH',
       33: 'ETH',
       44: 'ETH',
@@ -330,6 +337,7 @@ export default {
       513: 'ETH',
       14: 'ETH',
       514: 'ETH',
+      515: 'BNB',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -558,6 +566,13 @@ export default {
     if (fromChainID === 10 || fromChainID === 510) {
       return '~7 days'
     }
+    if (fromChainID === 13 || fromChainID === 513) {
+      return '~7 days'
+    }
+    if (fromChainID === 15 || fromChainID === 515) {
+      return '~15min'
+    }
+    
 
     if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -601,13 +616,15 @@ export default {
       if (toChainID === 11 || toChainID === 511) {
         return '~20min'
       }
+      if (toChainID === 13 || toChainID === 513) {
+        return '~10min'
+      }
+       if (toChainID === 15 || toChainID === 515) {
+        return '~15min'
+      }
     }
-    if (fromChainID === 13 || fromChainID === 513) {
-      return '~7 days'
-    }
-    if (toChainID === 13 || toChainID === 513) {
-      return '~10min'
-    }
+   
+   
   },
 
   transferSavingTime(fromChainID, toChainID) {
@@ -689,6 +706,9 @@ export default {
     if (fromChainID === 13 || fromChainID === 513) {
       return ' 7 days'
     }
+    if (fromChainID === 15 || fromChainID === 515) {
+      return ' 35 minute'
+    }
   },
   /**
    * @deprecated Move to transferOrginGasUsd
@@ -751,6 +771,7 @@ export default {
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0
+    let bscGas = 0;
     const selectMakerInfo = realSelectMakerInfo.value
 
     // withdraw
@@ -912,6 +933,16 @@ export default {
         (isErc20 ? ZK2_ERC20_WITHDRAW_ONZK2 : ZK2_ETH_WITHDRAW_ONZK2)
     }
 
+    if (fromChainID === 15 || fromChainID === 515) {
+      try {
+        const fromGasPrice = await this.getGasPrice(fromChainID)
+        // BSC WithDraw
+        const bscWithDrawARGas = fromGasPrice * 150000;
+        bscGas += bscWithDrawARGas
+      } catch (error) {
+        throw new Error(`bsc withdraw error`)
+      }
+    }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       try {
@@ -953,6 +984,7 @@ export default {
         const toGasPrice = await this.getGasPrice(toChainID === 6 ? 1 : 5)
         const pgDepositGas = toGasPrice * PG_ERC20_DEPOSIT_DEPOSIT_ONL1
         ethGas += pgDepositGas
+        console.log("polygon to Gas price", toGasPrice);
       } catch (error) {
         throw new Error(`po deposit error`)
       }
@@ -1048,6 +1080,19 @@ export default {
         (isErc20
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
+
+
+        }
+    if (toChainID === 15 || toChainID === 515) {
+      try {
+        // MT deposit
+        let toGasPrice = await this.getGasPrice(toChainID)
+        // MT deposit
+        const mtDepositGas = toGasPrice * 150000
+        bscGas += mtDepositGas
+      } catch (error) {
+        throw new Error(`bsc deposit error`)
+      }
     }
 
     let usd = new BigNumber(0)
@@ -1061,6 +1106,14 @@ export default {
         await exchangeToUsd(
           new BigNumber(maticGas).dividedBy(10 ** 18),
           'MATIC'
+        )
+      )
+    }
+    if (bscGas > 0) {
+      usd = usd.plus(
+        await exchangeToUsd(
+          new BigNumber(bscGas).dividedBy(10 ** 18),
+          'BNB'
         )
       )
     }
@@ -1178,7 +1231,7 @@ export default {
         // When is ETH
         const web3 = localWeb3(localChainID)
         balance = Number(await web3.eth.getBalance(userAddress)) || 0
-      } else {
+      }else {
         // When is ERC20
         var tokenContract = getLocalCoinContract(localChainID, tokenAddress, 0)
         if (!tokenContract) {
@@ -1186,7 +1239,6 @@ export default {
         }
         balance = await tokenContract.methods.balanceOf(userAddress).call()
       }
-
       return balance
     }
   },
@@ -1199,7 +1251,6 @@ export default {
       if (!env.localProvider[fromChainID]) {
         return null
       }
-
       let response = await axios.post(env.localProvider[fromChainID], {
         jsonrpc: '2.0',
         method: 'eth_gasPrice',

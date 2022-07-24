@@ -84,10 +84,9 @@ export default {
         }
         newArray.push(chainData)
       }
-
       const chainOrderIds = [
         3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
-        511, 13, 513, 4, 44,
+        511, 13, 513, 4, 44,15,515
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },

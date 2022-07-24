@@ -9,7 +9,7 @@ module.exports = {
   outputDir: 'dist',
   assetsDir: 'static',
   indexPath: 'index.html',
-  lintOnSave: true,
+  lintOnSave: true,  
   productionSourceMap: false,
   chainWebpack: (config) => {
     config.plugin('html').tap((args) => {
@@ -64,7 +64,6 @@ module.exports = {
     host: '0.0.0.0',
     port: 8080,
     hot: true,
-
     proxy: {
       '/send': {
         target: 'https://TEST.execute-api.ap-northeast-1.amazonaws.com',
@@ -132,7 +131,7 @@ module.exports = {
         },
       }
     } else {
-      config.devtool = 'eval-cheap-module-source-map'
+      config.devtool = 'source-map'
     }
   },
   pluginOptions: {

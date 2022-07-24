@@ -64,7 +64,7 @@
       <span
         v-if="!transferLoading"
         class="wbold s16"
-        style="letter-spacing: 0.1rem"
+        style="letter-spacing: 0.1rem;"
         >CONFIRM AND SEND</span
       >
       <CommLoading
@@ -820,7 +820,7 @@ export default {
           value,
           provider
         )
-        if (gasLimit < 21000) {
+        if (fromChainID == 2 && gasLimit < 21000) {
           gasLimit = 21000
         }
         const eprovider = new providers.Web3Provider(web3.currentProvider)
@@ -1263,7 +1263,7 @@ export default {
             to,
             tValue.tAmount
           )
-          if (gasLimit < 21000) {
+          if (fromChainID == 2 && gasLimit < 21000) {
             gasLimit = 21000
           }
           const objOption = { from: account, gas: gasLimit }

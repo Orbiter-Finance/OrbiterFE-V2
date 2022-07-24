@@ -65,6 +65,10 @@ export default {
         return 'zkSync2'
       case 514:
         return 'zkSync2(G)'
+      case 15:
+        return "Binance Smart Chain"
+      case 515:
+        return "Binance Smart Chain(R)"
     }
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
@@ -160,6 +164,10 @@ export default {
    */
   isEthTokenAddress(tokenAddress) {
     return /^0x0+$/i.test(tokenAddress)
+  },
+
+  isBNBTokenAddress(chainId) {
+    return chainId == 97 || chainId == 56;
   },
 
   /**

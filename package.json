@@ -28,6 +28,7 @@
     "element-ui": "^2.14.1",
     "eth-proof": "^2.1.6",
     "ethers": "^5.5.4",
+    "get-starknet": "^1.4.2",
     "get-starknet-wallet": "^0.0.8",
     "graphql": "^16.4.0",
     "graphql-request": "^4.3.0",

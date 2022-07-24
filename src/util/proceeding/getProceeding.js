@@ -716,6 +716,7 @@ function startScanMakerTransfer(
   nonce,
   ownerAddress = ''
 ) {
+  console.log("i am start scaning");
   if (!isCurrentTransaction(transactionID)) {
     return
   }
@@ -1083,6 +1084,18 @@ function ScanMakerTransfer(
             key: config.optimistic.key,
           }
           break
+          case 15:
+            api = {
+              endPoint: config.bsc.Mainnet,
+              key: config.etherscan.Mainnet.key,
+            }
+            break
+          case 515:
+            api = {
+              endPoint: config.bsc.Rinkeby,
+              key: config.etherscan.Rinkeby.key,
+            }
+            break
       }
       if (!api) {
         return

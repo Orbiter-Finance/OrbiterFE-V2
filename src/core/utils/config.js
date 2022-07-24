@@ -85,4 +85,10 @@ export default {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',
   },
+  bsc: {
+    Mainnet: "https://api.bscscan.com/",
+    Rinkeby: "https://api-testnet.bscscan.com/",
+    chainId: "56",
+    rinkeyChainID: "97"
+  }
 }

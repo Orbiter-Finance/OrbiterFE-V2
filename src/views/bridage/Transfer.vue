@@ -884,6 +884,7 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
+            this.c1Balance = 0
             console.warn(error)
             return
           })
@@ -901,6 +902,7 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
+            this.c2Balance = 0
             console.warn(error)
           })
       } else {
@@ -971,6 +973,7 @@ export default {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
+            this.c1Balance = 0
             console.warn(error)
           })
         transferCalculate
@@ -984,6 +987,7 @@ export default {
             this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
+            this.c2Balance = 0
             console.warn(error)
           })
       }
@@ -1272,7 +1276,6 @@ export default {
     }, 10 * 1000)
 
     this.transferValue = this.queryParams.amount
-
     makerInfo.getMakerInfoFromGraph({ maker: '0', }, true)
       .then((response) => {
         if (response.code === 0) {
@@ -1553,17 +1556,18 @@ export default {
           realSelectMakerInfo.value.tName,
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
-        if (nonce > 8999) {
+        if (
+          !(await netStateBlock(transferDataState.fromChainID))
+        ) {
           this.$notify.error({
-            title: `Address with the nonce over 9000 are not supported by Orbiter`,
+            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
             duration: 3000,
           })
           return
         }
-
-        if (!netStateBlock(transferDataState.fromChainID)) {
+        if (nonce > 8999) {
           this.$notify.error({
-            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
+            title: `Address with the nonce over 9000 are not supported by Orbiter`,
             duration: 3000,
           })
           return
@@ -1612,13 +1616,8 @@ export default {
               dydxAccount.positionId
             ),
           })
-        } else {
-          // Clear TransferExt
-          updateTransferExt(null)
-        }
-
-        // To starkNet
-        if (toChainID == 4 || toChainID == 44) {
+        } // To starkNet
+        else if (toChainID == 4 || toChainID == 44) {
           const { starkIsConnected, starkNetAddress, starkChain } =
             web3State.starkNet
           if (!starkChain || starkChain == 'unlogin') {
@@ -1752,6 +1751,7 @@ export default {
     async updateOriginGasCost() {
       this.originGasLoading = true
       const { fromChainID, toChainID } = transferDataState
+      console.log("transferDataState", transferDataState);
 
       if (!fromChainID || !toChainID) {
         return
@@ -1802,6 +1802,7 @@ export default {
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.warn(error)
+        return 0
       }
     },
     async getMakerMaxBalance() {
@@ -1815,7 +1816,6 @@ export default {
         this.makerMaxBalance = Number.MAX_SAFE_INTEGER
         return
       }
-
       try {
         const _balance = await this.getBalance(
           selectMakerInfo.makerAddress,
