@@ -24,11 +24,11 @@ export const chain2idMap = {
   'zkspace(R)': 512,
   'Boba(R)': 513,
   Boba: 13,
+  'zkSync2': 14,
   'zkSync2(G)': 514,
   "BinanceSmartChain(R)": 515,
   "BinanceSmartChain": 15,
-  // TODO: when mainnet is ready
-  // 'zkSync2(G)': 14,
+  "bsc(R)": 97,
 }
 
 export const chain2icon = item => {
