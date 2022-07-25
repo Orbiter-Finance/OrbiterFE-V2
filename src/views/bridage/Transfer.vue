@@ -20,7 +20,8 @@
           <template v-slot:titleDesc>
             <span v-html="starkAddress"></span>
           </template>
-          <div class="left">From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
+          <!-- <div class="left">From&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div> -->
+          <div class="left">From</div>
         </o-tooltip>
         <div v-else class="left">From</div>
         <div v-if="isLogin" class="right">
@@ -83,7 +84,8 @@
           <template v-slot:titleDesc>
             <span v-html="starkAddress"></span>
           </template>
-          <div class="left">To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div>
+          <!-- <div class="left">To&nbsp;&nbsp;&nbsp; {{ shortStarkAddress }}</div> -->
+          <div class="left">To</div>
         </o-tooltip>
         <div v-else class="left">To</div>
         <div v-if="isLogin" class="right">
