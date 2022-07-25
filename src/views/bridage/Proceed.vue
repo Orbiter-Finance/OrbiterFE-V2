@@ -27,9 +27,9 @@
           <template v-if="!detailData">
             <svg-icon v-if="$store.state.proceedState === 1" class="status-icon" color="#df2e2d" iconName="history_2"></svg-icon>
             <svg-icon v-else-if="$store.state.proceedState === 2" class="status-icon" color="#df2e2d" iconName="history_3"></svg-icon>
-            <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
+            <svg-icon v-else class="status-icon" color="#df2e2d" iconName="status-success"></svg-icon>
           </template>
-          <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
+          <svg-icon v-else class="status-icon" color="#df2e2d" iconName="status-success"></svg-icon>
           <span>{{ FromTx }}</span>
         </div>
         <div class="switch-btn" @click="() => switchNetWork()">Switch Network</div>
@@ -37,7 +37,7 @@
       <div class="middle-icon">
         <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
           <SvgIconThemed v-if="!isProcee && !detailData" icon="satellite" size="xs" />
-          <SvgIconThemed v-if="!isProcee && detailData" iconName="succeed" style="width:24px;height:24px;" />
+          <!-- <SvgIconThemed v-if="!isProcee && detailData" iconName="succeed" style="width:24px;height:24px;" /> -->
         </div>
         <div v-if="!isMobile" class="rocket-line-box">
           <SvgIconThemed icon="rocket-line" style="width:161px;height:14px;margin-top:10px;" />
@@ -53,13 +53,13 @@
         <div class="tx to-tx" @click="goToExplorTo">
           <template v-if="!detailData">
             <svg-icon v-if="$store.state.proceedState === 4" class="status-icon" color="#df2e2d" iconName="history_3"></svg-icon>
-            <svg-icon v-else-if="$store.state.proceedState === 5" class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
+            <svg-icon v-else-if="$store.state.proceedState === 5" class="status-icon" color="#df2e2d" iconName="status-success"></svg-icon>
             <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_1"></svg-icon>
           </template>
           <template v-else>
-            <svg-icon v-if="detailData.state === 0" class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
+            <svg-icon v-if="detailData.state === 0" class="status-icon" color="#df2e2d" iconName="status-success"></svg-icon>
             <svg-icon v-else-if="detailData.state === 1" class="status-icon" color="#df2e2d" iconName="history_2"></svg-icon>
-            <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_error"></svg-icon>
+            <svg-icon v-else class="status-icon" color="#df2e2d" iconName="status-error"></svg-icon>
           </template>
           <span>{{ ToTx }}</span>
         </div>

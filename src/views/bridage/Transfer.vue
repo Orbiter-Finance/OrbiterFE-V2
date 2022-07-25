@@ -1578,7 +1578,7 @@ export default {
           ) < 0
         ) {
           this.$notify.error({
-            title: `As an alpha release, Orbiter can only support ${this.userMinPrice} ~ ${this.maxPrice} ${transferDataState.selectTokenInfo.token} for each transfer.`,
+            title: `Orbiter can only support minimum of ${this.userMinPrice} and maximum of ${this.maxPrice} ${transferDataState.selectTokenInfo.token} on transfers.`,
             duration: 3000,
           })
           return

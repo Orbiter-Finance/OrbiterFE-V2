@@ -188,9 +188,12 @@ export default {
 .app-mobile {
   .obSelectChainBody {
     width: calc(100% - 30px);
+    max-height: 90vh;
+    height: 372px;
   }
 }
 .obSelectChainBody {
+  position: relative;
   margin: 4.2rem auto;
   // height: calc(
   //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
