@@ -92,7 +92,9 @@
   }
   background-size: 100% 360px;
   background-color: #28293D;
-  @include obScrollbarDark;
+  &.app {
+    @include obScrollbarDark;
+  }
   a {
     color: var(--dark-page-box-color);
   }
@@ -366,9 +368,9 @@
       border-top: 1px solid rgba(51, 51, 51, 0.2);
     }
   }
-
-  @include obScrollbarLight;
-
+  &.app {
+    @include obScrollbarLight;
+  }
   // &.app {
   //   background-color: #F5F5F5;
   // }

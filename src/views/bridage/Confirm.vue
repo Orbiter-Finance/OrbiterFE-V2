@@ -668,14 +668,10 @@ export default {
           if (error.message == 'account is not activated') {
             const notify = this.$notify({
               type: 'error',
-              message: `<div style="text-align:left;font-size: 1.4rem; color: black">This Loopring account is not activated, please activate it at <span style="color:blue;text-decoration: underline"> here </span> before transferring.</div>`,
+              message: `<div style="text-align:left;font-size: 1.4rem; color: black">This Loopring account is not yet activated, please activate it before transferring.</div>`,
               dangerouslyUseHTMLString: true,
               duration: 8000,
             })
-            notify.$el.querySelector('span').onclick = () => {
-              notify.close()
-              window.open('https://loopring.io/#/layer2/assets', '_blank')
-            }
           } else if (error.message == 'User account is frozen') {
             const notify = this.$notify({
               type: 'error',

@@ -56,14 +56,14 @@ export default {
             }
           ]
         },
-        {
-          name: 'L2 Data',
-          href: '/data',
-        },
-        {
-          name: 'More',
-          children: []
-        },
+        // {
+        //   name: 'L2 Data',
+        //   href: '/data',
+        // },
+        // {
+        //   name: 'More',
+        //   children: []
+        // },
       ]
     }
   },
