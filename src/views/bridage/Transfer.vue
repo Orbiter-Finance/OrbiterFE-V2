@@ -878,6 +878,7 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
+            console.log(`c1:  token:${selectMakerInfo.t1Address}, userAddress:${compatibleGlobalWalletConf.value.walletPayload.walletAddress}, Balance:${response}`);
             this.c1Balance = (
               response /
               10 ** selectMakerInfo.precision
@@ -895,6 +896,7 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
+          console.log(`c2:  token:${selectMakerInfo.t1Address}, userAddress:${compatibleGlobalWalletConf.value.walletPayload.walletAddress}, Balance:${response}`);
             this.c2Balance = (
               response /
               10 ** selectMakerInfo.precision
@@ -1392,7 +1394,6 @@ export default {
       const { fromChainID, toChainID, selectTokenInfo } = transferDataState
       updateTransferFromChainID(toChainID)
       updateTransferTokenInfo(selectTokenInfo)
-
       // Wait toChainArray updated
       this.$nextTick(() => {
         let _toChainID = fromChainID
@@ -1455,7 +1456,6 @@ export default {
       updateTransferFromChainID(e.localID)
       // Change query params's source
       const { path, query } = this.$route
-
       for (const key in queryParamsChainMap) {
         if (queryParamsChainMap[key] == e.localID) {
           if (!util.equalsIgnoreCase(query.source, key)) {
@@ -1748,7 +1748,6 @@ export default {
     async updateOriginGasCost() {
       this.originGasLoading = true
       const { fromChainID, toChainID } = transferDataState
-      console.log("transferDataState", transferDataState);
 
       if (!fromChainID || !toChainID) {
         return
@@ -1789,14 +1788,14 @@ export default {
         if (!makerAddress) {
           return ''
         }
-        const response = await transferCalculate.getTransferBalance(
-          chainId,
-          tokenAddress,
-          tokenName,
-          makerAddress,
-          true
-        )
-        return (response / 10 ** precision).toFixed(6)
+        // const response = await transferCalculate.getTransferBalance(
+        //   chainId,
+        //   tokenAddress,
+        //   tokenName,
+        //   makerAddress,
+        //   true
+        // )
+        // return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.warn(error)
         return 0
