@@ -5,7 +5,7 @@
     <span @click="showHistory" class="ops-item">History</span>
     <div v-if="isSelectedStarkNet" ref="connectedStarkNetBtn" @click="connectStarkNetWallet" class="ops-item center" style="display: inline-flex;">
       <svg-icon style="width: 2rem; height: 2rem" iconName="sknlogo"></svg-icon>
-      <span class="address">{{ starkAddress }}</span>
+      <span class="address">{{ starkAddress === 'not connected' ? 'connect starknet' : starkAddress }}</span>
     </div>
     <div ref="connectedBtn" @click="connectAWallet" class="ops-item center" style="display: inline-flex;">
       <svg-icon style="width: 2rem; height: 2rem"
@@ -29,7 +29,7 @@ import {
   walletIsLogin,
 } from '../../composition/walletsResponsiveData'
 import { setStarkNetDialog, setSelectWalletDialogVisible } from '../../composition/hooks'
-
+import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { starkAddress, showAddress, saveSenderPageWorkingState } from '../../composition/hooks'
 
 export default {
@@ -73,7 +73,11 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    connectStarkNetWallet() {
+    async connectStarkNetWallet() {
+      if (this.starkAddress === 'not connected') {
+        await connectStarkNetWallet()
+        return
+      }
       setStarkNetDialog(true)
       setSelectWalletDialogVisible(true)
     },
