@@ -77,13 +77,20 @@ export async function getTransactionsHistory(params = {}) {
         "userAddress": v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
         "makerAddress": v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
         "userAmount": v.fromValueFormat,
-        "fromTimeStamp": v.fromTimeStamp, //?.replace(/\..*/g, '')?.replace('T', ' ')?.slice(5, -3) || '',
-        "fromTimeStampShow": v.fromTimeStamp?.slice(5, -3) || '',
+        "fromTimeStamp": v.fromTimeStamp,
+        "fromTimeStampShow": v.fromTimeStamp ? (new Date(`${v.fromTimeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' ')?.slice(5, -3)) : '',
         "toTimeStamp": v.toTimeStamp,
         "tokenName": v.tokenName,
         "fromTxHash": v.fromTx,
         "toTxHash": v.toTx,
-        "state": v.status == 1 ? 0 : (v.status == 0 ? 1 : 2) // 0 success 1 waiting 2 fail
+        status: v.status,
+        state: (() => {
+          if (v.fromTx && v.toTx) {
+            return 0
+          }
+          if (v.status == 0) return 1
+          return 2
+        })()
       }
     })
     historyPanelState.transactionListInfo = resInfo
