@@ -19,14 +19,14 @@
         empty-text="No Items"
         @sort-change="onSortChange"
       >
-        <el-table-column fixed label="Name" width="160">
+        <el-table-column fixed label="Name" width="140">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="no">
                 {{ scope.$index + 1 }}
               </div>
               <chains-logo :name="scope.row.rollup_name" />
-              <div class="name">
+              <div class="name" :title="scope.row.rollup_name">
                 {{ scope.row.rollup_name }}
               </div>
             </div>
@@ -35,7 +35,7 @@
         <el-table-column
           prop="launch_time"
           label="Launch Time"
-          width="120"
+          width="110"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -47,7 +47,7 @@
         <el-table-column
           prop="total_tx"
           label="Total Transactions"
-          width="155"
+          width="150"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -124,7 +124,7 @@
         <el-table-column
           prop="txs"
           label="Transactions"
-          width="120"
+          width="110"
           align="right"
           :sortable="'custom'"
         >
@@ -160,7 +160,7 @@
         <el-table-column
           prop="new_accounts"
           label="New Accounts"
-          width="140"
+          width="130"
           align="right"
           :sortable="'custom'"
         >

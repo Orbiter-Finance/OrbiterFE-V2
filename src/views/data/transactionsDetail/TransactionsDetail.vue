@@ -1,7 +1,8 @@
 <template>
   <div class="transactions-detail">
-    <div class="head">
+    <div class="nav">
       <img
+        v-show="!isMobile"
         class="back"
         src="../../../assets/data/back.png"
         @click="$router.back()"
@@ -26,6 +27,7 @@
 import Rollups from './Rollups'
 import Dapps from './Dapps.vue'
 import Contracts from './Contracts.vue'
+import { isMobile } from '../../../composition/hooks'
 
 const tabs = [
   {
@@ -54,6 +56,15 @@ export default {
     Dapps,
     Contracts,
   },
+  computed: {
+    isMobile() {
+      return isMobile.value
+    },
+  },
+  activated() {
+    const nav = this.$route.query.nav
+    this.currentTab = nav ? nav : tabs[0].value
+  },
 }
 </script>
 
@@ -61,7 +72,7 @@ export default {
 .transactions-detail {
   max-width: 1120px;
   margin: 0 auto;
-  .head {
+  .nav {
     display: flex;
     align-items: center;
     .back {
@@ -98,9 +109,25 @@ export default {
       }
     }
   }
-
+  @media (max-width: 820px) {
+    .nav {
+      justify-content: center;
+      .tabs {
+        height: 36px;
+        .tab {
+          height: 36px;
+          width: 111px;
+          font-weight: 400;
+          font-size: 14px;
+        }
+      }
+    }
+  }
   .el-table th.el-table__cell > .cell {
     padding: 0;
+  }
+  .caret-wrapper {
+    width: 16px;
   }
   .el-table .cell {
     padding: 0;

@@ -8,6 +8,7 @@ import {
   Button,
   Pagination,
   Drawer,
+  Dialog,
   Table,
   TableColumn,
   Popover
@@ -24,6 +25,7 @@ const element = {
     Vue.use(Table)
     Vue.use(TableColumn)
     Vue.use(Popover)
+    Vue.use(Dialog)
     // Vue.prototype.$message = Message
     Vue.prototype.$notify = Notification
     // Vue.prototype.$msgbox = MessageBox

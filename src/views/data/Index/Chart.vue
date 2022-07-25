@@ -14,11 +14,13 @@
     <div class="rollups">
       <div class="head">
         <div class="title">
-          Rollups by Daily Transactions,
-          {{ latestData ? latestData.timestamp_read : '-' }}
+          Rollups by Daily Transactions
+          <template v-if="!isMobile">
+            ,{{ latestData ? latestData.timestamp_read : '-' }}
+          </template>
         </div>
         <time-diff
-          v-if="baseChartData && baseChartData.update_time"
+          v-if="!isMobile && baseChartData && baseChartData.update_time"
           :timestamp="baseChartData.update_time"
         />
         <div
@@ -26,6 +28,9 @@
           @click="
             $router.push({
               path: '/transactionsDetail',
+              query: {
+                nav: 'Rollups',
+              },
             })
           "
         >
@@ -82,6 +87,7 @@ import { getMainpageRollup } from '../../../L2data/chart.js'
 import Selector from '../Selector.vue'
 import TimeDiff from '../TimeDiff.vue'
 import ChainsLogo from '../ChainsLogo.vue'
+import { isMobile } from '../../../composition/hooks'
 
 export default {
   components: {
@@ -114,6 +120,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     filteredChartData() {
       const data = this.baseChartData
       if (!data || !data.tx_data) {
@@ -178,9 +187,11 @@ export default {
       const { times, data } = this._getData()
 
       const options = {
-        height: 160,
         title: {
           show: false,
+        },
+        grid: {
+          bottom: 20,
         },
         legend: {
           right: 0,
@@ -253,7 +264,9 @@ export default {
           },
         ],
       }
-
+      if (this.isMobile) {
+        options.grid.top = 18
+      }
       return options
     },
     _getData() {
@@ -282,14 +295,12 @@ export default {
 <style lang="scss" scoped>
 .chart-wrapper {
   display: flex;
-  height: 300px;
   background: #ffffff;
   border-radius: 20px;
   .chart {
     display: flex;
     align-items: flex-end;
     position: relative;
-    height: 100%;
     flex: 1;
     width: 50%;
     padding-left: 30px;
@@ -359,7 +370,8 @@ export default {
           font-weight: 700;
           font-size: 14px;
           color: #333333;
-          margin-right: 13px;
+          margin-right: 8px;
+          width: 17px;
         }
         img {
           margin-right: 8px;
@@ -388,6 +400,54 @@ export default {
       .content2 {
         flex: 1;
         margin-right: 30px;
+      }
+    }
+  }
+}
+@media (max-width: 1000px) {
+  .chart-wrapper {
+    flex-direction: column;
+    align-items: center;
+    .chart {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      height: auto;
+      padding: 30px 30px 0 30px;
+      height: 240px;
+      .title {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-bottom: 30px;
+      }
+      .checke-wrap {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-bottom: 5px;
+      }
+      #l2-data-chart {
+        width: 100%;
+        height: 240px;
+      }
+    }
+    .rollups {
+      flex: auto;
+      width: 100%;
+      padding: 0 30px 30px 30px;
+      .head {
+        .more {
+          right: 0;
+        }
+      }
+      .contents {
+        flex-direction: column;
+        margin-top: 20px;
+        .content1,
+        .content2 {
+          margin-right: 0;
+        }
       }
     }
   }

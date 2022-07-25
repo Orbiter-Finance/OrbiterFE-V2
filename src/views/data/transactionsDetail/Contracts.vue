@@ -7,7 +7,7 @@
       />
       <time-diff
         class="time"
-        v-if="contracts && contracts.update_time"
+        v-if="!isMobile && contracts && contracts.update_time"
         :timestamp="contracts.update_time"
       />
     </div>
@@ -29,8 +29,8 @@
               <div class="no">
                 {{ scope.$index + 1 }}
               </div>
-              <div class="address">
-                {{ shortenAddress(scope.row.contract_address) }}
+              <div class="address" :title="scope.row.contract_address">
+                {{ shortenAddress(scope.row.contract_address, 3) }}
               </div>
               <a :href="scope.row.scan_url" target="_blank">
                 <img
@@ -45,8 +45,8 @@
         <el-table-column label="Name" width="180">
           <template slot-scope="scope">
             <div class="name-column">
-              <dapp-logo :name="scope.row.dapp_name" :rollup="currentRollup" />
-              <div class="name">
+              <dapp-logo :name="scope.row.dapp_name" />
+              <div class="name" :title="scope.row.dapp_name">
                 {{ scope.row.dapp_name }}
               </div>
               <a :href="scope.row.dapp_url" target="_blank">
@@ -68,7 +68,7 @@
         ><el-table-column
           prop="launch_time"
           label="Launch Time"
-          width="120"
+          width="110"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -80,13 +80,64 @@
         <el-table-column
           prop="all_users"
           label="All User"
-          width="140"
+          width="100"
           align="right"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row.all_users).format('0,0') }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="users_age"
+          label="Users Age"
+          width="100"
+          align="right"
+        >
+          <template slot-scope="scope">
+            <div class="data">
+              {{ numeral(scope.row.users_age).format('0,0') }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="24h_active_users"
+          label="24h Active Users"
+          width="140"
+          align="right"
+          :sortable="'custom'"
+        >
+          <template slot-scope="scope">
+            <div class="data">
+              {{ numeral(scope.row['24h_active_users']).format('0,0') }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="24h_new_users"
+          label="24h New Users"
+          width="130"
+          align="right"
+          :sortable="'custom'"
+        >
+          <template slot-scope="scope">
+            <div class="data">
+              {{ numeral(scope.row['24h_new_users']).format('0,0') }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="24h_interactions"
+          label="24h Interactions"
+          width="140"
+          align="right"
+          :sortable="'custom'"
+        >
+          <template slot-scope="scope">
+            <div class="data">
+              {{ numeral(scope.row['24h_interactions']).format('0,0') }}
             </div>
           </template>
         </el-table-column>
@@ -112,6 +163,7 @@ import Rollups from '../Rollups.vue'
 import DappLogo from '../DappLogo.vue'
 import { getContracts } from '../../../L2data/contracts'
 import { shortenAddress } from '../../../util/shortenAddress'
+import { isMobile } from '../../../composition/hooks'
 
 const PAGE_SIZE = 30
 
@@ -130,7 +182,21 @@ export default {
     TimeDiff,
     DappLogo,
   },
+  watch: {
+    currentRollup() {
+      this.contracts = {}
+      this.tableData = []
+      this.page = 1
+      this._getContracts()
+    },
+    page() {
+      this.tableData = this._getTableData()
+    },
+  },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     total() {
       if (!this.contracts || !this.contracts.table_data) return 0
       return this.contracts.table_data.length
@@ -165,6 +231,11 @@ export default {
         this.tableData = tableData
         return
       }
+      this.tableData = tableData.sort((a, b) => {
+        const aData = Number(a[prop])
+        const bData = Number(b[prop])
+        return isAscending ? aData - bData : bData - aData
+      })
 
       if (prop === 'launch_time') {
         this.tableData = tableData.sort((a, b) => {
@@ -178,7 +249,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .contracts-wrapper {
   background: #ffffff;
   border-radius: 20px;
@@ -234,6 +305,13 @@ export default {
       a {
         margin-right: 10px;
       }
+    }
+    .data {
+      font-family: 'Inter';
+      font-style: normal;
+      font-weight: 500;
+      font-size: 14px;
+      color: rgba(51, 51, 51, 0.8);
     }
     .pagination {
       display: flex;

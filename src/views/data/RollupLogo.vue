@@ -26,13 +26,13 @@ export default {
   computed: {
     src() {
       if (this.isError) {
-        return require('../../assets/data/default-dapp.png')
+        return require('../../assets/data/default-rollup.png')
       }
       if (!this.name) {
         return '#'
       }
       const name = this.name.replace(' ', '').toLowerCase()
-      return `./images/dapps/${name}.png`
+      return `./images/rollups/${name}.png`
     },
   },
   methods: {

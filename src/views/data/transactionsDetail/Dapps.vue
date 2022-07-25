@@ -8,7 +8,7 @@
       <div class="right">
         <time-diff
           class="time"
-          v-if="dapps && dapps.update_time"
+          v-if="!isMobile && dapps && dapps.update_time"
           :timestamp="dapps.update_time"
         />
         <selector
@@ -23,6 +23,7 @@
         :data="tableData"
         style="width: 100%"
         empty-text="No Items"
+        @row-click="onRowClick"
         @sort-change="onSortChange"
       >
         <el-table-column fixed label="Dapp Name" width="280">
@@ -31,8 +32,8 @@
               <div class="rank">
                 {{ scope.row.rank }}
               </div>
-              <dapp-logo :name="scope.row.dapp_name" :rollup="currentRollup" />
-              <div class="name">
+              <dapp-logo :name="scope.row.dapp_name" />
+              <div class="name" :title="scope.row.dapp_name">
                 {{ scope.row.dapp_name }}
               </div>
               <a :href="scope.row.dapp_url" target="_blank">
@@ -145,6 +146,7 @@
         </el-pagination>
       </div>
     </div>
+    <dapp-detail ref="dappDetail" />
   </div>
 </template>
 
@@ -154,7 +156,9 @@ import Selector from '../Selector.vue'
 import TimeDiff from '../TimeDiff.vue'
 import DappLogo from '../DappLogo.vue'
 import Rollups from '../Rollups.vue'
+import DappDetail from '../DappDetail'
 import { getDapps } from '../../../L2data/dapp'
+import { isMobile } from '../../../composition/hooks'
 
 const PAGE_SIZE = 30
 
@@ -183,6 +187,7 @@ export default {
     DappLogo,
     TimeDiff,
     Rollups,
+    DappDetail,
   },
   watch: {
     currentRollup() {
@@ -199,6 +204,9 @@ export default {
     total() {
       if (!this.dapps || !this.dapps.table_data) return 0
       return this.dapps.table_data.length
+    },
+    isMobile() {
+      return isMobile.value
     },
   },
   mounted() {
@@ -251,6 +259,9 @@ export default {
         })
       }
     },
+    onRowClick(row) {
+      this.$refs.dappDetail.show(this.currentRollup, row)
+    },
     _getTableData() {
       const dapps = this.dapps
       const allData = dapps && dapps.table_data ? dapps.table_data : []
@@ -287,6 +298,9 @@ export default {
     padding: 0 20px 50px 20px;
     .el-table .cell {
       padding: 0 24px 0 5px;
+    }
+    .el-table__row {
+      cursor: pointer;
     }
     .name-column {
       display: flex;
@@ -343,6 +357,19 @@ export default {
         background-color: #df2e2d;
         border-radius: 8px;
       }
+    }
+  }
+}
+@media (max-width: 820px) {
+  .dapps-wrapper {
+    .head {
+      flex-direction: column;
+      .right{
+        align-items: flex-start;
+      }
+    }
+    .table{
+      padding: 0 30px 50px 30px;
     }
   }
 }

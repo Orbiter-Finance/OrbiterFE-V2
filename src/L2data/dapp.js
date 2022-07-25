@@ -12,3 +12,18 @@ export async function getDapps(rollup) {
   }
   return res ? res.data.data : undefined
 }
+
+export async function getDappDetail(rollup, name) {
+  let res = undefined
+  try {
+    res = await http.get(
+      `/dapp/details/${rollup}/${name.replace(' ', '').toLowerCase()}`
+    )
+    if (res.data.status !== 'success') {
+      throw Error()
+    }
+  } catch (error) {
+    console.error('Failed to get dapp detail', error)
+  }
+  return res ? res.data.data : undefined
+}

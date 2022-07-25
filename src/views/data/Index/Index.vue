@@ -1,21 +1,342 @@
 <template>
   <div class="l2data">
     <Chart />
+    <div class="dapp-daily-data">
+      <div class="head">
+        <rollups
+          :value="currentRollup"
+          @rollup-change="(value) => (currentRollup = value)"
+        />
+        <div
+          class="more"
+          @click="
+            $router.push({
+              path: '/transactionsDetail',
+              query: {
+                nav: 'Dapps',
+              },
+            })
+          "
+        >
+          More
+          <img src="../../../assets/data/right.png" width="8" height="12" />
+        </div>
+      </div>
+      <div class="title" v-if="!isMobile">
+        {{ currentRollup.replace(/^./, currentRollup[0].toUpperCase()) }} Dapp
+        Daily Data,
+        {{
+          baseDappDailyData && baseDappDailyData.update_time
+            ? dateFormat(
+                (baseDappDailyData.update_time - 60 * 60 * 24) * 1000,
+                'yyyy-MM-dd'
+              )
+            : '-'
+        }}
+        <time-diff
+          v-if="baseDappDailyData && baseDappDailyData.update_time"
+          :timestamp="baseDappDailyData.update_time"
+        />
+      </div>
+      <div class="table">
+        <el-table :data="tableData" style="width: 100%" empty-text="No Items">
+          <el-table-column
+            fixed
+            label="Dapp Name"
+            :width="isMobile ? 150 : 280"
+          >
+            <template slot-scope="scope">
+              <div class="name-column">
+                <template v-if="!isMobile">
+                  <div class="rank" v-if="scope.row.rank !== 0">
+                    {{ scope.row.rank }}
+                  </div>
+                  <div class="new" v-else>
+                    <span> NEW </span>
+                  </div>
+                </template>
+                <dapp-logo
+                  :name="scope.row.dapp_name"
+                  :rollup="currentRollup"
+                />
+                <div class="name" :title="scope.row.dapp_name">
+                  {{ scope.row.dapp_name }}
+                </div>
+                <template v-if="!isMobile">
+                  <a :href="scope.row.dapp_url" target="_blank">
+                    <img
+                      width="16"
+                      height="16"
+                      src="../../../assets/data/link.png"
+                    />
+                  </a>
+                  <a :href="scope.row.dapp_twitter" target="_blank">
+                    <img
+                      width="16"
+                      height="16"
+                      src="../../../assets/data/twitter.png"
+                    />
+                  </a>
+                </template>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="launch_time" label="Launch Time" width="120">
+            <template slot-scope="scope">
+              <div class="data">
+                {{ scope.row.launch_time }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="all_users"
+            label="All User"
+            width="170"
+            align="right"
+          >
+            <template slot-scope="scope">
+              <div class="data">
+                {{ numeral(scope.row.all_users).format('0,0') }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="24h_active_users"
+            label="24h Active Users"
+            width="170"
+            align="right"
+          >
+            <template slot-scope="scope">
+              <div class="data">
+                {{ numeral(scope.row['24h_active_users']).format('0,0') }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="24h_new_users"
+            label="24h New Users"
+            width="170"
+            align="right"
+          >
+            <template slot-scope="scope">
+              <div class="data">
+                {{ numeral(scope.row['24h_new_users']).format('0,0') }}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="24h_interactions"
+            label="24h Interactions"
+            width="170"
+            align="right"
+          >
+            <template slot-scope="scope">
+              <div class="data">
+                {{ numeral(scope.row['24h_interactions']).format('0,0') }}
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import numeral from 'numeral'
 import Chart from './Chart'
+import Rollups from '../Rollups.vue'
+import TimeDiff from '../TimeDiff.vue'
+import DappLogo from '../DappLogo.vue'
+import { getDappDailyData } from '../../../L2data/daily'
+import dateFormat from '../../../util/dateFormat'
+import { isMobile } from '../../../composition/hooks'
+
 export default {
+  data() {
+    return {
+      currentRollup: 'arbitrum',
+      baseDappDailyData: {},
+      tableData: [],
+    }
+  },
+  computed: {
+    isMobile() {
+      return isMobile.value
+    },
+  },
   components: {
     Chart,
+    Rollups,
+    TimeDiff,
+    DappLogo,
+  },
+  mounted() {
+    this._getDappDailyData()
+  },
+  methods: {
+    numeral,
+    dateFormat,
+    async _getDappDailyData() {
+      const baseDappDailyData = await getDappDailyData(this.currentRollup)
+      this.baseDappDailyData = baseDappDailyData
+      this.tableData = baseDappDailyData && baseDappDailyData.table_data
+    },
   },
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .l2data {
   max-width: 1120px;
   margin: 0 auto;
+  .dapp-daily-data {
+    max-width: 1120px;
+    background: #ffffff;
+    border-radius: 20px;
+    margin-top: 20px;
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      height: 80px;
+      padding: 0 30px;
+      .more {
+        font-family: 'Inter';
+        font-style: normal;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        right: 30px;
+        font-weight: 400;
+        font-size: 14px;
+        color: #df2e2d;
+        cursor: pointer;
+        img {
+          margin-left: 5px;
+        }
+      }
+    }
+    .title {
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+      div {
+        margin-left: 10px;
+      }
+    }
+    .table {
+      margin-top: 10px;
+      padding: 0 20px 50px 20px;
+      .el-table th.el-table__cell > .cell {
+        padding: 0;
+      }
+      .el-table td.el-table__cell,
+      .el-table th.el-table__cell.is-leaf {
+        border: 0;
+      }
+      .el-table__fixed-right::before,
+      .el-table__fixed::before {
+        width: 0;
+      }
+      .el-table .descending .sort-caret.descending {
+        border-top-color: #df2e2d;
+      }
+      .el-table .ascending .sort-caret.ascending {
+        border-bottom-color: #df2e2d;
+      }
+      .el-table::before {
+        display: none;
+      }
+      .el-table__body tr.hover-row > td.el-table__cell {
+        background-color: #ffffff !important;
+      }
+      .el-table tbody tr:hover > td {
+        background-color: #ffffff !important;
+      }
+      .el-table td.el-table__cell,
+      .el-table th.el-table__cell {
+        padding: 6px 0;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+        color: #333333;
+      }
+      .el-table .sort-caret.ascending {
+        border-bottom-color: rgba(51, 51, 51, 1);
+      }
+      .el-table .sort-caret.descending {
+        border-top-color: rgba(51, 51, 51, 1);
+      }
+      .el-table .cell {
+        padding: 0;
+      }
+      .name-column {
+        display: flex;
+        .rank {
+          width: 20px;
+          font-family: 'Inter';
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          color: #333333;
+          margin-right: 20px;
+        }
+        .new {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 32px;
+          height: 16px;
+          background: #df2e2d;
+          border-radius: 4px;
+          margin-right: 12px;
+          span {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 500;
+            color: #ffffff;
+            font-size: 12px;
+            zoom: 0.83;
+          }
+        }
+        .name {
+          width: 70px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          font-family: 'Inter';
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          color: #333333;
+          margin: 0 10px;
+        }
+        a {
+          margin-right: 10px;
+        }
+      }
+      .data {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        color: rgba(51, 51, 51, 0.8);
+      }
+    }
+  }
+}
+
+@media (max-width: 820px) {
+  .l2data {
+    margin-top: 20px;
+    .dapp-daily-data {
+      .table {
+        margin-top: 20px;
+      }
+    }
+  }
 }
 </style>
