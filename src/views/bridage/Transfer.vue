@@ -589,7 +589,6 @@ export default {
       let makerMax = new BigNumber(this.maxPrice)
       let makerMin = new BigNumber(this.userMinPrice)
       let transferValue = new BigNumber(this.transferValue)
-
       const info = {
         text: 'CONNECT A WALLET',
         disabled: null,
@@ -878,7 +877,6 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            console.log(`c1:  token:${selectMakerInfo.t1Address}, userAddress:${compatibleGlobalWalletConf.value.walletPayload.walletAddress}, Balance:${response}`);
             this.c1Balance = (
               response /
               10 ** selectMakerInfo.precision
@@ -896,7 +894,6 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-          console.log(`c2:  token:${selectMakerInfo.t1Address}, userAddress:${compatibleGlobalWalletConf.value.walletPayload.walletAddress}, Balance:${response}`);
             this.c2Balance = (
               response /
               10 ** selectMakerInfo.precision
@@ -1788,14 +1785,14 @@ export default {
         if (!makerAddress) {
           return ''
         }
-        // const response = await transferCalculate.getTransferBalance(
-        //   chainId,
-        //   tokenAddress,
-        //   tokenName,
-        //   makerAddress,
-        //   true
-        // )
-        // return (response / 10 ** precision).toFixed(6)
+        const response = await transferCalculate.getTransferBalance(
+          chainId,
+          tokenAddress,
+          tokenName,
+          makerAddress,
+          true
+        )
+        return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.warn(error)
         return 0
