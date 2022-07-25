@@ -105,17 +105,17 @@ export default {
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
       // us locate last wallet that user connected
-      // so localStorage is only used for initialization!!! 
-      const cacheWalletInfo  = getCurrentLoginInfoFromLocalStorage();
-      if (!cacheWalletInfo) return; // if there is no wallet connected
-      const { walletType } = cacheWalletInfo;
+      // so localStorage is only used for initialization!!!
+      const cacheWalletInfo = getCurrentLoginInfoFromLocalStorage()
+      if (!cacheWalletInfo) return // if there is no wallet connected
+      const { walletType } = cacheWalletInfo
 
       // according to different wallet types to do their own initialization
       // but eventually they all update a global responsive data: globalSelectWalletConf
       // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
-      const matchInitDispatcher = walletDispatchersOnInit[walletType];
-      matchInitDispatcher && matchInitDispatcher();
-    }
+      const matchInitDispatcher = walletDispatchersOnInit[walletType]
+      matchInitDispatcher && matchInitDispatcher()
+    },
   },
 }
 </script>

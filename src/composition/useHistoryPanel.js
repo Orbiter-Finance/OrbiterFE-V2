@@ -9,7 +9,7 @@ export const historyPanelState = reactive({
     current: 1,
     size: 30,
     total: 0,
-    pages: 1
+    pages: 1,
   },
   transactionList: null,
   historyInfo: null,
@@ -54,8 +54,8 @@ export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = false
 
   if (res.data.code === 0) {
-    const { code, data = [], ...resInfo } = res.data;
-    const list = data.map(v => {
+    const { code, data = [], ...resInfo } = res.data
+    const list = data.map((v) => {
       /*
         {
           "fromChainID": 33,

@@ -75,6 +75,12 @@ export default {
     chainID: '13',
     rinkeyChainID: '513',
   },
+  zkSync2: {
+    Mainnet: 'https://zksync2.zkscan.io/api',
+    Rinkeby: 'https://zksync2-testnet.zkscan.io/api',
+    chainID: '14',
+    rinkeyChainID: '514',
+  },
   L1: {
     Mainnet:
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',

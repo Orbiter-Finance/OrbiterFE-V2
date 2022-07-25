@@ -5,6 +5,7 @@ import { ethers } from 'ethers'
 import * as zksync from 'zksync'
 import env from '../../../env'
 import thirdapi from '../../core/actions/thirdapi'
+// import zksync2 from '../../core/actions/zksync2'
 import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
@@ -92,6 +93,12 @@ const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
 const BOBA_TRANSFER_OUT_LIMIT = 10123935
 const BOBA_TRANSFER_IN_LIMIT = 1787707
 
+// zksync2 deposit
+const ZK2_ETH_DEPOSIT_DEPOSIT_ONL1 = 170617
+const ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1 = 117858
+// zksync2 withdraw
+const ZK2_ETH_WITHDRAW_ONZK2 = 10560
+const ZK2_ERC20_WITHDRAW_ONZK2 = 10560 //same with eth
 // starkNet
 const STARKNET_ETH_DEPOSIT_ONL1 = 110000
 const STARKNET_ETH_WITHDRAW_ONL1 = 60000
@@ -137,7 +144,6 @@ export default {
         resultToken.id
       )
       let totalFee = fee.totalFee
-
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
         const addressState = await syncHttpProvider.getState(
@@ -155,6 +161,17 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
+    } else if (fromChainID === 12 || fromChainID === 512) {
+      let transferFee = 0
+      try {
+        transferFee = await zkspace.getZKTransferGasFee(
+          fromChainID,
+          web3State.coinbase
+        )
+      } catch (error) {
+        console.warn('getZKTransferGasFeeError =', error)
+      }
+      return transferFee
     } else if (fromChainID == 4 || fromChainID == 44) {
       let realTransferAmount = this.realTransferAmount().toString()
       let starkFee = await getStarkTransferFee(
@@ -165,10 +182,29 @@ export default {
         fromChainID
       )
       return starkFee / 10 ** 18
+    } else if (fromChainID == 9 || fromChainID == 99) {
+      // loopring fee can only use eth。other erc20 fee will be error
+      try {
+        const lpTokenInfo = await loopring.getLpTokenInfo(
+          fromChainID,
+          fromTokenAddress
+        )
+        let loopringFee = await loopring.getTransferFee(
+          web3State.coinbase,
+          fromChainID,
+          lpTokenInfo
+        )
+        const decimals = 18 // loopringFee must be use eth
+        return Number(loopringFee) / 10 ** decimals
+      } catch (error) {
+        console.warn(`lp getTransferFeeerror:`)
+      }
     } else if (
       util.isEthTokenAddress(fromTokenAddress) ||
       isPolygon ||
-      isMetis
+      isMetis ||
+      ((fromChainID == 14 || fromChainID == 514) &&
+        fromTokenAddress.toUpperCase() == `0X${'E'.repeat(40)}`)
     ) {
       if (fromChainID === 12 || fromChainID === 512) {
         //zkspace can only use eth as fee
@@ -244,6 +280,7 @@ export default {
       511: 1,
       13: 1,
       513: 1,
+      514: 0.000028572,
       515: 1,
     }
     const GasLimitMap = {
@@ -270,6 +307,7 @@ export default {
       510: 16000,
       511: 100000,
       513: 646496,
+      514: 10560,
       515: 150000,
     }
     const GasTokenMap = {
@@ -297,6 +335,8 @@ export default {
       13: 'ETH',
       513: 'ETH',
       515: 'BNB',
+      14: 'ETH',
+      514: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -346,7 +386,8 @@ export default {
         fromChainID,
         lpTokenInfo
       )
-      return (Number(loopringFee) / 10 ** lpTokenInfo.decimals).toFixed(6)
+      // lpGasFee must use eth
+      return (Number(loopringFee) / 10 ** 18).toFixed(6)
     }
     if (fromChainID === 12 || fromChainID === 512) {
       let selectMakerInfo = realSelectMakerInfo.value
@@ -481,9 +522,11 @@ export default {
     if (toChainID === 11 || toChainID === 511) {
       timeSpent += 5
     }
-
     if (toChainID === 13 || toChainID === 513) {
       timeSpent += 20
+    }
+    if (toChainID === 14 || toChainID === 514) {
+      timeSpent += 15
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -500,7 +543,9 @@ export default {
       fromChainID === 3 ||
       fromChainID === 33 ||
       fromChainID === 12 ||
-      fromChainID === 512
+      fromChainID === 512 ||
+      fromChainID === 14 ||
+      fromChainID === 514
     ) {
       return '~4 hours'
     }
@@ -541,7 +586,9 @@ export default {
         toChainID === 3 ||
         toChainID === 33 ||
         toChainID === 12 ||
-        toChainID === 512
+        toChainID === 512 ||
+        toChainID === 14 ||
+        toChainID === 514
       ) {
         // eth -> zk
         return '~10min'
@@ -861,7 +908,6 @@ export default {
     }
     if (fromChainID === 12 || fromChainID === 512) {
       try {
-        // api获取
         let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
           web3State.coinbase
@@ -888,6 +934,14 @@ export default {
         throw new Error(`bsc withdraw error`)
       }
     }
+    if (fromChainID === 14 || fromChainID === 514) {
+      // zk2 widthdraw
+      const fromGasPrice = await this.getGasPrice(fromChainID)
+      ethGas =
+        fromGasPrice *
+        (isErc20 ? ZK2_ERC20_WITHDRAW_ONZK2 : ZK2_ETH_WITHDRAW_ONZK2)
+    }
+
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       try {
@@ -1010,7 +1064,6 @@ export default {
         throw new Error(`zkspace deposit error`)
       }
     }
-
     if (toChainID === 13 || toChainID === 513) {
       // BOBA deposit
       let toGasPrice = await this.getGasPrice(toChainID)
@@ -1028,6 +1081,15 @@ export default {
       } catch (error) {
         throw new Error(`bsc deposit error`)
       }
+    }
+    if (toChainID === 14 || toChainID === 514) {
+      // zk2 get
+      const toGasPrice = await this.getGasPrice(toChainID === 14 ? 1 : 5)
+      ethGas =
+        toGasPrice *
+        (isErc20
+          ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
+          : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
 
     let usd = new BigNumber(0)
@@ -1172,7 +1234,7 @@ export default {
         if (!tokenContract) {
           throw 'getBalance_tokenContractError'
         }
-        balance = await tokenContract.methods.balanceOf(userAddress).call();
+        balance = await tokenContract.methods.balanceOf(userAddress).call()
       }
       return balance
     }
@@ -1269,12 +1331,36 @@ export default {
       p_text
     )
     if (!tValue.state) {
-      console.warn('getTralTransferAmountError')
       return userValue
     } else {
       return new BigNumber(tValue.tAmount).dividedBy(
         new BigNumber(10 ** selectMakerInfo.precision)
       )
     }
+  },
+  async getTokenList(fromChainID, count = 10) {
+    let tokenList =
+      fromChainID === 14
+        ? store.state.zk2tokenList.mainnet
+        : store.state.zk2tokenList.rinkeby
+    if (tokenList.length == 0) {
+      await util.sleep(300)
+      count--
+      if (count >= 0) {
+        return await this.getTokenList(fromChainID, count)
+      }
+    }
+    return tokenList
+  },
+  getMakerInfo: async function (fromChainID, count = 10) {
+    let selectMakerInfo = store.getters.realSelectMakerInfo
+    if (!selectMakerInfo) {
+      await util.sleep(300)
+      count--
+      if (count >= 0) {
+        return await this.getMakerInfo(fromChainID, count)
+      }
+    }
+    return selectMakerInfo
   },
 }

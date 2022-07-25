@@ -30,9 +30,11 @@ export default {
     return new ExchangeAPI({ chainId: netWorkID })
   },
   getLpTokenInfoOnce(fromChainID, tokenAddress) {
-    const lpTokenInfos = fromChainID === 9 ? store.state.lpTokenList.mainnet
-      : store.state.lpTokenList.rinkeby
-    return lpTokenInfos.find(item => item.address == tokenAddress)
+    const lpTokenInfos =
+      fromChainID === 9
+        ? store.state.lpTokenList.mainnet
+        : store.state.lpTokenList.rinkeby
+    return lpTokenInfos.find((item) => item.address == tokenAddress)
   },
   async getLpTokenInfo(fromChainID, tokenAddress, count = 10) {
     const theLpTokenInfo = this.getLpTokenInfoOnce(fromChainID, tokenAddress)
@@ -48,7 +50,12 @@ export default {
       }
     }
   },
-  getLoopringBalance: async function (address, localChainID, isMaker, lpTokenInfo) {
+  getLoopringBalance: async function (
+    address,
+    localChainID,
+    isMaker,
+    lpTokenInfo
+  ) {
     try {
       let accountInfo
       if (isMaker) {
@@ -60,7 +67,11 @@ export default {
         if (response.accInfo && response.raw_data) {
           accountInfo = response.accInfo
         } else {
-          return 0
+          if (response.code == 101002) {
+            return 0
+          } else {
+            return 0
+          }
         }
       } else {
         const accountResult = await this.accountInfo(address, localChainID)
@@ -73,7 +84,9 @@ export default {
         configNet = config.loopring.Rinkeby
       }
       const resp = await axios.get(
-        `${configNet}/api/v3/user/balances?accountId=${accountInfo.accountId}&tokens=${lpTokenInfo ? lpTokenInfo.tokenId : 0}`
+        `${configNet}/api/v3/user/balances?accountId=${
+          accountInfo.accountId
+        }&tokens=${lpTokenInfo ? lpTokenInfo.tokenId : 0}`
       )
       if (resp.status == 200 && resp.statusText == 'OK') {
         if (!Array.isArray(resp.data)) {
@@ -84,8 +97,10 @@ export default {
         }
         let balanceMap = resp.data[0]
         let totalBalance = balanceMap.total ? Number(balanceMap.total) : 0
-        let locked = Number(balanceMap.locked)
-        let withdraw = Number(balanceMap.pending.withdraw)
+        let locked = balanceMap.locked ? Number(balanceMap.locked) : 0
+        let withdraw = balanceMap.pending.withdraw
+          ? Number(balanceMap.pending.withdraw)
+          : 0
         return totalBalance - locked - withdraw
       }
     } catch (err) {
@@ -106,7 +121,7 @@ export default {
     }
     try {
       const exchangeApi = this.getExchangeAPI(localChainID)
-      let response = await exchangeApi.getAccount({ owner: address, })
+      let response = await exchangeApi.getAccount({ owner: address })
       if (response.accInfo && response.raw_data) {
         let info = {
           accountInfo: response.accInfo,
@@ -116,8 +131,9 @@ export default {
         return info
       } else {
         let info = {
-          code: 101002,
-          errorMessage: response.code == 101002 ? 'noAccount' : response.message,
+          code: response.code,
+          errorMessage:
+            response.code == 101002 ? 'noAccount' : response.message,
         }
         return info
       }
@@ -136,7 +152,6 @@ export default {
     amount,
     memo
   ) {
-
     const exchangeApi = this.getExchangeAPI(localChainID)
     const userApi = this.getUserAPI(localChainID)
     const accountResult = await this.accountInfo(address, localChainID)
@@ -170,9 +185,9 @@ export default {
         accInfo.keySeed && accInfo.keySeed !== ''
           ? accInfo.keySeed
           : GlobalAPI.KEY_MESSAGE.replace(
-            '${exchangeAddress}',
-            exchangeInfo.exchangeAddress
-          ).replace('${nonce}', (accInfo.nonce - 1).toString()),
+              '${exchangeAddress}',
+              exchangeInfo.exchangeAddress
+            ).replace('${nonce}', (accInfo.nonce - 1).toString()),
       walletType: ConnectorNames.MetaMask,
       chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
     }
@@ -284,7 +299,9 @@ export default {
       GetOffchainFeeAmtRequest,
       ''
     )
-    return response && lpTokenInfo && response.fees[lpTokenInfo.symbol] ? response.fees[lpTokenInfo.symbol].fee : 0
+    return response && lpTokenInfo && response.fees[lpTokenInfo.symbol]
+      ? response.fees[lpTokenInfo.symbol].fee
+      : 0
   },
 
   getLoopringTxList: async function (

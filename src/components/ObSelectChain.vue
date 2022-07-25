@@ -3,8 +3,11 @@
     <div @click.stop="stopPenetrate" class="selectChainContent">
       <div class="topItem">
         <span>Select a Chain</span>
-        <div @click="closerButton" style="position: absolute;top: 0;right: 0;">
-          <SvgIconThemed style="width:20px; height:20px;cursor:pointer;" iconName="close" />
+        <div @click="closerButton" style="position: absolute; top: 0; right: 0">
+          <SvgIconThemed
+            style="width: 20px; height: 20px; cursor: pointer"
+            iconName="close"
+          />
         </div>
       </div>
       <div style="width: 100%; position: relative">
@@ -83,7 +86,7 @@ export default {
       }
       const chainOrderIds = [
         3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
-        511, 13, 513, 4, 44,15,515
+        511, 13, 513, 4, 44,14,514,15,515
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
@@ -127,7 +130,6 @@ export default {
               ) return
             }
           }
-
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index
@@ -158,7 +160,6 @@ export default {
           return
         }
       }
-
       this.$emit('getChainInfo', e)
       this.closerButton()
     },
