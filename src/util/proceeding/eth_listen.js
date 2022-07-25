@@ -63,7 +63,6 @@ export class EthListen {
           timeout: 16000,
         })
         const { data } = resp
-
         if (data.status != '1' || !data.result || data.result.length <= 0) {
           return
         }
@@ -72,7 +71,6 @@ export class EthListen {
           if (!checkFilter(item.from, item.to)) {
             continue
           }
-
           if (this.transferReceivedHashs[item.hash] === undefined) {
             this.transferReceivedHashs[item.hash] = true
             callbacks && callbacks.onReceived && callbacks.onReceived(item)

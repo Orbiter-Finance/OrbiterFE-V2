@@ -5,7 +5,6 @@ import getTransactionList from '../../core/routes/transactionList'
 import config from '../../core/utils/config'
 import orbiterCore from '../../orbiterCore'
 import util from '../../util/util'
-import zkspace from '../../core/actions/zkspace'
 import { store } from '../../store'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
@@ -21,7 +20,6 @@ import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
-import { BobaListen } from '../boba/boba_listen'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { getTimeStampInfo } from './get_tx_by_hash'
 import { lpApiKey, lpAccountInfo, web3State, transferDataState } from '../../composition/hooks'
@@ -244,7 +242,7 @@ async function confirmUserTransaction(
           return
         }
       } catch (error) {
-        console.log('getImmutableXTransactionData Error =', error)
+        console.warn('getImmutableXTransactionData Error =', error)
         throw new Error('getImmutableXTransactionDataError')
       }
       return confirmUserTransaction(
@@ -254,7 +252,6 @@ async function confirmUserTransaction(
         confirmations
       )
     }
-
     // loopring
     if (localChainID == 9 || localChainID == 99) {
       let apiKey = lpApiKey.value
@@ -410,10 +407,7 @@ async function confirmUserTransaction(
         confirmations
       )
     }
-    if (!isCurrentTransaction(txHash)) {
-      return
-    }
-    var trx = trxConfirmations.trx
+    const trx = trxConfirmations.trx
     if (!isCurrentTransaction(txHash)) {
       return
     }
@@ -441,6 +435,22 @@ async function confirmUserTransaction(
         amountStr = Web3.utils.hexToNumberString(amountHex)
         startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
       }
+    } else if (localChainID == 14 || localChainID == 514) {
+      const makerAddress = makerInfo.makerAddress
+      const theMakerAddress = makerAddress
+        .toLowerCase()
+        .substr(2, makerAddress.length - 1)
+      let amountIndex = 0
+      const thekeyIndex = trx.input.indexOf(theMakerAddress)
+      if (thekeyIndex > -1) {
+        amountIndex = thekeyIndex + theMakerAddress.length
+        const hexAmount = trx.input.slice(amountIndex, amountIndex + 64)
+        amountStr = Web3.utils.hexToNumberString('0x' + hexAmount)
+        startScanMakerTransferFromAddress = makerAddress
+      } else {
+        console.warn('from zk2 the amount is incorrect')
+        return
+      }
     } else {
       let inputData
       // Parse input data
@@ -453,7 +463,6 @@ async function confirmUserTransaction(
       if (!inputData.ext?.value) {
         return
       }
-
       startScanMakerTransferFromAddress = inputData.to
       if (typeof inputData.amount == 'string') {
         amountStr = Number(inputData.amount) + ''
@@ -621,8 +630,8 @@ function ScanZKSpaceMakerTransfer(
   makerInfo,
   from,
   to,
-  amount,
-  timeStampStr
+  amount
+  // timeStampStr
 ) {
   let startPoint = 0
   setTimeout(async () => {
@@ -729,8 +738,8 @@ function startScanMakerTransfer(
       makerInfo,
       from,
       to,
-      amount,
-      timeStampStr
+      amount
+      // timeStampStr
     )
   }
   const web3 = localWeb3(localChainID)
@@ -1138,7 +1147,7 @@ function ScanMakerTransfer(
         from: from,
         to: to,
       },
-      fromBlock: currentBlock - 100,
+      fromBlock: currentBlock - 80,
       toBlock: 'latest',
     }
     tokenContract.getPastEvents(
@@ -1289,7 +1298,7 @@ export default {
     if (realAmount.state) {
       realAmount = realAmount.rAmount
     } else {
-      throw realAmount.rAmount.error
+      throw new Error(`UserTransferReady error: ${realAmount.error}`)
     }
     store.commit('updateProceedingUserTransferAmount', realAmount)
     confirmUserTransaction(localChainID, makerInfo, txHash)

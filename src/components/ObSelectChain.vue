@@ -3,8 +3,11 @@
     <div @click.stop="stopPenetrate" class="selectChainContent">
       <div class="topItem">
         <span>Select a Chain</span>
-        <div @click="closerButton" style="position: absolute;top: 0;right: 0;">
-          <SvgIconThemed style="width:20px; height:20px;cursor:pointer;" iconName="close" />
+        <div @click="closerButton" style="position: absolute; top: 0; right: 0">
+          <SvgIconThemed
+            style="width: 20px; height: 20px; cursor: pointer"
+            iconName="close"
+          />
         </div>
       </div>
       <div style="width: 100%; position: relative">
@@ -127,7 +130,6 @@ export default {
               ) return
             }
           }
-
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index

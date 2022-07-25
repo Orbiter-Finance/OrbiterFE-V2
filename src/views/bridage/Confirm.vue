@@ -22,9 +22,7 @@
         </o-tooltip>
       </div>
       <div class="item-right">
-        <span v-if="item.desc">{{
-          item.desc
-        }}</span>
+        <span v-if="item.desc">{{ item.desc }}</span>
       </div>
       <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
         <div
@@ -109,6 +107,7 @@ import zkspace from '../../core/actions/zkspace'
 import config from '../../core/utils/config'
 import env from '../../../env'
 import * as ethers from 'ethers'
+import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
 import {
   walletIsLogin,
@@ -121,6 +120,7 @@ import {
   realSelectMakerInfo,
   web3State,
 } from '../../composition/hooks'
+import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 
 const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
@@ -226,7 +226,7 @@ export default {
     },
   },
   methods: {
-    async zkspceTransfer(fromChainID, toChainID, selectMakerInfo) {
+    async zkspaceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
         let provider = new ethers.providers.Web3Provider(
           compatibleGlobalWalletConf.value.walletPayload.provider
@@ -319,8 +319,9 @@ export default {
             },
           },
         }
+
         const transferResult = await zkspace.sendTransfer(fromChainID, req)
-        const txHash = transferResult.data.data.replace('sync-tx:', '0x')
+        const txHash = transferResult.data?.data.replace('sync-tx:', '0x')
 
         const firstResult = await this.getFristResult(fromChainID, txHash)
 
@@ -338,38 +339,111 @@ export default {
           title: error.message,
           duration: 3000,
         })
-        console.warn('zkspceTransfer =', error.message)
+        console.warn('zkspaceTransfer =', error.message)
         return
       }
     },
-    getFristResult(fromChainID, txHash) {
-      return new Promise((resolve, reject) => {
-        setTimeout(async () => {
-          const firstResult = await zkspace.getZKSpaceTransactionData(
-            fromChainID,
-            txHash
-          )
-          if (
-            firstResult.success &&
-            !firstResult.data.fail_reason &&
-            !firstResult.data.success &&
-            !firstResult.data.amount
-          ) {
-            resolve(await this.getFristResult(fromChainID, txHash))
-          } else if (
-            firstResult.success &&
-            !firstResult.data.fail_reason &&
-            firstResult.data.success &&
-            firstResult.data.amount
-          ) {
-            resolve(firstResult)
-          } else {
-            reject(new Error('zks sendResult is error, do not care'))
-          }
-        }, 300)
-      })
+    async getFristResult(fromChainID, txHash) {
+      const firstResult = await zkspace.getZKSpaceTransactionData(
+        fromChainID,
+        txHash
+      )
+      if (
+        firstResult.success &&
+        !firstResult.data.fail_reason &&
+        !firstResult.data.success &&
+        !firstResult.data.amount
+      ) {
+        await util.sleep(300)
+        return await this.getFristResult(fromChainID, txHash)
+      } else if (
+        firstResult.success &&
+        !firstResult.data.fail_reason &&
+        firstResult.data.success &&
+        firstResult.data.amount
+      ) {
+        return firstResult
+      } else {
+        throw new Error('zks sendResult is error')
+      }
     },
-
+    async zk2Transfer(fromChainID, toChainID, selectMakerInfo) {
+      const zksync2Provider = new zksync2.Provider(
+        env.localProvider[fromChainID]
+      )
+      const tokenAddress =
+        fromChainID == selectMakerInfo.c1ID
+          ? selectMakerInfo.t1Address
+          : selectMakerInfo.t2Address
+      const isTokenLiquid = await zksync2Provider.isTokenLiquid(tokenAddress)
+      if (!isTokenLiquid) {
+        // throw new Error('the token can not be used for fee')
+      }
+      var rAmount = new BigNumber(transferDataState.transferValue)
+        .plus(new BigNumber(selectMakerInfo.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
+      var rAmountValue = rAmount.toFixed()
+      var p_text = 9000 + Number(toChainID) + ''
+      var tValue = orbiterCore.getTAmountFromRAmount(
+        fromChainID,
+        rAmountValue,
+        p_text
+      )
+      if (!tValue.state) {
+        this.$notify.error({
+          title: tValue.error,
+          duration: 3000,
+        })
+        this.transferLoading = false
+        return
+      }
+      const provider = new zksync2.Web3Provider(
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
+      const signer = provider.getSigner()
+      // const toAddress = '0xEFc6089224068b20197156A91D50132b2A47b908'
+      const toAddress = selectMakerInfo.makerAddress
+      // const amountToSend = '100000000000000'
+      const amountToSend = tValue.tAmount
+      const params = {
+        from: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        txType: 0x71,
+        customData: {
+          feeToken: "",
+        },
+        to: '',
+        value: ethers.BigNumber.from(0),
+        data: '0x',
+      }
+      const isMainCoin = tokenAddress.toLowerCase() === '0x000000000000000000000000000000000000800a';
+      if (!isMainCoin) {
+        console.log('ERC20 Token Transfer');
+        const web3 = new Web3()
+        const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
+        params.data = tokenContract.methods
+          .transfer(toAddress, web3.utils.toHex(amountToSend))
+          .encodeABI()
+        params.to = tokenAddress
+        params.customData.feeToken = tokenAddress;
+      } else {
+        console.log('ETH Transfer');
+        params.value = ethers.BigNumber.from(amountToSend)
+        params.to = toAddress
+        params.customData.feeToken = "0x0000000000000000000000000000000000000000";
+      }
+      const transferResult = await signer.sendTransaction(params)
+      if (transferResult.hash) {
+        selectMakerInfo.makerAddress = params.from;
+        this.onTransferSucceed(
+          web3State.coinbase,
+          selectMakerInfo,
+          tValue.tAmount,
+          fromChainID,
+          transferResult.hash
+        )
+      }
+      this.transferLoading = false
+    },
     async zkTransfer(fromChainID, toChainID, selectMakerInfo) {
       const web3Provider = new Web3(
         compatibleGlobalWalletConf.value.walletPayload.provider
@@ -1028,6 +1102,7 @@ export default {
               compatibleGlobalWalletConf.value.walletType
             ]
           if (matchAddChainDispatcher) {
+            console.log('=====', matchAddChainDispatcher)
             matchAddChainDispatcher(
               compatibleGlobalWalletConf.value.walletPayload.provider
             )
@@ -1052,6 +1127,7 @@ export default {
         })
         return
       }
+
       this.transferLoading = true
 
       let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
@@ -1083,10 +1159,12 @@ export default {
 
       if (fromChainID === 3 || fromChainID === 33) {
         this.zkTransfer(fromChainID, toChainID, selectMakerInfo)
+      } else if (fromChainID === 14 || fromChainID === 514) {
+        this.zk2Transfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 9 || fromChainID === 99) {
         this.loopringTransfer(fromChainID, toChainID, selectMakerInfo)
       } else if (fromChainID === 12 || fromChainID === 512) {
-        this.zkspceTransfer(fromChainID, toChainID, selectMakerInfo)
+        this.zkspaceTransfer(fromChainID, toChainID, selectMakerInfo)
       } else {
         const tokenAddress =
           selectMakerInfo.c1ID === fromChainID
@@ -1314,7 +1392,7 @@ export default {
     margin-top: 20px;
     height: 50px;
     line-height: 34px;
-    background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
+    background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
   }
 }
 </style>

@@ -33,9 +33,7 @@
         "https://rinkeby.infura.io/v3/125c410d47c94c4fbbc6f9fc3a33bf68",
         "wss://rinkeby.infura.io/ws/v3/125c410d47c94c4fbbc6f9fc3a33bf68"
       ],
-      "faucets": [
-        "https://faucet.rinkeby.io"
-      ],
+      "faucets": ["https://faucet.rinkeby.io"],
       "infoURL": "https://rinkeby.etherscan.io/"
     },
     {
@@ -52,9 +50,7 @@
         "https://ropsten.infura.io/v3/${INFURA_API_KEY}",
         "wss://ropsten.infura.io/ws/v3/${INFURA_API_KEY}"
       ],
-      "faucets": [
-        "https://faucet.ropsten.be?${ADDRESS}"
-      ],
+      "faucets": ["https://faucet.ropsten.be?${ADDRESS}"],
       "infoURL": "https://ropsten.etherscan.io/"
     },
     {
@@ -143,13 +139,8 @@
         "symbol": "tMATIC",
         "decimals": 18
       },
-      "rpc": [
-        "https://rpc-mumbai.matic.today",
-        "wss://ws-mumbai.matic.today"
-      ],
-      "faucets": [
-        "https://faucet.matic.network/"
-      ],
+      "rpc": ["https://rpc-mumbai.matic.today", "wss://ws-mumbai.matic.today"],
+      "faucets": ["https://faucet.matic.network/"],
       "infoURL": "https://matic.network/"
     },
     {
@@ -162,9 +153,7 @@
         "symbol": "OETH",
         "decimals": 18
       },
-      "rpc": [
-        "https://mainnet.optimism.io/"
-      ],
+      "rpc": ["https://mainnet.optimism.io/"],
       "faucets": [],
       "infoURL": "https://optimistic.etherscan.io/"
     },
@@ -178,9 +167,7 @@
         "symbol": "ETH",
         "decimals": 18
       },
-      "rpc": [
-        "https://kovan.optimism.io/"
-      ],
+      "rpc": ["https://kovan.optimism.io/"],
       "faucets": [],
       "infoURL": "https://kovan-optimistic.etherscan.io/"
     },
@@ -194,9 +181,7 @@
         "symbol": "METIS",
         "decimals": 18
       },
-      "rpc": [
-        "https://andromeda.metis.io/?owner=1088"
-      ],
+      "rpc": ["https://andromeda.metis.io/?owner=1088"],
       "faucets": [],
       "infoURL": "https://andromeda-explorer.metis.io"
     },
@@ -210,7 +195,6 @@
         "symbol": "tMETIS",
         "decimals": 18
       },
-      
       "rpc": [
         "https://stardust.metis.io/?owner=588",
         "wss://stardust-ws.metis.io/"
@@ -228,11 +212,7 @@
         "symbol": "ETH",
         "decimals": 18
       },
-      
-      "rpc": [
-        "https://mainnet.boba.network",
-        "wss://ws.mainnet.boba.network"
-      ],
+      "rpc": ["https://mainnet.boba.network", "wss://ws.mainnet.boba.network"],
       "faucets": [],
       "infoURL": "https://gateway.boba.network/"
     },
@@ -246,13 +226,26 @@
         "symbol": "ETH",
         "decimals": 18
       },
-      
-      "rpc": [
-        "https://mainnet.boba.network",
-        "wss://ws.mainnet.boba.network"
-      ],
+      "rpc": ["https://mainnet.boba.network", "wss://ws.mainnet.boba.network"],
       "faucets": [],
       "infoURL": "https://gateway.boba.network/"
+    },
+    {
+      "name": "Zksync2(G)",
+      "chainId": 280,
+      "shortName": "Zksync2",
+      "networkId": 280,
+      "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": [
+        "https://zksync2-testnet.zksync.dev",
+        "wss://zksync2-testnet.zksync.dev/ws"
+      ],
+      "faucets": [],
+      "infoURL": "https://zksync2-testnet.zksync.dev"
     },
     {
       "name": "BSC(R)",
