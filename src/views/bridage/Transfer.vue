@@ -1450,6 +1450,7 @@ export default {
       this.showFromChainPopupClick()
     },
     getFromChainInfo(e) {
+      console.log('getFromChainInfo: ', e, queryParamsChainMap)
       updateTransferFromChainID(e.localID)
       // Change query params's source
       const { path, query } = this.$route

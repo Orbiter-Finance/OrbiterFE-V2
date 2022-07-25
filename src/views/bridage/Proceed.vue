@@ -1,6 +1,6 @@
 <template>
 <div class="proceed-box">
-  <CommBoxHeader :back="closerButton">{{detailData ? (isFailed ? 'Transcation Failed' : 'Detail') : (isCompleted ? 'Completed' : 'Proceeding')}}</CommBoxHeader>
+  <CommBoxHeader :back="closerButton">{{detailData ? (isFailed ? 'Transcation Failed' : 'Detail') : (isCompleted ? 'Completed' : 'Processing')}}</CommBoxHeader>
   <div class="ProceedContent">
     <div v-for="item in proceedData" :key="item.title" class="contentItem">
       <span class="item-title" style="width:100px;text-align:left;">{{ item.title }}</span>
@@ -91,7 +91,7 @@ export default {
   },
   computed: {
     isCompleted() {
-      return !this.detailData && !(this.$store.state.proceedState === 1 || this.$store.state.proceedState === 2) && !(this.$store.state.proceedState === 4 || this.$store.state.proceedState === 5)
+      return !this.detailData && !(this.$store.state.proceedState === 1 || this.$store.state.proceedState === 2) && this.$store.state.proceedState === 5
     },
     isFailed() {
       return this.detailData && !(this.detailData.state === 1 || this.detailData.state === 0)
