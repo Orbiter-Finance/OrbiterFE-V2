@@ -166,11 +166,13 @@ export default {
       }
     },
     proceedData() {
+      const timestamp = (new Date(`${this.detailData.fromTimeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
       if (this.detailData) {
         return [
           {
             title: 'Timestamp',
-            desc: util.transferTimeStampToTime(this.detailData.fromTimeStamp),
+            // desc: util.transferTimeStampToTime(this.detailData.fromTimeStamp),
+            desc: timestamp
           },
           {
             title: 'Value',
@@ -184,9 +186,10 @@ export default {
       return [
         {
           title: 'Timestamp',
-          desc: util.transferTimeStampToTime(
-            this.$store.state.proceeding.userTransfer.timeStamp
-          ),
+          // desc: util.transferTimeStampToTime(
+          //   this.$store.state.proceeding.userTransfer.timeStamp
+          // ),
+          desc: timestamp
         },
         {
           title: 'Value',
