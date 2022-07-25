@@ -1,6 +1,11 @@
+const baseUrl = `https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com`
+const baseDomain = `https://api.orbiter.finance`
+const historyApiUrl = `${baseDomain}/api`
+export const netStateUrl = `${baseDomain}`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
-  baseUrl: 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com',
+  baseUrl,
+  baseTraddingUrl: historyApiUrl, //process.env.NODE_ENV === 'production' ? historyApiUrl : 'http://localhost:3000/api',
   credential: false,
   localProvider: {
     1: process.env.VUE_APP_HP,
@@ -15,6 +20,9 @@ export default {
     510: process.env.VUE_APP_HP_MT_R,
     13: process.env.VUE_APP_HP_BOBA,
     513: process.env.VUE_APP_HP_BOBA_R,
+    515: process.env.VUE_APP_HP_BSC_R,
+    15: process.env.VUE_APP_HP_BSC,
+    514: "https://zksync2-testnet.zksync.dev",
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -29,6 +37,9 @@ export default {
     510: process.env.VUE_APP_WP_MT_R,
     13: process.env.VUE_APP_WP_BOBA,
     513: process.env.VUE_APP_WP_BOBA_R,
+    515: process.env.VUE_APP_WP_BSC_R,
+    15: process.env.VUE_APP_WP_BSC,
+    514: 'wss://zksync2-testnet.zksync.dev/ws',
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -44,6 +55,8 @@ export default {
     '11',
     '12',
     '13',
+    '14',
+    "15",
     '22',
     '33',
     '44',
@@ -55,6 +68,8 @@ export default {
     '511',
     '512',
     '513',
+    '514',
+    "515"
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -69,7 +84,8 @@ export default {
     10: '1088', //metis
     11: '1', // dydx
     12: '1', // zkspace
-    13: '288', // boba mainnet
+    13: '288', // boba mainnet,
+    15: "56", // bsc mainnet,
     22: '421611', // arbitrum test
     33: '4', // zktest
     44: '5', // starknet(R)
@@ -81,6 +97,8 @@ export default {
     511: '3', // dydx(R)
     512: '4', // zkspace(R)s
     513: '28', // boba rinkeby
+    514: '280',//zksync2(G)
+    515: "97", // bsc test
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -99,6 +117,7 @@ export default {
     77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
     88: '',
     99: '',
+    515: ""
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -125,6 +144,9 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
+    15: "https://bscscan.com/tx/",
+    515: "https://testnet.bscscan.com/tx/",
+    514: 'https://zksync2-testnet.zkscan.io/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -151,5 +173,8 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/account/',
     13: 'https://blockexplorer.boba.network/address/',
     513: 'https://blockexplorer.rinkeby.boba.network/address/',
+    15: "https://bscscan.com/address",
+    515: "https://testnet.bscscan.com/address/",
+    514: 'https://zksync2-testnet.zkscan.io/address/',
   },
 }

@@ -1,14 +1,20 @@
-import { Message } from 'element-ui'
+import { Notification } from 'element-ui'
 import env from '../../env'
 import chainList from '../config/chains.json'
+import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
 
 export default {
   showMessage(message, type) {
-    Message({
-      showClose: true,
+    // Message({
+    //   showClose: true,
+    //   duration: 2000,
+    //   message: message,
+    //   type: type,
+    // })
+    const _type = type || 'success'
+    Notification[_type]({
+      title: message,
       duration: 2000,
-      message: message,
-      type: type,
     })
   },
   getChainInfo(netChainID) {
@@ -55,8 +61,15 @@ export default {
         return 'Boba'
       case 513:
         return 'Boba(R)'
+      case 14:
+        return 'zkSync2'
+      case 514:
+        return 'zkSync2(G)'
+      case 15:
+        return "Binance Smart Chain"
+      case 515:
+        return "Binance Smart Chain(R)"
     }
-
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
     )
@@ -91,7 +104,7 @@ export default {
     }
   },
   toHex(num) {
-    return '0x' + num.toString(16)
+    return '0x' + Number(num).toString(16)
   },
   transferTimeStampToTime(timestamp) {
     if (!timestamp) {
@@ -153,6 +166,10 @@ export default {
     return /^0x0+$/i.test(tokenAddress)
   },
 
+  isBNBTokenAddress(chainId) {
+    return chainId == 97 || chainId == 56;
+  },
+
   /**
    * @param {number} ms Sleep millisecond
    * @returns
@@ -176,14 +193,14 @@ export default {
   /**
    * @param {number} chainId
    */
-  async ensureMetamaskNetwork(chainId) {
+  async ensureWalletNetwork(chainId) {
+    console.lo
     const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
     const switchParams = {
       chainId: this.toHex(chain.chainId),
     }
-
     try {
-      await window.ethereum.request({
+      await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
       })
@@ -208,7 +225,7 @@ export default {
           ],
         }
 
-        await window.ethereum.request({
+        await compatibleGlobalWalletConf.value.walletPayload.provider.request({
           method: 'wallet_addEthereumChain',
           params: [params],
         })

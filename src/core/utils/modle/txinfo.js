@@ -1,5 +1,3 @@
-import BigNumber from 'bignumber.js'
-
 export default {
   getTxInfoWithEtherScan: function (etherScanInfo) {
     const txInfo = {
@@ -89,6 +87,22 @@ export default {
     return txInfo
   },
 
+  getTxInfoWithZksync2: function (zkSync2Info) {
+    const txInfo = {
+      from: zkSync2Info.from.toLowerCase(),
+      to: zkSync2Info.to.toLowerCase(),
+      tokenAddress: zkSync2Info.contractAddress.toLowerCase(),
+      timeStamp: zkSync2Info.timeStamp,
+      tokenName: zkSync2Info.tokenSymbol,
+      value: zkSync2Info.value,
+      tokenDecimal: zkSync2Info.tokenDecimal,
+      hash: zkSync2Info.hash,
+      nonce: zkSync2Info.nonce,
+      dataFrom: 'zksync2',
+    }
+    return txInfo
+  },
+
   getTxInfoWithStarknet: function (starknetInfo) {
     const txInfo = {
       from: starknetInfo.from.toLowerCase(),
@@ -130,9 +144,8 @@ export default {
       to: immutableX.to.toLowerCase(),
       tokenAddress: immutableX.contractAddress,
       timeStamp: immutableX.timeStamp,
-      tokenName: 'ETH', // Now only eth
       value: immutableX.value,
-      tokenDecimal: 18,
+      tokenDecimal: immutableX.tokenDecimal,
       hash: immutableX.hash,
       nonce: immutableX.nonce,
       dataFrom: 'ImmutableX',
@@ -147,9 +160,7 @@ export default {
       tokenAddress: zkspaceInfo.token.id,
       timeStamp: zkspaceInfo.created_at,
       tokenName: zkspaceInfo.token.symbol,
-      value: new BigNumber(zkspaceInfo.amount)
-        .multipliedBy(new BigNumber(10 ** 18))
-        .toString(),
+      value: zkspaceInfo.amount,
       tokenDecimal: 18,
       hash: zkspaceInfo.tx_hash,
       nonce: zkspaceInfo.nonce,

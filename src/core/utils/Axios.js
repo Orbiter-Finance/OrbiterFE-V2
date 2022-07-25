@@ -9,3 +9,27 @@ export default {
     })
   },
 }
+async function axiosPlus(method, url, params = {}, count = 5) {
+  try {
+    let resp;
+    if (method.toLowerCase() == 'get') {
+      resp = await axios.get(url, { params })
+    } else {
+      resp = await axios.post(url, params)
+    }
+
+    if (resp.status == 200 && resp.data) {
+      return resp.data
+    } else {
+      throw new Error(`get ${url} error`)
+    }
+  } catch (error) {
+    count--;
+    if (count >= 0) {
+      return await axiosPlus(method, url, params, count)
+    } else {
+      throw new Error(`get ${url} error`)
+    }
+  }
+}
+export { axiosPlus }

@@ -51,7 +51,6 @@ export default {
       default: '2rem'
     },
     loadingColor: { type: String, default: "#e85e24" },
-
   },
   data() {
     return {
@@ -81,6 +80,7 @@ export default {
 // }
 .loading .fade-item {
   position: absolute;
+  z-index: 1000;
   top: 0;
   left: 0;
   width: calc(100% - 0.1rem);

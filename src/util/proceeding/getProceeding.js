@@ -1,11 +1,10 @@
 import Bignumber from 'bignumber.js'
 import Web3 from 'web3'
 import thirdapi from '../../core/actions/thirdapi'
-import getTransactionList from '../../core/routes/transactionList'
 import config from '../../core/utils/config'
 import orbiterCore from '../../orbiterCore'
-import { store } from '../../store'
 import util from '../../util/util'
+import { store } from '../../store'
 import { Coin_ABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
 import {
@@ -20,33 +19,22 @@ import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import { getTimeStampInfo } from './get_tx_by_hash'
+import {
+  lpApiKey,
+  lpAccountInfo,
+  web3State,
+  transferDataState,
+} from '../../composition/hooks'
+
 import zkspace from '../../core/actions/zkspace'
 import { BobaListen } from '../boba/boba_listen'
 
 let startBlockNumber = ''
 
-const getHistory = () => {
-  if (store.getters.realSelectMakerInfo) {
-    getTransactionList
-      .getTransactionList({
-        address: store.state.web3.coinbase,
-        daysAgo: 14,
-        state: 1, //maker/user
-      })
-      .then((response) => {
-        if (response.state === 1) {
-          store.commit('updateTransactionList', response.list)
-        }
-      })
-      .catch((error) => {
-        console.warn('error =', error)
-      })
-  }
-}
-
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
-  getHistory()
 }
 
 async function confirmUserTransaction(
@@ -111,6 +99,10 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
+          const compareProceedTxTimeStr = (
+            Date.parse(new Date(time)) / 1000 -
+            1800
+          ).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -119,6 +111,7 @@ async function confirmUserTransaction(
             zkTransactionData.result.tx.op.to,
             zkTransactionData.result.tx.op.from,
             zk_amountToSend,
+            compareProceedTxTimeStr,
             zk_nonce
           )
           return
@@ -172,14 +165,20 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', block.timestamp)
+          const timeStr = block.timestamp.toString()
+          let compareProceedTxTimeStr = timeStr.slice(0, 10)
+          compareProceedTxTimeStr = Number(
+            compareProceedTxTimeStr - 1800
+          ).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
             sn_makerTransferChainID,
             makerInfo,
             makerInfo.makerAddress,
-            store.state.web3.coinbase,
+            web3State.coinbase,
             sn_amountToSend,
+            compareProceedTxTimeStr,
             sn_nonce
           )
           return
@@ -202,7 +201,6 @@ async function confirmUserTransaction(
         const imxHelper = new IMXHelper(localChainID)
         const imxClient = await imxHelper.getImmutableXClient()
         const transfer = await imxClient.getTransfer({ id: txHash })
-
         if (transfer.status.toLowerCase() == 'success') {
           const imx_amount = orbiterCore.getRAmountFromTAmount(
             localChainID,
@@ -232,20 +230,27 @@ async function confirmUserTransaction(
             'updateProceedingUserTransferTimeStamp',
             transfer.timestamp
           )
+          let compareProceedTxTimeStr =
+            Date.parse(new Date(transfer.timestamp)) / 1000
+          compareProceedTxTimeStr = Number(
+            compareProceedTxTimeStr - 1800
+          ).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
             imx_makerTransferChainID,
             makerInfo,
             makerInfo.makerAddress,
-            store.state.web3.coinbase,
-            imx_amountToSend
+            web3State.coinbase,
+            imx_amountToSend,
+            compareProceedTxTimeStr,
+            imx_nonce
           )
           return
         }
       } catch (error) {
-        console.warn('error =', error)
-        throw 'getImmutableXTransactionDataError'
+        console.warn('getImmutableXTransactionData Error =', error)
+        throw new Error('getImmutableXTransactionDataError')
       }
       return confirmUserTransaction(
         localChainID,
@@ -254,11 +259,10 @@ async function confirmUserTransaction(
         confirmations
       )
     }
-
     // loopring
     if (localChainID == 9 || localChainID == 99) {
-      let apiKey = store.state.lpApiKey
-      let acc = store.state.lpAccountInfo
+      let apiKey = lpApiKey.value
+      let acc = lpAccountInfo.value
       const GetUserTransferListRequest = {
         accountId: acc.accountId,
         hashes: txHash,
@@ -304,6 +308,9 @@ async function confirmUserTransaction(
               return
             }
             store.commit('updateProceedingUserTransferTimeStamp', time)
+            const timeStr = time.toString()
+            let realTimeStr = timeStr.slice(0, 10)
+            realTimeStr = Number(realTimeStr - 1800).toString()
             storeUpdateProceedState(3)
             startScanMakerTransfer(
               txHash,
@@ -312,6 +319,7 @@ async function confirmUserTransaction(
               lpTransaction.receiverAddress,
               lpTransaction.senderAddress,
               lp_amountToSend,
+              realTimeStr,
               lp_nonce
             )
             return
@@ -368,6 +376,9 @@ async function confirmUserTransaction(
             return
           }
           store.commit('updateProceedingUserTransferTimeStamp', time)
+          const timeStr = time.toString()
+          let realTimeStr = timeStr.slice(0, 10)
+          realTimeStr = Number(realTimeStr - 1800).toString()
           storeUpdateProceedState(3)
           startScanMakerTransfer(
             txHash,
@@ -376,6 +387,7 @@ async function confirmUserTransaction(
             zkspaceTransactionData.data.to,
             zkspaceTransactionData.data.from,
             zkspace_amountToSend,
+            realTimeStr,
             zkspace_nonce
           )
           return
@@ -402,10 +414,7 @@ async function confirmUserTransaction(
         confirmations
       )
     }
-    if (!isCurrentTransaction(txHash)) {
-      return
-    }
-    var trx = trxConfirmations.trx
+    const trx = trxConfirmations.trx
     if (!isCurrentTransaction(txHash)) {
       return
     }
@@ -433,6 +442,22 @@ async function confirmUserTransaction(
         amountStr = Web3.utils.hexToNumberString(amountHex)
         startScanMakerTransferFromAddress = '0x' + trx.input.slice(34, 74)
       }
+    } else if (localChainID == 14 || localChainID == 514) {
+      const makerAddress = makerInfo.makerAddress
+      const theMakerAddress = makerAddress
+        .toLowerCase()
+        .substr(2, makerAddress.length - 1)
+      let amountIndex = 0
+      const thekeyIndex = trx.input.indexOf(theMakerAddress)
+      if (thekeyIndex > -1) {
+        amountIndex = thekeyIndex + theMakerAddress.length
+        const hexAmount = trx.input.slice(amountIndex, amountIndex + 64)
+        amountStr = Web3.utils.hexToNumberString('0x' + hexAmount)
+        startScanMakerTransferFromAddress = makerAddress
+      } else {
+        console.warn('from zk2 the amount is incorrect')
+        return
+      }
     } else {
       let inputData
       // Parse input data
@@ -445,7 +470,6 @@ async function confirmUserTransaction(
       if (!inputData.ext?.value) {
         return
       }
-
       startScanMakerTransferFromAddress = inputData.to
       if (typeof inputData.amount == 'string') {
         amountStr = Number(inputData.amount) + ''
@@ -475,7 +499,6 @@ async function confirmUserTransaction(
         return
       }
       storeUpdateProceedState(3)
-
       const nonce = trx.nonce.toString()
       const sendRAmount = orbiterCore.getToAmountFromUserAmount(
         new Bignumber(amount).dividedBy(
@@ -491,12 +514,14 @@ async function confirmUserTransaction(
         sendRAmount,
         nonce
       ).tAmount
-      const { transferExt } = store.state.transferData
+      const { transferExt } = transferDataState
       let toAddress = trx.from
       if (transferExt?.value) {
         toAddress = transferExt.value
       }
-
+      const timeStr = trxConfirmations.timestamp.toString()
+      let realTimeStr = timeStr.slice(0, 10)
+      realTimeStr = Number(realTimeStr - 1800).toString()
       startScanMakerTransfer(
         txHash,
         makerTransferChainID,
@@ -504,6 +529,7 @@ async function confirmUserTransaction(
         startScanMakerTransferFromAddress,
         toAddress,
         amountToSend,
+        realTimeStr,
         nonce,
         trx.from
       )
@@ -524,7 +550,8 @@ function ScanZKMakerTransfer(
   makerInfo,
   from,
   to,
-  amount
+  amount,
+  timeStampStr
 ) {
   setTimeout(async () => {
     if (!isCurrentTransaction(transactionID)) {
@@ -555,7 +582,12 @@ function ScanZKMakerTransfer(
           zkInfo.op.to?.toLowerCase() == to.toLowerCase() &&
           zkInfo.op.amount === amount
         ) {
-          // shifou bijiao daibi
+          if (
+            Number(timeStampStr) >
+            Date.parse(new Date(zkInfo.createdAt)) / 1000
+          ) {
+            return
+          }
           let zkTokenList =
             localChainID === 3
               ? store.state.zktokenList.mainnet
@@ -586,8 +618,7 @@ function ScanZKMakerTransfer(
         }
       }
     } catch (error) {
-      console.warn('error =', error)
-      throw 'getZKTransactionListError'
+      console.log('getZKTransactionListError =', error)
     }
     return ScanZKMakerTransfer(
       transactionID,
@@ -607,23 +638,33 @@ function ScanZKSpaceMakerTransfer(
   from,
   to,
   amount
+  // timeStampStr
 ) {
   let startPoint = 0
   setTimeout(async () => {
     if (!isCurrentTransaction(transactionID)) {
       return
     }
+    const zksTokenInfos =
+      localChainID === 12
+        ? store.state.zksTokenList.mainnet
+        : store.state.zksTokenList.rinkeby
+    const tokenAddress =
+      localChainID === makerInfo.c1ID
+        ? makerInfo.t1Address
+        : makerInfo.t2Address
+    const tokenInfo = zksTokenInfos.find((item) => item.address == tokenAddress)
+    const tokenId = tokenInfo ? tokenInfo.id : 0
+
     try {
       let zksTransactions = await zkspace.getZKSapceTxList(
         from,
         localChainID,
         startPoint,
-        0,
+        tokenId,
         50
       )
-      if (!zksTransactions || !zksTransactions.success) {
-        // dosome
-      }
+
       if (zksTransactions.success && zksTransactions.data?.data?.length !== 0) {
         let transacionts = zksTransactions.data.data
         startPoint = transacionts.length == 50 ? startPoint + 50 : 0
@@ -634,7 +675,7 @@ function ScanZKSpaceMakerTransfer(
             zkspaceTransaction?.fail_reason == '' &&
             (zkspaceTransaction?.from?.toLowerCase() == from.toLowerCase() ||
               zkspaceTransaction?.to?.toLowerCase() == to.toLowerCase()) &&
-            zkspaceTransaction.token.symbol == 'ETH' &&
+            zkspaceTransaction.token.symbol == tokenInfo.symbol &&
             new Bignumber(zkspaceTransaction.amount)
               .multipliedBy(10 ** makerInfo.precision)
               .toString() == amount
@@ -678,9 +719,11 @@ function startScanMakerTransfer(
   from,
   to,
   amount,
+  timeStampStr, //only for second,not for millisecond
   nonce,
   ownerAddress = ''
 ) {
+  console.log('i am start scaning')
   if (!isCurrentTransaction(transactionID)) {
     return
   }
@@ -691,7 +734,8 @@ function startScanMakerTransfer(
       makerInfo,
       from,
       to,
-      amount
+      amount,
+      timeStampStr
     )
   }
   if (localChainID === 12 || localChainID === 512) {
@@ -702,6 +746,7 @@ function startScanMakerTransfer(
       from,
       to,
       amount
+      // timeStampStr
     )
   }
   const web3 = localWeb3(localChainID)
@@ -717,6 +762,7 @@ function startScanMakerTransfer(
     to,
     amount,
     nonce,
+    timeStampStr,
     ownerAddress
   )
 }
@@ -731,6 +777,7 @@ function ScanMakerTransfer(
   to,
   amount,
   nonce,
+  timeStampStr,
   ownerAddress = ''
 ) {
   const duration = 10 * 1000
@@ -765,7 +812,7 @@ function ScanMakerTransfer(
     if (localChainID == 4 || localChainID == 44) {
       const asyncStarknet = async () => {
         //todo
-        const toStarknetAddress = store.state.web3.starkNet.starkNetAddress
+        const toStarknetAddress = web3State.starkNet.starkNetAddress
 
         let fromStarknetAddress = getStarkMakerAddress(
           makerInfo.makerAddress,
@@ -848,6 +895,13 @@ function ScanMakerTransfer(
 
     // loopring
     if (localChainID == 9 || localChainID == 99) {
+      const lpTokenInfos =
+        localChainID === 9
+          ? store.state.lpTokenList.mainnet
+          : store.state.lpTokenList.rinkeby
+      const tokenInfo = lpTokenInfos.find(
+        (item) => item.address == tokenAddress
+      )
       let accountResult = await loopring.accountInfo(
         makerInfo.makerAddress,
         localChainID
@@ -878,7 +932,7 @@ function ScanMakerTransfer(
         end: 99999999999999,
         status: 'processed,processing,received',
         limit: 50,
-        tokenSymbol: 'ETH',
+        tokenSymbol: tokenInfo ? tokenInfo.symbol : 'ETH',
         transferTypes: 'transfer',
       }
       const LPTransferResult = await userApi.getUserTransferList(
@@ -894,13 +948,14 @@ function ScanMakerTransfer(
         let transacionts = LPTransferResult.userTransfers
         for (let index = 0; index < transacionts.length; index++) {
           const lpTransaction = transacionts[index]
+
           if (
             lpTransaction.txType == 'TRANSFER' &&
             lpTransaction.senderAddress.toLowerCase() ==
               makerInfo.makerAddress.toLowerCase() &&
             lpTransaction.receiverAddress.toLowerCase() ==
               store.state.proceeding.userTransfer.from.toLowerCase() &&
-            lpTransaction.symbol == 'ETH' &&
+            lpTransaction.symbol == tokenInfo.symbol &&
             lpTransaction.amount == rAmount &&
             lpTransaction.memo == memo
           ) {
@@ -927,7 +982,9 @@ function ScanMakerTransfer(
 
     // dydx
     if (localChainID == 11 || localChainID == 511) {
-      const dydxWeb3 = new Web3(window.ethereum)
+      const dydxWeb3 = new Web3(
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
       const dydxListen = new DydxListen(
         localChainID,
         dydxWeb3,
@@ -1036,6 +1093,18 @@ function ScanMakerTransfer(
             key: config.optimistic.key,
           }
           break
+        case 15:
+          api = {
+            endPoint: config.bsc.Mainnet,
+            key: config.etherscan.Mainnet.key,
+          }
+          break
+        case 515:
+          api = {
+            endPoint: config.bsc.Rinkeby,
+            key: config.etherscan.Rinkeby.key,
+          }
+          break
       }
       if (!api) {
         return
@@ -1079,9 +1148,7 @@ function ScanMakerTransfer(
         )
       return
     }
-
     const currentBlock = await web3.eth.getBlockNumber()
-
     const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
     // Generate filter options
     const options = {
@@ -1089,44 +1156,55 @@ function ScanMakerTransfer(
         from: from,
         to: to,
       },
-      fromBlock: currentBlock - 100,
+      fromBlock: currentBlock - 80,
       toBlock: 'latest',
     }
-    tokenContract.getPastEvents('Transfer', options, function (error, events) {
-      if (!isCurrentTransaction(transactionID)) {
-        return
-      }
-      if (error) {
-        console.log('Error =', error)
-      } else {
-        for (let index = 0; index < events.length; index++) {
-          const txinfo = events[index]
-          if (
-            checkData(
-              txinfo.returnValues.from,
-              txinfo.returnValues.to,
-              txinfo.returnValues.amount,
-              txinfo.address
-            )
-          ) {
-            store.commit(
-              'updateProceedingMakerTransferTxid',
-              txinfo.transactionHash
-            )
-            storeUpdateProceedState(4)
-            confirmMakerTransaction(
-              transactionID,
-              localChainID,
-              makerInfo,
-              txinfo.transactionHash
-            )
-            return
+    tokenContract.getPastEvents(
+      'Transfer',
+      options,
+      async function (error, events) {
+        if (!isCurrentTransaction(transactionID)) {
+          return
+        }
+        if (error) {
+          console.warn('tokenContract getPastEvents-Transfer Error =', error)
+        } else {
+          for (let index = events.length - 1; index >= 0; index--) {
+            const txinfo = events[index]
+            if (
+              checkData(
+                txinfo.returnValues.from,
+                txinfo.returnValues.to,
+                txinfo.returnValues.amount,
+                txinfo.address
+              )
+            ) {
+              let txTimeStamp = await getTimeStampInfo(
+                localChainID,
+                txinfo.transactionHash,
+                txinfo.blockNumber
+              )
+              if (!txTimeStamp || (txTimeStamp && timeStampStr < txTimeStamp)) {
+                store.commit(
+                  'updateProceedingMakerTransferTxid',
+                  txinfo.transactionHash
+                )
+                storeUpdateProceedState(4)
+                confirmMakerTransaction(
+                  transactionID,
+                  localChainID,
+                  makerInfo,
+                  txinfo.transactionHash
+                )
+                return
+              }
+            }
           }
         }
-      }
 
-      setTimeout(() => ticker(), duration)
-    })
+        setTimeout(() => ticker(), duration)
+      }
+    )
   }
   ticker()
   // setTimeout(() => ticker(), 100)
@@ -1229,7 +1307,7 @@ export default {
     if (realAmount.state) {
       realAmount = realAmount.rAmount
     } else {
-      throw realAmount.rAmount.error
+      throw new Error(`UserTransferReady error: ${realAmount.error}`)
     }
     store.commit('updateProceedingUserTransferAmount', realAmount)
     confirmUserTransaction(localChainID, makerInfo, txHash)

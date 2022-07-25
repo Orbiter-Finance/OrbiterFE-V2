@@ -14,19 +14,18 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Sender',
-      component: (resolve) => require(['./views/sender'], resolve),
+      component: (resolve) => require(['./views/bridage/Bridage'], resolve),
       meta: {
         title: 'Orbiter',
         keepAlive: true,
       },
     },
     {
-      path: '/maker',
-      name: 'Maker',
-      component: (resolve) => require(['./views/maker'], resolve),
+      path: '/history',
+      component: (resolve) => require(['./views/History'], resolve),
       meta: {
         title: 'Orbiter',
+        keepAlive: true,
       },
     },
   ],
