@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { store } from '../../store'
 import util from '../../util/util'
 import transferCalculate from '../../util/transfer/transferCalculate'
 import axios from 'axios'
