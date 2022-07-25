@@ -25,7 +25,8 @@ export const chain2idMap = {
   'Boba(R)': 513,
   Boba: 13,
   'zkSync2(G)': 514,
-  "bsc(R)": 97
+  "BinanceSmartChain(R)": 515,
+  "BinanceSmartChain": 15,
   // TODO: when mainnet is ready
   // 'zkSync2(G)': 14,
 }

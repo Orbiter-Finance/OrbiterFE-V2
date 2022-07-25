@@ -26,7 +26,6 @@ import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
-import { Coin_ABI } from '../constants/contract/contract'
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
 const ZK_ERC20_DEPOSIT_DEPOSIT_ONL1 = 103937
@@ -925,14 +924,6 @@ export default {
       const fromGasPrice = await this.getGasPrice(fromChainID)
       ethGas = fromGasPrice * BOBA_TRANSFER_OUT_LIMIT
     }
-    if (fromChainID === 14 || fromChainID === 514) {
-      // zk2 widthdraw
-      const fromGasPrice = await this.getGasPrice(fromChainID)
-      ethGas =
-        fromGasPrice *
-        (isErc20 ? ZK2_ERC20_WITHDRAW_ONZK2 : ZK2_ETH_WITHDRAW_ONZK2)
-    }
-
     if (fromChainID === 15 || fromChainID === 515) {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
@@ -943,6 +934,14 @@ export default {
         throw new Error(`bsc withdraw error`)
       }
     }
+    if (fromChainID === 14 || fromChainID === 514) {
+      // zk2 widthdraw
+      const fromGasPrice = await this.getGasPrice(fromChainID)
+      ethGas =
+        fromGasPrice *
+        (isErc20 ? ZK2_ERC20_WITHDRAW_ONZK2 : ZK2_ETH_WITHDRAW_ONZK2)
+    }
+
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       try {
@@ -1072,17 +1071,6 @@ export default {
       ethGas += depositGas
     }
 
-    if (toChainID === 14 || toChainID === 514) {
-      // zk2 get
-      const toGasPrice = await this.getGasPrice(toChainID === 14 ? 1 : 5)
-      ethGas =
-        toGasPrice *
-        (isErc20
-          ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
-          : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
-
-
-        }
     if (toChainID === 15 || toChainID === 515) {
       try {
         // MT deposit
@@ -1093,6 +1081,15 @@ export default {
       } catch (error) {
         throw new Error(`bsc deposit error`)
       }
+    }
+    if (toChainID === 14 || toChainID === 514) {
+      // zk2 get
+      const toGasPrice = await this.getGasPrice(toChainID === 14 ? 1 : 5)
+      ethGas =
+        toGasPrice *
+        (isErc20
+          ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
+          : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
 
     let usd = new BigNumber(0)
