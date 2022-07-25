@@ -41,7 +41,10 @@
           }}</span>
         </div>
       </div>
-      <div v-if="item.haveSep" style="border-bottom:2px dashed rgba(0, 0, 0, 0.2);height:43px;"></div>
+      <div
+        v-if="item.haveSep"
+        style="border-bottom: 2px dashed rgba(0, 0, 0, 0.2); height: 43px"
+      ></div>
     </div>
     <div
       v-if="isStarkNetChain"
@@ -57,14 +60,18 @@
       style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
     >
       <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d;flex:1;">Please do not modify the transaction or remove the last four digits on the transfer amount in MetaMask as this will cause the transaction to fail.</span>
+      <span style="color: #df2e2d; flex: 1"
+        >Please do not modify the transaction or remove the last four digits on
+        the transfer amount in MetaMask as this will cause the transaction to
+        fail.</span
+      >
     </div>
 
     <CommBtn @click="RealTransfer" class="select-wallet-dialog">
       <span
         v-if="!transferLoading"
         class="wbold s16"
-        style="letter-spacing: 0.1rem;"
+        style="letter-spacing: 0.1rem"
         >CONFIRM AND SEND</span
       >
       <CommLoading
@@ -79,7 +86,12 @@
 </template>
 
 <script>
-import { SvgIconThemed, CommBoxHeader, CommBtn, HelpIcon } from '../../components'
+import {
+  SvgIconThemed,
+  CommBoxHeader,
+  CommBtn,
+  HelpIcon,
+} from '../../components'
 import BigNumber from 'bignumber.js'
 import getProceeding from '../../util/proceeding/getProceeding'
 import {
@@ -155,56 +167,56 @@ export default {
         '$1...$2'
       )
       const comm = [
-          {
-            icon: 'withholding',
-            title: 'Withholding Fee',
-            notice:
-              'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
-            desc:
-              (realSelectMakerInfo.value
-                ? realSelectMakerInfo.value.tradingFee
-                : 0) +
-              ' ' +
-              realSelectMakerInfo.value.tName,
-          },
-          {
-            icon: 'security',
-            title: 'Identification Code',
-            notice:
-              'In Orbiter, each transaction has a four digit identification code. The identification code can be seen at the end of the total amount being transferred as a way to identify the transaction. The identification code will be the evidence in the case that the ‘Maker’ does not send the assets to the target network. This will act as an evidence to claim your funds from the margin contract.',
-            desc: transferCalculate.realTransferOPID(),
-            haveSep: true,
-          },
-          {
-            icon: 'send',
-            title: 'Total Send',
-            notice:
-              'Total amount sent by the ‘Sender’ including the withholding fee.',
-            desc: realTransferAmount + ' ' + realSelectMakerInfo.value.tName,
-            textBold: true,
-          },
-          {
-            icon: 'received',
-            title: 'Received',
-            desc:
-              orbiterCore.getToAmountFromUserAmount(
-                new BigNumber(transferDataState.transferValue).plus(
-                  new BigNumber(realSelectMakerInfo.value.tradingFee)
-                ),
-                realSelectMakerInfo.value,
-                false
-              ) +
-              ' ' +
-              realSelectMakerInfo.value.tName,
-            textBold: true,
-          },
-          {
-            icon: 'exchange',
-            title: 'Maker Routes',
-            notice:
-              "After the ‘Sender’ submits the transaction, the assets are transferred to the ‘Maker’s’ address who will provide the liquidity. Orbiter’s contract will ensure the safety of the assets and will make sure that the ‘Sender’ receives the assets to the target network.",
-            descInfo: this.$store.state.confirmData.routeDescInfo,
-          },
+        {
+          icon: 'withholding',
+          title: 'Withholding Fee',
+          notice:
+            'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
+          desc:
+            (realSelectMakerInfo.value
+              ? realSelectMakerInfo.value.tradingFee
+              : 0) +
+            ' ' +
+            realSelectMakerInfo.value.tName,
+        },
+        {
+          icon: 'security',
+          title: 'Identification Code',
+          notice:
+            'In Orbiter, each transaction has a four digit identification code. The identification code can be seen at the end of the total amount being transferred as a way to identify the transaction. The identification code will be the evidence in the case that the ‘Maker’ does not send the assets to the target network. This will act as an evidence to claim your funds from the margin contract.',
+          desc: transferCalculate.realTransferOPID(),
+          haveSep: true,
+        },
+        {
+          icon: 'send',
+          title: 'Total Send',
+          notice:
+            'Total amount sent by the ‘Sender’ including the withholding fee.',
+          desc: realTransferAmount + ' ' + realSelectMakerInfo.value.tName,
+          textBold: true,
+        },
+        {
+          icon: 'received',
+          title: 'Received',
+          desc:
+            orbiterCore.getToAmountFromUserAmount(
+              new BigNumber(transferDataState.transferValue).plus(
+                new BigNumber(realSelectMakerInfo.value.tradingFee)
+              ),
+              realSelectMakerInfo.value,
+              false
+            ) +
+            ' ' +
+            realSelectMakerInfo.value.tName,
+          textBold: true,
+        },
+        {
+          icon: 'exchange',
+          title: 'Maker Routes',
+          notice:
+            'After the ‘Sender’ submits the transaction, the assets are transferred to the ‘Maker’s’ address who will provide the liquidity. Orbiter’s contract will ensure the safety of the assets and will make sure that the ‘Sender’ receives the assets to the target network.',
+          descInfo: this.$store.state.confirmData.routeDescInfo,
+        },
       ]
       if (this.isStarkNetChain) {
         return [
@@ -220,9 +232,7 @@ export default {
         ]
       }
 
-      return [
-        ...comm,
-      ]
+      return [...comm]
     },
   },
   methods: {
@@ -409,31 +419,34 @@ export default {
         from: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         txType: 0x71,
         customData: {
-          feeToken: "",
+          feeToken: '',
         },
         to: '',
         value: ethers.BigNumber.from(0),
         data: '0x',
       }
-      const isMainCoin = tokenAddress.toLowerCase() === '0x000000000000000000000000000000000000800a';
+      const isMainCoin =
+        tokenAddress.toLowerCase() ===
+        '0x000000000000000000000000000000000000800a'
       if (!isMainCoin) {
-        console.log('ERC20 Token Transfer');
+        console.log('ERC20 Token Transfer')
         const web3 = new Web3()
         const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
         params.data = tokenContract.methods
           .transfer(toAddress, web3.utils.toHex(amountToSend))
           .encodeABI()
         params.to = tokenAddress
-        params.customData.feeToken = tokenAddress;
+        params.customData.feeToken = tokenAddress
       } else {
-        console.log('ETH Transfer');
+        console.log('ETH Transfer')
         params.value = ethers.BigNumber.from(amountToSend)
         params.to = toAddress
-        params.customData.feeToken = "0x0000000000000000000000000000000000000000";
+        params.customData.feeToken =
+          '0x0000000000000000000000000000000000000000'
       }
       const transferResult = await signer.sendTransaction(params)
       if (transferResult.hash) {
-        selectMakerInfo.makerAddress = params.from;
+        selectMakerInfo.makerAddress = params.from
         this.onTransferSucceed(
           web3State.coinbase,
           selectMakerInfo,
@@ -666,7 +679,8 @@ export default {
         } catch (error) {
           this.transferLoading = false
           if (error.message == 'account is not activated') {
-            const notify = this.$notify({
+            // const notify =
+            this.$notify({
               type: 'error',
               message: `<div style="text-align:left;font-size: 1.4rem; color: black">This Loopring account is not yet activated, please activate it before transferring.</div>`,
               dangerouslyUseHTMLString: true,
@@ -821,29 +835,30 @@ export default {
         }
         const eprovider = new providers.Web3Provider(web3.currentProvider)
         const signer = eprovider.getSigner()
-        signer.sendTransaction(
-          {
+        signer
+          .sendTransaction({
             from,
             to: selectMakerInfo.makerAddress,
             value,
             gasLimit: gasLimit,
-          },
-        ).then(res => {
-          this.transferLoading = false
-          this.onTransferSucceed(
-            from,
-            selectMakerInfo,
-            value,
-            fromChainID,
-            res.hash
-          )
-        }).catch(err => {
-          this.transferLoading = false
-          this.$notify.error({
-            title: err.message,
-            duration: 3000,
           })
-        })
+          .then((res) => {
+            this.transferLoading = false
+            this.onTransferSucceed(
+              from,
+              selectMakerInfo,
+              value,
+              fromChainID,
+              res.hash
+            )
+          })
+          .catch((err) => {
+            this.transferLoading = false
+            this.$notify.error({
+              title: err.message,
+              duration: 3000,
+            })
+          })
       } catch (error) {
         console.error(error)
       }

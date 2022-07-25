@@ -6,7 +6,7 @@
         :datas="tokens"
         v-model="selectedToken"
         @input="selectedTokenChange"
-        @show="() => isRaiseUpSelectVisible = true"
+        @show="() => (isRaiseUpSelectVisible = true)"
       ></ObSelect>
     </div>
     <div class="from-area">
@@ -52,7 +52,11 @@
             class="right"
             @input="checkTransferValue()"
             :maxlength="18"
-            :placeholder="this.userMinPrice > fromBalance ? `at least ${this.userMinPrice}` : `${this.userMinPrice}~${this.userMaxPrice}`"
+            :placeholder="
+              this.userMinPrice > fromBalance
+                ? `at least ${this.userMinPrice}`
+                : `${this.userMinPrice}~${this.userMaxPrice}`
+            "
           />
           <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
         </div>
@@ -65,7 +69,10 @@
       iconName="exchange"
       @click.native="transfer_mid"
     ></svg-icon>
-    <div class="to-area" :style="{marginTop: isShowExchangeIcon ? '4px' : '-2px'}">
+    <div
+      class="to-area"
+      :style="{ marginTop: isShowExchangeIcon ? '4px' : '-2px' }"
+    >
       <div class="topItem">
         <o-tooltip
           v-if="
@@ -110,49 +117,51 @@
         </div>
       </div>
     </div>
-    <div v-if="isStarknet" style="font-size: 1.2rem;color: #78797d;margin-top:1rem;text-align: left;">
+    <div
+      v-if="isStarknet"
+      style="
+        font-size: 1.2rem;
+        color: #78797d;
+        margin-top: 1rem;
+        text-align: left;
+      "
+    >
       <svg-icon
-        style="
-          width: 1rem;
-          height: 1rem;
-          height: 1rem;
-          margin-right: 0.2rem;
-        "
+        style="width: 1rem; height: 1rem; height: 1rem; margin-right: 0.2rem"
         iconName="tips"
       ></svg-icon>
-      Centralized transfer is provided currently and trustless transfer will be launched soon.
-      <a style="text-decoration: underline;" href="https://docs.orbiter.finance/" target="__blank">More</a>
+      Centralized transfer is provided currently and trustless transfer will be
+      launched soon.
+      <a
+        style="text-decoration: underline"
+        href="https://docs.orbiter.finance/"
+        target="__blank"
+        >More</a
+      >
     </div>
     <CommBtn
       @click="sendTransfer"
       :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
       class="btn select-wallet-dialog"
-      style="border-radius: 40px;"
+      style="border-radius: 40px"
     >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
         {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
     </CommBtn>
     <div class="info-box">
-      <!-- <div v-if="isShowMakerMostInfo" class="info-item">
-        <svg-icon class="info-icon" iconName="info"></svg-icon>
-        <span class="red">
-          Maker provider {{maxPrice}}ETH at most for liqudity.
-        </span>
-      </div> -->
       <div v-if="isShowUnreachMinInfo" class="info-item">
         <svg-icon class="info-icon" iconName="info"></svg-icon>
         <span class="red">
           Less than the minimum transfer amount.
-           <!-- {{userMinPrice}}ETH -->
+          <!-- {{userMinPrice}}ETH -->
         </span>
       </div>
       <div v-if="isShowMax" class="info-item">
         <svg-icon class="info-icon" iconName="info"></svg-icon>
         <span class="red">
           Makers provide {{ maxPrice }}
-          {{ transferDataState.selectTokenInfo.token }} for
-          liquidity.
+          {{ transferDataState.selectTokenInfo.token }} for liquidity.
         </span>
       </div>
       <div v-if="showSaveGas" class="gas-save info-item">
@@ -206,7 +215,7 @@
     </div>
 
     <CommDialog ref="SelectFromChainPopupRef">
-      <div slot="PoperContent" style="width:100%;">
+      <div slot="PoperContent" style="width: 100%">
         <ObSelectChain
           :ChainData="fromChainArray"
           v-on:getChainInfo="getFromChainInfo"
@@ -215,7 +224,7 @@
       </div>
     </CommDialog>
     <CommDialog ref="SelectToChainPopupRef">
-      <div slot="PoperContent" style="width:100%;">
+      <div slot="PoperContent" style="width: 100%">
         <ObSelectChain
           :ChainData="toChainArray"
           v-on:getChainInfo="getToChainInfo"
@@ -223,10 +232,14 @@
         />
       </div>
     </CommDialog>
-    <RaiseUpSelect 
+    <RaiseUpSelect
       :iconType="'img'"
-      :visible="isRaiseUpSelectVisible" @hiden="() => isRaiseUpSelectVisible = false"
-      :datas="tokenInfoArray" :value="selectedToken" @input="selectedTokenChange" :keyMaps="{value:'token',label:'token'}" 
+      :visible="isRaiseUpSelectVisible"
+      @hiden="() => (isRaiseUpSelectVisible = false)"
+      :datas="tokenInfoArray"
+      :value="selectedToken"
+      @input="selectedTokenChange"
+      :keyMaps="{ value: 'token', label: 'token' }"
     />
   </div>
 </template>
@@ -237,7 +250,8 @@ import {
   CommBtn,
   ObSelectChain,
   CommDialog,
-  SvgIconThemed, HelpIcon
+  SvgIconThemed,
+  HelpIcon,
 } from '../../components'
 import makerInfo from '../../core/routes/makerInfo'
 import util from '../../util/util'
@@ -268,23 +282,36 @@ import {
   compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
 import walletDispatchers from '../../util/walletsDispatchers'
-import { METAMASK } from "../../util/walletsDispatchers/index"
-import { 
-  transferDataState, realSelectMakerInfo, updateTransferMakerInfo,
-  updateTransferValue, updateTransferExt, updateTransferTokenInfo,
-  updateTransferFromChainID, updateTransferToChainID, updateTransferGasFee,
-  updateETHPrice, web3State
+import { METAMASK } from '../../util/walletsDispatchers/index'
+import {
+  transferDataState,
+  realSelectMakerInfo,
+  updateTransferMakerInfo,
+  updateTransferValue,
+  updateTransferExt,
+  updateTransferTokenInfo,
+  updateTransferFromChainID,
+  updateTransferToChainID,
+  updateTransferGasFee,
+  updateETHPrice,
+  web3State,
 } from '../../composition/hooks'
 import { watchEffect } from '../../composition'
 
 const queryParamsChainMap = chain2idMap
 
-const { walletDispatchersOnSwitchChain } = walletDispatchers;
+const { walletDispatchersOnSwitchChain } = walletDispatchers
 
 export default {
   name: 'Transfer',
   components: {
-    ObSelect, CommBtn, ObSelectChain, SvgIconThemed, CommDialog, RaiseUpSelect, HelpIcon
+    ObSelect,
+    CommBtn,
+    ObSelectChain,
+    SvgIconThemed,
+    CommDialog,
+    RaiseUpSelect,
+    HelpIcon,
   },
   data() {
     return {
@@ -365,14 +392,22 @@ export default {
     },
   },
   computed: {
-    transferDataState() { return transferDataState },
-    web3State() { return web3State },
-    isLogin() { return walletIsLogin.value },
+    transferDataState() {
+      return transferDataState
+    },
+    web3State() {
+      return web3State
+    },
+    isLogin() {
+      return walletIsLogin.value
+    },
     isShowExchangeIcon() {
-      return !this.queryParams.fixed &&
+      return (
+        !this.queryParams.fixed &&
         transferDataState.toChainID != 11 &&
         transferDataState.toChainID != 511 &&
         !this.starkMid
+      )
     },
     isStarknet() {
       return this.refererUpper === 'STARKNET'
@@ -616,7 +651,7 @@ export default {
           info.disabled = 'disabled'
         }
 
-        if(this.isShowUnreachMinInfo) {
+        if (this.isShowUnreachMinInfo) {
           info.text = 'SEND'
           info.disabled = 'disabled'
         }
@@ -624,41 +659,34 @@ export default {
 
       return info
     },
-    isShowRegionInfo() {
-      // maker in {{userMinPrice}}-{{userMaxPrice}}
-      if (walletIsLogin.value && this.transferValue) {
-        let transferValue = new BigNumber(this.transferValue)
-        let makerMax = new BigNumber(this.maxPrice)
-        const fromBalance = new BigNumber(this.fromBalance)
-        return transferValue.comparedTo(fromBalance) > 0 && transferValue.comparedTo(makerMax) > 0
-      }
-    },
-    isShowMakerMostInfo() {
-      if (walletIsLogin.value && this.transferValue) {
-        let transferValue = new BigNumber(this.transferValue)
-        let makerMax = new BigNumber(this.maxPrice)
-        const fromBalance = new BigNumber(this.fromBalance)
-        return transferValue.comparedTo(fromBalance) <= 0 && transferValue.comparedTo(makerMax) > 0
-      }
-    },
     isShowMax() {
-      return new BigNumber(this.transferValue).comparedTo(
-        new BigNumber(realSelectMakerInfo.value.maxPrice)
-      ) > 0
+      return (
+        new BigNumber(this.transferValue).comparedTo(
+          new BigNumber(realSelectMakerInfo.value.maxPrice)
+        ) > 0
+      )
     },
     isShowUnreachMinInfo() {
       if (walletIsLogin.value && this.transferValue) {
         let makerMin = new BigNumber(this.userMinPrice)
         let transferValue = new BigNumber(this.transferValue)
         const fromBalance = new BigNumber(this.fromBalance)
-        return transferValue.comparedTo(makerMin) < 0 && transferValue.comparedTo(fromBalance) < 0
+        return (
+          transferValue.comparedTo(makerMin) < 0 &&
+          transferValue.comparedTo(fromBalance) < 0
+        )
       }
+      return false
     },
     maxPrice() {
       return realSelectMakerInfo.value.maxPrice
     },
-    userMinPrice() { return realSelectMakerInfo.value.minPrice },
-    realTransferValue() { return transferCalculate.realTransferOPID() },
+    userMinPrice() {
+      return realSelectMakerInfo.value.minPrice
+    },
+    realTransferValue() {
+      return transferCalculate.realTransferOPID()
+    },
     realPtext() {
       let ptextResult = orbiterCore.getPTextFromTAmount(
         transferDataState.fromChainID,
@@ -697,8 +725,7 @@ export default {
       const withholdingGasFee = `<br />Withholding Fee: $${
         realSelectMakerInfo.value
           ? (
-              realSelectMakerInfo.value.tradingFee *
-              this.exchangeToUsdPrice
+              realSelectMakerInfo.value.tradingFee * this.exchangeToUsdPrice
             ).toFixed(2)
           : 0
       }`
@@ -709,10 +736,7 @@ export default {
       return gasFee + tradingFee + withholdingGasFee + total
     },
     toValue() {
-      if (
-        this.transferValue === '' ||
-        realSelectMakerInfo.value === ''
-      ) {
+      if (this.transferValue === '' || realSelectMakerInfo.value === '') {
         return '0'
       }
       return orbiterCore.getToAmountFromUserAmount(
@@ -723,8 +747,12 @@ export default {
         false
       )
     },
-    fromBalanceLoading() { return this.fromBalance === null },
-    toBalanceLoading() { return this.toBalance === null },
+    fromBalanceLoading() {
+      return this.fromBalance === null
+    },
+    toBalanceLoading() {
+      return this.toBalance === null
+    },
     fromBalance() {
       const c1 = transferDataState.selectMakerInfo.c1ID
       const from = transferDataState.fromChainID
@@ -785,9 +813,13 @@ export default {
       return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
-      return this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice > 0
+      return (
+        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice > 0
+      )
     },
-    saveGasLoading() { return this.originGasLoading },
+    saveGasLoading() {
+      return this.originGasLoading
+    },
     transferSavingTime() {
       return this.originTimeSpent?.replace('~', '')
       // return transferCalculate.transferSavingTime(
@@ -907,10 +939,7 @@ export default {
         this.c2Balance = Number(0).toFixed(6)
       }
     },
-    'transferDataState.selectMakerInfo': async function (
-      newValue,
-      oldValue
-    ) {
+    'transferDataState.selectMakerInfo': async function (newValue, oldValue) {
       this.updateExchangeToUsdPrice()
       this.getMakerMaxBalance()
 
@@ -920,8 +949,7 @@ export default {
         newValue.c2ID == 4 ||
         newValue.c2ID == 44
       ) {
-        const { starkNetIsConnect, starkNetAddress } =
-          web3State.starkNet
+        const { starkNetIsConnect, starkNetAddress } = web3State.starkNet
         if (!starkNetIsConnect || !starkNetAddress) {
           await connectStarkNetWallet()
           if (
@@ -1037,10 +1065,7 @@ export default {
         }
       }
 
-      if (
-        this.toChainArray.indexOf(transferDataState.toChainID) ===
-        -1
-      ) {
+      if (this.toChainArray.indexOf(transferDataState.toChainID) === -1) {
         let _toChainID = this.toChainArray[0]
         if (
           this.queryParams.dest > 0 &&
@@ -1086,8 +1111,7 @@ export default {
         // if can's find, use first; else find same name token's makerInfo
         if (
           this.tokenInfoArray.findIndex(
-            (item) =>
-              item.token == transferDataState.selectTokenInfo.token
+            (item) => item.token == transferDataState.selectTokenInfo.token
           ) === -1
         ) {
           let defaultIndex = this.tokenInfoArray.findIndex((item) =>
@@ -1102,12 +1126,10 @@ export default {
             if (
               (makerInfo.c1ID === transferDataState.fromChainID &&
                 makerInfo.c2ID === transferDataState.toChainID &&
-                makerInfo.tName ===
-                  transferDataState.selectTokenInfo.token) ||
+                makerInfo.tName === transferDataState.selectTokenInfo.token) ||
               (makerInfo.c2ID === transferDataState.fromChainID &&
                 makerInfo.c1ID === transferDataState.toChainID &&
-                makerInfo.tName ===
-                  transferDataState.selectTokenInfo.token)
+                makerInfo.tName === transferDataState.selectTokenInfo.token)
             ) {
               updateTransferMakerInfo(makerInfo)
             }
@@ -1169,8 +1191,7 @@ export default {
 
       if (
         this.tokenInfoArray.findIndex(
-          (item) =>
-            item.token == transferDataState.selectTokenInfo.token
+          (item) => item.token == transferDataState.selectTokenInfo.token
         ) === -1
       ) {
         let defaultIndex = this.tokenInfoArray.findIndex((item) =>
@@ -1186,12 +1207,10 @@ export default {
           if (
             (makerInfo.c1ID === transferDataState.fromChainID &&
               makerInfo.c2ID === transferDataState.toChainID &&
-              makerInfo.tName ===
-                transferDataState.selectTokenInfo.token) ||
+              makerInfo.tName === transferDataState.selectTokenInfo.token) ||
             (makerInfo.c2ID === transferDataState.fromChainID &&
               makerInfo.c1ID === transferDataState.toChainID &&
-              makerInfo.tName ===
-                transferDataState.selectTokenInfo.token)
+              makerInfo.tName === transferDataState.selectTokenInfo.token)
           ) {
             updateTransferMakerInfo(makerInfo)
           }
@@ -1233,15 +1252,16 @@ export default {
       }
     },
     transferValue: function (newValue) {
-      transferDataState.transferValue !== newValue && updateTransferValue(newValue)
+      transferDataState.transferValue !== newValue &&
+        updateTransferValue(newValue)
     },
   },
   mounted() {
     const updateETHPriceI = async () => {
       transferCalculate
         .getTokenConvertUsd('ETH')
-        .then(response => updateETHPrice(response))
-        .catch(error => console.warn('GetETHPriceError =', error))
+        .then((response) => updateETHPrice(response))
+        .catch((error) => console.warn('GetETHPriceError =', error))
     }
     const getTransferBalance = (idx = 1) => {
       const selectMakerInfo = transferDataState.selectMakerInfo
@@ -1250,9 +1270,16 @@ export default {
       const name = selectMakerInfo.tName
       // const oldVal = this[`c${idx}Balance`]
       this[`c${idx}Balance`] = null
-      transferCalculate.getTransferBalance(id, addr, name, web3State.coinbase)
-        .then((response) => this[`c${idx}Balance`] = (response / 10 ** selectMakerInfo.precision).toFixed(6))
-        .catch(() => this[`c${idx}Balance`] = 0)
+      transferCalculate
+        .getTransferBalance(id, addr, name, web3State.coinbase)
+        .then(
+          (response) =>
+            (this[`c${idx}Balance`] = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6))
+        )
+        .catch(() => (this[`c${idx}Balance`] = 0))
     }
 
     watchEffect(() => {
@@ -1272,27 +1299,26 @@ export default {
     }, 10 * 1000)
 
     this.transferValue = this.queryParams.amount
-    makerInfo.getMakerInfoFromGraph({ maker: '0', }, true)
+    makerInfo
+      .getMakerInfoFromGraph({ maker: '0' }, true)
       .then((response) => {
         if (response.code === 0) {
           this.makerInfoList = response.data
         }
       })
-      .catch(error => console.warn('error =', error))
+      .catch((error) => console.warn('error =', error))
   },
   methods: {
     naNString(tar) {
       return typeof tar === 'string' && tar === 'NaN' ? 0 : tar
     },
     showChainName(isFrom = true) {
-      const localChainID =
-        transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
+      const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
       const netChainID = this.$env.localChainID_netChainID[localChainID]
       return util.chainName(localChainID, netChainID)
     },
     showChainIcon(isFrom = true) {
-      const localChainID =
-        transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
+      const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
       return chain2icon(localChainID)
     },
     selectedTokenChange(val) {
@@ -1434,7 +1460,9 @@ export default {
       if (this.tokenInfoArray.length <= 1) return
       this.showCustomPopupClick()
     },
-    getTokenInfo(e) { updateTransferTokenInfo(e) },
+    getTokenInfo(e) {
+      updateTransferTokenInfo(e)
+    },
     // open pop
     showCustomPopupClick() {
       this.$refs.SelectTokenPopupRef.showCustom()
@@ -1551,9 +1579,7 @@ export default {
           realSelectMakerInfo.value.tName,
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
-        if (
-          !(await netStateBlock(transferDataState.fromChainID))
-        ) {
+        if (!(await netStateBlock(transferDataState.fromChainID))) {
           this.$notify.error({
             title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
             duration: 3000,
@@ -1589,8 +1615,9 @@ export default {
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
           const imxHelper = new IMXHelper(toChainID)
-          const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-          walletAddress && await imxHelper.ensureUser(walletAddress)
+          const walletAddress =
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+          walletAddress && (await imxHelper.ensureUser(walletAddress))
         }
 
         // To dYdX
@@ -1681,46 +1708,47 @@ export default {
           }
         } else {
           // Ensure fromChainId's networkId
-                 //    if (
-        //   compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-        //   this.$env.localChainID_netChainID[
-        //     transferDataState.fromChainID
-        //   ]
-        // ) {
-        //   if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
-        //     try {
-        //       await util.ensureWalletNetwork(
-        //         transferDataState.fromChainID
-        //       )
-        //     } catch (err) {
-        //       util.showMessage(err.message, 'error')
-        //       return
-        //     }
-        //   } else {
+          //    if (
+          //   compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+          //   this.$env.localChainID_netChainID[
+          //     transferDataState.fromChainID
+          //   ]
+          // ) {
+          //   if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+          //     try {
+          //       await util.ensureWalletNetwork(
+          //         transferDataState.fromChainID
+          //       )
+          //     } catch (err) {
+          //       util.showMessage(err.message, 'error')
+          //       return
+          //     }
+          //   } else {
           if (
             compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-            this.$env.localChainID_netChainID[
-              transferDataState.fromChainID
-            ]
+            this.$env.localChainID_netChainID[transferDataState.fromChainID]
           ) {
-              if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
-                try {
-                  await util.ensureWalletNetwork(
-                    transferDataState.fromChainID
-                  )
-                } catch (err) {
-                  util.showMessage(err.message, 'error')
-                  return
-                }
-              } else {
-                 const matchSwitchChainDispatcher = walletDispatchersOnSwitchChain[compatibleGlobalWalletConf.value.walletType];
-                 if (matchSwitchChainDispatcher) {
-                    const successCallback = () => this.$emit('stateChanged', '2');
-                    matchSwitchChainDispatcher(compatibleGlobalWalletConf.value.walletPayload.provider, () => successCallback.bind(this));
-                    return
-                 }
+            if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+              try {
+                await util.ensureWalletNetwork(transferDataState.fromChainID)
+              } catch (err) {
+                util.showMessage(err.message, 'error')
+                return
               }
-          
+            } else {
+              const matchSwitchChainDispatcher =
+                walletDispatchersOnSwitchChain[
+                  compatibleGlobalWalletConf.value.walletType
+                ]
+              if (matchSwitchChainDispatcher) {
+                const successCallback = () => this.$emit('stateChanged', '2')
+                matchSwitchChainDispatcher(
+                  compatibleGlobalWalletConf.value.walletPayload.provider,
+                  () => successCallback.bind(this)
+                )
+                return
+              }
+            }
           }
         }
         let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
@@ -1843,11 +1871,8 @@ export default {
         return Math.ceil(Number(transferGasFee * 10)) / 10
       }
       return (
-        Math.ceil(
-          transferDataState.gasFee *
-            transferDataState.ethPrice *
-            10
-        ) / 10
+        Math.ceil(transferDataState.gasFee * transferDataState.ethPrice * 10) /
+        10
       )
     },
   },
@@ -1880,7 +1905,8 @@ export default {
       margin-right: 10px;
     }
   }
-  .from-area, .to-area {
+  .from-area,
+  .to-area {
     margin-top: 20px;
     height: 96px;
     border-radius: 20px;
@@ -1971,7 +1997,7 @@ export default {
     display: inline-block;
     line-height: 34px;
     margin-bottom: 20px;
-    background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
+    background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
   }
   .info-box {
     font-family: 'Inter Regular';
@@ -1984,8 +2010,8 @@ export default {
       align-items: center;
       margin-bottom: 12px;
       .border {
-        margin-right:8px;
-        padding-right:8px;
+        margin-right: 8px;
+        padding-right: 8px;
       }
     }
     .info-icon {
