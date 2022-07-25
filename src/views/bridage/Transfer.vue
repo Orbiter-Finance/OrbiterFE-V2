@@ -884,7 +884,6 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
-            this.c1Balance = 0
             console.warn(error)
             return
           })
@@ -902,7 +901,6 @@ export default {
             ).toFixed(6)
           })
           .catch((error) => {
-            this.c2Balance = 0
             console.warn(error)
           })
       } else {
@@ -973,7 +971,6 @@ export default {
             this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
           })
           .catch((error) => {
-            this.c1Balance = 0
             console.warn(error)
           })
         transferCalculate
