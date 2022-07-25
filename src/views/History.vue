@@ -1,69 +1,98 @@
 <template>
-<div class="history-page">
-  <div class="history-content">
-    <div class="title">History</div>
-    <div class="table historyContent">
-      <div class="table-header">
-        <span class="col col-1">&nbsp;</span>
-        <span class="col col-2">Time</span>
-        <span class="col col-3">Value</span>
-        <span class="col col-4" style="text-align:center;">From</span>
-        <span class="col col-5" style="text-align:center;">To</span>
+  <div class="history-page">
+    <div class="history-content">
+      <div class="title">History</div>
+      <div class="table historyContent">
+        <div class="table-header">
+          <span class="col col-1">&nbsp;</span>
+          <span class="col col-2">Time</span>
+          <span class="col col-3">Value</span>
+          <span class="col col-4" style="text-align: center">From</span>
+          <span class="col col-5" style="text-align: center">To</span>
+        </div>
+        <div class="dydx-limit" v-if="isShowDydxLimit">
+          Limited by the dydx mechanism, the history of dYdX cannot be queried
+          temporarily
+        </div>
+        <CommLoading
+          v-if="isApiLoading"
+          style="margin: auto; margin-top: 5rem"
+          width="4rem"
+          height="4rem"
+        />
+        <div
+          v-else-if="historyData && historyData.length !== 0"
+          v-for="(item, index) in historyData"
+          :key="index"
+          @click="getHistoryInfo(item)"
+          class="contentItem"
+        >
+          <svg-icon
+            class="logo col-val col-1"
+            color="#df2e2d"
+            :iconName="iconName(item)"
+          ></svg-icon>
+          <span class="col-val col-2">{{ item.fromTimeStampShow }}</span>
+          <span class="col-val col-3">{{
+            item.userAmount + item.tokenName
+          }}</span>
+          <div
+            class="col-val col-4"
+            style="display: flex; align-items: center; justify-content: center"
+          >
+            <svg-icon
+              :iconName="logoName(item.fromChainID)"
+              style="width: 1.6rem; height: 1.6rem"
+            ></svg-icon>
+          </div>
+          <div
+            class="col-val col-5"
+            style="display: flex; align-items: center; justify-content: center"
+          >
+            <svg-icon
+              :iconName="logoName(item.toChainID)"
+              style="width: 1.6rem; height: 1.6rem"
+            ></svg-icon>
+          </div>
+        </div>
       </div>
-      <div class="dydx-limit" v-if="isShowDydxLimit">
-        Limited by the dydx mechanism, the history of dYdX cannot be queried
-        temporarily
-      </div>
-      <div class="dydx-limit">
-        Limited by the starkNet mechanism, the history of starkNet cannot be
-        queried temporarily
-      </div>
-      <CommLoading v-if="isApiLoading" style="margin: auto; margin-top: 5rem" width="4rem" height="4rem" />
-      <div
-        v-else-if="historyData && historyData.length !== 0"
-        v-for="(item, index) in historyData"
-        :key="index"
-        @click="getHistoryInfo(item)"
-        class="contentItem"
+      <NoData
+        v-if="!isApiLoading && historyData && historyData.length === 0"
+        style="padding-top: 200px"
+        >No history</NoData
       >
-        <svg-icon class="logo col-val col-1" color="#df2e2d" :iconName="iconName(item)"></svg-icon>
-        <span class="col-val col-2">{{ item.fromTimeStampShow }}</span>
-        <span class="col-val col-3">{{ item.userAmount + item.tokenName }}</span>
-        <div class="col-val col-4" style="display:flex;align-items:center;justify-content: center;">
-          <svg-icon
-            :iconName="logoName(item.fromChainID)"
-            style="width: 1.6rem; height: 1.6rem"
-          ></svg-icon>
-        </div>
-        <div class="col-val col-5" style="display:flex;align-items:center;justify-content: center;">
-          <svg-icon
-            :iconName="logoName(item.toChainID)"
-            style="width: 1.6rem; height: 1.6rem"
-          ></svg-icon>
-        </div>
-      </div>
-    </div>
-    <NoData v-if="!isApiLoading && historyData && historyData.length === 0" style="padding-top: 200px;">No history</NoData>
-    <el-pagination 
-      v-if="!isApiLoading && historyData && historyData.length !== 0" 
-      @current-change="curChange" class="pagination" layout="prev, pager, next" 
-      :current-page="currentPage"
-      :total="transactionListInfo.total">
-    </el-pagination>
+      <el-pagination
+        v-if="!isApiLoading && historyData && historyData.length !== 0"
+        @current-change="curChange"
+        class="pagination"
+        layout="prev, pager, next"
+        :current-page="currentPage"
+        :total="transactionListInfo.total"
+      >
+      </el-pagination>
 
-    <svg-icon @click.native="closeDialog" class="close" iconName="close"></svg-icon>
+      <svg-icon
+        @click.native="closeDialog"
+        class="close"
+        iconName="close"
+      ></svg-icon>
+    </div>
   </div>
-</div>
 </template>
 
 <script>
 import { NoData } from '../components'
-import { historyPanelState, getTransactionsHistory, recoverSenderPageWorkingState, setHistoryInfo } from '../composition/hooks'
+import {
+  historyPanelState,
+  getTransactionsHistory,
+  recoverSenderPageWorkingState,
+  setHistoryInfo,
+} from '../composition/hooks'
 
 export default {
   name: 'History',
   components: {
-    NoData
+    NoData,
   },
   computed: {
     currentPage() {
@@ -104,7 +133,7 @@ export default {
     },
     transactionListInfo() {
       return historyPanelState.transactionListInfo
-    }
+    },
   },
   beforeRouteEnter(to, from, next) {
     next(() => {
@@ -116,15 +145,17 @@ export default {
       getTransactionsHistory({ current: cur })
     },
     closeDialog() {
-      const last = JSON.parse(localStorage.getItem('last_page_before_history') || '{}')
+      const last = JSON.parse(
+        localStorage.getItem('last_page_before_history') || '{}'
+      )
       try {
         if (last.path) {
           last.path !== this.$route.path && this.$router.push(last)
           recoverSenderPageWorkingState()
         } else {
-          this.$router.push({path: '/'})
+          this.$router.push({ path: '/' })
         }
-      } catch(err) {
+      } catch (err) {
         console.error(err)
       }
     },
@@ -171,7 +202,7 @@ export default {
         return 'ethlogo'
       }
     },
-  }
+  },
 }
 </script>
 
@@ -278,10 +309,12 @@ export default {
       .col-1 {
         width: 16px;
       }
-      .col-2, .col-3 {
+      .col-2,
+      .col-3 {
         width: 150px;
       }
-      .col-4, .col-5 {
+      .col-4,
+      .col-5 {
         width: 40px;
       }
       // .col:last-child {
@@ -334,18 +367,18 @@ export default {
 <style scoped>
 /* ------------- override element style --------------- */
 .history-page >>> .el-pager .number.active {
-  background: #DF2E2D;
+  background: #df2e2d;
   border-radius: 8px;
   color: white;
 }
 .history-page >>> .el-pager li:hover {
   color: rgba(51, 51, 51, 0.8);
-  background: #F5F5F5;
+  background: #f5f5f5;
   border-radius: 8px;
 }
 .dark-theme .history-page >>> .el-pager li:hover {
   color: rgba(255, 255, 255, 0.6);
-  background: #3F415B;
+  background: #3f415b;
   border-radius: 8px;
 }
 .dark-theme .history-page >>> .el-pagination button:disabled {
@@ -356,7 +389,8 @@ export default {
   background-color: #373951;
   color: rgba(255, 255, 255, 0.6);
 }
-.dark-theme .history-page >>> .el-pagination .btn-next, .dark-theme .history-page >>> .el-pagination .btn-prev {
+.dark-theme .history-page >>> .el-pagination .btn-next,
+.dark-theme .history-page >>> .el-pagination .btn-prev {
   background: center center no-repeat #373951;
   color: rgba(255, 255, 255, 0.6);
 }
