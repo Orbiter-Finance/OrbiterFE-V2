@@ -4,7 +4,7 @@
       <div style="height:100%;position:relative;">
         <img v-if="isStarknet" src="../../assets/v2/starknet-logo.png" style="width:190px;height: 80px;" />
         <SvgIconThemed v-else @click.native="toHome" class="logo" :style="navIcons.style" :icon="navIcons.logo" />
-        <HeaderLinks style="margin-top: 24px;position:absolute;top:0;left:241px;min-width: 280px;" />
+        <!-- <HeaderLinks style="margin-top: 24px;position:absolute;top:0;left:241px;min-width: 280px;" /> -->
       </div>
       <HeaderOps />
     </template>
