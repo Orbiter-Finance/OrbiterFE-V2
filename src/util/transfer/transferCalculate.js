@@ -26,7 +26,6 @@ import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
 import { transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
 
-import { Coin_ABI } from '../constants/contract/contract'
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
 const ZK_ERC20_DEPOSIT_DEPOSIT_ONL1 = 103937
@@ -1082,6 +1081,7 @@ export default {
       } catch (error) {
         throw new Error(`bsc deposit error`)
       }
+    }
     if (toChainID === 14 || toChainID === 514) {
       // zk2 get
       const toGasPrice = await this.getGasPrice(toChainID === 14 ? 1 : 5)
