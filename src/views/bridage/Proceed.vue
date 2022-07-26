@@ -274,8 +274,8 @@ export default {
       }
     },
     proceedData() {
-      const timestamp = (new Date(`${this.detailData.fromTimeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
       if (this.detailData) {
+        const timestamp = (new Date(`${this.detailData.fromTimeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
         return [
           {
             title: 'Timestamp',
@@ -291,6 +291,7 @@ export default {
           },
         ]
       }
+      const timestamp = (new Date(`${this.$store.state.proceeding.userTransfer.timeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
       return [
         {
           title: 'Timestamp',
