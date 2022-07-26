@@ -1,7 +1,6 @@
 import Bignumber from 'bignumber.js'
 import Web3 from 'web3'
 import thirdapi from '../../core/actions/thirdapi'
-import getTransactionList from '../../core/routes/transactionList'
 import config from '../../core/utils/config'
 import orbiterCore from '../../orbiterCore'
 import util from '../../util/util'
@@ -20,9 +19,17 @@ import { factoryStarknetListen } from './starknet_listen'
 import loopring from '../../core/actions/loopring'
 import { CrossAddress } from '../cross_address'
 import { DydxListen } from '../dydx/dydx_listen'
-import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import { getTimeStampInfo } from './get_tx_by_hash'
-import { lpApiKey, lpAccountInfo, web3State, transferDataState } from '../../composition/hooks'
+import {
+  lpApiKey,
+  lpAccountInfo,
+  web3State,
+  transferDataState,
+} from '../../composition/hooks'
+
+import zkspace from '../../core/actions/zkspace'
+import { BobaListen } from '../boba/boba_listen'
 
 let startBlockNumber = ''
 
@@ -716,7 +723,7 @@ function startScanMakerTransfer(
   nonce,
   ownerAddress = ''
 ) {
-  console.log("i am start scaning");
+  console.log('i am start scaning')
   if (!isCurrentTransaction(transactionID)) {
     return
   }
@@ -975,7 +982,9 @@ function ScanMakerTransfer(
 
     // dydx
     if (localChainID == 11 || localChainID == 511) {
-      const dydxWeb3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
+      const dydxWeb3 = new Web3(
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
       const dydxListen = new DydxListen(
         localChainID,
         dydxWeb3,
@@ -1084,18 +1093,18 @@ function ScanMakerTransfer(
             key: config.optimistic.key,
           }
           break
-          case 15:
-            api = {
-              endPoint: config.bsc.Mainnet,
-              key: config.etherscan.Mainnet.key,
-            }
-            break
-          case 515:
-            api = {
-              endPoint: config.bsc.Rinkeby,
-              key: config.etherscan.Rinkeby.key,
-            }
-            break
+        case 15:
+          api = {
+            endPoint: config.bsc.Mainnet,
+            key: config.etherscan.Mainnet.key,
+          }
+          break
+        case 515:
+          api = {
+            endPoint: config.bsc.Rinkeby,
+            key: config.etherscan.Rinkeby.key,
+          }
+          break
       }
       if (!api) {
         return
