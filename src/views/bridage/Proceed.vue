@@ -291,14 +291,14 @@ export default {
           },
         ]
       }
-      const timestamp = (new Date(`${this.$store.state.proceeding.userTransfer.timeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
+      // const timestamp = (new Date(`${this.$store.state.proceeding.userTransfer.timeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
       return [
         {
           title: 'Timestamp',
-          // desc: util.transferTimeStampToTime(
-          //   this.$store.state.proceeding.userTransfer.timeStamp
-          // ),
-          desc: timestamp
+          desc: util.transferTimeStampToTime(
+            this.$store.state.proceeding.userTransfer.timeStamp
+          ),
+          // desc: timestamp
         },
         {
           title: 'Value',
