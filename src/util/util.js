@@ -66,9 +66,9 @@ export default {
       case 514:
         return 'zkSync2(G)'
       case 15:
-        return "Binance Smart Chain"
+        return "BNB Chain"
       case 515:
-        return "Binance Smart Chain(R)"
+        return "BNB Chain(R)"
     }
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
