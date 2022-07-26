@@ -1334,13 +1334,16 @@ export default {
       if (isStarknetRefer) {
         const { path, query } = this.$route;
         delete query.dests;
+        delete query.refer;
         try {
-          this.$router.replace({ path, query: {  
-            ...query,
-            referer: 'starknet',
-            dest: 'starknet',
-            fixed: 1,
-          }})
+          window.location.href = `${path}?referer=starknet&dest=starknet&fixed=1`
+          // this.$router.push({ path, query: {  
+          //   ...query,
+          //   referer: 'starknet',
+          //   dest: 'starknet',
+          //   fixed: 1,
+          //   source: 'Mainnet'
+          // }})
         } catch(err) {
           //
         }
