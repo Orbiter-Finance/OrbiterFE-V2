@@ -653,7 +653,7 @@ export default {
           info.disabled = 'disabled'
         }
 
-        if (this.isShowUnreachMinInfo) {
+        if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND'
           info.disabled = 'disabled'
         }
@@ -1155,6 +1155,8 @@ export default {
             console.warn('GetGasFeeError =', error)
           })
       }
+
+      this.setDefaultTokenWhenNotSupport()
     },
     'transferDataState.toChainID': function (newValue) {
       this.tokenInfoArray = []
@@ -1222,6 +1224,8 @@ export default {
       if (newValue) {
         this.updateOriginGasCost()
       }
+
+      this.setDefaultTokenWhenNotSupport()
     },
     'transferDataState.selectTokenInfo': function (newValue) {
       this.makerInfoList.filter((makerInfo) => {
@@ -1310,7 +1314,38 @@ export default {
       })
       .catch((error) => console.warn('error =', error))
   },
+  created() {
+    this.replaceStarknetWrongHref()
+  },
   methods: {
+    replaceStarknetWrongHref() {
+      /*
+        ?refer=starknet&dests=starknet
+        =>
+        ?referer=starknet&dest=starknet&fixed=1
+      */
+      let isStarknetRefer = false
+      const { href } = window.location
+      const match = href.match(/refer=starknet/i)
+      if (match) {
+        isStarknetRefer = true
+      }
+      
+      if (isStarknetRefer) {
+        const { path, query } = this.$route;
+        delete query.dests;
+        try {
+          this.$router.replace({ path, query: {  
+            ...query,
+            referer: 'starknet',
+            dest: 'starknet',
+            fixed: 1,
+          }})
+        } catch(err) {
+          //
+        }
+      }
+    },
     naNString(tar) {
       return typeof tar === 'string' && tar === 'NaN' ? 0 : tar
     },
@@ -1334,7 +1369,12 @@ export default {
           (v) => v.token == this.selectedToken
         )
         if (!st) {
-          this.selectedTokenChange('ETH')
+          if (this.tokenInfoArray.length > 0) {
+            const first = this.tokenInfoArray[0] 
+            this.selectedTokenChange(first.token || 'ETH')
+          } else {
+            this.selectedTokenChange('ETH')
+          }
         }
       })
     },
@@ -1480,7 +1520,6 @@ export default {
       this.showFromChainPopupClick()
     },
     getFromChainInfo(e) {
-      console.log('getFromChainInfo: ', e, queryParamsChainMap)
       updateTransferFromChainID(e.localID)
       // Change query params's source
       const { path, query } = this.$route

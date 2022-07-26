@@ -51,7 +51,7 @@
       style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
     >
       <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d"
+      <span style="color: #df2e2d; flex: 1"
         >StarkNet is still in alpha version, the transaction on it maybe will be
         done in 1~2 hours. Orbiter keeps your funds safe.</span
       >
@@ -1322,7 +1322,7 @@ export default {
 .app {
   .confirm-box {
     width: 480px;
-    height: 540px;
+    height: 610px;
     .confirm-item {
       margin: 22px 0;
     }

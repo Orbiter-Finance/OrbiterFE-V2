@@ -17,6 +17,20 @@ export function toggleBodyCls() {
   }
 }
 
+export function formatDateShort(date) {
+  return formatDate(date)?.slice(5, -3)
+}
+
+export function formatDate(date) {
+  const dt = new Date(date)
+  return `${dt.getFullYear()}-${padZero(dt.getMonth() + 1)}-${padZero(dt.getDate())} ${padZero(dt.getHours())}:${padZero(dt.getMinutes())}:${padZero(dt.getSeconds())}`
+}
+
+function padZero(tar) {
+  if (+tar < 10) return `0${tar}`
+  return tar
+}
+
 /**
  * deprecate! use 
  *  .el-notification__title {
