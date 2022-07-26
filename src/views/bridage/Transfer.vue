@@ -1155,6 +1155,8 @@ export default {
             console.warn('GetGasFeeError =', error)
           })
       }
+
+      this.setDefaultTokenWhenNotSupport()
     },
     'transferDataState.toChainID': function (newValue) {
       this.tokenInfoArray = []
@@ -1222,6 +1224,8 @@ export default {
       if (newValue) {
         this.updateOriginGasCost()
       }
+
+      this.setDefaultTokenWhenNotSupport()
     },
     'transferDataState.selectTokenInfo': function (newValue) {
       this.makerInfoList.filter((makerInfo) => {
@@ -1334,7 +1338,12 @@ export default {
           (v) => v.token == this.selectedToken
         )
         if (!st) {
-          this.selectedTokenChange('ETH')
+          if (this.tokenInfoArray.length > 0) {
+            const first = this.tokenInfoArray[0] 
+            this.selectedTokenChange(first.token || 'ETH')
+          } else {
+            this.selectedTokenChange('ETH')
+          }
         }
       })
     },
@@ -1480,7 +1489,6 @@ export default {
       this.showFromChainPopupClick()
     },
     getFromChainInfo(e) {
-      console.log('getFromChainInfo: ', e, queryParamsChainMap)
       updateTransferFromChainID(e.localID)
       // Change query params's source
       const { path, query } = this.$route
