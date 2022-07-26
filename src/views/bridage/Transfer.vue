@@ -653,7 +653,7 @@ export default {
           info.disabled = 'disabled'
         }
 
-        if (this.isShowUnreachMinInfo) {
+        if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND'
           info.disabled = 'disabled'
         }

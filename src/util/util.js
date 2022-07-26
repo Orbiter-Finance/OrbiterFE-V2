@@ -194,7 +194,6 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    console.lo
     const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
     const switchParams = {
       chainId: this.toHex(chain.chainId),
