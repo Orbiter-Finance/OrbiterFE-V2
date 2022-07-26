@@ -26,9 +26,8 @@ export const chain2idMap = {
   Boba: 13,
   'zkSync2': 14,
   'zkSync2(G)': 514,
-  "BinanceSmartChain(R)": 515,
-  "BinanceSmartChain": 15,
-  "bsc(R)": 97,
+  "BNBChain(R)": 515,
+  "BNBChain": 15,
 }
 
 export const chain2icon = item => {
