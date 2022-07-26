@@ -3,7 +3,7 @@
     <div class="head">
       <time-diff
         class="time"
-        v-if="rollups && rollups.update_time"
+        v-if="!isMobile && rollups && rollups.update_time"
         :timestamp="rollups.update_time"
       />
       <selector
@@ -19,7 +19,7 @@
         empty-text="No Items"
         @sort-change="onSortChange"
       >
-        <el-table-column fixed label="Name" width="140">
+        <el-table-column fixed label="Name" width="150">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="no">
@@ -82,6 +82,23 @@
           label="TVL"
           :sortable="'custom'"
         >
+          <template slot="header">
+            <div class="TVL-header">TVL</div>
+            <el-popover
+              popper-class="TVL-popover"
+              :placement="'bottom'"
+              width="280"
+              trigger="hover"
+            >
+              <div class="TVL-desc">
+                Total Value Locked in Rollups & Composition of the Currency.
+                <a href="#" target="_blank"> Read More </a>
+              </div>
+              <div class="TVL-help" slot="reference">
+                <help />
+              </div>
+            </el-popover>
+          </template>
           <template slot-scope="scope">
             <div class="TVL">
               <div class="all">
@@ -89,7 +106,7 @@
               </div>
               <el-popover
                 popper-class="TVL-popover"
-                placement="right"
+                :placement="isMobile ? 'top' : 'right'"
                 width="280"
                 trigger="hover"
               >
@@ -124,7 +141,7 @@
         <el-table-column
           prop="txs"
           label="Transactions"
-          width="110"
+          width="115"
           align="right"
           :sortable="'custom'"
         >
@@ -141,7 +158,7 @@
         <el-table-column
           label="Active Accounts"
           prop="active_accounts"
-          width="150"
+          width="140"
           align="right"
           :sortable="'custom'"
         >
@@ -160,7 +177,7 @@
         <el-table-column
           prop="new_accounts"
           label="New Accounts"
-          width="130"
+          width="120"
           align="right"
           :sortable="'custom'"
         >
@@ -185,7 +202,9 @@ import TimeDiff from '../TimeDiff.vue'
 import Selector from '../Selector.vue'
 import Percent from '../Percent.vue'
 import ChainsLogo from '../ChainsLogo.vue'
+import Help from '../Help'
 import { getRollups } from '../../../L2data/rollups'
+import { isMobile } from '../../../composition/hooks'
 
 const selectors = [
   { label: '1d', value: '1d' },
@@ -206,11 +225,17 @@ export default {
       tableData: [],
     }
   },
+  computed: {
+    isMobile() {
+      return isMobile.value
+    },
+  },
   components: {
     TimeDiff,
     Selector,
     Percent,
     ChainsLogo,
+    Help,
   },
   async mounted() {
     const rollups = await getRollups()
@@ -298,12 +323,12 @@ export default {
     padding: 0 20px 50px 20px;
     .name-column {
       display: flex;
+      color: #333333;
+      font-size: 14px;
       .no {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
-        font-size: 14px;
-        color: #333333;
         margin-right: 20px;
       }
       .name {
@@ -314,8 +339,6 @@ export default {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
-        font-size: 14px;
-        color: #333333;
         margin-left: 10px;
       }
     }
@@ -325,6 +348,17 @@ export default {
       font-weight: 500;
       font-size: 14px;
       color: rgba(51, 51, 51, 0.8);
+    }
+    .TVL-header {
+      display: inline-block;
+    }
+    .TVL-help {
+      display: inline-block;
+      position: absolute;
+      left: 33%;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
     }
     .TVL {
       display: flex;
@@ -353,6 +387,21 @@ export default {
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   border: 0;
+}
+.TVL-desc {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(51, 51, 51, 0.8);
+  a {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #df2e2d;
+  }
 }
 .TVL-detail {
   .TVL-item {
@@ -386,6 +435,69 @@ export default {
       text-align: right;
       color: rgba(51, 51, 51, 0.4);
     }
+  }
+}
+
+@media (max-width: 820px) {
+  .rollups-wrapper {
+    .head {
+      justify-content: flex-start;
+      padding-left: 30px;
+    }
+    .table {
+      padding: 0 30px 50px 30px;
+    }
+  }
+}
+
+.dark-theme {
+  .rollups-wrapper {
+    background: #373951;
+    .table {
+      .name-column {
+        color: #ffffff;
+      }
+      .data,
+      .TVL,
+      .new-data {
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+  }
+}
+.dark-body {
+  .TVL-popover {
+    background: #3f415b;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  .TVL-detail {
+    .TVL-token {
+      color: #ffffff;
+    }
+    .TVL-amount {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .TVL-percent {
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
+  .TVL-desc {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .el-popper[x-placement^='left'] .popper__arrow::after {
+    border-left-color: #3f415b;
+  }
+  .el-popper[x-placement^='right'] .popper__arrow::after {
+    border-right-color: #3f415b;
+  }
+  .el-popper[x-placement^='bottom'] .popper__arrow::after {
+    border-bottom-color: #3f415b;
+  }
+  .el-popper[x-placement^='top'] .popper__arrow::after {
+    border-top-color: #3f415b;
+  }
+  .el-popper .popper__arrow {
+    border: 0;
   }
 }
 </style>

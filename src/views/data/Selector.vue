@@ -1,7 +1,7 @@
 <template>
-  <div class="checker">
+  <div class="selector">
     <div
-      class="checker-item"
+      class="selector-item"
       v-for="(item, index) in data"
       :key="index"
       @click="$emit('change', item)"
@@ -26,11 +26,11 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-.checker {
+<style lang="scss">
+.selector {
   display: flex;
   align-items: center;
-  .checker-item {
+  .selector-item {
     width: 40px;
     height: 32px;
     line-height: 32px;
@@ -46,6 +46,18 @@ export default {
       border-radius: 8px;
       color: #df2e2d;
       font-weight: 700;
+    }
+  }
+}
+.dark-body,
+.dark-theme {
+  .selector {
+    .selector-item {
+      color: rgba(255, 255, 255, 0.6);
+      &.active {
+        background: #3f415b;
+        color: #df2e2d;
+      }
     }
   }
 }

@@ -295,7 +295,7 @@ export default {
 <style lang="scss" scoped>
 .chart-wrapper {
   display: flex;
-  background: #ffffff;
+  background: var(--light-page-bg);
   border-radius: 20px;
   .chart {
     display: flex;
@@ -322,7 +322,7 @@ export default {
     }
     #l2-data-chart {
       width: 100%;
-      height: 270px;
+      height: 300px;
     }
   }
   .rollups {
@@ -400,6 +400,37 @@ export default {
       .content2 {
         flex: 1;
         margin-right: 30px;
+      }
+    }
+  }
+}
+.dark-body {
+  .chart-wrapper {
+    background: var(--dark-page-bg);
+    .chart {
+      .title {
+        color: #fff;
+      }
+    }
+  }
+  .rollups {
+    .head {
+      .title {
+        color: #fff;
+      }
+    }
+
+    .contents {
+      .item {
+        .no {
+          color: #fff;
+        }
+        .name {
+          color: rgba(255, 255, 255, 0.6);
+        }
+        .num {
+          color: rgba(255, 255, 255, 0.4);
+        }
       }
     }
   }

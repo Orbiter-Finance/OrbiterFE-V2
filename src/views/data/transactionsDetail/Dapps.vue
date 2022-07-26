@@ -26,7 +26,7 @@
         @row-click="onRowClick"
         @sort-change="onSortChange"
       >
-        <el-table-column fixed label="Dapp Name" width="280">
+        <el-table-column fixed label="Dapp Name" :width="isMobile ? 210 : 280">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
@@ -36,20 +36,8 @@
               <div class="name" :title="scope.row.dapp_name">
                 {{ scope.row.dapp_name }}
               </div>
-              <a :href="scope.row.dapp_url" target="_blank">
-                <img
-                  width="16"
-                  height="16"
-                  src="../../../assets/data/link.png"
-                />
-              </a>
-              <a :href="scope.row.dapp_twitter" target="_blank">
-                <img
-                  width="16"
-                  height="16"
-                  src="../../../assets/data/twitter.png"
-                />
-              </a>
+              <icon-link :href="scope.row.dapp_url" />
+              <twitter-link :href="scope.row.dapp_twitter" />
             </div>
           </template>
         </el-table-column>
@@ -106,13 +94,25 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="new_users_age"
-          label="New Users Age"
-          width="140"
-          align="right"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="new_users_age" width="140" align="right">
+          <template slot="header">
+            <div class="new-user-age-header">New Users Age</div>
+            <el-popover
+              popper-class="new-user-age-header-popover"
+              :placement="'bottom'"
+              width="280"
+              trigger="hover"
+            >
+              <div class="new-user-age-desc">
+                Statistics for new users. Users-Age means the cumulative days
+                since users started the first transaction in the Ethereum.
+                <a href="#" target="_blank"> Read More </a>
+              </div>
+              <div class="new-user-age-help" slot="reference">
+                <help />
+              </div>
+            </el-popover>
+          </template>
           <template slot-scope="scope"
             ><div class="data">
               {{
@@ -157,6 +157,9 @@ import TimeDiff from '../TimeDiff.vue'
 import DappLogo from '../DappLogo.vue'
 import Rollups from '../Rollups.vue'
 import DappDetail from '../DappDetail'
+import IconLink from '../IconLink.vue'
+import Help from '../Help'
+import TwitterLink from '../TwitterLink.vue'
 import { getDapps } from '../../../L2data/dapp'
 import { isMobile } from '../../../composition/hooks'
 
@@ -188,6 +191,9 @@ export default {
     TimeDiff,
     Rollups,
     DappDetail,
+    IconLink,
+    TwitterLink,
+    Help,
   },
   watch: {
     currentRollup() {
@@ -304,13 +310,13 @@ export default {
     }
     .name-column {
       display: flex;
+      font-size: 14px;
+      color: #333333;
       .rank {
         width: 20px;
         font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
-        font-size: 14px;
-        color: #333333;
         margin-right: 20px;
       }
       .name {
@@ -321,8 +327,6 @@ export default {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
-        font-size: 14px;
-        color: #333333;
         margin: 0 10px;
       }
       a {
@@ -360,17 +364,72 @@ export default {
     }
   }
 }
+.new-user-age-header {
+  display: inline-block;
+}
+.new-user-age-help {
+  display: inline-block;
+  margin-left: 4px;
+  cursor: pointer;
+}
+.new-user-age-desc {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(51, 51, 51, 0.8);
+  a {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #df2e2d;
+  }
+}
+.new-user-age-header-popover {
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 0;
+}
 @media (max-width: 820px) {
   .dapps-wrapper {
     .head {
       flex-direction: column;
-      .right{
+      height: auto;
+      padding-top: 24px;
+      .right {
         align-items: flex-start;
+        margin-top: 20px;
+        margin-bottom: 5px;
       }
     }
-    .table{
+    .table {
       padding: 0 30px 50px 30px;
+      .el-table .cell {
+        padding: 0 14px 0 5px;
+      }
     }
+  }
+}
+.dark-body {
+  .new-user-age-header-popover {
+    background: #3f415b;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  .new-user-age-desc {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+.dark-theme {
+  .dapps-wrapper {
+    background: #373951;
+  }
+  .name-column {
+    display: flex;
+    color: #fff;
   }
 }
 </style>

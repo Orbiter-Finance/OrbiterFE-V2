@@ -1,5 +1,7 @@
 import {
   Steps,
+  Select,
+  Option,
   Step,
   InputNumber,
   Loading,
@@ -26,6 +28,8 @@ const element = {
     Vue.use(TableColumn)
     Vue.use(Popover)
     Vue.use(Dialog)
+    Vue.use(Select)
+    Vue.use(Option)
     // Vue.prototype.$message = Message
     Vue.prototype.$notify = Notification
     // Vue.prototype.$msgbox = MessageBox

@@ -6,23 +6,15 @@
     :show-close="false"
   >
     <div slot="title" class="dapp-detail-dialog-title">
-      <dapp-logo />
+      <dapp-logo :name="dappData.dapp_name" />
       <div class="name">{{ dappData.dapp_name }}</div>
-      <img
-        class="close"
-        @click="dialogVisible = false"
-        src="../../assets/data/close.png"
-      />
+      <span class="close" @click="dialogVisible = false"> </span>
     </div>
     <div class="dapp-detail-dialog-content">
       <div class="info">
         <div class="links">
-          <a :href="dappData.dapp_url" target="_blank">
-            <img width="16" height="16" src="../../assets/data/link.png" />
-          </a>
-          <a :href="dappData.dapp_twitter" target="_blank">
-            <img width="16" height="16" src="../../assets/data/twitter.png" />
-          </a>
+          <icon-link :href="dappData.dapp_url" />
+          <twitter-link :href="dappData.dapp_twitter" />
         </div>
         <div
           class="category"
@@ -31,12 +23,17 @@
           {{ detailData.info.dapp_category }}
         </div>
         <div class="supported">Supported L2</div>
-        <img
-          class="help"
-          width="12px"
-          height="12px"
-          src="../../assets/data/help.png"
-        />
+        <el-popover
+          popper-class="supported-l2-popover"
+          :placement="'bottom'"
+          width="280"
+          trigger="hover"
+        >
+          <div class="supported-l2-desc">
+            Only the chains supported by Orbier-L2 Data are listed.
+          </div>
+          <span class="supported-l2-help" slot="reference"> </span>
+        </el-popover>
         <div class="rollups" v-if="detailData.info">
           <rollup-logo
             :name="item"
@@ -46,7 +43,19 @@
         </div>
       </div>
       <div class="selectors">
+        <rollups
+          :customRollups="
+            rollups.map((item) => ({
+              value: item.toLowerCase(),
+              label: item,
+            }))
+          "
+          :onlySelect="true"
+          :value="rollup"
+          @rollup-change="onRollupChange"
+        />
         <selector
+          class="selector"
           :data="times"
           :value="currentTime"
           @change="(item) => (currentTime = item.value)"
@@ -64,6 +73,9 @@ import * as echarts from 'echarts'
 import DappLogo from './DappLogo.vue'
 import RollupLogo from './RollupLogo.vue'
 import Selector from './Selector.vue'
+import IconLink from './IconLink.vue'
+import Rollups from './Rollups'
+import TwitterLink from './TwitterLink.vue'
 import { getDappDetail } from '../../L2data/dapp'
 import dateFormat from '../../util/dateFormat'
 
@@ -89,7 +101,6 @@ const times = [
     label: 'Max',
   },
 ]
-
 const ONE_MONTH = 60 * 60 * 24 * 30
 
 export default {
@@ -100,17 +111,19 @@ export default {
       currentTime: times[0].value,
       dappData: {},
       detailData: {},
+      rollups: [],
+      rollup: '',
     }
   },
   computed: {
     chartData() {
-      const currentTime = this.currentTime
-      const now = new Date().getTime() / 1000
       if (!this.detailData || !this.detailData.chart_data) {
         return undefined
       }
       const chartData = this.detailData.chart_data
-      if (this.currentTime === 'Max') {
+      const currentTime = this.currentTime
+      const now = new Date().getTime() / 1000
+      if (currentTime === 'Max') {
         return chartData
       }
       const selectDataTime = ONE_MONTH * currentTime
@@ -126,18 +139,38 @@ export default {
     DappLogo,
     RollupLogo,
     Selector,
+    IconLink,
+    TwitterLink,
+    Rollups,
   },
   methods: {
     show(rollup, row) {
       this.dialogVisible = true
+      this.rollup = rollup
+      this.rollups = [rollup]
       this.$nextTick(async () => {
         this.detailData = {}
         this._initChart()
         this.dappData = row
         this._chart.showLoading()
-        this.detailData = await getDappDetail(rollup, row.dapp_name)
+        const detailData = await getDappDetail(rollup, row.dapp_name)
+        if (
+          detailData &&
+          detailData.info &&
+          detailData.info.dapp_supported_l2
+        ) {
+          this.rollups = detailData.info.dapp_supported_l2
+        }
+        this.detailData = detailData
         this._chart.hideLoading()
       })
+    },
+    async onRollupChange(value) {
+      this.rollup = value
+      this.detailData = {}
+      this._chart.showLoading()
+      this.detailData = await getDappDetail(value, this.dappData.dapp_name)
+      this._chart.hideLoading()
     },
     _initChart() {
       const chartDom = document.getElementById('dapp-detail-chart')
@@ -303,6 +336,8 @@ export default {
       width: 24px;
       height: 24px;
       cursor: pointer;
+      background-image: url('../../assets/data/close.png');
+      background-size: 24px 24px;
     }
   }
   .dapp-detail-dialog-content {
@@ -358,11 +393,23 @@ export default {
         font-size: 12px;
         color: rgba(51, 51, 51, 0.69);
       }
+      span {
+        display: inline-block;
+        height: 24px;
+      }
     }
     .rollups {
       margin-left: 25px;
+      img {
+        margin-right: 5px;
+        &:last-child {
+          margin-right: 0;
+        }
+      }
     }
     .selectors {
+      display: flex;
+      justify-content: space-between;
       margin-top: 20px;
     }
     .content {
@@ -376,7 +423,87 @@ export default {
 }
 @media (max-width: 880px) {
   .dapp-detail-dialog {
-    width: 80vw;
+    width: 100vw;
+    .dapp-detail-dialog-content {
+      .selectors {
+        flex-direction: column;
+        .selector {
+          margin-top: 20px;
+        }
+      }
+    }
+  }
+}
+.supported-l2-help {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-image: url('../../assets/data/help.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+  cursor: pointer;
+}
+.dark-body {
+  .dapp-detail-dialog {
+    background: #373951;
+    box-shadow: 0px 8px 50px rgba(0, 0, 0, 0.5);
+    .dapp-detail-dialog-title {
+      .name {
+        color: #fff;
+      }
+      .close {
+        background-image: url('../../assets/data/close-dark.png');
+      }
+    }
+    .dapp-detail-dialog-content {
+      .info {
+        .links {
+          &::after {
+            background: rgba(255, 255, 255, 0.2);
+          }
+        }
+        .category {
+          color: rgba(255, 255, 255, 0.6);
+          &::after {
+            background: rgba(255, 255, 255, 0.2);
+          }
+        }
+        .supported {
+          color: rgba(255, 255, 255, 0.6);
+        }
+      }
+      .content {
+        background: #3f415b;
+      }
+    }
+  }
+}
+.new-user-age-desc {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(51, 51, 51, 0.8);
+}
+.supported-l2-popover {
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 0;
+}
+.dark-body {
+  .supported-l2-popover {
+    background: #3f415b;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  .supported-l2-desc {
+    color: rgba(255, 255, 255, 0.6);
+  }
+  .supported-l2-help {
+    background-image: url('../../assets/data/help-dark.png');
   }
 }
 </style>

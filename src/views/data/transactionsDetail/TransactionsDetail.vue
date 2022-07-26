@@ -1,19 +1,14 @@
 <template>
   <div class="transactions-detail">
     <div class="nav">
-      <img
-        v-show="!isMobile"
-        class="back"
-        src="../../../assets/data/back.png"
-        @click="$router.back()"
-      />
+      <span class="back" v-show="!isMobile" @click="$router.back()"> </span>
       <div class="tabs">
         <div
           class="tab"
           v-for="(item, i) in tabs"
           :key="i"
           :class="{ active: currentTab === item.value }"
-          @click="currentTab = item.value"
+          @click="onTabChnage(item.value)"
         >
           {{ item.name }}
         </div>
@@ -65,6 +60,17 @@ export default {
     const nav = this.$route.query.nav
     this.currentTab = nav ? nav : tabs[0].value
   },
+  methods: {
+    onTabChnage(value) {
+      this.currentTab = value
+      this.$router.replace({
+        path: this.$route.path,
+        query: {
+          nav: value,
+        },
+      })
+    },
+  },
 }
 </script>
 
@@ -80,6 +86,8 @@ export default {
       width: 40px;
       margin-right: 40px;
       cursor: pointer;
+      background-image: url('../../../assets/data/back.png');
+      background-size: 100% 100%;
     }
     .tabs {
       display: flex;
@@ -150,10 +158,10 @@ export default {
     display: none;
   }
   .el-table__body tr.hover-row > td.el-table__cell {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
   }
   .el-table tbody tr:hover > td {
-    background-color: #ffffff !important;
+    background-color: #ffffff;
   }
   .el-table td.el-table__cell,
   .el-table th.el-table__cell {
@@ -169,6 +177,57 @@ export default {
   }
   .el-table .sort-caret.descending {
     border-top-color: rgba(51, 51, 51, 1);
+  }
+}
+.dark-theme {
+  .transactions-detail {
+    .nav {
+      .back {
+        background-image: url('../../../assets/data/back_dark.png');
+      }
+      .tabs {
+        background-color: #373951;
+        .tab {
+          color: rgba(255, 255, 255, 0.6);
+          &.active {
+            background: #df2e2d;
+            color: #ffffff;
+          }
+        }
+      }
+    }
+    .el-table,
+    .el-table__expanded-cell,
+    .el-table th.el-table__cell,
+    .el-table tr,
+    .el-table__body tr.hover-row > td.el-table__cell,
+    .el-table tbody tr:hover > td {
+      background-color: #373951;
+    }
+    .el-table td.el-table__cell {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .el-table th.el-table__cell {
+      color: #fff;
+    }
+    .el-table .sort-caret.ascending {
+      border-bottom-color: #fff;
+    }
+    .el-table .sort-caret.descending {
+      border-top-color: #fff;
+    }
+    .el-table .descending .sort-caret.descending {
+      border-top-color: #df2e2d;
+    }
+    .el-table .ascending .sort-caret.ascending {
+      border-bottom-color: #df2e2d;
+    }
+    .data {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .name-column {
+      color: #fff;
+    }
   }
 }
 </style>

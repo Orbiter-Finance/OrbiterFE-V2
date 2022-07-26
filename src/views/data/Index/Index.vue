@@ -63,20 +63,8 @@
                   {{ scope.row.dapp_name }}
                 </div>
                 <template v-if="!isMobile">
-                  <a :href="scope.row.dapp_url" target="_blank">
-                    <img
-                      width="16"
-                      height="16"
-                      src="../../../assets/data/link.png"
-                    />
-                  </a>
-                  <a :href="scope.row.dapp_twitter" target="_blank">
-                    <img
-                      width="16"
-                      height="16"
-                      src="../../../assets/data/twitter.png"
-                    />
-                  </a>
+                  <icon-link :href="scope.row.dapp_url" />
+                  <twitter-link :href="scope.row.dapp_twitter" />
                 </template>
               </div>
             </template>
@@ -147,6 +135,8 @@ import numeral from 'numeral'
 import Chart from './Chart'
 import Rollups from '../Rollups.vue'
 import TimeDiff from '../TimeDiff.vue'
+import IconLink from '../IconLink.vue'
+import TwitterLink from '../TwitterLink.vue'
 import DappLogo from '../DappLogo.vue'
 import { getDappDailyData } from '../../../L2data/daily'
 import dateFormat from '../../../util/dateFormat'
@@ -165,11 +155,18 @@ export default {
       return isMobile.value
     },
   },
+  watch: {
+    currentRollup() {
+      this._getDappDailyData()
+    },
+  },
   components: {
     Chart,
     Rollups,
     TimeDiff,
     DappLogo,
+    IconLink,
+    TwitterLink,
   },
   mounted() {
     this._getDappDailyData()
@@ -250,10 +247,10 @@ export default {
         display: none;
       }
       .el-table__body tr.hover-row > td.el-table__cell {
-        background-color: #ffffff !important;
+        background-color: #ffffff;
       }
       .el-table tbody tr:hover > td {
-        background-color: #ffffff !important;
+        background-color: #ffffff;
       }
       .el-table td.el-table__cell,
       .el-table th.el-table__cell {
@@ -275,13 +272,13 @@ export default {
       }
       .name-column {
         display: flex;
+        color: #333333;
         .rank {
           width: 20px;
           font-family: 'Inter';
           font-style: normal;
           font-weight: 400;
           font-size: 14px;
-          color: #333333;
           margin-right: 20px;
         }
         .new {
@@ -311,7 +308,6 @@ export default {
           font-style: normal;
           font-weight: 500;
           font-size: 14px;
-          color: #333333;
           margin: 0 10px;
         }
         a {
@@ -328,13 +324,45 @@ export default {
     }
   }
 }
-
+.dark-theme {
+  .l2data {
+    .dapp-daily-data {
+      background: var(--dark-page-bg);
+      .title {
+        color: #fff;
+      }
+      .table {
+        .el-table,
+        .el-table__expanded-cell,
+        .el-table th.el-table__cell,
+        .el-table tr,
+        .el-table__body tr.hover-row > td.el-table__cell,
+        .el-table tbody tr:hover > td {
+          background-color: #373951;
+        }
+        .el-table td.el-table__cell {
+          color: rgba(255, 255, 255, 0.6);
+        }
+        .el-table th.el-table__cell {
+          color: #fff;
+        }
+        .data {
+          color: rgba(255, 255, 255, 0.6);
+        }
+        .name-column {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
 @media (max-width: 820px) {
   .l2data {
     margin-top: 20px;
     .dapp-daily-data {
       .table {
         margin-top: 20px;
+        padding: 0 30px 50px 30px;
       }
     }
   }

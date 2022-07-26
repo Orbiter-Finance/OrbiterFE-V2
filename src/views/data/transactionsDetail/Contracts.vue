@@ -32,13 +32,7 @@
               <div class="address" :title="scope.row.contract_address">
                 {{ shortenAddress(scope.row.contract_address, 3) }}
               </div>
-              <a :href="scope.row.scan_url" target="_blank">
-                <img
-                  width="13"
-                  height="13"
-                  src="../../../assets/data/export.png"
-                />
-              </a>
+              <scan-link :href="scope.row.scan_url" />
             </div>
           </template>
         </el-table-column>
@@ -49,23 +43,12 @@
               <div class="name" :title="scope.row.dapp_name">
                 {{ scope.row.dapp_name }}
               </div>
-              <a :href="scope.row.dapp_url" target="_blank">
-                <img
-                  width="16"
-                  height="16"
-                  src="../../../assets/data/link.png"
-                />
-              </a>
-              <a :href="scope.row.dapp_twitter" target="_blank">
-                <img
-                  width="16"
-                  height="16"
-                  src="../../../assets/data/twitter.png"
-                />
-              </a>
+              <icon-link :href="scope.row.dapp_url" />
+              <twitter-link :href="scope.row.dapp_twitter" />
             </div>
-          </template> </el-table-column
-        ><el-table-column
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="launch_time"
           label="Launch Time"
           width="110"
@@ -96,6 +79,24 @@
           width="100"
           align="right"
         >
+          <template slot="header">
+            <div class="user-age-header">Users Age</div>
+            <el-popover
+              popper-class="user-age-header-popover"
+              :placement="'bottom'"
+              width="280"
+              trigger="hover"
+            >
+              <div class="user-age-desc">
+                Statistics for all users. Users-Age means the cumulative days
+                since users started the first transaction in the Ethereum.
+                <a href="#" target="_blank"> Read More </a>
+              </div>
+              <div class="user-age-help" slot="reference">
+                <help />
+              </div>
+            </el-popover>
+          </template>
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row.users_age).format('0,0') }}
@@ -161,6 +162,10 @@ import numeral from 'numeral'
 import TimeDiff from '../TimeDiff.vue'
 import Rollups from '../Rollups.vue'
 import DappLogo from '../DappLogo.vue'
+import IconLink from '../IconLink.vue'
+import TwitterLink from '../TwitterLink.vue'
+import ScanLink from '../ScanLink.vue'
+import Help from '../Help'
 import { getContracts } from '../../../L2data/contracts'
 import { shortenAddress } from '../../../util/shortenAddress'
 import { isMobile } from '../../../composition/hooks'
@@ -181,6 +186,10 @@ export default {
     Rollups,
     TimeDiff,
     DappLogo,
+    IconLink,
+    TwitterLink,
+    ScanLink,
+    Help,
   },
   watch: {
     currentRollup() {
@@ -269,22 +278,20 @@ export default {
     .new-contract {
       display: flex;
       align-items: center;
+      font-size: 14px;
+      color: #333333;
       .no {
         width: 20px;
         font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
-        font-size: 14px;
-        color: #333333;
         margin-right: 20px;
       }
       .address {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
-        font-size: 14px;
         line-height: 24px;
-        color: #333333;
         margin-right: 10px;
       }
     }
@@ -334,6 +341,73 @@ export default {
         border-radius: 8px;
       }
     }
+  }
+}
+.user-age-header {
+  display: inline-block;
+}
+.user-age-help {
+  display: inline-block;
+  margin-left: 4px;
+  cursor: pointer;
+}
+.user-age-desc {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(51, 51, 51, 0.8);
+  a {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #df2e2d;
+  }
+}
+.user-age-header-popover {
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  border: 0;
+}
+@media (max-width: 820px) {
+  .contracts-wrapper {
+    .head {
+      flex-direction: column;
+      height: auto;
+      padding-top: 24px;
+      padding-bottom: 14px;
+    }
+    .table {
+      padding: 0 30px 50px 30px;
+    }
+  }
+}
+.dark-theme {
+  .contracts-wrapper {
+    background: #373951;
+    .table {
+      .new-contract {
+        color: #fff;
+      }
+      .name-column {
+        .name {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+.dark-body {
+  .user-age-header-popover {
+    background: #3f415b;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  .user-age-desc {
+    color: rgba(255, 255, 255, 0.6);
   }
 }
 </style>

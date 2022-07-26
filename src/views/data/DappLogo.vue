@@ -1,5 +1,11 @@
 <template>
-  <img :width="width" :height="width" :src="src" @error="onError" />
+  <img
+    class="dapp-logo"
+    :width="width"
+    :height="width"
+    :src="src"
+    @error="onError"
+  />
 </template>
 
 <script>
@@ -42,3 +48,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.dapp-logo {
+  border-radius: 50%;
+}
+</style>
