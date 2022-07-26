@@ -811,8 +811,7 @@ export default {
       }
 
       if (
-        !compatibleGlobalWalletConf.value.walletPayload.isInstalled &&
-        !web3State.isInstallMeta
+       !walletIsLogin.value
       ) {
         this.transferLoading = false
         return
@@ -865,8 +864,7 @@ export default {
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
       if (
-        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
-        web3State.isInstallMeta
+        !walletIsLogin.value
       ) {
         this.transferLoading = false
         return
@@ -925,8 +923,7 @@ export default {
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
       if (
-        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
-        web3State.isInstallMeta
+       !walletIsLogin.value
       ) {
         this.transferLoading = false
         return
@@ -983,8 +980,7 @@ export default {
     },
     async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
       if (
-        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
-        web3State.isInstallMeta
+       !walletIsLogin.value
       ) {
         this.transferLoading = false
         return
@@ -1039,8 +1035,7 @@ export default {
 
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
       if (
-        !compatibleGlobalWalletConf.value.walletPayload.isInstalled ||
-        web3State.isInstallMeta
+        !walletIsLogin.value
       ) {
         return
       }
@@ -1141,18 +1136,6 @@ export default {
 
       this.transferLoading = true
 
-      let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
-        new BigNumber(transferDataState.transferValue).plus(
-          new BigNumber(realSelectMakerInfo.value.tradingFee)
-        ),
-        realSelectMakerInfo.value,
-        false
-      )
-
-      if (!(await checkStateWhenConfirmTransfer(shouldReceiveValue))) {
-        this.transferLoading = false
-        return
-      }
 
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
