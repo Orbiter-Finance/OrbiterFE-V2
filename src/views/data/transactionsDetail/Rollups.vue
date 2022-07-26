@@ -238,7 +238,9 @@ export default {
     Help,
   },
   async mounted() {
+    this.$loader.show()
     const rollups = await getRollups()
+    this.$loader.hide()
     this.rollups = rollups
     this.tableData = rollups && rollups.table_data ? rollups.table_data : []
   },

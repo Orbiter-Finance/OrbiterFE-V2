@@ -221,7 +221,9 @@ export default {
   methods: {
     numeral,
     async _getDapps() {
+      this.$loader.show()
       const dapps = await getDapps(this.currentRollup)
+      this.$loader.hide()
       this.dapps = dapps
       this.tableData = this._getTableData()
     },

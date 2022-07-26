@@ -172,12 +172,19 @@ export default {
   },
   async mounted() {
     this._initChart()
-    this._chart.showLoading()
+    this.$loader.show()
     this.baseChartData = await getMainpageRollup()
-    this._chart.hideLoading()
+    this.$loader.hide()
+    window.addEventListener('resize', this._onResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this._onResize)
   },
   methods: {
     numeral,
+    _onResize() {
+      this._chart && this._chart.resize()
+    },
     _initChart() {
       const chartDom = document.getElementById('l2-data-chart')
       const chart = echarts.init(chartDom)

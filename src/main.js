@@ -18,6 +18,7 @@ import { init } from '../src/util/resize/onresize'
 import { CommTooltip } from './components'
 import loading from './components/loading/loading.vue'
 import CommLoading from './components/CommLoading.vue'
+import Loader from './views/data/Loader'
 import { isLocal } from './util/env'
 import eruda from 'eruda'
 
@@ -31,6 +32,7 @@ if (isLocal()) {
   // eruda.position("center");
 }
 
+Vue.use(Loader)
 Vue.component('loading', loading)
 Vue.component('CommLoading', CommLoading)
 Vue.component('o-tooltip', CommTooltip)

@@ -218,7 +218,9 @@ export default {
     numeral,
     shortenAddress,
     async _getContracts() {
+      this.$loader.show()
       const contracts = await getContracts(this.currentRollup)
+      this.$loader.hide()
       this.contracts = contracts
       this.tableData = this._getTableData()
     },

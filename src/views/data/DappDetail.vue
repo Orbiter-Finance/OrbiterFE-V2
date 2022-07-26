@@ -143,6 +143,12 @@ export default {
     TwitterLink,
     Rollups,
   },
+  async mounted() {
+    window.addEventListener('resize', this._onResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this._onResize)
+  },
   methods: {
     show(rollup, row) {
       this.dialogVisible = true
@@ -152,8 +158,9 @@ export default {
         this.detailData = {}
         this._initChart()
         this.dappData = row
-        this._chart.showLoading()
+        this.$loader.show()
         const detailData = await getDappDetail(rollup, row.dapp_name)
+        this.$loader.hide()
         if (
           detailData &&
           detailData.info &&
@@ -166,11 +173,17 @@ export default {
       })
     },
     async onRollupChange(value) {
+      if (this.rollup === value) {
+        return
+      }
       this.rollup = value
       this.detailData = {}
-      this._chart.showLoading()
+      this.$loader.show()
       this.detailData = await getDappDetail(value, this.dappData.dapp_name)
-      this._chart.hideLoading()
+      this.$loader.hide()
+    },
+    _onResize() {
+      this._chart && this._chart.resize()
     },
     _initChart() {
       const chartDom = document.getElementById('dapp-detail-chart')
