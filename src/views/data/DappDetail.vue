@@ -428,6 +428,8 @@ export default {
     .content {
       margin-top: 20px;
       background: #f5f5f5;
+      border-radius: 12px;
+      margin-bottom: 100px;
       #dapp-detail-chart {
         height: 300px;
       }
@@ -436,7 +438,7 @@ export default {
 }
 @media (max-width: 880px) {
   .dapp-detail-dialog {
-    width: 100vw;
+    width: 100%;
     .dapp-detail-dialog-content {
       .selectors {
         flex-direction: column;

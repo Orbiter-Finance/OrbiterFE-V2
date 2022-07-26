@@ -413,6 +413,9 @@ export default {
       .el-table .cell {
         padding: 0 14px 0 5px;
       }
+      .pagination {
+        justify-content: center;
+      }
     }
   }
 }

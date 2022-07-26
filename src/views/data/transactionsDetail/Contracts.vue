@@ -385,6 +385,9 @@ export default {
     }
     .table {
       padding: 0 30px 50px 30px;
+      .pagination {
+        justify-content: center;
+      }
     }
   }
 }
