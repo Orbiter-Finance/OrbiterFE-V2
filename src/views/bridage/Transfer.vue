@@ -1314,7 +1314,38 @@ export default {
       })
       .catch((error) => console.warn('error =', error))
   },
+  created() {
+    this.replaceStarknetWrongHref()
+  },
   methods: {
+    replaceStarknetWrongHref() {
+      /*
+        ?refer=starknet&dests=starknet
+        =>
+        ?referer=starknet&dest=starknet&fixed=1
+      */
+      let isStarknetRefer = false
+      const { href } = window.location
+      const match = href.match(/refer=starknet/i)
+      if (match) {
+        isStarknetRefer = true
+      }
+      
+      if (isStarknetRefer) {
+        const { path, query } = this.$route;
+        delete query.dests;
+        try {
+          this.$router.replace({ path, query: {  
+            ...query,
+            referer: 'starknet',
+            dest: 'starknet',
+            fixed: 1,
+          }})
+        } catch(err) {
+          //
+        }
+      }
+    },
     naNString(tar) {
       return typeof tar === 'string' && tar === 'NaN' ? 0 : tar
     },
