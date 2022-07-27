@@ -23,8 +23,12 @@ import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
-import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
-import { transferDataState, realSelectMakerInfo, web3State } from '../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import {
+  transferDataState,
+  realSelectMakerInfo,
+  web3State,
+} from '../../composition/hooks'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -103,8 +107,6 @@ const ZK2_ERC20_WITHDRAW_ONZK2 = 10560 //same with eth
 const STARKNET_ETH_DEPOSIT_ONL1 = 110000
 const STARKNET_ETH_WITHDRAW_ONL1 = 60000
 
-
-
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
   // min ~ max
@@ -146,9 +148,7 @@ export default {
       let totalFee = fee.totalFee
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
-        const addressState = await syncHttpProvider.getState(
-          web3State.coinbase
-        )
+        const addressState = await syncHttpProvider.getState(web3State.coinbase)
         if (!addressState.committed || addressState.committed?.nonce == 0) {
           const changePubKeyFee = await syncHttpProvider.getTransactionFee(
             { ChangePubKey: { onchainPubkeyAuth: false } },
@@ -395,9 +395,7 @@ export default {
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
-          web3State.coinbase
-            ? web3State.coinbase
-            : selectMakerInfo.makerAddress
+          web3State.coinbase ? web3State.coinbase : selectMakerInfo.makerAddress
         )
       } catch (error) {
         console.warn('getZKSpaceTransferGasFeeError =', error.message)
@@ -571,7 +569,6 @@ export default {
     if (fromChainID === 15 || fromChainID === 515) {
       return '~15min'
     }
-    
 
     if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -618,12 +615,10 @@ export default {
       if (toChainID === 13 || toChainID === 513) {
         return '~10min'
       }
-       if (toChainID === 15 || toChainID === 515) {
+      if (toChainID === 15 || toChainID === 515) {
         return '~15min'
       }
     }
-   
-   
   },
 
   transferSavingTime(fromChainID, toChainID) {
@@ -770,7 +765,7 @@ export default {
     let ethGas = 0
     let maticGas = 0
     let metisGas = 0
-    let bscGas = 0;
+    let bscGas = 0
     const selectMakerInfo = realSelectMakerInfo.value
 
     // withdraw
@@ -910,9 +905,7 @@ export default {
       try {
         let zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
-          web3State.coinbase
-            ? web3State.coinbase
-            : selectMakerInfo.makerAddress
+          web3State.coinbase ? web3State.coinbase : selectMakerInfo.makerAddress
         )
         ethGas += Number(zkspaceWithDrawFee * 10 ** selectMakerInfo.precision)
       } catch (error) {
@@ -928,7 +921,7 @@ export default {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
         // BSC WithDraw
-        const bscWithDrawARGas = fromGasPrice * 150000;
+        const bscWithDrawARGas = fromGasPrice * 150000
         bscGas += bscWithDrawARGas
       } catch (error) {
         throw new Error(`bsc withdraw error`)
@@ -983,7 +976,6 @@ export default {
         const toGasPrice = await this.getGasPrice(toChainID === 6 ? 1 : 5)
         const pgDepositGas = toGasPrice * PG_ERC20_DEPOSIT_DEPOSIT_ONL1
         ethGas += pgDepositGas
-        console.log("polygon to Gas price", toGasPrice);
       } catch (error) {
         throw new Error(`po deposit error`)
       }
@@ -1108,10 +1100,7 @@ export default {
     }
     if (bscGas > 0) {
       usd = usd.plus(
-        await exchangeToUsd(
-          new BigNumber(bscGas).dividedBy(10 ** 18),
-          'BNB'
-        )
+        await exchangeToUsd(new BigNumber(bscGas).dividedBy(10 ** 18), 'BNB')
       )
     }
     if (metisGas > 0) {
@@ -1219,7 +1208,6 @@ export default {
           ? theBalanceInfo.amount * 10 ** selectMakerInfo.precision
           : 0
       } catch (error) {
-        console.log('getZKSBalanceError =', error.message)
         throw new Error(`getZKSBalanceError,${error.message}`)
       }
     } else {
@@ -1228,7 +1216,7 @@ export default {
         // When is ETH
         const web3 = localWeb3(localChainID)
         balance = Number(await web3.eth.getBalance(userAddress)) || 0
-      }else {
+      } else {
         // When is ERC20
         var tokenContract = getLocalCoinContract(localChainID, tokenAddress, 0)
         if (!tokenContract) {
@@ -1292,7 +1280,6 @@ export default {
         gasLimit: 21000,
       })
     )
-    // console.log(`Estimated L1 fee (in wei): ${l1FeeInWei.toString()}`)
     return Number(l1FeeInWei)
   },
 

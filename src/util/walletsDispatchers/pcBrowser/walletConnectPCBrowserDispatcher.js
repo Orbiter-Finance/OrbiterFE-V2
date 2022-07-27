@@ -149,7 +149,6 @@ export const walletConnectDispatcherOnSignature = async (
       onTransferSucceed(from, selectMakerInfo, value, fromChainID, result)
     })
     .catch((err) => {
-      console.log('err', err)
       showMessage(err, 'error')
     })
 }
@@ -192,7 +191,7 @@ export const walletConnectDispatcherOnContractSignature = async (
       : selectMakerInfo.t2Address
   const receiverAddress = selectMakerInfo.makerAddress
   const _web3 = localWeb3(fromChainID)
-    const tokenContract = new _web3.eth.Contract(Coin_ABI, tokenAddress)
+  const tokenContract = new _web3.eth.Contract(Coin_ABI, tokenAddress)
   const tokenTransferData = await tokenContract.methods
     .transfer(receiverAddress, _web3.utils.toHex(value))
     .encodeABI()
@@ -215,7 +214,6 @@ export const walletConnectDispatcherOnContractSignature = async (
       onTransferSucceed(from, selectMakerInfo, value, fromChainID, result)
     })
     .catch((err) => {
-      console.log('err', err)
       showMessage(err, 'error')
     })
 }

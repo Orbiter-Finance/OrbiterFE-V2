@@ -240,7 +240,6 @@ export default {
         ) {
           return `TransferId: ${proceeding.userTransfer.txid}`
         }
-        console.log('FromTx: ', proceeding.userTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
       }
     },
@@ -269,18 +268,20 @@ export default {
         ) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
-        console.log('ToTx: ', proceeding.makerTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
     proceedData() {
       if (this.detailData) {
-        const timestamp = (new Date(`${this.detailData.fromTimeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
+        const timestamp = new Date(`${this.detailData.fromTimeStamp} UTC+0`)
+          .toLocaleString()
+          ?.replace(/\..*/g, '')
+          ?.replace('T', ' ')
         return [
           {
             title: 'Timestamp',
             // desc: util.transferTimeStampToTime(this.detailData.fromTimeStamp),
-            desc: timestamp
+            desc: timestamp,
           },
           {
             title: 'Value',
@@ -496,7 +497,7 @@ export default {
       }
     },
     reportError() {
-      console.log('reportError')
+      console.warn('reportError')
     },
     addChainNetWork(useChainID) {
       var chain = util.getChainInfo(

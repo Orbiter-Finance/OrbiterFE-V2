@@ -105,7 +105,7 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
-import { WALLETCONNECT } from "../../util/walletsDispatchers/constants";
+import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
 // import { localWeb3 } from '../../constants/contract/localWeb3'
 import {
   sendTransfer,
@@ -434,7 +434,6 @@ export default {
         tokenAddress.toLowerCase() ===
         '0x000000000000000000000000000000000000800a'
       if (!isMainCoin) {
-        console.log('ERC20 Token Transfer')
         const web3 = new Web3()
         const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
         params.data = tokenContract.methods
@@ -443,7 +442,6 @@ export default {
         params.to = tokenAddress
         params.customData.feeToken = tokenAddress
       } else {
-        console.log('ETH Transfer')
         params.value = ethers.BigNumber.from(amountToSend)
         params.to = toAddress
         params.customData.feeToken =
@@ -1043,7 +1041,7 @@ export default {
       try {
         const { transferExt } = transferDataState
 
-         if (compatibleGlobalWalletConf.value.walletType == WALLETCONNECT) {
+        if (compatibleGlobalWalletConf.value.walletType == WALLETCONNECT) {
           //  const _web3 = localWeb3(fromChainID)
           //   const tokenContract = new _web3.eth.Contract(Coin_ABI, tokenAddress)
           // const tokenTransferData = await tokenContract.methods
@@ -1056,7 +1054,7 @@ export default {
           //         }else {
           //     return;
           //         }
-            }
+        }
         const provider = new ethers.providers.Web3Provider(
           compatibleGlobalWalletConf.value.walletPayload.provider
         )
@@ -1064,7 +1062,7 @@ export default {
 
         const amount = ethers.BigNumber.from(value)
         let transactionHash = ''
-  
+
         if (util.isEthTokenAddress(contractAddress)) {
           transactionHash = (
             await crossAddress.transfer(
@@ -1074,7 +1072,6 @@ export default {
             )
           ).hash
         } else {
-          
           transactionHash = (
             await crossAddress.transferERC20(
               contractAddress,
@@ -1110,11 +1107,6 @@ export default {
       const { fromChainID, toChainID, transferExt } = transferDataState
 
       if (fromChainID != 4 && fromChainID != 44) {
-        console.log(
-          compatibleGlobalWalletConf.value.walletPayload.networkId.toString(),
-          '====',
-          this.$env.localChainID_netChainID[transferDataState.fromChainID]
-        )
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
           this.$env.localChainID_netChainID[transferDataState.fromChainID]
@@ -1232,7 +1224,6 @@ export default {
 
         // Cross address transfer
         if (transferExt) {
-
           this.transferCrossAddress(
             account,
             selectMakerInfo,

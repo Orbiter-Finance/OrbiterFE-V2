@@ -145,7 +145,7 @@ export class CrossAddress {
 
     const contract = new ethers.Contract(
       this.contractAddress,
-      CROSS_ADDRESS_ABI,
+      CROSS_ADDRESS_ABI
     )
 
     const extHex = CrossAddress.encodeExt(ext)
@@ -194,6 +194,7 @@ export class CrossAddress {
       extHex
     )
   }
+  // TODO
   async transferERC20Hex(tokenAddress, to, amount, ext = undefined) {
     console.log('transferERC20Hex--')
   }

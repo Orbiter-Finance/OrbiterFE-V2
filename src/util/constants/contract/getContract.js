@@ -2,10 +2,13 @@ import Web3 from 'web3'
 import { Coin_ABI } from './contract.js'
 import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
-import { compatibleGlobalWalletConf,walletIsLogin } from "../../../composition/walletsResponsiveData";  
+import {
+  compatibleGlobalWalletConf,
+  walletIsLogin,
+} from '../../../composition/walletsResponsiveData'
 import { web3State } from '../../../composition/hooks'
 // Get a token contract on the L2 network
-function getLocalCoinContract(localChainID, tokenAddress, state) {  
+function getLocalCoinContract(localChainID, tokenAddress, state) {
   // 0 : http   1: ws
   // localChainID => rpcurl => web3Provider
   const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
@@ -34,7 +37,9 @@ function getTransferContract(localChainID, makerInfo) {
     return
   }
   if (walletIsLogin.value) {
-    const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
+    const web3 = new Web3(
+      compatibleGlobalWalletConf.value.walletPayload.provider
+    )
     var ABI = Coin_ABI
     var Address = null
     if (makerInfo.c1ID === localChainID) {
@@ -52,7 +57,14 @@ function getTransferContract(localChainID, makerInfo) {
   }
 }
 
-async function getTransferGasLimit(localChainID, makerInfo, from, to, value, provider = null) {
+async function getTransferGasLimit(
+  localChainID,
+  makerInfo,
+  from,
+  to,
+  value,
+  provider = null
+) {
   // !walletIsLogin.value
   if (web3State.isInstallMeta || provider) {
     const web3 = new Web3(provider || window.ethereum)
@@ -84,7 +96,6 @@ async function getTransferGasLimit(localChainID, makerInfo, from, to, value, pro
           .estimateGas({
             from: from,
           })
-        // console.log('gasLimit =',gasLimit)
         return gasLimit
       }
     } catch (err) {
