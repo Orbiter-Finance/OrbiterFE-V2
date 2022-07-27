@@ -492,9 +492,6 @@ async function confirmUserTransaction(
       storeUpdateProceedState(2)
     }
     if (trxConfirmations.confirmations >= confirmations) {
-      console.log(
-        'Transaction with hash ' + txHash + ' has been successfully confirmed'
-      )
       if (!isCurrentTransaction(txHash)) {
         return
       }
@@ -618,7 +615,7 @@ function ScanZKMakerTransfer(
         }
       }
     } catch (error) {
-      console.log('getZKTransactionListError =', error)
+      console.warn('getZKTransactionListError =', error)
     }
     return ScanZKMakerTransfer(
       transactionID,
@@ -723,7 +720,6 @@ function startScanMakerTransfer(
   nonce,
   ownerAddress = ''
 ) {
-  console.log('i am start scaning')
   if (!isCurrentTransaction(transactionID)) {
     return
   }
@@ -1232,17 +1228,7 @@ async function confirmMakerTransaction(
         confirmations
       )
     }
-    console.log(
-      'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
-    )
     if (trxConfirmations.confirmations >= confirmations) {
-      console.log(
-        'Transaction with hash ' + txHash + ' has been successfully confirmed'
-      )
       if (!isCurrentTransaction(transactionID)) {
         return
       }
