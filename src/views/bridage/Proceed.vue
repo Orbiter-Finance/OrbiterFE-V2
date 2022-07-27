@@ -274,7 +274,6 @@ export default {
       }
     },
     proceedData() {
-      const timestamp = (new Date(`${this.detailData.fromTimeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
       if (this.detailData) {
         const timestamp = (new Date(`${this.detailData.fromTimeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
         return [
