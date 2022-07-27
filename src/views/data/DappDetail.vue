@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import numeral from 'numeral'
 import * as echarts from 'echarts'
 import DappLogo from './DappLogo.vue'
 import RollupLogo from './RollupLogo.vue'
@@ -78,28 +79,16 @@ import Rollups from './Rollups'
 import TwitterLink from './TwitterLink.vue'
 import { getDappDetail } from '../../L2data/dapp'
 import dateFormat from '../../util/dateFormat'
+import getMonthStartAndEnd from '../../util/getMonthStartAndEnd'
+import arrayNonRepeatfy from '../../util/arrayNonRepeatfy'
+import { isMobile } from '../../composition/hooks'
 
 const times = [
-  {
-    label: '1m',
-    value: 1,
-  },
-  {
-    label: '3m',
-    value: 3,
-  },
-  {
-    label: '6m',
-    value: 6,
-  },
-  {
-    label: '1y',
-    value: 12,
-  },
-  {
-    value: 'Max',
-    label: 'Max',
-  },
+  { label: '1m', value: 1 },
+  { label: '3m', value: 3 },
+  { label: '6m', value: 6 },
+  { label: '1y', value: 12 },
+  { value: 'Max', label: 'Max' },
 ]
 const ONE_MONTH = 60 * 60 * 24 * 30
 
@@ -116,6 +105,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     chartData() {
       if (!this.detailData || !this.detailData.chart_data) {
         return undefined
@@ -128,6 +120,9 @@ export default {
       }
       const selectDataTime = ONE_MONTH * currentTime
       return chartData.filter((item) => item.timestamp > now - selectDataTime)
+    },
+    isLightMode() {
+      return this.$store.state.themeMode === 'light'
     },
   },
   watch: {
@@ -143,7 +138,7 @@ export default {
     TwitterLink,
     Rollups,
   },
-  async mounted() {
+  mounted() {
     window.addEventListener('resize', this._onResize)
   },
   beforeDestroy() {
@@ -194,53 +189,83 @@ export default {
       const { times, allUser, activeUser, newUser } = this._getData()
       return {
         height: 160,
+        color: [
+          'rgba(51, 51, 51, 0.8)',
+          'rgba(239, 47, 45, 1)',
+          'rgba(17, 112, 255, 1)',
+        ],
         title: {
-          show: false,
+          text: 'User Statistics',
+          textAlign: 'center',
+          top: 20,
+          left: '50%',
+          textStyle: {
+            color: this.isLightMode ? '#000' : '#fff',
+          },
         },
         legend: {
           bottom: 20,
-          left: 'center',
+          left: this.isMobile ? 'center' : 100,
+          selected: {
+            'All User': false,
+          },
+          textStyle: {
+            color: this.isLightMode
+              ? 'rgba(51, 51, 51, 0.8)'
+              : 'rgba(255, 255, 255, 0.6)',
+          },
+          selectorLabel: {
+            color: this.isLightMode
+              ? 'rgba(51, 51, 51, 0.8)'
+              : 'rgba(255, 255, 255, 0.6)',
+          },
         },
         grid: {
+          top: 64,
           left: '3%',
           right: '4%',
           bottom: '3%',
           containLabel: true,
         },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: times,
-            axisLine: {
-              show: false,
-              lineStyle: {
-                color: 'rgba(51, 51, 51, 0.4)',
-              },
-            },
-          },
-        ],
-        yAxis: {
-          type: 'value',
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: times,
           axisLine: {
             show: false,
             lineStyle: {
-              color: 'rgba(51, 51, 51, 0.4)',
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                ? ' rgba(51, 51, 51, 0.2)'
+                : 'rgba(255, 255, 255, 0.2)',
+            },
+          },
+        },
+        yAxis: {
+          type: 'value',
+          axisPointer: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
             },
           },
         },
         tooltip: {
           trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            crossStyle: {
-              backgroundColor: 'rgba(255, 255, 255, 0.96)',
-              shadowColor: '0px 4px 20px rgba(0, 0, 0, 0.2)',
-            },
-            label: {
-              backgroundColor: '#fff',
-            },
-          },
+          padding: 0,
+          backgroundColor: 'transparent',
+          formatter: this._onFormatter,
         },
         series: [
           {
@@ -295,25 +320,122 @@ export default {
       if (!this.chartData) {
         return { times: [], allUser: [], activeUser: [], newUser: [] }
       }
-      switch (this.currentTime) {
-        case '3m':
-          return {
-            times: this.chartData.map((item) =>
-              dateFormat(item.timestamp * 1000, 'yyyy-MM-dd')
-            ),
-            allUser: this.chartData.map((item) => item.all_users),
-            activeUser: this.chartData.map((item) => item.active_users),
-            newUser: this.chartData.map((item) => item.new_users),
-          }
-        default:
-          return {
-            times: this.chartData.map((item) =>
-              dateFormat(item.timestamp * 1000, 'yyyy-MM-dd')
-            ),
-            allUser: this.chartData.map((item) => item.all_users),
-            activeUser: this.chartData.map((item) => item.active_users),
-            newUser: this.chartData.map((item) => item.new_users),
-          }
+      const chartData = this.chartData
+      const currentTime = this.currentTime
+
+      if ([1, 3].includes(currentTime)) {
+        return {
+          times: chartData.map((item) =>
+            dateFormat(item.timestamp * 1000, 'yyyy-MM-dd')
+          ),
+          allUser: chartData.map((item) => item.all_users),
+          activeUser: chartData.map((item) => item.active_users),
+          newUser: chartData.map((item) => item.new_users),
+        }
+      }
+
+      const now = new Date().getTime()
+      const times =
+        currentTime === 'Max'
+          ? arrayNonRepeatfy(
+              chartData.map((item) =>
+                getMonthStartAndEnd(item.timestamp * 1000)
+              )
+            )
+          : [getMonthStartAndEnd(now)].concat(
+              Array.from({ length: currentTime - 1 }, (_, i) => i + 1).map(
+                (item) => getMonthStartAndEnd(now - ONE_MONTH * item * 1000)
+              )
+            )
+
+      const { monthList, data } = this._getChartDataByTimestamps(times)
+      return {
+        times: monthList,
+        allUser: data.map((item) => item.all_users),
+        activeUser: data.map((item) => item.active_users),
+        newUser: data.map((item) => item.new_users),
+      }
+    },
+    _onFormatter(params) {
+      const currentTime = this.currentTime
+      const chartData = this.chartData
+
+      let all_users
+      if ([1, 3].includes(currentTime)) {
+        all_users = chartData.find((item) => {
+          return (
+            dateFormat(item.timestamp * 1000, 'yyyy-MM-dd') ===
+            params[0].axisValue
+          )
+        }).all_users
+      } else {
+        const time = getMonthStartAndEnd(new Date(params[0].axisValue))
+        all_users = chartData
+          .filter((item) => {
+            return (
+              item.timestamp * 1000 > time.start &&
+              item.timestamp * 1000 < time.end
+            )
+          })
+          .reduce((mome, item) => mome + item.all_users, 0)
+      }
+
+      return `<div class="dapp-detail-chart-popover-content">
+                <div class="dapp-detail-chart-popover-title">${
+                  params[0].axisValue
+                }</div>
+                <div class="dapp-detail-chart-popover-data">
+                   ${params
+                     .map(
+                       (item) => `
+                    <div class="dapp-detail-chart-popover-data-item">
+                      <div class="dot" style="background:${item.color}"></div>
+                      <div class="name">${item.seriesName}</div>
+                      <div class="value">${numeral(item.value).format('0,0')}
+                      ${
+                        item.seriesName === 'All User'
+                          ? ''
+                          : `(<span>${numeral(item.value / all_users).format(
+                              '0.00%'
+                            )} </span>)`
+                      }
+                        </div>
+                      </div>
+                    `
+                     )
+                     .join('')}
+                </div>
+              </div>`
+    },
+    _getChartDataByTimestamps(times) {
+      const monthList = []
+      const data = []
+
+      times.forEach((time) => {
+        monthList.push(dateFormat(time.start, 'yyyy-MM'))
+        data.push(
+          this.chartData
+            .filter((item) => {
+              return (
+                item.timestamp * 1000 > time.start &&
+                item.timestamp * 1000 < time.end
+              )
+            })
+            .reduce(
+              (memo, item) => {
+                memo.all_users += item.all_users
+                memo.active_users += item.active_users
+                memo.new_users += item.new_users
+                return memo
+              },
+              { all_users: 0, active_users: 0, new_users: 0 }
+            )
+        )
+      })
+
+      return {
+        data,
+        monthList,
       }
     },
   },
@@ -449,16 +571,6 @@ export default {
     }
   }
 }
-.supported-l2-help {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  background-image: url('../../assets/data/help.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px 12px;
-  cursor: pointer;
-}
 .dark-body {
   .dapp-detail-dialog {
     background: #373951;
@@ -494,7 +606,19 @@ export default {
     }
   }
 }
-.new-user-age-desc {
+</style>
+<style lang="scss">
+.supported-l2-help {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-image: url('../../assets/data/help.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+  cursor: pointer;
+}
+.supported-l2-desc {
   font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
@@ -519,6 +643,63 @@ export default {
   }
   .supported-l2-help {
     background-image: url('../../assets/data/help-dark.png');
+  }
+}
+</style>
+<style lang="scss">
+.dapp-detail-chart-popover-content {
+  width: 280px;
+  border-radius: 12px;
+  padding: 20px;
+  font-family: 'Inter';
+  font-style: normal;
+  background: #fff;
+  color: #333333;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  .dapp-detail-chart-popover-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .dapp-detail-chart-popover-data {
+    .dapp-detail-chart-popover-data-item {
+      display: flex;
+      align-items: center;
+      position: relative;
+      font-size: 12px;
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 4px;
+        margin-right: 5px;
+      }
+      .value {
+        position: absolute;
+        right: 0;
+        color: rgba(51, 51, 51, 0.8);
+        span {
+          color: rgba(51, 51, 51, 0.4);
+        }
+      }
+    }
+  }
+}
+
+.dark-body {
+  .dapp-detail-chart-popover-content {
+    color: #fff;
+    background: #4d4f6c;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  }
+  .dapp-detail-chart-popover-data {
+    .dapp-detail-chart-popover-data-item {
+      .value {
+        color: rgba(255, 255, 255, 0.6);
+        span {
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
   }
 }
 </style>

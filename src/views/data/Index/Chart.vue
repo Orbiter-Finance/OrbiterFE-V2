@@ -1,13 +1,15 @@
 <template>
   <div class="chart-wrapper">
     <div class="chart">
-      <div class="title">Layer2 Transactions Chart</div>
-      <div class="checke-wrap">
-        <selector
-          :data="checkerData"
-          :value="currentChartTime"
-          @change="(item) => (currentChartTime = item.value)"
-        />
+      <div class="head">
+        <div class="title">Layer2 Transactions Chart</div>
+        <div class="checke-wrap">
+          <selector
+            :data="checkerData"
+            :value="currentChartTime"
+            @change="(item) => (currentChartTime = item.value)"
+          />
+        </div>
       </div>
       <div id="l2-data-chart"></div>
     </div>
@@ -87,7 +89,30 @@ import { getMainpageRollup } from '../../../L2data/chart.js'
 import Selector from '../Selector.vue'
 import TimeDiff from '../TimeDiff.vue'
 import ChainsLogo from '../ChainsLogo.vue'
+import getMonthStartAndEnd from '../../../util/getMonthStartAndEnd'
+import arrayNonRepeatfy from '../../../util/arrayNonRepeatfy'
 import { isMobile } from '../../../composition/hooks'
+import dateFormat from '../../../util/dateFormat'
+
+const ONE_MONTH = 60 * 60 * 24 * 30
+const ROLLUPS = [
+  'Arbitrum',
+  'Aztec',
+  'Boba',
+  'Gluon',
+  'Hermez',
+  'Immutable X',
+  'Loopring',
+  'Metis',
+  'OMG',
+  'Optimism',
+  'StarkNet',
+  'ZkSpace',
+  'ZkSwapV2',
+  'ZkSync',
+  'dYdX',
+]
+const caches = {}
 
 export default {
   components: {
@@ -98,25 +123,13 @@ export default {
   data() {
     return {
       checkerData: [
-        {
-          value: '3m',
-          label: '3m',
-        },
-        {
-          value: '6m',
-          label: '6m',
-        },
-        {
-          value: '1y',
-          label: '1y',
-        },
-        {
-          value: 'max',
-          label: 'Max',
-        },
+        { value: 3, label: '3m' },
+        { value: 6, label: '6m' },
+        { value: 12, label: '1y' },
+        { value: 'Max', label: 'Max' },
       ],
       baseChartData: {},
-      currentChartTime: '6m',
+      currentChartTime: 6,
     }
   },
   computed: {
@@ -130,13 +143,13 @@ export default {
       }
       let arr
       switch (this.currentChartTime) {
-        case '3m':
+        case 3:
           arr = Array.from({ length: 90 }, (_, i) => i + 1)
           break
-        case '6m':
+        case 6:
           arr = Array.from({ length: 180 }, (_, i) => i + 1)
           break
-        case '1y':
+        case 12:
           arr = Array.from({ length: 365 }, (_, i) => i + 1)
           break
         default:
@@ -164,9 +177,15 @@ export default {
         .slice(0, 10)
         .map((item, i) => ({ ...item, no: i + 1 }))
     },
+    isLightMode() {
+      return this.$store.state.themeMode === 'light'
+    },
   },
   watch: {
     filteredChartData() {
+      this._chart && this._chart.setOption(this._getChartOptions())
+    },
+    isLightMode() {
       this._chart && this._chart.setOption(this._getChartOptions())
     },
   },
@@ -198,7 +217,11 @@ export default {
           show: false,
         },
         grid: {
-          bottom: 20,
+          top: 10,
+          left: '30',
+          right: '30',
+          bottom: '26',
+          containLabel: true,
         },
         legend: {
           right: 0,
@@ -207,39 +230,50 @@ export default {
             width: 1,
           },
         },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: times,
-            axisLine: {
-              show: false,
-              lineStyle: {
-                color: 'rgba(51, 51, 51, 0.4)',
-              },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: times,
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
             },
           },
-        ],
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                ? ' rgba(51, 51, 51, 0.2)'
+                : 'rgba(255, 255, 255, 0.2)',
+            },
+          },
+        },
         yAxis: {
           type: 'value',
           axisLine: {
             show: false,
             lineStyle: {
-              color: 'rgba(51, 51, 51, 0.4)',
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
             },
+          },
+          axisPointer: {
+            show: false,
           },
         },
         tooltip: {
           trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: '#6a7985',
-            },
+          pading: 0,
+          backgroundColor: 'transparent',
+          formatter: this._onFormatter,
+          position: function (pos, params, dom, rect, size) {
+            const obj = { top: 40 }
+            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5
+            return obj
           },
-          // formatter(ops) {
-          //   console.log(ops.marker)
-          // },
         },
         series: [
           {
@@ -272,28 +306,120 @@ export default {
         ],
       }
       if (this.isMobile) {
-        options.grid.top = 18
+        options.grid = {
+          top: 10,
+          left: '0',
+          right: '0',
+          bottom: '20',
+          containLabel: true,
+        }
       }
       return options
     },
     _getData() {
-      switch (this.currentChartTime) {
-        case '3m':
-          return {
-            times: this.filteredChartData.map((item) => item.timestamp_read),
-            data: this.filteredChartData.map((item) => item.all),
-          }
-        case '6m':
-          return {
-            times: this.filteredChartData.map((item) => item.timestamp_read),
-            data: this.filteredChartData.map((item) => item.all),
-          }
-        default:
-          return {
-            times: this.filteredChartData.map((item) => item.timestamp_read),
-            data: this.filteredChartData.map((item) => item.all),
-          }
+      const currentChartTime = this.currentChartTime
+      if (this.currentChartTime === 3) {
+        return {
+          times: this.filteredChartData.map((item) => item.timestamp_read),
+          data: this.filteredChartData.map((item) => item.all),
+        }
       }
+
+      const now = new Date().getTime()
+      const { monthList, data } = this._getChartDataByTimestamps(
+        currentChartTime === 'Max'
+          ? arrayNonRepeatfy(
+              this.filteredChartData.map((item) =>
+                getMonthStartAndEnd(item.timestamp * 1000)
+              )
+            )
+          : [getMonthStartAndEnd(now)].concat(
+              Array.from({ length: currentChartTime - 1 }, (_, i) => i + 1).map(
+                (item) => getMonthStartAndEnd(now - ONE_MONTH * item * 1000)
+              )
+            )
+      )
+
+      return {
+        times: monthList,
+        data: data.map((item) => item),
+      }
+    },
+    _getChartDataByTimestamps(times) {
+      const monthList = []
+      const data = []
+      times.forEach((time) => {
+        monthList.push(dateFormat(time.start, 'yyyy-MM'))
+        data.push(
+          this.filteredChartData
+            .filter(
+              (item) =>
+                item.timestamp * 1000 > time.start &&
+                item.timestamp * 1000 < time.end
+            )
+            .reduce((total, item) => total + item.all, 0)
+        )
+      })
+      return {
+        data,
+        monthList,
+      }
+    },
+    _onFormatter([params]) {
+      let rollups = []
+      if (this.currentChartTime === 3) {
+        rollups = this.filteredChartData.find(
+          (item) => item.timestamp_read === params.axisValue
+        ).rollups
+      } else {
+        if (!caches[params.axisValue]) {
+          const { start, end } = getMonthStartAndEnd(
+            new Date(params.axisValue).getTime()
+          )
+          const data = this.filteredChartData.filter(
+            (item) =>
+              item.timestamp * 1000 > start && item.timestamp * 1000 < end
+          )
+          rollups = data.reduce((mome, item) => {
+            ROLLUPS.forEach((rollup) => {
+              const newRollup = item.rollups[rollup]
+              mome[rollup] = !mome[rollup]
+                ? newRollup
+                : mome[rollup] + newRollup
+            })
+            return mome
+          }, {})
+          caches[params.axisValue] = rollups
+        } else {
+          rollups = caches[params.axisValue]
+        }
+      }
+      return `<div class="chart-popover-content">
+                <div class="chart-popover-title">${params.axisValue}</div>
+                  <div class="chart-popover-total-transactions">
+                    Total Transactions: <span>${numeral(params.data).format(
+                      '0,0'
+                    )}</span>
+                </div>
+                <div class="chart-popover-rollups">
+                    ${ROLLUPS.map(
+                      (rollup) =>
+                        `<div class="chart-popover-rollup">
+                                <div class="name">
+                                ${rollup}
+                                </div>
+                                <div class="transactions">
+                                ${!rollups[rollup] ? 0 : rollups[rollup]}
+                                </div>
+                                <div class="percentage">
+                                ${numeral(rollups[rollup] / params.data).format(
+                                  '0.00%'
+                                )}
+                                </div>
+                              </div>`
+                    ).join('')}
+                 </div>
+              </div>`
     },
   },
 }
@@ -306,30 +432,27 @@ export default {
   border-radius: 20px;
   .chart {
     display: flex;
-    align-items: flex-end;
+    flex-direction: column;
     position: relative;
     flex: 1;
     width: 50%;
-    padding-left: 30px;
-    .title {
-      position: absolute;
-      top: 28px;
-      left: 30px;
-      font-family: 'Inter';
-      font-style: normal;
-      font-weight: 700;
-      font-size: 16px;
-      color: #333333;
-    }
-    .checke-wrap {
-      position: absolute;
-      top: 28px;
-      right: 50px;
-      z-index: 1;
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      height: 80px;
+      .title {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        color: #333333;
+      }
     }
     #l2-data-chart {
       width: 100%;
-      height: 300px;
+      height: 220px;
     }
   }
   .rollups {
@@ -339,7 +462,8 @@ export default {
       align-items: center;
       justify-content: flex-start;
       position: relative;
-      padding-top: 28px;
+      height: 80px;
+      padding: 0 30px;
       .title {
         font-weight: 700;
         font-size: 16px;
@@ -364,7 +488,9 @@ export default {
     }
     .contents {
       display: flex;
-      margin-top: 30px;
+      height: 210px;
+      padding: 0 30px 30px 30px;
+      margin-top: 10px;
       .item {
         display: flex;
         align-items: center;
@@ -415,8 +541,10 @@ export default {
   .chart-wrapper {
     background: var(--dark-page-bg);
     .chart {
-      .title {
-        color: #fff;
+      .head {
+        .title {
+          color: #fff;
+        }
       }
     }
   }
@@ -426,7 +554,6 @@ export default {
         color: #fff;
       }
     }
-
     .contents {
       .item {
         .no {
@@ -442,7 +569,7 @@ export default {
     }
   }
 }
-@media (max-width: 1000px) {
+@media (max-width: 820px) {
   .chart-wrapper {
     flex-direction: column;
     align-items: center;
@@ -452,22 +579,22 @@ export default {
       width: 100%;
       height: auto;
       padding: 30px 30px 0 30px;
-      height: 240px;
-      .title {
-        position: relative;
-        top: 0;
-        left: 0;
-        margin-bottom: 30px;
-      }
-      .checke-wrap {
-        position: relative;
-        top: 0;
-        left: 0;
-        margin-bottom: 5px;
+      .head {
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        height: auto;
+        padding: 0;
+        .title {
+          margin-bottom: 28px;
+        }
+        .checke-wrap {
+          margin-bottom: 18px;
+        }
       }
       #l2-data-chart {
+        height: 184px;
         width: 100%;
-        height: 240px;
       }
     }
     .rollups {
@@ -475,16 +602,92 @@ export default {
       width: 100%;
       padding: 0 30px 30px 30px;
       .head {
+        padding: 0;
         .more {
           right: 0;
         }
       }
       .contents {
         flex-direction: column;
-        margin-top: 20px;
+        height: auto;
+        padding: 0;
+        margin-top: 0;
         .content1,
         .content2 {
           margin-right: 0;
+        }
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.chart-popover-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 20px;
+  width: 280px;
+  color: #333333;
+  background: #fff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  font-family: 'Inter';
+  font-style: normal;
+  font-size: 14px;
+  .chart-popover-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .chart-popover-total-transactions {
+    font-weight: 700;
+    margin-bottom: 10px;
+    span {
+      color: #df2e2d;
+    }
+  }
+  .chart-popover-rollups {
+    .chart-popover-rollup {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 24px;
+      font-size: 12px;
+      .name {
+        font-weight: 500;
+      }
+      .transactions {
+        text-align: right;
+        flex: 2;
+        color: rgba(51, 51, 51, 0.8);
+      }
+      .percentage {
+        text-align: right;
+        flex: 0 0 42px;
+        margin-left: 20px;
+        color: rgba(51, 51, 51, 0.4);
+      }
+    }
+  }
+}
+.dark-body {
+  .chart-popover-content {
+    background: #4d4f6c;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+    .chart-popover-total-transactions {
+      span {
+        color: #df2e2d;
+      }
+    }
+    .chart-popover-rollups {
+      .chart-popover-rollup {
+        .transactions {
+          color: rgba(255, 255, 255, 0.8);
+        }
+        .percentage {
+          color: rgba(255, 255, 255, 0.4);
         }
       }
     }
