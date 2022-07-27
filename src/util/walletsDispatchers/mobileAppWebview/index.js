@@ -20,5 +20,6 @@ export default {
     walletDispatchersOnSwitchChain: mobileAppWebviewDispatchersOnSwitchChain,
     walletDispatchersOnDisconnect: mobileAppWebviewDispatchersOnDisconnect,
     loginStatusCheckerOfWallets: loginStatusCheckerOfAppWebview,
-    walletDispatchersOnSignature: {}
+    walletDispatchersOnSignature: {},
+    walletDispatchersOnContractSignature: {},
 }

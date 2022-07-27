@@ -105,6 +105,8 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
+import { WALLETCONNECT } from "../../util/walletsDispatchers/constants";
+// import { localWeb3 } from '../../constants/contract/localWeb3'
 import {
   sendTransfer,
   getStarkMakerAddress,
@@ -135,8 +137,11 @@ import {
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 
-const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
-  walletDispatchers
+const {
+  walletDispatchersOnSignature,
+  walletDispatchersOnSwitchChain,
+  walletDispatchersOnContractSignature,
+} = walletDispatchers
 
 export default {
   name: 'Confirm',
@@ -810,9 +815,7 @@ export default {
         return
       }
 
-      if (
-       !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -863,9 +866,7 @@ export default {
       }
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (
-        !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -922,9 +923,7 @@ export default {
       }
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (
-       !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -979,9 +978,7 @@ export default {
       }
     },
     async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (
-       !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -1034,9 +1031,7 @@ export default {
     },
 
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
-      if (
-        !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         return
       }
 
@@ -1047,6 +1042,21 @@ export default {
 
       try {
         const { transferExt } = transferDataState
+
+         if (compatibleGlobalWalletConf.value.walletType == WALLETCONNECT) {
+          //  const _web3 = localWeb3(fromChainID)
+          //   const tokenContract = new _web3.eth.Contract(Coin_ABI, tokenAddress)
+          // const tokenTransferData = await tokenContract.methods
+          //   .transfer(receiverAddress, _web3.utils.toHex(value))
+          //   .encodeABI()
+          //         if (util.isEthTokenAddress(contractAddress)) {
+          //     // get contract data
+          //    const result = await walletConnectSendTransaction(fromChainID, from, contractAddress,amount, crossAddress.transferHex());
+          //     return
+          //         }else {
+          //     return;
+          //         }
+            }
         const provider = new ethers.providers.Web3Provider(
           compatibleGlobalWalletConf.value.walletPayload.provider
         )
@@ -1054,7 +1064,7 @@ export default {
 
         const amount = ethers.BigNumber.from(value)
         let transactionHash = ''
-
+  
         if (util.isEthTokenAddress(contractAddress)) {
           transactionHash = (
             await crossAddress.transfer(
@@ -1064,6 +1074,7 @@ export default {
             )
           ).hash
         } else {
+          
           transactionHash = (
             await crossAddress.transferERC20(
               contractAddress,
@@ -1099,6 +1110,11 @@ export default {
       const { fromChainID, toChainID, transferExt } = transferDataState
 
       if (fromChainID != 4 && fromChainID != 44) {
+        console.log(
+          compatibleGlobalWalletConf.value.walletPayload.networkId.toString(),
+          '====',
+          this.$env.localChainID_netChainID[transferDataState.fromChainID]
+        )
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
           this.$env.localChainID_netChainID[transferDataState.fromChainID]
@@ -1108,7 +1124,6 @@ export default {
               compatibleGlobalWalletConf.value.walletType
             ]
           if (matchAddChainDispatcher) {
-            console.log('=====', matchAddChainDispatcher)
             matchAddChainDispatcher(
               compatibleGlobalWalletConf.value.walletPayload.provider
             )
@@ -1135,7 +1150,6 @@ export default {
       }
 
       this.transferLoading = true
-
 
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
@@ -1218,6 +1232,7 @@ export default {
 
         // Cross address transfer
         if (transferExt) {
+
           this.transferCrossAddress(
             account,
             selectMakerInfo,
@@ -1238,6 +1253,20 @@ export default {
           )
         } else {
           // When tokenAddress is erc20
+          const matchSignatureDispatcher =
+            walletDispatchersOnContractSignature[
+              compatibleGlobalWalletConf.value.walletType
+            ]
+          if (matchSignatureDispatcher) {
+            matchSignatureDispatcher(
+              account,
+              selectMakerInfo,
+              tValue.tAmount,
+              fromChainID,
+              this.onTransferSucceed
+            )
+            return
+          }
           const transferContract = getTransferContract(
             fromChainID,
             selectMakerInfo
@@ -1261,7 +1290,6 @@ export default {
             gasLimit = 21000
           }
           const objOption = { from: account, gas: gasLimit }
-          console.log('transferContract: ', transferContract)
           transferContract.methods
             .transfer(to, tValue.tAmount)
             .send(objOption, (error, transactionHash) => {
