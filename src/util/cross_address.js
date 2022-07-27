@@ -136,6 +136,24 @@ export class CrossAddress {
 
     return await contract.transfer(to, extHex, options)
   }
+  async transferHex(to, amount, ext = undefined) {
+    await this.checkNetworkId()
+
+    if (ext && !CrossAddressTypes[ext.type]) {
+      throw new Error(`Invalid crossAddressType : ${ext.type}`)
+    }
+
+    const contract = new ethers.Contract(
+      this.contractAddress,
+      CROSS_ADDRESS_ABI
+    )
+
+    const extHex = CrossAddress.encodeExt(ext)
+
+    const options = { value: amount.toHexString() }
+
+    return await contract.transfer(to, extHex, options).encodeABI()
+  }
 
   /**
    *
@@ -176,7 +194,10 @@ export class CrossAddress {
       extHex
     )
   }
-
+  // TODO
+  async transferERC20Hex(tokenAddress, to, amount, ext = undefined) {
+    console.log('transferERC20Hex--')
+  }
   /**
    *
    * @param {{type: string, value: string} | undefined} ext

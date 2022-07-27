@@ -1253,7 +1253,7 @@ export default {
           })
           .catch((error) => {
             that.gasCostLoading = false
-            console.log('GetGasFeeError =', error)
+            console.warn('GetGasFeeError =', error)
           })
       }
     },
@@ -1330,21 +1330,21 @@ export default {
       if (match) {
         isStarknetRefer = true
       }
-      
+
       if (isStarknetRefer) {
-        const { path, query } = this.$route;
-        delete query.dests;
-        delete query.refer;
+        const { path, query } = this.$route
+        delete query.dests
+        delete query.refer
         try {
           window.location.href = `${path}?referer=starknet&dest=starknet&fixed=1`
-          // this.$router.push({ path, query: {  
+          // this.$router.push({ path, query: {
           //   ...query,
           //   referer: 'starknet',
           //   dest: 'starknet',
           //   fixed: 1,
           //   source: 'Mainnet'
           // }})
-        } catch(err) {
+        } catch (err) {
           //
         }
       }
@@ -1373,7 +1373,7 @@ export default {
         )
         if (!st) {
           if (this.tokenInfoArray.length > 0) {
-            const first = this.tokenInfoArray[0] 
+            const first = this.tokenInfoArray[0]
             this.selectedTokenChange(first.token || 'ETH')
           } else {
             this.selectedTokenChange('ETH')

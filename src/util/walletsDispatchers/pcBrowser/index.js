@@ -8,6 +8,7 @@ import {
   walletConnectDispatcherOnDisconnect,
   walletConnectDispatcherOnInit,
   walletConnectDispatcherOnSignature,
+  walletConnectDispatcherOnContractSignature,
   walletConnectDispatcherOnAddChain,
 } from './walletConnectPCBrowserDispatcher'
 
@@ -50,6 +51,9 @@ const loginStatusCheckerOfPCBrowserWallet = {
 const pcBrowserWalletDispatchersOnSignature = {
     [WALLETCONNECT]: walletConnectDispatcherOnSignature,
 }
+const pcBrowserWalletDispatchersOnContractSignature = {
+    [WALLETCONNECT]: walletConnectDispatcherOnContractSignature,
+}
 
 const pcBrowserWalletDispatchersOnAddChain = {
     [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
@@ -66,6 +70,7 @@ export default {
     walletDispatchersOnDisconnect: pcBrowserWalletDispatchersOnDisconnect,
     walletDispatchersOnAddChain: pcBrowserWalletDispatchersOnAddChain,
     walletDispatchersOnSignature: pcBrowserWalletDispatchersOnSignature,
+    walletDispatchersOnContractSignature:pcBrowserWalletDispatchersOnContractSignature,
     walletDispatchersOnSwitchChain: pcBrowserDispatchersOnSwitchChain,
     loginStatusCheckerOfWallets: loginStatusCheckerOfPCBrowserWallet
 }

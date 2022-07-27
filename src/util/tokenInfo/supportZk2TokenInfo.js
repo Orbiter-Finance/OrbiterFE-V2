@@ -29,7 +29,7 @@ async function getAllZk2TokenList(makerAddress, localChainID) {
     }
     store.commit('updateZk2TokenList', zk2TokenResult)
   } catch (error) {
-    console.log('zk2_TokenListGetError =', error.message)
+    console.warn('zk2_TokenListGetError =', error.message)
   }
 }
 async function getZK2TokenList(makerAddress, localChainID) {
