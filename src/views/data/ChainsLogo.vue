@@ -35,5 +35,10 @@ export default {
       return `./images/chains/${name}.png`
     },
   },
+  watch: {
+    name() {
+      this.isError = false
+    },
+  },
 }
 </script>

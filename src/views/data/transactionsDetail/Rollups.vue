@@ -260,19 +260,17 @@ export default {
 
       if (['total_tx', 'total_accounts'].includes(prop)) {
         this.tableData = tableData.sort((a, b) => {
-          return isAscending
-            ? Number(a[prop]) - Number(b[prop])
-            : Number(b[prop]) - Number(a[prop])
+          const nA = Number(a[prop])
+          const nB = Number(b[prop])
+          return isAscending ? nA - nB : nB - nB
         })
         return
       }
       if (['active_accounts', 'new_accounts', 'txs'].includes(prop)) {
         this.tableData = tableData.sort((a, b) => {
-          return isAscending
-            ? Number(a[prop][this.currentFilter]) -
-                Number(b[prop][this.currentFilter])
-            : Number(b[prop][this.currentFilter]) -
-                Number(a[prop][this.currentFilter])
+          const nA = Number(a[prop][this.currentFilter])
+          const nB = Number(b[prop][this.currentFilter])
+          return isAscending ? nA - nB : nB - nB
         })
         return
       }
@@ -287,9 +285,9 @@ export default {
           break
         case 'TVL.all':
           this.tableData = tableData.sort((a, b) => {
-            return isAscending
-              ? Number(a.TVL.all) - Number(b.TVL.all)
-              : Number(b.TVL.all) - Number(a.TVL.all)
+            const nA = Number(a.TVL.all)
+            const nB = Number(b.TVL.all)
+            return isAscending ? nA - nB : nB - nA
           })
           break
         default:

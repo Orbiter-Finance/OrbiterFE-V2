@@ -4,7 +4,7 @@ export default function arrayNonRepeatfy(arr) {
   for (let i = 0; i < arr.length; i++) {
     const { start, end } = arr[i]
     if (!map.has(start + end)) {
-      map.set(start + end, false)
+      map.set(start + end, true)
       array.push(arr[i])
     }
   }

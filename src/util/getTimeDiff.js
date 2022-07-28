@@ -14,7 +14,6 @@ export default function getTimeDiff(timestamp) {
     return `${Math.floor(limit / 3600)}h ago`
   } else if (limit >= 86400 && limit < 2592000) {
     return `${Math.floor(limit / 86400)}d ago`
-  } else {
-    return `${Math.floor(limit / 2592000)}mon ago`
   }
+  return `${Math.floor(limit / 2592000)}mon ago`
 }

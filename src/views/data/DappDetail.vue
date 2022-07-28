@@ -204,16 +204,12 @@ export default {
           textAlign: 'center',
           top: 20,
           left: '50%',
-          textStyle: {
-            color: this.isLightMode ? '#000' : '#fff',
-          },
+          textStyle: { color: this.isLightMode ? '#000' : '#fff' },
         },
         legend: {
           bottom: 20,
           left: this.isMobile ? 'center' : 100,
-          selected: {
-            'All User': false,
-          },
+          selected: { 'All User': false },
           textStyle: {
             color: this.isLightMode
               ? 'rgba(51, 51, 51, 0.8)'
@@ -236,6 +232,7 @@ export default {
           type: 'category',
           boundaryGap: false,
           data: times,
+          axisTick: { show: false },
           axisLine: {
             show: false,
             lineStyle: {
@@ -255,6 +252,9 @@ export default {
         yAxis: {
           type: 'value',
           axisPointer: {
+            show: false,
+          },
+          axisTick: {
             show: false,
           },
           axisLine: {
@@ -332,6 +332,7 @@ export default {
       if (!this.chartData) {
         return { times: [], allUser: [], activeUser: [], newUser: [] }
       }
+
       const chartData = this.chartData
       const currentTime = this.currentTime
 
@@ -389,11 +390,11 @@ export default {
                       <div class="name">${item.seriesName}</div>
                       <div class="value">${numeral(item.value).format('0,0')}
                       ${
-                        item.seriesName === 'All User'
-                          ? ''
-                          : `<span>(${numeral(item.value / all_users).format(
+                        item.seriesName !== 'All User'
+                          ? `<span>(${numeral(item.value / all_users).format(
                               '0.00%'
                             )})</span>`
+                          : ''
                       }
                         </div>
                       </div>

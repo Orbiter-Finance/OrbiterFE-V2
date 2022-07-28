@@ -230,6 +230,9 @@ export default {
           type: 'category',
           boundaryGap: false,
           data: times,
+          axisTick: {
+            show: false,
+          },
           axisLine: {
             show: false,
             lineStyle: {
@@ -248,6 +251,9 @@ export default {
         },
         yAxis: {
           type: 'value',
+          axisTick: {
+            show: false,
+          },
           axisLine: {
             show: false,
             lineStyle: {

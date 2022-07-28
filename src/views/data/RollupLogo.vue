@@ -35,6 +35,11 @@ export default {
       return `./images/rollups/${name}.png`
     },
   },
+  watch: {
+    name() {
+      this.isError = false
+    },
+  },
   methods: {
     onError() {
       this.isError = true
