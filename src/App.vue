@@ -1,5 +1,13 @@
 <template>
-  <div id="app" :class="['ob-scrollbar', `${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="styles">
+  <div
+    id="app"
+    :class="[
+      'ob-scrollbar',
+      `${$store.state.themeMode}-theme`,
+      `app${isMobile ? '-mobile' : ''}`,
+    ]"
+    :style="styles"
+  >
     <div class="app-content">
       <keep-alive>
         <TopNav />
@@ -22,11 +30,12 @@
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
-import walletDispatchers, { getCurrentLoginInfoFromLocalStorage } from "./util/walletsDispatchers"
+import walletDispatchers, {
+  getCurrentLoginInfoFromLocalStorage,
+} from './util/walletsDispatchers'
 import { isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
-import History from './views/History.vue'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
@@ -72,7 +81,14 @@ export default {
           }
         }
       }
-    }
+      return {
+        'background-position': 'left bottom, left top',
+        'background-repeat': 'no-repeat',
+        // 'background-size': '100% 36%, 127% 100%',
+        'background-size': '100% 36%, 100% 100%',
+        'background-image': `url(${lightbg}), url(${topbg})`,
+      }
+    },
   },
   data() {
     return {
@@ -82,13 +98,15 @@ export default {
     }
   },
   components: {
-    TopNav, BottomNav, History, HeaderDialog
+    TopNav,
+    BottomNav,
+    HeaderDialog,
   },
   async mounted() {
     getZkToken.getSupportZKTokenList()
 
     // init wallet info by the localStorage
-    this.performInitCurrentLoginWallet();
+    this.performInitCurrentLoginWallet()
   },
   // watch: {
   //   '$store.getters.realSelectMakerInfo': function (newValue) {
@@ -97,8 +115,7 @@ export default {
   // },
   methods: {
     performInitCurrentLoginWallet() {
-
-      performInitMobileAppWallet();
+      performInitMobileAppWallet()
 
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
