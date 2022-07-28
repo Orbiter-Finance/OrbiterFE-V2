@@ -11,10 +11,8 @@
           class="more"
           @click="
             $router.push({
-              path: '/transactionsDetail',
-              query: {
-                nav: 'Dapps',
-              },
+              path: '/dataDetail',
+              query: { nav: 'Dapps' },
             })
           "
         >

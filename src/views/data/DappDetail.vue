@@ -460,7 +460,6 @@ export default {
   },
 }
 </script>
-
 <style lang="scss">
 .dapp-detail-dialog {
   border-radius: 20px;

@@ -25,7 +25,6 @@ export default {
   },
 }
 </script>
-
 <style lang="scss">
 .selector {
   display: flex;

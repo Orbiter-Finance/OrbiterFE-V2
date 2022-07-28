@@ -11,7 +11,6 @@ export default {
   },
 }
 </script>
-
 <style lang="scss" scoped>
 .link {
   display: inline-block;

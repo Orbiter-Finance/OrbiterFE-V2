@@ -37,10 +37,10 @@ export default new Router({
       },
     },
     {
-      path: '/transactionsDetail',
+      path: '/dataDetail',
       component: (resolve) =>
         require([
-          './views/data/transactionsDetail/TransactionsDetail.vue',
+          './views/data/DataDetail/DataDetail.vue',
         ], resolve),
       meta: {
         title: 'Orbiter',

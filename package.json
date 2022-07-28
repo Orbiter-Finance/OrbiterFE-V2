@@ -39,6 +39,7 @@
     "vue": "^2.6.11",
     "vue-async-computed": "^3.9.0",
     "vue-clipboard2": "^0.3.3",
+    "vue-gtag": "^1.16.1",
     "vue-router": "^3.0.7",
     "vuex": "^3.6.0",
     "web3": "^1.7.4",

@@ -53,7 +53,6 @@ export default {
   },
 }
 </script>
-
 <style>
 .dapp-logo {
   border-radius: 50%;

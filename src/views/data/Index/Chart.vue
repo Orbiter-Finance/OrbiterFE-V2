@@ -29,10 +29,8 @@
           class="more"
           @click="
             $router.push({
-              path: '/transactionsDetail',
-              query: {
-                nav: 'Rollups',
-              },
+              path: '/dataDetail',
+              query: { nav: 'Rollups' },
             })
           "
         >
