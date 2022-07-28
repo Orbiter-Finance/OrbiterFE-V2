@@ -65,9 +65,7 @@ export default {
       this.currentTab = value
       this.$router.replace({
         path: this.$route.path,
-        query: {
-          nav: value,
-        },
+        query: { nav: value },
       })
     },
   },
