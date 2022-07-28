@@ -16,14 +16,15 @@ export default {
     if (req.localChainID !== 12 && req.localChainID !== 512) {
       throw new Error('getZKSpaceBalance Error: wrongChainID')
     }
-    const url = `${req.localChainID === 512 ? config.ZKSpace.Rinkeby
-      : config.ZKSpace.Mainnet}/account/${req.account}/balances`
+    const url = `${
+      req.localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+    }/account/${req.account}/balances`
     try {
       const response = await axios.get(url)
       if (response.status === 200 && response.data.success) {
         return response.data.data.balances.tokens
       } else {
-        throw new Error("getZKSpaceBalance error: response.status not 200")
+        throw new Error('getZKSpaceBalance error: response.status not 200')
       }
     } catch (error) {
       throw new Error(`getZKSpaceBalance error: ${error.message}`)
@@ -35,10 +36,11 @@ export default {
       : 2000
 
     if (localChainID !== 12 && localChainID !== 512) {
-      throw new Error("getZKSpaceTransferGasFee：wrongChainID")
+      throw new Error('getZKSpaceTransferGasFee：wrongChainID')
     }
-    const url = `${localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
-      }/account/${account}/fee`
+    const url = `${
+      localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+    }/account/${account}/fee`
     try {
       const response = await axios.get(url)
       if (response.status === 200 && response.statusText == 'OK') {
@@ -50,13 +52,13 @@ export default {
           let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
           return Number(gasFee_fix)
         } else {
-          throw new Error("getZKSpaceGasFee->respData.success no true")
+          throw new Error('getZKSpaceGasFee->respData.success no true')
         }
       } else {
-        throw new Error("getZKSpaceGasFee->response.status not 200")
+        throw new Error('getZKSpaceGasFee->response.status not 200')
       }
     } catch (error) {
-      throw new Error("getZKSpaceGasFee->network error")
+      throw new Error('getZKSpaceGasFee->network error')
     }
   },
   getZKSpaceWithDrawGasFee: async function (localChainID, account) {
@@ -69,11 +71,16 @@ export default {
     if (localChainID !== 12 && localChainID !== 512) {
       throw new Error('getZKSpaceGasFeeError：wrongChainID')
     }
-    const url = `${localChainID === 512 ? config.ZKSpace.Rinkeby
-      : config.ZKSpace.Mainnet}/account/${account}/fee`
-    const response = await axios.get(url)
+    const url = `${
+      localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+    }/account/${account}/fee`
     try {
-      if (response.status === 200 && response.statusText == 'OK' && response.data.success) {
+      const response = await axios.get(url)
+      if (
+        response.status === 200 &&
+        response.statusText == 'OK' &&
+        response.data.success
+      ) {
         var respData = response.data
         const gasFee = new BigNumber(respData.data.withdraw).dividedBy(
           new BigNumber(ethPrice)
@@ -141,7 +148,7 @@ export default {
     }
     let response = await axios.post(
       (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
-      '/tx',
+        '/tx',
       {
         signature: req.signature,
         fastProcessing: req.fastProcessing,
@@ -151,11 +158,13 @@ export default {
     return response
   },
   getZKSpaceTransactionData: async function (localChainID, txHash) {
-
     if (localChainID !== 12 && localChainID !== 512) {
       throw new Error('getZKTransactionDataError_wrongChainID')
     }
-    const url = (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) + '/tx/' + txHash
+    const url =
+      (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
+      '/tx/' +
+      txHash
     const response = await axios.get(url)
 
     if (response.status === 200 && response.statusText === 'OK') {
@@ -166,18 +175,25 @@ export default {
         throw new Error(respData)
       }
     } else {
-      throw new Error("getZKSpaceTransactionData NetWorkError")
+      throw new Error('getZKSpaceTransactionData NetWorkError')
     }
   },
 
-  getZKSapceTxList: async (address, localChainID, startIndex, tokenID, limit) => {
+  getZKSapceTxList: async (
+    address,
+    localChainID,
+    startIndex,
+    tokenID,
+    limit
+  ) => {
     if (localChainID !== 12 && localChainID !== 512) {
       throw {
         errorCode: 1,
         errMsg: 'getZKSTransactinListError_wrongChainID',
       }
     }
-    let baseUrl = localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+    let baseUrl =
+      localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
     const url = `${baseUrl}/txs?types=Transfer&address=${address}&token=${tokenID}&start=${startIndex}&limit=${limit}`
     try {
       const response = await axios.get(url)
@@ -201,14 +217,24 @@ export default {
       }
     }
   },
-  async getL2SigTwoAndPK(signer, accountInfo, selectMakerInfo, transferValue, fee, zksChainID, tokenInfo) {
-
+  async getL2SigTwoAndPK(
+    signer,
+    accountInfo,
+    selectMakerInfo,
+    transferValue,
+    fee,
+    zksChainID,
+    tokenInfo
+  ) {
     try {
       const l2MsgParams = {
         accountId: accountInfo.id,
         to: selectMakerInfo.makerAddress,
         tokenSymbol: tokenInfo ? tokenInfo.symbol : 'ETH',
-        tokenAmount: ethers.utils.formatUnits(transferValue, tokenInfo.decimals),
+        tokenAmount: ethers.utils.formatUnits(
+          transferValue,
+          tokenInfo.decimals
+        ),
         feeSymbol: 'ETH',
         fee: fee.toString(),
         zksChainID,
@@ -227,7 +253,17 @@ export default {
       throw new Error(`getL2SigTwoAndPK error ${error.message}`)
     }
   },
-  getL2SigOneAndPK(privateKey, accountInfo, walletAccount, selectMakerInfo, tokenId, transferValue, feeTokenId, transferFee, zksChainID) {
+  getL2SigOneAndPK(
+    privateKey,
+    accountInfo,
+    walletAccount,
+    selectMakerInfo,
+    tokenId,
+    transferValue,
+    feeTokenId,
+    transferFee,
+    zksChainID
+  ) {
     const msgBytes = ethers.utils.concat([
       '0x05',
       zksync.utils.numberToBytesBE(accountInfo.id, 4),
@@ -242,14 +278,28 @@ export default {
     ])
     const signaturePacked = sign_musig(privateKey, msgBytes)
     const pubKey = ethers.utils.hexlify(signaturePacked.slice(0, 32)).substr(2)
-    const l2SignatureOne = ethers.utils.hexlify(signaturePacked.slice(32)).substr(2)
+    const l2SignatureOne = ethers.utils
+      .hexlify(signaturePacked.slice(32))
+      .substr(2)
     return { pubKey, l2SignatureOne }
   },
   async getAccountInfo(fromChainID, privateKey, signer, walletAccount) {
     try {
-      const accountInfo = await this.getZKAccountInfo(fromChainID, walletAccount)
-      if (accountInfo.pub_key_hash == 'sync:0000000000000000000000000000000000000000') {
-        const new_pub_key_hash = await this.registerAccount(accountInfo, privateKey, fromChainID, signer, walletAccount)
+      const accountInfo = await this.getZKAccountInfo(
+        fromChainID,
+        walletAccount
+      )
+      if (
+        accountInfo.pub_key_hash ==
+        'sync:0000000000000000000000000000000000000000'
+      ) {
+        const new_pub_key_hash = await this.registerAccount(
+          accountInfo,
+          privateKey,
+          fromChainID,
+          signer,
+          walletAccount
+        )
         accountInfo.pub_key_hash = new_pub_key_hash
         accountInfo.nonce = accountInfo.nonce + 1
       }
@@ -257,7 +307,6 @@ export default {
     } catch (error) {
       throw new Error(`getAccountInfo error ${error.message}`)
     }
-
   },
   async getTransferValue(selectMakerInfo, fromChainID, toChainID) {
     try {
@@ -298,13 +347,24 @@ export default {
     } catch (error) {
       throw new Error(`getL1SigAndPriVateKey error ${error.message}`)
     }
-
   },
-  async registerAccount(accountInfo, privateKey, fromChainID, signer, walletAccount) {
+  async registerAccount(
+    accountInfo,
+    privateKey,
+    fromChainID,
+    signer,
+    walletAccount
+  ) {
     try {
-      const pubKeyHash = ethers.utils.hexlify(private_key_to_pubkey_hash(privateKey)).substr(2)
+      const pubKeyHash = ethers.utils
+        .hexlify(private_key_to_pubkey_hash(privateKey))
+        .substr(2)
       const hexlifiedAccountId = this.toHex(accountInfo.id, 4)
       const hexlifiedNonce = this.toHex(accountInfo.nonce, 4)
+      // Don't move here any way and don't format it anyway!!!
+      // Don't move here any way and don't format it anyway!!!
+      // Don't move here any way and don't format it anyway!!!
+      // Don't move here any way and don't format it anyway!!!
       // Don't move here any way and don't format it anyway!!!
       let resgiterMsg = `Register ZKSwap pubkey:
 
@@ -315,8 +375,11 @@ account id: ${hexlifiedAccountId}
 Only sign this message for a trusted client!`
 
       const registerSignature = await signer.signMessage(resgiterMsg)
-      const url = `${fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet}/tx`
-      let transferResult = await axios.post(url,
+      const url = `${
+        fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+      }/tx`
+      let transferResult = await axios.post(
+        url,
         {
           signature: null,
           fastProcessing: null,
@@ -327,50 +390,49 @@ Only sign this message for a trusted client!`
             ethSignature: registerSignature,
             newPkHash: `sync:` + pubKeyHash,
             nonce: 0,
-            type: "ChangePubKey",
-          }
+            type: 'ChangePubKey',
+          },
         },
         {
           headers: {
-            "zk-account": walletAccount
+            'zk-account': walletAccount,
           },
         }
       )
       if (transferResult.status == 200 && transferResult.data.success) {
         return transferResult.data
       } else {
-        throw new Error("registerAccount fail")
+        throw new Error('registerAccount fail')
       }
     } catch (error) {
       throw new Error(`registerAccount error ${error.message}`)
     }
-
   },
   toHex(num, length) {
     var charArray = ['a', 'b', 'c', 'd', 'e', 'f']
-    let strArr = Array(length * 2).fill("0")
-    var i = length * 2 - 1;
+    let strArr = Array(length * 2).fill('0')
+    var i = length * 2 - 1
     while (num > 15) {
-      var yushu = num % 16;
+      var yushu = num % 16
       if (yushu >= 10) {
-        let index = yushu % 10;
-        strArr[i--] = charArray[index];
+        let index = yushu % 10
+        strArr[i--] = charArray[index]
       } else {
-        strArr[i--] = yushu.toString();
+        strArr[i--] = yushu.toString()
       }
-      num = Math.floor(num / 16);
+      num = Math.floor(num / 16)
     }
 
     if (num != 0) {
       if (num >= 10) {
-        let index = num % 10;
-        strArr[i--] = charArray[index];
+        let index = num % 10
+        strArr[i--] = charArray[index]
       } else {
-        strArr[i--] = num.toString();
+        strArr[i--] = num.toString()
       }
     }
     strArr.unshift('0x')
-    var hex = strArr.join('');
-    return hex;
-  }
+    var hex = strArr.join('')
+    return hex
+  },
 }

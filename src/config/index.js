@@ -7,6 +7,7 @@ const tokenIcons = {
   METIS: require('../assets/metislogo.png'),
   ZKS: require('../assets/zkslogo.png'),
   LRC: require('../assets/lrclogo.png'),
+  BNB: require('../assets/bnblogo.png'),
 }
 
 /**

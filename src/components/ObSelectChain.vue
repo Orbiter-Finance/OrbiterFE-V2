@@ -3,8 +3,11 @@
     <div @click.stop="stopPenetrate" class="selectChainContent">
       <div class="topItem">
         <span>Select a Chain</span>
-        <div @click="closerButton" style="position: absolute;top: 0;right: 0;">
-          <SvgIconThemed style="width:20px; height:20px;cursor:pointer;" iconName="close" />
+        <div @click="closerButton" style="position: absolute; top: 0; right: 0">
+          <SvgIconThemed
+            style="width: 20px; height: 20px; cursor: pointer"
+            iconName="close"
+          />
         </div>
       </div>
       <div style="width: 100%; position: relative">
@@ -18,7 +21,7 @@
         <SvgIconThemed @click="search" class="searchIcon" icon="search" />
       </div>
     </div>
-    <div class="list-content-box">
+    <div class="list-content-box ob-scrollbar">
       <div class="list-content">
         <div
           v-for="(item, index) in newChainData"
@@ -26,7 +29,11 @@
           @click="getChainInfo(item, index)"
           class="contentItem"
         >
-          <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+          <svg-icon
+            class="logo"
+            style="margin-right: 1.5rem"
+            :iconName="item.icon"
+          ></svg-icon>
           <span>{{ item.chain }}</span>
           <CommLoading
             v-if="loadingIndex == index"
@@ -44,8 +51,8 @@
 import Web3 from 'web3'
 import { DydxHelper } from '../util/dydx/dydx_helper'
 import { IMXHelper } from '../util/immutablex/imx_helper'
-import util from '../util/util.js';
-import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
+import util from '../util/util.js'
+import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { chain2icon } from '../util'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
@@ -81,10 +88,9 @@ export default {
         }
         newArray.push(chainData)
       }
-
       const chainOrderIds = [
         3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
-        511, 13, 513, 4, 44,
+        511, 13, 513, 4, 44, 14, 514, 15, 515,
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
@@ -125,16 +131,16 @@ export default {
               if (
                 !web3State.starkNet.starkIsConnected &&
                 !web3State.starkNet.starkNetAddress
-              ) return
+              )
+                return
             }
           }
-
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index
             const { coinbase } = web3State
             const imxHelper = new IMXHelper(e.localID)
-            coinbase && await imxHelper.ensureUser(coinbase)
+            coinbase && (await imxHelper.ensureUser(coinbase))
           }
 
           // dydx
@@ -159,16 +165,13 @@ export default {
           return
         }
       }
-
       this.$emit('getChainInfo', e)
       this.closerButton()
     },
     stopPenetrate(e) {
       e.stopPropagation
     },
-    search() {
-      console.log('search')
-    },
+    search() {},
     checkKeyWord() {},
     isStarkSystem(chainId) {
       return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1
@@ -182,14 +185,18 @@ export default {
 .app {
   .obSelectChainBody {
     width: 320px;
+    height: 372px;
   }
 }
 .app-mobile {
   .obSelectChainBody {
     width: calc(100% - 30px);
+    max-height: 90vh;
+    height: 372px;
   }
 }
 .obSelectChainBody {
+  position: relative;
   margin: 4.2rem auto;
   // height: calc(
   //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
@@ -247,19 +254,6 @@ export default {
   .list-content-box {
     overflow-y: scroll;
     height: calc(100% - 90px);
-  }
-  .list-content-box::-webkit-scrollbar {
-    width: 5px;
-  }
-  .list-content-box::-webkit-scrollbar-thumb {
-    // border-radius: 10px;
-    // -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    // background: #535353;
-  }
-  .list-content-box::-webkit-scrollbar-track {
-    // -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    // border-radius: 10px;
-    // background: #EDEDED;
   }
 
   .contentItem {

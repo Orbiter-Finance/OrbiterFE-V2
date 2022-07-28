@@ -17,12 +17,16 @@ async function cacheExchangeRates(currency = 'USD') {
       let usdToMetis = 1 / Number(metisExchangeRates['USD'])
       exchangeRates['METIS'] = String(usdToMetis)
     }
+    let bnbExchangeRates = await getRates('bnb')
+    if (bnbExchangeRates && bnbExchangeRates['USD']) {
+      let usdTobnb = 1 / Number(bnbExchangeRates['USD'])
+      exchangeRates['BNB'] = String(usdTobnb)
+    }
     return exchangeRates
   } else {
     return undefined
   }
 }
-
 async function getRates(currency) {
   try {
     const resp = await axios.get(
@@ -69,7 +73,6 @@ export async function getExchangeToUsdRate(sourceCurrency = 'ETH') {
 
   return new BigNumber(rate)
 }
-
 /**
  * @param sourceCurrency
  * @returns BigNumber

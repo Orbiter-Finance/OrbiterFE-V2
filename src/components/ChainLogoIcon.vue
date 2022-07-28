@@ -37,7 +37,9 @@ export default {
         return 'bobalogo'
       } else if (chainID == '14' || chainID == '514') { // zksync2
         return 'zk2logo'
-      } else {
+      }else if (chainID == '15' || chainID == '515') {
+        return 'bsclogo'
+      }  else {
         return 'ethlogo'
       }
     },

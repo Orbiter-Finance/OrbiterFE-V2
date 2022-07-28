@@ -13,6 +13,7 @@ import thegraph from '../actions/thegraph'
 import { getAllMakerList } from '../actions/thegraph'
 import thirdapi from '../actions/thirdapi'
 import zkspace from '../actions/zkspace'
+import zksync2 from '../actions/zksync2'
 import TxInfo from '../utils/modle/txinfo'
 import { store } from '../../store'
 import { isProd } from '../../util'
@@ -326,7 +327,104 @@ async function getTransactionListMetis(
 
   return { MTFromTxList, MTToTxList }
 }
+//zksync2
+async function getTransactionListZK2(
+  userAddress,
+  chainID,
+  needTimeStamp,
+  makerList
+) {
+  try {
+    const ZK2FromTxList = []
+    const ZK2ToTxList = []
 
+    let zk2ScanReq = {
+      timestamp: needTimeStamp,
+      closest: 'before',
+    }
+    let zk2ScanStartBlock = 0
+
+    try {
+      let resp = await zksync2.getBlockNumberWithTimeStamp(zk2ScanReq, chainID)
+      if (resp.status === '1' && resp.message === 'OK') {
+        zk2ScanStartBlock = resp.result?.blockNumber
+      } else {
+        zk2ScanStartBlock = 0
+      }
+    } catch (error) {
+      console.log('zk2ScanStartBlockError =', error)
+      throw error.message
+    }
+    let zk2scanReq = {
+      maker: userAddress,
+      startblock: zk2ScanStartBlock,
+      endblock: 999999999,
+    }
+    let res = await zksync2.getTransationList(zk2scanReq, chainID)
+    for (let zk2Info of res.result) {
+      let txinfo = TxInfo.getTxInfoWithZksync2(zk2Info)
+      let isMatch = false
+      for (let j = 0; j < makerList.length; j++) {
+        let makerInfo = makerList[j]
+        let _makerAddress = makerInfo.makerAddress.toLowerCase()
+
+        if (txinfo.from !== _makerAddress && txinfo.to !== _makerAddress) {
+          continue
+        }
+
+        if (txinfo.tokenName !== makerInfo.tName) {
+          continue
+        }
+
+        let avalibleTimes =
+          chainID === makerInfo.c1ID
+            ? makerInfo.c1AvalibleTimes
+            : makerInfo.c2AvalibleTimes
+        for (let z = 0; z < avalibleTimes.length; z++) {
+          let avalibleTime = avalibleTimes[z]
+
+          if (
+            avalibleTime.startTime <= txinfo.timeStamp &&
+            avalibleTime.endTime >= txinfo.timeStamp
+          ) {
+            isMatch = true
+            break
+          }
+        }
+        if (!isMatch) {
+          continue
+        }
+        if (txinfo.from === _makerAddress) {
+          let pText = orbiterCore.getPTextFromTAmount(chainID, txinfo.value)
+          let nonce = 0
+          if (pText.state) {
+            nonce = pText.pText
+          }
+          if (Number(nonce) < 9000 && Number(nonce) >= 0) {
+            ZK2ToTxList.push(txinfo)
+            break
+          }
+        } else if (txinfo.to === _makerAddress) {
+          const toChainId = orbiterCore.getToChainIDFromAmount(
+            chainID,
+            txinfo.value
+          )
+          if (toChainId) {
+            let arr1 = [makerInfo.c1ID, makerInfo.c2ID]
+            let arr2 = [chainID, toChainId]
+            if (judgeArrayEqualFun(arr1, arr2)) {
+              ZK2FromTxList.push(txinfo)
+              break
+            }
+          }
+        }
+      }
+    }
+    return { ZK2FromTxList, ZK2ToTxList }
+  } catch (error) {
+    console.warn(error)
+  }
+}
 // boba
 async function getTransactionListBoba(
   userAddress,
@@ -1029,7 +1127,6 @@ async function getTransactionListImmutableX(
       }
     }
   }
-
   return { IMXFromTxList, IMXToTxList }
 }
 
@@ -1398,7 +1495,22 @@ export default {
           }
         })
       }
-
+      // 14 514 zksync2
+      if (supportChains.indexOf(14) > -1 || supportChains.indexOf(514) > -1) {
+        allPromises.push(async () => {
+          let chainID = supportChains.indexOf(14) > -1 ? 14 : 514
+          const { ZK2FromTxList, ZK2ToTxList } = await getTransactionListZK2(
+            req.address,
+            chainID,
+            needTimeStamp,
+            makerList
+          )
+          originTxList[chainID] = {
+            fromList: ZK2FromTxList,
+            toList: ZK2ToTxList,
+          }
+        })
+      }
       // 6.66 pg
       if (supportChains.indexOf(6) > -1 || supportChains.indexOf(66) > -1) {
         allPromises.push(async () => {
@@ -1679,7 +1791,6 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           continue
         }
         let toList = origin[toChainID].toList
-
         let isMatch = false
         for (let z = 0; z < toList.length; z++) {
           let toTxInfo = toList[z]
@@ -1798,6 +1909,7 @@ function getTrasactionListFromTxList(origin, state, makerList) {
           if (toTxInfo.dataFrom == 'loopring' && toTxInfo.memo) {
             toTxInfo.memo = fromTxInfo.nonce
           }
+
           if (toAmount.toString() !== toTxInfo.value) {
             continue
           } else {

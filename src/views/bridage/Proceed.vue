@@ -1,79 +1,172 @@
 <template>
-<div class="proceed-box">
-  <CommBoxHeader :back="closerButton">{{detailData ? 'Detail' : 'Proceeding'}}</CommBoxHeader>
-  <div class="ProceedContent">
-    <div v-for="item in proceedData" :key="item.title" class="contentItem">
-      <span class="item-title" style="width:100px;text-align:left;">{{ item.title }}</span>
-      <span class="item-value right" v-if="item.desc || item.descInfo">{{ item.desc }}</span>
-      <CommLoading v-else class="right" width="1.2rem" height="1.2rem" />
-    </div>
-    <div class="chainDataContent">
-      <div v-if="isMobile" class="middle-icon-abs" style="z-index:2;">
-        <div v-if="isProcee" :class="[{'rocket-box-bg': isProcee}]">
-        </div>
-        <div v-else :class="['rocket-box']">
-          <SvgIconThemed v-if="true" icon="satellite" size="xs" />
-        </div>
+  <div class="proceed-box">
+    <CommBoxHeader :back="closerButton">{{
+      detailData
+        ? isFailed
+          ? 'Transcation Failed'
+          : 'Detail'
+        : isCompleted
+        ? 'Completed'
+        : 'Processing'
+    }}</CommBoxHeader>
+    <div class="ProceedContent">
+      <div v-for="item in proceedData" :key="item.title" class="contentItem">
+        <span class="item-title" style="width: 100px; text-align: left">{{
+          item.title
+        }}</span>
+        <span class="item-value right" v-if="item.desc || item.descInfo">{{
+          item.desc
+        }}</span>
+        <CommLoading v-else class="right" width="1.2rem" height="1.2rem" />
       </div>
-      <div class="item left" style="z-index:3;">
-        <div class="chain-name from">
-          <span>{{ FromChainName }}</span>
+      <div class="chainDataContent">
+        <div v-if="isMobile" class="middle-icon-abs" style="z-index: 2">
+          <div v-if="isProcee" :class="[{ 'rocket-box-bg': isProcee }]"></div>
+          <div v-else :class="['rocket-box']">
+            <SvgIconThemed v-if="!detailData" icon="satellite" size="xs" />
+            <SvgIconThemed
+              v-else
+              iconName="succeed"
+              style="width: 24px; height: 24px"
+            />
+          </div>
         </div>
-        <div class="chain">
-          <svg-icon :iconName="showChainIcon()" style="width: 56px;height: 56px;"></svg-icon>
+        <div class="item left" style="z-index: 3">
+          <div class="chain-name from">
+            <span>{{ FromChainName }}</span>
+          </div>
+          <div class="chain">
+            <svg-icon
+              :iconName="showChainIcon()"
+              style="width: 56px; height: 56px"
+            ></svg-icon>
+          </div>
+          <div class="tx from-tx" @click="goToExplorFrom">
+            <template v-if="!detailData">
+              <svg-icon
+                v-if="$store.state.proceedState === 1"
+                class="status-icon"
+                color="#df2e2d"
+                iconName="history_2"
+              ></svg-icon>
+              <svg-icon
+                v-else-if="$store.state.proceedState === 2"
+                class="status-icon"
+                color="#df2e2d"
+                iconName="history_3"
+              ></svg-icon>
+              <svg-icon
+                v-else
+                class="status-icon"
+                color="#df2e2d"
+                iconName="status-success"
+              ></svg-icon>
+            </template>
+            <svg-icon
+              v-else
+              class="status-icon"
+              color="#df2e2d"
+              iconName="status-success"
+            ></svg-icon>
+            <span>{{ FromTx }}</span>
+          </div>
+          <div class="switch-btn" @click="() => switchNetWork()">
+            Switch Network
+          </div>
         </div>
-        <div class="tx from-tx" @click="goToExplorFrom">
-          <template v-if="!detailData">
-            <svg-icon v-if="$store.state.proceedState === 1" class="status-icon" color="#df2e2d" iconName="history_2"></svg-icon>
-            <svg-icon v-else-if="$store.state.proceedState === 2" class="status-icon" color="#df2e2d" iconName="history_3"></svg-icon>
-            <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
-          </template>
-          <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
-          <span>{{ FromTx }}</span>
+        <div class="middle-icon">
+          <div
+            v-if="!isMobile"
+            :class="['rocket-box', { 'rocket-box-bg': isProcee }]"
+          >
+            <SvgIconThemed
+              v-if="!isProcee && !detailData"
+              icon="satellite"
+              size="xs"
+            />
+            <!-- <SvgIconThemed v-if="!isProcee && detailData" iconName="succeed" style="width:24px;height:24px;" /> -->
+          </div>
+          <div v-if="!isMobile" class="rocket-line-box">
+            <SvgIconThemed
+              icon="rocket-line"
+              style="width: 161px; height: 14px; margin-top: 10px"
+            />
+          </div>
         </div>
-        <div class="switch-btn" @click="() => switchNetWork()">Switch Network</div>
-      </div>
-      <div class="middle-icon">
-        <div v-if="!isMobile" :class="['rocket-box', {'rocket-box-bg': isProcee}]">
-          <SvgIconThemed v-if="!isProcee" icon="satellite" size="xs" />
+        <div class="item right" style="z-index: 3">
+          <div class="chain-name to">
+            <span>{{ toChainName }}</span>
+          </div>
+          <div class="chain">
+            <svg-icon
+              :iconName="showChainIcon(false)"
+              style="width: 56px; height: 56px"
+            ></svg-icon>
+          </div>
+          <div class="tx to-tx" @click="goToExplorTo">
+            <template v-if="!detailData">
+              <svg-icon
+                v-if="$store.state.proceedState === 4"
+                class="status-icon"
+                color="#df2e2d"
+                iconName="history_3"
+              ></svg-icon>
+              <svg-icon
+                v-else-if="$store.state.proceedState === 5"
+                class="status-icon"
+                color="#df2e2d"
+                iconName="status-success"
+              ></svg-icon>
+              <svg-icon
+                v-else
+                class="status-icon"
+                color="#df2e2d"
+                iconName="history_1"
+              ></svg-icon>
+            </template>
+            <template v-else>
+              <svg-icon
+                v-if="detailData.state === 0"
+                class="status-icon"
+                color="#df2e2d"
+                iconName="status-success"
+              ></svg-icon>
+              <svg-icon
+                v-else-if="detailData.state === 1"
+                class="status-icon"
+                color="#df2e2d"
+                iconName="history_2"
+              ></svg-icon>
+              <svg-icon
+                v-else
+                class="status-icon"
+                color="#df2e2d"
+                iconName="status-error"
+              ></svg-icon>
+            </template>
+            <span>{{ ToTx }}</span>
+          </div>
+          <div class="switch-btn" @click="() => switchNetWork(false)">
+            Switch Network
+          </div>
         </div>
-        <div v-if="!isMobile" class="rocket-line-box">
-          <SvgIconThemed icon="rocket-line" style="width:161px;height:14px;margin-top:10px;" />
-        </div>
-      </div>
-      <div class="item right" style="z-index:3;">
-        <div class="chain-name to">
-          <span>{{ toChainName }}</span>
-        </div>
-        <div class="chain">
-          <svg-icon :iconName="showChainIcon(false)" style="width: 56px;height: 56px;"></svg-icon>
-        </div>
-        <div class="tx to-tx" @click="goToExplorTo">
-          <template v-if="!detailData">
-            <svg-icon v-if="$store.state.proceedState === 4" class="status-icon" color="#df2e2d" iconName="history_3"></svg-icon>
-            <svg-icon v-else-if="$store.state.proceedState === 5" class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
-            <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_1"></svg-icon>
-          </template>
-          <template v-else>
-            <svg-icon v-if="detailData.state === 0" class="status-icon" color="#df2e2d" iconName="history_4"></svg-icon>
-            <svg-icon v-else-if="detailData.state === 1" class="status-icon" color="#df2e2d" iconName="history_2"></svg-icon>
-            <svg-icon v-else class="status-icon" color="#df2e2d" iconName="history_error"></svg-icon>
-          </template>
-          <span>{{ ToTx }}</span>
-        </div>
-        <div class="switch-btn" @click="() => switchNetWork(false)">Switch Network</div>
       </div>
     </div>
   </div>
-</div>
 </template>
 
 <script>
-import { SvgIconThemed, CommBoxHeader, CommBtn } from '../../components'
+import { SvgIconThemed, CommBoxHeader } from '../../components'
 import util from '../../util/util'
 import { chain2icon } from '../../util'
-import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
-import { isMobile, transferDataState, realSelectMakerInfo, web3State, saveSenderPageWorkingState } from '../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import {
+  isMobile,
+  transferDataState,
+  realSelectMakerInfo,
+  web3State,
+  saveSenderPageWorkingState,
+} from '../../composition/hooks'
 
 export default {
   name: 'Proceed',
@@ -81,13 +174,30 @@ export default {
     detailData: {
       type: Object,
       required: false,
-      default: null
+      default: null,
     },
   },
   components: {
-    SvgIconThemed, CommBoxHeader, CommBtn
+    SvgIconThemed,
+    CommBoxHeader,
   },
   computed: {
+    isCompleted() {
+      return (
+        !this.detailData &&
+        !(
+          this.$store.state.proceedState === 1 ||
+          this.$store.state.proceedState === 2
+        ) &&
+        this.$store.state.proceedState === 5
+      )
+    },
+    isFailed() {
+      return (
+        this.detailData &&
+        !(this.detailData.state === 1 || this.detailData.state === 0)
+      )
+    },
     isMobile() {
       return isMobile.value
     },
@@ -117,17 +227,19 @@ export default {
           return `TransferId: ${fromTxHash}`
         }
         return `Tx:${util.shortAddress(fromTxHash)}`
-      } 
-      
+      }
+
       const { proceedState, proceeding } = this.$store.state
       if (proceedState === 1) {
         return 'View on Explore'
       } else {
         // immutablex
-        if (transferDataState.fromChainID == 8 || transferDataState.fromChainID == 88) {
+        if (
+          transferDataState.fromChainID == 8 ||
+          transferDataState.fromChainID == 88
+        ) {
           return `TransferId: ${proceeding.userTransfer.txid}`
         }
-        console.log('FromTx: ', proceeding.userTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.userTransfer.txid)}`
       }
     },
@@ -143,26 +255,33 @@ export default {
           }
           return `Tx:${util.shortAddress(toTxHash)}`
         }
-      } 
+      }
 
       const { proceedState, proceeding } = this.$store.state
       if (proceedState < 4) {
         return 'View on Explore'
       } else {
         // immutablex
-        if (transferDataState.toChainID == 8 || transferDataState.toChainID == 88) {
+        if (
+          transferDataState.toChainID == 8 ||
+          transferDataState.toChainID == 88
+        ) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
-        console.log('ToTx: ', proceeding.makerTransfer.txid)
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
     proceedData() {
       if (this.detailData) {
+        const timestamp = new Date(`${this.detailData.fromTimeStamp} UTC+0`)
+          .toLocaleString()
+          ?.replace(/\..*/g, '')
+          ?.replace('T', ' ')
         return [
           {
             title: 'Timestamp',
-            desc: util.transferTimeStampToTime(this.detailData.fromTimeStamp),
+            // desc: util.transferTimeStampToTime(this.detailData.fromTimeStamp),
+            desc: timestamp,
           },
           {
             title: 'Value',
@@ -173,12 +292,14 @@ export default {
           },
         ]
       }
+      // const timestamp = (new Date(`${this.$store.state.proceeding.userTransfer.timeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
       return [
         {
           title: 'Timestamp',
           desc: util.transferTimeStampToTime(
             this.$store.state.proceeding.userTransfer.timeStamp
           ),
+          // desc: timestamp
         },
         {
           title: 'Value',
@@ -213,7 +334,7 @@ export default {
       this.addChainNetWork(this.getChainId(e))
     },
     async goToExplorFrom() {
-      let url;
+      let url
       if (this.detailData) {
         const { accountExploreUrl } = this.$env
         const { fromChainID } = this.detailData
@@ -249,7 +370,7 @@ export default {
         window.open(url, '_blank')
         return
       }
-      
+
       const { fromChainID } = transferDataState
       const { accountExploreUrl, txExploreUrl } = this.$env
       if (this.$store.state.proceedState === 1) {
@@ -286,7 +407,7 @@ export default {
       }
       const { toChainID, state } = data
       const { accountExploreUrl, txExploreUrl } = this.$env
-      let url = null;
+      let url = null
 
       const commHandler = () => {
         let userAddress = web3State.coinbase
@@ -300,7 +421,7 @@ export default {
           url = accountExploreUrl[toChainID]
         }
       }
-      
+
       if (this.detailData) {
         if (state !== 0) {
           commHandler()
@@ -314,7 +435,10 @@ export default {
           }
 
           // loopring
-          if (this.detailData.toChainID == 9 || this.detailData.toChainID == 99) {
+          if (
+            this.detailData.toChainID == 9 ||
+            this.detailData.toChainID == 99
+          ) {
             if (
               this.detailData.blockNum != 0 &&
               this.detailData.indexInBlock != 0 &&
@@ -353,14 +477,17 @@ export default {
     closerButton() {
       if (this.detailData) {
         const route = this.$route
-        localStorage.setItem('last_page_before_history', JSON.stringify({
-          path: route.path,
-          params: route.params,
-          query: route.query,
-        }))
+        localStorage.setItem(
+          'last_page_before_history',
+          JSON.stringify({
+            path: route.path,
+            params: route.params,
+            query: route.query,
+          })
+        )
         saveSenderPageWorkingState()
         this.$router.push({
-          path: '/history'
+          path: '/history',
         })
 
         this.$emit('stateChanged', '4')
@@ -370,7 +497,7 @@ export default {
       }
     },
     reportError() {
-      console.log('reportError')
+      console.warn('reportError')
     },
     addChainNetWork(useChainID) {
       var chain = util.getChainInfo(
@@ -424,7 +551,7 @@ export default {
           }
         })
     },
-  }
+  },
 }
 </script>
 
@@ -502,11 +629,11 @@ export default {
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
   );
-  max-height: calc(
-    var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
-      var(--bottom-nav-height)
-  );
-  overflow-y: scroll;
+  // max-height: calc(
+  //   var(--vh, 1vh) * 100 - 8.4rem - var(--top-nav-height) -
+  //     var(--bottom-nav-height)
+  // );
+  // overflow-y: scroll;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
@@ -548,7 +675,7 @@ export default {
         .chain {
           width: 100px;
           height: 100px;
-          border: 1px solid #1DFFF1;
+          border: 1px solid #1dfff1;
           border-radius: 100%;
           display: flex;
           justify-content: center;
@@ -575,6 +702,7 @@ export default {
         }
         .tx:hover {
           text-decoration: underline;
+          color: red;
         }
         .switch-btn {
           width: 128px;

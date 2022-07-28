@@ -87,6 +87,22 @@ export default {
     return txInfo
   },
 
+  getTxInfoWithZksync2: function (zkSync2Info) {
+    const txInfo = {
+      from: zkSync2Info.from.toLowerCase(),
+      to: zkSync2Info.to.toLowerCase(),
+      tokenAddress: zkSync2Info.contractAddress.toLowerCase(),
+      timeStamp: zkSync2Info.timeStamp,
+      tokenName: zkSync2Info.tokenSymbol,
+      value: zkSync2Info.value,
+      tokenDecimal: zkSync2Info.tokenDecimal,
+      hash: zkSync2Info.hash,
+      nonce: zkSync2Info.nonce,
+      dataFrom: 'zksync2',
+    }
+    return txInfo
+  },
+
   getTxInfoWithStarknet: function (starknetInfo) {
     const txInfo = {
       from: starknetInfo.from.toLowerCase(),

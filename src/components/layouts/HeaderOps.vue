@@ -5,7 +5,7 @@
     <span @click="showHistory" class="ops-item">History</span>
     <div v-if="isSelectedStarkNet" ref="connectedStarkNetBtn" @click="connectStarkNetWallet" class="ops-item center" style="display: inline-flex;">
       <svg-icon style="width: 2rem; height: 2rem" iconName="sknlogo"></svg-icon>
-      <span class="address">{{ starkAddress }}</span>
+      <span class="address">{{ starkAddress === 'not connected' ? 'connect starknet' : starkAddress }}</span>
     </div>
     <div ref="connectedBtn" @click="connectAWallet" class="ops-item center" style="display: inline-flex;">
       <svg-icon style="width: 2rem; height: 2rem"
@@ -29,7 +29,7 @@ import {
   walletIsLogin,
 } from '../../composition/walletsResponsiveData'
 import { setStarkNetDialog, setSelectWalletDialogVisible } from '../../composition/hooks'
-
+import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { starkAddress, showAddress, saveSenderPageWorkingState } from '../../composition/hooks'
 
 export default {
@@ -73,7 +73,11 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    connectStarkNetWallet() {
+    async connectStarkNetWallet() {
+      if (this.starkAddress === 'not connected') {
+        await connectStarkNetWallet()
+        return
+      }
       setStarkNetDialog(true)
       setSelectWalletDialogVisible(true)
     },
@@ -86,7 +90,7 @@ export default {
       this.$emit('closeDrawer')
 
       const route = this.$route
-      localStorage.setItem('last_page_before_history', JSON.stringify({
+      route.path !== '/history' && localStorage.setItem('last_page_before_history', JSON.stringify({
         path: route.path,
         params: route.params,
         query: route.query,
@@ -94,7 +98,7 @@ export default {
       if (route.path === '/') {
         saveSenderPageWorkingState()
       }
-      this.$router.push({
+      route.path !== '/history' && this.$router.push({
         path: '/history'
       })
     },

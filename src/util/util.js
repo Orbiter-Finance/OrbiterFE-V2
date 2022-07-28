@@ -61,8 +61,15 @@ export default {
         return 'Boba'
       case 513:
         return 'Boba(R)'
+      case 14:
+        return 'zkSync2'
+      case 514:
+        return 'zkSync2(G)'
+      case 15:
+        return "BNB Chain"
+      case 515:
+        return "BNB Chain(R)"
     }
-
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
     )
@@ -159,6 +166,10 @@ export default {
     return /^0x0+$/i.test(tokenAddress)
   },
 
+  isBNBTokenAddress(chainId) {
+    return chainId == 97 || chainId == 56;
+  },
+
   /**
    * @param {number} ms Sleep millisecond
    * @returns
@@ -183,7 +194,6 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    console.lo
     const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
     const switchParams = {
       chainId: this.toHex(chain.chainId),

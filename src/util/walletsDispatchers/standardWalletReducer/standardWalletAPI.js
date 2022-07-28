@@ -148,7 +148,7 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
 
 // if the current wallet doesn't have the chain selected by the user,
 // calling this method can wake up the browser wallet extensions and 
-// directs the user to append the chain 
+// directs the user to append the chain
 export const universalWalletSwitchChainHandler = (walletConf, walletProvider, successCallback = () => { }, failCallback = () => { }) => {
     const presentNetWorkId = getNetworkIdByChainId();
     // const matchChainConf = getChainInfo(presentNetWorkId);
