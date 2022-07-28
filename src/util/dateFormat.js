@@ -1,5 +1,8 @@
 export default function formatDate(time, fmt = 'yyyy-MM-dd hh:mm:ss') {
-  const date = new Date(time)
+  const date = new Date(
+    typeof time === 'string' ? time.replace(/-/g, '/') : time
+  )
+
   const o = {
     'M+': date.getMonth() + 1, // 月份
     'd+': date.getDate(), // 日

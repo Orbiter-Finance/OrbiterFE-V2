@@ -257,7 +257,8 @@ export default {
       }
 
       const isAscending = order === 'ascending'
-      if (prop === 'total_tx' || prop === 'total_accounts') {
+
+      if (['total_tx', 'total_accounts'].includes(prop)) {
         this.tableData = tableData.sort((a, b) => {
           return isAscending
             ? Number(a[prop]) - Number(b[prop])
@@ -265,12 +266,7 @@ export default {
         })
         return
       }
-
-      if (
-        prop === 'active_accounts' ||
-        prop === 'new_accounts' ||
-        prop === 'txs'
-      ) {
+      if (['active_accounts', 'new_accounts', 'txs'].includes(prop)) {
         this.tableData = tableData.sort((a, b) => {
           return isAscending
             ? Number(a[prop][this.currentFilter]) -
@@ -296,7 +292,6 @@ export default {
               : Number(b.TVL.all) - Number(a.TVL.all)
           })
           break
-
         default:
           this.tableData = tableData
           break

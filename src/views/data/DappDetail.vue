@@ -3,6 +3,7 @@
     custom-class="dapp-detail-dialog"
     :visible.sync="dialogVisible"
     append-to-body
+    :margin-top="isMobile ? '5%' : '15vh'"
     :show-close="false"
   >
     <div slot="title" class="dapp-detail-dialog-title">
@@ -90,7 +91,11 @@ const times = [
   { label: '1y', value: 12 },
   { value: 'Max', label: 'Max' },
 ]
+const isMax = (value) => value === 'Max'
+const padTimestamp = (timestamp) => timestamp * 1000
+
 const ONE_MONTH = 60 * 60 * 24 * 30
+const caches = {}
 
 export default {
   data() {
@@ -115,7 +120,7 @@ export default {
       const chartData = this.detailData.chart_data
       const currentTime = this.currentTime
       const now = new Date().getTime() / 1000
-      if (currentTime === 'Max') {
+      if (isMax(currentTime)) {
         return chartData
       }
       const selectDataTime = ONE_MONTH * currentTime
@@ -266,6 +271,13 @@ export default {
           padding: 0,
           backgroundColor: 'transparent',
           formatter: this._onFormatter,
+          position: this.isMobile
+            ? function (pos, params, dom, rect, size) {
+                const obj = { top: '10%' }
+                obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5
+                return obj
+              }
+            : undefined,
         },
         series: [
           {
@@ -326,7 +338,7 @@ export default {
       if ([1, 3].includes(currentTime)) {
         return {
           times: chartData.map((item) =>
-            dateFormat(item.timestamp * 1000, 'yyyy-MM-dd')
+            dateFormat(padTimestamp(item.timestamp), 'yyyy-MM-dd')
           ),
           allUser: chartData.map((item) => item.all_users),
           activeUser: chartData.map((item) => item.active_users),
@@ -335,18 +347,18 @@ export default {
       }
 
       const now = new Date().getTime()
-      const times =
-        currentTime === 'Max'
-          ? arrayNonRepeatfy(
-              chartData.map((item) =>
-                getMonthStartAndEnd(item.timestamp * 1000)
-              )
+      const times = isMax(currentTime)
+        ? arrayNonRepeatfy(
+            chartData.map((item) =>
+              getMonthStartAndEnd(padTimestamp(item.timestamp))
             )
-          : [getMonthStartAndEnd(now)].concat(
-              Array.from({ length: currentTime - 1 }, (_, i) => i + 1).map(
-                (item) => getMonthStartAndEnd(now - ONE_MONTH * item * 1000)
-              )
+          )
+        : [getMonthStartAndEnd(now)].concat(
+            Array.from({ length: currentTime - 1 }, (_, i) => i + 1).map(
+              (item) =>
+                getMonthStartAndEnd(now - padTimestamp(ONE_MONTH * item))
             )
+          )
 
       const { monthList, data } = this._getChartDataByTimestamps(times)
       return {
@@ -357,33 +369,17 @@ export default {
       }
     },
     _onFormatter(params) {
-      const currentTime = this.currentTime
-      const chartData = this.chartData
-
+      const axisValue = params[0].axisValue
       let all_users
-      if ([1, 3].includes(currentTime)) {
-        all_users = chartData.find((item) => {
-          return (
-            dateFormat(item.timestamp * 1000, 'yyyy-MM-dd') ===
-            params[0].axisValue
-          )
-        }).all_users
+      if (caches[axisValue]) {
+        all_users = caches[axisValue]
       } else {
-        const time = getMonthStartAndEnd(new Date(params[0].axisValue))
-        all_users = chartData
-          .filter((item) => {
-            return (
-              item.timestamp * 1000 > time.start &&
-              item.timestamp * 1000 < time.end
-            )
-          })
-          .reduce((mome, item) => mome + item.all_users, 0)
+        all_users = this._getAllUserByTime(axisValue)
+        caches[axisValue] = all_users
       }
 
       return `<div class="dapp-detail-chart-popover-content">
-                <div class="dapp-detail-chart-popover-title">${
-                  params[0].axisValue
-                }</div>
+                <div class="dapp-detail-chart-popover-title">${axisValue}</div>
                 <div class="dapp-detail-chart-popover-data">
                    ${params
                      .map(
@@ -395,9 +391,9 @@ export default {
                       ${
                         item.seriesName === 'All User'
                           ? ''
-                          : `(<span>${numeral(item.value / all_users).format(
+                          : `<span>(${numeral(item.value / all_users).format(
                               '0.00%'
-                            )} </span>)`
+                            )})</span>`
                       }
                         </div>
                       </div>
@@ -406,6 +402,28 @@ export default {
                      .join('')}
                 </div>
               </div>`
+    },
+    _getAllUserByTime(axisValue) {
+      const currentTime = this.currentTime
+      const chartData = this.chartData
+
+      if ([1, 3].includes(currentTime)) {
+        return chartData.find((item) => {
+          return (
+            dateFormat(padTimestamp(item.timestamp), 'yyyy-MM-dd') === axisValue
+          )
+        }).all_users
+      }
+
+      const time = getMonthStartAndEnd(new Date(axisValue))
+      return chartData
+        .filter((item) => {
+          return (
+            padTimestamp(item.timestamp) > time.start &&
+            padTimestamp(item.timestamp) < time.end
+          )
+        })
+        .reduce((mome, item) => mome + item.all_users, 0)
     },
     _getChartDataByTimestamps(times) {
       const monthList = []
@@ -417,8 +435,8 @@ export default {
           this.chartData
             .filter((item) => {
               return (
-                item.timestamp * 1000 > time.start &&
-                item.timestamp * 1000 < time.end
+                padTimestamp(item.timestamp) > time.start &&
+                padTimestamp(item.timestamp) < time.end
               )
             })
             .reduce(

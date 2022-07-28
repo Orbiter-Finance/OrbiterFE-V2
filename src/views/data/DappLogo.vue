@@ -41,6 +41,11 @@ export default {
       return `./images/dapps/${name}.png`
     },
   },
+  watch: {
+    name() {
+      this.isError = false
+    },
+  },
   methods: {
     onError() {
       this.isError = true

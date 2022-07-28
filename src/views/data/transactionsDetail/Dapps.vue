@@ -68,7 +68,7 @@
         </el-table-column>
         <el-table-column
           label="Active Accounts"
-          prop="active_accounts"
+          prop="active_users"
           width="150"
           align="right"
           :sortable="'custom'"
@@ -76,7 +76,7 @@
           <template slot-scope="scope"
             ><div class="data">
               {{
-                numeral(scope.row[currentFilter].active_accounts).format('0,0')
+                numeral(scope.row[currentFilter].active_users).format('0,0')
               }}
             </div>
           </template>
@@ -246,10 +246,12 @@ export default {
       }
 
       if (
-        prop === 'active_accounts' ||
-        prop === 'new_users' ||
-        prop === 'interactions' ||
-        prop === 'new_users_age'
+        [
+          'active_users',
+          'new_users',
+          'interactions',
+          'new_users_age',
+        ].includes(prop)
       ) {
         this.tableData = tableData.sort((a, b) => {
           const aData = a[this.currentFilter][prop]

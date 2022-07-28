@@ -114,6 +114,9 @@ const ROLLUPS = [
 ]
 const caches = {}
 
+const isMax = (value) => value === 'Max'
+const padTimestamp = (timestamp) => timestamp * 1000
+
 export default {
   components: {
     Selector,
@@ -141,19 +144,14 @@ export default {
       if (!data || !data.tx_data) {
         return []
       }
-      let arr
-      switch (this.currentChartTime) {
-        case 3:
-          arr = Array.from({ length: 90 }, (_, i) => i + 1)
-          break
-        case 6:
-          arr = Array.from({ length: 180 }, (_, i) => i + 1)
-          break
-        case 12:
-          arr = Array.from({ length: 365 }, (_, i) => i + 1)
-          break
-        default:
-          arr = data.tx_data ? Object.keys(data.tx_data) : []
+      let arr = []
+      if ([3, 6, 12].includes(this.currentChartTime)) {
+        arr = Array.from(
+          { length: 30 * this.currentChartTime },
+          (_, i) => i + 1
+        )
+      } else {
+        arr = data.tx_data ? Object.keys(data.tx_data) : []
       }
       return arr.map((item) => data.tx_data[item])
     },
@@ -213,9 +211,7 @@ export default {
       const { times, data } = this._getData()
 
       const options = {
-        title: {
-          show: false,
-        },
+        title: { show: false },
         grid: {
           top: 10,
           left: '30',
@@ -260,9 +256,7 @@ export default {
                 : 'rgba(255, 255, 255, 0.4)',
             },
           },
-          axisPointer: {
-            show: false,
-          },
+          axisPointer: { show: false },
         },
         tooltip: {
           trigger: 'axis',
@@ -280,22 +274,13 @@ export default {
             type: 'line',
             stack: 'Total',
             smooth: true,
-            lineStyle: {
-              width: 4,
-              color: '#DF2E2D',
-            },
+            lineStyle: { width: 4, color: '#DF2E2D' },
             showSymbol: false,
             areaStyle: {
               opacity: 0.8,
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                {
-                  offset: 0,
-                  color: 'rgba(232, 94, 36, 0.24)',
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(232, 94, 36, 0)',
-                },
+                { offset: 0, color: 'rgba(232, 94, 36, 0.24)' },
+                { offset: 1, color: 'rgba(232, 94, 36, 0)' },
               ]),
             },
             emphasis: {
@@ -327,22 +312,23 @@ export default {
 
       const now = new Date().getTime()
       const { monthList, data } = this._getChartDataByTimestamps(
-        currentChartTime === 'Max'
+        isMax(currentChartTime)
           ? arrayNonRepeatfy(
               this.filteredChartData.map((item) =>
-                getMonthStartAndEnd(item.timestamp * 1000)
+                getMonthStartAndEnd(padTimestamp(item.timestamp))
               )
             )
           : [getMonthStartAndEnd(now)].concat(
               Array.from({ length: currentChartTime - 1 }, (_, i) => i + 1).map(
-                (item) => getMonthStartAndEnd(now - ONE_MONTH * item * 1000)
+                (item) =>
+                  getMonthStartAndEnd(now - padTimestamp(ONE_MONTH * item))
               )
             )
       )
 
       return {
         times: monthList,
-        data: data.map((item) => item),
+        data: data,
       }
     },
     _getChartDataByTimestamps(times) {
@@ -354,8 +340,8 @@ export default {
           this.filteredChartData
             .filter(
               (item) =>
-                item.timestamp * 1000 > time.start &&
-                item.timestamp * 1000 < time.end
+                padTimestamp(item.timestamp) > time.start &&
+                padTimestamp(item.timestamp) < time.end
             )
             .reduce((total, item) => total + item.all, 0)
         )
@@ -367,32 +353,11 @@ export default {
     },
     _onFormatter([params]) {
       let rollups = []
-      if (this.currentChartTime === 3) {
-        rollups = this.filteredChartData.find(
-          (item) => item.timestamp_read === params.axisValue
-        ).rollups
+      if (caches[params.axisValue]) {
+        rollups = caches[params.axisValue]
       } else {
-        if (!caches[params.axisValue]) {
-          const { start, end } = getMonthStartAndEnd(
-            new Date(params.axisValue).getTime()
-          )
-          const data = this.filteredChartData.filter(
-            (item) =>
-              item.timestamp * 1000 > start && item.timestamp * 1000 < end
-          )
-          rollups = data.reduce((mome, item) => {
-            ROLLUPS.forEach((rollup) => {
-              const newRollup = item.rollups[rollup]
-              mome[rollup] = !mome[rollup]
-                ? newRollup
-                : mome[rollup] + newRollup
-            })
-            return mome
-          }, {})
-          caches[params.axisValue] = rollups
-        } else {
-          rollups = caches[params.axisValue]
-        }
+        rollups = this._getRollupsByTime(params.axisValue)
+        caches[params.axisValue] = rollups
       }
       return `<div class="chart-popover-content">
                 <div class="chart-popover-title">${params.axisValue}</div>
@@ -405,21 +370,38 @@ export default {
                     ${ROLLUPS.map(
                       (rollup) =>
                         `<div class="chart-popover-rollup">
-                                <div class="name">
-                                ${rollup}
-                                </div>
-                                <div class="transactions">
-                                ${!rollups[rollup] ? 0 : rollups[rollup]}
-                                </div>
-                                <div class="percentage">
-                                ${numeral(rollups[rollup] / params.data).format(
-                                  '0.00%'
-                                )}
-                                </div>
-                              </div>`
+                            <div class="name">${rollup}</div>
+                            <div class="transactions">${
+                              !rollups[rollup] ? 0 : rollups[rollup]
+                            }</div>
+                            <div class="percentage"> ${numeral(
+                              rollups[rollup] / params.data
+                            ).format('0.00%')} </div>
+                         </div>
+                         `
                     ).join('')}
                  </div>
               </div>`
+    },
+    _getRollupsByTime(axisValue) {
+      if (this.currentChartTime === 3) {
+        return this.filteredChartData.find(
+          ({ timestamp_read }) => timestamp_read === axisValue
+        ).rollups
+      }
+      const { start, end } = getMonthStartAndEnd(new Date(axisValue).getTime())
+      const data = this.filteredChartData.filter(
+        (item) =>
+          padTimestamp(item.timestamp) > start &&
+          padTimestamp(item.timestamp) < end
+      )
+      return data.reduce((mome, item) => {
+        ROLLUPS.forEach((rollup) => {
+          const newRollup = item.rollups[rollup]
+          mome[rollup] = !mome[rollup] ? newRollup : mome[rollup] + newRollup
+        })
+        return mome
+      }, {})
     },
   },
 }

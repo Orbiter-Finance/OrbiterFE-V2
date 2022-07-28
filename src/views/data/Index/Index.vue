@@ -4,6 +4,10 @@
     <div class="dapp-daily-data">
       <div class="head">
         <rollups
+          :customRollups="[
+            { label: 'Arbitrum', value: 'arbitrum' },
+            { label: 'Optimism', value: 'optimism' },
+          ]"
           :value="currentRollup"
           @rollup-change="(value) => (currentRollup = value)"
         />
