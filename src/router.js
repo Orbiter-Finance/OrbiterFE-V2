@@ -40,7 +40,7 @@ export default new Router({
       path: '/transactionsDetail',
       component: (resolve) =>
         require([
-          './views/data/transactionsDetail/TransactionsDetail',
+          './views/data/TransactionsDetail/TransactionsDetail',
         ], resolve),
       meta: {
         title: 'Orbiter',
