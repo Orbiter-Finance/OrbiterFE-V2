@@ -1,8 +1,6 @@
 import WalletConnect from '@walletconnect/client'
 import QRCodeModule from '@walletconnect/qrcode-modal'
 import { userDeniedMessage, showMessage } from '../../constants/web3/getWeb3'
-import env from '../../../../env'
-import Web3 from 'web3'
 import {
   globalSelectWalletConf,
   updateSelectWalletConfPayload,
@@ -11,7 +9,6 @@ import {
 import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
 import { localWeb3 } from '../../constants/contract/localWeb3'
-import { Coin_ABI } from '../../constants/contract/contract.js'
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code

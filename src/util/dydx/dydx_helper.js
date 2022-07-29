@@ -4,8 +4,6 @@ import BigNumber from 'bignumber.js'
 import { ethers, utils } from 'ethers'
 import config from '../../core/utils/config'
 import util from '../util'
-import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
-import { walletConnectSignTypedData } from '../../util/walletsDispatchers'
 const DYDX_MAKERS = {
   '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5': {
     starkKey:
