@@ -23,6 +23,7 @@
         :data="tableData"
         style="width: 100%"
         empty-text="No Items"
+        :default-sort="defaultSort"
         @row-click="onRowClick"
         @sort-change="onSortChange"
       >
@@ -75,9 +76,7 @@
         >
           <template slot-scope="scope"
             ><div class="data">
-              {{
-                numeral(scope.row[currentFilter].active_users).format('0,0')
-              }}
+              {{ numeral(scope.row[currentFilter].active_users).format('0,0') }}
             </div>
           </template>
         </el-table-column>
@@ -179,6 +178,7 @@ export default {
       selectors,
       PAGE_SIZE,
       dapps: {},
+      defaultSort: { prop: 'all_users', order: 'descending' },
       currentRollup: 'arbitrum',
       currentFilter: selectors[0].value,
       tableData: [],
@@ -246,12 +246,9 @@ export default {
       }
 
       if (
-        [
-          'active_users',
-          'new_users',
-          'interactions',
-          'new_users_age',
-        ].includes(prop)
+        ['active_users', 'new_users', 'interactions', 'new_users_age'].includes(
+          prop
+        )
       ) {
         this.tableData = tableData.sort((a, b) => {
           const aData = a[this.currentFilter][prop]
@@ -279,7 +276,13 @@ export default {
         return []
       }
       const start = (this.page - 1) * PAGE_SIZE
-      return allData.slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
+      return allData
+        .slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
+        .sort((a, b) => {
+          const nA = Number(a['all_users'])
+          const nB = Number(b['all_users'])
+          return nB - nA
+        })
     },
   },
 }

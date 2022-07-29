@@ -73,6 +73,10 @@ module.exports = {
           '^/send': '',
         },
       },
+       '/api/v1/l2_data': {
+        target: 'https://l2api.orbiter.finance/',
+        changeOrigin: true,
+      },
     },
     headers: {
       'Access-Control-Allow-Origin': '*',

@@ -41,8 +41,5 @@ export default {
   :nth-child(3) {
     background: rgba(223, 45, 56, 0.6);
   }
-  :nth-child(4) {
-    background: rgba(223, 45, 56, 0.4);
-  }
 }
 </style>

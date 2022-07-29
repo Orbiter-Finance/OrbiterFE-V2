@@ -19,6 +19,7 @@
       <el-table
         :data="tableData"
         style="width: 100%"
+        :default-sort="defaultSort"
         empty-text="No Items"
         @sort-change="onSortChange"
       >
@@ -180,6 +181,7 @@ export default {
   data() {
     return {
       PAGE_SIZE,
+      defaultSort: { prop: 'launch_time', order: 'descending' },
       currentRollup: 'arbitrum',
       contracts: {},
       tableData: [],
@@ -236,7 +238,13 @@ export default {
         return []
       }
       const start = (this.page - 1) * PAGE_SIZE
-      return allData.slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
+      return allData
+        .slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
+        .sort((a, b) => {
+          const aTime = new Date(a.launch_time).getTime()
+          const bTime = new Date(b.launch_time).getTime()
+          return bTime - aTime
+        })
     },
     onSortChange({ prop, order }) {
       const tableData = this.tableData

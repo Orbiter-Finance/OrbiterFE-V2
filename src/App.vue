@@ -1,5 +1,13 @@
 <template>
-  <div id="app" :class="['ob-scrollbar', `${$store.state.themeMode}-theme`, `app${isMobile ? '-mobile' : ''}`]" :style="styles">
+  <div
+    id="app"
+    :class="[
+      'ob-scrollbar',
+      `${$store.state.themeMode}-theme`,
+      `app${isMobile ? '-mobile' : ''}`,
+    ]"
+    :style="styles"
+  >
     <div class="app-content">
       <keep-alive>
         <TopNav />
@@ -22,7 +30,9 @@
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
-import walletDispatchers, { getCurrentLoginInfoFromLocalStorage } from "./util/walletsDispatchers"
+import walletDispatchers, {
+  getCurrentLoginInfoFromLocalStorage,
+} from './util/walletsDispatchers'
 import { isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
@@ -72,7 +82,7 @@ export default {
           }
         }
       }
-    }
+    },
   },
   data() {
     return {
@@ -82,13 +92,16 @@ export default {
     }
   },
   components: {
-    TopNav, BottomNav, History, HeaderDialog
+    TopNav,
+    BottomNav,
+    History,
+    HeaderDialog,
   },
   async mounted() {
     getZkToken.getSupportZKTokenList()
 
     // init wallet info by the localStorage
-    this.performInitCurrentLoginWallet();
+    this.performInitCurrentLoginWallet()
   },
   // watch: {
   //   '$store.getters.realSelectMakerInfo': function (newValue) {
@@ -97,8 +110,7 @@ export default {
   // },
   methods: {
     performInitCurrentLoginWallet() {
-
-      performInitMobileAppWallet();
+      performInitMobileAppWallet()
 
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
@@ -121,6 +133,10 @@ export default {
 </script>
 
 <style lang="scss">
+// fix 在ios设备中，el-select组件下拉框，点击次才能选中问题。
+.el-scrollbar .el-scrollbar__bar {
+  opacity: 1 !important;
+}
 .app {
   .app-content {
     .main {

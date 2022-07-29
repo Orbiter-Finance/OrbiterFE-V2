@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+const Data = () => import('./views/data/Index/Index.vue')
+const DataDetail = () => import('./views/data/DataDetail/DataDetail.vue')
+
 Vue.use(Router)
 
 // const originalPush = Router.prototype.push
@@ -30,7 +33,7 @@ export default new Router({
     },
     {
       path: '/data',
-      component: (resolve) => require(['./views/data/Index/Index'], resolve),
+      component: Data,
       meta: {
         title: 'Orbiter',
         keepAlive: true,
@@ -38,10 +41,7 @@ export default new Router({
     },
     {
       path: '/dataDetail',
-      component: (resolve) =>
-        require([
-          './views/data/DataDetail/DataDetail.vue',
-        ], resolve),
+      component: DataDetail,
       meta: {
         title: 'Orbiter',
         keepAlive: true,

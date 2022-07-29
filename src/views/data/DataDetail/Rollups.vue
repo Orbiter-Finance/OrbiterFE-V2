@@ -17,6 +17,7 @@
         :data="tableData"
         style="width: 100%"
         empty-text="No Items"
+        :default-sort="defaultSort"
         @sort-change="onSortChange"
       >
         <el-table-column fixed label="Name" width="150">
@@ -110,21 +111,49 @@
                 width="280"
                 trigger="hover"
               >
+                Others
                 <div class="TVL-detail">
-                  <div
-                    class="TVL-item"
-                    v-for="(item, i) in scope.row.TVL.list"
-                    :key="i"
-                  >
-                    <div class="TVL-token">{{ item.name }}</div>
+                  <div class="TVL-item">
+                    <div class="TVL-token">Stable Coins</div>
                     <div class="TVL-amount">
-                      {{ numeral(item.value_usd).format('$ 0.00 a') }}
+                      {{ numeral(scope.row.TVL.Stable).format('$ 0.00 a') }}
                     </div>
                     <div class="TVL-percent">
                       {{
-                        numeral(item.value_usd / scope.row.TVL.all).format(
-                          '0.00%'
+                        numeral(
+                          scope.row.TVL.Stable / scope.row.TVL.all
+                        ).format('0.00%')
+                      }}
+                    </div>
+                  </div>
+                  <div class="TVL-item">
+                    <div class="TVL-token">ETH/BTC</div>
+                    <div class="TVL-amount">
+                      {{
+                        numeral(scope.row.TVL.BTC + scope.row.TVL.ETH).format(
+                          '$ 0.00 a'
                         )
+                      }}
+                    </div>
+                    <div class="TVL-percent">
+                      {{
+                        numeral(
+                          (scope.row.TVL.BTC + scope.row.TVL.ETH) /
+                            scope.row.TVL.all
+                        ).format('0.00%')
+                      }}
+                    </div>
+                  </div>
+                  <div class="TVL-item">
+                    <div class="TVL-token">Others</div>
+                    <div class="TVL-amount">
+                      {{ numeral(scope.row.TVL.Others).format('$ 0.00 a') }}
+                    </div>
+                    <div class="TVL-percent">
+                      {{
+                        numeral(
+                          scope.row.TVL.Others / scope.row.TVL.all
+                        ).format('0.00%')
                       }}
                     </div>
                   </div>
@@ -132,7 +161,11 @@
                 <percent
                   class="reference"
                   slot="reference"
-                  :data="scope.row.TVL.list.map((item) => item.value_usd)"
+                  :data="[
+                    scope.row.TVL.BTC + scope.row.TVL.ETH,
+                    scope.row.TVL.Others,
+                    scope.row.TVL.Stable,
+                  ]"
                 />
               </el-popover>
             </div>
@@ -220,6 +253,7 @@ export default {
   data() {
     return {
       rollups: {},
+      defaultSort: { prop: 'txs', order: 'descending' },
       selectors,
       currentFilter: selectors[0].value,
       tableData: [],
@@ -242,17 +276,23 @@ export default {
     const rollups = await getRollups()
     this.$loader.hide()
     this.rollups = rollups
-    this.tableData = rollups && rollups.table_data ? rollups.table_data : []
+    this.tableData = this._getDefaultTableData()
   },
   methods: {
     numeral,
     isEmpty,
     onSortChange({ prop, order }) {
       const rollups = this.rollups
-      const tableData = rollups && rollups.table_data ? rollups.table_data : []
+      const tableData =
+        rollups && rollups.table_data
+          ? Object.keys(rollups.table_data).map((item) => ({
+              rollup_name: item,
+              ...rollups.table_data[item],
+            }))
+          : []
 
       if (!order === null) {
-        this.tableData = tableData
+        this.tableData = this._getDefaultTableData()
         return
       }
 
@@ -270,7 +310,7 @@ export default {
         this.tableData = tableData.sort((a, b) => {
           const nA = Number(a[prop][this.currentFilter])
           const nB = Number(b[prop][this.currentFilter])
-          return isAscending ? nA - nB : nB - nB
+          return isAscending ? nA - nB : nB - nA
         })
         return
       }
@@ -291,9 +331,25 @@ export default {
           })
           break
         default:
-          this.tableData = tableData
+          this.tableData = this._getDefaultTableData()
           break
       }
+    },
+    _getDefaultTableData() {
+      const rollups = this.rollups
+      const tableData =
+        rollups && rollups.table_data
+          ? Object.keys(rollups.table_data).map((item) => ({
+              rollup_name: item,
+              ...rollups.table_data[item],
+            }))
+          : []
+
+      return tableData.sort((a, b) => {
+        const nA = Number(a['txs'][this.currentFilter])
+        const nB = Number(b['txs'][this.currentFilter])
+        return nB - nA
+      })
     },
   },
 }
@@ -321,6 +377,7 @@ export default {
       color: #333333;
       font-size: 14px;
       .no {
+        width: 20px;
         font-family: 'Inter';
         font-style: normal;
         font-weight: 400;

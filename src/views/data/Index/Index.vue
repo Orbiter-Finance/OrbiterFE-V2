@@ -175,7 +175,9 @@ export default {
     async _getDappDailyData() {
       const baseDappDailyData = await getDappDailyData(this.currentRollup)
       this.baseDappDailyData = baseDappDailyData
-      this.tableData = baseDappDailyData && baseDappDailyData.table_data
+
+      const table_data = baseDappDailyData && baseDappDailyData.table_data
+      this.tableData = table_data
     },
   },
 }
