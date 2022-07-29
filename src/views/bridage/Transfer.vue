@@ -1876,7 +1876,6 @@ export default {
       if (!selectMakerInfo) {
         return
       }
-
       // dYdX can't get maker's balance, don't check it
       if (selectMakerInfo.c2ID == 11 || selectMakerInfo.c2ID == 511) {
         this.makerMaxBalance = Number.MAX_SAFE_INTEGER
