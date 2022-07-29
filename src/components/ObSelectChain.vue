@@ -29,7 +29,11 @@
           @click="getChainInfo(item, index)"
           class="contentItem"
         >
-          <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+          <svg-icon
+            class="logo"
+            style="margin-right: 1.5rem"
+            :iconName="item.icon"
+          ></svg-icon>
           <span>{{ item.chain }}</span>
           <CommLoading
             v-if="loadingIndex == index"
@@ -47,8 +51,8 @@
 import Web3 from 'web3'
 import { DydxHelper } from '../util/dydx/dydx_helper'
 import { IMXHelper } from '../util/immutablex/imx_helper'
-import util from '../util/util.js';
-import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
+import util from '../util/util.js'
+import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { chain2icon } from '../util'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
@@ -86,7 +90,7 @@ export default {
       }
       const chainOrderIds = [
         3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
-        511, 13, 513, 4, 44,14,514,15,515
+        511, 13, 513, 4, 44, 14, 514, 15, 515,
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
@@ -127,7 +131,8 @@ export default {
               if (
                 !web3State.starkNet.starkIsConnected &&
                 !web3State.starkNet.starkNetAddress
-              ) return
+              )
+                return
             }
           }
           // immutableX
@@ -135,7 +140,7 @@ export default {
             this.loadingIndex = index
             const coinbase = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
             const imxHelper = new IMXHelper(e.localID)
-            coinbase && await imxHelper.ensureUser(coinbase)
+            coinbase && (await imxHelper.ensureUser(coinbase))
           }
 
           // dydx
@@ -171,9 +176,7 @@ export default {
     stopPenetrate(e) {
       e.stopPropagation
     },
-    search() {
-      console.log('search')
-    },
+    search() {},
     checkKeyWord() {},
     isStarkSystem(chainId) {
       return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1

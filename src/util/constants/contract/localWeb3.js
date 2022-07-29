@@ -40,7 +40,6 @@ function localWSWeb3(chainID) {
     //   },
     // }
     const host = env.localWSProvider[chainID]
-    console.log('host', host)
     if (!host) {
       return null
     }

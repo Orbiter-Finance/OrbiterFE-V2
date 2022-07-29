@@ -1,17 +1,17 @@
 import Web3 from 'web3'
 import { store } from '../../../store'
 import pollWeb3 from './pollWeb3'
-import { findMatchWeb3ProviderByWalletType } from '../../walletsDispatchers/utils';
-import { METAMASK } from "../../walletsDispatchers"
-import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData"
+import { findMatchWeb3ProviderByWalletType } from '../../walletsDispatchers/utils'
+import { METAMASK } from '../../walletsDispatchers'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
 import { updateCoinbase, updateIsInstallMeta } from '../../../composition/hooks'
 import util from '../../util'
 
 const showMessage = util.showMessage
 
 async function installWeb3() {
-  var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK);
-  if (web3Provider) { 
+  var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK)
+  if (web3Provider) {
     try {
       await web3Provider.enable()
     } catch (error) {
@@ -45,7 +45,6 @@ async function getWeb3() {
     }
   })
   await web3.eth.getCoinbase((error, coinbase) => {
-    console.log('coinbase=', coinbase, error)
     if (error || !coinbase) {
       showMessage(
         'get coinbase failed，please unlock metamask or generate a new address',
@@ -54,23 +53,20 @@ async function getWeb3() {
       compatibleGlobalWalletConf.value.walletPayload.provider
         .send('eth_requestAccounts')
         .then((coin) => {
-          // console.log('result =', coin.result)
           updateCoinbase(coin.result[0])
         })
         .catch((err) => {
-          console.log('err =', err)
           showMessage(err.message, 'error')
           updateCoinbase('')
         })
     } else {
-      // showMessage(`get address ${coinbase}`, 'success')
       updateCoinbase(coinbase)
-      // console.log('account =', web3.eth.accounts)
     }
   })
   pollWeb3()
 }
 
-const userDeniedMessage = () => showMessage('User denied account access', 'error');
+const userDeniedMessage = () =>
+  showMessage('User denied account access', 'error')
 
 export { installWeb3, getWeb3, showMessage, userDeniedMessage }
