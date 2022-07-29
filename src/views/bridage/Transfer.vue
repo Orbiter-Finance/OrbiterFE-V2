@@ -1277,7 +1277,7 @@ export default {
       // const oldVal = this[`c${idx}Balance`]
       this[`c${idx}Balance`] = null
       transferCalculate
-        .getTransferBalance(id, addr, name, web3State.coinbase)
+        .getTransferBalance(id, addr, name, web3State.coinbase || compatibleGlobalWalletConf.value.walletPayload.walletAddress)
         .then(
           (response) =>
             (this[`c${idx}Balance`] = (
@@ -1285,7 +1285,7 @@ export default {
               10 ** selectMakerInfo.precision
             ).toFixed(6))
         )
-        .catch(() => (this[`c${idx}Balance`] = 0))
+        .catch(() => (this[`c${idx}Balance`] = Number(0).toFixed(6)))
     }
 
     watchEffect(() => {

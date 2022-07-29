@@ -5,8 +5,7 @@ import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import config from '../utils/config'
 import orbiterCore from '../../orbiterCore'
-import { store } from '../../store'
-import { private_key_to_pubkey_hash, sign_musig } from "zksync-crypto"
+import { private_key_to_pubkey_hash, sign_musig } from 'zksync-crypto'
 import { transferDataState } from '../../composition/hooks'
 
 const BigNumber = require('bignumber.js')
@@ -66,7 +65,8 @@ export default {
       return
     }
     let ethPrice = transferDataState.ethPrice
-      ? transferDataState.ethPrice : 2000
+      ? transferDataState.ethPrice
+      : 2000
 
     if (localChainID !== 12 && localChainID !== 512) {
       throw new Error('getZKSpaceGasFeeError：wrongChainID')
