@@ -3,7 +3,7 @@ import { store } from '../../store'
 
 let isWaitingMainnetZKTokenApiResponse = false
 let isWaitingRinkebyZKTokenApiResponse = false
-let zkTokenTimer = null;
+let zkTokenTimer = null
 export default {
   async getSupportZKTokenList() {
     getAllZKTokenList()
@@ -16,8 +16,8 @@ export default {
 }
 
 async function getAllZKTokenList() {
-  !isWaitingMainnetZKTokenApiResponse && getMainnetZKTokenList();
-  !isWaitingRinkebyZKTokenApiResponse && getRinkebyZKTokenList();
+  !isWaitingMainnetZKTokenApiResponse && getMainnetZKTokenList()
+  !isWaitingRinkebyZKTokenApiResponse && getRinkebyZKTokenList()
 }
 async function getMainnetZKTokenList() {
   getTokenList(3)
@@ -29,7 +29,9 @@ function isMainnetZKToken(id) {
   return id == 3
 }
 function setWaitingFlag(isMainnet, isWaiting = false) {
-  isMainnet ? (isWaitingMainnetZKTokenApiResponse = isWaiting) : (isWaitingRinkebyZKTokenApiResponse = isWaiting)
+  isMainnet
+    ? (isWaitingMainnetZKTokenApiResponse = isWaiting)
+    : (isWaitingRinkebyZKTokenApiResponse = isWaiting)
 }
 async function getTokenList(localChainID) {
   if (localChainID !== 3 && localChainID !== 33) {
@@ -71,12 +73,13 @@ async function getTokenList(localChainID) {
       }
       setWaitingFlag(isMainnet)
     }
-    hasMore && store.commit('updateZKTokenList', {
-      chainID: localChainID,
-      tokenList: zkTokenAllList,
-    })
+    hasMore &&
+      store.commit('updateZKTokenList', {
+        chainID: localChainID,
+        tokenList: zkTokenAllList,
+      })
   } catch (error) {
-    console.log('zk_TokenListGetError =', error)
+    console.warn('zk_TokenListGetError =', error)
     setWaitingFlag(isMainnet)
   }
 }

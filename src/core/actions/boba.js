@@ -53,7 +53,8 @@ export default {
       .then((result) => result.data)
     return resp.result
   },
-  getTxList: async function (req, chainId, isTokentx = true) {
+  //  isTokentx = true
+  getTxList: async function (req, chainId) {
     const endpoint =
       chainId == 513
         ? 'https://blockexplorer.rinkeby.boba.network/graphiql'

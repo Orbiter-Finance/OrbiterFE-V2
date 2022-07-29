@@ -105,6 +105,8 @@ import Middle from '../../util/middle/middle'
 import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
+import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
+// import { localWeb3 } from '../../constants/contract/localWeb3'
 import {
   sendTransfer,
   getStarkMakerAddress,
@@ -135,8 +137,11 @@ import {
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 
-const { walletDispatchersOnSignature, walletDispatchersOnSwitchChain } =
-  walletDispatchers
+const {
+  walletDispatchersOnSignature,
+  walletDispatchersOnSwitchChain,
+  walletDispatchersOnContractSignature,
+} = walletDispatchers
 
 export default {
   name: 'Confirm',
@@ -429,7 +434,6 @@ export default {
         tokenAddress.toLowerCase() ===
         '0x000000000000000000000000000000000000800a'
       if (!isMainCoin) {
-        console.log('ERC20 Token Transfer')
         const web3 = new Web3()
         const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
         params.data = tokenContract.methods
@@ -438,7 +442,6 @@ export default {
         params.to = tokenAddress
         params.customData.feeToken = tokenAddress
       } else {
-        console.log('ETH Transfer')
         params.value = ethers.BigNumber.from(amountToSend)
         params.to = toAddress
         params.customData.feeToken =
@@ -810,9 +813,7 @@ export default {
         return
       }
 
-      if (
-       !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -863,9 +864,7 @@ export default {
       }
     },
     async starknetTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (
-        !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -922,9 +921,7 @@ export default {
       }
     },
     async imxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (
-       !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -979,9 +976,7 @@ export default {
       }
     },
     async dydxTransfer(from, selectMakerInfo, value, fromChainID) {
-      if (
-       !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         this.transferLoading = false
         return
       }
@@ -1034,9 +1029,7 @@ export default {
     },
 
     async transferCrossAddress(from, selectMakerInfo, value, fromChainID) {
-      if (
-        !walletIsLogin.value
-      ) {
+      if (!walletIsLogin.value) {
         return
       }
 
@@ -1047,6 +1040,21 @@ export default {
 
       try {
         const { transferExt } = transferDataState
+
+        if (compatibleGlobalWalletConf.value.walletType == WALLETCONNECT) {
+          //  const _web3 = localWeb3(fromChainID)
+          //   const tokenContract = new _web3.eth.Contract(Coin_ABI, tokenAddress)
+          // const tokenTransferData = await tokenContract.methods
+          //   .transfer(receiverAddress, _web3.utils.toHex(value))
+          //   .encodeABI()
+          //         if (util.isEthTokenAddress(contractAddress)) {
+          //     // get contract data
+          //    const result = await walletConnectSendTransaction(fromChainID, from, contractAddress,amount, crossAddress.transferHex());
+          //     return
+          //         }else {
+          //     return;
+          //         }
+        }
         const provider = new ethers.providers.Web3Provider(
           compatibleGlobalWalletConf.value.walletPayload.provider
         )
@@ -1108,7 +1116,6 @@ export default {
               compatibleGlobalWalletConf.value.walletType
             ]
           if (matchAddChainDispatcher) {
-            console.log('=====', matchAddChainDispatcher)
             matchAddChainDispatcher(
               compatibleGlobalWalletConf.value.walletPayload.provider
             )
@@ -1135,7 +1142,6 @@ export default {
       }
 
       this.transferLoading = true
-
 
       if (toChainID != 11 && toChainID != 511) {
         let shouldReceiveValue = orbiterCore.getToAmountFromUserAmount(
@@ -1238,6 +1244,20 @@ export default {
           )
         } else {
           // When tokenAddress is erc20
+          const matchSignatureDispatcher =
+            walletDispatchersOnContractSignature[
+              compatibleGlobalWalletConf.value.walletType
+            ]
+          if (matchSignatureDispatcher) {
+            matchSignatureDispatcher(
+              account,
+              selectMakerInfo,
+              tValue.tAmount,
+              fromChainID,
+              this.onTransferSucceed
+            )
+            return
+          }
           const transferContract = getTransferContract(
             fromChainID,
             selectMakerInfo
@@ -1261,7 +1281,6 @@ export default {
             gasLimit = 21000
           }
           const objOption = { from: account, gas: gasLimit }
-          console.log('transferContract: ', transferContract)
           transferContract.methods
             .transfer(to, tValue.tAmount)
             .send(objOption, (error, transactionHash) => {
