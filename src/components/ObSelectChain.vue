@@ -133,21 +133,26 @@ export default {
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index
-            const { coinbase } = web3State
+            const coinbase = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
             const imxHelper = new IMXHelper(e.localID)
             coinbase && await imxHelper.ensureUser(coinbase)
           }
 
           // dydx
           if (e.localID == 11 || e.localID == 511) {
+            try {
             this.loadingIndex = index
-            const { coinbase } = web3State
+            const coinbase = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
             const dydxHelper = new DydxHelper(
               e.localID,
               new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
               'MetaMask'
             )
             await dydxHelper.getDydxClient(coinbase)
+            }catch(error) {
+              console.log(error);
+            }
+            
           }
 
           this.loadingIndex = -1

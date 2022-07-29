@@ -1,6 +1,8 @@
 import WalletConnect from '@walletconnect/client'
 import QRCodeModule from '@walletconnect/qrcode-modal'
 import { userDeniedMessage, showMessage } from '../../constants/web3/getWeb3'
+import env from '../../../../env'
+import Web3 from 'web3'
 import {
   globalSelectWalletConf,
   updateSelectWalletConfPayload,
@@ -10,9 +12,7 @@ import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
 import { localWeb3 } from '../../constants/contract/localWeb3'
 import { Coin_ABI } from '../../constants/contract/contract.js'
-
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
-
 // this hof helps the following functions to throw errors
 // avoid duplicate code
 export const withErrorCatcher = (fn) => {
@@ -22,9 +22,41 @@ export const withErrorCatcher = (fn) => {
   }
 }
 
+const provider = {
+  request: async (request) => {
+    let result = null
+    switch (request.method) {
+      case 'wallet_switchEthereumChain':
+        result = await walletConnectSwitchChain(request.params).then()
+        break
+      default:
+        result = await connector.sendCustomRequest(request)
+        break
+    }
+    return result
+  },
+  sendAsync: async (params, callback) => {
+    connector
+      .sendCustomRequest(params)
+      .then((result) => {
+        callback(null, { result })
+      })
+      .catch((error) => {
+        callback(error)
+      })
+  },
+}
 // transfer data after connect success into a valid data structure
 // there r different processing between the initial connect and the repeated connect
 const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
+  // const connChainId = payload.chainId;
+  // let web3 = {}
+  // for (const localId in env.localChainID_netChainID) {
+  //     if (env.localChainID_netChainID[localId] == connChainId) {
+  //       web3 = new Web3(env.localProvider[localId])
+  //       break;
+  //     }
+  // }
   if (connected) {
     const {
       _accounts = [],
@@ -33,6 +65,8 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
       _peerMeta = {},
     } = payload
     return {
+      provider: provider,
+      // connector,
       walletAddress: _accounts[0] || '',
       networkId: _chainId,
       peerId: _peerId,
@@ -44,6 +78,8 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
   const { accounts = [], chainId = '', peerId = '', peerMeta = {} } = payloadObj
   const [walletAddress = ''] = accounts
   return {
+    provider: provider,
+    // connector,
     walletAddress,
     networkId: chainId,
     peerId,
@@ -54,7 +90,7 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
 const onConnectSuccessCallback = withErrorCatcher(
   (payload, connected = false) => {
     // this console is necessary
-    console.successLog('WalletConnect connect success', payload)
+    console.successLog('WalletConnect connect success', payload, connected)
     const walletInfo = performWalletConnectAccountInfo(payload, connected)
     updateGlobalSelectWalletConf(WALLETCONNECT, walletInfo, true)
     // if connect successful, set the local login info
@@ -104,7 +140,7 @@ export const walletConnectDispatcherOnInit = async () => {
     bridge: 'https://bridge.walletconnect.org',
     qrcodeModal: QRCodeModule,
   })
-
+ 
   if (connector.connected) {
     // if it's already connected, invoke onConnectSuccessCallback for the data init
     onConnectSuccessCallback(null, connector, true)
@@ -154,19 +190,21 @@ export const walletConnectDispatcherOnSignature = async (
     })
 }
 
-export function walletConnectSendTransaction(chainId, from, to, value, data) {
-  return new Promise(async (resolve, reject) => {
-    const web3 = localWeb3(chainId)
-    const nonce = await web3.eth.getTransactionCount(from)
-    const gasPrice = await web3.eth.getGasPrice()
-    const gasLimit = await web3.eth.estimateGas({ to, data })
+export async function walletConnectSendTransaction(
+  chainId,
+  from,
+  to,
+  value,
+  data
+) {
+  const web3 = localWeb3(chainId)
+  const nonce = await web3.eth.getTransactionCount(from)
+  return new Promise((resolve, reject) => {
     connector
       .sendTransaction({
         from,
         to,
-        gasPrice,
         value,
-        gasLimit,
         data,
         nonce,
       })
@@ -179,47 +217,41 @@ export function walletConnectSendTransaction(chainId, from, to, value, data) {
       })
   })
 }
-export const walletConnectDispatcherOnContractSignature = async (
-  from,
-  selectMakerInfo,
-  value,
-  fromChainID,
-  onTransferSucceed
-) => {
-  const tokenAddress =
-    fromChainID == selectMakerInfo.c1ID
-      ? selectMakerInfo.t1Address
-      : selectMakerInfo.t2Address
-  const receiverAddress = selectMakerInfo.makerAddress
-  const _web3 = localWeb3(fromChainID)
-    const tokenContract = new _web3.eth.Contract(Coin_ABI, tokenAddress)
-  const tokenTransferData = await tokenContract.methods
-    .transfer(receiverAddress, _web3.utils.toHex(value))
-    .encodeABI()
-  const gasLimit = await _web3.eth.estimateGas({
-    to: receiverAddress,
-    data: tokenTransferData,
+
+export async function walletConnectSwitchChain(params) {
+  return new Promise((resolve, reject) => {
+    connector
+      .sendCustomRequest({
+        method: 'wallet_switchEthereumChain',
+        params,
+      })
+      .then(() => {
+        resolve(null)
+      })
+      .catch((e) => {
+        reject(e)
+      })
+    // bc Metamask Mobile and Walletconnect appear to have issues with wallet_switchEthereumChain (the above will never finish)
+    // the following will time out rejecting the promise
+    let timeout = 0
+    let timer = setInterval(() => {
+      if (
+        Number(params[0].chainId) ===
+        Number(globalSelectWalletConf.walletPayload.networkId)
+      ) {
+        clearInterval(timer)
+        return resolve(true)
+      }
+      timeout++
+      if (timeout >= 10) {
+        clearInterval(timer)
+        return reject(false)
+      }
+    }, 1000)
   })
-  const gasPrice = await _web3.eth.getGasPrice()
-  const nonce = await _web3.eth.getTransactionCount(from)
-  connector
-    .sendTransaction({
-      from,
-      to: tokenAddress,
-      gasPrice,
-      gasLimit,
-      data: tokenTransferData,
-      nonce,
-    })
-    .then((result) => {
-      onTransferSucceed(from, selectMakerInfo, value, fromChainID, result)
-    })
-    .catch((err) => {
-      console.log('err', err)
-      showMessage(err, 'error')
-    })
 }
 
-export const walletConnectDispatcherOnAddChain = () => {
+export const walletConnectDispatcherOnAddChain = (...result) => {
+  console.log('walletConnectDispatcherOnAddChain:', result);
   showMessage('You must Change Networks on your wallet app', 'error')
 }

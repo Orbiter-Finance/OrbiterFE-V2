@@ -21,5 +21,4 @@ export default {
     walletDispatchersOnDisconnect: mobileAppWebviewDispatchersOnDisconnect,
     loginStatusCheckerOfWallets: loginStatusCheckerOfAppWebview,
     walletDispatchersOnSignature: {},
-    walletDispatchersOnContractSignature: {},
 }

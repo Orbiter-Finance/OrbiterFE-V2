@@ -8,8 +8,10 @@ import {
   walletConnectDispatcherOnDisconnect,
   walletConnectDispatcherOnInit,
   walletConnectDispatcherOnSignature,
-  walletConnectDispatcherOnContractSignature,
+  walletConnectSendTransaction,
   walletConnectDispatcherOnAddChain,
+  walletConnectSignTypedData,
+  walletConnectSwitchChain,
 } from './walletConnectPCBrowserDispatcher'
 
 // metamask
@@ -51,9 +53,7 @@ const loginStatusCheckerOfPCBrowserWallet = {
 const pcBrowserWalletDispatchersOnSignature = {
     [WALLETCONNECT]: walletConnectDispatcherOnSignature,
 }
-const pcBrowserWalletDispatchersOnContractSignature = {
-    [WALLETCONNECT]: walletConnectDispatcherOnContractSignature,
-}
+
 
 const pcBrowserWalletDispatchersOnAddChain = {
     [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
@@ -70,7 +70,9 @@ export default {
     walletDispatchersOnDisconnect: pcBrowserWalletDispatchersOnDisconnect,
     walletDispatchersOnAddChain: pcBrowserWalletDispatchersOnAddChain,
     walletDispatchersOnSignature: pcBrowserWalletDispatchersOnSignature,
-    walletDispatchersOnContractSignature:pcBrowserWalletDispatchersOnContractSignature,
     walletDispatchersOnSwitchChain: pcBrowserDispatchersOnSwitchChain,
-    loginStatusCheckerOfWallets: loginStatusCheckerOfPCBrowserWallet
+    loginStatusCheckerOfWallets: loginStatusCheckerOfPCBrowserWallet,
+    walletConnectSendTransaction,
+    walletConnectSignTypedData,
+    walletConnectSwitchChain
 }
