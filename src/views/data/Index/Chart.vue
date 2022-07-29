@@ -249,6 +249,10 @@ export default {
             },
           },
           axisLabel: {
+            interval:
+              this.currentChartTime === 6
+                ? (index) => (index % 5 === 2 ? true : false)
+                : 'auto',
             formatter:
               this.currentChartTime === 6
                 ? (value) => {
@@ -419,7 +423,7 @@ export default {
                           `<div class="chart-popover-rollup">
                             <div class="name">${rollup.name}</div>
                             <div class="transactions">
-                                ${!rollup.value ? 0 : rollup.value}
+                                ${numeral(rollup.value).format('0,0')}
                             </div>
                             <div class="percentage">
                                 ${numeral(rollup.value / params.data).format(
@@ -487,7 +491,6 @@ export default {
       padding: 0 30px;
       height: 80px;
       .title {
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         font-size: 16px;
@@ -515,7 +518,6 @@ export default {
         margin-right: 10px;
       }
       .more {
-        font-family: 'Inter';
         font-style: normal;
         display: flex;
         align-items: center;
@@ -542,7 +544,6 @@ export default {
         font-size: 14px;
         position: relative;
         .no {
-          font-family: 'Inter';
           font-style: normal;
           font-weight: 700;
           font-size: 14px;
@@ -554,7 +555,6 @@ export default {
           margin-right: 8px;
         }
         .name {
-          font-family: 'Inter';
           font-style: normal;
           font-weight: 700;
           font-size: 14px;
@@ -563,7 +563,6 @@ export default {
         .num {
           position: absolute;
           right: 0px;
-          font-family: 'Inter';
           font-style: normal;
           font-weight: 400;
           font-size: 14px;
@@ -677,7 +676,6 @@ export default {
   background: #fff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  font-family: 'Inter';
   font-style: normal;
   font-size: 14px;
   .chart-popover-title {

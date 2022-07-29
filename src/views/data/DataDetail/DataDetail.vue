@@ -100,7 +100,6 @@ export default {
         width: 150px;
         height: 40px;
         border-radius: 20px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         font-size: 16px;
@@ -164,7 +163,6 @@ export default {
   .el-table td.el-table__cell,
   .el-table th.el-table__cell {
     padding: 6px 0;
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 700;
     font-size: 14px;

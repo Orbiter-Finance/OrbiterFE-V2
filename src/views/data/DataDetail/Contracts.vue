@@ -254,12 +254,6 @@ export default {
         this.tableData = tableData
         return
       }
-      this.tableData = tableData.sort((a, b) => {
-        const aData = Number(a[prop])
-        const bData = Number(b[prop])
-        return isAscending ? aData - bData : bData - aData
-      })
-
       if (prop === 'launch_time') {
         this.tableData = tableData.sort((a, b) => {
           const aTime = new Date(a.launch_time).getTime()
@@ -267,6 +261,11 @@ export default {
           return isAscending ? aTime - bTime : bTime - aTime
         })
       }
+      this.tableData = tableData.sort((a, b) => {
+        const aData = Number(a[prop])
+        const bData = Number(b[prop])
+        return isAscending ? aData - bData : bData - aData
+      })
     },
   },
 }
@@ -296,13 +295,11 @@ export default {
       color: #333333;
       .no {
         width: 20px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
         margin-right: 20px;
       }
       .address {
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
         line-height: 24px;
@@ -316,7 +313,6 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
         font-size: 14px;
@@ -328,7 +324,6 @@ export default {
       }
     }
     .data {
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -366,14 +361,12 @@ export default {
   cursor: pointer;
 }
 .user-age-desc {
-  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
   a {
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 14px;

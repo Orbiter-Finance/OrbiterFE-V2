@@ -31,7 +31,7 @@ export default {
 .percent {
   display: flex;
   height: 12px;
-  width: 72px;
+  width: 65px;
   :nth-child(1) {
     background: #df2e2d;
   }

@@ -34,7 +34,6 @@ export default {
     height: 32px;
     line-height: 32px;
     text-align: center;
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 14px;

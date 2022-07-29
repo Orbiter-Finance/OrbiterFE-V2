@@ -200,7 +200,6 @@ export default {
       height: 80px;
       padding: 0 30px;
       .more {
-        font-family: 'Inter';
         font-style: normal;
         display: flex;
         align-items: center;
@@ -255,7 +254,6 @@ export default {
       .el-table td.el-table__cell,
       .el-table th.el-table__cell {
         padding: 6px 0;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         font-size: 14px;
@@ -275,7 +273,6 @@ export default {
         color: #333333;
         .rank {
           width: 20px;
-          font-family: 'Inter';
           font-style: normal;
           font-weight: 400;
           font-size: 14px;
@@ -291,7 +288,6 @@ export default {
           border-radius: 4px;
           margin-right: 12px;
           span {
-            font-family: 'Inter';
             font-style: normal;
             font-weight: 500;
             color: #ffffff;
@@ -304,7 +300,6 @@ export default {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          font-family: 'Inter';
           font-style: normal;
           font-weight: 500;
           font-size: 14px;
@@ -315,7 +310,6 @@ export default {
         }
       }
       .data {
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
         font-size: 14px;

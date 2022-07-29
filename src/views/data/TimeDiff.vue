@@ -28,7 +28,6 @@ export default {
 
 <style lang="scss" scoped>
 .time-diff {
-  font-family: 'Inter';
   font-style: normal;
   display: flex;
   align-items: center;

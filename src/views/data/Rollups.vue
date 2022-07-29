@@ -92,7 +92,6 @@ export default {
       height: 32px;
       background: #f5f5f5;
       border-radius: 20px;
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -134,7 +133,6 @@ export default {
   border-radius: 12px;
   border: 0;
   .el-select-dropdown__item {
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 16px;

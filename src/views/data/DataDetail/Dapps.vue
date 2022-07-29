@@ -232,7 +232,7 @@ export default {
       const isAscending = order === 'ascending'
 
       if (!order === null) {
-        this.tableData = tableData
+        this.tableData = this._getTableData()
         return
       }
 
@@ -321,7 +321,6 @@ export default {
       color: #333333;
       .rank {
         width: 20px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
         margin-right: 20px;
@@ -331,7 +330,6 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
         margin: 0 10px;
@@ -342,7 +340,6 @@ export default {
     }
 
     .data {
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -380,14 +377,12 @@ export default {
   cursor: pointer;
 }
 .new-user-age-desc {
-  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
   a {
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 14px;

@@ -14,7 +14,7 @@
     </div>
     <div class="table">
       <el-table
-        :data="tableData"
+        :data="indexTableData"
         style="width: 100%"
         empty-text="No Items"
         :default-sort="defaultSort"
@@ -24,7 +24,7 @@
           <template slot-scope="scope">
             <div class="name-column">
               <div class="no">
-                {{ scope.$index + 1 }}
+                {{ scope.row.index }}
               </div>
               <chains-logo :name="scope.row.rollup_name" />
               <div class="name" :title="scope.row.rollup_name">
@@ -111,7 +111,6 @@
                 width="280"
                 trigger="hover"
               >
-                Others
                 <div class="TVL-detail">
                   <div class="TVL-item">
                     <div class="TVL-token">Stable Coins</div>
@@ -263,6 +262,9 @@ export default {
     isMobile() {
       return isMobile.value
     },
+    indexTableData() {
+      return this.tableData.map((item, i) => ({ index: i + 1, ...item }))
+    },
   },
   components: {
     TimeDiff,
@@ -378,7 +380,6 @@ export default {
       font-size: 14px;
       .no {
         width: 20px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
         margin-right: 20px;
@@ -388,14 +389,12 @@ export default {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
         margin-left: 10px;
       }
     }
     .data {
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -416,16 +415,15 @@ export default {
       display: flex;
       align-items: center;
       .all {
-        margin-right: 8px;
+        margin-right: 5px;
         flex: 1;
       }
       :nth-child(2) {
-        width: 72px;
+        width: 65px;
       }
     }
     .TVL,
     .new-data {
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -441,14 +439,12 @@ export default {
   border: 0;
 }
 .TVL-desc {
-  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
   a {
-    font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -461,7 +457,6 @@ export default {
     align-items: center;
     justify-content: space-between;
     .TVL-token {
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 500;
       font-size: 12px;
@@ -469,7 +464,6 @@ export default {
     }
     .TVL-amount {
       flex: 1;
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 400;
       font-size: 12px;
@@ -479,7 +473,6 @@ export default {
     .TVL-percent {
       margin-left: 20px;
       flex: 0 0 50px;
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 400;
       font-size: 12px;

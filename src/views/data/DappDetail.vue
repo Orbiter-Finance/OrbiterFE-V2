@@ -476,7 +476,6 @@ export default {
     justify-content: center;
     position: relative;
     .name {
-      font-family: 'Inter';
       font-style: normal;
       font-weight: 700;
       font-size: 16px;
@@ -522,7 +521,6 @@ export default {
       .category {
         position: relative;
         padding: 0 10px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
         font-size: 12px;
@@ -540,7 +538,6 @@ export default {
       }
       .supported {
         padding: 0 4px 0 10px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 500;
         font-size: 12px;
@@ -637,7 +634,6 @@ export default {
   cursor: pointer;
 }
 .supported-l2-desc {
-  font-family: 'Inter';
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -669,7 +665,6 @@ export default {
   width: 280px;
   border-radius: 12px;
   padding: 20px;
-  font-family: 'Inter';
   font-style: normal;
   background: #fff;
   color: #333333;
