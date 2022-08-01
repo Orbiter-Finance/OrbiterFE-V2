@@ -25,9 +25,8 @@
         Daily Data,
         {{
           baseDappDailyData && baseDappDailyData.update_time
-            ? dateFormat(
-                (baseDappDailyData.update_time - 60 * 60 * 24) * 1000,
-                'yyyy-MM-dd'
+            ? formatDayDate(
+                (baseDappDailyData.update_time - 60 * 60 * 24) * 1000
               )
             : '-'
         }}
@@ -41,7 +40,7 @@
           <el-table-column
             fixed
             label="Dapp Name"
-            :width="isMobile ? 150 : 280"
+            :width="isMobile ? 150 : 350"
           >
             <template slot-scope="scope">
               <div class="name-column">
@@ -67,17 +66,17 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="launch_time" label="Launch Time" width="120">
+          <el-table-column prop="launch_time" label="Launch Time" width="130">
             <template slot-scope="scope">
               <div class="data">
-                {{ scope.row.launch_time }}
+                {{ formatDayDate(scope.row.launch_time) }}
               </div>
             </template>
           </el-table-column>
           <el-table-column
             prop="all_users"
             label="All User"
-            width="170"
+            width="120"
             align="right"
           >
             <template slot-scope="scope">
@@ -101,7 +100,7 @@
           <el-table-column
             prop="24h_new_users"
             label="24h New Users"
-            width="170"
+            width="150"
             align="right"
           >
             <template slot-scope="scope">
@@ -113,7 +112,7 @@
           <el-table-column
             prop="24h_interactions"
             label="24h Interactions"
-            width="170"
+            width="160"
             align="right"
           >
             <template slot-scope="scope">
@@ -137,7 +136,7 @@ import IconLink from '../IconLink.vue'
 import TwitterLink from '../TwitterLink.vue'
 import DappLogo from '../DappLogo.vue'
 import { getDappDailyData } from '../../../L2data/daily'
-import dateFormat from '../../../util/dateFormat'
+import { formatDayDate } from '../../../util/dateFormat'
 import { isMobile } from '../../../composition/hooks'
 
 export default {
@@ -171,7 +170,7 @@ export default {
   },
   methods: {
     numeral,
-    dateFormat,
+    formatDayDate,
     async _getDappDailyData() {
       const baseDappDailyData = await getDappDailyData(this.currentRollup)
       this.baseDappDailyData = baseDappDailyData
@@ -253,7 +252,7 @@ export default {
       }
       .el-table td.el-table__cell,
       .el-table th.el-table__cell {
-        padding: 6px 0;
+        padding: 6px 10px;
         font-style: normal;
         font-weight: 700;
         font-size: 14px;
@@ -267,6 +266,15 @@ export default {
       }
       .el-table .cell {
         padding: 0;
+      }
+      .el-table__row:nth-child(-n + 3) {
+        background: #f5f5f5;
+      }
+      .el-table__body tr.hover-row:nth-child(-n + 3) > td.el-table__cell {
+        background: #f5f5f5;
+      }
+      .el-table tbody tr:nth-child(-n + 3):hover > td {
+        background-color: #ffffff;
       }
       .name-column {
         display: flex;
@@ -296,7 +304,7 @@ export default {
           }
         }
         .name {
-          width: 70px;
+          width: 150px;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;

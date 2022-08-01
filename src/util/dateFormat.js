@@ -1,3 +1,19 @@
+const m = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Spt',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+const d = ['st', 'nd', 'rd', 'th']
+
 export default function formatDate(time, fmt = 'yyyy-MM-dd hh:mm:ss') {
   const date = new Date(
     typeof time === 'string' ? time.replace(/-/g, '/') : time
@@ -33,4 +49,22 @@ export default function formatDate(time, fmt = 'yyyy-MM-dd hh:mm:ss') {
   })
 
   return fmt
+}
+
+export function formatDayDate(time) {
+  const date = new Date(
+    typeof time === 'string' ? time.replace(/-/g, '/') : time
+  )
+
+  const dn = date.getDate()
+  let dns
+  if (dn % 10 < 1 || dn % 10 > 3) {
+    dns = d[3]
+  } else {
+    dns = d[(dn % 10) - 1]
+    if (dn == 11 || dn == 12) {
+      dns = d[3]
+    }
+  }
+  return `${m[date.getMonth()]} ${dn + dns} ${date.getFullYear()}`
 }

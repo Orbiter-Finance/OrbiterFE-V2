@@ -17,7 +17,7 @@
     </div>
     <div class="table">
       <el-table
-        :data="tableData"
+        :data="currentTableData"
         style="width: 100%"
         :default-sort="defaultSort"
         empty-text="No Items"
@@ -32,16 +32,16 @@
           <template slot-scope="scope">
             <div class="new-contract">
               <div class="no">
-                {{ scope.$index + 1 }}
+                {{ scope.row.index }}
               </div>
               <div class="address" :title="scope.row.contract_address">
-                {{ shortenAddress(scope.row.contract_address, 3) }}
+                {{ shortenAddress(scope.row.contract_address, 2) }}
               </div>
               <scan-link :href="scope.row.scan_url" />
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="Name" width="180">
+        <el-table-column label="Name" width="165">
           <template slot-scope="scope">
             <div class="name-column">
               <dapp-logo :name="scope.row.dapp_name" />
@@ -56,19 +56,19 @@
         <el-table-column
           prop="launch_time"
           label="Launch Time"
-          width="110"
+          width="135"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
             <div class="data">
-              {{ scope.row.launch_time_str }}
+              {{ formatDayDate(scope.row.launch_time_str) }}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop="all_users"
           label="All User"
-          width="100"
+          width="80"
           align="right"
           :sortable="'custom'"
         >
@@ -171,6 +171,7 @@ import IconLink from '../IconLink.vue'
 import TwitterLink from '../TwitterLink.vue'
 import ScanLink from '../ScanLink.vue'
 import Help from '../Help'
+import { formatDayDate } from '../../../util/dateFormat'
 import { getContracts } from '../../../L2data/contracts'
 import { shortenAddress } from '../../../util/shortenAddress'
 import { isMobile } from '../../../composition/hooks'
@@ -204,9 +205,6 @@ export default {
       this.page = 1
       this._getContracts()
     },
-    page() {
-      this.tableData = this._getTableData()
-    },
   },
   computed: {
     isMobile() {
@@ -216,6 +214,17 @@ export default {
       if (!this.contracts || !this.contracts.table_data) return 0
       return this.contracts.table_data.length
     },
+    currentTableData() {
+      if (!this.tableData.length) {
+        return []
+      }
+      const start = (this.page - 1) * PAGE_SIZE
+      const allData = this.tableData.map((item, i) => ({
+        ...item,
+        index: i + 1,
+      }))
+      return allData.slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
+    },
   },
   mounted() {
     this._getContracts()
@@ -223,6 +232,7 @@ export default {
   methods: {
     numeral,
     shortenAddress,
+    formatDayDate,
     async _getContracts() {
       this.$loader.show()
       const contracts = await getContracts(this.currentRollup)
@@ -237,14 +247,11 @@ export default {
       if (!allData.length) {
         return []
       }
-      const start = (this.page - 1) * PAGE_SIZE
-      return allData
-        .slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
-        .sort((a, b) => {
-          const aTime = new Date(a.launch_time).getTime()
-          const bTime = new Date(b.launch_time).getTime()
-          return bTime - aTime
-        })
+      return allData.sort((a, b) => {
+        const aTime = new Date(a.launch_time).getTime()
+        const bTime = new Date(b.launch_time).getTime()
+        return bTime - aTime
+      })
     },
     onSortChange({ prop, order }) {
       const tableData = this.tableData
@@ -286,7 +293,7 @@ export default {
   .table {
     padding: 0 20px 50px 20px;
     .el-table .cell {
-      padding: 0 24px 0 5px;
+      padding: 0 15px 0 5px;
     }
     .new-contract {
       display: flex;
@@ -321,6 +328,9 @@ export default {
       }
       a {
         margin-right: 10px;
+        &:last-child {
+          margin-right: 0;
+        }
       }
     }
     .data {

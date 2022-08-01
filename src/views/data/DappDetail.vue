@@ -7,7 +7,7 @@
     :show-close="false"
   >
     <div slot="title" class="dapp-detail-dialog-title">
-      <dapp-logo :name="dappData.dapp_name" />
+      <dapp-logo class="logo" :name="dappData.dapp_name" />
       <div class="name">{{ dappData.dapp_name }}</div>
       <span class="close" @click="dialogVisible = false"> </span>
     </div>
@@ -79,7 +79,7 @@ import IconLink from './IconLink.vue'
 import Rollups from './Rollups'
 import TwitterLink from './TwitterLink.vue'
 import { getDappDetail } from '../../L2data/dapp'
-import dateFormat from '../../util/dateFormat'
+import dateFormat, { formatDayDate } from '../../util/dateFormat'
 import getMonthStartAndEnd from '../../util/getMonthStartAndEnd'
 import arrayNonRepeatfy from '../../util/arrayNonRepeatfy'
 import { isMobile } from '../../composition/hooks'
@@ -380,7 +380,9 @@ export default {
       }
 
       return `<div class="dapp-detail-chart-popover-content">
-                <div class="dapp-detail-chart-popover-title">${axisValue}</div>
+                <div class="dapp-detail-chart-popover-title">${formatDayDate(
+                  axisValue
+                )}</div>
                 <div class="dapp-detail-chart-popover-data">
                    ${params
                      .map(
@@ -468,7 +470,7 @@ export default {
     padding-bottom: 0;
   }
   .el-dialog__body {
-    padding: 12px 30px;
+    padding: 30px;
   }
   .dapp-detail-dialog-title {
     display: flex;
@@ -481,6 +483,9 @@ export default {
       font-size: 16px;
       color: #333333;
       margin-left: 10px;
+    }
+    .logo{
+      border: 0.2px solid rgba(0, 0, 0, 0.3);
     }
     .close {
       position: absolute;

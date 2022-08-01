@@ -20,7 +20,7 @@
     </div>
     <div class="table">
       <el-table
-        :data="tableData"
+        :data="currentTableData"
         style="width: 100%"
         empty-text="No Items"
         :default-sort="defaultSort"
@@ -31,7 +31,7 @@
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
-                {{ scope.row.rank }}
+                {{ scope.row.index }}
               </div>
               <dapp-logo :name="scope.row.dapp_name" />
               <div class="name" :title="scope.row.dapp_name">
@@ -45,19 +45,19 @@
         <el-table-column
           prop="launch_time"
           label="Launch Time"
-          width="120"
+          width="130"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
             <div class="data">
-              {{ scope.row.launch_time_str }}
+              {{ formatDayDate(scope.row.launch_time_str) }}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop="all_users"
           label="All User"
-          width="140"
+          width="130"
           align="right"
           :sortable="'custom'"
         >
@@ -159,6 +159,7 @@ import DappDetail from '../DappDetail'
 import IconLink from '../IconLink.vue'
 import Help from '../Help'
 import TwitterLink from '../TwitterLink.vue'
+import { formatDayDate } from '../../../util/dateFormat'
 import { getDapps } from '../../../L2data/dapp'
 import { isMobile } from '../../../composition/hooks'
 
@@ -202,9 +203,6 @@ export default {
       this.page = 1
       this._getDapps()
     },
-    page() {
-      this.tableData = this._getTableData()
-    },
   },
   computed: {
     total() {
@@ -214,11 +212,23 @@ export default {
     isMobile() {
       return isMobile.value
     },
+    currentTableData() {
+      if (!this.tableData.length) {
+        return []
+      }
+      const start = (this.page - 1) * PAGE_SIZE
+      const allData = this.tableData.map((item, i) => ({
+        ...item,
+        index: i + 1,
+      }))
+      return allData.slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
+    },
   },
   mounted() {
     this._getDapps()
   },
   methods: {
+    formatDayDate,
     numeral,
     async _getDapps() {
       this.$loader.show()
@@ -232,7 +242,7 @@ export default {
       const isAscending = order === 'ascending'
 
       if (!order === null) {
-        this.tableData = this._getTableData()
+        this.tableData = tableData
         return
       }
 
@@ -275,14 +285,11 @@ export default {
       if (!allData.length) {
         return []
       }
-      const start = (this.page - 1) * PAGE_SIZE
-      return allData
-        .slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
-        .sort((a, b) => {
-          const nA = Number(a['all_users'])
-          const nB = Number(b['all_users'])
-          return nB - nA
-        })
+      return allData.sort((a, b) => {
+        const nA = Number(a['all_users'])
+        const nB = Number(b['all_users'])
+        return nB - nA
+      })
     },
   },
 }
@@ -310,7 +317,7 @@ export default {
   .table {
     padding: 0 20px 50px 20px;
     .el-table .cell {
-      padding: 0 24px 0 5px;
+      padding: 0 15px 0 5px;
     }
     .el-table__row {
       cursor: pointer;
