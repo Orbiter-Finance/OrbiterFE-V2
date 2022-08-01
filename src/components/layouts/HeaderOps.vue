@@ -1,46 +1,83 @@
 <template>
-<div class="header-ops" :style="`flex-direction: ${verical ? 'column' : 'row'};`">
-  <CommBtn ref="connectBtn" v-if="!isLogin && !isMobile" @click="connectAWallet" class="ops-item not-mode" style="margin-right: 10px">Connect a Wallet</CommBtn>
-  <template v-if="isLogin">
-    <span @click="showHistory" class="ops-item">History</span>
-    <div v-if="isSelectedStarkNet" ref="connectedStarkNetBtn" @click="connectStarkNetWallet" class="ops-item center" style="display: inline-flex;">
-      <svg-icon style="width: 2rem; height: 2rem" iconName="sknlogo"></svg-icon>
-      <span class="address">{{ starkAddress === 'not connected' ? 'connect starknet' : starkAddress }}</span>
+  <div
+    class="header-ops"
+    :style="`flex-direction: ${verical ? 'column' : 'row'};`"
+  >
+    <CommBtn
+      ref="connectBtn"
+      v-if="!isLogin && !isMobile"
+      @click="connectAWallet"
+      class="ops-item not-mode"
+      style="margin-right: 10px"
+      >Connect a Wallet</CommBtn
+    >
+    <template v-if="isLogin">
+      <span @click="showHistory" class="ops-item">History</span>
+      <div
+        v-if="isSelectedStarkNet"
+        ref="connectedStarkNetBtn"
+        @click="connectStarkNetWallet"
+        class="ops-item center"
+        style="display: inline-flex"
+      >
+        <svg-icon
+          style="width: 2rem; height: 2rem"
+          iconName="sknlogo"
+        ></svg-icon>
+        <span class="address">{{
+          starkAddress === 'not connected' ? 'connect starknet' : starkAddress
+        }}</span>
+      </div>
+      <div
+        ref="connectedBtn"
+        @click="connectAWallet"
+        class="ops-item center"
+        style="display: inline-flex"
+      >
+        <svg-icon
+          style="width: 2rem; height: 2rem"
+          :iconName="
+            globalSelectWalletConf.walletType &&
+            globalSelectWalletConf.walletType.toLowerCase()
+          "
+        ></svg-icon>
+        <span class="address">{{ showAddress }}</span>
+      </div>
+    </template>
+    <div @click="toggleThemeMode" class="ops-mode">
+      <SvgIconThemed class="mode-icon" icon="mode" />
     </div>
-    <div ref="connectedBtn" @click="connectAWallet" class="ops-item center" style="display: inline-flex;">
-      <svg-icon style="width: 2rem; height: 2rem"
-        :iconName="globalSelectWalletConf.walletType && globalSelectWalletConf.walletType.toLowerCase()"
-      ></svg-icon>
-      <span class="address">{{ showAddress }}</span>
-    </div>
-  </template>
-  <div @click="toggleThemeMode" class="ops-mode">
-    <SvgIconThemed class="mode-icon" icon="mode" />
   </div>
-</div>
 </template>
 
 <script>
 import { mapMutations } from 'vuex'
-import { CommBtn, SvgIconThemed, ToggleBtn } from '../'
+import { CommBtn, SvgIconThemed } from '../'
 import { transferDataState, isMobile } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
   walletIsLogin,
 } from '../../composition/walletsResponsiveData'
-import { setStarkNetDialog, setSelectWalletDialogVisible } from '../../composition/hooks'
+import {
+  setStarkNetDialog,
+  setSelectWalletDialogVisible,
+} from '../../composition/hooks'
 import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
-import { starkAddress, showAddress, saveSenderPageWorkingState } from '../../composition/hooks'
+import {
+  starkAddress,
+  showAddress,
+  saveSenderPageWorkingState,
+} from '../../composition/hooks'
 
 export default {
   name: 'HeaderOps',
-  components: { CommBtn, SvgIconThemed, ToggleBtn },
+  components: { CommBtn, SvgIconThemed },
   props: {
     verical: {
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
   },
   computed: {
     isMobile() {
@@ -60,8 +97,12 @@ export default {
         transferDataState.toChainID == 44
       )
     },
-    starkAddress() { return starkAddress() },
-    showAddress() { return showAddress() }
+    starkAddress() {
+      return starkAddress()
+    },
+    showAddress() {
+      return showAddress()
+    },
   },
   data() {
     const selectedWallet = JSON.parse(
@@ -90,17 +131,22 @@ export default {
       this.$emit('closeDrawer')
 
       const route = this.$route
-      route.path !== '/history' && localStorage.setItem('last_page_before_history', JSON.stringify({
-        path: route.path,
-        params: route.params,
-        query: route.query,
-      }))
+      route.path !== '/history' &&
+        localStorage.setItem(
+          'last_page_before_history',
+          JSON.stringify({
+            path: route.path,
+            params: route.params,
+            query: route.query,
+          })
+        )
       if (route.path === '/') {
         saveSenderPageWorkingState()
       }
-      route.path !== '/history' && this.$router.push({
-        path: '/history'
-      })
+      route.path !== '/history' &&
+        this.$router.push({
+          path: '/history',
+        })
     },
   },
 }
