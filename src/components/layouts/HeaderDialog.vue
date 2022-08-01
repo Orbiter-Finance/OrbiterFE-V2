@@ -102,7 +102,7 @@
 </template>
 
 <script>
-import { CommBtn, SvgIconThemed, ToggleBtn } from '../'
+import { CommBtn, SvgIconThemed } from '../'
 import { isMobile, starkAddress, showAddress } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -118,14 +118,15 @@ import {
   isStarkNetDialog,
   selectWalletDialogVisible,
   setSelectWalletDialogVisible,
-  web3State
+  web3State,
 } from '../../composition/hooks'
 
-const { walletDispatchersOnInit, walletDispatchersOnDisconnect } = walletDispatchers
+const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
+  walletDispatchers
 
 export default {
   name: 'HeaderDialog',
-  components: { CommBtn, SvgIconThemed, ToggleBtn },
+  components: { CommBtn, SvgIconThemed },
   computed: {
     web3State() {
       return web3State
@@ -295,7 +296,7 @@ export default {
     },
   },
   mounted() {
-    Middle.$on('connectWallet', (state) => {
+    Middle.$on('connectWallet', () => {
       // this.selectWalletDialogVisible = true
       setSelectWalletDialogVisible(true)
     })

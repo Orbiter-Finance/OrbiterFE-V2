@@ -1,33 +1,35 @@
 <template>
-<a-tooltip :placement="placement"
-            arrow-point-at-center
-            :overlayClassName="$store.state.themeMode + '-comm_tooltip'">
-  <template slot="title">
-    <div class="tooltip-title">
-      <!-- <SvgIconThemed class="icon" style="margin-right:8px;margin-top: 2px;" size="xs" width="16px" height="16px" icon="info" /> -->
-      <slot name="titleDesc"></slot>
-    </div>
-  </template>
-  <slot></slot>
-</a-tooltip>
+  <a-tooltip
+    :placement="placement"
+    arrow-point-at-center
+    :overlayClassName="$store.state.themeMode + '-comm_tooltip'"
+  >
+    <template slot="title">
+      <div class="tooltip-title">
+        <!-- <SvgIconThemed class="icon" style="margin-right:8px;margin-top: 2px;" size="xs" width="16px" height="16px" icon="info" /> -->
+        <slot name="titleDesc"></slot>
+      </div>
+    </template>
+    <slot></slot>
+  </a-tooltip>
 </template>
 
 <script>
-import { SvgIconThemed } from './'
 export default {
   name: 'CommTooltip',
-  components: { SvgIconThemed },
+  components: {},
   props: {
     placement: {
       type: String,
-      default: 'left'
-    }
+      default: 'left',
+    },
   },
 }
 </script>
 
 <style lang="scss">
-.light-comm_tooltip, .dark-comm_tooltip {
+.light-comm_tooltip,
+.dark-comm_tooltip {
   .tooltip-title {
     font-family: 'Inter Regular';
     word-break: keep-all;
@@ -57,10 +59,10 @@ export default {
 .light-comm_tooltip {
   .ant-tooltip-inner {
     color: rgba(51, 51, 51, 0.8);
-    background: #FFF !important;
+    background: #fff !important;
   }
   .ant-tooltip-arrow::before {
-    background: #FFF !important;
+    background: #fff !important;
   }
 }
 .dark-comm_tooltip {

@@ -1,6 +1,6 @@
-import { reactive, watchEffect } from ".";
-import { walletIsLogin } from './walletsResponsiveData';
-import { compatibleGlobalWalletConf } from "./walletsResponsiveData";
+import { reactive, watchEffect } from '.'
+import { walletIsLogin } from './walletsResponsiveData'
+import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 import { getTransactionsHistoryApi } from '../core/routes/transactions'
 import { formatDateShort } from '../util'
 
@@ -19,8 +19,9 @@ export const historyPanelState = reactive({
 
 watchEffect(() => {
   !walletIsLogin.value && (historyPanelState.transactionList = [])
-  const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-  if (walletIsLogin.value && (walletAddress && walletAddress !== '0x')) {
+  const walletAddress =
+    compatibleGlobalWalletConf.value.walletPayload.walletAddress
+  if (walletIsLogin.value && walletAddress && walletAddress !== '0x') {
     getTraddingHistory(true)
   }
 })
@@ -38,7 +39,8 @@ export function setHistoryInfo(info = {}, isShowHistory = true) {
 
 export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = true
-  const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+  const walletAddress =
+    compatibleGlobalWalletConf.value.walletPayload.walletAddress
   if (!walletAddress) {
     historyPanelState.isLoading = false
     return
@@ -58,7 +60,7 @@ export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = false
 
   if (res.data.code === 0) {
-    const { code, data = [], ...resInfo } = res.data
+    const { data = [], ...resInfo } = res.data
     const list = data.map((v) => {
       /*
         {
@@ -86,20 +88,22 @@ export async function getTransactionsHistory(params = {}) {
         const h = arr[3]
         const M = arr[4]
         const s = arr[5]
-        fromTimeStampShow = formatDateShort(Date.UTC(y,m,d,h,M,s))
+        fromTimeStampShow = formatDateShort(Date.UTC(y, m, d, h, M, s))
       }
       return {
-        "fromChainID": +v.fromChain,
-        "toChainID": +v.toChain,
-        "userAddress": v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
-        "makerAddress": v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
-        "userAmount": v.fromValueFormat,
-        "fromTimeStamp": v.fromTimeStamp,
-        "fromTimeStampShow": fromTimeStampShow,
-        "toTimeStamp": v.toTimeStamp,
-        "tokenName": v.tokenName,
-        "fromTxHash": v.fromTx,
-        "toTxHash": v.toTx,
+        fromChainID: +v.fromChain,
+        toChainID: +v.toChain,
+        userAddress:
+          v.userAddress.slice(0, 4) + '...' + v.userAddress.slice(-4),
+        makerAddress:
+          v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
+        userAmount: v.fromValueFormat,
+        fromTimeStamp: v.fromTimeStamp,
+        fromTimeStampShow: fromTimeStampShow,
+        toTimeStamp: v.toTimeStamp,
+        tokenName: v.tokenName,
+        fromTxHash: v.fromTx,
+        toTxHash: v.toTx,
         status: v.status,
         state: (() => {
           if (v.fromTx && v.toTx) {
@@ -107,7 +111,7 @@ export async function getTransactionsHistory(params = {}) {
           }
           if (v.status == 0) return 1
           return 2
-        })()
+        })(),
       }
     })
     historyPanelState.transactionListInfo = resInfo
