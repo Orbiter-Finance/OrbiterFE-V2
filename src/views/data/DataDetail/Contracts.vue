@@ -61,7 +61,7 @@
         >
           <template slot-scope="scope">
             <div class="data">
-              {{ formatDayDate(scope.row.launch_time_str) }}
+              {{ dateFormat(scope.row.launch_time_str, 'yyyy-MM-dd') }}
             </div>
           </template>
         </el-table-column>
@@ -171,7 +171,7 @@ import IconLink from '../IconLink.vue'
 import TwitterLink from '../TwitterLink.vue'
 import ScanLink from '../ScanLink.vue'
 import Help from '../Help'
-import { formatDayDate } from '../../../util/dateFormat'
+import dateFormat from '../../../util/dateFormat'
 import { getContracts } from '../../../L2data/contracts'
 import { shortenAddress } from '../../../util/shortenAddress'
 import { isMobile } from '../../../composition/hooks'
@@ -232,7 +232,7 @@ export default {
   methods: {
     numeral,
     shortenAddress,
-    formatDayDate,
+    dateFormat,
     async _getContracts() {
       this.$loader.show()
       const contracts = await getContracts(this.currentRollup)

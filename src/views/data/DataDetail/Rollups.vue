@@ -41,7 +41,7 @@
         >
           <template slot-scope="scope">
             <div class="data">
-              {{ formatDayDate(scope.row.launch_time) }}
+              {{ dateFormat(scope.row.launch_time, 'yyyy-MM-dd') }}
             </div>
           </template>
         </el-table-column>
@@ -237,7 +237,7 @@ import ChainsLogo from '../ChainsLogo.vue'
 import Help from '../Help'
 import { getRollups } from '../../../L2data/rollups'
 import { isMobile } from '../../../composition/hooks'
-import { formatDayDate } from '../../../util/dateFormat'
+import dateFormat from '../../../util/dateFormat'
 
 const selectors = [
   { label: '1d', value: '1d' },
@@ -283,7 +283,7 @@ export default {
   },
   methods: {
     numeral,
-    formatDayDate,
+    dateFormat,
     isEmpty,
     onSortChange({ prop, order }) {
       const rollups = this.rollups

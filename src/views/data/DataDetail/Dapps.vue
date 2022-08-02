@@ -50,7 +50,7 @@
         >
           <template slot-scope="scope">
             <div class="data">
-              {{ formatDayDate(scope.row.launch_time_str) }}
+              {{ dateFormat(scope.row.launch_time_str, 'yyyy-MM-dd') }}
             </div>
           </template>
         </el-table-column>
@@ -159,7 +159,7 @@ import DappDetail from '../DappDetail'
 import IconLink from '../IconLink.vue'
 import Help from '../Help'
 import TwitterLink from '../TwitterLink.vue'
-import { formatDayDate } from '../../../util/dateFormat'
+import dateFormat from '../../../util/dateFormat'
 import { getDapps } from '../../../L2data/dapp'
 import { isMobile } from '../../../composition/hooks'
 
@@ -228,7 +228,7 @@ export default {
     this._getDapps()
   },
   methods: {
-    formatDayDate,
+    dateFormat,
     numeral,
     async _getDapps() {
       this.$loader.show()

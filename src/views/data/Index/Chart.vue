@@ -18,7 +18,11 @@
         <div class="title">
           Rollups by Daily Transactions
           <template v-if="!isMobile">
-            ,{{ latestData ? formatDayDate(latestData.timestamp_read) : '-' }}
+            ,{{
+              latestData
+                ? dateFormat(latestData.timestamp_read, 'yyyy-MM-dd')
+                : '-'
+            }}
           </template>
         </div>
         <time-diff
@@ -88,7 +92,7 @@ import Selector from '../Selector.vue'
 import TimeDiff from '../TimeDiff.vue'
 import ChainsLogo from '../ChainsLogo.vue'
 import { isMobile } from '../../../composition/hooks'
-import dateFormat, { formatDayDate } from '../../../util/dateFormat'
+import dateFormat from '../../../util/dateFormat'
 import getWeeks from '../../../util/getWeeks'
 
 const ROLLUPS = [
@@ -110,7 +114,6 @@ const ROLLUPS = [
 ]
 const caches = {}
 
-const isMax = (value) => value === 'Max'
 const padTimestamp = (timestamp) => timestamp * 1000
 
 export default {
@@ -196,7 +199,7 @@ export default {
   },
   methods: {
     numeral,
-    formatDayDate,
+    dateFormat,
     _onResize() {
       this._chart && this._chart.resize()
     },
@@ -247,7 +250,7 @@ export default {
             },
           },
           axisLabel: {
-            formatter: (value) => formatDayDate(parseInt(value)),
+            formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
           },
         },
         yAxis: {
@@ -312,10 +315,10 @@ export default {
       const currentChartTime = this.currentChartTime
       if ([3, 6].includes(currentChartTime)) {
         return {
-          times: this.filteredChartData.map((item) =>
-            padTimestamp(item.timestamp)
-          ),
-          data: this.filteredChartData.map((item) => item.all),
+          times: this.filteredChartData
+            .map((item) => padTimestamp(item.timestamp))
+            .reverse(),
+          data: this.filteredChartData.map((item) => item.all).reverse(),
         }
       }
       if ([12, 'Max'].includes(currentChartTime)) {
@@ -328,17 +331,19 @@ export default {
               )
 
         const weeks = getWeeks(startTime)
-        const data = weeks.map((time) =>
-          this.filteredChartData
-            .filter(
-              (item) =>
-                padTimestamp(item.timestamp) > time.start &&
-                padTimestamp(item.timestamp) < time.end
-            )
-            .reduce((total, item) => total + item.all, 0)
-        )
+        const data = weeks
+          .map((time) =>
+            this.filteredChartData
+              .filter(
+                (item) =>
+                  padTimestamp(item.timestamp) > time.start &&
+                  padTimestamp(item.timestamp) < time.end
+              )
+              .reduce((total, item) => total + item.all, 0)
+          )
+          .reverse()
         return {
-          times: weeks.map((item) => item.end),
+          times: weeks.map((item) => item.end).reverse(),
           data,
         }
       }
@@ -355,7 +360,6 @@ export default {
             value: data[item],
           }))
           .sort((a, b) => b.value - a.value)
-          console.log(rollups)
         caches[params.axisValue] = rollups
       }
 
@@ -364,8 +368,8 @@ export default {
       const date = new Date(parseInt(params.axisValue)).getTime()
       const start = date - 24 * 60 * 60 * 7 * 1000
       const title = [3, 6].includes(this.currentChartTime)
-        ? formatDayDate(parseInt(params.axisValue))
-        : `${formatDayDate(start)}-${formatDayDate(date)}`
+        ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
+        : `${dateFormat(start, 'yyyy-MM-dd')}-${dateFormat(date, 'yyyy-MM-dd')}`
 
       const firstData = rollups.slice(0, 10)
       const lastData = rollups.slice(10).reduce(

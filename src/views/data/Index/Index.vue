@@ -25,8 +25,9 @@
         Daily Data,
         {{
           baseDappDailyData && baseDappDailyData.update_time
-            ? formatDayDate(
-                (baseDappDailyData.update_time - 60 * 60 * 24) * 1000
+            ? dateFormat(
+                (baseDappDailyData.update_time - 60 * 60 * 24) * 1000,
+                'yyyy-MM-dd'
               )
             : '-'
         }}
@@ -66,10 +67,10 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="launch_time" label="Launch Time" width="130">
+          <el-table-column prop="launch_time" label="Launch Time" width="120">
             <template slot-scope="scope">
               <div class="data">
-                {{ formatDayDate(scope.row.launch_time) }}
+                {{ dateFormat(scope.row.launch_time, 'yyyy-MM-dd') }}
               </div>
             </template>
           </el-table-column>
@@ -136,7 +137,7 @@ import IconLink from '../IconLink.vue'
 import TwitterLink from '../TwitterLink.vue'
 import DappLogo from '../DappLogo.vue'
 import { getDappDailyData } from '../../../L2data/daily'
-import { formatDayDate } from '../../../util/dateFormat'
+import dateFormat from '../../../util/dateFormat'
 import { isMobile } from '../../../composition/hooks'
 
 export default {
@@ -170,7 +171,7 @@ export default {
   },
   methods: {
     numeral,
-    formatDayDate,
+    dateFormat,
     async _getDappDailyData() {
       const baseDappDailyData = await getDappDailyData(this.currentRollup)
       this.baseDappDailyData = baseDappDailyData

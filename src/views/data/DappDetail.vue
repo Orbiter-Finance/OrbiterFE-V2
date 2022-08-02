@@ -63,6 +63,23 @@
         />
       </div>
       <div class="content">
+        <div class="title">
+          User Statistics
+          <el-popover
+            popper-class="supported-l2-popover"
+            :placement="'bottom'"
+            width="280"
+            trigger="hover"
+          >
+            <div class="supported-l2-desc">
+              Active addresses interacting with each dapp & Corresponding
+              percentage of total users. New addresses interacting with each
+              dapp & Corresponding percentage of total users.
+              <a href="#" target="_blank"> Read More </a>
+            </div>
+            <span class="title-help" slot="reference"> </span>
+          </el-popover>
+        </div>
         <div id="dapp-detail-chart"></div>
       </div>
     </div>
@@ -79,7 +96,7 @@ import IconLink from './IconLink.vue'
 import Rollups from './Rollups'
 import TwitterLink from './TwitterLink.vue'
 import { getDappDetail } from '../../L2data/dapp'
-import dateFormat, { formatDayDate } from '../../util/dateFormat'
+import dateFormat from '../../util/dateFormat'
 import getMonthStartAndEnd from '../../util/getMonthStartAndEnd'
 import arrayNonRepeatfy from '../../util/arrayNonRepeatfy'
 import { isMobile } from '../../composition/hooks'
@@ -121,7 +138,7 @@ export default {
       const currentTime = this.currentTime
       const now = new Date().getTime() / 1000
       if (isMax(currentTime)) {
-        return chartData
+        return chartData.slice()
       }
       const selectDataTime = ONE_MONTH * currentTime
       return chartData.filter((item) => item.timestamp > now - selectDataTime)
@@ -200,72 +217,75 @@ export default {
           'rgba(17, 112, 255, 1)',
         ],
         title: {
-          text: 'User Statistics',
-          textAlign: 'center',
-          top: 20,
-          left: '50%',
-          textStyle: { color: this.isLightMode ? '#000' : '#fff' },
+          show: false,
         },
-        legend: {
-          bottom: 20,
-          left: this.isMobile ? 'center' : 100,
-          selected: { 'All User': false },
-          textStyle: {
-            color: this.isLightMode
-              ? 'rgba(51, 51, 51, 0.8)'
-              : 'rgba(255, 255, 255, 0.6)',
+        legend: [
+          {
+            bottom: 20,
+            left: this.isMobile ? 'center' : 100,
+            selected: { 'All User': false },
+            textStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.8)'
+                : 'rgba(255, 255, 255, 0.6)',
+            },
+            selectorLabel: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.8)'
+                : 'rgba(255, 255, 255, 0.6)',
+            },
           },
-          selectorLabel: {
-            color: this.isLightMode
-              ? 'rgba(51, 51, 51, 0.8)'
-              : 'rgba(255, 255, 255, 0.6)',
-          },
-        },
+        ],
         grid: {
-          top: 64,
+          top: 26,
           left: '3%',
           right: '4%',
           bottom: '3%',
           containLabel: true,
         },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: times,
-          axisTick: { show: false },
-          axisLine: {
-            show: false,
-            lineStyle: {
-              color: this.isLightMode
-                ? 'rgba(51, 51, 51, 0.4)'
-                : 'rgba(255, 255, 255, 0.4)',
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: times,
+            axisTick: { show: false },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: this.isLightMode
+                  ? 'rgba(51, 51, 51, 0.4)'
+                  : 'rgba(255, 255, 255, 0.4)',
+              },
+            },
+            splitLine: {
+              lineStyle: {
+                color: this.isLightMode
+                  ? ' rgba(51, 51, 51, 0.2)'
+                  : 'rgba(255, 255, 255, 0.2)',
+              },
             },
           },
-          splitLine: {
-            lineStyle: {
-              color: this.isLightMode
-                ? ' rgba(51, 51, 51, 0.2)'
-                : 'rgba(255, 255, 255, 0.2)',
+        ],
+        yAxis: [
+          {
+            alignTicks: false,
+            type: 'value',
+            axisPointer: {
+              show: false,
+            },
+            axisTick: {
+              show: false,
+            },
+            axisLine: {
+              show: false,
+              lineStyle: {
+                color: this.isLightMode
+                  ? 'rgba(51, 51, 51, 0.4)'
+                  : 'rgba(255, 255, 255, 0.4)',
+              },
             },
           },
-        },
-        yAxis: {
-          type: 'value',
-          axisPointer: {
-            show: false,
-          },
-          axisTick: {
-            show: false,
-          },
-          axisLine: {
-            show: false,
-            lineStyle: {
-              color: this.isLightMode
-                ? 'rgba(51, 51, 51, 0.4)'
-                : 'rgba(255, 255, 255, 0.4)',
-            },
-          },
-        },
+        ],
         tooltip: {
           trigger: 'axis',
           padding: 0,
@@ -333,7 +353,7 @@ export default {
         return { times: [], allUser: [], activeUser: [], newUser: [] }
       }
 
-      const chartData = this.chartData
+      const chartData = this.chartData.reverse()
       const currentTime = this.currentTime
 
       if ([1, 3].includes(currentTime)) {
@@ -362,11 +382,19 @@ export default {
           )
 
       const { monthList, data } = this._getChartDataByTimestamps(times)
+      if (isMax(currentTime)) {
+        return {
+          times: monthList,
+          allUser: data.map((item) => item.all_users),
+          activeUser: data.map((item) => item.active_users),
+          newUser: data.map((item) => item.new_users),
+        }
+      }
       return {
-        times: monthList,
-        allUser: data.map((item) => item.all_users),
-        activeUser: data.map((item) => item.active_users),
-        newUser: data.map((item) => item.new_users),
+        times: monthList.reverse(),
+        allUser: data.map((item) => item.all_users).reverse(),
+        activeUser: data.map((item) => item.active_users).reverse(),
+        newUser: data.map((item) => item.new_users).reverse(),
       }
     },
     _onFormatter(params) {
@@ -380,8 +408,9 @@ export default {
       }
 
       return `<div class="dapp-detail-chart-popover-content">
-                <div class="dapp-detail-chart-popover-title">${formatDayDate(
-                  axisValue
+                <div class="dapp-detail-chart-popover-title">${dateFormat(
+                  axisValue,
+                  'yyyy-MM-dd'
                 )}</div>
                 <div class="dapp-detail-chart-popover-data">
                    ${params
@@ -484,7 +513,7 @@ export default {
       color: #333333;
       margin-left: 10px;
     }
-    .logo{
+    .logo {
       border: 0.2px solid rgba(0, 0, 0, 0.3);
     }
     .close {
@@ -572,8 +601,29 @@ export default {
       background: #f5f5f5;
       border-radius: 12px;
       margin-bottom: 100px;
+      .title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 20px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        color: #333333;
+        .title-help {
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          background-image: url('../../assets/data/help.png');
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 12px 12px;
+          margin-left: 5px;
+        }
+      }
       #dapp-detail-chart {
-        height: 300px;
+        height: 270px;
       }
     }
   }
@@ -622,6 +672,12 @@ export default {
       }
       .content {
         background: #3f415b;
+        .title {
+          color: #fff;
+          .title-help {
+            background-image: url('../../assets/data/help-dark.png');
+          }
+        }
       }
     }
   }
@@ -644,6 +700,12 @@ export default {
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
+  a {
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    color: #df2e2d;
+  }
 }
 .supported-l2-popover {
   padding: 20px;
