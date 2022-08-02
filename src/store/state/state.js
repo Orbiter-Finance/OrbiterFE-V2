@@ -60,7 +60,7 @@ const state = {
       chainName: 'Arbitrum',
       tokenName: 'ETH',
       amount: 'loading...',
-      redeemLoading: false, 
+      redeemLoading: false,
     },
     {
       chainName: 'Polygon',
@@ -75,5 +75,6 @@ const state = {
       redeemLoading: false,
     },
   ],
+  themeMode: localStorage.getItem('themeMode') || 'light', // light dark
 }
 export default state

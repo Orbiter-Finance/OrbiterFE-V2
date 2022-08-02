@@ -1,5 +1,15 @@
+import { toggleBodyCls } from '../../util/theme/theme'
 export default {
-  updateLiquidityData(state,liquidityDataList){
+  toggleThemeMode(state, mode) {
+    if (typeof mode === 'string' && mode) {
+      state.themeMode = mode
+    } else {
+      state.themeMode = state.themeMode === 'light' ? 'dark' : 'light'
+    }
+    localStorage.setItem('themeMode', state.themeMode)
+    toggleBodyCls()
+  },
+  updateLiquidityData(state, liquidityDataList) {
     state.liquidityData = liquidityDataList
   },
   updateZKTokenList(state, obj) {

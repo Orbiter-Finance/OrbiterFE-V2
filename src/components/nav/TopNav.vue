@@ -1,38 +1,116 @@
 <template>
-  <div class="topNav">
-    <div class="nav-logo-web" @click="dosome()">
-      <img class="pizza" src="../../assets/pizza.png" alt="" />
-    </div>
-    <a-radio-group v-model="selected" defaultValue="sender" buttonStyle="solid">
-      <a-radio-button value="sender"> Sender </a-radio-button>
-      <a-radio-button value="maker"> Maker </a-radio-button>
-    </a-radio-group>
+  <div class="top-nav">
+    <template v-if="!isMobile">
+      <div style="height: 100%; position: relative">
+        <img
+          v-if="false"
+          src="../../assets/v2/starknet-logo.png"
+          style="width: 190px; height: 80px"
+        />
+        <SvgIconThemed
+          v-else
+          @click.native="toHome"
+          class="logo"
+          :style="navIcons.style"
+          :icon="navIcons.logo"
+        />
+        <HeaderLinks
+          style="
+            margin-top: 24px;
+            position: absolute;
+            top: 0;
+            left: 241px;
+            min-width: 280px;
+          "
+        />
+      </div>
+      <HeaderOps />
+    </template>
+    <template v-else>
+      <SvgIconThemed
+        @click.native="toHome"
+        class="logo"
+        :style="navIcons.style"
+        :icon="navIcons.logo"
+      />
+      <!-- <ToggleBtn v-if="showToggleBtn()" @input="toggleTab" /> -->
+      <div class="center">
+        <div
+          v-if="!isLogin"
+          @click="connectWallet"
+          class="wallet-status connect-wallet-btn"
+        >
+          Connect Wallet
+        </div>
+        <div
+          v-else
+          @click="connectAWallet"
+          class="wallet-status wallet-address"
+        >
+          {{ showAddress }}
+        </div>
+        <div
+          @click="() => (drawerVisible = true)"
+          class="center menu-outline"
+          style="width: 44px; height: 44px; border-radius: 8px"
+        >
+          <SvgIconThemed icon="menu" style="width: 26px; height: 22px" />
+        </div>
+      </div>
+      <el-drawer
+        :size="280"
+        title=""
+        :visible.sync="drawerVisible"
+        direction="rtl"
+        :before-close="() => (drawerVisible = false)"
+      >
+        <div class="drawer-body">
+          <HeaderLinks @closeDrawer="() => (drawerVisible = false)" verical />
+          <div class="drawer-bottom">
+            <div class="drawer-bottom-wrapper">
+              <HeaderOps verical @closeDrawer="() => (drawerVisible = false)" />
+            </div>
+          </div>
+        </div>
+      </el-drawer>
+    </template>
   </div>
 </template>
 
 <script>
+import { SvgIconThemed } from '../'
+import {
+  isMobile,
+  setPageTab,
+  setPageSenderTab,
+  showAddress,
+} from '../../composition/hooks'
+import HeaderOps from './HeaderOps.vue'
+import HeaderLinks from './HeaderLinks.vue'
+import { walletIsLogin } from '../../composition/walletsResponsiveData'
+import Middle from '../../util/middle/middle'
+import {
+  setStarkNetDialog,
+  setSelectWalletDialogVisible,
+} from '../../composition/hooks'
+
 export default {
   name: 'TopNav',
-  props: {},
+  components: { SvgIconThemed, HeaderLinks, HeaderOps },
   data() {
     return {
-      selected: 'sender',
+      drawerVisible: false,
     }
   },
-  mounted() {},
   computed: {
-    isWeb() {
-      if (this.$store.state.innerWH.innerWidth > 550) {
-        return true
-      }
-      return false
+    showAddress() {
+      return showAddress()
     },
     isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
+      return walletIsLogin.value
+    },
+    isMobile() {
+      return isMobile.value
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -43,157 +121,144 @@ export default {
       }
       return ''
     },
+    isRinkeby() {
+      const { href } = window.location
+      return /rinkeby\.orbiter/i.test(href)
+    },
+    isStarknet() {
+      return this.refererUpper === 'STARKNET'
+    },
     navIcons() {
       const icons = {
-        logo: 'orbiterLogo',
-        logoStyle: { width: '4.8rem', height: '4.8rem' },
-        logo_web: 'orbiterLogo_web',
-        logo_webStyle: { width: '16rem', height: '3.1rem' },
+        logo: 'logo-mobile',
+        logoStyle: { width: '41px', height: '40px' },
+        logo_web: 'logo',
+        logo_webStyle: { width: '153px', height: '40px' },
       }
+      // TODO: when rinkeby logo is add, uncomment blow
+      // if (this.isRinkeby) {
+      //   icons.logo_web = 'orbiterLogo_web--rinkeby'
+      // }
       switch (this.refererUpper) {
         case 'ZKSYNC':
           icons.logo = 'orbiterAsZksyncLogo'
           icons.logoStyle = {
             width: '10.45rem',
             height: '3.7rem',
-            margin: '0.5rem 0 0 -0.4rem',
           }
 
           icons.logo_web = 'orbiterAsZksyncLogo_web'
           icons.logo_webStyle = {
             width: '17.4rem',
             height: '3.7rem',
-            marginTop: '0.3rem',
+          }
+          break
+        case 'ARGENT':
+          icons.logo_web = 'argent'
+          icons.logo_webStyle = {
+            width: '17.4rem',
+            height: '3.7rem',
           }
           break
       }
-      return icons
-    },
-  },
-  watch: {
-    $route: function (to, from) {
-      if (to.path === from.path) {
-        return
-      }
-      if (to.path === '/maker' && this.selected !== 'maker') {
-        this.selected = 'maker'
-      }
-      if (
-        (to.path === '/' || to.path === '/sender') &&
-        this.selected !== 'sender'
-      ) {
-        this.selected = 'sender'
-      }
-    },
-    selected: function () {
-      if (this.selected === 'sender') {
-        if (this.$route.path !== '/') {
-          this.$router.push({
-            path: '/',
-            query: this.$route.query,
-          })
+      if (this.isMobile) {
+        return {
+          logo: icons.logo,
+          style: icons.logoStyle,
         }
       } else {
-        if (this.$route.path !== '/maker') {
-          this.$router.push({
-            path: '/maker',
-            query: this.$route.query,
-          })
+        return {
+          logo: icons.logo_web,
+          style: icons.logo_webStyle,
         }
       }
     },
   },
   methods: {
-    dosome() {
-      if (this.refererUpper) {
-        window.open(window.location.origin)
-      } else {
-        window.location.replace(window.location.origin)
-      }
+    toHome() {
+      setPageSenderTab()
+      this.$route.path !== '/' && this.$router.push({ path: '/' })
     },
-    unlogin() {
-      this.$store.commit('updateIsInstallMeta', false)
-      this.$store.commit('updateIsInjected', false)
+    toggleTab(tab) {
+      setPageTab(tab)
     },
-    login() {
-      this.$store.commit('updateIsInstallMeta', true)
-      this.$store.commit('updateIsInjected', true)
+    showToggleBtn() {
+      return this.$route.path === '/' || this.$route.path === '/history'
     },
-    toHistory() {},
-    clickHoriz() {},
+    connectWallet() {
+      Middle.$emit('connectWallet', true)
+    },
+    connectAWallet() {
+      setStarkNetDialog(false)
+      setSelectWalletDialogVisible(true)
+    },
   },
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss" scoped>
-.topNav {
-  width: 100%;
-  max-width: 128rem;
-  margin: 0 auto;
-  height: var(--top-nav-height);
-  position: relative;
-  top: 0;
-  z-index: 1;
-  background-color: transparent;
+<style scoped lang="scss">
+.top-nav {
+  height: 72px;
   display: flex;
-  .nav-logo {
-    top: 1.6rem;
-    left: 2.2rem;
-    position: absolute;
+  justify-content: space-between;
+  align-items: center;
+  .logo {
+    cursor: pointer;
   }
-  .nav-logo-web {
-    top: 1.6rem;
-    left: 4rem;
-    position: absolute;
-    .pizza {
-      width: 6rem;
-      height: 6rem;
+}
+.app {
+  .top-nav {
+    .logo {
+      margin-top: 16px;
+      margin-left: 21px;
     }
   }
-  .ant-radio-group {
-    background: #ffede0;
-    border-radius: 2rem;
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    width: 17rem;
-    height: 3.2rem;
-    font-size: 1.4rem;
-    text-align: center;
-    border-width: 0.15rem 0.15rem 0.25rem 0.15rem;
-    border-color: black;
-    border-style: solid;
-    box-sizing: content-box;
-    display: flex;
-    box-shadow: 0 1rem 1rem -0.5rem rgba(248, 95, 83, 0.3);
+}
+.app-mobile {
+  .top-nav {
+    padding: 16px 20px;
+    .wallet-status {
+      cursor: pointer;
+      margin-right: 15px;
+    }
+    .wallet-address {
+      padding: 8px 24px;
+      // background: #FFFFFF;
+      border-radius: 20px;
+      // color: rgba(51, 51, 51, 0.8);
+    }
+    .connect-wallet-btn {
+      width: 148px;
+      height: 40px;
+      line-height: 40px;
+      background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
+      box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
+      border-radius: 40px;
+      color: #ffffff;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .drawer-body {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: column;
+      .drawer-bottom {
+        width: 100%;
+        padding: 0 46px 40px 46px;
+        height: 320px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+    }
   }
-  .ant-radio-button-wrapper {
-    border-radius: 2rem;
-    content: none;
-    padding: 0;
-    margin-top: -0.05rem;
-    margin-left: -0.05rem;
-    width: 8.6rem;
-    height: 3.4rem;
-    line-height: 3.4rem;
-    border: 0;
-    box-sizing: border-box;
-  }
-  .ant-radio-button-wrapper-checked {
-    border-width: 0 0.15rem 0.2rem 0.1rem;
-    border-color: var(--default-black);
-    border-style: solid;
-  }
-  .ant-radio-button-wrapper:not(:first-child)::before {
-    content: none;
-  }
-  .ant-radio-group-solid
-    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover {
-    background: #f85f53;
-    border-width: 0 0.15rem 0.2rem 0.1rem;
-    border-color: var(--default-black);
-    border-style: solid;
-  }
+}
+::v-deep .el-drawer__header {
+  display: none;
 }
 </style>

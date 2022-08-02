@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@eth-optimism/contracts": "^0.5.14",
+    "@vue/composition-api": "^1.7.0",
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
     "bignumber.js": "^9.0.1",
