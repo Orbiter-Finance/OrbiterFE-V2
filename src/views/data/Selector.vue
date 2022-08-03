@@ -41,6 +41,7 @@ export default {
     color: rgba(51, 51, 51, 0.8);
     cursor: pointer;
     &.active {
+      font-family: 'Inter Bold';
       background: #f5f5f5;
       border-radius: 8px;
       color: #df2e2d;

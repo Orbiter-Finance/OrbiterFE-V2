@@ -444,7 +444,7 @@ export default {
         return {
           times: weeks.map((item) => item.end).reverse(),
           allUser: data.map((item) =>
-            item.reduce((memo, element) => memo + element.allUser, 0)
+            item.reduce((memo, element) => memo + element.all_users, 0)
           ),
           activeUser: data.map((item) =>
             item.reduce((memo, element) => memo + element.active_users, 0)
