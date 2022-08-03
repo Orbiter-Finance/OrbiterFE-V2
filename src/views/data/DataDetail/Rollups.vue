@@ -48,7 +48,7 @@
         <el-table-column
           prop="total_tx"
           label="Total Transactions"
-          width="150"
+          width="145"
           align="right"
           :sortable="'custom'"
         >
@@ -65,7 +65,7 @@
         <el-table-column
           prop="total_accounts"
           label="Total Accounts"
-          width="130"
+          width="125"
           align="right"
           :sortable="'custom'"
         >
@@ -80,7 +80,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          width="165"
+          width="175"
           prop="TVL.all"
           label="TVL"
           :sortable="'custom'"
@@ -380,6 +380,11 @@ export default {
   }
   .table {
     padding: 0 20px 50px 20px;
+    .el-table th.el-table__cell > .cell {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
     .name-column {
       font-family: 'Inter Regular';
       display: flex;
@@ -508,6 +513,9 @@ export default {
     }
     .table {
       padding: 0 30px 50px 30px;
+      .el-table th.el-table__cell > .cell {
+        font-size: 12px;
+      }
     }
   }
 }

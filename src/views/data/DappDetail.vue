@@ -436,7 +436,8 @@ export default {
         return {
           times: weeks.map((item) => item.end).reverse(),
           allUser: data.map((item) => {
-            return item.sort((a, b) => a.timestamp - b.timestamp)[0].all_users
+            const lastData = item.sort((a, b) => a.timestamp - b.timestamp)[0]
+            return lastData ? lastData.all_users : 0
           }),
           activeUser: data.map((item) =>
             item.reduce((memo, element) => memo + element.active_users, 0)
