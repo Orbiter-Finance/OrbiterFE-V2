@@ -72,15 +72,45 @@
             trigger="hover"
           >
             <div class="supported-l2-desc">
-              Active addresses interacting with each dapp & Corresponding
-              percentage of total users. New addresses interacting with each
-              dapp & Corresponding percentage of total users.
+              <div
+                v-html="
+                  checkData.includes('All User') &&
+                  checkData.includes('Active User') &&
+                  checkData.includes('New User')
+                    ? 'Active addresses interacting with each dapp & Corresponding Percentage of total users. </br>New addresses interacting with each dapp & Corresponding Percentage of total users. '
+                    : checkData.includes('All User') &&
+                      checkData.includes('New User')
+                    ? 'New addresses interacting with each dapp & Corresponding Percentage of total users.'
+                    : checkData.includes('All User') &&
+                      checkData.includes('Active User')
+                    ? 'Active addresses interacting with each dapp & Corresponding Percentage of total users.'
+                    : checkData.includes('New User') &&
+                      checkData.includes('Active User')
+                    ? 'New addresses interacting with each dapp & Corresponding Percentage of active users. '
+                    : ''
+                "
+              ></div>
               <a href="#" target="_blank"> Read More </a>
             </div>
             <span class="title-help" slot="reference"> </span>
           </el-popover>
         </div>
         <div id="dapp-detail-chart"></div>
+        <div class="checker">
+          <div
+            class="item"
+            v-for="(item, i) in allSeries"
+            :key="i"
+            @click="onCheckerClick(item)"
+          >
+            <div
+              class="checkbox"
+              :class="{ active: checkData.includes(item) }"
+            ></div>
+            <div class="line" :style="{ background: color[i] }"></div>
+            <div class="name">{{ item }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </el-dialog>
@@ -97,9 +127,20 @@ import Rollups from './Rollups'
 import TwitterLink from './TwitterLink.vue'
 import { getDappDetail } from '../../L2data/dapp'
 import dateFormat from '../../util/dateFormat'
-import getMonthStartAndEnd from '../../util/getMonthStartAndEnd'
-import arrayNonRepeatfy from '../../util/arrayNonRepeatfy'
 import { isMobile } from '../../composition/hooks'
+import getWeeks from '../../util/getWeeks'
+
+const allSeries = ['All User', 'Active User', 'New User']
+const color = [
+  'rgba(51, 51, 51, 0.8)',
+  'rgba(239, 47, 45, 1)',
+  'rgba(17, 112, 255, 1)',
+]
+const colorMap = {
+  'All User': 'rgba(51, 51, 51, 0.8)',
+  'Active User': 'rgba(239, 47, 45, 1)',
+  'New User': 'rgba(17, 112, 255, 1)',
+}
 
 const times = [
   { label: '1m', value: 1 },
@@ -124,6 +165,9 @@ export default {
       detailData: {},
       rollups: [],
       rollup: '',
+      allSeries,
+      color,
+      checkData: ['New User', 'Active User'],
     }
   },
   computed: {
@@ -199,6 +243,21 @@ export default {
       this.detailData = await getDappDetail(value, this.dappData.dapp_name)
       this.$loader.hide()
     },
+    onCheckerClick(item) {
+      if (this.checkData.length === 1 && this.checkData.includes(item)) {
+        return
+      }
+      if (this.checkData.includes(item)) {
+        this.checkData = this.checkData.filter((data) => data !== item)
+      } else {
+        this.checkData = this.checkData.concat([item])
+      }
+      const option = this._getChartOptions()
+      if (this._chart) {
+        this._chart.clear()
+        this._chart.setOption(option)
+      }
+    },
     _onResize() {
       this._chart && this._chart.resize()
     },
@@ -209,33 +268,15 @@ export default {
     },
     _getChartOptions() {
       const { times, allUser, activeUser, newUser } = this._getData()
-      return {
+
+      const options = {
         height: 160,
-        color: [
-          'rgba(51, 51, 51, 0.8)',
-          'rgba(239, 47, 45, 1)',
-          'rgba(17, 112, 255, 1)',
-        ],
         title: {
           show: false,
         },
-        legend: [
-          {
-            bottom: 20,
-            left: this.isMobile ? 'center' : 100,
-            selected: { 'All User': false },
-            textStyle: {
-              color: this.isLightMode
-                ? 'rgba(51, 51, 51, 0.8)'
-                : 'rgba(255, 255, 255, 0.6)',
-            },
-            selectorLabel: {
-              color: this.isLightMode
-                ? 'rgba(51, 51, 51, 0.8)'
-                : 'rgba(255, 255, 255, 0.6)',
-            },
-          },
-        ],
+        legend: {
+          show: false,
+        },
         grid: {
           top: 26,
           left: '3%',
@@ -257,6 +298,9 @@ export default {
                   : 'rgba(255, 255, 255, 0.4)',
               },
             },
+            axisLabel: {
+              formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
+            },
             splitLine: {
               lineStyle: {
                 color: this.isLightMode
@@ -269,6 +313,7 @@ export default {
         yAxis: [
           {
             alignTicks: false,
+            splitNumber: 3,
             type: 'value',
             axisPointer: {
               show: false,
@@ -299,54 +344,63 @@ export default {
               }
             : undefined,
         },
-        series: [
-          {
-            name: 'All User',
-            type: 'line',
-            stack: 'Total',
-            smooth: true,
-            lineStyle: {
-              width: 4,
-              color: 'rgba(51, 51, 51, 0.8)',
-            },
-            showSymbol: false,
-            emphasis: {
-              focus: 'series',
-            },
-            data: allUser,
-          },
-          {
-            name: 'Active User',
-            type: 'line',
-            stack: 'Total',
-            smooth: true,
-            lineStyle: {
-              width: 4,
-              color: 'rgba(239, 47, 45, 1)',
-            },
-            showSymbol: false,
-            emphasis: {
-              focus: 'series',
-            },
-            data: activeUser,
-          },
-          {
-            name: 'New User',
-            type: 'line',
-            stack: 'Total',
-            smooth: true,
-            lineStyle: {
-              width: 4,
-              color: 'rgba(17, 112, 255, 1)',
-            },
-            showSymbol: false,
-            emphasis: {
-              focus: 'series',
-            },
-            data: newUser,
-          },
-        ],
+        series: [],
       }
+
+      if (this.checkData.includes('All User')) {
+        options.series.push({
+          name: 'All User',
+          type: 'line',
+          stack: 'Total',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: 'rgba(51, 51, 51, 0.8)',
+          },
+          showSymbol: false,
+          emphasis: {
+            focus: 'series',
+          },
+          data: allUser,
+        })
+      }
+
+      if (this.checkData.includes('New User')) {
+        options.series.push({
+          name: 'New User',
+          type: 'line',
+          stack: 'Total',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: 'rgba(17, 112, 255, 1)',
+          },
+          showSymbol: false,
+          emphasis: {
+            focus: 'series',
+          },
+          data: newUser,
+        })
+      }
+
+      if (this.checkData.includes('Active User')) {
+        options.series.push({
+          name: 'Active User',
+          type: 'line',
+          stack: 'Total',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: 'rgba(239, 47, 45, 1)',
+          },
+          showSymbol: false,
+          emphasis: {
+            focus: 'series',
+          },
+          data: activeUser,
+        })
+      }
+      return options
     },
     _getData() {
       if (!this.chartData) {
@@ -356,45 +410,49 @@ export default {
       const chartData = this.chartData.reverse()
       const currentTime = this.currentTime
 
-      if ([1, 3].includes(currentTime)) {
+      if ([1, 3, 6].includes(currentTime)) {
         return {
-          times: chartData.map((item) =>
-            dateFormat(padTimestamp(item.timestamp), 'yyyy-MM-dd')
-          ),
+          times: chartData.map((item) => padTimestamp(item.timestamp)),
           allUser: chartData.map((item) => item.all_users),
           activeUser: chartData.map((item) => item.active_users),
           newUser: chartData.map((item) => item.new_users),
         }
       }
 
-      const now = new Date().getTime()
-      const times = isMax(currentTime)
-        ? arrayNonRepeatfy(
-            chartData.map((item) =>
-              getMonthStartAndEnd(padTimestamp(item.timestamp))
-            )
-          )
-        : [getMonthStartAndEnd(now)].concat(
-            Array.from({ length: currentTime - 1 }, (_, i) => i + 1).map(
-              (item) =>
-                getMonthStartAndEnd(now - padTimestamp(ONE_MONTH * item))
-            )
-          )
+      if ([12, 'Max'].includes(currentTime)) {
+        const startTime =
+          currentTime === 12
+            ? new Date().getTime() - 60 * 60 * 24 * 360 * 1000
+            : padTimestamp(
+                Math.min.apply(
+                  null,
+                  this.chartData.map((item) => item.timestamp)
+                )
+              )
 
-      const { monthList, data } = this._getChartDataByTimestamps(times)
-      if (isMax(currentTime)) {
+        const weeks = getWeeks(startTime)
+        const data = weeks
+          .map((time) =>
+            this.chartData.filter(
+              (item) =>
+                padTimestamp(item.timestamp) > time.start &&
+                padTimestamp(item.timestamp) < time.end
+            )
+          )
+          .reverse()
+
         return {
-          times: monthList,
-          allUser: data.map((item) => item.all_users),
-          activeUser: data.map((item) => item.active_users),
-          newUser: data.map((item) => item.new_users),
+          times: weeks.map((item) => item.end).reverse(),
+          allUser: data.map((item) =>
+            item.reduce((memo, element) => memo + element.allUser, 0)
+          ),
+          activeUser: data.map((item) =>
+            item.reduce((memo, element) => memo + element.active_users, 0)
+          ),
+          newUser: data.map((item) =>
+            item.reduce((memo, element) => memo + element.new_users, 0)
+          ),
         }
-      }
-      return {
-        times: monthList.reverse(),
-        allUser: data.map((item) => item.all_users).reverse(),
-        activeUser: data.map((item) => item.active_users).reverse(),
-        newUser: data.map((item) => item.new_users).reverse(),
       }
     },
     _onFormatter(params) {
@@ -407,17 +465,22 @@ export default {
         caches[axisValue] = all_users
       }
 
+      const date = new Date(parseInt(axisValue)).getTime()
+      const start = date - 24 * 60 * 60 * 7 * 1000
+      const title = [1, 3, 6].includes(this.currentTime)
+        ? dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
+        : `${dateFormat(start, 'yyyy-MM-dd')}-${dateFormat(date, 'yyyy-MM-dd')}`
+
       return `<div class="dapp-detail-chart-popover-content">
-                <div class="dapp-detail-chart-popover-title">${dateFormat(
-                  axisValue,
-                  'yyyy-MM-dd'
-                )}</div>
+                <div class="dapp-detail-chart-popover-title">${title}</div>
                 <div class="dapp-detail-chart-popover-data">
                    ${params
                      .map(
                        (item) => `
                     <div class="dapp-detail-chart-popover-data-item">
-                      <div class="dot" style="background:${item.color}"></div>
+                      <div class="dot" style="background:${
+                        colorMap[item.seriesName]
+                      }"></div>
                       <div class="name">${item.seriesName}</div>
                       <div class="value">${numeral(item.value).format('0,0')}
                       ${
@@ -438,55 +501,22 @@ export default {
     _getAllUserByTime(axisValue) {
       const currentTime = this.currentTime
       const chartData = this.chartData
-
-      if ([1, 3].includes(currentTime)) {
+      if ([1, 3, 6].includes(currentTime)) {
         return chartData.find((item) => {
-          return (
-            dateFormat(padTimestamp(item.timestamp), 'yyyy-MM-dd') === axisValue
-          )
+          return item.timestamp * 1000 === parseInt(axisValue)
         }).all_users
       }
 
-      const time = getMonthStartAndEnd(new Date(axisValue))
-      return chartData
+      const end = new Date(parseInt(axisValue)).getTime()
+      const start = end - 24 * 60 * 60 * 7 * 1000
+      return this.chartData
         .filter((item) => {
           return (
-            padTimestamp(item.timestamp) > time.start &&
-            padTimestamp(item.timestamp) < time.end
+            padTimestamp(item.timestamp) > start &&
+            padTimestamp(item.timestamp) < end
           )
         })
         .reduce((mome, item) => mome + item.all_users, 0)
-    },
-    _getChartDataByTimestamps(times) {
-      const monthList = []
-      const data = []
-
-      times.forEach((time) => {
-        monthList.push(dateFormat(time.start, 'yyyy-MM'))
-        data.push(
-          this.chartData
-            .filter((item) => {
-              return (
-                padTimestamp(item.timestamp) > time.start &&
-                padTimestamp(item.timestamp) < time.end
-              )
-            })
-            .reduce(
-              (memo, item) => {
-                memo.all_users += item.all_users
-                memo.active_users += item.active_users
-                memo.new_users += item.new_users
-                return memo
-              },
-              { all_users: 0, active_users: 0, new_users: 0 }
-            )
-        )
-      })
-
-      return {
-        data,
-        monthList,
-      }
     },
   },
 }
@@ -601,12 +631,12 @@ export default {
       background: #f5f5f5;
       border-radius: 12px;
       margin-bottom: 100px;
+      padding-bottom: 20px;
       .title {
         display: flex;
         align-items: center;
         justify-content: center;
         padding-top: 20px;
-        font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
         font-size: 16px;
@@ -623,7 +653,40 @@ export default {
         }
       }
       #dapp-detail-chart {
-        height: 270px;
+        height: 200px;
+      }
+      .checker {
+        display: flex;
+        align-items: center;
+        padding-left: 102px;
+        .item {
+          display: flex;
+          align-items: center;
+          margin-right: 20px;
+          font-family: 'Inter Regular';
+          font-style: normal;
+          font-weight: 400;
+          font-size: 12px;
+          color: rgba(51, 51, 51, 0.8);
+          cursor: pointer;
+          .checkbox {
+            width: 14px;
+            height: 14px;
+            background: rgba(51, 51, 51, 0.2);
+            border-radius: 4px;
+            margin-right: 4px;
+            &.active {
+              background: url('../../assets/data/checkend.png');
+              background-size: 14px 14px;
+            }
+          }
+          .line {
+            width: 16px;
+            height: 3px;
+            border-radius: 2px;
+            margin-right: 4px;
+          }
+        }
       }
     }
   }
@@ -700,7 +763,9 @@ export default {
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
+  font-family: 'Inter Regular';
   a {
+    display: block;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -733,7 +798,7 @@ export default {
   border-radius: 12px;
   padding: 20px;
   font-style: normal;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.96);
   color: #333333;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
   .dapp-detail-chart-popover-title {

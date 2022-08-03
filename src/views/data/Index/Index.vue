@@ -76,7 +76,7 @@
           </el-table-column>
           <el-table-column
             prop="all_users"
-            label="All User"
+            label="All Users"
             width="120"
             align="right"
           >
@@ -201,6 +201,7 @@ export default {
       padding: 0 30px;
       .more {
         font-style: normal;
+        font-family: 'Inter Regular';
         display: flex;
         align-items: center;
         position: absolute;
@@ -279,6 +280,7 @@ export default {
       }
       .name-column {
         display: flex;
+        font-family: 'Inter Regular';
         color: #333333;
         .rank {
           width: 20px;
@@ -319,6 +321,7 @@ export default {
         }
       }
       .data {
+        font-family: 'Inter Regular';
         font-style: normal;
         font-weight: 500;
         font-size: 14px;

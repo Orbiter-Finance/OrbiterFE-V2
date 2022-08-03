@@ -258,12 +258,20 @@ export default {
           axisTick: {
             show: false,
           },
+          splitNumber: 3,
           axisLine: {
             show: false,
             lineStyle: {
               color: this.isLightMode
                 ? 'rgba(51, 51, 51, 0.4)'
                 : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgb(246, 246, 246)'
+                : 'rgb(63, 65, 91)',
             },
           },
           axisPointer: { show: false },
@@ -490,6 +498,7 @@ export default {
         font-size: 14px;
         color: #df2e2d;
         cursor: pointer;
+        font-family: 'Inter Regular';
         img {
           margin-left: 5px;
         }
@@ -529,6 +538,7 @@ export default {
           font-style: normal;
           font-weight: 400;
           font-size: 14px;
+          font-family: 'Inter Regular';
           color: rgba(51, 51, 51, 0.4);
         }
       }
@@ -538,7 +548,6 @@ export default {
       }
       .content2 {
         flex: 1;
-        margin-right: 30px;
       }
     }
   }
@@ -659,6 +668,7 @@ export default {
       justify-content: space-between;
       height: 24px;
       font-size: 12px;
+      font-family: 'Inter Regular';
       .name {
         font-weight: 500;
       }

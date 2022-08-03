@@ -300,6 +300,7 @@ export default {
       align-items: center;
       font-size: 14px;
       color: #333333;
+      font-family: 'Inter Regular';
       .no {
         width: 20px;
         font-style: normal;
@@ -315,6 +316,7 @@ export default {
     }
     .name-column {
       display: flex;
+      font-family: 'Inter Regular';
       .name {
         width: 70px;
         white-space: nowrap;
@@ -334,6 +336,7 @@ export default {
       }
     }
     .data {
+      font-family: 'Inter Regular';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -352,6 +355,7 @@ export default {
         margin: 0;
       }
       .number {
+        font-family: 'Inter Regular';
         background-color: transparent;
       }
       li:not(.disabled).active,
@@ -372,11 +376,13 @@ export default {
 }
 .user-age-desc {
   font-style: normal;
+  font-family: 'Inter Regular';
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
   a {
+    display: block;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;

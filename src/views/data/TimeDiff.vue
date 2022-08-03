@@ -29,6 +29,7 @@ export default {
 <style lang="scss" scoped>
 .time-diff {
   font-style: normal;
+  font-family: 'Inter Regular';
   display: flex;
   align-items: center;
   font-weight: 400;
@@ -47,7 +48,7 @@ export default {
   .time-diff {
     color: rgba(255, 255, 255, 0.4);
   }
-  .icon{
+  .icon {
     background-image: url('../../assets/data/seconds-dark.png');
   }
 }

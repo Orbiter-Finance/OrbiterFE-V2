@@ -97,11 +97,13 @@ export default {
       font-size: 14px;
       color: #333333;
       margin-right: 10px;
+      font-family: 'Inter Regular';
       cursor: pointer;
       &:last-child {
         margin-right: 0;
       }
       &.active {
+        font-family: 'Inter Bold';
         font-weight: 700;
         color: #ffffff;
         background: #df2e2d;

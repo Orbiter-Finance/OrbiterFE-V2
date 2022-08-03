@@ -49,6 +49,7 @@
           prop="total_tx"
           label="Total Transactions"
           width="150"
+          align="right"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -65,6 +66,7 @@
           prop="total_accounts"
           label="Total Accounts"
           width="130"
+          align="right"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -78,7 +80,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          width="160"
+          width="165"
           prop="TVL.all"
           label="TVL"
           :sortable="'custom'"
@@ -103,19 +105,19 @@
           <template slot-scope="scope">
             <div class="TVL">
               <div class="all">
-                {{ numeral(scope.row.TVL.all).format('$ 0.00 a') }}
+                {{ formatUSD(scope.row.TVL.all) }}
               </div>
               <el-popover
                 popper-class="TVL-popover"
                 :placement="isMobile ? 'top' : 'right'"
-                width="280"
+                width="300"
                 trigger="hover"
               >
                 <div class="TVL-detail">
                   <div class="TVL-item">
                     <div class="TVL-token">Stable Coins</div>
                     <div class="TVL-amount">
-                      {{ numeral(scope.row.TVL.Stable).format('$ 0.00 a') }}
+                      {{ formatUSD(scope.row.TVL.Stable) }}
                     </div>
                     <div class="TVL-percent">
                       {{
@@ -128,11 +130,7 @@
                   <div class="TVL-item">
                     <div class="TVL-token">ETH/BTC</div>
                     <div class="TVL-amount">
-                      {{
-                        numeral(scope.row.TVL.BTC + scope.row.TVL.ETH).format(
-                          '$ 0.00 a'
-                        )
-                      }}
+                      {{ formatUSD(scope.row.TVL.BTC + scope.row.TVL.ETH) }}
                     </div>
                     <div class="TVL-percent">
                       {{
@@ -146,7 +144,7 @@
                   <div class="TVL-item">
                     <div class="TVL-token">Others</div>
                     <div class="TVL-amount">
-                      {{ numeral(scope.row.TVL.Others).format('$ 0.00 a') }}
+                      {{ formatUSD(scope.row.TVL.Others) }}
                     </div>
                     <div class="TVL-percent">
                       {{
@@ -190,7 +188,7 @@
         <el-table-column
           label="Active Accounts"
           prop="active_accounts"
-          width="140"
+          width="135"
           align="right"
           :sortable="'custom'"
         >
@@ -253,7 +251,7 @@ export default {
   data() {
     return {
       rollups: {},
-      defaultSort: { prop: 'txs', order: 'descending' },
+      defaultSort: { prop: 'total_tx', order: 'descending' },
       selectors,
       currentFilter: selectors[0].value,
       tableData: [],
@@ -350,10 +348,16 @@ export default {
           : []
 
       return tableData.sort((a, b) => {
-        const nA = Number(a['txs'][this.currentFilter])
-        const nB = Number(b['txs'][this.currentFilter])
+        const nA = Number(a.total_tx)
+        const nB = Number(b.total_tx)
         return nB - nA
       })
+    },
+    formatUSD(num) {
+      if (num < 1000000) {
+        return `$ ${numeral(num).divide(1000000).format('0.00')} M`
+      }
+      return numeral(num).format('$ 0.00 a').toUpperCase()
     },
   },
 }
@@ -377,6 +381,7 @@ export default {
   .table {
     padding: 0 20px 50px 20px;
     .name-column {
+      font-family: 'Inter Regular';
       display: flex;
       color: #333333;
       font-size: 14px;
@@ -397,18 +402,20 @@ export default {
       }
     }
     .data {
+      font-family: 'Inter Regular';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
       color: rgba(51, 51, 51, 0.8);
     }
     .TVL-header {
+      padding-left: 20px;
       display: inline-block;
     }
     .TVL-help {
       display: inline-block;
       position: absolute;
-      left: 33%;
+      left: 44%;
       top: 50%;
       transform: translateY(-50%);
       cursor: pointer;
@@ -416,6 +423,7 @@ export default {
     .TVL {
       display: flex;
       align-items: center;
+      padding-left: 10px;
       .all {
         margin-right: 5px;
         flex: 1;
@@ -426,6 +434,7 @@ export default {
     }
     .TVL,
     .new-data {
+      font-family: 'Inter Regular';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -445,8 +454,10 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
+  font-family: 'Inter Regular';
   color: rgba(51, 51, 51, 0.8);
   a {
+    display: block;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -454,6 +465,7 @@ export default {
   }
 }
 .TVL-detail {
+  font-family: 'Inter Regular';
   .TVL-item {
     display: flex;
     align-items: center;
@@ -474,7 +486,7 @@ export default {
     }
     .TVL-percent {
       margin-left: 20px;
-      flex: 0 0 50px;
+      flex: 0 0 60px;
       font-style: normal;
       font-weight: 400;
       font-size: 12px;

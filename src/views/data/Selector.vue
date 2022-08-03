@@ -35,6 +35,7 @@ export default {
     line-height: 32px;
     text-align: center;
     font-style: normal;
+    font-family: 'Inter Regular';
     font-weight: 400;
     font-size: 14px;
     color: rgba(51, 51, 51, 0.8);

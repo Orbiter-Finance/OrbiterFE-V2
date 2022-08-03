@@ -317,7 +317,7 @@ export default {
   .table {
     padding: 0 20px 50px 20px;
     .el-table .cell {
-      padding: 0 15px 0 5px;
+      padding: 0 5px 0 5px;
     }
     .el-table__row {
       cursor: pointer;
@@ -326,6 +326,7 @@ export default {
       display: flex;
       font-size: 14px;
       color: #333333;
+      font-family: 'Inter Regular';
       .rank {
         width: 20px;
         font-style: normal;
@@ -345,8 +346,8 @@ export default {
         margin-right: 10px;
       }
     }
-
     .data {
+      font-family: 'Inter Regular';
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
@@ -365,6 +366,7 @@ export default {
         margin: 0;
       }
       .number {
+        font-family: 'Inter Regular';
         background-color: transparent;
       }
       li:not(.disabled).active,
@@ -389,7 +391,9 @@ export default {
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
+  font-family: 'Inter Regular';
   a {
+    display: block;
     font-style: normal;
     font-weight: 400;
     font-size: 14px;
@@ -419,6 +423,11 @@ export default {
       padding: 0 30px 50px 30px;
       .el-table .cell {
         padding: 0 14px 0 5px;
+      }
+      .name-column {
+        .rank {
+          margin-right: 10px;
+        }
       }
       .pagination {
         justify-content: center;
