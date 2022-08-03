@@ -70,6 +70,7 @@
             :placement="'bottom'"
             width="280"
             trigger="hover"
+            v-if="!(checkData.length === 1)"
           >
             <div class="supported-l2-desc">
               <div
@@ -587,6 +588,7 @@ export default {
         padding: 0 10px;
         font-style: normal;
         font-weight: 400;
+        font-family: 'Inter Regular';
         font-size: 12px;
         color: rgba(51, 51, 51, 0.69);
         &::after {
@@ -606,6 +608,7 @@ export default {
         font-weight: 500;
         font-size: 12px;
         color: rgba(51, 51, 51, 0.69);
+        font-family: 'Inter Regular';
       }
       span {
         display: inline-block;
@@ -669,6 +672,9 @@ export default {
           font-size: 12px;
           color: rgba(51, 51, 51, 0.8);
           cursor: pointer;
+          &:last-child {
+            margin-right: 0;
+          }
           .checkbox {
             width: 14px;
             height: 14px;
@@ -699,6 +705,12 @@ export default {
         flex-direction: column;
         .selector {
           margin-top: 20px;
+        }
+      }
+      .content {
+        .checker {
+          padding-left: 0;
+          justify-content: center;
         }
       }
     }
