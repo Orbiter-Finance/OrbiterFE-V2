@@ -21,8 +21,8 @@
         </div>
       </div>
       <div class="title" v-if="!isMobile">
-        {{ currentRollup.replace(/^./, currentRollup[0].toUpperCase()) }} Dapp
-        Daily Data,
+        <!-- {{ currentRollup.replace(/^./, currentRollup[0].toUpperCase()) }} -->
+        Dapps 24h Active Users Rankings,
         {{
           baseDappDailyData && baseDappDailyData.update_time
             ? dateFormat(
@@ -62,7 +62,10 @@
                 </div>
                 <template v-if="!isMobile">
                   <icon-link :href="scope.row.dapp_url" />
-                  <twitter-link :href="scope.row.dapp_twitter" />
+                  <twitter-link
+                    v-if="scope.row.dapp_twitter"
+                    :href="scope.row.dapp_twitter"
+                  />
                 </template>
               </div>
             </template>

@@ -16,7 +16,7 @@
     <div class="rollups">
       <div class="head">
         <div class="title">
-          Rollups by Daily Transactions
+          Rollups Daily Transactions Ranking
           <template v-if="!isMobile">
             ,{{
               latestData
@@ -377,7 +377,7 @@ export default {
       const start = date - 24 * 60 * 60 * 7 * 1000
       const title = [3, 6].includes(this.currentChartTime)
         ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
-        : `${dateFormat(start, 'yyyy-MM-dd')}-${dateFormat(date, 'yyyy-MM-dd')}`
+        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(date, 'yyyy-MM-dd')}`
 
       const firstData = rollups.slice(0, 10)
       const lastData = rollups.slice(10).reduce(

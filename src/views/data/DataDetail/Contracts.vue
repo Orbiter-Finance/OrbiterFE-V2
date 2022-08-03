@@ -48,8 +48,11 @@
               <div class="name" :title="scope.row.dapp_name">
                 {{ scope.row.dapp_name }}
               </div>
-              <icon-link :href="scope.row.dapp_url" />
-              <twitter-link :href="scope.row.dapp_twitter" />
+              <icon-link :href="scope.row.dapp_url" v-if="scope.row.dapp_url" />
+              <twitter-link
+                :href="scope.row.dapp_twitter"
+                v-if="scope.row.dapp_twitter"
+              />
             </div>
           </template>
         </el-table-column>
@@ -67,7 +70,7 @@
         </el-table-column>
         <el-table-column
           prop="all_users"
-          label="All User"
+          label="All Users"
           width="80"
           align="right"
           :sortable="'custom'"
@@ -93,8 +96,7 @@
               trigger="hover"
             >
               <div class="user-age-desc">
-                Statistics for all users. Users-Age means the cumulative days
-                since users started the first transaction in the Ethereum.
+                Statistics for all users. " User Age " refers to the cumulative days since users started the first transaction on the mainnet. 
                 <a href="#" target="_blank"> Read More </a>
               </div>
               <div class="user-age-help" slot="reference">
@@ -375,6 +377,9 @@ export default {
   cursor: pointer;
 }
 .user-age-desc {
+  word-wrap: break-word;
+  word-break: normal;
+  text-align: left;
   font-style: normal;
   font-family: 'Inter Regular';
   font-weight: 400;

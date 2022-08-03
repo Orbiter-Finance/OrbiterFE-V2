@@ -135,6 +135,7 @@ export default {
   border-radius: 12px;
   border: 0;
   .el-select-dropdown__item {
+    font-family: 'Inter Regular';
     font-style: normal;
     font-weight: 400;
     font-size: 16px;

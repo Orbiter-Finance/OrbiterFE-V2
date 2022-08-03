@@ -24,17 +24,24 @@
         style="width: 100%"
         empty-text="No Items"
         :default-sort="defaultSort"
-        @row-click="onRowClick"
         @sort-change="onSortChange"
       >
-        <el-table-column fixed label="Dapp Name" :width="isMobile ? 210 : 280">
+        <el-table-column
+          fixed
+          label="NO. Dapp Name"
+          :width="isMobile ? 210 : 280"
+        >
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
                 {{ scope.row.index }}
               </div>
               <dapp-logo :name="scope.row.dapp_name" />
-              <div class="name" :title="scope.row.dapp_name">
+              <div
+                @click="onRowClick(scope.row)"
+                class="name"
+                :title="scope.row.dapp_name"
+              >
                 {{ scope.row.dapp_name }}
               </div>
               <icon-link :href="scope.row.dapp_url" />
@@ -56,9 +63,9 @@
         </el-table-column>
         <el-table-column
           prop="all_users"
-          label="All User"
+          label="All Users"
           width="130"
-          align="right"
+          align="center"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -99,12 +106,11 @@
             <el-popover
               popper-class="new-user-age-header-popover"
               :placement="'bottom'"
-              width="280"
+              width="290"
               trigger="hover"
             >
               <div class="new-user-age-desc">
-                Statistics for new users. Users-Age means the cumulative days
-                since users started the first transaction in the Ethereum.
+                Statistics for new users. " User Age " refers to the cumulative days since users started the first transaction on the mainnet.
                 <a href="#" target="_blank"> Read More </a>
               </div>
               <div class="new-user-age-help" slot="reference">
@@ -319,9 +325,6 @@ export default {
     .el-table .cell {
       padding: 0 5px 0 5px;
     }
-    .el-table__row {
-      cursor: pointer;
-    }
     .name-column {
       display: flex;
       font-size: 14px;
@@ -341,6 +344,7 @@ export default {
         font-style: normal;
         font-weight: 500;
         margin: 0 10px;
+        cursor: pointer;
       }
       a {
         margin-right: 10px;
@@ -386,6 +390,9 @@ export default {
   cursor: pointer;
 }
 .new-user-age-desc {
+  word-wrap: break-word;
+  word-break: normal;
+  text-align: left;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;

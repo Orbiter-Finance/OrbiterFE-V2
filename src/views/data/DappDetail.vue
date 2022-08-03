@@ -73,24 +73,8 @@
             v-if="!(checkData.length === 1)"
           >
             <div class="supported-l2-desc">
-              <div
-                v-html="
-                  checkData.includes('All User') &&
-                  checkData.includes('Active User') &&
-                  checkData.includes('New User')
-                    ? 'Active addresses interacting with each dapp & Corresponding Percentage of total users. </br>New addresses interacting with each dapp & Corresponding Percentage of total users. '
-                    : checkData.includes('All User') &&
-                      checkData.includes('New User')
-                    ? 'New addresses interacting with each dapp & Corresponding Percentage of total users.'
-                    : checkData.includes('All User') &&
-                      checkData.includes('Active User')
-                    ? 'Active addresses interacting with each dapp & Corresponding Percentage of total users.'
-                    : checkData.includes('New User') &&
-                      checkData.includes('Active User')
-                    ? 'New addresses interacting with each dapp & Corresponding Percentage of active users. '
-                    : ''
-                "
-              ></div>
+              Active Users & Corresponding percentage of total users. <br />
+              New Users & Corresponding percentage of total users.
               <a href="#" target="_blank"> Read More </a>
             </div>
             <span class="title-help" slot="reference"> </span>
@@ -131,16 +115,16 @@ import dateFormat from '../../util/dateFormat'
 import { isMobile } from '../../composition/hooks'
 import getWeeks from '../../util/getWeeks'
 
-const allSeries = ['All User', 'Active User', 'New User']
+const allSeries = ['All Users', 'Active Users', 'New Users']
 const color = [
   'rgba(51, 51, 51, 0.8)',
   'rgba(239, 47, 45, 1)',
   'rgba(17, 112, 255, 1)',
 ]
 const colorMap = {
-  'All User': 'rgba(51, 51, 51, 0.8)',
-  'Active User': 'rgba(239, 47, 45, 1)',
-  'New User': 'rgba(17, 112, 255, 1)',
+  'All Users': 'rgba(51, 51, 51, 0.8)',
+  'Active Users': 'rgba(239, 47, 45, 1)',
+  'New Users': 'rgba(17, 112, 255, 1)',
 }
 
 const times = [
@@ -168,7 +152,7 @@ export default {
       rollup: '',
       allSeries,
       color,
-      checkData: ['New User', 'Active User'],
+      checkData: ['New Users', 'Active Users'],
     }
   },
   computed: {
@@ -183,10 +167,16 @@ export default {
       const currentTime = this.currentTime
       const now = new Date().getTime() / 1000
       if (isMax(currentTime)) {
-        return chartData.slice()
+        return chartData.sort((a, b) => {
+          return a.timestamp - b.timestamp
+        })
       }
       const selectDataTime = ONE_MONTH * currentTime
-      return chartData.filter((item) => item.timestamp > now - selectDataTime)
+      return chartData
+        .filter((item) => item.timestamp > now - selectDataTime)
+        .sort((a, b) => {
+          return a.timestamp - b.timestamp
+        })
     },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
@@ -285,53 +275,56 @@ export default {
           bottom: '3%',
           containLabel: true,
         },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: times,
-            axisTick: { show: false },
-            axisLine: {
-              show: false,
-              lineStyle: {
-                color: this.isLightMode
-                  ? 'rgba(51, 51, 51, 0.4)'
-                  : 'rgba(255, 255, 255, 0.4)',
-              },
-            },
-            axisLabel: {
-              formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
-            },
-            splitLine: {
-              lineStyle: {
-                color: this.isLightMode
-                  ? ' rgba(51, 51, 51, 0.2)'
-                  : 'rgba(255, 255, 255, 0.2)',
-              },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          alignTicks: false,
+          data: times,
+          axisTick: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
             },
           },
-        ],
-        yAxis: [
-          {
-            alignTicks: false,
-            splitNumber: 3,
-            type: 'value',
-            axisPointer: {
-              show: false,
+          axisLabel: {
+            interval: (index) => {
+              return (
+                index % Math.ceil(times.length / (this.isMobile ? 3 : 6)) === 0
+              )
             },
-            axisTick: {
-              show: false,
-            },
-            axisLine: {
-              show: false,
-              lineStyle: {
-                color: this.isLightMode
-                  ? 'rgba(51, 51, 51, 0.4)'
-                  : 'rgba(255, 255, 255, 0.4)',
-              },
+            formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
+          },
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.2)'
+                : 'rgba(255, 255, 255, 0.2)',
             },
           },
-        ],
+        },
+        yAxis: {
+          splitNumber: 3,
+          type: 'value',
+          axisPointer: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+        },
         tooltip: {
           trigger: 'axis',
           padding: 0,
@@ -348,27 +341,9 @@ export default {
         series: [],
       }
 
-      if (this.checkData.includes('All User')) {
+      if (this.checkData.includes('New Users')) {
         options.series.push({
-          name: 'All User',
-          type: 'line',
-          stack: 'Total',
-          smooth: true,
-          lineStyle: {
-            width: 4,
-            color: 'rgba(51, 51, 51, 0.8)',
-          },
-          showSymbol: false,
-          emphasis: {
-            focus: 'series',
-          },
-          data: allUser,
-        })
-      }
-
-      if (this.checkData.includes('New User')) {
-        options.series.push({
-          name: 'New User',
+          name: 'New Users',
           type: 'line',
           stack: 'Total',
           smooth: true,
@@ -383,10 +358,9 @@ export default {
           data: newUser,
         })
       }
-
-      if (this.checkData.includes('Active User')) {
+      if (this.checkData.includes('Active Users')) {
         options.series.push({
-          name: 'Active User',
+          name: 'Active Users',
           type: 'line',
           stack: 'Total',
           smooth: true,
@@ -401,6 +375,23 @@ export default {
           data: activeUser,
         })
       }
+      if (this.checkData.includes('All Users')) {
+        options.series.push({
+          name: 'All Users',
+          type: 'line',
+          stack: 'Total',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: 'rgba(51, 51, 51, 0.8)',
+          },
+          showSymbol: false,
+          emphasis: {
+            focus: 'series',
+          },
+          data: allUser,
+        })
+      }
       return options
     },
     _getData() {
@@ -408,7 +399,7 @@ export default {
         return { times: [], allUser: [], activeUser: [], newUser: [] }
       }
 
-      const chartData = this.chartData.reverse()
+      const chartData = this.chartData
       const currentTime = this.currentTime
 
       if ([1, 3, 6].includes(currentTime)) {
@@ -470,12 +461,16 @@ export default {
       const start = date - 24 * 60 * 60 * 7 * 1000
       const title = [1, 3, 6].includes(this.currentTime)
         ? dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
-        : `${dateFormat(start, 'yyyy-MM-dd')}-${dateFormat(date, 'yyyy-MM-dd')}`
+        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
+            date,
+            'yyyy-MM-dd'
+          )}`
 
       return `<div class="dapp-detail-chart-popover-content">
                 <div class="dapp-detail-chart-popover-title">${title}</div>
                 <div class="dapp-detail-chart-popover-data">
                    ${params
+                     .reverse()
                      .map(
                        (item) => `
                     <div class="dapp-detail-chart-popover-data-item">
@@ -485,7 +480,7 @@ export default {
                       <div class="name">${item.seriesName}</div>
                       <div class="value">${numeral(item.value).format('0,0')}
                       ${
-                        item.seriesName !== 'All User'
+                        item.seriesName !== 'All Users'
                           ? `<span>(${numeral(item.value / all_users).format(
                               '0.00%'
                             )})</span>`
@@ -776,6 +771,9 @@ export default {
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
   font-family: 'Inter Regular';
+  word-wrap: break-word;
+  word-break: normal;
+  text-align: left;
   a {
     display: block;
     font-style: normal;

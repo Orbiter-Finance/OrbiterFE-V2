@@ -20,7 +20,7 @@
         :default-sort="defaultSort"
         @sort-change="onSortChange"
       >
-        <el-table-column fixed label="Name" width="150">
+        <el-table-column fixed label="NO. Name" width="150">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="no">
@@ -454,6 +454,9 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
+  word-wrap: break-word;
+  word-break: normal;
+  text-align: left;
   font-family: 'Inter Regular';
   color: rgba(51, 51, 51, 0.8);
   a {
