@@ -7,6 +7,13 @@ const state = {
     coinbase: null,
     error: null,
     localLogin: true,
+    starkNet: {
+      starkNetAddress: '',
+      starkNetWalletName: '',
+      starkWalletIcon: '',
+      starkIsConnected: false,
+      starkChain: '',
+    },
   },
   innerWH: {
     innerWidth: window.innerWidth,
@@ -76,5 +83,14 @@ const state = {
     },
   ],
   themeMode: localStorage.getItem('themeMode') || 'light', // light dark
+  curPage: {
+    Status: '1',
+    TabState: 'Sender',
+  },
+  dialog: {
+    selectWalletDialogVisible: false,
+    isStarkNetDialog: false,
+  },
+  isMobile: false,
 }
 export default state

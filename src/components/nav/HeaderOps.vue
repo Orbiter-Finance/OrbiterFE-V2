@@ -12,22 +12,7 @@
       >Connect a Wallet</CommBtn
     >
     <template v-if="isLogin">
-      <span @click="showHistory" class="ops-item">History</span>
-      <div
-        v-if="isSelectedStarkNet"
-        ref="connectedStarkNetBtn"
-        @click="connectStarkNetWallet"
-        class="ops-item center"
-        style="display: inline-flex"
-      >
-        <svg-icon
-          style="width: 2rem; height: 2rem"
-          iconName="sknlogo"
-        ></svg-icon>
-        <span class="address">{{
-          starkAddress === 'not connected' ? 'connect starknet' : starkAddress
-        }}</span>
-      </div>
+      <span @click="showHistory" class="ops-item OrbiterScan">OrbiterScan</span>
       <div
         ref="connectedBtn"
         @click="connectAWallet"
@@ -37,8 +22,8 @@
         <svg-icon
           style="width: 2rem; height: 2rem"
           :iconName="
-            globalSelectWalletConf.walletType &&
-            globalSelectWalletConf.walletType.toLowerCase()
+            getGlobalWalletConf.walletType &&
+            getGlobalWalletConf.walletType.toLowerCase()
           "
         ></svg-icon>
         <span class="address">{{ showAddress }}</span>
@@ -51,23 +36,8 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters, mapState } from 'vuex'
 import { CommBtn, SvgIconThemed } from '../'
-import { transferDataState, isMobile } from '../../composition/hooks'
-import {
-  compatibleGlobalWalletConf,
-  walletIsLogin,
-} from '../../composition/walletsResponsiveData'
-import {
-  setStarkNetDialog,
-  setSelectWalletDialogVisible,
-} from '../../composition/hooks'
-// import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
-import {
-  starkAddress,
-  showAddress,
-  saveSenderPageWorkingState,
-} from '../../composition/hooks'
 
 export default {
   name: 'HeaderOps',
@@ -80,29 +50,8 @@ export default {
     },
   },
   computed: {
-    isMobile() {
-      return isMobile.value
-    },
-    globalSelectWalletConf() {
-      return compatibleGlobalWalletConf.value
-    },
-    isLogin() {
-      return walletIsLogin.value
-    },
-    isSelectedStarkNet() {
-      return (
-        transferDataState.fromChainID == 4 ||
-        transferDataState.fromChainID == 44 ||
-        transferDataState.toChainID == 4 ||
-        transferDataState.toChainID == 44
-      )
-    },
-    starkAddress() {
-      return starkAddress()
-    },
-    showAddress() {
-      return showAddress()
-    },
+    ...mapGetters(['isLogin', 'showAddress','getGlobalWalletConf']),
+    ...mapState(['dialog', 'isMobile']),
   },
   data() {
     const selectedWallet = JSON.parse(
@@ -113,40 +62,19 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['toggleThemeMode']),
-    async connectStarkNetWallet() {
-      // if (this.starkAddress === 'not connected') {
-      //   await connectStarkNetWallet()
-      //   return
-      // }
-      // setStarkNetDialog(true)
-      // setSelectWalletDialogVisible(true)
-    },
+    ...mapMutations(['toggleThemeMode', 'setDialogVisible']),
     connectAWallet() {
-      setStarkNetDialog(false)
-      setSelectWalletDialogVisible(true)
-      this.$emit('closeDrawer')
+      this.setDialogVisible({
+        type: 'selectWalletDialogVisible',
+        value: true,
+      })
+
+      // setStarkNetDialog(false)
+      // setSelectWalletDialogVisible(true)
+      // this.$emit('closeDrawer')
     },
     showHistory() {
-      this.$emit('closeDrawer')
-
-      const route = this.$route
-      route.path !== '/history' &&
-        localStorage.setItem(
-          'last_page_before_history',
-          JSON.stringify({
-            path: route.path,
-            params: route.params,
-            query: route.query,
-          })
-        )
-      if (route.path === '/') {
-        saveSenderPageWorkingState()
-      }
-      route.path !== '/history' &&
-        this.$router.push({
-          path: '/history',
-        })
+      console.log('showHistory')
     },
   },
 }
@@ -178,6 +106,9 @@ export default {
     line-height: 24px;
     margin-right: 10px;
     cursor: pointer;
+    &.OrbiterScan {
+      box-shadow: inset 0px -3px 0px rgba(51, 51, 51, 0.16);
+    }
     .address {
       margin-left: 4px;
       font-weight: 700;

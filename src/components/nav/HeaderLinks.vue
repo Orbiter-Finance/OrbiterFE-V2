@@ -1,29 +1,56 @@
 <template>
-<div class="header-links-box" :style="`flex-direction: ${verical ? 'column' : 'row'};`">
-  <template v-for="(nav, idx) in navs">
-    <div :key="nav.name" @click="route2(nav)" :class="['nav-item', 'center', { 
-      selected: (!isMobile || isMobile && !nav.children) && $route.path === nav.href,
-      'nav-item-border-bottom': !(nav.children && nav.children.length > 0),
-      'nav-item-border-top': idx > 0 && navs[idx - 1].children && navs[idx - 1].children.length > 0,
-    }]">
-      {{nav.name}}
-      <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
-    </div>
-    <template v-if="isMobile && nav.children && nav.children.length">
-      <div 
-        v-for="snav in nav.children" 
-        :key="nav.name + '_' + snav.name" 
-        @click="subnavClick(nav, snav)" :class="['nav-item-sub', 'center', { selected: $route.path === snav.phref && curPageTabState === snav.name }]">
-        - {{snav.name}}
+  <div
+    class="header-links-box"
+    :style="`flex-direction: ${verical ? 'column' : 'row'};`"
+  >
+    <template v-for="(nav, idx) in navs">
+      <div
+        :key="nav.name"
+        @click="route2(nav)"
+        :class="[
+          'nav-item',
+          'center',
+          {
+            selected:
+              (!isMobile || (isMobile && !nav.children)) &&
+              $route.path === nav.href,
+            'nav-item-border-bottom': !(
+              nav.children && nav.children.length > 0
+            ),
+            'nav-item-border-top':
+              idx > 0 &&
+              navs[idx - 1].children &&
+              navs[idx - 1].children.length > 0,
+          },
+        ]"
+      >
+        {{ nav.name }}
+        <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
       </div>
+      <template v-if="isMobile && nav.children && nav.children.length">
+        <div
+          v-for="snav in nav.children"
+          :key="nav.name + '_' + snav.name"
+          @click="subnavClick(nav, snav)"
+          :class="[
+            'nav-item-sub',
+            'center',
+            {
+              selected:
+                $route.path === snav.phref && curPage.TabState === snav.name,
+            },
+          ]"
+        >
+          - {{ snav.name }}
+        </div>
+      </template>
     </template>
-  </template>
-</div>
+  </div>
 </template>
 
 <script>
-import { SvgIconThemed  } from '../'
-import { isMobile, curPageTabState, setPageTab } from '../../composition/hooks'
+import { SvgIconThemed } from '../'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'HeaderLinks',
@@ -33,11 +60,10 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
   },
   computed: {
-    isMobile() { return isMobile.value },
-    curPageTabState() { return curPageTabState.value },
+    ...mapState(['isMobile', 'curPage']),
   },
   data() {
     return {
@@ -53,31 +79,32 @@ export default {
             {
               name: 'Maker',
               phref: '/',
-            }
-          ]
+            },
+          ],
         },
         {
           name: 'L2 Data',
           href: '/data',
         },
-        // {
-        //   name: 'More',
-        //   children: []
-        // },
-      ]
+        {
+          name: 'More',
+          children: [],
+        },
+      ],
     }
   },
   methods: {
+    ...mapMutations(['togglePageTab']),
     route2(tar) {
       const path = tar.href
-      this.$route.path !== path && this.$router.push({ path, })
-      isMobile && this.$emit('closeDrawer')
+      this.$route.path !== path && this.$router.push({ path })
+      this.isMobile && this.$emit('closeDrawer')
     },
     subnavClick(nav, snav) {
       this.route2(nav)
-      setPageTab(snav.name)
+      this.togglePageTab({ type: 'TabState', value: snav.name })
     },
-  }
+  },
 }
 </script>
 

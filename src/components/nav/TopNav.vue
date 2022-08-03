@@ -20,7 +20,7 @@
             position: absolute;
             top: 0;
             left: 241px;
-            min-width: 280px;
+            min-width: 290px;
           "
         />
       </div>
@@ -33,7 +33,6 @@
         :style="navIcons.style"
         :icon="navIcons.logo"
       />
-      <!-- <ToggleBtn v-if="showToggleBtn()" @input="toggleTab" /> -->
       <div class="center">
         <div
           v-if="!isLogin"
@@ -79,20 +78,10 @@
 
 <script>
 import { SvgIconThemed } from '../'
-import {
-  isMobile,
-  setPageTab,
-  setPageSenderTab,
-  showAddress,
-} from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
-import { walletIsLogin } from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
-import {
-  setStarkNetDialog,
-  setSelectWalletDialogVisible,
-} from '../../composition/hooks'
+import { mapGetters, mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'TopNav',
@@ -103,15 +92,8 @@ export default {
     }
   },
   computed: {
-    showAddress() {
-      return showAddress()
-    },
-    isLogin() {
-      return walletIsLogin.value
-    },
-    isMobile() {
-      return isMobile.value
-    },
+    ...mapState(['isMobile']),
+    ...mapGetters(['isLogin', 'showAddress']),
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
       const { href } = window.location
@@ -175,12 +157,10 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['setDialogVisible', 'togglePageTab']),
     toHome() {
-      setPageSenderTab()
+      this.togglePageTab({ type: 'TabState', value: 'Sender' })
       this.$route.path !== '/' && this.$router.push({ path: '/' })
-    },
-    toggleTab(tab) {
-      setPageTab(tab)
     },
     showToggleBtn() {
       return this.$route.path === '/' || this.$route.path === '/history'
@@ -189,8 +169,8 @@ export default {
       Middle.$emit('connectWallet', true)
     },
     connectAWallet() {
-      setStarkNetDialog(false)
-      setSelectWalletDialogVisible(true)
+      // setStarkNetDialog(false)
+      this.setDialogVisible({ type: 'selectWalletDialogVisible', value: true })
     },
   },
 }

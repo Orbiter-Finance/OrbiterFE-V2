@@ -1,0 +1,625 @@
+// ---------- theme variable ----------
+:root {
+  --dark-page-bg: #373951;
+  --dark-page-box-bg: #3F415B;
+  --dark-page-color: #FFF;
+  --dark-page-box-primary-color: #FFF;
+  --dark-page-box-color: rgba(255, 255, 255, 0.6);
+  --light-page-bg: #FFF;
+  --light-page-box-bg: #F5F5F5;
+  --light-page-color: #333;
+}
+
+@mixin obScrollbarLight {
+  .ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(51, 51, 51, 0.2);
+  }
+  // .ob-scrollbar::-webkit-scrollbar-track {
+  //   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  //   border-radius: 10px;
+  //   background: #EDEDED;
+  // }
+  &.ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  &.ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(51, 51, 51, 0.2);
+  }
+}
+@mixin obScrollbarDark {
+  .ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.4);
+  }
+  // .ob-scrollbar::-webkit-scrollbar-track {
+  //   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+  //   border-radius: 10px;
+  //   background: #535353;
+  // }
+
+  &.ob-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  &.ob-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.4);
+  }
+}
+
+
+/* override the element component style */
+.dark-body .el-notification {
+  // width: 490px;
+  background-color: var(--dark-page-bg);
+  border: 1px solid var(--dark-page-bg);
+  .el-notification__title {
+    color: var(--dark-page-color);
+  }
+}
+
+.dark-theme {
+  &.app-mobile {
+    .top-nav {
+      .menu-outline {
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .drawer-body {
+        background: var(--dark-page-bg);
+      }
+      .wallet-address {
+        background: var(--dark-page-box-bg);
+        color: var(--dark-page-box-color);
+      }
+    }
+    .nav-item-border-bottom {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .nav-item-border-top {
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+  }
+  background-size: 100% 360px;
+  background-color: #28293D;
+  &.app {
+    @include obScrollbarDark;
+  }
+  a {
+    color: var(--dark-page-box-color);
+  }
+  // ---------- History page / start ----------
+  .history-page {
+    .history-content {
+      background: var(--dark-page-bg);
+      color: var(--dark-page-box-color);
+      .table {
+        .table-header {
+          background: var(--dark-page-box-bg);
+          color: var(--dark-page-box-color);
+        }
+      }
+    }
+    .historyContent {
+      .contentItem {
+        color: var(--dark-page-box-primary-color);
+      }
+      .contentItem:hover {
+        background: #3F415B;
+      }
+    }
+  }
+  // ---------- History page / end ----------
+  // ---------- RaiseUpSelect component / start ----------
+  .raiseup-select-box {
+    background: rgba(51, 51, 51, 0.4);
+    .raiseup-select-box-wrapper {
+      color: #FFFFFF;
+      .items {
+        background: #373951;
+        .item {
+          &.selected {
+            background: #3F415B;
+          }
+        }
+      }
+      .cancel {
+        background: #373951;
+      }
+    }
+  }
+  // ---------- RaiseUpSelect component / end ----------
+  // ---------- ObSelect component / start ----------
+  .ob-select-box {
+    background: var(--dark-page-box-bg);
+    color: var(--dark-page-box-primary-color);
+    .dialog {
+      background: var(--dark-page-box-bg);
+      box-shadow: 0px 8px 50px rgba(0, 0, 0, 0.5);
+      .select-item.selected {
+        background: #28293D;
+      }
+      .select-item:hover {
+        background: #28293D;
+      }
+    }
+  }
+  .ob-select-box:hover {
+    background: #535571;
+  }
+  // ---------- ObSelect component / end ----------
+  // ---------- ToggleBtn component / start ----------
+  .toggle-btn-box {
+    background: var(--dark-page-bg);
+    color: var(--dark-page-box-color);
+  }
+  // ---------- ToggleBtn component / end ----------
+  // ---------- bridage page / start ----------
+  .bridage-page {
+    .sender-box {
+      background: var(--dark-page-bg);
+    }
+    .maker-box {
+      background: var(--dark-page-bg);
+      .maker-title {
+        color: var(--dark-page-color);
+      }
+      .maker-content {
+        color: var(--dark-page-box-color);
+        .maker-foot-btn {
+          background: rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+  // ---------- bridage page / end ----------
+  // ---------- transfer component / start ----------
+  .transfer-box {
+    color: var(--dark-page-box-color);
+    .top-area {
+      .title {
+        color: #FFF;
+      }
+    }
+    .from-area, .to-area {
+      background: var(--dark-page-box-bg);
+      color: var(--dark-page-box-color);
+      .bottomItem {
+        input::placeholder {
+          color: rgba(255, 255, 255, 0.2) !important;
+        }
+        .maxBtn {
+          color: #1DFFF1;
+        }
+        .right {
+          color: rgba(255, 255, 255, 0.8);
+        }
+      }
+    }
+    .info-box {
+      .info-item {
+        .border {
+          border-right:1px solid #888;
+        }
+      }
+    }
+  }
+  // ---------- transfer component / end ----------
+  // ---------- ObSelectChain component / start ----------
+  .obSelectChainBody {
+    background-color: var(--dark-page-box-bg);
+    box-shadow: 0px 8px 50px rgba(0, 0, 0, 0.5);
+    color: #FFF;
+    .selectChainContent {
+      .input {
+        background-color: #28293D;
+        color: #FFF;
+      }
+      input::placeholder {
+        color: rgba(255, 255, 255, 0.4);
+      }
+    }
+    .contentItem {
+      color: #FFF;
+    }
+    .contentItem:hover {
+      background: #28293D;
+    }
+  }
+  // ---------- ObSelectChain component / end ----------
+  // ---------- HeaderDialog component / start ----------
+  .header-dialog-box {
+    background: rgba(51, 51, 51, 0.4);
+    .header-dialog-box-wrapper {
+      background: var(--dark-page-bg);
+      color: var(--dark-page-color);
+      .wallet-item-title {
+        color: var(--dark-page-box-color);
+      }
+    }
+  }
+  // ---------- HeaderDialog component / end ----------
+  // ---------- HeaderOps component / start ----------
+  .header-ops {
+    .ops-mode {
+      background: var(--dark-page-box-bg);
+    }
+    .ops-item:not(.not-mode) {
+      background: var(--dark-page-box-bg);
+      color: var(--dark-page-box-color);
+    }
+  }
+  // ---------- HeaderOps component / end ----------
+  // ---------- HeaderLinks component / start ----------
+  .header-links-box {
+    color: var(--dark-page-box-color);
+  }
+  // ---------- HeaderLinks component / end ----------
+  // ---------- BottomNav component / start ----------
+  .bottom-nav {
+    .terms {
+      color: rgba(255, 255, 255, 0.4);
+    }
+    .terms:hover {
+      color: rgba(255, 255, 255, 0.8);
+      // color: var(--dark-page-color);
+    }
+  }
+  // ---------- BottomNav component / end ----------
+  // ---------- GifLoading component / start ----------
+  .gif-loading-box {
+    .gif-wrap {
+      background: #FFF;
+    }
+    .gif-loading {
+      background-image: url('../assets/v2/dark-loading.gif');
+    }
+  }
+  // ---------- GifLoading component / end ----------
+  // ---------- Confirm component / start ----------
+  .confirm-box {
+    background: var(--dark-page-bg);
+    color: var(--dark-page-color);
+    .confirm-item {
+      .item-right {
+        color: rgba(255, 255, 255, 0.4);
+      }
+    }
+  }
+  // ---------- Confirm component / end ----------
+  // ---------- CommBoxHeader component / start ----------
+  .comm-box-header {
+    color: var(--dark-page-color);
+  }
+  // ---------- CommBoxHeader component / end ----------
+  // ---------- Proceed component / start ----------
+  .proceed-box {
+    background: var(--dark-page-bg);
+    color: var(--dark-page-color);
+    .ProceedContent {
+      .chainDataContent {
+        background: var(--dark-page-box-bg);
+      }
+      .contentItem {
+        .item-title {
+          color: #fff;
+        }
+        .item-value {
+          color: rgba(255, 255, 255, 0.6);
+        }
+      }
+      .chainDataContent {
+        .item {
+          .chain-name {
+            color: var(--dark-page-box-primary-color);
+            .label {
+              color: var(--dark-page-box-color);
+            }
+          }
+          .tx {
+            color: var(--dark-page-box-primary-color);
+          }
+          .switch-btn {
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: var(--dark-page-box-color);
+          }
+        }
+        .middle-icon, .middle-icon-abs {
+          .rocket-box-bg {
+            background-image: url('../assets/v2/dark-rocket.gif');
+          }
+        }
+      }
+    }
+  }
+  // ---------- Proceed component / end ----------
+}
+
+.light-theme {
+  background-size: 100% 274px;
+  &.app-mobile {
+    background-color: #ececf0;
+    .menu-outline {
+      border: 1px solid rgba(51, 51, 51, 0.2);
+    }
+    .top-nav {
+      .drawer-body {
+        background: var(--light-page-box-bg);
+      }
+      .wallet-address {
+        background: var(--light-page-bg);
+        color: rgba(51, 51, 51, 0.8);
+      }
+    }
+    .nav-item-border-bottom {
+      border-bottom: 1px solid rgba(51, 51, 51, 0.2);
+    }
+    .nav-item-border-top {
+      border-top: 1px solid rgba(51, 51, 51, 0.2);
+    }
+  }
+  &.app {
+    @include obScrollbarLight;
+  }
+  // &.app {
+  //   background-color: #F5F5F5;
+  // }
+  a {
+    color: var(--light-page-color);
+  }
+  // ---------- History page / start ----------
+  .history-page {
+    .history-content {
+      background: var(--light-page-bg);
+      color: var(--light-page-color);
+      .table {
+        .table-header {
+          background: var(--light-page-box-bg);
+          color: rgba(51, 51, 51, 0.8);
+        }
+      }
+    }
+    .historyContent {
+      .contentItem {
+        color: var(--light-page-color);
+      }
+      .contentItem:hover {
+        background: #F5F5F5;
+      }
+    }
+  }
+  // ---------- History page / end ----------
+  // ---------- RaiseUpSelect component / start ----------
+  .raiseup-select-box {
+    background: rgba(51, 51, 51, 0.2);
+    .raiseup-select-box-wrapper {
+      color: rgba(51, 51, 51, 0.8);
+      .items {
+        background: #FFFFFF;
+        .item {
+          &.selected {
+            background: #F5F5F5;
+          }
+        }
+      }
+      .cancel {
+        background: #FFF;
+      }
+    }
+  }
+  // ---------- RaiseUpSelect component / end ----------
+  // ---------- ObSelect component / start ----------
+  .ob-select-box {
+    background: var(--light-page-box-bg);
+    color: var(--light-page-color);
+    .dialog {
+      background: var(--light-page-bg);
+      box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.16);
+      .select-item.selected {
+        background: var(--light-page-box-bg);
+      }
+      .select-item:hover {
+        background: var(--light-page-box-bg);
+      }
+    }
+  }
+  .ob-select-box:hover {
+    background: #EEE;
+  }
+  // ---------- ObSelect component / end ----------
+  // ---------- ToggleBtn component / start ----------
+  .toggle-btn-box {
+    background: var(--light-page-bg);
+    color: rgba(51, 51, 51, 0.8);
+  }
+  // ---------- ToggleBtn component / end ----------
+  // ---------- bridage page / start ----------
+  .bridage-page {
+    .sender-box {
+      background: var(--light-page-bg);
+    }
+    .maker-box {
+      background: var(--light-page-bg);
+      .maker-title {
+        color: var(--light-page-color);
+      }
+      .maker-content {
+        color: rgba(51, 51, 51, 0.8);
+        .maker-foot-btn {
+          background: rgba(51, 51, 51, 0.2);
+        }
+      }
+    }
+  }
+  // ---------- bridage page / end ----------
+  // ---------- transfer component / start ----------
+  .transfer-box {
+    color: rgba(24, 25, 31, 0.7);
+    .top-area {
+      .title {
+        color: var(--light-page-color);
+      }
+    }
+    .from-area, .to-area {
+      background: var(--light-page-box-bg);
+      color: rgba(51, 51, 51, 0.8);
+      .bottomItem {
+        input::placeholder {
+          color: rgba(51, 51, 51, 0.2) !important;
+        }
+        .maxBtn {
+          color: #3183FF;
+        }
+        .right {
+          color: rgba(51, 51, 51, 0.8);
+        }
+      }
+    }
+    .info-box {
+      .info-item {
+        .border {
+          border-right:1px solid #ccc;
+        }
+      }
+    }
+  }
+  // ---------- transfer component / end ----------
+  // ---------- ObSelectChain component / start ----------
+  .obSelectChainBody {
+    background-color: var(--light-page-bg);
+    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.16);
+    color: var(--light-page-color);
+    .selectChainContent {
+      .input {
+        background-color: var(--light-page-box-bg);
+        color: var(--light-page-color);
+      }
+      input::placeholder {
+        color: rgba(51, 51, 51, 0.4);
+      }
+    }
+    .contentItem {
+      color: var(--light-page-color);
+    }
+    .contentItem:hover {
+      background: var(--light-page-box-bg);
+    }
+  }
+  // ---------- ObSelectChain component / end ----------
+  // ---------- HeaderDialog component / start ----------
+  .header-dialog-box {
+    background: rgba(51, 51, 51, 0.2);
+    .header-dialog-box-wrapper {
+      background: var(--light-page-bg);
+      color: var(--light-page-color);
+      .wallet-item-title {
+        color: rgba(51, 51, 51, 0.8);
+      }
+    }
+  }
+  // ---------- HeaderDialog component / end ----------
+  // ---------- HeaderOps component / start ----------
+  .header-ops {
+    .ops-mode {
+      background: var(--light-page-bg);
+    }
+    .ops-item:not(.not-mode) {
+      background: var(--light-page-bg);
+      color: rgba(51, 51, 51, 0.8);
+    }
+  }
+  // ---------- HeaderOps component / end ----------
+  // ---------- HeaderLinks component / start ----------
+  .header-links-box {
+    color: rgba(51, 51, 51, 0.8);
+  }
+  // ---------- HeaderLinks component / end ----------
+  // ---------- BottomNav component / start ----------
+  .bottom-nav {
+    .terms {
+      color: rgba(51, 51, 51, 0.4);
+    }
+    .terms:hover {
+      color: rgba(51, 51, 51, 0.8);
+      // color: rgb(51, 51, 51);
+    }
+  }
+  // ---------- BottomNav component / end ----------
+  // ---------- GifLoading component / start ----------
+  .gif-loading-box {
+    .gif-wrap {
+      background: rgba(51, 51, 51);
+    }
+    .gif-loading {
+      background-image: url('../assets/v2/light-loading.gif');
+    }
+  }
+  // ---------- GifLoading component / end ----------
+  // ---------- Confirm component / start ----------
+  .confirm-box {
+    background: var(--light-page-bg);
+    color: var(--light-page-color);
+    .confirm-item {
+      .item-right {
+        color: rgba(51, 51, 51, 0.4);
+      }
+    }
+  }
+  // ---------- Confirm component / end ----------
+  // ---------- CommBoxHeader component / start ----------
+  .comm-box-header {
+    color: #333;
+  }
+  // ---------- CommBoxHeader component / end ----------
+  // ---------- Proceed component / start ----------
+  .proceed-box {
+    background: var(--light-page-bg);
+    color: var(--light-page-color);
+    .ProceedContent {
+      .chainDataContent {
+        background: var(--light-page-box-bg);
+      }
+      .contentItem {
+        .item-title {
+          color: #333;
+        }
+        .item-value {
+          color: #5c5c5c; //rgba(51, 51, 51, 0.6)
+        }
+      }
+      .chainDataContent {
+        .item {
+          .chain-name {
+            color: var(--light-page-color);
+            .label {
+              color: rgba(51, 51, 51, 0.8);
+            }
+          }
+          .tx {
+            color: var(--light-page-color);
+          }
+          .switch-btn {
+            border: 1px solid rgba(51, 51, 51, 0.4);
+            color: rgba(51, 51, 51, 0.8);
+          }
+        }
+        .middle-icon, .middle-icon-abs {
+          .rocket-box-bg {
+            background-image: url('../assets/v2/light-rocket.gif');
+          }
+        }
+      }
+    }
+  }
+  // ---------- Proceed component / end ----------
+}

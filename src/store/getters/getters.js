@@ -42,5 +42,39 @@ export default {
         avalibleTimes: selectMakerInfo.c2AvalibleTimes,
       }
     }
-  }
+  },
+  isLogin(state) {
+    return (
+      state.web3.isInstallMeta && state.web3.isInjected && state.web3.localLogin
+    )
+  },
+  showAddress(state) {
+    let address = state.web3.coinbase
+    if (address && address.length > 5) {
+      let subStr1 = address.substr(0, 6)
+      let subStr2 = address.substr(address.length - 4, 4)
+      return subStr1 + '...' + subStr2
+    }
+    return ''
+  },
+  starkAddress(state) {
+    let stark = state.web3.starkNet.starkNetAddress
+    if (stark && stark.length > 5) {
+      let subStr1 = stark.substr(0, 6)
+      let subStr2 = stark.substr(stark.length - 4, 4)
+      return subStr1 + '...' + subStr2
+    }
+    return 'not connected'
+  },
+  getGlobalWalletConf(state) {
+    return {
+      walletType: 'MetaMask',
+      walletPayload: {
+        walletAddress: state.web3.coinbase,
+        provider: '',
+        networkId: state.web3.networkId,
+      },
+      loginSuccess: state.web3.localLogin,
+    }
+  },
 }

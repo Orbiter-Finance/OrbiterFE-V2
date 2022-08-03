@@ -22,6 +22,7 @@ import makerInfo from '../core/routes/makerInfo'
 import AddLiquidity from '../components/maker/addLiquidity.vue'
 import loginMaker from '../components/maker/loginMaker.vue'
 import unloginMaker from '../components/maker/unloginMaker.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Maker',
@@ -43,14 +44,7 @@ export default {
     }
   },
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin &&
-        this.makerInfoList.length > 0
-      )
-    },
+    ...mapGetters(['isLogin']),
   },
   async mounted() {
     const getMakerInfoFromGraphReq = {

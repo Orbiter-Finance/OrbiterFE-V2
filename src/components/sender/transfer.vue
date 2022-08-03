@@ -336,6 +336,7 @@ import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
+import { mapGetters } from 'vuex'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -456,6 +457,7 @@ export default {
     },
   },
   computed: {
+    ...mapGetters(['isLogin']),
     queryParams() {
       const { query } = this.$route
       const { referer } = query
@@ -710,13 +712,6 @@ export default {
       ).toFixed(2)}</b>`
 
       return gasFee + tradingFee + withholdingGasFee + total
-    },
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
     },
     toValue() {
       if (

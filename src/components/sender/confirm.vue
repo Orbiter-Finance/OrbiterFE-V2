@@ -109,6 +109,7 @@ import Loading from '../loading/loading.vue'
 import util from '../../util/util'
 import Middle from '../../util/middle/middle'
 import { ethers } from 'ethers'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Confirm',
@@ -124,13 +125,7 @@ export default {
   },
   asyncComputed: {},
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
+    ...mapGetters(['isLogin']),
     confirmData() {
       // 0.000120000000009022 to 0.000120...09022
       let realTransferAmount = new BigNumber(

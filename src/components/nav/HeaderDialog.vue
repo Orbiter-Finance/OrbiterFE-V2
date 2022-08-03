@@ -1,11 +1,15 @@
 <template>
   <div
     class="header-dialog-box"
-    :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
+    :style="{
+      display: this.dialog.selectWalletDialogVisible ? 'block' : 'none',
+    }"
   >
     <div
       ref="navDialog"
-      :style="!isMobile ? { right: isStarkNetDialog ? '160px' : '20px' } : {}"
+      :style="
+        !isMobile ? { right: dialog.isStarkNetDialog ? '160px' : '20px' } : {}
+      "
       class="header-dialog-box-wrapper"
     >
       <div class="toolbox-header">
@@ -51,9 +55,7 @@
             <span>{{ item.value }}</span>
             <div
               v-if="item.title === 'Address'"
-              v-clipboard:copy="
-                globalSelectWalletConf.walletPayload.walletAddress
-              "
+              v-clipboard:copy="getGlobalWalletConf.walletPayload.walletAddress"
               v-clipboard:success="onCopySuccess"
               v-clipboard:error="onCopyError"
               style="
@@ -71,7 +73,7 @@
             </div>
             <div
               v-if="item.title === 'StarkNetAddress'"
-              v-clipboard:copy="web3State.starkNet.starkNetAddress"
+              v-clipboard:copy="web3.starkNet.starkNetAddress"
               v-clipboard:success="onCopySuccess"
               v-clipboard:error="onCopyError"
               style="
@@ -90,7 +92,7 @@
           </div>
         </div>
         <CommBtn
-          v-if="!isStarkNetDialog"
+          v-if="!dialog.isStarkNetDialog"
           :disabled="checkIsMobileEnv()"
           class="wallet-btn"
           @click="disconnect"
@@ -103,53 +105,32 @@
 
 <script>
 import { CommBtn, SvgIconThemed } from '../'
-import { isMobile, starkAddress, showAddress } from '../../composition/hooks'
-import {
-  compatibleGlobalWalletConf,
-  walletIsLogin,
-} from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
-import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers from '../../util/walletsDispatchers'
-import { onCopySuccess, onCopyError, isMobileEnv } from '../../util'
-import {
-  isStarkNetDialog,
-  selectWalletDialogVisible,
-  setSelectWalletDialogVisible,
-  web3State,
-} from '../../composition/hooks'
+// import { isBraveBrowser } from '../../util/browserUtils'
+// import walletDispatchers from '../../util/walletsDispatchers'
+// import { onCopySuccess, onCopyError } from '../../util'
+import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
 
-const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
-  walletDispatchers
+// const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
+//   walletDispatchers
 
 export default {
   name: 'HeaderDialog',
   components: { CommBtn, SvgIconThemed },
   computed: {
-    web3State() {
-      return web3State
-    },
-    isStarkNetDialog() {
-      return isStarkNetDialog.value
-    },
-    selectWalletDialogVisible() {
-      return selectWalletDialogVisible.value
-    },
-    isMobile() {
-      return isMobile.value
-    },
-    globalSelectWalletConf() {
-      return compatibleGlobalWalletConf.value
-    },
-    isLogin() {
-      return walletIsLogin.value
-    },
+    ...mapGetters([
+      'isLogin',
+      'showAddress',
+      'starkAddress',
+      'getGlobalWalletConf',
+    ]),
+    ...mapState(['dialog', 'isMobile', 'web3']),
     loginData() {
       const wallets = [
         {
-          isConnect: walletIsLogin.value && check.checkIsMetaMask(),
+          isConnect: this.isLogin && check.checkIsMetaMask(),
           icon: 'metamask',
           title: 'MetaMask',
         },
@@ -171,13 +152,13 @@ export default {
       ]
       // the brave wallet is exclusive to the brave browser
       // so if in other browsers, we should hide brave wallet connect option to users
-      if (!isBraveBrowser())
-        return wallets.filter((wallet) => wallet.title !== 'Brave')
+      // if (!isBraveBrowser())
+      //   return wallets.filter((wallet) => wallet.title !== 'Brave')
       return wallets
     },
     loginInfoData() {
-      if (this.isStarkNetDialog) {
-        const starkChain = web3State.starkNet?.starkChain
+      if (this.dialog.isStarkNetDialog) {
+        const starkChain = this.web3.starkNet?.starkChain
         let networkName = ''
         if (starkChain) {
           if (starkChain == 4) {
@@ -196,17 +177,12 @@ export default {
           {
             icon: 'wallet',
             title: 'Wallet',
-            value: web3State.starkNet?.starkNetWalletName,
+            value: this.web3.starkNet?.starkNetWalletName,
           },
-          // {
-          //   icon: 'address',
-          //   title: 'Address',
-          //   value: this.showAddress,
-          // },
           {
             icon: 'address',
             title: 'StarkNetAddress',
-            value: starkAddress(),
+            value: this.starkAddress,
           },
         ]
       } else {
@@ -216,60 +192,61 @@ export default {
             title: 'Network',
             value: util.chainName(
               '0',
-              compatibleGlobalWalletConf.value.walletPayload.networkId
+              this.getGlobalWalletConf.walletPayload.networkId
             ),
           },
           {
             icon: 'wallet',
             title: 'Wallet',
-            value: compatibleGlobalWalletConf.value.walletType,
+            value: this.getGlobalWalletConf.walletType,
           },
           {
             icon: 'address',
             title: 'Address',
-            value: showAddress(),
+            value: this.showAddress,
           },
         ]
       }
     },
-    // styles() {
-    //   if (this.isMobile) {
-    //     return {
-    //       display: this.selectWalletDialogVisible ? 'block' : 'none',
-    //     }
-    //   } else {
-    //     return {
-    //       display: this.selectWalletDialogVisible ? 'block' : 'none',
-    //     }
-    //   }
-    // },
   },
   methods: {
-    onCopySuccess,
-    onCopyError,
+    ...mapMutations([
+      'updateLocalLogin',
+      'toggleThemeMode',
+      'setDialogVisible',
+    ]),
+    ...mapActions(['registerWeb3']),
+    onCopySuccess() {
+      util.onCopySuccess()
+    },
+    onCopyError() {
+      util.onCopyError()
+    },
     closeSelectWalletDialog() {
-      setSelectWalletDialogVisible(false)
+      this.setDialogVisible({ type: 'selectWalletDialogVisible', value: false })
     },
     connectWallet(walletConf) {
       this.closeSelectWalletDialog()
-      walletDispatchersOnInit[walletConf.title]()
+      if (walletConf.title === 'MetaMask') {
+        this.registerWeb3()
+      }
+      // walletDispatchersOnInit[walletConf.title]()
     },
     checkIsMobileEnv() {
-      return isMobileEnv()
+      // return isMobileEnv()
+      return false
     },
     disconnect() {
-      if (isMobileEnv()) return
+      // if (isMobileEnv()) return
       this.closeSelectWalletDialog()
       this.selectedWallet = {}
+      this.updateLocalLogin(false)
       localStorage.setItem('selectedWallet', JSON.stringify({}))
-      this.$store.commit('updateLocalLogin', false)
+
       localStorage.setItem('localLogin', false)
-      walletDispatchersOnDisconnect[
-        compatibleGlobalWalletConf.value.walletType
-      ]()
     },
     handlerDialogOutsideClick(e) {
-      if (this.selectWalletDialogVisible) {
+      if (this.dialog.selectWalletDialogVisible) {
         const dialog = this.$refs.navDialog
         const btn1 = this.$refs.connectBtn
         const btn2 = this.$refs.connectedBtn
@@ -298,7 +275,7 @@ export default {
   mounted() {
     Middle.$on('connectWallet', () => {
       // this.selectWalletDialogVisible = true
-      setSelectWalletDialogVisible(true)
+      this.setDialogVisible({ type: 'selectWalletDialogVisible', value: false })
     })
     // document.addEventListener('click', this.handlerDialogOutsideClick)
   },

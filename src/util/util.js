@@ -3,6 +3,12 @@ import { Message } from 'element-ui'
 import web3 from 'web3'
 
 export default {
+  onCopySuccess() {
+    // Notify({ title: 'copy success', type: 'success', duration: 2000 })
+  },
+  onCopyError() {
+    // Notify.error({ title: 'copy faild', duration: 2000 })
+  },
   showMessage(message, type) {
     Message({
       showClose: true,

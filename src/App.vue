@@ -26,9 +26,10 @@
         <BottomNav />
       </keep-alive>
     </div>
+    <header-dialog />
 
     <!-- Load tooltip.png ahead of time -->
-    <img style="display: none" src="./assets/tooltip.png" />
+    <!-- <img style="display: none" src="./assets/tooltip.png" /> -->
   </div>
 </template>
 
@@ -38,25 +39,15 @@ import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import TopNav from './components/nav/TopNav.vue'
 import BottomNav from './components/nav/BottomNav.vue'
-import { isMobile } from './composition/hooks'
-// import getZkToken from './util/tokenInfo/supportZkTokenInfo'
+import HeaderDialog from './components/nav/HeaderDialog.vue'
 import getTransactionList from './core/routes/transactionList'
-// import * as dotenv from 'dotenv'
-// dotenv.config({ path: __dirname + '.env' })
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'App',
   computed: {
-    isLogin() {
-      return (
-        this.$store.state.web3.isInstallMeta &&
-        this.$store.state.web3.isInjected &&
-        this.$store.state.web3.localLogin
-      )
-    },
-    isMobile() {
-      return isMobile.value
-    },
+    ...mapState(['isMobile']),
+    ...mapGetters(['isLogin']),
     isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
@@ -94,13 +85,10 @@ export default {
   components: {
     TopNav,
     BottomNav,
+    HeaderDialog,
   },
   mounted() {
-    // setInterval(this.getHistory, 60 * 1000)
-
-    // this.getHistory()
-
-    // getZkToken.getSupportZKTokenList()
+    console.log(this.$route.meta.keepAlive)
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {})
     }

@@ -1,5 +1,14 @@
 import { toggleBodyCls } from '../../util/theme/theme'
 export default {
+  changeMobileStatus(state, payload) {
+    state.isMobile = payload
+  },
+  setDialogVisible(state, payload) {
+    state.dialog[payload.type] = payload.value
+  },
+  togglePageTab(state, payload) {
+    state.curPage[payload.type] = payload.value
+  },
   toggleThemeMode(state, mode) {
     if (typeof mode === 'string' && mode) {
       state.themeMode = mode
