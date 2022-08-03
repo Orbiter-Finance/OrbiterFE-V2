@@ -435,9 +435,9 @@ export default {
 
         return {
           times: weeks.map((item) => item.end).reverse(),
-          allUser: data.map((item) =>
-            item.reduce((memo, element) => memo + element.all_users, 0)
-          ),
+          allUser: data.map((item) => {
+            return item.sort((a, b) => a.timestamp - b.timestamp)[0].all_users
+          }),
           activeUser: data.map((item) =>
             item.reduce((memo, element) => memo + element.active_users, 0)
           ),
@@ -512,7 +512,7 @@ export default {
             padTimestamp(item.timestamp) < end
           )
         })
-        .reduce((mome, item) => mome + item.all_users, 0)
+        .sort((a, b) => a.timestamp - b.timestamp)[0].all_users
     },
   },
 }
