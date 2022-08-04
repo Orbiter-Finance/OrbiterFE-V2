@@ -27,7 +27,7 @@
           fixed
           prop="contract_address"
           label="New Contract"
-          width="170"
+          width="160"
         >
           <template slot-scope="scope">
             <div class="new-contract">
@@ -59,7 +59,7 @@
         <el-table-column
           prop="launch_time"
           label="Launch Time"
-          width="120"
+          width="125"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -84,7 +84,7 @@
         <el-table-column
           prop="users_age"
           label="Users Age"
-          width="100"
+          width="95"
           align="right"
         >
           <template slot="header">
@@ -114,7 +114,7 @@
         <el-table-column
           prop="24h_active_users"
           label="24h Active Users"
-          width="140"
+          width="155"
           align="right"
           :sortable="'custom'"
         >
@@ -127,7 +127,7 @@
         <el-table-column
           prop="24h_new_users"
           label="24h New Users"
-          width="130"
+          width="140"
           align="right"
           :sortable="'custom'"
         >
@@ -140,7 +140,7 @@
         <el-table-column
           prop="24h_interactions"
           label="24h Interactions"
-          width="140"
+          width="150"
           align="right"
           :sortable="'custom'"
         >

@@ -415,10 +415,9 @@ export default {
       if (caches[axisValue]) {
         all_users = caches[axisValue]
       } else {
-        all_users = this._getAllUserByTime(axisValue)
+        all_users = this._getDataByTime(axisValue).all_users
         caches[axisValue] = all_users
       }
-
       const title = dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
 
       return `<div class="dapp-detail-chart-popover-content">
@@ -436,9 +435,9 @@ export default {
                       <div class="value">${numeral(item.value).format('0,0')}
                       ${
                         item.seriesName !== 'All Users'
-                          ? `<span>(${numeral(item.value / all_users).format(
-                              '0.00%'
-                            )})</span>`
+                          ? `<span>(${numeral(item.value)
+                              .divide(all_users)
+                              .format('0.00%')})</span>`
                           : ''
                       }
                         </div>
@@ -449,11 +448,11 @@ export default {
                 </div>
               </div>`
     },
-    _getAllUserByTime(axisValue) {
+    _getDataByTime(axisValue) {
       const chartData = this.chartData
       return chartData.find((item) => {
         return item.timestamp * 1000 === parseInt(axisValue)
-      }).all_users
+      })
     },
   },
 }
