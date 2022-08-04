@@ -113,7 +113,6 @@ import TwitterLink from './TwitterLink.vue'
 import { getDappDetail } from '../../L2data/dapp'
 import dateFormat from '../../util/dateFormat'
 import { isMobile } from '../../composition/hooks'
-import getWeeks from '../../util/getWeeks'
 
 const allSeries = ['All Users', 'Active Users', 'New Users']
 const color = [
@@ -400,52 +399,12 @@ export default {
       }
 
       const chartData = this.chartData
-      const currentTime = this.currentTime
 
-      if ([1, 3, 6].includes(currentTime)) {
-        return {
-          times: chartData.map((item) => padTimestamp(item.timestamp)),
-          allUser: chartData.map((item) => item.all_users),
-          activeUser: chartData.map((item) => item.active_users),
-          newUser: chartData.map((item) => item.new_users),
-        }
-      }
-
-      if ([12, 'Max'].includes(currentTime)) {
-        const startTime =
-          currentTime === 12
-            ? new Date().getTime() - 60 * 60 * 24 * 360 * 1000
-            : padTimestamp(
-                Math.min.apply(
-                  null,
-                  this.chartData.map((item) => item.timestamp)
-                )
-              )
-
-        const weeks = getWeeks(startTime)
-        const data = weeks
-          .map((time) =>
-            this.chartData.filter(
-              (item) =>
-                padTimestamp(item.timestamp) > time.start &&
-                padTimestamp(item.timestamp) < time.end
-            )
-          )
-          .reverse()
-
-        return {
-          times: weeks.map((item) => item.end).reverse(),
-          allUser: data.map((item) => {
-            const lastData = item.sort((a, b) => a.timestamp - b.timestamp)[0]
-            return lastData ? lastData.all_users : 0
-          }),
-          activeUser: data.map((item) =>
-            item.reduce((memo, element) => memo + element.active_users, 0)
-          ),
-          newUser: data.map((item) =>
-            item.reduce((memo, element) => memo + element.new_users, 0)
-          ),
-        }
+      return {
+        times: chartData.map((item) => padTimestamp(item.timestamp)),
+        allUser: chartData.map((item) => item.all_users),
+        activeUser: chartData.map((item) => item.active_users),
+        newUser: chartData.map((item) => item.new_users),
       }
     },
     _onFormatter(params) {
@@ -458,14 +417,7 @@ export default {
         caches[axisValue] = all_users
       }
 
-      const date = new Date(parseInt(axisValue)).getTime()
-      const start = date - 24 * 60 * 60 * 7 * 1000
-      const title = [1, 3, 6].includes(this.currentTime)
-        ? dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
-        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
-            date,
-            'yyyy-MM-dd'
-          )}`
+      const title = dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
 
       return `<div class="dapp-detail-chart-popover-content">
                 <div class="dapp-detail-chart-popover-title">${title}</div>
@@ -496,24 +448,10 @@ export default {
               </div>`
     },
     _getAllUserByTime(axisValue) {
-      const currentTime = this.currentTime
       const chartData = this.chartData
-      if ([1, 3, 6].includes(currentTime)) {
-        return chartData.find((item) => {
-          return item.timestamp * 1000 === parseInt(axisValue)
-        }).all_users
-      }
-
-      const end = new Date(parseInt(axisValue)).getTime()
-      const start = end - 24 * 60 * 60 * 7 * 1000
-      return this.chartData
-        .filter((item) => {
-          return (
-            padTimestamp(item.timestamp) > start &&
-            padTimestamp(item.timestamp) < end
-          )
-        })
-        .sort((a, b) => a.timestamp - b.timestamp)[0].all_users
+      return chartData.find((item) => {
+        return item.timestamp * 1000 === parseInt(axisValue)
+      }).all_users
     },
   },
 }
