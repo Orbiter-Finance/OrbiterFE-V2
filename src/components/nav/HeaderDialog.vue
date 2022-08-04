@@ -108,13 +108,7 @@ import { CommBtn, SvgIconThemed } from '../'
 import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
-// import { isBraveBrowser } from '../../util/browserUtils'
-// import walletDispatchers from '../../util/walletsDispatchers'
-// import { onCopySuccess, onCopyError } from '../../util'
 import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
-
-// const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
-//   walletDispatchers
 
 export default {
   name: 'HeaderDialog',

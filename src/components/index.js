@@ -1,3 +1,5 @@
 export { default as SvgIconThemed } from './SvgIcon/SvgIconThemed.vue'
 export { default as CommBtn } from './btn/CommBtn.vue'
 export { default as ToggleBtn } from './btn/ToggleBtn.vue'
+export { default as CommLoading } from './loading/CommLoading.vue'
+export { default as PoolAddLiquidity } from './pool/dialog/AddLiquidityDialog.vue'

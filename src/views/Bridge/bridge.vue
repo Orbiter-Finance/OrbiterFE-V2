@@ -37,9 +37,9 @@
         v-show="
           curPage.TabState === 'Pool' && curPage.Status === '1' && !showDetail
         "
-        class="maker-box"
+        class="pool-box"
       >
-        <maker />
+        <pool />
       </div>
     </template>
     <!-- <div
@@ -63,13 +63,14 @@
 <script>
 import Sender from '../sender'
 import Maker from '../maker'
+import Pool from '../pool'
 // import { Transfer, Confirm, Proceed } from './'
 import { ToggleBtn } from '../../components'
 import { mapState, mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: 'Bridge',
-  components: { ToggleBtn, Sender, Maker },
+  components: { ToggleBtn, Sender, Maker, Pool },
   computed: {
     ...mapState(['curPage', 'isMobile']),
     ...mapGetters(['isLogin']),
@@ -202,6 +203,10 @@ export default {
         font-family: 'Inter Bold';
       }
     }
+  }
+  .pool-box {
+    width: 1120px;
+    // height: 1100px;
   }
 }
 </style>

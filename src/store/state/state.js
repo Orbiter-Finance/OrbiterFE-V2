@@ -86,6 +86,7 @@ const state = {
   curPage: {
     Status: '1',
     TabState: 'Sender',
+    NetworkliquidityState: '1',
   },
   dialog: {
     selectWalletDialogVisible: false,

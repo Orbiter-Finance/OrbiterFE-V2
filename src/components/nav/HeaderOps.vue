@@ -50,7 +50,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['isLogin', 'showAddress','getGlobalWalletConf']),
+    ...mapGetters(['isLogin', 'showAddress', 'getGlobalWalletConf']),
     ...mapState(['dialog', 'isMobile']),
   },
   data() {
