@@ -16,7 +16,7 @@
     <div class="rollups">
       <div class="head">
         <div class="title">
-          Rollups Daily Transactions Ranking
+          Rollups Daily Transactions
           <template v-if="!isMobile">
             ,{{
               latestData
@@ -493,6 +493,8 @@ export default {
         display: flex;
         align-items: center;
         position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
         right: 30px;
         font-weight: 400;
         font-size: 14px;

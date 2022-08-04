@@ -22,7 +22,7 @@
       </div>
       <div class="title">
         {{ currentRollup.replace(/^./, currentRollup[0].toUpperCase()) }} Dapp
-        Daily Data,
+        Daily Data
         {{
           !isMobile && baseDappDailyData && baseDappDailyData.update_time
             ? ',' +
@@ -212,6 +212,8 @@ export default {
         align-items: center;
         position: absolute;
         right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
         font-weight: 400;
         font-size: 14px;
         color: #df2e2d;
@@ -225,6 +227,10 @@ export default {
       display: flex;
       align-items: center;
       padding: 0 30px;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      color: #333333;
       div {
         margin-left: 10px;
       }

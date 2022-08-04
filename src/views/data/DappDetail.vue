@@ -206,6 +206,10 @@ export default {
       this.rollup = rollup
       this.rollups = [rollup]
       this.$nextTick(async () => {
+        this.checkData = ['New Users', 'Active Users']
+        if (this._chart) {
+          this._chart.clear()
+        }
         this.detailData = {}
         this._initChart()
         this.dappData = row
@@ -645,7 +649,7 @@ export default {
           padding: 0 20px;
           flex-wrap: wrap;
           justify-content: flex-start;
-          .item{
+          .item {
             height: 28px;
           }
         }
