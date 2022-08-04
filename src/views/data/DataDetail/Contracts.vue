@@ -96,7 +96,7 @@
               trigger="hover"
             >
               <div class="user-age-desc">
-                Statistics for all users. " User Age " refers to the cumulative
+                Statistics for all users. " Users Age " refers to the cumulative
                 days since users started the first transaction on the mainnet.
                 <a href="#" target="_blank"> Read More </a>
               </div>
