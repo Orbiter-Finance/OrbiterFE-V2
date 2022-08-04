@@ -44,11 +44,11 @@
           <el-table-column
             fixed
             label="Dapp Name"
-            :width="isMobile ? 150 : 350"
+            :width="isMobile ? 250 : 350"
           >
             <template slot-scope="scope">
               <div class="name-column">
-                <template v-if="!isMobile">
+                <template>
                   <div class="rank" v-if="scope.row.rank !== 0">
                     {{ scope.row.rank }}
                   </div>
