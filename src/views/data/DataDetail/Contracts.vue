@@ -59,7 +59,7 @@
         <el-table-column
           prop="launch_time"
           label="Launch Time"
-          width="135"
+          width="120"
           :sortable="'custom'"
         >
           <template slot-scope="scope">
@@ -71,7 +71,7 @@
         <el-table-column
           prop="all_users"
           label="All Users"
-          width="80"
+          width="90"
           align="right"
           :sortable="'custom'"
         >
@@ -96,7 +96,8 @@
               trigger="hover"
             >
               <div class="user-age-desc">
-                Statistics for all users. " User Age " refers to the cumulative days since users started the first transaction on the mainnet. 
+                Statistics for all users. " User Age " refers to the cumulative
+                days since users started the first transaction on the mainnet.
                 <a href="#" target="_blank"> Read More </a>
               </div>
               <div class="user-age-help" slot="reference">
@@ -295,7 +296,12 @@ export default {
   .table {
     padding: 0 20px 50px 20px;
     .el-table .cell {
-      padding: 0 15px 0 5px;
+      padding: 0 10px 0 5px;
+    }
+    .el-table th.el-table__cell > .cell {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: nowrap;
     }
     .new-contract {
       display: flex;

@@ -16,7 +16,7 @@
     <div class="rollups">
       <div class="head">
         <div class="title">
-          Rollups Daily Transactions
+          Rollups by Daily Transactions
           <template v-if="!isMobile">
             ,{{
               latestData

@@ -349,7 +349,6 @@ export default {
         options.series.push({
           name: 'New Users',
           type: 'line',
-          stack: 'Total',
           smooth: true,
           lineStyle: {
             width: 4,
@@ -366,7 +365,6 @@ export default {
         options.series.push({
           name: 'Active Users',
           type: 'line',
-          stack: 'Total',
           smooth: true,
           lineStyle: {
             width: 4,
