@@ -38,7 +38,7 @@ export default {
         return '#'
       }
 
-      const name = this.name.replace(' ', '').toLowerCase()
+      const name = this.name.replace(/\s+/g, '').toLowerCase()
       if (['apex'].includes(name)) {
         return require('../../assets/data/apex.png')
       }

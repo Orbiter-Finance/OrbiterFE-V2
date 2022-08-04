@@ -31,7 +31,7 @@ export default {
       if (!this.name) {
         return '#'
       }
-      const name = this.name.replace(' ', '').toLowerCase()
+      const name = this.name.replace(/\s+/g, '').toLowerCase()
       return `https://l2api.orbiter.finance/img/rollups/${name}.png`
     },
   },
