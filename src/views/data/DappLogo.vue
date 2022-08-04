@@ -37,7 +37,11 @@ export default {
       if (!this.name) {
         return '#'
       }
+
       const name = this.name.replace(' ', '').toLowerCase()
+      if (['apex'].includes(name)) {
+        return require('../../assets/data/apex.png')
+      }
       return `https://l2api.orbiter.finance/img/dapps/${name}.png`
     },
   },

@@ -250,6 +250,7 @@ export default {
             },
           },
           axisLabel: {
+            padding: [0, 5, 0, 5],
             formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
           },
         },
@@ -377,7 +378,10 @@ export default {
       const start = date - 24 * 60 * 60 * 7 * 1000
       const title = [3, 6].includes(this.currentChartTime)
         ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
-        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(date, 'yyyy-MM-dd')}`
+        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
+            date,
+            'yyyy-MM-dd'
+          )}`
 
       const firstData = rollups.slice(0, 10)
       const lastData = rollups.slice(10).reduce(

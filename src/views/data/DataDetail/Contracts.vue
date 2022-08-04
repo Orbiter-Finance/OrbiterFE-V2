@@ -319,7 +319,8 @@ export default {
         font-style: normal;
         font-weight: 500;
         line-height: 24px;
-        margin-right: 10px;
+        margin-right: 7px;
+        white-space: nowrap;
       }
     }
     .name-column {
@@ -417,6 +418,11 @@ export default {
     }
     .table {
       padding: 0 30px 50px 30px;
+      .new-contract {
+        .no {
+          margin-right: 5px;
+        }
+      }
       .pagination {
         justify-content: center;
       }
