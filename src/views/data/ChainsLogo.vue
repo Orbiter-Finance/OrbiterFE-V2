@@ -32,7 +32,7 @@ export default {
         return '#'
       }
       const name = this.name.replace(' ', '').toLowerCase()
-      return `./images/chains/${name}.png`
+      return `https://l2api.orbiter.finance/img/chains/${name}.png`
     },
   },
   watch: {

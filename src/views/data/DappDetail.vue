@@ -125,7 +125,6 @@ const colorMap = {
   'Active Users': 'rgba(239, 47, 45, 1)',
   'New Users': 'rgba(17, 112, 255, 1)',
 }
-
 const times = [
   { label: '1m', value: 1 },
   { label: '3m', value: 3 },
@@ -137,7 +136,6 @@ const isMax = (value) => value === 'Max'
 const padTimestamp = (timestamp) => timestamp * 1000
 
 const ONE_MONTH = 60 * 60 * 24 * 30
-const caches = {}
 
 export default {
   data() {
@@ -166,16 +164,12 @@ export default {
       const currentTime = this.currentTime
       const now = new Date().getTime() / 1000
       if (isMax(currentTime)) {
-        return chartData.sort((a, b) => {
-          return a.timestamp - b.timestamp
-        })
+        return chartData.sort((a, b) => a.timestamp - b.timestamp)
       }
       const selectDataTime = ONE_MONTH * currentTime
       return chartData
         .filter((item) => item.timestamp > now - selectDataTime)
-        .sort((a, b) => {
-          return a.timestamp - b.timestamp
-        })
+        .sort((a, b) => a.timestamp - b.timestamp)
     },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
@@ -411,13 +405,7 @@ export default {
     },
     _onFormatter(params) {
       const axisValue = params[0].axisValue
-      let all_users
-      if (caches[axisValue]) {
-        all_users = caches[axisValue]
-      } else {
-        all_users = this._getDataByTime(axisValue).all_users
-        caches[axisValue] = all_users
-      }
+      const all_users = this._getDataByTime(axisValue).all_users
       const title = dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
 
       return `<div class="dapp-detail-chart-popover-content">
@@ -425,8 +413,8 @@ export default {
                 <div class="dapp-detail-chart-popover-data">
                    ${params
                      .reverse()
-                     .map(
-                       (item) => `
+                     .map((item) => {
+                       return `
                     <div class="dapp-detail-chart-popover-data-item">
                       <div class="dot" style="background:${
                         colorMap[item.seriesName]
@@ -435,15 +423,15 @@ export default {
                       <div class="value">${numeral(item.value).format('0,0')}
                       ${
                         item.seriesName !== 'All Users'
-                          ? `<span>(${numeral(item.value)
-                              .divide(all_users)
-                              .format('0.00%')})</span>`
+                          ? `<span>(${((item.value / all_users) * 100).toFixed(
+                              2
+                            )}%)</span>`
                           : ''
                       }
                         </div>
                       </div>
                     `
-                     )
+                     })
                      .join('')}
                 </div>
               </div>`

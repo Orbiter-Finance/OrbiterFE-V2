@@ -21,8 +21,7 @@
         </div>
       </div>
       <div class="title">
-        {{ currentRollup.replace(/^./, currentRollup[0].toUpperCase()) }} Dapp
-        Daily Data
+        {{ names[currentRollup] }} Dapp Daily Data
         {{
           !isMobile && baseDappDailyData && baseDappDailyData.update_time
             ? ',' +
@@ -64,11 +63,16 @@
                   {{ scope.row.dapp_name }}
                 </div>
                 <template v-if="!isMobile">
-                  <icon-link :href="scope.row.dapp_url" />
-                  <twitter-link
-                    v-if="scope.row.dapp_twitter"
-                    :href="scope.row.dapp_twitter"
-                  />
+                  <template v-if="scope.row.rank === 0">
+                    <scan-link :href="scope.row.dapp_url" />
+                  </template>
+                  <template v-else>
+                    <icon-link :href="scope.row.dapp_url" />
+                    <twitter-link
+                      v-if="scope.row.dapp_twitter"
+                      :href="scope.row.dapp_twitter"
+                    />
+                  </template>
                 </template>
               </div>
             </template>
@@ -140,15 +144,23 @@ import Chart from './Chart'
 import Rollups from '../Rollups.vue'
 import TimeDiff from '../TimeDiff.vue'
 import IconLink from '../IconLink.vue'
+import ScanLink from '../ScanLink.vue'
 import TwitterLink from '../TwitterLink.vue'
 import DappLogo from '../DappLogo.vue'
 import { getDappDailyData } from '../../../L2data/daily'
 import dateFormat from '../../../util/dateFormat'
 import { isMobile } from '../../../composition/hooks'
 
+const names = {
+  ['arbitrum']: 'Arbitrum',
+  ['optimism']: 'Optimism',
+  ['zksync']: 'zkSync',
+}
+
 export default {
   data() {
     return {
+      names,
       currentRollup: 'arbitrum',
       baseDappDailyData: {},
       tableData: [],
@@ -171,6 +183,7 @@ export default {
     DappLogo,
     IconLink,
     TwitterLink,
+    ScanLink,
   },
   mounted() {
     this._getDappDailyData()
