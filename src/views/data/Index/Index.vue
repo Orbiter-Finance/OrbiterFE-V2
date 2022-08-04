@@ -81,7 +81,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="launch_time" label="Launch Time" width="120">
+          <el-table-column prop="launch_time" label="Launch Date" width="120">
             <template slot-scope="scope">
               <div class="data">
                 {{ dateFormat(scope.row.launch_time, 'yyyy-MM-dd') }}

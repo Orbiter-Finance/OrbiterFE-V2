@@ -51,7 +51,7 @@
         </el-table-column>
         <el-table-column
           prop="launch_time"
-          label="Launch Time"
+          label="Launch Date"
           width="130"
           :sortable="'custom'"
         >
@@ -106,11 +106,11 @@
             <el-popover
               popper-class="new-user-age-header-popover"
               :placement="'bottom'"
-              width="290"
+              width="300"
               trigger="hover"
             >
               <div class="new-user-age-desc">
-                Statistics for new users. " Users Age " refers to the cumulative days since users started the first transaction on the mainnet.
+                Statistics of all users. “Users Age” refers to the cumulative days since users started the first transaction on the mainnet.
                 <a href="#" target="_blank"> Read More </a>
               </div>
               <div class="new-user-age-help" slot="reference">

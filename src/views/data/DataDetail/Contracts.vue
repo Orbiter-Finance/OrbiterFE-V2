@@ -50,15 +50,15 @@
               </div>
               <icon-link :href="scope.row.dapp_url" v-if="scope.row.dapp_url" />
               <twitter-link
-                :href="scope.row.dapp_twitter"
-                v-if="scope.row.dapp_twitter"
+                :href="scope.row.twitter_url"
+                v-if="scope.row.twitter_url"
               />
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop="launch_time"
-          label="Launch Time"
+          label="Launch Date"
           width="125"
           :sortable="'custom'"
         >

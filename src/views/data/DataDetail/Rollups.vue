@@ -35,7 +35,7 @@
         </el-table-column>
         <el-table-column
           prop="launch_time"
-          label="Launch Time"
+          label="Launch Date"
           width="110"
           :sortable="'custom'"
         >
@@ -94,7 +94,7 @@
               trigger="hover"
             >
               <div class="TVL-desc">
-                Total Value Locked in Rollups & Composition of the Currency.
+                Total Value Locked in Rollups & Types of cryptocurrencies.
                 <a href="#" target="_blank"> Read More </a>
               </div>
               <div class="TVL-help" slot="reference">
