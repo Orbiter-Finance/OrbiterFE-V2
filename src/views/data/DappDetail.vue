@@ -207,6 +207,7 @@ export default {
       this.rollups = [rollup]
       this.$nextTick(async () => {
         this.checkData = ['New Users', 'Active Users']
+        this.currentTime = times[0].value
         if (this._chart) {
           this._chart.clear()
         }
