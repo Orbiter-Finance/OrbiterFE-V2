@@ -23,8 +23,9 @@
         >
           {{ detailData.info.dapp_category }}
         </div>
-        <div class="supported">Supported L2</div>
+        <div class="supported" v-if="!isMobile">Supported L2</div>
         <el-popover
+          v-if="!isMobile"
           popper-class="supported-l2-popover"
           :placement="'bottom'"
           width="280"
@@ -70,7 +71,6 @@
             :placement="'bottom'"
             width="280"
             trigger="hover"
-            v-if="!(checkData.length === 1)"
           >
             <div class="supported-l2-desc">
               Active Users & Corresponding percentage of total users. <br />
@@ -242,9 +242,9 @@ export default {
       } else {
         this.checkData = this.checkData.concat([item])
       }
-      const option = this._getChartOptions()
       if (this._chart) {
         this._chart.clear()
+        const option = this._getChartOptions()
         this._chart.setOption(option)
       }
     },
@@ -378,7 +378,6 @@ export default {
         options.series.push({
           name: 'All Users',
           type: 'line',
-          stack: 'Total',
           smooth: true,
           lineStyle: {
             width: 4,
@@ -643,8 +642,12 @@ export default {
       }
       .content {
         .checker {
-          padding-left: 0;
-          justify-content: center;
+          padding: 0 20px;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+          .item{
+            height: 28px;
+          }
         }
       }
     }

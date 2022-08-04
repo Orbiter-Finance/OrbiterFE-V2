@@ -20,19 +20,22 @@
           <img src="../../../assets/data/right.png" width="8" height="12" />
         </div>
       </div>
-      <div class="title" v-if="!isMobile">
-        <!-- {{ currentRollup.replace(/^./, currentRollup[0].toUpperCase()) }} -->
-        Dapps 24h Active Users Rankings,
+      <div class="title">
+        {{ currentRollup.replace(/^./, currentRollup[0].toUpperCase()) }} Dapp
+        Daily Data,
         {{
-          baseDappDailyData && baseDappDailyData.update_time
-            ? dateFormat(
+          !isMobile && baseDappDailyData && baseDappDailyData.update_time
+            ? ',' +
+              dateFormat(
                 (baseDappDailyData.update_time - 60 * 60 * 24) * 1000,
                 'yyyy-MM-dd'
               )
+            : isMobile
+            ? ''
             : '-'
         }}
         <time-diff
-          v-if="baseDappDailyData && baseDappDailyData.update_time"
+          v-if="!isMobile && baseDappDailyData && baseDappDailyData.update_time"
           :timestamp="baseDappDailyData.update_time"
         />
       </div>
