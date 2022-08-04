@@ -1,5 +1,5 @@
 <template>
-  <a class="link" :href="href" target="_blank"> </a>
+  <a class="link" :style="style" :href="href" target="_blank"> </a>
 </template>
 
 <script>
@@ -7,6 +7,25 @@ export default {
   props: {
     href: {
       type: String,
+    },
+    width: {
+      type: Number,
+      default: 12,
+    },
+    height: {
+      type: Number,
+      default: 12,
+    },
+  },
+  computed: {
+    style() {
+      const width = this.width
+      const height = this.height
+      return {
+        width: `${width}px`,
+        height: `${height}px`,
+        'background-size': `${width}px ${height}px`,
+      }
     },
   },
 }

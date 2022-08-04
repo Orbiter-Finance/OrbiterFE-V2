@@ -64,7 +64,11 @@
                 </div>
                 <template v-if="!isMobile">
                   <template v-if="scope.row.rank === 0">
-                    <scan-link :href="scope.row.dapp_url" />
+                    <scan-link
+                      :href="scope.row.dapp_url"
+                      :width="13"
+                      :height="13"
+                    />
                   </template>
                   <template v-else>
                     <icon-link :href="scope.row.dapp_url" />
@@ -305,6 +309,7 @@ export default {
       }
       .name-column {
         display: flex;
+        align-items: center;
         font-family: 'Inter Regular';
         color: #333333;
         .rank {
