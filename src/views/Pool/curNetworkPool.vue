@@ -2,24 +2,28 @@
   <div class="pool-box-container">
     <div class="pool-box-nav">
       <div class="network-button">
-        <template v-for="(item, idx) in networkData">
+        <template v-for="(item, idx) in networkArray">
           <span
             :key="idx"
             @click="
               togglePageTab({
                 type: 'NetworkliquidityState',
-                value: item.index,
+                value: String(item),
               })
             "
             :class="[
               'options-item',
-              { selected: curPage.NetworkliquidityState === item.index },
+              { selected: curPage.NetworkliquidityState === String(item) },
             ]"
-            >{{ item.name }}</span
+            >{{ showChainName(item, $env.localChainID_netChainID[item]) }}</span
           >
         </template>
       </div>
-      <span class="option-button">Pools & Add Liquidity</span>
+      <span
+        class="option-button"
+        @click="togglePageTab({ type: 'curNetworkPoolMode', value: false })"
+        >Pools & Add Liquidity</span
+      >
     </div>
     <div class="pool-box-main">
       <CommLoading
@@ -95,24 +99,36 @@
           </div>
         </div>
         <div class="line-content">
-          <span class="content-button add">Add Liquidity</span>
+          <span
+            class="content-button add"
+            @click="
+              setDialogVisible({
+                type: 'addLiquidityDialogVisible',
+                value: true,
+              })
+            "
+            >Add Liquidity</span
+          >
 
           <span class="content-button reduce">Reduce Liquidity</span>
         </div>
       </div>
     </div>
-    <pool-add-liquidity :AddLiquidityVisible="AddLiquidityVisible" />
+
+    <pool-add-liquidity />
   </div>
 </template>
 
 <script>
-import { SvgIconThemed, CommLoading, PoolAddLiquidity } from '../components'
+import { SvgIconThemed, CommLoading, PoolAddLiquidity } from '../../components'
+import config from '../../config'
+import util from '../../util/util'
 import { mapState, mapMutations } from 'vuex'
 export default {
-  name: 'Pool',
+  name: 'curNetworkPool',
   components: { SvgIconThemed, CommLoading, PoolAddLiquidity },
   computed: {
-    ...mapState(['curPage']),
+    ...mapState(['curPage', 'poolNetworkOrTokenConfig']),
   },
   watch: {
     'curPage.NetworkliquidityState': function () {
@@ -122,39 +138,88 @@ export default {
   data() {
     return {
       isLoading: true,
-      networkData: [
-        {
-          name: 'Goerli',
-          index: '1',
-        },
-        {
-          name: 'Arbitrum',
-          index: '2',
-        },
-        {
-          name: 'Optimism',
-          index: '3',
-        },
-        {
-          name: 'Polygon',
-          index: '4',
-        },
-      ],
+      curPoolMode: false,
       curNetworkliquidityData: [],
-      AddLiquidityVisible: false,
+      tokenInfoArray: [],
+      networkArray: [],
+      toChainAddress: {},
+      toChainId: 0,
     }
   },
   mounted() {
-    this.getCurNetworkliquidityData()
+    this.getAllNetwork()
   },
   methods: {
-    ...mapMutations(['togglePageTab']),
+    ...mapMutations([
+      'togglePageTab',
+      'setDialogVisible',
+      'updatePoolNetworkOrTokenConfig',
+    ]),
+    // 获取所有网络
+    getAllNetwork() {
+      this.networkArray = []
+      this.poolNetworkOrTokenConfig.makerInfoList.filter((makerInfo) => {
+        if (this.networkArray.indexOf(makerInfo.c2ID) === -1) {
+          this.networkArray.push(makerInfo.c2ID)
+          this.toChainAddress[makerInfo.c2ID] = makerInfo.t2Address
+        }
+        if (this.networkArray.indexOf(makerInfo.c1ID) === -1) {
+          this.networkArray.push(makerInfo.c1ID)
+          this.toChainAddress[makerInfo.c1ID] = makerInfo.t1Address
+        }
+      })
+      this.togglePageTab({
+        type: 'NetworkliquidityState',
+        value: String(this.networkArray[0]),
+      })
+      this.updatePoolNetworkOrTokenConfig({
+        type: 'NetworkArray',
+        value: this.networkArray,
+      })
+      this.toChainId = this.networkArray[0]
+      console.log('networkArray', this.networkArray)
+
+      // 获取 当前网络 下的所有流动池信息
+      this.getCurNetworkliquidityData()
+
+      // 获取最新代币列表
+      this.getAllTokenArray()
+    },
+    getAllTokenArray() {
+      this.tokenInfoArray = []
+      this.poolNetworkOrTokenConfig.makerInfoList.filter((makerInfo) => {
+        const pushToken = (_fromChainID, _toChainID) => {
+          if (
+            _fromChainID !== this.toChainId &&
+            _toChainID !== this.toChainId
+          ) {
+            return
+          }
+
+          if (
+            this.tokenInfoArray.findIndex(
+              (tokenInfo) => tokenInfo.token === makerInfo.tName
+            ) == -1
+          ) {
+            this.tokenInfoArray.push({
+              icon: config.getTokenIcon(makerInfo.tName),
+              token: makerInfo.tName,
+              amount: 0,
+            })
+          }
+        }
+        pushToken(makerInfo.c1ID, makerInfo.c2ID)
+        pushToken(makerInfo.c2ID, makerInfo.c1ID)
+      })
+      console.log('info', this.tokenInfoArray)
+      // this.tokenInfo = this.tokenInfoArray[0]
+    },
     async getCurNetworkliquidityData() {
       this.isLoading = true
       //   mock of data
       const mockData = [
         {
-          tokenSrc: require('../assets/usdtlogo.png'),
+          tokenSrc: require('../../assets/usdtlogo.png'),
           tokenName: 'USDT',
           liquidity: '1,000,000.00',
           totalRevenue: '2335.32',
@@ -165,7 +230,7 @@ export default {
           estimatedProfit: '1,000.000',
         },
         {
-          tokenSrc: require('../assets/usdtlogo.png'),
+          tokenSrc: require('../../assets/usdtlogo.png'),
           tokenName: 'ETH',
           liquidity: '100,000.000',
           totalRevenue: '100.235',
@@ -176,7 +241,7 @@ export default {
           estimatedProfit: '1,000.000',
         },
         {
-          tokenSrc: require('../assets/usdclogo.png'),
+          tokenSrc: require('../../assets/usdclogo.png'),
           tokenName: 'USDC',
           liquidity: '1,000,000.00',
           totalRevenue: '2335.32',
@@ -191,6 +256,9 @@ export default {
         this.curNetworkliquidityData = mockData
         this.isLoading = false
       }, 300)
+    },
+    showChainName(localChainID, netChainID) {
+      return util.chainName(localChainID, netChainID)
     },
   },
 }
@@ -224,6 +292,7 @@ export default {
       &.selected {
         color: #ffffff;
         background: #df2e2d;
+        // font-weight: 700;
       }
     }
   }

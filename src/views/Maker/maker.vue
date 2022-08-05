@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import makerInfo from '../core/routes/makerInfo'
-import AddLiquidity from '../components/maker/addLiquidity.vue'
-import loginMaker from '../components/maker/loginMaker.vue'
-import unloginMaker from '../components/maker/unloginMaker.vue'
+import makerInfo from '../../core/routes/makerInfo'
+import AddLiquidity from '../../components/maker/addLiquidity.vue'
+import loginMaker from '../../components/maker/loginMaker.vue'
+import unloginMaker from '../../components/maker/unloginMaker.vue'
 import { mapGetters } from 'vuex'
 
 export default {

@@ -336,6 +336,7 @@ export default {
         pushToken(makerInfo.c1ID, makerInfo.c2ID)
         pushToken(makerInfo.c2ID, makerInfo.c1ID)
       })
+      console.log('info', this.tokenInfoArray)
       this.tokenInfo = this.tokenInfoArray[0]
     },
 
@@ -389,7 +390,7 @@ export default {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       return provider.getSigner()
     },
-    getDTokenContract(toChainId,provider) {
+    getDTokenContract(toChainId, provider) {
       return new ethers.Contract(
         this.dTokenAddresses[toChainId],
         getDTokenContractABI(),
@@ -406,7 +407,7 @@ export default {
         getCoinContractABI(),
         singer
       )
-      const dTokenInstance = this.getDTokenContract(this.toChainId,singer)
+      const dTokenInstance = this.getDTokenContract(this.toChainId, singer)
       const account = await singer.getAddress()
       const allowanceAmount = await coinToken.allowance(
         account,
@@ -470,10 +471,10 @@ export default {
       const divParam = ethers.utils.parseEther('1')
       let calculationApy = 410
       let customProvider = new ethers.providers.JsonRpcProvider(
-          process.env[this.$env.localProvider[this.toChainId]]
-        )
+        process.env[this.$env.localProvider[this.toChainId]]
+      )
       try {
-        const APY = this.getDTokenContract(this.toChainId,customProvider)
+        const APY = this.getDTokenContract(this.toChainId, customProvider)
         calculationApy = await APY.supplyRatePerBlock()
         calculationApy = ((calculationApy * blocksPerYear) / divParam) * 100
       } catch (error) {

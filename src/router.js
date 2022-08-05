@@ -15,7 +15,7 @@ export default new Router({
     {
       path: '/',
       name: 'Sender',
-      component: (resolve) => require(['./views/Bridge/bridge'], resolve),
+      component: (resolve) => require(['./views/bridge'], resolve),
       meta: {
         title: 'Orbiter',
         keepAlive: true,

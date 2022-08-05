@@ -21,6 +21,9 @@ export default {
   updateLiquidityData(state, liquidityDataList) {
     state.liquidityData = liquidityDataList
   },
+  updatePoolNetworkOrTokenConfig(state, payload) {
+    state.poolNetworkOrTokenConfig[payload.type] = payload.value
+  },
   updateZKTokenList(state, obj) {
     if (obj.chainID === 3) {
       state.zktokenList.mainnet = obj.tokenList

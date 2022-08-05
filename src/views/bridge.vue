@@ -24,14 +24,6 @@
         class="maker-box"
       >
         <maker />
-        <!-- <div class="maker-title">About Maker</div>
-        <div class="maker-content">
-          <div>
-            Orbiter's Maker provides liquidity for Layer 2 and benefits from it.
-          </div>
-          <div @click="clickLearnMore" class="maker-link">LEARN MORE</div>
-          <div class="maker-foot-btn">COMING SOON</div>
-        </div> -->
       </div>
       <div
         v-show="
@@ -39,7 +31,10 @@
         "
         class="pool-box"
       >
-        <pool />
+        <cur-network-pool
+          v-if="curPage.curNetworkPoolMode && makerInfoStatus"
+        />
+        <all-network-pool v-else />
       </div>
     </template>
     <!-- <div
@@ -61,26 +56,34 @@
 </template>
 
 <script>
-import Sender from '../sender'
-import Maker from '../maker'
-import Pool from '../pool'
-// import { Transfer, Confirm, Proceed } from './'
-import { ToggleBtn } from '../../components'
-import { mapState, mapGetters, mapMutations } from 'vuex'
+import { curNetworkPool, allNetworkPool, sender, maker } from './'
+import { ToggleBtn } from '../components'
+// import makerInfo from '../core/routes/makerInfo'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'Bridge',
-  components: { ToggleBtn, Sender, Maker, Pool },
+  components: { ToggleBtn, sender, maker, curNetworkPool, allNetworkPool },
   computed: {
     ...mapState(['curPage', 'isMobile']),
     ...mapGetters(['isLogin']),
     showDetail() {
-      //   return historyPanelState.isShowHistory
       return false
     },
   },
+  data() {
+    return {
+      makerInfoStatus: false,
+    }
+  },
+  async mounted() {
+    this.makerInfoStatus = await this.getMakerInfoList()
+    console.log('show')
+    // console.log(await this.getMakerInfoList())
+  },
   methods: {
     ...mapMutations(['togglePageTab']),
+    ...mapActions(['getMakerInfoList']),
     clickLearnMore() {
       window.open('https://docs.orbiter.finance/', '_blank')
     },

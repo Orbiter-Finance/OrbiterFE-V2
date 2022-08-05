@@ -123,9 +123,6 @@ export default {
   components: {},
   watch: {},
   mounted() {
-    // this.$nextTick(function () {
-    // this.draw('report')
-    // });
     this.toChainArray = []
     this.makerInfoList.filter((makerInfo) => {
       if (this.toChainArray.indexOf(makerInfo.c2ID) === -1) {
