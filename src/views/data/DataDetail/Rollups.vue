@@ -243,9 +243,9 @@ export default {
 
       if (['total_tx', 'total_accounts'].includes(prop)) {
         this.tableData = tableData.sort((a, b) => {
-          const nA = Number.isNaN(Number(a[prop])) ? 0 : Number(a[prop])
-          const nB = Number.isNaN(Number(b[prop])) ? 0 : Number(b[prop])
-          return isAscending ? nA - nB : nB - nB
+          const nA = isEmpty(a[prop]) ? 0 : a[prop]
+          const nB = isEmpty(b[prop]) ? 0 : b[prop]
+          return isAscending ? nA - nB : nB - nA
         })
         return
       }
@@ -289,8 +289,8 @@ export default {
           : []
 
       return tableData.sort((a, b) => {
-        const nA = Number.isNaN(Number(a.total_tx)) ? 0 : Number(a.total_tx)
-        const nB = Number.isNaN(Number(b.total_tx)) ? 0 : Number(b.total_tx)
+        const nA = isEmpty(a.total_tx) ? 0 : a.total_tx
+        const nB = isEmpty(b.total_tx) ? 0 : b.total_tx
         return nB - nA
       })
     },
