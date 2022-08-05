@@ -1,47 +1,23 @@
 <template>
   <div class="dapps-wrapper">
     <div class="head">
-      <rollups
-        :value="currentRollup"
-        @rollup-change="(value) => (currentRollup = value)"
-      />
+      <rollups :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" />
       <div class="right">
-        <time-diff
-          class="time"
-          v-if="!isMobile && dapps && dapps.update_time"
-          :timestamp="dapps.update_time"
-        />
-        <selector
-          :data="selectors"
-          :value="currentFilter"
-          @change="(item) => (currentFilter = item.value)"
-        />
+        <time-diff class="time" v-if="!isMobile && dapps && dapps.update_time" :timestamp="dapps.update_time" />
+        <selector :data="selectors" :value="currentFilter" @change="(item) => (currentFilter = item.value)" />
       </div>
     </div>
     <div class="table">
-      <el-table
-        :data="currentTableData"
-        style="width: 100%"
-        empty-text="No Items"
-        :default-sort="defaultSort"
-        @sort-change="onSortChange"
-      >
-        <el-table-column
-          fixed
-          label="NO. Dapp Name"
-          :width="isMobile ? 210 : 280"
-        >
+      <el-table :data="currentTableData" style="width: 100%" empty-text="No Items" :default-sort="defaultSort"
+        @sort-change="onSortChange">
+        <el-table-column fixed label="NO. Dapp Name" :width="isMobile ? 210 : 280">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
                 {{ scope.row.index }}
               </div>
               <dapp-logo :name="scope.row.dapp_name" />
-              <div
-                @click="onRowClick(scope.row)"
-                class="name"
-                :title="scope.row.dapp_name"
-              >
+              <div @click="onRowClick(scope.row)" class="name" :title="scope.row.dapp_name">
                 {{ scope.row.dapp_name }}
               </div>
               <icon-link :href="scope.row.dapp_url" />
@@ -49,51 +25,32 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="launch_time"
-          label="Launch Date"
-          width="130"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="launch_time" label="Launch Date" width="130" :sortable="'custom'"
+          :sort-orders="['descending', 'ascending', null]">
           <template slot-scope="scope">
             <div class="data">
               {{ dateFormat(scope.row.launch_time_str, 'yyyy-MM-dd') }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="all_users"
-          label="All Users"
-          width="130"
-          align="center"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="all_users" label="All Users" width="130" align="center"
+          :sort-orders="['descending', 'ascending', null]" :sortable="'custom'">
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row.all_users).format('0,0') }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="Active Accounts"
-          prop="active_users"
-          width="150"
-          align="right"
-          :sortable="'custom'"
-        >
-          <template slot-scope="scope"
-            ><div class="data">
+        <el-table-column label="Active Accounts" prop="active_users" :sort-orders="['descending', 'ascending', null]"
+          width="150" align="right" :sortable="'custom'">
+          <template slot-scope="scope">
+            <div class="data">
               {{ numeral(scope.row[currentFilter].active_users).format('0,0') }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="new_users"
-          label="New Users"
-          width="120"
-          align="right"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="new_users" label="New Users" width="120" align="right" :sortable="'custom'"
+          :sort-orders="['descending', 'ascending', null]">
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row[currentFilter].new_users).format('0,0') }}
@@ -103,14 +60,10 @@
         <el-table-column prop="new_users_age" width="140" align="right">
           <template slot="header">
             <div class="new-user-age-header">New Users Age</div>
-            <el-popover
-              popper-class="new-user-age-header-popover"
-              :placement="'bottom'"
-              width="300"
-              trigger="hover"
-            >
+            <el-popover popper-class="new-user-age-header-popover" :placement="'bottom'" width="300" trigger="hover">
               <div class="new-user-age-desc">
-                Statistics of all users. “Users Age” refers to the cumulative days since users started the first transaction on the mainnet.
+                Statistics of all users. “Users Age” refers to the cumulative days since users started the first
+                transaction on the mainnet.
                 <a href="#" target="_blank"> Read More </a>
               </div>
               <div class="new-user-age-help" slot="reference">
@@ -118,36 +71,26 @@
               </div>
             </el-popover>
           </template>
-          <template slot-scope="scope"
-            ><div class="data">
+          <template slot-scope="scope">
+            <div class="data">
               {{
-                numeral(scope.row[currentFilter].new_users_age).format('0,0')
+                  numeral(scope.row[currentFilter].new_users_age).format('0,0')
               }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="interactions"
-          label="Interactions"
-          width="120"
-          align="right"
-          :sortable="'custom'"
-        >
-          <template slot-scope="scope"
-            ><div class="data">
+        <el-table-column prop="interactions" label="Interactions" width="120" align="right" :sortable="'custom'"
+          :sort-orders="['descending', 'ascending', null]">
+          <template slot-scope="scope">
+            <div class="data">
               {{ numeral(scope.row[currentFilter].interactions).format('0,0') }}
             </div>
           </template>
         </el-table-column>
       </el-table>
       <div class="pagination">
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :page-size="PAGE_SIZE"
-          :total="total"
-          :current-page.sync="page"
-        >
+        <el-pagination background layout="prev, pager, next" :page-size="PAGE_SIZE" :total="total"
+          :current-page.sync="page">
         </el-pagination>
       </div>
     </div>
@@ -307,35 +250,43 @@ export default {
   border-radius: 20px;
   margin-top: 24px;
   overflow: hidden;
+
   .head {
     display: flex;
     justify-content: space-between;
     height: 80px;
     padding: 0 30px;
+
     .right {
       display: flex;
       align-items: center;
+
       .time {
         margin-right: 40px;
       }
     }
   }
+
   .table {
     padding: 0 20px 50px 20px;
+
     .el-table .cell {
       padding: 0 5px 0 5px;
     }
+
     .name-column {
       display: flex;
       font-size: 14px;
       color: #333333;
       font-family: 'Inter Regular';
+
       .rank {
         width: 20px;
         font-style: normal;
         font-weight: 400;
         margin-right: 20px;
       }
+
       .name {
         width: 70px;
         white-space: nowrap;
@@ -346,10 +297,12 @@ export default {
         margin: 0 10px;
         cursor: pointer;
       }
+
       a {
         margin-right: 10px;
       }
     }
+
     .data {
       font-family: 'Inter Regular';
       font-style: normal;
@@ -357,22 +310,27 @@ export default {
       font-size: 14px;
       color: rgba(51, 51, 51, 0.8);
     }
+
     .pagination {
       display: flex;
       justify-content: flex-end;
       margin-top: 20px;
+
       .el-pager li:not(.active):hover {
         color: #df2e2d;
       }
+
       .btn-prev,
       .btn-next {
         background-color: transparent;
         margin: 0;
       }
+
       .number {
         font-family: 'Inter Regular';
         background-color: transparent;
       }
+
       li:not(.disabled).active,
       .active {
         background-color: #df2e2d;
@@ -381,14 +339,17 @@ export default {
     }
   }
 }
+
 .new-user-age-header {
   display: inline-block;
 }
+
 .new-user-age-help {
   display: inline-block;
   margin-left: 4px;
   cursor: pointer;
 }
+
 .new-user-age-desc {
   word-wrap: break-word;
   word-break: normal;
@@ -399,6 +360,7 @@ export default {
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
   font-family: 'Inter Regular';
+
   a {
     display: block;
     font-style: normal;
@@ -407,6 +369,7 @@ export default {
     color: #df2e2d;
   }
 }
+
 .new-user-age-header-popover {
   padding: 20px;
   background: #ffffff;
@@ -414,47 +377,57 @@ export default {
   border-radius: 12px;
   border: 0;
 }
+
 @media (max-width: 820px) {
   .dapps-wrapper {
     .head {
       flex-direction: column;
       height: auto;
       padding-top: 24px;
+
       .right {
         align-items: flex-start;
         margin-top: 20px;
         margin-bottom: 5px;
       }
     }
+
     .table {
       padding: 0 30px 50px 30px;
+
       .el-table .cell {
         padding: 0 14px 0 5px;
       }
+
       .name-column {
         .rank {
           margin-right: 10px;
         }
       }
+
       .pagination {
         justify-content: center;
       }
     }
   }
 }
+
 .dark-body {
   .new-user-age-header-popover {
     background: #3f415b;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
   }
+
   .new-user-age-desc {
     color: rgba(255, 255, 255, 0.6);
   }
 }
+
 .dark-theme {
   .dapps-wrapper {
     background: #373951;
   }
+
   .name-column {
     display: flex;
     color: #fff;

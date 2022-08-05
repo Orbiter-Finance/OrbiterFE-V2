@@ -1,34 +1,17 @@
 <template>
   <div class="contracts-wrapper">
     <div class="head">
-      <rollups
-        :customRollups="[
-          { label: 'Arbitrum', value: 'arbitrum' },
-          { label: 'Optimism', value: 'optimism' },
-        ]"
-        :value="currentRollup"
-        @rollup-change="(value) => (currentRollup = value)"
-      />
-      <time-diff
-        class="time"
-        v-if="!isMobile && contracts && contracts.update_time"
-        :timestamp="contracts.update_time"
-      />
+      <rollups :customRollups="[
+        { label: 'Arbitrum', value: 'arbitrum' },
+        { label: 'Optimism', value: 'optimism' },
+      ]" :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" />
+      <time-diff class="time" v-if="!isMobile && contracts && contracts.update_time"
+        :timestamp="contracts.update_time" />
     </div>
     <div class="table">
-      <el-table
-        :data="currentTableData"
-        style="width: 100%"
-        :default-sort="defaultSort"
-        empty-text="No Items"
-        @sort-change="onSortChange"
-      >
-        <el-table-column
-          fixed
-          prop="contract_address"
-          label="New Contract"
-          width="160"
-        >
+      <el-table :data="currentTableData" style="width: 100%" :default-sort="defaultSort" empty-text="No Items"
+        @sort-change="onSortChange">
+        <el-table-column fixed prop="contract_address" label="New Contract" width="160">
           <template slot-scope="scope">
             <div class="new-contract">
               <div class="no">
@@ -49,52 +32,30 @@
                 {{ scope.row.dapp_name }}
               </div>
               <icon-link :href="scope.row.dapp_url" v-if="scope.row.dapp_url" />
-              <twitter-link
-                :href="scope.row.twitter_url"
-                v-if="scope.row.twitter_url"
-              />
+              <twitter-link :href="scope.row.twitter_url" v-if="scope.row.twitter_url" />
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="launch_time"
-          label="Launch Date"
-          width="125"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="launch_time" label="Launch Date" width="125"
+          :sort-orders="['descending', 'ascending', null]" :sortable="'custom'">
           <template slot-scope="scope">
             <div class="data">
               {{ dateFormat(scope.row.launch_time_str, 'yyyy-MM-dd') }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="all_users"
-          label="All Users"
-          width="90"
-          align="right"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="all_users" label="All Users" width="90" align="right"
+          :sort-orders="['descending', 'ascending', null]" :sortable="'custom'">
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row.all_users).format('0,0') }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="users_age"
-          label="Users Age"
-          width="95"
-          align="right"
-        >
+        <el-table-column prop="users_age" label="Users Age" width="95" align="right">
           <template slot="header">
             <div class="user-age-header">Users Age</div>
-            <el-popover
-              popper-class="user-age-header-popover"
-              :placement="'bottom'"
-              width="280"
-              trigger="hover"
-            >
+            <el-popover popper-class="user-age-header-popover" :placement="'bottom'" width="280" trigger="hover">
               <div class="user-age-desc">
                 Statistics for all users. " Users Age " refers to the cumulative
                 days since users started the first transaction on the mainnet.
@@ -111,39 +72,24 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="24h_active_users"
-          label="24h Active Users"
-          width="155"
-          align="right"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="24h_active_users" label="24h Active Users" width="155" align="right"
+          :sort-orders="['descending', 'ascending', null]" :sortable="'custom'">
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row['24h_active_users']).format('0,0') }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="24h_new_users"
-          label="24h New Users"
-          width="140"
-          align="right"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="24h_new_users" label="24h New Users" width="140" align="right"
+          :sort-orders="['descending', 'ascending', null]" :sortable="'custom'">
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row['24h_new_users']).format('0,0') }}
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="24h_interactions"
-          label="24h Interactions"
-          width="150"
-          align="right"
-          :sortable="'custom'"
-        >
+        <el-table-column prop="24h_interactions" label="24h Interactions" width="150" align="right"
+          :sort-orders="['descending', 'ascending', null]" :sortable="'custom'">
           <template slot-scope="scope">
             <div class="data">
               {{ numeral(scope.row['24h_interactions']).format('0,0') }}
@@ -152,13 +98,8 @@
         </el-table-column>
       </el-table>
       <div class="pagination">
-        <el-pagination
-          background
-          layout="prev, pager, next"
-          :page-size="PAGE_SIZE"
-          :total="total"
-          :current-page.sync="page"
-        >
+        <el-pagination background layout="prev, pager, next" :page-size="PAGE_SIZE" :total="total"
+          :current-page.sync="page">
         </el-pagination>
       </div>
     </div>
@@ -287,34 +228,41 @@ export default {
   border-radius: 20px;
   margin-top: 24px;
   overflow: hidden;
+
   .head {
     display: flex;
     justify-content: space-between;
     height: 80px;
     padding: 0 30px;
   }
+
   .table {
     padding: 0 20px 50px 20px;
+
     .el-table .cell {
       padding: 0 10px 0 5px;
     }
-    .el-table th.el-table__cell > .cell {
+
+    .el-table th.el-table__cell>.cell {
       display: inline-flex;
       align-items: center;
       flex-wrap: nowrap;
     }
+
     .new-contract {
       display: flex;
       align-items: center;
       font-size: 14px;
       color: #333333;
       font-family: 'Inter Regular';
+
       .no {
         width: 20px;
         font-style: normal;
         font-weight: 400;
         margin-right: 20px;
       }
+
       .address {
         font-style: normal;
         font-weight: 500;
@@ -323,9 +271,11 @@ export default {
         white-space: nowrap;
       }
     }
+
     .name-column {
       display: flex;
       font-family: 'Inter Regular';
+
       .name {
         width: 70px;
         white-space: nowrap;
@@ -337,13 +287,16 @@ export default {
         color: #333333;
         margin: 0 10px;
       }
+
       a {
         margin-right: 10px;
+
         &:last-child {
           margin-right: 0;
         }
       }
     }
+
     .data {
       font-family: 'Inter Regular';
       font-style: normal;
@@ -351,22 +304,27 @@ export default {
       font-size: 14px;
       color: rgba(51, 51, 51, 0.8);
     }
+
     .pagination {
       display: flex;
       justify-content: flex-end;
       margin-top: 20px;
+
       .el-pager li:not(.active):hover {
         color: #df2e2d;
       }
+
       .btn-prev,
       .btn-next {
         background-color: transparent;
         margin: 0;
       }
+
       .number {
         font-family: 'Inter Regular';
         background-color: transparent;
       }
+
       li:not(.disabled).active,
       .active {
         background-color: #df2e2d;
@@ -375,14 +333,17 @@ export default {
     }
   }
 }
+
 .user-age-header {
   display: inline-block;
 }
+
 .user-age-help {
   display: inline-block;
   margin-left: 4px;
   cursor: pointer;
 }
+
 .user-age-desc {
   word-wrap: break-word;
   word-break: normal;
@@ -393,6 +354,7 @@ export default {
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.8);
+
   a {
     display: block;
     font-style: normal;
@@ -401,6 +363,7 @@ export default {
     color: #df2e2d;
   }
 }
+
 .user-age-header-popover {
   padding: 20px;
   background: #ffffff;
@@ -408,6 +371,7 @@ export default {
   border-radius: 12px;
   border: 0;
 }
+
 @media (max-width: 820px) {
   .contracts-wrapper {
     .head {
@@ -416,26 +380,32 @@ export default {
       padding-top: 24px;
       padding-bottom: 14px;
     }
+
     .table {
       padding: 0 30px 50px 30px;
+
       .new-contract {
         .no {
           margin-right: 5px;
         }
       }
+
       .pagination {
         justify-content: center;
       }
     }
   }
 }
+
 .dark-theme {
   .contracts-wrapper {
     background: #373951;
+
     .table {
       .new-contract {
         color: #fff;
       }
+
       .name-column {
         .name {
           color: #fff;
@@ -444,11 +414,13 @@ export default {
     }
   }
 }
+
 .dark-body {
   .user-age-header-popover {
     background: #3f415b;
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
   }
+
   .user-age-desc {
     color: rgba(255, 255, 255, 0.6);
   }
