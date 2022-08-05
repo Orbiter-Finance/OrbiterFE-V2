@@ -2,7 +2,13 @@
   <div class="top-nav">
     <template v-if="!isMobile">
       <div style="height: 100%; position: relative">
+        <img
+          v-if="isStarknet"
+          src="../../assets/v2/starknet-logo.png"
+          style="width: 190px; height: 80px"
+        />
         <SvgIconThemed
+          v-else
           @click.native="toHome"
           class="logo"
           :style="navIcons.style"
@@ -140,7 +146,7 @@ export default {
           }
           break
         case 'ARGENT':
-        case 'STARKNET':
+        // case 'STARKNET':
           // icons.logo_web = 'argent'
           icons.logo_web = 'starknet'
           icons.logo_webStyle = {
