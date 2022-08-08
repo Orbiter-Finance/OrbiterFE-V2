@@ -18,15 +18,16 @@
           height="4rem"
         />
         <template v-else>
-          <div class="table-header">
-            <span class="col col-1">Network</span>
-            <span class="col col-2">Token</span>
-            <span class="col col-3">Pizza Pool</span>
-            <span class="col col-4">APR</span>
-            <span class="col col-5">Add Liquidity</span>
-          </div>
-          <hr style="background: rgba(51, 51, 51, 0.2)" />
-          <!-- <div
+          <div class="allNetworkPool-body">
+            <div class="table-header">
+              <span class="col col-1">Network</span>
+              <span class="col col-2">Token</span>
+              <span class="col col-3">Pizza Pool</span>
+              <span class="col col-4">APR</span>
+              <span class="col col-5">Add Liquidity</span>
+            </div>
+            <hr style="background: rgba(51, 51, 51, 0.2)" />
+            <!-- <div
             v-else-if="historyData && historyData.length !== 0"
             v-for="(item, index) in historyData"
             :key="index"
@@ -69,6 +70,7 @@
               ></svg-icon>
             </div>
           </div> -->
+          </div>
         </template>
 
         <!-- <div class="dydx-limit" v-if="isShowDydxLimit">
@@ -91,7 +93,7 @@
 
 <script>
 import { NoData, CommLoading } from '../../components'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'allNetworkPool',
@@ -100,6 +102,7 @@ export default {
     CommLoading,
   },
   computed: {
+    ...mapGetters(['getAllNetworkLiquidityData']),
     // currentPage() {
     //   return this.transactionListInfo.current
     // },
@@ -108,6 +111,11 @@ export default {
     return {
       isLoading: false,
     }
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.getAllNetworkLiquidityData()
+    }, 300)
   },
   beforeRouteEnter(to, from, next) {
     next(() => {
@@ -183,7 +191,7 @@ export default {
       width: 950px;
       .table {
         .table-header {
-          padding: 4px 20px;
+          // padding: 4px 20px;
         }
         .col {
           margin-right: 26px;
@@ -282,11 +290,17 @@ export default {
       font-weight: 400;
       font-size: 14px;
       line-height: 24px;
+      .allNetworkPool-body {
+        width: 870px;
+        height: 385px;
+        background: rgba(245, 245, 245, 0.6);
+        border-radius: 20px;
+        padding: 20px;
+      }
       .table-header {
         height: 32px;
-        border-radius: 8px;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
       }
       .col {
         text-align: left;

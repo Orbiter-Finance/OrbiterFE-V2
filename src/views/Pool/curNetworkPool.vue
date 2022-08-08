@@ -2,7 +2,7 @@
   <div class="pool-box-container">
     <div class="pool-box-nav">
       <div class="network-button">
-        <template v-for="(item, idx) in networkArray">
+        <template v-for="(item, idx) in poolNetworkOrTokenConfig.NetworkArray">
           <span
             :key="idx"
             @click="
@@ -34,7 +34,7 @@
       />
       <div
         v-else
-        v-for="(item, idx) in curNetworkliquidityData"
+        v-for="(item, idx) in getCurNetworkLiquidityData"
         :key="idx"
         class="pool-overview"
       >
@@ -110,12 +110,14 @@
             >Add Liquidity</span
           >
 
-          <span class="content-button reduce">Reduce Liquidity</span>
+          <span class="content-button reduce" @click="redeemLiquidity(item)"
+            >Reduce Liquidity</span
+          >
         </div>
       </div>
     </div>
 
-    <pool-add-liquidity />
+    <pool-add-liquidity v-on:updateTokens="getAllTokenArray" />
   </div>
 </template>
 
@@ -123,12 +125,15 @@
 import { SvgIconThemed, CommLoading, PoolAddLiquidity } from '../../components'
 import config from '../../config'
 import util from '../../util/util'
-import { mapState, mapMutations } from 'vuex'
+import { ethers } from 'ethers'
+import { mapState, mapMutations, mapGetters } from 'vuex'
+import { getDTokenContractABI } from '../../util/constants/contract/getContract'
 export default {
   name: 'curNetworkPool',
   components: { SvgIconThemed, CommLoading, PoolAddLiquidity },
   computed: {
     ...mapState(['curPage', 'poolNetworkOrTokenConfig']),
+    ...mapGetters(['getCurNetworkLiquidityData']),
   },
   watch: {
     'curPage.NetworkliquidityState': function () {
@@ -139,10 +144,7 @@ export default {
     return {
       isLoading: true,
       curPoolMode: false,
-      curNetworkliquidityData: [],
       tokenInfoArray: [],
-      networkArray: [],
-      toChainAddress: {},
       toChainId: 0,
     }
   },
@@ -154,38 +156,53 @@ export default {
       'togglePageTab',
       'setDialogVisible',
       'updatePoolNetworkOrTokenConfig',
+      'updateLiquidityData',
     ]),
+    getProviderSigner() {
+      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+      const singer = provider.getSigner()
+      return singer
+    },
     // 获取所有网络
     getAllNetwork() {
-      this.networkArray = []
+      let networkArray = []
+      let toChainAddress = {}
       this.poolNetworkOrTokenConfig.makerInfoList.filter((makerInfo) => {
-        if (this.networkArray.indexOf(makerInfo.c2ID) === -1) {
-          this.networkArray.push(makerInfo.c2ID)
-          this.toChainAddress[makerInfo.c2ID] = makerInfo.t2Address
+        if (networkArray.indexOf(makerInfo.c2ID) === -1) {
+          networkArray.push(makerInfo.c2ID)
+          toChainAddress[makerInfo.c2ID] = makerInfo.t2Address
         }
-        if (this.networkArray.indexOf(makerInfo.c1ID) === -1) {
-          this.networkArray.push(makerInfo.c1ID)
-          this.toChainAddress[makerInfo.c1ID] = makerInfo.t1Address
+        if (networkArray.indexOf(makerInfo.c1ID) === -1) {
+          networkArray.push(makerInfo.c1ID)
+          toChainAddress[makerInfo.c1ID] = makerInfo.t1Address
         }
       })
       this.togglePageTab({
         type: 'NetworkliquidityState',
-        value: String(this.networkArray[0]),
+        value: String(networkArray[0]),
       })
-      this.updatePoolNetworkOrTokenConfig({
-        type: 'NetworkArray',
-        value: this.networkArray,
-      })
-      this.toChainId = this.networkArray[0]
-      console.log('networkArray', this.networkArray)
+      this.toChainId = networkArray[0]
+      this.updatePoolNetworkOrTokenConfig([
+        {
+          type: 'NetworkArray',
+          value: networkArray,
+        },
+        {
+          type: 'toChainAddress',
+          value: toChainAddress,
+        },
+      ])
 
-      // 获取 当前网络 下的所有流动池信息
+      // 获取 当前网络下 的流动池信息
       this.getCurNetworkliquidityData()
 
       // 获取最新代币列表
-      this.getAllTokenArray()
+      this.getAllTokenArray(null)
     },
-    getAllTokenArray() {
+    getAllTokenArray(val) {
+      if (val !== null) {
+        this.toChainId = val.localID
+      }
       this.tokenInfoArray = []
       this.poolNetworkOrTokenConfig.makerInfoList.filter((makerInfo) => {
         const pushToken = (_fromChainID, _toChainID) => {
@@ -211,51 +228,107 @@ export default {
         pushToken(makerInfo.c1ID, makerInfo.c2ID)
         pushToken(makerInfo.c2ID, makerInfo.c1ID)
       })
-      console.log('info', this.tokenInfoArray)
-      // this.tokenInfo = this.tokenInfoArray[0]
+      this.updatePoolNetworkOrTokenConfig([
+        {
+          type: 'tokenInfoArray',
+          value: this.tokenInfoArray,
+        },
+        {
+          type: 'toChainId',
+          value: this.toChainId,
+        },
+      ])
+    },
+    async getLiquidityData(toChainId) {
+      let singer = this.getProviderSigner()
+      let customProvider = new ethers.providers.StaticJsonRpcProvider(
+        process.env[this.$env.localProvider[toChainId]]
+      )
+      const dTokenInstance = new ethers.Contract(
+        this.poolNetworkOrTokenConfig.dTokenAddresses[toChainId],
+        getDTokenContractABI(),
+        customProvider
+      )
+      const balanceAmount = await dTokenInstance.balanceOf(singer.getAddress())
+      var chainData = {
+        chainName: util.chainName(
+          toChainId,
+          this.$env.localChainID_netChainID[toChainId]
+        ),
+        localID: toChainId,
+        tokenName: await dTokenInstance.symbol(),
+        amount: ethers.utils.formatEther(balanceAmount),
+        redeemLoading: false,
+      }
+      return chainData
     },
     async getCurNetworkliquidityData() {
-      this.isLoading = true
-      //   mock of data
-      const mockData = [
-        {
-          tokenSrc: require('../../assets/usdtlogo.png'),
-          tokenName: 'USDT',
-          liquidity: '1,000,000.00',
-          totalRevenue: '2335.32',
-          apr: '5.22',
-          dayRevenueTime: '15',
-          dayRevenue: '49.55',
-          filledAmount: '1,000,000.000',
-          estimatedProfit: '1,000.000',
-        },
-        {
-          tokenSrc: require('../../assets/usdtlogo.png'),
-          tokenName: 'ETH',
-          liquidity: '100,000.000',
-          totalRevenue: '100.235',
-          apr: '5.22',
-          dayRevenueTime: '15',
-          dayRevenue: '0.000',
-          filledAmount: '1,000,000.000',
-          estimatedProfit: '1,000.000',
-        },
-        {
-          tokenSrc: require('../../assets/usdclogo.png'),
-          tokenName: 'USDC',
-          liquidity: '1,000,000.00',
-          totalRevenue: '2335.32',
-          apr: '5.22',
-          dayRevenueTime: '15',
-          dayRevenue: '49.55',
-          filledAmount: '1,000,000.000',
-          estimatedProfit: '1,000.000',
-        },
-      ]
-      setTimeout(() => {
-        this.curNetworkliquidityData = mockData
+      try {
+        this.isLoading = true
+        let promiseList = []
+        for (
+          let index = 0;
+          index < this.poolNetworkOrTokenConfig.NetworkArray.length;
+          index++
+        ) {
+          const item = this.poolNetworkOrTokenConfig.NetworkArray[index]
+          promiseList.push(() => this.getLiquidityData(item))
+        }
+        let res = await Promise.all(promiseList.map((fun) => fun()))
+        console.log(res)
+        this.updateLiquidityData(res)
         this.isLoading = false
-      }, 300)
+      } catch (error) {
+        console.log(error, 'error')
+        util.showMessage('Failed to get data', 'error')
+      }
+    },
+    async redeemLiquidity(item) {
+      let singer = this.getProviderSigner()
+      if (
+        ethers.BigNumber.from(ethers.utils.parseEther(item.liquidity)).isZero()
+      ) {
+        util.showMessage(
+          'Your account balance of 0 for ' + item.tokenName,
+          'warning'
+        )
+        return
+      }
+      item.redeemLoading = true
+      await util.ensureMetamaskNetwork(
+        this.$env.localChainID_netChainID[item.localID]
+      )
+      const account = await singer.getAddress()
+      const dTokenInstance = new ethers.Contract(
+        this.poolNetworkOrTokenConfig.dTokenAddresses[item.localID],
+        getDTokenContractABI(),
+        singer
+      )
+      let overrides = {
+        from: account,
+        gasLimit: 1000000,
+      }
+      try {
+        let tx = await dTokenInstance.redeem(
+          ethers.utils.parseEther(item.amount),
+          overrides
+        )
+        this.$notify.success({
+          title: tx.hash,
+          duration: 3000,
+        })
+        await tx.wait()
+        util.showMessage('RedeemLiquidity Success', 'success')
+        this.getCurNetworkliquidityData()
+      } catch (error) {
+        console.log(error)
+        this.$notify.error({
+          title: error.message,
+          duration: 3000,
+        })
+      } finally {
+        item.redeemLoading = false
+      }
     },
     showChainName(localChainID, netChainID) {
       return util.chainName(localChainID, netChainID)

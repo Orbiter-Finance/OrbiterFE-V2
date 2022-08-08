@@ -32,9 +32,20 @@
         class="pool-box"
       >
         <cur-network-pool
-          v-if="curPage.curNetworkPoolMode && makerInfoStatus"
+          v-if="curPage.curNetworkPoolMode && makerInfoStatus && isLogin"
         />
-        <all-network-pool v-else />
+        <all-network-pool v-else-if="!curPage.curNetworkPoolMode && isLogin" />
+        <div class="maker-box" v-else>
+          <div class="maker-title">About Maker</div>
+          <div class="maker-content">
+            <div>
+              Orbiter's Maker provides liquidity for Layer 2 and benefits from
+              it.
+            </div>
+            <div @click="clickLearnMore" class="maker-link">LEARN MORE</div>
+            <div class="maker-foot-btn">COMING SOON</div>
+          </div>
+        </div>
       </div>
     </template>
     <!-- <div

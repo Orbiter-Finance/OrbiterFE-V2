@@ -19,10 +19,37 @@ export default {
     toggleBodyCls()
   },
   updateLiquidityData(state, liquidityDataList) {
+    //   {
+    //     tokenSrc: require('../../assets/usdclogo.png'),
+    //     tokenName: 'USDC',
+    //     liquidity: '1,000,000.00',
+    //     totalRevenue: '2335.32',
+    //     apr: '5.22',
+    //     dayRevenueTime: '15',
+    //     dayRevenue: '49.55',
+    //     filledAmount: '1,000,000.000',
+    //     estimatedProfit: '1,000.000',
+    //   },
+    for (let i = 0; i < liquidityDataList.length; i++) {
+      liquidityDataList[i]['tokenSrc'] = require('../../assets/usdclogo.png')
+      liquidityDataList[i]['liquidity'] = liquidityDataList[i]['amount']
+      liquidityDataList[i]['totalRevenue'] = '2335.32'
+      liquidityDataList[i]['apr'] = '1.11'
+      liquidityDataList[i]['dayRevenueTime'] = '15'
+      liquidityDataList[i]['dayRevenue'] = '49.55'
+      liquidityDataList[i]['filledAmount'] = '1,000,000.000'
+      liquidityDataList[i]['estimatedProfit'] = '1,000.000'
+    }
     state.liquidityData = liquidityDataList
   },
   updatePoolNetworkOrTokenConfig(state, payload) {
-    state.poolNetworkOrTokenConfig[payload.type] = payload.value
+    if (payload?.constructor === Object) {
+      state.poolNetworkOrTokenConfig[payload.type] = payload.value
+    } else if (payload?.constructor === Array) {
+      for (let i = 0; i < payload.length; i++) {
+        state.poolNetworkOrTokenConfig[payload[i].type] = payload[i].value
+      }
+    }
   },
   updateZKTokenList(state, obj) {
     if (obj.chainID === 3) {

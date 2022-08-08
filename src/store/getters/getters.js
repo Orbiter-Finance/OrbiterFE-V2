@@ -1,3 +1,4 @@
+import util from '../../util/util'
 export default {
   realSelectMakerInfo(state) {
     let selectMakerInfo = state.transferData.selectMakerInfo
@@ -76,5 +77,15 @@ export default {
       },
       loginSuccess: state.web3.localLogin,
     }
+  },
+  getCurNetworkLiquidityData(state) {
+    return state.liquidityData.filter((item) => {
+      return item.localID === parseInt(state.curPage.NetworkliquidityState)
+    })
+  },
+  getAllNetworkLiquidityData(state) {
+    let dataList = util.groupingData(state.liquidityData, 'localID')
+    console.log('dataList: ', dataList)
+    // state.liquidityData.filter((item) => {})
   },
 }

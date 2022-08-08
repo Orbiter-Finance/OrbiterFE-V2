@@ -49,13 +49,19 @@
 
 <script>
 import util from '../../../util/util'
-
 import { SvgIconThemed } from '../../'
-import { mapState } from 'vuex'
 
 export default {
   name: 'NetworkSelect',
   components: { SvgIconThemed },
+  props: {
+    ChainData: {
+      type: Array,
+      default: function () {
+        return []
+      },
+    },
+  },
   data() {
     return {
       keyword: '',
@@ -63,15 +69,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['poolNetworkOrTokenConfig']),
     transeferChainData: function () {
       let newArray = []
-      for (
-        let index = 0;
-        index < this.poolNetworkOrTokenConfig.NetworkArray.length;
-        index++
-      ) {
-        const item = this.poolNetworkOrTokenConfig.NetworkArray[index]
+      for (let index = 0; index < this.ChainData.length; index++) {
+        const item = this.ChainData[index]
         let iconName = 'tokenLogo'
         if (item === 2 || item === 22) {
           iconName = 'arblogo'

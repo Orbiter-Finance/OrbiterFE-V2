@@ -63,4 +63,9 @@ export default {
     7: 'https://optimistic.etherscan.io/address/',
     77: 'https://kovan-optimistic.etherscan.io/address/',
   },
+  dTokenAddresses: {
+    5: '0xA78Eb19720C6043B118FfBf48Ee5CCb019983e60', // Rinkeby
+    22: '0xF2164c10FA18A5e1795410871374BF7b34Fdc268', // ARB(Rinkeby)
+    77: '0x76D7d615fAa7A37fB0123f7C8724534e1D387c42', // OP(Kovan)
+  },
 }

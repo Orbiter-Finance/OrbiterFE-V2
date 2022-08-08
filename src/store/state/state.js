@@ -1,3 +1,4 @@
+import env from '../../../env'
 const state = {
   web3: {
     isInstallMeta: false,
@@ -62,34 +63,14 @@ const state = {
     mainnet: [],
   },
   transactionList: null,
-  liquidityData: [
-    {
-      chainName: 'Arbitrum',
-      tokenName: 'ETH',
-      amount: 'loading...',
-      redeemLoading: false,
-    },
-    {
-      chainName: 'Polygon',
-      tokenName: 'USDC',
-      amount: 'loading...',
-      redeemLoading: false,
-    },
-    {
-      chainName: 'Optimistic',
-      tokenName: 'USDT',
-      amount: 'loading...',
-      redeemLoading: false,
-    },
-  ],
+  liquidityData: [],
   poolNetworkOrTokenConfig: {
-    dTokenAddresses: {
-      5: '0xA78Eb19720C6043B118FfBf48Ee5CCb019983e60', // Rinkeby
-      22: '0xF2164c10FA18A5e1795410871374BF7b34Fdc268', // ARB(Rinkeby)
-      77: '0x76D7d615fAa7A37fB0123f7C8724534e1D387c42', // OP(Kovan)
-    },
+    dTokenAddresses: env.dTokenAddresses,
     makerInfoList: [],
     NetworkArray: [],
+    toChainAddress: {},
+    toChainId: 0,
+    tokenInfoArray: [],
   },
   themeMode: localStorage.getItem('themeMode') || 'light', // light dark
   curPage: {

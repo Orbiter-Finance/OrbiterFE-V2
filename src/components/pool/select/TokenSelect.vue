@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { SvgIconThemed } from './'
+import { SvgIconThemed } from '../../'
 import { mapState } from 'vuex'
 
 export default {
@@ -128,7 +128,7 @@ export default {
 <style scoped lang="scss">
 .ob-select-box {
   border-radius: 12px;
-  width: 101px;
+  // width: 101px;
   height: 40px;
   display: flex;
   justify-content: center;

@@ -4,12 +4,7 @@
       <div class="add-liquidity-title">
         Add Liquidity
         <SvgIconThemed
-          @click.native="
-            setDialogVisible({
-              type: 'addLiquidityDialogVisible',
-              value: false,
-            })
-          "
+          @click.native="closeAddLiquidityDialog"
           class="toolbox-close"
           iconName="close"
         />
@@ -17,51 +12,126 @@
       <div class="add-liquidity-content">
         <div class="liquidity-network">
           <span class="liquidity-item" @click="selectNetwork">Network</span>
+          <div class="liquidity-value" @click="showNetworkPopupClick">
+            <svg-icon
+              :iconName="showChainIcon(poolNetworkOrTokenConfig.toChainId)"
+              style="width: 24px; height: 24px; margin-right: 4px"
+            ></svg-icon>
+            <span>{{
+              showChainName(
+                poolNetworkOrTokenConfig.toChainId,
+                $env.localChainID_netChainID[poolNetworkOrTokenConfig.toChainId]
+              )
+            }}</span>
+            <SvgIconThemed
+              v-if="poolNetworkOrTokenConfig.NetworkArray.length > 1"
+            />
+          </div>
         </div>
         <div class="liquidity-token">
           <span class="liquidity-item">Token</span>
+          <div class="liquidity-value">
+            <div class="topItem">
+              <div class="left">
+                <token-select
+                  :datas="tokens()"
+                  v-model="selectedToken"
+                  @input="selectedTokenChange"
+                />
+              </div>
+              <span class="right right-value">Amount</span>
+            </div>
+            <div class="bottomItem">
+              <div class="left">
+                Balance:
+                <CommLoading
+                  v-if="false"
+                  style="left: 0.3rem; top: 0.2rem"
+                  width="1.2rem"
+                  height="1.2rem"
+                />
+                <span v-else>{{ accountBalance() }}</span>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <!-- @input="checkTransferValue()" -->
+                <input
+                  type="text"
+                  v-model="transferValue"
+                  class="right"
+                  :maxlength="18"
+                  placeholder="0.0"
+                />
+                <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="add-liquidity-buttom">
-        <span class="option-button">Confirm and Add Liquidity</span>
+        <span class="option-button" @click="confirmAddLiquidity"
+          >Confirm and Add Liquidity</span
+        >
       </div>
     </div>
-    <!-- <comm-dialog ref="SelectNetworkPopupRef"> -->
-    <!-- <div slot="PoperContent" style="width: 100%"> -->
-    <network-select
-      v-if="visible"
-      v-on:closeSelect="closeNetworkPopupClick()"
-      v-on:getNetworkInfo="getNewNetworkInfo"
-    />
-    <!-- </div> -->
+    <comm-dialog ref="SelectNetworkPopupRef">
+      <div slot="PoperContent" style="width: 100%">
+        <network-select
+          :ChainData="poolNetworkOrTokenConfig.NetworkArray"
+          v-on:closeSelect="closeNetworkPopupClick()"
+          v-on:getNetworkInfo="getNewNetworkInfo"
+        />
+      </div>
+    </comm-dialog>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
-import { SvgIconThemed, NetworkSelect } from '../../'
+import { ethers } from 'ethers'
+import { mapState, mapMutations, mapGetters } from 'vuex'
+import { SvgIconThemed, CommLoading } from '../../'
+import NetworkSelect from '../select/NetworkSelect.vue'
+import TokenSelect from '../select/TokenSelect.vue'
+import CommDialog from '../../comm/CommDialog.vue'
+import {
+  getDTokenContractABI,
+  getCoinContractABI,
+} from '../../../util/constants/contract/getContract'
+import util from '../../../util/util'
 export default {
   name: 'AddLiquidityDialog',
-  components: { SvgIconThemed, NetworkSelect },
+  components: {
+    SvgIconThemed,
+    NetworkSelect,
+    TokenSelect,
+    CommDialog,
+    CommLoading,
+  },
   computed: {
-    ...mapState(['dialog']),
+    ...mapState(['dialog', 'poolNetworkOrTokenConfig', 'transferData']),
+    ...mapGetters(['realSelectMakerInfo']),
   },
   data() {
     return {
-      visible: false,
+      transferValue: '',
+      selectedToken: '',
     }
   },
-  mounted() {
-    setTimeout(() => {
-      this.visible = true
-    }, 500)
-  },
+  mounted() {},
   methods: {
-    ...mapMutations(['setDialogVisible']),
+    ...mapMutations(['setDialogVisible', 'updatePoolNetworkOrTokenConfig']),
+    getProviderSigner() {
+      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
+      return provider.getSigner()
+    },
     // open selectNetwork
     showNetworkPopupClick() {
-      console.log(this.$refs.SelectNetworkPopupRef)
-      // this.$refs.SelectNetworkPopupRef.showCustom()
+      this.$refs.SelectNetworkPopupRef.showCustom()
     },
     // close selectNetwork
     closeNetworkPopupClick() {
@@ -76,6 +146,12 @@ export default {
     closeTokenPopupClick() {
       this.$refs.SelectTokenPopupRef.maskClick()
     },
+    closeAddLiquidityDialog() {
+      this.setDialogVisible({
+        type: 'addLiquidityDialogVisible',
+        value: false,
+      })
+    },
     selectNetwork() {
       this.showNetworkPopupClick()
     },
@@ -84,8 +160,138 @@ export default {
     },
     getNewNetworkInfo(info) {
       console.log('info: ', info)
-      // this.toChainId = info.localID
+      this.$emit('updateTokens', info)
+      // this.poolNetworkOrTokenConfig.toChainId = info.localID
       // this.freshTokens()
+    },
+    showChainName(localChainID, netChainID) {
+      return util.chainName(localChainID, netChainID)
+    },
+    showChainIcon(localChainID) {
+      // const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
+      return util.chainIcon(localChainID)
+    },
+    accountBalance() {
+      if (
+        this.transferData.selectMakerInfo.c1ID === this.transferData.fromChainID
+      ) {
+        return this.c1Balance
+      } else {
+        return this.c2Balance
+      }
+    },
+    userMinPrice() {
+      return this.realSelectMakerInfo.value.minPrice
+    },
+    fromMax() {
+      console.log('fromMax')
+    },
+    tokens() {
+      if (this.selectedToken === '') {
+        this.selectedToken =
+          this.poolNetworkOrTokenConfig.tokenInfoArray[0].token
+      }
+
+      return this.poolNetworkOrTokenConfig.tokenInfoArray.map((v) => {
+        return {
+          ...v,
+          icon: v.icon || 'tokenLogo',
+          label: v.token,
+          value: v.token,
+          iconType: 'img',
+        }
+      })
+    },
+    selectedTokenChange() {
+      console.log('selectedTokenChange')
+    },
+    getDTokenContract(toChainId, provider) {
+      return new ethers.Contract(
+        this.poolNetworkOrTokenConfig.dTokenAddresses[toChainId],
+        getDTokenContractABI(),
+        provider
+      )
+    },
+    async confirmAddLiquidity() {
+      let singer = this.getProviderSigner()
+      await util.ensureMetamaskNetwork(
+        this.$env.localChainID_netChainID[
+          this.poolNetworkOrTokenConfig.toChainId
+        ]
+      )
+      const coinToken = new ethers.Contract(
+        this.poolNetworkOrTokenConfig.toChainAddress[
+          this.poolNetworkOrTokenConfig.toChainId
+        ],
+        getCoinContractABI(),
+        singer
+      )
+      const dTokenInstance = this.getDTokenContract(
+        this.poolNetworkOrTokenConfig.toChainId,
+        singer
+      )
+      const account = await singer.getAddress()
+      const allowanceAmount = await coinToken.allowance(
+        account,
+        this.poolNetworkOrTokenConfig.dTokenAddresses[
+          this.poolNetworkOrTokenConfig.toChainId
+        ]
+      )
+      const coinBalance = await coinToken.balanceOf(account)
+      if (ethers.utils.parseEther(this.transferValue).isZero()) return
+      if (
+        ethers.BigNumber.from(ethers.utils.parseEther(this.transferValue)).gt(
+          coinBalance
+        )
+      ) {
+        util.showMessage(
+          'Your account balance is ' +
+            ethers.utils.formatEther(coinBalance) +
+            ' DAI ',
+          'warning'
+        )
+        return
+      }
+      if (
+        ethers.BigNumber.from(allowanceAmount).lt(
+          ethers.utils.parseEther(this.transferValue)
+        )
+      ) {
+        await coinToken.approve(
+          this.poolNetworkOrTokenConfig.dTokenAddresses[
+            this.poolNetworkOrTokenConfig.toChainId
+          ],
+          ethers.constants.MaxUint256
+        )
+      } else {
+        // this.addLiquidityLoading = true
+        let overrides = {
+          from: account,
+          gasLimit: 1000000,
+        }
+        try {
+          let tx = await dTokenInstance.mint(
+            ethers.utils.parseEther(this.transferValue),
+            overrides
+          )
+          this.$notify.success({
+            title: tx.hash,
+            duration: 3000,
+          })
+          await tx.wait()
+          util.showMessage('AddLiquidity Success', 'success')
+          this.transferValue = ''
+        } catch (error) {
+          console.log(error)
+          this.$notify.error({
+            title: error.message,
+            duration: 3000,
+          })
+        } finally {
+          // this.addLiquidityLoading = false
+          this.closeAddLiquidityDialog()
+        }
+      }
     },
   },
 }
@@ -136,11 +342,149 @@ export default {
       flex-direction: column;
       line-height: 20px;
       margin-top: 30px;
+      .liquidity-item {
+        width: 20%;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 20px;
+
+        /* identical to box height, or 100% */
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.01em;
+      }
       .liquidity-network {
+        display: flex;
+
         // width: 100%;
+        .liquidity-value {
+          border-radius: 12px;
+          width: 190px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          position: relative;
+          font-weight: 700;
+          font-size: 16px;
+          line-height: 24px;
+          white-space: nowrap;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+        }
       }
       .liquidity-token {
+        display: flex;
         // width: 100%;
+        .liquidity-value {
+          width: 80%;
+          margin-top: 20px;
+          height: 96px;
+          border-radius: 20px;
+          position: relative;
+          padding: 20px 26px;
+          font-weight: 400;
+          font-size: 12px;
+          line-height: 20px;
+
+          .topItem {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Inter Regular';
+          }
+
+          .bottomItem {
+            display: flex;
+            justify-content: space-between;
+            // margin-top: 12px;
+            align-items: center;
+
+            .left {
+              font-family: 'Inter';
+              font-style: normal;
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 20px;
+
+              /* identical to box height, or 167% */
+              display: flex;
+              align-items: center;
+              text-align: right;
+              letter-spacing: -0.01em;
+            }
+
+            .right {
+              width: 100%;
+              // color: #df2e2d;
+              text-align: right;
+              border: 0;
+              outline: 0px;
+              appearance: none;
+              background-color: transparent;
+              transition: all 0.2s ease 0s;
+              flex-direction: row-reverse;
+            }
+            .right-value {
+              font-family: 'Inter';
+              font-style: normal;
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 20px;
+
+              /* identical to box height, or 167% */
+              display: flex;
+              align-items: center;
+              text-align: right;
+              letter-spacing: -0.01em;
+            }
+
+            input {
+              font-family: 'Inter';
+              font-style: normal;
+              font-weight: 700;
+              font-size: 26px;
+              line-height: 24px;
+
+              /* identical to box height, or 92% */
+              display: flex;
+              align-items: center;
+              text-align: right;
+            }
+
+            input::placeholder {
+              color: rgba(51, 51, 51, 0.2);
+              font-family: 'Inter';
+              font-style: normal;
+              font-weight: 700;
+              font-size: 26px;
+              line-height: 24px;
+
+              /* identical to box height, or 92% */
+              display: flex;
+              align-items: center;
+              text-align: right;
+            }
+
+            .maxBtn {
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 20px;
+              cursor: pointer;
+              border: none;
+              background: transparent;
+              text-align: right;
+              padding: 0;
+              margin-left: 8px;
+              font-family: 'Inter Regular';
+            }
+          }
+        }
       }
       .maker-link {
         margin-top: 20px;
@@ -164,36 +508,39 @@ export default {
         font-family: 'Inter Bold';
       }
     }
-    .option-button {
-      width: 100%;
-      height: 50px;
-      background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
-      box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
-      border-radius: 40px;
-      font-family: 'Inter';
-      font-style: normal;
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 20px;
-
-      /* identical to box height, or 100% */
-      display: flex;
-      align-items: center;
-      text-align: center;
-      letter-spacing: -0.01em;
-      color: #ffffff;
-      justify-content: center;
-      &:hover {
-        background: #ca2221;
-      }
-      &:active {
-        background: linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.2),
-            rgba(0, 0, 0, 0.2)
-          ),
-          linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
+    .add-liquidity-buttom {
+      margin-top: 40px;
+      .option-button {
+        width: 100%;
+        height: 50px;
+        background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
         box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
+        border-radius: 40px;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 20px;
+
+        /* identical to box height, or 100% */
+        display: flex;
+        align-items: center;
+        text-align: center;
+        letter-spacing: -0.01em;
+        color: #ffffff;
+        justify-content: center;
+        &:hover {
+          background: #ca2221;
+        }
+        &:active {
+          background: linear-gradient(
+              0deg,
+              rgba(0, 0, 0, 0.2),
+              rgba(0, 0, 0, 0.2)
+            ),
+            linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
+          box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
+        }
       }
     }
   }
