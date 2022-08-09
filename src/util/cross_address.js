@@ -3,7 +3,7 @@ import { ethers, utils } from 'ethers'
 import env from '../../env'
 import { Coin_ABI } from './constants/contract/contract'
 import util from './util'
-
+import walletDispatchers from './walletsDispatchers'
 const CROSS_ADDRESS_ABI = [
   {
     inputs: [
@@ -48,6 +48,7 @@ export class CrossAddress {
     }
 
     this.provider = provider
+    this.orbiterChainId = orbiterChainId
     this.signer = signer || provider.getSigner()
     this.networkId = env.localChainID_netChainID[orbiterChainId]
   }
@@ -67,6 +68,7 @@ export class CrossAddress {
    * @param {Contract} contractErc20
    */
   async getAllowance(contractErc20) {
+    
     const ownerAddress = await this.signer.getAddress()
     const allowance = await contractErc20.allowance(
       ownerAddress,
@@ -136,23 +138,22 @@ export class CrossAddress {
 
     return await contract.transfer(to, extHex, options)
   }
-  async transferHex(to, amount, ext = undefined) {
-    await this.checkNetworkId()
-
+  async wallConnTransfer(to,value, ext = undefined) {
     if (ext && !CrossAddressTypes[ext.type]) {
       throw new Error(`Invalid crossAddressType : ${ext.type}`)
     }
 
-    const contract = new ethers.Contract(
-      this.contractAddress,
-      CROSS_ADDRESS_ABI
-    )
-
+    const iface = new ethers.utils.Interface(CROSS_ADDRESS_ABI)
     const extHex = CrossAddress.encodeExt(ext)
-
-    const options = { value: amount.toHexString() }
-
-    return await contract.transfer(to, extHex, options).encodeABI()
+    const data = iface.encodeFunctionData('transfer', [to, extHex])
+    const ownerAddress = await this.signer.getAddress()
+    return await walletDispatchers.walletConnectSendTransaction(
+      this.orbiterChainId,
+      ownerAddress,
+      this.contractAddress,
+      value,
+      data
+    )
   }
 
   /**
@@ -169,13 +170,13 @@ export class CrossAddress {
     if (ext && !CrossAddressTypes[ext.type]) {
       throw new Error(`Invalid crossAddressType : ${ext.type}`)
     }
-
     // Check and approve erc20 amount
     const contractErc20 = new ethers.Contract(
       tokenAddress,
       Coin_ABI,
       this.provider
     )
+    
     const allowance = await this.getAllowance(contractErc20)
     if (amount.gt(allowance)) {
       await this.approveERC20(tokenAddress)
@@ -194,9 +195,71 @@ export class CrossAddress {
       extHex
     )
   }
-  // TODO
-  async transferERC20Hex(tokenAddress, to, amount, ext = undefined) {
-    console.log('transferERC20Hex--')
+
+  async walletConnApproveERC20(tokenAddress, amount = ethers.constants.MaxUint256) {
+    await this.checkNetworkId()
+
+    const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
+    const iface = new ethers.utils.Interface(Coin_ABI)
+    const data = iface.encodeFunctionData('approve', [this.contractAddress, amount])
+    const ownerAddress = await this.signer.getAddress()
+    const transferHash = await walletDispatchers.walletConnectSendTransaction(
+      this.orbiterChainId,
+      ownerAddress,
+      tokenAddress,
+      0,
+      data
+    )
+    console.log(transferHash, 'walletConnApproveERC20 transferHash---')
+    const n = Notification({
+      duration: 0,
+      title: 'Approving...',
+      type: 'warning',
+    })
+    try {
+      // Waitting approve succeed
+      for (let index = 0; index < 5000; index++) {
+        const allowance = await this.getAllowance(contract)
+        if (amount.lte(allowance)) {
+          break
+        }
+
+        await util.sleep(2000)
+      }
+
+      n.close()
+    } catch (error) {
+      n.close()
+      throw error
+    }
+  }
+  async walletConnTransferERC20(tokenAddress, to, amount, ext = undefined) {
+
+    if (ext && !CrossAddressTypes[ext.type]) {
+      throw new Error(`Invalid crossAddressType : ${ext.type}`)
+    }
+    // Check and approve erc20 amount
+    const contractErc20 = new ethers.Contract(
+      tokenAddress,
+      Coin_ABI,
+      this.provider
+    )
+    const allowance = await this.getAllowance(contractErc20)
+    if (amount.gt(allowance)) {
+      await this.walletConnApproveERC20(tokenAddress)
+    }
+    // transfer
+    const extHex = CrossAddress.encodeExt(ext)
+    const iface = new ethers.utils.Interface(CROSS_ADDRESS_ABI)
+    const data = iface.encodeFunctionData('transferERC20', [tokenAddress, to,amount.toHexString(), extHex])
+    const ownerAddress = await this.signer.getAddress()
+    return await walletDispatchers.walletConnectSendTransaction(
+      this.orbiterChainId,
+      ownerAddress,
+      this.contractAddress,
+      0,
+      data
+    )
   }
   /**
    *

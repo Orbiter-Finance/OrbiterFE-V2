@@ -127,7 +127,6 @@ export class IMXHelper {
       if (!err.message || !/account_not_found/i.test(err.message)) {
         throw err
       }
-
       const userClient = await this.getImmutableXClient(user)
       await userClient.registerImx({
         etherKey: userClient.address,

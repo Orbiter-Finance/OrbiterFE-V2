@@ -1,23 +1,60 @@
 <template>
   <div class="top-nav">
     <template v-if="!isMobile">
-      <div style="height:100%;position:relative;">
-        <img v-if="isStarknet" src="../../assets/v2/starknet-logo.png" style="width:190px;height: 80px;" />
-        <SvgIconThemed v-else @click.native="toHome" class="logo" :style="navIcons.style" :icon="navIcons.logo" />
-        <HeaderLinks style="margin-top: 24px;position:absolute;top:0;left:241px;min-width: 280px;" />
+      <div style="height: 100%; position: relative">
+        <img
+          v-if="isStarknet"
+          src="../../assets/v2/starknet-logo.png"
+          style="width: 190px; height: 80px"
+        />
+        <SvgIconThemed
+          v-else
+          @click.native="toHome"
+          class="logo"
+          :style="navIcons.style"
+          :icon="navIcons.logo"
+        />
+        <HeaderLinks
+          style="
+            margin-top: 24px;
+            position: absolute;
+            top: 0;
+            left: 241px;
+            min-width: 280px;
+          "
+        />
       </div>
       <HeaderOps />
     </template>
     <template v-else>
-      <SvgIconThemed @click.native="toHome" class="logo" :style="navIcons.style" :icon="navIcons.logo" />
+      <SvgIconThemed
+        @click.native="toHome"
+        class="logo"
+        :style="navIcons.style"
+        :icon="navIcons.logo"
+      />
       <!-- <ToggleBtn v-if="showToggleBtn()" @input="toggleTab" /> -->
       <div class="center">
-        <div v-if="!isLogin" @click="connectWallet" class="wallet-status connect-wallet-btn">Connect Wallet</div>
-        <div v-else @click="connectAWallet" class="wallet-status wallet-address">
+        <div
+          v-if="!isLogin"
+          @click="connectWallet"
+          class="wallet-status connect-wallet-btn"
+        >
+          Connect Wallet
+        </div>
+        <div
+          v-else
+          @click="connectAWallet"
+          class="wallet-status wallet-address"
+        >
           {{ showAddress }}
         </div>
-        <div @click="() => drawerVisible = true" class="center menu-outline" style="width:44px;height:44px;border-radius: 8px;">
-          <SvgIconThemed icon="menu" style="width:26px;height:22px;" />
+        <div
+          @click="() => (drawerVisible = true)"
+          class="center menu-outline"
+          style="width: 44px; height: 44px; border-radius: 8px"
+        >
+          <SvgIconThemed icon="menu" style="width: 26px; height: 22px" />
         </div>
       </div>
       <el-drawer
@@ -25,12 +62,15 @@
         title=""
         :visible.sync="drawerVisible"
         direction="rtl"
-        :before-close="() => drawerVisible = false">
+        :before-close="() => (drawerVisible = false)"
+      >
         <div class="drawer-body">
-          <HeaderLinks @closeDrawer="() => drawerVisible = false" verical />
-          <div class="drawer-bottom"><div class="drawer-bottom-wrapper">
-            <HeaderOps verical @closeDrawer="() => drawerVisible = false" />
-          </div></div>
+          <HeaderLinks @closeDrawer="() => (drawerVisible = false)" verical />
+          <div class="drawer-bottom">
+            <div class="drawer-bottom-wrapper">
+              <HeaderOps verical @closeDrawer="() => (drawerVisible = false)" />
+            </div>
+          </div>
         </div>
       </el-drawer>
     </template>
@@ -38,26 +78,34 @@
 </template>
 
 <script>
-import { CommBtn, SvgIconThemed, ToggleBtn } from '../'
-import { isMobile, setPageTab, setPageSenderTab, showAddress } from '../../composition/hooks'
+import { SvgIconThemed } from '../'
+import {
+  isMobile,
+  setPageTab,
+  setPageSenderTab,
+  showAddress,
+} from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
-import {
-  walletIsLogin,
-} from '../../composition/walletsResponsiveData'
+import { walletIsLogin } from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
-import { setStarkNetDialog, setSelectWalletDialogVisible } from '../../composition/hooks'
+import {
+  setStarkNetDialog,
+  setSelectWalletDialogVisible,
+} from '../../composition/hooks'
 
 export default {
   name: 'TopNav',
-  components: { CommBtn, SvgIconThemed, ToggleBtn, HeaderLinks, HeaderOps },
+  components: { SvgIconThemed, HeaderLinks, HeaderOps },
   data() {
     return {
       drawerVisible: false,
     }
   },
   computed: {
-    showAddress() { return showAddress() },
+    showAddress() {
+      return showAddress()
+    },
     isLogin() {
       return walletIsLogin.value
     },
@@ -106,7 +154,9 @@ export default {
           }
           break
         case 'ARGENT':
-          icons.logo_web = 'argent'
+          // case 'STARKNET':
+          // icons.logo_web = 'argent'
+          icons.logo_web = 'starknet'
           icons.logo_webStyle = {
             width: '17.4rem',
             height: '3.7rem',
@@ -116,12 +166,12 @@ export default {
       if (this.isMobile) {
         return {
           logo: icons.logo,
-          style: icons.logoStyle
+          style: icons.logoStyle,
         }
       } else {
         return {
           logo: icons.logo_web,
-          style: icons.logo_webStyle
+          style: icons.logo_webStyle,
         }
       }
     },
@@ -129,7 +179,7 @@ export default {
   methods: {
     toHome() {
       setPageSenderTab()
-      this.$route.path !== '/' && this.$router.push({ path: '/', })
+      this.$route.path !== '/' && this.$router.push({ path: '/' })
     },
     toggleTab(tab) {
       setPageTab(tab)
@@ -143,7 +193,7 @@ export default {
     connectAWallet() {
       setStarkNetDialog(false)
       setSelectWalletDialogVisible(true)
-    }
+    },
   },
 }
 </script>
@@ -183,10 +233,10 @@ export default {
       width: 148px;
       height: 40px;
       line-height: 40px;
-      background: linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
+      background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
       box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
       border-radius: 40px;
-      color: #FFFFFF;
+      color: #ffffff;
       font-style: normal;
       font-weight: 700;
       font-size: 16px;

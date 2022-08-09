@@ -36,7 +36,6 @@ import walletDispatchers, {
 import { isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
-import History from './views/History.vue'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
@@ -82,6 +81,13 @@ export default {
           }
         }
       }
+      return {
+        'background-position': 'left bottom, left top',
+        'background-repeat': 'no-repeat',
+        // 'background-size': '100% 36%, 127% 100%',
+        'background-size': '100% 36%, 100% 100%',
+        'background-image': `url(${lightbg}), url(${topbg})`,
+      }
     },
   },
   data() {
@@ -94,7 +100,6 @@ export default {
   components: {
     TopNav,
     BottomNav,
-    History,
     HeaderDialog,
   },
   async mounted() {

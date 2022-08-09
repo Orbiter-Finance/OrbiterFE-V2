@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js'
 import { ethers, utils } from 'ethers'
 import config from '../../core/utils/config'
 import util from '../util'
-
 const DYDX_MAKERS = {
   '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5': {
     starkKey:
@@ -77,10 +76,8 @@ export class DydxHelper {
     // if (!this.web3) {
     //   throw new Error('Sorry, miss param [web3]')
     // }
-
     // Ensure network
-    await util.ensureWalletNetwork(this.chainId)
-
+    await util.ensureWalletNetwork(this.chainId);
     const client = new DydxClient(this.host, {
       networkId: this.networkId,
       web3: this.web3,
@@ -89,7 +86,6 @@ export class DydxHelper {
       const userExists = await client.public.doesUserExistWithAddress(
         ethereumAddress
       )
-
       if (userExists.exists) {
         if (alwaysDeriveStarkKey) {
           client.starkPrivateKey = await client.onboarding.deriveStarkKey(
@@ -266,7 +262,9 @@ export class DydxHelper {
       to: '',
       value: new BigNumber(
         isTransferIn ? transfer.creditAmount : transfer.debitAmount
-      ).multipliedBy(10 ** 6).toString(),// Only usdc
+      )
+        .multipliedBy(10 ** 6)
+        .toString(), // Only usdc
       txreceipt_status: transfer.status,
       contractAddress: '', // Only usdc
       confirmations: 0,
