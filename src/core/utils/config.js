@@ -1,3 +1,10 @@
+/*
+ * @Description:
+ * @Author: Eric
+ * @Date: 2022-07-25 17:53:45
+ * @LastEditors: Eric
+ * @LastEditTime: 2022-08-09 14:08:36
+ */
 export default {
   etherscan: {
     key: process.env.VUE_APP_ETH_KEY,
@@ -7,7 +14,7 @@ export default {
   },
   zkSync: {
     Mainnet: 'https://api.zksync.io/api/v0.2',
-    Rinkeby: 'https://rinkeby-api.zksync.io/api/v0.2',
+    Rinkeby: 'https://goerli-api.zksync.io/api/v0.2',
     chainID: '3',
     rinkeyChainID: '33',
   },
@@ -86,9 +93,9 @@ export default {
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',
   },
   bsc: {
-    Mainnet: "https://api.bscscan.com/",
-    Rinkeby: "https://api-testnet.bscscan.com/",
-    chainId: "56",
-    rinkeyChainID: "97"
-  }
+    Mainnet: 'https://api.bscscan.com/',
+    Rinkeby: 'https://api-testnet.bscscan.com/',
+    chainId: '56',
+    rinkeyChainID: '97',
+  },
 }
