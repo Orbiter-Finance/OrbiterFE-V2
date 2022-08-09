@@ -1,128 +1,159 @@
 <template>
   <div class="pool-box-container">
-    <div class="pool-box-nav">
-      <div class="network-button">
-        <template v-for="(item, idx) in poolNetworkOrTokenConfig.NetworkArray">
-          <span
-            :key="idx"
-            @click="
-              togglePageTab({
-                type: 'NetworkliquidityState',
-                value: String(item),
-              })
-            "
-            :class="[
-              'options-item',
-              { selected: curPage.NetworkliquidityState === String(item) },
-            ]"
-            >{{ showChainName(item, $env.localChainID_netChainID[item]) }}</span
+    <!-- curNetworkPool -->
+    <template v-if="curPage.curNetworkPoolMode">
+      <div class="pool-box-nav">
+        <div class="network-button">
+          <template
+            v-for="(item, idx) in poolNetworkOrTokenConfig.NetworkArray"
           >
-        </template>
-      </div>
-      <span
-        class="option-button"
-        @click="togglePageTab({ type: 'curNetworkPoolMode', value: false })"
-        >Pools & Add Liquidity</span
-      >
-    </div>
-    <div class="pool-box-main">
-      <CommLoading
-        v-if="isLoading"
-        style="margin: auto; margin-top: 5rem"
-        width="4rem"
-        height="4rem"
-      />
-      <div
-        v-else
-        v-for="(item, idx) in getCurNetworkLiquidityData"
-        :key="idx"
-        class="pool-overview"
-      >
-        <div class="line-content">
-          <div class="content-left">
-            <img style="width: 24px; height: 24px" :src="item.tokenSrc" />
-            <span class="token-name">{{ item.tokenName }}</span>
-          </div>
-          <div class="content-right">
-            <span class="content-item">My Liquidity in Pizza</span>
-            <span class="content-value">{{
-              item.liquidity + ' ' + item.tokenName
-            }}</span>
-          </div>
+            <span
+              :key="idx"
+              @click="
+                togglePageTab({
+                  type: 'NetworkliquidityState',
+                  value: String(item),
+                })
+              "
+              :class="[
+                'options-item',
+                { selected: curPage.NetworkliquidityState === String(item) },
+              ]"
+              >{{
+                showChainName(item, $env.localChainID_netChainID[item])
+              }}</span
+            >
+          </template>
         </div>
-        <div class="line-content">
-          <div class="content-left">
-            <div class="total-revenue">
-              <span class="content-item" style="flex-grow: 1"
-                >Total Revenue</span
-              >
+        <span
+          class="option-button"
+          @click="togglePageTab({ type: 'curNetworkPoolMode', value: false })"
+          >Pools & Add Liquidity</span
+        >
+      </div>
+      <div class="pool-box-main">
+        <CommLoading
+          v-if="isLoading && getCurNetworkLiquidityData.length === 0"
+          style="margin: auto; margin-top: 5rem"
+          width="4rem"
+          height="4rem"
+        />
+        <div
+          v-else
+          v-for="(item, idx) in getCurNetworkLiquidityData"
+          :key="idx"
+          class="pool-overview"
+        >
+          <div class="line-content">
+            <div class="content-left">
+              <img style="width: 24px; height: 24px" :src="item.tokenSrc" />
+              <span class="token-name">{{ item.tokenName }}</span>
+            </div>
+            <div class="content-right">
+              <span class="content-item">My Liquidity in Pizza</span>
               <span class="content-value">{{
-                item.totalRevenue + ' ' + item.tokenName
+                item.liquidity + ' ' + item.tokenName
               }}</span>
             </div>
-            <div class="APR">
-              <span class="content-item">APR</span>
-              <span class="content-value">{{ item.apr }}%</span>
+          </div>
+          <div class="line-content">
+            <div class="content-left">
+              <div class="total-revenue">
+                <span class="content-item" style="flex-grow: 1"
+                  >Total Revenue</span
+                >
+                <span class="content-value">{{
+                  item.totalRevenue + ' ' + item.tokenName
+                }}</span>
+              </div>
+              <div class="APR">
+                <span class="content-item">APR</span>
+                <span class="content-value">{{ item.apr }}%</span>
+              </div>
+            </div>
+            <div class="content-right">
+              <span class="content-item"
+                >Last Day Revenue
+                <SvgIconThemed
+                  class="mode-icon"
+                  icon="clock"
+                  style="margin: 0 4px 0 5px"
+                />
+                {{ item.dayRevenueTime }}h ago</span
+              >
+              <span class="content-value">{{
+                item.dayRevenue + ' ' + item.tokenName
+              }}</span>
             </div>
           </div>
-          <div class="content-right">
-            <span class="content-item"
-              >Last Day Revenue
-              <SvgIconThemed
-                class="mode-icon"
-                icon="clock"
-                style="margin: 0 4px 0 5px"
-              />
-              {{ item.dayRevenueTime }}h ago</span
-            >
-            <span class="content-value">{{
-              item.dayRevenue + ' ' + item.tokenName
-            }}</span>
-          </div>
-        </div>
-        <hr
-          width="150"
-          style="
-            border: 1px dashed rgba(0, 0, 0, 0.2);
-            width: 100%;
-            margin-bottom: 30px;
-          "
-        />
-        <div class="line-content">
-          <div class="content-left">
-            <span class="content-item">Wait to be filled Amount</span>
-            <span class="content-value">{{ item.filledAmount }} ETH</span>
-          </div>
-          <div class="content-right">
-            <span class="content-item">Estimated 7 days Profit</span>
-            <span class="content-value">{{ item.estimatedProfit }} ETH</span>
-          </div>
-        </div>
-        <div class="line-content">
-          <span
-            class="content-button add"
-            @click="
-              setDialogVisible({
-                type: 'addLiquidityDialogVisible',
-                value: true,
-              })
+          <hr
+            width="150"
+            style="
+              border: 1px dashed rgba(0, 0, 0, 0.2);
+              width: 100%;
+              margin-bottom: 30px;
             "
-            >Add Liquidity</span
-          >
+          />
+          <div class="line-content">
+            <div class="content-left">
+              <span class="content-item">Wait to be filled Amount</span>
+              <span class="content-value">{{ item.filledAmount }} ETH</span>
+            </div>
+            <div class="content-right">
+              <span class="content-item">Estimated 7 days Profit</span>
+              <span class="content-value">{{ item.estimatedProfit }} ETH</span>
+            </div>
+          </div>
+          <div class="line-content">
+            <span
+              class="content-button add"
+              v-if="!item.addLiquidityLoading"
+              @click="showAddLiquidityDialog(item.idx)"
+              >Add Liquidity</span
+            >
+            <span class="content-button addLoading" v-else
+              ><loading
+                style="margin: auto"
+                loadingColor="white"
+                width="2rem"
+                height="2rem"
+              ></loading
+            ></span>
 
-          <span class="content-button reduce" @click="redeemLiquidity(item)"
-            >Reduce Liquidity</span
-          >
+            <span
+              v-if="!item.reduceLoading"
+              class="content-button reduce"
+              @click="reduceLiquidity(item)"
+              >Reduce Liquidity</span
+            >
+            <span class="content-button reduceLoading" v-else>
+              <loading
+                style="margin: auto"
+                loadingColor="white"
+                width="2rem"
+                height="2rem"
+              ></loading>
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+    </template>
+    <!-- allNetworkPool -->
+    <template v-else>
+      <all-network-pool v-on:deliveryInfo="showAddLiquidityDialog" />
+    </template>
 
-    <pool-add-liquidity v-on:updateTokens="getAllTokenArray" />
+    <pool-add-liquidity
+      :IDX="IDX"
+      v-on:updateTokens="getAllTokenArray"
+      v-on:updateLiquidity="getCurNetworkliquidityData"
+    />
   </div>
 </template>
 
 <script>
 import { SvgIconThemed, CommLoading, PoolAddLiquidity } from '../../components'
+import allNetworkPool from './allNetworkPool.vue'
 import config from '../../config'
 import util from '../../util/util'
 import { ethers } from 'ethers'
@@ -130,14 +161,18 @@ import { mapState, mapMutations, mapGetters } from 'vuex'
 import { getDTokenContractABI } from '../../util/constants/contract/getContract'
 export default {
   name: 'curNetworkPool',
-  components: { SvgIconThemed, CommLoading, PoolAddLiquidity },
+  components: { SvgIconThemed, CommLoading, PoolAddLiquidity, allNetworkPool },
   computed: {
-    ...mapState(['curPage', 'poolNetworkOrTokenConfig']),
+    ...mapState(['curPage', 'poolNetworkOrTokenConfig', 'liquidityData']),
     ...mapGetters(['getCurNetworkLiquidityData']),
   },
   watch: {
     'curPage.NetworkliquidityState': function () {
       this.getCurNetworkliquidityData()
+      this.updatePoolNetworkOrTokenConfig({
+        type: 'toChainId',
+        value: parseInt(this.curPage.NetworkliquidityState),
+      })
     },
   },
   data() {
@@ -146,6 +181,7 @@ export default {
       curPoolMode: false,
       tokenInfoArray: [],
       toChainId: 0,
+      IDX: null,
     }
   },
   mounted() {
@@ -157,6 +193,7 @@ export default {
       'setDialogVisible',
       'updatePoolNetworkOrTokenConfig',
       'updateLiquidityData',
+      'updateLiquidityDataStatusByIDX',
     ]),
     getProviderSigner() {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
@@ -258,7 +295,6 @@ export default {
         localID: toChainId,
         tokenName: await dTokenInstance.symbol(),
         amount: ethers.utils.formatEther(balanceAmount),
-        redeemLoading: false,
       }
       return chainData
     },
@@ -283,7 +319,7 @@ export default {
         util.showMessage('Failed to get data', 'error')
       }
     },
-    async redeemLiquidity(item) {
+    async reduceLiquidity(item) {
       let singer = this.getProviderSigner()
       if (
         ethers.BigNumber.from(ethers.utils.parseEther(item.liquidity)).isZero()
@@ -294,7 +330,6 @@ export default {
         )
         return
       }
-      item.redeemLoading = true
       await util.ensureMetamaskNetwork(
         this.$env.localChainID_netChainID[item.localID]
       )
@@ -309,6 +344,11 @@ export default {
         gasLimit: 1000000,
       }
       try {
+        // testButton
+        this.updateLiquidityDataStatusByIDX({
+          type: 'reduceLoading',
+          idx: item.idx,
+        })
         let tx = await dTokenInstance.redeem(
           ethers.utils.parseEther(item.amount),
           overrides
@@ -317,8 +357,10 @@ export default {
           title: tx.hash,
           duration: 3000,
         })
+
         await tx.wait()
-        util.showMessage('RedeemLiquidity Success', 'success')
+        util.showMessage('reduceLiquidity Success', 'success')
+
         this.getCurNetworkliquidityData()
       } catch (error) {
         console.log(error)
@@ -327,11 +369,21 @@ export default {
           duration: 3000,
         })
       } finally {
-        item.redeemLoading = false
+        this.updateLiquidityDataStatusByIDX({
+          type: 'reduceLoading',
+          idx: item.idx,
+        })
       }
     },
     showChainName(localChainID, netChainID) {
       return util.chainName(localChainID, netChainID)
+    },
+    showAddLiquidityDialog(IDX) {
+      this.IDX = IDX
+      this.setDialogVisible({
+        type: 'addLiquidityDialogVisible',
+        value: true,
+      })
     },
   },
 }
@@ -420,7 +472,7 @@ export default {
     }
     .content-left {
       display: flex;
-      width: 40%;
+      width: 45%;
       .token-name {
         font-family: 'Inter';
         font-style: normal;
@@ -516,12 +568,18 @@ export default {
           background: #053442;
         }
       }
+      &.addLoading {
+        background: #053442;
+      }
       &.reduce {
         background: rgba(51, 51, 51, 0.4);
         margin-left: 14px;
         &:not(:disabled):hover {
           background: rgba(26, 26, 26, 0.4);
         }
+      }
+      &.reduceLoading {
+        background: rgba(26, 26, 26, 0.4);
       }
     }
   }

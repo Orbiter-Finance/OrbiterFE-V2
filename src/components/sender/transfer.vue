@@ -745,8 +745,10 @@ export default {
         this.$store.state.transferData.selectMakerInfo.c1ID ===
         this.$store.state.transferData.fromChainID
       ) {
+        console.log('this.c1Balance: ', this.c1Balance)
         return this.c1Balance
       } else {
+        console.log('this.c2Balance', this.c2Balance)
         return this.c2Balance
       }
     },

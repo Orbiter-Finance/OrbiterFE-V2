@@ -45,12 +45,12 @@
               <div class="left">
                 Balance:
                 <CommLoading
-                  v-if="false"
+                  v-if="accountBalanceLoading"
                   style="left: 0.3rem; top: 0.2rem"
                   width="1.2rem"
                   height="1.2rem"
                 />
-                <span v-else>{{ accountBalance() }}</span>
+                <span v-else>{{ accountBalance }}</span>
               </div>
               <div
                 style="
@@ -103,8 +103,15 @@ import {
   getCoinContractABI,
 } from '../../../util/constants/contract/getContract'
 import util from '../../../util/util'
+import transferCalculate from '../../../util/transfer/transferCalculate'
 export default {
   name: 'AddLiquidityDialog',
+  props: {
+    IDX: {
+      type: String,
+      default: null,
+    },
+  },
   components: {
     SvgIconThemed,
     NetworkSelect,
@@ -113,18 +120,117 @@ export default {
     CommLoading,
   },
   computed: {
-    ...mapState(['dialog', 'poolNetworkOrTokenConfig', 'transferData']),
-    ...mapGetters(['realSelectMakerInfo']),
+    ...mapState(['web3', 'dialog', 'poolNetworkOrTokenConfig', 'transferData']),
+    ...mapGetters(['realSelectMakerInfo', 'isLogin']),
+    accountBalance() {
+      if (
+        this.transferData.selectMakerInfo.c1ID ===
+        this.poolNetworkOrTokenConfig.toChainId
+      ) {
+        return this.c1Balance
+      } else {
+        return this.c2Balance
+      }
+    },
+    accountBalanceLoading() {
+      if (this.accountBalance === null) {
+        return true
+      }
+      return false
+    },
+  },
+  watch: {
+    'web3.coinbase': function (newValue, oldValue) {
+      if (!newValue || newValue === '0x') {
+        this.c1Balance = 0
+        this.c2Balance = 0
+      }
+      if (oldValue !== newValue && newValue !== '0x') {
+        this.c1Balance = null
+        this.c2Balance = null
+        let selectMakerInfo = this.transferData.selectMakerInfo
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c1ID,
+            selectMakerInfo.t1Address,
+            selectMakerInfo.tName,
+            this.web3.coinbase
+          )
+          .then((response) => {
+            this.c1Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch((error) => {
+            console.log(error)
+            return
+          })
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c2ID,
+            selectMakerInfo.t2Address,
+            selectMakerInfo.tName,
+            this.web3.coinbase
+          )
+          .then((response) => {
+            this.c2Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        this.c1Balance = 0
+        this.c2Balance = 0
+      }
+    },
   },
   data() {
     return {
       transferValue: '',
       selectedToken: '',
+      c1Balance: null,
+      c2Balance: null,
     }
   },
-  mounted() {},
+  mounted() {
+    setInterval(() => {
+      let selectMakerInfo = this.transferData.selectMakerInfo
+      if (selectMakerInfo && this.isLogin) {
+        this.getBalance(
+          this.web3.coinbase,
+          selectMakerInfo.c1ID,
+          selectMakerInfo.t1Address,
+          selectMakerInfo.tName,
+          selectMakerInfo.precision
+        ).then((v) => {
+          if (v) {
+            this.c1Balance = v
+          }
+        })
+        this.getBalance(
+          this.web3.coinbase,
+          selectMakerInfo.c2ID,
+          selectMakerInfo.t2Address,
+          selectMakerInfo.tName,
+          selectMakerInfo.precision
+        ).then((v) => {
+          if (v) {
+            this.c2Balance = v
+          }
+        })
+      }
+    }, 5 * 1000)
+  },
   methods: {
-    ...mapMutations(['setDialogVisible', 'updatePoolNetworkOrTokenConfig']),
+    ...mapMutations([
+      'setDialogVisible',
+      'updatePoolNetworkOrTokenConfig',
+      'updateLiquidityDataStatusByIDX',
+    ]),
     getProviderSigner() {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       return provider.getSigner()
@@ -147,6 +253,7 @@ export default {
       this.$refs.SelectTokenPopupRef.maskClick()
     },
     closeAddLiquidityDialog() {
+      this.transferValue = ''
       this.setDialogVisible({
         type: 'addLiquidityDialogVisible',
         value: false,
@@ -161,7 +268,6 @@ export default {
     getNewNetworkInfo(info) {
       console.log('info: ', info)
       this.$emit('updateTokens', info)
-      // this.poolNetworkOrTokenConfig.toChainId = info.localID
       // this.freshTokens()
     },
     showChainName(localChainID, netChainID) {
@@ -171,20 +277,12 @@ export default {
       // const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
       return util.chainIcon(localChainID)
     },
-    accountBalance() {
-      if (
-        this.transferData.selectMakerInfo.c1ID === this.transferData.fromChainID
-      ) {
-        return this.c1Balance
-      } else {
-        return this.c2Balance
-      }
-    },
+
     userMinPrice() {
       return this.realSelectMakerInfo.value.minPrice
     },
     fromMax() {
-      console.log('fromMax')
+      this.transferValue = this.accountBalance.toString()
     },
     tokens() {
       if (this.selectedToken === '') {
@@ -204,6 +302,29 @@ export default {
     },
     selectedTokenChange() {
       console.log('selectedTokenChange')
+    },
+    async getBalance(
+      makerAddress,
+      chainId,
+      tokenAddress,
+      tokenName,
+      precision
+    ) {
+      try {
+        if (!makerAddress) {
+          return ''
+        }
+
+        const response = await transferCalculate.getTransferBalance(
+          chainId,
+          tokenAddress,
+          tokenName,
+          makerAddress
+        )
+        return (response / 10 ** precision).toFixed(6)
+      } catch (error) {
+        console.log(error)
+      }
     },
     getDTokenContract(toChainId, provider) {
       return new ethers.Contract(
@@ -264,7 +385,6 @@ export default {
           ethers.constants.MaxUint256
         )
       } else {
-        // this.addLiquidityLoading = true
         let overrides = {
           from: account,
           gasLimit: 1000000,
@@ -278,18 +398,25 @@ export default {
             title: tx.hash,
             duration: 3000,
           })
+          this.closeAddLiquidityDialog()
+          this.updateLiquidityDataStatusByIDX({
+            type: 'addLiquidityLoading',
+            idx: this.IDX,
+          })
           await tx.wait()
-          util.showMessage('AddLiquidity Success', 'success')
+          util.showMessage('Add Liquidity Success', 'success')
           this.transferValue = ''
+          this.updateLiquidityDataStatusByIDX({
+            type: 'addLiquidityLoading',
+            idx: this.IDX,
+          })
+          this.$emit('updateLiquidity')
         } catch (error) {
           console.log(error)
           this.$notify.error({
             title: error.message,
             duration: 3000,
           })
-        } finally {
-          // this.addLiquidityLoading = false
-          this.closeAddLiquidityDialog()
         }
       }
     },
@@ -361,19 +488,17 @@ export default {
         // width: 100%;
         .liquidity-value {
           border-radius: 12px;
+          padding-left: 26px;
+
           width: 190px;
           height: 40px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          cursor: pointer;
           position: relative;
           font-weight: 700;
           font-size: 16px;
           line-height: 24px;
           white-space: nowrap;
           display: flex;
-          justify-content: center;
+          justify-content: left;
           align-items: center;
           cursor: pointer;
         }

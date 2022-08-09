@@ -18,19 +18,14 @@ export default {
     localStorage.setItem('themeMode', state.themeMode)
     toggleBodyCls()
   },
+  updateLiquidityDataStatusByIDX(state, payload) {
+    console.log(payload)
+    state.liquidityData[parseInt(payload.idx)][payload.type] =
+      !state.liquidityData[parseInt(payload.idx)][payload.type]
+  },
   updateLiquidityData(state, liquidityDataList) {
-    //   {
-    //     tokenSrc: require('../../assets/usdclogo.png'),
-    //     tokenName: 'USDC',
-    //     liquidity: '1,000,000.00',
-    //     totalRevenue: '2335.32',
-    //     apr: '5.22',
-    //     dayRevenueTime: '15',
-    //     dayRevenue: '49.55',
-    //     filledAmount: '1,000,000.000',
-    //     estimatedProfit: '1,000.000',
-    //   },
     for (let i = 0; i < liquidityDataList.length; i++) {
+      liquidityDataList[i]['idx'] = String(i)
       liquidityDataList[i]['tokenSrc'] = require('../../assets/usdclogo.png')
       liquidityDataList[i]['liquidity'] = liquidityDataList[i]['amount']
       liquidityDataList[i]['totalRevenue'] = '2335.32'
@@ -39,6 +34,8 @@ export default {
       liquidityDataList[i]['dayRevenue'] = '49.55'
       liquidityDataList[i]['filledAmount'] = '1,000,000.000'
       liquidityDataList[i]['estimatedProfit'] = '1,000.000'
+      liquidityDataList[i]['addLiquidityLoading'] = false
+      liquidityDataList[i]['reduceLoading'] = false
     }
     state.liquidityData = liquidityDataList
   },

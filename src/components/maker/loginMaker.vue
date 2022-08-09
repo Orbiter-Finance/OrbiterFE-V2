@@ -64,14 +64,14 @@
             item.amount
           }}</span>
           <div class="removeContent tcenter s12" @click="redeemLiquidity(item)">
-            <span v-if="!item.redeemLoading"> Redeem </span>
-            <loading
+            <span> Redeem </span>
+            <!-- <loading
               v-else
               style="margin: auto"
               loadingColor="rgb(254, 126, 110)"
               width="2rem"
               height="2rem"
-            ></loading>
+            ></loading> -->
           </div>
         </div>
         <div class="removeSep"></div>
@@ -155,7 +155,6 @@ export default {
         )
         return
       }
-      item.redeemLoading = true
       await util.ensureMetamaskNetwork(
         this.$env.localChainID_netChainID[item.localID]
       )
@@ -187,8 +186,6 @@ export default {
           title: error.message,
           duration: 3000,
         })
-      } finally {
-        item.redeemLoading = false
       }
     },
 
@@ -291,7 +288,6 @@ export default {
         localID: toChainId,
         tokenName: await dTokenInstance.symbol(),
         amount: ethers.utils.formatEther(balanceAmount),
-        redeemLoading: false,
       }
       return chainData
     },

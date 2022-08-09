@@ -232,36 +232,4 @@ export default {
       }
     }
   },
-  /**
-   * [groupingData 根据共同字段将数据分组]
-   * @param {[type]} arr [数据源]
-   * @param {[type]} field [字段名]
-   */
-  // 传入两个参数 一个是待分组的数据 一个是按照哪个字段进行分组
-  groupingData(data, filed) {
-    // map用来保存存过的字段 为下边添加新对象或者将相同字段的数据保存到同一个list中
-    let map = {}
-    // dest主要保存分组后的数据
-    let dest = {}
-    // 循环遍历传入的data
-    data.forEach((item) => {
-      // 判断map对象中是否有遍历时data的key 如果没有则向dest数组中推入一个新的对象(包含两个属性，一个要分组的字段名，一个保存相同字段名数据的数组)
-      if (!map[item[filed]]) {
-        dest.item[filed].push({
-          [item[filed]]: [item],
-        })
-        console.log('item[filed]', item[filed])
-        // 进行一次新添对象的记录
-        map[item[filed]] = item
-        // 如果在map中有data遍历的key(字段相同) 则向dest数组里面的相同字段的list下推入数据
-      } else {
-        dest.forEach((dItem) => {
-          if (dItem[filed] == item[filed]) {
-            dItem.list.push(item)
-          }
-        })
-      }
-    })
-    return dest
-  },
 }

@@ -1,12 +1,19 @@
 <template>
   <div class="history-page">
     <div class="history-content">
-      <div class="title">Add Liquidity in Pizza Pool</div>
+      <div class="title">
+        <img
+          src="../../assets/pizza.png"
+          width="24px"
+          height="24px"
+          style="transform: rotate(90deg); margin-right: 10px"
+        />
+        Add Liquidity in Pizza Pool
+      </div>
       <div class="tip">
-        <span>X</span>
         <span class="tip-content"
           >Pizza Lending Pool is basing on order mortgaging. If a maker lends
-          liquidity from the Pizza Pool, the maker‘s order will be filled to the
+          liquidity from the Pizza Pool, the maker's order will be filled to the
           Pizza Pool derectly.</span
         >
       </div>
@@ -17,73 +24,69 @@
           width="4rem"
           height="4rem"
         />
+        <NoData
+          v-else-if="
+            !isLoading && Object.values(getAllNetworkLiquidityData).length === 0
+          "
+          style="padding-top: 200px"
+          >No history</NoData
+        >
         <template v-else>
-          <div class="allNetworkPool-body">
-            <div class="table-header">
-              <span class="col col-1">Network</span>
-              <span class="col col-2">Token</span>
-              <span class="col col-3">Pizza Pool</span>
-              <span class="col col-4">APR</span>
-              <span class="col col-5">Add Liquidity</span>
+          <template v-for="(item, idx) in getAllNetworkLiquidityData">
+            <div class="allNetworkPool-body" :key="idx">
+              <div class="table-header">
+                <span class="col col-1">Network</span>
+                <span class="col col-2">Token</span>
+                <span class="col col-3">Pizza Pool</span>
+                <span class="col col-4">APR</span>
+                <span class="col col-5">Add Liquidity</span>
+              </div>
+              <hr class="hr" />
+              <template v-for="(detail, index) in item">
+                <div
+                  class="allNetworkPool-main"
+                  :key="index"
+                  style="display: flex"
+                >
+                  <div class="col col-value">
+                    <svg-icon
+                      :iconName="chainIcon(detail.localID)"
+                      style="width: 24px; height: 24px"
+                    ></svg-icon>
+                    <span class="icon-label">{{
+                      chainName(detail.localID)
+                    }}</span>
+                  </div>
+                  <div class="col col-value">
+                    <img
+                      style="width: 24px; height: 24px"
+                      :src="detail.tokenSrc"
+                    />
+                    <span class="icon-label">{{ detail.tokenName }}</span>
+                  </div>
+                  <div class="col col-value">
+                    <span>{{ detail.liquidity + ' ' + detail.tokenName }}</span>
+                  </div>
+                  <div class="col col-value">
+                    <span>{{ detail.apr }}%</span>
+                  </div>
+                  <div class="col col-value">
+                    <span
+                      @click="
+                        showAddLiquidityDialog(detail.idx, detail.localID)
+                      "
+                      >Add Liquidity</span
+                    >
+                  </div>
+                </div>
+              </template>
             </div>
-            <hr style="background: rgba(51, 51, 51, 0.2)" />
-            <!-- <div
-            v-else-if="historyData && historyData.length !== 0"
-            v-for="(item, index) in historyData"
-            :key="index"
-            @click="getHistoryInfo(item)"
-            class="contentItem"
-          >
-            <svg-icon
-              class="logo col-val col-1"
-              color="#df2e2d"
-              :iconName="iconName(item)"
-            ></svg-icon>
-            <span class="col-val col-2">{{ item.fromTimeStampShow }}</span>
-            <span class="col-val col-3">{{
-              item.userAmount + item.tokenName
-            }}</span>
-            <div
-              class="col-val col-4"
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              <svg-icon
-                :iconName="logoName(item.fromChainID)"
-                style="width: 1.6rem; height: 1.6rem"
-              ></svg-icon>
-            </div>
-            <div
-              class="col-val col-5"
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: center;
-              "
-            >
-              <svg-icon
-                :iconName="logoName(item.toChainID)"
-                style="width: 1.6rem; height: 1.6rem"
-              ></svg-icon>
-            </div>
-          </div> -->
-          </div>
+          </template>
         </template>
-
-        <!-- <div class="dydx-limit" v-if="isShowDydxLimit">
-          Limited by the dydx mechanism, the history of dYdX cannot be queried
-          temporarily
-        </div> -->
       </div>
-      <NoData v-if="!isLoading" style="padding-top: 200px">No history</NoData>
 
       <svg-icon
-        @click.native="
-          togglePageTab({ type: 'curNetworkPoolMode', value: true })
-        "
+        @click.native="closeAllNetworkPool"
         class="close"
         iconName="close"
       ></svg-icon>
@@ -93,8 +96,8 @@
 
 <script>
 import { NoData, CommLoading } from '../../components'
-import { mapMutations, mapGetters } from 'vuex'
-
+import { mapMutations, mapGetters, mapState } from 'vuex'
+import util from '../../util/util'
 export default {
   name: 'allNetworkPool',
   components: {
@@ -102,28 +105,22 @@ export default {
     CommLoading,
   },
   computed: {
+    ...mapState(['curPage']),
     ...mapGetters(['getAllNetworkLiquidityData']),
-    // currentPage() {
-    //   return this.transactionListInfo.current
-    // },
   },
   data() {
     return {
       isLoading: false,
     }
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.getAllNetworkLiquidityData()
-    }, 300)
-  },
+  mounted() {},
   beforeRouteEnter(to, from, next) {
     next(() => {
       // getTransactionsHistory()
     })
   },
   methods: {
-    ...mapMutations(['togglePageTab']),
+    ...mapMutations(['togglePageTab', 'updatePoolNetworkOrTokenConfig']),
     closeDialog() {
       const last = JSON.parse(
         localStorage.getItem('last_page_before_history') || '{}'
@@ -142,16 +139,10 @@ export default {
     stopPenetrate(e) {
       e.stopPropagation()
     },
-    iconName(item) {
-      if (item.state === 0) {
-        return 'history_success'
-      } else if (item.state === 1) {
-        return 'history_waiting'
-      } else {
-        return 'history_fail'
-      }
+    chainName(chainID) {
+      return util.chainName(chainID, this.$env.localChainID_netChainID[chainID])
     },
-    logoName(chainID) {
+    chainIcon(chainID) {
       if (chainID == '2' || chainID == '22') {
         return 'arblogo'
       } else if (chainID == '3' || chainID == '33') {
@@ -178,6 +169,20 @@ export default {
         return 'ethlogo'
       }
     },
+    updateNetworkConfig(chainID) {
+      this.updatePoolNetworkOrTokenConfig({
+        type: 'toChainId',
+        value: chainID,
+      })
+    },
+    showAddLiquidityDialog(IDX, chainID) {
+      this.$emit('deliveryInfo', IDX)
+      this.updateNetworkConfig(chainID)
+    },
+    closeAllNetworkPool() {
+      this.togglePageTab({ type: 'curNetworkPoolMode', value: true }),
+        this.updateNetworkConfig(parseInt(this.curPage.NetworkliquidityState))
+    },
   },
 }
 </script>
@@ -194,7 +199,7 @@ export default {
           // padding: 4px 20px;
         }
         .col {
-          margin-right: 26px;
+          // margin-right: 26px;
         }
         .col-5 {
           margin-right: 0 !important;
@@ -257,70 +262,134 @@ export default {
   // overflow: hidden;
   width: 100%;
   height: 100%;
-  .tip {
-    display: flex;
-    .tip-content {
-      font-family: 'Inter';
-      font-style: normal;
-      font-weight: 400;
-      font-size: 12px;
-      line-height: 20px;
 
-      /* identical to box height, or 167% */
-      display: flex;
-      align-items: center;
-      letter-spacing: -0.01em;
-
-      color: rgba(51, 51, 51, 0.8);
-    }
-  }
   .history-content {
-    padding: 18px 20px;
+    padding: 25px 40px 10px;
     height: 100%;
     border-radius: 20px;
     position: relative;
     .title {
+      font-family: 'Inter';
+      font-style: normal;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 20px;
       line-height: 24px;
-      font-family: 'Inter Bold';
+
+      /* identical to box height, or 120% */
+      display: flex;
+      align-items: center;
+      letter-spacing: -0.01em;
+    }
+    .tip {
+      display: flex;
+      margin: 20px 0;
+      .tip-content {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 20px;
+
+        /* identical to box height, or 167% */
+        display: flex;
+        align-items: center;
+        letter-spacing: -0.01em;
+
+        color: rgba(51, 51, 51, 0.8);
+      }
     }
     .table {
-      margin-top: 26px;
       font-weight: 400;
       font-size: 14px;
       line-height: 24px;
       .allNetworkPool-body {
         width: 870px;
-        height: 385px;
+        // height: 385px;
         background: rgba(245, 245, 245, 0.6);
         border-radius: 20px;
         padding: 20px;
-      }
-      .table-header {
-        height: 32px;
-        display: flex;
-        align-items: flex-start;
-      }
-      .col {
-        text-align: left;
-        width: 20%;
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 700;
-        font-size: 16px;
-        line-height: 24px;
+        margin-bottom: 30px;
+        .table-header {
+          height: 32px;
+          display: flex;
+          align-items: flex-start;
+          font-family: 'Inter';
+          font-style: normal;
+          font-weight: 700;
+          font-size: 16px;
+          line-height: 24px;
 
-        /* identical to box height, or 150% */
-        display: flex;
-        align-items: center;
-        letter-spacing: -0.01em;
+          /* identical to box height, or 150% */
+          display: flex;
+          align-items: center;
+          letter-spacing: -0.01em;
 
-        color: #333333;
+          color: #333333;
+        }
+        .hr {
+          border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+        .allNetworkPool-main {
+          .col-value {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 24px;
+
+            /* identical to box height, or 171% */
+            display: flex;
+            align-items: center;
+            letter-spacing: -0.01em;
+
+            color: rgba(51, 51, 51, 0.8);
+            &:nth-last-child(2) {
+              color: #5ec2b7;
+            }
+            &:last-child {
+              display: flex;
+              flex-direction: row;
+              justify-content: center;
+              align-items: center;
+              padding: 8px 24px;
+              gap: 10px;
+              height: 40px;
+
+              background: #0e4c60;
+              box-shadow: inset 0px -3px 0px rgba(0, 0, 0, 0.16);
+              border-radius: 20px;
+
+              font-family: 'Inter';
+              font-style: normal;
+              font-weight: 700;
+              font-size: 16px;
+              line-height: 24px;
+
+              /* identical to box height, or 150% */
+              display: flex;
+              align-items: center;
+              text-align: center;
+              letter-spacing: -0.01em;
+
+              color: #ffffff;
+              background: #084c61;
+              &:not(:disabled):hover {
+                background: #053442;
+              }
+            }
+            .icon-label {
+              margin-left: 8px;
+            }
+          }
+        }
+        .col {
+          text-align: left;
+          width: 20%;
+          &:last-child {
+            text-align: center;
+          }
+        }
       }
-      // .col:last-child {
-      //   margin-right: 0px;
-      // }
     }
 
     .pagination {

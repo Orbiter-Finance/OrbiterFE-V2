@@ -1,4 +1,3 @@
-import util from '../../util/util'
 export default {
   realSelectMakerInfo(state) {
     let selectMakerInfo = state.transferData.selectMakerInfo
@@ -84,8 +83,14 @@ export default {
     })
   },
   getAllNetworkLiquidityData(state) {
-    let dataList = util.groupingData(state.liquidityData, 'localID')
-    console.log('dataList: ', dataList)
-    // state.liquidityData.filter((item) => {})
+    const filed = 'localID'
+    let dest = {}
+    state.liquidityData.forEach((item) => {
+      let array = []
+      dest[item[filed]] === undefined ? array : (array = dest[item[filed]])
+      array.push(item)
+      dest[item[filed]] = array
+    })
+    return dest
   },
 }

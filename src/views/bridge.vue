@@ -31,10 +31,7 @@
         "
         class="pool-box"
       >
-        <cur-network-pool
-          v-if="curPage.curNetworkPoolMode && makerInfoStatus && isLogin"
-        />
-        <all-network-pool v-else-if="!curPage.curNetworkPoolMode && isLogin" />
+        <cur-network-pool v-if="makerInfoStatus && isLogin" />
         <div class="maker-box" v-else>
           <div class="maker-title">About Maker</div>
           <div class="maker-content">
@@ -67,14 +64,14 @@
 </template>
 
 <script>
-import { curNetworkPool, allNetworkPool, sender, maker } from './'
+import { curNetworkPool, sender, maker } from './'
 import { ToggleBtn } from '../components'
 // import makerInfo from '../core/routes/makerInfo'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'Bridge',
-  components: { ToggleBtn, sender, maker, curNetworkPool, allNetworkPool },
+  components: { ToggleBtn, sender, maker, curNetworkPool },
   computed: {
     ...mapState(['curPage', 'isMobile']),
     ...mapGetters(['isLogin']),
