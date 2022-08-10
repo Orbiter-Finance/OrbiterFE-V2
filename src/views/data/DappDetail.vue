@@ -75,7 +75,7 @@
             <div class="supported-l2-desc">
               Active Users & Corresponding percentage of total users. <br />
               New Users & Corresponding percentage of total users.
-              <a href="#" target="_blank"> Read More </a>
+              <a href="https://docs.orbiter.finance/l2data" target="_blank"> Read More </a>
             </div>
             <span class="title-help" slot="reference"> </span>
           </el-popover>

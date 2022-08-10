@@ -59,7 +59,7 @@
               <div class="user-age-desc">
                 Statistics for all users. " Users Age " refers to the cumulative
                 days since users started the first transaction on the mainnet.
-                <a href="#" target="_blank"> Read More </a>
+                <a href="https://docs.orbiter.finance/l2data" target="_blank"> Read More </a>
               </div>
               <div class="user-age-help" slot="reference">
                 <help />
