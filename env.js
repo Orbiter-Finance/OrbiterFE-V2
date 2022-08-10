@@ -23,6 +23,8 @@ export default {
     515: process.env.VUE_APP_HP_BSC_R,
     15: process.env.VUE_APP_HP_BSC,
     514: "https://zksync2-testnet.zksync.dev",
+    16: 'https://nova.arbitrum.io/rpc',
+    516: 'https://goerli-rollup.arbitrum.io/rpc'
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -40,6 +42,8 @@ export default {
     515: process.env.VUE_APP_WP_BSC_R,
     15: process.env.VUE_APP_WP_BSC,
     514: 'wss://zksync2-testnet.zksync.dev/ws',
+    16: 'https://nova.arbitrum.io/rpc',
+    516: 'https://goerli-rollup.arbitrum.io/rpc'
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -57,6 +61,7 @@ export default {
     '13',
     '14',
     "15",
+    '16',
     '22',
     '33',
     '44',
@@ -69,7 +74,8 @@ export default {
     '512',
     '513',
     '514',
-    "515"
+    "515",
+    '516'
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -99,6 +105,8 @@ export default {
     513: '28', // boba rinkeby
     514: '280',//zksync2(G)
     515: "97", // bsc test
+    16: '42170', // ar nova
+    516: '421613' // ar nova g
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -117,7 +125,7 @@ export default {
     77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
     88: '',
     99: '',
-    515: ""
+    515: "",
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -147,6 +155,8 @@ export default {
     15: "https://bscscan.com/tx/",
     515: "https://testnet.bscscan.com/tx/",
     514: 'https://zksync2-testnet.zkscan.io/tx/',
+    16: 'https://nova-explorer.arbitrum.io/tx/',
+    516: 'https://goerli-rollup-explorer.arbitrum.io/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -173,8 +183,10 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/account/',
     13: 'https://blockexplorer.boba.network/address/',
     513: 'https://blockexplorer.rinkeby.boba.network/address/',
+    514: 'https://zksync2-testnet.zkscan.io/address/',
     15: "https://bscscan.com/address",
     515: "https://testnet.bscscan.com/address/",
-    514: 'https://zksync2-testnet.zkscan.io/address/',
+    16: 'https://nova-explorer.arbitrum.io/address/',
+    516: 'https://goerli-rollup-explorer.arbitrum.io/address/'
   },
 }
