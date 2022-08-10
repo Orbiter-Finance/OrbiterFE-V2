@@ -68,23 +68,28 @@ export function getStarkNetValidAddress(address) {
   return address
 }
 
+
+function refererUpper() {
+  // Don't use [$route.query.referer], because it will delay
+  const { href } = window.location
+  const match = href.match(/referer=(\w*)/i)
+  if (match?.[1]) {
+    return match[1].toUpperCase()
+  }
+  return ''
+}
+
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
-    /**
-     * control wallets order for both "connect to a wallet" and
-     * "install a wallet" lists.
-     *
-     * `array` - set higher + ordered priority to specific wallets by
-     * passing an array of wallet ids (just the wallets you would like to
-     * promote, other wallets will still be listed in random order)
-     *
-     * `"community"` - community set order, listed in the wallet-discovery manifest
-     *
-     * `"random"` - each time the list shows with a different order
-     *
-     * default is "random"
-    */
-    const wallet = await getStarknetWallet({ order: ['argentX', 'braavos'] })
+    const refer = refererUpper()
+    const isArgentX = refer === 'argent'.toUpperCase()
+    const isBraavos = refer === 'braavos'.toUpperCase()
+    await disConnectStarkNetWallet()
+    const obj = {
+      order: isArgentX ? ['argentX'] : (isBraavos ? ['braavos'] : ['argentX', 'braavos']),
+      showList: isArgentX || isBraavos ? false : true
+    }
+    const wallet = await getStarknetWallet(obj)
     if (!wallet) {
       return
     }
@@ -124,10 +129,13 @@ export function getStarkNetCurrentChainId() {
 }
 
 export async function disConnectStarkNetWallet() {
-  const dis = await disStarknetWallet()
+  const dis = await disStarknetWallet({clearLastWallet: true, clearDefaultWallet: true})
   if (dis) {
     store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
     store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
+  } else {
+    store.commit('updateStarkNetAddress', '')
+    store.commit('updateStarkNetIsConnect', false)
   }
 }
 
