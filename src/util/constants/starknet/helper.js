@@ -70,7 +70,21 @@ export function getStarkNetValidAddress(address) {
 
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
-    const wallet = await getStarknetWallet({ order: ['argentX'] })
+    /**
+     * control wallets order for both "connect to a wallet" and
+     * "install a wallet" lists.
+     *
+     * `array` - set higher + ordered priority to specific wallets by
+     * passing an array of wallet ids (just the wallets you would like to
+     * promote, other wallets will still be listed in random order)
+     *
+     * `"community"` - community set order, listed in the wallet-discovery manifest
+     *
+     * `"random"` - each time the list shows with a different order
+     *
+     * default is "random"
+    */
+    const wallet = await getStarknetWallet({ order: ['argentX', 'braavos'] })
     if (!wallet) {
       return
     }
