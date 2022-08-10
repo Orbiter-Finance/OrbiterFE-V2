@@ -68,7 +68,6 @@ export function getStarkNetValidAddress(address) {
   return address
 }
 
-
 function refererUpper() {
   // Don't use [$route.query.referer], because it will delay
   const { href } = window.location
@@ -84,10 +83,13 @@ export async function connectStarkNetWallet() {
     const refer = refererUpper()
     const isArgentX = refer === 'argent'.toUpperCase()
     const isBraavos = refer === 'braavos'.toUpperCase()
-    await disConnectStarkNetWallet()
     const obj = {
-      order: isArgentX ? ['argentX'] : (isBraavos ? ['braavos'] : ['argentX', 'braavos']),
-      showList: isArgentX || isBraavos ? false : true
+      order: isArgentX
+        ? ['argentX']
+        : isBraavos
+        ? ['braavos']
+        : ['argentX', 'braavos'],
+      showList: isArgentX || isBraavos ? false : true,
     }
     const wallet = await getStarknetWallet(obj)
     if (!wallet) {
@@ -129,7 +131,10 @@ export function getStarkNetCurrentChainId() {
 }
 
 export async function disConnectStarkNetWallet() {
-  const dis = await disStarknetWallet({clearLastWallet: true, clearDefaultWallet: true})
+  const dis = await disStarknetWallet({
+    clearLastWallet: true,
+    clearDefaultWallet: true,
+  })
   if (dis) {
     store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
     store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
