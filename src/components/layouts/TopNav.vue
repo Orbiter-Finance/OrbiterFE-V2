@@ -12,7 +12,8 @@
           @click.native="toHome"
           class="logo"
           :style="navIcons.style"
-          :icon="navIcons.logo"
+          :icon="!isBRAAVOS && navIcons.logo"
+          :iconName="navIcons.logo"
         />
         <!-- <HeaderLinks style="margin-top: 24px;position:absolute;top:0;left:241px;min-width: 280px;" /> -->
       </div>
@@ -120,6 +121,9 @@ export default {
     isStarknet() {
       return this.refererUpper === 'STARKNET'
     },
+    isBRAAVOS() {
+      return this.refererUpper === 'BRAAVOS'
+    },
     navIcons() {
       const icons = {
         logo: 'logo-mobile',
@@ -154,6 +158,13 @@ export default {
             height: '3.7rem',
           }
           break
+        case 'BRAAVOS':
+          icons.logo_web = 'BraavosOrbiter'
+          icons.logo_webStyle = {
+            width: '17.4rem',
+            height: '3.7rem',
+          }
+          break          
       }
       if (this.isMobile) {
         return {
