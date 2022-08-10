@@ -83,13 +83,13 @@ export async function connectStarkNetWallet() {
     const refer = refererUpper()
     const isArgentX = refer === 'argent'.toUpperCase()
     const isBraavos = refer === 'braavos'.toUpperCase()
+
     const obj = {
       order: isArgentX
         ? ['argentX']
         : isBraavos
         ? ['braavos']
         : ['argentX', 'braavos'],
-      showList: isArgentX || isBraavos ? false : true,
     }
     const wallet = await getStarknetWallet(obj)
     if (!wallet) {
