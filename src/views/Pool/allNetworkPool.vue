@@ -43,11 +43,7 @@
               </div>
               <hr class="hr" />
               <template v-for="(detail, index) in item">
-                <div
-                  class="allNetworkPool-main"
-                  :key="index"
-                  style="display: flex"
-                >
+                <div class="allNetworkPool-main" :key="index">
                   <div class="col col-value">
                     <svg-icon
                       :iconName="chainIcon(detail.localID)"
@@ -70,13 +66,32 @@
                   <div class="col col-value">
                     <span>{{ detail.apr }}%</span>
                   </div>
-                  <div class="col col-value">
+                  <div
+                    :class="[
+                      'col',
+                      'col-value',
+                      { addLoading: detail.addLiquidityLoading },
+                    ]"
+                  >
                     <span
                       @click="
-                        showAddLiquidityDialog(detail.idx, detail.localID)
+                        detail.addLiquidityLoading
+                          ? ''
+                          : showAddLiquidityDialog(detail)
                       "
-                      >Add Liquidity</span
                     >
+                      <template v-if="!detail.addLiquidityLoading">
+                        Add Liquidity
+                      </template>
+                      <template v-else>
+                        <loading
+                          style="margin: auto"
+                          loadingColor="white"
+                          width="2rem"
+                          height="2rem"
+                        ></loading>
+                      </template>
+                    </span>
                   </div>
                 </div>
               </template>
@@ -175,9 +190,9 @@ export default {
         value: chainID,
       })
     },
-    showAddLiquidityDialog(IDX, chainID) {
-      this.$emit('deliveryInfo', IDX)
-      this.updateNetworkConfig(chainID)
+    showAddLiquidityDialog(info) {
+      this.$emit('deliveryInfo', info)
+      this.updateNetworkConfig(info.localID)
     },
     closeAllNetworkPool() {
       this.togglePageTab({ type: 'curNetworkPoolMode', value: true }),
@@ -294,8 +309,6 @@ export default {
         display: flex;
         align-items: center;
         letter-spacing: -0.01em;
-
-        color: rgba(51, 51, 51, 0.8);
       }
     }
     .table {
@@ -305,7 +318,6 @@ export default {
       .allNetworkPool-body {
         width: 870px;
         // height: 385px;
-        background: rgba(245, 245, 245, 0.6);
         border-radius: 20px;
         padding: 20px;
         margin-bottom: 30px;
@@ -323,13 +335,13 @@ export default {
           display: flex;
           align-items: center;
           letter-spacing: -0.01em;
-
-          color: #333333;
         }
         .hr {
           border: 1px solid rgba(0, 0, 0, 0.2);
         }
         .allNetworkPool-main {
+          padding: 10px 0;
+          display: flex;
           .col-value {
             font-family: 'Inter';
             font-style: normal;
@@ -342,7 +354,6 @@ export default {
             align-items: center;
             letter-spacing: -0.01em;
 
-            color: rgba(51, 51, 51, 0.8);
             &:nth-last-child(2) {
               color: #5ec2b7;
             }
@@ -374,6 +385,9 @@ export default {
               color: #ffffff;
               background: #084c61;
               &:not(:disabled):hover {
+                background: #053442;
+              }
+              &.addLoading {
                 background: #053442;
               }
             }

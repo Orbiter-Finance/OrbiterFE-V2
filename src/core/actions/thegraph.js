@@ -103,8 +103,6 @@ const nowMakerList = [
   //     },
   //   ],
   // },
-
-  // USDC
 ]
 
 export default {

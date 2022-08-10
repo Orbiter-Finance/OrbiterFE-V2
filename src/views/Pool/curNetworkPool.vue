@@ -97,42 +97,57 @@
           <div class="line-content">
             <div class="content-left">
               <span class="content-item">Wait to be filled Amount</span>
-              <span class="content-value">{{ item.filledAmount }} ETH</span>
+              <span class="content-value">{{
+                item.filledAmount + ' ' + item.tokenName
+              }}</span>
             </div>
             <div class="content-right">
               <span class="content-item">Estimated 7 days Profit</span>
-              <span class="content-value">{{ item.estimatedProfit }} ETH</span>
+              <span class="content-value">{{
+                item.estimatedProfit + ' ' + item.tokenName
+              }}</span>
             </div>
           </div>
           <div class="line-content">
             <span
-              class="content-button add"
-              v-if="!item.addLiquidityLoading"
-              @click="showAddLiquidityDialog(item.idx)"
-              >Add Liquidity</span
+              :class="[
+                'content-button',
+                'add',
+                { addLoading: item.addLiquidityLoading },
+              ]"
+              @click="
+                item.addLiquidityLoading ? '' : showAddLiquidityDialog(item)
+              "
             >
-            <span class="content-button addLoading" v-else
-              ><loading
-                style="margin: auto"
-                loadingColor="white"
-                width="2rem"
-                height="2rem"
-              ></loading
-            ></span>
-
+              <template v-if="!item.addLiquidityLoading">
+                Add Liquidity
+              </template>
+              <template v-else
+                ><loading
+                  style="margin: auto"
+                  loadingColor="white"
+                  width="2rem"
+                  height="2rem"
+                ></loading>
+              </template>
+            </span>
             <span
-              v-if="!item.reduceLoading"
-              class="content-button reduce"
-              @click="reduceLiquidity(item)"
-              >Reduce Liquidity</span
+              :class="[
+                'content-button',
+                'reduce',
+                { reduceLoading: item.reduceLoading },
+              ]"
+              @click="item.reduceLoading ? '' : reduceLiquidity(item)"
             >
-            <span class="content-button reduceLoading" v-else>
-              <loading
-                style="margin: auto"
-                loadingColor="white"
-                width="2rem"
-                height="2rem"
-              ></loading>
+              <template v-if="!item.reduceLoading"> Reduce Liquidity </template>
+              <template v-else>
+                <loading
+                  style="margin: auto"
+                  loadingColor="white"
+                  width="2rem"
+                  height="2rem"
+                ></loading>
+              </template>
             </span>
           </div>
         </div>
@@ -144,7 +159,7 @@
     </template>
 
     <pool-add-liquidity
-      :IDX="IDX"
+      :destChainInfo="destChainInfo"
       v-on:updateTokens="getAllTokenArray"
       v-on:updateLiquidity="getCurNetworkliquidityData"
     />
@@ -163,7 +178,7 @@ export default {
   name: 'curNetworkPool',
   components: { SvgIconThemed, CommLoading, PoolAddLiquidity, allNetworkPool },
   computed: {
-    ...mapState(['curPage', 'poolNetworkOrTokenConfig', 'liquidityData']),
+    ...mapState(['curPage', 'poolNetworkOrTokenConfig']),
     ...mapGetters(['getCurNetworkLiquidityData']),
   },
   watch: {
@@ -181,7 +196,7 @@ export default {
       curPoolMode: false,
       tokenInfoArray: [],
       toChainId: 0,
-      IDX: null,
+      destChainInfo: null,
     }
   },
   mounted() {
@@ -193,12 +208,19 @@ export default {
       'setDialogVisible',
       'updatePoolNetworkOrTokenConfig',
       'updateLiquidityData',
-      'updateLiquidityDataStatusByIDX',
+      'updateLiquidityDataStatus',
     ]),
     getProviderSigner() {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
       const singer = provider.getSigner()
       return singer
+    },
+    getDTokenContract(tokenName, toChainId, provider) {
+      return new ethers.Contract(
+        this.poolNetworkOrTokenConfig.dTokenAddresses[tokenName][toChainId],
+        getDTokenContractABI(),
+        provider
+      )
     },
     // 获取所有网络
     getAllNetwork() {
@@ -276,17 +298,18 @@ export default {
         },
       ])
     },
-    async getLiquidityData(toChainId) {
+    async getLiquidityData(tokenName, toChainId) {
       let singer = this.getProviderSigner()
       let customProvider = new ethers.providers.StaticJsonRpcProvider(
         process.env[this.$env.localProvider[toChainId]]
       )
       const dTokenInstance = new ethers.Contract(
-        this.poolNetworkOrTokenConfig.dTokenAddresses[toChainId],
+        this.poolNetworkOrTokenConfig.dTokenAddresses[tokenName][toChainId],
         getDTokenContractABI(),
         customProvider
       )
       const balanceAmount = await dTokenInstance.balanceOf(singer.getAddress())
+      const apy = await this.getSupplyRatePerBlock(tokenName, toChainId)
       var chainData = {
         chainName: util.chainName(
           toChainId,
@@ -295,6 +318,7 @@ export default {
         localID: toChainId,
         tokenName: await dTokenInstance.symbol(),
         amount: ethers.utils.formatEther(balanceAmount),
+        apr: apy == 0 ? 1.11 : apy,
       }
       return chainData
     },
@@ -303,12 +327,24 @@ export default {
         this.isLoading = true
         let promiseList = []
         for (
-          let index = 0;
-          index < this.poolNetworkOrTokenConfig.NetworkArray.length;
+          let index = 0,
+            len = this.poolNetworkOrTokenConfig.NetworkArray.length;
+          index < len;
           index++
         ) {
+          const tokenName = 'DToken'
           const item = this.poolNetworkOrTokenConfig.NetworkArray[index]
-          promiseList.push(() => this.getLiquidityData(item))
+          promiseList.push(() => this.getLiquidityData(tokenName, item))
+        }
+        for (
+          let index = 0,
+            len = this.poolNetworkOrTokenConfig.NetworkArray.length;
+          index < len;
+          index++
+        ) {
+          const tokenName = 'USDC'
+          const item = this.poolNetworkOrTokenConfig.NetworkArray[index]
+          promiseList.push(() => this.getLiquidityData(tokenName, item))
         }
         let res = await Promise.all(promiseList.map((fun) => fun()))
         console.log(res)
@@ -319,7 +355,24 @@ export default {
         util.showMessage('Failed to get data', 'error')
       }
     },
+    async getSupplyRatePerBlock(tokenName, toChainId) {
+      const blocksPerYear = 2102400
+      const divParam = ethers.utils.parseEther('1')
+      let calculationApy = 1.11
+      let customProvider = new ethers.providers.JsonRpcProvider(
+        process.env[this.$env.localProvider[toChainId]]
+      )
+      try {
+        const APY = this.getDTokenContract(tokenName, toChainId, customProvider)
+        calculationApy = await APY.supplyRatePerBlock()
+        calculationApy = ((calculationApy * blocksPerYear) / divParam) * 100
+      } catch (error) {
+        console.log(error)
+      }
+      return calculationApy
+    },
     async reduceLiquidity(item) {
+      console.log('item', item)
       let singer = this.getProviderSigner()
       if (
         ethers.BigNumber.from(ethers.utils.parseEther(item.liquidity)).isZero()
@@ -335,7 +388,9 @@ export default {
       )
       const account = await singer.getAddress()
       const dTokenInstance = new ethers.Contract(
-        this.poolNetworkOrTokenConfig.dTokenAddresses[item.localID],
+        this.poolNetworkOrTokenConfig.dTokenAddresses[item.tokenName][
+          item.localID
+        ],
         getDTokenContractABI(),
         singer
       )
@@ -344,10 +399,10 @@ export default {
         gasLimit: 1000000,
       }
       try {
-        // testButton
-        this.updateLiquidityDataStatusByIDX({
+        this.updateLiquidityDataStatus({
           type: 'reduceLoading',
-          idx: item.idx,
+          localID: item.localID,
+          tokenName: item.tokenName,
         })
         let tx = await dTokenInstance.redeem(
           ethers.utils.parseEther(item.amount),
@@ -369,17 +424,21 @@ export default {
           duration: 3000,
         })
       } finally {
-        this.updateLiquidityDataStatusByIDX({
+        this.updateLiquidityDataStatus({
           type: 'reduceLoading',
-          idx: item.idx,
+          localID: item.localID,
+          tokenName: item.tokenName,
         })
       }
     },
     showChainName(localChainID, netChainID) {
       return util.chainName(localChainID, netChainID)
     },
-    showAddLiquidityDialog(IDX) {
-      this.IDX = IDX
+    showAddLiquidityDialog(info) {
+      this.destChainInfo = {
+        localID: info.localID,
+        tokenName: info.tokenName,
+      }
       this.setDialogVisible({
         type: 'addLiquidityDialogVisible',
         value: true,
@@ -485,7 +544,6 @@ export default {
         align-items: center;
         letter-spacing: -0.01em;
         margin-left: 11px;
-        color: #333333;
       }
       .total-revenue {
         display: flex;
@@ -518,8 +576,6 @@ export default {
       display: flex;
       align-items: center;
       letter-spacing: -0.01em;
-
-      color: rgba(51, 51, 51, 0.8);
     }
     .content-value {
       height: 24px;
@@ -536,7 +592,6 @@ export default {
       letter-spacing: -0.01em;
 
       /* #333333深色文字 */
-      color: #333333;
     }
     .content-button {
       display: flex;
@@ -563,6 +618,7 @@ export default {
 
       color: #ffffff;
       &.add {
+        width: 17.25%;
         background: #084c61;
         &:not(:disabled):hover {
           background: #053442;
@@ -572,6 +628,7 @@ export default {
         background: #053442;
       }
       &.reduce {
+        width: 20.1%;
         background: rgba(51, 51, 51, 0.4);
         margin-left: 14px;
         &:not(:disabled):hover {

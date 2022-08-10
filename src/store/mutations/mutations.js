@@ -1,4 +1,5 @@
 import { toggleBodyCls } from '../../util/theme/theme'
+import decimal from '../../util/decimal/decimal'
 export default {
   changeMobileStatus(state, payload) {
     state.isMobile = payload
@@ -18,22 +19,38 @@ export default {
     localStorage.setItem('themeMode', state.themeMode)
     toggleBodyCls()
   },
-  updateLiquidityDataStatusByIDX(state, payload) {
-    console.log(payload)
-    state.liquidityData[parseInt(payload.idx)][payload.type] =
-      !state.liquidityData[parseInt(payload.idx)][payload.type]
+  updateLiquidityDataStatus(state, payload) {
+    let tmpStatus = state.liquidityData.find(
+      (item) =>
+        item.localID == payload.localID && item.tokenName == payload.tokenName
+    )
+    tmpStatus[payload.type] = !tmpStatus[payload.type]
   },
   updateLiquidityData(state, liquidityDataList) {
     for (let i = 0; i < liquidityDataList.length; i++) {
-      liquidityDataList[i]['idx'] = String(i)
-      liquidityDataList[i]['tokenSrc'] = require('../../assets/usdclogo.png')
-      liquidityDataList[i]['liquidity'] = liquidityDataList[i]['amount']
-      liquidityDataList[i]['totalRevenue'] = '2335.32'
-      liquidityDataList[i]['apr'] = '1.11'
-      liquidityDataList[i]['dayRevenueTime'] = '15'
-      liquidityDataList[i]['dayRevenue'] = '49.55'
+      liquidityDataList[i]['tokenSrc'] =
+        liquidityDataList[i].tokenName === 'DToken'
+          ? require('../../assets/tusdlogo.png')
+          : require('../../assets/usdclogo.png')
+      liquidityDataList[i]['liquidity'] = decimal.number_format(
+        liquidityDataList[i]['amount'],
+        liquidityDataList[i].tokenName
+      )
+      liquidityDataList[i]['totalRevenue'] = decimal.number_format(
+        '2335.32',
+        liquidityDataList[i].tokenName
+      )
+      // liquidityDataList[i]['apr'] = '1.11'
+      liquidityDataList[i]['dayRevenueTime'] = new Date().getHours()
+      liquidityDataList[i]['dayRevenue'] = decimal.number_format(
+        (liquidityDataList[i]['apr'] / 365) * liquidityDataList[i]['amount'],
+        liquidityDataList[i].tokenName
+      )
       liquidityDataList[i]['filledAmount'] = '1,000,000.000'
-      liquidityDataList[i]['estimatedProfit'] = '1,000.000'
+      liquidityDataList[i]['estimatedProfit'] = decimal.number_format(
+        liquidityDataList[i]['dayRevenue'] * 7,
+        liquidityDataList[i].tokenName
+      )
       liquidityDataList[i]['addLiquidityLoading'] = false
       liquidityDataList[i]['reduceLoading'] = false
     }

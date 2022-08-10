@@ -74,9 +74,20 @@
         </div>
       </div>
       <div class="add-liquidity-buttom">
-        <span class="option-button" @click="confirmAddLiquidity"
-          >Confirm and Add Liquidity</span
+        <span
+          class="option-button"
+          @click="isLoading ? '' : confirmAddLiquidity()"
         >
+          <template v-if="!isLoading"> Confirm and Add Liquidity </template>
+          <template v-else>
+            <loading
+              style="margin: auto"
+              loadingColor="white"
+              width="2rem"
+              height="2rem"
+            ></loading>
+          </template>
+        </span>
       </div>
     </div>
     <comm-dialog ref="SelectNetworkPopupRef">
@@ -107,8 +118,8 @@ import transferCalculate from '../../../util/transfer/transferCalculate'
 export default {
   name: 'AddLiquidityDialog',
   props: {
-    IDX: {
-      type: String,
+    destChainInfo: {
+      type: Object,
       default: null,
     },
   },
@@ -194,6 +205,7 @@ export default {
       selectedToken: '',
       c1Balance: null,
       c2Balance: null,
+      isLoading: false,
     }
   },
   mounted() {
@@ -229,7 +241,7 @@ export default {
     ...mapMutations([
       'setDialogVisible',
       'updatePoolNetworkOrTokenConfig',
-      'updateLiquidityDataStatusByIDX',
+      'updateLiquidityDataStatus',
     ]),
     getProviderSigner() {
       const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
@@ -267,14 +279,13 @@ export default {
     },
     getNewNetworkInfo(info) {
       console.log('info: ', info)
+      this.destChainInfo.localID = info.localID
       this.$emit('updateTokens', info)
-      // this.freshTokens()
     },
     showChainName(localChainID, netChainID) {
       return util.chainName(localChainID, netChainID)
     },
     showChainIcon(localChainID) {
-      // const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
       return util.chainIcon(localChainID)
     },
 
@@ -328,12 +339,15 @@ export default {
     },
     getDTokenContract(toChainId, provider) {
       return new ethers.Contract(
-        this.poolNetworkOrTokenConfig.dTokenAddresses[toChainId],
+        this.poolNetworkOrTokenConfig.dTokenAddresses[
+          this.destChainInfo.tokenName
+        ][toChainId],
         getDTokenContractABI(),
         provider
       )
     },
     async confirmAddLiquidity() {
+      this.isLoading = true
       let singer = this.getProviderSigner()
       await util.ensureMetamaskNetwork(
         this.$env.localChainID_netChainID[
@@ -355,8 +369,8 @@ export default {
       const allowanceAmount = await coinToken.allowance(
         account,
         this.poolNetworkOrTokenConfig.dTokenAddresses[
-          this.poolNetworkOrTokenConfig.toChainId
-        ]
+          this.destChainInfo.tokenName
+        ][this.poolNetworkOrTokenConfig.toChainId]
       )
       const coinBalance = await coinToken.balanceOf(account)
       if (ethers.utils.parseEther(this.transferValue).isZero()) return
@@ -380,8 +394,8 @@ export default {
       ) {
         await coinToken.approve(
           this.poolNetworkOrTokenConfig.dTokenAddresses[
-            this.poolNetworkOrTokenConfig.toChainId
-          ],
+            this.destChainInfo.tokenName
+          ][this.poolNetworkOrTokenConfig.toChainId],
           ethers.constants.MaxUint256
         )
       } else {
@@ -390,6 +404,11 @@ export default {
           gasLimit: 1000000,
         }
         try {
+          this.updateLiquidityDataStatus({
+            type: 'addLiquidityLoading',
+            localID: this.destChainInfo.localID,
+            tokenName: this.destChainInfo.tokenName,
+          })
           let tx = await dTokenInstance.mint(
             ethers.utils.parseEther(this.transferValue),
             overrides
@@ -399,23 +418,22 @@ export default {
             duration: 3000,
           })
           this.closeAddLiquidityDialog()
-          this.updateLiquidityDataStatusByIDX({
-            type: 'addLiquidityLoading',
-            idx: this.IDX,
-          })
           await tx.wait()
           util.showMessage('Add Liquidity Success', 'success')
           this.transferValue = ''
-          this.updateLiquidityDataStatusByIDX({
-            type: 'addLiquidityLoading',
-            idx: this.IDX,
-          })
           this.$emit('updateLiquidity')
         } catch (error) {
-          console.log(error)
           this.$notify.error({
             title: error.message,
             duration: 3000,
+          })
+        } finally {
+          this.isLoading = false
+          console.log('123123123')
+          this.updateLiquidityDataStatus({
+            type: 'addLiquidityLoading',
+            localID: this.destChainInfo.localID,
+            tokenName: this.destChainInfo.tokenName,
           })
         }
       }
