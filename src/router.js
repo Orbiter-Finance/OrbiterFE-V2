@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+const Data = () => import('./views/data/Index/Index.vue')
+const DataDetail = () => import('./views/data/DataDetail/DataDetail.vue')
+
 Vue.use(Router)
 
 // const originalPush = Router.prototype.push
@@ -23,6 +26,22 @@ export default new Router({
     {
       path: '/history',
       component: (resolve) => require(['./views/History'], resolve),
+      meta: {
+        title: 'Orbiter',
+        keepAlive: true,
+      },
+    },
+    {
+      path: '/data',
+      component: Data,
+      meta: {
+        title: 'Orbiter',
+        keepAlive: true,
+      },
+    },
+    {
+      path: '/dataDetail',
+      component: DataDetail,
       meta: {
         title: 'Orbiter',
         keepAlive: true,

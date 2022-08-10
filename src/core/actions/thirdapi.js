@@ -18,7 +18,8 @@ export default {
           errMsg: 'getZKAccountError_wrongChainID',
         })
       }
-      const prefix = req.localChainID === 33 ? config.zkSync.Rinkeby : config.zkSync.Mainnet
+      const prefix =
+        req.localChainID === 33 ? config.zkSync.Rinkeby : config.zkSync.Mainnet
       axios
         .get(`${prefix}/accounts/${req.account}/${req.stateType}`)
         .then(function (response) {
@@ -111,7 +112,8 @@ export default {
         limit: req.limit,
         direction: req.direction,
       }
-      const prefix = req.localChainID === 33 ? config.zkSync.Rinkeby : config.zkSync.Mainnet
+      const prefix =
+        req.localChainID === 33 ? config.zkSync.Rinkeby : config.zkSync.Mainnet
       axios
         .get(`${prefix}/accounts/${req.account}/transactions`, {
           params: params,
@@ -182,7 +184,8 @@ export default {
       const baseUrl = req.localChainID === 33 ? zkSync.Rinkeby : zkSync.Mainnet
       const url = `${baseUrl}/tokens?from=${req.from}&limit=${req.limit}&direction=${req.direction}`
 
-      axios.get(url)
+      axios
+        .get(url)
         .then(function (response) {
           if (response.status === 200) {
             var respData = response.data

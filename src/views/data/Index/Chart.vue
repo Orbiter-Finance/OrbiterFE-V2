@@ -1,0 +1,717 @@
+<template>
+  <div class="chart-wrapper">
+    <div class="chart">
+      <div class="head">
+        <div class="title">Layer2 Transactions Chart</div>
+        <div class="checke-wrap">
+          <selector
+            :data="checkerData"
+            :value="currentChartTime"
+            @change="(item) => (currentChartTime = item.value)"
+          />
+        </div>
+      </div>
+      <div id="l2-data-chart"></div>
+    </div>
+    <div class="rollups">
+      <div class="head">
+        <div class="title">
+          Rollups by Daily Transactions
+          <template v-if="!isMobile">
+            ,{{
+              latestData
+                ? dateFormat(latestData.timestamp_read, 'yyyy-MM-dd')
+                : '-'
+            }}
+          </template>
+        </div>
+        <time-diff
+          v-if="!isMobile && baseChartData && baseChartData.update_time"
+          :timestamp="baseChartData.update_time"
+        />
+        <div
+          class="more"
+          @click="
+            $router.push({
+              path: '/dataDetail',
+              query: { nav: 'Rollups' },
+            })
+          "
+        >
+          More
+          <img src="../../../assets/data/right.png" width="8" height="12" />
+        </div>
+      </div>
+      <div class="contents">
+        <div class="content1">
+          <div
+            class="item"
+            v-for="(item, i) in latestDataRank.slice(0, 5)"
+            :key="i"
+          >
+            <div class="no">
+              {{ item.no }}
+            </div>
+            <chains-logo :name="item.name" />
+            <div class="name">
+              {{ item.name }}
+            </div>
+            <div class="num">
+              {{ numeral(item.transactions).format('0,0') }}
+            </div>
+          </div>
+        </div>
+        <div class="content2">
+          <div
+            class="item"
+            v-for="(item, i) in latestDataRank.slice(5, 10)"
+            :key="i"
+          >
+            <div class="no">
+              {{ item.no }}
+            </div>
+            <chains-logo :name="item.name" />
+            <div class="name">
+              {{ item.name }}
+            </div>
+            <div class="num">
+              {{ numeral(item.transactions).format('0,0') }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import numeral from 'numeral'
+import * as echarts from 'echarts'
+import { getMainpageRollup } from '../../../L2data/chart.js'
+import Selector from '../Selector.vue'
+import TimeDiff from '../TimeDiff.vue'
+import ChainsLogo from '../ChainsLogo.vue'
+import { isMobile } from '../../../composition/hooks'
+import dateFormat from '../../../util/dateFormat'
+import getWeeks from '../../../util/getWeeks'
+
+const ROLLUPS = [
+  'Arbitrum',
+  'Aztec',
+  'Boba',
+  'Gluon',
+  'Hermez',
+  'Immutable X',
+  'Loopring',
+  'Metis',
+  'OMG',
+  'Optimism',
+  'StarkNet',
+  'ZkSpace',
+  'ZkSwapV2',
+  'ZkSync',
+  'dYdX',
+]
+const caches = {}
+
+const padTimestamp = (timestamp) => timestamp * 1000
+
+export default {
+  components: {
+    Selector,
+    TimeDiff,
+    ChainsLogo,
+  },
+  data() {
+    return {
+      checkerData: [
+        { value: 3, label: '3m' },
+        { value: 6, label: '6m' },
+        { value: 12, label: '1y' },
+        { value: 'Max', label: 'Max' },
+      ],
+      defaultSort: { prop: 'txs', order: 'descending' },
+      baseChartData: {},
+      currentChartTime: 6,
+    }
+  },
+  computed: {
+    isMobile() {
+      return isMobile.value
+    },
+    filteredChartData() {
+      const data = this.baseChartData
+      if (!data || !data.tx_data) {
+        return []
+      }
+      let arr = []
+      if ([3, 6, 12].includes(this.currentChartTime)) {
+        arr = Array.from(
+          { length: 30 * this.currentChartTime },
+          (_, i) => i + 1
+        )
+      } else {
+        arr = data.tx_data ? Object.keys(data.tx_data) : []
+      }
+      return arr.map((item) => data.tx_data[item])
+    },
+    latestData() {
+      const data = this.baseChartData
+      if (!data || !data.tx_data) {
+        return undefined
+      }
+      return data.tx_data[1]
+    },
+    latestDataRank() {
+      if (!this.latestData) {
+        return []
+      }
+      return Object.keys(this.latestData.rollups)
+        .map((item) => ({
+          name: item,
+          transactions: this.latestData.rollups[item],
+        }))
+        .sort((a, b) => b.transactions - a.transactions)
+        .slice(0, 10)
+        .map((item, i) => ({ ...item, no: i + 1 }))
+    },
+    isLightMode() {
+      return this.$store.state.themeMode === 'light'
+    },
+  },
+  watch: {
+    filteredChartData() {
+      this._chart && this._chart.setOption(this._getChartOptions())
+    },
+    isLightMode() {
+      this._chart && this._chart.setOption(this._getChartOptions())
+    },
+  },
+  async mounted() {
+    this._initChart()
+    this.$loader.show()
+    this.baseChartData = await getMainpageRollup()
+    this.$loader.hide()
+    window.addEventListener('resize', this._onResize)
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this._onResize)
+  },
+  methods: {
+    numeral,
+    dateFormat,
+    _onResize() {
+      this._chart && this._chart.resize()
+    },
+    _initChart() {
+      const chartDom = document.getElementById('l2-data-chart')
+      const chart = echarts.init(chartDom)
+      this._chart = chart
+    },
+    _getChartOptions() {
+      const { times, data } = this._getData()
+
+      const options = {
+        title: { show: false },
+        grid: {
+          top: 10,
+          left: '30',
+          right: '30',
+          bottom: '26',
+          containLabel: true,
+        },
+        legend: {
+          right: 0,
+          lineStyle: {
+            color: 'rgba(245, 245, 245, 1)',
+            width: 1,
+          },
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: times,
+          axisTick: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                ? ' rgba(51, 51, 51, 0.2)'
+                : 'rgba(255, 255, 255, 0.2)',
+            },
+          },
+          axisLabel: {
+            padding: [0, 5, 0, 5],
+            formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
+          },
+        },
+        yAxis: {
+          type: 'value',
+          axisTick: {
+            show: false,
+          },
+          splitNumber: 3,
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgb(246, 246, 246)'
+                : 'rgb(63, 65, 91)',
+            },
+          },
+          axisPointer: { show: false },
+        },
+        tooltip: {
+          trigger: 'axis',
+          pading: 0,
+          backgroundColor: 'transparent',
+          formatter: this._onFormatter,
+          position: function (pos, params, dom, rect, size) {
+            const obj = { top: 40 }
+            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5
+            return obj
+          },
+        },
+        series: [
+          {
+            type: 'line',
+            stack: 'Total',
+            smooth: true,
+            lineStyle: { width: 4, color: '#DF2E2D' },
+            showSymbol: false,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: 'rgba(232, 94, 36, 0.24)' },
+                { offset: 1, color: 'rgba(232, 94, 36, 0)' },
+              ]),
+            },
+            emphasis: {
+              focus: 'series',
+            },
+            data: data,
+          },
+        ],
+      }
+      if (this.isMobile) {
+        options.grid = {
+          top: 10,
+          left: '0',
+          right: '0',
+          bottom: '20',
+          containLabel: true,
+        }
+      }
+      return options
+    },
+    _getData() {
+      const currentChartTime = this.currentChartTime
+      if ([3, 6].includes(currentChartTime)) {
+        return {
+          times: this.filteredChartData
+            .map((item) => padTimestamp(item.timestamp))
+            .reverse(),
+          data: this.filteredChartData.map((item) => item.all).reverse(),
+        }
+      }
+      if ([12, 'Max'].includes(currentChartTime)) {
+        const startTime =
+          currentChartTime === 12
+            ? new Date().getTime() - 60 * 60 * 24 * 360 * 1000
+            : padTimestamp(
+                this.filteredChartData[this.filteredChartData.length - 1]
+                  .timestamp
+              )
+
+        const weeks = getWeeks(startTime)
+        const data = weeks
+          .map((time) =>
+            this.filteredChartData
+              .filter(
+                (item) =>
+                  padTimestamp(item.timestamp) > time.start &&
+                  padTimestamp(item.timestamp) < time.end
+              )
+              .reduce((total, item) => total + item.all, 0)
+          )
+          .reverse()
+        return {
+          times: weeks.map((item) => item.end).reverse(),
+          data,
+        }
+      }
+    },
+    _onFormatter([params]) {
+      let rollups = {}
+      if (caches[params.axisValue]) {
+        rollups = caches[params.axisValue]
+      } else {
+        const data = this._getRollupsByTime(params.axisValue)
+        rollups = Object.keys(data)
+          .map((item) => ({
+            name: item,
+            value: data[item],
+          }))
+          .sort((a, b) => b.value - a.value)
+        caches[params.axisValue] = rollups
+      }
+
+      if (!rollups.length) return undefined
+
+      const date = new Date(parseInt(params.axisValue)).getTime()
+      const start = date - 24 * 60 * 60 * 7 * 1000
+      const title = [3, 6].includes(this.currentChartTime)
+        ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
+        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
+            date,
+            'yyyy-MM-dd'
+          )}`
+
+      const firstData = rollups.slice(0, 10)
+      const lastData = rollups.slice(10).reduce(
+        (mome, item) => ({
+          name: 'Others',
+          value: mome.value ? mome.value + item.value : item.value,
+        }),
+        {}
+      )
+
+      return `<div class="chart-popover-content">
+                <div class="chart-popover-title">${title}</div>
+                  <div class="chart-popover-total-transactions">
+                    Total Transactions: <span>${numeral(params.data).format(
+                      '0,0'
+                    )}</span>
+                    </div>
+                    <div class="chart-popover-rollups">
+                    ${firstData
+                      .concat([lastData])
+                      .map(
+                        (rollup) =>
+                          `<div class="chart-popover-rollup">
+                            <div class="name">${rollup.name}</div>
+                            <div class="transactions">
+                                ${numeral(rollup.value).format('0,0')}
+                            </div>
+                            <div class="percentage">
+                                ${numeral(rollup.value / params.data).format(
+                                  '0.00%'
+                                )}
+                            </div>
+                          </div> `
+                      )
+                      .join('')}
+                </div>
+              </div>`
+    },
+    _getRollupsByTime(axisValue) {
+      if ([3, 6].includes(this.currentChartTime)) {
+        return this.filteredChartData.find(
+          ({ timestamp }) => timestamp * 1000 === parseInt(axisValue)
+        ).rollups
+      }
+
+      const end = new Date(parseInt(axisValue)).getTime()
+      const start = end - 24 * 60 * 60 * 7 * 1000
+
+      const data = this.filteredChartData.filter((item) => {
+        return (
+          padTimestamp(item.timestamp) > start &&
+          padTimestamp(item.timestamp) < end
+        )
+      })
+      return data.reduce((mome, item) => {
+        ROLLUPS.forEach((rollup) => {
+          const newRollup = item.rollups[rollup]
+          mome[rollup] = !mome[rollup] ? newRollup : mome[rollup] + newRollup
+        })
+        return mome
+      }, {})
+    },
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+.chart-wrapper {
+  display: flex;
+  background: var(--light-page-bg);
+  border-radius: 20px;
+  .chart {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    flex: 1;
+    width: 50%;
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 30px;
+      height: 80px;
+      .title {
+        font-style: normal;
+        font-weight: 700;
+        font-size: 16px;
+        color: #333333;
+      }
+    }
+    #l2-data-chart {
+      width: 100%;
+      height: 220px;
+    }
+  }
+  .rollups {
+    flex: 1;
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      position: relative;
+      height: 80px;
+      padding: 0 30px;
+      .title {
+        font-weight: 700;
+        font-size: 16px;
+        color: #333333;
+        margin-right: 10px;
+      }
+      .more {
+        font-style: normal;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 30px;
+        font-weight: 400;
+        font-size: 14px;
+        color: #df2e2d;
+        cursor: pointer;
+        font-family: 'Inter Regular';
+        img {
+          margin-left: 5px;
+        }
+      }
+    }
+    .contents {
+      display: flex;
+      height: 210px;
+      padding: 0 30px 30px 30px;
+      margin-top: 10px;
+      .item {
+        display: flex;
+        align-items: center;
+        height: 36px;
+        font-size: 14px;
+        position: relative;
+        .no {
+          font-style: normal;
+          font-weight: 700;
+          font-size: 14px;
+          color: #333333;
+          margin-right: 8px;
+          width: 17px;
+        }
+        img {
+          margin-right: 8px;
+        }
+        .name {
+          font-style: normal;
+          font-weight: 700;
+          font-size: 14px;
+          color: rgba(51, 51, 51, 0.8);
+        }
+        .num {
+          position: absolute;
+          right: 0px;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 14px;
+          font-family: 'Inter Regular';
+          color: rgba(51, 51, 51, 0.4);
+        }
+      }
+      .content1 {
+        flex: 1;
+        margin-right: 50px;
+      }
+      .content2 {
+        flex: 1;
+      }
+    }
+  }
+}
+.dark-body {
+  .chart-wrapper {
+    background: var(--dark-page-bg);
+    .chart {
+      .head {
+        .title {
+          color: #fff;
+        }
+      }
+    }
+  }
+  .rollups {
+    .head {
+      .title {
+        color: #fff;
+      }
+    }
+    .contents {
+      .item {
+        .no {
+          color: #fff;
+        }
+        .name {
+          color: rgba(255, 255, 255, 0.6);
+        }
+        .num {
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+}
+@media (max-width: 820px) {
+  .chart-wrapper {
+    flex-direction: column;
+    align-items: center;
+    .chart {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      height: auto;
+      padding: 30px 30px 0 30px;
+      .head {
+        align-items: flex-start;
+        justify-content: flex-start;
+        flex-direction: column;
+        height: auto;
+        padding: 0;
+        .title {
+          margin-bottom: 28px;
+        }
+        .checke-wrap {
+          margin-bottom: 18px;
+        }
+      }
+      #l2-data-chart {
+        height: 184px;
+        width: 100%;
+      }
+    }
+    .rollups {
+      flex: auto;
+      width: 100%;
+      padding: 0 30px 30px 30px;
+      .head {
+        padding: 0;
+        .more {
+          right: 0;
+        }
+      }
+      .contents {
+        flex-direction: column;
+        height: auto;
+        padding: 0;
+        margin-top: 0;
+        .content1,
+        .content2 {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}
+</style>
+
+<style lang="scss">
+.chart-popover-content {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 20px;
+  width: 280px;
+  color: #333333;
+  background: #fff;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  font-style: normal;
+  font-size: 14px;
+  .chart-popover-title {
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .chart-popover-total-transactions {
+    font-weight: 700;
+    margin-bottom: 10px;
+    span {
+      color: #df2e2d;
+    }
+  }
+  .chart-popover-rollups {
+    .chart-popover-rollup {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 24px;
+      font-size: 12px;
+      font-family: 'Inter Regular';
+      .name {
+        font-weight: 500;
+      }
+      .transactions {
+        text-align: right;
+        flex: 2;
+        color: rgba(51, 51, 51, 0.8);
+      }
+      .percentage {
+        text-align: right;
+        flex: 0 0 42px;
+        margin-left: 20px;
+        color: rgba(51, 51, 51, 0.4);
+      }
+    }
+  }
+}
+.dark-body {
+  .chart-popover-content {
+    background: #4d4f6c;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+    color: #ffffff;
+    .chart-popover-total-transactions {
+      span {
+        color: #df2e2d;
+      }
+    }
+    .chart-popover-rollups {
+      .chart-popover-rollup {
+        .transactions {
+          color: rgba(255, 255, 255, 0.8);
+        }
+        .percentage {
+          color: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+  }
+}
+</style>
