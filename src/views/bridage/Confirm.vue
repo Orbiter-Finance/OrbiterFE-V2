@@ -106,7 +106,7 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
-// import { localWeb3 } from '../../constants/contract/localWeb3'
+import { localWeb3 } from '../../util/constants/contract/localWeb3'
 import {
   sendTransfer,
   getStarkMakerAddress,
@@ -140,7 +140,7 @@ import { providers } from 'ethers'
 const {
   walletDispatchersOnSignature,
   walletDispatchersOnSwitchChain,
-  walletDispatchersOnContractSignature,
+  walletConnectSendTransaction,
 } = walletDispatchers
 
 export default {
@@ -980,7 +980,6 @@ export default {
         this.transferLoading = false
         return
       }
-
       try {
         const dydxHelper = new DydxHelper(
           fromChainID,
@@ -1040,31 +1039,41 @@ export default {
 
       try {
         const { transferExt } = transferDataState
-
+        const amount = ethers.BigNumber.from(value)
+        let transferHash = ''
+        const toAddress = selectMakerInfo.makerAddress
         if (compatibleGlobalWalletConf.value.walletType == WALLETCONNECT) {
-          //  const _web3 = localWeb3(fromChainID)
-          //   const tokenContract = new _web3.eth.Contract(Coin_ABI, tokenAddress)
-          // const tokenTransferData = await tokenContract.methods
-          //   .transfer(receiverAddress, _web3.utils.toHex(value))
-          //   .encodeABI()
-          //         if (util.isEthTokenAddress(contractAddress)) {
-          //     // get contract data
-          //    const result = await walletConnectSendTransaction(fromChainID, from, contractAddress,amount, crossAddress.transferHex());
-          //     return
-          //         }else {
-          //     return;
-          //         }
+          const web3 = localWeb3(fromChainID)
+          const provider = new ethers.providers.Web3Provider(
+            web3.currentProvider
+          )
+          const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(from))
+          if (util.isEthTokenAddress(contractAddress)) {
+            transferHash = await  await crossAddress.wallConnTransfer(toAddress,value,transferExt )
+          } else {
+            transferHash = await crossAddress.walletConnTransferERC20( contractAddress,
+              selectMakerInfo.makerAddress,
+              amount,
+              transferExt)
+          }
+          if (transferHash) {
+            this.onTransferSucceed(
+              from,
+              selectMakerInfo,
+              value,
+              fromChainID,
+              transferHash
+            )
+          }
+          return
         }
+
         const provider = new ethers.providers.Web3Provider(
           compatibleGlobalWalletConf.value.walletPayload.provider
         )
         const crossAddress = new CrossAddress(provider, fromChainID)
-
-        const amount = ethers.BigNumber.from(value)
-        let transactionHash = ''
-
         if (util.isEthTokenAddress(contractAddress)) {
-          transactionHash = (
+          transferHash = (
             await crossAddress.transfer(
               selectMakerInfo.makerAddress,
               amount,
@@ -1072,7 +1081,7 @@ export default {
             )
           ).hash
         } else {
-          transactionHash = (
+          transferHash = (
             await crossAddress.transferERC20(
               contractAddress,
               selectMakerInfo.makerAddress,
@@ -1081,15 +1090,18 @@ export default {
             )
           ).hash
         }
-
-        this.onTransferSucceed(
-          from,
-          selectMakerInfo,
-          value,
-          fromChainID,
-          transactionHash
-        )
+        if (transferHash) {
+          this.onTransferSucceed(
+            from,
+            selectMakerInfo,
+            value,
+            fromChainID,
+            transferHash
+          )
+        }
+        return
       } catch (err) {
+        console.log(err)
         this.$notify.error({
           title: err?.data?.message || err.message,
           duration: 3000,
@@ -1244,19 +1256,27 @@ export default {
           )
         } else {
           // When tokenAddress is erc20
-          const matchSignatureDispatcher =
-            walletDispatchersOnContractSignature[
-              compatibleGlobalWalletConf.value.walletType
-            ]
-          if (matchSignatureDispatcher) {
-            matchSignatureDispatcher(
-              account,
-              selectMakerInfo,
-              tValue.tAmount,
+          if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+            const web3 = new Web3()
+            const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
+            const tokenTransferData = await tokenContract.methods
+              .transfer(to, web3.utils.toHex(tValue.tAmount))
+              .encodeABI()
+            return walletConnectSendTransaction(
               fromChainID,
-              this.onTransferSucceed
-            )
-            return
+              account,
+              tokenAddress,
+              0,
+              tokenTransferData
+            ).then((hash) => {
+              this.onTransferSucceed(
+                account,
+                selectMakerInfo,
+                tValue.tAmount,
+                fromChainID,
+                hash
+              )
+            })
           }
           const transferContract = getTransferContract(
             fromChainID,

@@ -20,6 +20,7 @@
     "@vue/composition-api": "^1.7.0",
     "@walletconnect/client": "^1.7.8",
     "@walletconnect/qrcode-modal": "^1.7.8",
+    "@walletconnect/web3-provider": "^1.7.8",
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
     "bignumber.js": "^9.0.1",
@@ -42,6 +43,7 @@
     "vue-gtag": "^1.16.1",
     "vue-router": "^3.0.7",
     "vuex": "^3.6.0",
+    "walletconnect": "^1.7.8",
     "web3": "^1.7.4",
     "zksync": "^0.11.3",
     "zksync-web3": "^0.7.9"
