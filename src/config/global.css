@@ -6,6 +6,7 @@
   --top-nav-height: 5.2rem;
 
   --bottom-nav-height: 8rem;
+  --font-size:10px
 }
 
 /* override the element component style */
@@ -33,7 +34,9 @@
   src: url('../assets/fonts/Inter-Regular-9.otf');
   font-stretch: 100%;
 }
-
+html{
+  font-size: var(--font-size) !important;
+}
 html,
 body {
   width: 100%;

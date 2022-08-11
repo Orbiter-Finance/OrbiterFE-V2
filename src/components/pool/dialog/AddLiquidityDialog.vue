@@ -349,93 +349,97 @@ export default {
     async confirmAddLiquidity() {
       this.isLoading = true
       let singer = this.getProviderSigner()
-      await util.ensureMetamaskNetwork(
-        this.$env.localChainID_netChainID[
-          this.poolNetworkOrTokenConfig.toChainId
-        ]
-      )
-      const coinToken = new ethers.Contract(
-        this.poolNetworkOrTokenConfig.toChainAddress[
-          this.poolNetworkOrTokenConfig.toChainId
-        ],
-        getCoinContractABI(),
-        singer
-      )
-      const dTokenInstance = this.getDTokenContract(
-        this.poolNetworkOrTokenConfig.toChainId,
-        singer
-      )
-      const account = await singer.getAddress()
-      const allowanceAmount = await coinToken.allowance(
-        account,
-        this.poolNetworkOrTokenConfig.dTokenAddresses[
-          this.destChainInfo.tokenName
-        ][this.poolNetworkOrTokenConfig.toChainId]
-      )
-      const coinBalance = await coinToken.balanceOf(account)
-      if (ethers.utils.parseEther(this.transferValue).isZero()) return
-      if (
-        ethers.BigNumber.from(ethers.utils.parseEther(this.transferValue)).gt(
-          coinBalance
+      try {
+        await util.ensureMetamaskNetwork(
+          this.$env.localChainID_netChainID[
+            this.poolNetworkOrTokenConfig.toChainId
+          ]
         )
-      ) {
-        util.showMessage(
-          'Your account balance is ' +
-            ethers.utils.formatEther(coinBalance) +
-            ' DAI ',
-          'warning'
+        const coinToken = new ethers.Contract(
+          this.poolNetworkOrTokenConfig.toChainAddress[
+            this.poolNetworkOrTokenConfig.toChainId
+          ],
+          getCoinContractABI(),
+          singer
         )
-        return
-      }
-      if (
-        ethers.BigNumber.from(allowanceAmount).lt(
-          ethers.utils.parseEther(this.transferValue)
+        const dTokenInstance = this.getDTokenContract(
+          this.poolNetworkOrTokenConfig.toChainId,
+          singer
         )
-      ) {
-        await coinToken.approve(
+        const account = await singer.getAddress()
+        const allowanceAmount = await coinToken.allowance(
+          account,
           this.poolNetworkOrTokenConfig.dTokenAddresses[
             this.destChainInfo.tokenName
-          ][this.poolNetworkOrTokenConfig.toChainId],
-          ethers.constants.MaxUint256
+          ][this.poolNetworkOrTokenConfig.toChainId]
         )
-      } else {
-        let overrides = {
-          from: account,
-          gasLimit: 1000000,
-        }
-        try {
-          this.updateLiquidityDataStatus({
-            type: 'addLiquidityLoading',
-            localID: this.destChainInfo.localID,
-            tokenName: this.destChainInfo.tokenName,
-          })
-          let tx = await dTokenInstance.mint(
-            ethers.utils.parseEther(this.transferValue),
-            overrides
+        const coinBalance = await coinToken.balanceOf(account)
+        if (ethers.utils.parseEther(this.transferValue).isZero()) return
+        if (
+          ethers.BigNumber.from(ethers.utils.parseEther(this.transferValue)).gt(
+            coinBalance
           )
-          this.$notify.success({
-            title: tx.hash,
-            duration: 3000,
-          })
-          this.closeAddLiquidityDialog()
-          await tx.wait()
-          util.showMessage('Add Liquidity Success', 'success')
-          this.transferValue = ''
-          this.$emit('updateLiquidity')
-        } catch (error) {
-          this.$notify.error({
-            title: error.message,
-            duration: 3000,
-          })
-        } finally {
-          this.isLoading = false
-          console.log('123123123')
-          this.updateLiquidityDataStatus({
-            type: 'addLiquidityLoading',
-            localID: this.destChainInfo.localID,
-            tokenName: this.destChainInfo.tokenName,
-          })
+        ) {
+          util.showMessage(
+            'Your account balance is ' +
+              ethers.utils.formatEther(coinBalance) +
+              ' DAI ',
+            'warning'
+          )
+          return
         }
+        if (
+          ethers.BigNumber.from(allowanceAmount).lt(
+            ethers.utils.parseEther(this.transferValue)
+          )
+        ) {
+          await coinToken.approve(
+            this.poolNetworkOrTokenConfig.dTokenAddresses[
+              this.destChainInfo.tokenName
+            ][this.poolNetworkOrTokenConfig.toChainId],
+            ethers.constants.MaxUint256
+          )
+        } else {
+          let overrides = {
+            from: account,
+            gasLimit: 1000000,
+          }
+          try {
+            this.updateLiquidityDataStatus({
+              type: 'addLiquidityLoading',
+              localID: this.destChainInfo.localID,
+              tokenName: this.destChainInfo.tokenName,
+            })
+            let tx = await dTokenInstance.mint(
+              ethers.utils.parseEther(this.transferValue),
+              overrides
+            )
+            this.$notify.success({
+              title: tx.hash,
+              duration: 3000,
+            })
+            this.closeAddLiquidityDialog()
+            await tx.wait()
+            util.showMessage('Add Liquidity Success', 'success')
+            this.transferValue = ''
+            this.$emit('updateLiquidity')
+          } catch (error) {
+            this.$notify.error({
+              title: error.message,
+              duration: 3000,
+            })
+          } finally {
+            this.updateLiquidityDataStatus({
+              type: 'addLiquidityLoading',
+              localID: this.destChainInfo.localID,
+              tokenName: this.destChainInfo.tokenName,
+            })
+          }
+        }
+      } catch (error) {
+        //
+      } finally {
+        this.isLoading = false
       }
     },
   },

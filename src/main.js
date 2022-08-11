@@ -5,6 +5,7 @@ import router from './router'
 import { store } from './store'
 import './config/theme.scss'
 import './config/global.css'
+import './util/rem'
 import env from '../env'
 
 import './icons'
