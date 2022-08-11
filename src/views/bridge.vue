@@ -40,7 +40,7 @@
               it.
             </div>
             <div @click="clickLearnMore" class="maker-link">LEARN MORE</div>
-            <div class="maker-foot-btn">COMING SOON</div>
+            <div class="maker-foot-btn">Connect a Wallet</div>
           </div>
         </div>
       </div>
