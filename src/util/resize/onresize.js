@@ -34,7 +34,7 @@ let vh = window.innerHeight * 0.01
 // Then we set the value in the --vh custom property to the root of the document
 document.documentElement.style.setProperty('--vh', `${vh}px`)
 
-window.onresize = function() {
+window.onresize = function () {
   if (Date.now() - lastClick >= ms) {
     init()
     lastClick = Date.now()

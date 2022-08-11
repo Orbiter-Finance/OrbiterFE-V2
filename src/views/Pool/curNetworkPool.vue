@@ -179,14 +179,16 @@ export default {
   components: { SvgIconThemed, CommLoading, PoolAddLiquidity, allNetworkPool },
   computed: {
     ...mapState(['curPage', 'web3', 'poolNetworkOrTokenConfig']),
-    ...mapGetters(['getCurNetworkLiquidityData']),
+    ...mapGetters(['getCurNetworkLiquidityData', 'HasOrNotTrading']),
     isLoading() {
       return this.getCurNetworkLiquidityData.length === 0 ? true : false
     },
   },
   watch: {
     'curPage.NetworkliquidityState': function () {
-      this.getCurNetworkliquidityData()
+      if (!this.HasOrNotTrading) {
+        this.getCurNetworkliquidityData()
+      }
       this.updatePoolNetworkOrTokenConfig({
         type: 'toChainId',
         value: parseInt(this.curPage.NetworkliquidityState),

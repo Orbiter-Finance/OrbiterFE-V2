@@ -75,7 +75,7 @@
       </div>
       <div class="add-liquidity-buttom">
         <span
-          class="option-button"
+          :class="['option-button', { Loading: isLoading }]"
           @click="isLoading ? '' : confirmAddLiquidity()"
         >
           <template v-if="!isLoading"> Confirm and Add Liquidity </template>
@@ -687,6 +687,9 @@ export default {
             ),
             linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
           box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
+        }
+        &.Loading {
+          background: #ca2221;
         }
       }
     }

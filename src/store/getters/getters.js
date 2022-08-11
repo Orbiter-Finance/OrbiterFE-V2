@@ -93,4 +93,12 @@ export default {
     })
     return dest
   },
+  HasOrNotTrading(state) {
+    return (
+      state.liquidityData.findIndex(
+        (item) =>
+          item.addLiquidityLoading === true || item.reduceLoading === true
+      ) !== -1
+    )
+  },
 }

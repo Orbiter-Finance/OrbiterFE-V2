@@ -335,6 +335,45 @@
     }
   }
   // ---------- Proceed component / end ----------
+  // —————————— AddLiquidityDialog component / start ----------
+  .dialog-bg {
+    background: rgba(51, 51, 51, 0.2);
+    .add-liquidity-dialog {
+      background: var(--dark-page-bg);
+      color: var(--dark-page-box-color);
+      box-shadow: 0rem 0.8rem 3rem rgba(0, 0, 0, 0.16);
+      .add-liquidity-content {
+        .liquidity-network {
+          .liquidity-value {
+            background: var(--dark-page-box-bg);
+            color: var(--dark-page-box-color);
+            &:hover {
+              background: #535571;
+            }
+          }
+        }
+        .liquidity-token {
+          .liquidity-value {
+            background: var(--dark-page-box-bg);
+            color: var(--dark-page-box-color);
+            .bottomItem {
+              input::placeholder {
+                color: rgba(255, 255, 255, 0.2) !important;
+              }
+              .maxBtn {
+                color: #1dfff1;
+              }
+              .right {
+                color: hsla(0, 0%, 100%, 0.8);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // —————————— AddLiquidityDialog component / end ----------
   // —————————— allNetworkPool component / start ----------
   .history-page {
     .history-content {
