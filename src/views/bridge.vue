@@ -32,7 +32,7 @@
         class="pool-box"
       >
         <cur-network-pool v-if="makerInfoStatus && isLogin" />
-        <div class="maker-box" v-else>
+        <div class="maker-box" style="margin: 0 auto" v-else>
           <div class="maker-title">About Maker</div>
           <div class="maker-content">
             <div>
@@ -45,28 +45,12 @@
         </div>
       </div>
     </template>
-    <!-- <div
-      v-show="curPage.Status !== '1' || showDetail"
-      style="width: 100%; height: 100%"
-      class="center"
-    >
-      <Proceed
-        v-if="showDetail"
-        :detailData="detailData"
-        @stateChanged="changeState"
-      />
-      <template v-else>
-        <Confirm v-if="curPage.Status === '2'" @stateChanged="changeState" />
-        <Proceed v-if="curPage.Status === '3'" @stateChanged="changeState" />
-      </template>
-    </div> -->
   </div>
 </template>
 
 <script>
 import { curNetworkPool, sender, maker } from './'
 import { ToggleBtn } from '../components'
-// import makerInfo from '../core/routes/makerInfo'
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
@@ -86,8 +70,6 @@ export default {
   },
   async mounted() {
     this.makerInfoStatus = await this.getMakerInfoList()
-    console.log('show')
-    // console.log(await this.getMakerInfoList())
   },
   methods: {
     ...mapMutations(['togglePageTab']),

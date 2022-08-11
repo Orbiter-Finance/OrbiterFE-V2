@@ -33,7 +33,7 @@
       </div>
       <div class="pool-box-main">
         <CommLoading
-          v-if="isLoading && getCurNetworkLiquidityData.length === 0"
+          v-if="isLoading"
           style="margin: auto; margin-top: 5rem"
           width="4rem"
           height="4rem"
@@ -178,8 +178,11 @@ export default {
   name: 'curNetworkPool',
   components: { SvgIconThemed, CommLoading, PoolAddLiquidity, allNetworkPool },
   computed: {
-    ...mapState(['curPage', 'poolNetworkOrTokenConfig']),
+    ...mapState(['curPage', 'web3', 'poolNetworkOrTokenConfig']),
     ...mapGetters(['getCurNetworkLiquidityData']),
+    isLoading() {
+      return this.getCurNetworkLiquidityData.length === 0 ? true : false
+    },
   },
   watch: {
     'curPage.NetworkliquidityState': function () {
@@ -189,10 +192,12 @@ export default {
         value: parseInt(this.curPage.NetworkliquidityState),
       })
     },
+    'web3.coinbase': function () {
+      this.getCurNetworkliquidityData()
+    },
   },
   data() {
     return {
-      isLoading: true,
       curPoolMode: false,
       tokenInfoArray: [],
       toChainId: 0,
@@ -201,6 +206,7 @@ export default {
   },
   mounted() {
     this.getAllNetwork()
+    console.log('122', this.getCurNetworkLiquidityData.length === 0)
   },
   methods: {
     ...mapMutations([
@@ -318,38 +324,31 @@ export default {
         localID: toChainId,
         tokenName: await dTokenInstance.symbol(),
         amount: ethers.utils.formatEther(balanceAmount),
-        apr: apy == 0 ? 1.11 : apy,
+        apr: apy,
       }
       return chainData
     },
     async getCurNetworkliquidityData() {
       try {
-        this.isLoading = true
         let promiseList = []
         for (
           let index = 0,
-            len = this.poolNetworkOrTokenConfig.NetworkArray.length;
-          index < len;
+            tokenArray = Object.keys(
+              this.poolNetworkOrTokenConfig.dTokenAddresses
+            ),
+            tokenArrayLength = tokenArray.length,
+            networkLength = this.poolNetworkOrTokenConfig.NetworkArray.length;
+          index < tokenArrayLength;
           index++
         ) {
-          const tokenName = 'DToken'
-          const item = this.poolNetworkOrTokenConfig.NetworkArray[index]
-          promiseList.push(() => this.getLiquidityData(tokenName, item))
-        }
-        for (
-          let index = 0,
-            len = this.poolNetworkOrTokenConfig.NetworkArray.length;
-          index < len;
-          index++
-        ) {
-          const tokenName = 'USDC'
-          const item = this.poolNetworkOrTokenConfig.NetworkArray[index]
-          promiseList.push(() => this.getLiquidityData(tokenName, item))
+          for (let i = 0; i < networkLength; i++) {
+            const tokenName = tokenArray[index]
+            const item = this.poolNetworkOrTokenConfig.NetworkArray[i]
+            promiseList.push(() => this.getLiquidityData(tokenName, item))
+          }
         }
         let res = await Promise.all(promiseList.map((fun) => fun()))
-        console.log(res)
         this.updateLiquidityData(res)
-        this.isLoading = false
       } catch (error) {
         console.log(error, 'error')
         util.showMessage('Failed to get data', 'error')
@@ -372,7 +371,6 @@ export default {
       return calculationApy
     },
     async reduceLiquidity(item) {
-      console.log('item', item)
       let singer = this.getProviderSigner()
       if (
         ethers.BigNumber.from(ethers.utils.parseEther(item.liquidity)).isZero()

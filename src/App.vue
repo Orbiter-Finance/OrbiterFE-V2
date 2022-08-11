@@ -177,7 +177,6 @@ export default {
   color: var(--default-black);
   font-size: 2rem;
   height: 100%;
-  // width: 100%;
   overflow-y: scroll;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);

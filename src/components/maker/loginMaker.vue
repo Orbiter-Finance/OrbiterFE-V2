@@ -132,7 +132,7 @@ export default {
         this.toChainArray.push(makerInfo.c1ID)
       }
     })
-    this.getLquidityData()
+    // this.getLquidityData()
   },
   methods: {
     ...mapMutations(['updateLiquidityData']),
@@ -299,6 +299,7 @@ export default {
           promiseList.push(() => this.getLData(item))
         }
         let res = await Promise.all(promiseList.map((fun) => fun()))
+        console.log('loginMaker')
         this.updateLiquidityData(res)
       } catch (error) {
         console.log(error, 'error')
