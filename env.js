@@ -64,10 +64,9 @@ export default {
     77: 'https://kovan-optimistic.etherscan.io/address/',
   },
   dTokenAddresses: {
-    DToken: {
-      5: '0xA78Eb19720C6043B118FfBf48Ee5CCb019983e60', // Rinkeby
-      22: '0xF2164c10FA18A5e1795410871374BF7b34Fdc268', // ARB(Rinkeby)
-      77: '0x76D7d615fAa7A37fB0123f7C8724534e1D387c42', // OP(Kovan)
+    DAI: {
+      5: '0x05ffa6120c15C652B80c498BA7E1342f4Fc3b54E', // Rinkeby
+      22: '0x57d5779232064aa6be5C93cF05FbcaD748CbCf61', // ARB(Rinkeby)
     },
     USDC: {
       5: '0xd74194556F75ca0858B706bCaDa3796F0f7C4004', // Rinkeby

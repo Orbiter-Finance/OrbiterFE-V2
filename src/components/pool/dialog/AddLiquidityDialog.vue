@@ -198,6 +198,54 @@ export default {
         this.c2Balance = 0
       }
     },
+    'transferData.selectMakerInfo': function (newValue, oldValue) {
+      // this.updateExchangeToUsdPrice()
+
+      if (this.isLogin && oldValue !== newValue) {
+        this.c1Balance = null
+        this.c2Balance = null
+        transferCalculate
+          .getTransferBalance(
+            newValue.c1ID,
+            newValue.t1Address,
+            newValue.tName,
+            this.web3.coinbase
+          )
+          .then((response) => {
+            this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+        transferCalculate
+          .getTransferBalance(
+            newValue.c2ID,
+            newValue.t2Address,
+            newValue.tName,
+            this.web3.coinbase
+          )
+          .then((response) => {
+            this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
+      }
+    },
+    'transferData.selectTokenInfo': function (newValue) {
+      this.poolNetworkOrTokenConfig.makerInfoList.filter((makerInfo) => {
+        if (
+          (makerInfo.c1ID === this.transferData.fromChainID &&
+            makerInfo.c2ID === this.transferData.toChainID &&
+            makerInfo.tName === newValue.token) ||
+          (makerInfo.c2ID === this.transferData.fromChainID &&
+            makerInfo.c1ID === this.transferData.toChainID &&
+            makerInfo.tName === newValue.token)
+        ) {
+          this.updateTransferMakerInfo(makerInfo)
+        }
+      })
+    },
   },
   data() {
     return {
@@ -239,6 +287,7 @@ export default {
   },
   methods: {
     ...mapMutations([
+      'updateTransferMakerInfo',
       'setDialogVisible',
       'updatePoolNetworkOrTokenConfig',
       'updateLiquidityDataStatus',
@@ -399,43 +448,43 @@ export default {
             ][this.poolNetworkOrTokenConfig.toChainId],
             ethers.constants.MaxUint256
           )
-        } else {
-          let overrides = {
-            from: account,
-            gasLimit: 1000000,
-          }
-          try {
-            this.updateLiquidityDataStatus({
-              type: 'addLiquidityLoading',
-              localID: this.destChainInfo.localID,
-              tokenName: this.destChainInfo.tokenName,
-            })
-            let tx = await dTokenInstance.mint(
-              ethers.utils.parseEther(this.transferValue),
-              overrides
-            )
-            this.$notify.success({
-              title: tx.hash,
-              duration: 3000,
-            })
-            this.closeAddLiquidityDialog()
-            await tx.wait()
-            util.showMessage('Add Liquidity Success', 'success')
-            this.transferValue = ''
-            this.$emit('updateLiquidity')
-          } catch (error) {
-            this.$notify.error({
-              title: error.message,
-              duration: 3000,
-            })
-          } finally {
-            this.updateLiquidityDataStatus({
-              type: 'addLiquidityLoading',
-              localID: this.destChainInfo.localID,
-              tokenName: this.destChainInfo.tokenName,
-            })
-          }
         }
+        let overrides = {
+          from: account,
+          gasLimit: 1000000,
+        }
+        try {
+          this.updateLiquidityDataStatus({
+            type: 'addLiquidityLoading',
+            localID: this.destChainInfo.localID,
+            tokenName: this.destChainInfo.tokenName,
+          })
+          let tx = await dTokenInstance.mint(
+            ethers.utils.parseEther(this.transferValue),
+            overrides
+          )
+          this.$notify.success({
+            title: tx.hash,
+            duration: 3000,
+          })
+          this.closeAddLiquidityDialog()
+          await tx.wait()
+          util.showMessage('Add Liquidity Success', 'success')
+          this.transferValue = ''
+          this.$emit('updateLiquidity')
+        } catch (error) {
+          this.$notify.error({
+            title: error.message,
+            duration: 3000,
+          })
+        } finally {
+          this.updateLiquidityDataStatus({
+            type: 'addLiquidityLoading',
+            localID: this.destChainInfo.localID,
+            tokenName: this.destChainInfo.tokenName,
+          })
+        }
+        // }
       } catch (error) {
         //
       } finally {

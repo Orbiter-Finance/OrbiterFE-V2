@@ -103,6 +103,40 @@ const nowMakerList = [
   //     },
   //   ],
   // },
+  // USDC
+  {
+    makerAddress: '0x49377441951437beE356D7d90a16dFF97C66fBB0',
+    c1ID: 5,
+    c2ID: 22,
+    c1Name: 'rinkeby',
+    c2Name: 'arbitrum(test)',
+    t1Address: '0x2e055eEe18284513B993dB7568A592679aB13188',
+    t2Address: '0xAe60819A0258e8D34580bf26C755331e8B4B79b4',
+    tName: 'USDC',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 10,
+    c2MinPrice: 1,
+    c2MaxPrice: 10,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0,
+    c2TradingFee: 0,
+    c1GasFee: 0,
+    c2GasFee: 0,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+  },
 ]
 
 export default {
