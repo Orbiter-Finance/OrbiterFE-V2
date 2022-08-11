@@ -4,9 +4,12 @@
       <div class="title">
         <img
           src="../../assets/pizza.png"
-          width="24px"
-          height="24px"
-          style="transform: rotate(90deg); margin-right: 10px"
+          style="
+            transform: rotate(90deg);
+            margin-right: 1rem;
+            width: 2.4rem;
+            height: 2.4rem;
+          "
         />
         Add Liquidity in Pizza Pool
       </div>
@@ -28,7 +31,7 @@
           v-else-if="
             !isLoading && Object.values(getAllNetworkLiquidityData).length === 0
           "
-          style="padding-top: 200px"
+          style="padding-top: 20rem"
           >No history</NoData
         >
         <template v-else>
@@ -47,7 +50,7 @@
                   <div class="col col-value">
                     <svg-icon
                       :iconName="chainIcon(detail.localID)"
-                      style="width: 24px; height: 24px"
+                      style="width: 2.4rem; height: 2.4rem"
                     ></svg-icon>
                     <span class="icon-label">{{
                       chainName(detail.localID)
@@ -55,7 +58,7 @@
                   </div>
                   <div class="col col-value">
                     <img
-                      style="width: 24px; height: 24px"
+                      style="width: 2.4rem; height: 2.4rem"
                       :src="detail.tokenSrc"
                     />
                     <span class="icon-label">{{ detail.tokenName }}</span>
@@ -205,24 +208,18 @@ export default {
 <style scoped lang="scss">
 .app {
   .history-page {
-    border-radius: 20px;
+    border-radius: 2rem;
     .history-content {
-      min-height: 400px;
-      width: 950px;
+      min-height: 40rem;
+      width: 95rem;
       .table {
-        .table-header {
-          // padding: 4px 20px;
-        }
-        .col {
-          // margin-right: 26px;
-        }
         .col-5 {
-          margin-right: 0 !important;
+          margin-right: 0rem !important;
         }
         .contentItem {
-          padding: 4px 20px;
+          padding: 0.4rem 2rem;
           .col-val {
-            margin-right: 26px;
+            margin-right: 2.6rem;
             text-align: left;
           }
         }
@@ -233,34 +230,34 @@ export default {
 .app-mobile {
   .history-page {
     .history-content {
-      min-width: 335px;
+      min-width: 33.5rem;
       height: 100%;
-      min-height: 300px;
+      min-height: 30rem;
       // overflow-y: scroll;
       // overflow-x: hidden;
       .table {
         .col-1 {
-          min-width: 16px;
-          min-height: 16px;
-          margin-left: 12px;
-          margin-right: 10px;
+          min-width: 1.6rem;
+          min-height: 1.6rem;
+          margin-left: 1.2rem;
+          margin-right: 1rem;
         }
         .col-2 {
-          min-width: 100px;
+          min-width: 10rem;
         }
         .col-3 {
-          min-width: 120px;
+          min-width: 12rem;
         }
         .col-4 {
-          min-width: 33px;
-          margin-right: 8px;
+          min-width: 3.3rem;
+          margin-right: 0.8rem;
         }
         .col-5 {
-          // min-width: 32px;
-          min-width: 38px;
+          // min-width: 3.2rem;
+          min-width: 3.8rem;
         }
         .contentItem {
-          min-width: 335px;
+          min-width: 33.5rem;
           .col-val {
             text-align: left;
           }
@@ -279,16 +276,16 @@ export default {
   height: 100%;
 
   .history-content {
-    padding: 25px 40px 10px;
+    padding: 2.5rem 4rem 1rem;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 2rem;
     position: relative;
     .title {
       font-family: 'Inter';
       font-style: normal;
       font-weight: 700;
-      font-size: 20px;
-      line-height: 24px;
+      font-size: 2rem;
+      line-height: 2.4rem;
 
       /* identical to box height, or 120% */
       display: flex;
@@ -297,13 +294,13 @@ export default {
     }
     .tip {
       display: flex;
-      margin: 20px 0;
+      margin: 2rem 0;
       .tip-content {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 400;
-        font-size: 12px;
-        line-height: 20px;
+        font-size: 1.2rem;
+        line-height: 2rem;
 
         /* identical to box height, or 167% */
         display: flex;
@@ -313,23 +310,23 @@ export default {
     }
     .table {
       font-weight: 400;
-      font-size: 14px;
-      line-height: 24px;
+      font-size: 1.4rem;
+      line-height: 2.4rem;
       .allNetworkPool-body {
-        width: 870px;
-        // height: 385px;
-        border-radius: 20px;
-        padding: 20px;
-        margin-bottom: 30px;
+        width: 87rem;
+        // height: 38.5rem;
+        border-radius: 2rem;
+        padding: 2rem;
+        margin-bottom: 3rem;
         .table-header {
-          height: 32px;
+          height: 3.2rem;
           display: flex;
           align-items: flex-start;
           font-family: 'Inter';
           font-style: normal;
           font-weight: 700;
-          font-size: 16px;
-          line-height: 24px;
+          font-size: 1.6rem;
+          line-height: 2.4rem;
 
           /* identical to box height, or 150% */
           display: flex;
@@ -337,17 +334,17 @@ export default {
           letter-spacing: -0.01em;
         }
         .hr {
-          border: 1px solid rgba(0, 0, 0, 0.2);
+          border: 0.1rem solid rgba(0, 0, 0, 0.2);
         }
         .allNetworkPool-main {
-          padding: 10px 0;
+          padding: 1rem 0;
           display: flex;
           .col-value {
             font-family: 'Inter';
             font-style: normal;
             font-weight: 700;
-            font-size: 14px;
-            line-height: 24px;
+            font-size: 1.4rem;
+            line-height: 2.4rem;
 
             /* identical to box height, or 171% */
             display: flex;
@@ -362,19 +359,19 @@ export default {
               flex-direction: row;
               justify-content: center;
               align-items: center;
-              padding: 8px 24px;
-              gap: 10px;
-              height: 40px;
+              padding: 0.8rem 2.4rem;
+              gap: 1rem;
+              height: 4rem;
 
               background: #0e4c60;
-              box-shadow: inset 0px -3px 0px rgba(0, 0, 0, 0.16);
-              border-radius: 20px;
+              box-shadow: inset 0rem -0.3rem 0rem rgba(0, 0, 0, 0.16);
+              border-radius: 2rem;
 
               font-family: 'Inter';
               font-style: normal;
               font-weight: 700;
-              font-size: 16px;
-              line-height: 24px;
+              font-size: 1.6rem;
+              line-height: 2.4rem;
 
               /* identical to box height, or 150% */
               display: flex;
@@ -392,7 +389,7 @@ export default {
               }
             }
             .icon-label {
-              margin-left: 8px;
+              margin-left: 0.8rem;
             }
           }
         }
@@ -407,23 +404,23 @@ export default {
     }
 
     .pagination {
-      margin-top: 24px;
+      margin-top: 2.4rem;
       text-align: right;
     }
     .close {
       position: absolute;
-      top: 24px;
-      right: 26px;
-      width: 12px;
-      height: 12px;
+      top: 2.4rem;
+      right: 2.6rem;
+      width: 1.2rem;
+      height: 1.2rem;
       cursor: pointer;
     }
   }
 
   .dydx-limit {
     color: #e85e24;
-    font-size: 14px;
-    padding-top: 8px;
+    font-size: 1.4rem;
+    padding-top: 0.8rem;
   }
 
   .historyContent {
@@ -435,14 +432,14 @@ export default {
       display: flex;
       position: relative;
       text-align: left;
-      height: 32px;
-      line-height: 32px;
-      margin-top: 8px;
-      margin-bottom: 8px;
+      height: 3.2rem;
+      line-height: 3.2rem;
+      margin-top: 0.8rem;
+      margin-bottom: 0.8rem;
       cursor: pointer;
     }
     .contentItem:hover {
-      border-radius: 8px;
+      border-radius: 0.8rem;
     }
   }
 }
@@ -452,18 +449,18 @@ export default {
 /* ------------- override element style --------------- */
 .history-page >>> .el-pager .number.active {
   background: #df2e2d;
-  border-radius: 8px;
+  border-radius: 0.8rem;
   color: white;
 }
 .history-page >>> .el-pager li:hover {
   color: rgba(51, 51, 51, 0.8);
   background: #f5f5f5;
-  border-radius: 8px;
+  border-radius: 0.8rem;
 }
 .dark-theme .history-page >>> .el-pager li:hover {
   color: rgba(255, 255, 255, 0.6);
   background: #3f415b;
-  border-radius: 8px;
+  border-radius: 0.8rem;
 }
 .dark-theme .history-page >>> .el-pagination button:disabled {
   background-color: #373951;
@@ -479,6 +476,6 @@ export default {
   color: rgba(255, 255, 255, 0.6);
 }
 .app-mobile .history-page >>> .el-pager li {
-  min-width: 30px !important;
+  min-width: 3rem !important;
 }
 </style>

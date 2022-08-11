@@ -26,16 +26,16 @@ export default {
   justify-content: center;
   align-items: center;
   .box-wrap {
-    width: 160px;
-    height: 76px;
+    width: 16rem;
+    height: 7.6rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     .title {
-      margin-top: 12px;
+      margin-top: 1.2rem;
       font-weight: 400;
-      font-size: 14px;
-      line-height: 24px;
+      font-size: 1.4rem;
+      line-height: 2.4rem;
     }
   }
 }

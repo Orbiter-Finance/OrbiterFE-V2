@@ -5,7 +5,7 @@
         <span>Select a Chain</span>
         <div @click="closerButton" style="position: absolute; top: 0; right: 0">
           <SvgIconThemed
-            style="width: 20px; height: 20px; cursor: pointer"
+            style="width: 2rem; height: 2rem; cursor: pointer"
             iconName="close"
           />
         </div>
@@ -131,15 +131,15 @@ export default {
 <style lang="scss" scoped>
 .app {
   .obSelectChainBody {
-    width: 320px;
-    height: 372px;
+    width: 32rem;
+    height: 37.2rem;
   }
 }
 .app-mobile {
   .obSelectChainBody {
-    width: calc(100% - 30px);
+    width: calc(100% - 3rem);
     max-height: 90vh;
-    height: 372px;
+    height: 37.2rem;
   }
 }
 .obSelectChainBody {
@@ -151,13 +151,13 @@ export default {
   height: calc(
     100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
   );
-  border-radius: 20px;
-  padding: 20px 0;
+  border-radius: 2rem;
+  padding: 2rem 0;
 
   .selectChainContent {
     // margin: 1rem 1.5rem;
     position: relative;
-    padding: 0 20px;
+    padding: 0 2rem;
 
     .topItem {
       width: 100%;
@@ -169,20 +169,20 @@ export default {
       // justify-content: space-between;
       justify-content: center;
       padding: 0 1rem;
-      margin-bottom: 18px;
+      margin-bottom: 1.8rem;
       position: relative;
     }
 
     .input {
       position: relative;
       border-radius: 2rem;
-      margin-bottom: 10px;
+      margin-bottom: 1rem;
       height: 4rem;
       width: 100%;
       outline: none;
       font-size: 1.4rem;
-      padding: 10px;
-      padding-left: 48px;
+      padding: 1rem;
+      padding-left: 4.8rem;
       border: none;
     }
 
@@ -193,14 +193,14 @@ export default {
 
     .searchIcon {
       position: absolute;
-      left: 20px;
-      top: 10px;
+      left: 2rem;
+      top: 1rem;
     }
   }
 
   .list-content-box {
     overflow-y: scroll;
-    height: calc(100% - 90px);
+    height: calc(100% - 9rem);
   }
 
   .contentItem {
@@ -208,24 +208,24 @@ export default {
     align-items: center;
     display: flex;
     position: relative;
-    padding: 10px 30px;
+    padding: 1rem 3rem;
     cursor: pointer;
     font-weight: 700;
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
 
     .logo {
       width: 2.4rem;
       height: 2.4rem;
       border-radius: 50%;
       background: rgba($color: #000000, $alpha: 0.05);
-      padding: 0.2rem;
+      padding: .2rem;
     }
 
     .right {
       text-align: right;
       position: absolute;
-      right: 0.5rem;
+      right: .5rem;
     }
   }
 }

@@ -46,7 +46,7 @@
         >
           <div class="line-content">
             <div class="content-left">
-              <img style="width: 24px; height: 24px" :src="item.tokenSrc" />
+              <img style="width: 2.4rem; height: 2.4rem" :src="item.tokenSrc" />
               <span class="token-name">{{ item.tokenName }}</span>
             </div>
             <div class="content-right">
@@ -77,7 +77,7 @@
                 <SvgIconThemed
                   class="mode-icon"
                   icon="clock"
-                  style="margin: 0 4px 0 5px"
+                  style="margin: 0 0.4rem 0 0.5rem"
                 />
                 {{ item.dayRevenueTime }}h ago</span
               >
@@ -89,9 +89,9 @@
           <hr
             width="150"
             style="
-              border: 1px dashed rgba(0, 0, 0, 0.2);
+              border: 0.1rem dashed rgba(0, 0, 0, 0.2);
               width: 100%;
-              margin-bottom: 30px;
+              margin-bottom: 3rem;
             "
           />
           <div class="line-content">
@@ -452,22 +452,22 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin: 28px 85px 21px 85px;
+  margin: 2.8rem 8.5rem 2.1rem 8.5rem;
   .network-button {
     display: flex;
     .options-item {
       display: flex;
-      // width: 83px;
-      height: 32px;
-      padding: 6px 10px;
-      border-radius: 20px;
+      // width: 8.3rem;
+      height: 3.2rem;
+      padding: 0.6rem 1rem;
+      border-radius: 2rem;
       font-family: 'Inter';
       font-style: normal;
       font-weight: 700;
-      font-size: 14px;
-      line-height: 20px;
+      font-size: 1.4rem;
+      line-height: 2rem;
       align-items: center;
-      margin-right: 10px;
+      margin-right: 1rem;
       text-align: center;
       letter-spacing: -0.01em;
 
@@ -480,16 +480,16 @@ export default {
   }
 
   .option-button {
-    width: 290px;
-    height: 50px;
+    width: 29rem;
+    height: 5rem;
     background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
-    box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
-    border-radius: 40px;
+    box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
+    border-radius: 4rem;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 700;
-    font-size: 20px;
-    line-height: 20px;
+    font-size: 2rem;
+    line-height: 2rem;
 
     /* identical to box height, or 100% */
     display: flex;
@@ -504,20 +504,20 @@ export default {
     &:active {
       background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
         linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
-      box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
+      box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
     }
   }
 }
 .pool-overview {
-  width: 950px;
-  height: 280px;
-  padding: 25px 40px;
-  border-radius: 20px;
-  margin: 0px 85px 30px;
+  width: 95rem;
+  height: 28rem;
+  padding: 2.5rem 4rem;
+  border-radius: 2rem;
+  margin: 0rem 8.5rem 3rem;
   .line-content {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
     &:last-child {
       justify-content: flex-end;
     }
@@ -534,14 +534,14 @@ export default {
         font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
-        font-size: 20px;
-        line-height: 24px;
+        font-size: 2rem;
+        line-height: 2.4rem;
 
         /* identical to box height, or 120% */
         display: flex;
         align-items: center;
         letter-spacing: -0.01em;
-        margin-left: 11px;
+        margin-left: 1.1rem;
       }
       .total-revenue {
         display: flex;
@@ -563,12 +563,12 @@ export default {
       justify-content: space-between;
     }
     .content-item {
-      height: 20px;
+      height: 2rem;
       font-family: 'Inter';
       font-style: normal;
       font-weight: 400;
-      font-size: 12px;
-      line-height: 20px;
+      font-size: 1.2rem;
+      line-height: 2rem;
 
       /* identical to box height, or 167% */
       display: flex;
@@ -576,12 +576,12 @@ export default {
       letter-spacing: -0.01em;
     }
     .content-value {
-      height: 24px;
+      height: 2.4rem;
       font-family: 'Inter';
       font-style: normal;
       font-weight: 700;
-      font-size: 18px;
-      line-height: 24px;
+      font-size: 1.8rem;
+      line-height: 2.4rem;
 
       /* identical to box height, or 133% */
       display: flex;
@@ -596,17 +596,17 @@ export default {
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      padding: 8px 24px;
-      gap: 10px;
-      height: 40px;
-      border-radius: 20px;
-      box-shadow: inset 0px -3px 0px rgba(0, 0, 0, 0.16);
+      padding: 0.8rem 2.4rem;
+      gap: 1rem;
+      height: 4rem;
+      border-radius: 2rem;
+      box-shadow: inset 0rem -0.3rem 0rem rgba(0, 0, 0, 0.16);
 
       font-family: 'Inter';
       font-style: normal;
       font-weight: 700;
-      font-size: 16px;
-      line-height: 24px;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
 
       /* identical to box height, or 150% */
       display: flex;
@@ -628,7 +628,7 @@ export default {
       &.reduce {
         width: 20.1%;
         background: rgba(51, 51, 51, 0.4);
-        margin-left: 14px;
+        margin-left: 1.4rem;
         &:not(:disabled):hover {
           background: rgba(26, 26, 26, 0.4);
         }

@@ -12,57 +12,57 @@
 
 @mixin obScrollbarLight {
   .ob-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 0.8rem;
   }
   .ob-scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
+    -webkit-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.2);
     background: rgba(51, 51, 51, 0.2);
   }
   // .ob-scrollbar::-webkit-scrollbar-track {
-  //   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  //   border-radius: 10px;
+  //   -webkit-box-shadow: inset 0 0 .5rem rgba(0,0,0,0.2);
+  //   border-radius: 1rem;
   //   background: #EDEDED;
   // }
   &.ob-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 0.8rem;
   }
   &.ob-scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
+    -webkit-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.2);
     background: rgba(51, 51, 51, 0.2);
   }
 }
 @mixin obScrollbarDark {
   .ob-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 0.8rem;
   }
   .ob-scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
+    -webkit-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.2);
     background: rgba(255, 255, 255, 0.4);
   }
   // .ob-scrollbar::-webkit-scrollbar-track {
-  //   -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-  //   border-radius: 10px;
+  //   -webkit-box-shadow: inset 0 0 .5rem rgba(0,0,0,0.2);
+  //   border-radius: 1rem;
   //   background: #535353;
   // }
 
   &.ob-scrollbar::-webkit-scrollbar {
-    width: 8px;
+    width: 0.8rem;
   }
   &.ob-scrollbar::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
+    -webkit-box-shadow: inset 0 0 0.5rem rgba(0, 0, 0, 0.2);
     background: rgba(255, 255, 255, 0.4);
   }
 }
 
 /* override the element component style */
 .dark-body .el-notification {
-  // width: 490px;
+  // width: 49rem;
   background-color: var(--dark-page-bg);
-  border: 1px solid var(--dark-page-bg);
+  border: 0.1rem solid var(--dark-page-bg);
   .el-notification__title {
     color: var(--dark-page-color);
   }
@@ -72,7 +72,7 @@
   &.app-mobile {
     .top-nav {
       .menu-outline {
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 0.1rem solid rgba(255, 255, 255, 0.2);
       }
       .drawer-body {
         background: var(--dark-page-bg);
@@ -83,13 +83,13 @@
       }
     }
     .nav-item-border-bottom {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom: 0.1rem solid rgba(255, 255, 255, 0.2);
     }
     .nav-item-border-top {
-      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      border-top: 0.1rem solid rgba(255, 255, 255, 0.2);
     }
   }
-  background-size: 100% 360px;
+  background-size: 100% 36rem;
   background-color: #28293d;
   &.app {
     @include obScrollbarDark;
@@ -122,7 +122,7 @@
     color: var(--dark-page-box-primary-color);
     .dialog {
       background: var(--dark-page-box-bg);
-      box-shadow: 0px 8px 50px rgba(0, 0, 0, 0.5);
+      box-shadow: 0rem 0.8rem 5rem rgba(0, 0, 0, 0.5);
       .select-item.selected {
         background: #28293d;
       }
@@ -200,7 +200,7 @@
     .info-box {
       .info-item {
         .border {
-          border-right: 1px solid #888;
+          border-right: 0.1rem solid #888;
         }
       }
     }
@@ -209,7 +209,7 @@
   // ---------- ObSelectChain component / start ----------
   .obSelectChainBody {
     background-color: var(--dark-page-box-bg);
-    box-shadow: 0px 8px 50px rgba(0, 0, 0, 0.5);
+    box-shadow: 0rem 0.8rem 5rem rgba(0, 0, 0, 0.5);
     color: #fff;
     .selectChainContent {
       .input {
@@ -321,7 +321,7 @@
             color: var(--dark-page-box-primary-color);
           }
           .switch-btn {
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            border: 0.1rem solid rgba(255, 255, 255, 0.4);
             color: var(--dark-page-box-color);
           }
         }
@@ -360,11 +360,11 @@
 }
 
 .light-theme {
-  background-size: 100% 274px;
+  background-size: 100% 27.4rem;
   &.app-mobile {
     background-color: #ececf0;
     .menu-outline {
-      border: 1px solid rgba(51, 51, 51, 0.2);
+      border: 0.1rem solid rgba(51, 51, 51, 0.2);
     }
     .top-nav {
       .drawer-body {
@@ -376,10 +376,10 @@
       }
     }
     .nav-item-border-bottom {
-      border-bottom: 1px solid rgba(51, 51, 51, 0.2);
+      border-bottom: 0.1rem solid rgba(51, 51, 51, 0.2);
     }
     .nav-item-border-top {
-      border-top: 1px solid rgba(51, 51, 51, 0.2);
+      border-top: 0.1rem solid rgba(51, 51, 51, 0.2);
     }
   }
   &.app {
@@ -416,7 +416,7 @@
     color: var(--light-page-color);
     .dialog {
       background: var(--light-page-bg);
-      box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.16);
+      box-shadow: 0rem 0.8rem 3rem rgba(0, 0, 0, 0.16);
       .select-item.selected {
         background: var(--light-page-box-bg);
       }
@@ -505,7 +505,7 @@
     .info-box {
       .info-item {
         .border {
-          border-right: 1px solid #ccc;
+          border-right: 0.1rem solid #ccc;
         }
       }
     }
@@ -514,7 +514,7 @@
   // ---------- ObSelectChain component / start ----------
   .obSelectChainBody {
     background-color: var(--light-page-bg);
-    box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.16);
+    box-shadow: 0rem 0.8rem 3rem rgba(0, 0, 0, 0.16);
     color: var(--light-page-color);
     .selectChainContent {
       .input {
@@ -626,7 +626,7 @@
             color: var(--light-page-color);
           }
           .switch-btn {
-            border: 1px solid rgba(51, 51, 51, 0.4);
+            border: 0.1rem solid rgba(51, 51, 51, 0.4);
             color: rgba(51, 51, 51, 0.8);
           }
         }
@@ -646,7 +646,7 @@
     .add-liquidity-dialog {
       background: var(--light-page-bg);
       color: var(--light-page-color);
-      box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.16);
+      box-shadow: 0rem 0.8rem 3rem rgba(0, 0, 0, 0.16);
       .add-liquidity-content {
         .liquidity-network {
           .liquidity-value {

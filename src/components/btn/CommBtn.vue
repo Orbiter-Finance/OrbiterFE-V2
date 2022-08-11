@@ -15,16 +15,16 @@ export default {
 
 <style scoped lang="scss">
 .comm-btn {
-  height:40px;
+  height:4rem;
   background:#DF2E2D;
-  box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
-  border-radius: 20px;
-  padding: 8px 24px;
+  box-shadow: inset 0rem -0.6rem 0rem rgba(0, 0, 0, 0.16);
+  border-radius: 2rem;
+  padding: .8rem 2.4rem;
   text-align:center;
   color:white;
   font-weight: 700;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
   cursor:pointer;
   display: inline-block;
 }
@@ -40,6 +40,6 @@ export default {
 }
 .comm-btn:active {
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(90.46deg, #EB382D 4.07%, #BC3035 98.55%);
-  box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
 }
 </style>

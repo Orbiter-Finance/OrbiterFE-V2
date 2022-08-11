@@ -112,58 +112,58 @@ export default {
 .header-links-box {
   display: flex;
   font-weight: 700;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1.6rem;
+  line-height: 2.4rem;
   .nav-item {
-    height: 60px;
+    height: 6rem;
     position: relative;
     display: inline-flex;
   }
   .nav-item.selected::after {
     content: '';
     position: absolute;
-    width: 40px;
-    height: 6px;
+    width: 4rem;
+    height: .6rem;
     background: #df2e2d;
-    bottom: 8px;
-    left: calc(50% - 20px);
-    border-radius: 11px;
+    bottom: .8rem;
+    left: calc(50% - 2rem);
+    border-radius: 1.1rem;
   }
 }
 .app-mobile {
   .nav-item-sub {
-    // height: 50px;
+    // height: 5rem;
     position: relative;
     display: inline-flex;
     font-family: 'Inter Regular';
-    line-height: 24px;
-    margin-bottom: 12px;
-    padding-bottom: 16px;
+    line-height: 2.4rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1.6rem;
   }
   .nav-item-sub.selected::after {
     content: '';
     position: absolute;
-    width: 40px;
-    height: 6px;
+    width: 4rem;
+    height: .6rem;
     background: #df2e2d;
-    bottom: 0px;
-    left: calc(50% - 20px);
-    border-radius: 11px;
+    bottom: 0rem;
+    left: calc(50% - 2rem);
+    border-radius: 1.1rem;
   }
 }
 .app {
   .header-links-box {
-    height: 40px;
+    height: 4rem;
     .nav-item {
-      height: 24px;
-      margin-right: 39px;
+      height: 2.4rem;
+      margin-right: 3.9rem;
       cursor: pointer;
     }
     .nav-item:last-child {
       margin-right: 0;
     }
     .nav-item.selected::after {
-      bottom: -10px;
+      bottom: -1rem;
     }
   }
 }

@@ -94,18 +94,18 @@ export default {
 .app {
   .bridage-page {
     .maker-box {
-      width: 480px;
-      height: 331px;
+      width: 48rem;
+      height: 33.1rem;
       .maker-content {
         .maker-foot-btn {
-          width: 400px;
+          width: 40rem;
         }
       }
     }
     .sender-box {
-      width: 480px;
-      height: 540px;
-      padding: 24px 20px;
+      width: 48rem;
+      height: 54rem;
+      padding: 2.4rem 2rem;
     }
   }
 }
@@ -119,7 +119,7 @@ export default {
     .sender-box {
       width: 100%;
       height: 100%;
-      padding: 24px 20px;
+      padding: 2.4rem 2rem;
     }
   }
 }
@@ -132,50 +132,50 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 24px;
-    margin-top: 0px;
+    margin: 2.4rem;
+    margin-top: 0rem;
     .tab-toggle-btn {
-      width: 229px;
-      height: 40px;
-      border-radius: 40px;
+      width: 22.9rem;
+      height: 4rem;
+      border-radius: 4rem;
       .tab-btn-item {
         display: inline-block;
         width: 50%;
         text-align: center;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 1.6rem;
         height: 100%;
-        line-height: 40px;
-        border-radius: 20px;
+        line-height: 4rem;
+        border-radius: 2rem;
         cursor: pointer;
       }
       .tab-btn-item.selected {
         background: #df2e2d;
         color: #ffffff;
-        box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
+        box-shadow: inset 0rem -0.6rem 0rem rgba(0, 0, 0, 0.16);
       }
     }
   }
   .sender-box {
-    border-radius: 20px;
+    border-radius: 2rem;
   }
   .maker-box {
-    border-radius: 20px;
-    padding: 34px 40px;
+    border-radius: 2rem;
+    padding: 3.4rem 4rem;
     text-align: left;
     .maker-title {
       font-weight: 700;
-      font-size: 20px;
-      line-height: 20px;
+      font-size: 2rem;
+      line-height: 2rem;
     }
     .maker-content {
       font-family: 'Inter Regular';
       font-weight: 400;
-      font-size: 14px;
-      line-height: 20px;
-      margin-top: 30px;
+      font-size: 1.4rem;
+      line-height: 2rem;
+      margin-top: 3rem;
       .maker-link {
-        margin-top: 20px;
+        margin-top: 2rem;
         color: #df2e2d;
       }
       .maker-link:hover {
@@ -183,23 +183,23 @@ export default {
         cursor: pointer;
       }
       .maker-foot-btn {
-        height: 50px;
-        box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
-        border-radius: 40px;
+        height: 5rem;
+        box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
+        border-radius: 4rem;
         font-weight: 700;
-        font-size: 20px;
-        line-height: 20px;
+        font-size: 2rem;
+        line-height: 2rem;
         color: #fff;
-        margin-top: 40px;
+        margin-top: 4rem;
         text-align: center;
-        line-height: 50px;
+        line-height: 5rem;
         font-family: 'Inter Bold';
       }
     }
   }
   .pool-box {
-    width: 1120px;
-    // height: 1100px;
+    width: 112rem;
+    // height: 110rem;
   }
 }
 </style>

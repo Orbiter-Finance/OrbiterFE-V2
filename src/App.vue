@@ -148,25 +148,25 @@ export default {
 .app {
   .app-content {
     .main {
-      padding-top: 24px;
+      padding-top: 2.4rem;
     }
   }
   .global-dialog {
-    top: 94px;
-    height: calc(100% - 96px - 66px - 72px);
+    top: 9.4rem;
+    height: calc(100% - 9.6rem - 6.6rem - 7.2rem);
   }
 }
 .app-mobile {
   .app-content {
     .main {
-      height: calc(100% - 83px - 96px);
-      border-radius: 20px;
+      height: calc(100% - 8.3rem - 9.6rem);
+      border-radius: 2rem;
       display: flex;
     }
   }
   .global-dialog {
-    top: 70px;
-    height: calc(100% - 96px - 84px);
+    top: 7rem;
+    height: calc(100% - 9.6rem - 8.4rem);
   }
 }
 #app {

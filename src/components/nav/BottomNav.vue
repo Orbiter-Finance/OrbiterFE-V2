@@ -67,14 +67,14 @@ export default {
 <style scoped lang="scss">
 .app {
   .bottom-nav {
-    margin-top: 36px;
-    padding-bottom: 12px;
+    margin-top: 3.6rem;
+    padding-bottom: 1.2rem;
   }
 }
 .app-mobile {
   .bottom-nav {
-    margin-top: 20px;
-    padding-bottom: 24px;
+    margin-top: 2rem;
+    padding-bottom: 2.4rem;
   }
 }
 .bottom-nav {
@@ -82,17 +82,17 @@ export default {
     display: flex;
     justify-content: center;
     align-content: center;
-    height: 24px;
-    margin-bottom: 8px;
+    height: 2.4rem;
+    margin-bottom: .8rem;
     .links-content {
       .links-item {
-        margin-right: 25px;
-        width: 24px;
-        height: 24px;
+        margin-right: 2.5rem;
+        width: 2.4rem;
+        height: 2.4rem;
         display: inline-block;
         .links-icon {
-          width: 24px; 
-          height: 24px;
+          width: 2.4rem; 
+          height: 2.4rem;
           cursor: pointer;
         }
         .links-icon:hover {
@@ -100,14 +100,14 @@ export default {
         }
       }
       .links-item:last-child {
-        margin-right: 0px;
+        margin-right: 0rem;
       }
     }
   }
   .terms {
     font-weight: 400;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 1.4rem;
+    line-height: 2rem;
     cursor: pointer;
     opacity: 0.6;
     font-family: 'Inter Regular';

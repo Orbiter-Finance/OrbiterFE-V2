@@ -15,7 +15,7 @@
           <div class="liquidity-value" @click="showNetworkPopupClick">
             <svg-icon
               :iconName="showChainIcon(poolNetworkOrTokenConfig.toChainId)"
-              style="width: 24px; height: 24px; margin-right: 4px"
+              style="width: 2.4rem; height: 2.4rem; margin-right: 0.4rem"
             ></svg-icon>
             <span>{{
               showChainName(
@@ -452,24 +452,24 @@ export default {
   margin: auto;
   .add-liquidity-dialog {
     @extend .dialog-bg;
-    border-radius: 20px;
-    padding: 44px 40px;
+    border-radius: 2rem;
+    padding: 4.4rem 4rem;
     text-align: left;
-    width: 610px;
-    height: 395px;
+    width: 61rem;
+    height: 39.5rem;
     .add-liquidity-title {
       font: {
         family: 'Inter';
         style: normal;
         weight: 700;
-        size: 20px;
+        size: 2rem;
       }
       .toolbox-close {
         width: 1.5rem;
         height: 1.5rem;
         position: absolute;
-        top: 44px;
-        right: 40px;
+        top: 4.4rem;
+        right: 4rem;
         opacity: 0.8;
         cursor: pointer;
         &:hover {
@@ -481,19 +481,19 @@ export default {
       font: {
         family: 'Inter Regular';
         weight: 400;
-        size: 14px;
+        size: 1.4rem;
       }
       display: flex;
       flex-direction: column;
-      line-height: 20px;
-      margin-top: 30px;
+      line-height: 2rem;
+      margin-top: 3rem;
       .liquidity-item {
         width: 20%;
         font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
-        font-size: 20px;
-        line-height: 20px;
+        font-size: 2rem;
+        line-height: 2rem;
 
         /* identical to box height, or 100% */
         display: flex;
@@ -505,15 +505,15 @@ export default {
 
         // width: 100%;
         .liquidity-value {
-          border-radius: 12px;
-          padding-left: 26px;
+          border-radius: 1.2rem;
+          padding-left: 2.6rem;
 
-          width: 190px;
-          height: 40px;
+          width: 19rem;
+          height: 4rem;
           position: relative;
           font-weight: 700;
-          font-size: 16px;
-          line-height: 24px;
+          font-size: 1.6rem;
+          line-height: 2.4rem;
           white-space: nowrap;
           display: flex;
           justify-content: left;
@@ -526,14 +526,14 @@ export default {
         // width: 100%;
         .liquidity-value {
           width: 80%;
-          margin-top: 20px;
-          height: 96px;
-          border-radius: 20px;
+          margin-top: 2rem;
+          height: 9.6rem;
+          border-radius: 2rem;
           position: relative;
-          padding: 20px 26px;
+          padding: 2rem 2.6rem;
           font-weight: 400;
-          font-size: 12px;
-          line-height: 20px;
+          font-size: 1.2rem;
+          line-height: 2rem;
 
           .topItem {
             display: flex;
@@ -545,15 +545,15 @@ export default {
           .bottomItem {
             display: flex;
             justify-content: space-between;
-            // margin-top: 12px;
+            // margin-top: 1.2rem;
             align-items: center;
 
             .left {
               font-family: 'Inter';
               font-style: normal;
               font-weight: 400;
-              font-size: 12px;
-              line-height: 20px;
+              font-size: 1.2rem;
+              line-height: 2rem;
 
               /* identical to box height, or 167% */
               display: flex;
@@ -567,7 +567,7 @@ export default {
               // color: #df2e2d;
               text-align: right;
               border: 0;
-              outline: 0px;
+              outline: 0rem;
               appearance: none;
               background-color: transparent;
               transition: all 0.2s ease 0s;
@@ -577,8 +577,8 @@ export default {
               font-family: 'Inter';
               font-style: normal;
               font-weight: 400;
-              font-size: 12px;
-              line-height: 20px;
+              font-size: 1.2rem;
+              line-height: 2rem;
 
               /* identical to box height, or 167% */
               display: flex;
@@ -591,8 +591,8 @@ export default {
               font-family: 'Inter';
               font-style: normal;
               font-weight: 700;
-              font-size: 26px;
-              line-height: 24px;
+              font-size: 2.6rem;
+              line-height: 2.4rem;
 
               /* identical to box height, or 92% */
               display: flex;
@@ -605,8 +605,8 @@ export default {
               font-family: 'Inter';
               font-style: normal;
               font-weight: 700;
-              font-size: 26px;
-              line-height: 24px;
+              font-size: 2.6rem;
+              line-height: 2.4rem;
 
               /* identical to box height, or 92% */
               display: flex;
@@ -616,21 +616,21 @@ export default {
 
             .maxBtn {
               font-weight: 400;
-              font-size: 14px;
-              line-height: 20px;
+              font-size: 1.4rem;
+              line-height: 2rem;
               cursor: pointer;
               border: none;
               background: transparent;
               text-align: right;
               padding: 0;
-              margin-left: 8px;
+              margin-left: 0.8rem;
               font-family: 'Inter Regular';
             }
           }
         }
       }
       .maker-link {
-        margin-top: 20px;
+        margin-top: 2rem;
         color: #df2e2d;
       }
       .maker-link:hover {
@@ -638,32 +638,32 @@ export default {
         cursor: pointer;
       }
       .maker-foot-btn {
-        height: 50px;
-        box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
-        border-radius: 40px;
+        height: 5rem;
+        box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
+        border-radius: 4rem;
         font-weight: 700;
-        font-size: 20px;
-        line-height: 20px;
+        font-size: 2rem;
+        line-height: 2rem;
         color: #fff;
-        margin-top: 40px;
+        margin-top: 4rem;
         text-align: center;
-        line-height: 50px;
+        line-height: 5rem;
         font-family: 'Inter Bold';
       }
     }
     .add-liquidity-buttom {
-      margin-top: 40px;
+      margin-top: 4rem;
       .option-button {
         width: 100%;
-        height: 50px;
+        height: 5rem;
         background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
-        box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
-        border-radius: 40px;
+        box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
+        border-radius: 4rem;
         font-family: 'Inter';
         font-style: normal;
         font-weight: 700;
-        font-size: 20px;
-        line-height: 20px;
+        font-size: 2rem;
+        line-height: 2rem;
 
         /* identical to box height, or 100% */
         display: flex;
@@ -682,7 +682,7 @@ export default {
               rgba(0, 0, 0, 0.2)
             ),
             linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
-          box-shadow: inset 0px -8px 0px rgba(0, 0, 0, 0.16);
+          box-shadow: inset 0rem -0.8rem 0rem rgba(0, 0, 0, 0.16);
         }
       }
     }

@@ -8,7 +8,7 @@
       v-if="!isLogin && !isMobile"
       @click="connectAWallet"
       class="ops-item not-mode"
-      style="margin-right: 10px"
+      style="margin-right: 1rem"
       >Connect a Wallet</CommBtn
     >
     <template v-if="isLogin">
@@ -82,52 +82,52 @@ export default {
 
 <style scoped lang="scss">
 .header-ops {
-  margin-right: 16px;
+  margin-right: 1.6rem;
   display: flex;
   align-items: center;
   .ops-mode {
-    width: 40px;
-    height: 40px;
+    width: 4rem;
+    height: 4rem;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     .mode-icon {
-      width: 16px;
-      height: 16px;
+      width: 1.6rem;
+      height: 1.6rem;
     }
   }
   .ops-item {
-    padding: 8px 18px;
-    border-radius: 20px;
+    padding: .8rem 1.8rem;
+    border-radius: 2rem;
     font-weight: 700;
-    font-size: 16px;
-    line-height: 24px;
-    margin-right: 10px;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
+    margin-right: 1rem;
     cursor: pointer;
     &.OrbiterScan {
-      box-shadow: inset 0px -3px 0px rgba(51, 51, 51, 0.16);
+      box-shadow: inset 0rem -0.3rem 0rem rgba(51, 51, 51, 0.16);
     }
     .address {
-      margin-left: 4px;
+      margin-left: .4rem;
       font-weight: 700;
-      font-size: 16px;
-      line-height: 24px;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
     }
   }
 }
 .app {
   .header-ops {
-    height: 40px;
+    height: 4rem;
   }
 }
 .app-mobile {
   .header-ops {
-    margin-top: 19px;
+    margin-top: 1.9rem;
     .ops-item {
       width: 100%;
-      margin-bottom: 30px;
+      margin-bottom: 3rem;
     }
   }
 }

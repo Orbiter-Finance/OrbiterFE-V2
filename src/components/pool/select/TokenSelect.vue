@@ -127,9 +127,9 @@ export default {
 
 <style scoped lang="scss">
 .ob-select-box {
-  border-radius: 12px;
-  // width: 101px;
-  height: 40px;
+  border-radius: 1.2rem;
+  // width: 10.1rem;
+  height: 4rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -138,34 +138,34 @@ export default {
   .prefix,
   .suffix,
   .select-item-icon {
-    width: 20px;
-    height: 20px;
+    width: 2rem;
+    height: 2rem;
   }
   .selected-label {
-    margin: 0 4px;
+    margin: 0 0.4rem;
     font-weight: 700;
-    font-size: 16px;
-    line-height: 24px;
+    font-size: 1.6rem;
+    line-height: 2.4rem;
   }
   .dialog {
     position: absolute;
     left: 0;
-    top: 40px;
-    border-radius: 12px;
-    min-width: 200px;
-    padding: 10px 0;
+    top: 4rem;
+    border-radius: 1.2rem;
+    min-width: 20rem;
+    padding: 1rem 0;
     z-index: 100;
     .select-item {
-      height: 40px;
+      height: 4rem;
       display: flex;
       align-items: center;
       cursor: pointer;
-      padding-left: 18px;
+      padding-left: 1.8rem;
       font-weight: 700;
-      font-size: 16px;
-      line-height: 24px;
+      font-size: 1.6rem;
+      line-height: 2.4rem;
       .select-item-icon {
-        margin-right: 4px;
+        margin-right: 0.4rem;
       }
     }
   }

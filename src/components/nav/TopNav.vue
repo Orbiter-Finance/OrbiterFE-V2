@@ -5,7 +5,7 @@
         <img
           v-if="false"
           src="../../assets/v2/starknet-logo.png"
-          style="width: 190px; height: 80px"
+          style="width: 19rem; height: 8rem"
         />
         <SvgIconThemed
           v-else
@@ -16,11 +16,11 @@
         />
         <HeaderLinks
           style="
-            margin-top: 24px;
+            margin-top: 2.4rem;
             position: absolute;
             top: 0;
-            left: 241px;
-            min-width: 290px;
+            left: 24.1rem;
+            min-width: 30rem;
           "
         />
       </div>
@@ -51,9 +51,9 @@
         <div
           @click="() => (drawerVisible = true)"
           class="center menu-outline"
-          style="width: 44px; height: 44px; border-radius: 8px"
+          style="width: 4.4rem; height: 4.4rem; border-radius: 0.8rem"
         >
-          <SvgIconThemed icon="menu" style="width: 26px; height: 22px" />
+          <SvgIconThemed icon="menu" style="width: 2.6rem; height: 2.2rem" />
         </div>
       </div>
       <el-drawer
@@ -113,9 +113,9 @@ export default {
     navIcons() {
       const icons = {
         logo: 'logo-mobile',
-        logoStyle: { width: '41px', height: '40px' },
+        logoStyle: { width: '4.1rem', height: '4rem' },
         logo_web: 'logo',
-        logo_webStyle: { width: '153px', height: '40px' },
+        logo_webStyle: { width: '15.3rem', height: '4rem' },
       }
       // TODO: when rinkeby logo is add, uncomment blow
       // if (this.isRinkeby) {
@@ -178,7 +178,7 @@ export default {
 
 <style scoped lang="scss">
 .top-nav {
-  height: 72px;
+  height: 7.2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -189,35 +189,35 @@ export default {
 .app {
   .top-nav {
     .logo {
-      margin-top: 16px;
-      margin-left: 21px;
+      margin-top: 1.6rem;
+      margin-left: 2.1rem;
     }
   }
 }
 .app-mobile {
   .top-nav {
-    padding: 16px 20px;
+    padding: 1.6rem 2rem;
     .wallet-status {
       cursor: pointer;
-      margin-right: 15px;
+      margin-right: 1.5rem;
     }
     .wallet-address {
-      padding: 8px 24px;
+      padding: 0.8rem 2.4rem;
       // background: #FFFFFF;
-      border-radius: 20px;
+      border-radius: 2rem;
       // color: rgba(51, 51, 51, 0.8);
     }
     .connect-wallet-btn {
-      width: 148px;
-      height: 40px;
-      line-height: 40px;
+      width: 14.8rem;
+      height: 4rem;
+      line-height: 4rem;
       background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
-      box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
-      border-radius: 40px;
+      box-shadow: inset 0rem -0.6rem 0rem rgba(0, 0, 0, 0.16);
+      border-radius: 4rem;
       color: #ffffff;
       font-style: normal;
       font-weight: 700;
-      font-size: 16px;
+      font-size: 1.6rem;
       text-align: center;
     }
 
@@ -229,8 +229,8 @@ export default {
       flex-direction: column;
       .drawer-bottom {
         width: 100%;
-        padding: 0 46px 40px 46px;
-        height: 320px;
+        padding: 0 4.6rem 4rem 4.6rem;
+        height: 32rem;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;

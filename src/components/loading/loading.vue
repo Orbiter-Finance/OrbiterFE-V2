@@ -1,69 +1,77 @@
 <template>
-  <div class="loading"
-       :style="{width:width,height:height}">
-    <i class="fade-item fade-item1"
-       :style="{
-            '--loadingColor': loadingColor,
-       }">
+  <div class="loading" :style="{ width: width, height: height }">
+    <i
+      class="fade-item fade-item1"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    >
     </i>
-    <i class="fade-item fade-item2"
-       :style="{
-            '--loadingColor': loadingColor,
-       }"></i>
-    <i class="fade-item fade-item3"
-       :style="{
-            '--loadingColor': loadingColor,
-       }"></i>
-    <i class="fade-item fade-item4"
-       :style="{
-            '--loadingColor': loadingColor,
-       }"></i>
-    <i class="fade-item fade-item5"
-       :style="{
-            '--loadingColor': loadingColor,
-       }"></i>
-    <i class="fade-item fade-item6"
-       :style="{
-            '--loadingColor': loadingColor,
-       }"></i>
-    <i class="fade-item fade-item7"
-       :style="{
-            '--loadingColor': loadingColor,
-       }"></i>
-    <i class="fade-item fade-item8"
-       :style="{
-            '--loadingColor': loadingColor,
-       }"></i>
+    <i
+      class="fade-item fade-item2"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    ></i>
+    <i
+      class="fade-item fade-item3"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    ></i>
+    <i
+      class="fade-item fade-item4"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    ></i>
+    <i
+      class="fade-item fade-item5"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    ></i>
+    <i
+      class="fade-item fade-item6"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    ></i>
+    <i
+      class="fade-item fade-item7"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    ></i>
+    <i
+      class="fade-item fade-item8"
+      :style="{
+        '--loadingColor': loadingColor,
+      }"
+    ></i>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'Loading',
   props: {
     width: {
       type: String,
-      default: '2rem'
+      default: '2rem',
     },
     height: {
       type: String,
-      default: '2rem'
+      default: '2rem',
     },
-    loadingColor: { type: String, default: "#e85e24" },
-
+    loadingColor: { type: String, default: '#e85e24' },
   },
   data() {
-    return {
-    }
+    return {}
   },
-  mounted() {
-
-  },
-  watch: {
-  },
-  methods: {
-  }
+  mounted() {},
+  watch: {},
+  methods: {},
 }
 </script>
 
@@ -77,7 +85,7 @@ export default {
 //   position: relative;
 //   width: 100%;
 //   height: 100%;
-//   // border-radius: 4px;
+//   // border-radius: .4rem;
 // }
 .loading .fade-item {
   position: absolute;
@@ -85,10 +93,10 @@ export default {
   left: 0;
   width: calc(100% - 0.1rem);
   height: calc(100% - 0.1rem);
-  margin: 0.1rem 0px 0px 0.1rem;
+  margin: 0.1rem 0rem 0rem 0.1rem;
 }
 .loading .fade-item:before {
-  content: "";
+  content: '';
   display: block;
   margin: 0 auto;
   width: 0.1rem;

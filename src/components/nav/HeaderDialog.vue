@@ -8,7 +8,7 @@
     <div
       ref="navDialog"
       :style="
-        !isMobile ? { right: dialog.isStarkNetDialog ? '160px' : '20px' } : {}
+        !isMobile ? { right: dialog.isStarkNetDialog ? '16rem' : '2rem' } : {}
       "
       class="header-dialog-box-wrapper"
     >
@@ -38,7 +38,7 @@
           v-for="item in loginInfoData"
           :key="item.title"
           :class="['wallet-item', 'item-' + item.icon]"
-          style="font-weight: 400; font-size: 14px; line-height: 20px"
+          style="font-weight: 400; font-size: 1.4rem; line-height: 2rem"
         >
           <div
             style="display: flex; justify-content: center; align-items: center"
@@ -62,7 +62,7 @@
                 width: 1.8rem;
                 height: 1.8rem;
                 display: inline-block;
-                margin-left: 6px;
+                margin-left: 0.6rem;
                 cursor: pointer;
               "
             >
@@ -80,7 +80,7 @@
                 width: 1.8rem;
                 height: 1.8rem;
                 display: inline-block;
-                margin-left: 6px;
+                margin-left: 0.6rem;
                 cursor: pointer;
               "
             >
@@ -274,7 +274,7 @@ export default {
     // document.addEventListener('click', this.handlerDialogOutsideClick)
   },
   unmounted() {
-    // document.removeEventListener('click', this.handlerDialogOutsideClick)
+    // documentNaNpxoveEventListener('click', this.handlerDialogOutsideClick)
   },
 }
 </script>
@@ -285,8 +285,8 @@ export default {
     width: 100%;
     .header-dialog-box-wrapper {
       position: absolute;
-      top: 75px;
-      width: 320px;
+      top: 7.5rem;
+      width: 32rem;
     }
   }
 }
@@ -296,9 +296,9 @@ export default {
     height: 100%;
     .header-dialog-box-wrapper {
       position: absolute;
-      top: calc(50% - 140px);
-      width: calc(100% - 27px * 2);
-      left: 27px;
+      top: calc(50% - 14rem);
+      width: calc(100% - 2.7rem * 2);
+      left: 2.7rem;
     }
   }
 }
@@ -309,39 +309,39 @@ export default {
   left: 0;
   .header-dialog-box-wrapper {
     z-index: 10000;
-    height: 280px;
-    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
-    border-radius: 20px;
+    height: 28rem;
+    box-shadow: 0rem 0.4rem 2rem rgba(0, 0, 0, 0.12);
+    border-radius: 2rem;
     .toolbox-header {
-      height: 24px;
-      margin-top: 18px;
+      height: 2.4rem;
+      margin-top: 1.8rem;
       text-align: center;
       position: relative;
-      line-height: 24px;
-      margin-bottom: 22px;
+      line-height: 2.4rem;
+      margin-bottom: 2.2rem;
       .toolbox-title {
         font-family: 'Inter Bold';
         font-weight: 700;
-        font-size: 16px;
-        line-height: 24px;
+        font-size: 1.6rem;
+        line-height: 2.4rem;
       }
       .toolbox-close {
         width: 1.5rem;
         height: 1.5rem;
         position: absolute;
-        top: 4.5px;
-        right: 26px;
+        top: 0.45rem;
+        right: 2.6rem;
         opacity: 0.6;
         cursor: pointer;
       }
     }
     .wallet-item {
-      height: 36px;
-      padding: 0px 20px;
+      height: 3.6rem;
+      padding: 0rem 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 1.6rem;
       .wallet-item-left {
         display: flex;
         justify-content: center;
@@ -352,14 +352,14 @@ export default {
         }
         .wallet-title {
           font-weight: 400;
-          font-size: 14px;
-          line-height: 24px;
-          margin-left: 8px;
+          font-size: 1.4rem;
+          line-height: 2.4rem;
+          margin-left: 0.8rem;
         }
       }
       .wallet-btn {
-        height: 36px;
-        line-height: 20px;
+        height: 3.6rem;
+        line-height: 2rem;
       }
     }
   }

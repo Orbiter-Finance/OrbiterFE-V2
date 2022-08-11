@@ -142,18 +142,18 @@ input {
 }
 
 /* ::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+  width: .3rem;
+  height: .3rem;
   background-color: transparent;
 }
 
 ::-webkit-scrollbar-track {
-  border-radius: 3px;
+  border-radius: .3rem;
   background-color: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 3px;
+  border-radius: .3rem;
   background-color: rgba(0, 0, 0, 0.3);
 } */
 
@@ -189,8 +189,8 @@ p {
   display: block;
   margin-block-start: 1em;
   margin-block-end: 1em;
-  margin-inline-start: 0px;
-  margin-inline-end: 0px;
+  margin-inline-start: 0rem;
+  margin-inline-end: 0rem;
 }
 
 .noScroll {
@@ -217,7 +217,7 @@ p {
   width: 100%;
 }
 
-@media screen and (min-width: 5000px) {
+@media screen and (min-width: 500rem) {
   .router {
     padding: 0;
     height: calc(100% - var(--top-nav-height));

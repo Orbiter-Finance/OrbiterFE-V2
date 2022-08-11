@@ -60,15 +60,15 @@ export default {
 
 <style scoped lang="scss">
 .svg-icon-xs {
-  width: 40px;
-  height: 40px;
+  width: 4rem;
+  height: 4rem;
 }
 .svg-icon-lg {
-  width: 20px;
-  height: 20px;
+  width: 2rem;
+  height: 2rem;
 }
 .svg-icon-sm {
-  width: 16px;
-  height: 16px;
+  width: 1.6rem;
+  height: 1.6rem;
 }
 </style>

@@ -31,7 +31,7 @@ export default {
     ...mapMutations(['togglePageTab']),
     toggleTab(target) {
       const tab = (typeof target === 'string' && target) || 'Sender'
-      this.togglePageTab({type:'TabState',value:tab})
+      this.togglePageTab({ type: 'TabState', value: tab })
 
       // 待处理
       if (this.isMobile) {
@@ -47,29 +47,29 @@ export default {
 
 <style lang="scss" scoped>
 .toggle-btn-box {
-  width: 342px;
-  height: 40px;
-  border-radius: 40px;
+  width: 34.2rem;
+  height: 4rem;
+  border-radius: 4rem;
   .tab-btn-item {
     display: inline-block;
     width: 33%;
     text-align: center;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 1.6rem;
     height: 100%;
-    line-height: 40px;
-    border-radius: 40px;
+    line-height: 4rem;
+    border-radius: 4rem;
     cursor: pointer;
   }
   .tab-btn-item.selected {
     background: #df2e2d;
     color: #ffffff;
-    box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
+    box-shadow: inset 0rem -0.6rem 0rem rgba(0, 0, 0, 0.16);
   }
 }
 .app-mobile {
   .toggle-btn-box {
-    width: 180px;
+    width: 18rem;
   }
 }
 </style>
