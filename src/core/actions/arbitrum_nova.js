@@ -3,6 +3,7 @@ import { cacheMemoryGet, cacheMemorySet } from '../../util/cache/memory'
 import Axios from '../utils/Axios'
 import config from '../utils/config'
 Axios.axios()
+
 import { GraphQLClient, gql } from 'graphql-request'
 export default {
   async queryAddressTrxList(graphQLClient, address) {
@@ -20,7 +21,6 @@ export default {
         }
       }
     `
-
     const resp = await graphQLClient.request(query, {
       hash: address,
     })
@@ -39,9 +39,9 @@ export default {
   },
   getTxByHash: async function (hash, chainId) {
     const api =
-      chainId == 513
-        ? 'https://blockexplorer.rinkeby.boba.network/api'
-        : 'https://blockexplorer.boba.network/api'
+      chainId == 516
+        ? config.arbitrum_nova.Rinkeby
+        : config.arbitrum_nova.Mainnet
     const resp = await axios
       .get(api, {
         params: {
@@ -56,9 +56,9 @@ export default {
   //  isTokentx = true
   getTxList: async function (req, chainId) {
     const endpoint =
-      chainId == 513
-        ? 'https://blockexplorer.rinkeby.boba.network/graphiql'
-        : 'https://blockexplorer.boba.network/graphiql'
+      chainId == 516
+        ? 'https://goerli-rollup-explorer.arbitrum.io/graphiql'
+        : 'https://nova-explorer.arbitrum.io/graphiql'
     const graphQLClient = new GraphQLClient(endpoint, {})
     const result = await this.queryAddressTrxList(graphQLClient, req.maker)
     const trxList = []
@@ -119,7 +119,7 @@ export default {
         // apikey: config.polygon.key,
       }
       const configNet =
-        chainId === 513 ? config.boba.Rinkeby : config.boba.Mainnet
+        chainId === 516 ? config.arbitrum_nova.Rinkeby : config.arbitrum_nova.Mainnet
       axios
         .get(configNet, { params })
         .then(function (response) {

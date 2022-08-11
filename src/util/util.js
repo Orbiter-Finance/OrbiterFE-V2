@@ -203,7 +203,6 @@ export default {
       chainId: this.toHex(chain.chainId),
     }
     try {
-      console.log(compatibleGlobalWalletConf.value.walletPayload.provider, '===compatibleGlobalWalletConf.value.walletPayload.provider')
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
