@@ -215,6 +215,7 @@ export default {
   }
   .sender-box {
     border-radius: 2rem;
+    overflow-y: scroll;
   }
   .maker-box {
     border-radius: 2rem;

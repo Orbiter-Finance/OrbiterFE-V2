@@ -190,4 +190,17 @@ export default {
     }
   }
 }
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-track {
+  border-radius: 3px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
 </style>
