@@ -40,6 +40,8 @@ export default {
     13: process.env.VUE_APP_WP_BOBA,
     513: process.env.VUE_APP_WP_BOBA_R,
     514: 'wss://zksync2-testnet.zksync.dev/ws',
+    16: 'https://nova.arbitrum.io/rpc',
+    516: 'https://goerli-rollup.arbitrum.io/rpc'
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -151,6 +153,8 @@ export default {
     15: "https://bscscan.com/tx/",
     515: "https://testnet.bscscan.com/tx/",
     514: 'https://zksync2-testnet.zkscan.io/tx/',
+    16: 'https://nova-explorer.arbitrum.io/tx/',
+    516: 'https://goerli-rollup-explorer.arbitrum.io/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
