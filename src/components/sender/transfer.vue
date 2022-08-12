@@ -1636,7 +1636,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 .senderbody {
-  margin: 4.2rem auto 1rem;
+  margin: 1rem auto 1rem;
   color: var(--default-black);
   max-height: calc(
     100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
