@@ -10,7 +10,6 @@ import {
   walletConnectDispatcherOnSignature,
   walletConnectSendTransaction,
   walletConnectDispatcherOnAddChain,
-  walletConnectSignTypedData,
   walletConnectSwitchChain,
 } from './walletConnectPCBrowserDispatcher'
 
@@ -73,6 +72,5 @@ export default {
     walletDispatchersOnSwitchChain: pcBrowserDispatchersOnSwitchChain,
     loginStatusCheckerOfWallets: loginStatusCheckerOfPCBrowserWallet,
     walletConnectSendTransaction,
-    walletConnectSignTypedData,
     walletConnectSwitchChain
 }

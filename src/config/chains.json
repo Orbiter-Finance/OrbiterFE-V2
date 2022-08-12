@@ -257,7 +257,7 @@
         "symbol": "BNB",
         "decimals": 18
       },
-      
+
       "rpc": [
         "https://data-seed-prebsc-1-s1.binance.org:8545/",
         "wss://apis.ankr.com/wss/efaf2c4bf9464a3081ac0efef84edb7e/0835c09efa6182fad4264b37a4ac2144/binance/full/test"
@@ -275,13 +275,61 @@
         "symbol": "ETH",
         "decimals": 18
       },
-      
+
       "rpc": [
         "https://apis.ankr.com/c19ccaa33ee845ca9c3b6b891ab7cd21/0835c09efa6182fad4264b37a4ac2144/binance/full/main",
         "wss://apis.ankr.com/wss/c19ccaa33ee845ca9c3b6b891ab7cd21/0835c09efa6182fad4264b37a4ac2144/binance/full/main"
       ],
       "faucets": [],
       "infoURL": "https://bscscan.com/"
+    },
+    {
+      "name": "Arbitrum Nova",
+      "chainId": 42170,
+      "shortName": "arb-nova",
+      "chain": "ETH",
+      "networkId": 42170,
+      "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": ["https://nova.arbitrum.io/rpc"],
+      "faucets": [],
+      "explorers": [
+        {
+          "name": "Arbitrum Nova Chain Explorer",
+          "url": "https://nova-explorer.arbitrum.io",
+          "icon": "blockscout",
+          "standard": "EIP3091"
+        }
+      ],
+      "infoURL": "https://arbitrum.io",
+      "parent": {}
+    },
+     {
+      "name": "Arbitrum Nova Testnet",
+      "chainId": 421613,
+      "shortName": "arb-nova Testnet",
+      "chain": "ETH",
+      "networkId": 421613,
+      "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": ["https://goerli-rollup.arbitrum.io/rpc"],
+      "faucets": [],
+      "explorers": [
+        {
+          "name": "Arbitrum Nova Chain Explorer",
+          "url": "https://goerli-rollup.arbitrum.io/",
+          "icon": "blockscout",
+          "standard": "EIP3091"
+        }
+      ],
+      "infoURL": "https://arbitrum.io",
+      "parent": {}
     }
   ]
 }
