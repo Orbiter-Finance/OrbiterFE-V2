@@ -74,7 +74,7 @@ export const chain2icon = item => {
     iconName = 'bsclogo'
   }
   if (item === 16 || item === 516) {
-    iconName = 'arblogo'
+    iconName = 'arnavologo'
   }
   return iconName
 }
