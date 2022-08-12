@@ -198,6 +198,11 @@ export default {
         return 'zkspacelogo'
       } else if (chainID == '13' || chainID == '513') {
         return 'bobalogo'
+      }else if (chainID == '15' || chainID == '515') {
+        return 'bsclogo'
+      }
+      else if (chainID == '16' || chainID == '516') {
+        return 'arnavologo'
       } else {
         return 'ethlogo'
       }
