@@ -138,6 +138,10 @@ export default {
 </script>
 
 <style lang="scss">
+// fix 在ios设备中，el-select组件下拉框，点击次才能选中问题。
+.el-scrollbar .el-scrollbar__bar {
+  opacity: 1 !important;
+}
 .app {
   .app-content {
     .main {

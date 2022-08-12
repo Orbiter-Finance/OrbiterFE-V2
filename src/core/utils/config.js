@@ -70,8 +70,8 @@ export default {
     zksrinkebyChainID: 133,
   },
   boba: {
-    Mainnet: 'https://blockexplorer.boba.network/api',
-    Rinkeby: 'https://blockexplorer.rinkeby.boba.network/api',
+    Mainnet: 'https://api.bobascan.com/api',
+    Rinkeby: 'https://api-testnet.bobascan.com/api',
     chainID: '13',
     rinkeyChainID: '513',
   },
@@ -90,5 +90,11 @@ export default {
     Rinkeby: "https://api-testnet.bscscan.com/",
     chainId: "56",
     rinkeyChainID: "97"
+  },
+  arbitrum_nova: {
+    Mainnet: "https://nova-explorer.arbitrum.io/api",
+    Rinkeby: "https://goerli-rollup-explorer.arbitrum.io/api",
+    chainId: "16",
+    rinkeyChainID: "516"
   }
 }

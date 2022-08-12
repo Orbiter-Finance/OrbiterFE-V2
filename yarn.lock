@@ -7028,13 +7028,6 @@ get-intrinsic@^1.0.2, get-intrinsic@^1.1.0, get-intrinsic@^1.1.1:
     has "^1.0.3"
     has-symbols "^1.0.3"
 
-get-starknet-wallet@^0.0.8:
-  version "0.0.8"
-  resolved "https://registry.npmmirror.com/get-starknet-wallet/-/get-starknet-wallet-0.0.8.tgz#3c586423fc91817cb262e1b09433d81c9835a7de"
-  integrity sha512-VhFY1kXxLri4Vs6G9GwcyjdAPqSLDdNGPqvuCx0VsMdE4fQdJD5qGeOf+BASjO8/ZN2SYIjuEvDfV5SGs3teYA==
-  dependencies:
-    bowser "^2.11.0"
-
 get-starknet@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/get-starknet/-/get-starknet-1.4.2.tgz#fc7aa13506d672229157b357632a3f9b77ecd9d9"
@@ -9710,6 +9703,11 @@ number-to-bn@1.7.0:
   dependencies:
     bn.js "4.11.6"
     strip-hex-prefix "1.0.0"
+
+numeral@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.npmmirror.com/numeral/-/numeral-2.0.6.tgz#4ad080936d443c2561aed9f2197efffe25f4e506"
+  integrity sha512-qaKRmtYPZ5qdw4jWJD6bxEf1FJEqllJrwxCLIm0sQU/A7v2/czigzOb+C2uSiFsa9lBUzeH7M1oK+Q+OLxL3kA==
 
 oauth-sign@~0.9.0:
   version "0.9.0"
@@ -12993,6 +12991,11 @@ vue-eslint-parser@^7.0.0:
     esquery "^1.4.0"
     lodash "^4.17.21"
     semver "^6.3.0"
+
+vue-gtag@^1.16.1:
+  version "1.16.1"
+  resolved "https://registry.npmmirror.com/vue-gtag/-/vue-gtag-1.16.1.tgz#edb2f20ab4f6c4d4d372dfecf8c1fcc8ab890181"
+  integrity sha512-5vs0pSGxdqrfXqN1Qwt0ZFXG0iTYjRMu/saddc7QIC5yp+DKgjWQRpGYVa7Pq+KbThxwzzMfo0sGi7ISa6NowA==
 
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"

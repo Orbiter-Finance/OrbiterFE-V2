@@ -14,7 +14,8 @@ const MAX_BITS = {
   dydx: 28,
   zkspace: 35,
   boba: 256,
-  bsc: 256
+  bsc: 256,
+  arbitrum_nova: 256
 }
 
 const CHAIN_INDEX = {
@@ -45,7 +46,9 @@ const CHAIN_INDEX = {
   14: 'zksync2',
   514: 'zksync2',
   515: "bsc",
-  15: "bsc"
+  15: "bsc",
+  16: 'arbitrum_nova',
+  516: 'arbitrum_nova'
 }
 
 const SIZE_OP = {

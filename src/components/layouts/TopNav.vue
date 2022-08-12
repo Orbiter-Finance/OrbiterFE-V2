@@ -15,7 +15,15 @@
           :icon="!isBRAAVOS && navIcons.logo"
           :iconName="navIcons.logo"
         />
-        <!-- <HeaderLinks style="margin-top: 24px;position:absolute;top:0;left:241px;min-width: 280px;" /> -->
+        <HeaderLinks
+          style="
+            margin-top: 24px;
+            position: absolute;
+            top: 0;
+            left: 241px;
+            min-width: 280px;
+          "
+        />
       </div>
       <HeaderOps />
     </template>
@@ -150,7 +158,7 @@ export default {
           }
           break
         case 'ARGENT':
-        // case 'STARKNET':
+          // case 'STARKNET':
           // icons.logo_web = 'argent'
           icons.logo_web = 'starknet'
           icons.logo_webStyle = {
