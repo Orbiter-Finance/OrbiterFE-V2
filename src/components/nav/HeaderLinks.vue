@@ -82,14 +82,10 @@ export default {
             },
           ],
         },
-        {
-          name: 'L2 Data',
-          href: '/data',
-        },
-        {
-          name: 'More',
-          children: [],
-        },
+        // {
+        //   name: 'More',
+        //   children: [],
+        // },
       ],
     }
   },
@@ -123,9 +119,9 @@ export default {
     content: '';
     position: absolute;
     width: 4rem;
-    height: .6rem;
+    height: 0.6rem;
     background: #df2e2d;
-    bottom: .8rem;
+    bottom: 0.8rem;
     left: calc(50% - 2rem);
     border-radius: 1.1rem;
   }
@@ -144,7 +140,7 @@ export default {
     content: '';
     position: absolute;
     width: 4rem;
-    height: .6rem;
+    height: 0.6rem;
     background: #df2e2d;
     bottom: 0rem;
     left: calc(50% - 2rem);

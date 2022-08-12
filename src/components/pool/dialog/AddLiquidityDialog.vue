@@ -13,16 +13,21 @@
         <div class="liquidity-network">
           <span class="liquidity-item" @click="selectNetwork">Network</span>
           <div class="liquidity-value" @click="showNetworkPopupClick">
-            <svg-icon
-              :iconName="showChainIcon(poolNetworkOrTokenConfig.toChainId)"
-              style="width: 2.4rem; height: 2.4rem; margin-right: 0.4rem"
-            ></svg-icon>
-            <span>{{
-              showChainName(
-                poolNetworkOrTokenConfig.toChainId,
-                $env.localChainID_netChainID[poolNetworkOrTokenConfig.toChainId]
-              )
-            }}</span>
+            <div style="display: flex">
+              <svg-icon
+                :iconName="showChainIcon(poolNetworkOrTokenConfig.toChainId)"
+                style="width: 2.4rem; height: 2.4rem; margin-right: 0.4rem"
+              ></svg-icon>
+              <span>{{
+                showChainName(
+                  poolNetworkOrTokenConfig.toChainId,
+                  $env.localChainID_netChainID[
+                    poolNetworkOrTokenConfig.toChainId
+                  ]
+                )
+              }}</span>
+            </div>
+
             <SvgIconThemed
               v-if="poolNetworkOrTokenConfig.NetworkArray.length > 1"
             />
@@ -559,7 +564,7 @@ export default {
         // width: 100%;
         .liquidity-value {
           border-radius: 1.2rem;
-          padding-left: 2.6rem;
+          padding: 0rem 0.6rem 0rem 2.6rem;
 
           width: 19rem;
           height: 4rem;
@@ -569,7 +574,7 @@ export default {
           line-height: 2.4rem;
           white-space: nowrap;
           display: flex;
-          justify-content: left;
+          justify-content: space-between;
           align-items: center;
           cursor: pointer;
         }
@@ -593,6 +598,12 @@ export default {
             justify-content: space-between;
             align-items: center;
             font-family: 'Inter Regular';
+            .left {
+              display: flex;
+              width: 16.4rem;
+              justify-content: space-between;
+              padding: 0rem 0.6rem 0rem 0rem;
+            }
           }
 
           .bottomItem {

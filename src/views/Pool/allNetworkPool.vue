@@ -75,14 +75,13 @@
                       'col-value',
                       { addLoading: detail.addLiquidityLoading },
                     ]"
+                    @click="
+                      detail.addLiquidityLoading
+                        ? ''
+                        : showAddLiquidityDialog(detail)
+                    "
                   >
-                    <span
-                      @click="
-                        detail.addLiquidityLoading
-                          ? ''
-                          : showAddLiquidityDialog(detail)
-                      "
-                    >
+                    <span>
                       <template v-if="!detail.addLiquidityLoading">
                         Add Liquidity
                       </template>

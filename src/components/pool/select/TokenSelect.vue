@@ -1,23 +1,26 @@
 <template>
   <div ref="ctx" class="ob-select-box" @click="showSelectDialog">
-    <slot class="prfix" name="prefix">
-      <template v-if="selectedItem.icon">
-        <img
-          v-if="selectedItem.iconType === 'img'"
-          :src="selectedItem.icon"
-          class="select-item-icon"
-          alt=""
-        />
-        <svg-icon
-          v-else
-          class="select-item-icon"
-          :iconName="selectedItem.icon"
-        ></svg-icon>
-      </template>
-    </slot>
-    <span class="selected-label">{{
-      (datas.find((v) => v.value == value) || {}).label || ''
-    }}</span>
+    <div style="display: flex; justify-content: center; align-items: center">
+      <slot class="prfix" name="prefix">
+        <template v-if="selectedItem.icon">
+          <img
+            v-if="selectedItem.iconType === 'img'"
+            :src="selectedItem.icon"
+            class="select-item-icon"
+            alt=""
+          />
+          <svg-icon
+            v-else
+            class="select-item-icon"
+            :iconName="selectedItem.icon"
+          ></svg-icon>
+        </template>
+      </slot>
+      <span class="selected-label">{{
+        (datas.find((v) => v.value == value) || {}).label || ''
+      }}</span>
+    </div>
+
     <SvgIconThemed />
     <div
       ref="dialog"
@@ -128,10 +131,10 @@ export default {
 <style scoped lang="scss">
 .ob-select-box {
   border-radius: 1.2rem;
-  // width: 10.1rem;
+  width: 100%;
   height: 4rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   cursor: pointer;
   position: relative;
