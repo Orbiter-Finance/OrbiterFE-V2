@@ -41,7 +41,7 @@
                 <span class="col col-1">Network</span>
                 <span class="col col-2">Token</span>
                 <span class="col col-3">Pizza Pool</span>
-                <span class="col col-4">APR</span>
+                <span class="col col-4">APY</span>
                 <span class="col col-5">Add Liquidity</span>
               </div>
               <hr class="hr" />

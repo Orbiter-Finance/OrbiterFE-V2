@@ -29,9 +29,9 @@ export default {
   updateLiquidityData(state, liquidityDataList) {
     for (let i = 0; i < liquidityDataList.length; i++) {
       liquidityDataList[i]['tokenSrc'] =
-        liquidityDataList[i].tokenName === 'DAI'
-          ? require('../../assets/dailogo.svg')
-          : require('../../assets/usdclogo.png')
+        state.poolNetworkOrTokenConfig.tokenInfoArray.find(
+          (item) => item.token === liquidityDataList[i].tokenName
+        ).icon
       liquidityDataList[i]['liquidity'] = decimal.number_format(
         liquidityDataList[i]['amount'],
         liquidityDataList[i].tokenName

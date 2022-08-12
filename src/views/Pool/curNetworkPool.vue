@@ -67,7 +67,7 @@
                 }}</span>
               </div>
               <div class="APR">
-                <span class="content-item">APR</span>
+                <span class="content-item">APY</span>
                 <span class="content-value">{{ item.apr }}%</span>
               </div>
             </div>

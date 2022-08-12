@@ -39,9 +39,6 @@
               "
             >
               <li>
-                <span style="width: 1.6rem; height: 1.6rem; background: #5ec2b7"
-                  >1</span
-                >
                 Download the
                 <a style="text-decoration: underline; color: #5ec2b7"
                   >Market Maker Client</a
@@ -86,7 +83,7 @@
               Orbiter's Maker provides liquidity for Layer 2 and benefits from
               it.
             </div>
-            <div @click="clickLearnMore" class="maker-link">LEARN MORE</div>
+            <!-- <div @click="clickLearnMore" class="maker-link">LEARN MORE</div> -->
             <div class="maker-foot-btn">Connect a Wallet</div>
           </div>
         </div>
