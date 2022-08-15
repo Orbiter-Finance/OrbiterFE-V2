@@ -1630,6 +1630,20 @@ export default {
           })
           return
         }
+
+        if (
+          transferDataState.fromChainID == 13 ||
+          transferDataState.fromChainID == 513 ||
+          transferDataState.toChainID == 13 ||
+          transferDataState.toChainID == 513
+        ) {
+          this.$notify.error({
+            title: `Affected by the Boba interface issue, the transfer about Boba is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
+
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
