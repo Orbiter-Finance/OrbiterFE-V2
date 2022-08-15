@@ -1,7 +1,7 @@
-import boba from '../../core/actions/boba'
+import service from '../../core/actions/arbitrum_nova'
 const ETHLISTEN_TRANSFER_DURATION = 5 * 1000
 
-export class BobaListen {
+export class ArNovaListen {
   constructor(chainId, api, address, blockProvider = undefined) {
     this.api = api
     this.address = address
@@ -51,7 +51,7 @@ export class BobaListen {
           startblock,
           endblock: 999999999,
         }
-        const data = await boba.getTransationList(MtscanReq, this.chainId)
+        const data = await service.getTransationList(MtscanReq, this.chainId)
         // const resp = await axios.get(this.api.endPoint, {
         //   params: {
         //     apiKey: this.api.key,

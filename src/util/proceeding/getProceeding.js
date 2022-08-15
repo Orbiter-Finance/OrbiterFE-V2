@@ -29,7 +29,7 @@ import {
 } from '../../composition/hooks'
 
 import zkspace from '../../core/actions/zkspace'
-import { BobaListen } from '../boba/boba_listen'
+import { ArNovaListen } from '../ar_nova/ar_listen'
 
 let startBlockNumber = ''
 
@@ -405,7 +405,11 @@ async function confirmUserTransaction(
     }
     // EVM chains
     // main & arbitrum
-    const trxConfirmations = await getConfirmations(localChainID, txHash)
+    let trxConfirmations = await getConfirmations(localChainID, txHash)
+    console.log(trxConfirmations, '==');
+    if (localChainID == 13 || localChainID===513) {
+      trxConfirmations.confirmations = 3;
+    }
     if (!trxConfirmations) {
       return confirmUserTransaction(
         localChainID,
@@ -1010,11 +1014,11 @@ function ScanMakerTransfer(
       return
     }
 
-    // boba
-    if (localChainID == 13 || localChainID == 513) {
-      new BobaListen(
+    // ar nova
+    if (localChainID == 16 || localChainID == 516) {
+      new ArNovaListen(
         localChainID,
-        config.boba,
+        config.arbitrum_nova,
         to,
         async () => startBlockNumber
       )
@@ -1101,6 +1105,18 @@ function ScanMakerTransfer(
             key: config.etherscan.Rinkeby.key,
           }
           break
+          case 13:
+            api = {
+              endPoint: config.boba.mainnet,
+              key: config.boba.mainnet.key,
+            }
+            break
+          case 513:
+            api = {
+              endPoint: config.boba.Rinkeby,
+              key: config.boba.Rinkeby.key,
+            }
+            break
       }
       if (!api) {
         return
@@ -1261,7 +1277,7 @@ async function getConfirmations(localChainID, txHash) {
         timestamp: blockInfo.timestamp,
       }
     }
-    return { confirmations: 0, trx: trx, timestamp: 0 }
+    return { confirmations: 1, trx: trx, timestamp: 0 }
   } catch (error) {
     console.warn(error)
   }

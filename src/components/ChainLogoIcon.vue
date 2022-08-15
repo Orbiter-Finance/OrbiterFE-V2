@@ -39,7 +39,9 @@ export default {
         return 'zk2logo'
       }else if (chainID == '15' || chainID == '515') {
         return 'bsclogo'
-      }  else {
+      }else if (chainID == '16' || chainID == '516') {
+        return 'arnavologo'
+      }   else {
         return 'ethlogo'
       }
     },
