@@ -964,11 +964,11 @@ export default {
         let ARWithDrawARGas =
           fromGasPrice *
           (isErc20 ? 300000 : 65000)
-        // let L1ChainID = fromChainID === 2 ? 1 : 5
-        // let L1GasPrice = await this.getGasPrice(L1ChainID)
-        // let ARWithDrawL1Gas =
-        //   L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
-        ethGas = ARWithDrawARGas
+        let L1ChainID = fromChainID === 16 ? 1 : 5
+        let L1GasPrice = await this.getGasPrice(L1ChainID)
+        let WithDrawL1Gas =
+          L1GasPrice * (isErc20 ? 160000 : 115000)
+        ethGas = ARWithDrawARGas + WithDrawL1Gas;
       } catch (error) {
         throw new Error(`ar withdraw error`)
       }
