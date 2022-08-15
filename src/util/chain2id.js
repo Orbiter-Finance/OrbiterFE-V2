@@ -28,6 +28,8 @@ export const chain2idMap = {
   'zkSync2(G)': 514,
   "BNBChain(R)": 515,
   "BNBChain": 15,
+  "Arbitrum Nova": 16,
+  "Arbitrum Nova(Goerli)": 516,
 }
 
 export const chain2icon = item => {
@@ -70,6 +72,9 @@ export const chain2icon = item => {
   }
   if (item === 15 || item === 515) {
     iconName = 'bsclogo'
+  }
+  if (item === 16 || item === 516) {
+    iconName = 'arnavologo'
   }
   return iconName
 }

@@ -269,6 +269,7 @@ export default {
       10: 1,
       11: 1,
       15: 1,
+      16: 1,
       22: 0.02,
       33: 100,
       44: 50,
@@ -282,6 +283,7 @@ export default {
       513: 1,
       514: 0.000028572,
       515: 1,
+      516: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -297,6 +299,7 @@ export default {
       11: 100000,
       13: 646496,
       15: 150000,
+      16: 150000,
       22: 810000,
       33: 100,
       44: 35000,
@@ -309,6 +312,7 @@ export default {
       513: 646496,
       514: 10560,
       515: 150000,
+      516: 150000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -323,6 +327,7 @@ export default {
       9: 'ETH',
       10: 'METIS',
       15: 'BNB',
+      16: 'ETH',
       22: 'AETH',
       33: 'ETH',
       44: 'ETH',
@@ -337,6 +342,7 @@ export default {
       515: 'BNB',
       14: 'ETH',
       514: 'ETH',
+      516: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -482,6 +488,9 @@ export default {
     if (fromChainID === 13 || fromChainID === 513) {
       timeSpent = 20
     }
+    if (fromChainID === 16 || fromChainID === 516) {
+      timeSpent = 30
+    }
     if (fromChainID === 4 || fromChainID === 44) {
       timeSpent = 180
     }
@@ -489,6 +498,9 @@ export default {
       timeSpent = 180
     }
     if (toChainID === 1 || toChainID === 5) {
+      timeSpent += 30
+    }
+    if (toChainID === 16 || toChainID === 516) {
       timeSpent += 30
     }
     if (toChainID === 2 || toChainID === 22) {
@@ -536,6 +548,9 @@ export default {
     }
     if (fromChainID === 4 || fromChainID === 44) {
       return '~24 hours'
+    }
+     if (fromChainID === 16 || fromChainID === 516) {
+      return '~7 days'
     }
     if (
       fromChainID === 3 ||
@@ -618,6 +633,9 @@ export default {
       if (toChainID === 15 || toChainID === 515) {
         return '~15min'
       }
+      if (toChainID === 16 || toChainID === 516) {
+        return '~10min'
+      }
     }
   },
 
@@ -650,6 +668,9 @@ export default {
     }
     if (fromChainID === 4 || fromChainID === 44) {
       return ' 24 hours'
+    }
+    if (fromChainID === 16 || fromChainID === 516) {
+      return ' 7 days'
     }
     if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -787,6 +808,7 @@ export default {
         throw new Error(`ar withdraw error`)
       }
     }
+
     if (fromChainID === 3 || fromChainID === 33) {
       try {
         // zk withdraw
@@ -933,6 +955,24 @@ export default {
       ethGas =
         fromGasPrice *
         (isErc20 ? ZK2_ERC20_WITHDRAW_ONZK2 : ZK2_ETH_WITHDRAW_ONZK2)
+    }
+    if (fromChainID === 16 || fromChainID === 516) {
+      try {
+        // Ar get
+        let fromGasPrice = await this.getGasPrice(fromChainID)
+        // AR WithDraw
+
+        let ARWithDrawARGas =
+          fromGasPrice *
+          (isErc20 ? 300000 : 65000)
+        let L1ChainID = fromChainID === 16 ? 1 : 5
+        let L1GasPrice = await this.getGasPrice(L1ChainID)
+        let WithDrawL1Gas =
+          L1GasPrice * (isErc20 ? 160000 : 115000)
+        ethGas = ARWithDrawARGas + WithDrawL1Gas;
+      } catch (error) {
+        throw new Error(`ar withdraw error`)
+      }
     }
 
     // deposit
@@ -1083,7 +1123,6 @@ export default {
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
-
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(

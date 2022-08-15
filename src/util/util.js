@@ -69,6 +69,10 @@ export default {
         return "BNB Chain"
       case 515:
         return "BNB Chain(R)"
+      case 16:
+        return "Arbitrum Nova"
+      case 516:
+        return "Arbitrum Nova(Goerli)"
     }
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
@@ -199,7 +203,6 @@ export default {
       chainId: this.toHex(chain.chainId),
     }
     try {
-      console.log(compatibleGlobalWalletConf.value.walletPayload.provider, '===compatibleGlobalWalletConf.value.walletPayload.provider')
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
