@@ -550,7 +550,7 @@ export default {
       return '~24 hours'
     }
      if (fromChainID === 16 || fromChainID === 516) {
-      return '~24 hours'
+      return '~7 days'
     }
     if (
       fromChainID === 3 ||
@@ -670,7 +670,7 @@ export default {
       return ' 24 hours'
     }
     if (fromChainID === 16 || fromChainID === 516) {
-      return ' 24 hours'
+      return ' 7 days'
     }
     if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
