@@ -7,7 +7,7 @@ export default {
   },
   zkSync: {
     Mainnet: 'https://api.zksync.io/api/v0.2',
-    Rinkeby: 'https://rinkeby-api.zksync.io/api/v0.2',
+    TestNet: 'https://goerli-api.zksync.io/api/v0.2',
     chainID: '3',
     rinkeyChainID: '33',
   },

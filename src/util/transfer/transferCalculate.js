@@ -2,7 +2,6 @@ import { getContractFactory, predeploys } from '@eth-optimism/contracts'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { ethers } from 'ethers'
-import * as zksync from 'zksync'
 import env from '../../../env'
 import thirdapi from '../../core/actions/thirdapi'
 // import zksync2 from '../../core/actions/zksync2'
@@ -19,6 +18,7 @@ import {
   getStarkTransferFee,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
+import {getZkSyncProvider} from '../zksync/zkysnc_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
@@ -118,9 +118,7 @@ export default {
       (fromChainID == 10 || fromChainID == 510) && //if transfer metis,need to consider reduce metis
       fromTokenAddress == '0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000' //metis token address
     if (fromChainID === 3 || fromChainID === 33) {
-      const syncHttpProvider = await zksync.getDefaultProvider(
-        fromChainID === 33 ? 'rinkeby' : 'mainnet'
-      )
+      const syncHttpProvider = await getZkSyncProvider(fromChainID)
       let selectMakerInfo = realSelectMakerInfo.value
       if (!makerAddress) {
         return null
@@ -339,9 +337,7 @@ export default {
       514: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
-      const syncHttpProvider = await zksync.getDefaultProvider(
-        fromChainID === 33 ? 'rinkeby' : 'mainnet'
-      )
+      const syncHttpProvider = await getZkSyncProvider(fromChainID)
       let selectMakerInfo = realSelectMakerInfo.value
       let transferAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
@@ -725,9 +721,7 @@ export default {
     }
     if (fromChainID === 3 || fromChainID === 33) {
       // zk withdraw
-      const syncHttpProvider = await zksync.getDefaultProvider(
-        fromChainID === 33 ? 'rinkeby' : 'mainnet'
-      )
+      const syncHttpProvider = await getZkSyncProvider(fromChainID)
       let transferAddress = selectMakerInfo.makerAddress
         ? selectMakerInfo.makerAddress
         : null
@@ -790,9 +784,7 @@ export default {
     if (fromChainID === 3 || fromChainID === 33) {
       try {
         // zk withdraw
-        const syncHttpProvider = await zksync.getDefaultProvider(
-          fromChainID === 33 ? 'rinkeby' : 'mainnet'
-        )
+        const syncHttpProvider = await getZkSyncProvider(fromChainID)
         let transferAddress = selectMakerInfo.makerAddress
         if (transferAddress) {
           const zkWithDrawFee = await syncHttpProvider.getTransactionFee(

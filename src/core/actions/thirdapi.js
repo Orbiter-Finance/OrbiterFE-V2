@@ -5,7 +5,7 @@ import config from '../utils/config'
 
 Axios.axios()
 
-var zkConfigNet = config.zkSync.Rinkeby
+var zkConfigNet = config.zkSync.TestNet
 // var arConfigNet = config.arbitrum.Ropsten
 // var l1ConfigNet = config.L1.Mainnet
 
@@ -18,7 +18,7 @@ export default {
           errMsg: 'getZKAccountError_wrongChainID',
         })
       }
-      const prefix = req.localChainID === 33 ? config.zkSync.Rinkeby : config.zkSync.Mainnet
+      const prefix = req.localChainID === 33 ? config.zkSync.TestNet : config.zkSync.Mainnet
       axios
         .get(`${prefix}/accounts/${req.account}/${req.stateType}`)
         .then(function (response) {
@@ -60,7 +60,7 @@ export default {
       }
       const url =
         (req.localChainID === 33
-          ? config.zkSync.Rinkeby
+          ? config.zkSync.TestNet
           : config.zkSync.Mainnet) +
         '/transactions/' +
         req.txHash +
@@ -111,7 +111,7 @@ export default {
         limit: req.limit,
         direction: req.direction,
       }
-      const prefix = req.localChainID === 33 ? config.zkSync.Rinkeby : config.zkSync.Mainnet
+      const prefix = req.localChainID === 33 ? config.zkSync.TestNet : config.zkSync.Mainnet
       axios
         .get(`${prefix}/accounts/${req.account}/transactions`, {
           params: params,
@@ -179,7 +179,7 @@ export default {
         direction: 'newer',
       */
       const zkSync = config.zkSync
-      const baseUrl = req.localChainID === 33 ? zkSync.Rinkeby : zkSync.Mainnet
+      const baseUrl = req.localChainID === 33 ? zkSync.TestNet : zkSync.Mainnet
       const url = `${baseUrl}/tokens?from=${req.from}&limit=${req.limit}&direction=${req.direction}`
 
       axios.get(url)

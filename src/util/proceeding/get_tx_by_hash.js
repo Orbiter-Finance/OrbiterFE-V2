@@ -81,7 +81,7 @@ async function metisTimeStampInfo(chainId, hash) {
     }
 }
 async function zkSyncTimeStampInfo(chainId, hash) {
-    const url = `${chainId === 33 ? config.zkSync.Rinkeby
+    const url = `${chainId === 33 ? config.zkSync.TestNet
         : config.zkSync.Mainnet
         }/transactions/${hash} /data`
     const response = await axios.get(url)
