@@ -1122,10 +1122,6 @@ export default {
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
-    if (toChainID === 16 || toChainID === 516) {
-     // Query block browser deposit transaction fee is 0
-    }
-
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(
