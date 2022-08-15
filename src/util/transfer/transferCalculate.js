@@ -550,7 +550,7 @@ export default {
       return '~24 hours'
     }
      if (fromChainID === 16 || fromChainID === 516) {
-      return '~24 hours'
+      return '~7 days'
     }
     if (
       fromChainID === 3 ||
@@ -670,7 +670,7 @@ export default {
       return ' 24 hours'
     }
     if (fromChainID === 16 || fromChainID === 516) {
-      return ' 24 hours'
+      return ' 7 days'
     }
     if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -964,11 +964,11 @@ export default {
         let ARWithDrawARGas =
           fromGasPrice *
           (isErc20 ? 300000 : 65000)
-        // let L1ChainID = fromChainID === 2 ? 1 : 5
-        // let L1GasPrice = await this.getGasPrice(L1ChainID)
-        // let ARWithDrawL1Gas =
-        //   L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
-        ethGas = ARWithDrawARGas
+        let L1ChainID = fromChainID === 16 ? 1 : 5
+        let L1GasPrice = await this.getGasPrice(L1ChainID)
+        let WithDrawL1Gas =
+          L1GasPrice * (isErc20 ? 160000 : 115000)
+        ethGas = ARWithDrawARGas + WithDrawL1Gas;
       } catch (error) {
         throw new Error(`ar withdraw error`)
       }
@@ -1122,10 +1122,6 @@ export default {
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
-    if (toChainID === 16 || toChainID === 516) {
-     // Query block browser deposit transaction fee is 0
-    }
-
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(
