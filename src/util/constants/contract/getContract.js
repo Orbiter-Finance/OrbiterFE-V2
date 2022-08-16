@@ -1,15 +1,17 @@
 import Web3 from 'web3'
-
-import { Coin_ABI, sourceABI, dTokenABI } from './contract.js'
+import { ethers } from 'ethers'
+import {
+  CoinABI,
+  sourceABI,
+  dTokenABI,
+  pTokenABI,
+  DestABI,
+} from './contract.js'
 import { store } from '../../../store'
 import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
+import env from '../../../../env'
 
-const sourceAddress = {
-  5: '0xb530A7f856B126104f3513036A4e961369EB35C1',
-  22: '0x3954f34A8355802B515cB1C0CbcB5a1fA1c76e5d',
-  77: '0xd7569CB667aDCF9D2eb2Dd4E039243DCf6feC5e7',
-}
 // Get a token contract on the L2 network
 function getLocalCoinContract(localChainID, tokenAddress, state) {
   // 0 : http   1: ws
@@ -17,7 +19,7 @@ function getLocalCoinContract(localChainID, tokenAddress, state) {
   const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
   if (web3) {
     const ecourseContractInstance = new web3.eth.Contract(
-      Coin_ABI,
+      CoinABI,
       tokenAddress
     )
     if (!ecourseContractInstance) {
@@ -39,7 +41,7 @@ function getTransferContract(localChainID, makerInfo) {
   }
   if (store.state.web3.isInstallMeta) {
     const web3 = new Web3(window.ethereum)
-    var ABI = Coin_ABI
+    var ABI = CoinABI
     var Address = null
     if (makerInfo.c1ID === localChainID) {
       Address = makerInfo.t1Address
@@ -77,7 +79,7 @@ async function getTransferGasLimit(localChainID, makerInfo, from, to, value) {
         })
         return gasLimit
       } else {
-        const ABI = Coin_ABI
+        const ABI = CoinABI
         const ecourseContractInstance = new web3.eth.Contract(ABI, tokenAddress)
         if (!ecourseContractInstance) {
           return gasLimit
@@ -103,7 +105,7 @@ function getSourceContract(chainID) {
   if (store.state.web3.isInstallMeta) {
     const web3 = new Web3(window.ethereum)
     var ABI = sourceABI
-    var Address = sourceAddress[chainID]
+    var Address = env.sourceAddress[store.state.transferData.selectTokenInfo.token][chainID]
     const ecourseContractInstance = new web3.eth.Contract(ABI, Address)
     if (!ecourseContractInstance) {
       return null
@@ -114,12 +116,45 @@ function getSourceContract(chainID) {
   }
 }
 
+function getCoinContractInstance(chainID, provider) {
+  return new ethers.Contract(
+    store.state.poolNetworkOrTokenConfig.toChainAddress[chainID],
+    CoinABI,
+    provider
+  )
+}
+
+function getDestContractInstance(tokenName, chainID, provider) {
+  return new ethers.Contract(
+    env.destAddress[tokenName][chainID],
+    DestABI,
+    provider
+  )
+}
+
+function getDTokenContractInstance(tokenName, chainID, provider) {
+  return new ethers.Contract(
+    env.dTokenAddress[tokenName][chainID],
+    dTokenABI,
+    provider
+  )
+}
+
 function getDTokenContractABI() {
   return dTokenABI
 }
 
 function getCoinContractABI() {
-  return Coin_ABI
+  return CoinABI
+}
+
+
+function getPTokenContractABI() {
+  return pTokenABI
+}
+
+function getDestContractABI() {
+  return DestABI
 }
 
 export {
@@ -127,7 +162,11 @@ export {
   getLocalCoinContract,
   getTransferGasLimit,
   getDTokenContractABI,
+  getPTokenContractABI,
+  getDestContractABI,
   getCoinContractABI,
   getSourceContract,
-  sourceAddress,
+  getCoinContractInstance,
+  getDestContractInstance,
+  getDTokenContractInstance
 }

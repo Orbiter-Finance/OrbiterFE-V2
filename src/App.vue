@@ -88,7 +88,6 @@ export default {
     HeaderDialog,
   },
   mounted() {
-    // console.log(this.$route.meta.keepAlive)
     if (localStorage.getItem('localLogin') === 'true') {
       this.$store.dispatch('registerWeb3').then(() => {})
     }

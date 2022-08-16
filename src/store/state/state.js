@@ -1,4 +1,3 @@
-import env from '../../../env'
 const state = {
   web3: {
     isInstallMeta: false,
@@ -8,6 +7,7 @@ const state = {
     coinbase: null,
     error: null,
     localLogin: true,
+    provider: null,
     starkNet: {
       starkNetAddress: '',
       starkNetWalletName: '',
@@ -65,7 +65,6 @@ const state = {
   transactionList: null,
   liquidityData: [],
   poolNetworkOrTokenConfig: {
-    dTokenAddresses: env.dTokenAddresses,
     makerInfoList: [],
     NetworkArray: [],
     toChainAddress: {},

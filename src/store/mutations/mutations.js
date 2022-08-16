@@ -1,5 +1,6 @@
 import { toggleBodyCls } from '../../util/theme/theme'
 import decimal from '../../util/decimal/decimal'
+import { getDefaultProvider } from '../../util/constants/web3/provider'
 export default {
   changeMobileStatus(state, payload) {
     state.isMobile = payload
@@ -47,7 +48,10 @@ export default {
         (liquidityDataList[i]['apr'] / 365) * liquidityDataList[i]['amount'],
         liquidityDataList[i].tokenName
       )
-      liquidityDataList[i]['filledAmount'] = '1,000,000.000'
+      liquidityDataList[i]['filledAmount'] = decimal.number_format(
+        liquidityDataList[i]['filledAmount'],
+        liquidityDataList[i].tokenName
+      )
       liquidityDataList[i]['estimatedProfit'] = decimal.number_format(
         liquidityDataList[i]['dayRevenue'] * 7,
         liquidityDataList[i].tokenName
@@ -185,9 +189,11 @@ export default {
       localStorage.setItem('localLogin', true)
     }
     state.web3.coinbase = coinbase
+    state.web3.provider = getDefaultProvider()
   },
   updateNetWorkId(state, netWorkId) {
     state.web3.networkId = netWorkId
+    state.web3.provider = getDefaultProvider()
   },
   updateLocalLogin(state, localLogin) {
     state.web3.localLogin = localLogin

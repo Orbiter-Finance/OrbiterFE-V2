@@ -115,8 +115,8 @@ import NetworkSelect from '../select/NetworkSelect.vue'
 import TokenSelect from '../select/TokenSelect.vue'
 import CommDialog from '../../comm/CommDialog.vue'
 import {
-  getDTokenContractABI,
-  getCoinContractABI,
+  getCoinContractInstance,
+  getDTokenContractInstance,
 } from '../../../util/constants/contract/getContract'
 import util from '../../../util/util'
 import transferCalculate from '../../../util/transfer/transferCalculate'
@@ -297,10 +297,6 @@ export default {
       'updatePoolNetworkOrTokenConfig',
       'updateLiquidityDataStatus',
     ]),
-    getProviderSigner() {
-      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-      return provider.getSigner()
-    },
     // open selectNetwork
     showNetworkPopupClick() {
       this.$refs.SelectNetworkPopupRef.showCustom()
@@ -391,43 +387,32 @@ export default {
         console.log(error)
       }
     },
-    getDTokenContract(toChainId, provider) {
-      return new ethers.Contract(
-        this.poolNetworkOrTokenConfig.dTokenAddresses[
-          this.destChainInfo.tokenName
-        ][toChainId],
-        getDTokenContractABI(),
-        provider
-      )
-    },
     async confirmAddLiquidity() {
       this.isLoading = true
-      let singer = this.getProviderSigner()
+      let signer = this.web3.provider.getSigner()
       try {
         await util.ensureMetamaskNetwork(
           this.$env.localChainID_netChainID[
             this.poolNetworkOrTokenConfig.toChainId
           ]
         )
-        const coinToken = new ethers.Contract(
-          this.poolNetworkOrTokenConfig.toChainAddress[
-            this.poolNetworkOrTokenConfig.toChainId
-          ],
-          getCoinContractABI(),
-          singer
-        )
-        const dTokenInstance = this.getDTokenContract(
+        const coinInstance = getCoinContractInstance(
           this.poolNetworkOrTokenConfig.toChainId,
-          singer
+          signer
         )
-        const account = await singer.getAddress()
-        const allowanceAmount = await coinToken.allowance(
+        const dTokenInstance = getDTokenContractInstance(
+          this.destChainInfo.tokenName,
+          this.poolNetworkOrTokenConfig.toChainId,
+          signer
+        )
+        const account = await signer.getAddress()
+        const allowanceAmount = await coinInstance.allowance(
           account,
-          this.poolNetworkOrTokenConfig.dTokenAddresses[
-            this.destChainInfo.tokenName
-          ][this.poolNetworkOrTokenConfig.toChainId]
+          this.$env.dTokenAddress[this.destChainInfo.tokenName][
+            this.poolNetworkOrTokenConfig.toChainId
+          ]
         )
-        const coinBalance = await coinToken.balanceOf(account)
+        const coinBalance = await coinInstance.balanceOf(account)
         if (ethers.utils.parseEther(this.transferValue).isZero()) return
         if (
           ethers.BigNumber.from(ethers.utils.parseEther(this.transferValue)).gt(
@@ -447,10 +432,10 @@ export default {
             ethers.utils.parseEther(this.transferValue)
           )
         ) {
-          await coinToken.approve(
-            this.poolNetworkOrTokenConfig.dTokenAddresses[
-              this.destChainInfo.tokenName
-            ][this.poolNetworkOrTokenConfig.toChainId],
+          await coinInstance.approve(
+            this.$env.dTokenAddress[this.destChainInfo.tokenName][
+              this.poolNetworkOrTokenConfig.toChainId
+            ],
             ethers.constants.MaxUint256
           )
         }

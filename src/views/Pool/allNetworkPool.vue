@@ -131,11 +131,6 @@ export default {
     }
   },
   mounted() {},
-  beforeRouteEnter(to, from, next) {
-    next(() => {
-      // getTransactionsHistory()
-    })
-  },
   methods: {
     ...mapMutations(['togglePageTab', 'updatePoolNetworkOrTokenConfig']),
     closeDialog() {

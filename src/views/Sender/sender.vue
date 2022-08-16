@@ -48,7 +48,6 @@ import Confirm from '../../components/sender/confirm'
 import Proceed from '../../components/sender/proceed'
 import Detail from '../../components/sender/detail'
 import Middle from '../../util/middle/middle'
-
 export default {
   name: 'Sender',
   props: {},

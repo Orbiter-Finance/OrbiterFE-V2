@@ -336,7 +336,7 @@ import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 const queryParamsChainMap = {
   Mainnet: 1,
@@ -457,6 +457,7 @@ export default {
     },
   },
   computed: {
+    ...mapState(['transferData']),
     ...mapGetters(['isLogin']),
     queryParams() {
       const { query } = this.$route

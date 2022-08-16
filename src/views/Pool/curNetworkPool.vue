@@ -173,7 +173,11 @@ import config from '../../config'
 import util from '../../util/util'
 import { ethers } from 'ethers'
 import { mapState, mapMutations, mapGetters } from 'vuex'
-import { getDTokenContractABI } from '../../util/constants/contract/getContract'
+import {
+  getDestContractInstance,
+  getCoinContractInstance,
+  getDTokenContractInstance,
+} from '../../util/constants/contract/getContract'
 export default {
   name: 'curNetworkPool',
   components: { SvgIconThemed, CommLoading, PoolAddLiquidity, allNetworkPool },
@@ -208,7 +212,6 @@ export default {
   },
   mounted() {
     this.getAllNetwork()
-    console.log('122', this.getCurNetworkLiquidityData.length === 0)
   },
   methods: {
     ...mapMutations([
@@ -218,18 +221,6 @@ export default {
       'updateLiquidityData',
       'updateLiquidityDataStatus',
     ]),
-    getProviderSigner() {
-      const provider = new ethers.providers.Web3Provider(window.ethereum, 'any')
-      const singer = provider.getSigner()
-      return singer
-    },
-    getDTokenContract(tokenName, toChainId, provider) {
-      return new ethers.Contract(
-        this.poolNetworkOrTokenConfig.dTokenAddresses[tokenName][toChainId],
-        getDTokenContractABI(),
-        provider
-      )
-    },
     // 获取所有网络
     getAllNetwork() {
       let networkArray = []
@@ -260,11 +251,10 @@ export default {
         },
       ])
 
-      // 获取 当前网络下 的流动池信息
-      this.getCurNetworkliquidityData()
-
       // 获取最新代币列表
       this.getAllTokenArray(null)
+      // 获取 当前网络下 的流动池信息
+      this.getCurNetworkliquidityData()
     },
     getAllTokenArray(val) {
       if (val !== null) {
@@ -307,17 +297,25 @@ export default {
       ])
     },
     async getLiquidityData(tokenName, toChainId) {
-      let singer = this.getProviderSigner()
+      let signer = this.web3.provider.getSigner()
       let customProvider = new ethers.providers.StaticJsonRpcProvider(
         process.env[this.$env.localProvider[toChainId]]
       )
-      const dTokenInstance = new ethers.Contract(
-        this.poolNetworkOrTokenConfig.dTokenAddresses[tokenName][toChainId],
-        getDTokenContractABI(),
+      const dTokenInstance = getDTokenContractInstance(
+        tokenName,
+        toChainId,
         customProvider
       )
-      const balanceAmount = await dTokenInstance.balanceOf(singer.getAddress())
-      const apy = await this.getSupplyRatePerBlock(tokenName, toChainId)
+      const destInstance = getDestContractInstance(
+        tokenName,
+        toChainId,
+        customProvider
+      )
+      console.log('totalBorrows', await dTokenInstance.totalBorrows())
+      const coinInstance = getCoinContractInstance(toChainId, customProvider)
+      const balanceAmount = await dTokenInstance.balanceOf(signer.getAddress())
+      const filledAmount = await coinInstance.balanceOf(destInstance.address)
+      const apy = await this.getSupplyRatePerBlock(dTokenInstance)
       var chainData = {
         chainName: util.chainName(
           toChainId,
@@ -327,6 +325,7 @@ export default {
         tokenName: await dTokenInstance.symbol(),
         amount: ethers.utils.formatEther(balanceAmount),
         apr: apy,
+        filledAmount: ethers.utils.formatEther(filledAmount),
       }
       return chainData
     },
@@ -335,9 +334,7 @@ export default {
         let promiseList = []
         for (
           let index = 0,
-            tokenArray = Object.keys(
-              this.poolNetworkOrTokenConfig.dTokenAddresses
-            ),
+            tokenArray = Object.keys(this.$env.dTokenAddress),
             tokenArrayLength = tokenArray.length,
             networkLength = this.poolNetworkOrTokenConfig.NetworkArray.length;
           index < tokenArrayLength;
@@ -356,16 +353,12 @@ export default {
         util.showMessage('Failed to get data', 'error')
       }
     },
-    async getSupplyRatePerBlock(tokenName, toChainId) {
+    async getSupplyRatePerBlock(dTokenInstance) {
       const blocksPerYear = 2102400
       const divParam = ethers.utils.parseEther('1')
       let calculationApy = 1.11
-      let customProvider = new ethers.providers.JsonRpcProvider(
-        process.env[this.$env.localProvider[toChainId]]
-      )
       try {
-        const APY = this.getDTokenContract(tokenName, toChainId, customProvider)
-        calculationApy = await APY.supplyRatePerBlock()
+        calculationApy = await dTokenInstance.supplyRatePerBlock()
         calculationApy = ((calculationApy * blocksPerYear) / divParam) * 100
       } catch (error) {
         console.log(error)
@@ -373,7 +366,7 @@ export default {
       return calculationApy
     },
     async reduceLiquidity(item) {
-      let singer = this.getProviderSigner()
+      let signer = this.web3.provider.getSigner()
       if (
         ethers.BigNumber.from(ethers.utils.parseEther(item.liquidity)).isZero()
       ) {
@@ -386,13 +379,11 @@ export default {
       await util.ensureMetamaskNetwork(
         this.$env.localChainID_netChainID[item.localID]
       )
-      const account = await singer.getAddress()
-      const dTokenInstance = new ethers.Contract(
-        this.poolNetworkOrTokenConfig.dTokenAddresses[item.tokenName][
-          item.localID
-        ],
-        getDTokenContractABI(),
-        singer
+      const account = await signer.getAddress()
+      const dTokenInstance = getDTokenContractInstance(
+        item.tokenName,
+        item.localID,
+        signer
       )
       let overrides = {
         from: account,

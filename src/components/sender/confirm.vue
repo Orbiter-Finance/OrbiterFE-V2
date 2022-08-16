@@ -102,14 +102,13 @@ import getProceeding from '../../util/proceeding/getProceeding'
 import {
   getTransferContract,
   getSourceContract,
-  sourceAddress,
 } from '../../util/constants/contract/getContract.js'
 import orbiterCore from '../../orbiterCore'
 import Loading from '../loading/loading.vue'
 import util from '../../util/util'
 import Middle from '../../util/middle/middle'
 import { ethers } from 'ethers'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'Confirm',
@@ -120,11 +119,11 @@ export default {
   data() {
     return {
       transferLoading: false,
-      sourceAddress: { ...sourceAddress },
     }
   },
   asyncComputed: {},
   computed: {
+    ...mapState(['transferData']),
     ...mapGetters(['isLogin']),
     confirmData() {
       // 0.000120000000009022 to 0.000120...09022
@@ -198,7 +197,7 @@ export default {
   watch: {},
   mounted() {},
   methods: {
-   addChainNetWork() {
+    addChainNetWork() {
       var that = this
       var chain = util.getChainInfo(
         this.$env.localChainID_netChainID[
@@ -208,7 +207,7 @@ export default {
       const switchParams = {
         chainId: util.toHex(chain.chainId),
       }
-       window.ethereum
+      window.ethereum
         .request({
           method: 'wallet_switchEthereumChain',
           params: [switchParams],
@@ -328,13 +327,17 @@ export default {
       console.warn('amount =', amount)
       console.warn(
         'source =',
-        this.sourceAddress[this.$store.state.transferData.fromChainID]
+        this.$env.sourceAddress[this.transferData.selectTokenInfo.token][
+          this.transferData.fromChainID
+        ]
       )
 
       const allowance = await transferContract.methods
         .allowance(
           account,
-          this.sourceAddress[this.$store.state.transferData.fromChainID]
+          this.$env.sourceAddress[this.transferData.selectTokenInfo.token][
+            this.transferData.fromChainID
+          ]
         )
         .call()
       console.warn('transferContract allowance: ', allowance)
@@ -343,7 +346,9 @@ export default {
         if (ethers.BigNumber.from(allowance).lt(amount)) {
           const approveTransactionHash = await transferContract.methods
             .approve(
-              this.sourceAddress[this.$store.state.transferData.fromChainID],
+              this.$env.sourceAddress[this.transferData.selectTokenInfo.token][
+                this.transferData.fromChainID
+              ],
               ethers.constants.MaxUint256
             )
             .send(objOption)

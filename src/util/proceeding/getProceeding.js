@@ -2,7 +2,7 @@ import getTransactionList from '../../core/routes/transactionList'
 import config from '../../core/utils/config'
 import { store } from '../../store'
 import util from '../../util/util'
-import { Coin_ABI } from '../constants/contract/contract.js'
+import { CoinABI } from '../constants/contract/contract.js'
 import { localWeb3 } from '../constants/contract/localWeb3.js'
 import { EthListen } from './eth_listen'
 import BigNumber from 'bignumber.js'
@@ -74,10 +74,10 @@ async function confirmUserTransaction(
     )
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
     if (
       trxConfirmations.confirmations > 0 &&
@@ -276,7 +276,7 @@ function ScanMakerTransfer(
 
     const currentBlock = await web3.eth.getBlockNumber()
 
-    const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
+    const tokenContract = new web3.eth.Contract(CoinABI, tokenAddress)
     // Generate filter options
     const options = {
       filter: {
@@ -351,10 +351,10 @@ async function confirmMakerTransaction(
     }
     console.log(
       'Transaction with hash ' +
-        txHash +
-        ' has ' +
-        trxConfirmations.confirmations +
-        ' confirmation(s)'
+      txHash +
+      ' has ' +
+      trxConfirmations.confirmations +
+      ' confirmation(s)'
     )
     if (trxConfirmations.confirmations >= confirmations) {
       console.log(

@@ -1,6 +1,5 @@
 import { store } from '../../../store'
-
-const pollWeb3 = function() {
+const pollWeb3 = function () {
   window.ethereum.autoRefreshOnNetworkChange = false
   window.ethereum.on('chainChanged', (chainId) => {
     console.log('networkChanged = ' + chainId)
