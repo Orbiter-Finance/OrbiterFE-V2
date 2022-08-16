@@ -37,7 +37,7 @@ export async function getTimeStampInfo(chainId, hash, blockNo, count = 30) {
 
 
 async function ethOrRinkebyTimeStampInfo(chainId, blockNo) {
-    const url = `${chainId === 5 ? config.etherscan.Rinkeby : config.etherscan.Mainnet
+    const url = `${chainId === 5 ? config.etherscan.TestNet : config.etherscan.Mainnet
         }?module=block&action=getblockreward&blockno=${blockNo}&apikey=${process.env.VUE_APP_ETH_KEY}`
 
     const response = await axios.get(url)

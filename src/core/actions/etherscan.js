@@ -24,7 +24,7 @@ export default {
         apikey: config.etherscan.key,
       }
       if (chainId === 5) {
-        configNet = config.etherscan.Rinkeby
+        configNet = config.etherscan.TestNet
       }
       axios
         .get(configNet, { params })
@@ -88,7 +88,7 @@ export default {
         apikey: config.etherscan.key,
       }
       if (chainId === 5) {
-        configNet = config.etherscan.Rinkeby
+        configNet = config.etherscan.TestNet
       }
       axios
         .get(configNet, { params })
