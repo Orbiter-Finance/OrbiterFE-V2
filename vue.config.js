@@ -74,7 +74,7 @@ module.exports = {
         },
       },
        '/api/v1/l2_data': {
-        target: 'https://l2api.orbiter.finance/',
+        target: 'http://13.112.21.145/',
         changeOrigin: true,
       },
     },

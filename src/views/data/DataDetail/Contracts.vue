@@ -1,10 +1,8 @@
 <template>
   <div class="contracts-wrapper">
     <div class="head">
-      <rollups :customRollups="[
-        { label: 'Arbitrum', value: 'arbitrum' },
-        { label: 'Optimism', value: 'optimism' },
-      ]" :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" />
+      <rollups :customRollups="customRollups" :value="currentRollup"
+        @rollup-change="(value) => (currentRollup = value)" />
       <time-diff class="time" v-if="!isMobile && contracts && contracts.update_time"
         :timestamp="contracts.update_time" />
     </div>
@@ -127,6 +125,13 @@ export default {
     return {
       PAGE_SIZE,
       defaultSort: { prop: 'launch_time', order: 'descending' },
+      customRollups: [
+        { label: 'Arbitrum', value: 'arbitrum' },
+        { label: 'Optimism', value: 'optimism' },
+        {
+          label: 'Arbitrum Nova', value: "arbitrumnova"
+        }
+      ],
       currentRollup: 'arbitrum',
       contracts: {},
       tableData: [],
