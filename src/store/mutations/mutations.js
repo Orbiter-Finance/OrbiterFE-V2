@@ -42,7 +42,7 @@ export default {
         liquidityDataList[i].tokenName
       )
       liquidityDataList[i]['apr'] =
-        liquidityDataList[i]['apr'] === 0 ? '1.11' : liquidityDataList[i]['apr']
+        liquidityDataList[i]['apr'] === 0 ? '1.11' : liquidityDataList[i]['apr'].toFixed(2)
       liquidityDataList[i]['dayRevenueTime'] = new Date().getHours()
       liquidityDataList[i]['dayRevenue'] = decimal.number_format(
         (liquidityDataList[i]['apr'] / 365) * liquidityDataList[i]['amount'],

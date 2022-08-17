@@ -65,18 +65,18 @@ export default {
   },
   dTokenAddress: {
     DAI: {
-      5: '0x05ffa6120c15C652B80c498BA7E1342f4Fc3b54E', // Rinkeby
-      22: '0x57d5779232064aa6be5C93cF05FbcaD748CbCf61', // ARB(Rinkeby)
+      5: '0x5D649b98B8D678441D3AcC9A82a6a8757120FA95', // Rinkeby
+      22: '0x92D4E2df09d38D2f805Bac3031ce2c756d1B6290', // ARB(Rinkeby)
     },
     USDC: {
       5: '0x48D3C937A4F8a1a855C45A8F75da3e8d972b6806', // Rinkeby
       22: '0x6F4E161967EBC4929068A46a5e2ec26272666B0D', // ARB(Rinkeby)
     },
   },
-  pTokenAddresses: {
+  pTokenAddress: {
     DAI: {
-      5: '0x18e37c92209Bee092913Df4984f4386e192e0B85', // Rinkeby
-      22: '0xA30e0a3dA901E0cCd398a0c7DDA39051E6539F0b', // ARB(Rinkeby)
+      5: '0xE2C1ad36Abbf0C356a28f261b04E1a716A7D2b51', // Rinkeby
+      22: '0xf3da8481909265aef431627d43CD83d3C1800CF2', // ARB(Rinkeby)
     },
     USDC: {
       5: '0x556E72Cb9848Ec87a9C8D43aA0071CD657A86292', // Rinkeby
@@ -85,8 +85,8 @@ export default {
   },
   destAddress: {
     DAI: {
-      5: '0x8A769e4E9AE68310971C6875c86F4DE8f66BD65A', // Rinkeby
-      22: '0x7Efc576D720f98ea43f3c401E8702bBAd2323516', // ARB(Rinkeby)
+      5: "0x35ee29870FAb05E64844614137a3563Ae0b514b5",
+      22: "0xcC29953339348eF921D545cE554aA5A78A5403C3",
     },
     USDC: {
       5: "0xCc039Bd084Ec795F2C5cC0846832fF88D86B5248",
@@ -95,8 +95,8 @@ export default {
   },
   sourceAddress: {
     DAI: {
-      5: '0xA7cfafB26aE43bC673da38de02Bf236CB6a6b9B8', // Rinkeby
-      22: '0x0f61f0E8C62cd944561244764c34B5576412152E', // ARB(Rinkeby)
+      5: "0xF801518555C9C222C14bAbeF3eB4275f9D6B1b5d",
+      22: "0xeD431a02DA21c6a33Df6560997c11Afd620f46a3",
     },
     USDC: {
       5: '0x2786516cf1382375EcCCb2C98b613D88bdc7AC3A',

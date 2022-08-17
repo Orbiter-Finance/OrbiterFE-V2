@@ -174,9 +174,8 @@ import util from '../../util/util'
 import { ethers } from 'ethers'
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import {
-  getDestContractInstance,
-  getCoinContractInstance,
   getDTokenContractInstance,
+  getSourceContract,
 } from '../../util/constants/contract/getContract'
 export default {
   name: 'curNetworkPool',
@@ -306,15 +305,22 @@ export default {
         toChainId,
         customProvider
       )
-      const destInstance = getDestContractInstance(
-        tokenName,
-        toChainId,
-        customProvider
-      )
-      console.log('totalBorrows', await dTokenInstance.totalBorrows())
-      const coinInstance = getCoinContractInstance(toChainId, customProvider)
+      // if (toChainId == 22) {
+      //   const options = {
+      //     filter: {
+      //       txindex: 1,
+      //       chainId: 5,
+      //     },
+      //     fromBlock: '0',
+      //   }
+      //   const source = getSourceContract(22)
+      //   const events = await source.getPastEvents('newTransfer', options)
+      //   console.log('events.length ==', events.length)
+      //   console.log('tx =', events[0].returnValues.hashOnion)
+      // }
+
       const balanceAmount = await dTokenInstance.balanceOf(signer.getAddress())
-      const filledAmount = await coinInstance.balanceOf(destInstance.address)
+      const filledAmount = await dTokenInstance.totalBorrows()
       const apy = await this.getSupplyRatePerBlock(dTokenInstance)
       var chainData = {
         chainName: util.chainName(
