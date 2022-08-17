@@ -48,7 +48,7 @@
         <rollups
           :customRollups="
             rollups.map((item) => ({
-              value: item.toLowerCase(),
+              value: item.replace(/\s+/g, '').toLowerCase(),
               label: item,
             }))
           "
