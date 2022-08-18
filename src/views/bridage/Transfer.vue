@@ -1277,7 +1277,13 @@ export default {
       // const oldVal = this[`c${idx}Balance`]
       this[`c${idx}Balance`] = null
       transferCalculate
-        .getTransferBalance(id, addr, name, web3State.coinbase || compatibleGlobalWalletConf.value.walletPayload.walletAddress)
+        .getTransferBalance(
+          id,
+          addr,
+          name,
+          web3State.coinbase ||
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        )
         .then(
           (response) =>
             (this[`c${idx}Balance`] = (
@@ -1594,6 +1600,13 @@ export default {
       }
     },
     async sendTransfer() {
+      if (check.checkIsBitKeep()) {
+        this.$notify.error({
+          title: `Bitkeep is not supported and please try another wallet.`,
+          duration: 3000,
+        })
+        return
+      }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return
       }
