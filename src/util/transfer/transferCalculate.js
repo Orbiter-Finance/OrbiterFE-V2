@@ -164,12 +164,12 @@ export default {
     } else if (fromChainID === 12 || fromChainID === 512) {
       let transferFee = 0
       try {
-        transferFee = await zkspace.getZKTransferGasFee(
+        transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
           web3State.coinbase
         )
       } catch (error) {
-        console.warn('getZKTransferGasFeeError =', error)
+        console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee
     } else if (fromChainID == 4 || fromChainID == 44) {
@@ -215,7 +215,7 @@ export default {
             web3State.coinbase
           )
         } catch (error) {
-          console.warn('getZKTransferGasFeeError =', error)
+          console.warn('getZKSpaceTransferGasFeeError =', error)
         }
         return transferFee
       } else if (fromChainID == 9 || fromChainID == 99) {
@@ -269,7 +269,7 @@ export default {
       10: 1,
       11: 1,
       15: 1,
-      16:1,
+      16: 1,
       22: 0.02,
       33: 100,
       44: 50,
@@ -283,7 +283,7 @@ export default {
       513: 1,
       514: 0.000028572,
       515: 1,
-      516:1
+      516: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -342,7 +342,7 @@ export default {
       515: 'BNB',
       14: 'ETH',
       514: 'ETH',
-      516: 'ETH'
+      516: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -549,7 +549,7 @@ export default {
     if (fromChainID === 4 || fromChainID === 44) {
       return '~24 hours'
     }
-     if (fromChainID === 16 || fromChainID === 516) {
+    if (fromChainID === 16 || fromChainID === 516) {
       return '~7 days'
     }
     if (
@@ -961,14 +961,11 @@ export default {
         // Ar get
         let fromGasPrice = await this.getGasPrice(fromChainID)
         // AR WithDraw
-        let ARWithDrawARGas =
-          fromGasPrice *
-          (isErc20 ? 300000 : 65000)
+        let ARWithDrawARGas = fromGasPrice * (isErc20 ? 300000 : 65000)
         let L1ChainID = fromChainID === 16 ? 1 : 5
         let L1GasPrice = await this.getGasPrice(L1ChainID)
-        let WithDrawL1Gas =
-          L1GasPrice * (isErc20 ? 160000 : 115000)
-        ethGas = ARWithDrawARGas + WithDrawL1Gas;
+        let WithDrawL1Gas = L1GasPrice * (isErc20 ? 160000 : 115000)
+        ethGas = ARWithDrawARGas + WithDrawL1Gas
       } catch (error) {
         throw new Error(`ar withdraw error`)
       }
@@ -1280,10 +1277,7 @@ export default {
         params: [],
         id: 0,
       })
-      if (
-        response.status === 200 &&
-        (response.statusText === 'OK' || response.statusText === '')
-      ) {
+      if (response.status === 200) {
         return parseInt(response.data.result)
       } else {
         return null
