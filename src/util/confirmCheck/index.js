@@ -60,7 +60,7 @@ async function netStateBlock(fromChainID) {
   let response
   try {
     response = await axios.get(`${netStateUrl}/chains`)
-    if (response.status == 200 && response.statusText == 'OK') {
+    if (response.status == 200) {
       let netDic = response.data
       let netArr = Object.values(netDic)
       if (netArr && netArr.length) {

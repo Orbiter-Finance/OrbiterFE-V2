@@ -30,6 +30,9 @@ export default {
     }
   },
   getZKSpaceTransferGasFee: async function (localChainID, account) {
+    if (!account) {
+      return 0
+    }
     let ethPrice = transferDataState.ethPrice
       ? transferDataState.ethPrice
       : 2000
@@ -42,7 +45,7 @@ export default {
     }/account/${account}/fee`
     try {
       const response = await axios.get(url)
-      if (response.status === 200 && response.statusText == 'OK') {
+      if (response.status === 200) {
         var respData = response.data
         if (respData.success == true) {
           const gasFee = new BigNumber(respData.data.transfer).dividedBy(
@@ -76,11 +79,7 @@ export default {
     }/account/${account}/fee`
     try {
       const response = await axios.get(url)
-      if (
-        response.status === 200 &&
-        response.statusText == 'OK' &&
-        response.data.success
-      ) {
+      if (response.status === 200 && response.data.success) {
         var respData = response.data
         const gasFee = new BigNumber(respData.data.withdraw).dividedBy(
           new BigNumber(ethPrice)
@@ -117,7 +116,7 @@ export default {
       axios
         .get(url)
         .then(function (response) {
-          if (response.status === 200 && response.statusText == 'OK') {
+          if (response.status === 200) {
             var respData = response.data
             if (respData.success == true) {
               resolve(respData.data)
@@ -167,7 +166,7 @@ export default {
       txHash
     const response = await axios.get(url)
 
-    if (response.status === 200 && response.statusText === 'OK') {
+    if (response.status === 200) {
       var respData = response.data
       if (respData.success === true) {
         return respData
@@ -197,7 +196,7 @@ export default {
     const url = `${baseUrl}/txs?types=Transfer&address=${address}&token=${tokenID}&start=${startIndex}&limit=${limit}`
     try {
       const response = await axios.get(url)
-      if (response.status === 200 && response.statusText === 'OK') {
+      if (response.status === 200) {
         var respData = response.data
         if (respData.success === true) {
           return respData
