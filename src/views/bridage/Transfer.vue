@@ -1602,7 +1602,7 @@ export default {
     async sendTransfer() {
       if (check.checkIsBitKeep()) {
         this.$notify.error({
-          title: `Bitkeep is not supported by Orbiter, please try another wallet.`,
+          title: `Bitkeep is not supported and please try another wallet.`,
           duration: 3000,
         })
         return
