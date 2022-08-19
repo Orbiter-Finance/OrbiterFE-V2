@@ -62,7 +62,7 @@
               class="dColor"
               style="margin-left: 0.7rem; margin-right: 1.1rem"
             >
-              {{ desc.amount }}{{ desc.coin }}
+              {{ desc.amount }}{{ ' ' + desc.coin }}
             </span>
             To
             <span class="dColor" style="margin-left: 0.7rem">

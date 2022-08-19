@@ -135,7 +135,9 @@
               :class="[
                 'content-button',
                 'reduce',
-                { reduceLoading: item.reduceLoading },
+                {
+                  reduceLoading: item.reduceLoading,
+                },
               ]"
               @click="item.reduceLoading ? '' : reduceLiquidity(item)"
             >
@@ -173,10 +175,7 @@ import config from '../../config'
 import util from '../../util/util'
 import { ethers } from 'ethers'
 import { mapState, mapMutations, mapGetters } from 'vuex'
-import {
-  getDTokenContractInstance,
-  getSourceContract,
-} from '../../util/constants/contract/getContract'
+import { getDTokenContractInstance } from '../../util/constants/contract/getContract'
 export default {
   name: 'curNetworkPool',
   components: { SvgIconThemed, CommLoading, PoolAddLiquidity, allNetworkPool },
@@ -305,20 +304,6 @@ export default {
         toChainId,
         customProvider
       )
-      // if (toChainId == 22) {
-      //   const options = {
-      //     filter: {
-      //       txindex: 1,
-      //       chainId: 5,
-      //     },
-      //     fromBlock: '0',
-      //   }
-      //   const source = getSourceContract(22)
-      //   const events = await source.getPastEvents('newTransfer', options)
-      //   console.log('events.length ==', events.length)
-      //   console.log('tx =', events[0].returnValues.hashOnion)
-      // }
-
       const balanceAmount = await dTokenInstance.balanceOf(signer.getAddress())
       const filledAmount = await dTokenInstance.totalBorrows()
       const apy = await this.getSupplyRatePerBlock(dTokenInstance)
@@ -372,12 +357,26 @@ export default {
       return calculationApy
     },
     async reduceLiquidity(item) {
+      console.log(item)
       let signer = this.web3.provider.getSigner()
       if (
         ethers.BigNumber.from(ethers.utils.parseEther(item.liquidity)).isZero()
       ) {
         util.showMessage(
-          'Your account balance of 0 for ' + item.tokenName,
+          'Your account balance of 0 ' +
+            item.tokenName +
+            ' for ' +
+            this.showChainName(
+              item.localID,
+              this.$env.localChainID_netChainID[item.localID]
+            ),
+          'warning'
+        )
+        return
+      }
+      if (item.filledAmount !== '0.00') {
+        util.showMessage(
+          'Borrowing has been started and full redemption is not supported for the time being.',
           'warning'
         )
         return

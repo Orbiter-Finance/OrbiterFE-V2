@@ -13,9 +13,9 @@ export default {
   },
   arbitrum: {
     Mainnet: 'https://api.arbiscan.io/api',
-    Rinkeby: 'https://api-testnet.arbiscan.io/api',
+    Goerli: 'https://api-testnet.arbiscan.io/api',
     chainID: '2',
-    rinkeyChainID: '22'
+    goerliChainID: '22'
   },
   polygon: {
     key: '93B5F59W4XWXRPJFD2WRERHNSPQ1T4UTAE',

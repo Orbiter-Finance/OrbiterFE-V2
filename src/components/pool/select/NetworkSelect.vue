@@ -27,7 +27,15 @@
           v-for="(item, index) in newChainData"
           :key="item.chain"
           @click="getNetworkInfo(item, index)"
-          class="contentItem"
+          :class="[
+            'contentItem',
+            {
+              selected:
+                selectData === 0
+                  ? newChainData[selectData].localID === item.localID
+                  : selectData === item.localID,
+            },
+          ]"
         >
           <svg-icon
             class="logo"
@@ -60,6 +68,10 @@ export default {
       default: function () {
         return []
       },
+    },
+    selectData: {
+      type: Number,
+      default: 0,
     },
   },
   data() {
@@ -213,19 +225,21 @@ export default {
     font-weight: 700;
     font-size: 1.6rem;
     line-height: 2.4rem;
-
     .logo {
       width: 2.4rem;
       height: 2.4rem;
       border-radius: 50%;
       background: rgba($color: #000000, $alpha: 0.05);
-      padding: .2rem;
+      padding: 0.2rem;
     }
 
     .right {
       text-align: right;
       position: absolute;
-      right: .5rem;
+      right: 0.5rem;
+    }
+    &.selected {
+      background: var(--light-page-box-bg);
     }
   }
 }

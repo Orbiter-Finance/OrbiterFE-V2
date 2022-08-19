@@ -99,6 +99,7 @@
       <div slot="PoperContent" style="width: 100%">
         <network-select
           :ChainData="poolNetworkOrTokenConfig.NetworkArray"
+          :selectData="poolNetworkOrTokenConfig.toChainId"
           v-on:closeSelect="closeNetworkPopupClick()"
           v-on:getNetworkInfo="getNewNetworkInfo"
         />
@@ -296,6 +297,7 @@ export default {
       'setDialogVisible',
       'updatePoolNetworkOrTokenConfig',
       'updateLiquidityDataStatus',
+      'updateTransferTokenInfo',
     ]),
     // open selectNetwork
     showNetworkPopupClick() {
@@ -361,8 +363,11 @@ export default {
         }
       })
     },
-    selectedTokenChange() {
-      console.log('selectedTokenChange')
+    selectedTokenChange(e) {
+      let newTokenInfo = this.poolNetworkOrTokenConfig.tokenInfoArray.find(
+        (item) => item.token === e
+      )
+      this.updateTransferTokenInfo(newTokenInfo)
     },
     async getBalance(
       makerAddress,

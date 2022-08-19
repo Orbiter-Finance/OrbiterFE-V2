@@ -20,23 +20,21 @@
       "infoURL": "https://etherscan.io/"
     },
     {
-      "name": "Rinkeby",
-      "chainId": 4,
-      "shortName": "rin",
-      "networkId": 4,
+      "name": "Goerli",
+      "chainId": 5,
+      "shortName": "goe",
+      "networkId": 5,
       "nativeCurrency": {
-        "name": "Rinkeby Ether",
-        "symbol": "RIN",
+        "name": "Goerli Ether",
+        "symbol": "Goe",
         "decimals": 18
       },
       "rpc": [
-        "https://rinkeby.infura.io/v3/${INFURA_API_KEY}",
-        "wss://rinkeby.infura.io/ws/v3/${INFURA_API_KEY}"
+        "https://eth-goerli.g.alchemy.com/v2/jmWy91tpjAUOgBHEyGa-J9rpmXGlnwFD",
+        "wss://eth-goerli.g.alchemy.com/v2/jmWy91tpjAUOgBHEyGa-J9rpmXGlnwFD"
       ],
-      "faucets": [
-        "https://faucet.rinkeby.io"
-      ],
-      "infoURL": "https://rinkeby.etherscan.io/"
+      "faucets": ["https://goerli-faucet.mudit.blog/"],
+      "infoURL": "https://goerli.etherscan.io/"
     },
     {
       "name": "Ropsten",
@@ -52,9 +50,7 @@
         "https://ropsten.infura.io/v3/${INFURA_API_KEY}",
         "wss://ropsten.infura.io/ws/v3/${INFURA_API_KEY}"
       ],
-      "faucets": [
-        "https://faucet.ropsten.be?${ADDRESS}"
-      ],
+      "faucets": ["https://faucet.ropsten.be?${ADDRESS}"],
       "infoURL": "https://ropsten.etherscan.io/"
     },
     {
@@ -77,21 +73,21 @@
       "infoURL": "https://arbiscan.io/"
     },
     {
-      "name": "Arbitrum(R)",
-      "chainId": 421611,
-      "shortName": "arb-rinkeby",
-      "networkId": 421611,
+      "name": "Arbitrum(G)",
+      "chainId": 421613,
+      "shortName": "arb-goerli",
+      "networkId": 421613,
       "nativeCurrency": {
-        "name": "Arbitrum Rinkeby Ether",
+        "name": "Arbitrum Goerli Ether",
         "symbol": "ARETH",
         "decimals": 18
       },
       "rpc": [
-        "https://rinkeby.arbitrum.io/rpc",
-        "wss://rinkeby.arbitrum.io/ws"
+        "https://arb-goerli.g.alchemy.com/v2/yKCEaSWa9llIeVNAp6NYivWNCD5suKU7",
+        "wss://arb-goerli.g.alchemy.com/v2/yKCEaSWa9llIeVNAp6NYivWNCD5suKU7"
       ],
       "faucets": [],
-      "infoURL": "https://rinkeby-explorer.arbitrum.io/"
+      "infoURL": "https://goerli-rollup-explorer.arbitrum.io/"
     },
     {
       "name": "Polygon",
@@ -122,13 +118,8 @@
         "symbol": "tMATIC",
         "decimals": 18
       },
-      "rpc": [
-        "https://rpc-mumbai.matic.today",
-        "wss://ws-mumbai.matic.today"
-      ],
-      "faucets": [
-        "https://faucet.matic.network/"
-      ],
+      "rpc": ["https://rpc-mumbai.matic.today", "wss://ws-mumbai.matic.today"],
+      "faucets": ["https://faucet.matic.network/"],
       "infoURL": "https://matic.network/"
     },
     {
@@ -141,9 +132,7 @@
         "symbol": "OETH",
         "decimals": 18
       },
-      "rpc": [
-        "https://mainnet.optimism.io/"
-      ],
+      "rpc": ["https://mainnet.optimism.io/"],
       "faucets": [],
       "infoURL": "https://optimistic.etherscan.io/"
     },
@@ -157,9 +146,7 @@
         "symbol": "ETH",
         "decimals": 18
       },
-      "rpc": [
-        "https://kovan.optimism.io/"
-      ],
+      "rpc": ["https://kovan.optimism.io/"],
       "faucets": [],
       "infoURL": "https://kovan-optimistic.etherscan.io/"
     }

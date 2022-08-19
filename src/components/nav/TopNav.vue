@@ -103,10 +103,10 @@ export default {
       }
       return ''
     },
-    isRinkeby() {
-      const { href } = window.location
-      return /rinkeby\.orbiter/i.test(href)
-    },
+    // isRinkeby() {
+    //   const { href } = window.location
+    //   return /rinkeby\.orbiter/i.test(href)
+    // },
     isStarknet() {
       return this.refererUpper === 'STARKNET'
     },

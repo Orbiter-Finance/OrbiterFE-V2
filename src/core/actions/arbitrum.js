@@ -22,7 +22,7 @@ export default {
         sort: 'asc',
       }
       if (chainId == 22) {
-        configNet = config.arbitrum.Rinkeby
+        configNet = config.arbitrum.Goerli
       }
       axios
         .get(configNet, { params })
@@ -71,7 +71,7 @@ export default {
   },
   getBlockNumberWithTimeStamp: function (req, chainId) {
     if (chainId == 22) {
-      configNet = config.arbitrum.Rinkeby
+      configNet = config.arbitrum.Goerli
     }
     return new Promise((resolve, reject) => {
       const cacheKey = `arbitrum.getBlockNumberWithTimeStamp__${req.closest}`

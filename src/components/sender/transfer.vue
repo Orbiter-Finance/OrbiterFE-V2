@@ -337,20 +337,6 @@ import BigNumber from 'bignumber.js'
 import config from '../../config'
 import { exchangeToUsd } from '../../util/coinbase'
 import { mapGetters, mapState } from 'vuex'
-
-const queryParamsChainMap = {
-  Mainnet: 1,
-  Arbitrum: 2,
-  ZkSync: 3,
-  Polygon: 6,
-  Optimism: 7,
-  Rinkeby: 5,
-  'Arbitrum(R)': 22,
-  'ZkSync(R)': 33,
-  'Polygon(R)': 66,
-  'Optimism(K)': 77,
-}
-
 export default {
   name: 'Transfer',
   props: {},
@@ -457,7 +443,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['transferData']),
+    ...mapState(['transferData', 'web3']),
     ...mapGetters(['isLogin']),
     queryParams() {
       const { query } = this.$route
@@ -471,9 +457,9 @@ export default {
           return 0
         }
 
-        for (const key in queryParamsChainMap) {
+        for (const key in this.$env.localChainMap) {
           if (util.equalsIgnoreCase(key, chainName)) {
-            return queryParamsChainMap[key]
+            return this.$env.localChainMap[key]
           }
         }
         return 0
@@ -667,7 +653,7 @@ export default {
     },
     realPtext() {
       let ptextResult = orbiterCore.getPTextFromTAmount(
-        this.$store.state.transferData.fromChainID,
+        this.transferData.fromChainID,
         this.realTransferValue
       )
       if (ptextResult.state) {
@@ -870,13 +856,13 @@ export default {
       if (oldValue !== newValue && newValue !== '0x') {
         this.c1Balance = null
         this.c2Balance = null
-        let selectMakerInfo = this.$store.state.transferData.selectMakerInfo
+        let selectMakerInfo = this.transferData.selectMakerInfo
         transferCalculate
           .getTransferBalance(
             selectMakerInfo.c1ID,
             selectMakerInfo.t1Address,
             selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
+            this.web3.coinbase
           )
           .then((response) => {
             this.c1Balance = (
@@ -893,7 +879,7 @@ export default {
             selectMakerInfo.c2ID,
             selectMakerInfo.t2Address,
             selectMakerInfo.tName,
-            this.$store.state.web3.coinbase
+            this.web3.coinbase
           )
           .then((response) => {
             this.c2Balance = (
@@ -1363,6 +1349,7 @@ export default {
       this.showCustomPopupClick()
     },
     getTokenInfo(e) {
+      console.log('e', e)
       this.$store.commit('updateTransferTokenInfo', e)
     },
     // open pop
@@ -1385,8 +1372,8 @@ export default {
 
       // Change query params's source
       const { path, query } = this.$route
-      for (const key in queryParamsChainMap) {
-        if (queryParamsChainMap[key] == e.localID) {
+      for (const key in this.$env.localChainMap) {
+        if (this.$env.localChainMap[key] == e.localID) {
           if (!util.equalsIgnoreCase(query.source, key)) {
             this.$router.replace({ path, query: { ...query, source: key } })
             break
@@ -1414,8 +1401,8 @@ export default {
 
       // Change query params's source
       const { path, query } = this.$route
-      for (const key in queryParamsChainMap) {
-        if (queryParamsChainMap[key] == e.localID) {
+      for (const key in this.$env.localChainMap) {
+        if (this.$env.localChainMap[key] == e.localID) {
           if (!util.equalsIgnoreCase(query.dest, key)) {
             this.$router.replace({ path, query: { ...query, dest: key } })
             break
