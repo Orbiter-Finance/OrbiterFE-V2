@@ -194,6 +194,7 @@ export default {
       rollups: {},
       defaultSort: { prop: 'total_tx', order: 'descending' },
       selectors,
+      currentSort: undefined,
       currentFilter: selectors[0].value,
       tableData: [],
     }
@@ -205,6 +206,13 @@ export default {
     indexTableData() {
       return this.tableData.map((item, i) => ({ index: i + 1, ...item }))
     },
+  },
+  watch: {
+    currentFilter() {
+      if (this.currentSort) {
+        this.onSortChange(this.currentSort)
+      }
+    }
   },
   components: {
     TimeDiff,
@@ -225,6 +233,10 @@ export default {
     dateFormat,
     isEmpty,
     onSortChange({ prop, order }) {
+      this.currentSort = {
+        prop, order
+      }
+
       const rollups = this.rollups
       const tableData =
         rollups && rollups.table_data
