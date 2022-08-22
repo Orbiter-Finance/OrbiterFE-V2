@@ -56,7 +56,7 @@ export default {
       return isMobile.value
     },
   },
-  activated() {
+  mounted() {
     const nav = this.$route.query.nav
     this.currentTab = nav ? nav : tabs[0].value
   },
