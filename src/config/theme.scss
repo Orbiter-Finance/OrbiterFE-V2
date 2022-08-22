@@ -222,6 +222,9 @@
     }
     .contentItem {
       color: #fff;
+      &.selected {
+        background: #28293d;
+      }
     }
     .contentItem:hover {
       background: #28293d;
@@ -566,6 +569,9 @@
     }
     .contentItem {
       color: var(--light-page-color);
+      &.selected {
+        background: var(--light-page-box-bg);
+      }
     }
     .contentItem:hover {
       background: var(--light-page-box-bg);

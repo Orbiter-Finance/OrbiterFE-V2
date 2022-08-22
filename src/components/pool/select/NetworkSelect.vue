@@ -238,9 +238,6 @@ export default {
       position: absolute;
       right: 0.5rem;
     }
-    &.selected {
-      background: var(--light-page-box-bg);
-    }
   }
 }
 

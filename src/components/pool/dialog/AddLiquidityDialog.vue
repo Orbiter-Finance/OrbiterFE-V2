@@ -40,7 +40,7 @@
               <div class="left">
                 <token-select
                   :datas="tokens()"
-                  v-model="selectedToken"
+                  v-model="destChainInfo.tokenName"
                   @input="selectedTokenChange"
                 />
               </div>
@@ -256,7 +256,6 @@ export default {
   data() {
     return {
       transferValue: '',
-      selectedToken: '',
       c1Balance: null,
       c2Balance: null,
       isLoading: false,
@@ -307,7 +306,6 @@ export default {
     closeNetworkPopupClick() {
       this.$refs.SelectNetworkPopupRef.maskClick()
     },
-
     // open selectToken
     showTokenPopupClick() {
       this.$refs.SelectTokenPopupRef.showCustom()
@@ -330,7 +328,6 @@ export default {
       this.showTokenPopupClick()
     },
     getNewNetworkInfo(info) {
-      console.log('info: ', info)
       this.destChainInfo.localID = info.localID
       this.$emit('updateTokens', info)
     },
@@ -340,7 +337,6 @@ export default {
     showChainIcon(localChainID) {
       return util.chainIcon(localChainID)
     },
-
     userMinPrice() {
       return this.realSelectMakerInfo.value.minPrice
     },
@@ -348,11 +344,6 @@ export default {
       this.transferValue = this.accountBalance.toString()
     },
     tokens() {
-      if (this.selectedToken === '') {
-        this.selectedToken =
-          this.poolNetworkOrTokenConfig.tokenInfoArray[0].token
-      }
-
       return this.poolNetworkOrTokenConfig.tokenInfoArray.map((v) => {
         return {
           ...v,
@@ -427,7 +418,8 @@ export default {
           util.showMessage(
             'Your account balance is ' +
               ethers.utils.formatEther(coinBalance) +
-              ' DAI ',
+              ' ' +
+              this.destChainInfo.tokenName,
             'warning'
           )
           return
@@ -479,7 +471,6 @@ export default {
             tokenName: this.destChainInfo.tokenName,
           })
         }
-        // }
       } catch (error) {
         //
       } finally {

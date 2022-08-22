@@ -91,11 +91,6 @@ export default {
       }
     },
     selectItem(item) {
-      // ???? not work
-      // this.dialogVisible = false
-      // this.$nextTick(() => {
-      //   this.dialogVisible = false
-      // })
       setTimeout(() => {
         this.dialogVisible = false
       }, 0)
