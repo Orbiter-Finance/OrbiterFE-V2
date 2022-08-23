@@ -129,6 +129,7 @@ export default {
       PAGE_SIZE,
       dapps: {},
       defaultSort: { prop: 'all_users', order: 'descending' },
+      currentSort: undefined,
       currentRollup: 'arbitrum',
       currentFilter: selectors[0].value,
       tableData: [],
@@ -146,12 +147,20 @@ export default {
     Help,
   },
   watch: {
-    currentRollup() {
+    async currentRollup() {
       this.dapps = {}
       this.tableData = []
       this.page = 1
-      this._getDapps()
+      await this._getDapps()
+      if (this.currentSort) {
+        this.onSortChange(this.currentSort)
+      }
     },
+    currentFilter() {
+      if (this.currentSort) {
+        this.onSortChange(this.currentSort)
+      }
+    }
   },
   computed: {
     total() {
@@ -189,6 +198,10 @@ export default {
     onSortChange({ prop, order }) {
       const tableData = this.tableData
       const isAscending = order === 'ascending'
+
+      this.currentSort = {
+        prop, order
+      }
 
       if (!order === null) {
         this.tableData = tableData
