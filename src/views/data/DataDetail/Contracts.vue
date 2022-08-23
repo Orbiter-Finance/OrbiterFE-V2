@@ -125,6 +125,7 @@ export default {
     return {
       PAGE_SIZE,
       defaultSort: { prop: 'launch_time', order: 'descending' },
+      currentSort: undefined,
       customRollups: [
         { label: 'Arbitrum', value: 'arbitrum' },
         { label: 'Optimism', value: 'optimism' },
@@ -148,11 +149,14 @@ export default {
     Help,
   },
   watch: {
-    currentRollup() {
+    async currentRollup() {
       this.contracts = {}
       this.tableData = []
       this.page = 1
-      this._getContracts()
+      await this._getContracts()
+      if (this.currentSort) {
+        this.onSortChange(this.currentSort)
+      }
     },
   },
   computed: {
@@ -205,6 +209,9 @@ export default {
     onSortChange({ prop, order }) {
       const tableData = this.tableData
       const isAscending = order === 'ascending'
+      this.currentSort = {
+        prop, order
+      }
 
       if (!order === null) {
         this.tableData = tableData
