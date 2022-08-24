@@ -117,6 +117,7 @@ import dateFormat from '../../../util/dateFormat'
 import { getContracts } from '../../../L2data/contracts'
 import { shortenAddress } from '../../../util/shortenAddress'
 import { isMobile } from '../../../composition/hooks'
+import { getTabRollups } from '../../../L2data/rollups'
 
 const PAGE_SIZE = 30
 
@@ -126,14 +127,8 @@ export default {
       PAGE_SIZE,
       defaultSort: { prop: 'launch_time', order: 'descending' },
       currentSort: undefined,
-      customRollups: [
-        { label: 'Arbitrum', value: 'arbitrum' },
-        { label: 'Optimism', value: 'optimism' },
-        {
-          label: 'Arbitrum Nova', value: "arbitrumnova"
-        }
-      ],
-      currentRollup: 'arbitrum',
+      customRollups: [],
+      currentRollup: undefined,
       contracts: {},
       tableData: [],
       page: 1,
@@ -179,8 +174,13 @@ export default {
       return allData.slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
     },
   },
-  mounted() {
-    this._getContracts()
+  async mounted() {
+    // if (this.currentRollup) {
+
+    // } else {
+    this.customRollups = await getTabRollups('contracts')
+    this.currentRollup = this.customRollups[0].value
+    // }
   },
   methods: {
     numeral,
