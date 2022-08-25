@@ -1,10 +1,8 @@
 <template>
   <div class="contracts-wrapper">
     <div class="head">
-      <rollups :customRollups="[
-        { label: 'Arbitrum', value: 'arbitrum' },
-        { label: 'Optimism', value: 'optimism' },
-      ]" :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" />
+      <rollups :customRollups="customRollups" :value="currentRollup"
+        @rollup-change="(value) => (currentRollup = value)" />
       <time-diff class="time" v-if="!isMobile && contracts && contracts.update_time"
         :timestamp="contracts.update_time" />
     </div>
@@ -119,6 +117,7 @@ import dateFormat from '../../../util/dateFormat'
 import { getContracts } from '../../../L2data/contracts'
 import { shortenAddress } from '../../../util/shortenAddress'
 import { isMobile } from '../../../composition/hooks'
+import { getTabRollups } from '../../../L2data/rollups'
 
 const PAGE_SIZE = 30
 
@@ -127,7 +126,9 @@ export default {
     return {
       PAGE_SIZE,
       defaultSort: { prop: 'launch_time', order: 'descending' },
-      currentRollup: 'arbitrum',
+      currentSort: undefined,
+      customRollups: [],
+      currentRollup: undefined,
       contracts: {},
       tableData: [],
       page: 1,
@@ -143,11 +144,14 @@ export default {
     Help,
   },
   watch: {
-    currentRollup() {
+    async currentRollup() {
       this.contracts = {}
       this.tableData = []
       this.page = 1
-      this._getContracts()
+      await this._getContracts()
+      if (this.currentSort) {
+        this.onSortChange(this.currentSort)
+      }
     },
   },
   computed: {
@@ -170,8 +174,13 @@ export default {
       return allData.slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
     },
   },
-  mounted() {
-    this._getContracts()
+  async mounted() {
+    // if (this.currentRollup) {
+
+    // } else {
+    this.customRollups = await getTabRollups('contracts')
+    this.currentRollup = this.customRollups[0].value
+    // }
   },
   methods: {
     numeral,
@@ -200,6 +209,9 @@ export default {
     onSortChange({ prop, order }) {
       const tableData = this.tableData
       const isAscending = order === 'ascending'
+      this.currentSort = {
+        prop, order
+      }
 
       if (!order === null) {
         this.tableData = tableData

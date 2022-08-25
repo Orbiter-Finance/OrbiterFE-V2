@@ -36,7 +36,7 @@ export default new Router({
       component: Data,
       meta: {
         title: 'Orbiter',
-        keepAlive: true,
+        keepAlive: false,
       },
     },
     {
@@ -44,7 +44,7 @@ export default new Router({
       component: DataDetail,
       meta: {
         title: 'Orbiter',
-        keepAlive: true,
+        keepAlive: false,
       },
     },
   ],

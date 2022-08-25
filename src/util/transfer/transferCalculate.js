@@ -164,12 +164,12 @@ export default {
     } else if (fromChainID === 12 || fromChainID === 512) {
       let transferFee = 0
       try {
-        transferFee = await zkspace.getZKTransferGasFee(
+        transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
           web3State.coinbase
         )
       } catch (error) {
-        console.warn('getZKTransferGasFeeError =', error)
+        console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee
     } else if (fromChainID == 4 || fromChainID == 44) {
@@ -215,7 +215,7 @@ export default {
             web3State.coinbase
           )
         } catch (error) {
-          console.warn('getZKTransferGasFeeError =', error)
+          console.warn('getZKSpaceTransferGasFeeError =', error)
         }
         return transferFee
       } else if (fromChainID == 9 || fromChainID == 99) {
@@ -269,7 +269,7 @@ export default {
       10: 1,
       11: 1,
       15: 1,
-      16:1,
+      16: 1,
       22: 0.02,
       33: 100,
       44: 50,
@@ -283,7 +283,7 @@ export default {
       513: 1,
       514: 0.000028572,
       515: 1,
-      516:1
+      516: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -342,7 +342,7 @@ export default {
       14: 'ETH',
       514: 'ETH',
       515: 'BNB',
-      516: 'ETH'
+      516: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await zksync.getDefaultProvider(
@@ -549,8 +549,8 @@ export default {
     if (fromChainID === 4 || fromChainID === 44) {
       return '~24 hours'
     }
-     if (fromChainID === 16 || fromChainID === 516) {
-      return '~24 hours'
+    if (fromChainID === 16 || fromChainID === 516) {
+      return '~7 days'
     }
     if (
       fromChainID === 3 ||
@@ -670,7 +670,7 @@ export default {
       return ' 24 hours'
     }
     if (fromChainID === 16 || fromChainID === 516) {
-      return ' 24 hours'
+      return ' 7 days'
     }
     if (fromChainID === 1 || fromChainID === 5) {
       if (toChainID === 2 || toChainID === 22) {
@@ -961,14 +961,11 @@ export default {
         // Ar get
         let fromGasPrice = await this.getGasPrice(fromChainID)
         // AR WithDraw
-        let ARWithDrawARGas =
-          fromGasPrice *
-          (isErc20 ? 300000 : 65000)
-        // let L1ChainID = fromChainID === 2 ? 1 : 5
-        // let L1GasPrice = await this.getGasPrice(L1ChainID)
-        // let ARWithDrawL1Gas =
-        //   L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
-        ethGas = ARWithDrawARGas
+        let ARWithDrawARGas = fromGasPrice * (isErc20 ? 300000 : 65000)
+        let L1ChainID = fromChainID === 16 ? 1 : 5
+        let L1GasPrice = await this.getGasPrice(L1ChainID)
+        let WithDrawL1Gas = L1GasPrice * (isErc20 ? 160000 : 115000)
+        ethGas = ARWithDrawARGas + WithDrawL1Gas
       } catch (error) {
         throw new Error(`ar withdraw error`)
       }
@@ -1122,10 +1119,6 @@ export default {
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
-    if (toChainID === 16 || toChainID === 516) {
-     // Query block browser deposit transaction fee is 0
-    }
-
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(
@@ -1284,10 +1277,7 @@ export default {
         params: [],
         id: 0,
       })
-      if (
-        response.status === 200 &&
-        (response.statusText === 'OK' || response.statusText === '')
-      ) {
+      if (response.status === 200) {
         return parseInt(response.data.result)
       } else {
         return null
