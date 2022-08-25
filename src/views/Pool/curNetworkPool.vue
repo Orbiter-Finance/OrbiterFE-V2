@@ -173,6 +173,7 @@ import { SvgIconThemed, CommLoading, PoolAddLiquidity } from '../../components'
 import allNetworkPool from './allNetworkPool.vue'
 import config from '../../config'
 import util from '../../util/util'
+import axios from 'axios'
 import { ethers } from 'ethers'
 import { mapState, mapMutations, mapGetters } from 'vuex'
 import { getDTokenContractInstance } from '../../util/constants/contract/getContract'
@@ -307,6 +308,13 @@ export default {
       const balanceAmount = await dTokenInstance.balanceOf(signer.getAddress())
       const filledAmount = await dTokenInstance.totalBorrows()
       const apy = await this.getSupplyRatePerBlock(dTokenInstance)
+      // revenue
+      let url = `ec2-35-73-220-137.ap-northeast-1.compute.amazonaws.com:${
+        tokenName === 'DAI' ? 3001 : 3000
+      }/getAccountRevenue/${this.web3.coinbase}`
+      const totalRevenue = await axios.get(url)
+
+      //
       var chainData = {
         chainName: util.chainName(
           toChainId,
@@ -317,6 +325,7 @@ export default {
         amount: ethers.utils.formatEther(balanceAmount),
         apr: apy,
         filledAmount: ethers.utils.formatEther(filledAmount),
+        totalRevenue,
       }
       return chainData
     },

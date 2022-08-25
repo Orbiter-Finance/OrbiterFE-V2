@@ -48,7 +48,6 @@ export default {
     'ZkSync(R)': 33,
     'Polygon(R)': 66,
     'Optimism(K)': 77,
-
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
