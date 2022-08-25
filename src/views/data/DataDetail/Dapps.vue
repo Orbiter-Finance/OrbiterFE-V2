@@ -1,7 +1,7 @@
 <template>
   <div class="dapps-wrapper">
     <div class="head">
-      <rollups :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" />
+      <rollups :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" :customRollups="rollups" />
       <div class="right">
         <time-diff class="time" v-if="!isMobile && dapps && dapps.update_time" :timestamp="dapps.update_time" />
         <selector :data="selectors" :value="currentFilter" @change="(item) => (currentFilter = item.value)" />
@@ -111,6 +111,7 @@ import TwitterLink from '../TwitterLink.vue'
 import dateFormat from '../../../util/dateFormat'
 import { getDapps } from '../../../L2data/dapp'
 import { isMobile } from '../../../composition/hooks'
+import { getTabRollups } from '../../../L2data/rollups'
 
 const PAGE_SIZE = 30
 
@@ -130,7 +131,8 @@ export default {
       dapps: {},
       defaultSort: { prop: 'all_users', order: 'descending' },
       currentSort: undefined,
-      currentRollup: 'arbitrum',
+      currentRollup: undefined,
+      rollups: [],
       currentFilter: selectors[0].value,
       tableData: [],
       page: 1,
@@ -182,8 +184,9 @@ export default {
       return allData.slice(start < 1 ? 0 : start, this.page * PAGE_SIZE)
     },
   },
-  mounted() {
-    this._getDapps()
+  async mounted() {
+    this.rollups = await getTabRollups('dapps')
+    this.currentRollup = this.rollups[0].value
   },
   methods: {
     dateFormat,
