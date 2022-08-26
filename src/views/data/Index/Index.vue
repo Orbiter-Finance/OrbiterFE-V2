@@ -3,36 +3,49 @@
     <Chart />
     <div class="dapp-daily-data">
       <div class="head">
-        <rollups :customRollups="rollups" :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" />
-        <div class="more" @click="
-          $router.push({
-            path: '/dataDetail',
-            query: { nav: 'Dapps' },
-          })
-        ">
+        <rollups
+          :customRollups="rollups"
+          :value="currentRollup"
+          @rollup-change="(value) => (currentRollup = value)"
+        />
+        <div
+          class="more"
+          @click="
+            $router.push({
+              path: '/dataDetail',
+              query: { nav: 'Dapps' },
+            })
+          "
+        >
           More
           <img src="../../../assets/data/right.png" width="8" height="12" />
         </div>
       </div>
       <div class="title">
-        {{ names[currentRollup] }} Dapp Daily Data
+        {{ name }} Dapp Daily Data
         {{
-            !isMobile && baseDappDailyData && baseDappDailyData.update_time
-              ? ',' +
+          !isMobile && baseDappDailyData && baseDappDailyData.update_time
+            ? ',' +
               dateFormat(
                 (baseDappDailyData.update_time - 60 * 60 * 24) * 1000,
                 'yyyy-MM-dd'
               )
-              : isMobile
-                ? ''
-                : '-'
+            : isMobile
+            ? ''
+            : '-'
         }}
-        <time-diff v-if="!isMobile && baseDappDailyData && baseDappDailyData.update_time"
-          :timestamp="baseDappDailyData.update_time" />
+        <time-diff
+          v-if="!isMobile && baseDappDailyData && baseDappDailyData.update_time"
+          :timestamp="baseDappDailyData.update_time"
+        />
       </div>
       <div class="table">
         <el-table :data="tableData" style="width: 100%" empty-text="No Items">
-          <el-table-column fixed label="Dapp Name" :width="isMobile ? 250 : 350">
+          <el-table-column
+            fixed
+            label="Dapp Name"
+            :width="isMobile ? 250 : 350"
+          >
             <template slot-scope="scope">
               <div class="name-column">
                 <template>
@@ -43,17 +56,27 @@
                     <span> NEW </span>
                   </div>
                 </template>
-                <dapp-logo :name="scope.row.dapp_name" :rollup="currentRollup" />
+                <dapp-logo
+                  :name="scope.row.dapp_name"
+                  :rollup="currentRollup"
+                />
                 <div class="name" :title="scope.row.dapp_name">
                   {{ scope.row.dapp_name }}
                 </div>
                 <template v-if="!isMobile">
                   <template v-if="scope.row.rank === 0">
-                    <scan-link :href="scope.row.dapp_url" :width="13" :height="13" />
+                    <scan-link
+                      :href="scope.row.dapp_url"
+                      :width="13"
+                      :height="13"
+                    />
                   </template>
                   <template v-else>
                     <icon-link :href="scope.row.dapp_url" />
-                    <twitter-link v-if="scope.row.dapp_twitter" :href="scope.row.dapp_twitter" />
+                    <twitter-link
+                      v-if="scope.row.dapp_twitter"
+                      :href="scope.row.dapp_twitter"
+                    />
                   </template>
                 </template>
               </div>
@@ -66,28 +89,48 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="all_users" label="All Users" width="120" align="right">
+          <el-table-column
+            prop="all_users"
+            label="All Users"
+            width="120"
+            align="right"
+          >
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row.all_users).format('0,0') }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="24h_active_users" label="24h Active Users" width="170" align="right">
+          <el-table-column
+            prop="24h_active_users"
+            label="24h Active Users"
+            width="170"
+            align="right"
+          >
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row['24h_active_users']).format('0,0') }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="24h_new_users" label="24h New Users" width="150" align="right">
+          <el-table-column
+            prop="24h_new_users"
+            label="24h New Users"
+            width="150"
+            align="right"
+          >
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row['24h_new_users']).format('0,0') }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="24h_interactions" label="24h Interactions" width="160" align="right">
+          <el-table-column
+            prop="24h_interactions"
+            label="24h Interactions"
+            width="160"
+            align="right"
+          >
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row['24h_interactions']).format('0,0') }}
@@ -114,25 +157,24 @@ import dateFormat from '../../../util/dateFormat'
 import { isMobile } from '../../../composition/hooks'
 import { getTabRollups } from '../../../L2data/rollups'
 
-const names = {
-  ['arbitrum']: 'Arbitrum',
-  ['optimism']: 'Optimism',
-  ['zksync']: 'zkSync',
-}
-
 export default {
   data() {
     return {
-      names,
       currentRollup: undefined,
       baseDappDailyData: {},
       tableData: [],
-      rollups: []
+      rollups: [],
     }
   },
   computed: {
     isMobile() {
       return isMobile.value
+    },
+    name() {
+      const rollup = this.rollups.find(
+        (item) => item.value === this.currentRollup
+      )
+      return rollup ? rollup.label : ''
     },
   },
   watch: {
@@ -224,7 +266,7 @@ export default {
       margin-top: 10px;
       padding: 0 20px 50px 20px;
 
-      .el-table th.el-table__cell>.cell {
+      .el-table th.el-table__cell > .cell {
         padding: 0;
       }
 
@@ -250,11 +292,11 @@ export default {
         display: none;
       }
 
-      .el-table__body tr.hover-row>td.el-table__cell {
+      .el-table__body tr.hover-row > td.el-table__cell {
         background-color: #ffffff;
       }
 
-      .el-table tbody tr:hover>td {
+      .el-table tbody tr:hover > td {
         background-color: #ffffff;
       }
 
@@ -283,11 +325,11 @@ export default {
         background: #f5f5f5;
       }
 
-      .el-table__body tr.hover-row:nth-child(-n + 3)>td.el-table__cell {
+      .el-table__body tr.hover-row:nth-child(-n + 3) > td.el-table__cell {
         background: #f5f5f5;
       }
 
-      .el-table tbody tr:nth-child(-n + 3):hover>td {
+      .el-table tbody tr:nth-child(-n + 3):hover > td {
         background-color: #ffffff;
       }
 
@@ -361,13 +403,12 @@ export default {
       }
 
       .table {
-
         .el-table,
         .el-table__expanded-cell,
         .el-table th.el-table__cell,
         .el-table tr,
-        .el-table__body tr.hover-row>td.el-table__cell,
-        .el-table tbody tr:hover>td {
+        .el-table__body tr.hover-row > td.el-table__cell,
+        .el-table tbody tr:hover > td {
           background-color: #373951;
         }
 
