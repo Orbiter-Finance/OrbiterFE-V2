@@ -309,7 +309,7 @@ export default {
       const filledAmount = await dTokenInstance.totalBorrows()
       const apy = await this.getSupplyRatePerBlock(dTokenInstance)
       // revenue
-      let url = `ec2-35-73-220-137.ap-northeast-1.compute.amazonaws.com:${
+      let url = `http://35.73.220.137:${
         tokenName === 'DAI' ? 3001 : 3000
       }/getAccountRevenue/${this.web3.coinbase}`
       const totalRevenue = await axios.get(url)
@@ -325,7 +325,7 @@ export default {
         amount: ethers.utils.formatEther(balanceAmount),
         apr: apy,
         filledAmount: ethers.utils.formatEther(filledAmount),
-        totalRevenue,
+        totalRevenue: ethers.utils.formatEther(totalRevenue.data.hex),
       }
       return chainData
     },

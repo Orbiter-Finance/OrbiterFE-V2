@@ -38,7 +38,7 @@ export default {
         liquidityDataList[i].tokenName
       )
       liquidityDataList[i]['totalRevenue'] = decimal.number_format(
-        '2335.32',
+        liquidityDataList[i]['totalRevenue'],
         liquidityDataList[i].tokenName
       )
       liquidityDataList[i]['apr'] =
