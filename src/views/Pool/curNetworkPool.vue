@@ -315,7 +315,7 @@ export default {
       //   this.$env.dTokenAddress[tokenName][toChainId]
       // }`
       let url = `http://127.0.0.1:3000/getAccountRevenue/${this.web3.coinbase}/${this.$env.dTokenAddress[tokenName][toChainId]}`
-      const totalRevenue = await axios.get(url)
+      const totalRevenue = (await axios.get(url)).data
 
       //
       var chainData = {
@@ -328,7 +328,9 @@ export default {
         amount: ethers.utils.formatEther(balanceAmount),
         apr: apy,
         filledAmount: ethers.utils.formatEther(filledAmount),
-        totalRevenue: ethers.utils.formatEther(totalRevenue.data.hex),
+        totalRevenue: ethers.utils.formatEther(
+          ethers.BigNumber.from(totalRevenue)
+        ),
       }
       return chainData
     },
