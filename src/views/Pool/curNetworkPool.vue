@@ -311,7 +311,9 @@ export default {
       // revenue
       let url = `http://35.73.220.137:${
         tokenName === 'DAI' ? 3001 : 3000
-      }/getAccountRevenue/${this.web3.coinbase}`
+      }/getAccountRevenue/${this.web3.coinbase}/${
+        this.$env.dTokenAddress[tokenName][toChainId]
+      }`
       const totalRevenue = await axios.get(url)
 
       //
