@@ -252,6 +252,9 @@ export default {
         }
       })
     },
+    destChainInfo: function (newValue) {
+      this.selectedTokenChange(newValue.tokenName)
+    },
   },
   data() {
     return {
@@ -460,6 +463,7 @@ export default {
           this.transferValue = ''
           this.$emit('updateLiquidity')
         } catch (error) {
+          console.log('err', error)
           this.$notify.error({
             title: error.message,
             duration: 3000,
@@ -472,6 +476,7 @@ export default {
           })
         }
       } catch (error) {
+        console.log('error', error)
         //
       } finally {
         this.isLoading = false
