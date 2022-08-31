@@ -309,12 +309,11 @@ export default {
       const filledAmount = await dTokenInstance.totalBorrows()
       const apy = await this.getSupplyRatePerBlock(dTokenInstance)
       // revenue
-      // let url = `http://35.73.220.137:${
-      //   tokenName === 'DAI' ? 3001 : 3000
-      // }/getAccountRevenue/${this.web3.coinbase}/${
-      //   this.$env.dTokenAddress[tokenName][toChainId]
-      // }`
-      let url = `http://127.0.0.1:3000/getAccountRevenue/${this.web3.coinbase}/${this.$env.dTokenAddress[tokenName][toChainId]}`
+      let url = `${this.$env.baseUrl}:${
+        tokenName === 'DAI' ? 3000 : 3001
+      }/getAccountRevenue/${this.web3.coinbase}/${
+        this.$env.dTokenAddress[tokenName][toChainId]
+      }`
       const totalRevenue = (await axios.get(url)).data
 
       //

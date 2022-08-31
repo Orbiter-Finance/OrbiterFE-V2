@@ -39,7 +39,8 @@ export default {
       )
       liquidityDataList[i]['totalRevenue'] = decimal.number_format(
         liquidityDataList[i]['totalRevenue'],
-        liquidityDataList[i].tokenName
+        liquidityDataList[i].tokenName,
+        liquidityDataList[i]['totalRevenue'] === '0.0' ? undefined : 6
       )
       liquidityDataList[i]['apr'] =
         liquidityDataList[i]['apr'] === 0 ? '1.11' : liquidityDataList[i]['apr'].toFixed(2)
@@ -50,7 +51,8 @@ export default {
       )
       liquidityDataList[i]['filledAmount'] = decimal.number_format(
         liquidityDataList[i]['filledAmount'],
-        liquidityDataList[i].tokenName
+        liquidityDataList[i].tokenName,
+        liquidityDataList[i]['filledAmount'] === '0.0' ? undefined : 8
       )
       liquidityDataList[i]['estimatedProfit'] = decimal.number_format(
         liquidityDataList[i]['dayRevenue'] * 7,

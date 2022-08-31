@@ -3,10 +3,12 @@ export default {
    *
    * @param {*} number Number to format
    * @param {*} tokenName Token Name
+   * @param {*} specify Specify the number of decimal places
    * @returns
    */
-  number_format(number, tokenName) {
-    const decimals = tokenName === 'ETH' ? 3 : 2,
+  number_format(number, tokenName, specify) {
+    specify = specify === undefined ? undefined : (number - parseInt(number) === 0 ? undefined : specify)
+    let decimals = specify === undefined ? (tokenName === 'ETH' ? 3 : 2) : specify,
       dec_point = '.',
       thousands_sep = ','
     number = (number + '').replace(/[^0-9+-Ee.]/g, '')
