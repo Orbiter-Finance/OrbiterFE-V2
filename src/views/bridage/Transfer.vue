@@ -1644,6 +1644,19 @@ export default {
           return
         }
 
+        if (
+          transferDataState.fromChainID == 2 ||
+          transferDataState.fromChainID == 22 ||
+          transferDataState.toChainID == 2 ||
+          transferDataState.toChainID == 22
+        ) {
+          this.$notify.error({
+            title: `Due to Arbitrum One is upgrading to Nitro, Orbiter bridging service for Arbitrum One is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
+
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
