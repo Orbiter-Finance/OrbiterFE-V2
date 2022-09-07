@@ -12,6 +12,10 @@
         </div>
       </div>
       <div id="l2-data-chart"></div>
+      <div class="change_btn" style="cursor: pointer;">
+        <span @click="changeY">Y</span>/
+        <span @click="changeYY">YY</span>
+      </div>
     </div>
     <div class="rollups">
       <div class="head">
@@ -94,6 +98,7 @@ import ChainsLogo from '../ChainsLogo.vue'
 import { isMobile } from '../../../composition/hooks'
 import dateFormat from '../../../util/dateFormat'
 import getWeeks from '../../../util/getWeeks'
+import { keyof } from 'io-ts'
 
 const ROLLUPS = [
   'Arbitrum',
@@ -208,9 +213,18 @@ export default {
       const chart = echarts.init(chartDom)
       this._chart = chart
     },
+    changeY() {
+      let options = this._getChartOptions()
+      options.series[1].yAxisIndex = 0
+      this._chart.setOption(options)
+    },  
+    changeYY() {
+      let options = this._getChartOptions()
+      options.series[1].yAxisIndex = 1
+      this._chart.setOption(options)
+    },  
     _getChartOptions() {
-      const { times, data } = this._getData()
-
+      const { times, data, data_l1 } = this._getData()
       const options = {
         title: { show: false },
         grid: {
@@ -254,7 +268,7 @@ export default {
             formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
           },
         },
-        yAxis: {
+        yAxis: [{
           type: 'value',
           axisTick: {
             show: false,
@@ -277,6 +291,31 @@ export default {
           },
           axisPointer: { show: false },
         },
+        {
+          type: 'value',
+          position: 'right',
+          axisTick: {
+            show: false,
+          },
+          splitNumber: 3,
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgba(51, 51, 51, 0.4)'
+                : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                ? 'rgb(246, 246, 246)'
+                : 'rgb(63, 65, 91)',
+            },
+          },
+          axisPointer: { show: false },
+        }
+        ],
         tooltip: {
           trigger: 'axis',
           pading: 0,
@@ -292,6 +331,7 @@ export default {
           {
             type: 'line',
             stack: 'Total',
+            yAxisIndex: 0,
             smooth: true,
             lineStyle: { width: 4, color: '#DF2E2D' },
             showSymbol: false,
@@ -306,6 +346,25 @@ export default {
               focus: 'series',
             },
             data: data,
+          },
+          {
+            type: 'line',
+            stack: 'Total',
+            yAxisIndex: 1,
+            smooth: true,
+            lineStyle: { width: 4, color: 'rgb(17, 112, 255)' },
+            showSymbol: false,
+            areaStyle: {
+              opacity: 0.8,
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: 'rgba(17, 112, 255, 0.24)' },
+                { offset: 1, color: 'rgba(17, 112, 255, 0)' },
+              ]),
+            },
+            emphasis: {
+              focus: 'series',
+            },
+            data: data_l1,
           },
         ],
       }
@@ -328,6 +387,7 @@ export default {
             .map((item) => padTimestamp(item.timestamp))
             .reverse(),
           data: this.filteredChartData.map((item) => item.all).reverse(),
+          data_l1: this.filteredChartData.map((item) => item.all_l1).reverse(),
         }
       }
       if ([12, 'Max'].includes(currentChartTime)) {
@@ -351,13 +411,25 @@ export default {
               .reduce((total, item) => total + item.all, 0)
           )
           .reverse()
+        const data_l1 = weeks
+          .map((time) =>
+            this.filteredChartData
+              .filter(
+                (item) =>
+                  padTimestamp(item.timestamp) > time.start &&
+                  padTimestamp(item.timestamp) < time.end
+              )
+              .reduce((total, item) => total + item.all_l1, 0)
+          )
+          .reverse()
         return {
           times: weeks.map((item) => item.end).reverse(),
           data,
+          data_l1
         }
       }
     },
-    _onFormatter([params]) {
+    _onFormatter([params, params2]) {
       let rollups = {}
       if (caches[params.axisValue]) {
         rollups = caches[params.axisValue]
@@ -382,7 +454,29 @@ export default {
             date,
             'yyyy-MM-dd'
           )}`
-
+      const currentChartTime = this.currentChartTime
+      if ([12, 'Max'].includes(currentChartTime)) {
+        let data = this.filteredChartData.filter(
+          (item) =>
+            padTimestamp(item.timestamp) > start &&
+            padTimestamp(item.timestamp) < date
+        ).map((item) => item.rollups)
+        let obj = {}, rollupsTotal = []
+        data.map(v => {
+          for (const key in v) {
+            if (obj[key]) {
+              obj[key].value = v[key] ? obj[key].value + v[key] : obj[key].value
+            } else {
+              obj[key] = {name: key, value: v[key] ? v[key] : 0}
+            }
+          }
+        })
+        for (const key in obj) {
+          rollupsTotal.push(obj[key])
+        }
+        rollupsTotal.sort((a, b) => b.value-a.value)
+        rollups = rollupsTotal
+      }
       const firstData = rollups.slice(0, 10)
       const lastData = rollups.slice(10).reduce(
         (mome, item) => ({
@@ -391,11 +485,15 @@ export default {
         }),
         {}
       )
-
       return `<div class="chart-popover-content">
                 <div class="chart-popover-title">${title}</div>
-                  <div class="chart-popover-total-transactions">
-                    Total Transactions: <span>${numeral(params.data).format(
+                    <div class="chart-popover-total-transactions">
+                    Ethereum Total Transactions: <span style='color: rgb(17, 112, 255)'>${numeral(params2.data).format(
+                      '0,0'
+                    )}</span>
+                    </div>
+                    <div class="chart-popover-total-transactions">
+                    Layer2 Total Transactions: <span>${numeral(params.data).format(
                       '0,0'
                     )}</span>
                     </div>
@@ -649,7 +747,7 @@ export default {
   flex-direction: column;
   text-align: left;
   padding: 20px;
-  width: 280px;
+  width: 300px;
   color: #333333;
   background: #fff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
