@@ -27,10 +27,6 @@
         </div>
       </div>
       <div id="l2-data-chart"></div>
-      <!-- <div class="change_btn" style="cursor: pointer;">
-        <span @click="changeY">Y</span>/
-        <span @click="changeYY">YY</span>
-      </div> -->
     </div>
     <div class="rollups">
       <div class="head">
@@ -160,7 +156,7 @@ export default {
       currentChartTime: 6,
       allSeries,
       color,
-      checkData: [''],
+      checkData: ['Ethereum Mainnet Transactions'],
     }
   },
   computed: {
@@ -245,20 +241,7 @@ export default {
       const chart = echarts.init(chartDom)
       this._chart = chart
     },
-    changeY() {
-      let options = this._getChartOptions()
-      options.series[1].yAxisIndex = 0
-      this._chart.setOption(options)
-    },  
-    changeYY() {
-      let options = this._getChartOptions()
-      options.series[1].yAxisIndex = 1
-      this._chart.setOption(options)
-    },  
     onCheckerClick(item) {
-      if (this.checkData.length === 1 && this.checkData.includes(item)) {
-        return
-      }
       if (this.checkData.includes(item)) {
         this.checkData = this.checkData.filter((data) => data !== item)
       } else {
