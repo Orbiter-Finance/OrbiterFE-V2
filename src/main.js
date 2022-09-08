@@ -30,7 +30,7 @@ import './util/enhancedLogger'
 // in some cases, we may need do something in webview(like imToken's webview environment)
 // local only!!!
 if (isLocal()) {
-  eruda.init()
+  // eruda.init()
   // eruda.position("center");
 }
 

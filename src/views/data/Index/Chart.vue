@@ -11,6 +11,21 @@
           />
         </div>
       </div>
+      <div class="checker">
+        <div
+          class="item"
+          v-for="(item, i) in allSeries"
+          :key="i"
+          @click="onCheckerClick(item)"
+        >
+          <div
+            class="checkbox"
+            :class="{ active: checkData.includes(item) }"
+          ></div>
+          <div class="line" :style="{ background: color[i] }"></div>
+          <div class="name">{{ item }}</div>
+        </div>
+      </div>
       <div id="l2-data-chart"></div>
     </div>
     <div class="rollups">
@@ -113,9 +128,15 @@ const ROLLUPS = [
   'dYdX',
 ]
 const caches = {}
+const allSeries = ['Ethereum Mainnet Transactions']
+const color = [
+  'rgba(17, 112, 255, 0.8)',
+  'rgba(239, 47, 45, 1)',
+  'rgba(17, 112, 255, 1)',
+]
 
 const padTimestamp = (timestamp) => timestamp * 1000
-
+const unixTime = (timestamp) => timestamp - (timestamp % 86400000)
 export default {
   components: {
     Selector,
@@ -133,6 +154,9 @@ export default {
       defaultSort: { prop: 'txs', order: 'descending' },
       baseChartData: {},
       currentChartTime: 6,
+      allSeries,
+      color,
+      checkData: ['Ethereum Mainnet Transactions'],
     }
   },
   computed: {
@@ -145,13 +169,22 @@ export default {
         return []
       }
       let arr = []
-      if ([3, 6, 12].includes(this.currentChartTime)) {
+      if ([3, 6].includes(this.currentChartTime)) {
         arr = Array.from(
           { length: 30 * this.currentChartTime },
           (_, i) => i + 1
         )
+      } else if ([12].includes(this.currentChartTime)) {
+        arr = Array.from(
+          { length: 30 * this.currentChartTime + 4},
+          (_, i) => i + 1
+        )
       } else {
         arr = data.tx_data ? Object.keys(data.tx_data) : []
+        let spliceLen = arr.length % 7
+        if (spliceLen != 0) {
+          arr.splice(-spliceLen)
+        }
       }
       return arr.map((item) => data.tx_data[item])
     },
@@ -208,9 +241,20 @@ export default {
       const chart = echarts.init(chartDom)
       this._chart = chart
     },
+    onCheckerClick(item) {
+      if (this.checkData.includes(item)) {
+        this.checkData = this.checkData.filter((data) => data !== item)
+      } else {
+        this.checkData = this.checkData.concat([item])
+      }
+      if (this._chart) {
+        this._chart.clear()
+        const option = this._getChartOptions()
+        this._chart.setOption(option)
+      }
+    },
     _getChartOptions() {
-      const { times, data } = this._getData()
-
+      const { times, data, data_l1 } = this._getData()
       const options = {
         title: { show: false },
         grid: {
@@ -254,7 +298,7 @@ export default {
             formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
           },
         },
-        yAxis: {
+        yAxis: [{
           type: 'value',
           axisTick: {
             show: false,
@@ -276,7 +320,8 @@ export default {
             },
           },
           axisPointer: { show: false },
-        },
+        }
+        ],
         tooltip: {
           trigger: 'axis',
           pading: 0,
@@ -284,14 +329,13 @@ export default {
           formatter: this._onFormatter,
           position: function (pos, params, dom, rect, size) {
             const obj = { top: 40 }
-            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5
+            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = -30
             return obj
           },
         },
         series: [
           {
             type: 'line',
-            stack: 'Total',
             smooth: true,
             lineStyle: { width: 4, color: '#DF2E2D' },
             showSymbol: false,
@@ -318,6 +362,25 @@ export default {
           containLabel: true,
         }
       }
+      if (this.checkData.includes('Ethereum Mainnet Transactions')) {
+        options.series[1] = {
+          type: 'line',
+          smooth: true,
+          lineStyle: { width: 4, color: 'rgb(17, 112, 255)' },
+          showSymbol: false,
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(17, 112, 255, 0.24)' },
+              { offset: 1, color: 'rgba(17, 112, 255, 0)' },
+            ]),
+          },
+          emphasis: {
+            focus: 'series',
+          },
+          data: data_l1,
+        }
+      }
       return options
     },
     _getData() {
@@ -328,36 +391,49 @@ export default {
             .map((item) => padTimestamp(item.timestamp))
             .reverse(),
           data: this.filteredChartData.map((item) => item.all).reverse(),
+          data_l1: this.filteredChartData.map((item) => item.all_l1).reverse(),
         }
       }
       if ([12, 'Max'].includes(currentChartTime)) {
         const startTime =
           currentChartTime === 12
-            ? new Date().getTime() - 60 * 60 * 24 * 360 * 1000
+            ? unixTime(new Date().getTime()) - 60 * 60 * 24 * 360 * 1000
             : padTimestamp(
                 this.filteredChartData[this.filteredChartData.length - 1]
                   .timestamp
               )
-
-        const weeks = getWeeks(startTime)
+        const endTime = padTimestamp(this.filteredChartData[0].timestamp)
+        const weeks = getWeeks(startTime, endTime)
         const data = weeks
           .map((time) =>
             this.filteredChartData
               .filter(
                 (item) =>
-                  padTimestamp(item.timestamp) > time.start &&
-                  padTimestamp(item.timestamp) < time.end
+                  padTimestamp(item.timestamp) >= time.start &&
+                  padTimestamp(item.timestamp) <= time.end
               )
               .reduce((total, item) => total + item.all, 0)
+          )
+          .reverse()
+        const data_l1 = weeks
+          .map((time) =>
+            this.filteredChartData
+              .filter(
+                (item) =>
+                  padTimestamp(item.timestamp) >= time.start &&
+                  padTimestamp(item.timestamp) <= time.end
+              )
+              .reduce((total, item) => total + item.all_l1, 0)
           )
           .reverse()
         return {
           times: weeks.map((item) => item.end).reverse(),
           data,
+          data_l1
         }
       }
     },
-    _onFormatter([params]) {
+    _onFormatter([params, params2]) {
       let rollups = {}
       if (caches[params.axisValue]) {
         rollups = caches[params.axisValue]
@@ -373,16 +449,49 @@ export default {
       }
 
       if (!rollups.length) return undefined
-
       const date = new Date(parseInt(params.axisValue)).getTime()
-      const start = date - 24 * 60 * 60 * 7 * 1000
+      let start = date - 24 * 60 * 60 * 6 * 1000
+      const startTime =
+        this.currentChartTime === 12
+          ? unixTime(new Date().getTime()) - 60 * 60 * 24 * 360 * 1000
+          : padTimestamp(
+              this.filteredChartData[this.filteredChartData.length - 1].timestamp
+            )
+      const endTime = padTimestamp(this.filteredChartData[0].timestamp)
+      const weeks = getWeeks(startTime, endTime)
+      if (start <= weeks[weeks.length - 1].start) {
+        start = weeks[weeks.length - 1].start
+      }
       const title = [3, 6].includes(this.currentChartTime)
-        ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
-        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
-            date,
-            'yyyy-MM-dd'
-          )}`
-
+      ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
+      : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
+        date,
+        'yyyy-MM-dd'
+        )}`
+      
+      const currentChartTime = this.currentChartTime
+      if ([12, 'Max'].includes(currentChartTime)) {
+        let data = this.filteredChartData.filter(
+          (item) =>
+            padTimestamp(item.timestamp) >= start &&
+            padTimestamp(item.timestamp) <= date
+        ).map((item) => item.rollups)
+        let obj = {}, rollupsTotal = []
+        data.map(v => {
+          for (const key in v) {
+            if (obj[key]) {
+              obj[key].value = v[key] ? obj[key].value + v[key] : obj[key].value
+            } else {
+              obj[key] = {name: key, value: v[key] ? v[key] : 0}
+            }
+          }
+        })
+        for (const key in obj) {
+          rollupsTotal.push(obj[key])
+        }
+        rollupsTotal.sort((a, b) => b.value-a.value)
+        rollups = rollupsTotal
+      }
       const firstData = rollups.slice(0, 10)
       const lastData = rollups.slice(10).reduce(
         (mome, item) => ({
@@ -391,11 +500,16 @@ export default {
         }),
         {}
       )
-
+      const domMod = this.checkData.includes('Ethereum Mainnet Transactions') ? `<div class="chart-popover-total-transactions">
+                    Ethereum Transactions: <span style='color: rgb(17, 112, 255)'>${numeral(params2.data).format(
+                      '0,0'
+                    )}</span>
+                  </div>` : ''
       return `<div class="chart-popover-content">
                 <div class="chart-popover-title">${title}</div>
-                  <div class="chart-popover-total-transactions">
-                    Total Transactions: <span>${numeral(params.data).format(
+                    ${domMod}
+                    <div class="chart-popover-total-transactions">
+                    Layer2 Total Transactions: <span>${numeral(params.data).format(
                       '0,0'
                     )}</span>
                     </div>
@@ -476,6 +590,44 @@ export default {
       width: 100%;
       height: 220px;
     }
+    .checker {
+        display: flex;
+        align-items: center;
+        padding-left: 30px;
+        padding-bottom: 10px;
+        margin-top: -18px;
+        .item {
+          display: flex;
+          align-items: center;
+          margin-right: 20px;
+          font-family: 'Inter Regular';
+          font-style: normal;
+          font-weight: 400;
+          font-size: 12px;
+          color: rgba(51, 51, 51, 0.8);
+          cursor: pointer;
+          &:last-child {
+            margin-right: 0;
+          }
+          .checkbox {
+            width: 14px;
+            height: 14px;
+            background: rgba(51, 51, 51, 0.2);
+            border-radius: 4px;
+            margin-right: 4px;
+            &.active {
+              background: url('../../../assets/data/checkend.png');
+              background-size: 14px 14px;
+            }
+          }
+          .line {
+            width: 16px;
+            height: 3px;
+            border-radius: 2px;
+            margin-right: 4px;
+          }
+        }
+      }
   }
   .rollups {
     flex: 1;
@@ -567,6 +719,18 @@ export default {
           color: #fff;
         }
       }
+      .checker {
+        .item {
+          color: #fff;
+          .checkbox {
+            background: rgba(255, 255, 255, 0.4);
+            &.active {
+              background: url('../../../assets/data/checkend.png');
+              background-size: 14px 14px;
+            }
+          }
+        }
+      }
     }
   }
   .rollups {
@@ -649,7 +813,7 @@ export default {
   flex-direction: column;
   text-align: left;
   padding: 20px;
-  width: 280px;
+  width: 300px;
   color: #333333;
   background: #fff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
