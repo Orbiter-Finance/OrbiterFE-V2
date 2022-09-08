@@ -736,6 +736,18 @@ export default {
           color: #fff;
         }
       }
+      .checker {
+        .item {
+          color: #fff;
+          .checkbox {
+            background: rgba(255, 255, 255, 0.4);
+            &.active {
+              background: url('../../../assets/data/checkend.png');
+              background-size: 14px 14px;
+            }
+          }
+        }
+      }
     }
   }
   .rollups {
