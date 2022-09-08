@@ -113,8 +113,6 @@ import ChainsLogo from '../ChainsLogo.vue'
 import { isMobile } from '../../../composition/hooks'
 import dateFormat from '../../../util/dateFormat'
 import getWeeks from '../../../util/getWeeks'
-import { keyof } from 'io-ts'
-import util from '../../../util/util.js'
 
 const ROLLUPS = [
   'Arbitrum',
@@ -187,7 +185,6 @@ export default {
         )
       } else {
         arr = data.tx_data ? Object.keys(data.tx_data) : []
-        console.log(arr)
         let spliceLen = arr.length % 7
         if (spliceLen != 0) {
           arr.splice(-spliceLen)
@@ -356,7 +353,6 @@ export default {
         series: [
           {
             type: 'line',
-            // stack: 'Total',
             smooth: true,
             lineStyle: { width: 4, color: '#DF2E2D' },
             showSymbol: false,
@@ -386,7 +382,6 @@ export default {
       if (this.checkData.includes('Ethereum Mainnet Transactions')) {
         options.series[1] = {
           type: 'line',
-          // stack: 'Total',
           smooth: true,
           lineStyle: { width: 4, color: 'rgb(17, 112, 255)' },
           showSymbol: false,
@@ -437,7 +432,6 @@ export default {
               .reduce((total, item) => total + item.all, 0)
           )
           .reverse()
-        // console.log('data ==>', data)
         const data_l1 = weeks
           .map((time) =>
             this.filteredChartData
@@ -493,7 +487,6 @@ export default {
         )}`
       
       const currentChartTime = this.currentChartTime
-      // console.log(start, date)
       if ([12, 'Max'].includes(currentChartTime)) {
         let data = this.filteredChartData.filter(
           (item) =>
@@ -501,7 +494,6 @@ export default {
             padTimestamp(item.timestamp) <= date
         ).map((item) => item.rollups)
         let obj = {}, rollupsTotal = []
-        // console.log("xxxxxxxxxxx",data)
         data.map(v => {
           for (const key in v) {
             if (obj[key]) {
