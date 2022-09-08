@@ -11,11 +11,26 @@
           />
         </div>
       </div>
+      <div class="checker">
+        <div
+          class="item"
+          v-for="(item, i) in allSeries"
+          :key="i"
+          @click="onCheckerClick(item)"
+        >
+          <div
+            class="checkbox"
+            :class="{ active: checkData.includes(item) }"
+          ></div>
+          <div class="line" :style="{ background: color[i] }"></div>
+          <div class="name">{{ item }}</div>
+        </div>
+      </div>
       <div id="l2-data-chart"></div>
-      <div class="change_btn" style="cursor: pointer;">
+      <!-- <div class="change_btn" style="cursor: pointer;">
         <span @click="changeY">Y</span>/
         <span @click="changeYY">YY</span>
-      </div>
+      </div> -->
     </div>
     <div class="rollups">
       <div class="head">
@@ -99,6 +114,7 @@ import { isMobile } from '../../../composition/hooks'
 import dateFormat from '../../../util/dateFormat'
 import getWeeks from '../../../util/getWeeks'
 import { keyof } from 'io-ts'
+import util from '../../../util/util.js'
 
 const ROLLUPS = [
   'Arbitrum',
@@ -118,9 +134,15 @@ const ROLLUPS = [
   'dYdX',
 ]
 const caches = {}
+const allSeries = ['Ethereum Mainnet Transactions']
+const color = [
+  'rgba(17, 112, 255, 0.8)',
+  'rgba(239, 47, 45, 1)',
+  'rgba(17, 112, 255, 1)',
+]
 
 const padTimestamp = (timestamp) => timestamp * 1000
-
+const unixTime = (timestamp) => timestamp - (timestamp % 86400000)
 export default {
   components: {
     Selector,
@@ -138,6 +160,9 @@ export default {
       defaultSort: { prop: 'txs', order: 'descending' },
       baseChartData: {},
       currentChartTime: 6,
+      allSeries,
+      color,
+      checkData: [''],
     }
   },
   computed: {
@@ -150,13 +175,23 @@ export default {
         return []
       }
       let arr = []
-      if ([3, 6, 12].includes(this.currentChartTime)) {
+      if ([3, 6].includes(this.currentChartTime)) {
         arr = Array.from(
           { length: 30 * this.currentChartTime },
           (_, i) => i + 1
         )
+      } else if ([12].includes(this.currentChartTime)) {
+        arr = Array.from(
+          { length: 30 * this.currentChartTime + 4},
+          (_, i) => i + 1
+        )
       } else {
         arr = data.tx_data ? Object.keys(data.tx_data) : []
+        console.log(arr)
+        let spliceLen = arr.length % 7
+        if (spliceLen != 0) {
+          arr.splice(-spliceLen)
+        }
       }
       return arr.map((item) => data.tx_data[item])
     },
@@ -223,6 +258,21 @@ export default {
       options.series[1].yAxisIndex = 1
       this._chart.setOption(options)
     },  
+    onCheckerClick(item) {
+      if (this.checkData.length === 1 && this.checkData.includes(item)) {
+        return
+      }
+      if (this.checkData.includes(item)) {
+        this.checkData = this.checkData.filter((data) => data !== item)
+      } else {
+        this.checkData = this.checkData.concat([item])
+      }
+      if (this._chart) {
+        this._chart.clear()
+        const option = this._getChartOptions()
+        this._chart.setOption(option)
+      }
+    },
     _getChartOptions() {
       const { times, data, data_l1 } = this._getData()
       const options = {
@@ -290,30 +340,6 @@ export default {
             },
           },
           axisPointer: { show: false },
-        },
-        {
-          type: 'value',
-          position: 'right',
-          axisTick: {
-            show: false,
-          },
-          splitNumber: 3,
-          axisLine: {
-            show: false,
-            lineStyle: {
-              color: this.isLightMode
-                ? 'rgba(51, 51, 51, 0.4)'
-                : 'rgba(255, 255, 255, 0.4)',
-            },
-          },
-          splitLine: {
-            lineStyle: {
-              color: this.isLightMode
-                ? 'rgb(246, 246, 246)'
-                : 'rgb(63, 65, 91)',
-            },
-          },
-          axisPointer: { show: false },
         }
         ],
         tooltip: {
@@ -330,8 +356,7 @@ export default {
         series: [
           {
             type: 'line',
-            stack: 'Total',
-            yAxisIndex: 0,
+            // stack: 'Total',
             smooth: true,
             lineStyle: { width: 4, color: '#DF2E2D' },
             showSymbol: false,
@@ -347,25 +372,6 @@ export default {
             },
             data: data,
           },
-          {
-            type: 'line',
-            stack: 'Total',
-            yAxisIndex: 1,
-            smooth: true,
-            lineStyle: { width: 4, color: 'rgb(17, 112, 255)' },
-            showSymbol: false,
-            areaStyle: {
-              opacity: 0.8,
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: 'rgba(17, 112, 255, 0.24)' },
-                { offset: 1, color: 'rgba(17, 112, 255, 0)' },
-              ]),
-            },
-            emphasis: {
-              focus: 'series',
-            },
-            data: data_l1,
-          },
         ],
       }
       if (this.isMobile) {
@@ -375,6 +381,26 @@ export default {
           right: '0',
           bottom: '20',
           containLabel: true,
+        }
+      }
+      if (this.checkData.includes('Ethereum Mainnet Transactions')) {
+        options.series[1] = {
+          type: 'line',
+          // stack: 'Total',
+          smooth: true,
+          lineStyle: { width: 4, color: 'rgb(17, 112, 255)' },
+          showSymbol: false,
+          areaStyle: {
+            opacity: 0.8,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: 'rgba(17, 112, 255, 0.24)' },
+              { offset: 1, color: 'rgba(17, 112, 255, 0)' },
+            ]),
+          },
+          emphasis: {
+            focus: 'series',
+          },
+          data: data_l1,
         }
       }
       return options
@@ -393,31 +419,32 @@ export default {
       if ([12, 'Max'].includes(currentChartTime)) {
         const startTime =
           currentChartTime === 12
-            ? new Date().getTime() - 60 * 60 * 24 * 360 * 1000
+            ? unixTime(new Date().getTime()) - 60 * 60 * 24 * 360 * 1000
             : padTimestamp(
                 this.filteredChartData[this.filteredChartData.length - 1]
                   .timestamp
               )
-
-        const weeks = getWeeks(startTime)
+        const endTime = padTimestamp(this.filteredChartData[0].timestamp)
+        const weeks = getWeeks(startTime, endTime)
         const data = weeks
           .map((time) =>
             this.filteredChartData
               .filter(
                 (item) =>
-                  padTimestamp(item.timestamp) > time.start &&
-                  padTimestamp(item.timestamp) < time.end
+                  padTimestamp(item.timestamp) >= time.start &&
+                  padTimestamp(item.timestamp) <= time.end
               )
               .reduce((total, item) => total + item.all, 0)
           )
           .reverse()
+        // console.log('data ==>', data)
         const data_l1 = weeks
           .map((time) =>
             this.filteredChartData
               .filter(
                 (item) =>
-                  padTimestamp(item.timestamp) > time.start &&
-                  padTimestamp(item.timestamp) < time.end
+                  padTimestamp(item.timestamp) >= time.start &&
+                  padTimestamp(item.timestamp) <= time.end
               )
               .reduce((total, item) => total + item.all_l1, 0)
           )
@@ -445,23 +472,36 @@ export default {
       }
 
       if (!rollups.length) return undefined
-
       const date = new Date(parseInt(params.axisValue)).getTime()
-      const start = date - 24 * 60 * 60 * 7 * 1000
+      let start = date - 24 * 60 * 60 * 6 * 1000
+      const startTime =
+        this.currentChartTime === 12
+          ? unixTime(new Date().getTime()) - 60 * 60 * 24 * 360 * 1000
+          : padTimestamp(
+              this.filteredChartData[this.filteredChartData.length - 1].timestamp
+            )
+      const endTime = padTimestamp(this.filteredChartData[0].timestamp)
+      const weeks = getWeeks(startTime, endTime)
+      if (start <= weeks[weeks.length - 1].start) {
+        start = weeks[weeks.length - 1].start
+      }
       const title = [3, 6].includes(this.currentChartTime)
-        ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
-        : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
-            date,
-            'yyyy-MM-dd'
-          )}`
+      ? dateFormat(parseInt(params.axisValue), 'yyyy-MM-dd')
+      : `From ${dateFormat(start, 'yyyy-MM-dd')} to ${dateFormat(
+        date,
+        'yyyy-MM-dd'
+        )}`
+      
       const currentChartTime = this.currentChartTime
+      // console.log(start, date)
       if ([12, 'Max'].includes(currentChartTime)) {
         let data = this.filteredChartData.filter(
           (item) =>
-            padTimestamp(item.timestamp) > start &&
-            padTimestamp(item.timestamp) < date
+            padTimestamp(item.timestamp) >= start &&
+            padTimestamp(item.timestamp) <= date
         ).map((item) => item.rollups)
         let obj = {}, rollupsTotal = []
+        // console.log("xxxxxxxxxxx",data)
         data.map(v => {
           for (const key in v) {
             if (obj[key]) {
@@ -485,13 +525,14 @@ export default {
         }),
         {}
       )
-      return `<div class="chart-popover-content">
-                <div class="chart-popover-title">${title}</div>
-                    <div class="chart-popover-total-transactions">
-                    Ethereum Total Transactions: <span style='color: rgb(17, 112, 255)'>${numeral(params2.data).format(
+      const domMod = this.checkData.includes('Ethereum Mainnet Transactions') ? `<div class="chart-popover-total-transactions">
+                    Ethereum Transactions: <span style='color: rgb(17, 112, 255)'>${numeral(params2.data).format(
                       '0,0'
                     )}</span>
-                    </div>
+                  </div>` : ''
+      return `<div class="chart-popover-content">
+                <div class="chart-popover-title">${title}</div>
+                    ${domMod}
                     <div class="chart-popover-total-transactions">
                     Layer2 Total Transactions: <span>${numeral(params.data).format(
                       '0,0'
@@ -574,6 +615,44 @@ export default {
       width: 100%;
       height: 220px;
     }
+    .checker {
+        display: flex;
+        align-items: center;
+        padding-left: 30px;
+        padding-bottom: 10px;
+        margin-top: -18px;
+        .item {
+          display: flex;
+          align-items: center;
+          margin-right: 20px;
+          font-family: 'Inter Regular';
+          font-style: normal;
+          font-weight: 400;
+          font-size: 12px;
+          color: rgba(51, 51, 51, 0.8);
+          cursor: pointer;
+          &:last-child {
+            margin-right: 0;
+          }
+          .checkbox {
+            width: 14px;
+            height: 14px;
+            background: rgba(51, 51, 51, 0.2);
+            border-radius: 4px;
+            margin-right: 4px;
+            &.active {
+              background: url('../../../assets/data/checkend.png');
+              background-size: 14px 14px;
+            }
+          }
+          .line {
+            width: 16px;
+            height: 3px;
+            border-radius: 2px;
+            margin-right: 4px;
+          }
+        }
+      }
   }
   .rollups {
     flex: 1;
