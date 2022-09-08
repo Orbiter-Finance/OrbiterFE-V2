@@ -346,7 +346,7 @@ export default {
           formatter: this._onFormatter,
           position: function (pos, params, dom, rect, size) {
             const obj = { top: 40 }
-            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5
+            obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = -30
             return obj
           },
         },
