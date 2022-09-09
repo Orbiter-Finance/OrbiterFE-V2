@@ -2989,312 +2989,312 @@ const nowMakerList = [
     ],
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 1,
-    c1Name: 'nova',
-    c2Name: 'mainnet',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "mainnet",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.002,
+    c1TradingFee: 0.004,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 3,
-    c1Name: 'nova',
-    c2Name: 'zksync',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "zksync",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 4,
-    c1Name: 'nova',
-    c2Name: 'starknet',
-    t1Address: '0x0000000000000000000000000000000000000000',
+    c1Name: "nova",
+    c2Name: "starknet",
+    t1Address: "0x0000000000000000000000000000000000000000",
     t2Address:
-      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
-    tName: 'ETH',
+      "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 2,
-    c1Name: 'nova',
-    c2Name: 'arbitrum',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "arbitrum",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0006,
+    c1TradingFee: 0.0012,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 7,
-    c1Name: 'nova',
-    c2Name: 'optimism',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "optimism",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 6,
-    c1Name: 'nova',
-    c2Name: 'polygon',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "polygon",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 15,
-    c1Name: 'nova',
-    c2Name: 'bnbchain',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "bnbchain",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 9,
-    c1Name: 'nova',
-    c2Name: 'loopring',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "loopring",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 3,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 8,
-    c1Name: 'nova',
-    c2Name: 'immutableX',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "immutableX",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 13,
-    c1Name: 'nova',
-    c2Name: 'boba',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "boba",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
     c1MaxPrice: 1,
     c2MinPrice: 0.005,
@@ -3302,32 +3302,32 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0008,
+    c1TradingFee: 0.0016,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 16,
     c2ID: 10,
-    c1Name: 'nova',
-    c2Name: 'metis',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x420000000000000000000000000000000000000A',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "metis",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x420000000000000000000000000000000000000A",
+    tName: "ETH",
     c1MinPrice: 0.005,
     c1MaxPrice: 1,
     c2MinPrice: 0.005,
@@ -3335,32 +3335,32 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0008,
+    c1TradingFee: 0.0016,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
+        endTime: 99999999999999
+      }
+    ]
   },
   {
-    makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
+    makerAddress: "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
     c1ID: 15,
     c2ID: 12,
-    c1Name: 'nova',
-    c2Name: 'zkspace',
-    t1Address: '0x0000000000000000000000000000000000000000',
-    t2Address: '0x0000000000000000000000000000000000000000',
-    tName: 'ETH',
+    c1Name: "nova",
+    c2Name: "zkspace",
+    t1Address: "0x0000000000000000000000000000000000000000",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "ETH",
     c1MinPrice: 0.005,
     c1MaxPrice: 1,
     c2MinPrice: 0.005,
@@ -3368,23 +3368,23 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0008,
+    c1TradingFee: 0.0016,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.5,
+    c1GasFee: 8,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
+        endTime: 99999999999999
+      }
     ],
     c2AvalibleTimes: [
       {
         startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
-  },
+        endTime: 99999999999999
+      }
+    ]
+  }
   // USDC
   {
     makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
