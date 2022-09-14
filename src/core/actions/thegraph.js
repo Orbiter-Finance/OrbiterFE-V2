@@ -21,7 +21,7 @@ const nowMakerList = [
     c1TradingFee: 0.0013,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -87,7 +87,7 @@ const nowMakerList = [
     c1TradingFee: 0.0007,
     c2TradingFee: 0.0055,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -219,7 +219,7 @@ const nowMakerList = [
     c1TradingFee: 0.0012,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 1,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1657614601,
@@ -285,7 +285,7 @@ const nowMakerList = [
     c1TradingFee: 0.0005,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -417,7 +417,7 @@ const nowMakerList = [
     c1TradingFee: 0.0012,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 1,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -515,7 +515,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0007,
-    c1GasFee: 0.2,
+    c1GasFee: 2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -944,7 +944,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.2,
+    c1GasFee: 2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -1208,7 +1208,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0027,
     c2TradingFee: 0.001,
-    c1GasFee: 1,
+    c1GasFee: 2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -1507,7 +1507,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0012,
-    c1GasFee: 0,
+    c1GasFee: 2,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -1847,7 +1847,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.002,
     c2TradingFee: 0.0005,
-    c1GasFee: 0,
+    c1GasFee: 2,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -2309,9 +2309,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.3,
+    c1GasFee: 0.4,
     c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
@@ -2342,9 +2342,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.5,
+    c1GasFee: 0.8,
     c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
@@ -2507,9 +2507,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.2,
+    c1GasFee: 0.4,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -2639,9 +2639,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.2,
+    c1GasFee: 0.8,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
