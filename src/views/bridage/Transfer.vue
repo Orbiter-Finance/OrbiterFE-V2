@@ -1629,6 +1629,24 @@ export default {
           })
           return
         }
+        const { fromChainID, toChainID } = transferDataState
+
+        if (fromChainID == 3 || toChainID == 3) {
+          this.$notify.error({
+            title: `zkSync is affected by Merge and suspends activity, the transfer involving zkSync on Orbiter is unavailable during this period.`,
+            duration: 3000,
+          })
+          return
+        }
+
+        if (fromChainID == 12 || toChainID == 12) {
+          this.$notify.error({
+            title: `ZKSpace is affected by Merge and suspends activity, the transfer involving ZKSpace on Orbiter is unavailable during this period.`,
+            duration: 3000,
+          })
+          return
+        }
+
         let selectMakerInfo = realSelectMakerInfo.value
         let nonce = await getNonce.getNonce(
           transferDataState.fromChainID,
@@ -1667,8 +1685,6 @@ export default {
           })
           return
         }
-
-        const { fromChainID, toChainID } = transferDataState
 
         // Ensure immutablex's registered
         if (toChainID == 8 || toChainID == 88) {
