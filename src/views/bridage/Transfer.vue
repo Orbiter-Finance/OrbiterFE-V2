@@ -1600,255 +1600,250 @@ export default {
       }
     },
     async sendTransfer() {
-      this.$notify.error({
-        title: `The transfer service is suspended during Merge and it will be resumed within 1 hour once Merge is completed.`,
-        duration: 3000,
-      })
-      return
-      // if (check.checkIsBitKeep()) {
-      //   this.$notify.error({
-      //     title: `Bitkeep is not supported and please try another wallet.`,
-      //     duration: 3000,
-      //   })
-      //   return
-      // }
-      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-      //   return
-      // }
-      // // if unlogin  login first
-      // if (!walletIsLogin.value) {
-      //   Middle.$emit('connectWallet', true)
-      //   return
-      // } else {
-      //   if (!check.checkPrice(this.transferValue)) {
-      //     this.$notify.error({
-      //       title: `The format of input amount is incorrect`,
-      //       duration: 3000,
-      //     })
-      //     return
-      //   }
-      //   if (this.fromBalance === null) {
-      //     this.$notify.error({
-      //       title: `Waiting for account balance to be obtained`,
-      //       duration: 3000,
-      //     })
-      //     return
-      //   }
-      //   const { fromChainID, toChainID } = transferDataState
+      if (check.checkIsBitKeep()) {
+        this.$notify.error({
+          title: `Bitkeep is not supported and please try another wallet.`,
+          duration: 3000,
+        })
+        return
+      }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return
+      }
+      // if unlogin  login first
+      if (!walletIsLogin.value) {
+        Middle.$emit('connectWallet', true)
+        return
+      } else {
+        if (!check.checkPrice(this.transferValue)) {
+          this.$notify.error({
+            title: `The format of input amount is incorrect`,
+            duration: 3000,
+          })
+          return
+        }
+        if (this.fromBalance === null) {
+          this.$notify.error({
+            title: `Waiting for account balance to be obtained`,
+            duration: 3000,
+          })
+          return
+        }
+        const { fromChainID, toChainID } = transferDataState
 
-      //   if (fromChainID == 3 || toChainID == 3) {
-      //     this.$notify.error({
-      //       title: `zkSync is affected by Merge and suspends activity, the transfer involving zkSync on Orbiter is unavailable during this period.`,
-      //       duration: 3000,
-      //     })
-      //     return
-      //   }
+        if (fromChainID == 3 || toChainID == 3) {
+          this.$notify.error({
+            title: `zkSync is affected by Merge and suspends activity, the transfer involving zkSync on Orbiter is unavailable during this period.`,
+            duration: 3000,
+          })
+          return
+        }
 
-      //   if (fromChainID == 12 || toChainID == 12) {
-      //     this.$notify.error({
-      //       title: `ZKSpace is affected by Merge and suspends activity, the transfer involving ZKSpace on Orbiter is unavailable during this period.`,
-      //       duration: 3000,
-      //     })
-      //     return
-      //   }
+        if (fromChainID == 12 || toChainID == 12) {
+          this.$notify.error({
+            title: `ZKSpace is affected by Merge and suspends activity, the transfer involving ZKSpace on Orbiter is unavailable during this period.`,
+            duration: 3000,
+          })
+          return
+        }
 
-      //   let selectMakerInfo = realSelectMakerInfo.value
-      //   let nonce = await getNonce.getNonce(
-      //     transferDataState.fromChainID,
-      //     realSelectMakerInfo.value.t1Address,
-      //     realSelectMakerInfo.value.tName,
-      //     compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      //   )
-      //   if (!(await netStateBlock(transferDataState.fromChainID))) {
-      //     this.$notify.error({
-      //       title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
-      //       duration: 3000,
-      //     })
-      //     return
-      //   }
+        let selectMakerInfo = realSelectMakerInfo.value
+        let nonce = await getNonce.getNonce(
+          transferDataState.fromChainID,
+          realSelectMakerInfo.value.t1Address,
+          realSelectMakerInfo.value.tName,
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        )
+        if (!(await netStateBlock(transferDataState.fromChainID))) {
+          this.$notify.error({
+            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
 
-      //   if (nonce > 8999) {
-      //     this.$notify.error({
-      //       title: `Address with the nonce over 9000 are not supported by Orbiter`,
-      //       duration: 3000,
-      //     })
-      //     return
-      //   }
+        if (nonce > 8999) {
+          this.$notify.error({
+            title: `Address with the nonce over 9000 are not supported by Orbiter`,
+            duration: 3000,
+          })
+          return
+        }
 
-      //   if (
-      //     !this.transferValue ||
-      //     new BigNumber(this.transferValue).comparedTo(
-      //       new BigNumber(this.userMaxPrice)
-      //     ) > 0 ||
-      //     new BigNumber(this.transferValue).comparedTo(
-      //       new BigNumber(this.userMinPrice)
-      //     ) < 0
-      //   ) {
-      //     this.$notify.error({
-      //       title: `Orbiter can only support minimum of ${this.userMinPrice} and maximum of ${this.maxPrice} ${transferDataState.selectTokenInfo.token} on transfers.`,
-      //       duration: 3000,
-      //     })
-      //     return
-      //   }
+        if (
+          !this.transferValue ||
+          new BigNumber(this.transferValue).comparedTo(
+            new BigNumber(this.userMaxPrice)
+          ) > 0 ||
+          new BigNumber(this.transferValue).comparedTo(
+            new BigNumber(this.userMinPrice)
+          ) < 0
+        ) {
+          this.$notify.error({
+            title: `Orbiter can only support minimum of ${this.userMinPrice} and maximum of ${this.maxPrice} ${transferDataState.selectTokenInfo.token} on transfers.`,
+            duration: 3000,
+          })
+          return
+        }
 
-      //   // Ensure immutablex's registered
-      //   if (toChainID == 8 || toChainID == 88) {
-      //     const imxHelper = new IMXHelper(toChainID)
-      //     const walletAddress =
-      //       compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      //     walletAddress && (await imxHelper.ensureUser(walletAddress))
-      //   }
+        // Ensure immutablex's registered
+        if (toChainID == 8 || toChainID == 88) {
+          const imxHelper = new IMXHelper(toChainID)
+          const walletAddress =
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+          walletAddress && (await imxHelper.ensureUser(walletAddress))
+        }
 
-      //   // To dYdX
-      //   if (toChainID == 11 || toChainID == 511) {
-      //     const dydxHelper = new DydxHelper(
-      //       toChainID,
-      //       new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
-      //       'MetaMask'
-      //     )
-      //     const dydxAccount = await dydxHelper.getAccount(
-      //       compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      //     )
+        // To dYdX
+        if (toChainID == 11 || toChainID == 511) {
+          const dydxHelper = new DydxHelper(
+            toChainID,
+            new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
+            'MetaMask'
+          )
+          const dydxAccount = await dydxHelper.getAccount(
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+          )
 
-      //     updateTransferExt({
-      //       type: '0x02', // for dydx
-      //       value: dydxHelper.conactStarkKeyPositionId(
-      //         '0x' + dydxAccount.starkKey,
-      //         dydxAccount.positionId
-      //       ),
-      //     })
-      //   } // To starkNet
-      //   else if (toChainID == 4 || toChainID == 44) {
-      //     const { starkIsConnected, starkNetAddress, starkChain } =
-      //       web3State.starkNet
-      //     if (!starkChain || starkChain == 'unlogin') {
-      //       util.showMessage('please connect StarkNet Wallet', 'error')
-      //       return
-      //     }
-      //     if (
-      //       toChainID == 4 &&
-      //       (starkChain == 44 || starkChain == 'localhost')
-      //     ) {
-      //       util.showMessage(
-      //         'please switch StarkNet Wallet to mainnet',
-      //         'error'
-      //       )
-      //       return
-      //     }
-      //     if (
-      //       toChainID == 44 &&
-      //       (starkChain == 4 || starkChain == 'localhost')
-      //     ) {
-      //       util.showMessage(
-      //         'please switch StarkNet Wallet to testNet',
-      //         'error'
-      //       )
-      //       return
-      //     }
-      //     if (starkNetAddress && starkIsConnected) {
-      //       updateTransferExt({
-      //         type: '0x03',
-      //         value: starkNetAddress,
-      //       })
-      //     } else {
-      //       util.showMessage('please connect StarkNet Wallet', 'error')
-      //       return
-      //     }
-      //   } else {
-      //     // Clear TransferExt
-      //     updateTransferExt(null)
-      //   }
+          updateTransferExt({
+            type: '0x02', // for dydx
+            value: dydxHelper.conactStarkKeyPositionId(
+              '0x' + dydxAccount.starkKey,
+              dydxAccount.positionId
+            ),
+          })
+        } // To starkNet
+        else if (toChainID == 4 || toChainID == 44) {
+          const { starkIsConnected, starkNetAddress, starkChain } =
+            web3State.starkNet
+          if (!starkChain || starkChain == 'unlogin') {
+            util.showMessage('please connect StarkNet Wallet', 'error')
+            return
+          }
+          if (
+            toChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
+            return
+          }
+          if (
+            toChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
+            return
+          }
+          if (starkNetAddress && starkIsConnected) {
+            updateTransferExt({
+              type: '0x03',
+              value: starkNetAddress,
+            })
+          } else {
+            util.showMessage('please connect StarkNet Wallet', 'error')
+            return
+          }
+        } else {
+          // Clear TransferExt
+          updateTransferExt(null)
+        }
 
-      //   if (fromChainID == 4 || fromChainID == 44) {
-      //     const { starkChain } = web3State.starkNet
-      //     if (!starkChain || starkChain == 'unlogin') {
-      //       util.showMessage('please connect StarkNet Wallet', 'error')
-      //       return
-      //     }
-      //     if (
-      //       fromChainID == 4 &&
-      //       (starkChain == 44 || starkChain == 'localhost')
-      //     ) {
-      //       util.showMessage(
-      //         'please switch StarkNet Wallet to mainnet',
-      //         'error'
-      //       )
-      //       return
-      //     }
-      //     if (
-      //       fromChainID == 44 &&
-      //       (starkChain == 4 || starkChain == 'localhost')
-      //     ) {
-      //       util.showMessage(
-      //         'please switch StarkNet Wallet to testNet',
-      //         'error'
-      //       )
-      //       return
-      //     }
-      //   } else {
-      //     // Ensure fromChainId's networkId
-      //     //    if (
-      //     //   compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-      //     //   this.$env.localChainID_netChainID[
-      //     //     transferDataState.fromChainID
-      //     //   ]
-      //     // ) {
-      //     //   if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
-      //     //     try {
-      //     //       await util.ensureWalletNetwork(
-      //     //         transferDataState.fromChainID
-      //     //       )
-      //     //     } catch (err) {
-      //     //       util.showMessage(err.message, 'error')
-      //     //       return
-      //     //     }
-      //     //   } else {
-      //     if (
-      //       compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-      //       this.$env.localChainID_netChainID[transferDataState.fromChainID]
-      //     ) {
-      //       if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
-      //         try {
-      //           await util.ensureWalletNetwork(transferDataState.fromChainID)
-      //         } catch (err) {
-      //           util.showMessage(err.message, 'error')
-      //           return
-      //         }
-      //       } else {
-      //         const matchSwitchChainDispatcher =
-      //           walletDispatchersOnSwitchChain[
-      //             compatibleGlobalWalletConf.value.walletType
-      //           ]
-      //         if (matchSwitchChainDispatcher) {
-      //           const successCallback = () => this.$emit('stateChanged', '2')
-      //           matchSwitchChainDispatcher(
-      //             compatibleGlobalWalletConf.value.walletPayload.provider,
-      //             () => successCallback.bind(this)
-      //           )
-      //           return
-      //         }
-      //       }
-      //     }
-      //   }
-      //   let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
-      //   if (fromChainID == 4 || fromChainID == 44) {
-      //     toAddress = util.shortAddress(
-      //       getStarkMakerAddress(selectMakerInfo.makerAddress, fromChainID)
-      //     )
-      //   }
-      //   // sendTransfer
-      //   this.$store.commit('updateConfirmRouteDescInfo', [
-      //     {
-      //       no: 1,
-      //       amount: new BigNumber(this.transferValue).plus(
-      //         new BigNumber(selectMakerInfo.tradingFee)
-      //       ),
-      //       coin: transferDataState.selectTokenInfo.token,
-      //       toAddress: toAddress,
-      //     },
-      //   ])
-      //   this.$emit('stateChanged', '2')
-      // }
+        if (fromChainID == 4 || fromChainID == 44) {
+          const { starkChain } = web3State.starkNet
+          if (!starkChain || starkChain == 'unlogin') {
+            util.showMessage('please connect StarkNet Wallet', 'error')
+            return
+          }
+          if (
+            fromChainID == 4 &&
+            (starkChain == 44 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to mainnet',
+              'error'
+            )
+            return
+          }
+          if (
+            fromChainID == 44 &&
+            (starkChain == 4 || starkChain == 'localhost')
+          ) {
+            util.showMessage(
+              'please switch StarkNet Wallet to testNet',
+              'error'
+            )
+            return
+          }
+        } else {
+          // Ensure fromChainId's networkId
+          //    if (
+          //   compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+          //   this.$env.localChainID_netChainID[
+          //     transferDataState.fromChainID
+          //   ]
+          // ) {
+          //   if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+          //     try {
+          //       await util.ensureWalletNetwork(
+          //         transferDataState.fromChainID
+          //       )
+          //     } catch (err) {
+          //       util.showMessage(err.message, 'error')
+          //       return
+          //     }
+          //   } else {
+          if (
+            compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+            this.$env.localChainID_netChainID[transferDataState.fromChainID]
+          ) {
+            if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+              try {
+                await util.ensureWalletNetwork(transferDataState.fromChainID)
+              } catch (err) {
+                util.showMessage(err.message, 'error')
+                return
+              }
+            } else {
+              const matchSwitchChainDispatcher =
+                walletDispatchersOnSwitchChain[
+                  compatibleGlobalWalletConf.value.walletType
+                ]
+              if (matchSwitchChainDispatcher) {
+                const successCallback = () => this.$emit('stateChanged', '2')
+                matchSwitchChainDispatcher(
+                  compatibleGlobalWalletConf.value.walletPayload.provider,
+                  () => successCallback.bind(this)
+                )
+                return
+              }
+            }
+          }
+        }
+        let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
+        if (fromChainID == 4 || fromChainID == 44) {
+          toAddress = util.shortAddress(
+            getStarkMakerAddress(selectMakerInfo.makerAddress, fromChainID)
+          )
+        }
+        // sendTransfer
+        this.$store.commit('updateConfirmRouteDescInfo', [
+          {
+            no: 1,
+            amount: new BigNumber(this.transferValue).plus(
+              new BigNumber(selectMakerInfo.tradingFee)
+            ),
+            coin: transferDataState.selectTokenInfo.token,
+            toAddress: toAddress,
+          },
+        ])
+        this.$emit('stateChanged', '2')
+      }
     },
     async updateOriginGasCost() {
       this.originGasLoading = true
