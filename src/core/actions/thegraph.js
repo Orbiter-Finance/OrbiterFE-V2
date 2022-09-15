@@ -21,7 +21,7 @@ const nowMakerList = [
     c1TradingFee: 0.0013,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -87,7 +87,7 @@ const nowMakerList = [
     c1TradingFee: 0.0007,
     c2TradingFee: 0.0055,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -120,7 +120,7 @@ const nowMakerList = [
     c1TradingFee: 0.0011,
     c2TradingFee: 0.0007,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -186,7 +186,7 @@ const nowMakerList = [
     c1TradingFee: 0.0011,
     c2TradingFee: 0.0007,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -219,7 +219,7 @@ const nowMakerList = [
     c1TradingFee: 0.0012,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1657614601,
@@ -251,7 +251,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0013,
     c2TradingFee: 0.0011,
-    c1GasFee: 0.15,
+    c1GasFee: 1,
     c2GasFee: 0.15,
     c1AvalibleTimes: [
       {
@@ -285,7 +285,7 @@ const nowMakerList = [
     c1TradingFee: 0.0005,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -350,7 +350,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0006,
     c2TradingFee: 0.0011,
-    c1GasFee: 0.15,
+    c1GasFee: 1,
     c2GasFee: 0.15,
     c1AvalibleTimes: [
       {
@@ -383,8 +383,8 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0007,
     c2TradingFee: 0.0011,
-    c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c1GasFee: 1,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -417,7 +417,7 @@ const nowMakerList = [
     c1TradingFee: 0.0012,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 2,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -450,7 +450,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0013,
     c1GasFee: 0.15,
-    c2GasFee: 0.15,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -482,7 +482,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0005,
     c2TradingFee: 0.0008,
-    c1GasFee: 0.15,
+    c1GasFee: 1,
     c2GasFee: 0.15,
     c1AvalibleTimes: [
       {
@@ -515,7 +515,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0007,
-    c1GasFee: 0.2,
+    c1GasFee: 2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -582,7 +582,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -615,7 +615,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -747,7 +747,7 @@ const nowMakerList = [
     c1TradingFee: 0.0009,
     c2TradingFee: 0.0007,
     c1GasFee: 2.5,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -846,7 +846,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 2.5,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -944,7 +944,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.2,
+    c1GasFee: 2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -978,7 +978,7 @@ const nowMakerList = [
     c1TradingFee: 0.0009,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1077,7 +1077,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1208,7 +1208,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0027,
     c2TradingFee: 0.001,
-    c1GasFee: 1,
+    c1GasFee: 2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -1242,7 +1242,7 @@ const nowMakerList = [
     c1TradingFee: 0.0011,
     c2TradingFee: 0.001,
     c1GasFee: 1,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1341,7 +1341,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.001,
     c1GasFee: 1,
-    c2GasFee: 0.2,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1507,7 +1507,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0012,
-    c1GasFee: 0,
+    c1GasFee: 2,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -1542,7 +1542,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0012,
     c1GasFee: 0,
-    c2GasFee: 0,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1646064001,
@@ -1644,7 +1644,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0012,
     c1GasFee: 0,
-    c2GasFee: 0,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 1646064001,
@@ -1847,7 +1847,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.002,
     c2TradingFee: 0.0005,
-    c1GasFee: 0,
+    c1GasFee: 2,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -1948,7 +1948,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0003,
     c1GasFee: 0,
-    c2GasFee: 0,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -1981,7 +1981,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0003,
     c1GasFee: 0,
-    c2GasFee: 0,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -2309,9 +2309,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.3,
+    c1GasFee: 0.4,
     c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
@@ -2342,9 +2342,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.5,
+    c1GasFee: 0.8,
     c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
@@ -2507,9 +2507,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.2,
+    c1GasFee: 0.4,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -2639,9 +2639,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 1.5,
+    c1TradingFee: 3,
     c2TradingFee: 1.5,
-    c1GasFee: 0.2,
+    c1GasFee: 0.8,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -2992,21 +2992,21 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 1,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'mainnet',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.002,
+    c1TradingFee: 0.004,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3025,21 +3025,21 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 3,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'zksync',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3058,22 +3058,22 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 4,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'starknet',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address:
       '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3092,22 +3092,22 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 2,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'arbitrum',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0006,
+    c1TradingFee: 0.0012,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
-    c2GasFee: 0,
+    c1GasFee: 12,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -3125,22 +3125,22 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 7,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'optimism',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
-    c2GasFee: 0,
+    c1GasFee: 12,
+    c2GasFee: 1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -3158,21 +3158,21 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 6,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'polygon',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3191,21 +3191,21 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 15,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'bnbchain',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3224,21 +3224,21 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 9,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'loopring',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 3,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3257,21 +3257,21 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 8,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'immutableX',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 3,
+    c1MaxPrice: 1,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0005,
+    c1TradingFee: 0.001,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3290,7 +3290,7 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 13,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'boba',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
@@ -3302,9 +3302,9 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0008,
+    c1TradingFee: 0.0016,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3323,7 +3323,7 @@ const nowMakerList = [
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
     c1ID: 16,
     c2ID: 10,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'metis',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x420000000000000000000000000000000000000A',
@@ -3335,9 +3335,9 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0008,
+    c1TradingFee: 0.0016,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3354,9 +3354,9 @@ const nowMakerList = [
   },
   {
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',
-    c1ID: 15,
+    c1ID: 16,
     c2ID: 12,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'zkspace',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
@@ -3368,9 +3368,9 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0008,
+    c1TradingFee: 0.0016,
     c2TradingFee: 0.0005,
-    c1GasFee: 0.1,
+    c1GasFee: 12,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3390,7 +3390,7 @@ const nowMakerList = [
     makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
     c1ID: 16,
     c2ID: 6,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'polygon',
     t1Address: '0x750ba8b76187092b0d1e87e28daaf484d1b5273b', // SIM
     t2Address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
@@ -3423,7 +3423,7 @@ const nowMakerList = [
     makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
     c1ID: 16,
     c2ID: 3,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'zksync',
     t1Address: '0x750ba8b76187092b0d1e87e28daaf484d1b5273b', // SIM
     t2Address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -3456,7 +3456,7 @@ const nowMakerList = [
     makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
     c1ID: 16,
     c2ID: 7,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'optimism',
     t1Address: '0x750ba8b76187092b0d1e87e28daaf484d1b5273b', // SIM
     t2Address: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
@@ -3489,7 +3489,7 @@ const nowMakerList = [
     makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
     c1ID: 16,
     c2ID: 2,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'arbitrum',
     t1Address: '0x750ba8b76187092b0d1e87e28daaf484d1b5273b', // SIM
     t2Address: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
@@ -3522,7 +3522,7 @@ const nowMakerList = [
     makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
     c1ID: 16,
     c2ID: 1,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'mainnet',
     t1Address: '0x750ba8b76187092b0d1e87e28daaf484d1b5273b', // SIM
     t2Address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -3555,7 +3555,7 @@ const nowMakerList = [
     makerAddress: '0x41d3D33156aE7c62c094AAe2995003aE63f587B3',
     c1ID: 16,
     c2ID: 11,
-    c1Name: 'arbitrum_nova',
+    c1Name: 'nova',
     c2Name: 'dydx',
     t1Address: '0x750ba8b76187092b0d1e87e28daaf484d1b5273b',
     t2Address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
