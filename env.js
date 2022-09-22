@@ -82,7 +82,7 @@ export default {
     2: '42161', // Arbitrum
     3: '1', // zk
     4: '1', // starknet
-    5: '4', // rinkeby
+    5: '5', // goerli
     6: '137', // polygon
     7: '10', // optimism
     8: '1', // mainnet
@@ -93,7 +93,7 @@ export default {
     13: '288', // boba mainnet,
     15: '56', // bsc mainnet,
     22: '421611', // arbitrum test
-    33: '4', // zktest
+    33: '5', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)
     77: '69', // optimism(K)
@@ -129,11 +129,11 @@ export default {
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
-    5: 'https://rinkeby.etherscan.io/tx/', // /tx/  /address/
+    5: 'https://goerli.etherscan.io/tx/', // /tx/  /address/
     2: 'https://arbiscan.io/tx/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/tx/',
     3: 'https://zkscan.io/explorer/transactions/',
-    33: 'https://rinkeby.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
+    33: 'https://goerli.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://voyager.online/tx/',
     44: 'https://goerli.voyager.online/tx/',
     6: 'https://polygonscan.com/tx/',
@@ -160,11 +160,11 @@ export default {
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
-    5: 'https://rinkeby.etherscan.io/address/', // /tx/  /address/
+    5: 'https://goerli.etherscan.io/address/', // /tx/  /address/
     2: 'https://arbiscan.io/address/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/address/',
     3: 'https://zkscan.io/explorer/accounts/',
-    33: 'https://rinkeby.zkscan.io/explorer/accounts/', // /explorer/transactions/   /explorer/accounts/
+    33: 'https://goerli.zkscan.io/explorer/accounts/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://voyager.online/contract/',
     44: 'https://goerli.voyager.online/contract/',
     6: 'https://polygonscan.com/address/',

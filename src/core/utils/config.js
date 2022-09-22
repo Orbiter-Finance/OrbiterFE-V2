@@ -9,12 +9,13 @@ export default {
   etherscan: {
     key: process.env.VUE_APP_ETH_KEY,
     Mainnet: 'https://api.etherscan.io/api',
-    Rinkeby: 'https://api-rinkeby.etherscan.io/api',
+    Rinkeby: 'https://api-goerli.etherscan.io/api',
+    TestNet: 'https://api-goerli.etherscan.io/api',
     chainID: '1',
   },
   zkSync: {
     Mainnet: 'https://api.zksync.io/api/v0.2',
-    Rinkeby: 'https://goerli-api.zksync.io/api/v0.2',
+    TestNet: 'https://goerli-api.zksync.io/api/v0.2',
     chainID: '3',
     rinkeyChainID: '33',
   },

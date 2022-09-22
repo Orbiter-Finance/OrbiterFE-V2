@@ -54,12 +54,12 @@
       "infoURL": "https://ropsten.etherscan.io/"
     },
     {
-      "name": "Görli",
+      "name": "Goerli",
       "chainId": 5,
       "shortName": "gor",
       "networkId": 5,
       "nativeCurrency": {
-        "name": "Görli Ether",
+        "name": "Goerli Ether",
         "symbol": "GOR",
         "decimals": 18
       },
