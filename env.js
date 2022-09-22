@@ -22,9 +22,9 @@ export default {
     513: process.env.VUE_APP_HP_BOBA_R,
     515: process.env.VUE_APP_HP_BSC_R,
     15: process.env.VUE_APP_HP_BSC,
-    514: "https://zksync2-testnet.zksync.dev",
+    514: 'https://zksync2-testnet.zksync.dev',
     16: 'https://nova.arbitrum.io/rpc',
-    516: 'https://goerli-rollup.arbitrum.io/rpc'
+    516: 'https://goerli-rollup.arbitrum.io/rpc',
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -43,7 +43,7 @@ export default {
     15: process.env.VUE_APP_WP_BSC,
     514: 'wss://zksync2-testnet.zksync.dev/ws',
     16: 'https://nova.arbitrum.io/rpc',
-    516: 'https://goerli-rollup.arbitrum.io/rpc'
+    516: 'https://goerli-rollup.arbitrum.io/rpc',
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -60,7 +60,7 @@ export default {
     '12',
     '13',
     '14',
-    "15",
+    '15',
     '16',
     '22',
     '33',
@@ -74,15 +74,15 @@ export default {
     '512',
     '513',
     '514',
-    "515",
-    '516'
+    '515',
+    '516',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
     2: '42161', // Arbitrum
     3: '1', // zk
     4: '1', // starknet
-    5: '4', // rinkeby
+    5: '5', // goerli
     6: '137', // polygon
     7: '10', // optimism
     8: '1', // mainnet
@@ -91,22 +91,22 @@ export default {
     11: '1', // dydx
     12: '1', // zkspace
     13: '288', // boba mainnet,
-    15: "56", // bsc mainnet,
+    15: '56', // bsc mainnet,
     22: '421611', // arbitrum test
-    33: '4', // zktest
+    33: '5', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)
-    77: '69', // optimism(K)
+    77: '420', // optimism(G)
     88: '3', // ropsten
     99: '5', // loopring(G)
     510: '588', //metis test
     511: '3', // dydx(R)
     512: '4', // zkspace(R)s
     513: '28', // boba rinkeby
-    514: '280',//zksync2(G)
-    515: "97", // bsc test
+    514: '280', //zksync2(G)
+    515: '97', // bsc test
     16: '42170', // ar nova
-    516: '421613' // ar nova g
+    516: '421613', // ar nova g
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -125,21 +125,21 @@ export default {
     77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
     88: '',
     99: '',
-    515: "",
+    515: '',
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
-    5: 'https://rinkeby.etherscan.io/tx/', // /tx/  /address/
+    5: 'https://goerli.etherscan.io/tx/', // /tx/  /address/
     2: 'https://arbiscan.io/tx/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/tx/',
     3: 'https://zkscan.io/explorer/transactions/',
-    33: 'https://rinkeby.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
+    33: 'https://goerli.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://voyager.online/tx/',
     44: 'https://goerli.voyager.online/tx/',
     6: 'https://polygonscan.com/tx/',
     66: 'https://mumbai.polygonscan.com/tx/',
     7: 'https://optimistic.etherscan.io/tx/',
-    77: 'https://kovan-optimistic.etherscan.io/tx/',
+    77: 'https://blockscout.com/optimism/goerli/tx/',
     8: 'https://immutascan.io/tx/',
     88: '', // ImmutableX don't have testnet browser
     9: 'https://explorer.loopring.io/tx/',
@@ -152,25 +152,25 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://bobascan.com/tx/',
     513: 'https://bobascan.com/tx/',
-    15: "https://testnet.bscscan.com/tx/",
-    515: "https://testnet.bscscan.com/tx/",
+    15: 'https://bscscan.com/tx/',
+    515: 'https://testnet.bscscan.com/tx/',
     514: 'https://zksync2-testnet.zkscan.io/tx/',
     16: 'https://nova-explorer.arbitrum.io/tx/',
-    516: 'https://goerli-rollup-explorer.arbitrum.io/tx/'
+    516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
-    5: 'https://rinkeby.etherscan.io/address/', // /tx/  /address/
+    5: 'https://goerli.etherscan.io/address/', // /tx/  /address/
     2: 'https://arbiscan.io/address/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/address/',
     3: 'https://zkscan.io/explorer/accounts/',
-    33: 'https://rinkeby.zkscan.io/explorer/accounts/', // /explorer/transactions/   /explorer/accounts/
+    33: 'https://goerli.zkscan.io/explorer/accounts/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://voyager.online/contract/',
     44: 'https://goerli.voyager.online/contract/',
     6: 'https://polygonscan.com/address/',
     66: 'https://mumbai.polygonscan.com/address/',
     7: 'https://optimistic.etherscan.io/address/',
-    77: 'https://kovan-optimistic.etherscan.io/address/',
+    77: 'https://blockscout.com/optimism/goerli/address/',
     8: 'https://market.immutable.com/inventory/',
     88: 'https://market.ropsten.immutable.com/inventory/',
     9: 'https://explorer.loopring.io/account/',
@@ -184,9 +184,9 @@ export default {
     13: 'https://bobascan.com/address/',
     513: 'https://testnet.bobascan.com/address/',
     514: 'https://zksync2-testnet.zkscan.io/address/',
-    15: "https://bscscan.com/address",
-    515: "https://testnet.bscscan.com/address/",
+    15: 'https://bscscan.com/address',
+    515: 'https://testnet.bscscan.com/address/',
     16: 'https://nova-explorer.arbitrum.io/address/',
-    516: 'https://goerli-rollup-explorer.arbitrum.io/address/'
+    516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
   },
 }

@@ -37,7 +37,7 @@ export async function getTimeStampInfo(chainId, hash, blockNo, count = 30) {
 
 
 async function ethOrRinkebyTimeStampInfo(chainId, blockNo) {
-    const url = `${chainId === 5 ? config.etherscan.Rinkeby : config.etherscan.Mainnet
+    const url = `${chainId === 5 ? config.etherscan.TestNet : config.etherscan.Mainnet
         }?module=block&action=getblockreward&blockno=${blockNo}&apikey=${process.env.VUE_APP_ETH_KEY}`
 
     const response = await axios.get(url)
@@ -81,7 +81,7 @@ async function metisTimeStampInfo(chainId, hash) {
     }
 }
 async function zkSyncTimeStampInfo(chainId, hash) {
-    const url = `${chainId === 33 ? config.zkSync.Rinkeby
+    const url = `${chainId === 33 ? config.zkSync.TestNet
         : config.zkSync.Mainnet
         }/transactions/${hash} /data`
     const response = await axios.get(url)

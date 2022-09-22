@@ -1,13 +1,21 @@
+/*
+ * @Description:
+ * @Author: Eric
+ * @Date: 2022-07-25 17:53:45
+ * @LastEditors: Eric
+ * @LastEditTime: 2022-08-15 17:24:22
+ */
 export default {
   etherscan: {
     key: process.env.VUE_APP_ETH_KEY,
     Mainnet: 'https://api.etherscan.io/api',
-    Rinkeby: 'https://api-rinkeby.etherscan.io/api',
+    Rinkeby: 'https://api-goerli.etherscan.io/api',
+    TestNet: 'https://api-goerli.etherscan.io/api',
     chainID: '1',
   },
   zkSync: {
     Mainnet: 'https://api.zksync.io/api/v0.2',
-    Rinkeby: 'https://rinkeby-api.zksync.io/api/v0.2',
+    TestNet: 'https://goerli-api.zksync.io/api/v0.2',
     chainID: '3',
     rinkeyChainID: '33',
   },
@@ -39,7 +47,7 @@ export default {
   optimistic: {
     key: process.env.VUE_APP_OP_KEY,
     Mainnet: 'https://api-optimistic.etherscan.io/api',
-    Rinkeby: 'https://api-kovan-optimistic.etherscan.io/api',
+    Rinkeby: 'https://api-goerli-optimistic.etherscan.io/api',
     chainID: '7',
     rinkeyChainID: '77',
   },
@@ -86,15 +94,15 @@ export default {
       'https://eth-mainnet.alchemyapi.io/v2/7Y6To95k4MT7oZPTc8oUe0HKK4j0M8Yf',
   },
   bsc: {
-    Mainnet: "https://api.bscscan.com/",
-    Rinkeby: "https://api-testnet.bscscan.com/",
-    chainId: "56",
-    rinkeyChainID: "97"
+    Mainnet: 'https://api.bscscan.com/',
+    Rinkeby: 'https://api-testnet.bscscan.com/',
+    chainId: '56',
+    rinkeyChainID: '97',
   },
   arbitrum_nova: {
-    Mainnet: "https://nova-explorer.arbitrum.io/api",
-    Rinkeby: "https://goerli-rollup-explorer.arbitrum.io/api",
-    chainId: "16",
-    rinkeyChainID: "516"
-  }
+    Mainnet: 'https://nova-explorer.arbitrum.io/api',
+    Rinkeby: 'https://goerli-rollup-explorer.arbitrum.io/api',
+    chainId: '16',
+    rinkeyChainID: '516',
+  },
 }
