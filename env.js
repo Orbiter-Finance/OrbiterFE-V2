@@ -96,7 +96,7 @@ export default {
     33: '5', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)
-    77: '69', // optimism(K)
+    77: '420', // optimism(G)
     88: '3', // ropsten
     99: '5', // loopring(G)
     510: '588', //metis test
@@ -139,7 +139,7 @@ export default {
     6: 'https://polygonscan.com/tx/',
     66: 'https://mumbai.polygonscan.com/tx/',
     7: 'https://optimistic.etherscan.io/tx/',
-    77: 'https://kovan-optimistic.etherscan.io/tx/',
+    77: 'https://blockscout.com/optimism/goerli/tx/',
     8: 'https://immutascan.io/tx/',
     88: '', // ImmutableX don't have testnet browser
     9: 'https://explorer.loopring.io/tx/',
@@ -170,7 +170,7 @@ export default {
     6: 'https://polygonscan.com/address/',
     66: 'https://mumbai.polygonscan.com/address/',
     7: 'https://optimistic.etherscan.io/address/',
-    77: 'https://kovan-optimistic.etherscan.io/address/',
+    77: 'https://blockscout.com/optimism/goerli/address/',
     8: 'https://market.immutable.com/inventory/',
     88: 'https://market.ropsten.immutable.com/inventory/',
     9: 'https://explorer.loopring.io/account/',

@@ -330,6 +330,20 @@
       ],
       "infoURL": "https://arbitrum.io",
       "parent": {}
+    },
+    {
+      "name": "Optimism(G)",
+      "chainId": 420,
+      "shortName": "ogov",
+      "networkId": 420,
+      "nativeCurrency": {
+        "name": "Görli Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": ["https://blockscout.com/optimism/goerli/api"],
+      "faucets": [],
+      "infoURL": "https://blockscout.com/optimism/goerli/"
     }
   ]
 }

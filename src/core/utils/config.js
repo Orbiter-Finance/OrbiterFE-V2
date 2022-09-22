@@ -47,7 +47,7 @@ export default {
   optimistic: {
     key: process.env.VUE_APP_OP_KEY,
     Mainnet: 'https://api-optimistic.etherscan.io/api',
-    Rinkeby: 'https://api-kovan-optimistic.etherscan.io/api',
+    Rinkeby: 'https://api-goerli-optimistic.etherscan.io/api',
     chainID: '7',
     rinkeyChainID: '77',
   },
