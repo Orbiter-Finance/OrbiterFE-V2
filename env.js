@@ -5,7 +5,7 @@ export const netStateUrl = `${baseDomain}`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
   baseUrl,
-  baseTraddingUrl: historyApiUrl, //process.env.NODE_ENV === 'production' ? historyApiUrl : 'http://localhost:3000/api',
+  baseTraddingUrl:  process.env.NODE_ENV === 'production' ? historyApiUrl : 'http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003/api',
   credential: false,
   localProvider: {
     1: process.env.VUE_APP_HP,
