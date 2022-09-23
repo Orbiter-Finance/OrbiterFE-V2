@@ -14,7 +14,7 @@ export const chain2idMap = {
   'ZkSync(R)': 33,
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
-  'Optimism(K)': 77,
+  'Optimism(G)': 77,
   Loopring: 9,
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,

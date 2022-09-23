@@ -89,8 +89,8 @@ export default {
         newArray.push(chainData)
       }
       const chainOrderIds = [
-        3, 33, 6, 66, 1, 5, 2, 22, 9, 99, 7, 77, 12, 512, 8, 88, 10, 510, 11,
-        511, 13, 513, 4, 44, 14, 514, 15, 515,16,516
+        3, 33, 6, 66, 1, 5, 2, 22, 16, 516, 9, 99, 7, 77, 12, 512, 8, 88, 10,
+        510, 11, 511, 13, 513, 4, 44, 14, 514, 15, 515,
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
@@ -138,7 +138,8 @@ export default {
           // immutableX
           if (e.localID == 8 || e.localID == 88) {
             this.loadingIndex = index
-            const coinbase = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+            const coinbase =
+              compatibleGlobalWalletConf.value.walletPayload.walletAddress
             const imxHelper = new IMXHelper(e.localID)
             coinbase && (await imxHelper.ensureUser(coinbase))
           }
@@ -146,18 +147,20 @@ export default {
           // dydx
           if (e.localID == 11 || e.localID == 511) {
             try {
-            this.loadingIndex = index
-            const coinbase = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-            const dydxHelper = new DydxHelper(
-              e.localID,
-              new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
-              'MetaMask'
-            )
-            await dydxHelper.getDydxClient(coinbase)
-            }catch(error) {
-              console.log(error);
+              this.loadingIndex = index
+              const coinbase =
+                compatibleGlobalWalletConf.value.walletPayload.walletAddress
+              const dydxHelper = new DydxHelper(
+                e.localID,
+                new Web3(
+                  compatibleGlobalWalletConf.value.walletPayload.provider
+                ),
+                'MetaMask'
+              )
+              await dydxHelper.getDydxClient(coinbase)
+            } catch (error) {
+              console.log(error)
             }
-            
           }
 
           this.loadingIndex = -1
