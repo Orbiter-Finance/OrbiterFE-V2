@@ -22,7 +22,7 @@ watchEffect(() => {
   const walletAddress =
     compatibleGlobalWalletConf.value.walletPayload.walletAddress
   if (walletIsLogin.value && walletAddress && walletAddress !== '0x') {
-    getTraddingHistory(true)
+    // getTraddingHistory(true)
   }
 })
 
