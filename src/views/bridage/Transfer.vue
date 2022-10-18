@@ -408,8 +408,6 @@ export default {
         !this.queryParams.fixed &&
         transferDataState.toChainID != 11 &&
         transferDataState.toChainID != 511 &&
-        transferDataState.toChainID != 4 &&
-        transferDataState.toChainID != 44 &&
         !this.starkMid
       )
     },
@@ -1397,11 +1395,7 @@ export default {
           makerInfo.c1ID == 11 ||
           makerInfo.c1ID == 511 ||
           makerInfo.c2ID == 11 ||
-          makerInfo.c2ID == 511 ||
-          makerInfo.c1ID == 4 ||
-          makerInfo.c1ID == 44 ||
-          makerInfo.c2ID == 4 ||
-          makerInfo.c2ID == 44
+          makerInfo.c2ID == 511
         ) {
           return
         }
