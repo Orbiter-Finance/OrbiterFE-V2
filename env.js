@@ -161,15 +161,9 @@ export default {
     2: 'https://arbiscan.io/address/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/address/',
     3: 'https://zkscan.io/explorer/accounts/',
-<<<<<<< HEAD
     33: 'https://goerli.zkscan.io/explorer/accounts/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://voyager.online/contract/',
     44: 'https://goerli.voyager.online/contract/',
-=======
-    33: 'https://rinkeby.zkscan.io/explorer/accounts/', // /explorer/transactions/   /explorer/accounts/
-    4: 'https://starkscan.co/contract/',
-    44: 'https://testnet.starkscan.co/',
->>>>>>> develop_rollup_chart
     6: 'https://polygonscan.com/address/',
     66: 'https://mumbai.polygonscan.com/address/',
     7: 'https://optimistic.etherscan.io/address/',
