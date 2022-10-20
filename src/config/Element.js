@@ -13,7 +13,9 @@ import {
   Dialog,
   Table,
   TableColumn,
-  Popover
+  Popover,
+  Row,
+  Col,
 } from 'element-ui'
 const element = {
   install: function(Vue) {
@@ -30,6 +32,8 @@ const element = {
     Vue.use(Dialog)
     Vue.use(Select)
     Vue.use(Option)
+    Vue.use(Row)
+    Vue.use(Col)
     // Vue.prototype.$message = Message
     Vue.prototype.$notify = Notification
     // Vue.prototype.$msgbox = MessageBox

@@ -7,20 +7,26 @@
     <div class="table">
       <el-table :data="indexTableData" style="width: 100%" empty-text="No Items" :default-sort="defaultSort"
         @sort-change="onSortChange">
-        <el-table-column fixed label="NO. Name" width="150">
+        <el-table-column fixed label="NO. Name" width="140">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="no">
                 {{ scope.row.index }}
               </div>
               <chains-logo :name="scope.row.rollup_name" />
-              <div class="name" :title="scope.row.rollup_name">
-                {{ scope.row.rollup_name }}
+              <div class="name_box" @click="onRowClick(scope.row)"> 
+                <div class="name" :title="scope.row.rollup_name">
+                  {{ scope.row.rollup_name }}
+                </div>
+                <div class="icon" v-if="!!scope.row.details"> 
+                  <!-- <i class="el-icon-arrow-right"></i> -->
+                  <svg-icon-themed icon="searchChartIcon" size="lg"></svg-icon-themed>
+                </div>
               </div>
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="launch_time" label="Launch Date" width="110" :sortable="'custom'"
+        <el-table-column prop="launch_time" label="Launch Date" width="110" align="right" :sortable="'custom'"
           :sort-orders="['descending', 'ascending', null]">
           <template slot-scope="scope">
             <div class="data">
@@ -33,9 +39,9 @@
           <template slot-scope="scope">
             <div class="data">
               {{
-                  isEmpty(scope.row.total_tx)
-                    ? '-'
-                    : numeral(scope.row.total_tx).format('0,0')
+              isEmpty(scope.row.total_tx)
+              ? '-'
+              : numeral(scope.row.total_tx).format('0,0')
               }}
             </div>
           </template>
@@ -45,9 +51,9 @@
           <template slot-scope="scope">
             <div class="data">
               {{
-                  isEmpty(scope.row.total_accounts)
-                    ? '-'
-                    : numeral(scope.row.total_accounts).format('0,0')
+              isEmpty(scope.row.total_accounts)
+              ? '-'
+              : numeral(scope.row.total_accounts).format('0,0')
               }}
             </div>
           </template>
@@ -81,9 +87,9 @@
                     </div>
                     <div class="TVL-percent">
                       {{
-                          numeral(
-                            scope.row.TVL.Stable / scope.row.TVL.all
-                          ).format('0.00%')
+                      numeral(
+                      scope.row.TVL.Stable / scope.row.TVL.all
+                      ).format('0.00%')
                       }}
                     </div>
                   </div>
@@ -94,10 +100,10 @@
                     </div>
                     <div class="TVL-percent">
                       {{
-                          numeral(
-                            (scope.row.TVL.BTC + scope.row.TVL.ETH) /
-                            scope.row.TVL.all
-                          ).format('0.00%')
+                      numeral(
+                      (scope.row.TVL.BTC + scope.row.TVL.ETH) /
+                      scope.row.TVL.all
+                      ).format('0.00%')
                       }}
                     </div>
                   </div>
@@ -108,9 +114,9 @@
                     </div>
                     <div class="TVL-percent">
                       {{
-                          numeral(
-                            scope.row.TVL.Others / scope.row.TVL.all
-                          ).format('0.00%')
+                      numeral(
+                      scope.row.TVL.Others / scope.row.TVL.all
+                      ).format('0.00%')
                       }}
                     </div>
                   </div>
@@ -129,9 +135,9 @@
           <template slot-scope="scope">
             <div class="new-data">
               {{
-                  isEmpty(scope.row.txs[currentFilter])
-                    ? '-'
-                    : numeral(scope.row.txs[currentFilter]).format('0,0')
+              isEmpty(scope.row.txs[currentFilter])
+              ? '-'
+              : numeral(scope.row.txs[currentFilter]).format('0,0')
               }}
             </div>
           </template>
@@ -141,11 +147,11 @@
           <template slot-scope="scope">
             <div class="new-data">
               {{
-                  isEmpty(scope.row.active_accounts[currentFilter])
-                    ? '-'
-                    : numeral(scope.row.active_accounts[currentFilter]).format(
-                      '0,0'
-                    )
+              isEmpty(scope.row.active_accounts[currentFilter])
+              ? '-'
+              : numeral(scope.row.active_accounts[currentFilter]).format(
+              '0,0'
+              )
               }}
             </div>
           </template>
@@ -155,15 +161,16 @@
           <template slot-scope="scope">
             <div class="new-data">
               {{
-                  isEmpty(scope.row.new_accounts[currentFilter])
-                    ? '-'
-                    : numeral(scope.row.new_accounts[currentFilter]).format('0,0')
+              isEmpty(scope.row.new_accounts[currentFilter])
+              ? '-'
+              : numeral(scope.row.new_accounts[currentFilter]).format('0,0')
               }}
             </div>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <rollup-detail ref="rolluoDetail"></rollup-detail>
   </div>
 </template>
 
@@ -177,6 +184,8 @@ import Help from '../Help'
 import { getRollups } from '../../../L2data/rollups'
 import { isMobile } from '../../../composition/hooks'
 import dateFormat from '../../../util/dateFormat'
+import RollupDetail from '../RollupDetail.vue'
+import SvgIconThemed from '../../../components/SvgIconThemed.vue'
 
 const selectors = [
   { label: '1d', value: '1d' },
@@ -220,13 +229,16 @@ export default {
     Percent,
     ChainsLogo,
     Help,
-  },
+    RollupDetail,
+    SvgIconThemed
+},
   async mounted() {
     this.$loader.show()
     const rollups = await getRollups()
     this.$loader.hide()
     this.rollups = rollups
     this.tableData = this._getDefaultTableData()
+    console.log("tableData ==>", this.tableData)
   },
   methods: {
     numeral,
@@ -312,6 +324,9 @@ export default {
       }
       return numeral(num).format('$ 0.00 a').toUpperCase()
     },
+    onRowClick(row) {
+      this.$refs.rolluoDetail.show(row, true)
+    }
   },
 }
 </script>
@@ -340,9 +355,22 @@ export default {
     .el-table th.el-table__cell>.cell {
       display: inline-flex;
       align-items: center;
+      justify-content: right;
       flex-wrap: nowrap;
-    }
 
+      // .caret-wrapper {
+      //   margin-left: auto;
+      // }
+    }
+    .el-table th.el-table__cell:nth-child(1)>.cell {
+      justify-content: left;
+    }
+    .el-table th.el-table__cell:nth-child(5)>.cell {
+      justify-content: left;
+    }
+    .sort-caret {
+      left: 6px;
+    }
     .name-column {
       font-family: 'Inter Regular';
       display: flex;
@@ -350,20 +378,40 @@ export default {
       font-size: 14px;
 
       .no {
-        width: 20px;
+        min-width: 20px;
         font-style: normal;
         font-weight: 400;
-        margin-right: 20px;
+        margin-right: 4px;
+      }
+
+      .icon {
+        position: absolute;
+        right: -17px;
+        top: 65%;
+        transform: translateY(-50%);
+        // color: #df2e2d;
+        i, svg {
+          width: 18px;
+          font-weight: bolder;
+        }
+      }
+
+      .name_box {
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
       }
 
       .name {
+        cursor: pointer;
         width: 70px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         font-style: normal;
         font-weight: 500;
-        margin-left: 10px;
+        margin-left: 5px;
       }
     }
 
@@ -372,11 +420,12 @@ export default {
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
+      padding-right: 16px;
       color: rgba(51, 51, 51, 0.8);
     }
 
     .TVL-header {
-      padding-left: 20px;
+      padding-left: 22px;
       display: inline-block;
     }
 
@@ -411,6 +460,9 @@ export default {
       font-weight: 500;
       font-size: 14px;
       color: #333;
+    }
+    .new-data {
+      padding-right: 16px;
     }
   }
 }
