@@ -252,15 +252,19 @@ export default {
     padding: 0 20px 50px 20px;
 
     .el-table .cell {
-      padding: 0 10px 0 5px;
+      // padding: 0 10px 0 5px;
+      padding-right: 16px;
     }
 
     .el-table th.el-table__cell>.cell {
       display: inline-flex;
       align-items: center;
+      justify-content: right;
       flex-wrap: nowrap;
     }
-
+    .el-table th.el-table__cell:nth-child(1)>.cell, .el-table th.el-table__cell:nth-child(2)>.cell, .el-table th.el-table__cell:nth-child(3)>.cell {
+      justify-content: left;
+    }
     .new-contract {
       display: flex;
       align-items: center;

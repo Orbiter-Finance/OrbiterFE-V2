@@ -287,7 +287,8 @@ export default {
     padding: 0 20px 50px 20px;
 
     .el-table .cell {
-      padding: 0 5px 0 5px;
+      // padding: 0 5px 0 5px;
+      padding-right: 16px;
     }
 
     .name-column {

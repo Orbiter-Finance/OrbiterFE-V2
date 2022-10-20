@@ -237,9 +237,11 @@ export default {
       this._chart && this._chart.resize()
     },
     _initChart() {
-      const chartDom = document.getElementById('l2-data-chart')
-      const chart = echarts.init(chartDom)
-      this._chart = chart
+      this.$nextTick(() => {
+        const chartDom = document.getElementById('l2-data-chart')
+        const chart = echarts.init(chartDom)
+        this._chart = chart
+      })
     },
     onCheckerClick(item) {
       if (this.checkData.includes(item)) {
@@ -256,6 +258,7 @@ export default {
     _getChartOptions() {
       const { times, data, data_l1 } = this._getData()
       const options = {
+        width: '100%',
         title: { show: false },
         grid: {
           top: 10,
