@@ -41,7 +41,10 @@ export default {
         return 'bsclogo'
       }else if (chainID == '16' || chainID == '516') {
         return 'arnavologo'
+      }else if (chainID == '17' || chainID == '517') {
+        return 'polygon_zkevm_logo'
       }   else {
+        
         return 'ethlogo'
       }
     },

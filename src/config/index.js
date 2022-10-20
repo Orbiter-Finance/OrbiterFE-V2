@@ -8,6 +8,7 @@ const tokenIcons = {
   ZKS: require('../assets/zkslogo.png'),
   LRC: require('../assets/lrclogo.png'),
   BNB: require('../assets/bnblogo.png'),
+  DAI: require('../assets/dailogo.png'),
 }
 
 /**
