@@ -76,5 +76,8 @@ export const chain2icon = item => {
   if (item === 16 || item === 516) {
     iconName = 'arnavologo'
   }
+  if (item === 17 || item === 517) {
+    iconName = 'polygon_zkevm_logo'
+  }
   return iconName
 }
