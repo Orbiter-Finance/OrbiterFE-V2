@@ -43,6 +43,7 @@ const CHAIN_INDEX = {
   512: 'zkspace',
   13: 'boba',
   513: 'boba',
+  14: 'zksync2',
   514: 'zksync2',
   515: "bsc",
   15: "bsc",

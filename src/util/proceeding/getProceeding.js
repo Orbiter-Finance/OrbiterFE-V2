@@ -1071,7 +1071,7 @@ function ScanMakerTransfer(
           break
         case 5:
           api = {
-            endPoint: config.etherscan.Rinkeby,
+            endPoint: config.etherscan.TestNet,
             key: config.etherscan.key,
           }
           break

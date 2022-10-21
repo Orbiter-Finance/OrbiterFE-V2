@@ -28,6 +28,10 @@ export default {
       type: Number,
       default: 22,
     },
+    chains: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     src() {
@@ -42,7 +46,11 @@ export default {
       if (['apex'].includes(name)) {
         return require('../../assets/data/apex.png')
       }
-      return `https://l2api.orbiter.finance/img/dapps/${name}.png`
+      if (this.chains) {
+        return `https://l2api.orbiter.finance/img/chains/${name}.png`
+      } else {
+        return `https://l2api.orbiter.finance/img/dapps/${name}.png`
+      }
     },
   },
   watch: {

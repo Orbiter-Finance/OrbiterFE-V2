@@ -14,7 +14,7 @@ export const chain2idMap = {
   'ZkSync(R)': 33,
   'StarkNet(R)': 44,
   'Polygon(R)': 66,
-  'Optimism(K)': 77,
+  'Optimism(G)': 77,
   Loopring: 9,
   'Loopring(G)': 99,
   'ImmutableX(R)': 88,
@@ -75,6 +75,9 @@ export const chain2icon = item => {
   }
   if (item === 16 || item === 516) {
     iconName = 'arnavologo'
+  }
+  if (item === 17 || item === 517) {
+    iconName = 'polygon_zkevm_logo'
   }
   return iconName
 }

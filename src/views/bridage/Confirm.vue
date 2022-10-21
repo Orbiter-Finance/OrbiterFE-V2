@@ -111,6 +111,7 @@ import {
   sendTransfer,
   getStarkMakerAddress,
 } from '../../util/constants/starknet/helper'
+import {getZkSyncProvider} from '../../util/zksync/zkysnc_helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
@@ -473,10 +474,7 @@ export default {
       const ethWallet = new ethers.providers.Web3Provider(
         web3Provider.currentProvider
       )
-      const syncProvider =
-        fromChainID === 3
-          ? await zksync.getDefaultProvider('mainnet')
-          : await zksync.getDefaultProvider('rinkeby')
+      const syncProvider = await getZkSyncProvider(fromChainID)
       // const contractAddresses = await syncProvider.getTokens();
       try {
         const syncWallet = await zksync.Wallet.fromEthSigner(

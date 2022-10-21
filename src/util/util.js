@@ -32,7 +32,7 @@ export default {
       case 3:
         return 'zkSync'
       case 33:
-        return 'zkSync(R)'
+        return 'zkSync(G)'
       case 4:
         return 'StarkNet'
       case 44:
@@ -73,6 +73,10 @@ export default {
         return "Arbitrum Nova"
       case 516:
         return "Arbitrum Nova(Goerli)"
+      case 17:
+        return "Polygon ZKEVM"
+      case 517:
+        return "Polygon ZKEVM(Goerli)"
     }
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
@@ -96,7 +100,7 @@ export default {
       localChainID &&
       localChainID.toString() === '33'
     ) {
-      return 'zkSync(R)'
+      return 'zkSync(G)'
     }
     var chain = chainList.chainList.filter(
       (chain) => chain.chainId.toString() === netChainID
