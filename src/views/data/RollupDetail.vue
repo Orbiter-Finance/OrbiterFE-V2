@@ -172,7 +172,6 @@ const times = [
 ]
 const isMax = (value) => value === 'Max'
 const ONE_MONTH = 60 * 60 * 24 * 30
-const ONE_DAY = 60 * 60 * 24
 
 const padTimestamp = (timestamp) => timestamp * 1000
 
@@ -241,7 +240,7 @@ export default {
                 }
             }
             const data = this.chartDateFormatter(filterChartData)
-            console.log("chartData ==>", data)
+            // console.log("chartData ==>", data)
             return data
         },
         isLightMode() {
@@ -310,7 +309,6 @@ export default {
             const chartData = res
             this.detailData = res
             if (res.info) {
-                this.detailData.update_time = this.detailData.update_time - ONE_DAY
                 const data = this.chartDateFormatter(chartData)
                 return data
             } else {
@@ -998,6 +996,7 @@ export default {
             const all_users = this._getDataByTime(axisValue).all_users
             const title = dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
             const paramsData = ["L1 Total Fee", "L2 Total Fee"].includes(params[0].seriesName) ? params : params.reverse()
+            paramsData.sort((a, b) => b.data - a.data)
 
             return `<div class="dapp-detail-chart-popover-content">
                 <div class="dapp-detail-chart-popover-title">${title}</div>
@@ -1010,9 +1009,9 @@ export default {
                             <div class="dot" style="background:${colorMap[item.seriesName]
                                 }"></div>
                             ${item.seriesName == 'L2 Total Fee' ?
-                                    `<div class="name" style="color: ${colorMap[item.seriesName]}">Mainnet</div>`
+                                    `<div class="name" style="color: ${colorMap[item.seriesName]}">${this.chartData.info.rollup_name} Received on L2</div>`
                                     :
-                                    `<div class="name" style="color: ${colorMap[item.seriesName]}">${this.chartData.info.rollup_name}</div>`}                           
+                                    `<div class="name" style="color: ${colorMap[item.seriesName]}">${this.chartData.info.rollup_name} Spent on L1</div>`}                           
                             <div class="value" style="color: ${colorMap[item.seriesName]}">${numeral(item.value).format('0,0.00')} ETH</div>
                             </div>
                             `
@@ -1186,6 +1185,7 @@ export default {
             .rollup_gas {
                 // display: flex;
                 // align-items: center;
+                line-height: 32px;
 
                 .text {
                     font-size: 12px;

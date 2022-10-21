@@ -238,7 +238,6 @@ export default {
     this.$loader.hide()
     this.rollups = rollups
     this.tableData = this._getDefaultTableData()
-    console.log("tableData ==>", this.tableData)
   },
   methods: {
     numeral,
