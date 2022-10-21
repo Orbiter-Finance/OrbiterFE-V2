@@ -21,7 +21,7 @@ const nowMakerList = [
     c1TradingFee: 0.0013,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 2,
+    c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -87,7 +87,7 @@ const nowMakerList = [
     c1TradingFee: 0.0007,
     c2TradingFee: 0.0055,
     c1GasFee: 0.15,
-    c2GasFee: 2,
+    c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -120,7 +120,7 @@ const nowMakerList = [
     c1TradingFee: 0.0011,
     c2TradingFee: 0.0007,
     c1GasFee: 0.15,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -186,7 +186,7 @@ const nowMakerList = [
     c1TradingFee: 0.0011,
     c2TradingFee: 0.0007,
     c1GasFee: 0.15,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -219,7 +219,7 @@ const nowMakerList = [
     c1TradingFee: 0.0012,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 2,
+    c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
         startTime: 1657614601,
@@ -251,7 +251,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0013,
     c2TradingFee: 0.0011,
-    c1GasFee: 1,
+    c1GasFee: 0.1,
     c2GasFee: 0.15,
     c1AvalibleTimes: [
       {
@@ -285,7 +285,7 @@ const nowMakerList = [
     c1TradingFee: 0.0005,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 2,
+    c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -350,7 +350,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0006,
     c2TradingFee: 0.0011,
-    c1GasFee: 1,
+    c1GasFee: 0.1,
     c2GasFee: 0.15,
     c1AvalibleTimes: [
       {
@@ -383,8 +383,8 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0007,
     c2TradingFee: 0.0011,
-    c1GasFee: 1,
-    c2GasFee: 1,
+    c1GasFee: 0.1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -417,7 +417,7 @@ const nowMakerList = [
     c1TradingFee: 0.0012,
     c2TradingFee: 0.005,
     c1GasFee: 0.15,
-    c2GasFee: 2,
+    c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -450,7 +450,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0013,
     c1GasFee: 0.15,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -482,7 +482,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0005,
     c2TradingFee: 0.0008,
-    c1GasFee: 1,
+    c1GasFee: 0.1,
     c2GasFee: 0.15,
     c1AvalibleTimes: [
       {
@@ -515,7 +515,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0007,
-    c1GasFee: 2,
+    c1GasFee: 0.3,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -582,7 +582,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -615,7 +615,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -747,7 +747,7 @@ const nowMakerList = [
     c1TradingFee: 0.0009,
     c2TradingFee: 0.0007,
     c1GasFee: 2.5,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -846,7 +846,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 2.5,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -944,7 +944,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0005,
-    c1GasFee: 2,
+    c1GasFee: 0.3,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -978,7 +978,7 @@ const nowMakerList = [
     c1TradingFee: 0.0009,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1077,7 +1077,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.0007,
     c1GasFee: 0.2,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1208,7 +1208,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0027,
     c2TradingFee: 0.001,
-    c1GasFee: 2,
+    c1GasFee: 0.3,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -1242,7 +1242,7 @@ const nowMakerList = [
     c1TradingFee: 0.0011,
     c2TradingFee: 0.001,
     c1GasFee: 1,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1341,7 +1341,7 @@ const nowMakerList = [
     c1TradingFee: 0.001,
     c2TradingFee: 0.001,
     c1GasFee: 1,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1655967601,
@@ -1507,7 +1507,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.0025,
     c2TradingFee: 0.0012,
-    c1GasFee: 2,
+    c1GasFee: 0.3,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -1542,7 +1542,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0012,
     c1GasFee: 0,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1646064001,
@@ -1644,7 +1644,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0012,
     c1GasFee: 0,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 1646064001,
@@ -1847,7 +1847,7 @@ const nowMakerList = [
     c2AvalibleDeposit: 1000,
     c1TradingFee: 0.002,
     c2TradingFee: 0.0005,
-    c1GasFee: 2,
+    c1GasFee: 0.3,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -1948,7 +1948,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0003,
     c1GasFee: 0,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -1981,7 +1981,7 @@ const nowMakerList = [
     c1TradingFee: 0.0008,
     c2TradingFee: 0.0003,
     c1GasFee: 0,
-    c2GasFee: 1,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -2309,9 +2309,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 3,
+    c1TradingFee: 1.5,
     c2TradingFee: 1.5,
-    c1GasFee: 0.4,
+    c1GasFee: 0.3,
     c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
@@ -2342,9 +2342,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 3,
+    c1TradingFee: 1.5,
     c2TradingFee: 1.5,
-    c1GasFee: 0.8,
+    c1GasFee: 0.5,
     c2GasFee: 0.3,
     c1AvalibleTimes: [
       {
@@ -2507,9 +2507,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 3,
+    c1TradingFee: 1.5,
     c2TradingFee: 1.5,
-    c1GasFee: 0.4,
+    c1GasFee: 0.2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -2639,9 +2639,9 @@ const nowMakerList = [
     precision: 6,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 3,
+    c1TradingFee: 1.5,
     c2TradingFee: 1.5,
-    c1GasFee: 0.8,
+    c1GasFee: 0.2,
     c2GasFee: 0.2,
     c1AvalibleTimes: [
       {
@@ -2998,15 +2998,15 @@ const nowMakerList = [
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.004,
+    c1TradingFee: 0.002,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3031,15 +3031,15 @@ const nowMakerList = [
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.001,
+    c1TradingFee: 0.0005,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3065,15 +3065,15 @@ const nowMakerList = [
       '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.001,
+    c1TradingFee: 0.0005,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3098,16 +3098,16 @@ const nowMakerList = [
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0012,
+    c1TradingFee: 0.0006,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
-    c2GasFee: 1,
+    c1GasFee: 6,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -3131,16 +3131,16 @@ const nowMakerList = [
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.001,
+    c1TradingFee: 0.0005,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
-    c2GasFee: 1,
+    c1GasFee: 6,
+    c2GasFee: 0.1,
     c1AvalibleTimes: [
       {
         startTime: 0,
@@ -3164,15 +3164,15 @@ const nowMakerList = [
     t2Address: '0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.001,
+    c1TradingFee: 0.0005,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3197,15 +3197,15 @@ const nowMakerList = [
     t2Address: '0x2170ed0880ac9a755fd29b2688956bd959f933f8',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.001,
+    c1TradingFee: 0.0005,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3230,15 +3230,15 @@ const nowMakerList = [
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 3,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.001,
+    c1TradingFee: 0.0005,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3263,15 +3263,15 @@ const nowMakerList = [
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
     c1MinPrice: 0.005,
-    c1MaxPrice: 1,
+    c1MaxPrice: 3,
     c2MinPrice: 0.005,
     c2MaxPrice: 5,
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.001,
+    c1TradingFee: 0.0005,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3302,9 +3302,9 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0016,
+    c1TradingFee: 0.0008,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3335,9 +3335,9 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0016,
+    c1TradingFee: 0.0008,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3368,9 +3368,9 @@ const nowMakerList = [
     precision: 18,
     c1AvalibleDeposit: 1000,
     c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.0016,
+    c1TradingFee: 0.0008,
     c2TradingFee: 0.0005,
-    c1GasFee: 12,
+    c1GasFee: 6,
     c2GasFee: 0,
     c1AvalibleTimes: [
       {
@@ -3571,6 +3571,510 @@ const nowMakerList = [
     c2TradingFee: 1,
     c1GasFee: 0.1,
     c2GasFee: 0,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  // Dai
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 1,
+    c2ID: 4,
+    c1Name: 'mainnet',
+    c2Name: 'starknet',
+    t1Address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // USDT
+    t2Address:
+      '0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 2,
+    c2TradingFee: 8.5,
+    c1GasFee: 5,
+    c2GasFee: 0,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 1,
+    c2ID: 2,
+    c1Name: 'mainnet',
+    c2Name: 'arbitrum',
+    t1Address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // USDT
+    t2Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 2,
+    c2TradingFee: 8.5,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 1,
+    c2ID: 7,
+    c1Name: 'mainnet',
+    c2Name: 'optimism',
+    t1Address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // USDT
+    t2Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 2,
+    c2TradingFee: 8.5,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 1,
+    c2ID: 6,
+    c1Name: 'mainnet',
+    c2Name: 'polygon',
+    t1Address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // USDT
+    t2Address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.5,
+    c2TradingFee: 8.5,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 1,
+    c2ID: 3,
+    c1Name: 'mainnet',
+    c2Name: 'zksync',
+    t1Address: '0x6B175474E89094C44Da98b954EedeAC495271d0F', // USDT
+    t2Address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.5,
+    c2TradingFee: 8.5,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 2,
+    c2ID: 4,
+    c1Name: 'arbitrum',
+    c2Name: 'starknet',
+    t1Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', // USDT
+    t2Address:
+      '0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.5,
+    c2TradingFee: 1.3,
+    c1GasFee: 5,
+    c2GasFee: 0,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 2,
+    c2ID: 7,
+    c1Name: 'arbitrum',
+    c2Name: 'optimism',
+    t1Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', // USDT
+    t2Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.3,
+    c2TradingFee: 1.3,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 2,
+    c2ID: 6,
+    c1Name: 'arbitrum',
+    c2Name: 'polygon',
+    t1Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', // USDT
+    t2Address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.3,
+    c2TradingFee: 1.3,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 2,
+    c2ID: 3,
+    c1Name: 'arbitrum',
+    c2Name: 'zksync',
+    t1Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', // USDT
+    t2Address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.3,
+    c2TradingFee: 1.3,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 7,
+    c2ID: 4,
+    c1Name: 'optimism',
+    c2Name: 'starknet',
+    t1Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', // USDT
+    t2Address:
+      '0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.5,
+    c2TradingFee: 1.3,
+    c1GasFee: 5,
+    c2GasFee: 0,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 7,
+    c2ID: 6,
+    c1Name: 'optimism',
+    c2Name: 'polygon',
+    t1Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1', // USDT
+    t2Address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.3,
+    c2TradingFee: 1.3,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 7,
+    c2ID: 3,
+    c1Name: 'optimism',
+    c2Name: 'zksync',
+    t1Address: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
+    t2Address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.3,
+    c2TradingFee: 1.3,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 6,
+    c2ID: 4,
+    c1Name: 'polygon',
+    c2Name: 'starknet',
+    t1Address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', // USDT
+    t2Address:
+      '0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.5,
+    c2TradingFee: 1.3,
+    c1GasFee: 5,
+    c2GasFee: 0,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 6,
+    c2ID: 3,
+    c1Name: 'polygon',
+    c2Name: 'zksync',
+    t1Address: '0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063', // USDT
+    t2Address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.3,
+    c2TradingFee: 1.3,
+    c1GasFee: 0.2,
+    c2GasFee: 0.2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+
+  {
+    makerAddress: '0x095D2918B03b2e86D68551DCF11302121fb626c9',
+    c1ID: 4,
+    c2ID: 3,
+    c1Name: 'starknet',
+    c2Name: 'zksync',
+    t1Address:
+      '0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3', // USDT
+    t2Address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+    tName: 'DAI',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 3000,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 3000,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1.3,
+    c2TradingFee: 1.5,
+    c1GasFee: 0,
+    c2GasFee: 5,
     c1AvalibleTimes: [
       {
         startTime: 0,
