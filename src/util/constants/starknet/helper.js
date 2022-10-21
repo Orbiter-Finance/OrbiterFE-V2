@@ -22,6 +22,11 @@ const STARKNET_CROSS_CONTRACT_ADDRESS = {
 }
 
 const L1_TO_L2_ADDRESSES = {
+  '0x095d2918b03b2e86d68551dcf11302121fb626c9': {
+    'mainnet-alpha': '0x001709eA381e87D4c9ba5e4A67Adc9868C05e82556A53FD1b3A8b1F21e098143',
+    'georli-alpha':
+      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+  },
   '0x0043d60e87c5dd08c86c3123340705a1556c4719': {
     'mainnet-alpha': '',
     'georli-alpha':
