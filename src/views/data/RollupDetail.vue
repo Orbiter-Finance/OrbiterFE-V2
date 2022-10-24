@@ -993,7 +993,7 @@ export default {
         },
         _onFormatter(params) {
             const axisValue = params[0].axisValue
-            const all_users = this._getDataByTime(axisValue).all_users
+            const all_users = ["All Users", "Active Users", "New Users"].includes(params[0].seriesName) ? this._getDataByTime(axisValue).all_users : ''
             const title = dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
             const paramsData = ["L1 Total Fee", "L2 Total Fee"].includes(params[0].seriesName) ? params : params.reverse()
             paramsData.sort((a, b) => b.data - a.data)
