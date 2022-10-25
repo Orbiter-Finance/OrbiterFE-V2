@@ -268,7 +268,7 @@ import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
-import { netStateBlock } from '../../util/confirmCheck'
+// import { netStateBlock } from '../../util/confirmCheck'
 import { chain2idMap } from '../../util/chain2id'
 import { chain2icon } from '../../util'
 import {
@@ -1638,21 +1638,13 @@ export default {
           realSelectMakerInfo.value.tName,
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
-        if (!(await netStateBlock(transferDataState.fromChainID))) {
-          this.$notify.error({
-            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
-            duration: 3000,
-          })
-          return
-        }
-
-        if (toChainID == 4 || toChainID == 44) {
-          this.$notify.error({
-            title: `Affected by the starkNet interface issue, the transfer to starkNet is suspended.`,
-            duration: 3000,
-          })
-          return
-        }
+        // if (!(await netStateBlock(transferDataState.fromChainID))) {
+        //   this.$notify.error({
+        //     title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
+        //     duration: 3000,
+        //   })
+        //   return
+        // }
 
         if (nonce > 8999) {
           this.$notify.error({
