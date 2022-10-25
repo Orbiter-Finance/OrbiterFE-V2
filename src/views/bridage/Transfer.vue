@@ -1646,13 +1646,13 @@ export default {
           return
         }
 
-        // if (fromChainID == 4 || toChainID == 4) {
-        //   this.$notify.error({
-        //     title: `Affected by the starkNet interface issue, the transfer from starkNet is suspended.`,
-        //     duration: 3000,
-        //   })
-        //   return
-        // }
+        if (toChainID == 4 || toChainID == 44) {
+          this.$notify.error({
+            title: `Affected by the starkNet interface issue, the transfer to starkNet is suspended.`,
+            duration: 3000,
+          })
+          return
+        }
 
         if (nonce > 8999) {
           this.$notify.error({
