@@ -129,8 +129,8 @@ export default {
       selectors,
       PAGE_SIZE,
       dapps: {},
-      defaultSort: { prop: 'all_users', order: 'descending' },
-      currentSort: undefined,
+      defaultSort: { prop: 'active_users', order: 'descending' },
+      currentSort: { prop: 'active_users', order: 'descending' },
       currentRollup: undefined,
       rollups: [],
       currentFilter: selectors[0].value,
@@ -251,8 +251,8 @@ export default {
         return []
       }
       return allData.sort((a, b) => {
-        const nA = Number(a['all_users'])
-        const nB = Number(b['all_users'])
+        const nA = Number(a[this.currentFilter].active_users)
+        const nB = Number(b[this.currentFilter].active_users)
         return nB - nA
       })
     },

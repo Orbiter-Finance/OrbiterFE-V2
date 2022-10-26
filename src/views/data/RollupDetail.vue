@@ -90,11 +90,11 @@
                         <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
                             <div class="content" style="margin-top: 0;">
                                 <div class="title">
-                                    Fees
+                                    L2 Revenue and L1 Gas Fee Consumption
                                     <el-popover popper-class="supported-l2-popover" :placement="'bottom'" width="280"
                                         trigger="hover">
                                         <div class="supported-l2-desc">
-                                            Gas fees statistics of the network consumption.
+                                            StarkNet Received on L2: Total gas received of every successful transaction on StarkNet StarkNet Spent on L1: Total gas used by StarkNet's L1 contracts to settle L2 proof on Ethereum
                                         </div>
                                         <span class="title-help" slot="reference"> </span>
                                     </el-popover>
@@ -686,6 +686,9 @@ export default {
                         type: 'value',
                         axisPointer: {
                             show: false,
+                        },
+                        axisLabel: {
+                            formatter:'{value} ETH'
                         },
                         axisTick: {
                             show: false,

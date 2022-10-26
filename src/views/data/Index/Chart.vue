@@ -262,7 +262,7 @@ export default {
         title: { show: false },
         grid: {
           top: 10,
-          left: '30',
+          left: '0',
           right: '30',
           bottom: '26',
           containLabel: true,
@@ -592,6 +592,8 @@ export default {
     #l2-data-chart {
       width: 100%;
       height: 220px;
+      padding-left: 30px;
+      box-sizing: border-box;
     }
     .checker {
         display: flex;
