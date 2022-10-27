@@ -1645,13 +1645,13 @@ export default {
         //   })
         //   return
         // }
-        if (toChainID == 4 || toChainID == 44) {
-          this.$notify.error({
-            title: `Due to the congestion of StarkNet, the transaction failure rate to StarkNet is too high. In order not to affect the user experience, to-StarkNet function is temporarily offline.`,
-            duration: 6000,
-          })
-          return
-        }
+        // if (toChainID == 4 || toChainID == 44) {
+        //   this.$notify.error({
+        //     title: `Due to the congestion of StarkNet, the transaction failure rate to StarkNet is too high. In order not to affect the user experience, to-StarkNet function is temporarily offline.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
 
         if (nonce > 8999) {
           this.$notify.error({
