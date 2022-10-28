@@ -368,6 +368,9 @@ export default {
       let opBalance = 10 ** -avalibleDigit
       let preGasDigit = 3
       let preGas = 10 ** -preGasDigit
+      if (![3,33].includes(transferDataState.fromChainID)) {
+        preGas = 0;
+      }
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
         .minus(new BigNumber(opBalance))
@@ -630,6 +633,7 @@ export default {
         text: 'CONNECT A WALLET',
         disabled: null,
       }
+
       if (walletIsLogin.value) {
         info.text = 'SEND'
         if (transferValue.comparedTo(0) < 0) {
@@ -1322,6 +1326,9 @@ export default {
   },
   created() {
     this.replaceStarknetWrongHref()
+    setInterval(() => {
+      this.refreshUserBalance()
+    }, 5000)
   },
   methods: {
     replaceStarknetWrongHref() {
@@ -1938,6 +1945,40 @@ export default {
         Math.ceil(transferDataState.gasFee * transferDataState.ethPrice * 10) /
         10
       )
+    },
+    refreshUserBalance() {
+      let selectMakerInfo = transferDataState.selectMakerInfo
+      transferCalculate
+        .getTransferBalance(
+          selectMakerInfo.c1ID,
+          selectMakerInfo.t1Address,
+          selectMakerInfo.tName,
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        )
+        .then((response) => {
+          this.c1Balance = (response / 10 ** selectMakerInfo.precision).toFixed(
+            6
+          )
+        })
+        .catch((error) => {
+          console.warn(error)
+          return
+        })
+      transferCalculate
+        .getTransferBalance(
+          selectMakerInfo.c2ID,
+          selectMakerInfo.t2Address,
+          selectMakerInfo.tName,
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        )
+        .then((response) => {
+          this.c2Balance = (response / 10 ** selectMakerInfo.precision).toFixed(
+            6
+          )
+        })
+        .catch((error) => {
+          console.warn(error)
+        })
     },
   },
 }
