@@ -368,8 +368,8 @@ export default {
       let opBalance = 10 ** -avalibleDigit
       let preGasDigit = 3
       let preGas = 10 ** -preGasDigit
-      if (![3,33].includes(transferDataState.fromChainID)) {
-        preGas = 0;
+      if (![3, 33].includes(transferDataState.fromChainID)) {
+        preGas = 0
       }
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
@@ -1652,13 +1652,13 @@ export default {
         //   })
         //   return
         // }
-        if (toChainID == 4 || toChainID == 44) {
-          this.$notify.error({
-            title: `Due to the congestion of StarkNet, the transaction failure rate to StarkNet is too high. In order not to affect the user experience, to-StarkNet function is temporarily offline.`,
-            duration: 6000,
-          })
-          return
-        }
+        // if (toChainID == 4 || toChainID == 44) {
+        //   this.$notify.error({
+        //     title: `Due to the congestion of StarkNet, the transaction failure rate to StarkNet is too high. In order not to affect the user experience, to-StarkNet function is temporarily offline.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
 
         if (nonce > 8999) {
           this.$notify.error({
