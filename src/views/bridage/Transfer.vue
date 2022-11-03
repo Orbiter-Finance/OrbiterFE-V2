@@ -1666,6 +1666,13 @@ export default {
         //   })
         //   return
         // }
+        if (fromChainID == 15) {
+          this.$notify.error({
+            title: `Affected by the BNB CHAIN interface issue, the transfer to BNB CHAIN is suspended.`,
+            duration: 6000,
+          })
+          return
+        }
 
         if (nonce > 8999) {
           this.$notify.error({
