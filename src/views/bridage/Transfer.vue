@@ -463,9 +463,10 @@ export default {
         toChainID != 2 &&
         toChainID != 22 &&
         toChainID != 6 &&
-        toChainID != 66 &&
-        toChainID != 7 &&
-        toChainID != 77
+        toChainID != 66
+        // &&
+        // toChainID != 7 &&
+        // toChainID != 77
       ) {
         return true
       }
@@ -1057,9 +1058,10 @@ export default {
         newValue != 2 &&
         newValue != 22 &&
         newValue != 6 &&
-        newValue != 66 &&
-        newValue != 7 &&
-        newValue != 77
+        newValue != 66
+        // &&
+        // newValue != 7 &&
+        // newValue != 77
       ) {
         if (this.toChainArray.indexOf(4) != -1) {
           let index = this.toChainArray.indexOf(4)
