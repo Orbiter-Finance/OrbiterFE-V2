@@ -1661,13 +1661,13 @@ export default {
         //   })
         //   return
         // }
-        if (fromChainID == 7) {
-          this.$notify.error({
-            title: `Affected by the Optimism interface issue, the transfer from Optimism is suspended.`,
-            duration: 6000,
-          })
-          return
-        }
+        // if (fromChainID == 7) {
+        //   this.$notify.error({
+        //     title: `Affected by the Optimism interface issue, the transfer from Optimism is suspended.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
         if (toChainID == 9) {
           this.$notify.error({
             title: `Affected by the Loopring interface issue, the transfer to Loopring is suspended.`,
