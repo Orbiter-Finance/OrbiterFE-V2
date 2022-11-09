@@ -368,8 +368,8 @@ export default {
       let opBalance = 10 ** -avalibleDigit
       let preGasDigit = 3
       let preGas = 10 ** -preGasDigit
-      if (![3,33].includes(transferDataState.fromChainID)) {
-        preGas = 0;
+      if (![3, 33].includes(transferDataState.fromChainID)) {
+        preGas = 0
       }
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
@@ -1313,7 +1313,9 @@ export default {
       this.getMakerMaxBalance()
       this.updateExchangeToUsdPrice()
     }, 10 * 1000)
-
+    setInterval(() => {
+      this.refreshUserBalance(false)
+    }, 1000 * 60)
     this.transferValue = this.queryParams.amount
     makerInfo
       .getMakerInfoFromGraph({ maker: '0' }, true)
@@ -1326,9 +1328,9 @@ export default {
   },
   created() {
     this.replaceStarknetWrongHref()
-    setInterval(() => {
-      this.refreshUserBalance()
-    }, 5000)
+  },
+  activated() {
+    this.refreshUserBalance()
   },
   methods: {
     replaceStarknetWrongHref() {
@@ -1947,7 +1949,7 @@ export default {
         10
       )
     },
-    refreshUserBalance() {
+    refreshUserBalance(queryToChain = true) {
       let selectMakerInfo = transferDataState.selectMakerInfo
       transferCalculate
         .getTransferBalance(
@@ -1965,21 +1967,24 @@ export default {
           console.warn(error)
           return
         })
-      transferCalculate
-        .getTransferBalance(
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        )
-        .then((response) => {
-          this.c2Balance = (response / 10 ** selectMakerInfo.precision).toFixed(
-            6
+      if (queryToChain) {
+        transferCalculate
+          .getTransferBalance(
+            selectMakerInfo.c2ID,
+            selectMakerInfo.t2Address,
+            selectMakerInfo.tName,
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
-        })
-        .catch((error) => {
-          console.warn(error)
-        })
+          .then((response) => {
+            this.c2Balance = (
+              response /
+              10 ** selectMakerInfo.precision
+            ).toFixed(6)
+          })
+          .catch((error) => {
+            console.warn(error)
+          })
+      }
     },
   },
 }
