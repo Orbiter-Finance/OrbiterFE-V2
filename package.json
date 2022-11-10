@@ -16,7 +16,7 @@
     "@dydxprotocol/v3-client": "^1.8.2",
     "@eth-optimism/contracts": "^0.5.14",
     "@imtbl/imx-sdk": "^1.5.0",
-    "@loopring-web/loopring-sdk": "1.8.17",
+    "@loopring-web/loopring-sdk": "2.1.14",
     "@vue/composition-api": "^1.7.0",
     "@walletconnect/client": "^1.7.8",
     "@walletconnect/qrcode-modal": "^1.7.8",
