@@ -1670,13 +1670,13 @@ export default {
         //   })
         //   return
         // }
-        if (toChainID == 9) {
-          this.$notify.error({
-            title: `Affected by the Loopring interface issue, the transfer to Loopring is suspended.`,
-            duration: 6000,
-          })
-          return
-        }
+        // if (toChainID == 9) {
+        //   this.$notify.error({
+        //     title: `Affected by the Loopring interface issue, the transfer to Loopring is suspended.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
 
         if (nonce > 8999) {
           this.$notify.error({
