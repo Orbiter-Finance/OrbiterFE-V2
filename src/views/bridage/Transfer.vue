@@ -141,12 +141,15 @@
         >More</a
       >
     </div>
-    {{ isSupportXVM }}--------
     <div class="cross-addr-box to-area" v-if="isSupportXVM">
       <div data-v-59545920="" class="topItem">
         <div class="left">Cross Address</div>
       </div>
-      <input type="text" placeholder="You receive cross chain addresses" />
+      <input
+        type="text"
+        v-model="crossAddressReceipt"
+        placeholder="You receive cross chain addresses"
+      />
     </div>
     <CommBtn
       @click="sendTransfer"
@@ -323,6 +326,7 @@ export default {
   },
   data() {
     return {
+      crossAddressReceipt: '',
       isRaiseUpSelectVisible: false,
       selectedToken: 'ETH',
       // loading
@@ -408,7 +412,6 @@ export default {
       const supportXVM = this.$env.supportXVM
       const fromChainID = transferDataState.fromChainID
       const toChainID = transferDataState.toChainID
-      console.log(supportXVM, '===', transferDataState)
       if (supportXVM.includes(toChainID) && supportXVM.includes(fromChainID)) {
         return true
       }
@@ -1283,7 +1286,7 @@ export default {
         updateTransferValue(newValue)
     },
   },
-  mounted() {
+  async mounted() {
     const updateETHPriceI = async () => {
       transferCalculate
         .getTokenConvertUsd('ETH')
@@ -1322,8 +1325,8 @@ export default {
       }
     })
 
-    updateETHPriceI()
-    this.getMakerMaxBalance()
+    await updateETHPriceI();
+    await this.getMakerMaxBalance();
 
     setInterval(() => {
       updateETHPriceI()
@@ -1334,14 +1337,15 @@ export default {
       this.refreshUserBalance(false)
     }, 1000 * 60)
     this.transferValue = this.queryParams.amount
-    makerInfo
-      .getMakerInfoFromGraph({ maker: '0' }, true)
-      .then((response) => {
-        if (response.code === 0) {
-          this.makerInfoList = response.data
-        }
-      })
-      .catch((error) => console.warn('error =', error))
+    const response = await makerInfo.getMakerInfoFromGraph({ maker: '0' }, true)
+    if (response.code === 0) {
+      this.makerInfoList = response.data
+    }
+    console.log(this.supportXVM, '==this.supportXVM')
+    if (this.supportXVM) {
+      console.log('support evm')
+    }
+    // this.crossAddressReceipt = walle
   },
   created() {
     this.replaceStarknetWrongHref()
