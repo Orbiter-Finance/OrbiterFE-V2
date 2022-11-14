@@ -6,7 +6,6 @@ import {
   ChainId,
   generateKeyPair,
   UserAPI,
-  VALID_UNTIL,
   OffchainFeeReqType,
   sleep,
   //   WhitelistedUserAPI,
@@ -15,8 +14,13 @@ import axios from 'axios'
 import config from '../utils/config'
 import Web3 from 'web3'
 import { store } from '../../store'
-import { transferDataState, lpAccountInfo, updatelpAccountInfo, updatelpApiKey  } from '../../composition/hooks'
-import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData"
+import {
+  transferDataState,
+  lpAccountInfo,
+  updatelpAccountInfo,
+  updatelpApiKey,
+} from '../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 var configNet = config.loopring.Mainnet
 
 export default {
@@ -64,8 +68,10 @@ export default {
           owner: address,
         }
         let response = await exchangeApi.getAccount(GetAccountRequest)
+        console.warn('Maker_loopringResponse =', response)
         if (response.accInfo && response.raw_data) {
           accountInfo = response.accInfo
+          console.warn('Maker_loopringAccountInfo =', accountInfo)
         } else {
           if (response.code == 101002) {
             return 0
@@ -88,7 +94,7 @@ export default {
           accountInfo.accountId
         }&tokens=${lpTokenInfo ? lpTokenInfo.tokenId : 0}`
       )
-      if (resp.status == 200 && resp.statusText == 'OK') {
+      if (resp.status == 200) {
         if (!Array.isArray(resp.data)) {
           return 0
         }
@@ -177,7 +183,9 @@ export default {
       throw Error('User account is frozen')
     }
     const { exchangeInfo } = await exchangeApi.getExchangeInfo()
-    const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
+    const web3 = new Web3(
+      compatibleGlobalWalletConf.value.walletPayload.provider
+    )
     let options = {
       web3,
       address: accInfo.owner,
@@ -215,7 +223,7 @@ export default {
       GetNextStorageIdRequest,
       apiKey
     )
-
+    const ts = Math.round(new Date().getTime() / 1000) + 30 * 86400
     // step 4 transfer
     const OriginTransferRequestV3 = {
       exchange: exchangeInfo.exchangeAddress,
@@ -232,7 +240,7 @@ export default {
         tokenId: 0,
         volume: '94000000000000000',
       },
-      validUntil: VALID_UNTIL,
+      validUntil: ts,
       memo: memo,
     }
     const response = await userApi.submitInternalTransfer({
@@ -247,7 +255,7 @@ export default {
     return response
   },
 
-  getWithDrawFee: async function (address, localChainID,tokenName) {
+  getWithDrawFee: async function (address, localChainID, tokenName) {
     const accountResult = await this.accountInfo(address, localChainID)
     if (!accountResult) {
       return 0
