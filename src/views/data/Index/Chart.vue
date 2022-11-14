@@ -126,6 +126,8 @@ const ROLLUPS = [
   'ZkSwapV2',
   'ZkSync',
   'dYdX',
+  'ScrollL1',
+  'ScrollL2'
 ]
 const caches = {}
 const allSeries = ['Ethereum Mainnet Transactions']

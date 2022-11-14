@@ -15,7 +15,9 @@ const MAX_BITS = {
   zkspace: 35,
   boba: 256,
   bsc: 256,
-  arbitrum_nova: 256
+  arbitrum_nova: 256,
+  scroll_l1_test: 18,
+  scroll_l2_test: 19
 }
 
 const CHAIN_INDEX = {
@@ -48,7 +50,9 @@ const CHAIN_INDEX = {
   515: "bsc",
   15: "bsc",
   16: 'arbitrum_nova',
-  516: 'arbitrum_nova'
+  516: 'arbitrum_nova',
+  518: 'scroll_l1_test',
+  519: 'scroll_l2_test'
 }
 
 const SIZE_OP = {

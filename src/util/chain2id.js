@@ -30,6 +30,8 @@ export const chain2idMap = {
   "BNBChain": 15,
   "Arbitrum Nova": 16,
   "Arbitrum Nova(Goerli)": 516,
+  ScrollL1: 518,
+  ScrollL2: 519
 }
 
 export const chain2icon = item => {
@@ -78,6 +80,9 @@ export const chain2icon = item => {
   }
   if (item === 17 || item === 517) {
     iconName = 'polygon_zkevm_logo'
+  }
+  if (item === 18 || item === 518 || item === 19 || item === 519) {
+    iconName = 'scrolllogo'
   }
   return iconName
 }
