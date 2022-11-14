@@ -44,6 +44,7 @@ export default {
     516: 'https://goerli-rollup.arbitrum.io/rpc',
     517: 'https://public.zkevm-test.net:2083'
   },
+  supportXVM:[5, 77],
   supportLocalNetWorksIDs: [
     '1',
     '2',

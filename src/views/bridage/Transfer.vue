@@ -141,6 +141,13 @@
         >More</a
       >
     </div>
+    {{ isSupportXVM }}--------
+    <div class="cross-addr-box to-area" v-if="isSupportXVM">
+      <div data-v-59545920="" class="topItem">
+        <div class="left">Cross Address</div>
+      </div>
+      <input type="text" placeholder="You receive cross chain addresses" />
+    </div>
     <CommBtn
       @click="sendTransfer"
       :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -277,7 +284,6 @@ import {
 } from '../../util/constants/starknet/helper'
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 import { RaiseUpSelect } from '../../components'
-
 // composition
 import {
   walletIsLogin,
@@ -397,6 +403,17 @@ export default {
     },
   },
   computed: {
+    //
+    isSupportXVM() {
+      const supportXVM = this.$env.supportXVM
+      const fromChainID = transferDataState.fromChainID
+      const toChainID = transferDataState.toChainID
+      console.log(supportXVM, '===', transferDataState)
+      if (supportXVM.includes(toChainID) && supportXVM.includes(fromChainID)) {
+        return true
+      }
+      return false
+    },
     transferDataState() {
       return transferDataState
     },
@@ -1539,6 +1556,7 @@ export default {
     },
     getFromChainInfo(e) {
       updateTransferFromChainID(e.localID)
+
       // Change query params's source
       const { path, query } = this.$route
       for (const key in queryParamsChainMap) {
@@ -2139,6 +2157,15 @@ export default {
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
+  }
+  .cross-addr-box {
+    input {
+      border: 0;
+      outline: none; //
+      background-color: rgba(0, 0, 0, 0); //
+      width: 100%;
+      height: 40px;
+    }
   }
 }
 </style>
