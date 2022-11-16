@@ -89,11 +89,8 @@ export default {
     '515',
     '516',
     '517',
-<<<<<<< HEAD
     '518',
     '519'
-=======
->>>>>>> change_rpc_node
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -126,11 +123,8 @@ export default {
     16: '42170', // ar nova
     516: '421613', // ar nova g
     517: '1402',
-<<<<<<< HEAD
     518: '534351', // Scroll L1 Testnet
     519: '534354', // Scroll L2 Testnet
-=======
->>>>>>> change_rpc_node
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -182,11 +176,8 @@ export default {
     16: 'https://nova-explorer.arbitrum.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
     517: 'https://public.zkevm-test.net:8443/tx/',
-<<<<<<< HEAD
     518:'https://l1scan.scroll.io/tx/',
     519:'https://l2scan.scroll.io/tx/'
-=======
->>>>>>> change_rpc_node
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -219,10 +210,7 @@ export default {
     16: 'https://nova-explorer.arbitrum.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
     517: 'https://public.zkevm-test.net:8443/address/',
-<<<<<<< HEAD
     518:'https://l1scan.scroll.io/address/',
     519:'https://l2scan.scroll.io/address/'
-=======
->>>>>>> change_rpc_node
   },
 }
