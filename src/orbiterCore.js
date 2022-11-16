@@ -16,8 +16,8 @@ const MAX_BITS = {
   boba: 256,
   bsc: 256,
   arbitrum_nova: 256,
-  scroll_l1_test: 18,
-  scroll_l2_test: 19
+  scroll_l1_test: 256,
+  scroll_l2_test: 256
 }
 
 const CHAIN_INDEX = {
