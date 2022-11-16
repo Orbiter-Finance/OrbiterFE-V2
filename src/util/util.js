@@ -77,6 +77,10 @@ export default {
         return "Polygon ZKEVM"
       case 517:
         return "Polygon ZKEVM(Goerli)"
+      case 518:
+        return "Scroll L1 testnet"
+      case 519:
+        return "Scroll L2 testnet"
     }
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
