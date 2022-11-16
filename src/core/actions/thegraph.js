@@ -1,5 +1,4 @@
-// util/thegraph.js
-export const nowMakerList = [
+export const makerList = [
   {
     makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
     c1ID: 33,
@@ -2658,6 +2657,305 @@ export const nowMakerList = [
   },
   {
     makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 5,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'rinkeby',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 99,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'loopring_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 66,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'polygon_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 44,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'starknet_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address:
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_210',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 513,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'boba_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 515,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'bsc_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 514,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'zksync2_test',
+    t1Address: '0x3a304243d69e330b2cebbd79690ae9df52ef2dbd',
+    t2Address: '0xf9a9afd74dc8a5bd3745d6613b0e169b3eac4fcf',
+    tName: 'USDC',
+    c1MinPrice: 1,
+    c1MaxPrice: 10,
+    c2MinPrice: 1,
+    c2MaxPrice: 10,
+    precision: 6,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1,
+    c2TradingFee: 1,
+    c1GasFee: 3,
+    c2GasFee: 3,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 33,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'zksync_test',
+    t1Address: '0x3a304243d69e330b2cebbd79690ae9df52ef2dbd',
+    t2Address: '0xd35cceead182dcee0f148ebac9447da2c4d449c4',
+    tName: 'USDC',
+    c1MinPrice: 1,
+    c1MaxPrice: 10,
+    c2MinPrice: 1,
+    c2MaxPrice: 10,
+    precision: 6,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1,
+    c2TradingFee: 1,
+    c1GasFee: 3,
+    c2GasFee: 3,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 516,
+    c2ID: 22,
+    c1Name: 'arbitrum_nova_test',
+    c2Name: 'arbitrum_test',
+    t1Address: '0x3a304243d69e330b2cebbd79690ae9df52ef2dbd',
+    t2Address: '0x3a304243d69e330b2cebbd79690ae9df52ef2dbd',
+    tName: 'USDC',
+    c1MinPrice: 0.1,
+    c1MaxPrice: 10,
+    c2MinPrice: 0.1,
+    c2MaxPrice: 10,
+    precision: 6,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 1,
+    c2TradingFee: 2,
+    c1GasFee: 3,
+    c2GasFee: 4,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
     c1ID: 44,
     c2ID: 77,
     c1Name: 'starknet_test',
@@ -3223,46 +3521,211 @@ export const nowMakerList = [
       },
     ],
   },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 33,
+    c2ID: 519,
+    c1Name: 'zksync_test',
+    c2Name: 'scroll_l2_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.0005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_193',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 22,
+    c2ID: 519,
+    c1Name: 'arbitrum_test',
+    c2Name: 'scroll_l2_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.0005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_214',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 5,
+    c2ID: 519,
+    c1Name: 'rinkeby',
+    c2Name: 'scroll_l2_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.0005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_208',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 77,
+    c2ID: 519,
+    c1Name: 'optimism_test',
+    c2Name: 'scroll_l2_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.0005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_198',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 44,
+    c2ID: 519,
+    c1Name: 'starknet_test',
+    c2Name: 'scroll_l2_test',
+    t1Address:
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.0005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_212',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 518,
+    c2ID: 519,
+    c1Name: 'scroll_l1_test',
+    c2Name: 'scroll_l2_test',
+    t1Address: '0x0000000000000000000000000000000000000000',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.0005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_198',
+  },
 ]
 
-
-function getMakerInfo(req, next) {
-  return new Promise((resolve, reject) => {
-    var res = {}
-    res.code = 0
-    res.data = nowMakerList
-    if (next) {
-      resolve(res)
-    } else {
-      reject(res)
-    }
-  })
-}
-function getMakerTokenNames(maketList) {
-  let makerTokenNames = {}
-  for (let item of maketList) {
-    makerTokenNames[item.tName] = true
-  }
-  return makerTokenNames
-}
-function getAllMakerList(req, next) {
-  return new Promise((resolve, reject) => {
-    var res = {}
-    res.code = 0
-    res.data = []
-    // push now makerList
-    res.data = res.data.concat(nowMakerList)
-
-    if (next) {
-      resolve(res)
-    } else {
-      reject(res)
-    }
-  })
-}
-export default {
-  getMakerInfo,
-  getMakerTokenNames,
-  getAllMakerList,
-}
-export { getMakerInfo, getMakerTokenNames, getAllMakerList }
+export const makerListHistory = [];
