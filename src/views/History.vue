@@ -200,9 +200,10 @@ export default {
         return 'bobalogo'
       }else if (chainID == '15' || chainID == '515') {
         return 'bsclogo'
-      }
-      else if (chainID == '16' || chainID == '516') {
+      } else if (chainID == '16' || chainID == '516') {
         return 'arnavologo'
+      } else if (chainID == '518' || chainID == '519') {
+        return 'scrolllogo'
       } else {
         return 'ethlogo'
       }
