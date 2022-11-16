@@ -8,10 +8,10 @@ import {
 } from '../../../composition/walletsResponsiveData'
 import { web3State } from '../../../composition/hooks'
 // Get a token contract on the L2 network
-function getLocalCoinContract(localChainID, tokenAddress, state) {
+function getLocalCoinContract(localChainID, tokenAddress, state, web3) {
   // 0 : http   1: ws
   // localChainID => rpcurl => web3Provider
-  const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
+  // const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
   if (web3) {
     const ecourseContractInstance = new web3.eth.Contract(
       Coin_ABI,
