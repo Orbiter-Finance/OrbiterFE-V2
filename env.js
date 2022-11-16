@@ -4,7 +4,7 @@ export const netStateUrl = `${baseDomain}`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
   baseUrl,
-  baseTraddingUrl: 'http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003/api',
+  baseTraddingUrl: `${baseDomain}/api`,
   credential: false,
   localProvider: {
     1: process.env.VUE_APP_HP,
@@ -26,7 +26,7 @@ export default {
     516: 'https://goerli-rollup.arbitrum.io/rpc',
     517: 'https://public.zkevm-test.net:2083',
     518: 'https://prealpha.scroll.io/l1',
-    519: 'https://prealpha.scroll.io/l2'
+    519: 'https://prealpha.scroll.io/l2',
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -46,7 +46,7 @@ export default {
     516: 'https://goerli-rollup.arbitrum.io/rpc',
     517: 'https://public.zkevm-test.net:2083',
     518: 'https://prealpha.scroll.io/l1',
-    519: 'https://prealpha.scroll.io/l2'
+    519: 'https://prealpha.scroll.io/l2',
   },
   publicRPC: {
     1: ['https://api.mycryptoapi.com/eth', process.env.VUE_APP_HP],
@@ -87,7 +87,7 @@ export default {
     '516',
     '517',
     '518',
-    '519'
+    '519',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -173,8 +173,8 @@ export default {
     16: 'https://nova-explorer.arbitrum.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
     517: 'https://public.zkevm-test.net:8443/tx/',
-    518:'https://l1scan.scroll.io/tx/',
-    519:'https://l2scan.scroll.io/tx/'
+    518: 'https://l1scan.scroll.io/tx/',
+    519: 'https://l2scan.scroll.io/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -207,7 +207,7 @@ export default {
     16: 'https://nova-explorer.arbitrum.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
     517: 'https://public.zkevm-test.net:8443/address/',
-    518:'https://l1scan.scroll.io/address/',
-    519:'https://l2scan.scroll.io/address/'
+    518: 'https://l1scan.scroll.io/address/',
+    519: 'https://l2scan.scroll.io/address/',
   },
 }
