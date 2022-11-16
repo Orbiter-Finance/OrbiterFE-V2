@@ -14,19 +14,22 @@ export default {
     5: process.env.VUE_APP_HP_R, // rinkeby
     22: process.env.VUE_APP_HP_AR_R,
     66: process.env.VUE_APP_HP_PO_G,
-    77: "https://goerli.optimism.io",
+    77: 'https://goerli.optimism.io',
     10: process.env.VUE_APP_HP_MT,
     510: process.env.VUE_APP_HP_MT_R,
     13: process.env.VUE_APP_HP_BOBA,
     513: process.env.VUE_APP_HP_BOBA_R,
-    514: "https://zksync2-testnet.zksync.dev",
+    514: 'https://zksync2-testnet.zksync.dev',
     515: process.env.VUE_APP_HP_BSC_R,
     15: process.env.VUE_APP_HP_BSC,
     16: 'https://nova.arbitrum.io/rpc',
     516: 'https://goerli-rollup.arbitrum.io/rpc',
     517: 'https://public.zkevm-test.net:2083',
+<<<<<<< HEAD
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2'
+=======
+>>>>>>> change_rpc_node
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -47,6 +50,12 @@ export default {
     517: 'https://public.zkevm-test.net:2083',
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2'
+  },
+  publicRPC: {
+    1: ['https://api.mycryptoapi.com/eth', process.env.VUE_APP_HP],
+    2: ['https://arb1.arbitrum.io/rpc', process.env.VUE_APP_HP_AR],
+    6: ['https://polygon-rpc.com/', process.env.VUE_APP_HP_PO],
+    7: ['https://mainnet.optimism.io', process.env.VUE_APP_HP_OP],
   },
   supportLocalNetWorksIDs: [
     '1',
@@ -80,8 +89,11 @@ export default {
     '515',
     '516',
     '517',
+<<<<<<< HEAD
     '518',
     '519'
+=======
+>>>>>>> change_rpc_node
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -114,8 +126,11 @@ export default {
     16: '42170', // ar nova
     516: '421613', // ar nova g
     517: '1402',
+<<<<<<< HEAD
     518: '534351', // Scroll L1 Testnet
     519: '534354', // Scroll L2 Testnet
+=======
+>>>>>>> change_rpc_node
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -161,14 +176,17 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
-    15: "https://bscscan.com/tx/",
-    515: "https://testnet.bscscan.com/tx/",
+    15: 'https://bscscan.com/tx/',
+    515: 'https://testnet.bscscan.com/tx/',
     514: 'https://zksync2-testnet.zkscan.io/tx/',
     16: 'https://nova-explorer.arbitrum.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
     517: 'https://public.zkevm-test.net:8443/tx/',
+<<<<<<< HEAD
     518:'https://l1scan.scroll.io/tx/',
     519:'https://l2scan.scroll.io/tx/'
+=======
+>>>>>>> change_rpc_node
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -201,7 +219,10 @@ export default {
     16: 'https://nova-explorer.arbitrum.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
     517: 'https://public.zkevm-test.net:8443/address/',
+<<<<<<< HEAD
     518:'https://l1scan.scroll.io/address/',
     519:'https://l2scan.scroll.io/address/'
+=======
+>>>>>>> change_rpc_node
   },
 }
