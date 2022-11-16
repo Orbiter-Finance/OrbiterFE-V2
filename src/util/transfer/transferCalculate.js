@@ -1318,7 +1318,7 @@ export default {
         return Number(await web3.eth.getBalance(userAddress)) || 0
       } else {
         // When is ERC20
-        var tokenContract = getLocalCoinContract(chainId, tokenAddress, 0)
+        var tokenContract = getLocalCoinContract(chainId, tokenAddress, 0, web3)
         if (!tokenContract) {
           throw 'getBalance_tokenContractError'
         }
