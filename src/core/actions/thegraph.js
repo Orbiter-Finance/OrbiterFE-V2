@@ -1,4 +1,4 @@
-export const makerList = [
+export const nowMakerList = [
   {
     makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
     c1ID: 33,
@@ -3729,3 +3729,45 @@ export const makerList = [
 ]
 
 export const makerListHistory = [];
+
+
+function getMakerInfo(req, next) {
+  return new Promise((resolve, reject) => {
+    var res = {}
+    res.code = 0
+    res.data = nowMakerList
+    if (next) {
+      resolve(res)
+    } else {
+      reject(res)
+    }
+  })
+}
+function getMakerTokenNames(maketList) {
+  let makerTokenNames = {}
+  for (let item of maketList) {
+    makerTokenNames[item.tName] = true
+  }
+  return makerTokenNames
+}
+function getAllMakerList(req, next) {
+  return new Promise((resolve, reject) => {
+    var res = {}
+    res.code = 0
+    res.data = []
+    // push now makerList
+    res.data = res.data.concat(nowMakerList)
+
+    if (next) {
+      resolve(res)
+    } else {
+      reject(res)
+    }
+  })
+}
+export default {
+  getMakerInfo,
+  getMakerTokenNames,
+  getAllMakerList,
+}
+export { getMakerInfo, getMakerTokenNames, getAllMakerList }
