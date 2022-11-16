@@ -1355,7 +1355,6 @@ export default {
         params: [],
         id: 0,
       })
-      console.log('respone-------->',response)
       if (response.status === 200) {
         return parseInt(response.data.result)
       } else {

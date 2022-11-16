@@ -25,11 +25,8 @@ export default {
     16: 'https://nova.arbitrum.io/rpc',
     516: 'https://goerli-rollup.arbitrum.io/rpc',
     517: 'https://public.zkevm-test.net:2083',
-<<<<<<< HEAD
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2'
-=======
->>>>>>> change_rpc_node
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
