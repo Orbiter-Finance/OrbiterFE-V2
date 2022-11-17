@@ -1688,13 +1688,13 @@ export default {
         //   })
         //   return
         // }
-        if (toChainID == 16) {
-          this.$notify.error({
-            title: `Affected by the Arbitrum Nova interface issue, the transfer to Arbitrum Nova is suspended.`,
-            duration: 6000,
-          })
-          return
-        }
+        // if (toChainID == 16) {
+        //   this.$notify.error({
+        //     title: `Affected by the Arbitrum Nova interface issue, the transfer to Arbitrum Nova is suspended.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
 
         if (nonce > 8999) {
           this.$notify.error({
