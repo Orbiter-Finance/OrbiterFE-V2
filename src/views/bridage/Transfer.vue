@@ -2,12 +2,6 @@
   <div class="transfer-box">
     <div class="top-area">
       <span class="title">Token</span>
-      <ObSelect
-        :datas="tokens"
-        v-model="selectedToken"
-        @input="selectedTokenChange"
-        @show="() => (isRaiseUpSelectVisible = true)"
-      ></ObSelect>
     </div>
     <div class="from-area">
       <div class="topItem">
@@ -47,7 +41,7 @@
         <div
           style="display: flex; justify-content: center; align-items: center"
         >
-          <input
+          <input style="min-width: 50px"
             type="text"
             v-model="transferValue"
             class="right"
@@ -60,6 +54,14 @@
             "
           />
           <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          <div style="margin-left: 4px">
+            <ObSelect
+                    :datas="tokens"
+                    v-model="selectedToken"
+                    @input="selectedTokenChange"
+                    @show="() => (isRaiseUpSelectVisible = true)"
+            ></ObSelect>
+          </div>
         </div>
       </div>
     </div>
@@ -108,7 +110,15 @@
           <span>{{ showChainName(false) }}</span>
           <SvgIconThemed v-if="queryParams.dests.length > 1" />
         </div>
-        <div style="display: flex; align-items: center" class="right">
+        <div style="display: flex; align-items: center;height: 40px" class="right">
+          <div v-if="XVMTokenInfoArray.length" style="margin-left: 4px">
+            <ObSelect
+                    :datas="XVMTokens"
+                    v-model="selectedXVMToken"
+                    @input="selectedXVMTokenChange"
+                    @show="() => (isRaiseUpSelectVisible = true)"
+            ></ObSelect>
+          </div>
           <o-tooltip>
             <template v-slot:titleDesc>
               <span v-html="toValueToolTip"></span>
@@ -141,15 +151,21 @@
         >More</a
       >
     </div>
-    <div class="cross-addr-box to-area" v-if="isSupportXVM">
-      <div data-v-59545920="" class="topItem">
-        <div class="left">Cross Address</div>
+    <div v-if="isSupportXVM">
+      <div style="text-align: left;margin-top: 20px;padding-left: 20px">
+        <input type="checkbox" id="checkbox" v-model="isCrossAddress" />
+        <label for="checkbox"> cross address </label>
       </div>
-      <input
-        type="text"
-        v-model="crossAddressReceipt"
-        placeholder="You receive cross chain addresses"
-      />
+      <div class="cross-addr-box to-area" v-if="isCrossAddress">
+        <div data-v-59545920="" class="topItem">
+          <div class="left">Cross Address</div>
+        </div>
+        <input
+                type="text"
+                v-model="crossAddressReceipt"
+                placeholder="You receive cross chain addresses"
+        />
+      </div>
     </div>
     <CommBtn
       @click="sendTransfer"
@@ -162,6 +178,12 @@
       </span>
     </CommBtn>
     <div class="info-box">
+      <div v-if="isErrorAddress" class="info-item">
+        <svg-icon class="info-icon" iconName="info"></svg-icon>
+        <span class="red">
+          Address format error.
+        </span>
+      </div>
       <div v-if="isShowUnreachMinInfo" class="info-item">
         <svg-icon class="info-icon" iconName="info"></svg-icon>
         <span class="red">
@@ -253,6 +275,15 @@
       @input="selectedTokenChange"
       :keyMaps="{ value: 'token', label: 'token' }"
     />
+    <RaiseUpSelect
+            :iconType="'img'"
+            :visible="isRaiseUpXVMSelectVisible"
+            @hiden="() => (isRaiseUpXVMSelectVisible = false)"
+            :datas="XVMTokenInfoArray"
+            :value="selectedXVMToken"
+            @input="selectedXVMTokenChange"
+            :keyMaps="{ value: 'token', label: 'token' }"
+    />
   </div>
 </template>
 
@@ -305,9 +336,11 @@ import {
   updateTransferToChainID,
   updateTransferGasFee,
   updateETHPrice,
-  web3State,
-} from '../../composition/hooks'
+  web3State, updateCrossAddressReceipt, updateTransferToCurrency, updateIsCrossAddress, updateTransferFromCurrency,
+} from '../../composition/hooks';
 import { watchEffect } from '../../composition'
+import { xvmList } from "../../core/actions/thegraph";
+const elementResizeDetectorMaker = require('element-resize-detector')
 
 const queryParamsChainMap = chain2idMap
 
@@ -326,6 +359,9 @@ export default {
   },
   data() {
     return {
+      isCrossAddress: false,
+      selectedXVMToken: 'ETH',
+      isRaiseUpXVMSelectVisible: false,
       crossAddressReceipt: '',
       isRaiseUpSelectVisible: false,
       selectedToken: 'ETH',
@@ -344,12 +380,16 @@ export default {
       fromChainArray: [],
       toChainArray: [],
       tokenInfoArray: [],
+      XVMTokenInfoArray: [],
 
       transferValue: '',
 
       exchangeToUsdPrice: 0,
 
       makerMaxBalance: 0,
+
+      formWith: 0,
+      bottomItemWith: 0
     }
   },
   asyncComputed: {
@@ -407,15 +447,29 @@ export default {
     },
   },
   computed: {
-    //
-    isSupportXVM() {
-      const supportXVM = this.$env.supportXVM
-      const fromChainID = transferDataState.fromChainID
-      const toChainID = transferDataState.toChainID
-      if (supportXVM.includes(toChainID) && supportXVM.includes(fromChainID)) {
-        return true
+    isErrorAddress() {
+      if (!this.crossAddressReceipt || !this.isSupportXVM) {
+        return false;
       }
-      return false
+      if (transferDataState.toChainID === 4 || transferDataState.toChainID === 44) {
+        return false;
+      }
+      const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+      return !reg.test(this.crossAddressReceipt);
+    },
+    isSupportXVM() {
+      return util.isSupportEVMContract();
+    },
+    XVMTokens() {
+      return this.XVMTokenInfoArray.map((v) => {
+        return {
+          ...v,
+          icon: v.icon || 'tokenLogo',
+          label: v.token,
+          value: v.token,
+          iconType: 'img',
+        }
+      })
     },
     transferDataState() {
       return transferDataState
@@ -681,6 +735,11 @@ export default {
           info.text = 'SEND'
           info.disabled = 'disabled'
         }
+
+        if (util.isSupportEVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
+          info.text = 'SEND';
+          info.disabled = 'disabled';
+        }
       }
 
       return info
@@ -866,6 +925,19 @@ export default {
     },
     makerInfoList: function (newValue, oldValue) {
       oldValue === '' && newValue !== '' && this.initChainArray()
+    },
+    crossAddressReceipt: function (newValue) {
+      updateCrossAddressReceipt(newValue);
+    },
+    selectedToken: function (newValue) {
+      this.selectedXVMToken = newValue;
+      updateTransferFromCurrency(newValue)
+    },
+    selectedXVMToken: function (newValue) {
+      updateTransferToCurrency(newValue)
+    },
+    isCrossAddress: function (newValue) {
+      updateIsCrossAddress(newValue)
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
@@ -1181,6 +1253,8 @@ export default {
       }
 
       this.setDefaultTokenWhenNotSupport()
+
+      this.updateXVMTokenInfoArray(newValue, transferDataState.toChainID);
     },
     'transferDataState.toChainID': function (newValue) {
       this.tokenInfoArray = []
@@ -1250,6 +1324,8 @@ export default {
       }
 
       this.setDefaultTokenWhenNotSupport()
+
+      this.updateXVMTokenInfoArray(transferDataState.fromChainID, newValue);
     },
     'transferDataState.selectTokenInfo': function (newValue) {
       this.makerInfoList.filter((makerInfo) => {
@@ -1345,7 +1421,17 @@ export default {
     if (this.supportXVM) {
       console.log('support evm')
     }
-    // this.crossAddressReceipt = walle
+    updateIsCrossAddress(this.isCrossAddress);
+    updateCrossAddressReceipt(this.crossAddressReceipt);
+    updateTransferFromCurrency(this.selectedToken);
+    updateTransferToCurrency(this.selectedXVMToken);
+
+    const self = this;
+    const erd = elementResizeDetectorMaker();
+    erd.listenTo(document.getElementsByClassName('bottomItem'), function (element) {
+      const width = element.offsetWidth;
+      self.bottomItemWith = width;
+    });
   },
   created() {
     this.replaceStarknetWrongHref()
@@ -1354,6 +1440,31 @@ export default {
     this.refreshUserBalance()
   },
   methods: {
+    updateXVMTokenInfoArray(fromChainID, toChainID) {
+      this.XVMTokenInfoArray = [];
+      const xvmData = xvmList.find(item => item.chainId === fromChainID);
+      if (xvmData) {
+        const target = xvmData.target;
+        const data = target.find(item => item.symbol === this.selectedToken);
+        if (data) {
+          const toChains = data.toChains;
+          const chainList = toChains.filter(item => item.chainId === toChainID);
+          if (chainList.length) {
+            this.selectedXVMToken = chainList[0].symbol;
+          }
+          for (const chain of chainList) {
+            this.XVMTokenInfoArray.push({
+              icon: config.getTokenIcon(chain.symbol),
+              token: chain.symbol,
+              amount: 0,
+            });
+          }
+        }
+      }
+    },
+    selectedXVMTokenChange(val) {
+      this.selectedXVMToken = val;
+    },
     replaceStarknetWrongHref() {
       /*
         ?refer=starknet&dests=starknet
@@ -1389,9 +1500,13 @@ export default {
       return typeof tar === 'string' && tar === 'NaN' ? 0 : tar
     },
     showChainName(isFrom = true) {
-      const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
-      const netChainID = this.$env.localChainID_netChainID[localChainID]
-      return util.chainName(localChainID, netChainID)
+      const localChainID = transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`];
+      const netChainID = this.$env.localChainID_netChainID[localChainID];
+      const chainName = util.chainName(localChainID, netChainID);
+      if (this.bottomItemWith < 280 && chainName.length > 5) {
+        return util.shortChainName(chainName);
+      }
+      return chainName;
     },
     showChainIcon(isFrom = true) {
       const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
@@ -1401,6 +1516,8 @@ export default {
       const tar = this.tokens.find((v) => v.value == val)
       this.selectedToken = val || 'ETH'
       updateTransferTokenInfo(tar || {})
+
+      this.updateXVMTokenInfoArray(transferDataState.fromChainID, transferDataState.toChainID);
     },
     setDefaultTokenWhenNotSupport() {
       this.$nextTick(() => {
@@ -1848,23 +1965,38 @@ export default {
             }
           }
         }
-        let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
+        const toAddressAll = (util.isExecuteXVMContract() ?
+                xvmList.find(item => item.chainId === fromChainID).contractAddress :
+                selectMakerInfo.makerAddress).toLowerCase();
+        let toAddress = util.shortAddress(toAddressAll);
         if (fromChainID == 4 || fromChainID == 44) {
           toAddress = util.shortAddress(
             getStarkMakerAddress(selectMakerInfo.makerAddress, fromChainID)
           )
         }
+        const { isCrossAddress, crossAddressReceipt } = transferDataState;
+        const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase()
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
             no: 1,
-            amount: new BigNumber(this.transferValue).plus(
-              new BigNumber(selectMakerInfo.tradingFee)
-            ),
-            coin: transferDataState.selectTokenInfo.token,
-            toAddress: toAddress,
+            from: new BigNumber(this.transferValue).plus(
+                    new BigNumber(selectMakerInfo.tradingFee)
+            ) + transferDataState.selectTokenInfo.token,
+            to: toAddress,
+            fromTip: '',
+            toTip: toAddressAll,
+            icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
           },
-        ])
+          {
+            no: 2,
+            from: toAddress,
+            to: util.shortAddress(walletAddress),
+            fromTip: toAddressAll,
+            toTip: walletAddress,
+            icon: 'wallet'
+          }
+        ]);
         this.$emit('stateChanged', '2')
       }
     },

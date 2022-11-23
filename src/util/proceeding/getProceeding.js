@@ -30,6 +30,7 @@ import {
 
 import zkspace from '../../core/actions/zkspace'
 import { ArNovaListen } from '../ar_nova/ar_listen'
+import { decodeInputXVMContractTransfer } from "../constants/contract/abiUtil";
 
 let startBlockNumber = ''
 
@@ -433,6 +434,50 @@ async function confirmUserTransaction(
         trxConfirmations.confirmations +
         ' confirmation(s)'
     )
+    // XVM swap
+    if (trx.input.substring(0, 10) === '0x471824f7') {
+      if (trxConfirmations.confirmations > 0 && trxConfirmations.confirmations < confirmations) {
+        if (!isCurrentTransaction(txHash)) {
+          return;
+        }
+        storeUpdateProceedState(2);
+      }
+      if (trxConfirmations.confirmations >= confirmations) {
+        if (!isCurrentTransaction(txHash)) {
+          return;
+        }
+        storeUpdateProceedState(3);
+        const decodeResult = decodeInputXVMContractTransfer(trx.input);
+        if (decodeResult.name === 'swap') {
+          const { maker, data } = decodeResult.transferData;
+          const { toChainId, toWalletAddress, toExpectValue } = data;
+          const timeStr = trxConfirmations.timestamp.toString();
+          let realTimeStr = timeStr.slice(0, 10);
+          realTimeStr = Number(realTimeStr - 1800).toString();
+          const nonce = trx.nonce.toString();
+          // TODO
+          // startScanMakerTransfer(
+          //     txHash,
+          //     toChainId,
+          //     makerInfo,
+          //     maker,
+          //     toWalletAddress,
+          //     toExpectValue,
+          //     realTimeStr,
+          //     nonce,
+          //     trx.from
+          // );
+        }
+        return;
+      } else {
+        return confirmUserTransaction(
+            localChainID,
+            makerInfo,
+            txHash,
+            confirmations
+        );
+      }
+    }
 
     // ERC20's transfer input length is 138(include 0x), when the length > 138, it is cross address transfer
     let amountStr = '0'

@@ -3225,6 +3225,80 @@ export const nowMakerList = [
   },
 ]
 
+// { chainId: { tokenAddress:data } }
+export const xvmList = [
+  {
+    chainId: 33, contractAddress: '0xeb5a56c4424ca7c9f6470841db1b0070b87449d2', target: [
+      {
+        tokenAddress: "0x0000000000000000000000000000000000000000",
+        symbol: "ETH",
+        toChains: [
+          {
+            chainId: 5,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            rate: 2
+          },
+          {
+            chainId: 22,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            rate: 2
+          },
+          {
+            chainId: 5,
+            tokenAddress: "0xC51FceEc013cD34aE2e95E6D64E9858F2aC28fFf",
+            symbol: "USDT",
+            rate: 2
+          },
+        ]
+      },
+      {
+        tokenAddress: "0x0000000000000000000000000000000000000000",
+        symbol: "USDT",
+        toChains: [
+          {
+            chainId: 5,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            rate: 2
+          }
+        ]
+      }],
+  },
+  {
+    chainId: 5, contractAddress: '0xeb5a56c4424ca7c9f6470841db1b0070b87449d2', target: [
+      {
+        tokenAddress: "0x0000000000000000000000000000000000000000",
+        symbol: "ETH",
+        toChains: [
+          {
+            chainId: 22,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            rate: 2
+          },
+        ]
+      }
+    ],
+  },
+  {
+    chainId: 22, contractAddress: '0x2ad8d38d29275a5f2f52a1a69fa4f4f409b223a0', target: [
+      {
+        tokenAddress: "0x0000000000000000000000000000000000000000",
+        symbol: "ETH",
+        toChains: [
+          {
+            chainId: 5,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            rate: 2
+          },
+        ]
+      }
+    ],
+  }
+];
 
 function getMakerInfo(req, next) {
   return new Promise((resolve, reject) => {

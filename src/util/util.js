@@ -2,6 +2,8 @@ import { Notification } from 'element-ui'
 import env from '../../env'
 import chainList from '../config/chains.json'
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
+import { xvmList } from "../core/actions/thegraph";
+import { transferDataState } from "../composition/useTransferData";
 
 export default {
   showMessage(message, type) {
@@ -145,6 +147,14 @@ export default {
     }
     return ''
   },
+  shortChainName(address) {
+    if (address && address.length > 5) {
+      var subStr1 = address.substr(0, 2)
+      var subStr2 = address.substr(address.length - 2, 2)
+      return subStr1 + '...' + subStr2
+    }
+    return ''
+  },
 
   /**
    * @param {string} value1
@@ -196,6 +206,17 @@ export default {
    */
   isSupportEVM(chainId) {
     return [1, 2, 6, 7, 5, 22, 66, 77].indexOf(Number(chainId)) > -1
+  },
+
+  isSupportEVMContract() {
+    const { fromChainID, toChainID } = transferDataState;
+    const supportXVM = xvmList.map(item => item.chainId);
+    return !!(supportXVM.includes(toChainID) && supportXVM.includes(fromChainID));
+  },
+
+  isExecuteXVMContract() {
+    const { fromCurrency, toCurrency, isCrossAddress } = transferDataState;
+    return !!(this.isSupportEVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
   },
 
   /**

@@ -26,19 +26,39 @@
       </div>
       <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
         <div
-          v-for="desc in item.descInfo"
+          v-for="(desc,index) in item.descInfo"
           :key="desc.no"
           style="margin-bottom: 1rem"
         >
-          Send
-          <span
-            style="margin-left: 0.7rem; margin-right: 1.1rem; color: #df2e2d"
-            >{{ desc.amount }}{{ desc.coin }}</span
-          >
+          <span style="width: 40px;display:-moz-inline-box; display:inline-block;">
+            {{ index === 0 ? 'Send' : '' }}
+          </span>
+          <o-tooltip v-if="desc.fromTip" placement="topLeft">
+            <template v-slot:titleDesc>
+              <span>{{ desc.fromTip }}</span>
+            </template>
+            <span style="margin-left: 0.7rem; margin-right: 0.7rem; color: #df2e2d;
+            width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
+              {{ desc.from }}
+            </span>
+          </o-tooltip>
+          <span v-else style="margin-left: 0.7rem; margin-right: 0.7rem; color: #df2e2d;
+            width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
+              {{ desc.from }}
+          </span>
           To
-          <span style="margin-left: 0.7rem; color: #df2e2d">{{
-            desc.toAddress
-          }}</span>
+          <o-tooltip placement="topLeft">
+            <template v-slot:titleDesc>
+              <span>{{ desc.toTip }}</span>
+            </template>
+            <span style="margin-left: 0.7rem; color: #df2e2d;
+            width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
+            {{ desc.to }}
+            </span>
+          </o-tooltip>
+          <span style="margin-left: 0.3rem;vertical-align: -25%">
+            <SvgIconThemed :icon="desc.icon" />
+          </span>
         </div>
       </div>
       <div
@@ -137,6 +157,8 @@ import {
 } from '../../composition/hooks'
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
+import { XVMSwap } from "../../util/constants/contract/xvm";
+import { xvmList } from "../../core/actions/thegraph";
 
 const {
   walletDispatchersOnSignature,
@@ -732,10 +754,12 @@ export default {
         })
         .then(() => {
           let fromChainID = transferDataState.fromChainID
-          let toAddress = util.shortAddress(
-            realSelectMakerInfo.value.makerAddress
-          )
+          const toAddressAll = (util.isExecuteXVMContract() ?
+                  xvmList.find(item => item.chainId === fromChainID).contractAddress :
+                  realSelectMakerInfo.value.makerAddress).toLowerCase();
+          let toAddress = util.shortAddress(toAddressAll);
           if (fromChainID == 4 || fromChainID == 44) {
+            // TODO xvm
             toAddress = util.shortAddress(
               getStarkMakerAddress(
                 realSelectMakerInfo.value.makerAddress,
@@ -743,17 +767,29 @@ export default {
               )
             )
           }
+          const { isCrossAddress, crossAddressReceipt } = transferDataState;
+          const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase()
           // switch success
           that.$store.commit('updateConfirmRouteDescInfo', [
             {
               no: 1,
-              amount: new BigNumber(transferDataState.transferValue).plus(
-                new BigNumber(realSelectMakerInfo.value.tradingFee)
-              ),
-              coin: transferDataState.selectTokenInfo.token,
-              toAddress: toAddress,
+              from: new BigNumber(transferDataState.transferValue).plus(
+                      new BigNumber(realSelectMakerInfo.value.tradingFee)
+              ) + transferDataState.selectTokenInfo.token,
+              to: toAddress,
+              fromTip: '',
+              toTip: toAddressAll,
+              icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
             },
-          ])
+            {
+              no: 2,
+              from: toAddress,
+              to: util.shortAddress(walletAddress),
+              fromTip: toAddressAll,
+              toTip: walletAddress,
+              icon: 'wallet'
+            }
+          ]);
           this.RealTransfer()
         })
         .catch((error) => {
@@ -1109,6 +1145,73 @@ export default {
       }
     },
 
+    async handleXVMContract() {
+      const { fromChainID, toChainID, crossAddressReceipt, toCurrency } = transferDataState;
+      const selectMakerInfo = realSelectMakerInfo.value;
+      const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+
+      if (!walletIsLogin.value) {
+        return;
+      }
+
+      const rAmount = new BigNumber(transferDataState.transferValue)
+              .plus(new BigNumber(selectMakerInfo.tradingFee))
+              .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision));
+      const rAmountValue = rAmount.toFixed();
+      const p_text = 9000 + Number(toChainID) + '';
+      const tValue = orbiterCore.getTAmountFromRAmount(
+              fromChainID,
+              rAmountValue,
+              p_text
+      );
+      if (!tValue.state) {
+        this.$notify.error({
+          title: tValue.error,
+          duration: 3000,
+        });
+        return;
+      }
+
+      const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
+      if (matchSignatureDispatcher) {
+        matchSignatureDispatcher(account, selectMakerInfo, tValue.tAmount, fromChainID, this.onTransferSucceed);
+        return;
+      }
+
+      try {
+        const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
+
+        let gasLimit = await getTransferGasLimit(
+                fromChainID,
+                selectMakerInfo,
+                account,
+                selectMakerInfo.makerAddress,
+                tValue.tAmount,
+                provider
+        );
+        if (fromChainID === 2 && gasLimit < 21000) {
+          gasLimit = 21000;
+        }
+
+        const { transactionHash } = await XVMSwap(provider, account, 121000, fromChainID, selectMakerInfo.makerAddress, selectMakerInfo.t1Address,
+                tValue.tAmount, toChainID, toCurrency, crossAddressReceipt || account);
+        if (transactionHash) {
+          this.onTransferSucceed(
+                  account,
+                  selectMakerInfo,
+                  tValue.tAmount,
+                  fromChainID,
+                  transactionHash
+          );
+        }
+      } catch (e) {
+        console.error(e);
+        this.$notify.error({
+          title: e.message,
+          duration: 3000,
+        });
+      }
+    },
     async RealTransfer() {
       if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true)
@@ -1141,6 +1244,14 @@ export default {
 
       // sendTransfer
       const selectMakerInfo = realSelectMakerInfo.value
+
+      // EVM contract
+      if (util.isExecuteXVMContract()) {
+        this.transferLoading = true;
+        await this.handleXVMContract();
+        this.transferLoading = false;
+        return;
+      }
 
       // Check fromChainID isSupportEVM
       if (transferExt && !util.isSupportEVM(fromChainID)) {

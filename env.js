@@ -93,7 +93,7 @@ export default {
     12: '1', // zkspace
     13: '288', // boba mainnet,
     15: '56', // bsc mainnet,
-    22: '421611', // arbitrum test
+    22: '421613', // arbitrum test
     33: '5', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)

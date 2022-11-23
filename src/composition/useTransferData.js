@@ -44,6 +44,18 @@ export function updateTransferGasFee(gasFee) {
 export function updateETHPrice(price) {
   transferDataState.ethPrice = price
 }
+export function updateTransferFromCurrency(fromCurrency) {
+  transferDataState.fromCurrency = fromCurrency;
+}
+export function updateTransferToCurrency(toCurrency) {
+  transferDataState.toCurrency = toCurrency;
+}
+export function updateIsCrossAddress(isCrossAddress) {
+  transferDataState.isCrossAddress = isCrossAddress;
+}
+export function updateCrossAddressReceipt(crossAddressReceipt) {
+  transferDataState.crossAddressReceipt = crossAddressReceipt;
+}
 
 export const realSelectMakerInfo = computed(() => {
   let selectMakerInfo = transferDataState.selectMakerInfo
