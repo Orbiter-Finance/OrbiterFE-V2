@@ -1653,6 +1653,18 @@ export default {
           realSelectMakerInfo.value.tName,
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
+
+        if (
+          (toChainID == 4 || toChainID == 44) &&
+          transferDataState.selectTokenInfo.token == 'DAI'
+        ) {
+          this.$notify.error({
+            title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
+            duration: 6000,
+          })
+          return
+        }
+
         // if (!(await netStateBlock(transferDataState.fromChainID))) {
         //   this.$notify.error({
         //     title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
