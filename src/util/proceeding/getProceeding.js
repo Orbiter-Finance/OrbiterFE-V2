@@ -31,6 +31,8 @@ import {
 import zkspace from '../../core/actions/zkspace'
 import { ArNovaListen } from '../ar_nova/ar_listen'
 import { decodeInputXVMContractTransfer } from "../constants/contract/abiUtil";
+import { XVM_ABI } from "../constants/contract/contract";
+import { xvmList } from "../../core/actions/thegraph";
 
 let startBlockNumber = ''
 
@@ -449,24 +451,29 @@ async function confirmUserTransaction(
         storeUpdateProceedState(3);
         const decodeResult = decodeInputXVMContractTransfer(trx.input);
         if (decodeResult.name === 'swap') {
-          const { maker, data } = decodeResult.transferData;
-          const { toChainId, toWalletAddress, toExpectValue } = data;
+          const { toChainId, toWalletAddress, toExpectValue } = decodeResult.transferData;
+          const xvm = xvmList.find(item=>item.chainId === +toChainId);
+          const contractAddress = xvm?.contractAddress;
+          if (!contractAddress) {
+            console.log(`xvm config error toChainId ${ toChainId }`);
+            return;
+          }
           const timeStr = trxConfirmations.timestamp.toString();
           let realTimeStr = timeStr.slice(0, 10);
           realTimeStr = Number(realTimeStr - 1800).toString();
           const nonce = trx.nonce.toString();
-          // TODO
-          // startScanMakerTransfer(
-          //     txHash,
-          //     toChainId,
-          //     makerInfo,
-          //     maker,
-          //     toWalletAddress,
-          //     toExpectValue,
-          //     realTimeStr,
-          //     nonce,
-          //     trx.from
-          // );
+          startScanMakerTransfer(
+              txHash,
+              toChainId,
+              makerInfo,
+              contractAddress,
+              toWalletAddress,
+              toExpectValue,
+              realTimeStr,
+              nonce,
+              trx.from,
+              contractAddress
+          );
         }
         return;
       } else {
@@ -767,7 +774,8 @@ function startScanMakerTransfer(
   amount,
   timeStampStr, //only for second,not for millisecond
   nonce,
-  ownerAddress = ''
+  ownerAddress = '',
+  contractAddress = ''
 ) {
   if (!isCurrentTransaction(transactionID)) {
     return
@@ -808,7 +816,8 @@ function startScanMakerTransfer(
     amount,
     nonce,
     timeStampStr,
-    ownerAddress
+    ownerAddress,
+    contractAddress
   )
 }
 
@@ -823,7 +832,8 @@ function ScanMakerTransfer(
   amount,
   nonce,
   timeStampStr,
-  ownerAddress = ''
+  ownerAddress = '',
+  contractAddress = ''
 ) {
   const duration = 10 * 1000
   const ticker = async () => {
@@ -1104,52 +1114,106 @@ function ScanMakerTransfer(
         )
     }
 
-    // when is eth tokenAddress
-    if (util.isEthTokenAddress(tokenAddress)) {
-      let api = null
-      switch (localChainID) {
-        case 1:
-          api = {
-            endPoint: config.etherscan.Mainnet,
-            key: config.etherscan.Mainnet.key,
+    if (contractAddress) {
+      console.log('========================== Scan XVM ==========================');
+      const currentBlock = await web3.eth.getBlockNumber();
+      const XVMContract = new web3.eth.Contract(XVM_ABI, contractAddress);
+      const options = {
+        filter: {
+          from: from,
+          to: to,
+        },
+        fromBlock: currentBlock - 80,
+        toBlock: 'latest',
+      }
+      XVMContract.getPastEvents(
+          'SwapOKEvent',
+          options,
+          async function (error, events) {
+            if (!isCurrentTransaction(transactionID)) {
+              return
+            }
+            if (error) {
+              console.warn('XVMContract getPastEvents-Transfer Error =', error)
+            } else {
+              for (let index = events.length - 1; index >= 0; index--) {
+                const txinfo = events[index]
+                console.log('txinfo', txinfo);
+                if (txinfo.returnValues?.to.toLowerCase() === to.toLowerCase()) {
+                  let txTimeStamp = await getTimeStampInfo(
+                      localChainID,
+                      txinfo.transactionHash,
+                      txinfo.blockNumber
+                  )
+                  if (!txTimeStamp || (txTimeStamp && timeStampStr < txTimeStamp)) {
+                    store.commit(
+                        'updateProceedingMakerTransferTxid',
+                        txinfo.transactionHash
+                    )
+                    storeUpdateProceedState(4)
+                    confirmMakerTransaction(
+                        transactionID,
+                        localChainID,
+                        makerInfo,
+                        txinfo.transactionHash
+                    )
+                    return
+                  }
+                }
+              }
+            }
+
+            setTimeout(() => ticker(), duration)
           }
-          break
-        case 5:
-          api = {
-            endPoint: config.etherscan.TestNet,
-            key: config.etherscan.key,
-          }
-          break
-        case 2:
-          api = { endPoint: config.arbitrum.Mainnet, key: '' }
-          break
-        case 22:
-          api = { endPoint: config.arbitrum.Rinkeby, key: '' }
-          break
-        case 7:
-          api = {
-            endPoint: config.optimistic.Mainnet,
-            key: config.optimistic.key,
-          }
-          break
-        case 77:
-          api = {
-            endPoint: config.optimistic.Rinkeby,
-            key: config.optimistic.key,
-          }
-          break
-        case 15:
-          api = {
-            endPoint: config.bsc.Mainnet,
-            key: config.etherscan.Mainnet.key,
-          }
-          break
-        case 515:
-          api = {
-            endPoint: config.bsc.Rinkeby,
-            key: config.etherscan.Rinkeby.key,
-          }
-          break
+      )
+    } else {
+      console.log('========================== Scan Maker Transfer ==========================');
+      // when is eth tokenAddress
+      if (util.isEthTokenAddress(tokenAddress)) {
+        let api = null
+        switch (localChainID) {
+          case 1:
+            api = {
+              endPoint: config.etherscan.Mainnet,
+              key: config.etherscan.Mainnet.key,
+            }
+            break
+          case 5:
+            api = {
+              endPoint: config.etherscan.TestNet,
+              key: config.etherscan.key,
+            }
+            break
+          case 2:
+            api = { endPoint: config.arbitrum.Mainnet, key: '' }
+            break
+          case 22:
+            api = { endPoint: config.arbitrum.Rinkeby, key: '' }
+            break
+          case 7:
+            api = {
+              endPoint: config.optimistic.Mainnet,
+              key: config.optimistic.key,
+            }
+            break
+          case 77:
+            api = {
+              endPoint: config.optimistic.Rinkeby,
+              key: config.optimistic.key,
+            }
+            break
+          case 15:
+            api = {
+              endPoint: config.bsc.Mainnet,
+              key: config.etherscan.Mainnet.key,
+            }
+            break
+          case 515:
+            api = {
+              endPoint: config.bsc.Rinkeby,
+              key: config.etherscan.Rinkeby.key,
+            }
+            break
           case 13:
             api = {
               endPoint: config.boba.mainnet,
@@ -1162,106 +1226,107 @@ function ScanMakerTransfer(
               key: config.boba.Rinkeby.key,
             }
             break
-      }
-      if (!api) {
-        return
-      }
-
-      new EthListen(api, to, async () => startBlockNumber)
-        .setTransferBreaker(() => isCurrentTransaction(transactionID))
-        .transfer(
-          { from, to },
-          {
-            onReceived: (transaction) => {
-              if (
-                checkData(
-                  transaction.from,
-                  transaction.to,
-                  transaction.value,
-                  ''
-                )
-              ) {
-                store.commit(
-                  'updateProceedingMakerTransferTxid',
-                  transaction.hash
-                )
-                storeUpdateProceedState(4)
-              }
-            },
-            onConfirmation: (transaction) => {
-              if (
-                checkData(
-                  transaction.from,
-                  transaction.to,
-                  transaction.value,
-                  ''
-                )
-              ) {
-                storeUpdateProceedState(5)
-              }
-            },
-          },
-          1
-        )
-      return
-    }
-    const currentBlock = await web3.eth.getBlockNumber()
-    const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
-    // Generate filter options
-    const options = {
-      filter: {
-        from: from,
-        to: to,
-      },
-      fromBlock: currentBlock - 80,
-      toBlock: 'latest',
-    }
-    tokenContract.getPastEvents(
-      'Transfer',
-      options,
-      async function (error, events) {
-        if (!isCurrentTransaction(transactionID)) {
+        }
+        if (!api) {
           return
         }
-        if (error) {
-          console.warn('tokenContract getPastEvents-Transfer Error =', error)
-        } else {
-          for (let index = events.length - 1; index >= 0; index--) {
-            const txinfo = events[index]
-            if (
-              checkData(
-                txinfo.returnValues.from,
-                txinfo.returnValues.to,
-                txinfo.returnValues.amount,
-                txinfo.address
-              )
-            ) {
-              let txTimeStamp = await getTimeStampInfo(
-                localChainID,
-                txinfo.transactionHash,
-                txinfo.blockNumber
-              )
-              if (!txTimeStamp || (txTimeStamp && timeStampStr < txTimeStamp)) {
-                store.commit(
-                  'updateProceedingMakerTransferTxid',
-                  txinfo.transactionHash
-                )
-                storeUpdateProceedState(4)
-                confirmMakerTransaction(
-                  transactionID,
-                  localChainID,
-                  makerInfo,
-                  txinfo.transactionHash
-                )
-                return
+
+        new EthListen(api, to, async () => startBlockNumber)
+            .setTransferBreaker(() => isCurrentTransaction(transactionID))
+            .transfer(
+                { from, to },
+                {
+                  onReceived: (transaction) => {
+                    if (
+                        checkData(
+                            transaction.from,
+                            transaction.to,
+                            transaction.value,
+                            ''
+                        )
+                    ) {
+                      store.commit(
+                          'updateProceedingMakerTransferTxid',
+                          transaction.hash
+                      )
+                      storeUpdateProceedState(4)
+                    }
+                  },
+                  onConfirmation: (transaction) => {
+                    if (
+                        checkData(
+                            transaction.from,
+                            transaction.to,
+                            transaction.value,
+                            ''
+                        )
+                    ) {
+                      storeUpdateProceedState(5)
+                    }
+                  },
+                },
+                1
+            )
+        return
+      }
+      const currentBlock = await web3.eth.getBlockNumber()
+      const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
+      // Generate filter options
+      const options = {
+        filter: {
+          from: from,
+          to: to,
+        },
+        fromBlock: currentBlock - 80,
+        toBlock: 'latest',
+      }
+      tokenContract.getPastEvents(
+          'Transfer',
+          options,
+          async function (error, events) {
+            if (!isCurrentTransaction(transactionID)) {
+              return
+            }
+            if (error) {
+              console.warn('tokenContract getPastEvents-Transfer Error =', error)
+            } else {
+              for (let index = events.length - 1; index >= 0; index--) {
+                const txinfo = events[index]
+                if (
+                    checkData(
+                        txinfo.returnValues.from,
+                        txinfo.returnValues.to,
+                        txinfo.returnValues.amount,
+                        txinfo.address
+                    )
+                ) {
+                  let txTimeStamp = await getTimeStampInfo(
+                      localChainID,
+                      txinfo.transactionHash,
+                      txinfo.blockNumber
+                  )
+                  if (!txTimeStamp || (txTimeStamp && timeStampStr < txTimeStamp)) {
+                    store.commit(
+                        'updateProceedingMakerTransferTxid',
+                        txinfo.transactionHash
+                    )
+                    storeUpdateProceedState(4)
+                    confirmMakerTransaction(
+                        transactionID,
+                        localChainID,
+                        makerInfo,
+                        txinfo.transactionHash
+                    )
+                    return
+                  }
+                }
               }
             }
-          }
-        }
 
-        setTimeout(() => ticker(), duration)
-      }
-    )
+            setTimeout(() => ticker(), duration)
+          }
+      )
+    }
   }
   ticker()
   // setTimeout(() => ticker(), 100)

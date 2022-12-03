@@ -2,6 +2,7 @@ import Web3 from 'web3';
 import { XVM_ABI } from "./contract";
 import { xvmList } from "../../../core/actions/thegraph";
 import { exchangeToCoin } from "../../coinbase";
+import util from "../../util";
 
 export async function XVMSwap(provider, account, gasLimit, fromChainId, makerAddress, t1Address, value, toChainId,
                               toCurrency, toWalletAddress) {
@@ -17,7 +18,11 @@ export async function XVMSwap(provider, account, gasLimit, fromChainId, makerAdd
     const data = [toChainId, t2Address, toWalletAddress, expectValue].map(item => {
         return web3.utils.toHex(item);
     });
+    // const hash = web3.utils.toHex(123);
+    // return (new web3.eth.Contract(XVM_ABI, xvm.contractAddress)).methods.swapFail(hash, t1Address, toWalletAddress, value).send({
+    //     from: account, gas: gasLimit, value: util.isEthTokenAddress(t1Address) ? value : 0
+    // });
     return (new web3.eth.Contract(XVM_ABI, xvm.contractAddress)).methods.swap(makerAddress, t1Address, value, data).send({
-        from: account, gas: gasLimit, value
+        from: account, gas: gasLimit, value: util.isEthTokenAddress(t1Address) ? value : 0
     });
 }

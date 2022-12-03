@@ -123,7 +123,7 @@ export function decodeMethod(input, abiFile = "XVM") {
  */
 export function decodeInputXVMContractTransfer(input) {
   const callFuncNameSign = input.substring(0, 10);
-  const xvmNameSigns = ["0x471824f7"];
+  const xvmNameSigns = ["0x471824f7", "0x230f308b", "0x56409ad7"];
   const decodeInputData = decodeMethod(
       String(input),
       "XVM",
@@ -139,25 +139,32 @@ export function decodeInputXVMContractTransfer(input) {
   result.name = decodeInputData.name;
   decodeInputData.params.forEach((el) => {
     const filedName = el.name.replace("_", "");
-    result.data[filedName] = el.value;
-    result[filedName] = el;
+    result.transferData[filedName] = el.value;
+    result.data[filedName] = el;
   });
   if (xvmNameSigns.includes(callFuncNameSign)) {
     // Forward Contract
     switch (callFuncNameSign) {
       case "0x471824f7": // swap
-        result.transferData.maker = result.maker.value;
-        result.transferData.token = result.token.value;
-        result.transferData.value = new BigNumber(result.value.value);
-        result.transferData.data = {};
-        const data = result.data.value;
-        result.transferData.data.toChainId = +data[0];
-        result.transferData.data.toTokenAddress = data[1];
-        result.transferData.data.toWalletAddress = data[2];
-        result.transferData.data.toExpectValue = new BigNumber(data[3]);
+        if (!result.data.data.value) return result;
+        result.transferData.to = result.transferData.maker;
+        delete result.transferData.data;
+        delete result.transferData.maker;
+        result.transferData.toChainId = +result.data.data.value[0];
+        result.transferData.toTokenAddress = result.data.data.value[1];
+        result.transferData.toWalletAddress = result.data.data.value[2];
+        result.transferData.toExpectValue = new BigNumber(result.data.data.value[3]);
+        break;
+      case "0x230f308b": // swapOk
+        result.transferData.toWalletAddress = result.transferData.to;
+        result.transferData.isOk = 1;
+        break;
+      case "0x56409ad7": // swapFail
+        result.transferData.toWalletAddress = result.transferData.to;
+        result.transferData.isOk = 0;
         break;
     }
   }
-// delete result.data;
+  // delete result.data;
   return result;
 }

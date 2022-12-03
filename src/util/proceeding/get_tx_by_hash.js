@@ -55,7 +55,7 @@ async function arbitrumTimeStampInfo(chainId, blockNo) {
     if (response.status === 200) {
         return response.data.result?.timeStamp
     } else {
-        throw new Error("zkSynctimeStampInfo get error")
+        throw new Error("arbitrumTimeStampInfo get error")
     }
 }
 async function polygonTimeStampInfo(chainId, blockNo) {
