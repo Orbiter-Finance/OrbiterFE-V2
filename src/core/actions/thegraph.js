@@ -3,9 +3,9 @@ export const nowMakerList = [
   {
     makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
     c1ID: 33,
-    c2ID: 99,
+    c2ID: 66,
     c1Name: 'zksync_test',
-    c2Name: 'loopring_test',
+    c2Name: 'polygon(R)',
     t1Address: '0x0000000000000000000000000000000000000000',
     t2Address: '0x0000000000000000000000000000000000000000',
     tName: 'ETH',
@@ -62,45 +62,6 @@ export const nowMakerList = [
 // { chainId: { tokenAddress:data } }
 export const xvmList = [
   {
-    chainId: 33, contractAddress: '0xeb5a56c4424ca7c9f6470841db1b0070b87449d2', target: [
-      {
-        tokenAddress: "0x0000000000000000000000000000000000000000",
-        symbol: "ETH",
-        toChains: [
-          {
-            chainId: 5,
-            tokenAddress: "0x0000000000000000000000000000000000000000",
-            symbol: "ETH",
-            rate: 2
-          },
-          {
-            chainId: 22,
-            tokenAddress: "0x0000000000000000000000000000000000000000",
-            symbol: "ETH",
-            rate: 2
-          },
-          {
-            chainId: 5,
-            tokenAddress: "0xC51FceEc013cD34aE2e95E6D64E9858F2aC28fFf",
-            symbol: "USDT",
-            rate: 2
-          },
-        ]
-      },
-      {
-        tokenAddress: "0x0000000000000000000000000000000000000000",
-        symbol: "USDT",
-        toChains: [
-          {
-            chainId: 5,
-            tokenAddress: "0x0000000000000000000000000000000000000000",
-            symbol: "ETH",
-            rate: 2
-          }
-        ]
-      }],
-  },
-  {
     chainId: 5, contractAddress: '0xeb5a56c4424ca7c9f6470841db1b0070b87449d2', target: [
       {
         tokenAddress: "0x0000000000000000000000000000000000000000",
@@ -110,6 +71,12 @@ export const xvmList = [
             chainId: 22,
             tokenAddress: "0x0000000000000000000000000000000000000000",
             symbol: "ETH",
+            rate: 2
+          },
+          {
+            chainId: 66,
+            tokenAddress: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
+            symbol: "MATIC",
             rate: 2
           },
         ]
@@ -124,6 +91,34 @@ export const xvmList = [
         toChains: [
           {
             chainId: 5,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            rate: 2
+          },
+          {
+            chainId: 66,
+            tokenAddress: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
+            symbol: "MATIC",
+            rate: 2
+          },
+        ]
+      }
+    ],
+  },
+  {
+    chainId: 66, contractAddress: '0xD834F61E9bf59E1d7D417fE50625f72e36EB1ffb', target: [
+      {
+        tokenAddress: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
+        symbol: "MATIC",
+        toChains: [
+          {
+            chainId: 5,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            rate: 2
+          },
+          {
+            chainId: 22,
             tokenAddress: "0x0000000000000000000000000000000000000000",
             symbol: "ETH",
             rate: 2
