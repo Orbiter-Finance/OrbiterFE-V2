@@ -88,7 +88,8 @@ import {
   recoverSenderPageWorkingState,
   setHistoryInfo,
 } from '../composition/hooks'
-
+let timer = 0;
+import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 export default {
   name: 'History',
   components: {
@@ -135,11 +136,22 @@ export default {
       return historyPanelState.transactionListInfo
     },
   },
-  beforeRouteEnter(to, from, next) {
-    next(() => {
-      getTransactionsHistory()
-    })
+  deactivated() {
+      clearInterval(timer);
   },
+  created() {
+    timer = setInterval(()=> {
+      if (compatibleGlobalWalletConf.value.walletPayload.walletAddress) {
+        clearInterval(timer);
+        getTransactionsHistory()
+      }
+    }, 500)
+  },
+  // beforeRouteEnter(to, from, next) {
+  //   next(() => {
+  //     getTransactionsHistory()
+  //   })
+  // },
   methods: {
     curChange(cur) {
       getTransactionsHistory({ current: cur })
