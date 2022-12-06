@@ -1,4 +1,5 @@
 export const METAMASK = 'MetaMask' // metamask wallet constant
+export const BLOCKWALLET = 'BlockWallet' // BlockWallet wallet constant
 export const WALLETCONNECT = 'WalletConnect' // walletConnect wallet constant
 export const COINBASE = 'Coinbase' // coinbase wallet constant
 export const BRAVE = 'Brave' // brave wallet constant

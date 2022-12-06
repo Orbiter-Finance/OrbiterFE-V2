@@ -1,14 +1,14 @@
 import { showMessage } from "../../constants/web3/getWeb3";
-import { COINBASE, BRAVE } from "../constants";
+import { COINBASE, BRAVE, BLOCKWALLET } from "../constants";
 
 /**
- * Description: 
+ * Description:
  * if u find that the wallet to be added follows the standard ethereum API
  * u can append wallets conf to this configuration directly, standard wallet loader
  * will watch this config and generate the connect, disconnect ...etc methods for it
- * 
+ *
  * config props u can set:
- * 
+ *
  * - 【 walletType: required 】, new wallet type
  * - 【 icon: optional 】, wallet icon, this property will not be used now, it's primarily to take over UI layer config in the feature
  * - 【 walletIsInstalledInvestigator: required 】, in the wallet init phase, this method will be called to make sure the corresponding wallet extension is installed in the user's browser
@@ -24,6 +24,10 @@ import { COINBASE, BRAVE } from "../constants";
  */
 export default [
     {
+        walletType: BLOCKWALLET,
+        icon: BLOCKWALLET,
+    },
+    {
         walletType: COINBASE,
         icon: COINBASE,
         walletIsInstalledInvestigator: provider => provider.isCoinbaseWallet
@@ -35,9 +39,9 @@ export default [
         chainIdTransfer: chainId => parseInt(chainId, 16),
         walletNotInstallReducer: () => {
             // because brave is special, his provider maybe overridden by metamask
-            // so even if the user is in the brave browser, he may still not have 
+            // so even if the user is in the brave browser, he may still not have
             // access the provider of brave wallet
-            
+
             // maybe we can popup a window to prompt the user to disable the metamask wallet
             // extension? (to avoid user confusion);
 

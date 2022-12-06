@@ -101,7 +101,7 @@ class StarknetListen {
           const transaction = {
             timeStamp: Number(blockInfo.timestamp),
             hash: tx.transaction_hash,
-            nonce: calldata[9],
+            nonce: tx.nonce,
             blockHash: '',
             transactionIndex: '',
             from,

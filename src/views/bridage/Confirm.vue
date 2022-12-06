@@ -62,7 +62,7 @@
       <SvgIconThemed style="margin-right: 10px" icon="info" />
       <span style="color: #df2e2d; flex: 1"
         >Please do not modify the transaction or remove the last four digits on
-        the transfer amount in MetaMask as this will cause the transaction to
+        the transfer amount in your wallet as this will cause the transaction to
         fail.</span
       >
     </div>

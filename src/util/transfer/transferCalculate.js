@@ -18,7 +18,7 @@ import {
   getStarkTransferFee,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
-import {getZkSyncProvider} from '../zksync/zkysnc_helper'
+import { getZkSyncProvider } from '../zksync/zkysnc_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
@@ -1287,23 +1287,60 @@ export default {
         throw new Error(`getZKSBalanceError,${error.message}`)
       }
     } else {
-      let balance = 0
+      //
+      return this.getBalanceByCommonRPC(
+        localChainID,
+        userAddress,
+        tokenAddress
+      )
+
+      // if (util.isEthTokenAddress(tokenAddress)) {
+      //   // When is ETH
+      //   const web3 = localWeb3(localChainID)
+      //   balance = Number(await web3.eth.getBalance(userAddress)) || 0
+      // } else {
+      //   // When is ERC20
+      //   var tokenContract = getLocalCoinContract(localChainID, tokenAddress, 0)
+      //   if (!tokenContract) {
+      //     throw 'getBalance_tokenContractError'
+      //   }
+      //   balance = await tokenContract.methods.balanceOf(userAddress).call()
+      // }
+    }
+  },
+  async getBalanceByCommonRPC(chainId, userAddress, tokenAddress) {
+    const getBalance = async (web3, userAddress, tokenAddress) => {
+      if (!web3) {
+        return 0;
+      }
       if (util.isEthTokenAddress(tokenAddress)) {
         // When is ETH
-        const web3 = localWeb3(localChainID)
-        balance = Number(await web3.eth.getBalance(userAddress)) || 0
+        return Number(await web3.eth.getBalance(userAddress)) || 0
       } else {
         // When is ERC20
-        var tokenContract = getLocalCoinContract(localChainID, tokenAddress, 0)
+        var tokenContract = getLocalCoinContract(chainId, tokenAddress, 0, web3)
         if (!tokenContract) {
           throw 'getBalance_tokenContractError'
         }
-        balance = await tokenContract.methods.balanceOf(userAddress).call()
+        return await tokenContract.methods.balanceOf(userAddress).call()
+      }
+    }
+    if (env['publicRPC'] && env['publicRPC'][chainId]) {
+      const rpcs = env['publicRPC'][chainId]
+      let balance = 0
+      for (const rpc of rpcs) {
+        try {
+          balance = await getBalance(new Web3(rpc), userAddress, tokenAddress);
+          break
+        } catch (error) {
+          console.error(`GetBalance ${chainId} error:`, error)
+        }
       }
       return balance
+    } else {
+      return await getBalance(localWeb3(chainId), userAddress, tokenAddress)
     }
   },
-
   async getGasPrice(fromChainID) {
     if (fromChainID === 33 || fromChainID === 3) {
       return null
@@ -1318,7 +1355,6 @@ export default {
         params: [],
         id: 0,
       })
-      console.log('respone-------->',response)
       if (response.status === 200) {
         return parseInt(response.data.result)
       } else {
