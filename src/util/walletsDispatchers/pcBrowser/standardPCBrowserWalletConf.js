@@ -23,10 +23,10 @@ import { COINBASE, BRAVE, BLOCKWALLET } from "../constants";
   - 【 chainIdTransferOnInitProcess: optional 】 by default, loader invoke chainIdTransfer method in switch chain process only, if u want loader invoke it in init process, set this prop with "true"
  */
 export default [
-    {
-        walletType: BLOCKWALLET,
-        icon: BLOCKWALLET,
-    },
+    // {
+    //     walletType: BLOCKWALLET,
+    //     icon: BLOCKWALLET,
+    // },
     {
         walletType: COINBASE,
         icon: COINBASE,
