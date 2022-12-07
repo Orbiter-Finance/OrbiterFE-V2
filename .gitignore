@@ -1,6 +1,6 @@
 .DS_Store
 node_modules
-/dist
+
 .env
 package-lock.json
 
