@@ -1,4 +1,4 @@
-import { COINBASE, METAMASK, BRAVE } from "./constants";
+import { COINBASE, METAMASK, BRAVE, BLOCKWALLET } from "./constants";
 import { LOCALLOGINDATA, IM_TOKEN_APP, METAMASK_APP, TOKEN_POCKET_APP, BIT_KEEP_APP, COINBASE_APP } from "./constants"
 import { updateGlobalSelectWalletConf, globalSelectWalletConf } from "./walletsCoreData";
 import { toRefs } from "../../composition";
@@ -27,7 +27,7 @@ export const withPerformInterruptWallet = (fn) => {
         removeCurrentLoginInfoFromLocalStorage();
         // 2. for old code, do extra processing for metamask, will be removed later
         localStorage.setItem('localLogin', false);
-        // 3. clear wallet login information saved in global responsive variable 
+        // 3. clear wallet login information saved in global responsive variable
         updateGlobalSelectWalletConf();
         // 4. if u have any else to process
         return fn(...args);
@@ -45,6 +45,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket;
     if (walletType === BIT_KEEP_APP) return "isBitKeepChrome" in ethereum;
     if (walletType === COINBASE_APP) return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet;
+    // if (walletType === BLOCKWALLET) return ethereum.isBlockWallet;
     // we never care wallet connect, because it's a protocol, not a wallet
     // so it doesn't follow the Ethereum standard api
 }

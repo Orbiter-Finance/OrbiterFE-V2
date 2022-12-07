@@ -88,7 +88,8 @@ import {
   recoverSenderPageWorkingState,
   setHistoryInfo,
 } from '../composition/hooks'
-
+let timer = 0;
+import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 export default {
   name: 'History',
   components: {
@@ -135,11 +136,22 @@ export default {
       return historyPanelState.transactionListInfo
     },
   },
-  beforeRouteEnter(to, from, next) {
-    next(() => {
-      getTransactionsHistory()
-    })
+  deactivated() {
+      clearInterval(timer);
   },
+  created() {
+    timer = setInterval(()=> {
+      if (compatibleGlobalWalletConf.value.walletPayload.walletAddress) {
+        clearInterval(timer);
+        getTransactionsHistory()
+      }
+    }, 500)
+  },
+  // beforeRouteEnter(to, from, next) {
+  //   next(() => {
+  //     getTransactionsHistory()
+  //   })
+  // },
   methods: {
     curChange(cur) {
       getTransactionsHistory({ current: cur })
@@ -200,9 +212,10 @@ export default {
         return 'bobalogo'
       }else if (chainID == '15' || chainID == '515') {
         return 'bsclogo'
-      }
-      else if (chainID == '16' || chainID == '516') {
+      } else if (chainID == '16' || chainID == '516') {
         return 'arnavologo'
+      } else if (chainID == '518' || chainID == '519') {
+        return 'scrolllogo'
       } else {
         return 'ethlogo'
       }

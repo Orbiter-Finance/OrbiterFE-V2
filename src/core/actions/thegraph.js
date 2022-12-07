@@ -1,6 +1,3 @@
-import Axios from '../utils/Axios'
-Axios.axios()
-
 const nowMakerList = [
   {
     makerAddress: '0x80C67432656d59144cEFf962E8fAF8926599bCF8',

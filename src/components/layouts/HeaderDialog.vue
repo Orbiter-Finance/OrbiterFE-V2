@@ -153,6 +153,11 @@ export default {
           icon: 'metamask',
           title: 'MetaMask',
         },
+        // {
+        //   isConnect: false,
+        //   icon: 'blockwallet',
+        //   title: 'BlockWallet',
+        // },
         {
           isConnect: false,
           icon: 'walletConnect',

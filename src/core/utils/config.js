@@ -105,4 +105,14 @@ export default {
     chainId: '16',
     rinkeyChainID: '516',
   },
+  scroll_l1: {
+    Rinkeby: 'https://l1scan.scroll.io/api',
+    chainId: '534351',
+    rinkeyChainID: '518',
+  },
+  scroll_l2: {
+    Rinkeby: 'https://l2scan.scroll.io/api',
+    chainId: '534354',
+    rinkeyChainID: '519',
+  },
 }
