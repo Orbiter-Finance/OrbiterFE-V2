@@ -10,7 +10,7 @@ import util from '../../util'
 const showMessage = util.showMessage
 
 async function installWeb3() {
-  var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK)
+  var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK);
   if (web3Provider) {
     try {
       await web3Provider.enable()
@@ -23,8 +23,10 @@ async function installWeb3() {
   } else {
     updateIsInstallMeta(false)
     updateCoinbase('')
-    showMessage('not install metamask', 'error')
-    return
+    if (window.ethereum && (window.ethereum.isBlockWallet == true && window.ethereum.isMetaMask === false)) {
+      return showMessage('MetaMask wallet conflicts with Block wallet, please disable Block wallet extension in your browser if you want to access MetaMask wallet.', 'error')
+    }
+    return showMessage('not install metamask', 'error')
   }
   return new Web3(web3Provider)
 }
