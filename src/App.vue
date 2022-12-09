@@ -188,4 +188,10 @@ export default {
     }
   }
 }
+.installWalletTips{
+  width:360px;
+  .el-notification__title{
+    word-break: break-word;
+  }
+}
 </style>

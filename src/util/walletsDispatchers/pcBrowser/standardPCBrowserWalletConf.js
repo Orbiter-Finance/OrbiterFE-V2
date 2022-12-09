@@ -1,5 +1,6 @@
 import { showMessage } from '../../constants/web3/getWeb3'
 import { COINBASE, BRAVE, BLOCKWALLET } from '../constants'
+import { Notification } from 'element-ui'
 
 /**
  * Description:
@@ -27,7 +28,15 @@ export default [
     walletType: BLOCKWALLET,
     icon: BLOCKWALLET,
     walletNotInstallReducer: () => {
-      return showMessage('Error: BlockWallet has not been installed.<p style="margin-top:10px">If you already have BlockWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</p>', 'warning')
+      return Notification({
+        title: 'Error: BlockWallet has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have BlockWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
     },
   },
   {
