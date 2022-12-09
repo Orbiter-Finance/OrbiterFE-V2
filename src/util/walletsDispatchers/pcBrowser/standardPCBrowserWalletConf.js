@@ -27,7 +27,7 @@ export default [
     walletType: BLOCKWALLET,
     icon: BLOCKWALLET,
     walletNotInstallReducer: () => {
-      return showMessage('not install BlockWallet', 'error')
+      return showMessage('Error: BlockWallet has not been installed.<p style="margin-top:10px">If you already have BlockWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</p>', 'warning')
     },
   },
   {

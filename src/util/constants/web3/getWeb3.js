@@ -24,7 +24,7 @@ async function installWeb3() {
     updateIsInstallMeta(false)
     updateCoinbase('')
     if (window.ethereum && (window.ethereum.isBlockWallet == true && window.ethereum.isMetaMask === false)) {
-      return showMessage('MetaMask wallet conflicts with Block wallet, please disable Block wallet extension in your browser if you want to access MetaMask wallet.', 'error')
+      return showMessage(`Error: MetaMask has not been installed.<p style="margin-top:10px"> If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</p>`, 'warning')
     }
     return showMessage('not install metamask', 'error')
   }
