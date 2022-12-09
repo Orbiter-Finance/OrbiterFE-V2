@@ -6,11 +6,12 @@ import { METAMASK } from '../../walletsDispatchers'
 import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
 import { updateCoinbase, updateIsInstallMeta } from '../../../composition/hooks'
 import util from '../../util'
+import { Notification } from 'element-ui'
 
 const showMessage = util.showMessage
 
 async function installWeb3() {
-  var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK)
+  var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK);
   if (web3Provider) {
     try {
       await web3Provider.enable()
@@ -23,8 +24,17 @@ async function installWeb3() {
   } else {
     updateIsInstallMeta(false)
     updateCoinbase('')
-    showMessage('not install metamask', 'error')
-    return
+    if (window.ethereum && (window.ethereum.isBlockWallet == true && window.ethereum.isMetaMask === false)) {
+      return Notification({
+        title: 'Error: MetaMask has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass:"installWalletTips",
+        duration: 3000,
+        message: '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>'
+      });
+    }
+    return showMessage('not install metamask', 'error')
   }
   return new Web3(web3Provider)
 }
