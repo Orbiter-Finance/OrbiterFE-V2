@@ -4,6 +4,8 @@ import chainList from '../config/chains.json'
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
 import { xvmList } from "../core/actions/thegraph";
 import { transferDataState } from "../composition/useTransferData";
+import { exchangeToCoin } from "./coinbase";
+import Web3 from 'web3'
 
 export default {
   showMessage(message, type) {
@@ -217,6 +219,36 @@ export default {
   isExecuteXVMContract() {
     const { fromCurrency, toCurrency, isCrossAddress } = transferDataState;
     return !!(this.isSupportEVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
+  },
+
+  getXVMContractToChainInfo() {
+    const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
+    const xvm = xvmList.find(item => item.chainId === fromChainID);
+    const target = xvm?.target;
+    if (!target) return null;
+    const targetData = target.find(item => item.symbol === fromCurrency);
+    const toChains = targetData.toChains;
+    if (!toChains) return null;
+    const toChain = toChains.find(item => item.chainId === toChainID && item.symbol === toCurrency);
+    return { target: targetData, toChain };
+  },
+
+  async getXVMExpectValue(isWei) {
+    const { transferValue } = transferDataState;
+    const web3 = new Web3();
+    const chainInfo = this.getXVMContractToChainInfo();
+    if (!chainInfo) return '0';
+    const fromCurrency = chainInfo.target.symbol;
+    const toCurrency = chainInfo.toChain.symbol;
+    const rate = chainInfo.toChain.rate;
+    let expectValue = web3.utils.toWei((transferValue * (1 - rate / 10000)).toString());
+    if (fromCurrency !== toCurrency) {
+      expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
+    }
+    if (!isWei) {
+      expectValue = web3.utils.fromWei(expectValue);
+    }
+    return expectValue;
   },
 
   /**

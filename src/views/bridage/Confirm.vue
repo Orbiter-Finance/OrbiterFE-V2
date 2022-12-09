@@ -172,6 +172,7 @@ export default {
   data() {
     return {
       transferLoading: false,
+      expectValue: ''
     }
   },
   computed: {
@@ -226,8 +227,7 @@ export default {
         {
           icon: 'received',
           title: 'Received',
-          desc:
-            orbiterCore.getToAmountFromUserAmount(
+          desc: util.isExecuteXVMContract() ? this.xvmShowValue() : (orbiterCore.getToAmountFromUserAmount(
               new BigNumber(transferDataState.transferValue).plus(
                 new BigNumber(realSelectMakerInfo.value.tradingFee)
               ),
@@ -235,7 +235,7 @@ export default {
               false
             ) +
             ' ' +
-            realSelectMakerInfo.value.tName,
+            realSelectMakerInfo.value.tName),
           textBold: true,
         },
         {
@@ -264,6 +264,15 @@ export default {
     },
   },
   methods: {
+    xvmShowValue() {
+      const { toChain } = util.getXVMContractToChainInfo();
+      const digit = toChain.precision === 18 ? 5 : 2;
+      console.log('value ----> ', this.expectValue);
+      return (new BigNumber(this.expectValue || '0')).toFixed(digit)
+              +
+              ' ' +
+              toChain.symbol;
+    },
     async zkspaceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
         let provider = new ethers.providers.Web3Provider(
@@ -1153,28 +1162,11 @@ export default {
       if (!walletIsLogin.value) {
         return;
       }
-
-      const rAmount = new BigNumber(transferDataState.transferValue)
-              .plus(new BigNumber(selectMakerInfo.tradingFee))
-              .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision));
-      const rAmountValue = rAmount.toFixed();
-      const p_text = 9000 + Number(toChainID) + '';
-      const tValue = orbiterCore.getTAmountFromRAmount(
-              fromChainID,
-              rAmountValue,
-              p_text
-      );
-      if (!tValue.state) {
-        this.$notify.error({
-          title: tValue.error,
-          duration: 3000,
-        });
-        return;
-      }
-
+      const web3 = new Web3();
+      const amount = web3.utils.toWei(transferDataState.transferValue);
       const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
       if (matchSignatureDispatcher) {
-        matchSignatureDispatcher(account, selectMakerInfo, tValue.tAmount, fromChainID, this.onTransferSucceed);
+        matchSignatureDispatcher(account, selectMakerInfo, amount, fromChainID, this.onTransferSucceed);
         return;
       }
 
@@ -1186,7 +1178,7 @@ export default {
                 selectMakerInfo,
                 account,
                 selectMakerInfo.makerAddress,
-                tValue.tAmount,
+                amount,
                 provider
         );
         if (fromChainID === 2 && gasLimit < 21000) {
@@ -1194,12 +1186,12 @@ export default {
         }
 
         const { transactionHash } = await XVMSwap(provider, account, 121000, fromChainID, selectMakerInfo.makerAddress, selectMakerInfo.t1Address,
-                tValue.tAmount, toChainID, toCurrency, crossAddressReceipt || account);
+                amount, toChainID, toCurrency, crossAddressReceipt || account);
         if (transactionHash) {
           this.onTransferSucceed(
                   account,
                   selectMakerInfo,
-                  tValue.tAmount,
+                  amount,
                   fromChainID,
                   transactionHash
           );
@@ -1463,6 +1455,9 @@ export default {
       this.$emit('stateChanged', '1')
     },
   },
+  async mounted() {
+      this.expectValue = await util.getXVMExpectValue();
+  }
 }
 </script>
 
