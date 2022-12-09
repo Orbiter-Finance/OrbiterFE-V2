@@ -45,7 +45,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket;
     if (walletType === BIT_KEEP_APP) return "isBitKeepChrome" in ethereum;
     if (walletType === COINBASE_APP) return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet;
-    // if (walletType === BLOCKWALLET) return ethereum.isBlockWallet;
+    if (walletType === BLOCKWALLET) return ethereum.isBlockWallet;
     // we never care wallet connect, because it's a protocol, not a wallet
     // so it doesn't follow the Ethereum standard api
 }

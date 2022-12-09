@@ -13,8 +13,9 @@ export default {
     // })
     const _type = type || 'success'
     Notification[_type]({
-      title: message,
-      duration: 2000,
+      message: message,
+      dangerouslyUseHTMLString: true,
+      duration: 3000,
     })
   },
   getChainInfo(netChainID) {
@@ -77,10 +78,6 @@ export default {
         return "Polygon ZKEVM"
       case 517:
         return "Polygon ZKEVM(Goerli)"
-      case 518:
-        return "Scroll L1 testnet"
-      case 519:
-        return "Scroll L2 testnet"
     }
     const chain = chainList.chainList.filter(
       (_chain) => _chain.chainId == netChainID
