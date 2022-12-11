@@ -9,6 +9,7 @@ export async function XVMSwap(provider, account, gasLimit, fromChainId, makerAdd
     const toChain = chainInfo.toChain;
     const t2Address = toChain.tokenAddress;
     const expectValue = await util.getXVMExpectValue(1);
+    console.log('expectValue', expectValue);
     const web3 = new Web3(provider || window.web3.currentProvider);
     const data = [toChainId, t2Address, toWalletAddress, expectValue, toChain.rate].map(item => {
         return web3.utils.toHex(item);
