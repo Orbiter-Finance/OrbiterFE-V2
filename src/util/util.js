@@ -6,6 +6,7 @@ import { xvmList } from "../core/actions/thegraph";
 import { transferDataState } from "../composition/useTransferData";
 import { exchangeToCoin } from "./coinbase";
 import Web3 from 'web3'
+import BigNumber from "bignumber.js";
 
 export default {
   showMessage(message, type) {
@@ -241,7 +242,7 @@ export default {
     const fromCurrency = chainInfo.target.symbol;
     const toCurrency = chainInfo.toChain.symbol;
     const rate = chainInfo.toChain.rate;
-    let expectValue = web3.utils.toWei((transferValue * (1 - rate / 10000)).toString());
+    let expectValue = web3.utils.toWei((new BigNumber(transferValue).multipliedBy(1 - rate / 10000)).toString());
     if (fromCurrency !== toCurrency) {
       expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
     }
