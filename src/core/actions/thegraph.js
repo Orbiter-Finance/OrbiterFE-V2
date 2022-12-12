@@ -71,15 +71,8 @@ export const xvmList = [
             chainId: 22,
             tokenAddress: "0x0000000000000000000000000000000000000000",
             symbol: "ETH",
-            precision:18,
+            precision: 18,
             rate: 200   // Ten thousandth ratio
-          },
-          {
-            chainId: 66,
-            tokenAddress: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
-            symbol: "MATIC",
-            precision:18,
-            rate: 200
           },
         ]
       }
@@ -95,16 +88,16 @@ export const xvmList = [
             chainId: 5,
             tokenAddress: "0x0000000000000000000000000000000000000000",
             symbol: "ETH",
-            precision:18,
+            precision: 18,
             rate: 200
           },
           {
-            chainId: 66,
-            tokenAddress: "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
-            symbol: "MATIC",
-            precision:18,
+            chainId: 5,
+            tokenAddress: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
+            symbol: "DAI",
+            precision: 18,
             rate: 200
-          },
+          }
         ]
       }
     ],
@@ -119,14 +112,21 @@ export const xvmList = [
             chainId: 5,
             tokenAddress: "0x0000000000000000000000000000000000000000",
             symbol: "ETH",
-            precision:18,
+            precision: 18,
+            rate: 200
+          },
+          {
+            chainId: 5,
+            tokenAddress: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
+            symbol: "DAI",
+            precision: 18,
             rate: 200
           },
           {
             chainId: 22,
             tokenAddress: "0x0000000000000000000000000000000000000000",
             symbol: "ETH",
-            precision:18,
+            precision: 18,
             rate: 200
           },
         ]
