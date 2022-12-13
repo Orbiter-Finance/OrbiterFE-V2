@@ -390,7 +390,9 @@ export default {
       makerMaxBalance: 0,
 
       formWith: 0,
-      bottomItemWith: 0
+      bottomItemWith: 0,
+
+      cronList: []
     }
   },
   asyncComputed: {
@@ -1447,14 +1449,19 @@ export default {
     setTimeout(() => {
       this.refreshUserBalance();
     }, 1000);
-    setInterval(() => {
-      updateETHPriceI()
-      this.getMakerMaxBalance()
-      this.updateExchangeToUsdPrice()
-    }, 10 * 1000)
-    setInterval(() => {
-      this.refreshUserBalance(false)
-    }, 1000 * 60)
+    this.cronList.push(setInterval(() => {
+      updateETHPriceI();
+      this.getMakerMaxBalance();
+      this.updateExchangeToUsdPrice();
+      if (this.currencyAddress !== compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress) {
+        this.refreshUserBalance();
+        this.currencyAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        console.log('Current wallet address', this.currencyAddress);
+      }
+    }, 10 * 1000));
+    this.cronList.push(setInterval(() => {
+      this.refreshUserBalance(false);
+    }, 1000 * 60));
     this.transferValue = this.queryParams.amount
     const response = await makerInfo.getMakerInfoFromGraph({ maker: '0' }, true)
     if (response.code === 0) {
@@ -1475,6 +1482,11 @@ export default {
       const width = element.offsetWidth;
       self.bottomItemWith = width;
     });
+  },
+  onBeforeUnmount() {
+    for (const cron of this.cronList) {
+      clearInterval(cron);
+    }
   },
   created() {
     this.replaceStarknetWrongHref()
@@ -2100,10 +2112,10 @@ export default {
           makerAddress,
           true
         )
-          if(this.selectedToken !== tokenName) {
-              const exchangeRes = (await exchangeToCoin(response, tokenName, this.selectedToken)).toString();
-              return (new BigNumber(exchangeRes).dividedBy(10 ** precision)).toFixed(6);
-          }
+        if (this.selectedToken !== tokenName) {
+          const exchangeRes = (await exchangeToCoin(response, tokenName, this.selectedToken)).toString();
+          return (new BigNumber(exchangeRes).dividedBy(10 ** precision)).toFixed(6);
+        }
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.warn(error)
@@ -2142,8 +2154,8 @@ export default {
         )
         if (_balance > 0) {
           // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
-          this.makerMaxBalance = _balance * 0.95
-            console.log('makerMaxBalance', this.makerMaxBalance);
+          this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
+          console.log('makerMaxBalance', this.makerMaxBalance);
         }
       } catch (err) {
         alert(err.message)
@@ -2173,11 +2185,19 @@ export default {
     refreshUserBalance(queryToChain = true) {
       const self = this;
       let selectMakerInfo = transferDataState.selectMakerInfo
+      const isC1 = transferDataState.fromChainID === selectMakerInfo.c1ID;
+      let c1ID = transferDataState.fromChainID;
+      let t1Address = isC1 ? selectMakerInfo.t1Address : selectMakerInfo.t2Address;
+      let t1Name = selectMakerInfo.tName;
+      let c2ID = transferDataState.toChainID;
+      let t2Address = isC1 ? selectMakerInfo.t2Address : selectMakerInfo.t1Address;
+      let t2Name = selectMakerInfo.tName;
+      let precision = selectMakerInfo.precision;
       transferCalculate
         .getTransferBalance(
-          selectMakerInfo.c1ID,
-          selectMakerInfo.t1Address,
-          selectMakerInfo.tName,
+          c1ID,
+          t1Address,
+          t1Name,
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
         .then((response) => {
@@ -2185,17 +2205,13 @@ export default {
           //   6
           // )
           const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
-          self.addBalance(selectMakerInfo.c1ID, selectMakerInfo.tName, balance);
+          self.addBalance(c1ID, t1Name, balance);
         })
         .catch((error) => {
           console.warn(error)
           return
         })
       if (queryToChain) {
-        let c2ID = selectMakerInfo.c2ID;
-        let t2Address = selectMakerInfo.t2Address;
-        let t2Name = selectMakerInfo.tName;
-        let precision = selectMakerInfo.precision;
         if (util.isSupportXVMContract()) {
           const { toChain } = util.getXVMContractToChainInfo();
           c2ID = toChain.chainId;
