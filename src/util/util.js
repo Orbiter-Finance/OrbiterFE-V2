@@ -212,9 +212,8 @@ export default {
   },
 
   isSupportXVMContract() {
-    const { fromChainID, toChainID } = transferDataState;
-    const supportXVM = xvmList.map(item => item.chainId);
-    return !!(supportXVM.includes(toChainID) && supportXVM.includes(fromChainID));
+    const chainInfo = this.getXVMContractToChainInfo();
+    return !!(chainInfo?.toChain);
   },
 
   isExecuteXVMContract() {
@@ -228,7 +227,7 @@ export default {
     const target = xvm?.target;
     if (!target) return null;
     const targetData = target.find(item => item.symbol === fromCurrency);
-    const toChains = targetData.toChains;
+    const toChains = targetData?.toChains;
     if (!toChains) return null;
     targetData.chainId = xvm.chainId;
     const toChain = toChains.find(item => item.chainId === toChainID && item.symbol === toCurrency);

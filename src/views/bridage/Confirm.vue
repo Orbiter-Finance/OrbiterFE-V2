@@ -1484,7 +1484,7 @@ export default {
 .app {
   .confirm-box {
     width: 480px;
-    height: 610px;
+    padding-bottom: 20px;
     .confirm-item {
       margin: 22px 0;
     }
