@@ -211,7 +211,7 @@ export default {
     return [1, 2, 6, 7, 5, 22, 66, 77].indexOf(Number(chainId)) > -1
   },
 
-  isSupportEVMContract() {
+  isSupportXVMContract() {
     const { fromChainID, toChainID } = transferDataState;
     const supportXVM = xvmList.map(item => item.chainId);
     return !!(supportXVM.includes(toChainID) && supportXVM.includes(fromChainID));
@@ -219,7 +219,7 @@ export default {
 
   isExecuteXVMContract() {
     const { fromCurrency, toCurrency, isCrossAddress } = transferDataState;
-    return !!(this.isSupportEVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
+    return !!(this.isSupportXVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
   },
 
   getXVMContractToChainInfo() {
@@ -230,25 +230,26 @@ export default {
     const targetData = target.find(item => item.symbol === fromCurrency);
     const toChains = targetData.toChains;
     if (!toChains) return null;
+    targetData.chainId = xvm.chainId;
     const toChain = toChains.find(item => item.chainId === toChainID && item.symbol === toCurrency);
     return { target: targetData, toChain };
   },
 
-  async getXVMExpectValue(isWei) {
-    const { transferValue } = transferDataState;
+  async getXVMExpectValue(value, isWei) {
     const web3 = new Web3();
     const chainInfo = this.getXVMContractToChainInfo();
     if (!chainInfo) return '0';
     const fromCurrency = chainInfo.target.symbol;
     const toCurrency = chainInfo.toChain.symbol;
     const rate = chainInfo.toChain.rate;
-    let expectValue = web3.utils.toWei((new BigNumber(transferValue).multipliedBy(1 - rate / 10000)).toString());
+    let expectValue = web3.utils.toWei((new BigNumber(value).multipliedBy(1 - rate / 10000)).toString());
     if (fromCurrency !== toCurrency) {
       expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
     }
     if (!isWei) {
       expectValue = web3.utils.fromWei(expectValue);
     }
+    console.log('expectValue', expectValue);
     return expectValue;
   },
 

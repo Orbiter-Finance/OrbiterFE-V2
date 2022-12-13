@@ -159,6 +159,7 @@ import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from "../../util/constants/contract/xvm";
 import { xvmList } from "../../core/actions/thegraph";
+import { exchangeToCoin } from "../../util/coinbase";
 
 const {
   walletDispatchersOnSignature,
@@ -227,13 +228,7 @@ export default {
         {
           icon: 'received',
           title: 'Received',
-          desc: util.isExecuteXVMContract() ? this.xvmShowValue() : (orbiterCore.getToAmountFromUserAmount(
-              new BigNumber(transferDataState.transferValue).plus(
-                new BigNumber(realSelectMakerInfo.value.tradingFee)
-              ),
-              realSelectMakerInfo.value,
-              false
-            ) +
+          desc: util.isExecuteXVMContract() ? this.xvmShowValue() : (this.expectValue +
             ' ' +
             realSelectMakerInfo.value.tName),
           textBold: true,
@@ -1155,15 +1150,32 @@ export default {
     },
 
     async handleXVMContract() {
-      const { fromChainID, toChainID, crossAddressReceipt, toCurrency } = transferDataState;
+      const { fromChainID, toChainID, crossAddressReceipt } = transferDataState;
       const selectMakerInfo = realSelectMakerInfo.value;
       const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
 
       if (!walletIsLogin.value) {
         return;
       }
-      const web3 = new Web3();
-      const amount = web3.utils.toWei(transferDataState.transferValue);
+      const rAmount = new BigNumber(transferDataState.transferValue)
+              .plus(new BigNumber(selectMakerInfo.tradingFee))
+              .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision));
+      const rAmountValue = rAmount.toFixed();
+      const p_text = 9000 + Number(toChainID) + '';
+      const tValue = orbiterCore.getTAmountFromRAmount(
+              fromChainID,
+              rAmountValue,
+              p_text
+      );
+      if (!tValue.state) {
+        this.$notify.error({
+          title: tValue.error,
+          duration: 3000,
+        });
+        this.transferLoading = false;
+        return;
+      }
+      const amount = tValue.tAmount;
       const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
       if (matchSignatureDispatcher) {
         matchSignatureDispatcher(account, selectMakerInfo, amount, fromChainID, this.onTransferSucceed);
@@ -1172,21 +1184,8 @@ export default {
 
       try {
         const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
-
-        let gasLimit = await getTransferGasLimit(
-                fromChainID,
-                selectMakerInfo,
-                account,
-                selectMakerInfo.makerAddress,
-                amount,
-                provider
-        );
-        if (fromChainID === 2 && gasLimit < 21000) {
-          gasLimit = 21000;
-        }
-
-        const { transactionHash } = await XVMSwap(provider, account, 121000, fromChainID, selectMakerInfo.makerAddress, selectMakerInfo.t1Address,
-                amount, toChainID, toCurrency, crossAddressReceipt || account);
+        const { transactionHash } = await XVMSwap(provider, account, selectMakerInfo.makerAddress,
+                amount, crossAddressReceipt || account);
         if (transactionHash) {
           this.onTransferSucceed(
                   account,
@@ -1456,7 +1455,27 @@ export default {
     },
   },
   async mounted() {
-      this.expectValue = await util.getXVMExpectValue();
+    console.log('transferDataState.transferValue',transferDataState.transferValue)
+    const amount = orbiterCore.getToAmountFromUserAmount(
+            new BigNumber(transferDataState.transferValue).plus(
+                    new BigNumber(realSelectMakerInfo.value.tradingFee)
+            ),
+            realSelectMakerInfo.value,
+            false
+    );
+    if(util.isExecuteXVMContract()){
+      const chainInfo = util.getXVMContractToChainInfo();
+      const fromCurrency = chainInfo.target.symbol;
+      const toCurrency = chainInfo.toChain.symbol;
+      const rate = chainInfo.toChain.rate;
+      let expectValue = new BigNumber(amount).multipliedBy(1 - rate / 10000);
+      if (fromCurrency !== toCurrency) {
+        expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
+      }
+      this.expectValue = expectValue;
+    } else {
+      this.expectValue = amount;
+    }
   }
 }
 </script>

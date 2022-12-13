@@ -116,7 +116,7 @@
                     :datas="XVMTokens"
                     v-model="selectedXVMToken"
                     @input="selectedXVMTokenChange"
-                    @show="() => (isRaiseUpSelectVisible = true)"
+                    @show="() => (isRaiseUpXVMSelectVisible = true)"
             ></ObSelect>
           </div>
           <o-tooltip>
@@ -304,7 +304,7 @@ import Middle from '../../util/middle/middle'
 import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
-import { exchangeToUsd } from '../../util/coinbase'
+import { exchangeToCoin, exchangeToUsd } from '../../util/coinbase';
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
@@ -372,6 +372,7 @@ export default {
 
       saveTimeLoading: false,
 
+      balanceMap: {},
       c1Balance: Number(0).toFixed(6),
       c2Balance: Number(0).toFixed(6),
       originGasCost: 0,
@@ -458,7 +459,7 @@ export default {
       return !reg.test(this.crossAddressReceipt);
     },
     isSupportXVM() {
-      return util.isSupportEVMContract();
+      return util.isSupportXVMContract();
     },
     XVMTokens() {
       return this.XVMTokenInfoArray.map((v) => {
@@ -736,7 +737,7 @@ export default {
           info.disabled = 'disabled'
         }
 
-        if (util.isSupportEVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
+        if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
           info.text = 'SEND';
           info.disabled = 'disabled';
         }
@@ -839,14 +840,36 @@ export default {
       return this.toBalance === null
     },
     fromBalance() {
-      const c1 = transferDataState.selectMakerInfo.c1ID
-      const from = transferDataState.fromChainID
-      return c1 === from ? this.c1Balance : this.c2Balance
+      // const c1 = transferDataState.selectMakerInfo.c1ID
+      const chainId = transferDataState.fromChainID;
+      // return c1 === from ? this.c1Balance : this.c2Balance
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      if (!walletAddress || walletAddress === '0x'){
+        return Number(0).toFixed(6);
+      }
+      const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
+      const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
+      if (typeof chainBalanceMap[this.selectedToken] === "undefined") {
+        // this.refreshUserBalance();
+        return Number(0).toFixed(6);
+      }
+      return chainBalanceMap[this.selectedToken];
     },
     toBalance() {
-      const c1 = transferDataState.selectMakerInfo.c1ID
-      const from = transferDataState.fromChainID
-      return c1 === from ? this.c2Balance : this.c1Balance
+      // const c1 = transferDataState.selectMakerInfo.c1ID
+      const chainId = transferDataState.toChainID
+      // return c1 === from ? this.c2Balance : this.c1Balance
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      if (!walletAddress || walletAddress === '0x'){
+        return Number(0).toFixed(6);
+      }
+      const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
+      const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
+      if (typeof chainBalanceMap[this.selectedXVMToken] === 'undefined') {
+        // this.refreshUserBalance();
+        return Number(0).toFixed(6);
+      }
+      return chainBalanceMap[this.selectedXVMToken];
     },
     timeSpent() {
       return transferCalculate.transferSpentTime(
@@ -934,7 +957,9 @@ export default {
       updateTransferFromCurrency(newValue)
     },
     selectedXVMToken: function (newValue) {
-      updateTransferToCurrency(newValue)
+      updateTransferToCurrency(newValue);
+      this.getMakerMaxBalance();
+      this.refreshUserBalance();
     },
     isCrossAddress: function (newValue) {
       updateIsCrossAddress(newValue)
@@ -950,6 +975,7 @@ export default {
           toChainID == 4 ||
           toChainID == 44
         ) {
+          const self = this;
           this.c1Balance = null
           this.c2Balance = null
           transferCalculate
@@ -960,10 +986,12 @@ export default {
               web3State.coinbase
             )
             .then((response) => {
-              this.c1Balance = (
-                response /
-                10 ** selectMakerInfo.precision
-              ).toFixed(6)
+              // this.c1Balance = (
+              //   response /
+              //   10 ** selectMakerInfo.precision
+              // ).toFixed(6)
+              const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+              self.addBalance(newValue.c1ID, newValue.tName, balance);
             })
             .catch((error) => {
               this.c1Balance = Number(0).toFixed(6)
@@ -978,10 +1006,12 @@ export default {
               web3State.coinbase
             )
             .then((response) => {
-              this.c2Balance = (
-                response /
-                10 ** selectMakerInfo.precision
-              ).toFixed(6)
+              // this.c2Balance = (
+              //   response /
+              //   10 ** selectMakerInfo.precision
+              // ).toFixed(6)
+              const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+              self.addBalance(newValue.c2ID, newValue.tName, balance);
             })
             .catch((error) => {
               this.c2Balance = Number(0).toFixed(6)
@@ -996,6 +1026,7 @@ export default {
         this.c2Balance = Number(0).toFixed(6)
       }
       if (oldValue !== newValue && newValue !== '0x') {
+        const self = this;
         this.c1Balance = null
         this.c2Balance = null
         let selectMakerInfo = transferDataState.selectMakerInfo
@@ -1007,10 +1038,12 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c1Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
+            // this.c1Balance = (
+            //   response /
+            //   10 ** selectMakerInfo.precision
+            // ).toFixed(6)
+            const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+            self.addBalance(newValue.c1ID, newValue.tName, balance);
           })
           .catch((error) => {
             console.warn(error)
@@ -1024,10 +1057,12 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c2Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
+            // this.c2Balance = (
+            //   response /
+            //   10 ** selectMakerInfo.precision
+            // ).toFixed(6)
+            const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+            self.addBalance(newValue.c2ID, newValue.tName, balance);
           })
           .catch((error) => {
             console.warn(error)
@@ -1075,8 +1110,9 @@ export default {
       }
 
       if (walletIsLogin.value && oldValue !== newValue) {
-        this.c1Balance = null
-        this.c2Balance = null
+        // this.c1Balance = null
+        // this.c2Balance = null
+        const self = this;
         if (
           newValue.c1ID == 9 ||
           newValue.c1ID == 99 ||
@@ -1093,7 +1129,9 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
+            // this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
+            const balance = (response / 10 ** newValue.precision).toFixed(6);
+            self.addBalance(newValue.c1ID, newValue.tName, balance);
           })
           .catch((error) => {
             console.warn(error)
@@ -1106,7 +1144,9 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
+            // this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
+            const balance = (response / 10 ** newValue.precision).toFixed(6);
+            self.addBalance(newValue.c2ID, newValue.tName, balance);
           })
           .catch((error) => {
             this.c2Balance = 0
@@ -1404,6 +1444,9 @@ export default {
     await updateETHPriceI();
     await this.getMakerMaxBalance();
 
+    setTimeout(() => {
+      this.refreshUserBalance();
+    }, 1000);
     setInterval(() => {
       updateETHPriceI()
       this.getMakerMaxBalance()
@@ -1440,6 +1483,13 @@ export default {
     this.refreshUserBalance()
   },
   methods: {
+    addBalance(chainId, symbol, value) {
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
+      const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
+      chainBalanceMap[symbol] = value || Number(0).toFixed(6);
+      this.balanceMap = JSON.parse(JSON.stringify(this.balanceMap));
+    },
     updateXVMTokenInfoArray(fromChainID, toChainID) {
       this.XVMTokenInfoArray = [];
       const xvmData = xvmList.find(item => item.chainId === fromChainID);
@@ -2050,6 +2100,10 @@ export default {
           makerAddress,
           true
         )
+          if(this.selectedToken !== tokenName) {
+              const exchangeRes = (await exchangeToCoin(response, tokenName, this.selectedToken)).toString();
+              return (new BigNumber(exchangeRes).dividedBy(10 ** precision)).toFixed(6);
+          }
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.warn(error)
@@ -2067,16 +2121,29 @@ export default {
         return
       }
       try {
+          let selectMakerInfo = transferDataState.selectMakerInfo
+          let c2ID = selectMakerInfo.c2ID;
+          let t2Address = selectMakerInfo.t2Address;
+          let t2Name = selectMakerInfo.tName;
+          let precision = selectMakerInfo.precision
+          if (util.isSupportXVMContract()) {
+              const { toChain } = util.getXVMContractToChainInfo();
+              c2ID = toChain.chainId;
+              t2Address = toChain.tokenAddress;
+              t2Name = toChain.symbol;
+              precision = toChain.precision
+          }
         const _balance = await this.getBalance(
-          selectMakerInfo.makerAddress,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
+            selectMakerInfo.makerAddress,
+            c2ID,
+            t2Address,
+            t2Name,
+            precision
         )
         if (_balance > 0) {
           // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
           this.makerMaxBalance = _balance * 0.95
+            console.log('makerMaxBalance', this.makerMaxBalance);
         }
       } catch (err) {
         alert(err.message)
@@ -2104,6 +2171,7 @@ export default {
       )
     },
     refreshUserBalance(queryToChain = true) {
+      const self = this;
       let selectMakerInfo = transferDataState.selectMakerInfo
       transferCalculate
         .getTransferBalance(
@@ -2113,27 +2181,45 @@ export default {
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
         .then((response) => {
-          this.c1Balance = (response / 10 ** selectMakerInfo.precision).toFixed(
-            6
-          )
+          // this.c1Balance = (response / 10 ** selectMakerInfo.precision).toFixed(
+          //   6
+          // )
+          const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+          self.addBalance(selectMakerInfo.c1ID, selectMakerInfo.tName, balance);
         })
         .catch((error) => {
           console.warn(error)
           return
         })
       if (queryToChain) {
+        let c2ID = selectMakerInfo.c2ID;
+        let t2Address = selectMakerInfo.t2Address;
+        let t2Name = selectMakerInfo.tName;
+        let precision = selectMakerInfo.precision;
+        if (util.isSupportXVMContract()) {
+          const { toChain } = util.getXVMContractToChainInfo();
+          c2ID = toChain.chainId;
+          t2Address = toChain.tokenAddress;
+          t2Name = toChain.symbol;
+          precision = toChain.precision;
+        }
         transferCalculate
           .getTransferBalance(
-            selectMakerInfo.c2ID,
-            selectMakerInfo.t2Address,
-            selectMakerInfo.tName,
-            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+                  c2ID,
+                  t2Address,
+                  t2Name,
+                  compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c2Balance = (
-              response /
-              10 ** selectMakerInfo.precision
+            // this.c2Balance = (
+            //   response /
+            //   10 ** precision
+            // ).toFixed(6)
+            const balance = (
+                    response /
+                    10 ** precision
             ).toFixed(6)
+            self.addBalance(c2ID, t2Name, balance);
           })
           .catch((error) => {
             console.warn(error)

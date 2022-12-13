@@ -2,6 +2,74 @@
 export const nowMakerList = [
   {
     makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 44,
+    c2ID: 5,
+    c1Name: 'starknet_test',
+    c2Name: 'goerli',
+    t1Address: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.0001,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.0001,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_217',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
+    c1ID: 44,
+    c2ID: 22,
+    c1Name: 'starknet_test',
+    c2Name: 'arbitrum_test',
+    t1Address: '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+    t2Address: '0x0000000000000000000000000000000000000000',
+    tName: 'ETH',
+    c1MinPrice: 0.005,
+    c1MaxPrice: 0.01,
+    c2MinPrice: 0.005,
+    c2MaxPrice: 0.01,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.0001,
+    c2TradingFee: 0.0001,
+    c1GasFee: 2,
+    c2GasFee: 2,
+    c1AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 1636019587,
+        endTime: 99999999999999,
+      },
+    ],
+    _X_ROW_KEY: 'row_218',
+  },
+  {
+    makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
     c1ID: 33,
     c2ID: 66,
     c1Name: 'zksync_test',
@@ -74,6 +142,13 @@ export const xvmList = [
             precision: 18,
             rate: 200   // Ten thousandth ratio
           },
+          {
+            chainId: 44,
+            tokenAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+            symbol: "ETH",
+            precision: 18,
+            rate: 200
+          },
         ]
       }
     ],
@@ -95,6 +170,13 @@ export const xvmList = [
             chainId: 5,
             tokenAddress: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
             symbol: "DAI",
+            precision: 18,
+            rate: 200
+          },
+          {
+            chainId: 44,
+            tokenAddress: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+            symbol: "ETH",
             precision: 18,
             rate: 200
           }

@@ -116,5 +116,6 @@ export async function exchangeToCoin(value = 1, sourceCurrency = 'ETH', toCurren
   if (!fromRate || !fromRate) {
     return new BigNumber(0);
   }
+  console.log(`${ sourceCurrency } fromRate`, fromRate, `${ toCurrency } toRate`, toRate);
   return value.dividedBy(fromRate).multipliedBy(toRate);
 }
