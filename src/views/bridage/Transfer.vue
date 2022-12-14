@@ -151,7 +151,7 @@
         >More</a
       >
     </div>
-    <div v-if="isSupportXVM">
+    <div :hidden="!isSupportXVM">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
         <input type="checkbox" id="checkbox" v-model="isCrossAddress" />
         <label for="checkbox"> cross address </label>
@@ -451,7 +451,7 @@ export default {
   },
   computed: {
     isErrorAddress() {
-      if (!this.crossAddressReceipt || !this.isSupportXVM) {
+      if (!this.crossAddressReceipt || !util.isSupportXVMContract()) {
         return false;
       }
       if (transferDataState.toChainID === 4 || transferDataState.toChainID === 44) {
@@ -461,7 +461,9 @@ export default {
       return !reg.test(this.crossAddressReceipt);
     },
     isSupportXVM() {
-      return util.isSupportXVMContract();
+        const { fromChainID, toChainID } = transferDataState;
+        console.log('fromChainID', fromChainID, 'toChainID', toChainID, 'fromToken', this.selectedToken, 'toToken', this.selectedXVMToken);
+        return util.isSupportXVMContract();
     },
     XVMTokens() {
       return this.XVMTokenInfoArray.map((v) => {
@@ -2155,7 +2157,6 @@ export default {
         if (_balance > 0) {
           // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
           this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
-          console.log('makerMaxBalance', this.makerMaxBalance);
         }
       } catch (err) {
         alert(err.message)

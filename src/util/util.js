@@ -212,8 +212,9 @@ export default {
   },
 
   isSupportXVMContract() {
+    const { fromCurrency, toCurrency } = transferDataState;
     const chainInfo = this.getXVMContractToChainInfo();
-    return !!(chainInfo?.toChain);
+    return !!(chainInfo?.toChain && chainInfo.target.symbol === fromCurrency && chainInfo.toChain.symbol === toCurrency);
   },
 
   isExecuteXVMContract() {
