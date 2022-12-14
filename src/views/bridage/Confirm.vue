@@ -262,7 +262,6 @@ export default {
     xvmShowValue() {
       const { toChain } = util.getXVMContractToChainInfo();
       const digit = toChain.precision === 18 ? 5 : 2;
-      console.log('value ----> ', this.expectValue);
       return (new BigNumber(this.expectValue || '0')).toFixed(digit)
               +
               ' ' +

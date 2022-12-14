@@ -308,7 +308,7 @@
       "parent": {}
     },
      {
-      "name": "Arbitrum Nova Testnet",
+      "name": "Arbitrum Goerli",
       "chainId": 421613,
       "shortName": "arb-nova Testnet",
       "chain": "ETH",

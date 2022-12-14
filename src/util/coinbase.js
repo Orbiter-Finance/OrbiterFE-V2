@@ -27,7 +27,7 @@ async function cacheExchangeRates(currency = 'USD') {
     return undefined
   }
 }
-async function getRates(currency) {
+export async function getRates(currency) {
   try {
     const resp = await axios.get(
       `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`

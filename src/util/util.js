@@ -235,19 +235,17 @@ export default {
     return { target: targetData, toChain };
   },
 
-  async getXVMExpectValue(value, isWei) {
+  async getXVMExpectValue(value) {
     const web3 = new Web3();
     const chainInfo = this.getXVMContractToChainInfo();
     if (!chainInfo) return '0';
     const fromCurrency = chainInfo.target.symbol;
     const toCurrency = chainInfo.toChain.symbol;
     const rate = chainInfo.toChain.rate;
-    let expectValue = web3.utils.toWei((new BigNumber(value).multipliedBy(1 - rate / 10000)).toString());
+    let expectValue = (new BigNumber(value).multipliedBy(1 - rate / 10000)).toString();
     if (fromCurrency !== toCurrency) {
+      expectValue = web3.utils.fromWei((new BigNumber(expectValue)).toFixed(0));
       expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
-    }
-    if (!isWei) {
-      expectValue = web3.utils.fromWei(expectValue);
     }
     return expectValue;
   },

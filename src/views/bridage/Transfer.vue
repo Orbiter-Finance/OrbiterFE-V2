@@ -304,7 +304,7 @@ import Middle from '../../util/middle/middle'
 import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
-import { exchangeToCoin, exchangeToUsd } from '../../util/coinbase';
+import { exchangeToCoin, exchangeToUsd, getRates } from '../../util/coinbase';
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
@@ -829,13 +829,23 @@ export default {
       if (this.transferValue === '' || realSelectMakerInfo.value === '') {
         return '0'
       }
-      return orbiterCore.getToAmountFromUserAmount(
-        new BigNumber(this.transferValue).plus(
-          new BigNumber(realSelectMakerInfo.value.tradingFee)
-        ),
-        realSelectMakerInfo.value,
-        false
-      )
+      let amount = orbiterCore.getToAmountFromUserAmount(
+              new BigNumber(this.transferValue).plus(
+                      new BigNumber(realSelectMakerInfo.value.tradingFee)
+              ),
+              realSelectMakerInfo.value,
+              false
+      );
+      if(this.selectedToken !== this.selectedXVMToken){
+        const exchangeRates = this.rates;
+        const fromRate = exchangeRates[this.selectedToken];
+        const toRate = exchangeRates[this.selectedXVMToken];
+        if (!fromRate || !fromRate) {
+          return amount.toString();
+        }
+        return (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
+      }
+      return amount;
     },
     fromBalanceLoading() {
       return this.fromBalance === null
@@ -957,7 +967,6 @@ export default {
       updateCrossAddressReceipt(newValue);
     },
     selectedToken: function (newValue) {
-      this.selectedXVMToken = newValue;
       updateTransferFromCurrency(newValue)
     },
     selectedXVMToken: function (newValue) {
@@ -1484,6 +1493,8 @@ export default {
       const width = element.offsetWidth;
       self.bottomItemWith = width;
     });
+
+    this.rates = await getRates('ETH');
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -1491,7 +1502,7 @@ export default {
     }
   },
   created() {
-    this.replaceStarknetWrongHref()
+    this.replaceStarknetWrongHref();
   },
   activated() {
     this.refreshUserBalance()

@@ -3124,41 +3124,6 @@ export const nowMakerList = [
       },
     ],
   },
-
-  {
-    makerAddress: "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-    c1ID: 77,
-    c2ID: 33,
-    c1Name: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
-    c2Name: "zksync_test",
-    t1Address: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
-    t2Address: "0x5C221E77624690fff6dd741493D735a17716c26B",
-    tName: "DAI",
-    c1MinPrice: 0.01,
-    c1MaxPrice: 10,
-    c2MinPrice: 0.01,
-    c2MaxPrice: 10,
-    precision: 18,
-    c1AvalibleDeposit: 1000,
-    c2AvalibleDeposit: 1000,
-    c1TradingFee: 0.1,
-    c2TradingFee: 0.1,
-    c1GasFee: 1,
-    c2GasFee: 1,
-    c1AvalibleTimes: [
-      {
-        startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
-    c2AvalibleTimes: [
-      {
-        startTime: 0,
-        endTime: 99999999999999,
-      },
-    ],
-  },
-
   {
     makerAddress: "0x0043d60e87c5dd08C86C3123340705a1556C4719",
     c1ID: 44,
@@ -3563,13 +3528,6 @@ export const xvmList = [
             "symbol": "DAI",
             "precision": 18,
             "rate": 200
-          },
-          {
-            "chainId": 77,
-            "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
-            "symbol": "DAI",
-            "precision": 18,
-            "rate": 200
           }
         ]
       },
@@ -3601,13 +3559,6 @@ export const xvmList = [
           {
             "chainId": 77,
             "tokenAddress": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
-            "symbol": "DAI",
-            "precision": 18,
-            "rate": 200
-          },
-          {
-            "chainId": 77,
-            "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
             "symbol": "DAI",
             "precision": 18,
             "rate": 200
@@ -3645,13 +3596,6 @@ export const xvmList = [
             "symbol": "DAI",
             "precision": 18,
             "rate": 200
-          },
-          {
-            "chainId": 77,
-            "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
-            "symbol": "DAI",
-            "precision": 18,
-            "rate": 200
           }
         ]
       },
@@ -3683,13 +3627,6 @@ export const xvmList = [
           {
             "chainId": 77,
             "tokenAddress": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
-            "symbol": "DAI",
-            "precision": 18,
-            "rate": 200
-          },
-          {
-            "chainId": 77,
-            "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
             "symbol": "DAI",
             "precision": 18,
             "rate": 200
@@ -3747,13 +3684,6 @@ export const xvmList = [
             "symbol": "DAI",
             "precision": 18,
             "rate": 200
-          },
-          {
-            "chainId": 77,
-            "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
-            "symbol": "DAI",
-            "precision": 18,
-            "rate": 200
           }
         ]
       },
@@ -3798,13 +3728,6 @@ export const xvmList = [
           },
           {
             "chainId": 5,
-            "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
-            "symbol": "DAI",
-            "precision": 18,
-            "rate": 200
-          },
-          {
-            "chainId": 77,
             "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
             "symbol": "DAI",
             "precision": 18,
@@ -3913,58 +3836,10 @@ export const xvmList = [
             "rate": 200
           }
         ]
-      },
-      {
-        "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
-        "symbol": "DAI",
-        "toChains": [
-          {
-            "chainId": 22,
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "precision": 18,
-            "rate": 200
-          },
-          {
-            "chainId": 5,
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "precision": 18,
-            "rate": 200
-          },
-          {
-            "chainId": 22,
-            "tokenAddress": "0x3a304243d69e330b2cebbd79690ae9df52ef2dbd",
-            "symbol": "USDC",
-            "precision": 6,
-            "rate": 200
-          },
-          {
-            "chainId": 5,
-            "tokenAddress": "0xeb8f08a975ab53e34d8a0330e0d34de942c95926",
-            "symbol": "USDC",
-            "precision": 6,
-            "rate": 200
-          },
-          {
-            "chainId": 5,
-            "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-            "symbol": "BNB",
-            "precision": 18,
-            "rate": 200
-          },
-          {
-            "chainId": 5,
-            "tokenAddress": "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
-            "symbol": "DAI",
-            "precision": 18,
-            "rate": 200
-          }
-        ]
       }
     ]
   }
-];
+]
 
 function getMakerInfo(req, next) {
   return new Promise((resolve, reject) => {

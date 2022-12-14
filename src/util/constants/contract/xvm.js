@@ -12,7 +12,8 @@ export async function XVMSwap(provider, account, makerAddress, value, toWalletAd
     const toChainId = toChain.chainId;
     const toCurrency = toChain.symbol;
     const t2Address = toChain.tokenAddress;
-    const expectValue = (new BigNumber(await util.getXVMExpectValue(value, 1))).toFixed(0);
+    const expectValue = (new BigNumber(await util.getXVMExpectValue(value))).toFixed(0);
+    console.log('expectValue --> ',expectValue)
     const web3 = new Web3(provider || window.web3.currentProvider);
     const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, expectValue, toChain.rate];
     const data = sourceData.map(item => {
