@@ -1150,13 +1150,14 @@ export default {
     },
 
     async handleXVMContract() {
-      const { fromChainID, toChainID, crossAddressReceipt } = transferDataState;
+      const { fromChainID, toChainID, fromCurrency, crossAddressReceipt } = transferDataState;
       const selectMakerInfo = realSelectMakerInfo.value;
       const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
 
       if (!walletIsLogin.value) {
         return;
       }
+
       const rAmount = new BigNumber(transferDataState.transferValue)
               .plus(new BigNumber(selectMakerInfo.tradingFee))
               .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision));
@@ -1180,6 +1181,28 @@ export default {
       if (matchSignatureDispatcher) {
         matchSignatureDispatcher(account, selectMakerInfo, amount, fromChainID, this.onTransferSucceed);
         return;
+      }
+
+      // approve
+      const xvm = xvmList.find(item => item.chainId === fromChainID);
+      const contractAddress = xvm.contractAddress;
+      const targetData = xvm?.target.find(item => item.symbol === fromCurrency);
+      const tokenAddress = targetData?.tokenAddress;
+      if (!tokenAddress) return;
+      // const web3 = localWeb3(fromChainID);
+      // const provider = new ethers.providers.Web3Provider(web3.currentProvider);
+
+      if (!util.isEthTokenAddress(tokenAddress)) {
+        if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+          const web3 = localWeb3(fromChainID);
+          const provider = new ethers.providers.Web3Provider(web3.currentProvider);
+          const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(account));
+          await crossAddress.contractApprove(tokenAddress, contractAddress, ethers.BigNumber.from(amount));
+        } else {
+          const provider = new ethers.providers.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider);
+          const crossAddress = new CrossAddress(provider, fromChainID);
+          await crossAddress.contractApprove(tokenAddress, contractAddress, ethers.BigNumber.from(amount));
+        }
       }
 
       try {

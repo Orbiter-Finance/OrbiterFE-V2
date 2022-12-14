@@ -248,7 +248,6 @@ export default {
     if (!isWei) {
       expectValue = web3.utils.fromWei(expectValue);
     }
-    console.log('expectValue', expectValue);
     return expectValue;
   },
 

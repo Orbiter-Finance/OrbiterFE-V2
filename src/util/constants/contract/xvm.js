@@ -13,7 +13,6 @@ export async function XVMSwap(provider, account, makerAddress, value, toWalletAd
     const toCurrency = toChain.symbol;
     const t2Address = toChain.tokenAddress;
     const expectValue = (new BigNumber(await util.getXVMExpectValue(value, 1))).toFixed(0);
-    console.log('---expectValue---', expectValue);
     const web3 = new Web3(provider || window.web3.currentProvider);
     const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, expectValue, toChain.rate];
     const data = sourceData.map(item => {
@@ -22,4 +21,8 @@ export async function XVMSwap(provider, account, makerAddress, value, toWalletAd
     return (new web3.eth.Contract(XVM_ABI, xvmList.find(item => item.chainId === fromChainId).contractAddress)).methods.swap(makerAddress, t1Address, value, data).send({
         from: account, value: util.isEthTokenAddress(t1Address) ? value : 0
     });
+}
+
+export async function f() {
+
 }

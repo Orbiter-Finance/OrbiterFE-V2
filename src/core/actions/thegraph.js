@@ -1,6 +1,39 @@
 // util/thegraph.js
 export const nowMakerList = [
   {
+    makerAddress: "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+    c1ID: 5,
+    c2ID: 22,
+    c1Name: "goerli",
+    c2Name: "arbitrum_test",
+    t1Address: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
+    t2Address: "0x0000000000000000000000000000000000000000",
+    tName: "DAI",
+    c1MinPrice: 0.01,
+    c1MaxPrice: 10,
+    c2MinPrice: 0.01,
+    c2MaxPrice: 10,
+    precision: 18,
+    c1AvalibleDeposit: 1000,
+    c2AvalibleDeposit: 1000,
+    c1TradingFee: 0.1,
+    c2TradingFee: 0.1,
+    c1GasFee: 1,
+    c2GasFee: 1,
+    c1AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+    c2AvalibleTimes: [
+      {
+        startTime: 0,
+        endTime: 99999999999999,
+      },
+    ],
+  },
+  {
     makerAddress: '0x0043d60e87c5dd08C86C3123340705a1556C4719',
     c1ID: 44,
     c2ID: 5,
@@ -149,6 +182,19 @@ export const xvmList = [
             precision: 18,
             rate: 200
           },
+        ]
+      },
+      {
+        tokenAddress: "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
+        symbol: "DAI",
+        toChains: [
+          {
+            chainId: 22,
+            tokenAddress: "0x0000000000000000000000000000000000000000",
+            symbol: "ETH",
+            precision: 18,
+            rate: 200   // Ten thousandth ratio
+          }
         ]
       }
     ],
