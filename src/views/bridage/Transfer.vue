@@ -840,10 +840,13 @@ export default {
         const exchangeRates = this.rates;
         const fromRate = exchangeRates[this.selectedToken];
         const toRate = exchangeRates[this.selectedXVMToken];
-        if (!fromRate || !fromRate) {
+        const chainInfo = util.getXVMContractToChainInfo();
+        const rate = chainInfo?.toChain?.rate;
+        if (!fromRate || !toRate || !rate) {
           return amount.toString();
         }
-        return (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
+        const value = (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
+        return new BigNumber(value).multipliedBy(1 - rate / 10000);
       }
       return amount;
     },

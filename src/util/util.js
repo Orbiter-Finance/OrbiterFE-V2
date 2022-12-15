@@ -5,7 +5,6 @@ import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData
 import { xvmList } from "../core/actions/thegraph";
 import { transferDataState } from "../composition/useTransferData";
 import { exchangeToCoin } from "./coinbase";
-import Web3 from 'web3'
 import BigNumber from "bignumber.js";
 
 export default {
@@ -236,15 +235,15 @@ export default {
   },
 
   async getXVMExpectValue(value) {
-    const web3 = new Web3();
     const chainInfo = this.getXVMContractToChainInfo();
     if (!chainInfo) return '0';
     const fromCurrency = chainInfo.target.symbol;
     const toCurrency = chainInfo.toChain.symbol;
-    const rate = chainInfo.toChain.rate;
-    let expectValue = (new BigNumber(value).multipliedBy(1 - rate / 10000)).toString();
+    let expectValue = (new BigNumber(value)).toString();
     if (fromCurrency !== toCurrency) {
-      expectValue = web3.utils.fromWei((new BigNumber(expectValue)).toFixed(0));
+      const fromPrecision = chainInfo.target.precision;
+      const toPrecision = chainInfo.toChain.precision;
+      expectValue = (new BigNumber(expectValue)).dividedBy(10 ** fromPrecision).multipliedBy(10 ** toPrecision);
       expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
     }
     return expectValue;

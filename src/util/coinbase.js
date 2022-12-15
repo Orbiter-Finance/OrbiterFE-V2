@@ -106,15 +106,16 @@ export async function exchangeToUsd(value = 1, sourceCurrency = 'ETH') {
 }
 
 
-export async function exchangeToCoin(value = 1, sourceCurrency = 'ETH', toCurrency) {
+export async function exchangeToCoin(value = 1, sourceCurrency = 'ETH', toCurrency, rates) {
   if (!(value instanceof BigNumber)) {
     value = new BigNumber(value);
   }
-  const exchangeRates = await getRates(sourceCurrency);
+  const exchangeRates = rates || await getRates(sourceCurrency);
   const fromRate = exchangeRates[sourceCurrency];
   const toRate = exchangeRates[toCurrency];
   if (!fromRate || !fromRate) {
     return new BigNumber(0);
   }
+  console.log('rate', fromRate, toRate);
   return value.dividedBy(fromRate).multipliedBy(toRate);
 }

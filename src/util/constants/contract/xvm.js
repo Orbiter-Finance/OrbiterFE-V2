@@ -2,9 +2,8 @@ import Web3 from 'web3';
 import { XVM_ABI } from "./contract";
 import util from "../../util";
 import { xvmList } from "../../../core/actions/thegraph";
-import BigNumber from "bignumber.js";
 
-export async function XVMSwap(provider, account, makerAddress, value, toWalletAddress) {
+export async function XVMSwap(provider, account, makerAddress, value, expectValue, toWalletAddress) {
     const { target, toChain } = util.getXVMContractToChainInfo();
     const fromChainId = target.chainId;
     const t1Address = target.tokenAddress;
@@ -12,8 +11,7 @@ export async function XVMSwap(provider, account, makerAddress, value, toWalletAd
     const toChainId = toChain.chainId;
     const toCurrency = toChain.symbol;
     const t2Address = toChain.tokenAddress;
-    const expectValue = (new BigNumber(await util.getXVMExpectValue(value))).toFixed(0);
-    console.log('expectValue --> ',expectValue)
+    console.log('expectValue --> ', expectValue);
     const web3 = new Web3(provider || window.web3.currentProvider);
     const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, expectValue, toChain.rate];
     const data = sourceData.map(item => {

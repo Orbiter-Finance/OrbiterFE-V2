@@ -228,9 +228,7 @@ export default {
         {
           icon: 'received',
           title: 'Received',
-          desc: util.isExecuteXVMContract() ? this.xvmShowValue() : (this.expectValue +
-            ' ' +
-            realSelectMakerInfo.value.tName),
+          desc: this.expectValue,
           textBold: true,
         },
         {
@@ -259,14 +257,6 @@ export default {
     },
   },
   methods: {
-    xvmShowValue() {
-      const { toChain } = util.getXVMContractToChainInfo();
-      const digit = toChain.precision === 18 ? 5 : 2;
-      return (new BigNumber(this.expectValue || '0')).toFixed(digit)
-              +
-              ' ' +
-              toChain.symbol;
-    },
     async zkspaceTransfer(fromChainID, toChainID, selectMakerInfo) {
       try {
         let provider = new ethers.providers.Web3Provider(
@@ -1160,22 +1150,7 @@ export default {
       const rAmount = new BigNumber(transferDataState.transferValue)
               .plus(new BigNumber(selectMakerInfo.tradingFee))
               .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision));
-      const rAmountValue = rAmount.toFixed();
-      const p_text = 9000 + Number(toChainID) + '';
-      const tValue = orbiterCore.getTAmountFromRAmount(
-              fromChainID,
-              rAmountValue,
-              p_text
-      );
-      if (!tValue.state) {
-        this.$notify.error({
-          title: tValue.error,
-          duration: 3000,
-        });
-        this.transferLoading = false;
-        return;
-      }
-      const amount = tValue.tAmount;
+      const amount = rAmount.toFixed();
       const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
       if (matchSignatureDispatcher) {
         matchSignatureDispatcher(account, selectMakerInfo, amount, fromChainID, this.onTransferSucceed);
@@ -1204,10 +1179,20 @@ export default {
         }
       }
 
+      let expectValue = orbiterCore.getToAmountFromUserAmount(
+              new BigNumber(transferDataState.transferValue).plus(
+                      new BigNumber(realSelectMakerInfo.value.tradingFee)
+              ),
+              realSelectMakerInfo.value,
+              false
+      );
+      const web = new Web3();
+      expectValue = (new BigNumber(await util.getXVMExpectValue(web.utils.toWei(expectValue.toString())))).toFixed(0);
+
       try {
         const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
         const { transactionHash } = await XVMSwap(provider, account, selectMakerInfo.makerAddress,
-                amount, crossAddressReceipt || account);
+                amount, expectValue, crossAddressReceipt || account);
         if (transactionHash) {
           this.onTransferSucceed(
                   account,
@@ -1477,7 +1462,6 @@ export default {
     },
   },
   async mounted() {
-    console.log('transferDataState.transferValue',transferDataState.transferValue)
     const amount = orbiterCore.getToAmountFromUserAmount(
             new BigNumber(transferDataState.transferValue).plus(
                     new BigNumber(realSelectMakerInfo.value.tradingFee)
@@ -1485,18 +1469,21 @@ export default {
             realSelectMakerInfo.value,
             false
     );
-    if(util.isExecuteXVMContract()){
+    if (util.isExecuteXVMContract()) {
       const chainInfo = util.getXVMContractToChainInfo();
       const fromCurrency = chainInfo.target.symbol;
       const toCurrency = chainInfo.toChain.symbol;
       const rate = chainInfo.toChain.rate;
-      let expectValue = new BigNumber(amount).multipliedBy(1 - rate / 10000);
       if (fromCurrency !== toCurrency) {
-        expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
+        const decimal = chainInfo.toChain.precision === 18 ? 5 : 3;
+        const highValue = (await exchangeToCoin(amount, fromCurrency, toCurrency)).toFixed(decimal);
+        const lowerValue = (new BigNumber(highValue).multipliedBy(1 - rate / 10000)).toFixed(decimal);
+        this.expectValue = `${ lowerValue } ~ ${ highValue } ${ toCurrency }`;
+      } else {
+        this.expectValue = `${ amount } ${ toCurrency }`;
       }
-      this.expectValue = expectValue;
     } else {
-      this.expectValue = amount;
+      this.expectValue = `${amount} ${realSelectMakerInfo.value.tName}`;
     }
   }
 }
