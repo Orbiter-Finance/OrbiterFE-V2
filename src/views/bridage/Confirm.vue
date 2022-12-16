@@ -1139,7 +1139,7 @@ export default {
     },
 
     async handleXVMContract() {
-      const { fromChainID, toChainID, fromCurrency, crossAddressReceipt } = transferDataState;
+      const { fromChainID, fromCurrency, crossAddressReceipt, isCrossAddress } = transferDataState;
       const selectMakerInfo = realSelectMakerInfo.value;
       const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
 
@@ -1192,7 +1192,7 @@ export default {
       try {
         const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
         const { transactionHash } = await XVMSwap(provider, account, selectMakerInfo.makerAddress,
-                amount, expectValue, crossAddressReceipt || account);
+                amount, expectValue, isCrossAddress ? crossAddressReceipt : account);
         if (transactionHash) {
           this.onTransferSucceed(
                   account,

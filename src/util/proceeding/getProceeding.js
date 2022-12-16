@@ -1136,6 +1136,7 @@ function ScanMakerTransfer(
             if (error) {
               console.warn('XVMContract getPastEvents-Transfer Error =', error)
             } else {
+              console.log('events',events)
               for (let index = events.length - 1; index >= 0; index--) {
                 const txinfo = events[index]
                 console.log('txinfo', txinfo);
