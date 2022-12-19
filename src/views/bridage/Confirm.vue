@@ -752,7 +752,6 @@ export default {
                   realSelectMakerInfo.value.makerAddress).toLowerCase();
           let toAddress = util.shortAddress(toAddressAll);
           if (fromChainID == 4 || fromChainID == 44) {
-            // TODO xvm
             toAddress = util.shortAddress(
               getStarkMakerAddress(
                 realSelectMakerInfo.value.makerAddress,

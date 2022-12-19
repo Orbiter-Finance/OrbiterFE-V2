@@ -17,9 +17,22 @@ export async function XVMSwap(provider, account, makerAddress, value, expectValu
     const data = sourceData.map(item => {
         return web3.utils.toHex(item);
     });
-    return (new web3.eth.Contract(XVM_ABI, xvmList.find(item => item.chainId === fromChainId).contractAddress)).methods.swap(makerAddress, t1Address, value, data).send({
-        from: account, value: util.isEthTokenAddress(t1Address) ? value : 0
-    });
+    const contractInstance = new web3.eth.Contract(XVM_ABI, xvmList.find(item => item.chainId === fromChainId).contractAddress);
+    if (util.isEthTokenAddress(t1Address)) {
+        return contractInstance.methods.swap(makerAddress, t1Address, value, data).send({
+            from: account, value
+        });
+    } else {
+        const gasLimit = await contractInstance.methods.swap(makerAddress, t1Address, value, data).estimateGas({
+            value,
+            from: account,
+            gas: 5000000
+        });
+        console.log('gasLimit', gasLimit);
+        return contractInstance.methods.swap(makerAddress, t1Address, value, data).send({
+            from: account, gas: gasLimit
+        });
+    }
 }
 
 export async function f() {
