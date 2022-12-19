@@ -241,9 +241,8 @@ export default {
     const toCurrency = chainInfo.toChain.symbol;
     let expectValue = (new BigNumber(value)).toString();
     if (fromCurrency !== toCurrency) {
-      const fromPrecision = chainInfo.target.precision;
       const toPrecision = chainInfo.toChain.precision;
-      expectValue = (new BigNumber(expectValue)).dividedBy(10 ** fromPrecision).multipliedBy(10 ** toPrecision);
+      expectValue = (new BigNumber(expectValue)).multipliedBy(10 ** toPrecision);
       expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
     }
     return expectValue;

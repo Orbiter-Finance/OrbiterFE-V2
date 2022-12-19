@@ -1185,8 +1185,7 @@ export default {
               realSelectMakerInfo.value,
               false
       );
-      const web = new Web3();
-      expectValue = (new BigNumber(await util.getXVMExpectValue(web.utils.toWei(expectValue.toString())))).toFixed(0);
+      expectValue = (new BigNumber(await util.getXVMExpectValue(expectValue))).toFixed(0);
 
       try {
         const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
