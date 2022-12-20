@@ -28,10 +28,10 @@ async function cacheExchangeRates(currency = 'USD') {
   }
 }
 export async function getRates(currency) {
-  const bnbRates = await axios.get(
-      `https://coinyep.com/api/v1/?from=${currency}&to=BNB&lang=zh&format=json`
-  );
-  const bnbPrice = bnbRates?.data?.price;
+  // const bnbRates = await axios.get(
+  //     `https://coinyep.com/api/v1/?from=${currency}&to=BNB&lang=zh&format=json`
+  // );
+  // const bnbPrice = bnbRates?.data?.price;
 
   try {
     const resp = await axios.get(
@@ -46,7 +46,7 @@ export async function getRates(currency) {
     ) {
       return undefined
     }
-    return { ...data.rates, "BNB": bnbPrice };
+    return data.rates;
   } catch (error) {
     return undefined
   }
