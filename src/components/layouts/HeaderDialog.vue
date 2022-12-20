@@ -155,6 +155,11 @@ export default {
         },
         {
           isConnect: false,
+          icon: 'blockwallet',
+          title: 'BlockWallet',
+        },
+        {
+          isConnect: false,
           icon: 'walletConnect',
           title: 'WalletConnect',
         },

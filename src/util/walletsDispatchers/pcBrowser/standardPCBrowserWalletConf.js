@@ -1,14 +1,15 @@
-import { showMessage } from "../../constants/web3/getWeb3";
-import { COINBASE, BRAVE } from "../constants";
+import { showMessage } from '../../constants/web3/getWeb3'
+import { COINBASE, BRAVE, BLOCKWALLET } from '../constants'
+import { Notification } from 'element-ui'
 
 /**
- * Description: 
+ * Description:
  * if u find that the wallet to be added follows the standard ethereum API
  * u can append wallets conf to this configuration directly, standard wallet loader
  * will watch this config and generate the connect, disconnect ...etc methods for it
- * 
+ *
  * config props u can set:
- * 
+ *
  * - 【 walletType: required 】, new wallet type
  * - 【 icon: optional 】, wallet icon, this property will not be used now, it's primarily to take over UI layer config in the feature
  * - 【 walletIsInstalledInvestigator: required 】, in the wallet init phase, this method will be called to make sure the corresponding wallet extension is installed in the user's browser
@@ -23,25 +24,43 @@ import { COINBASE, BRAVE } from "../constants";
   - 【 chainIdTransferOnInitProcess: optional 】 by default, loader invoke chainIdTransfer method in switch chain process only, if u want loader invoke it in init process, set this prop with "true"
  */
 export default [
-    {
-        walletType: COINBASE,
-        icon: COINBASE,
-        walletIsInstalledInvestigator: provider => provider.isCoinbaseWallet
+  {
+    walletType: BLOCKWALLET,
+    icon: BLOCKWALLET,
+    walletNotInstallReducer: () => {
+      return Notification({
+        title: 'Error: BlockWallet has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have BlockWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
     },
-    {
-        walletType: BRAVE,
-        icon: BRAVE,
-        walletIsInstalledInvestigator: provider => provider.isBraveWallet,
-        chainIdTransfer: chainId => parseInt(chainId, 16),
-        walletNotInstallReducer: () => {
-            // because brave is special, his provider maybe overridden by metamask
-            // so even if the user is in the brave browser, he may still not have 
-            // access the provider of brave wallet
-            
-            // maybe we can popup a window to prompt the user to disable the metamask wallet
-            // extension? (to avoid user confusion);
+  },
+  {
+    walletType: COINBASE,
+    icon: COINBASE,
+    walletIsInstalledInvestigator: (provider) => provider.isCoinbaseWallet,
+  },
+  {
+    walletType: BRAVE,
+    icon: BRAVE,
+    walletIsInstalledInvestigator: (provider) => provider.isBraveWallet,
+    chainIdTransfer: (chainId) => parseInt(chainId, 16),
+    walletNotInstallReducer: () => {
+      // because brave is special, his provider maybe overridden by metamask
+      // so even if the user is in the brave browser, he may still not have
+      // access the provider of brave wallet
 
-            showMessage("The Brave Wallet is only available in the brave browser, so make sure u r in the brave browser, and the brave wallet will conflict with the metamask wallet, so u must disable the metamask wallet extension in your browser if u want to access the brave wallet", "warning");
-        }
+      // maybe we can popup a window to prompt the user to disable the metamask wallet
+      // extension? (to avoid user confusion);
+
+      showMessage(
+        'The Brave Wallet is only available in the brave browser, so make sure u r in the brave browser, and the brave wallet will conflict with the metamask wallet, so u must disable the metamask wallet extension in your browser if u want to access the brave wallet',
+        'warning'
+      )
     },
+  },
 ]

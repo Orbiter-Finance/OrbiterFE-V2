@@ -344,6 +344,36 @@
       "rpc": ["https://goerli.optimism.io"],
       "faucets": [],
       "infoURL": "https://blockscout.com/optimism/goerli/"
+    },
+    {
+      "name": "Scroll L1 Testnet",
+      "chainId": 534351,
+      "shortName": "Scroll-L1",
+      "networkId": 534351,
+      "nativeCurrency": {
+        "name": "Scroll L1 ETH",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": [],
+      "faucets": [],
+      "infoURL": "https://l2scan.scroll.io/"
+    },
+    {
+      "name": "Scroll L2 Testnet",
+      "chainId": 534354,
+      "shortName": "Scroll-L2",
+      "networkId": 534354,
+      "nativeCurrency": {
+        "name": "Scroll L2 ETH",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": [
+        "https://prealpha.scroll.io/l2"
+      ],
+      "faucets": [],
+      "infoURL": "https://l2scan.scroll.io/"
     }
   ]
 }

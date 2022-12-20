@@ -17,8 +17,9 @@ export default {
     // })
     const _type = type || 'success'
     Notification[_type]({
-      title: message,
-      duration: 2000,
+      message: message,
+      dangerouslyUseHTMLString: true,
+      duration: 3000,
     })
   },
   getChainInfo(netChainID) {

@@ -413,6 +413,9 @@ async function confirmUserTransaction(
     if (localChainID == 13 || localChainID===513) {
       trxConfirmations.confirmations = 3;
     }
+    if (localChainID == 518 || localChainID === 519) {
+      trxConfirmations.confirmations = 3;
+    }
     if (!trxConfirmations) {
       return confirmUserTransaction(
         localChainID,
@@ -1227,10 +1230,22 @@ function ScanMakerTransfer(
               key: config.boba.Rinkeby.key,
             }
             break
-        }
-        if (!api) {
-          return
-        }
+        case 518:
+          api = {
+            endPoint: config.scroll_l1.Rinkeby,
+            key: '',
+          };
+          break;
+        case 519:
+          api = {
+            endPoint: config.scroll_l2.Rinkeby,
+            key: '',
+          };
+          break;
+      }
+      if (!api) {
+        return
+      }
 
         new EthListen(api, to, async () => startBlockNumber)
             .setTransferBreaker(() => isCurrentTransaction(transactionID))

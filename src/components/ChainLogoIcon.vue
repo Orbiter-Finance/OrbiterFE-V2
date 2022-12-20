@@ -43,8 +43,9 @@ export default {
         return 'arnavologo'
       }else if (chainID == '17' || chainID == '517') {
         return 'polygon_zkevm_logo'
-      }   else {
-        
+      } else if (chainID == '518' || chainID == '519') {
+        return 'scrolllogo'
+      } else {
         return 'ethlogo'
       }
     },

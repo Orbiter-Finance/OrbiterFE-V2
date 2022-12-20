@@ -309,7 +309,7 @@ import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
 import Web3 from 'web3'
-import { netStateBlock } from '../../util/confirmCheck'
+// import { netStateBlock } from '../../util/confirmCheck'
 import { chain2idMap } from '../../util/chain2id'
 import { chain2icon } from '../../util'
 import {
@@ -420,9 +420,13 @@ export default {
       )
       let opBalance = 10 ** -avalibleDigit
       let preGasDigit = 3
-      let preGas = 10 ** -preGasDigit
-      if (![3, 33].includes(transferDataState.fromChainID)) {
-        preGas = 0
+      let preGas = 0
+      if (
+        [3, 33, 1, 5, 2, 22, 7, 77, 16, 516].includes(
+          transferDataState.fromChainID
+        )
+      ) {
+        preGas = 10 ** -preGasDigit
       }
       let useBalanle = new BigNumber(this.fromBalance)
         .minus(new BigNumber(selectMakerInfo.tradingFee))
@@ -542,9 +546,10 @@ export default {
         toChainID != 2 &&
         toChainID != 22 &&
         toChainID != 6 &&
-        toChainID != 66 &&
-        toChainID != 7 &&
-        toChainID != 77
+        toChainID != 66
+        // &&
+        // toChainID != 7 &&
+        // toChainID != 77
       ) {
         return true
       }
@@ -1205,9 +1210,10 @@ export default {
         newValue != 2 &&
         newValue != 22 &&
         newValue != 6 &&
-        newValue != 66 &&
-        newValue != 7 &&
-        newValue != 77
+        newValue != 66
+        // &&
+        // newValue != 7 &&
+        // newValue != 77
       ) {
         if (this.toChainArray.indexOf(4) != -1) {
           let index = this.toChainArray.indexOf(4)
@@ -1864,18 +1870,57 @@ export default {
           realSelectMakerInfo.value.tName,
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
-        if (!(await netStateBlock(transferDataState.fromChainID))) {
+
+        if (
+          (toChainID == 4 || toChainID == 44) &&
+          transferDataState.selectTokenInfo.token == 'DAI'
+        ) {
           this.$notify.error({
-            title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
-            duration: 3000,
+            title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
+            duration: 6000,
           })
           return
         }
 
-        // if (fromChainID == 4 || toChainID == 4) {
+        // if (!(await netStateBlock(transferDataState.fromChainID))) {
         //   this.$notify.error({
-        //     title: `Affected by the starkNet interface issue, the transfer from starkNet is suspended.`,
+        //     title: `Affected by the ${selectMakerInfo.c1Name} interface issue, the transfer from ${selectMakerInfo.c1Name} is suspended.`,
         //     duration: 3000,
+        //   })
+        //   return
+        // }
+        // if (toChainID == 4 || fromChainID == 4) {
+        //   this.$notify.error({
+        //     title: `Due to the congestion of StarkNet, the transaction failure rate to StarkNet is too high. In order not to affect the user experience, to-StarkNet function is temporarily offline.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
+        // if (fromChainID == 7) {
+        //   this.$notify.error({
+        //     title: `Affected by the Optimism interface issue, the transfer from Optimism is suspended.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
+        // if (toChainID == 9) {
+        //   this.$notify.error({
+        //     title: `Affected by the Loopring interface issue, the transfer to Loopring is suspended.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
+        // if (toChainID == 2) {
+        //   this.$notify.error({
+        //     title: `Affected by the Arbitrum interface issue, the transfer to Arbitrum is suspended.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
+        // if (toChainID == 16) {
+        //   this.$notify.error({
+        //     title: `Affected by the Arbitrum Nova interface issue, the transfer to Arbitrum Nova is suspended.`,
+        //     duration: 6000,
         //   })
         //   return
         // }

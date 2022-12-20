@@ -18,7 +18,7 @@ import {
   getStarkTransferFee,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
-import {getZkSyncProvider} from '../zksync/zkysnc_helper'
+import { getZkSyncProvider } from '../zksync/zkysnc_helper'
 import util from '../util'
 import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
@@ -106,6 +106,10 @@ const ZK2_ERC20_WITHDRAW_ONZK2 = 10560 //same with eth
 // starkNet
 const STARKNET_ETH_DEPOSIT_ONL1 = 110000
 const STARKNET_ETH_WITHDRAW_ONL1 = 60000
+
+// scroll
+const SCROLL_ETH_DEPOSIT = 21000
+const SCROLL_ETH_WITHDRAW = 21000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
@@ -282,6 +286,8 @@ export default {
       514: 0.000028572,
       515: 1,
       516: 1,
+      518: 1,
+      519: 1
     }
     const GasLimitMap = {
       1: 35000,
@@ -311,6 +317,8 @@ export default {
       514: 10560,
       515: 150000,
       516: 150000,
+      518: 21000,
+      519: 21000
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -341,6 +349,8 @@ export default {
       514: 'ETH',
       515: 'BNB',
       516: 'ETH',
+      518: 'ETH',
+      519: 'ETH'
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await getZkSyncProvider(fromChainID)
@@ -490,6 +500,12 @@ export default {
     if (fromChainID === 4 || fromChainID === 44) {
       timeSpent = 180
     }
+    if (fromChainID === 518){
+      timeSpent = 15
+    }
+    if (fromChainID === 519){
+      timeSpent = 6.828
+    }
     if (toChainID === 4 || toChainID === 44) {
       timeSpent = 180
     }
@@ -533,6 +549,12 @@ export default {
     }
     if (toChainID === 14 || toChainID === 514) {
       timeSpent += 15
+    }
+    if (toChainID === 518) {
+      timeSpent += 15
+    }
+    if (toChainID === 519) {
+      timeSpent += 6.828
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -579,6 +601,12 @@ export default {
     }
     if (fromChainID === 15 || fromChainID === 515) {
       return '~15min'
+    }
+    if (fromChainID === 518 && toChainID === 519) {
+      return '~2min'
+    }
+    if (fromChainID === 519 && toChainID === 518) {
+      return '~10min'
     }
 
     if (fromChainID === 1 || fromChainID === 5) {
@@ -962,6 +990,16 @@ export default {
         throw new Error(`ar withdraw error`)
       }
     }
+    if (fromChainID === 518 || fromChainID === 519) {
+      try {
+        // scroll get
+        let fromGasPrice = await this.getGasPrice(fromChainID)
+        // scroll WithDraw
+        ethGas = fromGasPrice * SCROLL_ETH_WITHDRAW;
+      } catch (error) {
+        throw new Error(`scroll withdraw error`)
+      }
+    }
 
     // deposit
     if (toChainID === 2 || toChainID === 22) {
@@ -1111,6 +1149,17 @@ export default {
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
+    if (toChainID === 518 || toChainID === 519) {
+      try {
+        // scroll get
+        let toGasPrice = await this.getGasPrice(toChainID)
+        // scroll DEPOSIT
+        ethGas += toGasPrice * SCROLL_ETH_DEPOSIT;
+      } catch (error) {
+        throw new Error(`scroll deposit error`)
+      }
+    }
+
     let usd = new BigNumber(0)
     if (ethGas > 0) {
       usd = usd.plus(
@@ -1238,23 +1287,60 @@ export default {
         throw new Error(`getZKSBalanceError,${error.message}`)
       }
     } else {
-      let balance = 0
+      //
+      return this.getBalanceByCommonRPC(
+        localChainID,
+        userAddress,
+        tokenAddress
+      )
+
+      // if (util.isEthTokenAddress(tokenAddress)) {
+      //   // When is ETH
+      //   const web3 = localWeb3(localChainID)
+      //   balance = Number(await web3.eth.getBalance(userAddress)) || 0
+      // } else {
+      //   // When is ERC20
+      //   var tokenContract = getLocalCoinContract(localChainID, tokenAddress, 0)
+      //   if (!tokenContract) {
+      //     throw 'getBalance_tokenContractError'
+      //   }
+      //   balance = await tokenContract.methods.balanceOf(userAddress).call()
+      // }
+    }
+  },
+  async getBalanceByCommonRPC(chainId, userAddress, tokenAddress) {
+    const getBalance = async (web3, userAddress, tokenAddress) => {
+      if (!web3) {
+        return 0;
+      }
       if (util.isEthTokenAddress(tokenAddress)) {
         // When is ETH
-        const web3 = localWeb3(localChainID)
-        balance = Number(await web3.eth.getBalance(userAddress)) || 0
+        return Number(await web3.eth.getBalance(userAddress)) || 0
       } else {
         // When is ERC20
-        var tokenContract = getLocalCoinContract(localChainID, tokenAddress, 0)
+        var tokenContract = getLocalCoinContract(chainId, tokenAddress, 0, web3)
         if (!tokenContract) {
           throw 'getBalance_tokenContractError'
         }
-        balance = await tokenContract.methods.balanceOf(userAddress).call()
+        return await tokenContract.methods.balanceOf(userAddress).call()
+      }
+    }
+    if (env['publicRPC'] && env['publicRPC'][chainId]) {
+      const rpcs = env['publicRPC'][chainId]
+      let balance = 0
+      for (const rpc of rpcs) {
+        try {
+          balance = await getBalance(new Web3(rpc), userAddress, tokenAddress);
+          break
+        } catch (error) {
+          console.error(`GetBalance ${chainId} error:`, error)
+        }
       }
       return balance
+    } else {
+      return await getBalance(localWeb3(chainId), userAddress, tokenAddress)
     }
   },
-
   async getGasPrice(fromChainID) {
     if (fromChainID === 33 || fromChainID === 3) {
       return null

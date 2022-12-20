@@ -82,7 +82,7 @@
       <SvgIconThemed style="margin-right: 10px" icon="info" />
       <span style="color: #df2e2d; flex: 1"
         >Please do not modify the transaction or remove the last four digits on
-        the transfer amount in MetaMask as this will cause the transaction to
+        the transfer amount in your wallet as this will cause the transaction to
         fail.</span
       >
     </div>
@@ -131,7 +131,7 @@ import {
   sendTransfer,
   getStarkMakerAddress,
 } from '../../util/constants/starknet/helper'
-import {getZkSyncProvider} from '../../util/zksync/zkysnc_helper'
+import { getZkSyncProvider } from '../../util/zksync/zkysnc_helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import { ERC20TokenType, ETHTokenType } from '@imtbl/imx-sdk'
@@ -144,6 +144,7 @@ import env from '../../../env'
 import * as ethers from 'ethers'
 import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
+import { METAMASK } from '../../util/walletsDispatchers/index'
 import {
   walletIsLogin,
   compatibleGlobalWalletConf,
@@ -1073,14 +1074,24 @@ export default {
           const provider = new ethers.providers.Web3Provider(
             web3.currentProvider
           )
-          const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(from))
+          const crossAddress = new CrossAddress(
+            provider,
+            fromChainID,
+            provider.getSigner(from)
+          )
           if (util.isEthTokenAddress(contractAddress)) {
-            transferHash = await  await crossAddress.wallConnTransfer(toAddress,value,transferExt )
+            transferHash = await await crossAddress.wallConnTransfer(
+              toAddress,
+              value,
+              transferExt
+            )
           } else {
-            transferHash = await crossAddress.walletConnTransferERC20( contractAddress,
+            transferHash = await crossAddress.walletConnTransferERC20(
+              contractAddress,
               selectMakerInfo.makerAddress,
               amount,
-              transferExt)
+              transferExt
+            )
           }
           if (transferHash) {
             this.onTransferSucceed(
@@ -1214,21 +1225,29 @@ export default {
         return
       }
       const { fromChainID, toChainID, transferExt } = transferDataState
-
       if (fromChainID != 4 && fromChainID != 44) {
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
           this.$env.localChainID_netChainID[transferDataState.fromChainID]
         ) {
-          const matchAddChainDispatcher =
-            walletDispatchersOnSwitchChain[
-              compatibleGlobalWalletConf.value.walletType
-            ]
-          if (matchAddChainDispatcher) {
-            matchAddChainDispatcher(
-              compatibleGlobalWalletConf.value.walletPayload.provider
-            )
-            return
+          if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+            try {
+              await util.ensureWalletNetwork(transferDataState.fromChainID)
+            } catch (err) {
+              util.showMessage(err.message, 'error')
+              return
+            }
+          } else {
+            const matchAddChainDispatcher =
+              walletDispatchersOnSwitchChain[
+                compatibleGlobalWalletConf.value.walletType
+              ]
+            if (matchAddChainDispatcher) {
+              matchAddChainDispatcher(
+                compatibleGlobalWalletConf.value.walletPayload.provider
+              )
+              return
+            }
           }
         }
       }

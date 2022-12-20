@@ -1,10 +1,10 @@
-const baseUrl = `https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com`
-const baseDomain = `https://api.orbiter.finance`
+const baseUrl = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
+const baseDomain = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
 export const netStateUrl = `${baseDomain}`
 export default {
   // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
   baseUrl,
-  baseTraddingUrl: 'http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003/api',
+  baseTraddingUrl: `${baseDomain}/api`,
   credential: false,
   localProvider: {
     1: process.env.VUE_APP_HP,
@@ -14,17 +14,19 @@ export default {
     5: process.env.VUE_APP_HP_R, // rinkeby
     22: process.env.VUE_APP_HP_AR_R,
     66: process.env.VUE_APP_HP_PO_G,
-    77: "https://goerli.optimism.io",
+    77: 'https://goerli.optimism.io',
     10: process.env.VUE_APP_HP_MT,
     510: process.env.VUE_APP_HP_MT_R,
     13: process.env.VUE_APP_HP_BOBA,
     513: process.env.VUE_APP_HP_BOBA_R,
-    514: "https://zksync2-testnet.zksync.dev",
+    514: 'https://zksync2-testnet.zksync.dev',
     515: process.env.VUE_APP_HP_BSC_R,
     15: process.env.VUE_APP_HP_BSC,
     16: 'https://nova.arbitrum.io/rpc',
     516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://public.zkevm-test.net:2083'
+    517: 'https://public.zkevm-test.net:2083',
+    518: 'https://prealpha.scroll.io/l1',
+    519: 'https://prealpha.scroll.io/l2',
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -42,7 +44,15 @@ export default {
     514: 'wss://zksync2-testnet.zksync.dev/ws',
     16: 'https://nova.arbitrum.io/rpc',
     516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://public.zkevm-test.net:2083'
+    517: 'https://public.zkevm-test.net:2083',
+    518: 'https://prealpha.scroll.io/l1',
+    519: 'https://prealpha.scroll.io/l2',
+  },
+  publicRPC: {
+    1: ["https://eth-mainnet.public.blastapi.io",'https://api.mycryptoapi.com/eth',"https://api.securerpc.com/v1",process.env.VUE_APP_HP],
+    2: ['https://arb1.arbitrum.io/rpc',"https://1rpc.io/arb", process.env.VUE_APP_HP_AR],
+    6: ["https://polygon-rpc.com/", 'https://poly-rpc.gateway.pokt.network', process.env.VUE_APP_HP_PO],
+    7: ['https://mainnet.optimism.io', process.env.VUE_APP_HP_OP],
   },
   supportXVM:[5, 77],
   supportLocalNetWorksIDs: [
@@ -76,7 +86,9 @@ export default {
     '514',
     '515',
     '516',
-    '517'
+    '517',
+    '518',
+    '519',
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -108,7 +120,9 @@ export default {
     515: '97', // bsc test
     16: '42170', // ar nova
     516: '421613', // ar nova g
-    517: '1402'
+    517: '1402',
+    518: '534351', // Scroll L1 Testnet
+    519: '534354', // Scroll L2 Testnet
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -154,12 +168,14 @@ export default {
     512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
-    15: "https://bscscan.com/tx/",
-    515: "https://testnet.bscscan.com/tx/",
+    15: 'https://bscscan.com/tx/',
+    515: 'https://testnet.bscscan.com/tx/',
     514: 'https://zksync2-testnet.zkscan.io/tx/',
-    16: 'https://nova-explorer.arbitrum.io/tx/',
+    16: 'https://nova.arbiscan.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
-    517: 'https://public.zkevm-test.net:8443/tx/'
+    517: 'https://public.zkevm-test.net:8443/tx/',
+    518: 'https://l1scan.scroll.io/tx/',
+    519: 'https://l2scan.scroll.io/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -189,8 +205,10 @@ export default {
     514: 'https://zksync2-testnet.zkscan.io/address/',
     15: 'https://bscscan.com/address',
     515: 'https://testnet.bscscan.com/address/',
-    16: 'https://nova-explorer.arbitrum.io/address/',
+    16: 'https://nova.arbiscan.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
-    517: 'https://public.zkevm-test.net:8443/address/'
+    517: 'https://public.zkevm-test.net:8443/address/',
+    518: 'https://l1scan.scroll.io/address/',
+    519: 'https://l2scan.scroll.io/address/',
   },
 }

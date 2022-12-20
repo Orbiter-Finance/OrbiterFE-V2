@@ -68,10 +68,8 @@ export default {
           owner: address,
         }
         let response = await exchangeApi.getAccount(GetAccountRequest)
-        console.warn('Maker_loopringResponse =', response)
         if (response.accInfo && response.raw_data) {
           accountInfo = response.accInfo
-          console.warn('Maker_loopringAccountInfo =', accountInfo)
         } else {
           if (response.code == 101002) {
             return 0
