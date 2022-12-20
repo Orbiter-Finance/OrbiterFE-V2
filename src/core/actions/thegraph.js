@@ -137,7 +137,7 @@ export const nowMakerList = [
         "c1MaxPrice": 0.01,
         "c2MinPrice": 0.005,
         "c2MaxPrice": 0.01,
-        "precision": 6,
+        "precision": 18,
         "c1TradingFee": 0.0001,
         "c2TradingFee": 0.0001,
         "c1GasFee": 1,
@@ -509,7 +509,7 @@ export const nowMakerList = [
         "c1MaxPrice": 0.01,
         "c2MinPrice": 0.005,
         "c2MaxPrice": 0.01,
-        "precision": 6,
+        "precision": 18,
         "c1TradingFee": 0.0001,
         "c2TradingFee": 0.0001,
         "c1GasFee": 1,
@@ -633,7 +633,7 @@ export const nowMakerList = [
         "c1MaxPrice": 0.01,
         "c2MinPrice": 0.005,
         "c2MaxPrice": 0.01,
-        "precision": 6,
+        "precision": 18,
         "c1TradingFee": 0.0001,
         "c2TradingFee": 0.0001,
         "c1GasFee": 1,
@@ -1005,7 +1005,7 @@ export const nowMakerList = [
         "c1MaxPrice": 0.01,
         "c2MinPrice": 0.005,
         "c2MaxPrice": 0.01,
-        "precision": 6,
+        "precision": 18,
         "c1TradingFee": 0.0001,
         "c2TradingFee": 0.0001,
         "c1GasFee": 1,
@@ -1377,7 +1377,7 @@ export const nowMakerList = [
         "c1MaxPrice": 0.01,
         "c2MinPrice": 0.005,
         "c2MaxPrice": 0.01,
-        "precision": 6,
+        "precision": 18,
         "c1TradingFee": 0.0001,
         "c2TradingFee": 0.0001,
         "c1GasFee": 1,
@@ -1625,7 +1625,7 @@ export const nowMakerList = [
         "c1MaxPrice": 0.01,
         "c2MinPrice": 0.005,
         "c2MaxPrice": 0.01,
-        "precision": 6,
+        "precision": 18,
         "c1TradingFee": 0.0001,
         "c2TradingFee": 0.0001,
         "c1GasFee": 1,
@@ -1749,7 +1749,7 @@ export const nowMakerList = [
         "c1MaxPrice": 0.01,
         "c2MinPrice": 0.005,
         "c2MaxPrice": 0.01,
-        "precision": 6,
+        "precision": 18,
         "c1TradingFee": 0.0001,
         "c2TradingFee": 0.0001,
         "c1GasFee": 1,
@@ -4977,7 +4977,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5033,7 +5033,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5103,7 +5103,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5159,7 +5159,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5229,7 +5229,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5285,7 +5285,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5355,7 +5355,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5411,7 +5411,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5481,7 +5481,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5537,7 +5537,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5613,7 +5613,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5669,7 +5669,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5746,7 +5746,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5802,7 +5802,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5879,7 +5879,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -5935,7 +5935,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6012,7 +6012,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6068,7 +6068,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6117,7 +6117,7 @@ export const xvmList = [
             {
                 "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                 "symbol": "ETH",
-                "precision": 6,
+                "precision": 18,
                 "toChains": [
                     {
                         "chainId": 22,
@@ -6207,7 +6207,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6340,7 +6340,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6473,7 +6473,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6606,7 +6606,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6717,7 +6717,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6745,7 +6745,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6850,7 +6850,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6878,7 +6878,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -6983,7 +6983,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7011,7 +7011,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7116,7 +7116,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7144,7 +7144,7 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7193,7 +7193,7 @@ export const xvmList = [
             {
                 "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                 "symbol": "ETH",
-                "precision": 6,
+                "precision": 18,
                 "toChains": [
                     {
                         "chainId": 22,
@@ -7255,7 +7255,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7381,7 +7381,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7507,7 +7507,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7633,7 +7633,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
@@ -7759,7 +7759,7 @@ export const xvmList = [
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
-                        "precision": 6,
+                        "precision": 18,
                         "rate": 200
                     },
                     {
