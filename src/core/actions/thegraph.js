@@ -4070,39 +4070,6 @@ export const nowMakerList = [
     },
     {
         "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "c1ID": 515,
-        "c2ID": 5,
-        "c1Name": "bsc_test",
-        "c2Name": "rinkeby",
-        "t1Address": "0x0000000000000000000000000000000000000000",
-        "t2Address": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-        "tName": "BNB",
-        "c1MinPrice": 0.005,
-        "c1MaxPrice": 0.01,
-        "c2MinPrice": 0.005,
-        "c2MaxPrice": 0.01,
-        "precision": 18,
-        "c1AvalibleDeposit": 1000,
-        "c2AvalibleDeposit": 1000,
-        "c1TradingFee": 0.0001,
-        "c2TradingFee": 0.0001,
-        "c1GasFee": 2,
-        "c2GasFee": 2,
-        "c1AvalibleTimes": [
-            {
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        ],
-        "c2AvalibleTimes": [
-            {
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        ]
-    },
-    {
-        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
         "c1ID": 516,
         "c2ID": 5,
         "c1Name": "arbitrum_nova_test",
@@ -5056,13 +5023,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -5180,13 +5140,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -5308,13 +5261,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -5432,139 +5378,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    }
-                ]
-            },
-            {
-                "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                "symbol": "BNB",
-                "precision": 18,
-                "toChains": [
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -5692,20 +5505,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -5823,20 +5622,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -5958,20 +5743,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -6089,20 +5860,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -6230,20 +5987,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -6361,20 +6104,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -6496,20 +6225,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -6627,20 +6342,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -6768,20 +6469,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -6899,20 +6586,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -7034,20 +6707,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -7165,20 +6824,6 @@ export const xvmList = [
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 515,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -7306,13 +6951,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -7430,13 +7068,6 @@ export const xvmList = [
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
@@ -7558,13 +7189,6 @@ export const xvmList = [
                         "symbol": "DAI",
                         "precision": 18,
                         "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
                     }
                 ]
             },
@@ -7682,139 +7306,6 @@ export const xvmList = [
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
-                        "precision": 18,
-                        "rate": 200
-                    }
-                ]
-            },
-            {
-                "tokenAddress": "0x0000000000000000000000000000000000000000",
-                "symbol": "BNB",
-                "precision": 18,
-                "toChains": [
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 66,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 77,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 5,
-                        "tokenAddress": "0x5a5D3Eb7265854902460523340a75148AAD7fcF1",
-                        "symbol": "BNB",
                         "precision": 18,
                         "rate": 200
                     }
