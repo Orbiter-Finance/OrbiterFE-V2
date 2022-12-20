@@ -154,7 +154,7 @@
     <div :hidden="!isSupportXVM">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
         <input type="checkbox" id="checkbox" v-model="isCrossAddress" />
-        <label for="checkbox"> cross address </label>
+        <label for="checkbox"> Cross Address </label>
       </div>
       <div class="cross-addr-box to-area" v-if="isCrossAddress">
         <div data-v-59545920="" class="topItem">
