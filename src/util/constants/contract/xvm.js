@@ -11,7 +11,7 @@ export async function XVMSwap(provider, account, makerAddress, value, expectValu
     const toChainId = toChain.chainId;
     const toCurrency = toChain.symbol;
     const t2Address = toChain.tokenAddress;
-    console.log('expectValue --> ', expectValue);
+    console.log('expectValue --> ', expectValue, 'eth value-->', value, 'token-->', t1Address);
     const web3 = new Web3(provider || window.web3.currentProvider);
     const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, expectValue, toChain.rate];
     const data = sourceData.map(item => {
@@ -24,7 +24,6 @@ export async function XVMSwap(provider, account, makerAddress, value, expectValu
         });
     } else {
         const gasLimit = await contractInstance.methods.swap(makerAddress, t1Address, value, data).estimateGas({
-            value,
             from: account,
             gas: 5000000
         });
