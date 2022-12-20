@@ -848,7 +848,8 @@ export default {
         const chainInfo = util.getXVMContractToChainInfo();
         const rate = chainInfo?.toChain?.rate;
         if (!fromRate || !toRate || !rate) {
-          return amount.toString();
+          console.log('get rate fail', this.selectedToken, fromRate, this.selectedXVMToken, toRate);
+          return 0;
         }
         const value = (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
         return new BigNumber(value).multipliedBy(1 - rate / 10000);
@@ -2174,7 +2175,7 @@ export default {
           true
         )
         if (this.selectedToken !== tokenName) {
-          const exchangeRes = (await exchangeToCoin(response, tokenName, this.selectedToken)).toString();
+          const exchangeRes = (await exchangeToCoin(response, tokenName, this.selectedToken, this.rates)).toString();
           return (new BigNumber(exchangeRes).dividedBy(10 ** precision)).toFixed(6);
         }
         return (response / 10 ** precision).toFixed(6)

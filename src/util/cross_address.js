@@ -45,7 +45,7 @@ export class CrossAddress {
   constructor(provider, orbiterChainId = 5, signer = undefined) {
     this.contractAddress = env.crossAddressContracts[orbiterChainId]
     if (!this.contractAddress) {
-      throw new Error('Sorry, miss param [contractAddress]')
+      console.log('Sorry, miss param [contractAddress]')
     }
 
     this.provider = provider

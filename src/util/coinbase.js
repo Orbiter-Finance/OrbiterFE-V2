@@ -28,6 +28,11 @@ async function cacheExchangeRates(currency = 'USD') {
   }
 }
 export async function getRates(currency) {
+  const bnbRates = await axios.get(
+      `https://coinyep.com/api/v1/?from=${currency}&to=BNB&lang=zh&format=json`
+  );
+  const bnbPrice = bnbRates?.data?.price;
+
   try {
     const resp = await axios.get(
       `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
@@ -41,7 +46,7 @@ export async function getRates(currency) {
     ) {
       return undefined
     }
-    return data.rates
+    return { ...data.rates, "BNB": bnbPrice };
   } catch (error) {
     return undefined
   }
@@ -113,9 +118,9 @@ export async function exchangeToCoin(value = 1, sourceCurrency = 'ETH', toCurren
   const exchangeRates = rates || await getRates(sourceCurrency);
   const fromRate = exchangeRates[sourceCurrency];
   const toRate = exchangeRates[toCurrency];
-  if (!fromRate || !fromRate) {
+  if (!fromRate || !toRate) {
     return new BigNumber(0);
   }
-  console.log('rate', fromRate, toRate);
+  console.log(`${ sourceCurrency } rate`, fromRate, `${ toCurrency } rate`, toRate);
   return value.dividedBy(fromRate).multipliedBy(toRate);
 }
