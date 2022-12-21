@@ -717,7 +717,8 @@ export default {
         text: 'CONNECT A WALLET',
         disabled: null,
       }
-
+      console.log('userMax', userMax.toString(), 'transferValue', transferValue.toString(), 'makerMax', makerMax.toString(),
+              'toValue', this.toValue.toString(), 'makerMaxBalance', this.makerMaxBalance);
       if (walletIsLogin.value) {
         info.text = 'SEND'
         if (transferValue.comparedTo(0) < 0) {
