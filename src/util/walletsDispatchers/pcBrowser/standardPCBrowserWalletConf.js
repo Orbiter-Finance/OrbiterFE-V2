@@ -27,6 +27,7 @@ export default [
   {
     walletType: BLOCKWALLET,
     icon: BLOCKWALLET,
+    shouldAddChainCode: -32603,
     walletNotInstallReducer: () => {
       return Notification({
         title: 'Error: BlockWallet has not been installed.',
