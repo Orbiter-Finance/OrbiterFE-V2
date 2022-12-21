@@ -54,6 +54,7 @@ export default {
     6: ["https://polygon-rpc.com/", 'https://poly-rpc.gateway.pokt.network', process.env.VUE_APP_HP_PO],
     7: ['https://mainnet.optimism.io', process.env.VUE_APP_HP_OP],
   },
+  supportXVM:[5, 77],
   supportLocalNetWorksIDs: [
     '1',
     '2',
@@ -104,7 +105,7 @@ export default {
     12: '1', // zkspace
     13: '288', // boba mainnet,
     15: '56', // bsc mainnet,
-    22: '421611', // arbitrum test
+    22: '421613', // arbitrum test
     33: '5', // zktest
     44: '5', // starknet(R)
     66: '80001', // polygon(R)

@@ -101,7 +101,7 @@ export default {
     }
     .sender-box {
       width: 480px;
-      height: 540px;
+      /*height: 540px;*/
       padding: 24px 20px;
     }
   }

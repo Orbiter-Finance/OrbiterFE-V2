@@ -2,6 +2,10 @@ import { Notification } from 'element-ui'
 import env from '../../env'
 import chainList from '../config/chains.json'
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
+import { xvmList } from "../core/actions/thegraph";
+import { transferDataState } from "../composition/useTransferData";
+import { exchangeToCoin } from "./coinbase";
+import BigNumber from "bignumber.js";
 
 export default {
   showMessage(message, type) {
@@ -146,6 +150,14 @@ export default {
     }
     return ''
   },
+  shortChainName(address) {
+    if (address && address.length > 5) {
+      var subStr1 = address.substr(0, 2)
+      var subStr2 = address.substr(address.length - 2, 2)
+      return subStr1 + '...' + subStr2
+    }
+    return ''
+  },
 
   /**
    * @param {string} value1
@@ -197,6 +209,44 @@ export default {
    */
   isSupportEVM(chainId) {
     return [1, 2, 6, 7, 5, 22, 66, 77].indexOf(Number(chainId)) > -1
+  },
+
+  isSupportXVMContract() {
+    const { fromCurrency, toCurrency } = transferDataState;
+    const chainInfo = this.getXVMContractToChainInfo();
+    return !!(chainInfo?.toChain && chainInfo.target.symbol === fromCurrency && chainInfo.toChain.symbol === toCurrency);
+  },
+
+  isExecuteXVMContract() {
+    const { fromCurrency, toCurrency, isCrossAddress } = transferDataState;
+    return !!(this.isSupportXVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
+  },
+
+  getXVMContractToChainInfo() {
+    const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
+    const xvm = xvmList.find(item => item.chainId === fromChainID);
+    const target = xvm?.target;
+    if (!target) return null;
+    const targetData = target.find(item => item.symbol === fromCurrency);
+    const toChains = targetData?.toChains;
+    if (!toChains) return null;
+    targetData.chainId = xvm.chainId;
+    const toChain = toChains.find(item => item.chainId === toChainID && item.symbol === toCurrency);
+    return { target: targetData, toChain };
+  },
+
+  async getXVMExpectValue(value) {
+    const chainInfo = this.getXVMContractToChainInfo();
+    if (!chainInfo) return '0';
+    const fromCurrency = chainInfo.target.symbol;
+    const toCurrency = chainInfo.toChain.symbol;
+    let expectValue = (new BigNumber(value)).toString();
+    if (fromCurrency !== toCurrency) {
+      const toPrecision = chainInfo.toChain.precision;
+      expectValue = (new BigNumber(expectValue)).multipliedBy(10 ** toPrecision);
+      expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
+    }
+    return expectValue;
   },
 
   /**

@@ -2,12 +2,6 @@
   <div class="transfer-box">
     <div class="top-area">
       <span class="title">Token</span>
-      <ObSelect
-        :datas="tokens"
-        v-model="selectedToken"
-        @input="selectedTokenChange"
-        @show="() => (isRaiseUpSelectVisible = true)"
-      ></ObSelect>
     </div>
     <div class="from-area">
       <div class="topItem">
@@ -47,7 +41,7 @@
         <div
           style="display: flex; justify-content: center; align-items: center"
         >
-          <input
+          <input style="min-width: 50px"
             type="text"
             v-model="transferValue"
             class="right"
@@ -60,6 +54,14 @@
             "
           />
           <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          <div style="margin-left: 4px">
+            <ObSelect
+                    :datas="tokens"
+                    v-model="selectedToken"
+                    @input="selectedTokenChange"
+                    @show="() => (isRaiseUpSelectVisible = true)"
+            ></ObSelect>
+          </div>
         </div>
       </div>
     </div>
@@ -108,7 +110,15 @@
           <span>{{ showChainName(false) }}</span>
           <SvgIconThemed v-if="queryParams.dests.length > 1" />
         </div>
-        <div style="display: flex; align-items: center" class="right">
+        <div style="display: flex; align-items: center;height: 40px" class="right">
+          <div v-if="XVMTokenInfoArray.length" style="margin-left: 4px">
+            <ObSelect
+                    :datas="XVMTokens"
+                    v-model="selectedXVMToken"
+                    @input="selectedXVMTokenChange"
+                    @show="() => (isRaiseUpXVMSelectVisible = true)"
+            ></ObSelect>
+          </div>
           <o-tooltip>
             <template v-slot:titleDesc>
               <span v-html="toValueToolTip"></span>
@@ -141,6 +151,22 @@
         >More</a
       >
     </div>
+    <div :hidden="!isSupportXVM">
+      <div style="text-align: left;margin-top: 20px;padding-left: 20px">
+        <input type="checkbox" id="checkbox" v-model="isCrossAddress" />
+        <label for="checkbox"> Cross Address </label>
+      </div>
+      <div class="cross-addr-box to-area" v-if="isCrossAddress">
+        <div data-v-59545920="" class="topItem">
+          <div class="left">Cross Address</div>
+        </div>
+        <input
+                type="text"
+                v-model="crossAddressReceipt"
+                placeholder="You receive cross chain addresses"
+        />
+      </div>
+    </div>
     <CommBtn
       @click="sendTransfer"
       :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -152,6 +178,12 @@
       </span>
     </CommBtn>
     <div class="info-box">
+      <div v-if="isErrorAddress" class="info-item">
+        <svg-icon class="info-icon" iconName="info"></svg-icon>
+        <span class="red">
+          Address format error.
+        </span>
+      </div>
       <div v-if="isShowUnreachMinInfo" class="info-item">
         <svg-icon class="info-icon" iconName="info"></svg-icon>
         <span class="red">
@@ -243,6 +275,15 @@
       @input="selectedTokenChange"
       :keyMaps="{ value: 'token', label: 'token' }"
     />
+    <RaiseUpSelect
+            :iconType="'img'"
+            :visible="isRaiseUpXVMSelectVisible"
+            @hiden="() => (isRaiseUpXVMSelectVisible = false)"
+            :datas="XVMTokenInfoArray"
+            :value="selectedXVMToken"
+            @input="selectedXVMTokenChange"
+            :keyMaps="{ value: 'token', label: 'token' }"
+    />
   </div>
 </template>
 
@@ -263,7 +304,7 @@ import Middle from '../../util/middle/middle'
 import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
 import config from '../../config'
-import { exchangeToUsd } from '../../util/coinbase'
+import { exchangeToCoin, exchangeToUsd, getRates } from '../../util/coinbase';
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 import { DydxHelper } from '../../util/dydx/dydx_helper'
@@ -277,7 +318,6 @@ import {
 } from '../../util/constants/starknet/helper'
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 import { RaiseUpSelect } from '../../components'
-
 // composition
 import {
   walletIsLogin,
@@ -296,9 +336,11 @@ import {
   updateTransferToChainID,
   updateTransferGasFee,
   updateETHPrice,
-  web3State,
-} from '../../composition/hooks'
+  web3State, updateCrossAddressReceipt, updateTransferToCurrency, updateIsCrossAddress, updateTransferFromCurrency,
+} from '../../composition/hooks';
 import { watchEffect } from '../../composition'
+import { xvmList } from "../../core/actions/thegraph";
+const elementResizeDetectorMaker = require('element-resize-detector')
 
 const queryParamsChainMap = chain2idMap
 
@@ -317,6 +359,10 @@ export default {
   },
   data() {
     return {
+      isCrossAddress: false,
+      selectedXVMToken: 'ETH',
+      isRaiseUpXVMSelectVisible: false,
+      crossAddressReceipt: '',
       isRaiseUpSelectVisible: false,
       selectedToken: 'ETH',
       // loading
@@ -326,6 +372,7 @@ export default {
 
       saveTimeLoading: false,
 
+      balanceMap: {},
       c1Balance: Number(0).toFixed(6),
       c2Balance: Number(0).toFixed(6),
       originGasCost: 0,
@@ -334,12 +381,18 @@ export default {
       fromChainArray: [],
       toChainArray: [],
       tokenInfoArray: [],
+      XVMTokenInfoArray: [],
 
       transferValue: '',
 
       exchangeToUsdPrice: 0,
 
       makerMaxBalance: 0,
+
+      formWith: 0,
+      bottomItemWith: 0,
+
+      cronList: []
     }
   },
   asyncComputed: {
@@ -401,6 +454,32 @@ export default {
     },
   },
   computed: {
+    isErrorAddress() {
+      if (!this.crossAddressReceipt || !util.isSupportXVMContract()) {
+        return false;
+      }
+      if (transferDataState.toChainID === 4 || transferDataState.toChainID === 44) {
+        return false;
+      }
+      const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+      return !reg.test(this.crossAddressReceipt);
+    },
+    isSupportXVM() {
+        const { fromChainID, toChainID } = transferDataState;
+        console.log('fromChainID', fromChainID, 'toChainID', toChainID, 'fromToken', this.selectedToken, 'toToken', this.selectedXVMToken);
+        return util.isSupportXVMContract();
+    },
+    XVMTokens() {
+      return this.XVMTokenInfoArray.map((v) => {
+        return {
+          ...v,
+          icon: v.icon || 'tokenLogo',
+          label: v.token,
+          value: v.token,
+          iconType: 'img',
+        }
+      })
+    },
     transferDataState() {
       return transferDataState
     },
@@ -666,6 +745,11 @@ export default {
           info.text = 'SEND'
           info.disabled = 'disabled'
         }
+
+        if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
+          info.text = 'SEND';
+          info.disabled = 'disabled';
+        }
       }
 
       return info
@@ -750,13 +834,27 @@ export default {
       if (this.transferValue === '' || realSelectMakerInfo.value === '') {
         return '0'
       }
-      return orbiterCore.getToAmountFromUserAmount(
-        new BigNumber(this.transferValue).plus(
-          new BigNumber(realSelectMakerInfo.value.tradingFee)
-        ),
-        realSelectMakerInfo.value,
-        false
-      )
+      let amount = orbiterCore.getToAmountFromUserAmount(
+              new BigNumber(this.transferValue).plus(
+                      new BigNumber(realSelectMakerInfo.value.tradingFee)
+              ),
+              realSelectMakerInfo.value,
+              false
+      );
+      if(this.selectedToken !== this.selectedXVMToken){
+        const exchangeRates = this.rates;
+        const fromRate = exchangeRates[this.selectedToken];
+        const toRate = exchangeRates[this.selectedXVMToken];
+        const chainInfo = util.getXVMContractToChainInfo();
+        const rate = chainInfo?.toChain?.rate;
+        if (!fromRate || !toRate || !rate) {
+          console.log('get rate fail', this.selectedToken, fromRate, this.selectedXVMToken, toRate);
+          return 0;
+        }
+        const value = (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
+        return new BigNumber(value).multipliedBy(1 - rate / 10000);
+      }
+      return amount;
     },
     fromBalanceLoading() {
       return this.fromBalance === null
@@ -765,14 +863,36 @@ export default {
       return this.toBalance === null
     },
     fromBalance() {
-      const c1 = transferDataState.selectMakerInfo.c1ID
-      const from = transferDataState.fromChainID
-      return c1 === from ? this.c1Balance : this.c2Balance
+      // const c1 = transferDataState.selectMakerInfo.c1ID
+      const chainId = transferDataState.fromChainID;
+      // return c1 === from ? this.c1Balance : this.c2Balance
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      if (!walletAddress || walletAddress === '0x'){
+        return Number(0).toFixed(6);
+      }
+      const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
+      const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
+      if (typeof chainBalanceMap[this.selectedToken] === "undefined") {
+        // this.refreshUserBalance();
+        return Number(0).toFixed(6);
+      }
+      return chainBalanceMap[this.selectedToken];
     },
     toBalance() {
-      const c1 = transferDataState.selectMakerInfo.c1ID
-      const from = transferDataState.fromChainID
-      return c1 === from ? this.c2Balance : this.c1Balance
+      // const c1 = transferDataState.selectMakerInfo.c1ID
+      const chainId = transferDataState.toChainID
+      // return c1 === from ? this.c2Balance : this.c1Balance
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      if (!walletAddress || walletAddress === '0x'){
+        return Number(0).toFixed(6);
+      }
+      const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
+      const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
+      if (typeof chainBalanceMap[this.selectedXVMToken] === 'undefined') {
+        // this.refreshUserBalance();
+        return Number(0).toFixed(6);
+      }
+      return chainBalanceMap[this.selectedXVMToken];
     },
     timeSpent() {
       return transferCalculate.transferSpentTime(
@@ -852,6 +972,20 @@ export default {
     makerInfoList: function (newValue, oldValue) {
       oldValue === '' && newValue !== '' && this.initChainArray()
     },
+    crossAddressReceipt: function (newValue) {
+      updateCrossAddressReceipt(newValue);
+    },
+    selectedToken: function (newValue) {
+      updateTransferFromCurrency(newValue)
+    },
+    selectedXVMToken: function (newValue) {
+      updateTransferToCurrency(newValue);
+      this.getMakerMaxBalance();
+      this.refreshUserBalance();
+    },
+    isCrossAddress: function (newValue) {
+      updateIsCrossAddress(newValue)
+    },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         let selectMakerInfo = transferDataState.selectMakerInfo
@@ -863,6 +997,7 @@ export default {
           toChainID == 4 ||
           toChainID == 44
         ) {
+          const self = this;
           this.c1Balance = null
           this.c2Balance = null
           transferCalculate
@@ -873,10 +1008,12 @@ export default {
               web3State.coinbase
             )
             .then((response) => {
-              this.c1Balance = (
-                response /
-                10 ** selectMakerInfo.precision
-              ).toFixed(6)
+              // this.c1Balance = (
+              //   response /
+              //   10 ** selectMakerInfo.precision
+              // ).toFixed(6)
+              const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+              self.addBalance(newValue.c1ID, newValue.tName, balance);
             })
             .catch((error) => {
               this.c1Balance = Number(0).toFixed(6)
@@ -891,10 +1028,12 @@ export default {
               web3State.coinbase
             )
             .then((response) => {
-              this.c2Balance = (
-                response /
-                10 ** selectMakerInfo.precision
-              ).toFixed(6)
+              // this.c2Balance = (
+              //   response /
+              //   10 ** selectMakerInfo.precision
+              // ).toFixed(6)
+              const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+              self.addBalance(newValue.c2ID, newValue.tName, balance);
             })
             .catch((error) => {
               this.c2Balance = Number(0).toFixed(6)
@@ -909,6 +1048,7 @@ export default {
         this.c2Balance = Number(0).toFixed(6)
       }
       if (oldValue !== newValue && newValue !== '0x') {
+        const self = this;
         this.c1Balance = null
         this.c2Balance = null
         let selectMakerInfo = transferDataState.selectMakerInfo
@@ -920,10 +1060,12 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c1Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
+            // this.c1Balance = (
+            //   response /
+            //   10 ** selectMakerInfo.precision
+            // ).toFixed(6)
+            const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+            self.addBalance(newValue.c1ID, newValue.tName, balance);
           })
           .catch((error) => {
             console.warn(error)
@@ -937,10 +1079,12 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c2Balance = (
-              response /
-              10 ** selectMakerInfo.precision
-            ).toFixed(6)
+            // this.c2Balance = (
+            //   response /
+            //   10 ** selectMakerInfo.precision
+            // ).toFixed(6)
+            const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+            self.addBalance(newValue.c2ID, newValue.tName, balance);
           })
           .catch((error) => {
             console.warn(error)
@@ -988,8 +1132,9 @@ export default {
       }
 
       if (walletIsLogin.value && oldValue !== newValue) {
-        this.c1Balance = null
-        this.c2Balance = null
+        // this.c1Balance = null
+        // this.c2Balance = null
+        const self = this;
         if (
           newValue.c1ID == 9 ||
           newValue.c1ID == 99 ||
@@ -1006,7 +1151,9 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
+            // this.c1Balance = (response / 10 ** newValue.precision).toFixed(6)
+            const balance = (response / 10 ** newValue.precision).toFixed(6);
+            self.addBalance(newValue.c1ID, newValue.tName, balance);
           })
           .catch((error) => {
             console.warn(error)
@@ -1019,7 +1166,9 @@ export default {
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
+            // this.c2Balance = (response / 10 ** newValue.precision).toFixed(6)
+            const balance = (response / 10 ** newValue.precision).toFixed(6);
+            self.addBalance(newValue.c2ID, newValue.tName, balance);
           })
           .catch((error) => {
             this.c2Balance = 0
@@ -1167,6 +1316,8 @@ export default {
       }
 
       this.setDefaultTokenWhenNotSupport()
+
+      this.updateXVMTokenInfoArray(newValue, transferDataState.toChainID);
     },
     'transferDataState.toChainID': function (newValue) {
       this.tokenInfoArray = []
@@ -1236,6 +1387,8 @@ export default {
       }
 
       this.setDefaultTokenWhenNotSupport()
+
+      this.updateXVMTokenInfoArray(transferDataState.fromChainID, newValue);
     },
     'transferDataState.selectTokenInfo': function (newValue) {
       this.makerInfoList.filter((makerInfo) => {
@@ -1272,7 +1425,7 @@ export default {
         updateTransferValue(newValue)
     },
   },
-  mounted() {
+  async mounted() {
     const updateETHPriceI = async () => {
       transferCalculate
         .getTokenConvertUsd('ETH')
@@ -1311,34 +1464,92 @@ export default {
       }
     })
 
-    updateETHPriceI()
-    this.getMakerMaxBalance()
+    await updateETHPriceI();
+    await this.getMakerMaxBalance();
 
-    setInterval(() => {
-      updateETHPriceI()
-      this.getMakerMaxBalance()
-      this.updateExchangeToUsdPrice()
-    }, 10 * 1000)
-    setInterval(() => {
-      this.refreshUserBalance(false)
-    }, 1000 * 60)
+    setTimeout(() => {
+      this.refreshUserBalance();
+    }, 1000);
+    this.cronList.push(setInterval(() => {
+      updateETHPriceI();
+      this.getMakerMaxBalance();
+      this.updateExchangeToUsdPrice();
+      if (this.currencyAddress !== compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress) {
+        this.refreshUserBalance();
+        this.currencyAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        console.log('Current wallet address', this.currencyAddress);
+      }
+    }, 10 * 1000));
+    this.cronList.push(setInterval(() => {
+      this.refreshUserBalance(false);
+    }, 1000 * 60));
     this.transferValue = this.queryParams.amount
-    makerInfo
-      .getMakerInfoFromGraph({ maker: '0' }, true)
-      .then((response) => {
-        if (response.code === 0) {
-          this.makerInfoList = response.data
-        }
-      })
-      .catch((error) => console.warn('error =', error))
+    const response = await makerInfo.getMakerInfoFromGraph({ maker: '0' }, true)
+    if (response.code === 0) {
+      this.makerInfoList = response.data
+    }
+    console.log(this.supportXVM, '==this.supportXVM')
+    if (this.supportXVM) {
+      console.log('support evm')
+    }
+    updateIsCrossAddress(this.isCrossAddress);
+    updateCrossAddressReceipt(this.crossAddressReceipt);
+    updateTransferFromCurrency(this.selectedToken);
+    updateTransferToCurrency(this.selectedXVMToken);
+
+    const self = this;
+    const erd = elementResizeDetectorMaker();
+    erd.listenTo(document.getElementsByClassName('bottomItem'), function (element) {
+      const width = element.offsetWidth;
+      self.bottomItemWith = width;
+    });
+
+    this.rates = await getRates('ETH');
+  },
+  onBeforeUnmount() {
+    for (const cron of this.cronList) {
+      clearInterval(cron);
+    }
   },
   created() {
-    this.replaceStarknetWrongHref()
+    this.replaceStarknetWrongHref();
   },
   activated() {
     this.refreshUserBalance()
   },
   methods: {
+    addBalance(chainId, symbol, value) {
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
+      const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
+      chainBalanceMap[symbol] = value || Number(0).toFixed(6);
+      this.balanceMap = JSON.parse(JSON.stringify(this.balanceMap));
+    },
+    updateXVMTokenInfoArray(fromChainID, toChainID) {
+      this.XVMTokenInfoArray = [];
+      const xvmData = xvmList.find(item => item.chainId === fromChainID);
+      if (xvmData) {
+        const target = xvmData.target;
+        const data = target.find(item => item.symbol === this.selectedToken);
+        if (data) {
+          const toChains = data.toChains;
+          const chainList = toChains.filter(item => item.chainId === toChainID);
+          if (chainList.length) {
+            this.selectedXVMToken = chainList[0].symbol;
+          }
+          for (const chain of chainList) {
+            this.XVMTokenInfoArray.push({
+              icon: config.getTokenIcon(chain.symbol),
+              token: chain.symbol,
+              amount: 0,
+            });
+          }
+        }
+      }
+    },
+    selectedXVMTokenChange(val) {
+      this.selectedXVMToken = val;
+    },
     replaceStarknetWrongHref() {
       /*
         ?refer=starknet&dests=starknet
@@ -1374,9 +1585,13 @@ export default {
       return typeof tar === 'string' && tar === 'NaN' ? 0 : tar
     },
     showChainName(isFrom = true) {
-      const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
-      const netChainID = this.$env.localChainID_netChainID[localChainID]
-      return util.chainName(localChainID, netChainID)
+      const localChainID = transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`];
+      const netChainID = this.$env.localChainID_netChainID[localChainID];
+      const chainName = util.chainName(localChainID, netChainID);
+      if (this.bottomItemWith < 280 && chainName.length > 5) {
+        return util.shortChainName(chainName);
+      }
+      return chainName;
     },
     showChainIcon(isFrom = true) {
       const localChainID = transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
@@ -1386,6 +1601,8 @@ export default {
       const tar = this.tokens.find((v) => v.value == val)
       this.selectedToken = val || 'ETH'
       updateTransferTokenInfo(tar || {})
+
+      this.updateXVMTokenInfoArray(transferDataState.fromChainID, transferDataState.toChainID);
     },
     setDefaultTokenWhenNotSupport() {
       this.$nextTick(() => {
@@ -1545,6 +1762,7 @@ export default {
     },
     getFromChainInfo(e) {
       updateTransferFromChainID(e.localID)
+
       // Change query params's source
       const { path, query } = this.$route
       for (const key in queryParamsChainMap) {
@@ -1871,23 +2089,38 @@ export default {
             }
           }
         }
-        let toAddress = util.shortAddress(selectMakerInfo.makerAddress)
+        const toAddressAll = (util.isExecuteXVMContract() ?
+                xvmList.find(item => item.chainId === fromChainID).contractAddress :
+                selectMakerInfo.makerAddress).toLowerCase();
+        let toAddress = util.shortAddress(toAddressAll);
         if (fromChainID == 4 || fromChainID == 44) {
           toAddress = util.shortAddress(
             getStarkMakerAddress(selectMakerInfo.makerAddress, fromChainID)
           )
         }
+        const { isCrossAddress, crossAddressReceipt } = transferDataState;
+        const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase()
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
             no: 1,
-            amount: new BigNumber(this.transferValue).plus(
-              new BigNumber(selectMakerInfo.tradingFee)
-            ),
-            coin: transferDataState.selectTokenInfo.token,
-            toAddress: toAddress,
+            from: new BigNumber(this.transferValue).plus(
+                    new BigNumber(selectMakerInfo.tradingFee)
+            ) + transferDataState.selectTokenInfo.token,
+            to: toAddress,
+            fromTip: '',
+            toTip: toAddressAll,
+            icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
           },
-        ])
+          {
+            no: 2,
+            from: toAddress,
+            to: util.shortAddress(walletAddress),
+            fromTip: toAddressAll,
+            toTip: walletAddress,
+            icon: 'wallet'
+          }
+        ]);
         this.$emit('stateChanged', '2')
       }
     },
@@ -1941,6 +2174,10 @@ export default {
           makerAddress,
           true
         )
+        if (this.selectedToken !== tokenName) {
+          const exchangeRes = (await exchangeToCoin(response, tokenName, this.selectedToken, this.rates)).toString();
+          return (new BigNumber(exchangeRes).dividedBy(10 ** precision)).toFixed(6);
+        }
         return (response / 10 ** precision).toFixed(6)
       } catch (error) {
         console.warn(error)
@@ -1958,16 +2195,28 @@ export default {
         return
       }
       try {
+          let selectMakerInfo = transferDataState.selectMakerInfo
+          let c2ID = selectMakerInfo.c2ID;
+          let t2Address = selectMakerInfo.t2Address;
+          let t2Name = selectMakerInfo.tName;
+          let precision = selectMakerInfo.precision
+          if (util.isSupportXVMContract()) {
+              const { toChain } = util.getXVMContractToChainInfo();
+              c2ID = toChain.chainId;
+              t2Address = toChain.tokenAddress;
+              t2Name = toChain.symbol;
+              precision = toChain.precision
+          }
         const _balance = await this.getBalance(
-          selectMakerInfo.makerAddress,
-          selectMakerInfo.c2ID,
-          selectMakerInfo.t2Address,
-          selectMakerInfo.tName,
-          selectMakerInfo.precision
+            selectMakerInfo.makerAddress,
+            c2ID,
+            t2Address,
+            t2Name,
+            precision
         )
         if (_balance > 0) {
           // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
-          this.makerMaxBalance = _balance * 0.95
+          this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
         }
       } catch (err) {
         alert(err.message)
@@ -1995,36 +2244,59 @@ export default {
       )
     },
     refreshUserBalance(queryToChain = true) {
+      const self = this;
       let selectMakerInfo = transferDataState.selectMakerInfo
+      const isC1 = transferDataState.fromChainID === selectMakerInfo.c1ID;
+      let c1ID = transferDataState.fromChainID;
+      let t1Address = isC1 ? selectMakerInfo.t1Address : selectMakerInfo.t2Address;
+      let t1Name = selectMakerInfo.tName;
+      let c2ID = transferDataState.toChainID;
+      let t2Address = isC1 ? selectMakerInfo.t2Address : selectMakerInfo.t1Address;
+      let t2Name = selectMakerInfo.tName;
+      let precision = selectMakerInfo.precision;
       transferCalculate
         .getTransferBalance(
-          selectMakerInfo.c1ID,
-          selectMakerInfo.t1Address,
-          selectMakerInfo.tName,
+          c1ID,
+          t1Address,
+          t1Name,
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
         .then((response) => {
-          this.c1Balance = (response / 10 ** selectMakerInfo.precision).toFixed(
-            6
-          )
+          // this.c1Balance = (response / 10 ** selectMakerInfo.precision).toFixed(
+          //   6
+          // )
+          const balance = (response / 10 ** selectMakerInfo.precision).toFixed(6);
+          self.addBalance(c1ID, t1Name, balance);
         })
         .catch((error) => {
           console.warn(error)
           return
         })
       if (queryToChain) {
+        if (util.isSupportXVMContract()) {
+          const { toChain } = util.getXVMContractToChainInfo();
+          c2ID = toChain.chainId;
+          t2Address = toChain.tokenAddress;
+          t2Name = toChain.symbol;
+          precision = toChain.precision;
+        }
         transferCalculate
           .getTransferBalance(
-            selectMakerInfo.c2ID,
-            selectMakerInfo.t2Address,
-            selectMakerInfo.tName,
-            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+                  c2ID,
+                  t2Address,
+                  t2Name,
+                  compatibleGlobalWalletConf.value.walletPayload.walletAddress
           )
           .then((response) => {
-            this.c2Balance = (
-              response /
-              10 ** selectMakerInfo.precision
+            // this.c2Balance = (
+            //   response /
+            //   10 ** precision
+            // ).toFixed(6)
+            const balance = (
+                    response /
+                    10 ** precision
             ).toFixed(6)
+            self.addBalance(c2ID, t2Name, balance);
           })
           .catch((error) => {
             console.warn(error)
@@ -2184,6 +2456,15 @@ export default {
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
+  }
+  .cross-addr-box {
+    input {
+      border: 0;
+      outline: none; //
+      background-color: rgba(0, 0, 0, 0); //
+      width: 100%;
+      height: 40px;
+    }
   }
 }
 </style>

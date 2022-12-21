@@ -26,19 +26,39 @@
       </div>
       <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
         <div
-          v-for="desc in item.descInfo"
+          v-for="(desc,index) in item.descInfo"
           :key="desc.no"
           style="margin-bottom: 1rem"
         >
-          Send
-          <span
-            style="margin-left: 0.7rem; margin-right: 1.1rem; color: #df2e2d"
-            >{{ desc.amount }}{{ desc.coin }}</span
-          >
+          <span style="width: 40px;display:-moz-inline-box; display:inline-block;">
+            {{ index === 0 ? 'Send' : '' }}
+          </span>
+          <o-tooltip v-if="desc.fromTip" placement="topLeft">
+            <template v-slot:titleDesc>
+              <span>{{ desc.fromTip }}</span>
+            </template>
+            <span style="margin-left: 0.7rem; margin-right: 0.7rem; color: #df2e2d;
+            width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
+              {{ desc.from }}
+            </span>
+          </o-tooltip>
+          <span v-else style="margin-left: 0.7rem; margin-right: 0.7rem; color: #df2e2d;
+            width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
+              {{ desc.from }}
+          </span>
           To
-          <span style="margin-left: 0.7rem; color: #df2e2d">{{
-            desc.toAddress
-          }}</span>
+          <o-tooltip placement="topLeft">
+            <template v-slot:titleDesc>
+              <span>{{ desc.toTip }}</span>
+            </template>
+            <span style="margin-left: 0.7rem; color: #df2e2d;
+            width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
+            {{ desc.to }}
+            </span>
+          </o-tooltip>
+          <span style="margin-left: 0.3rem;vertical-align: -25%">
+            <SvgIconThemed :icon="desc.icon" />
+          </span>
         </div>
       </div>
       <div
@@ -138,6 +158,9 @@ import {
 } from '../../composition/hooks'
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
+import { XVMSwap } from "../../util/constants/contract/xvm";
+import { xvmList } from "../../core/actions/thegraph";
+import { exchangeToCoin } from "../../util/coinbase";
 
 const {
   walletDispatchersOnSignature,
@@ -151,6 +174,7 @@ export default {
   data() {
     return {
       transferLoading: false,
+      expectValue: ''
     }
   },
   computed: {
@@ -205,16 +229,7 @@ export default {
         {
           icon: 'received',
           title: 'Received',
-          desc:
-            orbiterCore.getToAmountFromUserAmount(
-              new BigNumber(transferDataState.transferValue).plus(
-                new BigNumber(realSelectMakerInfo.value.tradingFee)
-              ),
-              realSelectMakerInfo.value,
-              false
-            ) +
-            ' ' +
-            realSelectMakerInfo.value.tName,
+          desc: this.expectValue,
           textBold: true,
         },
         {
@@ -733,9 +748,10 @@ export default {
         })
         .then(() => {
           let fromChainID = transferDataState.fromChainID
-          let toAddress = util.shortAddress(
-            realSelectMakerInfo.value.makerAddress
-          )
+          const toAddressAll = (util.isExecuteXVMContract() ?
+                  xvmList.find(item => item.chainId === fromChainID).contractAddress :
+                  realSelectMakerInfo.value.makerAddress).toLowerCase();
+          let toAddress = util.shortAddress(toAddressAll);
           if (fromChainID == 4 || fromChainID == 44) {
             toAddress = util.shortAddress(
               getStarkMakerAddress(
@@ -744,17 +760,29 @@ export default {
               )
             )
           }
+          const { isCrossAddress, crossAddressReceipt } = transferDataState;
+          const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase()
           // switch success
           that.$store.commit('updateConfirmRouteDescInfo', [
             {
               no: 1,
-              amount: new BigNumber(transferDataState.transferValue).plus(
-                new BigNumber(realSelectMakerInfo.value.tradingFee)
-              ),
-              coin: transferDataState.selectTokenInfo.token,
-              toAddress: toAddress,
+              from: new BigNumber(transferDataState.transferValue).plus(
+                      new BigNumber(realSelectMakerInfo.value.tradingFee)
+              ) + transferDataState.selectTokenInfo.token,
+              to: toAddress,
+              fromTip: '',
+              toTip: toAddressAll,
+              icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
             },
-          ])
+            {
+              no: 2,
+              from: toAddress,
+              to: util.shortAddress(walletAddress),
+              fromTip: toAddressAll,
+              toTip: walletAddress,
+              icon: 'wallet'
+            }
+          ]);
           this.RealTransfer()
         })
         .catch((error) => {
@@ -1120,6 +1148,77 @@ export default {
       }
     },
 
+    async handleXVMContract() {
+      const { fromChainID, fromCurrency, crossAddressReceipt, isCrossAddress } = transferDataState;
+      const selectMakerInfo = realSelectMakerInfo.value;
+      const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+
+      if (!walletIsLogin.value) {
+        return;
+      }
+
+      const rAmount = new BigNumber(transferDataState.transferValue)
+              .plus(new BigNumber(selectMakerInfo.tradingFee))
+              .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision));
+      const amount = rAmount.toFixed();
+      const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
+      if (matchSignatureDispatcher) {
+        matchSignatureDispatcher(account, selectMakerInfo, amount, fromChainID, this.onTransferSucceed);
+        return;
+      }
+
+      // approve
+      const xvm = xvmList.find(item => item.chainId === fromChainID);
+      const contractAddress = xvm.contractAddress;
+      const targetData = xvm?.target.find(item => item.symbol === fromCurrency);
+      const tokenAddress = targetData?.tokenAddress;
+      if (!tokenAddress) return;
+      // const web3 = localWeb3(fromChainID);
+      // const provider = new ethers.providers.Web3Provider(web3.currentProvider);
+
+      if (!util.isEthTokenAddress(tokenAddress)) {
+        if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+          const web3 = localWeb3(fromChainID);
+          const provider = new ethers.providers.Web3Provider(web3.currentProvider);
+          const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(account));
+          await crossAddress.contractApprove(tokenAddress, contractAddress, ethers.BigNumber.from(amount));
+        } else {
+          const provider = new ethers.providers.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider);
+          const crossAddress = new CrossAddress(provider, fromChainID);
+          await crossAddress.contractApprove(tokenAddress, contractAddress, ethers.BigNumber.from(amount));
+        }
+      }
+
+      let expectValue = orbiterCore.getToAmountFromUserAmount(
+              new BigNumber(transferDataState.transferValue).plus(
+                      new BigNumber(realSelectMakerInfo.value.tradingFee)
+              ),
+              realSelectMakerInfo.value,
+              false
+      );
+      expectValue = (new BigNumber(await util.getXVMExpectValue(expectValue))).toFixed(0);
+
+      try {
+        const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
+        const { transactionHash } = await XVMSwap(provider, account, selectMakerInfo.makerAddress,
+                amount, expectValue, isCrossAddress ? crossAddressReceipt : account);
+        if (transactionHash) {
+          this.onTransferSucceed(
+                  account,
+                  selectMakerInfo,
+                  amount,
+                  fromChainID,
+                  transactionHash
+          );
+        }
+      } catch (e) {
+        console.error(e);
+        this.$notify.error({
+          title: e.message,
+          duration: 3000,
+        });
+      }
+    },
     async RealTransfer() {
       if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true)
@@ -1160,6 +1259,14 @@ export default {
 
       // sendTransfer
       const selectMakerInfo = realSelectMakerInfo.value
+
+      // EVM contract
+      if (util.isExecuteXVMContract()) {
+        this.transferLoading = true;
+        await this.handleXVMContract();
+        this.transferLoading = false;
+        return;
+      }
 
       // Check fromChainID isSupportEVM
       if (transferExt && !util.isSupportEVM(fromChainID)) {
@@ -1371,6 +1478,31 @@ export default {
       this.$emit('stateChanged', '1')
     },
   },
+  async mounted() {
+    const amount = orbiterCore.getToAmountFromUserAmount(
+            new BigNumber(transferDataState.transferValue).plus(
+                    new BigNumber(realSelectMakerInfo.value.tradingFee)
+            ),
+            realSelectMakerInfo.value,
+            false
+    );
+    if (util.isExecuteXVMContract()) {
+      const chainInfo = util.getXVMContractToChainInfo();
+      const fromCurrency = chainInfo.target.symbol;
+      const toCurrency = chainInfo.toChain.symbol;
+      const rate = chainInfo.toChain.rate;
+      if (fromCurrency !== toCurrency) {
+        const decimal = chainInfo.toChain.precision === 18 ? 5 : 3;
+        const highValue = (await exchangeToCoin(amount, fromCurrency, toCurrency)).toFixed(decimal);
+        const lowerValue = (new BigNumber(highValue).multipliedBy(1 - rate / 10000)).toFixed(decimal);
+        this.expectValue = `${ lowerValue } ~ ${ highValue } ${ toCurrency }`;
+      } else {
+        this.expectValue = `${ amount } ${ toCurrency }`;
+      }
+    } else {
+      this.expectValue = `${amount} ${realSelectMakerInfo.value.tName}`;
+    }
+  }
 }
 </script>
 
@@ -1378,7 +1510,7 @@ export default {
 .app {
   .confirm-box {
     width: 480px;
-    height: 610px;
+    padding-bottom: 20px;
     .confirm-item {
       margin: 22px 0;
     }
