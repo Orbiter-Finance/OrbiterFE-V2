@@ -749,6 +749,7 @@ export default {
     }
   }
   .dapp-detail-dialog-content {
+    padding-bottom: 100px;
     .info {
       display: flex;
       align-items: center;
@@ -824,7 +825,6 @@ export default {
       margin-top: 20px;
       background: #f5f5f5;
       border-radius: 12px;
-      margin-bottom: 100px;
       padding-bottom: 20px;
       .title {
         display: flex;
