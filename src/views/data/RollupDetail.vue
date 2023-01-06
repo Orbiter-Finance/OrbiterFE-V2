@@ -71,7 +71,7 @@
                     </div>
                 </div>
 
-                <div class="content">
+                <div v-if="chartData.chart_data_bridge" class="content">
                     <div class="title">
                         Interactions Statistics
                         <el-popover popper-class="supported-l2-popover" :placement="'bottom'" width="280"
