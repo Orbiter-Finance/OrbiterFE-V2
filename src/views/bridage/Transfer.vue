@@ -1654,16 +1654,16 @@ export default {
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         )
 
-        if (
-          (toChainID == 4 || toChainID == 44) &&
-          transferDataState.selectTokenInfo.token == 'DAI'
-        ) {
-          this.$notify.error({
-            title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
-            duration: 6000,
-          })
-          return
-        }
+        // if (
+        //   (toChainID == 4 || toChainID == 44) &&
+        //   transferDataState.selectTokenInfo.token == 'DAI'
+        // ) {
+        //   this.$notify.error({
+        //     title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
+        //     duration: 6000,
+        //   })
+        //   return
+        // }
 
         // if (!(await netStateBlock(transferDataState.fromChainID))) {
         //   this.$notify.error({
@@ -1672,7 +1672,7 @@ export default {
         //   })
         //   return
         // }
-        // if (toChainID == 4 || fromChainID == 4) {
+        // if (toChainID == 4 || toChainID == 44) {
         //   this.$notify.error({
         //     title: `Due to the congestion of StarkNet, the transaction failure rate to StarkNet is too high. In order not to affect the user experience, to-StarkNet function is temporarily offline.`,
         //     duration: 6000,
