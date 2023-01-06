@@ -155,6 +155,15 @@ export default {
         },
         {
           isConnect: false,
+          icon: 'tallyho',
+          title: 'TallyHo',
+        },
+<<<<<<< HEAD
+=======
+
+>>>>>>> f612b0f98296db3914173c9f6ea25f52ace968bc
+        {
+          isConnect: false,
           icon: 'blockwallet',
           title: 'BlockWallet',
         },

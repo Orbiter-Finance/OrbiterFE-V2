@@ -1,4 +1,4 @@
-import { COINBASE, METAMASK, BRAVE, BLOCKWALLET } from "./constants";
+import { COINBASE, METAMASK, BRAVE, BLOCKWALLET, TALLYHO } from "./constants";
 import { LOCALLOGINDATA, IM_TOKEN_APP, METAMASK_APP, TOKEN_POCKET_APP, BIT_KEEP_APP, COINBASE_APP } from "./constants"
 import { updateGlobalSelectWalletConf, globalSelectWalletConf } from "./walletsCoreData";
 import { toRefs } from "../../composition";
@@ -38,6 +38,7 @@ export const withPerformInterruptWallet = (fn) => {
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     if (!walletType || !ethereum) return false;
     if (walletType === METAMASK) return ethereum.isMetaMask && !ethereum.isBraveWallet;
+    if (walletType === TALLYHO) return ethereum.isTally;
     if (walletType === COINBASE) return ethereum.isCoinbaseWallet;
     if (walletType === BRAVE) return ethereum.isBraveWallet;
     if (walletType === IM_TOKEN_APP) return ethereum.isImToken;
