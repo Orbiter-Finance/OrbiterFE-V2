@@ -86,11 +86,45 @@
             class="item"
             v-for="(item, i) in allSeries"
             :key="i"
-            @click="onCheckerClick(item)"
+            @click="onCheckerClick(1,item)"
           >
             <div
               class="checkbox"
               :class="{ active: checkData.includes(item) }"
+            ></div>
+            <div class="line" :style="{ background: color[i] }"></div>
+            <div class="name">{{ item }}</div>
+          </div>
+        </div>
+      </div>
+      <div :hidden="!interactionsShow" class="content">
+        <div class="title">
+          Interactions Statistics
+          <el-popover
+                  popper-class="supported-l2-popover"
+                  :placement="'bottom'"
+                  width="280"
+                  trigger="hover"
+          >
+            <div class="supported-l2-desc">
+              Bridge Interactions percentage of total Interactions. <br />
+              Other Interactions percentage of total Interactions.
+              <a href="https://docs.orbiter.finance/l2data" target="_blank"> Read More </a>
+            </div>
+            <span class="title-help" slot="reference"> </span>
+          </el-popover>
+        </div>
+        <div id="dapp-detail-interactions-chart"></div>
+        <div class="checker">
+          <div
+                  class="item"
+                  v-for="(item, i) in allInteractionsSeries"
+                  :key="i"
+                  @click="onCheckerClick(2,item)"
+          >
+            <div
+                    class="checkbox"
+                    :class="{ active: checkInteractionsData.includes(item) }"
             ></div>
             <div class="line" :style="{ background: color[i] }"></div>
             <div class="name">{{ item }}</div>
@@ -115,15 +149,19 @@ import dateFormat from '../../util/dateFormat'
 import { isMobile } from '../../composition/hooks'
 
 const allSeries = ['All Users', 'Active Users', 'New Users']
+const allInteractionsSeries = ['All Interactions', 'Bridge Interactions', 'Other Interactions'];
 const color = [
-  'rgba(51, 51, 51, 0.8)',
+  'rgba(0, 0, 255, 0.8)',
   'rgba(239, 47, 45, 1)',
   'rgba(17, 112, 255, 1)',
 ]
 const colorMap = {
-  'All Users': 'rgba(51, 51, 51, 0.8)',
+  'All Users': 'rgba(0, 0, 255, 0.8)',
   'Active Users': 'rgba(239, 47, 45, 1)',
   'New Users': 'rgba(17, 112, 255, 1)',
+  'All Interactions': 'rgba(0, 0, 255, 0.8)',
+  'Bridge Interactions': 'rgba(239, 47, 45, 1)',
+  'Other Interactions': 'rgba(17, 112, 255, 1)',
 }
 const times = [
   { label: '1m', value: 1 },
@@ -148,8 +186,11 @@ export default {
       rollups: [],
       rollup: '',
       allSeries,
+      allInteractionsSeries,
       color,
       checkData: ['New Users', 'Active Users'],
+      checkInteractionsData: ['Bridge Interactions', 'Other Interactions'],
+      interactionsShow: true
     }
   },
   computed: {
@@ -157,19 +198,28 @@ export default {
       return isMobile.value
     },
     chartData() {
-      if (!this.detailData || !this.detailData.chart_data) {
+      if (!this.detailData) {
         return undefined
       }
-      const chartData = this.detailData.chart_data
-      const currentTime = this.currentTime
-      const now = new Date().getTime() / 1000
+      const chart_data = this.detailData?.chart_data || [];
+      const chart_data_bridge = this.detailData?.chart_data_bridge || [];
+      const currentTime = this.currentTime;
+      const now = new Date().getTime() / 1000;
       if (isMax(currentTime)) {
-        return chartData.sort((a, b) => a.timestamp - b.timestamp)
+        return {
+          chart_data: chart_data.sort((a, b) => a.timestamp - b.timestamp),
+          chart_data_bridge: chart_data_bridge.sort((a, b) => a.timestamp - b.timestamp)
+        };
       }
-      const selectDataTime = ONE_MONTH * currentTime
-      return chartData
-        .filter((item) => item.timestamp > now - selectDataTime)
-        .sort((a, b) => a.timestamp - b.timestamp)
+      const selectDataTime = ONE_MONTH * currentTime;
+      return {
+        chart_data: chart_data
+                .filter((item) => item.timestamp > now - selectDataTime)
+                .sort((a, b) => a.timestamp - b.timestamp),
+        chart_data_bridge: chart_data_bridge
+                .filter((item) => item.timestamp > now - selectDataTime)
+                .sort((a, b) => a.timestamp - b.timestamp)
+      };
     },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
@@ -178,6 +228,7 @@ export default {
   watch: {
     chartData() {
       this._chart && this._chart.setOption(this._getChartOptions())
+      this._interactionsChart && this._interactionsChart.setOption(this._getInteractionsChartOptions())
     },
   },
   components: {
@@ -196,17 +247,23 @@ export default {
   },
   methods: {
     show(rollup, row) {
+      this.interactionsShow = true
       this.dialogVisible = true
       this.rollup = rollup
       this.rollups = [rollup]
       this.$nextTick(async () => {
         this.checkData = ['New Users', 'Active Users']
+        this.checkInteractionsData = ['Bridge Interactions', 'Other Interactions'];
         this.currentTime = times[0].value
         if (this._chart) {
           this._chart.clear()
         }
+        if (this._interactionsChart) {
+          this._interactionsChart.clear();
+        }
         this.detailData = {}
         this._initChart()
+
         this.dappData = row
         this.$loader.show()
         const detailData = await getDappDetail(rollup, row.dapp_name)
@@ -220,6 +277,14 @@ export default {
         }
         this.detailData = detailData
         this._chart.hideLoading()
+
+        if (this.chartData.chart_data_bridge.length) {
+          this.interactionsShow = true;
+          this._initInteractionsChart();
+          this._interactionsChart.hideLoading();
+        } else {
+          this.interactionsShow = false;
+        }
       })
     },
     async onRollupChange(value) {
@@ -232,28 +297,50 @@ export default {
       this.detailData = await getDappDetail(value, this.dappData.dapp_name)
       this.$loader.hide()
     },
-    onCheckerClick(item) {
-      if (this.checkData.length === 1 && this.checkData.includes(item)) {
-        return
-      }
-      if (this.checkData.includes(item)) {
-        this.checkData = this.checkData.filter((data) => data !== item)
-      } else {
-        this.checkData = this.checkData.concat([item])
-      }
-      if (this._chart) {
-        this._chart.clear()
-        const option = this._getChartOptions()
-        this._chart.setOption(option)
+    onCheckerClick(type, item) {
+      if (type === 1) {
+        if (this.checkData.length === 1 && this.checkData.includes(item)) {
+          return;
+        }
+        if (this.checkData.includes(item)) {
+          this.checkData = this.checkData.filter((data) => data !== item);
+        } else {
+          this.checkData = this.checkData.concat([item]);
+        }
+        if (this._chart) {
+          this._chart.clear();
+          const option = this._getChartOptions();
+          this._chart.setOption(option);
+        }
+      } else if (type === 2) {
+        if (this.checkInteractionsData.length === 1 && this.checkInteractionsData.includes(item)) {
+          return;
+        }
+        if (this.checkInteractionsData.includes(item)) {
+          this.checkInteractionsData = this.checkInteractionsData.filter((data) => data !== item);
+        } else {
+          this.checkInteractionsData = this.checkInteractionsData.concat([item]);
+        }
+        if (this._interactionsChart) {
+          this._interactionsChart.clear();
+          const option = this._getInteractionsChartOptions();
+          this._interactionsChart.setOption(option);
+        }
       }
     },
     _onResize() {
       this._chart && this._chart.resize()
+      this._interactionsChart && this._interactionsChart.resize()
     },
     _initChart() {
       const chartDom = document.getElementById('dapp-detail-chart')
       const chart = echarts.init(chartDom)
       this._chart = chart
+    },
+    _initInteractionsChart() {
+      const chartDom = document.getElementById('dapp-detail-interactions-chart')
+      const chart = echarts.init(chartDom)
+      this._interactionsChart = chart
     },
     _getChartOptions() {
       const { times, allUser, activeUser, newUser } = this._getData()
@@ -378,7 +465,7 @@ export default {
           smooth: true,
           lineStyle: {
             width: 4,
-            color: 'rgba(51, 51, 51, 0.8)',
+            color: 'rgba(0, 0, 255, 0.8)',
           },
           showSymbol: false,
           emphasis: {
@@ -389,12 +476,146 @@ export default {
       }
       return options
     },
+    _getInteractionsChartOptions() {
+      const { times, daily_tx, bridge_tx, other_tx } = this._getInteractionsData()
+
+      const options = {
+        height: 160,
+        title: {
+          show: false,
+        },
+        legend: {
+          show: false,
+        },
+        grid: {
+          top: 26,
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true,
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          alignTicks: false,
+          data: times,
+          axisTick: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                      ? 'rgba(51, 51, 51, 0.4)'
+                      : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+          axisLabel: {
+            interval: (index) => {
+              return (
+                      index % Math.ceil(times.length / (this.isMobile ? 3 : 6)) === 0
+              )
+            },
+            formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
+          },
+          splitLine: {
+            lineStyle: {
+              color: this.isLightMode
+                      ? 'rgba(51, 51, 51, 0.2)'
+                      : 'rgba(255, 255, 255, 0.2)',
+            },
+          },
+        },
+        yAxis: {
+          splitNumber: 3,
+          type: 'value',
+          axisPointer: {
+            show: false,
+          },
+          axisTick: {
+            show: false,
+          },
+          axisLine: {
+            show: false,
+            lineStyle: {
+              color: this.isLightMode
+                      ? 'rgba(51, 51, 51, 0.4)'
+                      : 'rgba(255, 255, 255, 0.4)',
+            },
+          },
+        },
+        tooltip: {
+          trigger: 'axis',
+          padding: 0,
+          backgroundColor: 'transparent',
+          formatter: this._onInteractionsFormatter,
+          position: this.isMobile
+                  ? function (pos, params, dom, rect, size) {
+                    const obj = { top: '10%' }
+                    obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5
+                    return obj
+                  }
+                  : undefined,
+        },
+        series: [],
+      }
+
+      if (this.checkInteractionsData.includes('Other Interactions')) {
+        options.series.push({
+          name: 'Other Interactions',
+          type: 'line',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: 'rgba(17, 112, 255, 1)',
+          },
+          showSymbol: false,
+          emphasis: {
+            focus: 'series',
+          },
+          data: other_tx,
+        })
+      }
+      if (this.checkInteractionsData.includes('Bridge Interactions')) {
+        options.series.push({
+          name: 'Bridge Interactions',
+          type: 'line',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: 'rgba(239, 47, 45, 1)',
+          },
+          showSymbol: false,
+          emphasis: {
+            focus: 'series',
+          },
+          data: bridge_tx,
+        })
+      }
+      if (this.checkInteractionsData.includes('All Interactions')) {
+        options.series.push({
+          name: 'All Interactions',
+          type: 'line',
+          smooth: true,
+          lineStyle: {
+            width: 4,
+            color: 'rgba(0, 0, 255, 0.8)',
+          },
+          showSymbol: false,
+          emphasis: {
+            focus: 'series',
+          },
+          data: daily_tx,
+        })
+      }
+      return options
+    },
     _getData() {
-      if (!this.chartData) {
+      if (!this.chartData?.chart_data) {
         return { times: [], allUser: [], activeUser: [], newUser: [] }
       }
 
-      const chartData = this.chartData
+      const chartData = this.chartData.chart_data
 
       return {
         times: chartData.map((item) => padTimestamp(item.timestamp)),
@@ -403,9 +624,23 @@ export default {
         newUser: chartData.map((item) => item.new_users),
       }
     },
+    _getInteractionsData() {
+      if (!this.chartData?.chart_data_bridge) {
+        return { times: [], daily_tx:[], bridge_tx:[], other_tx: [] }
+      }
+
+      const chartData = this.chartData.chart_data_bridge
+
+      return {
+        times: chartData.map((item) => padTimestamp(item.timestamp)),
+        daily_tx: chartData.map((item) => item.daily_tx),
+        bridge_tx: chartData.map((item) => item.bridge_tx),
+        other_tx: chartData.map((item) => item.other_tx),
+      }
+    },
     _onFormatter(params) {
       const axisValue = params[0].axisValue
-      const all_users = this._getDataByTime(axisValue).all_users
+      const all_users = this._getDataByTime(axisValue,'chart_data').all_users
       const title = dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
 
       return `<div class="dapp-detail-chart-popover-content">
@@ -436,8 +671,41 @@ export default {
                 </div>
               </div>`
     },
-    _getDataByTime(axisValue) {
-      const chartData = this.chartData
+    _onInteractionsFormatter(params) {
+      const axisValue = params[0].axisValue
+      const daily_tx = this._getDataByTime(axisValue,'chart_data_bridge').daily_tx
+      const title = dateFormat(parseInt(axisValue), 'yyyy-MM-dd')
+
+      return `<div class="dapp-detail-chart-popover-content">
+                <div class="dapp-detail-chart-popover-title">${title}</div>
+                <div class="dapp-detail-chart-popover-data">
+                   ${params
+              .reverse()
+              .map((item) => {
+                return `
+                    <div class="dapp-detail-chart-popover-data-item">
+                      <div class="dot" style="background:${
+                        colorMap[item.seriesName]
+                }"></div>
+                      <div class="name">${item.seriesName}</div>
+                      <div class="value">${numeral(item.value).format('0,0')}
+                      ${
+                        item.seriesName !== 'All Users'
+                                ? `<span>(${((item.value / daily_tx) * 100).toFixed(
+                                2
+                                )}%)</span>`
+                                : ''
+                }
+                        </div>
+                      </div>
+                    `
+              })
+              .join('')}
+                </div>
+              </div>`
+    },
+    _getDataByTime(axisValue, prop) {
+      const chartData = this.chartData[prop];
       return chartData.find((item) => {
         return item.timestamp * 1000 === parseInt(axisValue)
       })
@@ -579,6 +847,9 @@ export default {
         }
       }
       #dapp-detail-chart {
+        height: 200px;
+      }
+      #dapp-detail-interactions-chart {
         height: 200px;
       }
       .checker {
