@@ -4809,40 +4809,6 @@ export const nowMakerList = [
     {
         "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
         "c1ID": 520,
-        "c2ID": 518,
-        "c1Name": "taiko A1",
-        "c2Name": "Scroll L1 Testnet",
-        "t1Address": "0x0000000000000000000000000000000000000000",
-        "t2Address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-        "tName": "ETH",
-        "c1MinPrice": 0.0005,
-        "c1MaxPrice": 0.01,
-        "c2MinPrice": 0.0005,
-        "c2MaxPrice": 0.01,
-        "precision": 18,
-        "c1AvalibleDeposit": 1000,
-        "c2AvalibleDeposit": 1000,
-        "c1TradingFee": 0.0001,
-        "c2TradingFee": 0.0001,
-        "c1GasFee": 2,
-        "c2GasFee": 2,
-        "c1AvalibleTimes": [
-            {
-                "startTime": 1636019587,
-                "endTime": 99999999999999
-            }
-        ],
-        "c2AvalibleTimes": [
-            {
-                "startTime": 1636019587,
-                "endTime": 99999999999999
-            }
-        ],
-        "_X_ROW_KEY": "row_212"
-    },
-    {
-        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "c1ID": 520,
         "c2ID": 519,
         "c1Name": "taiko A1",
         "c2Name": "scroll_l2_test",
