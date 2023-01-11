@@ -846,13 +846,13 @@ export default {
         const fromRate = exchangeRates[this.selectedToken];
         const toRate = exchangeRates[this.selectedXVMToken];
         const chainInfo = util.getXVMContractToChainInfo();
-        const rate = chainInfo?.toChain?.rate;
-        if (!fromRate || !toRate || !rate) {
+        const slippage = chainInfo?.toChain?.slippage;
+        if (!fromRate || !toRate || !slippage) {
           console.log('get rate fail', this.selectedToken, fromRate, this.selectedXVMToken, toRate);
           return 0;
         }
         const value = (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
-        return new BigNumber(value).multipliedBy(1 - rate / 10000);
+        return new BigNumber(value).multipliedBy(1 - slippage / 10000);
       }
       return amount;
     },

@@ -1175,10 +1175,9 @@ export default {
       if (!tokenAddress) return;
       // const web3 = localWeb3(fromChainID);
       // const provider = new ethers.providers.Web3Provider(web3.currentProvider);
-
+      const web3 = localWeb3(fromChainID);
       if (!util.isEthTokenAddress(tokenAddress)) {
         if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
-          const web3 = localWeb3(fromChainID);
           const provider = new ethers.providers.Web3Provider(web3.currentProvider);
           const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(account));
           await crossAddress.contractApprove(tokenAddress, contractAddress, ethers.BigNumber.from(amount));
@@ -1196,7 +1195,7 @@ export default {
               realSelectMakerInfo.value,
               false
       );
-      expectValue = (new BigNumber(await util.getXVMExpectValue(expectValue))).toFixed(0);
+      expectValue = await util.getXVMExpectValue(expectValue.toString());
 
       try {
         const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
@@ -1490,11 +1489,11 @@ export default {
       const chainInfo = util.getXVMContractToChainInfo();
       const fromCurrency = chainInfo.target.symbol;
       const toCurrency = chainInfo.toChain.symbol;
-      const rate = chainInfo.toChain.rate;
+      const slippage = chainInfo.toChain.slippage;
       if (fromCurrency !== toCurrency) {
         const decimal = chainInfo.toChain.precision === 18 ? 5 : 3;
         const highValue = (await exchangeToCoin(amount, fromCurrency, toCurrency)).toFixed(decimal);
-        const lowerValue = (new BigNumber(highValue).multipliedBy(1 - rate / 10000)).toFixed(decimal);
+        const lowerValue = (new BigNumber(highValue).multipliedBy(1 - slippage / 10000)).toFixed(decimal);
         this.expectValue = `${ lowerValue } ~ ${ highValue } ${ toCurrency }`;
       } else {
         this.expectValue = `${ amount } ${ toCurrency }`;

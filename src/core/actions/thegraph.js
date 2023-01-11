@@ -4905,7 +4905,7 @@ export const nowMakerList = [
 export const xvmList = [
     {
         "chainId": 5,
-        "contractAddress": "0x4cB37AAAB19A38fa419EBd260481257936e83b94",
+        "contractAddress": "0x6838e53488b9f75894a9fdf9feb509ee22c281dd",
         "target": [
             {
                 "tokenAddress": "0x0000000000000000000000000000000000000000",
@@ -4917,112 +4917,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -5036,112 +5036,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -5155,112 +5155,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -5274,112 +5274,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 22,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             }
@@ -5387,7 +5387,7 @@ export const xvmList = [
     },
     {
         "chainId": 22,
-        "contractAddress": "0x4cB37AAAB19A38fa419EBd260481257936e83b94",
+        "contractAddress": "0x6838e53488b9f75894a9fdf9feb509ee22c281dd",
         "target": [
             {
                 "tokenAddress": "0x0000000000000000000000000000000000000000",
@@ -5399,112 +5399,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -5518,112 +5518,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -5637,112 +5637,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -5756,112 +5756,112 @@ export const xvmList = [
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             }
@@ -5869,7 +5869,7 @@ export const xvmList = [
     },
     {
         "chainId": 66,
-        "contractAddress": "0x4cB37AAAB19A38fa419EBd260481257936e83b94",
+        "contractAddress": "0x6838e53488b9f75894a9fdf9feb509ee22c281dd",
         "target": [
             {
                 "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
@@ -5877,116 +5877,116 @@ export const xvmList = [
                 "precision": 18,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -5996,116 +5996,116 @@ export const xvmList = [
                 "precision": 6,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -6115,116 +6115,116 @@ export const xvmList = [
                 "precision": 6,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -6234,116 +6234,116 @@ export const xvmList = [
                 "precision": 18,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             }
@@ -6351,7 +6351,7 @@ export const xvmList = [
     },
     {
         "chainId": 77,
-        "contractAddress": "0x4cB37AAAB19A38fa419EBd260481257936e83b94",
+        "contractAddress": "0x6838e53488b9f75894a9fdf9feb509ee22c281dd",
         "target": [
             {
                 "tokenAddress": "0x0000000000000000000000000000000000000000",
@@ -6359,116 +6359,116 @@ export const xvmList = [
                 "precision": 18,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -6478,116 +6478,116 @@ export const xvmList = [
                 "precision": 6,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -6597,116 +6597,116 @@ export const xvmList = [
                 "precision": 6,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -6716,116 +6716,116 @@ export const xvmList = [
                 "precision": 18,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 515,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             }
@@ -6833,7 +6833,7 @@ export const xvmList = [
     },
     {
         "chainId": 515,
-        "contractAddress": "0x4cB37AAAB19A38fa419EBd260481257936e83b94",
+        "contractAddress": "0x6838e53488b9f75894a9fdf9feb509ee22c281dd",
         "target": [
             {
                 "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
@@ -6841,116 +6841,116 @@ export const xvmList = [
                 "precision": 18,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -6960,116 +6960,116 @@ export const xvmList = [
                 "precision": 6,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -7079,116 +7079,116 @@ export const xvmList = [
                 "precision": 6,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             },
@@ -7198,116 +7198,116 @@ export const xvmList = [
                 "precision": 18,
                 "toChains": [
                     {
-                        "chainId": 22,
-                        "tokenAddress": "0x0000000000000000000000000000000000000000",
-                        "symbol": "ETH",
-                        "precision": 18,
-                        "rate": 200
-                    },
-                    {
                         "chainId": 5,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
-                        "symbol": "USDT",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
-                        "symbol": "USDC",
-                        "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
-                    },
-                    {
-                        "chainId": 22,
-                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
-                        "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 5,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x0000000000000000000000000000000000000000",
+                        "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+                        "symbol": "USDT",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+                        "symbol": "USDC",
+                        "precision": 6,
+                        "slippage": 200
+                    },
+                    {
+                        "chainId": 22,
+                        "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
+                        "symbol": "DAI",
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 66,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x0000000000000000000000000000000000000000",
                         "symbol": "ETH",
                         "precision": 18,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
                         "symbol": "USDT",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
                         "symbol": "USDC",
                         "precision": 6,
-                        "rate": 200
+                        "slippage": 200
                     },
                     {
                         "chainId": 77,
                         "tokenAddress": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa",
                         "symbol": "DAI",
-                        "precision": 18,
-                        "rate": 200
+                        "precision": 6,
+                        "slippage": 200
                     }
                 ]
             }
