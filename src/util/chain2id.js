@@ -31,7 +31,8 @@ export const chain2idMap = {
   "Arbitrum Nova": 16,
   "Arbitrum Nova(Goerli)": 516,
   ScrollL1: 518,
-  ScrollL2: 519
+  ScrollL2: 519,
+  Taiko: 520
 }
 
 export const chain2icon = item => {
