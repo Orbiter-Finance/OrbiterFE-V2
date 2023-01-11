@@ -1242,6 +1242,12 @@ function ScanMakerTransfer(
             key: '',
           };
           break;
+        case 520:
+          api = {
+            endPoint: config.taiko_a1.Rinkeby,
+            key: '',
+          };
+          break;
       }
       if (!api) {
         return

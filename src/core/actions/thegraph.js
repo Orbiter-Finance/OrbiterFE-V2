@@ -4567,6 +4567,447 @@ export const nowMakerList = [
             }
         ],
         "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 510,
+        "c1Name": "Taiko A1",
+        "c2Name": "Metis Stardust Testnet",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x420000000000000000000000000000000000000a",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 511,
+        "c1Name": "taiko A1",
+        "c2Name": "dydx(R)",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 512,
+        "c1Name": "taiko A1",
+        "c2Name": "ZKSpace Testnet",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x0000000000000000000000000000000000000000",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 513,
+        "c1Name": "taiko A1",
+        "c2Name": "Boba Rinkeby Network",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x0000000000000000000000000000000000000000",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 515,
+        "c1Name": "taiko A1",
+        "c2Name": "bsc_test",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 77,
+        "c1Name": "taiko A1",
+        "c2Name": "Optimism goerli",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x0000000000000000000000000000000000000000",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 517,
+        "c1Name": "taiko A1",
+        "c2Name": "polygon_zkevm",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x0000000000000000000000000000000000000000",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 518,
+        "c1Name": "taiko A1",
+        "c2Name": "Scroll L1 Testnet",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 519,
+        "c1Name": "taiko A1",
+        "c2Name": "scroll_l2_test",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 22,
+        "c1Name": "taiko A1",
+        "c2Name": "Arbitrum Görli",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 33,
+        "c1Name": "taiko A1",
+        "c2Name": "zksync Görli",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 0.01,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 0.01,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 5,
+        "c1Name": "taiko A1",
+        "c2Name": "Görli",
+        "t1Address": "0x0000000000000000000000000000000000000000",
+        "t2Address": "0x0000000000000000000000000000000000000000",
+        "tName": "ETH",
+        "c1MinPrice": 0.0005,
+        "c1MaxPrice": 10,
+        "c2MinPrice": 0.0005,
+        "c2MaxPrice": 10,
+        "precision": 18,
+        "c1AvalibleDeposit": 1000,
+        "c2AvalibleDeposit": 1000,
+        "c1TradingFee": 0.0001,
+        "c2TradingFee": 0.0001,
+        "c1GasFee": 2,
+        "c2GasFee": 2,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
+    },
+    
+    {
+        "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "c1ID": 520,
+        "c2ID": 5,
+        "c1Name": "taiko A1",
+        "c2Name": "Görli",
+        "t1Address": "0x69588525E1CF36a0e5437CED510A5597b4fB09F5",
+        "t2Address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5",
+        "tName": "USDT",
+        "c1MinPrice": 0.1,
+        "c1MaxPrice": 10,
+        "c2MinPrice": 0.1,
+        "c2MaxPrice": 10,
+        "precision": 6,
+        "c1TradingFee": 0.1,
+        "c2TradingFee": 0.1,
+        "c1GasFee": 1,
+        "c2GasFee": 1,
+        "c1AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "c2AvalibleTimes": [
+            {
+                "startTime": 1636019587,
+                "endTime": 99999999999999
+            }
+        ],
+        "_X_ROW_KEY": "row_212"
     }
 ];
 

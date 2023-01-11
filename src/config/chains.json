@@ -332,6 +332,30 @@
       "parent": {}
     },
     {
+      "name": "Taiko A1",
+      "chainId": 167003,
+      "shortName": "Taiko A1",
+      "chain": "ETH",
+      "networkId": 167003,
+      "nativeCurrency": {
+        "name": "Ether",
+        "symbol": "ETH",
+        "decimals": 18
+      },
+      "rpc": ["https://l2rpc.a1.taiko.xyz"],
+      "faucets": [],
+      "explorers": [
+        {
+          "name": "Arbitrum Nova Chain Explorer",
+          "url": "https://l2explorer.a1.taiko.xyz/address",
+          "icon": "blockscout",
+          "standard": "EIP3091"
+        }
+      ],
+      "infoURL": "https://taiko.xyz/",
+      "parent": {}
+    },
+    {
       "name": "Optimism(G)",
       "chainId": 420,
       "shortName": "ogov",

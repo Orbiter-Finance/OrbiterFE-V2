@@ -84,5 +84,8 @@ export const chain2icon = item => {
   if (item === 18 || item === 518 || item === 19 || item === 519) {
     iconName = 'scrolllogo'
   }
+  if (item === 20 || item === 520) {
+    iconName = 'taiko'
+  }
   return iconName
 }

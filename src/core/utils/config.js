@@ -115,4 +115,9 @@ export default {
     chainId: '534354',
     rinkeyChainID: '519',
   },
+  taiko_a1: {
+    Rinkeby: "https://l2explorer.a1.taiko.xyz/api",
+    chainId: "167003",
+    rinkeyChainID: "520"
+  }
 }
