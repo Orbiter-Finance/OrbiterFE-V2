@@ -27,6 +27,7 @@ export default {
     517: 'https://public.zkevm-test.net:2083',
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2',
+    520: 'https://l2rpc.a1.taiko.xyz'
   },
   localWSProvider: {
     1: process.env.VUE_APP_WP,
@@ -47,6 +48,7 @@ export default {
     517: 'https://public.zkevm-test.net:2083',
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2',
+    520: 'https://l2rpc.a1.taiko.xyz',
   },
   publicRPC: {
     1: ["https://eth-mainnet.public.blastapi.io",'https://api.mycryptoapi.com/eth',"https://api.securerpc.com/v1",process.env.VUE_APP_HP],
@@ -89,6 +91,7 @@ export default {
     '517',
     '518',
     '519',
+    '520'
   ],
   localChainID_netChainID: {
     1: '1', // mainnet
@@ -123,6 +126,7 @@ export default {
     517: '1402',
     518: '534351', // Scroll L1 Testnet
     519: '534354', // Scroll L2 Testnet
+    520: '167003', // Taiko A1 Testnet
   },
   crossAddressContracts: {
     1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
@@ -176,6 +180,7 @@ export default {
     517: 'https://public.zkevm-test.net:8443/tx/',
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
+    520: 'https://l2explorer.a1.taiko.xyz/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/

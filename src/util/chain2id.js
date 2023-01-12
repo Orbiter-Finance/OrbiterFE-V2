@@ -9,6 +9,7 @@ export const chain2idMap = {
   ImmutableX: 8,
   Metis: 10,
   dYdX: 11,
+  "Polygon ZKEVM": 17,
   Rinkeby: 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
@@ -30,8 +31,10 @@ export const chain2idMap = {
   "BNBChain": 15,
   "Arbitrum Nova": 16,
   "Arbitrum Nova(Goerli)": 516,
+  "Polygon ZKEVM(Goerli)": 517,
   ScrollL1: 518,
-  ScrollL2: 519
+  ScrollL2: 519,
+  Taiko: 520
 }
 
 export const chain2icon = item => {
@@ -83,6 +86,9 @@ export const chain2icon = item => {
   }
   if (item === 18 || item === 518 || item === 19 || item === 519) {
     iconName = 'scrolllogo'
+  }
+  if (item === 20 || item === 520) {
+    iconName = 'taiko'
   }
   return iconName
 }

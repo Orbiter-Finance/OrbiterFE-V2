@@ -110,6 +110,8 @@ const STARKNET_ETH_WITHDRAW_ONL1 = 60000
 // scroll
 const SCROLL_ETH_DEPOSIT = 21000
 const SCROLL_ETH_WITHDRAW = 21000
+const TAIKO_ETH_WITHDRAW = 21000
+const TAIKO_ETH_DEPOSIT = 21000
 
 const LocalNetWorks = env.supportLocalNetWorksIDs
 export default {
@@ -318,7 +320,8 @@ export default {
       515: 150000,
       516: 150000,
       518: 21000,
-      519: 21000
+      519: 21000,
+      520: 21000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -350,7 +353,8 @@ export default {
       515: 'BNB',
       516: 'ETH',
       518: 'ETH',
-      519: 'ETH'
+      519: 'ETH',
+      520: 'ETH'
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await getZkSyncProvider(fromChainID)
@@ -506,6 +510,9 @@ export default {
     if (fromChainID === 519){
       timeSpent = 6.828
     }
+    if (fromChainID === 520) {
+      timeSpent = 60
+    }
     if (toChainID === 4 || toChainID === 44) {
       timeSpent = 180
     }
@@ -555,6 +562,9 @@ export default {
     }
     if (toChainID === 519) {
       timeSpent += 6.828
+    }
+    if (toChainID === 520) {
+      timeSpent = 60
     }
     let timeSpentStr = timeSpent + 's'
     return timeSpentStr
@@ -607,6 +617,13 @@ export default {
     }
     if (fromChainID === 519 && toChainID === 518) {
       return '~10min'
+    }
+    if (fromChainID === 520 || fromChainID === 20) {
+      return '~2hours'
+    }
+    
+    if (toChainID === 520 || toChainID === 20) {
+      return '~2hours'
     }
 
     if (fromChainID === 1 || fromChainID === 5) {
@@ -1000,7 +1017,14 @@ export default {
         throw new Error(`scroll withdraw error`)
       }
     }
-
+    if (fromChainID === 520 || fromChainID === 20) {
+      try {
+        let fromGasPrice = await this.getGasPrice(fromChainID)
+        ethGas = fromGasPrice * TAIKO_ETH_WITHDRAW;
+      } catch (error) {
+        throw new Error(`taiko withdraw error`)
+      }
+    }
     // deposit
     if (toChainID === 2 || toChainID === 22) {
       try {
@@ -1155,6 +1179,16 @@ export default {
         let toGasPrice = await this.getGasPrice(toChainID)
         // scroll DEPOSIT
         ethGas += toGasPrice * SCROLL_ETH_DEPOSIT;
+      } catch (error) {
+        throw new Error(`scroll deposit error`)
+      }
+    }
+    if (toChainID === 520 || toChainID === 20) {
+      try {
+        // scroll get
+        let toGasPrice = await this.getGasPrice(toChainID)
+        // scroll DEPOSIT
+        ethGas += toGasPrice * TAIKO_ETH_DEPOSIT;
       } catch (error) {
         throw new Error(`scroll deposit error`)
       }
