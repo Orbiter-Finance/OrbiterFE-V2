@@ -240,13 +240,14 @@ export default {
     if (!chainInfo) return '0';
     const fromCurrency = chainInfo.target.symbol;
     const toCurrency = chainInfo.toChain.symbol;
-    let expectValue = (new BigNumber(value)).toString();
+    const fromPrecision = chainInfo.target.precision;
+    let expectValue = (new BigNumber(value)).multipliedBy(10 ** fromPrecision);
     if (fromCurrency !== toCurrency) {
       const toPrecision = chainInfo.toChain.precision;
-      expectValue = (new BigNumber(expectValue)).multipliedBy(10 ** toPrecision);
-      expectValue = (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toString();
+      expectValue = (new BigNumber(value)).multipliedBy(10 ** toPrecision);
+      expectValue = await exchangeToCoin(expectValue, fromCurrency, toCurrency);
     }
-    return expectValue;
+    return expectValue.toFixed(0);
   },
 
   /**

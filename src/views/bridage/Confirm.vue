@@ -1196,7 +1196,7 @@ export default {
               realSelectMakerInfo.value,
               false
       );
-      expectValue = (new BigNumber(await util.getXVMExpectValue(expectValue))).toFixed(0);
+      expectValue = await util.getXVMExpectValue(expectValue.toString());
 
       try {
         const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
