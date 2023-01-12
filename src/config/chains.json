@@ -332,9 +332,9 @@
       "parent": {}
     },
     {
-      "name": "Taiko A1",
+      "name": "Taiko",
       "chainId": 167003,
-      "shortName": "Taiko A1",
+      "shortName": "Taiko",
       "chain": "ETH",
       "networkId": 167003,
       "nativeCurrency": {
