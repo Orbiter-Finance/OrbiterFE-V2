@@ -24,7 +24,7 @@ export default {
     15: process.env.VUE_APP_HP_BSC,
     16: 'https://nova.arbitrum.io/rpc',
     516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://public.zkevm-test.net:2083',
+    517: 'https://rpc.public.zkevm-test.net',
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2',
     520: 'https://l2rpc.a1.taiko.xyz'
@@ -45,7 +45,7 @@ export default {
     514: 'wss://zksync2-testnet.zksync.dev/ws',
     16: 'https://nova.arbitrum.io/rpc',
     516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://public.zkevm-test.net:2083',
+    517: 'https://rpc.public.zkevm-test.net',
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2',
     520: 'https://l2rpc.a1.taiko.xyz',
@@ -123,7 +123,7 @@ export default {
     515: '97', // bsc test
     16: '42170', // ar nova
     516: '421613', // ar nova g
-    517: '1402',
+    517: '1422',
     518: '534351', // Scroll L1 Testnet
     519: '534354', // Scroll L2 Testnet
     520: '167003', // Taiko A1 Testnet
@@ -177,7 +177,7 @@ export default {
     514: 'https://zksync2-testnet.zkscan.io/tx/',
     16: 'https://nova.arbiscan.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
-    517: 'https://public.zkevm-test.net:8443/tx/',
+    517: 'https://explorer.public.zkevm-test.net/tx/',
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
     520: 'https://l2explorer.a1.taiko.xyz/tx/',
@@ -212,7 +212,7 @@ export default {
     515: 'https://testnet.bscscan.com/address/',
     16: 'https://nova.arbiscan.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
-    517: 'https://public.zkevm-test.net:8443/address/',
+    517: 'https://explorer.public.zkevm-test.net/address/',
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
   },
