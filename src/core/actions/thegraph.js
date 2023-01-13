@@ -1966,7 +1966,7 @@ export const nowMakerList = [
       "c1MaxPrice": 0.01,
       "c2MinPrice": 0.005,
       "c2MaxPrice": 0.01,
-      "precision": 0,
+      "precision": 18,
       "c1TradingFee": 0.0001,
       "c2TradingFee": 0.0001,
       "c1GasFee": 1,
