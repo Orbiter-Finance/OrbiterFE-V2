@@ -18,8 +18,7 @@
                 <div class="name" :title="scope.row.rollup_name">
                   {{ scope.row.rollup_name }}
                 </div>
-                <div class="icon" v-if="!!scope.row.details"> 
-                  <!-- <i class="el-icon-arrow-right"></i> -->
+                <div class="icon" v-if="!!scope.row.details">
                   <svg-icon-themed icon="searchChartIcon" size="lg"></svg-icon-themed>
                 </div>
               </div>

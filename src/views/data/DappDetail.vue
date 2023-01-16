@@ -295,6 +295,7 @@ export default {
       this.detailData = {}
       this.$loader.show()
       this.detailData = await getDappDetail(value, this.dappData.dapp_name)
+      this.interactionsShow = !!this.chartData.chart_data_bridge.length;
       this.$loader.hide()
     },
     onCheckerClick(type, item) {

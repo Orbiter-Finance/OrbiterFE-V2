@@ -40,11 +40,11 @@
         />
       </div>
       <div class="table">
-        <el-table :data="tableData" style="width: 100%" empty-text="No Items">
+        <el-table :data="tableData" style="width: 100%" empty-text="No Items" @sort-change="onSortChange">
           <el-table-column
             fixed
             label="Dapp Name"
-            :width="isMobile ? 250 : 350"
+            :width="isMobile ? 200 : 300"
           >
             <template slot-scope="scope">
               <div class="name-column">
@@ -60,77 +60,62 @@
                   :name="scope.row.dapp_name"
                   :rollup="currentRollup"
                 />
-                <div class="name" :title="scope.row.dapp_name">
+                <div @click="onRowClick(scope.row)" class="name" :title="scope.row.dapp_name">
                   {{ scope.row.dapp_name }}
                 </div>
-                <template v-if="!isMobile">
+                <div v-if="!isMobile" style="width: 50px;display: flex">
                   <template v-if="scope.row.rank === 0">
                     <scan-link
-                      :href="scope.row.dapp_url"
-                      :width="13"
-                      :height="13"
+                            :href="scope.row.dapp_url"
+                            :width="13"
+                            :height="13"
                     />
                   </template>
                   <template v-else>
                     <icon-link :href="scope.row.dapp_url" />
                     <twitter-link
-                      v-if="scope.row.dapp_twitter"
-                      :href="scope.row.dapp_twitter"
+                            v-if="scope.row.dapp_twitter"
+                            :href="scope.row.dapp_twitter"
                     />
                   </template>
-                </template>
+                </div>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="launch_time" label="Launch Date" width="120">
+          <el-table-column prop="launch_time" label="Launch Date" width="140" align="right"
+                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
             <template slot-scope="scope">
               <div class="data">
                 {{ dateFormat(scope.row.launch_time, 'yyyy-MM-dd') }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="all_users"
-            label="All Users"
-            width="120"
-            align="right"
-          >
+          <el-table-column prop="all_users" label="All Users" width="110" align="right"
+                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row.all_users).format('0,0') }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="24h_active_users"
-            label="24h Active Users"
-            width="170"
-            align="right"
-          >
+          <el-table-column prop="24h_active_users" label="24h Active Users" width="180" align="right"
+                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row['24h_active_users']).format('0,0') }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="24h_new_users"
-            label="24h New Users"
-            width="150"
-            align="right"
-          >
+          <el-table-column prop="24h_new_users" label="24h New Users" width="170" align="right"
+                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row['24h_new_users']).format('0,0') }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="24h_interactions"
-            label="24h Interactions"
-            width="160"
-            align="right"
-          >
+          <el-table-column prop="24h_interactions" label="24h Interactions" width="180" align="right"
+                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
             <template slot-scope="scope">
               <div class="data">
                 {{ numeral(scope.row['24h_interactions']).format('0,0') }}
@@ -139,6 +124,7 @@
           </el-table-column>
         </el-table>
       </div>
+      <dapp-detail ref="dappDetail" />
     </div>
   </div>
 </template>
@@ -151,6 +137,7 @@ import TimeDiff from '../TimeDiff.vue'
 import IconLink from '../IconLink.vue'
 import ScanLink from '../ScanLink.vue'
 import TwitterLink from '../TwitterLink.vue'
+import DappDetail from '../DappDetail'
 import DappLogo from '../DappLogo.vue'
 import { getDappDailyData } from '../../../L2data/daily'
 import dateFormat from '../../../util/dateFormat'
@@ -164,6 +151,7 @@ export default {
       baseDappDailyData: {},
       tableData: [],
       rollups: [],
+      currentSort: { prop: '24h_active_users', order: 'descending' }
     }
   },
   computed: {
@@ -190,6 +178,7 @@ export default {
     IconLink,
     TwitterLink,
     ScanLink,
+    DappDetail
   },
   async mounted() {
     this.rollups = await getTabRollups('mainpage')
@@ -204,6 +193,62 @@ export default {
 
       const table_data = baseDappDailyData && baseDappDailyData.table_data
       this.tableData = table_data
+    },
+    onSortChange({ prop, order }) {
+      let tableData = JSON.parse(JSON.stringify(this.tableData));
+      const isAscending = order === 'ascending';
+
+      this.currentSort = {
+        prop, order
+      };
+
+      if (!order === null) {
+        this.tableData = tableData;
+        return;
+      }
+
+      if (prop === 'all_users') {
+        tableData = tableData.sort((a, b) => {
+          const aAll = a.all_users;
+          const bAll = b.all_users;
+          if (!a.rank) return false;
+          if (!b.rank) return true;
+          return isAscending ? aAll - bAll : bAll - aAll;
+        });
+      }
+
+      if (
+              ['24h_active_users', '24h_new_users', '24h_interactions'].includes(
+                      prop
+              )
+      ) {
+        tableData = tableData.sort((a, b) => {
+          const aData = a[prop];
+          const bData = b[prop];
+          if (!a.rank) return false;
+          if (!b.rank) return true;
+          return isAscending ? aData - bData : bData - aData;
+        });
+      }
+
+      if (prop === 'launch_time') {
+        tableData = tableData.sort((a, b) => {
+          const aTime = new Date(a.launch_time).getTime();
+          const bTime = new Date(b.launch_time).getTime();
+          if (!a.rank) return false;
+          if (!b.rank) return true;
+          return isAscending ? aTime - bTime : bTime - aTime;
+        });
+      }
+      const rankList = tableData.filter(item => item.rank);
+      const fixList = tableData.filter(item => !item.rank);
+      for (let i = 0; i < rankList.length; i++) {
+        rankList[i].rank = i + 1;
+      }
+      this.tableData = [...fixList, ...rankList];
+    },
+    onRowClick(row){
+      this.$refs.dappDetail.show(this.currentRollup, row)
     },
   },
 }
@@ -340,11 +385,11 @@ export default {
         color: #333333;
 
         .rank {
-          width: 20px;
+          width: 32px;
           font-style: normal;
           font-weight: 400;
           font-size: 14px;
-          margin-right: 20px;
+          margin-right: 12px;
         }
 
         .new {
@@ -375,6 +420,7 @@ export default {
           font-weight: 500;
           font-size: 14px;
           margin: 0 10px;
+          cursor: pointer;
         }
 
         a {
@@ -388,6 +434,7 @@ export default {
         font-weight: 500;
         font-size: 14px;
         color: rgba(51, 51, 51, 0.8);
+        padding-right: 24px;
       }
     }
   }
@@ -426,6 +473,19 @@ export default {
 
         .name-column {
           color: #fff;
+        }
+
+        .el-table .sort-caret.ascending {
+          border-bottom-color: #fff;
+        }
+        .el-table .sort-caret.descending {
+          border-top-color: #fff;
+        }
+        .el-table .descending .sort-caret.descending {
+          border-top-color: #df2e2d;
+        }
+        .el-table .ascending .sort-caret.ascending {
+          border-bottom-color: #df2e2d;
         }
       }
     }
