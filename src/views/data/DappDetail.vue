@@ -180,7 +180,7 @@ export default {
     return {
       dialogVisible: false,
       times,
-      currentTime: times[0].value,
+      currentTime: times[1].value,
       dappData: {},
       detailData: {},
       rollups: [],
@@ -189,7 +189,7 @@ export default {
       allInteractionsSeries,
       color,
       checkData: ['New Users', 'Active Users'],
-      checkInteractionsData: ['Bridge Interactions', 'Other Interactions'],
+      checkInteractionsData: ['All Interactions', 'Bridge Interactions', 'Other Interactions'],
       interactionsShow: true
     }
   },
@@ -253,8 +253,8 @@ export default {
       this.rollups = [rollup]
       this.$nextTick(async () => {
         this.checkData = ['New Users', 'Active Users']
-        this.checkInteractionsData = ['Bridge Interactions', 'Other Interactions'];
-        this.currentTime = times[0].value
+        this.checkInteractionsData = ['All Interactions', 'Bridge Interactions', 'Other Interactions'];
+        this.currentTime = times[1].value
         if (this._chart) {
           this._chart.clear()
         }

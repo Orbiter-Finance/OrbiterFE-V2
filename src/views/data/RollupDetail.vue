@@ -210,12 +210,12 @@ export default {
             rollupData: {},
             detailData: {},
             times,
-            currentTime: times[0].value,
+            currentTime: times[1].value,
             allSeries,
             allInteractionsSeries,
             color,
             checkData: ['New Users', 'Active Users'],
-            checkInteractionsData: ['Bridge Interactions', 'Other Interactions'],
+            checkInteractionsData: ['All Interactions', 'Bridge Interactions', 'Other Interactions'],
         };
     },
     watch: {
