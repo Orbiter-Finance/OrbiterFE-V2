@@ -155,6 +155,11 @@ export default {
         },
         {
           isConnect: false,
+          icon: 'tallyho',
+          title: 'TallyHo',
+        },
+        {
+          isConnect: false,
           icon: 'blockwallet',
           title: 'BlockWallet',
         },
@@ -321,6 +326,7 @@ export default {
       position: absolute;
       top: 75px;
       width: 320px;
+      height: auto
     }
   }
 }
