@@ -8,18 +8,13 @@ import { updateGlobalSelectWalletConf, updateSelectWalletAddress, updateSelectWa
 import { showMessage } from "../../constants/web3/getWeb3";
 import { getChainInfo, getNetworkIdByChainId } from "../../chainUtils";
 import util from "../../util";
-import { TALLYHO } from "../constants.js";
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
 // otherwise it will throw error;
 export const installWallet = (walletType, walletIsInstalledInvestigator) => {
     return new Promise((resolve) => {
-        //Use Tally Ho provider if available to avoid conflicts with MetaMask
-        if(walletType === TALLYHO) {
-            const tallyhoProvider = window.tally;
-                tallyhoProvider.enable().then(() => resolve(tallyhoProvider));
-        } else if(window.ethereum) {
+        if (window.ethereum) {
             try {
                 // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
                 const matchProvider =  findMatchWeb3ProviderByWalletType(walletType, walletIsInstalledInvestigator);
@@ -52,7 +47,6 @@ export const performWalletInformation = async (walletType, walletIsInstalledInve
         walletAddress: null,
     }
     const matchWalletWeb3Provider = new Web3(matchWalletProvider); // inject web3
-    console.log('matchWalletProvider', matchWalletProvider)
     let networkId,
         walletAddress;
     if (matchWalletProvider.request) { // provide ethereum standard request method, more compatible, recommend first
