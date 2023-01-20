@@ -1615,12 +1615,15 @@ export default {
       }
     },
     async sendTransfer() {
-    
-      this.$notify.error({
-          title: `Service maintenance is in progress, please wait for recovery.`,
+      // eslint-disable-next-line no-constant-condition
+      if (true) {
+        this.$notify.error({
+          title: `The system is under maintenance, the transfer function is suspended, all funds are safe.`,
           duration: 3000,
         })
         return
+      }
+     
       if (check.checkIsBitKeep()) {
         this.$notify.error({
           title: `Bitkeep is not supported and please try another wallet.`,
