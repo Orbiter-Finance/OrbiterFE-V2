@@ -1615,6 +1615,12 @@ export default {
       }
     },
     async sendTransfer() {
+    
+      this.$notify.error({
+          title: `Service maintenance is in progress, please wait for recovery.`,
+          duration: 3000,
+        })
+        return
       if (check.checkIsBitKeep()) {
         this.$notify.error({
           title: `Bitkeep is not supported and please try another wallet.`,
