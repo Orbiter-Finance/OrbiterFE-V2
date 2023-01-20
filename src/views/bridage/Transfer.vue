@@ -1616,13 +1616,13 @@ export default {
     },
     async sendTransfer() {
       // eslint-disable-next-line no-constant-condition
-      if (true) {
-        this.$notify.error({
-          title: `The system is under maintenance, the transfer function is suspended, all funds are safe.`,
-          duration: 3000,
-        })
-        return
-      }
+      // if (true) {
+      //   this.$notify.error({
+      //     title: `The system is under maintenance, the transfer function is suspended, all funds are safe.`,
+      //     duration: 3000,
+      //   })
+      //   return
+      // }
      
       if (check.checkIsBitKeep()) {
         this.$notify.error({
