@@ -1654,7 +1654,20 @@ export default {
           return
         }
         const { fromChainID, toChainID } = transferDataState
-
+        if (toChainID == 11) {
+          this.$notify.error({
+            title: `Dydx is under maintenance, please try again later`,
+            duration: 3000,
+          })
+          return
+        }
+        if (fromChainID == 10) {
+          this.$notify.error({
+            title: `Metis network maintenance is in progress, please try again later`,
+            duration: 3000,
+          })
+          return
+        }
         let selectMakerInfo = realSelectMakerInfo.value
         let nonce = await getNonce.getNonce(
           transferDataState.fromChainID,
