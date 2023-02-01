@@ -1,20 +1,14 @@
 import { Notification } from 'element-ui'
-import env from '../../env'
-import chainList from '../config/chains.json'
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
-import { xvmList } from "../core/actions/thegraph";
 import { transferDataState } from "../composition/useTransferData";
 import { exchangeToCoin } from "./coinbase";
 import BigNumber from "bignumber.js";
+import testnet from '../config/testnet.json'
+import mainnet from '../config/mainnet.json'
+import { isProd } from "./env";
 
 export default {
   showMessage(message, type) {
-    // Message({
-    //   showClose: true,
-    //   duration: 2000,
-    //   message: message,
-    //   type: type,
-    // })
     const _type = type || 'success'
     Notification[_type]({
       message: message,
@@ -22,99 +16,11 @@ export default {
       duration: 3000,
     })
   },
-  getChainInfo(netChainID) {
-    var chain = chainList.chainList.filter(
-      (chain) => chain.chainId.toString() === netChainID.toString()
-    )
-    if (chain.length > 0) {
-      return chain[0]
-    }
-    return undefined
+  chainName(chainId) {
+    return this.getChainInfoByChainId(chainId)?.name || 'unknown';
   },
-  chainName(localChainID, netChainID) {
-    // zksync、starknet
-    switch (Number(localChainID)) {
-      case 3:
-        return 'zkSync'
-      case 33:
-        return 'zkSync(G)'
-      case 4:
-        return 'StarkNet'
-      case 44:
-        return 'StarkNet(R)'
-      case 8:
-        return 'Immutable X'
-      case 88:
-        return 'Immutable X(R)'
-      case 9:
-        return 'Loopring'
-      case 99:
-        return 'Loopring(G)'
-      case 10:
-        return 'Metis'
-      case 510:
-        return 'Metis(R)'
-      case 11:
-        return 'dYdX'
-      case 511:
-        return 'dYdX(R)'
-      case 12:
-        return 'ZKSpace'
-      case 512:
-        return 'ZKSpace(R)'
-      case 13:
-        return 'Boba'
-      case 513:
-        return 'Boba(R)'
-      case 14:
-        return 'zkSync2'
-      case 514:
-        return 'zkSync2(G)'
-      case 15:
-        return "BNB Chain"
-      case 515:
-        return "BNB Chain(R)"
-      case 16:
-        return "Arbitrum Nova"
-      case 516:
-        return "Arbitrum Nova(Goerli)"
-      case 17:
-        return "Polygon ZKEVM"
-      case 517:
-        return "Polygon ZKEVM(Goerli)"
-    }
-    const chain = chainList.chainList.filter(
-      (_chain) => _chain.chainId == netChainID
-    )
-    if (chain.length > 0) {
-      return chain[0].name
-    } else {
-      return 'unknown'
-    }
-  },
-  chainShortName(localChainID, netChainID) {
-    if (
-      localChainID !== '' &&
-      localChainID &&
-      localChainID.toString() === '3'
-    ) {
-      return 'zkSync'
-    }
-    if (
-      localChainID !== '' &&
-      localChainID &&
-      localChainID.toString() === '33'
-    ) {
-      return 'zkSync(G)'
-    }
-    var chain = chainList.chainList.filter(
-      (chain) => chain.chainId.toString() === netChainID
-    )
-    if (chain.length > 0) {
-      return chain[0].shortName
-    } else {
-      return 'unknown'
-    }
+  chainNetWorkId(chainId) {
+    return this.getChainInfoByChainId(chainId)?.chainId;
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -150,45 +56,30 @@ export default {
     }
     return ''
   },
-  shortChainName(address) {
-    if (address && address.length > 5) {
-      var subStr1 = address.substr(0, 2)
-      var subStr2 = address.substr(address.length - 2, 2)
-      return subStr1 + '...' + subStr2
-    }
-    return ''
-  },
-
-  /**
-   * @param {string} value1
-   * @param {string} value2
-   * @returns {boolean}
-   */
   equalsIgnoreCase(value1, value2) {
     if (typeof value1 !== 'string' || typeof value2 !== 'string') {
       return false
     }
-
-    if (value1 == value2) {
-      return true
-    }
-    if (value1.toUpperCase() == value2.toUpperCase()) {
-      return true
-    }
-
-    return false
+    return value1.toUpperCase() === value2.toUpperCase();
   },
 
   /**
    * @param {string} tokenAddress when tokenAddress=/^0x0+$/i,
    * @returns {boolean}
    */
-  isEthTokenAddress(tokenAddress) {
-    return /^0x0+$/i.test(tokenAddress)
-  },
-
-  isBNBTokenAddress(chainId) {
-    return chainId == 97 || chainId == 56;
+  isEthTokenAddress(chainId, tokenAddress) {
+    const chainInfo = this.getChainInfoByChainId(chainId);
+    if (chainInfo) {
+      // main coin
+      if (this.equalsIgnoreCase(chainInfo.nativeCurrency.address, tokenAddress)) {
+        return true;
+      }
+      // ERC20
+      if (chainInfo.tokens.find(item => this.equalsIgnoreCase(item.address, tokenAddress))) {
+        return false;
+      }
+    }
+    return /^0x0+$/i.test(tokenAddress);
   },
 
   /**
@@ -203,18 +94,26 @@ export default {
     })
   },
 
-  /**
-   * @param {number} chainId
-   * @returns
-   */
-  isSupportEVM(chainId) {
-    return [1, 2, 6, 7, 5, 22, 66, 77].indexOf(Number(chainId)) > -1
+  getChainInfoByChainId(chainId) {
+    let configChainList = isProd() ? mainnet : testnet;
+    const chainInfo = JSON.parse(JSON.stringify(configChainList.find(item => +item.internalId === +chainId) || {}));
+    const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
+    if (localWsRpc) {
+      chainInfo.rpc = chainInfo.rpc || [];
+      chainInfo.rpc.unshift(localWsRpc);
+    }
+    const localHttpRpc = process.env[`VUE_APP_HP_${ chainId }`];
+    if (localHttpRpc) {
+      chainInfo.rpc = chainInfo.rpc || [];
+      chainInfo.rpc.unshift(localHttpRpc);
+    }
+    return chainInfo;
   },
 
   isSupportXVMContract() {
-    const { fromCurrency, toCurrency } = transferDataState;
-    const chainInfo = this.getXVMContractToChainInfo();
-    return !!(chainInfo?.toChain && chainInfo.target.symbol === fromCurrency && chainInfo.toChain.symbol === toCurrency);
+    const { fromChainID } = transferDataState;
+    const chainInfo = this.getChainInfoByChainId(fromChainID);
+    return chainInfo?.xvmList && chainInfo.xvmList.length;
   },
 
   isExecuteXVMContract() {
@@ -222,28 +121,15 @@ export default {
     return !!(this.isSupportXVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
   },
 
-  getXVMContractToChainInfo() {
-    const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
-    const xvm = xvmList.find(item => item.chainId === fromChainID);
-    const target = xvm?.target;
-    if (!target) return null;
-    const targetData = target.find(item => item.symbol === fromCurrency);
-    const toChains = targetData?.toChains;
-    if (!toChains) return null;
-    targetData.chainId = xvm.chainId;
-    const toChain = toChains.find(item => item.chainId === toChainID && item.symbol === toCurrency);
-    return { target: targetData, toChain };
-  },
-
   async getXVMExpectValue(value) {
-    const chainInfo = this.getXVMContractToChainInfo();
-    if (!chainInfo) return '0';
-    const fromCurrency = chainInfo.target.symbol;
-    const toCurrency = chainInfo.toChain.symbol;
-    const fromPrecision = chainInfo.target.precision;
+    const { selectMakerConfig } = transferDataState;
+    const {fromChain,toChain} = selectMakerConfig;
+    const fromCurrency = fromChain.symbol;
+    const toCurrency = toChain.symbol;
+    const fromPrecision = fromChain.decimals;
     let expectValue = (new BigNumber(value)).multipliedBy(10 ** fromPrecision);
     if (fromCurrency !== toCurrency) {
-      const toPrecision = chainInfo.toChain.precision;
+      const toPrecision = toChain.decimals;
       expectValue = (new BigNumber(value)).multipliedBy(10 ** toPrecision);
       expectValue = await exchangeToCoin(expectValue, fromCurrency, toCurrency);
     }
@@ -254,7 +140,7 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
+    const chain = this.getChainInfoByChainId(chainId)
     const switchParams = {
       chainId: this.toHex(chain.chainId),
     }

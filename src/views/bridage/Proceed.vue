@@ -158,12 +158,10 @@
 <script>
 import { SvgIconThemed, CommBoxHeader } from '../../components'
 import util from '../../util/util'
-import { chain2icon } from '../../util'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import {
   isMobile,
   transferDataState,
-  realSelectMakerInfo,
   web3State,
   saveSenderPageWorkingState,
 } from '../../composition/hooks'
@@ -213,11 +211,11 @@ export default {
     },
     FromChainName() {
       const chainId = this.getChainId()
-      return util.chainName(chainId, this.$env.localChainID_netChainID[chainId])
+      return util.chainName(chainId)
     },
     toChainName() {
       const chainId = this.getChainId(false)
-      return util.chainName(chainId, this.$env.localChainID_netChainID[chainId])
+      return util.chainName(chainId)
     },
     FromTx() {
       if (this.detailData) {
@@ -250,28 +248,26 @@ export default {
           return 'View on Explore'
         } else {
           // immutablex
-          if (toChainID == 8 || toChainID == 88) {
+          if (toChainID === 8 || toChainID === 88) {
             return `TransferId: ${toTxHash}`
           }
           return `Tx:${util.shortAddress(toTxHash)}`
         }
       }
-
+      const { toChainID } = transferDataState;
       const { proceedState, proceeding } = this.$store.state
       if (proceedState < 4) {
         return 'View on Explore'
       } else {
         // immutablex
-        if (
-          transferDataState.toChainID == 8 ||
-          transferDataState.toChainID == 88
-        ) {
+        if (toChainID === 8 || toChainID === 88) {
           return `TransferId: ${proceeding.makerTransfer.txid}`
         }
         return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
       }
     },
     proceedData() {
+      const { selectMakerConfig, fromCurrency } = transferDataState;
       if (this.detailData) {
         const timestamp = new Date(`${this.detailData.fromTimeStamp} UTC+0`)
           .toLocaleString()
@@ -280,36 +276,32 @@ export default {
         return [
           {
             title: 'Timestamp',
-            // desc: util.transferTimeStampToTime(this.detailData.fromTimeStamp),
             desc: timestamp,
           },
           {
             title: 'Value',
-            desc:
-              this.detailData.userAmount.toString() +
+            desc: this.detailData.userAmount.toString() +
               ' ' +
               this.detailData.tokenName,
           },
         ]
       }
-      // const timestamp = (new Date(`${this.$store.state.proceeding.userTransfer.timeStamp} UTC+0`).toLocaleString()?.replace(/\..*/g, '')?.replace('T', ' '))
       return [
         {
           title: 'Timestamp',
           desc: util.transferTimeStampToTime(
             this.$store.state.proceeding.userTransfer.timeStamp
           ),
-          // desc: timestamp
         },
         {
           title: 'Value',
           desc:
             (
               this.$store.state.proceeding.userTransfer.amount /
-              10 ** realSelectMakerInfo.value.precision
+              10 ** selectMakerConfig.fromChain.decimals
             ).toFixed(6) +
             ' ' +
-            transferDataState.selectTokenInfo.token,
+            fromCurrency,
         },
       ]
     },
@@ -317,9 +309,9 @@ export default {
   methods: {
     showChainIcon(isFrom = true) {
       if (this.detailData) {
-        return chain2icon(this.detailData[`${isFrom ? 'from' : 'to'}ChainID`])
+        return this.$env.chainIcon[this.detailData[`${ isFrom ? 'from' : 'to' }ChainID`]];
       }
-      return chain2icon(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`])
+      return this.$env.chainIcon[transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`]];
     },
     getChainId(isFrom = true) {
       let chainID
@@ -496,60 +488,56 @@ export default {
         this.$emit('stateChanged', '1')
       }
     },
-    reportError() {
-      console.warn('reportError')
-    },
     addChainNetWork(useChainID) {
-      var chain = util.getChainInfo(
-        this.$env.localChainID_netChainID[useChainID]
-      )
+      const chain = util.getChainInfoByChainId(useChainID);
       const switchParams = {
         chainId: util.toHex(chain.chainId),
-      }
+      };
       compatibleGlobalWalletConf.value.walletPayload.provider
-        .request({
-          method: 'wallet_switchEthereumChain',
-          params: [switchParams],
-        })
-        .then(() => {
-          // switch success
-          util.showMessage('switch success', 'success')
-        })
-        .catch((error) => {
-          console.warn(error)
-          if (error.code === 4902) {
-            // need add net
-            const params = {
-              chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
-              chainName: chain.name,
-              nativeCurrency: {
-                name: chain.nativeCurrency.name,
-                symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-                decimals: chain.nativeCurrency.decimals,
-              },
-              rpcUrls: chain.rpc,
-              blockExplorerUrls: [
-                chain.explorers &&
-                chain.explorers.length > 0 &&
-                chain.explorers[0].url
-                  ? chain.explorers[0].url
-                  : chain.infoURL,
-              ],
-            }
-            compatibleGlobalWalletConf.value.walletPayload.provider
               .request({
-                method: 'wallet_addEthereumChain',
-                params: [params, web3State.coinbase],
+                method: 'wallet_switchEthereumChain',
+                params: [switchParams],
               })
-              .then(() => {})
+              .then(() => {
+                // switch success
+                util.showMessage('switch success', 'success');
+              })
               .catch((error) => {
-                console.warn(error)
-                util.showMessage(error.message, 'error')
-              })
-          } else {
-            util.showMessage(error.message, 'error')
-          }
-        })
+                console.warn(error);
+                if (error.code === 4902) {
+                  // need add net
+                  const params = {
+                    chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
+                    chainName: chain.name,
+                    nativeCurrency: {
+                      name: chain.nativeCurrency.name,
+                      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
+                      decimals: chain.nativeCurrency.decimals,
+                    },
+                    rpcUrls: chain.rpc,
+                    blockExplorerUrls: [
+                      chain.explorers &&
+                      chain.explorers.length > 0 &&
+                      chain.explorers[0].url
+                              ? chain.explorers[0].url
+                              : chain.infoURL,
+                    ],
+                  };
+                  compatibleGlobalWalletConf.value.walletPayload.provider
+                          .request({
+                            method: 'wallet_addEthereumChain',
+                            params: [params, web3State.coinbase],
+                          })
+                          .then(() => {
+                          })
+                          .catch((error) => {
+                            console.warn(error);
+                            util.showMessage(error.message, 'error');
+                          });
+                } else {
+                  util.showMessage(error.message, 'error');
+                }
+              });
     },
   },
 }

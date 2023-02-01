@@ -151,7 +151,6 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
 // directs the user to append the chain
 export const universalWalletSwitchChainHandler = (walletConf, walletProvider, successCallback = () => { }, failCallback = () => { }) => {
     const presentNetWorkId = getNetworkIdByChainId();
-    // const matchChainConf = getChainInfo(presentNetWorkId);
     const switchParams = {
         chainId: util.toHex(presentNetWorkId)
     }

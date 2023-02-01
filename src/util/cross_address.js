@@ -1,34 +1,10 @@
 import { Notification } from 'element-ui'
 import { ethers, utils } from 'ethers'
 import env from '../../env'
-import { Coin_ABI } from './constants/contract/contract'
+import { Coin_ABI, CROSS_ADDRESS_ABI } from './constants/contract/contract';
 import util from './util'
 import walletDispatchers, { WALLETCONNECT } from './walletsDispatchers';
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
-const CROSS_ADDRESS_ABI = [
-  {
-    inputs: [
-      { internalType: 'address payable', name: '_to', type: 'address' },
-      { internalType: 'bytes', name: '_ext', type: 'bytes' },
-    ],
-    name: 'transfer',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_token', type: 'address' },
-      { internalType: 'address', name: '_to', type: 'address' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' },
-      { internalType: 'bytes', name: '_ext', type: 'bytes' },
-    ],
-    name: 'transferERC20',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-]
 
 export const CrossAddressTypes = {
   '0x01': 'Cross Ethereum Address',
@@ -43,15 +19,16 @@ export class CrossAddress {
    * @param {ethers.Signer | undefined} signer
    */
   constructor(provider, orbiterChainId = 5, signer = undefined) {
-    this.contractAddress = env.crossAddressContracts[orbiterChainId]
+    const chainInfo = util.getChainInfoByChainId(orbiterChainId);
+    this.contractAddress = chainInfo?.xvmList && chainInfo.xvmList.length ? chainInfo.xvmList[0] : '';
     if (!this.contractAddress) {
-      console.log('Sorry, miss param [contractAddress]')
+      console.log('Sorry, miss param [contractAddress]');
     }
 
-    this.provider = provider
-    this.orbiterChainId = orbiterChainId
-    this.signer = signer || provider.getSigner()
-    this.networkId = env.localChainID_netChainID[orbiterChainId]
+    this.provider = provider;
+    this.orbiterChainId = orbiterChainId;
+    this.signer = signer || provider.getSigner();
+    this.networkId = util.chainNetWorkId(orbiterChainId);
   }
 
   async checkNetworkId() {
@@ -69,13 +46,11 @@ export class CrossAddress {
    * @param {Contract} contractErc20
    */
   async getAllowance(contractErc20, contractAddress = this.contractAddress) {
-
-    const ownerAddress = await this.signer.getAddress()
-    const allowance = await contractErc20.allowance(
-      ownerAddress,
-      contractAddress
-    )
-    return allowance
+    const ownerAddress = await this.signer.getAddress();
+    return await contractErc20.allowance(
+        ownerAddress,
+        contractAddress
+    );
   }
 
   /**

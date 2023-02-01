@@ -108,11 +108,6 @@ export default {
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
   },
-  // watch: {
-  //   '$store.getters.realSelectMakerInfo': function (newValue) {
-  //     newValue && getTraddingHistory()
-  //   },
-  // },
   methods: {
     performInitCurrentLoginWallet() {
       performInitMobileAppWallet()

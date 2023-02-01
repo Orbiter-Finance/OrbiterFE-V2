@@ -1,24 +1,30 @@
 import Web3 from 'web3'
 import env from '../../../../env'
-
-const LocalNetWorks = env.supportLocalNetWorksIDs
+import { makerConfigs } from "../../../core/actions/thegraph";
+import util from "../../util";
 
 /**
- * @param {number} chainID
  * @returns {Web3 | null}
+ * @param chainId
  */
-function localWeb3(chainID) {
-  if (chainID && LocalNetWorks.indexOf(chainID.toString()) > -1) {
-    const provider = env.localProvider[chainID]
-    if (!provider) {
-      return null
-    }
-
-    const localWeb3 = new Web3(provider)
-    return localWeb3
-  } else {
-    return null
+function localWeb3(chainId) {
+  const rpc = this.localRpc(chainId);
+  if (rpc) {
+    return new Web3(rpc);
   }
+  return null;
+}
+
+function localRpc(chainId, isWs) {
+  const localHttpRpc = process.env[`VUE_APP_HP_${ chainId }`];
+  if (localHttpRpc && !isWs) {
+    return localHttpRpc;
+  }
+  const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
+  if (localWsRpc) {
+    return localWsRpc;
+  }
+  return '';
 }
 
 /**
@@ -26,34 +32,14 @@ function localWeb3(chainID) {
  * @returns {Web3 | null}
  */
 function localWSWeb3(chainID) {
-  if (LocalNetWorks.indexOf(chainID.toString()) > -1) {
-    // var socketOptions = {
-    //   clientConfig: {
-    //     keepalive: true,
-    //     keepaliveInterval: 60000,
-    //   },
-    //   reconnect: {
-    //     auto: true,
-    //     delay: 1000,
-    //     maxAttempts: Infinity,
-    //     onTimeout: false,
-    //   },
-    // }
-    const host = env.localWSProvider[chainID]
-    if (!host) {
-      return null
-    }
-
-    const localWSWeb3 = new Web3(
-      new Web3.providers.WebsocketProvider(
-        host
-        // socketOptions,
-      )
-    )
-    return localWSWeb3
-  } else {
-    return null
+  const rpc = this.localRpc(chainID, 1);
+  if (!rpc) {
+    return null;
   }
+
+  return new Web3(
+      new Web3.providers.WebsocketProvider(rpc)
+  );
 }
 
-export { localWeb3, localWSWeb3 }
+export { localRpc, localWeb3, localWSWeb3 };
