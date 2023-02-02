@@ -1311,8 +1311,9 @@ export default {
             }
           }
         }
+        const chainInfo = util.getChainInfoByChainId(fromChainID);
         const toAddressAll = (util.isExecuteXVMContract() ?
-                selectMakerConfig.fromChain.xvmList[0] :
+                chainInfo.xvmList[0] :
                 selectMakerConfig.sender).toLowerCase();
         let toAddress = util.shortAddress(toAddressAll);
         if (fromChainID === 4 || fromChainID === 44 && !util.isExecuteXVMContract()) {

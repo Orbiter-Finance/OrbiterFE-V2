@@ -8,7 +8,7 @@ import util from "../../util";
  * @param chainId
  */
 function localWeb3(chainId) {
-  const rpc = this.localRpc(chainId);
+  const rpc = localRpc(chainId);
   if (rpc) {
     return new Web3(rpc);
   }
@@ -23,6 +23,10 @@ function localRpc(chainId, isWs) {
   const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
   if (localWsRpc) {
     return localWsRpc;
+  }
+  const chainInfo = util.getChainInfoByChainId(chainId);
+  if (chainInfo?.rpc) {
+    return chainInfo?.rpc;
   }
   return '';
 }

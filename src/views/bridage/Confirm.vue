@@ -199,7 +199,7 @@ export default {
           icon: 'withholding',
           title: 'Withholding Fee',
           notice: 'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
-          desc: selectMakerConfig.tradingFee + ' ' + selectMakerConfig.tradingFee.fromChain.symbol,
+          desc: selectMakerConfig.tradingFee + ' ' + selectMakerConfig.fromChain.symbol,
         },
         {
           icon: 'security',

@@ -65,7 +65,7 @@ async function getTransferGasLimit(
       if (util.isEthTokenAddress(localChainID, tokenAddress)) {
         gasLimit = await web3.eth.estimateGas({
           from,
-          to: makerInfo.makerAddress,
+          to: selectMakerConfig.recipient,
           value,
         })
         return gasLimit
