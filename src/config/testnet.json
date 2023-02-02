@@ -67,7 +67,8 @@
     },
     "rpc": [
       "https://goerli-rollup.arbitrum.io/rpc",
-      "https://arb-goerli.g.alchemy.com/v2/demo"
+      "https://arb-goerli.g.alchemy.com/v2/demo",
+      "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
     ],
     "watch": [
       "rpc"
@@ -199,7 +200,7 @@
       "name": "MATIC",
       "symbol": "MATIC",
       "decimals": 18,
-      "address": "0x0000000000000000000000000000000000001010"
+      "address": "0x0000000000000000000000000000000000000000"
     },
     "rpc": [
       "https://matic-testnet-archive-rpc.bwarelabs.com",
@@ -212,12 +213,6 @@
     ],
     "contracts": [],
     "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
-      },
       {
         "name": "USDT",
         "symbol": "USDT",
@@ -454,7 +449,7 @@
       "name": "Ether",
       "symbol": "ETH",
       "decimals": 18,
-      "address": "0x000000000000000000000000000000000000800A"
+      "address": "0x0000000000000000000000000000000000000000"
     },
     "rpc": [
       "https://zksync2-testnet.zksync.dev",
