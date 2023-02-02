@@ -5,7 +5,6 @@ import { exchangeToCoin } from "./coinbase";
 import BigNumber from "bignumber.js";
 import testnet from '../config/testnet.json'
 import mainnet from '../config/mainnet.json'
-import { isProd } from "./env";
 
 export default {
   showMessage(message, type) {
@@ -95,7 +94,7 @@ export default {
   },
 
   getChainInfoByChainId(chainId) {
-    let configChainList = isProd() ? mainnet : testnet;
+    let configChainList = [...mainnet, ...testnet];
     const info = configChainList.find(item => +item.internalId === +chainId);
     if (!info) return null;
     const chainInfo = JSON.parse(JSON.stringify(info));

@@ -152,7 +152,7 @@
     </div>
     <div :hidden="!isSupportXVM">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
-        <input @input="updateSendBtnInfo" type="checkbox" id="checkbox" v-model="isCrossAddress" />
+        <input type="checkbox" id="checkbox" v-model="isCrossAddress" />
         <label for="checkbox"> Cross Address </label>
       </div>
       <div class="cross-addr-box to-area" v-if="isCrossAddress">
@@ -419,6 +419,9 @@ export default {
     currentWalletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
     },
+    currentNetwork() {
+      return compatibleGlobalWalletConf.value.walletPayload.networkId;
+    },
     isShowExchangeIcon() {
       return (
               !this.queryParams.fixed &&
@@ -617,6 +620,8 @@ export default {
       return gasFee + tradingFee + withholdingGasFee + total;
     },
     timeSpent() {
+      // const { selectMakerConfig } = transferDataState;
+      // return selectMakerConfig.spendTime
       return transferCalculate.transferSpentTime(
               transferDataState.fromChainID,
               transferDataState.toChainID
@@ -691,13 +696,22 @@ export default {
       updateCrossAddressReceipt(newValue);
     },
     selectFromToken(newValue) {
-      if (transferDataState.fromCurrency !== newValue) this.updateTransferInfo({ fromCurrency: newValue });
+      if (transferDataState.fromCurrency !== newValue) {
+        this.updateTransferInfo({ fromCurrency: newValue });
+        this.clearTransferValue();
+      }
     },
     selectToToken: function (newValue) {
-      if (transferDataState.toCurrency !== newValue) this.updateTransferInfo({ toCurrency: newValue });
+      if (transferDataState.toCurrency !== newValue) {
+        this.updateTransferInfo({ toCurrency: newValue });
+      }
     },
     isCrossAddress: function (newValue) {
       updateIsCrossAddress(newValue);
+      this.updateSendBtnInfo();
+    },
+    currentNetwork(newValue, oldValue) {
+      if (oldValue !== newValue) this.clearTransferValue();
     },
     currentWalletAddress: function (newValue, oldValue) {
       console.log('Current wallet address', newValue);
@@ -826,9 +840,9 @@ export default {
           });
         }
       });
-
-      if (!fromTokenList.find((item) => item.token === fromCurrency)) {
+      if (fromTokenList.length && !fromTokenList.find((item) => item.token === fromCurrency)) {
         fromCurrency = fromTokenList[0].token;
+        if (oldFromChainID !== fromChainID) this.selectFromToken = fromTokenList[0].token;
       }
 
       makerConfigList.forEach(item => {
@@ -841,8 +855,9 @@ export default {
         }
       });
 
-      if (!toTokenList.find((item) => item.token === toCurrency)) {
+      if (toTokenList.length && !toTokenList.find((item) => item.token === toCurrency)) {
         toCurrency = toTokenList[0].token;
+        if (oldToChainID !== toChainID) this.selectToToken = toTokenList[0].token;
       }
 
       if (this.fromChainIdList !== fromChainIdList) {
@@ -1070,6 +1085,10 @@ export default {
       const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
       chainBalanceMap[symbol] = value || Number(0).toFixed(6);
       this.balanceMap = JSON.parse(JSON.stringify(this.balanceMap));
+    },
+    clearTransferValue() {
+      this.transferValue = '';
+      this.toValue = 0;
     },
     replaceStarknetWrongHref() {
       /*

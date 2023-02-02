@@ -2,11 +2,11 @@ import util from '../util'
 import axios from 'axios'
 import config from '../../core/utils/config'
 import { store } from '../../store'
-import { isProd } from "../env";
 
 export default {
     async getSupportZksTokenList() {
-        isProd() ? await getAllZksTokenList(12) : await getAllZksTokenList(512);
+        await getAllZksTokenList(12);
+        await getAllZksTokenList(512);
         await util.sleep(30 * 1000)
         this.getSupportZksTokenList()
     },

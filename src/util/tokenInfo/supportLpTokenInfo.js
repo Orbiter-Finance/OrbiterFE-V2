@@ -2,12 +2,12 @@ import util from '../util'
 import axios from 'axios'
 import config from '../../core/utils/config'
 import { store } from '../../store'
-import { isProd } from "../env";
 
 export default {
     async getSupportLpTokenList() {
         try {
-            isProd() ? await getAllLpTokenList(9) : await getAllLpTokenList(99);
+            await getAllLpTokenList(9);
+            await getAllLpTokenList(99);
             await util.sleep(30 * 1000);
             this.getSupportLpTokenList();
         } catch (err) {

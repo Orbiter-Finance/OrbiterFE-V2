@@ -9,6 +9,7 @@ const tokenIcons = {
   LRC: require('../assets/lrclogo.png'),
   BNB: require('../assets/bnblogo.png'),
   DAI: require('../assets/dailogo.png'),
+  MATIC: require('../assets/maticlogo.png')
 }
 
 /**
