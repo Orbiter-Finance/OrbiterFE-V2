@@ -1,6 +1,4 @@
 import Web3 from 'web3'
-import env from '../../../../env'
-import { makerConfigs } from "../../../core/actions/thegraph";
 import util from "../../util";
 
 /**

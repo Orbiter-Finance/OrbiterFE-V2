@@ -152,7 +152,7 @@
     </div>
     <div :hidden="!isSupportXVM">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
-        <input type="checkbox" id="checkbox" v-model="isCrossAddress" />
+        <input @input="updateSendBtnInfo" type="checkbox" id="checkbox" v-model="isCrossAddress" />
         <label for="checkbox"> Cross Address </label>
       </div>
       <div class="cross-addr-box to-area" v-if="isCrossAddress">
@@ -160,6 +160,7 @@
           <div class="left">Cross Address</div>
         </div>
         <input
+                @blur="updateSendBtnInfo"
                 type="text"
                 v-model="crossAddressReceipt"
                 placeholder="You receive cross chain addresses"
@@ -304,8 +305,7 @@ import config from '../../config'
 import { exchangeToCoin, exchangeToUsd, getRates } from '../../util/coinbase';
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
-import { DydxHelper } from '../../util/dydx/dydx_helper'
-import Web3 from 'web3'
+
 import {
   connectStarkNetWallet,
   getStarkMakerAddress,
@@ -395,7 +395,7 @@ export default {
   },
   computed: {
     isErrorAddress() {
-      if (!this.crossAddressReceipt || !util.isSupportXVMContract()) {
+      if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
         return false;
       }
       if (transferDataState.toChainID === 4 || transferDataState.toChainID === 44) {
@@ -734,6 +734,8 @@ export default {
     this.rates = await getRates('ETH');
 
     this.updateTransferInfo();
+
+    console.log('NODE_ENV', process.env.NODE_ENV);
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
