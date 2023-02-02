@@ -17,6 +17,7 @@ export default {
     })
   },
   chainName(chainId) {
+    console.log('getChainInfoByChainId', chainId, this.getChainInfoByChainId(chainId));
     return this.getChainInfoByChainId(chainId)?.name || 'unknown';
   },
   chainNetWorkId(chainId) {
