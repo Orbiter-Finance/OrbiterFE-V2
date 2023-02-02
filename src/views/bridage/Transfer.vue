@@ -748,8 +748,6 @@ export default {
     this.rates = await getRates('ETH');
 
     this.updateTransferInfo();
-
-    console.log('NODE_ENV', process.env.NODE_ENV);
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -910,14 +908,14 @@ export default {
       if (fromChainID !== oldFromChainID || fromCurrency !== oldFromCurrency) {
         this.userMinPrice = makerConfig?.fromChain?.minPrice || 0;
       }
-      this.getMakerMaxBalance();
       this.updateRoutes(oldFromChainID, oldToChainID);
       this.updateSendBtnInfo();
     },
-    updateSendBtnInfo() {
+    async updateSendBtnInfo() {
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain } = selectMakerConfig;
+      await this.getMakerMaxBalance();
       this.updateToValue();
       const availableDigit = fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
@@ -931,11 +929,11 @@ export default {
       let makerMin = new BigNumber(this.userMinPrice);
       let transferValue = new BigNumber(this.transferValue || 0);
       const info = {
-        text: 'CONNECT A WALLET',
+        text: 'SEND',
         disabled: null,
       };
       console.log('userMax', userMax.toString(), 'transferValue', transferValue.toString(), 'selectMakerConfigMax', makerMax.toString(),
-              'toValue', this.toValue.toString(), 'makerMaxBalance', this.makerMaxBalance);
+              'toValue', this.toValue.toString(), 'makerMaxBalance', new BigNumber(this.makerMaxBalance).toString());
       if (walletIsLogin.value) {
         info.text = 'SEND';
         if (transferValue.comparedTo(0) < 0) {
@@ -945,6 +943,7 @@ export default {
         }
         if (transferValue.comparedTo(userMax) > 0) {
           info.text = 'INSUFFICIENT FUNDS';
+          info.disabled = 'disabled';
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           info.disabled = 'disabled';
@@ -954,8 +953,8 @@ export default {
         } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
-        } else if (this.toValue > 0 && this.toValue > this.makerMaxBalance) {
-          info.text = 'INSUFFICIENT LIQUIDITY';
+        } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
+          info.text = 'INSUFFICIENT LIQUIDITY 1';
           info.disabled = 'disabled';
         }
 
@@ -1157,8 +1156,13 @@ export default {
       this.transferValue = max.toString();
     },
     transfer_mid() {
-      const { fromChainID, toChainID } = transferDataState;
-      this.updateTransferInfo({ toChainID: fromChainID, fromChainID: toChainID });
+      const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
+      this.updateTransferInfo({
+        toChainID: fromChainID,
+        fromChainID: toChainID,
+      });
+      this.selectFromToken = toCurrency;
+      this.selectToToken = fromCurrency;
     },
     changeFromChain() {
       if (this.fromChainIdList.length <= 1) {
@@ -1437,6 +1441,13 @@ export default {
         this.makerMaxBalance = Number.MAX_SAFE_INTEGER;
         return;
       }
+      const makerAddress = selectMakerConfig.sender;
+      const addressBalanceMap = this.balanceMap[makerAddress] = this.balanceMap[makerAddress] || {};
+      const chainBalanceMap = addressBalanceMap[toChain.id] = addressBalanceMap[toChain.id] || {};
+      if (chainBalanceMap[toChain.symbol]) {
+        this.makerMaxBalance = chainBalanceMap[toChain.symbol];
+        return;
+      }
 
       const _balance = await this.getBalance(
               toChain.id,
@@ -1447,6 +1458,7 @@ export default {
       if (_balance > 0) {
         // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
         this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
+        this.addBalance(toChain.id, toChain.symbol, this.makerMaxBalance, makerAddress)
       }
     },
     gasCost() {
