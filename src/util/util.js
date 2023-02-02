@@ -96,7 +96,9 @@ export default {
 
   getChainInfoByChainId(chainId) {
     let configChainList = isProd() ? mainnet : testnet;
-    const chainInfo = JSON.parse(JSON.stringify(configChainList.find(item => +item.internalId === +chainId) || {}));
+    const info = configChainList.find(item => +item.internalId === +chainId);
+    if (!info) return null;
+    const chainInfo = JSON.parse(JSON.stringify(info));
     const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
     if (localWsRpc) {
       chainInfo.rpc = chainInfo.rpc || [];
