@@ -43,6 +43,14 @@ export default {
     }
     return false
   },
+  checkIsTallyHo: function () {
+    if (compatibleGlobalWalletConf.value.walletPayload.provider) {
+      if (compatibleGlobalWalletConf.value.walletPayload.provider.isTally) {
+        return true
+      }
+    }
+    return false
+  },
   checkIsBitKeep: function () {
     if (compatibleGlobalWalletConf.value.walletPayload.provider) {
       if (compatibleGlobalWalletConf.value.walletPayload.provider.isBitKeep) {
