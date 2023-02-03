@@ -46,14 +46,6 @@ const provider = {
 // transfer data after connect success into a valid data structure
 // there r different processing between the initial connect and the repeated connect
 const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
-  // const connChainId = payload.chainId;
-  // let web3 = {}
-  // for (const localId in env.localChainID_netChainID) {
-  //     if (env.localChainID_netChainID[localId] == connChainId) {
-  //       web3 = new Web3(env.localProvider[localId])
-  //       break;
-  //     }
-  // }
   if (connected) {
     const {
       _accounts = [],
@@ -158,7 +150,7 @@ export const walletConnectDispatcherOnDisconnect = withPerformInterruptWallet(
 
 export const walletConnectDispatcherOnSignature = async (
   from,
-  selectMakerInfo,
+  selectMakerConfig,
   value,
   fromChainID,
   onTransferSucceed
@@ -166,20 +158,20 @@ export const walletConnectDispatcherOnSignature = async (
   const _web3 = localWeb3(fromChainID)
   const gaslimit = await _web3.eth.estimateGas({
     from,
-    to: selectMakerInfo.makerAddress,
+    to: selectMakerConfig.recipient,
     value,
   })
   const nonce = await _web3.eth.getTransactionCount(from)
   connector
     .sendTransaction({
       from,
-      to: selectMakerInfo.makerAddress,
+      to: selectMakerConfig.recipient,
       gasLimit: gaslimit,
       value,
       nonce,
     })
     .then((result) => {
-      onTransferSucceed(from, selectMakerInfo, value, fromChainID, result)
+      onTransferSucceed(from, value, fromChainID, result)
     })
     .catch((err) => {
       console.log('err', err)

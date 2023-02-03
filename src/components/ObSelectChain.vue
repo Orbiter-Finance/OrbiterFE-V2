@@ -53,7 +53,6 @@ import { DydxHelper } from '../util/dydx/dydx_helper'
 import { IMXHelper } from '../util/immutablex/imx_helper'
 import util from '../util/util.js'
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
-import { chain2icon } from '../util'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 import { web3State } from '../composition/hooks'
@@ -76,14 +75,15 @@ export default {
     }
   },
   computed: {
-    transeferChainData: function () {
-      var newArray = []
+    transferChainData: function () {
+      const newArray = []
       for (let index = 0; index < this.ChainData.length; index++) {
         const item = this.ChainData[index]
-        const iconName = chain2icon(item)
-        var chainData = {
+
+        const iconName = this.$env.chainIcon[item]
+        const chainData = {
           icon: iconName,
-          chain: util.chainName(item, this.$env.localChainID_netChainID[item]),
+          chain: util.chainName(item),
           localID: item,
         }
         newArray.push(chainData)
@@ -96,9 +96,9 @@ export default {
     },
     newChainData: function () {
       if (!this.keyword || this.keyword === '') {
-        return this.transeferChainData
+        return this.transferChainData
       }
-      return this.transeferChainData.filter(
+      return this.transferChainData.filter(
         (item) =>
           item.chain.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1
       )

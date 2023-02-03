@@ -1,151 +1,45 @@
 const baseUrl = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
 const baseDomain = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
-export const netStateUrl = `${baseDomain}`
 export default {
-  // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
   baseUrl,
-  baseTraddingUrl: `${baseDomain}/api`,
+  baseTraddingUrl: `${ baseDomain }/api`,
   credential: false,
-  localProvider: {
-    1: process.env.VUE_APP_HP,
-    2: process.env.VUE_APP_HP_AR,
-    6: process.env.VUE_APP_HP_PO,
-    7: process.env.VUE_APP_HP_OP,
-    5: process.env.VUE_APP_HP_R, // rinkeby
-    22: process.env.VUE_APP_HP_AR_R,
-    66: process.env.VUE_APP_HP_PO_G,
-    77: 'https://goerli.optimism.io',
-    10: process.env.VUE_APP_HP_MT,
-    510: process.env.VUE_APP_HP_MT_R,
-    13: process.env.VUE_APP_HP_BOBA,
-    513: process.env.VUE_APP_HP_BOBA_R,
-    514: 'https://zksync2-testnet.zksync.dev',
-    515: process.env.VUE_APP_HP_BSC_R,
-    15: process.env.VUE_APP_HP_BSC,
-    16: 'https://nova.arbitrum.io/rpc',
-    516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://rpc.public.zkevm-test.net',
-    518: 'https://prealpha.scroll.io/l1',
-    519: 'https://prealpha.scroll.io/l2',
-    520: 'https://l2rpc.a1.taiko.xyz'
-  },
-  localWSProvider: {
-    1: process.env.VUE_APP_WP,
-    2: process.env.VUE_APP_WP_AR,
-    6: process.env.VUE_APP_WP_PO,
-    7: process.env.VUE_APP_WP_OP,
-    5: process.env.VUE_APP_WP_R, // rinkeby
-    22: process.env.VUE_APP_WP_AR_R,
-    66: process.env.VUE_APP_WP_PO_G,
-    77: process.env.VUE_APP_WP_OP_K,
-    10: process.env.VUE_APP_WP_MT,
-    510: process.env.VUE_APP_WP_MT_R,
-    13: process.env.VUE_APP_WP_BOBA,
-    513: process.env.VUE_APP_WP_BOBA_R,
-    514: 'wss://zksync2-testnet.zksync.dev/ws',
-    16: 'https://nova.arbitrum.io/rpc',
-    516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://rpc.public.zkevm-test.net',
-    518: 'https://prealpha.scroll.io/l1',
-    519: 'https://prealpha.scroll.io/l2',
-    520: 'https://l2rpc.a1.taiko.xyz',
-  },
-  publicRPC: {
-    1: ["https://eth-mainnet.public.blastapi.io",'https://api.mycryptoapi.com/eth',"https://api.securerpc.com/v1",process.env.VUE_APP_HP],
-    2: ['https://arb1.arbitrum.io/rpc',"https://1rpc.io/arb", process.env.VUE_APP_HP_AR],
-    6: ["https://polygon-rpc.com/", 'https://poly-rpc.gateway.pokt.network', process.env.VUE_APP_HP_PO],
-    7: ['https://mainnet.optimism.io', process.env.VUE_APP_HP_OP],
-  },
-  supportXVM:[5, 77],
-  supportLocalNetWorksIDs: [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '22',
-    '33',
-    '44',
-    '66',
-    '77',
-    '88',
-    '99',
-    '510',
-    '511',
-    '512',
-    '513',
-    '514',
-    '515',
-    '516',
-    '517',
-    '518',
-    '519',
-    '520'
-  ],
-  localChainID_netChainID: {
-    1: '1', // mainnet
-    2: '42161', // Arbitrum
-    3: '1', // zk
-    4: '1', // starknet
-    5: '5', // goerli
-    6: '137', // polygon
-    7: '10', // optimism
-    8: '1', // mainnet
-    9: '1', // loopring
-    10: '1088', //metis
-    11: '1', // dydx
-    12: '1', // zkspace
-    13: '288', // boba mainnet,
-    15: '56', // bsc mainnet,
-    22: '421613', // arbitrum test
-    33: '5', // zktest
-    44: '5', // starknet(R)
-    66: '80001', // polygon(R)
-    77: '420', // optimism(G)
-    88: '3', // ropsten
-    99: '5', // loopring(G)
-    510: '588', //metis test
-    511: '3', // dydx(R)
-    512: '4', // zkspace(R)s
-    513: '28', // boba rinkeby
-    514: '280', //zksync2(G)
-    515: '97', // bsc test
-    16: '42170', // ar nova
-    516: '421613', // ar nova g
-    517: '1422',
-    518: '534351', // Scroll L1 Testnet
-    519: '534354', // Scroll L2 Testnet
-    520: '167003', // Taiko A1 Testnet
-  },
-  crossAddressContracts: {
-    1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    2: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    3: '',
-    4: '',
-    5: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    6: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    7: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    8: '',
-    9: '',
-    22: '0x721fBB2C2C9cdFa5547feE6b683949c20F175457',
-    33: '',
-    44: '',
-    66: '0x40eC19690ebEd534e9b9C58e341727028cF143c0',
-    77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
-    88: '',
-    99: '',
-    515: '',
+  chainIcon: {
+    1: 'tokenLogo',
+    2: 'arblogo',
+    22: 'arblogo',
+    3: 'zklogo',
+    33: 'zklogo',
+    4: 'sknlogo',
+    44: 'sknlogo',
+    6: 'pglogo',
+    66: 'pglogo',
+    7: 'oplogo',
+    77: 'oplogo',
+    8: 'imxlogo',
+    88: 'imxlogo',
+    9: 'loopringlogo',
+    99: 'loopringlogo',
+    10: 'metislogo',
+    510: 'metislogo',
+    11: 'dydxlogo',
+    511: 'dydxlogo',
+    12: 'zkspacelogo',
+    512: 'zkspacelogo',
+    13: 'bobalogo',
+    513: 'bobalogo',
+    14: 'zk2logo',
+    514: 'zk2logo',
+    15: 'bsclogo',
+    515: 'bsclogo',
+    16: 'arnavologo',
+    516: 'arnavologo',
+    17: 'polygon_zkevm_logo',
+    517: 'polygon_zkevm_logo',
+    18: 'scrolllogo',
+    518: 'scrolllogo',
+    19: 'scrolllogo',
+    519: 'scrolllogo',
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -177,10 +71,9 @@ export default {
     514: 'https://zksync2-testnet.zkscan.io/tx/',
     16: 'https://nova.arbiscan.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
-    517: 'https://explorer.public.zkevm-test.net/tx/',
+    517: 'https://public.zkevm-test.net:8443/tx/',
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
-    520: 'https://l2explorer.a1.taiko.xyz/tx/',
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -212,8 +105,8 @@ export default {
     515: 'https://testnet.bscscan.com/address/',
     16: 'https://nova.arbiscan.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
-    517: 'https://explorer.public.zkevm-test.net/address/',
+    517: 'https://public.zkevm-test.net:8443/address/',
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
   },
-}
+};

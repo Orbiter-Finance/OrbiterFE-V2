@@ -28,11 +28,6 @@ async function cacheExchangeRates(currency = 'USD') {
   }
 }
 export async function getRates(currency) {
-  // const bnbRates = await axios.get(
-  //     `https://coinyep.com/api/v1/?from=${currency}&to=BNB&lang=zh&format=json`
-  // );
-  // const bnbPrice = bnbRates?.data?.price;
-
   try {
     const resp = await axios.get(
       `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
@@ -51,8 +46,6 @@ export async function getRates(currency) {
     return undefined
   }
 }
-
-setInterval(() => cacheExchangeRates(), 10 * 1000)
 
 /**
  * @param sourceCurrency
