@@ -186,21 +186,20 @@
       "infoURL": "https://andromeda-explorer.metis.io"
     },
     {
-      "name": "Metis(R)",
-      "chainId": 588,
-      "shortName": "stardust-metis",
-      "networkId": 588,
+      "name": "Metis(G)",
+      "chainId": 599,
+      "shortName": "Metis Goerli",
+      "networkId": 599,
       "nativeCurrency": {
         "name": "METIS",
         "symbol": "tMETIS",
         "decimals": 18
       },
       "rpc": [
-        "https://stardust.metis.io/?owner=588",
-        "wss://stardust-ws.metis.io/"
+        "https://goerli.gateway.metisdevops.link"
       ],
       "faucets": [],
-      "infoURL": "https://stardust-explorer.metis.io"
+      "infoURL": "https://goerli.explorer.metisdevops.link"
     },
     {
       "name": "Boba",

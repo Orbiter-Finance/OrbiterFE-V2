@@ -332,12 +332,12 @@
   },
   {
     "api": {
-      "url": "https://stardust-explorer.metis.io/api",
+      "url": "https://goerli.explorer.metisdevops.link/api",
       "key": ""
     },
     "chain": "ETH",
-    "chainId": "588",
-    "networkId": "588",
+    "chainId": "599",
+    "networkId": "599",
     "internalId": "510",
     "name": "Metis(G)",
     "nativeCurrency": {
@@ -347,7 +347,7 @@
       "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
     },
     "rpc": [
-      "https://stardust.metis.io/?owner=588"
+      "https://goerli.gateway.metisdevops.link"
     ],
     "watch": [
       "rpc"
