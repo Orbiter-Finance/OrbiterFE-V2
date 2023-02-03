@@ -9,11 +9,12 @@ export async function XVMSwap(provider, contractAddress, account, makerAddress, 
     const { fromChain, toChain } = selectMakerConfig;
     const t1Address = fromChain.tokenAddress;
     const fromCurrency = fromChain.symbol;
-    const toChainId = toChain.chainId;
+    const toChainId = toChain.id;
     const toCurrency = toChain.symbol;
     const t2Address = toChain.tokenAddress;
     const slippage = selectMakerConfig.slippage;
-    console.log('expectValue --> ', expectValue, 'eth value-->', value, 'token-->', t1Address);
+    console.log('expectValue --> ', expectValue, 'eth value-->', value, 'token-->', t1Address,
+        'params-->',toChainId, t2Address, toWalletAddress);
     const web3 = new Web3(provider || window.web3.currentProvider);
     const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, expectValue, slippage];
     const bufferList = sourceData.map(item => {

@@ -378,6 +378,7 @@ export default {
 
       transferValue: '',
       toValue: 0,
+      isWaitSend: false,
 
       exchangeToUsdPrice: 0,
 
@@ -711,7 +712,7 @@ export default {
       this.updateSendBtnInfo();
     },
     currentNetwork(newValue, oldValue) {
-      if (oldValue !== newValue) this.clearTransferValue();
+      if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
     },
     currentWalletAddress: function (newValue, oldValue) {
       console.log('Current wallet address', newValue);
@@ -1318,7 +1319,10 @@ export default {
           if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainNetWorkId(fromChainID)) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
+                this.isWaitSend = true;
                 await util.ensureWalletNetwork(fromChainID);
+                await util.sleep(1000);
+                this.isWaitSend = false;
               } catch (err) {
                 util.showMessage(err.message, 'error');
                 return;

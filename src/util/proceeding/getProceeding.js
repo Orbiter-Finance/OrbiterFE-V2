@@ -6,7 +6,7 @@ const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
 }
 
-async function confirmUserTransaction(hash) {
+function confirmUserTransaction(hash) {
   let currentStatus = 1;
   const cron = setInterval(async () => {
     try {
@@ -47,7 +47,8 @@ async function confirmUserTransaction(hash) {
       console.error(e);
       return;
     }
-  }, 10 * 1000);
+  }, 20 * 1000);
+  return cron;
 }
 
 export default {
@@ -68,8 +69,6 @@ export default {
     store.commit('updateProceedingUserTransferAmount', realAmount);
     store.commit('updateProceedingUserTransferLocalChainID', localChainID);
     store.commit('updateProceedingUserTransferTxid', txHash);
-    setTimeout(() => {
-      confirmUserTransaction(txHash);
-    }, 20 * 1000);
+    return confirmUserTransaction(txHash);
   },
 };
