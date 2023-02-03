@@ -196,12 +196,6 @@
     "networkId": "80001",
     "internalId": "66",
     "name": "Polygon Mumbai",
-    "nativeCurrency": {
-      "name": "MATIC",
-      "symbol": "MATIC",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
     "rpc": [
       "https://matic-testnet-archive-rpc.bwarelabs.com",
       "https://polygon-testnet.public.blastapi.io",
@@ -213,6 +207,12 @@
     ],
     "contracts": [],
     "tokens": [
+      {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa"
+      },
       {
         "name": "USDT",
         "symbol": "USDT",

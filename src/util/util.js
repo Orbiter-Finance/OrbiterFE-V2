@@ -70,7 +70,7 @@ export default {
     const chainInfo = this.getChainInfoByChainId(chainId);
     if (chainInfo) {
       // main coin
-      if (this.equalsIgnoreCase(chainInfo.nativeCurrency.address, tokenAddress)) {
+      if (this.equalsIgnoreCase(chainInfo.nativeCurrency?.address, tokenAddress)) {
         return true;
       }
       // ERC20
