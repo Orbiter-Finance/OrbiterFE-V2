@@ -18,7 +18,7 @@ export async function XVMSwap(provider, contractAddress, account, makerAddress, 
     const web3 = new Web3(provider || window.web3.currentProvider);
     const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, expectValue, slippage];
     const bufferList = sourceData.map(item => {
-        return web3.utils.toHex(item);
+        return item;
     });
     const data = RLP.encode(bufferList);
     const contractInstance = new web3.eth.Contract(XVM_ABI, contractAddress);

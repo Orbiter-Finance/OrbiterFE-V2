@@ -152,7 +152,7 @@
     </div>
     <div :hidden="!isSupportXVM">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
-        <input type="checkbox" id="checkbox" v-model="isCrossAddress" />
+        <input type="checkbox" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Cross Address </label>
       </div>
       <div class="cross-addr-box to-area" v-if="isCrossAddress">
@@ -307,8 +307,7 @@ import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 
 import {
-  connectStarkNetWallet,
-  getStarkMakerAddress,
+  connectStarkNetWallet
 } from '../../util/constants/starknet/helper'
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 import { RaiseUpSelect } from '../../components'
@@ -433,6 +432,10 @@ export default {
     },
     isStarknet() {
       return this.refererUpper === 'STARKNET';
+    },
+    crossAddressInputDisable() {
+      const toChainID = transferDataState.toChainID;
+      return toChainID === 4 || toChainID === 44 || toChainID === 11 || toChainID === 511;
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -721,18 +724,14 @@ export default {
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) this.refreshUserBalance();
     },
-    'transferDataState.fromChainID': function (newValue) {
-      if (transferDataState.fromChainID !== newValue) this.updateTransferInfo({ fromChainID: newValue });
-    },
-    'transferDataState.toChainID': function (newValue) {
-      if (transferDataState.toChainID !== newValue) this.updateTransferInfo({ toChainID: newValue });
-    },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
     },
   },
   async mounted() {
+    this.updateTransferInfo();
+
     const updateETHPriceI = async () => {
       transferCalculate
               .getTokenConvertUsd('ETH')
@@ -740,15 +739,13 @@ export default {
               .catch((error) => console.warn('GetETHPriceError =', error));
     };
 
-    await updateETHPriceI();
+    updateETHPriceI();
 
     this.transferValue = this.queryParams.amount;
     updateIsCrossAddress(this.isCrossAddress);
     updateCrossAddressReceipt(this.crossAddressReceipt);
 
     this.rates = await getRates('ETH');
-
-    this.updateTransferInfo();
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -886,7 +883,7 @@ export default {
 
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
-        this.specialProcessing();
+        this.specialProcessing(oldToChainID);
       }
       if (fromChainID !== oldFromChainID) {
         let self = this;
@@ -933,40 +930,47 @@ export default {
         text: 'SEND',
         disabled: null,
       };
-      console.log('userMax', userMax.toString(), 'transferValue', transferValue.toString(), 'selectMakerConfigMax', makerMax.toString(),
-              'toValue', this.toValue.toString(), 'makerMaxBalance', new BigNumber(this.makerMaxBalance).toString());
       if (walletIsLogin.value) {
         info.text = 'SEND';
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled';
+          console.log('transferValue < 0', transferValue.toString());
         } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
           info.disabled = 'disabled';
+          console.log('transferValue > userMaxPrice', transferValue.toString(), this.userMaxPrice.toString());
         }
         if (transferValue.comparedTo(userMax) > 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
+          console.log('transferValue > userMax', transferValue.toString(), userMax.toString());
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           info.disabled = 'disabled';
+          console.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
         } else if (transferValue.comparedTo(makerMin) < 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
+          console.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
         } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
+          console.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
         } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
-          info.text = 'INSUFFICIENT LIQUIDITY 1';
+          info.text = 'INSUFFICIENT LIQUIDITY';
           info.disabled = 'disabled';
+          console.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
         }
 
         if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND';
           info.disabled = 'disabled';
+          console.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
           info.text = 'SEND';
           info.disabled = 'disabled';
+          console.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)', this.crossAddressReceipt, this.isErrorAddress);
         }
       }
       this.sendBtnInfo = info;
@@ -1015,8 +1019,12 @@ export default {
         this.toValue = amount;
       }
     },
-    async specialProcessing() {
+    async specialProcessing(oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
+      if (oldToChainID === 4 || oldToChainID === 44 || oldToChainID === 11 || oldToChainID === 511) {
+        this.isCrossAddress = false;
+        this.crossAddressReceipt = '';
+      }
       if (fromChainID === 4 || fromChainID === 44 || toChainID === 4 || toChainID === 44) {
         const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
         if (!starkNetIsConnect || !starkNetAddress) {
@@ -1027,11 +1035,22 @@ export default {
             return;
           }
         }
+        if (toChainID === 4 || toChainID === 44) {
+          this.isCrossAddress = true;
+          this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+        }
       }
       if (fromChainID === 9 || fromChainID === 99 || toChainID === 9 || toChainID === 99) {
         if (walletIsLogin.value) {
           this.checkTransferValue();
         }
+      }
+      if (toChainID === 11 || toChainID === 511) {
+        this.isCrossAddress = true;
+        const self = this;
+        setTimeout(() => {
+          self.crossAddressReceipt = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        }, 500);
       }
     },
     async updateUserMaxPrice() {
@@ -1047,7 +1066,7 @@ export default {
       }
       let transferGasFee = (await transferCalculate.getTransferGasLimit(
               fromChain.id,
-              selectMakerConfig.sender,
+              selectMakerConfig.recipient,
               fromChain.tokenAddress
       )) || 0;
       let avalibleDigit = orbiterCore.getDigitByPrecision(fromChain.decimals);
@@ -1343,13 +1362,8 @@ export default {
         const chainInfo = util.getChainInfoByChainId(fromChainID);
         const toAddressAll = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
-                selectMakerConfig.sender).toLowerCase();
+                selectMakerConfig.recipient).toLowerCase();
         let toAddress = util.shortAddress(toAddressAll);
-        if (fromChainID === 4 || fromChainID === 44 && !util.isExecuteXVMContract()) {
-          toAddress = util.shortAddress(
-                  getStarkMakerAddress(selectMakerConfig.sender, fromChainID)
-          );
-        }
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
         // sendTransfer
@@ -1488,51 +1502,58 @@ export default {
     },
     refreshUserBalance() {
       const self = this;
-      const { fromChainID, selectMakerConfig } = transferDataState;
+      const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       let address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       if (fromChainID === 4 || fromChainID === 44) {
-        address = web3State.coinbase;
+        address = web3State.starkNet.starkNetAddress;
       }
-      if (!address || address === '0x') return;
-      const addressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
-      const fromChainBalanceMap = addressBalanceMap[fromChain.id] = addressBalanceMap[fromChain.id] || {};
-      if (typeof fromChainBalanceMap[fromChain.symbol] === 'undefined') {
-        this.fromBalanceLoading = true;
-        transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
-                .then((response) => {
-                  const balance = (response / 10 ** fromChain.decimals).toFixed(6);
-                  self.addBalance(fromChain.id, fromChain.symbol, balance, address);
-                  self.fromBalance = balance;
-                  self.updateUserMaxPrice();
-                })
-                .catch((error) => {
-                  console.warn(error);
-                }).finally(() => {
-          this.fromBalanceLoading = false;
-        });
-      } else {
-        self.updateUserMaxPrice();
-        self.fromBalance = fromChainBalanceMap[fromChain.symbol];
+      if (address && address !== '0x') {
+        const addressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
+        const fromChainBalanceMap = addressBalanceMap[fromChain.id] = addressBalanceMap[fromChain.id] || {};
+        if (typeof fromChainBalanceMap[fromChain.symbol] === 'undefined') {
+          this.fromBalanceLoading = true;
+          transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
+                  .then((response) => {
+                    const balance = (response / 10 ** fromChain.decimals).toFixed(6);
+                    self.addBalance(fromChain.id, fromChain.symbol, balance, address);
+                    self.fromBalance = balance;
+                    self.updateUserMaxPrice();
+                  })
+                  .catch((error) => {
+                    console.warn(error);
+                  }).finally(() => {
+            this.fromBalanceLoading = false;
+          });
+        } else {
+          self.updateUserMaxPrice();
+          self.fromBalance = fromChainBalanceMap[fromChain.symbol];
+        }
       }
 
-      const toChainBalanceMap = addressBalanceMap[toChain.id] = addressBalanceMap[toChain.id] || {};
-      if (typeof toChainBalanceMap[toChain.symbol] === 'undefined') {
-        this.toBalanceLoading = true;
-        transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
-                .then((response) => {
-                  const balance = (response / 10 ** toChain.decimals).toFixed(6);
-                  self.addBalance(toChain.id, toChain.symbol, balance, address);
-                  self.toBalance = balance;
-                })
-                .catch((error) => {
-                  console.warn(error);
-                }).finally(() => {
-          this.toBalanceLoading = false;
-        });
-      } else {
-        self.toBalance = toChainBalanceMap[toChain.symbol];
+      if (toChainID === 4 || toChainID === 44) {
+        address = web3State.starkNet.starkNetAddress;
+      }
+      if (address && address !== '0x') {
+        const toAddressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
+        const toChainBalanceMap = toAddressBalanceMap[toChain.id] = toAddressBalanceMap[toChain.id] || {};
+        if (typeof toChainBalanceMap[toChain.symbol] === 'undefined') {
+          this.toBalanceLoading = true;
+          transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
+                  .then((response) => {
+                    const balance = (response / 10 ** toChain.decimals).toFixed(6);
+                    self.addBalance(toChain.id, toChain.symbol, balance, address);
+                    self.toBalance = balance;
+                  })
+                  .catch((error) => {
+                    console.warn(error);
+                  }).finally(() => {
+            this.toBalanceLoading = false;
+          });
+        } else {
+          self.toBalance = toChainBalanceMap[toChain.symbol];
+        }
       }
     },
   },

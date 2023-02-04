@@ -2,19 +2,16 @@ import { getContractFactory, predeploys } from '@eth-optimism/contracts';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
-import env from '../../../env';
 import thirdapi from '../../core/actions/thirdapi';
-// import zksync2 from '../../core/actions/zksync2'
 import zkspace from '../../core/actions/zkspace';
 import orbiterCore from '../../orbiterCore';
 import { store } from '../../store';
 import { exchangeToUsd } from '../coinbase';
 import { getLocalCoinContract } from '../constants/contract/getContract';
-import { localRpc, localWeb3 } from '../constants/contract/localWeb3';
+import { localRpc } from '../constants/contract/localWeb3';
 import {
     getErc20Balance,
     getNetworkIdByChainId,
-    getStarkMakerAddress,
     getStarkTransferFee,
 } from '../constants/starknet/helper';
 import { IMXHelper } from '../immutablex/imx_helper';
@@ -1144,7 +1141,7 @@ export default {
                     return 0;
                 }
             } else {
-                starknetAddress = getStarkMakerAddress(userAddress, localChainID);
+                starknetAddress = userAddress;
             }
             return await getErc20Balance(
                 starknetAddress,
