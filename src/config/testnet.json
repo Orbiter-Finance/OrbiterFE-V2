@@ -196,6 +196,7 @@
     "networkId": "80001",
     "internalId": "66",
     "name": "Polygon Mumbai",
+    "nativeCurrency": {},
     "rpc": [
       "https://matic-testnet-archive-rpc.bwarelabs.com",
       "https://polygon-testnet.public.blastapi.io",
@@ -371,12 +372,7 @@
     "networkId": "dydx",
     "internalId": "511",
     "name": "Dydx(G)",
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
+    "nativeCurrency": {},
     "rpc": [],
     "watch": [
       "api"
@@ -386,7 +382,7 @@
       "name": "USDC",
       "symbol": "USDC",
       "decimals": 6,
-      "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      "address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4"
     }]
   },
   {

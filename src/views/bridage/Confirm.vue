@@ -128,8 +128,7 @@ import Web3 from 'web3'
 import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
 import { localRpc, localWeb3 } from '../../util/constants/contract/localWeb3';
 import {
-  sendTransfer,
-  getStarkMakerAddress,
+  sendTransfer
 } from '../../util/constants/starknet/helper'
 import { getZkSyncProvider } from '../../util/zksync/zkysnc_helper'
 import loopring from '../../core/actions/loopring'
@@ -675,10 +674,7 @@ export default {
                 let toAddress = util.shortAddress(toAddressAll);
                 if (fromChainID === 4 || fromChainID === 44) {
                   toAddress = util.shortAddress(
-                          getStarkMakerAddress(
-                                  selectMakerConfig.recipient,
-                                  fromChainID
-                          )
+                          selectMakerConfig.recipient
                   );
                 }
 
