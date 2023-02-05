@@ -10,11 +10,32 @@
       </keep-alive>
     </div>
     <div v-show="!isSenderTab && status === '1' && !showDetail" class="maker-box">
-      <div class="maker-title">About Maker</div>
+      <div class="new">
+        <img class="img" src="../../assets/new.png">
+      </div>
+      <div class="maker-title">Early Access</div>
       <div class="maker-content">
-        <div>Orbiter's Maker provides liquidity for Layer 2 and benefits from it.</div>
-        <div @click="clickLearnMore" class="maker-link">LEARN MORE</div>
-        <div class="maker-foot-btn">COMING SOON</div>
+        <div style="margin-bottom: 30px">
+          <div class="maker-desc"><div class="point">1</div>Become a maker and configure node parameters.</div>
+          <div class="maker-desc"><div class="point">2</div>Run nodes to ensure instant response to users.</div>
+          <div class="maker-desc"><div class="point">3</div>Maintain sufficient liquidity in the node by depositing margin.</div>
+          <div class="maker-desc"><div class="point">4</div>Experience arbitration process when transactions fail.</div>
+        </div>
+
+        <div>
+          <div class="maker-line">
+            <SvgIconThemed icon="docs" class="maker-icon" /><span class="maker-link" @click="openUrl(1)">Docs for Market Maker</span>
+          </div>
+          <div class="maker-line">
+            <SvgIconThemed icon="discord" class="maker-icon" /><span class="maker-link" @click="openUrl(2)">Get Help in Orbiter Discord</span>
+          </div>
+        </div>
+
+        <div class="bottom-box">
+          <div class="bottom-btn" @click="openUrl(99)">
+            Learn More on Testnet
+          </div>
+        </div>
       </div>
     </div>
   </template>
@@ -32,10 +53,11 @@
 import { Transfer, Confirm, Proceed } from './'
 import { ToggleBtn } from '../../components'
 import { isMobile, curPageTabState, togglePageTab, curPageStatus, changeCurPageStatus, historyPanelState } from '../../composition/hooks'
+import { SvgIconThemed } from '../../components'
 
 export default {
   name: 'Bridge',
-  components: { Transfer, Confirm, Proceed, ToggleBtn },
+  components: { Transfer, Confirm, Proceed, ToggleBtn, SvgIconThemed },
   computed: {
     isMobile() {
       return isMobile.value
@@ -71,8 +93,14 @@ export default {
       changeCurPageStatus('1')
       togglePageTab()
     },
-    clickLearnMore() {
-      window.open('https://docs.orbiter.finance/', '_blank')
+    openUrl(type) {
+      if (type === 1) {
+        window.open('https://docs.orbiter.finance/makersystem', '_blank');
+      } else if (type === 2) {
+        window.open('https://discord.com/invite/hJJvXP7C73', '_blank');
+      }else if(type === 99){
+        window.open('https://rinkeby.orbiter.finance', '_blank');
+      }
     },
     changeState(e) {
       if (e !== '1' && e !== '2' && e !== '3') {
@@ -92,7 +120,7 @@ export default {
   .bridage-page {
     .maker-box {
       width: 480px;
-      height: 331px;
+      height: 380px;
       .maker-content {
         .maker-foot-btn {
           width: 400px;
@@ -157,9 +185,20 @@ export default {
     border-radius: 20px;
   }
   .maker-box {
+    position: relative;
     border-radius: 20px;
     padding: 34px 40px;
     text-align: left;
+
+    .new {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+
+      .img {
+        width: 70px;
+      }
+    }
     .maker-title {
       font-weight: 700;
       font-size: 20px;
@@ -171,10 +210,58 @@ export default {
       font-size: 14px;
       line-height: 20px;
       margin-top: 30px;
-      .maker-link {
-        margin-top: 20px;
-        color: #DF2E2D;
+
+      .bottom-box {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+
+        .bottom-btn {
+          display: inline-block;
+          width: 90%;
+          text-align: center;
+          font-weight: 700;
+          font-size: 16px;
+          line-height: 40px;
+          border-radius: 40px;
+          cursor: pointer;
+          background: linear-gradient(to right , #D93E28, #A6453E);
+          color: #FFFFFF;
+        }
       }
+
+      .maker-desc {
+        margin-bottom: 8px;
+
+        .point {
+          display: inline-block;
+          border-radius: 8px;
+          background-color: #7BC2BA;
+          color: #E9ECE2;
+          width: 16px;
+          height: 16px;
+          line-height: 16px;
+          text-align: center;
+          margin-right: 8px;
+          font-size: 13px;
+        }
+      }
+
+      .maker-line {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+
+        .maker-icon {
+          margin-right: 8px;
+        }
+        .maker-link {
+          text-decoration: underline;
+          color: #3D3D3E;
+        }
+      }
+
       .maker-link:hover {
         text-decoration: underline;
         cursor: pointer;

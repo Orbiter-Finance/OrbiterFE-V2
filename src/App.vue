@@ -194,4 +194,22 @@ export default {
     word-break: break-word;
   }
 }
+.watermark {
+  background-image: url('./assets/watermark.png') !important;
+  /*background: rebeccapurple !important;*/
+  /*background-size:100% 100%;*/
+  z-index: 999;
+
+  /*.el-table {*/
+  /*  display: block;*/
+  /*  width: 500px;*/
+  /*  height: 385px;*/
+  /*  padding-top: 300px;*/
+  /*  !*background: rebeccapurple !important;*!*/
+  /*  !*background:url('./assets/watermark.png') no-repeat;*!*/
+  /*  color: #909399;*/
+  /*  box-sizing: border-box;*/
+  /*  z-index: 999;*/
+  /*}*/
+}
 </style>

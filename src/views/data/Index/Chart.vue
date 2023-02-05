@@ -102,7 +102,7 @@
         </div>
       </div>
 
-      <rollup-detail ref="rolluoDetail"></rollup-detail>
+      <rollup-detail @close="closeRollupDetail" ref="rolluoDetail"></rollup-detail>
     </div>
   </div>
 </template>
@@ -239,6 +239,14 @@ export default {
     this._initChart()
     this.$loader.show()
     this.baseChartData = await getMainpageRollup()
+    if(this.baseChartData){
+      const { query } = this.$route;
+      if (query?.rollup_name) {
+        this.handleRoute({
+          rollup_name: query?.rollup_name
+        });
+      }
+    }
     this.$loader.hide()
     window.addEventListener('resize', this._onResize)
   },
@@ -260,9 +268,6 @@ export default {
     },
     isShowDetail(name) {
       return showDetailList.includes(name.toLowerCase());
-    },
-    onRowClick(name) {
-      this.$refs.rolluoDetail.show({ rollup_name: name }, true);
     },
     onCheckerClick(item) {
       if (this.checkData.includes(item)) {
@@ -582,6 +587,41 @@ export default {
         return mome
       }, {})
     },
+    closeRollupDetail(){
+      const { path, query } = this.$route;
+      const newQuery = JSON.parse(JSON.stringify(query || {}));
+      delete newQuery.rollup_name;
+      const suffixArr = [];
+      for (const key in newQuery) {
+        suffixArr.push(`${ key }=${ newQuery[key] }`);
+      }
+      const newPath = path + '?' + suffixArr.join('&');
+      this.$router.replace({ path: newPath, query: newQuery });
+    },
+    onRowClick(rollup_name) {
+      this.handleRoute({ rollup_name });
+    },
+    handleRoute({ rollup_name }) {
+      const { path, query } = this.$route;
+      const newQuery = JSON.parse(JSON.stringify(query || {}));
+      if (rollup_name instanceof Array) {
+        rollup_name = rollup_name[0];
+      }
+      if (rollup_name) {
+        if (newQuery?.rollup_name !== rollup_name) {
+          newQuery.rollup_name = rollup_name;
+          this.$refs.rolluoDetail.show({ rollup_name }, true);
+          let suffixArr = [];
+          for (const key in newQuery) {
+            suffixArr.push(`${ key }=${ newQuery[key] }`);
+          }
+          const newPath = path + '?' + suffixArr.join('&');
+          this.$router.replace({ path: newPath, query: newQuery });
+        } else {
+          this.$refs.rolluoDetail.show({ rollup_name }, true);
+        }
+      }
+    }
   },
 }
 </script>

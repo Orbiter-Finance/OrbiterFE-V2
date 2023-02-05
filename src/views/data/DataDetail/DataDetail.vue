@@ -1,7 +1,7 @@
 <template>
   <div class="transactions-detail">
     <div class="nav">
-      <span class="back" v-show="!isMobile" @click="$router.back()"> </span>
+      <span class="back" v-show="!isMobile" @click="back"> </span>
       <div class="tabs">
         <div
           class="tab"
@@ -11,6 +11,12 @@
           @click="onTabChnage(item.value)"
         >
           {{ item.name }}
+        </div>
+      </div>
+
+      <div class="contact">
+        <div class="rollup active" @click="openTwitter">
+          Contact{{ !isMobile ? ' Us' : '' }}
         </div>
       </div>
     </div>
@@ -57,10 +63,20 @@ export default {
     },
   },
   mounted() {
-    const nav = this.$route.query.nav
+    let nav = this.$route.query.nav;
+    if (nav instanceof Array) {
+      nav = nav[0];
+    }
     this.currentTab = nav ? nav : tabs[0].value
   },
   methods: {
+    back(){
+      // this.$router.back()
+      this.$router.push({
+        path: '/data',
+        query: { rollup_tab: 'arbitrum' },
+      })
+    },
     onTabChnage(value) {
       this.currentTab = value
       this.$router.replace({
@@ -68,11 +84,49 @@ export default {
         query: { nav: value },
       })
     },
+    openTwitter() {
+      window.open('https://twitter.com/OrbiterResearch', '_blank');
+    }
   },
 }
 </script>
 
 <style lang="scss">
+  .contact {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-grow: 1;
+    padding-right: 20px;
+  }
+  .rollup {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 83px;
+    height: 32px;
+    padding: 0 12px;
+    background: #f5f5f5;
+    border-radius: 20px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333333;
+    margin-right: 10px;
+    font-family: 'Inter Regular';
+    cursor: pointer;
+
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &.active {
+      font-family: 'Inter Bold';
+      font-weight: 700;
+      color: #ffffff;
+      background: #df2e2d;
+    }
+  }
 .transactions-detail {
   max-width: 1120px;
   margin: 0 auto;

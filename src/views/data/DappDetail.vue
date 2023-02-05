@@ -9,7 +9,7 @@
     <div slot="title" class="dapp-detail-dialog-title">
       <dapp-logo class="logo" :name="dappData.dapp_name" />
       <div class="name">{{ dappData.dapp_name }}</div>
-      <span class="close" @click="dialogVisible = false"> </span>
+      <span class="close" @click="close"> </span>
     </div>
     <div class="dapp-detail-dialog-content">
       <div class="info">
@@ -246,6 +246,10 @@ export default {
     window.removeEventListener('resize', this._onResize)
   },
   methods: {
+    close(){
+      this.dialogVisible = false;
+      this.$emit('close', false);
+    },
     show(rollup, row) {
       this.interactionsShow = true
       this.dialogVisible = true

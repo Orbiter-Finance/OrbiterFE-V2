@@ -1,7 +1,7 @@
 <template>
   <div class="dapps-wrapper">
     <div class="head">
-      <rollups :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" :customRollups="rollups" />
+      <rollups :value="currentRollup" @rollup-change="rollupChange" :customRollups="rollups" />
       <div class="right">
         <time-diff class="time" v-if="!isMobile && dapps && dapps.update_time" :timestamp="dapps.update_time" />
         <selector :data="selectors" :value="currentFilter" @change="(item) => (currentFilter = item.value)" />
@@ -104,7 +104,7 @@
         </el-pagination>
       </div>
     </div>
-    <dapp-detail ref="dappDetail" />
+    <dapp-detail @close="closeDappDetail" ref="dappDetail" />
   </div>
 </template>
 
@@ -122,6 +122,7 @@ import dateFormat from '../../../util/dateFormat'
 import { getDapps } from '../../../L2data/dapp'
 import { isMobile } from '../../../composition/hooks'
 import { getTabRollups } from '../../../L2data/rollups'
+import Common from '../Common'
 
 const PAGE_SIZE = 30
 
@@ -134,6 +135,7 @@ const selectors = [
 ]
 
 export default {
+  mixins: [Common],
   data() {
     return {
       selectors,
@@ -196,7 +198,6 @@ export default {
   },
   async mounted() {
     this.rollups = await getTabRollups('dapps')
-    this.currentRollup = this.rollups[0].value
   },
   methods: {
     dateFormat,
@@ -250,9 +251,6 @@ export default {
           return isAscending ? aTime - bTime : bTime - aTime
         })
       }
-    },
-    onRowClick(row) {
-      this.$refs.dappDetail.show(this.currentRollup, row)
     },
     _getTableData() {
       const dapps = this.dapps

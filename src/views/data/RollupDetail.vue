@@ -4,7 +4,7 @@
         <div slot="title" class="rollup-detail-dialog-title">
             <dapp-logo class="logo" :chains="true" :name="rollupData.rollup_name" />
             <div class="name">{{ rollupData.rollup_name }}</div>
-            <span class="close" @click="isShow = false"> </span>
+            <span class="close" @click="close"> </span>
         </div>
         <div class="rollup-detail-dialog-content">
             <div class="info" v-if="detailData.info">
@@ -284,6 +284,10 @@ export default {
         window.removeEventListener('resize', this._onResize)
     },
     methods: {
+        close() {
+            this.isShow = false;
+            this.$emit('close', false);
+        },
         async show(row, show) {
             this.rollupData = row;
             this.$loader.show()
@@ -1179,9 +1183,7 @@ export default {
 
             return `<div class="chart-popover-content">
                 ${params[0].seriesName == 'Deposit' ?
-                    `<div class="chart-popover-title">${title}</div>`
-                    :
-                    `<div class="chart-popover-title" style="color: ${colorMap['Withdraw']}">${title}</div>`}
+                    `<div class="chart-popover-total-transactions">${title}</div>
                 <div class="chart-popover-total-transactions">
                     Transactions: <span>${numeral(params[0].data).format(
                         '0,0'
@@ -1196,6 +1198,23 @@ export default {
                         ${listmod}
                     </div>
                 </div>`
+                    :
+                    `<div class="chart-popover-total-transactions-withdraw">${title}</div>
+                <div class="chart-popover-total-transactions-withdraw">
+                    Transactions: <span>${numeral(params[0].data).format(
+                        '0,0'
+                    )}</span>
+                    </div>
+                    <div class="chart-popover-total-transactions-withdraw">
+                    Total Fees: <span>${numeral(item_data.total_fees).format(
+                        '0,0.0000'
+                    )} ETH</span>
+                    </div>
+                    <div class="chart-popover-rollups">
+                        ${listmod}
+                    </div>
+                </div>`}
+                `
         },
         _onFormatter(params) {
             const axisValue = params[0].axisValue
@@ -1284,6 +1303,15 @@ export default {
 
         span {
             color: #333333;
+        }
+    }
+
+    .chart-popover-total-transactions-withdraw {
+        font-weight: 700;
+        margin-bottom: 10px;
+
+        span {
+            color: rgba(17, 112, 255, 1);
         }
     }
 
