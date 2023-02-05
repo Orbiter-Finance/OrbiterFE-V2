@@ -81,16 +81,43 @@ export default {
     return /^0x0+$/i.test(tokenAddress);
   },
 
-  /**
-   * @param {number} ms Sleep millisecond
-   * @returns
-   */
   sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(null)
       }, ms)
     })
+  },
+
+  // the actual transfer amount
+  getRealTransferValue() {
+    const { selectMakerConfig, transferValue } = transferDataState;
+    return new BigNumber(transferValue)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+        .toFixed();
+  },
+
+  // Get expected received amount
+  async getExpectValue() {
+    const { selectMakerConfig, transferValue, fromCurrency, toCurrency } = transferDataState;
+    const value = new BigNumber(transferValue);
+
+    const gasFee = value
+        .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
+        .dividedBy(new BigNumber(1000));
+    const gasFee_fix = gasFee.decimalPlaces(
+        selectMakerConfig.fromChain.decimals === 18 ? 5 : 2,
+        BigNumber.ROUND_UP);
+
+    const toAmount = value.minus(gasFee_fix);
+    const expectValue = toAmount.multipliedBy(10 ** selectMakerConfig.toChain.decimals);
+
+    if (fromCurrency !== toCurrency) {
+      return (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toFixed(0);
+    } else {
+      return expectValue.toFixed(0);
+    }
   },
 
   getChainInfoByChainId(chainId) {
@@ -120,21 +147,6 @@ export default {
   isExecuteXVMContract() {
     const { fromCurrency, toCurrency, isCrossAddress } = transferDataState;
     return !!(this.isSupportXVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
-  },
-
-  async getXVMExpectValue(value) {
-    const { selectMakerConfig } = transferDataState;
-    const {fromChain,toChain} = selectMakerConfig;
-    const fromCurrency = fromChain.symbol;
-    const toCurrency = toChain.symbol;
-    const fromPrecision = fromChain.decimals;
-    let expectValue = (new BigNumber(value)).multipliedBy(10 ** fromPrecision);
-    if (fromCurrency !== toCurrency) {
-      const toPrecision = toChain.decimals;
-      expectValue = (new BigNumber(value)).multipliedBy(10 ** toPrecision);
-      expectValue = await exchangeToCoin(expectValue, fromCurrency, toCurrency);
-    }
-    return expectValue.toFixed(0);
   },
 
   /**

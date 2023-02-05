@@ -4,7 +4,7 @@ import util from "../../util";
 import RLP from "rlp";
 import { transferDataState } from "../../../composition/useTransferData";
 
-export async function XVMSwap(provider, contractAddress, account, makerAddress, value, expectValue, toWalletAddress) {
+export async function XVMSwap(provider, contractAddress, account, makerAddress, value, toWalletAddress) {
     const { selectMakerConfig, fromChainID } = transferDataState;
     const { fromChain, toChain } = selectMakerConfig;
     const t1Address = fromChain.tokenAddress;
@@ -13,6 +13,7 @@ export async function XVMSwap(provider, contractAddress, account, makerAddress, 
     const toCurrency = toChain.symbol;
     const t2Address = toChain.tokenAddress;
     const slippage = selectMakerConfig.slippage;
+    const expectValue = await util.getExpectValue();
     console.log('expectValue --> ', expectValue, 'eth value-->', value, 'token-->', t1Address,
         'params-->',toChainId, t2Address, toWalletAddress);
     const web3 = new Web3(provider || window.web3.currentProvider);

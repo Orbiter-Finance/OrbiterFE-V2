@@ -1,6 +1,5 @@
 import { Notification } from 'element-ui'
 import { ethers, utils } from 'ethers'
-import env from '../../env'
 import { Coin_ABI, CROSS_ADDRESS_ABI } from './constants/contract/contract';
 import util from './util'
 import walletDispatchers, { WALLETCONNECT } from './walletsDispatchers';

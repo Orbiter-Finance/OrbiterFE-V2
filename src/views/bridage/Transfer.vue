@@ -283,6 +283,24 @@
             @input="selectToTokenChange"
             :keyMaps="{ value: 'token', label: 'token' }"
     />
+
+    <CommTipDialog ref="TipPopupRef">
+      <div slot="PoperContent" class="dialog">
+        <div class="dialog-box">
+          <div class="title">
+            Unlock more Orbiter identities?
+          </div>
+          <div class="content">
+            Explore more transactions on Orbiter Finance Mainnet Have fun!
+          </div>
+          <div class="bottom">
+            <span class="btn" @click="openUrl">
+              Let's Go
+            </span>
+          </div>
+        </div>
+      </div>
+    </CommTipDialog>
   </div>
 </template>
 
@@ -292,6 +310,7 @@ import {
   CommBtn,
   ObSelectChain,
   CommDialog,
+  CommTipDialog,
   SvgIconThemed,
   HelpIcon,
 } from '../../components'
@@ -318,6 +337,7 @@ import {
 import walletDispatchers from '../../util/walletsDispatchers'
 import { METAMASK } from '../../util/walletsDispatchers/index'
 import {
+  isMobile,
   transferDataState,
   updateTransferValue,
   updateTransferFromChainID,
@@ -343,6 +363,7 @@ export default {
     ObSelectChain,
     SvgIconThemed,
     CommDialog,
+    CommTipDialog,
     RaiseUpSelect,
     HelpIcon,
   },
@@ -746,6 +767,10 @@ export default {
     updateCrossAddressReceipt(this.crossAddressReceipt);
 
     this.rates = await getRates('ETH');
+
+    if (!isMobile.value) {
+      this.showTipPopup();
+    }
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -1217,6 +1242,12 @@ export default {
     // close selectChain
     closeToChainPopupClick() {
       this.$refs.SelectToChainPopupRef.maskClick();
+    },
+    showTipPopup() {
+      this.$refs.TipPopupRef.showCustom();
+    },
+    openUrl() {
+      window.open('https://www.orbiter.finance/', '_blank');
     },
     checkTransferValue() {
       const { selectMakerConfig } = transferDataState;
@@ -1717,6 +1748,57 @@ export default {
       background-color: rgba(0, 0, 0, 0); //
       width: 100%;
       height: 40px;
+    }
+  }
+}
+
+.dialog {
+  width: 400px;
+  bottom: 30px;
+  right: 30px;
+  position: absolute;
+
+  .dialog-box {
+    background-color: #ffffff;
+    color: #161616;
+    border-radius: 40px;
+    width: 100%;
+    padding: 10px;
+    font-family: 'Inter Regular';
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+
+    .title {
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 17px;
+    }
+
+    .content {
+      margin-bottom: 10px;
+      font-weight: lighter;
+      font-size: 15px;
+    }
+
+    .bottom {
+      height: 30px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .btn {
+        display: inline-block;
+        width: 350px;
+        text-align: center;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 30px;
+        height: 30px;
+        border-radius: 30px;
+        cursor: pointer;
+        background: linear-gradient(to right, #D93E28, #A6453E);
+        color: #FFFFFF;
+      }
     }
   }
 }
