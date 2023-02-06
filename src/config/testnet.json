@@ -445,7 +445,7 @@
       "name": "Ether",
       "symbol": "ETH",
       "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
+      "address": "0x000000000000000000000000000000000000800A"
     },
     "rpc": [
       "https://zksync2-testnet.zksync.dev",

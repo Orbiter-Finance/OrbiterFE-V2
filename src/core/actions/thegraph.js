@@ -11327,7 +11327,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -11575,7 +11575,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -11823,7 +11823,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -12071,7 +12071,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -12319,7 +12319,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -12567,7 +12567,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -12970,7 +12970,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -13528,7 +13528,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -13931,7 +13931,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -14334,7 +14334,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -14549,288 +14549,9 @@ export const makerConfigs = [
         "gasFee": 0.01,
         "spendTime": 5,
         "fromChain": {
-            "id": 510,
-            "name": "Metis(G)",
-            "tokenAddress": "0x420000000000000000000000000000000000000a",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
             "id": 515,
             "name": "BSC(G)",
             "tokenAddress": "0x2170ed0880ac9a755fd29b2688956bd959f933f8",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 33,
-            "name": "ZKSync(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 88,
-            "name": "ImmutableX(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 99,
-            "name": "Loopring(R)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 512,
-            "name": "ZKSpace(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 513,
-            "name": "Boba(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 514,
-            "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 519,
-            "name": "Scroll L2(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
-            "symbol": "ETH",
-            "decimals": 18,
-            "minPrice": 0.005,
-            "maxPrice": 0.01
-        },
-        "toChain": {
-            "id": 511,
-            "name": "Dydx(G)",
-            "tokenAddress": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4",
-            "symbol": "USDC",
-            "decimals": 6
-        },
-        "times": [
-            1636019587,
-            99999999999999
-        ]
-    },
-    {
-        "id": "",
-        "makerId": "",
-        "ebcId": "",
-        "slippage": 200,
-        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-        "tradingFee": 0.0001,
-        "gasFee": 0.01,
-        "spendTime": 5,
-        "fromChain": {
-            "id": 520,
-            "name": "Taiko A1(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -15171,7 +14892,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -15574,7 +15295,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -15676,7 +15397,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15707,7 +15428,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15738,7 +15459,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15769,7 +15490,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15800,7 +15521,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15831,7 +15552,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15862,7 +15583,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15893,7 +15614,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15924,7 +15645,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15955,7 +15676,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -15986,7 +15707,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -16017,7 +15738,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -16048,7 +15769,7 @@ export const makerConfigs = [
         "toChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18
         },
@@ -16411,7 +16132,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
@@ -16814,7 +16535,7 @@ export const makerConfigs = [
         "fromChain": {
             "id": 514,
             "name": "ZkSync 2.0(G)",
-            "tokenAddress": "0x0000000000000000000000000000000000000000",
+            "tokenAddress": "0x000000000000000000000000000000000000800A",
             "symbol": "ETH",
             "decimals": 18,
             "minPrice": 0.005,
