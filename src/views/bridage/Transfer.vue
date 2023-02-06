@@ -287,6 +287,9 @@
     <CommTipDialog ref="TipPopupRef">
       <div slot="PoperContent" class="dialog">
         <div class="dialog-box">
+          <div @click="closeTipPopup" class="icon">
+            <i class="el-icon-close"></i>
+          </div>
           <div class="title">
             Unlock more Orbiter identities?
           </div>
@@ -1246,6 +1249,9 @@ export default {
     showTipPopup() {
       this.$refs.TipPopupRef.showCustom();
     },
+    closeTipPopup() {
+      this.$refs.TipPopupRef.maskClick();
+    },
     openUrl() {
       window.open('https://www.orbiter.finance/', '_blank');
     },
@@ -1753,12 +1759,10 @@ export default {
 }
 
 .dialog {
-  width: 400px;
-  bottom: 30px;
-  right: 30px;
-  position: absolute;
+  width: 100%;
 
   .dialog-box {
+    position: relative;
     background-color: #ffffff;
     color: #161616;
     border-radius: 40px;
@@ -1766,6 +1770,13 @@ export default {
     padding: 10px;
     font-family: 'Inter Regular';
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+
+    .icon {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      cursor: pointer;
+    }
 
     .title {
       margin-bottom: 10px;
