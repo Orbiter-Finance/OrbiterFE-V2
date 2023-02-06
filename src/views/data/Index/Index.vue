@@ -90,7 +90,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="launch_time" label="Launch Date" width="160" align="right"
+          <el-table-column prop="launch_time" label="Launch Date" width="145" align="right"
                            :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
             <template slot-scope="scope">
               <div class="data">
@@ -106,7 +106,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="24h_active_users" label="24h Active Users" width="180" align="right"
+          <el-table-column prop="24h_active_users" label="24h Active Users" width="175" align="right"
                            :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
             <template slot-scope="scope">
               <div class="data">
@@ -323,6 +323,7 @@ export default {
       }
 
       .contact {
+        margin-right: -30px;
         display: flex;
         justify-content: flex-end;
         align-items: center;

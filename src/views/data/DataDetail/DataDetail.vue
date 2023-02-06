@@ -15,7 +15,7 @@
       </div>
 
       <div class="contact">
-        <div class="rollup active" @click="openTwitter">
+        <div class="btn active" @click="openTwitter">
           Contact{{ !isMobile ? ' Us' : '' }}
         </div>
       </div>
@@ -98,33 +98,25 @@ export default {
     align-items: center;
     flex-grow: 1;
     padding-right: 20px;
-  }
-  .rollup {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-width: 83px;
-    height: 32px;
-    padding: 0 12px;
-    background: #f5f5f5;
-    border-radius: 20px;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px;
-    color: #333333;
-    margin-right: 10px;
-    font-family: 'Inter Regular';
-    cursor: pointer;
 
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &.active {
-      font-family: 'Inter Bold';
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 150px;
+      height: 40px;
+      border-radius: 20px;
+      font-style: normal;
       font-weight: 700;
-      color: #ffffff;
-      background: #df2e2d;
+      font-size: 16px;
+      color: rgba(51, 51, 51, 0.8);
+      cursor: pointer;
+      &.active {
+        background: #df2e2d;
+        box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
+        border-radius: 20px;
+        color: #ffffff;
+      }
     }
   }
 .transactions-detail {

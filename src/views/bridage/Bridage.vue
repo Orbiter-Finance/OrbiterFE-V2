@@ -16,10 +16,18 @@
       <div class="maker-title">Early Access</div>
       <div class="maker-content">
         <div style="margin-bottom: 30px">
-          <div class="maker-desc"><div class="point">1</div>Become a maker and configure node parameters.</div>
-          <div class="maker-desc"><div class="point">2</div>Run nodes to ensure instant response to users.</div>
-          <div class="maker-desc"><div class="point">3</div>Maintain sufficient liquidity in the node by depositing margin.</div>
-          <div class="maker-desc"><div class="point">4</div>Experience arbitration process when transactions fail.</div>
+          <div class="maker-desc">
+            <div class="point">1</div><div>Become a maker and configure node parameters.</div>
+          </div>
+          <div class="maker-desc">
+            <div class="point">2</div><div>Run nodes to ensure instant response to users.</div>
+          </div>
+          <div class="maker-desc">
+            <div class="point">3</div><div>Maintain sufficient liquidity in the node by depositing margin.</div>
+          </div>
+          <div class="maker-desc">
+            <div class="point">4</div><div>Experience arbitration process when transactions fail.</div>
+          </div>
         </div>
 
         <div>
@@ -32,9 +40,12 @@
         </div>
 
         <div class="bottom-box">
-          <div class="bottom-btn" @click="openUrl(99)">
+          <CommBtn
+                  @click="openUrl(99)"
+                  class="bottom-btn"
+          >
             Learn More on Testnet
-          </div>
+          </CommBtn>
         </div>
       </div>
     </div>
@@ -51,13 +62,13 @@
 
 <script>
 import { Transfer, Confirm, Proceed } from './'
-import { ToggleBtn } from '../../components'
+import { ToggleBtn,CommBtn } from '../../components'
 import { isMobile, curPageTabState, togglePageTab, curPageStatus, changeCurPageStatus, historyPanelState } from '../../composition/hooks'
 import { SvgIconThemed } from '../../components'
 
 export default {
   name: 'Bridge',
-  components: { Transfer, Confirm, Proceed, ToggleBtn, SvgIconThemed },
+  components: { Transfer, Confirm, Proceed, ToggleBtn, SvgIconThemed,CommBtn },
   computed: {
     isMobile() {
       return isMobile.value
@@ -218,24 +229,21 @@ export default {
         margin-top: 30px;
 
         .bottom-btn {
+          height: 50px;
           display: inline-block;
+          line-height: 34px;
+          margin-bottom: 20px;
+          background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
           width: 90%;
-          text-align: center;
-          font-weight: 700;
-          font-size: 16px;
-          line-height: 40px;
           border-radius: 40px;
-          cursor: pointer;
-          background: linear-gradient(to right , #D93E28, #A6453E);
-          color: #FFFFFF;
         }
       }
 
       .maker-desc {
         margin-bottom: 8px;
+        display: flex;
 
         .point {
-          display: inline-block;
           border-radius: 8px;
           background-color: #7BC2BA;
           color: #E9ECE2;
