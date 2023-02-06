@@ -49,7 +49,7 @@
           <el-table-column
             fixed
             label="Dapp Name"
-            :width="isMobile ? 200 : 300"
+            :width="isMobile ? 150 : 300"
           >
             <template slot-scope="scope">
               <div class="name-column">
@@ -61,9 +61,9 @@
                     <span> NEW </span>
                   </div>
                 </template>
-                <dapp-logo
-                  :name="scope.row.dapp_name"
-                  :rollup="currentRollup"
+                <dapp-logo v-if="(scope.row.rank === 0 && !isMobile) || scope.row.rank !== 0"
+                           :name="scope.row.dapp_name"
+                           :rollup="currentRollup"
                 />
                 <div v-if="scope.row.rank !== 0" @click="onRowClick(scope.row)" class="name" :title="scope.row.dapp_name">
                   {{ scope.row.dapp_name }}
@@ -71,7 +71,7 @@
                 <div v-if="scope.row.rank === 0" class="name-disable" :title="scope.row.dapp_name">
                   {{ scope.row.dapp_name }}
                 </div>
-                <div style="width: 50px;display: flex">
+                <div v-if="!isMobile" style="width: 50px;display: flex">
                   <template v-if="scope.row.rank === 0">
                     <scan-link
                             :href="scope.row.dapp_url"
@@ -695,6 +695,67 @@ export default {
       .table {
         margin-top: 20px;
         padding: 0 30px 50px 30px;
+
+        .name-column {
+          display: flex;
+          align-items: center;
+          font-family: 'Inter Regular';
+          color: #333333;
+
+          .rank {
+            width: 32px;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            margin-right: 12px;
+          }
+
+          .new {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 16px;
+            background: #df2e2d;
+            border-radius: 4px;
+            margin-right: 12px;
+
+            span {
+              font-style: normal;
+              font-weight: 500;
+              color: #ffffff;
+              font-size: 12px;
+              zoom: 0.83;
+            }
+          }
+
+          .name {
+            width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            margin: 0 10px;
+            cursor: pointer;
+          }
+
+          .name-disable {
+            width: 100px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 14px;
+            margin: 0 10px;
+          }
+
+          a {
+            margin-right: 10px;
+          }
+        }
       }
     }
   }

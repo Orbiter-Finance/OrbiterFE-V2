@@ -14,9 +14,9 @@
         </div>
       </div>
 
-      <div class="contact">
+      <div v-if="!isMobile" class="contact">
         <div class="btn active" @click="openTwitter">
-          Contact{{ !isMobile ? ' Us' : '' }}
+          Contact Us
         </div>
       </div>
     </div>

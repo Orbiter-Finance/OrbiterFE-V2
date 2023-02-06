@@ -10,7 +10,7 @@
     <div class="table">
       <el-table :data="currentTableData" style="width: 100%" empty-text="No Items" :default-sort="defaultSort"
         @sort-change="onSortChange">
-        <el-table-column v-if="!isMobile" fixed label="NO. Dapp Name" :width="isMobile ? 210 : 280">
+        <el-table-column v-if="!isMobile" fixed label="NO. Dapp Name" :width="280">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
@@ -25,13 +25,16 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column v-if="isMobile" fixed label="NO. Dapp" :width="100">
+        <el-table-column v-if="isMobile" fixed label="NO. Dapp" :width="150">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
                 {{ scope.row.index }}
               </div>
               <dapp-logo :name="scope.row.dapp_name" />
+              <div @click="onRowClick(scope.row)" class="name" :title="scope.row.dapp_name">
+                {{ scope.row.dapp_name }}
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -426,7 +429,8 @@ export default {
 
       .name-column {
         .rank {
-          margin-right: 10px;
+          width: 32px;
+          margin-right: 12px;
         }
       }
 

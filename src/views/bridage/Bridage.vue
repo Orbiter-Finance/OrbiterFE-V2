@@ -32,10 +32,10 @@
 
         <div>
           <div class="maker-line">
-            <SvgIconThemed icon="docs" class="maker-icon" /><span class="maker-link" @click="openUrl(1)">Docs for Market Maker</span>
+            <SvgIconThemed icon="docs" class="maker-icon" /><span :class="isLightMode ? 'maker-link' : 'maker-link-dark'" @click="openUrl(1)">Docs for Market Maker</span>
           </div>
           <div class="maker-line">
-            <SvgIconThemed icon="discord" class="maker-icon" /><span class="maker-link" @click="openUrl(2)">Get Help in Orbiter Discord</span>
+            <SvgIconThemed icon="discord" class="maker-icon" /><span :class="isLightMode ? 'maker-link' : 'maker-link-dark'" @click="openUrl(2)">Get Help in Orbiter Discord</span>
           </div>
         </div>
 
@@ -70,6 +70,9 @@ export default {
   name: 'Bridge',
   components: { Transfer, Confirm, Proceed, ToggleBtn, SvgIconThemed,CommBtn },
   computed: {
+    isLightMode() {
+      return this.$store.state.themeMode === 'light'
+    },
     isMobile() {
       return isMobile.value
     },
@@ -198,7 +201,7 @@ export default {
   .maker-box {
     position: relative;
     border-radius: 20px;
-    padding: 34px 40px;
+    padding: 34px 20px;
     text-align: left;
 
     .new {
@@ -229,12 +232,12 @@ export default {
         margin-top: 30px;
 
         .bottom-btn {
+          width: 100%;
           height: 50px;
           display: inline-block;
           line-height: 34px;
           margin-bottom: 20px;
           background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
-          width: 90%;
           border-radius: 40px;
         }
       }
@@ -242,6 +245,7 @@ export default {
       .maker-desc {
         margin-bottom: 8px;
         display: flex;
+        font-family: 'Inter Regular';
 
         .point {
           border-radius: 8px;
@@ -267,6 +271,10 @@ export default {
         .maker-link {
           text-decoration: underline;
           color: #3D3D3E;
+        }
+        .maker-link-dark {
+          text-decoration: underline;
+          color: #ffffff;
         }
       }
 
