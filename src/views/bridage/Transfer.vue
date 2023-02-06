@@ -938,7 +938,7 @@ export default {
       this.updateSendBtnInfo();
     },
     async updateSendBtnInfo() {
-      const { selectMakerConfig } = transferDataState;
+      const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain } = selectMakerConfig;
       await this.getMakerMaxBalance();
@@ -993,6 +993,12 @@ export default {
           info.text = 'SEND';
           info.disabled = 'disabled';
           console.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
+        }
+
+        if((fromCurrency !== toCurrency || this.isCrossAddress) && !util.isSupportXVMContract()){
+          info.text = 'SEND';
+          info.disabled = 'disabled';
+          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract');
         }
 
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
