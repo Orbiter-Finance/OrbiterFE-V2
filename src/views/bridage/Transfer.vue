@@ -756,6 +756,10 @@ export default {
   async mounted() {
     this.updateTransferInfo();
 
+    if (!isMobile.value) {
+      this.showTipPopup();
+    }
+
     const updateETHPriceI = async () => {
       transferCalculate
               .getTokenConvertUsd('ETH')
@@ -770,10 +774,6 @@ export default {
     updateCrossAddressReceipt(this.crossAddressReceipt);
 
     this.rates = await getRates('ETH');
-
-    if (!isMobile.value) {
-      this.showTipPopup();
-    }
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
