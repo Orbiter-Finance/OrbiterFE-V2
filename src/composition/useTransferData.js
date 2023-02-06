@@ -1,4 +1,4 @@
-import { reactive, computed } from './'
+import { reactive } from './'
 
 const defaultTransferDateState = {
   fromChainID: '',

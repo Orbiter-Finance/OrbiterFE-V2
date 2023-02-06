@@ -968,17 +968,14 @@ export default {
       }
     },
     async handleXVMContract() {
-      const { fromChainID, crossAddressReceipt, transferValue, isCrossAddress, selectMakerConfig } = transferDataState;
+      const { fromChainID, crossAddressReceipt, isCrossAddress, selectMakerConfig } = transferDataState;
       const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
 
       if (!walletIsLogin.value) {
         return;
       }
 
-      const rAmount = new BigNumber(transferValue)
-              .plus(new BigNumber(selectMakerConfig.tradingFee))
-              .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals));
-      const amount = rAmount.toFixed();
+      const amount = util.getRealTransferValue();
       const matchSignatureDispatcher = walletDispatchersOnSignature[compatibleGlobalWalletConf.value.walletType];
       if (matchSignatureDispatcher) {
         matchSignatureDispatcher(account, selectMakerConfig, amount, fromChainID, this.onTransferSucceed);
@@ -1002,18 +999,10 @@ export default {
         }
       }
 
-      let expectValue = orbiterCore.getToAmountFromUserAmount(
-              new BigNumber(transferValue)
-                      .plus(new BigNumber(selectMakerConfig.tradingFee)),
-              selectMakerConfig,
-              false
-      );
-      expectValue = await util.getXVMExpectValue(expectValue.toString());
-
       try {
         const provider = compatibleGlobalWalletConf.value.walletPayload.provider;
         const { transactionHash } = await XVMSwap(provider, contractAddress, account, selectMakerConfig.recipient,
-                amount, expectValue, isCrossAddress ? crossAddressReceipt : account);
+                amount, isCrossAddress ? crossAddressReceipt : account);
         if (transactionHash) {
           this.onTransferSucceed(
                   account,

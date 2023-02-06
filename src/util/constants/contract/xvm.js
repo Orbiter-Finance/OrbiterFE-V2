@@ -4,7 +4,7 @@ import util from "../../util";
 import RLP from "rlp";
 import { transferDataState } from "../../../composition/useTransferData";
 
-export async function XVMSwap(provider, contractAddress, account, makerAddress, value, expectValue, toWalletAddress) {
+export async function XVMSwap(provider, contractAddress, account, makerAddress, value, toWalletAddress) {
     const { selectMakerConfig, fromChainID } = transferDataState;
     const { fromChain, toChain } = selectMakerConfig;
     const t1Address = fromChain.tokenAddress;
@@ -13,14 +13,12 @@ export async function XVMSwap(provider, contractAddress, account, makerAddress, 
     const toCurrency = toChain.symbol;
     const t2Address = toChain.tokenAddress;
     const slippage = selectMakerConfig.slippage;
+    const expectValue = await util.getExpectValue();
     console.log('expectValue --> ', expectValue, 'eth value-->', value, 'token-->', t1Address,
         'params-->',toChainId, t2Address, toWalletAddress);
     const web3 = new Web3(provider || window.web3.currentProvider);
-    const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, expectValue, slippage];
-    const bufferList = sourceData.map(item => {
-        return item;
-    });
-    const data = RLP.encode(bufferList);
+    const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, web3.utils.toHex(expectValue), slippage];
+    const data = RLP.encode(sourceData);
     const contractInstance = new web3.eth.Contract(XVM_ABI, contractAddress);
     if (util.isEthTokenAddress(fromChainID, t1Address)) {
         return contractInstance.methods.swap(makerAddress, t1Address, value, data).send({

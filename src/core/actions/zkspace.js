@@ -4,7 +4,6 @@ import axios from 'axios'
 import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import config from '../utils/config'
-import orbiterCore from '../../orbiterCore'
 import { private_key_to_pubkey_hash, sign_musig } from 'zksync-crypto'
 import { transferDataState } from '../../composition/hooks'
 
