@@ -9,7 +9,7 @@
     <div slot="title" class="dapp-detail-dialog-title">
       <dapp-logo class="logo" :name="dappData.dapp_name" />
       <div class="name">{{ dappData.dapp_name }}</div>
-      <span class="close" @click="dialogVisible = false"> </span>
+      <span class="close" @click="close"> </span>
     </div>
     <div class="dapp-detail-dialog-content">
       <div class="info">
@@ -180,7 +180,7 @@ export default {
     return {
       dialogVisible: false,
       times,
-      currentTime: times[0].value,
+      currentTime: times[1].value,
       dappData: {},
       detailData: {},
       rollups: [],
@@ -189,7 +189,7 @@ export default {
       allInteractionsSeries,
       color,
       checkData: ['New Users', 'Active Users'],
-      checkInteractionsData: ['Bridge Interactions', 'Other Interactions'],
+      checkInteractionsData: ['All Interactions', 'Bridge Interactions', 'Other Interactions'],
       interactionsShow: true
     }
   },
@@ -246,6 +246,10 @@ export default {
     window.removeEventListener('resize', this._onResize)
   },
   methods: {
+    close(){
+      this.dialogVisible = false;
+      this.$emit('close', false);
+    },
     show(rollup, row) {
       this.interactionsShow = true
       this.dialogVisible = true
@@ -253,8 +257,8 @@ export default {
       this.rollups = [rollup]
       this.$nextTick(async () => {
         this.checkData = ['New Users', 'Active Users']
-        this.checkInteractionsData = ['Bridge Interactions', 'Other Interactions'];
-        this.currentTime = times[0].value
+        this.checkInteractionsData = ['All Interactions', 'Bridge Interactions', 'Other Interactions'];
+        this.currentTime = times[1].value
         if (this._chart) {
           this._chart.clear()
         }

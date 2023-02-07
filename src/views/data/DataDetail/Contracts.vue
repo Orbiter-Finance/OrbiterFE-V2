@@ -1,8 +1,8 @@
 <template>
   <div class="contracts-wrapper">
     <div class="head">
-      <rollups :customRollups="customRollups" :value="currentRollup"
-        @rollup-change="(value) => (currentRollup = value)" />
+      <rollups :customRollups="rollups" :value="currentRollup"
+        @rollup-change="rollupChange" />
       <time-diff class="time" v-if="!isMobile && contracts && contracts.update_time"
         :timestamp="contracts.update_time" />
     </div>
@@ -118,16 +118,18 @@ import { getContracts } from '../../../L2data/contracts'
 import { shortenAddress } from '../../../util/shortenAddress'
 import { isMobile } from '../../../composition/hooks'
 import { getTabRollups } from '../../../L2data/rollups'
+import Common from '../Common'
 
 const PAGE_SIZE = 30
 
 export default {
+  mixins: [Common],
   data() {
     return {
       PAGE_SIZE,
       defaultSort: { prop: 'launch_time', order: 'descending' },
       currentSort: undefined,
-      customRollups: [],
+      rollups: [],
       currentRollup: undefined,
       contracts: {},
       tableData: [],
@@ -175,12 +177,7 @@ export default {
     },
   },
   async mounted() {
-    // if (this.currentRollup) {
-
-    // } else {
-    this.customRollups = await getTabRollups('contracts')
-    this.currentRollup = this.customRollups[0].value
-    // }
+    this.rollups = await getTabRollups('contracts')
   },
   methods: {
     numeral,
