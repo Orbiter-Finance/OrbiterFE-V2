@@ -5,6 +5,7 @@ import { exchangeToCoin } from "./coinbase";
 import BigNumber from "bignumber.js";
 import testnet from '../config/testnet.json'
 import mainnet from '../config/mainnet.json'
+import whiteList from '../config/white.json'
 
 export default {
   showMessage(message, type) {
@@ -138,8 +139,15 @@ export default {
     return chainInfo;
   },
 
+  isWhite() {
+    return !(whiteList.length && !whiteList.find(item => this.equalsIgnoreCase(item, compatibleGlobalWalletConf.value.walletPayload.walletAddress)));
+  },
+
   isSupportXVMContract() {
     const { fromChainID } = transferDataState;
+    if (!this.isWhite()) {
+      return false;
+    }
     const chainInfo = this.getChainInfoByChainId(fromChainID);
     return chainInfo?.xvmList && chainInfo.xvmList.length;
   },
