@@ -1031,7 +1031,7 @@ export default {
       this.toChainArray = []
       this.makerInfoList.filter((makerInfo) => {
         if (
-          makerInfo.c1ID === newValue &&
+          makerInfo.c1ID === newValue && makerInfo.c2ID!=11 &&
           this.toChainArray.indexOf(makerInfo.c2ID) === -1
         ) {
           // dests fiter
