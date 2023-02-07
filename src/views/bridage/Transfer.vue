@@ -789,6 +789,12 @@ export default {
     },
   },
   async mounted() {
+    if (util.isWhite()) {
+      this.isWhiteWallet = true;
+    } else {
+      this.isWhiteWallet = false;
+    }
+
     this.updateTransferInfo();
 
     if (!isMobile.value) {
