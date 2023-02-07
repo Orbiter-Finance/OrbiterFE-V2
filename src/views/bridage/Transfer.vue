@@ -2,6 +2,22 @@
   <div class="transfer-box">
     <div class="top-area">
       <span class="title">Token</span>
+      <div v-if="!isNewVersion" style="margin-left: 4px">
+        <ObSelect
+                :datas="fromTokenList"
+                v-model="selectFromToken"
+                @input="selectFromTokenChange"
+                @show="() => (isRaiseUpFromTokenListVisible = true)"
+        ></ObSelect>
+      </div>
+      <div :hidden="!isWhiteWallet" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+        <span :style="`margin-right:10px;color:${isNewVersion ? '#13ce66' : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
+        <el-switch
+                v-model="isNewVersion"
+                active-color="#13ce66"
+                inactive-color="#888888">
+        </el-switch>
+      </div>
     </div>
     <div class="from-area">
       <div class="topItem">
@@ -56,7 +72,7 @@
           />
           <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
           <div style="margin-left: 4px">
-            <ObSelect
+            <ObSelect v-if="isNewVersion"
                     :datas="fromTokenList"
                     v-model="selectFromToken"
                     @input="selectFromTokenChange"
@@ -111,7 +127,7 @@
         </div>
         <div style="display: flex; align-items: center;height: 40px" class="right">
           <div v-if="toTokenList.length" style="margin-left: 4px">
-            <ObSelect
+            <ObSelect v-if="isNewVersion"
                     :datas="toTokenList"
                     v-model="selectToToken"
                     @input="selectToTokenChange"
@@ -150,9 +166,9 @@
         >More</a
       >
     </div>
-    <div :hidden="!isSupportXVM">
+    <div v-if="isNewVersion" :hidden="!isSupportXVM">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
-        <input type="checkbox" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+        <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Cross Address </label>
       </div>
       <div class="cross-addr-box to-area" v-if="isCrossAddress">
@@ -354,7 +370,9 @@ import {
   updateTransferFromCurrency,
   updateTransferMakerConfig,
 } from '../../composition/hooks';
-import { makerConfigs } from "../../core/actions/thegraph";
+import { makerConfigs as newMakerConfig, oldMakerConfigs } from "../../core/actions/thegraph";
+
+let makerConfigs = oldMakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
@@ -372,6 +390,9 @@ export default {
   },
   data() {
     return {
+      isWhiteWallet: false,
+      isNewVersion: false,
+
       isCrossAddress: false,
       isRaiseUpFromTokenListVisible: false,
       isRaiseUpToTokenListVisible: false,
@@ -714,6 +735,15 @@ export default {
     },
   },
   watch: {
+    isNewVersion() {
+      if (this.isNewVersion) {
+        makerConfigs = newMakerConfig;
+        this.updateTransferInfo();
+      } else {
+        makerConfigs = oldMakerConfigs;
+        this.updateTransferInfo();
+      }
+    },
     queryParams: function (nv) {
       // When transferValue is empty, set it = nv.amount
       if (this.transferValue <= 0) {
@@ -743,6 +773,11 @@ export default {
     },
     currentWalletAddress: function (newValue, oldValue) {
       console.log('Current wallet address', newValue);
+      if (util.isWhite()) {
+        this.isWhiteWallet = true;
+      } else {
+        this.isWhiteWallet = false;
+      }
       if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance();
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
@@ -785,6 +820,10 @@ export default {
   },
   methods: {
     updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
+      if (!this.isNewVersion) {
+        toCurrency = fromCurrency;
+      }
+
       const oldFromChainID = transferDataState.fromChainID;
       const oldToChainID = transferDataState.toChainID;
       const oldFromCurrency = transferDataState.fromCurrency;
@@ -938,7 +977,7 @@ export default {
       this.updateSendBtnInfo();
     },
     async updateSendBtnInfo() {
-      const { selectMakerConfig } = transferDataState;
+      const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain } = selectMakerConfig;
       await this.getMakerMaxBalance();
@@ -993,6 +1032,12 @@ export default {
           info.text = 'SEND';
           info.disabled = 'disabled';
           console.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
+        }
+
+        if((fromCurrency !== toCurrency || this.isCrossAddress) && !util.isSupportXVMContract()){
+          info.text = 'SEND';
+          info.disabled = 'disabled';
+          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract');
         }
 
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
@@ -1798,17 +1843,76 @@ export default {
       justify-content: center;
 
       .btn {
-        display: inline-block;
         width: 350px;
         text-align: center;
         font-weight: 700;
         font-size: 16px;
-        line-height: 30px;
-        height: 30px;
         border-radius: 30px;
         cursor: pointer;
-        background: linear-gradient(to right, #D93E28, #A6453E);
         color: #FFFFFF;
+
+        height: 40px;
+        display: inline-block;
+        line-height: 40px;
+        background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
+      }
+    }
+  }
+}
+
+.dark-theme {
+  .dialog {
+    width: 100%;
+
+    .dialog-box {
+      position: relative;
+      background-color: #3f415b;
+      color: #FFFFFF;
+      border-radius: 40px;
+      width: 100%;
+      padding: 10px;
+      font-family: 'Inter Regular';
+      box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
+
+      .icon {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        cursor: pointer;
+      }
+
+      .title {
+        margin-bottom: 10px;
+        font-weight: 700;
+        font-size: 17px;
+      }
+
+      .content {
+        margin-bottom: 10px;
+        font-weight: lighter;
+        font-size: 15px;
+      }
+
+      .bottom {
+        height: 30px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .btn {
+          display: inline-block;
+          width: 350px;
+          text-align: center;
+          font-weight: 700;
+          font-size: 16px;
+          line-height: 30px;
+          height: 30px;
+          border-radius: 30px;
+          cursor: pointer;
+          background: linear-gradient(to right, #D93E28, #A6453E);
+          color: #FFFFFF;
+        }
       }
     }
   }

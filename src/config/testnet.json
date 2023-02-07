@@ -445,7 +445,7 @@
       "name": "Ether",
       "symbol": "ETH",
       "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
+      "address": "0x000000000000000000000000000000000000800A"
     },
     "rpc": [
       "https://zksync2-testnet.zksync.dev",
@@ -491,7 +491,7 @@
       "name": "ETH",
       "symbol": "ETH",
       "decimals": 18,
-      "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+      "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
     },
     "rpc": [
       "https://data-seed-prebsc-1-s1.binance.org:8545",

@@ -1,4 +1,5 @@
 import {
+  Switch,
   Steps,
   Select,
   Option,
@@ -19,6 +20,7 @@ import {
 } from 'element-ui'
 const element = {
   install: function(Vue) {
+    Vue.use(Switch)
     Vue.use(Steps)
     Vue.use(Step)
     Vue.use(InputNumber)
