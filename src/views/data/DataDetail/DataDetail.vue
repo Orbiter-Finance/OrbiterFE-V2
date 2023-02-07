@@ -1,7 +1,7 @@
 <template>
   <div class="transactions-detail">
     <div class="nav">
-      <span class="back" v-show="!isMobile" @click="$router.back()"> </span>
+      <span class="back" v-show="!isMobile" @click="back"> </span>
       <div class="tabs">
         <div
           class="tab"
@@ -11,6 +11,12 @@
           @click="onTabChnage(item.value)"
         >
           {{ item.name }}
+        </div>
+      </div>
+
+      <div v-if="!isMobile" class="contact">
+        <div class="btn active" @click="openTwitter">
+          Contact Us
         </div>
       </div>
     </div>
@@ -57,10 +63,20 @@ export default {
     },
   },
   mounted() {
-    const nav = this.$route.query.nav
+    let nav = this.$route.query.nav;
+    if (nav instanceof Array) {
+      nav = nav[0];
+    }
     this.currentTab = nav ? nav : tabs[0].value
   },
   methods: {
+    back(){
+      // this.$router.back()
+      this.$router.push({
+        path: '/data',
+        query: { rollup_tab: 'arbitrum' },
+      })
+    },
     onTabChnage(value) {
       this.currentTab = value
       this.$router.replace({
@@ -68,11 +84,41 @@ export default {
         query: { nav: value },
       })
     },
+    openTwitter() {
+      window.open('https://twitter.com/OrbiterResearch', '_blank');
+    }
   },
 }
 </script>
 
 <style lang="scss">
+  .contact {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-grow: 1;
+    padding-right: 20px;
+
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 150px;
+      height: 40px;
+      border-radius: 20px;
+      font-style: normal;
+      font-weight: 700;
+      font-size: 16px;
+      color: rgba(51, 51, 51, 0.8);
+      cursor: pointer;
+      &.active {
+        background: #df2e2d;
+        box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
+        border-radius: 20px;
+        color: #ffffff;
+      }
+    }
+  }
 .transactions-detail {
   max-width: 1120px;
   margin: 0 auto;

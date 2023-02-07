@@ -1,7 +1,7 @@
 <template>
   <div class="dapps-wrapper">
     <div class="head">
-      <rollups :value="currentRollup" @rollup-change="(value) => (currentRollup = value)" :customRollups="rollups" />
+      <rollups :value="currentRollup" @rollup-change="rollupChange" :customRollups="rollups" />
       <div class="right">
         <time-diff class="time" v-if="!isMobile && dapps && dapps.update_time" :timestamp="dapps.update_time" />
         <selector :data="selectors" :value="currentFilter" @change="(item) => (currentFilter = item.value)" />
@@ -10,7 +10,7 @@
     <div class="table">
       <el-table :data="currentTableData" style="width: 100%" empty-text="No Items" :default-sort="defaultSort"
         @sort-change="onSortChange">
-        <el-table-column v-if="!isMobile" fixed label="NO. Dapp Name" :width="isMobile ? 210 : 280">
+        <el-table-column v-if="!isMobile" fixed label="NO. Dapp Name" :width="280">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
@@ -25,13 +25,16 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column v-if="isMobile" fixed label="NO. Dapp" :width="100">
+        <el-table-column v-if="isMobile" fixed label="NO. Dapp" :width="150">
           <template slot-scope="scope">
             <div class="name-column">
               <div class="rank">
                 {{ scope.row.index }}
               </div>
               <dapp-logo :name="scope.row.dapp_name" />
+              <div @click="onRowClick(scope.row)" class="name" :title="scope.row.dapp_name">
+                {{ scope.row.dapp_name }}
+              </div>
             </div>
           </template>
         </el-table-column>
@@ -104,7 +107,7 @@
         </el-pagination>
       </div>
     </div>
-    <dapp-detail ref="dappDetail" />
+    <dapp-detail @close="closeDappDetail" ref="dappDetail" />
   </div>
 </template>
 
@@ -122,6 +125,7 @@ import dateFormat from '../../../util/dateFormat'
 import { getDapps } from '../../../L2data/dapp'
 import { isMobile } from '../../../composition/hooks'
 import { getTabRollups } from '../../../L2data/rollups'
+import Common from '../Common'
 
 const PAGE_SIZE = 30
 
@@ -134,6 +138,7 @@ const selectors = [
 ]
 
 export default {
+  mixins: [Common],
   data() {
     return {
       selectors,
@@ -196,7 +201,6 @@ export default {
   },
   async mounted() {
     this.rollups = await getTabRollups('dapps')
-    this.currentRollup = this.rollups[0].value
   },
   methods: {
     dateFormat,
@@ -250,9 +254,6 @@ export default {
           return isAscending ? aTime - bTime : bTime - aTime
         })
       }
-    },
-    onRowClick(row) {
-      this.$refs.dappDetail.show(this.currentRollup, row)
     },
     _getTableData() {
       const dapps = this.dapps
@@ -428,7 +429,8 @@ export default {
 
       .name-column {
         .rank {
-          margin-right: 10px;
+          width: 32px;
+          margin-right: 12px;
         }
       }
 
