@@ -344,7 +344,12 @@ export default {
           const newPath = path + '?' + suffixArr.join('&');
           this.$router.replace({ path: newPath, query: newQuery });
         } else {
-          this.$refs.rolluoDetail.show(this.indexTableData.find(item => item.rollup_name === floater), true);
+          const row = this.indexTableData.find(item => item.rollup_name === floater);
+          if (row) {
+            this.$refs.rolluoDetail.show(row, true);
+          } else {
+            this.closeDappDetail();
+          }
         }
       }
     }

@@ -39,6 +39,9 @@
             floater = floater[0];
         }
         if (rollup_tab) {
+            if (!['arbitrum', 'optimism', 'zksync', 'arbitrumnova', 'starknet'].includes(rollup_tab)) {
+                rollup_tab = 'arbitrum';
+            }
           if (newQuery?.rollup_tab !== rollup_tab) {
             newQuery.rollup_tab = rollup_tab;
             this.currentRollup = rollup_tab;
@@ -63,7 +66,12 @@
             const newPath = path + '?' + suffixArr.join('&');
             this.$router.replace({ path: newPath, query: newQuery });
           } else {
-            this.$refs.dappDetail.show(this.currentRollup, (this.currentTableData || this.tableData).find(item=>item.dapp_name === floater));
+              const row = (this.currentTableData || this.tableData).find(item=>item.dapp_name === floater);
+              if (row) {
+                  this.$refs.dappDetail.show(this.currentRollup, row);
+              } else {
+                  this.closeDappDetail();
+              }
           }
         }
       }

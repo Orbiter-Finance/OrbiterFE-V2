@@ -683,6 +683,46 @@ export default {
           border-bottom-color: #df2e2d;
         }
       }
+
+      .table-none {
+        .el-table,
+        .el-table__expanded-cell,
+        .el-table th.el-table__cell,
+        .el-table tr,
+        .el-table__body tr.hover-row > td.el-table__cell,
+        .el-table tbody tr:hover > td {
+          background-color: #373951;
+        }
+
+        .el-table td.el-table__cell {
+          color: rgba(255, 255, 255, 0.6);
+        }
+
+        .el-table th.el-table__cell {
+          color: #fff;
+        }
+
+        .data {
+          color: rgba(255, 255, 255, 0.6);
+        }
+
+        .name-column {
+          color: #fff;
+        }
+
+        .el-table .sort-caret.ascending {
+          border-bottom-color: #fff;
+        }
+        .el-table .sort-caret.descending {
+          border-top-color: #fff;
+        }
+        .el-table .descending .sort-caret.descending {
+          border-top-color: #df2e2d;
+        }
+        .el-table .ascending .sort-caret.ascending {
+          border-bottom-color: #df2e2d;
+        }
+      }
     }
   }
 }

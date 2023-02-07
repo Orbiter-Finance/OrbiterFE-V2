@@ -113,7 +113,7 @@ export default {
       } else if (type === 2) {
         window.open('https://discord.com/invite/hJJvXP7C73', '_blank');
       }else if(type === 99){
-        window.open('https://rinkeby.orbiter.finance', '_blank');
+        window.open('https://testmaker.orbiter.finance/', '_blank');
       }
     },
     changeState(e) {
