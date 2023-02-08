@@ -962,7 +962,7 @@ export default {
         let self = this;
         this.gasCostLoading = true;
         transferCalculate
-                .transferSpentGas(fromChainID)
+                .transferSpentGas(fromChainID, this.$env.gasPriceMap, this.$env.gasLimitMap)
                 .then((response) => {
                   updateTransferGasFee(response);
                   self.gasCostLoading = false;

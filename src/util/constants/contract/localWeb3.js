@@ -23,25 +23,10 @@ function localRpc(chainId, isWs) {
     return localWsRpc;
   }
   const chainInfo = util.getChainInfoByChainId(chainId);
-  if (chainInfo?.rpc) {
-    return chainInfo?.rpc;
+  if (chainInfo?.rpc && chainInfo.rpc.length) {
+    return chainInfo?.rpc[0];
   }
   return '';
 }
 
-/**
- * @param {number} chainID
- * @returns {Web3 | null}
- */
-function localWSWeb3(chainID) {
-  const rpc = this.localRpc(chainID, 1);
-  if (!rpc) {
-    return null;
-  }
-
-  return new Web3(
-      new Web3.providers.WebsocketProvider(rpc)
-  );
-}
-
-export { localRpc, localWeb3, localWSWeb3 };
+export { localRpc, localWeb3 };

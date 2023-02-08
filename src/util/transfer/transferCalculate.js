@@ -249,102 +249,8 @@ export default {
     },
 
     // gasCost-> savingValue
-    async transferSpentGas(fromChainID) {
+    async transferSpentGas(fromChainID, gasPriceMap, gasLimitMap) {
         const { selectMakerConfig } = transferDataState;
-        const GasPriceMap = {
-            1: 100,
-            2: 1.9,
-            3: 100,
-            4: 100,
-            5: 1,
-            6: 60,
-            7: 0.001,
-            8: 1.7,
-            9: 100,
-            10: 1,
-            11: 1,
-            15: 1,
-            16: 1,
-            22: 0.02,
-            33: 100,
-            44: 50,
-            66: 60,
-            77: 0.001,
-            88: 1.7,
-            99: 1,
-            510: 1,
-            511: 1,
-            13: 1,
-            513: 1,
-            514: 0.000028572,
-            515: 1,
-            516: 1,
-            518: 1,
-            519: 1
-        };
-        const GasLimitMap = {
-            1: 35000,
-            2: 810000,
-            3: 100,
-            4: 35000,
-            5: 35000,
-            6: 1500,
-            7: 21000,
-            8: 51000,
-            9: 75000,
-            10: 28000,
-            11: 100000,
-            13: 646496,
-            15: 150000,
-            16: 150000,
-            22: 810000,
-            33: 100,
-            44: 35000,
-            66: 1500,
-            77: 21000,
-            88: 51000,
-            99: 75000,
-            510: 16000,
-            511: 100000,
-            513: 646496,
-            514: 10560,
-            515: 150000,
-            516: 150000,
-            518: 21000,
-            519: 21000
-        };
-        const GasTokenMap = {
-            1: 'ETH',
-            2: 'AETH',
-            3: 'ETH',
-            4: 'ETH',
-            5: 'ETH',
-            6: 'MATIC',
-            7: 'ETH',
-            8: 'ETH',
-            11: 'ETH',
-            9: 'ETH',
-            10: 'METIS',
-            15: 'BNB',
-            16: 'ETH',
-            22: 'AETH',
-            33: 'ETH',
-            44: 'ETH',
-            66: 'MATIC',
-            77: 'ETH',
-            88: 'ETH',
-            99: 'ETH',
-            510: 'METIS',
-            511: 'ETH',
-            13: 'ETH',
-            513: 'ETH',
-            14: 'ETH',
-            514: 'ETH',
-            515: 'BNB',
-            516: 'ETH',
-            518: 'ETH',
-            519: 'ETH'
-        };
         if (fromChainID === 3 || fromChainID === 33) {
             const syncHttpProvider = await getZkSyncProvider(fromChainID);
             const zkTokenList =
@@ -405,29 +311,21 @@ export default {
             );
             return (starkFee / 10 ** 18).toFixed(6);
         }
-        if (
-            GasPriceMap[fromChainID.toString()] &&
-            GasLimitMap[fromChainID.toString()] &&
-            GasTokenMap[fromChainID.toString()]
-        ) {
-            let gasPrice = await this.getGasPrice(fromChainID.toString());
-            if (!gasPrice) {
-                let gas =
-                    (GasPriceMap[fromChainID.toString()] *
-                        GasLimitMap[fromChainID.toString()]) /
-                    10 ** 9;
-                return gas.toFixed(6).toString();
-            } else {
-                let gas = gasPrice * GasLimitMap[fromChainID.toString()];
-                if (fromChainID === 7 || fromChainID === 77) {
-                    let l1GasFee = await this.getOPFee(fromChainID);
-                    gas += l1GasFee;
-                }
-                gas = gas / 10 ** 18;
-                return gas.toFixed(6).toString();
-            }
+        let gasPrice = await this.getGasPrice(fromChainID.toString());
+        if (!gasPrice) {
+            let gas =
+                (gasPriceMap[fromChainID.toString()] *
+                    gasLimitMap[fromChainID.toString()]) /
+                10 ** 9;
+            return gas.toFixed(6).toString();
         } else {
-            return null;
+            let gas = gasPrice * gasLimitMap[fromChainID.toString()];
+            if (fromChainID === 7 || fromChainID === 77) {
+                let l1GasFee = await this.getOPFee(fromChainID);
+                gas += l1GasFee;
+            }
+            gas = gas / 10 ** 18;
+            return gas.toFixed(6).toString();
         }
     },
 
