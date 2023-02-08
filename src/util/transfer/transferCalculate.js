@@ -314,12 +314,12 @@ export default {
         let gasPrice = await this.getGasPrice(fromChainID.toString());
         if (!gasPrice) {
             let gas =
-                (gasPriceMap[fromChainID.toString()] *
-                    gasLimitMap[fromChainID.toString()]) /
+                ((gasPriceMap[fromChainID.toString()] || 1) *
+                    (gasLimitMap[fromChainID.toString()] || 21000)) /
                 10 ** 9;
             return gas.toFixed(6).toString();
         } else {
-            let gas = gasPrice * gasLimitMap[fromChainID.toString()];
+            let gas = gasPrice * (gasLimitMap[fromChainID.toString()] || 21000);
             if (fromChainID === 7 || fromChainID === 77) {
                 let l1GasFee = await this.getOPFee(fromChainID);
                 gas += l1GasFee;
