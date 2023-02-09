@@ -347,6 +347,7 @@
       "decimals": 18,
       "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
     },
+    "xvmList":["0x783f0AB9199206Ee7e70d4D728A9d93609610800"],
     "rpc": [
       "https://goerli.gateway.metisdevops.link"
     ],
@@ -360,6 +361,24 @@
         "symbol": "ETH",
         "decimals": 18,
         "address": "0x420000000000000000000000000000000000000a"
+      },
+      {
+        "name": "TestToken",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
+      },
+      {
+        "name": "TestToken",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      },
+      {
+        "name": "TestToken",
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
       }
     ]
   },
