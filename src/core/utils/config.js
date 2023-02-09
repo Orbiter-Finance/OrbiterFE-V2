@@ -71,11 +71,11 @@ export default {
   },
   ZKSpace: {
     Mainnet: 'https://api.zks.app/v3/1',
-    Rinkeby: 'https://api.zks.app/v3/4',
+    Rinkeby: 'https://api.zks.app/v3/5',
     chainID: '12',
     rinkeyChainID: '512',
     zksChainID: 13,
-    zksrinkebyChainID: 133,
+    zksrinkebyChainID: 129,
   },
   boba: {
     Mainnet: 'https://api.bobascan.com/api',
