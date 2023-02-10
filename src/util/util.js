@@ -162,9 +162,12 @@ export default {
    */
   async ensureWalletNetwork(chainId) {
     const chain = this.getChainInfoByChainId(chainId)
-    const switchParams = {
-      chainId: this.toHex(chain.chainId),
+    if (!+chain.networkId) {
+      return;
     }
+    const switchParams = {
+      chainId: this.toHex(chain.networkId),
+    };
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
@@ -174,7 +177,7 @@ export default {
       if (error.code === 4902) {
         // need add net
         const params = {
-          chainId: this.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
+          chainId: this.toHex(chain.networkId), // A 0x-prefixed hexadecimal string
           chainName: chain.name,
           nativeCurrency: {
             name: chain.nativeCurrency.name,
