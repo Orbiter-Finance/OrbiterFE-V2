@@ -582,7 +582,7 @@ export default {
       }
     },
     async loopringTransfer() {
-      const { selectMakerConfig, fromChainID, toChainID } = transferDataState;
+      const { selectMakerConfig, isCrossAddress, crossAddressReceipt, fromChainID, toChainID } = transferDataState;
       const tokenAddress = selectMakerConfig.fromChain.fromChain.tokenAddress;
       try {
         const tValue = transferCalculate.getTransferTValue();
@@ -604,7 +604,7 @@ export default {
                   0,
                   tokenAddress,
                   amount,
-                  p_text
+                  isCrossAddress ? `${ p_text }_${ crossAddressReceipt }` : p_text
           );
           if (response.hash && response.status === 'processing') {
             this.onTransferSucceed(

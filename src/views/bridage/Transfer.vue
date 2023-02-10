@@ -166,7 +166,7 @@
         >More</a
       >
     </div>
-    <div v-if="isNewVersion" :hidden="!isSupportXVM">
+    <div v-if="isNewVersion" :hidden="!isSupportXVM && !isLoopring">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
         <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Cross Address </label>
@@ -451,6 +451,9 @@ export default {
     },
     isSupportXVM() {
       return util.isSupportXVMContract();
+    },
+    isLoopring() {
+      return transferDataState.fromChainID == 9 || transferDataState.fromChainID == 99;
     },
     transferDataState() {
       return transferDataState;
@@ -1040,10 +1043,10 @@ export default {
           console.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
-        if((fromCurrency !== toCurrency || this.isCrossAddress) && !util.isSupportXVMContract()){
+        if((fromCurrency !== toCurrency || this.isCrossAddress) && !util.isSupportXVMContract() && !this.isLoopring){
           info.text = 'SEND';
           info.disabled = 'disabled';
-          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract');
+          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring');
         }
 
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
