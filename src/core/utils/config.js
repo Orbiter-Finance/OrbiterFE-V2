@@ -59,7 +59,7 @@ export default {
   },
   immutableX: {
     Mainnet: 'https://api.x.immutable.com/v1',
-    Rinkeby: 'https://api.ropsten.x.immutable.com/v1',
+    Rinkeby: 'https://api.sandbox.x.immutable.com/v1',
     chainID: '8',
     rinkeyChainID: '88',
   },

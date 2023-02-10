@@ -875,11 +875,10 @@ export default {
 
         const imxHelper = new IMXHelper(fromChainID);
         const imxClient = await imxHelper.getImmutableXClient(from, true);
-
         let tokenInfo = {
           type: ETHTokenType.ETH,
           data: {
-            decimals: selectMakerConfig.fromChain.tokenAddress,
+            decimals: selectMakerConfig.fromChain.decimals,
           },
         };
         if (!util.isEthTokenAddress(fromChainID, contractAddress)) {
@@ -892,7 +891,7 @@ export default {
             },
           };
         }
-
+    
         const resp = await imxClient.transfer({
           sender: from,
           token: tokenInfo,
@@ -907,6 +906,7 @@ export default {
                 resp.transfer_id
         );
       } catch (error) {
+        console.log(error);
         this.$notify.error({
           title: error.message,
           duration: 3000,
