@@ -16,6 +16,9 @@ export default {
       duration: 3000,
     })
   },
+  netWorkName(networkId) {
+    return this.getChainInfoByNetworkId(networkId)?.name || 'unknown';
+  },
   chainName(chainId) {
     return this.getChainInfoByChainId(chainId)?.name || 'unknown';
   },
@@ -137,6 +140,13 @@ export default {
       chainInfo.rpc.unshift(localHttpRpc);
     }
     return chainInfo;
+  },
+
+  getChainInfoByNetworkId(networkId) {
+    let configChainList = [...mainnet, ...testnet];
+    const info = configChainList.find(item => +item.networkId === +networkId);
+    if (!info) return null;
+    return JSON.parse(JSON.stringify(info));
   },
 
   isWhite() {
