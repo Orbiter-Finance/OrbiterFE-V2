@@ -596,6 +596,15 @@ export default {
         }
         const p_text = 9000 + Number(toChainID) + '';
         const amount = tValue.tAmount;
+        const memo = isCrossAddress ? `${ p_text }_${ crossAddressReceipt }` : p_text;
+        if (memo.length > 128) {
+          this.$notify.error({
+            title: 'The sending address is too long',
+            duration: 3000,
+          });
+          this.transferLoading = false;
+          return;
+        }
         try {
           const response = await loopring.sendTransfer(
                   compatibleGlobalWalletConf.value.walletPayload.walletAddress,
@@ -604,7 +613,7 @@ export default {
                   0,
                   tokenAddress,
                   amount,
-                  isCrossAddress ? `${ p_text }_${ crossAddressReceipt }` : p_text
+                  memo
           );
           if (response.hash && response.status === 'processing') {
             this.onTransferSucceed(
