@@ -47,7 +47,7 @@ export default {
     2: 'https://arbiscan.io/tx/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/tx/',
     3: 'https://zkscan.io/explorer/transactions/',
-    33: 'https://rinkeby.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
+    33: 'https://goerli.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://starkscan.co/tx/',
     44: 'https://testnet.starkscan.co/tx/',
     6: 'https://polygonscan.com/tx/',
