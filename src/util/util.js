@@ -6,6 +6,7 @@ import BigNumber from "bignumber.js";
 import testnet from '../config/testnet.json'
 import mainnet from '../config/mainnet.json'
 import whiteList from '../config/white.json'
+import Web3 from "web3";
 
 export default {
   showMessage(message, type) {
@@ -93,6 +94,36 @@ export default {
     })
   },
 
+  stableWeb3(chainId) {
+    return new Web3(this.stableRpc(chainId));
+  },
+
+  stableRpc(chainId) {
+    const rpcList = this.getRpcList(chainId);
+    if (rpcList.length) {
+      return rpcList[0];
+    }
+    console.error(`${ chainId } Unable to find stable rpc node`);
+    return null;
+  },
+
+  setStableRpc(chainId, rpc, msg) {
+    console.log(chainId, rpc, msg || '', 'success');
+    localStorage.setItem(`${ chainId }_stable_rpc`, rpc);
+  },
+
+  getRpcList(chainId) {
+    const chainInfo = this.getChainInfoByChainId(chainId);
+    const rpcList = (chainInfo?.rpc || []).sort(function () {
+      return 0.5 - Math.random();
+    });
+    const stableRpc = localStorage.getItem(`${ chainId }_stable_rpc`);
+    if (stableRpc) {
+      return [stableRpc, ...rpcList];
+    }
+    return rpcList;
+  },
+
   // the actual transfer amount
   getRealTransferValue() {
     const { selectMakerConfig, transferValue } = transferDataState;
@@ -132,12 +163,12 @@ export default {
     const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
     if (localWsRpc) {
       chainInfo.rpc = chainInfo.rpc || [];
-      chainInfo.rpc.unshift(localWsRpc);
+      chainInfo.rpc.push(localWsRpc);
     }
     const localHttpRpc = process.env[`VUE_APP_HP_${ chainId }`];
     if (localHttpRpc) {
       chainInfo.rpc = chainInfo.rpc || [];
-      chainInfo.rpc.unshift(localHttpRpc);
+      chainInfo.rpc.push(localHttpRpc);
     }
     return chainInfo;
   },
@@ -195,13 +226,13 @@ export default {
             decimals: chain.nativeCurrency.decimals,
           },
           rpcUrls: chain.rpc,
-          blockExplorerUrls: [
-            chain.explorers &&
-            chain.explorers.length > 0 &&
-            chain.explorers[0].url
-              ? chain.explorers[0].url
-              : chain.infoURL,
-          ],
+          // blockExplorerUrls: [
+          //   chain.explorers &&
+          //   chain.explorers.length > 0 &&
+          //   chain.explorers[0].url
+          //     ? chain.explorers[0].url
+          //     : chain.infoURL,
+          // ],
         }
         await compatibleGlobalWalletConf.value.walletPayload.provider.request({
           method: 'wallet_addEthereumChain',

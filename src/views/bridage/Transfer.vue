@@ -371,6 +371,7 @@ import {
   updateTransferMakerConfig,
 } from '../../composition/hooks';
 import { makerConfigs as newMakerConfig, oldMakerConfigs } from "../../core/actions/thegraph";
+import { isDev } from "../../util";
 
 let makerConfigs = oldMakerConfigs;
 
@@ -800,9 +801,9 @@ export default {
 
     this.updateTransferInfo();
 
-    if (!isMobile.value) {
-      this.showTipPopup();
-    }
+     if (isDev() && !isMobile.value) {
+       this.showTipPopup();
+     }
 
     const updateETHPriceI = async () => {
       transferCalculate

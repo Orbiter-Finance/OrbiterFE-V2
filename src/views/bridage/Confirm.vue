@@ -126,7 +126,6 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
-import { localRpc, localWeb3 } from '../../util/constants/contract/localWeb3';
 import {
   sendTransfer
 } from '../../util/constants/starknet/helper'
@@ -371,7 +370,7 @@ export default {
     },
     async zk2Transfer() {
       const { selectMakerConfig, fromChainID } = transferDataState;
-      const zksync2Provider = new zksync2.Provider(localRpc(fromChainID));
+      const zksync2Provider = new zksync2.Provider(util.stableRpc(fromChainID));
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress;
       const isTokenLiquid = await zksync2Provider.isTokenLiquid(tokenAddress);
       if (!isTokenLiquid) {
@@ -724,13 +723,13 @@ export default {
                       decimals: chainInfo.nativeCurrency.decimals,
                     },
                     rpcUrls: chainInfo.rpc,
-                    blockExplorerUrls: [
-                      chainInfo.explorers &&
-                      chainInfo.explorers.length > 0 &&
-                      chainInfo.explorers[0].url
-                              ? chainInfo.explorers[0].url
-                              : chainInfo.infoURL,
-                    ],
+                    // blockExplorerUrls: [
+                    //   chainInfo.explorers &&
+                    //   chainInfo.explorers.length > 0 &&
+                    //   chainInfo.explorers[0].url
+                    //           ? chainInfo.explorers[0].url
+                    //           : chainInfo.infoURL,
+                    // ],
                   };
                   compatibleGlobalWalletConf.value.walletPayload.provider
                           .request({
@@ -997,7 +996,7 @@ export default {
       // approve
       if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
         if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
-          const web3 = localWeb3(fromChainID);
+          const web3 = util.stableWeb3(fromChainID);
           const provider = new ethers.providers.Web3Provider(web3.currentProvider);
           const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(account));
           await crossAddress.contractApprove(tokenAddress, contractAddress, ethers.BigNumber.from(amount));

@@ -10767,6 +10767,37 @@ export const makerConfigs = [
         "gasFee": 0.01,
         "spendTime": 5,
         "fromChain": {
+            "id": 88,
+            "name": "ImmutableX(G)",
+            "tokenAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+            "symbol": "USDC",
+            "decimals": 6,
+            "minPrice": 0.005,
+            "maxPrice": 0.01
+        },
+        "toChain": {
+            "id": 5,
+            "name": "Görli",
+            "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+            "symbol": "USDC",
+            "decimals": 6
+        },
+        "times": [
+            1636019587,
+            99999999999999
+        ]
+    },
+    {
+        "id": "",
+        "makerId": "",
+        "ebcId": "",
+        "slippage": 200,
+        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "tradingFee": 0.0001,
+        "gasFee": 0.01,
+        "spendTime": 5,
+        "fromChain": {
             "id": 99,
             "name": "Loopring(R)",
             "tokenAddress": "0x0000000000000000000000000000000000000000",
@@ -11015,6 +11046,37 @@ export const makerConfigs = [
         "gasFee": 0.01,
         "spendTime": 5,
         "fromChain": {
+            "id": 88,
+            "name": "ImmutableX(G)",
+            "tokenAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+            "symbol": "USDC",
+            "decimals": 6,
+            "minPrice": 0.005,
+            "maxPrice": 0.01
+        },
+        "toChain": {
+            "id": 22,
+            "name": "Arbitrum(G)",
+            "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+            "symbol": "USDC",
+            "decimals": 6
+        },
+        "times": [
+            1636019587,
+            99999999999999
+        ]
+    },
+    {
+        "id": "",
+        "makerId": "",
+        "ebcId": "",
+        "slippage": 200,
+        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "tradingFee": 0.0001,
+        "gasFee": 0.01,
+        "spendTime": 5,
+        "fromChain": {
             "id": 99,
             "name": "Loopring(R)",
             "tokenAddress": "0x0000000000000000000000000000000000000000",
@@ -11263,6 +11325,37 @@ export const makerConfigs = [
         "gasFee": 0.01,
         "spendTime": 5,
         "fromChain": {
+            "id": 88,
+            "name": "ImmutableX(G)",
+            "tokenAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+            "symbol": "USDC",
+            "decimals": 6,
+            "minPrice": 0.005,
+            "maxPrice": 0.01
+        },
+        "toChain": {
+            "id": 66,
+            "name": "Polygon Mumbai",
+            "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+            "symbol": "USDC",
+            "decimals": 6
+        },
+        "times": [
+            1636019587,
+            99999999999999
+        ]
+    },
+    {
+        "id": "",
+        "makerId": "",
+        "ebcId": "",
+        "slippage": 200,
+        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "tradingFee": 0.0001,
+        "gasFee": 0.01,
+        "spendTime": 5,
+        "fromChain": {
             "id": 99,
             "name": "Loopring(R)",
             "tokenAddress": "0x0000000000000000000000000000000000000000",
@@ -11494,6 +11587,37 @@ export const makerConfigs = [
             "tokenAddress": "0x0000000000000000000000000000000000000000",
             "symbol": "ETH",
             "decimals": 18
+        },
+        "times": [
+            1636019587,
+            99999999999999
+        ]
+    },
+    {
+        "id": "",
+        "makerId": "",
+        "ebcId": "",
+        "slippage": 200,
+        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "tradingFee": 0.0001,
+        "gasFee": 0.01,
+        "spendTime": 5,
+        "fromChain": {
+            "id": 88,
+            "name": "ImmutableX(G)",
+            "tokenAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+            "symbol": "USDC",
+            "decimals": 6,
+            "minPrice": 0.005,
+            "maxPrice": 0.01
+        },
+        "toChain": {
+            "id": 77,
+            "name": "Optimism(G)",
+            "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+            "symbol": "USDC",
+            "decimals": 6
         },
         "times": [
             1636019587,
@@ -11990,6 +12114,37 @@ export const makerConfigs = [
             "tokenAddress": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56",
             "symbol": "ETH",
             "decimals": 18
+        },
+        "times": [
+            1636019587,
+            99999999999999
+        ]
+    },
+    {
+        "id": "",
+        "makerId": "",
+        "ebcId": "",
+        "slippage": 200,
+        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "tradingFee": 0.0001,
+        "gasFee": 0.01,
+        "spendTime": 5,
+        "fromChain": {
+            "id": 88,
+            "name": "ImmutableX(G)",
+            "tokenAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+            "symbol": "USDC",
+            "decimals": 6,
+            "minPrice": 0.005,
+            "maxPrice": 0.01
+        },
+        "toChain": {
+            "id": 515,
+            "name": "BSC(G)",
+            "tokenAddress": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f",
+            "symbol": "USDC",
+            "decimals": 6
         },
         "times": [
             1636019587,
@@ -12393,6 +12548,37 @@ export const makerConfigs = [
             "tokenAddress": "0x0000000000000000000000000000000000000000",
             "symbol": "ETH",
             "decimals": 18
+        },
+        "times": [
+            1636019587,
+            99999999999999
+        ]
+    },
+    {
+        "id": "",
+        "makerId": "",
+        "ebcId": "",
+        "slippage": 200,
+        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "tradingFee": 0.0001,
+        "gasFee": 0.01,
+        "spendTime": 5,
+        "fromChain": {
+            "id": 88,
+            "name": "ImmutableX(G)",
+            "tokenAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+            "symbol": "USDC",
+            "decimals": 6,
+            "minPrice": 0.005,
+            "maxPrice": 0.01
+        },
+        "toChain": {
+            "id": 33,
+            "name": "ZKSync(G)",
+            "tokenAddress": "0xd35cceead182dcee0f148ebac9447da2c4d449c4",
+            "symbol": "USDC",
+            "decimals": 6
         },
         "times": [
             1636019587,
@@ -12951,6 +13137,37 @@ export const makerConfigs = [
             "tokenAddress": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
             "symbol": "ETH",
             "decimals": 18
+        },
+        "times": [
+            1636019587,
+            99999999999999
+        ]
+    },
+    {
+        "id": "",
+        "makerId": "",
+        "ebcId": "",
+        "slippage": 200,
+        "recipient": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+        "tradingFee": 0.0001,
+        "gasFee": 0.01,
+        "spendTime": 5,
+        "fromChain": {
+            "id": 88,
+            "name": "ImmutableX(G)",
+            "tokenAddress": "0x07865c6e87b9f70255377e024ace6630c1eaa37f",
+            "symbol": "USDC",
+            "decimals": 6,
+            "minPrice": 0.005,
+            "maxPrice": 0.01
+        },
+        "toChain": {
+            "id": 44,
+            "name": "Starknet(G)",
+            "tokenAddress": "0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426",
+            "symbol": "USDC",
+            "decimals": 6
         },
         "times": [
             1636019587,

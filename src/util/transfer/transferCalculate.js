@@ -8,7 +8,6 @@ import orbiterCore from '../../orbiterCore';
 import { store } from '../../store';
 import { exchangeToUsd } from '../coinbase';
 import { getLocalCoinContract } from '../constants/contract/getContract';
-import { localRpc } from '../constants/contract/localWeb3';
 import {
     getErc20Balance,
     getNetworkIdByChainId,
@@ -222,28 +221,25 @@ export default {
                     console.warn(`lp getTransferFeeerror:`);
                 }
             }
-            const chainInfo = util.getChainInfoByChainId(fromChainID);
-            const rpcList = chainInfo?.rpc;
-            if (rpcList) {
-                for (const rpc of rpcList) {
-                    try {
-                        const web3 = new Web3(rpc);
-                        const estimateGas = await web3.eth.estimateGas({
-                            from: web3State.coinbase,
-                            to: makerAddress,
-                        });
-                        const gasPrice = await web3.eth.getGasPrice();
-                        let gas = new BigNumber(gasPrice).multipliedBy(estimateGas);
-                        if (fromChainID === 7 || fromChainID === 77) {
-                            let l1GasFee = await this.getOPFee(fromChainID);
-                            gas = gas.plus(l1GasFee);
-                        }
-                        return gas.dividedBy(10 ** 18).toString();
-                    } catch (error) {
-                        console.error(`EstimateGas ${ fromChainID } error:`, error);
+            const rpcList = util.getRpcList(fromChainID);
+            for (const rpc of rpcList) {
+                try {
+                    const web3 = new Web3(rpc);
+                    const estimateGas = await web3.eth.estimateGas({
+                        from: web3State.coinbase,
+                        to: makerAddress,
+                    });
+                    const gasPrice = await web3.eth.getGasPrice();
+                    let gas = new BigNumber(gasPrice).multipliedBy(estimateGas);
+                    if (fromChainID === 7 || fromChainID === 77) {
+                        let l1GasFee = await this.getOPFee(fromChainID);
+                        gas = gas.plus(l1GasFee);
                     }
-                }
+                    util.setStableRpc(fromChainID, rpc, 'EstimateGas');
+                    return gas.dividedBy(10 ** 18).toString();
+                } catch (error) {}
             }
+            console.error(fromChainID, rpcList, `EstimateGas error`);
         }
         return 0;
     },
@@ -1118,47 +1114,42 @@ export default {
                 return await tokenContract.methods.balanceOf(userAddress).call();
             }
         };
-        const chainInfo = util.getChainInfoByChainId(chainId);
-        const rpcList = chainInfo?.rpc;
-        if (rpcList) {
-            let balance = 0;
-            for (const rpc of rpcList) {
-                try {
-                    balance = await getBalance(new Web3(rpc), userAddress, tokenAddress);
-                    break;
-                } catch (error) {
-                    console.error(`GetBalance ${ chainId } error:`, error);
-                }
-            }
-            return balance;
-        } else {
-            return null;
+        const rpcList = util.getRpcList(chainId);
+        let balance = 0;
+        for (const rpc of rpcList) {
+            try {
+                balance = await getBalance(new Web3(rpc), userAddress, tokenAddress);
+                util.setStableRpc(chainId, rpc, 'GetBalance');
+                return balance;
+            } catch (error) {}
         }
+        console.error(chainId, rpcList, `GetBalance error`);
+        return balance;
     },
     async getGasPrice(fromChainID) {
         if (fromChainID === 33 || fromChainID === 3) {
             return null;
         }
-        const rpc = localRpc(fromChainID);
-        if (!rpc) {
-            return null;
+        const rpcList = util.getRpcList(fromChainID);
+        for (const rpc of rpcList) {
+            let response = await axios.post(rpc, {
+                jsonrpc: '2.0',
+                method: 'eth_gasPrice',
+                params: [],
+                id: 0,
+            });
+            if (response.status === 200) {
+                util.setStableRpc(fromChainID, rpc, 'eth_gasPrice');
+                return parseInt(response.data.result);
+            }
         }
-        let response = await axios.post(rpc, {
-            jsonrpc: '2.0',
-            method: 'eth_gasPrice',
-            params: [],
-            id: 0,
-        });
-        if (response.status === 200) {
-            return parseInt(response.data.result);
-        } else {
-            return null;
-        }
+        console.error(fromChainID, rpcList, 'Get gasPrice error');
+        return null;
     },
 
     async getOPFee(fromChainID) {
         // Create an ethers provider connected to the public mainnet endpoint.
-        const provider = new ethers.providers.JsonRpcProvider(localRpc(fromChainID));
+        const provider = new ethers.providers.JsonRpcProvider(util.stableRpc(fromChainID));
         // Create contract instances connected to the GPO and WETH contracts.
         const GasPriceOracle = getContractFactory('OVM_GasPriceOracle')
             .attach(predeploys.OVM_GasPriceOracle)
