@@ -8,7 +8,7 @@ import {
 } from '../walletsCoreData'
 import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
-import { localWeb3 } from '../../constants/contract/localWeb3'
+import { localWeb3,requestWeb3 } from '../../constants/contract/localWeb3'
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code
@@ -164,12 +164,12 @@ export const walletConnectDispatcherOnSignature = async (
   onTransferSucceed
 ) => {
   const _web3 = localWeb3(fromChainID)
-  const gaslimit = await _web3.eth.estimateGas({
+  const gaslimit = await requestWeb3(fromChainID, "estimateGas", {
     from,
     to: selectMakerInfo.makerAddress,
     value,
   })
-  const nonce = await _web3.eth.getTransactionCount(from)
+  const nonce = await requestWeb3(fromChainID, "getTransactionCount", from);
   connector
     .sendTransaction({
       from,

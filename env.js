@@ -48,12 +48,6 @@ export default {
     518: 'https://prealpha.scroll.io/l1',
     519: 'https://prealpha.scroll.io/l2',
   },
-  publicRPC: {
-    1: ["https://eth-mainnet.public.blastapi.io",'https://api.mycryptoapi.com/eth',"https://api.securerpc.com/v1",process.env.VUE_APP_HP],
-    2: ['https://arb1.arbitrum.io/rpc',"https://1rpc.io/arb", process.env.VUE_APP_HP_AR],
-    6: ["https://polygon-rpc.com/", 'https://poly-rpc.gateway.pokt.network', process.env.VUE_APP_HP_PO],
-    7: ['https://mainnet.optimism.io', process.env.VUE_APP_HP_OP],
-  },
   supportLocalNetWorksIDs: [
     '1',
     '2',

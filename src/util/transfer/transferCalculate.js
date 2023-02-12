@@ -9,8 +9,7 @@ import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
 import { exchangeToUsd } from '../coinbase'
-import { getLocalCoinContract } from '../constants/contract/getContract'
-import { localWeb3 } from '../constants/contract/localWeb3'
+import { requestWeb3,getWeb3TokenBalance } from '../constants/contract/localWeb3'
 import {
   getErc20Balance,
   getNetworkIdByChainId,
@@ -238,22 +237,18 @@ export default {
           console.warn(`lp getTransferFeeerror:`)
         }
       }
-      const web3 = localWeb3(fromChainID)
-      if (web3) {
-        const estimateGas = await web3.eth.estimateGas({
-          from: web3State.coinbase,
-          to: makerAddress,
-        })
-        const gasPrice = await web3.eth.getGasPrice()
-        let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
-        if (fromChainID === 7 || fromChainID === 77) {
-          let l1GasFee = await this.getOPFee(fromChainID)
-          gas = gas.plus(l1GasFee)
-        }
-        return gas.dividedBy(10 ** 18).toString()
+      const estimateGas = await requestWeb3(fromChainID, 'estimateGas', {
+        from: web3State.coinbase,
+        to: makerAddress,
+      })
+      const gasPrice = await requestWeb3(fromChainID, 'getGasPrice')
+      let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
+      if (fromChainID === 7 || fromChainID === 77) {
+        let l1GasFee = await this.getOPFee(fromChainID)
+        gas = gas.plus(l1GasFee)
       }
+      return gas.dividedBy(10 ** 18).toString();
     }
-    return 0
   },
 
   // gasCost-> savingValue
@@ -287,7 +282,7 @@ export default {
       515: 1,
       516: 1,
       518: 1,
-      519: 1
+      519: 1,
     }
     const GasLimitMap = {
       1: 35000,
@@ -318,7 +313,7 @@ export default {
       515: 150000,
       516: 150000,
       518: 21000,
-      519: 21000
+      519: 21000,
     }
     const GasTokenMap = {
       1: 'ETH',
@@ -350,7 +345,7 @@ export default {
       515: 'BNB',
       516: 'ETH',
       518: 'ETH',
-      519: 'ETH'
+      519: 'ETH',
     }
     if (fromChainID === 3 || fromChainID === 33) {
       const syncHttpProvider = await getZkSyncProvider(fromChainID)
@@ -500,10 +495,10 @@ export default {
     if (fromChainID === 4 || fromChainID === 44) {
       timeSpent = 180
     }
-    if (fromChainID === 518){
+    if (fromChainID === 518) {
       timeSpent = 15
     }
-    if (fromChainID === 519){
+    if (fromChainID === 519) {
       timeSpent = 6.828
     }
     if (toChainID === 4 || toChainID === 44) {
@@ -995,7 +990,7 @@ export default {
         // scroll get
         let fromGasPrice = await this.getGasPrice(fromChainID)
         // scroll WithDraw
-        ethGas = fromGasPrice * SCROLL_ETH_WITHDRAW;
+        ethGas = fromGasPrice * SCROLL_ETH_WITHDRAW
       } catch (error) {
         throw new Error(`scroll withdraw error`)
       }
@@ -1154,7 +1149,7 @@ export default {
         // scroll get
         let toGasPrice = await this.getGasPrice(toChainID)
         // scroll DEPOSIT
-        ethGas += toGasPrice * SCROLL_ETH_DEPOSIT;
+        ethGas += toGasPrice * SCROLL_ETH_DEPOSIT
       } catch (error) {
         throw new Error(`scroll deposit error`)
       }
@@ -1288,11 +1283,7 @@ export default {
       }
     } else {
       //
-      return this.getBalanceByCommonRPC(
-        localChainID,
-        userAddress,
-        tokenAddress
-      )
+      return this.getBalanceByCommonRPC(localChainID, userAddress, tokenAddress)
 
       // if (util.isEthTokenAddress(tokenAddress)) {
       //   // When is ETH
@@ -1309,36 +1300,14 @@ export default {
     }
   },
   async getBalanceByCommonRPC(chainId, userAddress, tokenAddress) {
-    const getBalance = async (web3, userAddress, tokenAddress) => {
-      if (!web3) {
-        return 0;
-      }
-      if (util.isEthTokenAddress(tokenAddress)) {
-        // When is ETH
-        return Number(await web3.eth.getBalance(userAddress)) || 0
-      } else {
-        // When is ERC20
-        var tokenContract = getLocalCoinContract(chainId, tokenAddress, 0, web3)
-        if (!tokenContract) {
-          throw 'getBalance_tokenContractError'
-        }
-        return await tokenContract.methods.balanceOf(userAddress).call()
-      }
-    }
-    if (env['publicRPC'] && env['publicRPC'][chainId]) {
-      const rpcs = env['publicRPC'][chainId]
-      let balance = 0
-      for (const rpc of rpcs) {
-        try {
-          balance = await getBalance(new Web3(rpc), userAddress, tokenAddress);
-          break
-        } catch (error) {
-          console.error(`GetBalance ${chainId} error:`, error)
-        }
-      }
-      return balance
+
+    if (util.isEthTokenAddress(tokenAddress)) {
+      // When is ETH
+      const balance = await requestWeb3(chainId, 'getBalance', userAddress);
+      return Number(balance);
     } else {
-      return await getBalance(localWeb3(chainId), userAddress, tokenAddress)
+      const balance = await getWeb3TokenBalance(chainId, userAddress, tokenAddress);
+      return Number(balance);
     }
   },
   async getGasPrice(fromChainID) {
@@ -1349,17 +1318,8 @@ export default {
       if (!env.localProvider[fromChainID]) {
         return null
       }
-      let response = await axios.post(env.localProvider[fromChainID], {
-        jsonrpc: '2.0',
-        method: 'eth_gasPrice',
-        params: [],
-        id: 0,
-      })
-      if (response.status === 200) {
-        return parseInt(response.data.result)
-      } else {
-        return null
-      }
+      const response = await requestWeb3(fromChainID, 'getGasPrice');
+        return parseInt(response)
     } else {
       return null
     }

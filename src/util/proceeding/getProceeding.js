@@ -6,7 +6,7 @@ import orbiterCore from '../../orbiterCore'
 import util from '../../util/util'
 import { store } from '../../store'
 import { Coin_ABI } from '../constants/contract/contract.js'
-import { localWeb3 } from '../constants/contract/localWeb3.js'
+import { localWeb3,requestWeb3 } from '../constants/contract/localWeb3.js'
 import {
   getStarkMakerAddress,
   getProviderByChainId,
@@ -50,10 +50,7 @@ async function confirmUserTransaction(
     toLocalChainID = makerInfo.c1ID
   }
   // Get current toChain blockNumber
-  const _web3 = localWeb3(toLocalChainID)
-  if (_web3) {
-    startBlockNumber = await _web3.eth.getBlockNumber()
-  }
+  startBlockNumber = await requestWeb3(toLocalChainID, 'getBlockNumber');
 
   store.commit('updateProceedingUserTransferLocalChainID', localChainID)
   store.commit('updateProceedingUserTransferTxid', txHash)
@@ -1278,14 +1275,14 @@ async function confirmMakerTransaction(
 
 async function getConfirmations(localChainID, txHash) {
   try {
-    const web3 = localWeb3(localChainID)
-    const trx = await web3.eth.getTransaction(txHash)
-    const currentBlock = await web3.eth.getBlockNumber()
+    
+    const trx = await requestWeb3(localChainID, 'getTransaction', txHash);
+    const currentBlock = await requestWeb3(localChainID, 'getBlockNumber');
     if (!trx) {
       return trx
     }
     if (trx.blockNumber !== null) {
-      var blockInfo = await web3.eth.getBlock(trx.blockNumber)
+      const blockInfo = await requestWeb3(localChainID, 'getBlock', trx.blockNumber);
       return {
         confirmations: currentBlock - trx.blockNumber,
         trx: trx,

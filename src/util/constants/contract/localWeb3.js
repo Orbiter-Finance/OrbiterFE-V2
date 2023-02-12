@@ -1,7 +1,8 @@
 import Web3 from 'web3'
 import env from '../../../../env'
-
+import { extraRpcs } from '../../../config/extraRpcs'
 const LocalNetWorks = env.supportLocalNetWorksIDs
+import { Coin_ABI } from './contract.js'
 
 /**
  * @param {number} chainID
@@ -10,7 +11,7 @@ const LocalNetWorks = env.supportLocalNetWorksIDs
 function localWeb3(chainID) {
   if (chainID && LocalNetWorks.indexOf(chainID.toString()) > -1) {
     const provider = env.localProvider[chainID]
-    if (!provider) {
+    if (!provider || provider.includes('alchemy')) {
       return null
     }
 
@@ -21,6 +22,79 @@ function localWeb3(chainID) {
   }
 }
 
+function requestWeb3(insideId, method, ...args) {
+  const chainId = env.localChainID_netChainID[insideId]
+  const chain = extraRpcs[chainId]
+  return new Promise(async (resolve, reject) => {
+    let result
+    if (chain && chain.rpcs.length > 0) {
+      for (const rpc of chain.rpcs) {
+        try {
+          const url = rpc.url
+          const web3 = new Web3(url)
+          result = await web3.eth[method](...args)
+          if (result) {
+            resolve(result)
+            break
+          }
+        } catch (error) {
+          console.log(
+            'request rpc error:',
+            error.message,
+            insideId,
+            method,
+            args
+          )
+        }
+      }
+    }
+
+    if (!result) {
+      reject(`Reuqest Web3 RPC ERROR：${insideId}-${method}-${args.join(',')}`)
+    }
+  })
+}
+
+  function getWeb3TokenBalance (insideId, userAddress, tokenAddress) {
+    
+    const chainId = env.localChainID_netChainID[insideId]
+    const chain = extraRpcs[chainId]
+    return new Promise(async (resolve, reject) => {
+      let result
+      if (chain && chain.rpcs.length > 0) {
+        for (const rpc of chain.rpcs) {
+          try {
+            const url = rpc.url
+            const web3 = new Web3(url)
+            // result = await web3.eth[method](...args)
+            const tokenContract = new web3.eth.Contract(
+              Coin_ABI,
+              tokenAddress
+            )
+            if (!tokenContract) {
+              console.warn('getLocalCoinContract_ecourseContractInstance');
+              continue;
+            }
+            const result =  await tokenContract.methods.balanceOf(userAddress).call()
+            if (result) {
+              resolve(result)
+              break
+            }
+          } catch (error) {
+            console.log(
+              'Request Web3 token Balance rpc error:',
+              error.message,
+              insideId,
+            )
+          }
+        }
+      }
+  
+      if (!result) {
+        reject(`Request Web3 TokenBalance RPC error${insideId}`)
+      }
+    })
+    }
 /**
  * @param {number} chainID
  * @returns {Web3 | null}
@@ -56,4 +130,4 @@ function localWSWeb3(chainID) {
   }
 }
 
-export { localWeb3, localWSWeb3 }
+export { localWeb3, localWSWeb3, requestWeb3,getWeb3TokenBalance }
