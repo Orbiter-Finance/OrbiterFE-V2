@@ -1,3 +1,7 @@
+import testnet from './testnet.json'
+import mainnet from './mainnet.json'
+import { isDev } from "../util";
+
 const tokenIcons = {
   ETH: require('../assets/ethlogo.svg'),
   USDC: require('../assets/usdclogo.png'),
@@ -27,4 +31,12 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-export default { getTokenIcon }
+const chainConfig = [...isDev() ? testnet : mainnet].map(item => {
+  if (process.env[`VUE_APP_CHAIN_API_KEY_${ item.internalId }`]) {
+    item.api = item.api || {};
+    item.api.key = process.env[`VUE_APP_CHAIN_API_KEY_${ item.internalId }`];
+  }
+  return item;
+});
+
+export default { getTokenIcon, chainConfig };

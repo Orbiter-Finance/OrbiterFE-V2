@@ -48,7 +48,12 @@
     ],
     "xvmList": [
       "0x6838e53488b9f75894a9fdf9feb509ee22c281dd"
-    ]
+    ],
+    "faucets": [
+      "https://goerli-faucet.slock.it/?address=${ADDRESS}",
+      "https://faucet.goerli.mudit.blog"
+    ],
+    "infoURL": "https://goerli.net/#about"
   },
   {
     "api": {
@@ -96,7 +101,18 @@
     ],
     "xvmList": [
       "0x6838e53488b9f75894a9fdf9feb509ee22c281dd"
-    ]
+    ],
+    "faucets": [],
+    "explorers": [
+      {
+        "name": "Arbitrum Nova Chain Explorer",
+        "url": "https://goerli-rollup.arbitrum.io/",
+        "icon": "blockscout",
+        "standard": "EIP3091"
+      }
+    ],
+    "infoURL": "https://arbitrum.io",
+    "parent": {}
   },
   {
     "api": {
@@ -109,7 +125,6 @@
     "debug": false,
     "name": "ZKSync(G)",
     "nativeCurrency": {
-      "id": 0,
       "name": "Ether",
       "symbol": "ETH",
       "decimals": 18,
@@ -122,22 +137,16 @@
     "contracts": [],
     "tokens": [
       {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
+        "name": "DAI",
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0x5c221e77624690fff6dd741493d735a17716c26b"
       },
       {
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-      },
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+        "address": "0xd35cceead182dcee0f148ebac9447da2c4d449c4"
       }
     ]
   },
@@ -235,12 +244,14 @@
     ],
     "xvmList": [
       "0x6838e53488b9f75894a9fdf9feb509ee22c281dd"
-    ]
+    ],
+    "faucets": ["https://faucet.matic.network/"],
+    "infoURL": "https://matic.network/"
   },
   {
     "api": {
       "url": "https://api-goerli-optimism.etherscan.io/api",
-      "key": "G1XY7R53AED1EB654H2PKV9NUMWKIGI1YA"
+      "key": ""
     },
     "chainId": "420",
     "networkId": "420",
@@ -284,7 +295,9 @@
     ],
     "xvmList": [
       "0x6838e53488b9f75894a9fdf9feb509ee22c281dd"
-    ]
+    ],
+    "faucets": [],
+    "infoURL": "https://blockscout.com/optimism/goerli/"
   },
   {
     "api": {
@@ -306,12 +319,19 @@
       "api"
     ],
     "contracts": [],
-    "tokens": []
+    "tokens": [
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x07865c6e87b9f70255377e024ace6630c1eaa37f"
+      }
+    ]
   },
   {
     "api": {
       "url": "https://uat2.loopring.io",
-      "key": "35vBhSaHoYuUodTk2pFzuOLNeeVXtWyvsEUunNp0TRTph28gNFBecX9XRodrMUda"
+      "key": ""
     },
     "chainId": "loopring_testnet",
     "networkId": "5",
@@ -361,7 +381,9 @@
         "decimals": 18,
         "address": "0x420000000000000000000000000000000000000a"
       }
-    ]
+    ],
+    "faucets": [],
+    "infoURL": "https://stardust-explorer.metis.io"
   },
   {
     "api": {
@@ -429,7 +451,9 @@
       "rpc"
     ],
     "contracts": [],
-    "tokens": []
+    "tokens": [],
+    "faucets": [],
+    "infoURL": "https://gateway.boba.network/"
   },
   {
     "api": {
@@ -474,7 +498,9 @@
         "decimals": 18,
         "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
       }
-    ]
+    ],
+    "faucets": [],
+    "infoURL": "https://zksync2-testnet.zkscan.io/"
   },
   {
     "api": {
@@ -522,7 +548,11 @@
     ],
     "xvmList": [
       "0x6838e53488b9f75894a9fdf9feb509ee22c281dd"
-    ]
+    ],
+    "faucets": [
+      "https://testnet.binance.org/faucet-smart"
+    ],
+    "infoURL": "https://testnet.binance.org/"
   },
   {
     "api": {
@@ -543,7 +573,9 @@
     },
     "rpc": ["https://prealpha.scroll.io/l2"],
     "watch": ["api", "rpc"],
-    "tokens": []
+    "tokens": [],
+    "faucets": [],
+    "infoURL": "https://l2scan.scroll.io/"
   },
   {
     "api": {
@@ -565,6 +597,17 @@
     },
     "rpc": ["https://l2rpc.a1.taiko.xyz"],
     "watch": ["api", "rpc"],
-    "tokens": []
+    "tokens": [],
+    "faucets": [],
+    "explorers": [
+      {
+        "name": "Arbitrum Nova Chain Explorer",
+        "url": "https://l2explorer.a1.taiko.xyz/address",
+        "icon": "blockscout",
+        "standard": "EIP3091"
+      }
+    ],
+    "infoURL": "https://taiko.xyz/",
+    "parent": {}
   }
 ]

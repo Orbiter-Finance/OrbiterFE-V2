@@ -711,40 +711,8 @@ export default {
                 this.RealTransfer();
               })
               .catch((error) => {
-                console.warn(error);
                 if (error.code === 4902) {
-                  // need add net
-                  const params = {
-                    chainId: util.toHex(chainInfo.chainId), // A 0x-prefixed hexadecimal string
-                    chainName: chainInfo.name,
-                    nativeCurrency: {
-                      name: chainInfo.nativeCurrency.name,
-                      symbol: chainInfo.nativeCurrency.symbol, // 2-6 characters long
-                      decimals: chainInfo.nativeCurrency.decimals,
-                    },
-                    rpcUrls: chainInfo.rpc,
-                    // blockExplorerUrls: [
-                    //   chainInfo.explorers &&
-                    //   chainInfo.explorers.length > 0 &&
-                    //   chainInfo.explorers[0].url
-                    //           ? chainInfo.explorers[0].url
-                    //           : chainInfo.infoURL,
-                    // ],
-                  };
-                  compatibleGlobalWalletConf.value.walletPayload.provider
-                          .request({
-                            method: 'wallet_addEthereumChain',
-                            params: [
-                              params,
-                              compatibleGlobalWalletConf.value.walletPayload.walletAddress,
-                            ],
-                          })
-                          .then(() => {
-                          })
-                          .catch((error) => {
-                            console.warn(error);
-                            util.showMessage(error.message, 'error');
-                          });
+                  util.addEthereumChain(fromChainID);
                 } else {
                   util.showMessage(error.message, 'error');
                 }
