@@ -33,10 +33,8 @@ function requestWeb3(insideId, method, ...args) {
           const url = rpc.url
           const web3 = new Web3(url)
           result = await web3.eth[method](...args)
-          if (result) {
-            resolve(result)
-            break
-          }
+          resolve(result)
+          break
         } catch (error) {
           console.log(
             'request rpc error:',
