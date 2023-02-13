@@ -582,7 +582,7 @@ export default {
     },
     async loopringTransfer() {
       const { selectMakerConfig, isCrossAddress, crossAddressReceipt, fromChainID, toChainID } = transferDataState;
-      const tokenAddress = selectMakerConfig.fromChain.fromChain.tokenAddress;
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress;
       try {
         const tValue = transferCalculate.getTransferTValue();
         if (!tValue.state) {
