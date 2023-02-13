@@ -155,8 +155,7 @@ export default {
   },
 
   getChainInfoByChainId(chainId) {
-    const configChainList = config.chainConfig;
-    const info = configChainList.find(item => +item.internalId === +chainId);
+    const info = config.chainConfig.find(item => +item.internalId === +chainId);
     if (!info) return null;
     const chainInfo = JSON.parse(JSON.stringify(info));
     const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
@@ -173,8 +172,7 @@ export default {
   },
 
   getChainInfoByNetworkId(networkId) {
-    let configChainList = [...mainnet, ...testnet];
-    const info = configChainList.find(item => +item.networkId === +networkId);
+    const info = config.chainConfig.find(item => +item.networkId === +networkId);
     if (!info) return null;
     return JSON.parse(JSON.stringify(info));
   },

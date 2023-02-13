@@ -1,8 +1,8 @@
 <template>
   <div class="transfer-box">
-    <div class="top-area">
+    <div class="top-area" style="position: relative">
       <span class="title">Token</span>
-      <div v-if="!isNewVersion" style="margin-left: 4px">
+      <div v-if="!isNewVersion" class="symbol">
         <ObSelect
                 :datas="fromTokenList"
                 v-model="selectFromToken"
@@ -70,7 +70,7 @@
                 ) : '0'
             "
           />
-          <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
           <div style="margin-left: 4px">
             <ObSelect v-if="isNewVersion"
                     :datas="fromTokenList"
@@ -819,6 +819,11 @@ export default {
     updateCrossAddressReceipt(this.crossAddressReceipt);
 
     this.rates = await getRates('ETH');
+
+    // const self = this;
+    // this.cronList.push(setInterval(() => {
+    //   self.updateTransferInfo();
+    // }, 10 * 1000));
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -1237,26 +1242,9 @@ export default {
       }
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
-      const { fromChain, toChain } = selectMakerConfig;
-      let avalibleDigit = orbiterCore.getDigitByPrecision(fromChain.decimals);
-      let opBalance = 10 ** -avalibleDigit;
-      let useBalanle = new BigNumber(this.fromBalance)
-              .minus(new BigNumber(selectMakerConfig.tradingFee))
-              .minus(new BigNumber(opBalance));
-      let userMax = useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
-              ? useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
-              : new BigNumber(0);
-      let max = userMax.comparedTo(new BigNumber(this.userMaxPrice)) > 0
-              ? new BigNumber(this.userMaxPrice) : userMax;
-      if ((fromChain.id === 9 ||
-              fromChain.id === 99 ||
-              toChain.id === 9 ||
-              toChain.id === 99) &&
-              fromChain.decimals === 18
-      ) {
-        max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
-      }
-      this.transferValue = max.toString();
+      console.log('userMaxPrice',this.userMaxPrice)
+      this.transferValue = this.userMaxPrice;
+      this.updateTransferInfo()
     },
     transfer_mid() {
       const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
@@ -1619,8 +1607,8 @@ export default {
             this.fromBalanceLoading = false;
           });
         } else {
-          self.updateUserMaxPrice();
           self.fromBalance = fromChainBalanceMap[fromChain.symbol];
+          self.updateUserMaxPrice();
         }
       }
 
@@ -1668,6 +1656,10 @@ export default {
   }
 }
 .transfer-box {
+  .symbol {
+    position: absolute;
+    left: 80px;
+  }
   .top-area {
     display: flex;
     align-items: center;
