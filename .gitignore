@@ -4,6 +4,7 @@ node_modules
 .env
 package-lock.json
 /src/config/chain.json
+/src/config/maker.json
 
 # local env files
 .env.local
