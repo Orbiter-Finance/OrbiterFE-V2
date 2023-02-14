@@ -1,8 +1,8 @@
 <template>
   <div class="transfer-box">
-    <div class="top-area">
+    <div class="top-area" style="position: relative">
       <span class="title">Token</span>
-      <div v-if="!isNewVersion" style="margin-left: 4px">
+      <div v-if="!isNewVersion" class="symbol">
         <ObSelect
                 :datas="fromTokenList"
                 v-model="selectFromToken"
@@ -36,12 +36,12 @@
         <div v-if="isLogin" class="right">
           Balance:
           <CommLoading
-            v-if="fromBalanceLoading"
+            :hidden="!fromBalanceLoading"
             style="left: 0.3rem; top: 0.2rem"
             width="1.2rem"
             height="1.2rem"
           />
-          <span v-else>{{ fromBalance }}</span>
+          <span :hidden="fromBalanceLoading">{{ fromBalance }}</span>
         </div>
       </div>
       <div class="bottomItem">
@@ -54,7 +54,7 @@
           <SvgIconThemed v-if="fromChainIdList.length > 1" />
         </div>
         <div
-          style="display: flex; justify-content: center; align-items: center"
+          style="display: flex; justify-content: center; align-items: center;height: 40px"
         >
           <input style="min-width: 50px"
             type="text"
@@ -70,9 +70,9 @@
                 ) : '0'
             "
           />
-          <el-button @click="fromMax" class="maxBtn" style>Max</el-button>
+          <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
           <div style="margin-left: 4px">
-            <ObSelect v-if="isNewVersion"
+            <ObSelect :hidden="!isNewVersion"
                     :datas="fromTokenList"
                     v-model="selectFromToken"
                     @input="selectFromTokenChange"
@@ -108,12 +108,12 @@
         <div v-if="isLogin" class="right">
           Balance:
           <CommLoading
-            v-if="toBalanceLoading"
+            :hidden="!toBalanceLoading"
             style="left: 0.3rem; top: 0.2rem"
             width="1.2rem"
             height="1.2rem"
           />
-          <span v-else>{{ toBalance }}</span>
+          <span :hidden="toBalanceLoading">{{ toBalance }}</span>
         </div>
       </div>
       <div class="bottomItem">
@@ -166,7 +166,7 @@
         >More</a
       >
     </div>
-    <div v-if="isNewVersion" :hidden="!isSupportXVM">
+    <div v-if="isNewVersion" :hidden="!isSupportXVM && !isLoopring">
       <div style="text-align: left;margin-top: 20px;padding-left: 20px">
         <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Cross Address </label>
@@ -219,12 +219,12 @@
         <span class="red">
           Save
           <CommLoading
-            v-if="saveGasLoading"
+            :hidden="!saveGasLoading"
             style="margin: 0 1rem"
             width="1rem"
             height="1rem"
           />
-          <span v-else style="margin-left: 0.4rem"
+          <span :hidden="saveGasLoading" style="margin-left: 0.4rem"
             >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
           >
         </span>
@@ -239,18 +239,18 @@
         <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
         <span class="border">
           Time Spend
-          <CommLoading v-if="timeSpenLoading" width="1.2rem" height="1.2rem" />
-          <span v-else>{{ timeSpent }}</span>
+          <CommLoading :hidden="!timeSpenLoading" width="1.2rem" height="1.2rem" />
+          <span :hidden="timeSpenLoading">{{ timeSpent }}</span>
         </span>
         <span class="red">
           Save
           <CommLoading
-            v-if="saveTimeLoading"
+            :hidden="!saveTimeLoading"
             style="margin: 0 1rem"
             width="1rem"
             height="1rem"
           />
-          <span v-else style="margin-left: 0.4rem">
+          <span :hidden="saveTimeLoading" style="margin-left: 0.4rem">
             {{ transferSavingTime }}
           </span>
         </span>
@@ -370,9 +370,9 @@ import {
   updateTransferFromCurrency,
   updateTransferMakerConfig,
 } from '../../composition/hooks';
-import { makerConfigs as newMakerConfig, oldMakerConfigs } from "../../core/actions/thegraph";
+import { isDev } from "../../util";
 
-let makerConfigs = oldMakerConfigs;
+let makerConfigs = config.v1MakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
@@ -451,6 +451,9 @@ export default {
     },
     isSupportXVM() {
       return util.isSupportXVMContract();
+    },
+    isLoopring() {
+      return transferDataState.fromChainID == 9 || transferDataState.fromChainID == 99;
     },
     transferDataState() {
       return transferDataState;
@@ -737,10 +740,10 @@ export default {
   watch: {
     isNewVersion() {
       if (this.isNewVersion) {
-        makerConfigs = newMakerConfig;
+        makerConfigs = config.makerConfigs;
         this.updateTransferInfo();
       } else {
-        makerConfigs = oldMakerConfigs;
+        makerConfigs = config.v1MakerConfigs;
         this.updateTransferInfo();
       }
     },
@@ -766,7 +769,7 @@ export default {
     },
     isCrossAddress: function (newValue) {
       updateIsCrossAddress(newValue);
-      this.updateSendBtnInfo();
+      this.updateTransferInfo();
     },
     currentNetwork(newValue, oldValue) {
       if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
@@ -797,9 +800,9 @@ export default {
 
     this.updateTransferInfo();
 
-    if (!isMobile.value) {
-      this.showTipPopup();
-    }
+     if (isDev() && !isMobile.value) {
+       this.showTipPopup();
+     }
 
     const updateETHPriceI = async () => {
       transferCalculate
@@ -815,6 +818,11 @@ export default {
     updateCrossAddressReceipt(this.crossAddressReceipt);
 
     this.rates = await getRates('ETH');
+
+    // const self = this;
+    // this.cronList.push(setInterval(() => {
+    //   self.updateTransferInfo();
+    // }, 30 * 1000));
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -825,11 +833,13 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
-    updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
+    async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
         toCurrency = fromCurrency;
       }
+      this.sendBtnInfo.disabled = 'disabled';
 
+      const isCrossAddress = transferDataState.isCrossAddress;
       const oldFromChainID = transferDataState.fromChainID;
       const oldToChainID = transferDataState.toChainID;
       const oldFromCurrency = transferDataState.fromCurrency;
@@ -929,6 +939,13 @@ export default {
         if (oldToChainID !== toChainID) this.selectToToken = toTokenList[0].token;
       }
 
+      if (fromCurrency !== this.selectFromToken) {
+        this.selectFromToken = fromCurrency;
+      }
+      if (toCurrency !== this.selectToToken) {
+        this.selectToToken = toCurrency;
+      }
+
       if (this.fromChainIdList !== fromChainIdList) {
         this.fromChainIdList = fromChainIdList;
       }
@@ -952,7 +969,14 @@ export default {
               item.fromChain.symbol === fromCurrency &&
               item.toChain.symbol === toCurrency
       );
-      updateTransferMakerConfig(makerConfig);
+      const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
+      if (fromCurrency === toCurrency && isCrossAddress) {
+        makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient;
+        makerConfigInfo.sender = makerConfigInfo.crossAddress?.sender;
+        makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee;
+        makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
+      }
+      updateTransferMakerConfig(makerConfigInfo);
 
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
@@ -975,12 +999,12 @@ export default {
       if (fromCurrency !== oldFromCurrency) {
         this.updateExchangeToUsdPrice();
       }
-      this.refreshUserBalance();
+      await this.refreshUserBalance();
       if (fromChainID !== oldFromChainID || fromCurrency !== oldFromCurrency) {
-        this.userMinPrice = makerConfig?.fromChain?.minPrice || 0;
+        this.userMinPrice = makerConfigInfo?.fromChain?.minPrice || 0;
       }
       this.updateRoutes(oldFromChainID, oldToChainID);
-      this.updateSendBtnInfo();
+      await this.updateSendBtnInfo();
     },
     async updateSendBtnInfo() {
       const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
@@ -1040,10 +1064,10 @@ export default {
           console.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
-        if((fromCurrency !== toCurrency || this.isCrossAddress) && !util.isSupportXVMContract()){
+        if((fromCurrency !== toCurrency || this.isCrossAddress) && !util.isSupportXVMContract() && !this.isLoopring){
           info.text = 'SEND';
           info.disabled = 'disabled';
-          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract');
+          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring');
         }
 
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
@@ -1233,26 +1257,9 @@ export default {
       }
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
-      const { fromChain, toChain } = selectMakerConfig;
-      let avalibleDigit = orbiterCore.getDigitByPrecision(fromChain.decimals);
-      let opBalance = 10 ** -avalibleDigit;
-      let useBalanle = new BigNumber(this.fromBalance)
-              .minus(new BigNumber(selectMakerConfig.tradingFee))
-              .minus(new BigNumber(opBalance));
-      let userMax = useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
-              ? useBalanle.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
-              : new BigNumber(0);
-      let max = userMax.comparedTo(new BigNumber(this.userMaxPrice)) > 0
-              ? new BigNumber(this.userMaxPrice) : userMax;
-      if ((fromChain.id === 9 ||
-              fromChain.id === 99 ||
-              toChain.id === 9 ||
-              toChain.id === 99) &&
-              fromChain.decimals === 18
-      ) {
-        max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
-      }
-      this.transferValue = max.toString();
+      console.log('userMaxPrice',this.userMaxPrice)
+      this.transferValue = this.userMaxPrice;
+      this.updateTransferInfo()
     },
     transfer_mid() {
       const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
@@ -1588,7 +1595,9 @@ export default {
               10
       );
     },
-    refreshUserBalance() {
+    async refreshUserBalance() {
+      this.fromBalanceLoading = true;
+      this.toBalanceLoading = true;
       const self = this;
       const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
@@ -1601,13 +1610,12 @@ export default {
         const addressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
         const fromChainBalanceMap = addressBalanceMap[fromChain.id] = addressBalanceMap[fromChain.id] || {};
         if (typeof fromChainBalanceMap[fromChain.symbol] === 'undefined') {
-          this.fromBalanceLoading = true;
-          transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
-                  .then((response) => {
+          await transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
+                  .then(async (response) => {
                     const balance = (response / 10 ** fromChain.decimals).toFixed(6);
                     self.addBalance(fromChain.id, fromChain.symbol, balance, address);
                     self.fromBalance = balance;
-                    self.updateUserMaxPrice();
+                    await self.updateUserMaxPrice();
                   })
                   .catch((error) => {
                     console.warn(error);
@@ -1615,9 +1623,10 @@ export default {
             this.fromBalanceLoading = false;
           });
         } else {
-          self.updateUserMaxPrice();
           self.fromBalance = fromChainBalanceMap[fromChain.symbol];
+          await self.updateUserMaxPrice();
         }
+        this.fromBalanceLoading = false;
       }
 
       if (toChainID === 4 || toChainID === 44) {
@@ -1627,8 +1636,7 @@ export default {
         const toAddressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
         const toChainBalanceMap = toAddressBalanceMap[toChain.id] = toAddressBalanceMap[toChain.id] || {};
         if (typeof toChainBalanceMap[toChain.symbol] === 'undefined') {
-          this.toBalanceLoading = true;
-          transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
+          await transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
                   .then((response) => {
                     const balance = (response / 10 ** toChain.decimals).toFixed(6);
                     self.addBalance(toChain.id, toChain.symbol, balance, address);
@@ -1642,6 +1650,7 @@ export default {
         } else {
           self.toBalance = toChainBalanceMap[toChain.symbol];
         }
+        this.toBalanceLoading = false;
       }
     },
   },
@@ -1664,6 +1673,10 @@ export default {
   }
 }
 .transfer-box {
+  .symbol {
+    position: absolute;
+    left: 80px;
+  }
   .top-area {
     display: flex;
     align-items: center;

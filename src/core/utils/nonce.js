@@ -1,8 +1,8 @@
 import thirdapi from '../actions/thirdapi'
 import loopring from '../actions/loopring'
 import zkspace from '../actions/zkspace'
-import { localWeb3 } from '../../util/constants/contract/localWeb3'
 import { getStarkNonce } from '../../util/constants/starknet/helper'
+import util from "../../util/util";
 
 export default {
   getNonce: async function (
@@ -61,7 +61,7 @@ export default {
       return 0
     } else {
       let nonce = 0
-      const web3 = localWeb3(localChainID)
+      const web3 = util.stableWeb3(localChainID);
       try {
         nonce = await web3.eth.getTransactionCount(userAddress, 'pending')
         return nonce

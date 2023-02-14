@@ -126,7 +126,6 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
-import { localRpc, localWeb3 } from '../../util/constants/contract/localWeb3';
 import {
   sendTransfer
 } from '../../util/constants/starknet/helper'
@@ -371,7 +370,7 @@ export default {
     },
     async zk2Transfer() {
       const { selectMakerConfig, fromChainID } = transferDataState;
-      const zksync2Provider = new zksync2.Provider(localRpc(fromChainID));
+      const zksync2Provider = new zksync2.Provider(util.stableRpc(fromChainID));
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress;
       const isTokenLiquid = await zksync2Provider.isTokenLiquid(tokenAddress);
       if (!isTokenLiquid) {
@@ -582,7 +581,7 @@ export default {
       }
     },
     async loopringTransfer() {
-      const { selectMakerConfig, fromChainID, toChainID } = transferDataState;
+      const { selectMakerConfig, isCrossAddress, crossAddressReceipt, fromChainID, toChainID } = transferDataState;
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress;
       try {
         const tValue = transferCalculate.getTransferTValue();
@@ -596,6 +595,15 @@ export default {
         }
         const p_text = 9000 + Number(toChainID) + '';
         const amount = tValue.tAmount;
+        const memo = isCrossAddress ? `${ p_text }_${ crossAddressReceipt }` : p_text;
+        if (memo.length > 128) {
+          this.$notify.error({
+            title: 'The sending address is too long',
+            duration: 3000,
+          });
+          this.transferLoading = false;
+          return;
+        }
         try {
           const response = await loopring.sendTransfer(
                   compatibleGlobalWalletConf.value.walletPayload.walletAddress,
@@ -604,7 +612,7 @@ export default {
                   0,
                   tokenAddress,
                   amount,
-                  p_text
+                  memo
           );
           if (response.hash && response.status === 'processing') {
             this.onTransferSucceed(
@@ -654,93 +662,6 @@ export default {
           duration: 3000,
         });
       }
-    },
-    addChainNetWork() {
-      const { isCrossAddress, crossAddressReceipt, fromChainID, fromCurrency, transferValue, selectMakerConfig } = transferDataState;
-      const that = this;
-      const chainInfo = util.getChainInfoByChainId(fromChainID);
-      const switchParams = {
-        chainId: util.toHex(chainInfo.chainId),
-      };
-      compatibleGlobalWalletConf.value.walletPayload.provider
-              .request({
-                method: 'wallet_switchEthereumChain',
-                params: [switchParams],
-              })
-              .then(() => {
-                const toAddressAll = (util.isExecuteXVMContract() ?
-                        chainInfo.xvmList[0] :
-                        selectMakerConfig.recipient).toLowerCase();
-                let toAddress = util.shortAddress(toAddressAll);
-                if (fromChainID === 4 || fromChainID === 44) {
-                  toAddress = util.shortAddress(
-                          selectMakerConfig.recipient
-                  );
-                }
-
-                const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
-                // switch success
-                that.$store.commit('updateConfirmRouteDescInfo', [
-                  {
-                    no: 1,
-                    from: new BigNumber(transferValue).plus(
-                            new BigNumber(selectMakerConfig.tradingFee)
-                    ) + fromCurrency,
-                    to: toAddress,
-                    fromTip: '',
-                    toTip: toAddressAll,
-                    icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
-                  },
-                  {
-                    no: 2,
-                    from: toAddress,
-                    to: util.shortAddress(walletAddress),
-                    fromTip: toAddressAll,
-                    toTip: walletAddress,
-                    icon: 'wallet'
-                  }
-                ]);
-                this.RealTransfer();
-              })
-              .catch((error) => {
-                console.warn(error);
-                if (error.code === 4902) {
-                  // need add net
-                  const params = {
-                    chainId: util.toHex(chainInfo.chainId), // A 0x-prefixed hexadecimal string
-                    chainName: chainInfo.name,
-                    nativeCurrency: {
-                      name: chainInfo.nativeCurrency.name,
-                      symbol: chainInfo.nativeCurrency.symbol, // 2-6 characters long
-                      decimals: chainInfo.nativeCurrency.decimals,
-                    },
-                    rpcUrls: chainInfo.rpc,
-                    blockExplorerUrls: [
-                      chainInfo.explorers &&
-                      chainInfo.explorers.length > 0 &&
-                      chainInfo.explorers[0].url
-                              ? chainInfo.explorers[0].url
-                              : chainInfo.infoURL,
-                    ],
-                  };
-                  compatibleGlobalWalletConf.value.walletPayload.provider
-                          .request({
-                            method: 'wallet_addEthereumChain',
-                            params: [
-                              params,
-                              compatibleGlobalWalletConf.value.walletPayload.walletAddress,
-                            ],
-                          })
-                          .then(() => {
-                          })
-                          .catch((error) => {
-                            console.warn(error);
-                            util.showMessage(error.message, 'error');
-                          });
-                } else {
-                  util.showMessage(error.message, 'error');
-                }
-              });
     },
     async ethTransfer(value) {
       const { selectMakerConfig, fromChainID } = transferDataState;
@@ -875,10 +796,11 @@ export default {
 
         const imxHelper = new IMXHelper(fromChainID);
         const imxClient = await imxHelper.getImmutableXClient(from, true);
+
         let tokenInfo = {
           type: ETHTokenType.ETH,
           data: {
-            decimals: selectMakerConfig.fromChain.decimals,
+            decimals: selectMakerConfig.fromChain.tokenAddress,
           },
         };
         if (!util.isEthTokenAddress(fromChainID, contractAddress)) {
@@ -891,7 +813,7 @@ export default {
             },
           };
         }
-    
+
         const resp = await imxClient.transfer({
           sender: from,
           token: tokenInfo,
@@ -906,7 +828,6 @@ export default {
                 resp.transfer_id
         );
       } catch (error) {
-        console.log(error);
         this.$notify.error({
           title: error.message,
           duration: 3000,
@@ -988,7 +909,7 @@ export default {
       // approve
       if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
         if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
-          const web3 = localWeb3(fromChainID);
+          const web3 = util.stableWeb3(fromChainID);
           const provider = new ethers.providers.Web3Provider(web3.currentProvider);
           const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(account));
           await crossAddress.contractApprove(tokenAddress, contractAddress, ethers.BigNumber.from(amount));

@@ -1,9 +1,6 @@
-const baseUrl = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
 const baseDomain = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
 export default {
-  baseUrl,
   baseTraddingUrl: `${ baseDomain }/api`,
-  credential: false,
   chainIcon: {
     1: 'tokenLogo',
     2: 'arblogo',
@@ -47,7 +44,7 @@ export default {
     2: 'https://arbiscan.io/tx/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/tx/',
     3: 'https://zkscan.io/explorer/transactions/',
-    33: 'https://rinkeby.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
+    33: 'https://goerli.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://starkscan.co/tx/',
     44: 'https://testnet.starkscan.co/tx/',
     6: 'https://polygonscan.com/tx/',
@@ -59,11 +56,11 @@ export default {
     9: 'https://explorer.loopring.io/tx/',
     99: 'https://explorer.loopring.io/tx/',
     10: 'https://andromeda-explorer.metis.io/tx/',
-    510: 'https://goerli.explorer.metisdevops.link/tx/',
+    510: 'https://stardust-explorer.metis.io/tx/',
     11: 'https://trade.dydx.exchange/',
     511: 'https://trade.stage.dydx.exchange/',
     12: 'https://zkspace.info/transaction/',
-    512: 'https://v3-goerli.zkswap.info/transaction/',
+    512: 'https://v3-rinkeby.zkswap.info/transaction/',
     13: 'https://blockexplorer.boba.network/tx/',
     513: 'https://blockexplorer.rinkeby.boba.network/tx/',
     15: 'https://bscscan.com/tx/',
@@ -93,11 +90,11 @@ export default {
     9: 'https://explorer.loopring.io/account/',
     99: 'https://explorer.loopring.io/account/',
     10: 'https://andromeda-explorer.metis.io/address/',
-    510: 'https://goerli.explorer.metisdevops.link/address/',
+    510: 'https://stardust-explorer.metis.io/address/',
     11: 'https://trade.dydx.exchange/',
     511: 'https://trade.stage.dydx.exchange/',
     12: 'https://zkspace.info/account/',
-    512: 'https://v3-goerli.zkswap.info/account/',
+    512: 'https://v3-rinkeby.zkswap.info/account/',
     13: 'https://bobascan.com/address/',
     513: 'https://testnet.bobascan.com/address/',
     514: 'https://zksync2-testnet.zkscan.io/address/',

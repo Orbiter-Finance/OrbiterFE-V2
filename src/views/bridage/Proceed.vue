@@ -323,7 +323,7 @@ export default {
       return chainID
     },
     switchNetWork(e = true) {
-      this.addChainNetWork(this.getChainId(e))
+      util.ensureWalletNetwork(this.getChainId(e));
     },
     async goToExplorFrom() {
       let url
@@ -487,58 +487,7 @@ export default {
         this.$store.commit('updateProceedTxID', null)
         this.$emit('stateChanged', '1')
       }
-    },
-    addChainNetWork(useChainID) {
-      const chain = util.getChainInfoByChainId(useChainID);
-      const switchParams = {
-        chainId: util.toHex(chain.chainId),
-      };
-      compatibleGlobalWalletConf.value.walletPayload.provider
-              .request({
-                method: 'wallet_switchEthereumChain',
-                params: [switchParams],
-              })
-              .then(() => {
-                // switch success
-                util.showMessage('switch success', 'success');
-              })
-              .catch((error) => {
-                console.warn(error);
-                if (error.code === 4902) {
-                  // need add net
-                  const params = {
-                    chainId: util.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
-                    chainName: chain.name,
-                    nativeCurrency: {
-                      name: chain.nativeCurrency.name,
-                      symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-                      decimals: chain.nativeCurrency.decimals,
-                    },
-                    rpcUrls: chain.rpc,
-                    blockExplorerUrls: [
-                      chain.explorers &&
-                      chain.explorers.length > 0 &&
-                      chain.explorers[0].url
-                              ? chain.explorers[0].url
-                              : chain.infoURL,
-                    ],
-                  };
-                  compatibleGlobalWalletConf.value.walletPayload.provider
-                          .request({
-                            method: 'wallet_addEthereumChain',
-                            params: [params, web3State.coinbase],
-                          })
-                          .then(() => {
-                          })
-                          .catch((error) => {
-                            console.warn(error);
-                            util.showMessage(error.message, 'error');
-                          });
-                } else {
-                  util.showMessage(error.message, 'error');
-                }
-              });
-    },
+    }
   },
 }
 </script>

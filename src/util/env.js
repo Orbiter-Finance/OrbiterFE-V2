@@ -1,6 +1,6 @@
-export const isLocal = () => process.env.NODE_ENV === 'local'
-export const isDev = () => process.env.NODE_ENV === 'development'
-export const isProd = () => process.env.NODE_ENV === 'production'
+export const isLocal = () => process.env.VUE_APP_ENV === 'local';
+export const isDev = () => process.env.VUE_APP_ENV === 'development';
+export const isProd = () => process.env.VUE_APP_ENV === 'production';
 
 // TODO: should check by code
 export const isWebSimulation = false

@@ -3,9 +3,8 @@ import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData
 import { transferDataState } from "../composition/useTransferData";
 import { exchangeToCoin } from "./coinbase";
 import BigNumber from "bignumber.js";
-import testnet from '../config/testnet.json'
-import mainnet from '../config/mainnet.json'
-import whiteList from '../config/white.json'
+import config from '../config/index'
+import Web3 from "web3";
 
 export default {
   showMessage(message, type) {
@@ -15,6 +14,9 @@ export default {
       dangerouslyUseHTMLString: true,
       duration: 3000,
     })
+  },
+  netWorkName(networkId) {
+    return this.getChainInfoByNetworkId(networkId)?.name || 'unknown';
   },
   chainName(chainId) {
     return this.getChainInfoByChainId(chainId)?.name || 'unknown';
@@ -90,6 +92,36 @@ export default {
     })
   },
 
+  stableWeb3(chainId) {
+    return new Web3(this.stableRpc(chainId));
+  },
+
+  stableRpc(chainId) {
+    const rpcList = this.getRpcList(chainId);
+    if (rpcList.length) {
+      return rpcList[0];
+    }
+    console.error(`${ chainId } Unable to find stable rpc node`);
+    return null;
+  },
+
+  setStableRpc(chainId, rpc, msg) {
+    console.log(chainId, rpc, msg || '', 'success');
+    localStorage.setItem(`${ chainId }_stable_rpc`, rpc);
+  },
+
+  getRpcList(chainId) {
+    const chainInfo = this.getChainInfoByChainId(chainId);
+    const rpcList = (chainInfo?.rpc || []).sort(function () {
+      return 0.5 - Math.random();
+    });
+    const stableRpc = localStorage.getItem(`${ chainId }_stable_rpc`);
+    if (stableRpc) {
+      return [stableRpc, ...rpcList];
+    }
+    return rpcList;
+  },
+
   // the actual transfer amount
   getRealTransferValue() {
     const { selectMakerConfig, transferValue } = transferDataState;
@@ -122,25 +154,30 @@ export default {
   },
 
   getChainInfoByChainId(chainId) {
-    let configChainList = [...mainnet, ...testnet];
-    const info = configChainList.find(item => +item.internalId === +chainId);
+    const info = config.chainConfig.find(item => +item.internalId === +chainId);
     if (!info) return null;
     const chainInfo = JSON.parse(JSON.stringify(info));
     const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
     if (localWsRpc) {
       chainInfo.rpc = chainInfo.rpc || [];
-      chainInfo.rpc.unshift(localWsRpc);
+      chainInfo.rpc.push(localWsRpc);
     }
     const localHttpRpc = process.env[`VUE_APP_HP_${ chainId }`];
     if (localHttpRpc) {
       chainInfo.rpc = chainInfo.rpc || [];
-      chainInfo.rpc.unshift(localHttpRpc);
+      chainInfo.rpc.push(localHttpRpc);
     }
     return chainInfo;
   },
 
+  getChainInfoByNetworkId(networkId) {
+    const info = config.chainConfig.find(item => +item.networkId === +networkId);
+    if (!info) return null;
+    return JSON.parse(JSON.stringify(info));
+  },
+
   isWhite() {
-    return !(whiteList.length && !whiteList.find(item => this.equalsIgnoreCase(item, compatibleGlobalWalletConf.value.walletPayload.walletAddress)));
+    return !(config.whiteList.length && !config.whiteList.find(item => this.equalsIgnoreCase(item, compatibleGlobalWalletConf.value.walletPayload.walletAddress)));
   },
 
   isSupportXVMContract() {
@@ -161,7 +198,7 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    const chain = this.getChainInfoByChainId(chainId)
+    const chain = this.getChainInfoByChainId(chainId);
     if (!+chain.networkId) {
       return;
     }
@@ -172,34 +209,44 @@ export default {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
-      })
+      });
     } catch (error) {
       if (error.code === 4902) {
-        // need add net
-        const params = {
-          chainId: this.toHex(chain.networkId), // A 0x-prefixed hexadecimal string
-          chainName: chain.name,
-          nativeCurrency: {
-            name: chain.nativeCurrency.name,
-            symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-            decimals: chain.nativeCurrency.decimals,
-          },
-          rpcUrls: chain.rpc,
-          blockExplorerUrls: [
-            chain.explorers &&
-            chain.explorers.length > 0 &&
-            chain.explorers[0].url
-              ? chain.explorers[0].url
-              : chain.infoURL,
-          ],
-        }
-        await compatibleGlobalWalletConf.value.walletPayload.provider.request({
-          method: 'wallet_addEthereumChain',
-          params: [params],
-        })
+        await this.addEthereumChain(chainId);
       } else {
-        throw error
+        console.error(error);
+        this.showMessage(error.message, 'error');
       }
+    }
+  },
+
+  async addEthereumChain(chainId) {
+    const chainInfo = this.getChainInfoByChainId(chainId);
+    const params = {
+      chainId: this.toHex(chainInfo.networkId), // A 0x-prefixed hexadecimal string
+      chainName: chainInfo.name,
+      nativeCurrency: {
+        name: chainInfo.nativeCurrency.name,
+        symbol: chainInfo.nativeCurrency.symbol, // 2-6 characters long
+        decimals: chainInfo.nativeCurrency.decimals,
+      },
+      rpcUrls: chainInfo.rpc,
+      blockExplorerUrls: [
+        chainInfo.explorers &&
+        chainInfo.explorers.length &&
+        chainInfo.explorers[0].url
+            ? chainInfo.explorers[0].url
+            : chainInfo.infoURL,
+      ],
+    };
+    try {
+      await compatibleGlobalWalletConf.value.walletPayload.provider.request({
+        method: 'wallet_addEthereumChain',
+        params: [params],
+      });
+    } catch (error) {
+      console.error(error);
+      this.showMessage(error.message, 'error');
     }
   },
 }
