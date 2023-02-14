@@ -11,10 +11,10 @@
         ></ObSelect>
       </div>
       <div :hidden="!isWhiteWallet" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
-        <span :style="`margin-right:10px;color:${isNewVersion ? '#13ce66' : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
+        <span :style="`margin-right:10px;color:${isNewVersion ? '#4890FE' : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
         <el-switch
                 v-model="isNewVersion"
-                active-color="#13ce66"
+                active-color="#4890FE"
                 inactive-color="#888888">
         </el-switch>
       </div>
@@ -54,7 +54,7 @@
           <SvgIconThemed v-if="fromChainIdList.length > 1" />
         </div>
         <div
-          style="display: flex; justify-content: center; align-items: center;height: 40px"
+          style="display: flex; justify-content: center; align-items: center;height: 30px"
         >
           <input style="min-width: 50px"
             type="text"
@@ -125,7 +125,7 @@
           <span>{{ showChainName(false) }}</span>
           <SvgIconThemed v-if="toChainIdList.length > 1" />
         </div>
-        <div style="display: flex; align-items: center;height: 40px" class="right">
+        <div style="display: flex; align-items: center;height: 30px" class="right">
           <div v-if="toTokenList.length" style="margin-left: 4px">
             <ObSelect v-if="isNewVersion"
                     :datas="toTokenList"
@@ -167,19 +167,19 @@
       >
     </div>
     <div v-if="isNewVersion" :hidden="!isSupportXVM && !isLoopring">
-      <div style="text-align: left;margin-top: 20px;padding-left: 20px">
+      <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
         <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
-        <label for="checkbox"> Cross Address </label>
+        <label for="checkbox"> Change Account </label>
       </div>
-      <div class="cross-addr-box to-area" v-if="isCrossAddress">
+      <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
         <div data-v-59545920="" class="topItem">
-          <div class="left">Cross Address</div>
+          <div class="left">Recipient's Address</div>
         </div>
         <input
                 @blur="updateSendBtnInfo"
                 type="text"
                 v-model="crossAddressReceipt"
-                placeholder="You receive cross chain addresses"
+                :placeholder="`Recipient's ${chainName} Address`"
         />
       </div>
     </div>
@@ -187,13 +187,19 @@
       @click="sendTransfer"
       :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
       class="btn select-wallet-dialog"
-      style="border-radius: 40px"
+      :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
     >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
         {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
     </CommBtn>
     <div class="info-box">
+      <div v-if="isCurrentAddress" class="info-item">
+        <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
+        <span class="warn">
+          This is your address.
+        </span>
+      </div>
       <div v-if="isErrorAddress" class="info-item">
         <svg-icon class="info-icon" iconName="info"></svg-icon>
         <span class="red">
@@ -439,6 +445,12 @@ export default {
     };
   },
   computed: {
+    chainName() {
+      return util.chainName(transferDataState.toChainID);
+    },
+    isCurrentAddress() {
+      return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
+    },
     isErrorAddress() {
       if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
         return false;
@@ -447,7 +459,11 @@ export default {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
-      return !reg.test(this.crossAddressReceipt);
+      const isCheck = !reg.test(this.crossAddressReceipt);
+      if (isCheck) {
+        this.sendBtnInfo.disabled = 'disabled';
+      }
+      return isCheck;
     },
     isSupportXVM() {
       return util.isSupportXVMContract();
@@ -1073,7 +1089,8 @@ export default {
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
           info.text = 'SEND';
           info.disabled = 'disabled';
-          console.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)', this.crossAddressReceipt, this.isErrorAddress);
+          console.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
+                  this.crossAddressReceipt, this.isErrorAddress);
         }
       }
       this.sendBtnInfo = info;
@@ -1804,6 +1821,9 @@ export default {
   }
   .red {
     color: #df2e2d;
+  }
+  .warn {
+    color: #E2989A;
   }
   .starknet-tips {
     font-family: 'Inter Regular';
