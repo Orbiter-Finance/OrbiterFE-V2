@@ -36,12 +36,12 @@
         <div v-if="isLogin" class="right">
           Balance:
           <CommLoading
-            v-if="fromBalanceLoading"
+            :hidden="!fromBalanceLoading"
             style="left: 0.3rem; top: 0.2rem"
             width="1.2rem"
             height="1.2rem"
           />
-          <span v-else>{{ fromBalance }}</span>
+          <span :hidden="fromBalanceLoading">{{ fromBalance }}</span>
         </div>
       </div>
       <div class="bottomItem">
@@ -54,7 +54,7 @@
           <SvgIconThemed v-if="fromChainIdList.length > 1" />
         </div>
         <div
-          style="display: flex; justify-content: center; align-items: center"
+          style="display: flex; justify-content: center; align-items: center;height: 40px"
         >
           <input style="min-width: 50px"
             type="text"
@@ -72,7 +72,7 @@
           />
           <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
           <div style="margin-left: 4px">
-            <ObSelect v-if="isNewVersion"
+            <ObSelect :hidden="!isNewVersion"
                     :datas="fromTokenList"
                     v-model="selectFromToken"
                     @input="selectFromTokenChange"
@@ -108,12 +108,12 @@
         <div v-if="isLogin" class="right">
           Balance:
           <CommLoading
-            v-if="toBalanceLoading"
+            :hidden="!toBalanceLoading"
             style="left: 0.3rem; top: 0.2rem"
             width="1.2rem"
             height="1.2rem"
           />
-          <span v-else>{{ toBalance }}</span>
+          <span :hidden="toBalanceLoading">{{ toBalance }}</span>
         </div>
       </div>
       <div class="bottomItem">
@@ -219,12 +219,12 @@
         <span class="red">
           Save
           <CommLoading
-            v-if="saveGasLoading"
+            :hidden="!saveGasLoading"
             style="margin: 0 1rem"
             width="1rem"
             height="1rem"
           />
-          <span v-else style="margin-left: 0.4rem"
+          <span :hidden="saveGasLoading" style="margin-left: 0.4rem"
             >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
           >
         </span>
@@ -239,18 +239,18 @@
         <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
         <span class="border">
           Time Spend
-          <CommLoading v-if="timeSpenLoading" width="1.2rem" height="1.2rem" />
-          <span v-else>{{ timeSpent }}</span>
+          <CommLoading :hidden="!timeSpenLoading" width="1.2rem" height="1.2rem" />
+          <span :hidden="timeSpenLoading">{{ timeSpent }}</span>
         </span>
         <span class="red">
           Save
           <CommLoading
-            v-if="saveTimeLoading"
+            :hidden="!saveTimeLoading"
             style="margin: 0 1rem"
             width="1rem"
             height="1rem"
           />
-          <span v-else style="margin-left: 0.4rem">
+          <span :hidden="saveTimeLoading" style="margin-left: 0.4rem">
             {{ transferSavingTime }}
           </span>
         </span>
@@ -823,7 +823,7 @@ export default {
     // const self = this;
     // this.cronList.push(setInterval(() => {
     //   self.updateTransferInfo();
-    // }, 10 * 1000));
+    // }, 30 * 1000));
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -1580,7 +1580,9 @@ export default {
               10
       );
     },
-    refreshUserBalance() {
+    async refreshUserBalance() {
+      this.fromBalanceLoading = true;
+      this.toBalanceLoading = true;
       const self = this;
       const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
@@ -1593,13 +1595,12 @@ export default {
         const addressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
         const fromChainBalanceMap = addressBalanceMap[fromChain.id] = addressBalanceMap[fromChain.id] || {};
         if (typeof fromChainBalanceMap[fromChain.symbol] === 'undefined') {
-          this.fromBalanceLoading = true;
-          transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
-                  .then((response) => {
+          await transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
+                  .then(async (response) => {
                     const balance = (response / 10 ** fromChain.decimals).toFixed(6);
                     self.addBalance(fromChain.id, fromChain.symbol, balance, address);
                     self.fromBalance = balance;
-                    self.updateUserMaxPrice();
+                    await self.updateUserMaxPrice();
                   })
                   .catch((error) => {
                     console.warn(error);
@@ -1608,8 +1609,9 @@ export default {
           });
         } else {
           self.fromBalance = fromChainBalanceMap[fromChain.symbol];
-          self.updateUserMaxPrice();
+          await self.updateUserMaxPrice();
         }
+        this.fromBalanceLoading = false;
       }
 
       if (toChainID === 4 || toChainID === 44) {
@@ -1619,8 +1621,7 @@ export default {
         const toAddressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
         const toChainBalanceMap = toAddressBalanceMap[toChain.id] = toAddressBalanceMap[toChain.id] || {};
         if (typeof toChainBalanceMap[toChain.symbol] === 'undefined') {
-          this.toBalanceLoading = true;
-          transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
+          await transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
                   .then((response) => {
                     const balance = (response / 10 ** toChain.decimals).toFixed(6);
                     self.addBalance(toChain.id, toChain.symbol, balance, address);
@@ -1634,6 +1635,7 @@ export default {
         } else {
           self.toBalance = toChainBalanceMap[toChain.symbol];
         }
+        this.toBalanceLoading = false;
       }
     },
   },
