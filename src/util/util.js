@@ -4,7 +4,6 @@ import { transferDataState } from "../composition/useTransferData";
 import { exchangeToCoin } from "./coinbase";
 import BigNumber from "bignumber.js";
 import config from '../config/index'
-import whiteList from '../config/white.json'
 import Web3 from "web3";
 
 export default {
@@ -178,7 +177,7 @@ export default {
   },
 
   isWhite() {
-    return !(whiteList.length && !whiteList.find(item => this.equalsIgnoreCase(item, compatibleGlobalWalletConf.value.walletPayload.walletAddress)));
+    return !(config.whiteList.length && !config.whiteList.find(item => this.equalsIgnoreCase(item, compatibleGlobalWalletConf.value.walletPayload.walletAddress)));
   },
 
   isSupportXVMContract() {

@@ -1,9 +1,6 @@
-const baseUrl = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
 const baseDomain = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
 export default {
-  baseUrl,
   baseTraddingUrl: `${ baseDomain }/api`,
-  credential: false,
   chainIcon: {
     1: 'tokenLogo',
     2: 'arblogo',

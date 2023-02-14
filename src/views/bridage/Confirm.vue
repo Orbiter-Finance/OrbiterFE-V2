@@ -663,61 +663,6 @@ export default {
         });
       }
     },
-    addChainNetWork() {
-      const { isCrossAddress, crossAddressReceipt, fromChainID, fromCurrency, transferValue, selectMakerConfig } = transferDataState;
-      const that = this;
-      const chainInfo = util.getChainInfoByChainId(fromChainID);
-      const switchParams = {
-        chainId: util.toHex(chainInfo.chainId),
-      };
-      compatibleGlobalWalletConf.value.walletPayload.provider
-              .request({
-                method: 'wallet_switchEthereumChain',
-                params: [switchParams],
-              })
-              .then(() => {
-                const toAddressAll = (util.isExecuteXVMContract() ?
-                        chainInfo.xvmList[0] :
-                        selectMakerConfig.recipient).toLowerCase();
-                let toAddress = util.shortAddress(toAddressAll);
-                if (fromChainID === 4 || fromChainID === 44) {
-                  toAddress = util.shortAddress(
-                          selectMakerConfig.recipient
-                  );
-                }
-
-                const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
-                // switch success
-                that.$store.commit('updateConfirmRouteDescInfo', [
-                  {
-                    no: 1,
-                    from: new BigNumber(transferValue).plus(
-                            new BigNumber(selectMakerConfig.tradingFee)
-                    ) + fromCurrency,
-                    to: toAddress,
-                    fromTip: '',
-                    toTip: toAddressAll,
-                    icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
-                  },
-                  {
-                    no: 2,
-                    from: toAddress,
-                    to: util.shortAddress(walletAddress),
-                    fromTip: toAddressAll,
-                    toTip: walletAddress,
-                    icon: 'wallet'
-                  }
-                ]);
-                this.RealTransfer();
-              })
-              .catch((error) => {
-                if (error.code === 4902) {
-                  util.addEthereumChain(fromChainID);
-                } else {
-                  util.showMessage(error.message, 'error');
-                }
-              });
-    },
     async ethTransfer(value) {
       const { selectMakerConfig, fromChainID } = transferDataState;
       const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress;

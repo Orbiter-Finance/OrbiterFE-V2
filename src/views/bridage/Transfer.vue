@@ -370,10 +370,9 @@ import {
   updateTransferFromCurrency,
   updateTransferMakerConfig,
 } from '../../composition/hooks';
-import { makerConfigs as newMakerConfig, oldMakerConfigs } from "../../core/actions/thegraph";
 import { isDev } from "../../util";
 
-let makerConfigs = oldMakerConfigs;
+let makerConfigs = config.v1MakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
@@ -741,10 +740,10 @@ export default {
   watch: {
     isNewVersion() {
       if (this.isNewVersion) {
-        makerConfigs = newMakerConfig;
+        makerConfigs = config.makerConfigs;
         this.updateTransferInfo();
       } else {
-        makerConfigs = oldMakerConfigs;
+        makerConfigs = config.v1MakerConfigs;
         this.updateTransferInfo();
       }
     },
@@ -770,7 +769,7 @@ export default {
     },
     isCrossAddress: function (newValue) {
       updateIsCrossAddress(newValue);
-      this.updateSendBtnInfo();
+      this.updateTransferInfo();
     },
     currentNetwork(newValue, oldValue) {
       if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
@@ -834,11 +833,13 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
-    updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
+    async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
         toCurrency = fromCurrency;
       }
+      this.sendBtnInfo.disabled = 'disabled';
 
+      const isCrossAddress = transferDataState.isCrossAddress;
       const oldFromChainID = transferDataState.fromChainID;
       const oldToChainID = transferDataState.toChainID;
       const oldFromCurrency = transferDataState.fromCurrency;
@@ -938,6 +939,13 @@ export default {
         if (oldToChainID !== toChainID) this.selectToToken = toTokenList[0].token;
       }
 
+      if (fromCurrency !== this.selectFromToken) {
+        this.selectFromToken = fromCurrency;
+      }
+      if (toCurrency !== this.selectToToken) {
+        this.selectToToken = toCurrency;
+      }
+
       if (this.fromChainIdList !== fromChainIdList) {
         this.fromChainIdList = fromChainIdList;
       }
@@ -961,7 +969,14 @@ export default {
               item.fromChain.symbol === fromCurrency &&
               item.toChain.symbol === toCurrency
       );
-      updateTransferMakerConfig(makerConfig);
+      const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
+      if (fromCurrency === toCurrency && isCrossAddress) {
+        makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient;
+        makerConfigInfo.sender = makerConfigInfo.crossAddress?.sender;
+        makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee;
+        makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
+      }
+      updateTransferMakerConfig(makerConfigInfo);
 
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
@@ -984,12 +999,12 @@ export default {
       if (fromCurrency !== oldFromCurrency) {
         this.updateExchangeToUsdPrice();
       }
-      this.refreshUserBalance();
+      await this.refreshUserBalance();
       if (fromChainID !== oldFromChainID || fromCurrency !== oldFromCurrency) {
-        this.userMinPrice = makerConfig?.fromChain?.minPrice || 0;
+        this.userMinPrice = makerConfigInfo?.fromChain?.minPrice || 0;
       }
       this.updateRoutes(oldFromChainID, oldToChainID);
-      this.updateSendBtnInfo();
+      await this.updateSendBtnInfo();
     },
     async updateSendBtnInfo() {
       const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
