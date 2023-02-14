@@ -15,7 +15,7 @@
 
 **[config](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/config)** - Third-party and global configurations of the CSS
 
-**[core](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/core)** - Related network processing and interface implementation of the on-rollup and TheGraph.
+**[core](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/core)** - Related network processing and interface implementation of the on-rollup.
 
 **[icons](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/icons)** - SVG Image Processing & SVG Image resources
 
