@@ -16,7 +16,7 @@
         <span class="left-txt">{{ item.title }}</span>
         <o-tooltip placement="topLeft">
           <template v-slot:titleDesc>
-            <span>{{ item.notice }}</span>
+            <span class="o-tip">{{ item.notice }}</span>
           </template>
           <HelpIcon v-if="item.notice" size="sm" />
         </o-tooltip>
@@ -35,7 +35,7 @@
           </span>
           <o-tooltip v-if="desc.fromTip" placement="topLeft">
             <template v-slot:titleDesc>
-              <span>{{ desc.fromTip }}</span>
+              <span class="o-tip">{{ desc.fromTip }}</span>
             </template>
             <span style="margin-left: 0.7rem; margin-right: 0.7rem; color: #df2e2d;
             width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
@@ -49,7 +49,7 @@
           To
           <o-tooltip placement="topLeft">
             <template v-slot:titleDesc>
-              <span>{{ desc.toTip }}</span>
+              <span class="o-tip">{{ desc.toTip }}</span>
             </template>
             <span style="margin-left: 0.7rem; color: #df2e2d;
             width: 90px;display:-moz-inline-box; display:inline-block;text-align: center">
@@ -1220,5 +1220,8 @@ export default {
     line-height: 34px;
     background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
   }
+}
+.o-tip {
+  padding-right: 15px;
 }
 </style>
