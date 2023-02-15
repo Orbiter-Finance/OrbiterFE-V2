@@ -470,6 +470,8 @@ export default {
       const isCheck = !reg.test(this.crossAddressReceipt);
       if (isCheck) {
         this.sendBtnInfo.disabled = 'disabled';
+      } else if(this.sendBtnInfo.disabled === 'disabled'){
+        this.updateTransferInfo()
       }
       return isCheck;
     },
