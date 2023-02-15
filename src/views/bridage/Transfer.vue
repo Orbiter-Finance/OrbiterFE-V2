@@ -11,8 +11,13 @@
         ></ObSelect>
       </div>
       <div :hidden="!isWhiteWallet" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
-        <span :style="`margin-right:10px;color:${isNewVersion ? '#4890FE' : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
-        <el-switch
+        <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
+        <el-switch :hidden="isLightMode"
+                v-model="isNewVersion"
+                active-color="#22DED7"
+                inactive-color="#888888">
+        </el-switch>
+        <el-switch :hidden="!isLightMode"
                 v-model="isNewVersion"
                 active-color="#4890FE"
                 inactive-color="#888888">
@@ -445,6 +450,9 @@ export default {
     };
   },
   computed: {
+    isLightMode() {
+      return this.$store.state.themeMode === 'light';
+    },
     chainName() {
       return util.chainName(transferDataState.toChainID);
     },
@@ -792,6 +800,7 @@ export default {
     },
     currentWalletAddress: function (newValue, oldValue) {
       console.log('Current wallet address', newValue);
+      this.isNewVersion = false;
       if (util.isWhite()) {
         this.isWhiteWallet = true;
       } else {
