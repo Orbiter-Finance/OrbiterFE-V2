@@ -486,6 +486,13 @@ export default {
       return web3State;
     },
     isLogin() {
+        console.log('walletIsLogin.value',walletIsLogin.value)
+        if (!walletIsLogin.value) {
+            this.isNewVersion = false;
+            this.isWhiteWallet = false;
+        } else {
+            this.isWhiteWallet = !!util.isWhite();
+        }
       return walletIsLogin.value;
     },
     currentWalletAddress() {
@@ -801,11 +808,7 @@ export default {
     currentWalletAddress: function (newValue, oldValue) {
       console.log('Current wallet address', newValue);
       this.isNewVersion = false;
-      if (util.isWhite()) {
-        this.isWhiteWallet = true;
-      } else {
-        this.isWhiteWallet = false;
-      }
+      this.isWhiteWallet = !!util.isWhite();
       if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance();
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
