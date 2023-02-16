@@ -1,628 +1,630 @@
 [
-    {
-      "api": {
-        "url": "https://api-goerli.etherscan.io/api",
-        "key": ""
-      },
-      "chainId": "5",
-      "networkId": "5",
-      "internalId": "5",
-      "name": "Görli",
-      "debug": false,
-      "contracts": [],
-      "nativeCurrency": {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "rpc": [
-        "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
-        "https://eth-goerli.public.blastapi.io",
-        "https://rpc.ankr.com/eth_goerli",
-        "https://rpc.goerli.mudit.blog",
-        "https://eth-goerli.g.alchemy.com/v2/demo"
-      ],
-      "watch": [
-        "rpc"
-      ],
-      "tokens": [
-        {
-          "name": "USDT",
-          "symbol": "USDT",
-          "decimals": 6,
-          "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-        },
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-        },
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-        }
-      ],
-      "xvmList": [
-        "0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"
-      ],
-      "faucets": [
-        "https://goerli-faucet.slock.it/?address=${ADDRESS}",
-        "https://faucet.goerli.mudit.blog"
-      ],
-      "infoURL": "https://goerli.net/#about"
+  {
+    "api": {
+      "url": "https://api-goerli.etherscan.io/api",
+      "key": ""
     },
-    {
-      "api": {
-        "url": "https://api-goerli.arbiscan.io/api",
-        "key": ""
-      },
-      "chainId": "421613",
-      "networkId": "421613",
-      "internalId": "22",
-      "name": "Arbitrum(G)",
-      "nativeCurrency": {
-        "name": "Ether",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "rpc": [
-        "https://goerli-rollup.arbitrum.io/rpc",
-        "https://arb-goerli.g.alchemy.com/v2/demo",
-        "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
-      ],
-      "watch": [
-        "rpc"
-      ],
-      "contracts": [],
-      "tokens": [
-        {
-          "name": "USDT",
-          "symbol": "USDT",
-          "decimals": 6,
-          "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-        },
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-        },
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-        }
-      ],
-      "xvmList": [
-        "0x8d6363511418f5871107b6c2dac78cfb1174f3eb"
-      ],
-      "faucets": [],
-      "explorers": [
-        {
-          "name": "Arbitrum Nova Chain Explorer",
-          "url": "https://goerli-rollup.arbitrum.io/",
-          "icon": "blockscout",
-          "standard": "EIP3091"
-        }
-      ],
-      "infoURL": "https://arbitrum.io",
-      "parent": {}
+    "chainId": "5",
+    "networkId": "5",
+    "internalId": "5",
+    "name": "Görli",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
     },
-    {
-      "api": {
-        "url": "https://goerli-api.zksync.io/api/v0.2",
-        "key": ""
+    "rpc": [
+      "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      "https://eth-goerli.public.blastapi.io",
+      "https://rpc.ankr.com/eth_goerli",
+      "https://rpc.goerli.mudit.blog",
+      "https://eth-goerli.g.alchemy.com/v2/demo"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
       },
-      "chainId": "zksync_test",
-      "networkId": "zksync",
-      "internalId": "33",
-      "debug": false,
-      "name": "ZKSync(G)",
-      "nativeCurrency": {
-        "name": "Ether",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "rpc": [],
-      "watch": [
-        "api"
-      ],
-      "contracts": [],
-      "tokens": [
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0x5c221e77624690fff6dd741493d735a17716c26b"
-        },
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0xd35cceead182dcee0f148ebac9447da2c4d449c4"
-        }
-      ]
-    },
-    {
-      "api": {
-        "url": "",
-        "key": "",
-        "intervalTime": 60000
-      },
-      "chainId": "SN_GOERLI",
-      "networkId": "goerli-alpha",
-      "internalId": "44",
-      "name": "Starknet(G)",
-      "debug": false,
-      "contracts": [
-        "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"
-      ],
-      "nativeCurrency": {
-        "id": 0,
-        "name": "Ether",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-      },
-      "rpc": [],
-      "watch": [
-        "rpc"
-      ],
-      "tokens": [
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0x03e85bfbb8e2a42b7bead9e88e9a1b19dbccf661471061807292120462396ec9"
-        },
-        {
-          "name": "Tether USD",
-          "symbol": "USDT",
-          "decimals": 6,
-          "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
-        },
-        {
-          "name": "USD Coin",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426"
-        }
-      ]
-    },
-    {
-      "api": {
-        "url": "https://api-testnet.polygonscan.com/api",
-        "key": ""
-      },
-      "chainId": "80001",
-      "networkId": "80001",
-      "internalId": "66",
-      "name": "Polygon Mumbai",
-      "nativeCurrency": {},
-      "rpc": [
-        "https://matic-testnet-archive-rpc.bwarelabs.com",
-        "https://polygon-testnet.public.blastapi.io",
-        "https://rpc.ankr.com/polygon_mumbai",
-        "https://matic-mumbai.chainstacklabs.com"
-      ],
-      "watch": [
-        "rpc"
-      ],
-      "contracts": [],
-      "tokens": [
-        {
-          "name": "ETH",
-          "symbol": "ETH",
-          "decimals": 18,
-          "address": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa"
-        },
-        {
-          "name": "USDT",
-          "symbol": "USDT",
-          "decimals": 6,
-          "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-        },
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-        },
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-        }
-      ],
-      "xvmList": [
-        "0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"
-      ],
-      "faucets": ["https://faucet.matic.network/"],
-      "infoURL": "https://matic.network/"
-    },
-    {
-      "api": {
-        "url": "https://api-goerli-optimism.etherscan.io/api",
-        "key": ""
-      },
-      "chainId": "420",
-      "networkId": "420",
-      "internalId": "77",
-      "name": "Optimism(G)",
-      "nativeCurrency": {
-        "name": "Ether",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "rpc": [
-        "https://goerli.optimism.io",
-        "https://opt-goerli.g.alchemy.com/v2/demo"
-      ],
-      "watch": [
-        "rpc"
-      ],
-      "contracts": [
-        "0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39"
-      ],
-      "tokens": [
-        {
-          "name": "USDT",
-          "symbol": "USDT",
-          "decimals": 6,
-          "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-        },
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-        },
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-        }
-      ],
-      "xvmList": [
-        "0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"
-      ],
-      "faucets": [],
-      "infoURL": "https://blockscout.com/optimism/goerli/"
-    },
-    {
-      "api": {
-        "url": "https://api.sandbox.x.immutable.com/v1",
-        "key": ""
-      },
-      "chainId": "immutableX_testnet",
-      "networkId": "immutableX",
-      "internalId": "88",
-      "name": "ImmutableX(G)",
-      "nativeCurrency": {
-        "name": "Ether",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "rpc": [],
-      "watch": [
-        "api"
-      ],
-      "contracts": [],
-      "tokens": [
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x07865c6e87b9f70255377e024ace6630c1eaa37f"
-        }
-      ]
-    },
-    {
-      "api": {
-        "url": "https://uat2.loopring.io",
-        "key": ""
-      },
-      "chainId": "loopring_testnet",
-      "networkId": "5",
-      "internalId": "99",
-      "name": "Loopring(R)",
-      "nativeCurrency": {
-        "name": "Ethereum",
-        "symbol": "ETH",
-        "decimals": 18,
-        "id": 0,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "rpc": [],
-      "watch": [
-        "api"
-      ],
-      "contracts": [],
-      "tokens": []
-    },
-   {
-        "api": {
-          "url": "https://goerli.explorer.metisdevops.link/api",
-          "key": "",
-          "intervalTime": 10000
-        },
-        "chain": "ETH",
-        "chainId": "599",
-        "networkId": "599",
-        "internalId": "510",
-        "features": ["EVM"],
-        "name": "Metis Goerli",
-        "nativeCurrency": {
-          "name": "Metis Token",
-          "symbol": "METIS",
-          "decimals": 18,
-          "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
-        },
-        "rpc": ["https://goerli.gateway.metisdevops.link"],
-        "watch": ["rpc", "api"],
-        "contracts": [],
-        "xvmList": ["0x6838e53488B9F75894a9fDF9feB509eE22c281dd"],
-        "tokens": [
-          {
-            "name": "Ether (WETH)",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x420000000000000000000000000000000000000a"
-          },
-          {
-            "name": "TestToken",
-            "symbol": "USDT",
-            "decimals": 6,
-            "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-          },
-          {
-            "name": "TestToken",
-            "symbol": "USDC",
-            "decimals": 6,
-            "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-          },
-          {
-            "name": "TestToken",
-            "symbol": "DAI",
-            "decimals": 18,
-            "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-          }
-        ]
-      },
-    {
-      "api": {
-        "url": "https://api.stage.dydx.exchange",
-        "key": ""
-      },
-      "chainId": "dydx_test",
-      "networkId": "dydx",
-      "internalId": "511",
-      "name": "Dydx(G)",
-      "nativeCurrency": {},
-      "rpc": [],
-      "watch": [
-        "api"
-      ],
-      "contracts": [],
-      "tokens": [{
+      {
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
-        "address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4"
-      }]
-    },
-    {
-      "api": {
-        "url": "https://api.zkswap.info/v3-rinkeby",
-        "key": ""
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
       },
-      "chainId": "zkspace_test",
-      "networkId": "zkspace",
-      "internalId": "512",
-      "name": "ZKSpace(G)",
-      "nativeCurrency": {
-        "name": "Ether",
-        "symbol": "ETH",
+      {
+        "name": "DAI",
+        "symbol": "DAI",
         "decimals": 18,
-        "id": 0,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "rpc": [],
-      "watch": [
-        "api"
-      ],
-      "tokens": []
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      }
+    ],
+    "xvmList": [
+      "0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"
+    ],
+    "faucets": [
+      "https://goerli-faucet.slock.it/?address=${ADDRESS}",
+      "https://faucet.goerli.mudit.blog"
+    ],
+    "infoURL": "https://goerli.net/#about"
+  },
+  {
+    "api": {
+      "url": "https://api-goerli.arbiscan.io/api",
+      "key": ""
     },
-    {
-      "api": {
-        "url": "https://api-testnet.bobascan.com/api",
-        "key": ""
+    "chainId": "421613",
+    "networkId": "421613",
+    "internalId": "22",
+    "name": "Arbitrum(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://goerli-rollup.arbitrum.io/rpc",
+      "https://arb-goerli.g.alchemy.com/v2/demo",
+      "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "contracts": [],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
       },
-      "chainId": "28",
-      "internalId": "513",
-      "name": "Boba(G)",
-      "nativeCurrency": {
-        "name": "Ether",
-        "symbol": "ETH",
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      },
+      {
+        "name": "DAI",
+        "symbol": "DAI",
         "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
-      },
-      "networkId": "28",
-      "rpc": [
-        "https://rinkeby.boba.network"
-      ],
-      "watch": [
-        "rpc"
-      ],
-      "contracts": [],
-      "tokens": [],
-      "faucets": [],
-      "infoURL": "https://gateway.boba.network/"
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      }
+    ],
+    "xvmList": [
+      "0x8D6363511418F5871107b6C2Dac78Cfb1174f3EB"
+    ],
+    "faucets": [],
+    "explorers": [
+      {
+        "name": "Arbitrum Nova Chain Explorer",
+        "url": "https://goerli-rollup.arbitrum.io/",
+        "icon": "blockscout",
+        "standard": "EIP3091"
+      }
+    ],
+    "infoURL": "https://arbitrum.io",
+    "parent": {}
+  },
+  {
+    "api": {
+      "url": "https://goerli-api.zksync.io/api/v0.2",
+      "key": ""
     },
-    {
-      "api": {
-        "url": "https://zksync2-testnet.zkscan.io/api",
-        "key": ""
-      },
-      "chainId": "280",
-      "networkId": "280",
-      "debug": true,
-      "internalId": "514",
-      "name": "ZkSync 2.0(G)",
-      "nativeCurrency": {
-        "name": "Ether",
-        "symbol": "ETH",
+    "chainId": "zksync_test",
+    "networkId": "zksync",
+    "internalId": "33",
+    "debug": false,
+    "name": "ZKSync(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": [
+      "api"
+    ],
+    "contracts": [],
+    "tokens": [
+      {
+        "name": "DAI",
+        "symbol": "DAI",
         "decimals": 18,
-        "address": "0x000000000000000000000000000000000000800A"
+        "address": "0x5c221e77624690fff6dd741493d735a17716c26b"
       },
-      "rpc": [
-        "https://zksync2-testnet.zksync.dev",
-        "wss://zksync2-testnet.zksync.dev/ws"
-      ],
-      "watch": [
-        "rpc"
-      ],
-      "contracts": [],
-      "tokens": [
-        {
-          "name": "USDT",
-          "symbol": "USDT",
-          "decimals": 6,
-          "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-        },
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-        },
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-        }
-      ],
-      "faucets": [],
-      "infoURL": "https://zksync2-testnet.zkscan.io/"
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0xd35cceead182dcee0f148ebac9447da2c4d449c4"
+      }
+    ]
+  },
+  {
+    "api": {
+      "url": "",
+      "key": "",
+      "intervalTime": 60000
     },
-    {
-      "api": {
-        "url": "https://api-testnet.bscscan.com/api",
-        "key": ""
+    "chainId": "SN_GOERLI",
+    "networkId": "goerli-alpha",
+    "internalId": "44",
+    "name": "Starknet(G)",
+    "debug": false,
+    "contracts": [
+      "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"
+    ],
+    "nativeCurrency": {
+      "id": 0,
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
+    },
+    "rpc": [],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [
+      {
+        "name": "DAI",
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0x03e85bfbb8e2a42b7bead9e88e9a1b19dbccf661471061807292120462396ec9"
       },
-      "chainId": "97",
-      "networkId": "97",
-      "internalId": "515",
-      "name": "BSC(G)",
-      "debug": false,
-      "contracts": [],
-      "nativeCurrency": {
+      {
+        "name": "Tether USD",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
+      },
+      {
+        "name": "USD Coin",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426"
+      }
+    ]
+  },
+  {
+    "api": {
+      "url": "https://api-testnet.polygonscan.com/api",
+      "key": ""
+    },
+    "chainId": "80001",
+    "networkId": "80001",
+    "internalId": "66",
+    "name": "Polygon Mumbai",
+    "nativeCurrency": {},
+    "rpc": [
+      "https://matic-testnet-archive-rpc.bwarelabs.com",
+      "https://polygon-testnet.public.blastapi.io",
+      "https://rpc.ankr.com/polygon_mumbai",
+      "https://matic-mumbai.chainstacklabs.com"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "contracts": [],
+    "tokens": [
+      {
         "name": "ETH",
         "symbol": "ETH",
         "decimals": 18,
-        "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
+        "address": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa"
       },
-      "rpc": [
-        "https://data-seed-prebsc-1-s1.binance.org:8545",
-        "https://bsc-testnet.public.blastapi.io"
-      ],
-      "watch": [
-        "rpc"
-      ],
-      "tokens": [
-        {
-          "name": "USDT",
-          "symbol": "USDT",
-          "decimals": 6,
-          "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-        },
-        {
-          "name": "USDC",
-          "symbol": "USDC",
-          "decimals": 6,
-          "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-        },
-        {
-          "name": "DAI",
-          "symbol": "DAI",
-          "decimals": 18,
-          "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-        }
-      ],
-      "xvmList": [
-        "0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"
-      ],
-      "faucets": [
-        "https://testnet.binance.org/faucet-smart"
-      ],
-      "infoURL": "https://testnet.binance.org/"
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
+      },
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      },
+      {
+        "name": "DAI",
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      }
+    ],
+    "xvmList": [
+      "0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"
+    ],
+    "faucets": ["https://faucet.matic.network/"],
+    "infoURL": "https://matic.network/"
+  },
+  {
+    "api": {
+      "url": "https://api-goerli-optimism.etherscan.io/api",
+      "key": ""
     },
-    {
-      "api": {
-        "url": "https://l2scan.scroll.io/api",
-        "key": ""
+    "chainId": "420",
+    "networkId": "420",
+    "internalId": "77",
+    "name": "Optimism(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://goerli.optimism.io",
+      "https://opt-goerli.g.alchemy.com/v2/demo"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "contracts": [
+      "0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39"
+    ],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
       },
-      "chainId": "534354",
-      "networkId": "534354",
-      "internalId": "519",
-      "name": "Scroll L2(G)",
-      "debug": false,
-      "contracts": [],
-      "nativeCurrency": {
-        "name": "ETH",
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      },
+      {
+        "name": "DAI",
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      }
+    ],
+    "xvmList": [
+      "0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"
+    ],
+    "faucets": [],
+    "infoURL": "https://blockscout.com/optimism/goerli/"
+  },
+  {
+    "api": {
+      "url": "https://api.sandbox.x.immutable.com/v1",
+      "key": ""
+    },
+    "chainId": "immutableX_testnet",
+    "networkId": "immutableX",
+    "internalId": "88",
+    "name": "ImmutableX(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": [
+      "api"
+    ],
+    "contracts": [],
+    "tokens": [
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x07865c6e87b9f70255377e024ace6630c1eaa37f"
+      }
+    ]
+  },
+  {
+    "api": {
+      "url": "https://uat2.loopring.io",
+      "key": ""
+    },
+    "chainId": "loopring_testnet",
+    "networkId": "5",
+    "internalId": "99",
+    "name": "Loopring(R)",
+    "nativeCurrency": {
+      "name": "Ethereum",
+      "symbol": "ETH",
+      "decimals": 18,
+      "id": 0,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": [
+      "api"
+    ],
+    "contracts": [],
+    "tokens": []
+  },
+  {
+    "api": {
+      "url": "https://goerli.explorer.metisdevops.link/api",
+      "key": "",
+      "intervalTime": 10000
+    },
+    "chain": "ETH",
+    "chainId": "599",
+    "networkId": "599",
+    "internalId": "510",
+    "features": ["EVM"],
+    "name": "Metis(G)",
+    "nativeCurrency": {
+      "name": "Metis Token",
+      "symbol": "METIS",
+      "decimals": 18,
+      "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
+    },
+    "rpc": ["https://goerli.gateway.metisdevops.link"],
+    "watch": ["rpc", "api"],
+    "contracts": [],
+    "tokens": [
+      {
+        "name": "Ether (WETH)",
         "symbol": "ETH",
         "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
+        "address": "0x420000000000000000000000000000000000000a"
       },
-      "rpc": ["https://prealpha.scroll.io/l2"],
-      "watch": ["api", "rpc"],
-      "tokens": [],
-      "faucets": [],
-      "infoURL": "https://l2scan.scroll.io/"
-    },
-    {
-      "api": {
-        "url": "https://l2explorer.a1.taiko.xyz/api",
-        "key": "",
-        "intervalTime": 60000
+      {
+        "name": "TestToken",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
       },
-      "chainId": "167003",
-      "networkId": "167003",
-      "internalId": "520",
-      "name": "Taiko A1(G)",
-      "debug": false,
-      "contracts": [],
-      "nativeCurrency": {
-        "name": "ETH",
-        "symbol": "ETH",
+      {
+        "name": "TestToken",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      },
+      {
+        "name": "TestToken",
+        "symbol": "DAI",
         "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      }
+    ],
+    "xvmList": ["0x6838e53488B9F75894a9fDF9feB509eE22c281dd"],
+    "faucets": [],
+    "infoURL": "https://stardust-explorer.metis.io"
+  },
+  {
+    "api": {
+      "url": "https://api.stage.dydx.exchange",
+      "key": ""
+    },
+    "chainId": "dydx_test",
+    "networkId": "dydx",
+    "internalId": "511",
+    "name": "Dydx(G)",
+    "nativeCurrency": {},
+    "rpc": [],
+    "watch": [
+      "api"
+    ],
+    "contracts": [],
+    "tokens": [{
+      "name": "USDC",
+      "symbol": "USDC",
+      "decimals": 6,
+      "address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4"
+    }]
+  },
+  {
+    "api": {
+      "url": "https://api.zks.app/v3/5",
+      "key": ""
+    },
+    "chainId": "zkspace_test",
+    "networkId": "zkspace",
+    "internalId": "512",
+    "name": "ZKSpace(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "id": 0,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": [
+      "api"
+    ],
+    "tokens": []
+  },
+  {
+    "api": {
+      "url": "https://api-testnet.bobascan.com/api",
+      "key": ""
+    },
+    "chainId": "28",
+    "internalId": "513",
+    "name": "Boba(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "networkId": "28",
+    "rpc": [
+      "https://goerli.boba.network"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "contracts": [],
+    "tokens": [],
+    "faucets": [],
+    "infoURL": "https://gateway.boba.network/"
+  },
+  {
+    "api": {
+      "url": "https://zksync2-testnet.zkscan.io/api",
+      "key": ""
+    },
+    "chainId": "280",
+    "networkId": "280",
+    "debug": true,
+    "internalId": "514",
+    "name": "ZkSync 2.0(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x000000000000000000000000000000000000800A"
+    },
+    "rpc": [
+      "https://zksync2-testnet.zksync.dev",
+      "wss://zksync2-testnet.zksync.dev/ws"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "contracts": [],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
       },
-      "rpc": ["https://l2rpc.a1.taiko.xyz"],
-      "watch": ["api", "rpc"],
-      "tokens": [],
-      "faucets": [],
-      "explorers": [
-        {
-          "name": "Arbitrum Nova Chain Explorer",
-          "url": "https://l2explorer.a1.taiko.xyz/address",
-          "icon": "blockscout",
-          "standard": "EIP3091"
-        }
-      ],
-      "infoURL": "https://taiko.xyz/",
-      "parent": {}
-    }
-  ]
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      },
+      {
+        "name": "DAI",
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      }
+    ],
+    "faucets": [],
+    "infoURL": "https://zksync2-testnet.zkscan.io/"
+  },
+  {
+    "api": {
+      "url": "https://api-testnet.bscscan.com/api",
+      "key": ""
+    },
+    "chainId": "97",
+    "networkId": "97",
+    "internalId": "515",
+    "name": "BSC(G)",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
+    },
+    "rpc": [
+      "https://data-seed-prebsc-1-s1.binance.org:8545",
+      "https://bsc-testnet.public.blastapi.io"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
+      },
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+      },
+      {
+        "name": "DAI",
+        "symbol": "DAI",
+        "decimals": 18,
+        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      }
+    ],
+    "xvmList": [
+      "0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"
+    ],
+    "faucets": [
+      "https://testnet.binance.org/faucet-smart"
+    ],
+    "infoURL": "https://testnet.binance.org/"
+  },
+  {
+    "api": {
+      "url": "https://l2scan.scroll.io/api",
+      "key": ""
+    },
+    "chainId": "534354",
+    "networkId": "534354",
+    "internalId": "519",
+    "name": "Scroll L2(G)",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://prealpha.scroll.io/l2"],
+    "watch": ["api", "rpc"],
+    "tokens": [],
+    "faucets": [],
+    "infoURL": "https://l2scan.scroll.io/"
+  },
+  {
+    "api": {
+      "url": "https://l2explorer.a1.taiko.xyz/api",
+      "key": "",
+      "intervalTime": 60000
+    },
+    "chainId": "167003",
+    "networkId": "167003",
+    "internalId": "520",
+    "name": "Taiko A1(G)",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://l2rpc.a1.taiko.xyz"],
+    "watch": ["api", "rpc"],
+    "tokens": [],
+    "faucets": [],
+    "explorers": [
+      {
+        "name": "Arbitrum Nova Chain Explorer",
+        "url": "https://l2explorer.a1.taiko.xyz/address",
+        "icon": "blockscout",
+        "standard": "EIP3091"
+      }
+    ],
+    "infoURL": "https://taiko.xyz/",
+    "parent": {}
+  }
+]
