@@ -37,6 +37,8 @@ export default {
     518: 'scrolllogo',
     19: 'scrolllogo',
     519: 'scrolllogo',
+    20: 'taikologo',
+    520: 'taikologo',
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
