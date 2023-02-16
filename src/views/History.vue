@@ -216,6 +216,8 @@ export default {
         return 'arnavologo'
       } else if (chainID == '518' || chainID == '519') {
         return 'scrolllogo'
+      }else if (chainID == '520' || chainID == '520') {
+        return 'taiko'
       } else {
         return 'ethlogo'
       }

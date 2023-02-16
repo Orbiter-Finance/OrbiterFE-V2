@@ -45,7 +45,9 @@ export default {
         return 'polygon_zkevm_logo'
       } else if (chainID == '518' || chainID == '519') {
         return 'scrolllogo'
-      } else {
+      }  else if (item === '20' || item === '520') {
+    return  'taiko';
+  } else {
         return 'ethlogo'
       }
     },
