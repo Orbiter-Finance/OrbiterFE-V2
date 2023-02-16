@@ -804,9 +804,9 @@ export default {
       updateIsCrossAddress(newValue);
       this.updateTransferInfo();
     },
-    currentNetwork(newValue, oldValue) {
-      if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
-    },
+    // currentNetwork(newValue, oldValue) {
+    //   if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
+    // },
     currentWalletAddress: function (newValue, oldValue) {
       console.log('Current wallet address', newValue);
       this.isNewVersion = false;
