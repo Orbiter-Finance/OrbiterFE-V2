@@ -17,9 +17,9 @@ export class CrossAddress {
    * @param {number} orbiterChainId
    * @param {ethers.Signer | undefined} signer
    */
-  constructor(provider, orbiterChainId = 5, signer = undefined) {
+  constructor(provider, orbiterChainId = 5, signer = undefined, contractAddress) {
     const chainInfo = util.getChainInfoByChainId(orbiterChainId);
-    this.contractAddress = chainInfo?.xvmList && chainInfo.xvmList.length ? chainInfo.xvmList[0] : '';
+    this.contractAddress = contractAddress || (chainInfo?.xvmList && chainInfo.xvmList.length ? chainInfo.xvmList[0] : '');
     if (!this.contractAddress) {
       console.log('Sorry, miss param [contractAddress]');
     }

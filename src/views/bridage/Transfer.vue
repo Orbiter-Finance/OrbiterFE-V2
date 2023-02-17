@@ -380,6 +380,7 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
+  updateTransferExt,
 } from '../../composition/hooks';
 import { isDev } from "../../util";
 
@@ -1180,6 +1181,13 @@ export default {
         if (toChainID === 4 || toChainID === 44) {
           this.isCrossAddress = true;
           this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+          updateTransferExt({
+            fromAddress: this.currentWalletAddress,
+            ext: {
+              type: '0x03',
+              value: web3State.starkNet.starkNetAddress,
+            }
+          });
         }
       }
       if (fromChainID === 9 || fromChainID === 99 || toChainID === 9 || toChainID === 99) {
