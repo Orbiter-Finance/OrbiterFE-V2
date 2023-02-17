@@ -180,9 +180,17 @@ export default {
     return !(config.whiteList.length && !config.whiteList.find(item => this.equalsIgnoreCase(item, compatibleGlobalWalletConf.value.walletPayload.walletAddress)));
   },
 
+  isStarkNet(){
+    const { fromChainID, toChainID } = transferDataState;
+    return fromChainID === 4 || fromChainID === 44 || toChainID === 4 || toChainID === 44;
+  },
+
   isSupportXVMContract() {
     const { fromChainID } = transferDataState;
     if (!this.isWhite()) {
+      return false;
+    }
+    if (this.isStarkNet()) {
       return false;
     }
     const chainInfo = this.getChainInfoByChainId(fromChainID);
