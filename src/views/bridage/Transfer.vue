@@ -1045,6 +1045,9 @@ export default {
       const { fromChain } = selectMakerConfig;
       await this.getMakerMaxBalance();
       this.updateToValue();
+      if (util.isStarkNet()) {
+          this.isCrossAddress = true;
+      }
       const availableDigit = fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = new BigNumber(this.fromBalance)
