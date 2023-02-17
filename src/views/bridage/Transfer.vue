@@ -1500,7 +1500,8 @@ export default {
         const senderAddress = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
                 selectMakerConfig.sender).toLowerCase();
-        let toAddress = util.shortAddress(toAddressAll);
+        const toAddress = util.shortAddress(toAddressAll);
+        const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
         // sendTransfer
@@ -1517,7 +1518,7 @@ export default {
           },
           {
             no: 2,
-            from: toAddress,
+            from: senderShortAddress,
             to: util.shortAddress(walletAddress),
             fromTip: senderAddress,
             toTip: walletAddress,
