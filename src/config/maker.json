@@ -4223,6 +4223,17 @@
       "slippage": 200,
       "startTime": 1636019587,
       "endTime": 99999999999999
+    },
+    "DAI-DAI": {
+      "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
+      "sender": "0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f",
+      "gasFee": 0.01,
+      "tradingFee": 0.0001,
+      "maxPrice": 10,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 1636019587,
+      "endTime": 99999999999999
     }
   },
   "44-5": {
