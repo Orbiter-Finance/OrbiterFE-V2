@@ -814,7 +814,10 @@ export default {
       if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance();
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
-      if (newValue) this.refreshUserBalance();
+      if (newValue) {
+        this.crossAddressReceipt = newValue;
+        this.refreshUserBalance();
+      }
     },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
@@ -1000,7 +1003,7 @@ export default {
               item.toChain.symbol === toCurrency
       );
       const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
-      if (fromCurrency === toCurrency && isCrossAddress) {
+      if (fromCurrency === toCurrency && isCrossAddress && makerConfigInfo.crossAddress?.recipient) {
         makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient;
         makerConfigInfo.sender = makerConfigInfo.crossAddress?.sender;
         makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee;
@@ -1042,6 +1045,9 @@ export default {
       const { fromChain } = selectMakerConfig;
       await this.getMakerMaxBalance();
       this.updateToValue();
+      if (util.isStarkNet()) {
+          this.isCrossAddress = true;
+      }
       const availableDigit = fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = new BigNumber(this.fromBalance)
@@ -1094,10 +1100,12 @@ export default {
           console.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
-        if((fromCurrency !== toCurrency || this.isCrossAddress) && !util.isSupportXVMContract() && !this.isLoopring){
+        if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
+                !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
           info.text = 'SEND';
           info.disabled = 'disabled';
-          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring');
+          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
+                  fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
         }
 
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
@@ -1489,6 +1497,9 @@ export default {
         const toAddressAll = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
                 selectMakerConfig.recipient).toLowerCase();
+        const senderAddress = (util.isExecuteXVMContract() ?
+                chainInfo.xvmList[0] :
+                selectMakerConfig.sender).toLowerCase();
         let toAddress = util.shortAddress(toAddressAll);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
@@ -1508,7 +1519,7 @@ export default {
             no: 2,
             from: toAddress,
             to: util.shortAddress(walletAddress),
-            fromTip: toAddressAll,
+            fromTip: senderAddress,
             toTip: walletAddress,
             icon: 'wallet'
           }
