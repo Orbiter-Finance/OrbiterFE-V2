@@ -171,7 +171,7 @@
         >More</a
       >
     </div>
-    <div v-if="isNewVersion" :hidden="!isSupportXVM && !isLoopring">
+    <div v-if="isNewVersion && selectFromToken !== selectToToken" :hidden="!isSupportXVM && !isLoopring">
       <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
         <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Change Account </label>
