@@ -50,3 +50,6 @@ export function updateIsCrossAddress(isCrossAddress) {
 export function updateCrossAddressReceipt(crossAddressReceipt) {
   transferDataState.crossAddressReceipt = crossAddressReceipt;
 }
+export function updateTransferExt(transferExt) {
+  transferDataState.transferExt = transferExt;
+}

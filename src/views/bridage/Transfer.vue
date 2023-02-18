@@ -380,6 +380,7 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
+  updateTransferExt,
 } from '../../composition/hooks';
 import { isDev } from "../../util";
 
@@ -1180,6 +1181,13 @@ export default {
         if (toChainID === 4 || toChainID === 44) {
           this.isCrossAddress = true;
           this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+          updateTransferExt({
+            fromAddress: this.currentWalletAddress,
+            ext: {
+              type: '0x03',
+              value: web3State.starkNet.starkNetAddress,
+            }
+          });
         }
       }
       if (fromChainID === 9 || fromChainID === 99 || toChainID === 9 || toChainID === 99) {
@@ -1407,14 +1415,14 @@ export default {
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
 
-        if ((toChainID === 4 || toChainID === 44) && fromCurrency == 'DAI'
-        ) {
-          this.$notify.error({
-            title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
-            duration: 6000,
-          });
-          return;
-        }
+        // if ((toChainID === 4 || toChainID === 44) && fromCurrency == 'DAI'
+        // ) {
+        //   this.$notify.error({
+        //     title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
+        //     duration: 6000,
+        //   });
+        //   return;
+        // }
 
         if (nonce > 8999) {
           this.$notify.error({
@@ -1500,7 +1508,8 @@ export default {
         const senderAddress = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
                 selectMakerConfig.sender).toLowerCase();
-        let toAddress = util.shortAddress(toAddressAll);
+        const toAddress = util.shortAddress(toAddressAll);
+        const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
         // sendTransfer
@@ -1517,7 +1526,7 @@ export default {
           },
           {
             no: 2,
-            from: toAddress,
+            from: senderShortAddress,
             to: util.shortAddress(walletAddress),
             fromTip: senderAddress,
             toTip: walletAddress,

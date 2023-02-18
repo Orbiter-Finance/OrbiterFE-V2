@@ -230,6 +230,96 @@ export default {
     },
   },
   methods: {
+    async transferToStarkNet(value) {
+      console.log('value', value);
+      const { selectMakerConfig, fromChainID, transferExt } = transferDataState;
+
+      if (!walletIsLogin.value) {
+        return;
+      }
+      const { fromAddress, ext } = transferExt;
+      const contractAddress = selectMakerConfig.fromChain.tokenAddress;
+      const recipient = selectMakerConfig.recipient;
+      const amount = ethers.BigNumber.from(value);
+      const chainInfo = util.getChainInfoByChainId(fromChainID);
+      if (!chainInfo.contracts || !chainInfo.contracts.length) {
+        this.$notify.error({
+          title: 'Contract not supported temporarily',
+          duration: 3000,
+        });
+        return;
+      }
+
+      const crossContractAddress = chainInfo.contracts[0];
+      try {
+        let transferHash = '';
+        if (compatibleGlobalWalletConf.value.walletType == WALLETCONNECT) {
+          const web3 = util.stableWeb3(fromChainID);
+          const provider = new ethers.providers.Web3Provider(
+                  web3.currentProvider
+          );
+          const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(fromAddress), crossContractAddress);
+          if (util.isEthTokenAddress(fromChainID, contractAddress)) {
+            transferHash = await await crossAddress.wallConnTransfer(recipient, amount, ext);
+          } else {
+            transferHash = await crossAddress.walletConnTransferERC20(
+                    contractAddress,
+                    recipient,
+                    amount,
+                    ext);
+          }
+          if (transferHash) {
+            this.onTransferSucceed(
+                    fromAddress,
+                    amount,
+                    fromChainID,
+                    transferHash
+            );
+          }
+          return;
+        }
+
+        const provider = new ethers.providers.Web3Provider(
+                compatibleGlobalWalletConf.value.walletPayload.provider
+        );
+        const crossAddress = new CrossAddress(provider, fromChainID, provider.getSigner(fromAddress), crossContractAddress);
+        if (util.isEthTokenAddress(fromChainID, contractAddress)) {
+          transferHash = (
+                  await crossAddress.transfer(
+                          recipient,
+                          amount,
+                          ext
+                  )
+          ).hash;
+        } else {
+          transferHash = (
+                  await crossAddress.transferERC20(
+                          contractAddress,
+                          recipient,
+                          amount,
+                          ext
+                  )
+          ).hash;
+        }
+        if (transferHash) {
+          this.onTransferSucceed(
+                  fromAddress,
+                  amount,
+                  fromChainID,
+                  transferHash
+          );
+        }
+        return;
+      } catch (err) {
+        console.log(err);
+        this.$notify.error({
+          title: err?.data?.message || err.message,
+          duration: 3000,
+        });
+      } finally {
+        this.transferLoading = false;
+      }
+    },
     async zkspaceTransfer() {
       const { selectMakerConfig, fromChainID } = transferDataState;
       try {
@@ -945,7 +1035,7 @@ export default {
         Middle.$emit('connectWallet', true);
         return;
       }
-      const { fromChainID, selectMakerConfig } = transferDataState;
+      const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (fromChainID !== 4 && fromChainID !== 44) {
         if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainNetWorkId(fromChainID)) {
           if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
@@ -993,7 +1083,7 @@ export default {
         this.loopringTransfer();
       } else if (fromChainID === 12 || fromChainID === 512) {
         this.zkspaceTransfer();
-      } else {
+      }  else {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress;
         const to = selectMakerConfig.recipient;
         const tValue = transferCalculate.getTransferTValue();
@@ -1004,6 +1094,10 @@ export default {
           });
           this.transferLoading = false;
           return;
+        }
+        if (toChainID === 4 || toChainID === 44) {
+          this.transferToStarkNet(tValue.tAmount);
+          return
         }
         const account = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (fromChainID === 4 || fromChainID === 44) {

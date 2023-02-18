@@ -9,7 +9,7 @@
     "internalId": "5",
     "name": "Görli",
     "debug": false,
-    "contracts": [],
+    "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
@@ -78,7 +78,7 @@
     "watch": [
       "rpc"
     ],
-    "contracts": [],
+    "contracts": ["0x721fBB2C2C9cdFa5547feE6b683949c20F175457"],
     "tokens": [
       {
         "name": "USDT",
