@@ -9,6 +9,8 @@
 </template>
 
 <script>
+import env from "../../../env";
+
 export default {
   data() {
     return {
@@ -47,9 +49,9 @@ export default {
         return require('../../assets/data/apex.png')
       }
       if (this.chains) {
-        return `https://l2api.orbiter.finance/img/chains/${name}.png`
+        return `${ env.l2BaseUrl }/img/chains/${ name }.png`;
       } else {
-        return `https://l2api.orbiter.finance/img/dapps/${name}.png`
+        return `${ env.l2BaseUrl }/img/dapps/${ name }.png`;
       }
     },
   },

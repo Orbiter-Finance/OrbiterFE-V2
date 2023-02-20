@@ -382,7 +382,8 @@ import {
   updateTransferMakerConfig,
   updateTransferExt,
 } from '../../composition/hooks';
-import { isDev } from "../../util";
+import { isDev, isProd } from "../../util";
+import orbiterApiAx from "../../common/orbiterApiAx";
 
 let makerConfigs = config.v1MakerConfigs;
 
@@ -458,9 +459,21 @@ export default {
       return util.chainName(transferDataState.toChainID);
     },
     isCurrentAddress() {
+      if (!this.isNewVersion || this.selectFromToken === this.selectToToken) {
+        return false;
+      }
+      if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
+        return false;
+      }
+      if (transferDataState.toChainID === 4 || transferDataState.toChainID === 44) {
+        return false;
+      }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
+      if (!this.isNewVersion || this.selectFromToken === this.selectToToken) {
+        return false;
+      }
       if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
         return false;
       }
@@ -826,11 +839,7 @@ export default {
     },
   },
   async mounted() {
-    if (util.isWhite()) {
-      this.isWhiteWallet = true;
-    } else {
-      this.isWhiteWallet = false;
-    }
+    this.initWhiteList()
 
     this.updateTransferInfo();
 
@@ -867,6 +876,12 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async initWhiteList() {
+      if (isProd()) {
+        config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
+      }
+      this.isWhiteWallet = !!util.isWhite();
+    },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
         toCurrency = fromCurrency;

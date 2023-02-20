@@ -74,7 +74,8 @@ module.exports = {
         },
       },
        '/api/v1/l2_data': {
-        target: 'https://l2api.orbiter.finance/',
+        // target: 'https://l2api.orbiter.finance/',
+        target: 'http://datastation.joeyzhou.xyz/',
         changeOrigin: true,
       },
     },
