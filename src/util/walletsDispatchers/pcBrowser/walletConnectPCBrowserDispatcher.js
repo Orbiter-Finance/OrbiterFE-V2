@@ -239,6 +239,6 @@ export async function walletConnectSwitchChain(params) {
 }
 
 export const walletConnectDispatcherOnAddChain = (...result) => {
-  console.log('walletConnectDispatcherOnAddChain:', result);
+  // console.log('walletConnectDispatcherOnAddChain:', result);
   showMessage('You must Change Networks on your wallet app', 'error')
 }

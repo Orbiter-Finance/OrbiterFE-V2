@@ -1,4 +1,5 @@
 import { reactive } from './'
+import util from "../util/util";
 
 const defaultTransferDateState = {
   fromChainID: '',
@@ -19,7 +20,7 @@ export function updateTransferValue(value) {
   transferDataState.transferValue = value
 }
 export function updateTransferMakerConfig(makerConfig) {
-  console.log('selectMakerConfig', makerConfig);
+  util.log('selectMakerConfig', makerConfig);
   transferDataState.selectMakerConfig = makerConfig;
 }
 export function updateTransferFromChainID(chainID) {

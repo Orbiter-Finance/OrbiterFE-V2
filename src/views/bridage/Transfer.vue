@@ -489,7 +489,7 @@ export default {
       return web3State;
     },
     isLogin() {
-        console.log('walletIsLogin.value',walletIsLogin.value)
+        util.log('walletIsLogin.value',walletIsLogin.value)
         if (!walletIsLogin.value) {
             this.isNewVersion = false;
             this.isWhiteWallet = false;
@@ -809,7 +809,7 @@ export default {
     //   if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
     // },
     currentWalletAddress: function (newValue, oldValue) {
-      console.log('Current wallet address', newValue);
+      util.log('Current wallet address', newValue);
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
       if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance();
@@ -1068,51 +1068,51 @@ export default {
         info.text = 'SEND';
         if (transferValue.comparedTo(0) < 0) {
           info.disabled = 'disabled';
-          console.log('transferValue < 0', transferValue.toString());
+          util.log('transferValue < 0', transferValue.toString());
         } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
           // info.disabled = 'disabled';
-          console.log('transferValue > userMaxPrice', transferValue.toString(), this.userMaxPrice.toString());
+          util.log('transferValue > userMaxPrice', transferValue.toString(), this.userMaxPrice.toString());
         }
         if (transferValue.comparedTo(userMax) > 0) {
           info.text = 'INSUFFICIENT FUNDS';
           // info.disabled = 'disabled';
-          console.log('transferValue > userMax', transferValue.toString(), userMax.toString());
+          util.log('transferValue > userMax', transferValue.toString(), userMax.toString());
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           // info.disabled = 'disabled';
-          console.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
+          util.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
         } else if (transferValue.comparedTo(makerMin) < 0) {
           info.text = 'INSUFFICIENT FUNDS';
           // info.disabled = 'disabled';
-          console.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
+          util.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
         } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
           info.text = 'INSUFFICIENT FUNDS';
           // info.disabled = 'disabled';
-          console.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
+          util.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
         } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           // info.disabled = 'disabled';
-          console.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
+          util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
         }
 
         if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND';
           info.disabled = 'disabled';
-          console.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
+          util.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
         if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
                 !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
           info.text = 'SEND';
           info.disabled = 'disabled';
-          console.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
+          util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
                   fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
         }
 
         if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
           info.text = 'SEND';
           info.disabled = 'disabled';
-          console.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
+          util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
                   this.crossAddressReceipt, this.isErrorAddress);
         }
       }
@@ -1153,7 +1153,7 @@ export default {
         const toRate = exchangeRates[toCurrency];
         const slippage = selectMakerConfig.slippage;
         if (!fromRate || !toRate || !slippage) {
-          console.log('get rate fail', fromCurrency, fromRate, toCurrency, toRate);
+          util.log('get rate fail', fromCurrency, fromRate, toCurrency, toRate);
           return 0;
         }
         const value = (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
@@ -1304,7 +1304,7 @@ export default {
       }
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
-      console.log('userMaxPrice',this.userMaxPrice)
+      util.log('userMaxPrice',this.userMaxPrice)
       this.transferValue = this.userMaxPrice;
       this.updateTransferInfo()
     },

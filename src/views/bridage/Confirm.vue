@@ -231,7 +231,6 @@ export default {
   },
   methods: {
     async transferToStarkNet(value) {
-      console.log('value', value);
       const { selectMakerConfig, fromChainID, transferExt } = transferDataState;
 
       if (!walletIsLogin.value) {
@@ -311,7 +310,7 @@ export default {
         }
         return;
       } catch (err) {
-        console.log(err);
+        // console.log(err);
         this.$notify.error({
           title: err?.data?.message || err.message,
           duration: 3000,

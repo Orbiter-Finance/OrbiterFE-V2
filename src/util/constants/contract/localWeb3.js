@@ -3,6 +3,7 @@ import env from '../../../../env'
 import { extraRpcs } from '../../../config/extraRpcs'
 const LocalNetWorks = env.supportLocalNetWorksIDs
 import { Coin_ABI } from './contract.js'
+import util from "../../util";
 
 /**
  * @param {number} chainID
@@ -36,7 +37,7 @@ function requestWeb3(insideId, method, ...args) {
           resolve(result)
           break
         } catch (error) {
-          console.log(
+          util.log(
             'request rpc error:',
             error.message,
             insideId,
@@ -79,7 +80,7 @@ function requestWeb3(insideId, method, ...args) {
               break
             }
           } catch (error) {
-            console.log(
+            util.log(
               'Request Web3 token Balance rpc error:',
               error.message,
               insideId,

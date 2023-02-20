@@ -159,7 +159,7 @@ export default {
               )
               await dydxHelper.getDydxClient(coinbase)
             } catch (error) {
-              console.log(error)
+              console.error(error)
             }
           }
 

@@ -1,7 +1,7 @@
 export const isLocal = () => process.env.VUE_APP_ENV === 'local';
 export const isDev = () => process.env.VUE_APP_ENV === 'development';
 export const isProd = () => process.env.VUE_APP_ENV === 'production';
-console.log('VUE_APP_ENV', process.env.VUE_APP_ENV);
+
 // TODO: should check by code
 export const isWebSimulation = false
 

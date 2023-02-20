@@ -6,6 +6,7 @@ import BigNumber from 'bignumber.js'
 import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
+import { isProd } from "./env";
 
 
 export default {
@@ -114,7 +115,7 @@ export default {
   },
 
   setStableRpc(chainId, rpc, msg) {
-    console.log(chainId, rpc, msg || '', 'success')
+    this.log(chainId, rpc, msg || '', 'success')
     localStorage.setItem(`${chainId}_stable_rpc`, rpc)
   },
 
@@ -194,7 +195,17 @@ export default {
     return JSON.parse(JSON.stringify(info))
   },
 
+  log(...msg) {
+    if (isProd()) {
+      return;
+    }
+    console.log(...msg);
+  },
+
   isWhite() {
+    if(isProd() && !config?.whiteList.length){
+      return false;
+    }
     return !(
       config.whiteList.length &&
       !config.whiteList.find((item) =>
@@ -304,7 +315,7 @@ export default {
             resolve(result)
             break
           } catch (error) {
-            console.log(
+            this.log(
               'request rpc error:',
               url,
               error.message,
@@ -344,7 +355,7 @@ export default {
               resolve(result)
               break
           } catch (error) {
-            console.log(
+            this.log(
               'Request Web3 token Balance rpc error:',
               url,
               error.message,

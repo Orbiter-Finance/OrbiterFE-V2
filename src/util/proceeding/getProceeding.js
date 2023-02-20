@@ -1,6 +1,7 @@
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
 import openApiAx from "../../common/openApiAx";
+import util from "../util";
 
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
@@ -11,7 +12,7 @@ function confirmUserTransaction(hash) {
   const cron = setInterval(async () => {
     try {
       const { status, txList } = await openApiAx.get(`/status?hash=${ hash }`);
-      console.log('txStatus', status, 'txList', txList);
+      util.log('txStatus', status, 'txList', txList);
       switch (status) {
         case 0: {
           if (currentStatus === 2) {

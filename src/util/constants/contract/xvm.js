@@ -14,8 +14,8 @@ export async function XVMSwap(provider, contractAddress, account, makerAddress, 
     const t2Address = toChain.tokenAddress;
     const slippage = selectMakerConfig.slippage;
     const expectValue = await util.getExpectValue();
-    console.log(selectMakerConfig);
-    console.log('expectValue --> ', expectValue, 'makerAddress-->', makerAddress, 'eth value-->', value, 'token-->', t1Address,
+    util.log(selectMakerConfig);
+    util.log('expectValue --> ', expectValue, 'makerAddress-->', makerAddress, 'eth value-->', value, 'token-->', t1Address,
         'params-->', toChainId, t2Address, toWalletAddress);
     const web3 = new Web3(provider || window.web3.currentProvider);
     const sourceData = fromCurrency === toCurrency ? [toChainId, t2Address, toWalletAddress] : [toChainId, t2Address, toWalletAddress, web3.utils.toHex(expectValue), slippage];
@@ -30,7 +30,7 @@ export async function XVMSwap(provider, contractAddress, account, makerAddress, 
             from: account,
             gas: 5000000
         });
-        console.log('gasLimit', gasLimit);
+        util.log('gasLimit', gasLimit);
         return contractInstance.methods.swap(makerAddress, t1Address, value, data).send({
             from: account, gas: gasLimit
         });

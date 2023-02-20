@@ -185,7 +185,6 @@ export class CrossAddress {
       0,
       data
     )
-    console.log(transferHash, 'walletConnApproveERC20 transferHash---')
     const n = Notification({
       duration: 0,
       title: 'Approving...',
@@ -244,7 +243,6 @@ export class CrossAddress {
         this.provider
     );
     const allowance = await this.getAllowance(contractErc20, contractAddress);
-    console.log('allowance',allowance)
     if (amount.gt(allowance)) {
       if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
         await this.walletConnApproveERC20(tokenAddress, ethers.constants.MaxUint256, contractAddress);

@@ -117,7 +117,6 @@ export default {
     async initWhiteList() {
       if (isProd()) {
         config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-        console.log('whiteList length', config.whiteList?.length);
       }
     },
     performInitCurrentLoginWallet() {
