@@ -7,7 +7,7 @@ const orbiterApiAx = axios.create({
     timeout: 30000
 });
 
-openApiAx.interceptors.response.use(
+orbiterApiAx.interceptors.response.use(
     function (response) {
       return response.data;
     },
