@@ -18,8 +18,7 @@
                 <div class="name" :title="scope.row.rollup_name">
                   {{ scope.row.rollup_name }}
                 </div>
-                <div class="icon" v-if="!!scope.row.details"> 
-                  <!-- <i class="el-icon-arrow-right"></i> -->
+                <div class="icon" v-if="!!scope.row.details">
                   <svg-icon-themed icon="searchChartIcon" size="lg"></svg-icon-themed>
                 </div>
               </div>
@@ -170,7 +169,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <rollup-detail ref="rolluoDetail"></rollup-detail>
+    <rollup-detail @close="closeDappDetail" ref="rolluoDetail"></rollup-detail>
   </div>
 </template>
 
@@ -186,6 +185,7 @@ import { isMobile } from '../../../composition/hooks'
 import dateFormat from '../../../util/dateFormat'
 import RollupDetail from '../RollupDetail.vue'
 import SvgIconThemed from '../../../components/SvgIconThemed.vue'
+import Common from '../Common'
 
 const selectors = [
   { label: '1d', value: '1d' },
@@ -198,6 +198,7 @@ const selectors = [
 const isEmpty = (v) => v === ''
 
 export default {
+  mixins: [Common],
   data() {
     return {
       rollups: {},
@@ -324,7 +325,33 @@ export default {
       return numeral(num).format('$ 0.00 a').toUpperCase()
     },
     onRowClick(row) {
-      this.$refs.rolluoDetail.show(row, true)
+      this.handleRoute({ floater: row.rollup_name });
+    },
+    handleRoute({ floater }) {
+      const { path, query } = this.$route;
+      const newQuery = JSON.parse(JSON.stringify(query || {}));
+      if (floater instanceof Array) {
+        floater = floater[0];
+      }
+      if (floater) {
+        if (newQuery?.floater !== floater) {
+          newQuery.floater = floater;
+          this.$refs.rolluoDetail.show(this.indexTableData.find(item => item.rollup_name === floater), true);
+          let suffixArr = [];
+          for (const key in newQuery) {
+            suffixArr.push(`${ key }=${ newQuery[key] }`);
+          }
+          const newPath = path + '?' + suffixArr.join('&');
+          this.$router.replace({ path: newPath, query: newQuery });
+        } else {
+          const row = this.indexTableData.find(item => item.rollup_name === floater);
+          if (row) {
+            this.$refs.rolluoDetail.show(row, true);
+          } else {
+            this.closeDappDetail();
+          }
+        }
+      }
     }
   },
 }

@@ -4,7 +4,7 @@
         <div slot="title" class="rollup-detail-dialog-title">
             <dapp-logo class="logo" :chains="true" :name="rollupData.rollup_name" />
             <div class="name">{{ rollupData.rollup_name }}</div>
-            <span class="close" @click="isShow = false"> </span>
+            <span class="close" @click="close"> </span>
         </div>
         <div class="rollup-detail-dialog-content">
             <div class="info" v-if="detailData.info">
@@ -52,7 +52,7 @@
                     <div class="title">
                         User Statistics
                         <el-popover popper-class="supported-l2-popover" :placement="'bottom'" width="280"
-                            trigger="hover">
+                                    trigger="hover">
                             <div class="supported-l2-desc">
                                 Active Users & Corresponding percentage of total users. <br />
                                 New Users & Corresponding percentage of total users.
@@ -63,8 +63,31 @@
                     </div>
                     <div id="rollup_user_chart" ref="rollup_user_chart"></div>
                     <div class="checker">
-                        <div class="item" v-for="(item, i) in allSeries" :key="i" @click="onCheckerClick(item)">
+                        <div class="item" v-for="(item, i) in allSeries" :key="i" @click="onCheckerClick(1,item)">
                             <div class="checkbox" :class="{ active: checkData.includes(item) }"></div>
+                            <div class="line" :style="{ background: color[i] }"></div>
+                            <div class="name">{{ item }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div :hidden="!chartData.chart_data_bridge" class="content">
+                    <div class="title">
+                        Interactions Statistics
+                        <el-popover popper-class="supported-l2-popover" :placement="'bottom'" width="280"
+                            trigger="hover">
+                            <div class="supported-l2-desc">
+                                Bridge Interactions percentage of total Interactions. <br />
+                                Other Interactions percentage of total Interactions.
+                                <a href="https://docs.orbiter.finance/l2data" target="_blank"> Read More </a>
+                            </div>
+                            <span class="title-help" slot="reference"> </span>
+                        </el-popover>
+                    </div>
+                    <div id="rollup_interactions_chart" ref="rollup_interactions_chart"></div>
+                    <div class="checker">
+                        <div class="item" v-for="(item, i) in allInteractionsSeries" :key="i" @click="onCheckerClick(2,item)">
+                            <div class="checkbox" :class="{ active: checkInteractionsData.includes(item) }"></div>
                             <div class="line" :style="{ background: color[i] }"></div>
                             <div class="name">{{ item }}</div>
                         </div>
@@ -147,15 +170,19 @@ import dateFormat from '../../util/dateFormat'
 import TimeDiff from './TimeDiff.vue';
 
 const allSeries = ['All Users', 'Active Users', 'New Users']
+const allInteractionsSeries = ['All Interactions', 'Bridge Interactions', 'Other Interactions'];
 const color = [
-    'rgba(51, 51, 51, 0.8)',
+    'rgba(0, 0, 255, 0.8)',
     'rgba(239, 47, 45, 1)',
     'rgba(17, 112, 255, 1)',
 ]
 const colorMap = {
-    'All Users': 'rgba(51, 51, 51, 0.8)',
+    'All Users': 'rgba(0, 0, 255, 0.8)',
     'Active Users': 'rgba(239, 47, 45, 1)',
     'New Users': 'rgba(17, 112, 255, 1)',
+    'All Interactions': 'rgba(0, 0, 255, 0.8)',
+    'Bridge Interactions': 'rgba(239, 47, 45, 1)',
+    'Other Interactions': 'rgba(17, 112, 255, 1)',
     'Transactions': 'rgba(17, 112, 255, 1)',
     'L2 Total Fee': 'rgba(239, 47, 45, 1)',
     'L1 Total Fee': 'rgba(17, 112, 255, 1)',
@@ -183,16 +210,19 @@ export default {
             rollupData: {},
             detailData: {},
             times,
-            currentTime: times[0].value,
+            currentTime: times[1].value,
             allSeries,
+            allInteractionsSeries,
             color,
             checkData: ['New Users', 'Active Users'],
+            checkInteractionsData: ['All Interactions', 'Bridge Interactions', 'Other Interactions'],
         };
     },
     watch: {
         chartData() {
             if (this.detailData.info) {
                 this._chartUser && this._chartUser.setOption(this._getUsetChartOptions())
+                this._chartInteractions && this._chartInteractions.setOption(this._getInteractionsChartOptions())
                 this._chartTransaction && this._chartTransaction.setOption(this._getTransactionChartOptions())
                 this._chartFees && this._chartFees.setOption(this._getFeesChartOptions())
                 this._chartDeposit && this._chartDeposit.setOption(this._getDepositChartOptions())
@@ -254,6 +284,10 @@ export default {
         window.removeEventListener('resize', this._onResize)
     },
     methods: {
+        close() {
+            this.isShow = false;
+            this.$emit('close', false);
+        },
         async show(row, show) {
             this.rollupData = row;
             this.$loader.show()
@@ -262,25 +296,42 @@ export default {
             this.isShow = show;
             if (res.info) {
                 this._initUserChart()
+                this._initInteractionsChart();
                 this._initTransactionChart()
                 this._initFeesChart()
                 this._initDepositChart()
                 this._initWithdrawChart()
             }
         },
-        onCheckerClick(item) {
-            if (this.checkData.length === 1 && this.checkData.includes(item)) {
-                return
-            }
-            if (this.checkData.includes(item)) {
-                this.checkData = this.checkData.filter((data) => data !== item)
-            } else {
-                this.checkData = this.checkData.concat([item])
-            }
-            if (this._chartUser) {
-                this._chartUser.clear()
-                const option = this._getUsetChartOptions()
-                this._chartUser.setOption(option)
+        onCheckerClick(type, item) {
+            if (type === 1) {
+                if (this.checkData.length === 1 && this.checkData.includes(item)) {
+                    return;
+                }
+                if (this.checkData.includes(item)) {
+                    this.checkData = this.checkData.filter((data) => data !== item);
+                } else {
+                    this.checkData = this.checkData.concat([item]);
+                }
+                if (this._chartUser) {
+                    this._chartUser.clear();
+                    const option = this._getUsetChartOptions();
+                    this._chartUser.setOption(option);
+                }
+            } else if (type === 2) {
+                if (this.checkInteractionsData.length === 1 && this.checkInteractionsData.includes(item)) {
+                    return;
+                }
+                if (this.checkInteractionsData.includes(item)) {
+                    this.checkInteractionsData = this.checkInteractionsData.filter((data) => data !== item);
+                } else {
+                    this.checkInteractionsData = this.checkInteractionsData.concat([item]);
+                }
+                if (this._chartInteractions) {
+                    this._chartInteractions.clear();
+                    const option = this._getInteractionsChartOptions();
+                    this._chartInteractions.setOption(option);
+                }
             }
         },
         chartDateFormatter(chartData) {
@@ -317,6 +368,7 @@ export default {
         },
         _onResize() {
             this._chartUser && this._chartUser.resize()
+            this._chartInteractions && this._chartInteractions.resize()
             this._chartTransaction && this._chartTransaction.resize()
             this._chartFees && this._chartFees.resize()
             this._chartDeposit && this._chartDeposit.resize()
@@ -329,6 +381,15 @@ export default {
                 this._chartUser = chartUser
                 const option = this._getUsetChartOptions()
                 this._chartUser.setOption(option)
+            })
+        },
+        _initInteractionsChart() {
+            this.$nextTick(() => {
+                const chartInteractionsDom = document.getElementById('rollup_interactions_chart')
+                const chartInteractions = echarts.init(chartInteractionsDom)
+                this._chartInteractions = chartInteractions
+                const option = this._getInteractionsChartOptions()
+                this._chartInteractions.setOption(option)
             })
         },
         _initTransactionChart() {
@@ -507,6 +568,152 @@ export default {
                             }
                         },
                         data: chart_data_user.all_users,
+                    })
+                }
+                return options
+            } else {
+                return {}
+            }
+        },
+        _getInteractionsChartOptions() {
+            const chart_data = this.chartData
+            const chart_data_bridge = chart_data.chart_data_bridge
+            if (chart_data_bridge) {
+                const options = {
+                    height: 160,
+                    title: {
+                        show: false,
+                    },
+                    legend: {
+                        show: false,
+                    },
+                    grid: {
+                        top: 26,
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true,
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        alignTicks: false,
+                        data: chart_data_bridge.timestamp,
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: false,
+                            lineStyle: {
+                                color: this.isLightMode
+                                    ? 'rgba(51, 51, 51, 0.4)'
+                                    : 'rgba(255, 255, 255, 0.4)',
+                            },
+                        },
+                        axisLabel: {
+                            interval: (index) => {
+                                return (
+                                    index % Math.ceil(chart_data_bridge.timestamp.length / (this.isMobile ? 3 : 6)) === 0
+                                )
+                            },
+                            formatter: (value) => dateFormat(parseInt(value), 'yyyy-MM-dd'),
+                        },
+                        splitLine: {
+                            lineStyle: {
+                                color: this.isLightMode
+                                    ? 'rgba(51, 51, 51, 0.2)'
+                                    : 'rgba(255, 255, 255, 0.2)',
+                            },
+                        },
+                    },
+                    yAxis: {
+                        splitNumber: 3,
+                        type: 'value',
+                        axisPointer: {
+                            show: false,
+                        },
+                        axisTick: {
+                            show: false,
+                        },
+                        axisLine: {
+                            show: false,
+                            lineStyle: {
+                                color: this.isLightMode
+                                    ? 'rgba(51, 51, 51, 0.4)'
+                                    : 'rgba(255, 255, 255, 0.4)',
+                            },
+                        },
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        padding: 0,
+                        backgroundColor: 'transparent',
+                        formatter: this._onFormatter,
+                        position: this.isMobile
+                            ? function (pos, params, dom, rect, size) {
+                                const obj = { top: '10%' }
+                                obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 5
+                                return obj
+                            }
+                            : undefined,
+                    },
+                    series: [],
+                }
+                if (this.checkInteractionsData.includes('Other Interactions')) {
+                    options.series.push({
+                        name: 'Other Interactions',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 4,
+                            color: colorMap['Other Interactions'],
+                        },
+                        showSymbol: false,
+                        emphasis: {
+                            focus: 'series',
+                            itemStyle: {
+                                borderColor: colorMap['Other Interactions'],
+                            }
+                        },
+                        data: chart_data_bridge.other_tx,
+                    })
+                }
+                if (this.checkInteractionsData.includes('Bridge Interactions')) {
+                    options.series.push({
+                        name: 'Bridge Interactions',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 4,
+                            color: colorMap['Bridge Interactions'],
+                        },
+                        showSymbol: false,
+                        emphasis: {
+                            focus: 'series',
+                            itemStyle: {
+                                borderColor: colorMap['Bridge Interactions'],
+                            }
+                        },
+                        data: chart_data_bridge.bridge_tx,
+                    })
+                }
+                if (this.checkInteractionsData.includes('All Interactions')) {
+                    options.series.push({
+                        name: 'All Interactions',
+                        type: 'line',
+                        smooth: true,
+                        lineStyle: {
+                            width: 4,
+                            color: colorMap['All Interactions'],
+                        },
+                        showSymbol: false,
+                        emphasis: {
+                            focus: 'series',
+                            itemStyle: {
+                                borderColor: colorMap['All Interactions'],
+                            }
+                        },
+                        data: chart_data_bridge.daily_tx,
                     })
                 }
                 return options
@@ -976,9 +1183,7 @@ export default {
 
             return `<div class="chart-popover-content">
                 ${params[0].seriesName == 'Deposit' ?
-                    `<div class="chart-popover-title">${title}</div>`
-                    :
-                    `<div class="chart-popover-title" style="color: ${colorMap['Withdraw']}">${title}</div>`}
+                    `<div class="chart-popover-total-transactions">${title}</div>
                 <div class="chart-popover-total-transactions">
                     Transactions: <span>${numeral(params[0].data).format(
                         '0,0'
@@ -993,6 +1198,23 @@ export default {
                         ${listmod}
                     </div>
                 </div>`
+                    :
+                    `<div class="chart-popover-total-transactions-withdraw">${title}</div>
+                <div class="chart-popover-total-transactions-withdraw">
+                    Transactions: <span>${numeral(params[0].data).format(
+                        '0,0'
+                    )}</span>
+                    </div>
+                    <div class="chart-popover-total-transactions-withdraw">
+                    Total Fees: <span>${numeral(item_data.total_fees).format(
+                        '0,0.0000'
+                    )} ETH</span>
+                    </div>
+                    <div class="chart-popover-rollups">
+                        ${listmod}
+                    </div>
+                </div>`}
+                `
         },
         _onFormatter(params) {
             const axisValue = params[0].axisValue
@@ -1081,6 +1303,15 @@ export default {
 
         span {
             color: #333333;
+        }
+    }
+
+    .chart-popover-total-transactions-withdraw {
+        font-weight: 700;
+        margin-bottom: 10px;
+
+        span {
+            color: rgba(17, 112, 255, 1);
         }
     }
 
@@ -1245,6 +1476,7 @@ export default {
                 }
 
                 #rollup_user_chart,
+                #rollup_interactions_chart,
                 #rollup_tx_chart,
                 #rollup_fees_chart,
                 #rollup_deposit_chart,

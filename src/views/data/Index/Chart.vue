@@ -68,8 +68,11 @@
               {{ item.no }}
             </div>
             <chains-logo :name="item.name" />
-            <div class="name">
+            <div class="name" @click="onRowClick(item.name)">
               {{ item.name }}
+            </div>
+            <div class="icon" v-if="isShowDetail(item.name)" @click="onRowClick(item.name)">
+              <svg-icon-themed icon="searchChartIcon" size="lg"></svg-icon-themed>
             </div>
             <div class="num">
               {{ numeral(item.transactions).format('0,0') }}
@@ -86,8 +89,11 @@
               {{ item.no }}
             </div>
             <chains-logo :name="item.name" />
-            <div class="name">
+            <div class="name" @click="onRowClick(item.name)">
               {{ item.name }}
+            </div>
+            <div class="icon" v-if="isShowDetail(item.name)" @click="onRowClick(item.name)">
+              <svg-icon-themed icon="searchChartIcon" size="lg"></svg-icon-themed>
             </div>
             <div class="num">
               {{ numeral(item.transactions).format('0,0') }}
@@ -95,6 +101,8 @@
           </div>
         </div>
       </div>
+
+      <rollup-detail @close="closeRollupDetail" ref="rolluoDetail"></rollup-detail>
     </div>
   </div>
 </template>
@@ -106,6 +114,8 @@ import { getMainpageRollup } from '../../../L2data/chart.js'
 import Selector from '../Selector.vue'
 import TimeDiff from '../TimeDiff.vue'
 import ChainsLogo from '../ChainsLogo.vue'
+import RollupDetail from '../RollupDetail.vue'
+import SvgIconThemed from '../../../components/SvgIconThemed.vue'
 import { isMobile } from '../../../composition/hooks'
 import dateFormat from '../../../util/dateFormat'
 import getWeeks from '../../../util/getWeeks'
@@ -139,11 +149,14 @@ const color = [
 
 const padTimestamp = (timestamp) => timestamp * 1000
 const unixTime = (timestamp) => timestamp - (timestamp % 86400000)
+const showDetailList = ['starknet'];
 export default {
   components: {
     Selector,
     TimeDiff,
     ChainsLogo,
+    SvgIconThemed,
+    RollupDetail
   },
   data() {
     return {
@@ -226,6 +239,14 @@ export default {
     this._initChart()
     this.$loader.show()
     this.baseChartData = await getMainpageRollup()
+    if(this.baseChartData){
+      const { query } = this.$route;
+      if (query?.rollup_name) {
+        this.handleRoute({
+          rollup_name: query?.rollup_name
+        });
+      }
+    }
     this.$loader.hide()
     window.addEventListener('resize', this._onResize)
   },
@@ -244,6 +265,9 @@ export default {
         const chart = echarts.init(chartDom)
         this._chart = chart
       })
+    },
+    isShowDetail(name) {
+      return showDetailList.includes(name.toLowerCase());
     },
     onCheckerClick(item) {
       if (this.checkData.includes(item)) {
@@ -563,11 +587,55 @@ export default {
         return mome
       }, {})
     },
+    closeRollupDetail(){
+      const { path, query } = this.$route;
+      const newQuery = JSON.parse(JSON.stringify(query || {}));
+      delete newQuery.rollup_name;
+      const suffixArr = [];
+      for (const key in newQuery) {
+        suffixArr.push(`${ key }=${ newQuery[key] }`);
+      }
+      const newPath = path + '?' + suffixArr.join('&');
+      this.$router.replace({ path: newPath, query: newQuery });
+    },
+    onRowClick(rollup_name) {
+      this.handleRoute({ rollup_name });
+    },
+    handleRoute({ rollup_name }) {
+      const { path, query } = this.$route;
+      const newQuery = JSON.parse(JSON.stringify(query || {}));
+      if (rollup_name instanceof Array) {
+        rollup_name = rollup_name[0];
+      }
+      if (rollup_name) {
+        if (newQuery?.rollup_name !== rollup_name) {
+          newQuery.rollup_name = rollup_name;
+          this.$refs.rolluoDetail.show({ rollup_name }, true);
+          let suffixArr = [];
+          for (const key in newQuery) {
+            suffixArr.push(`${ key }=${ newQuery[key] }`);
+          }
+          const newPath = path + '?' + suffixArr.join('&');
+          this.$router.replace({ path: newPath, query: newQuery });
+        } else {
+          this.$refs.rolluoDetail.show({ rollup_name }, true);
+        }
+      }
+    }
   },
 }
 </script>
 
 <style lang="scss" scoped>
+  .icon {
+    margin-left: 3px;
+    margin-top: 3px;
+    cursor: pointer;
+    i, svg {
+      width: 18px;
+      font-weight: bolder;
+    }
+  }
 .chart-wrapper {
   display: flex;
   background: var(--light-page-bg);
@@ -696,6 +764,7 @@ export default {
           font-weight: 700;
           font-size: 14px;
           color: rgba(51, 51, 51, 0.8);
+          cursor: pointer;
         }
         .num {
           position: absolute;

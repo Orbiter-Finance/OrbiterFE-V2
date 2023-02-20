@@ -155,13 +155,12 @@ export const walletConnectDispatcherOnSignature = async (
   fromChainID,
   onTransferSucceed
 ) => {
-  const _web3 = util.stableWeb3(fromChainID);
-  const gaslimit = await _web3.eth.estimateGas({
+  const gaslimit = await util.requestWeb3(fromChainID, 'estimateGas', {
     from,
     to: selectMakerConfig.recipient,
     value,
   })
-  const nonce = await _web3.eth.getTransactionCount(from)
+  const nonce = await util.requestWeb3(fromChainID, "getTransactionCount", from);
   connector
     .sendTransaction({
       from,
@@ -186,8 +185,7 @@ export async function walletConnectSendTransaction(
   value,
   data
 ) {
-  const web3 = util.stableWeb3(chainId)
-  const nonce = await web3.eth.getTransactionCount(from)
+  const nonce= await util.requestWeb3(chainId, 'getTransactionCount', from)
   return new Promise((resolve, reject) => {
     connector
       .sendTransaction({

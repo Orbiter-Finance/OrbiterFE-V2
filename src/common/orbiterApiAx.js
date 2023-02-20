@@ -1,5 +1,4 @@
 import axios from 'axios';
-import openApiAx from "./openApiAx";
 
 const orbiterApiAx = axios.create({
     baseURL: 'https://api.orbiter.finance',

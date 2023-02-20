@@ -1,4 +1,4 @@
-const baseDomain = `http://ec2-54-238-20-18.ap-northeast-1.compute.amazonaws.com:3003`
+const baseDomain = `https://api.orbiter.finance`
 export default {
   baseTraddingUrl: `${ baseDomain }/api`,
   chainIcon: {
