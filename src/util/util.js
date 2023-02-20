@@ -114,7 +114,6 @@ export default {
   },
 
   setStableRpc(chainId, rpc, msg) {
-    console.log(chainId, rpc, msg || '', 'success')
     localStorage.setItem(`${chainId}_stable_rpc`, rpc)
   },
   getRpcList(chainId) {
@@ -299,9 +298,6 @@ export default {
           try {
             const web3 = new Web3(url)
             result = await web3.eth[method](...args);
-            if (result && result.error) {
-
-            }
             this.setStableRpc(chainId, url, 'success');
             resolve(result)
             break
