@@ -56,14 +56,6 @@ const GAS_ADDRESS = {
   },
 }
 
-export function getStarkMakerAddress(makerAddress, chainID) {
-  makerAddress = makerAddress.toLowerCase()
-  let networkID = getNetworkIdByChainId(chainID)
-  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
-  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
-  return receiverAddress
-}
-
 export function getStarkNetValidAddress(address) {
   if (address.length == 65) {
     return `0x0${address.substring(2)}`
@@ -194,7 +186,7 @@ export async function sendTransfer(
     getStarknet().provider
   )
 
-  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
+  const receiverAddress = makerAddress
   try {
     const calldata = stark.compileCalldata({
       token: tokenAddress,
@@ -258,7 +250,7 @@ export async function getStarkTransferFee(
     ec.getKeyPair(GAS_ADDRESS[network].privateKey)
   )
 
-  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
+  const receiverAddress = makerAddress
   const ethContract = new Contract(erc20Abi, tokenAddress, userSender)
   const crossContract = new Contract(
     starkNetCrossAbi,
