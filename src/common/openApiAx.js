@@ -2,10 +2,7 @@ import axios from 'axios';
 
 const openApiAx = axios.create({
     baseURL: process.env.VUE_APP_OPEN_URL,
-    timeout: 30000,
-    headers: {
-        'Access-Control-Allow-Origin': '*',
-    },
+    timeout: 30000
 });
 
 openApiAx.interceptors.response.use(
