@@ -1079,19 +1079,19 @@ export default {
           console.log('transferValue > userMax', transferValue.toString(), userMax.toString());
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
-          info.disabled = 'disabled';
+          // info.disabled = 'disabled';
           console.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
         } else if (transferValue.comparedTo(makerMin) < 0) {
           info.text = 'INSUFFICIENT FUNDS';
-          info.disabled = 'disabled';
+          // info.disabled = 'disabled';
           console.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
         } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
           info.text = 'INSUFFICIENT FUNDS';
-          info.disabled = 'disabled';
+          // info.disabled = 'disabled';
           console.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
         } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
-          info.disabled = 'disabled';
+          // info.disabled = 'disabled';
           console.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
         }
 
