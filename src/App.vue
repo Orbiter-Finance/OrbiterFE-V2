@@ -110,15 +110,8 @@ export default {
 
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
-
-    await this.initWhiteList();
   },
   methods: {
-    async initWhiteList() {
-      if (isProd()) {
-        config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      }
-    },
     performInitCurrentLoginWallet() {
       performInitMobileAppWallet()
 
