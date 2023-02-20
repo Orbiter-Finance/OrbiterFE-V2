@@ -27,7 +27,7 @@ async function cacheExchangeRates(currency = 'USD') {
     return undefined
   }
 }
-async function getRates(currency) {
+export async function getRates(currency) {
   try {
     const resp = await axios.get(
       `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
@@ -41,13 +41,11 @@ async function getRates(currency) {
     ) {
       return undefined
     }
-    return data.rates
+    return data.rates;
   } catch (error) {
     return undefined
   }
 }
-
-setInterval(() => cacheExchangeRates(), 10 * 1000)
 
 /**
  * @param sourceCurrency
@@ -103,4 +101,19 @@ export async function exchangeToUsd(value = 1, sourceCurrency = 'ETH') {
   }
 
   return value.dividedBy(rate)
+}
+
+
+export async function exchangeToCoin(value = 1, sourceCurrency = 'ETH', toCurrency, rates) {
+  if (!(value instanceof BigNumber)) {
+    value = new BigNumber(value);
+  }
+  const exchangeRates = rates || await getRates(sourceCurrency);
+  const fromRate = exchangeRates[sourceCurrency];
+  const toRate = exchangeRates[toCurrency];
+  if (!fromRate || !toRate) {
+    return new BigNumber(0);
+  }
+  console.log(`${ sourceCurrency } rate`, fromRate, `${ toCurrency } rate`, toRate);
+  return value.dividedBy(fromRate).multipliedBy(toRate);
 }

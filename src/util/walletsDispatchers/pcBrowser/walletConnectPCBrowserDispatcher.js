@@ -8,7 +8,7 @@ import {
 } from '../walletsCoreData'
 import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
-import { localWeb3,requestWeb3 } from '../../constants/contract/localWeb3'
+import util from "../../util";
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code
@@ -46,14 +46,6 @@ const provider = {
 // transfer data after connect success into a valid data structure
 // there r different processing between the initial connect and the repeated connect
 const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
-  // const connChainId = payload.chainId;
-  // let web3 = {}
-  // for (const localId in env.localChainID_netChainID) {
-  //     if (env.localChainID_netChainID[localId] == connChainId) {
-  //       web3 = new Web3(env.localProvider[localId])
-  //       break;
-  //     }
-  // }
   if (connected) {
     const {
       _accounts = [],
@@ -158,28 +150,29 @@ export const walletConnectDispatcherOnDisconnect = withPerformInterruptWallet(
 
 export const walletConnectDispatcherOnSignature = async (
   from,
-  selectMakerInfo,
+  selectMakerConfig,
   value,
   fromChainID,
   onTransferSucceed
 ) => {
-  const _web3 = localWeb3(fromChainID)
-  const gaslimit = await requestWeb3(fromChainID, "estimateGas", {
+  const _web3 = util.stableWeb3(fromChainID);
+  const gaslimit = await _web3.eth.estimateGas({
     from,
-    to: selectMakerInfo.makerAddress,
+    to: selectMakerConfig.recipient,
     value,
   })
-  const nonce = await requestWeb3(fromChainID, "getTransactionCount", from);
+  const nonce = await _web3.eth.getTransactionCount(from)
+  // const nonce = await requestWeb3(fromChainID, "getTransactionCount", from);
   connector
     .sendTransaction({
       from,
-      to: selectMakerInfo.makerAddress,
+      to: selectMakerConfig.recipient,
       gasLimit: gaslimit,
       value,
       nonce,
     })
     .then((result) => {
-      onTransferSucceed(from, selectMakerInfo, value, fromChainID, result)
+      onTransferSucceed(from, value, fromChainID, result)
     })
     .catch((err) => {
       console.log('err', err)
@@ -194,7 +187,7 @@ export async function walletConnectSendTransaction(
   value,
   data
 ) {
-  const web3 = localWeb3(chainId)
+  const web3 = util.stableWeb3(chainId)
   const nonce = await web3.eth.getTransactionCount(from)
   return new Promise((resolve, reject) => {
     connector

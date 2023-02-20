@@ -17,7 +17,8 @@ const MAX_BITS = {
   bsc: 256,
   arbitrum_nova: 256,
   scroll_l1_test: 256,
-  scroll_l2_test: 256
+  scroll_l2_test: 256,
+  taiko_a1_test: 256
 }
 
 const CHAIN_INDEX = {
@@ -52,7 +53,8 @@ const CHAIN_INDEX = {
   16: 'arbitrum_nova',
   516: 'arbitrum_nova',
   518: 'scroll_l1_test',
-  519: 'scroll_l2_test'
+  519: 'scroll_l2_test',
+  520: 'taiko_a1_test'
 }
 
 const SIZE_OP = {
@@ -99,26 +101,27 @@ function isLimitNumber(chain) {
   return false
 }
 
-function getToAmountFromUserAmount(userAmount, selectMakerInfo, isWei) {
+function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
+  const decimals = selectMakerConfig.fromChain?.decimals || selectMakerConfig.precision;
   let toAmount_tradingFee = new BigNumber(userAmount).minus(
-    new BigNumber(selectMakerInfo.tradingFee)
-  )
+      new BigNumber(selectMakerConfig.tradingFee)
+  );
   let gasFee = toAmount_tradingFee
-    .multipliedBy(new BigNumber(selectMakerInfo.gasFee))
-    .dividedBy(new BigNumber(1000))
-  let digit = selectMakerInfo.precision === 18 ? 5 : 2
-  let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
-  let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
+      .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
+      .dividedBy(new BigNumber(1000));
+  let digit = decimals === 18 ? 5 : 2;
+  let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP);
+  let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix);
 
   if (!toAmount_fee || isNaN(toAmount_fee)) {
-    return 0
+    return 0;
   }
   if (isWei) {
     return toAmount_fee.multipliedBy(
-      new BigNumber(10 ** selectMakerInfo.precision)
-    )
+        new BigNumber(10 ** decimals)
+    );
   } else {
-    return toAmount_fee
+    return toAmount_fee;
   }
 }
 

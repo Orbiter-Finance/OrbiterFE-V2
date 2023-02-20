@@ -1,16 +1,13 @@
 import { Notification } from 'element-ui'
-import env from '../../env'
-import chainList from '../config/chains.json'
 import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData"
+import { transferDataState } from "../composition/useTransferData";
+import { exchangeToCoin } from "./coinbase";
+import BigNumber from "bignumber.js";
+import config from '../config/index'
+import Web3 from "web3";
 
 export default {
   showMessage(message, type) {
-    // Message({
-    //   showClose: true,
-    //   duration: 2000,
-    //   message: message,
-    //   type: type,
-    // })
     const _type = type || 'success'
     Notification[_type]({
       message: message,
@@ -18,99 +15,14 @@ export default {
       duration: 3000,
     })
   },
-  getChainInfo(netChainID) {
-    var chain = chainList.chainList.filter(
-      (chain) => chain.chainId.toString() === netChainID.toString()
-    )
-    if (chain.length > 0) {
-      return chain[0]
-    }
-    return undefined
+  netWorkName(networkId) {
+    return this.getChainInfoByNetworkId(networkId)?.name || 'unknown';
   },
-  chainName(localChainID, netChainID) {
-    // zksync、starknet
-    switch (Number(localChainID)) {
-      case 3:
-        return 'zkSync'
-      case 33:
-        return 'zkSync(G)'
-      case 4:
-        return 'StarkNet'
-      case 44:
-        return 'StarkNet(R)'
-      case 8:
-        return 'Immutable X'
-      case 88:
-        return 'Immutable X(R)'
-      case 9:
-        return 'Loopring'
-      case 99:
-        return 'Loopring(G)'
-      case 10:
-        return 'Metis'
-      case 510:
-        return 'Metis(R)'
-      case 11:
-        return 'dYdX'
-      case 511:
-        return 'dYdX(R)'
-      case 12:
-        return 'ZKSpace'
-      case 512:
-        return 'ZKSpace(R)'
-      case 13:
-        return 'Boba'
-      case 513:
-        return 'Boba(R)'
-      case 14:
-        return 'zkSync2'
-      case 514:
-        return 'zkSync2(G)'
-      case 15:
-        return "BNB Chain"
-      case 515:
-        return "BNB Chain(R)"
-      case 16:
-        return "Arbitrum Nova"
-      case 516:
-        return "Arbitrum Nova(Goerli)"
-      case 17:
-        return "Polygon ZKEVM"
-      case 517:
-        return "Polygon ZKEVM(Goerli)"
-    }
-    const chain = chainList.chainList.filter(
-      (_chain) => _chain.chainId == netChainID
-    )
-    if (chain.length > 0) {
-      return chain[0].name
-    } else {
-      return 'unknown'
-    }
+  chainName(chainId) {
+    return this.getChainInfoByChainId(chainId)?.name || 'unknown';
   },
-  chainShortName(localChainID, netChainID) {
-    if (
-      localChainID !== '' &&
-      localChainID &&
-      localChainID.toString() === '3'
-    ) {
-      return 'zkSync'
-    }
-    if (
-      localChainID !== '' &&
-      localChainID &&
-      localChainID.toString() === '33'
-    ) {
-      return 'zkSync(G)'
-    }
-    var chain = chainList.chainList.filter(
-      (chain) => chain.chainId.toString() === netChainID
-    )
-    if (chain.length > 0) {
-      return chain[0].shortName
-    } else {
-      return 'unknown'
-    }
+  chainNetWorkId(chainId) {
+    return this.getChainInfoByChainId(chainId)?.chainId;
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -146,43 +58,32 @@ export default {
     }
     return ''
   },
-
-  /**
-   * @param {string} value1
-   * @param {string} value2
-   * @returns {boolean}
-   */
   equalsIgnoreCase(value1, value2) {
     if (typeof value1 !== 'string' || typeof value2 !== 'string') {
       return false
     }
-
-    if (value1 == value2) {
-      return true
-    }
-    if (value1.toUpperCase() == value2.toUpperCase()) {
-      return true
-    }
-
-    return false
+    return value1.toUpperCase() === value2.toUpperCase();
   },
 
   /**
    * @param {string} tokenAddress when tokenAddress=/^0x0+$/i,
    * @returns {boolean}
    */
-  isEthTokenAddress(tokenAddress) {
-    return /^0x0+$/i.test(tokenAddress)
+  isEthTokenAddress(chainId, tokenAddress) {
+    const chainInfo = this.getChainInfoByChainId(chainId);
+    if (chainInfo) {
+      // main coin
+      if (this.equalsIgnoreCase(chainInfo.nativeCurrency?.address, tokenAddress)) {
+        return true;
+      }
+      // ERC20
+      if (chainInfo.tokens.find(item => this.equalsIgnoreCase(item.address, tokenAddress))) {
+        return false;
+      }
+    }
+    return /^0x0+$/i.test(tokenAddress);
   },
 
-  isBNBTokenAddress(chainId) {
-    return chainId == 97 || chainId == 56;
-  },
-
-  /**
-   * @param {number} ms Sleep millisecond
-   * @returns
-   */
   sleep(ms) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -191,54 +92,169 @@ export default {
     })
   },
 
-  /**
-   * @param {number} chainId
-   * @returns
-   */
-  isSupportEVM(chainId) {
-    return [1, 2, 6, 7, 5, 22, 66, 77].indexOf(Number(chainId)) > -1
+  stableWeb3(chainId) {
+    return new Web3(this.stableRpc(chainId));
+  },
+
+  stableRpc(chainId) {
+    const rpcList = this.getRpcList(chainId);
+    if (rpcList.length) {
+      return rpcList[0];
+    }
+    console.error(`${ chainId } Unable to find stable rpc node`);
+    return null;
+  },
+
+  setStableRpc(chainId, rpc, msg) {
+    console.log(chainId, rpc, msg || '', 'success');
+    localStorage.setItem(`${ chainId }_stable_rpc`, rpc);
+  },
+
+  getRpcList(chainId) {
+    const chainInfo = this.getChainInfoByChainId(chainId);
+    const rpcList = (chainInfo?.rpc || []).sort(function () {
+      return 0.5 - Math.random();
+    });
+    const stableRpc = localStorage.getItem(`${ chainId }_stable_rpc`);
+    if (stableRpc) {
+      return [stableRpc, ...rpcList];
+    }
+    return rpcList;
+  },
+
+  // the actual transfer amount
+  getRealTransferValue() {
+    const { selectMakerConfig, transferValue } = transferDataState;
+    return new BigNumber(transferValue)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+        .toFixed();
+  },
+
+  // Get expected received amount
+  async getExpectValue() {
+    const { selectMakerConfig, transferValue, fromCurrency, toCurrency } = transferDataState;
+    const value = new BigNumber(transferValue);
+
+    const gasFee = value
+        .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
+        .dividedBy(new BigNumber(1000));
+    const gasFee_fix = gasFee.decimalPlaces(
+        selectMakerConfig.fromChain.decimals === 18 ? 5 : 2,
+        BigNumber.ROUND_UP);
+
+    const toAmount = value.minus(gasFee_fix);
+    const expectValue = toAmount.multipliedBy(10 ** selectMakerConfig.toChain.decimals);
+
+    if (fromCurrency !== toCurrency) {
+      return (await exchangeToCoin(expectValue, fromCurrency, toCurrency)).toFixed(0);
+    } else {
+      return expectValue.toFixed(0);
+    }
+  },
+
+  getChainInfoByChainId(chainId) {
+    const info = config.chainConfig.find(item => +item.internalId === +chainId);
+    if (!info) return null;
+    const chainInfo = JSON.parse(JSON.stringify(info));
+    const localWsRpc = process.env[`VUE_APP_WP_${ chainId }`];
+    if (localWsRpc) {
+      chainInfo.rpc = chainInfo.rpc || [];
+      chainInfo.rpc.push(localWsRpc);
+    }
+    const localHttpRpc = process.env[`VUE_APP_HP_${ chainId }`];
+    if (localHttpRpc) {
+      chainInfo.rpc = chainInfo.rpc || [];
+      chainInfo.rpc.push(localHttpRpc);
+    }
+    return chainInfo;
+  },
+
+  getChainInfoByNetworkId(networkId) {
+    const info = config.chainConfig.find(item => +item.networkId === +networkId);
+    if (!info) return null;
+    return JSON.parse(JSON.stringify(info));
+  },
+
+  isWhite() {
+    return !(config.whiteList.length && !config.whiteList.find(item => this.equalsIgnoreCase(item, compatibleGlobalWalletConf.value.walletPayload.walletAddress)));
+  },
+
+  isStarkNet(){
+    const { fromChainID, toChainID } = transferDataState;
+    return fromChainID === 4 || fromChainID === 44 || toChainID === 4 || toChainID === 44;
+  },
+
+  isSupportXVMContract() {
+    const { fromChainID } = transferDataState;
+    if (!this.isWhite()) {
+      return false;
+    }
+    if (this.isStarkNet()) {
+      return false;
+    }
+    const chainInfo = this.getChainInfoByChainId(fromChainID);
+    return chainInfo?.xvmList && chainInfo.xvmList.length;
+  },
+
+  isExecuteXVMContract() {
+    const { fromCurrency, toCurrency, isCrossAddress } = transferDataState;
+    return !!(this.isSupportXVMContract() && (fromCurrency !== toCurrency || isCrossAddress));
   },
 
   /**
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    const chain = this.getChainInfo(env.localChainID_netChainID[chainId])
-    const switchParams = {
-      chainId: this.toHex(chain.chainId),
+    const chain = this.getChainInfoByChainId(chainId);
+    if (!+chain.networkId) {
+      return;
     }
+    const switchParams = {
+      chainId: this.toHex(chain.networkId),
+    };
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
-      })
+      });
     } catch (error) {
       if (error.code === 4902) {
-        // need add net
-        const params = {
-          chainId: this.toHex(chain.chainId), // A 0x-prefixed hexadecimal string
-          chainName: chain.name,
-          nativeCurrency: {
-            name: chain.nativeCurrency.name,
-            symbol: chain.nativeCurrency.symbol, // 2-6 characters long
-            decimals: chain.nativeCurrency.decimals,
-          },
-          rpcUrls: chain.rpc,
-          blockExplorerUrls: [
-            chain.explorers &&
-            chain.explorers.length > 0 &&
-            chain.explorers[0].url
-              ? chain.explorers[0].url
-              : chain.infoURL,
-          ],
-        }
-        await compatibleGlobalWalletConf.value.walletPayload.provider.request({
-          method: 'wallet_addEthereumChain',
-          params: [params],
-        })
+        await this.addEthereumChain(chainId);
       } else {
-        throw error
+        console.error(error);
+        this.showMessage(error.message, 'error');
       }
+    }
+  },
+
+  async addEthereumChain(chainId) {
+    const chainInfo = this.getChainInfoByChainId(chainId);
+    const params = {
+      chainId: this.toHex(chainInfo.networkId), // A 0x-prefixed hexadecimal string
+      chainName: chainInfo.name,
+      nativeCurrency: {
+        name: chainInfo.nativeCurrency.name,
+        symbol: chainInfo.nativeCurrency.symbol, // 2-6 characters long
+        decimals: chainInfo.nativeCurrency.decimals,
+      },
+      rpcUrls: chainInfo.rpc,
+      blockExplorerUrls: [
+        chainInfo.explorers &&
+        chainInfo.explorers.length &&
+        chainInfo.explorers[0].url
+            ? chainInfo.explorers[0].url
+            : chainInfo.infoURL,
+      ],
+    };
+    try {
+      await compatibleGlobalWalletConf.value.walletPayload.provider.request({
+        method: 'wallet_addEthereumChain',
+        params: [params],
+      });
+    } catch (error) {
+      console.error(error);
+      this.showMessage(error.message, 'error');
     }
   },
 }
