@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js'
 import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
-
+import { isProd } from "./env";
 
 export default {
   showMessage(message, type) {
@@ -17,6 +17,13 @@ export default {
       duration: 3000,
     })
   },
+  log(...msg) {
+    if (isProd()) {
+      return;
+    }
+    console.log(...msg);
+  },
+
   netWorkName(networkId) {
     return this.getChainInfoByNetworkId(networkId)?.name || 'unknown'
   },
@@ -114,6 +121,7 @@ export default {
   },
 
   setStableRpc(chainId, rpc, msg) {
+    this.log(chainId, rpc, msg || '', 'success')
     localStorage.setItem(`${chainId}_stable_rpc`, rpc)
   },
   getRpcList(chainId) {
@@ -193,6 +201,10 @@ export default {
   },
 
   isWhite() {
+        if(isProd() && !config?.whiteList.length){
+      return false;
+    }
+
     return !(
       config.whiteList.length &&
       !config.whiteList.find((item) =>
