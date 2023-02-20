@@ -6,7 +6,6 @@ import BigNumber from 'bignumber.js'
 import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
-import { isProd } from "./env";
 
 
 export default {
@@ -115,10 +114,8 @@ export default {
   },
 
   setStableRpc(chainId, rpc, msg) {
-    this.log(chainId, rpc, msg || '', 'success')
     localStorage.setItem(`${chainId}_stable_rpc`, rpc)
   },
-
   getRpcList(chainId) {
     const chainInfo = this.getChainInfoByChainId(chainId)
     const rpcList = (chainInfo?.rpc || []).sort(function () {
@@ -128,7 +125,7 @@ export default {
     if (stableRpc) {
       return [stableRpc, ...rpcList]
     }
-    return rpcList
+    return rpcList.filter(rpc=> rpc!='')
   },
 
   // the actual transfer amount
@@ -195,17 +192,7 @@ export default {
     return JSON.parse(JSON.stringify(info))
   },
 
-  log(...msg) {
-    if (isProd()) {
-      return;
-    }
-    console.log(...msg);
-  },
-
   isWhite() {
-    if(isProd() && !config?.whiteList.length){
-      return false;
-    }
     return !(
       config.whiteList.length &&
       !config.whiteList.find((item) =>
@@ -310,12 +297,12 @@ export default {
         for (const url of rpcList) {
           try {
             const web3 = new Web3(url)
-            result = await web3.eth[method](...args)
+            result = await web3.eth[method](...args);
             this.setStableRpc(chainId, url, 'success');
             resolve(result)
             break
           } catch (error) {
-            this.log(
+            console.log(
               'request rpc error:',
               url,
               error.message,
@@ -355,7 +342,7 @@ export default {
               resolve(result)
               break
           } catch (error) {
-            this.log(
+            console.log(
               'Request Web3 token Balance rpc error:',
               url,
               error.message,
