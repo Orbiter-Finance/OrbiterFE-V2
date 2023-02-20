@@ -221,25 +221,18 @@ export default {
                     console.warn(`lp getTransferFeeerror:`);
                 }
             }
-            const rpcList = util.getRpcList(fromChainID);
-            for (const rpc of rpcList) {
-                try {
-                    const web3 = new Web3(rpc);
-                    const estimateGas = await web3.eth.estimateGas({
-                        from: web3State.coinbase,
+
+            const estimateGas = await util.requestWeb3(fromChainID, 'estimateGas', {
+                from: web3State.coinbase,
                         to: makerAddress,
-                    });
-                    const gasPrice = await web3.eth.getGasPrice();
-                    let gas = new BigNumber(gasPrice).multipliedBy(estimateGas);
-                    if (fromChainID === 7 || fromChainID === 77) {
-                        let l1GasFee = await this.getOPFee(fromChainID);
-                        gas = gas.plus(l1GasFee);
-                    }
-                    util.setStableRpc(fromChainID, rpc, 'EstimateGas');
-                    return gas.dividedBy(10 ** 18).toString();
-                } catch (error) {}
+            })
+             const gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice');
+            let gas = new BigNumber(gasPrice).multipliedBy(estimateGas);
+            if (fromChainID === 7 || fromChainID === 77) {
+                let l1GasFee = await this.getOPFee(fromChainID);
+                gas = gas.plus(l1GasFee);
             }
-            console.error(fromChainID, rpcList, `EstimateGas error`);
+            return gas.dividedBy(10 ** 18).toString();
         }
         return 0;
     },
@@ -1098,33 +1091,15 @@ export default {
         }
     },
     async getBalanceByRPC(chainId, userAddress, tokenAddress) {
-        const getBalance = async (web3, userAddress, tokenAddress) => {
-            if (!web3) {
-                return 0;
-            }
             if (util.isEthTokenAddress(chainId, tokenAddress)) {
                 // When is ETH
-                return Number(await web3.eth.getBalance(userAddress)) || 0;
+                const balance = await util.requestWeb3(chainId, 'getBalance', userAddress);
+                return Number(balance) || 0;
             } else {
                 // When is ERC20
-                const tokenContract = getLocalCoinContract(chainId, tokenAddress, 0, web3);
-                if (!tokenContract) {
-                    throw 'getBalance_tokenContractError';
-                }
-                return await tokenContract.methods.balanceOf(userAddress).call();
+                const tokenBalance = await util.getWeb3TokenBalance(chainId, userAddress, tokenAddress);
+                return Number(tokenBalance);
             }
-        };
-        const rpcList = util.getRpcList(chainId);
-        let balance = 0;
-        for (const rpc of rpcList) {
-            try {
-                balance = await getBalance(new Web3(rpc), userAddress, tokenAddress);
-                util.setStableRpc(chainId, rpc, 'GetBalance');
-                return balance;
-            } catch (error) {}
-        }
-        console.error(chainId, rpcList, `GetBalance error`);
-        return balance;
     },
     async getGasPrice(fromChainID) {
         if (fromChainID === 33 || fromChainID === 3) {

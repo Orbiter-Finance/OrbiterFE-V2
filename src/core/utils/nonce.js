@@ -60,9 +60,8 @@ export default {
       }
       return 0
     } else {
-      const web3 = util.stableWeb3(localChainID);
       try {
-        const nonce = await web3.eth.getTransactionCount(userAddress)
+        const nonce = await util.requestWeb3(localChainID, 'getTransactionCount', userAddress);
         return nonce
       } catch (err) {
         console.warn('getWeb3NonceError =', err)

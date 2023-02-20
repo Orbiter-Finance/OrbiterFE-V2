@@ -296,16 +296,17 @@ export default {
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {
-        for (const rpc of rpcList) {
+        for (const url of rpcList) {
           try {
-            const url = rpc.url
             const web3 = new Web3(url)
             result = await web3.eth[method](...args)
+            this.setStableRpc(chainId, url, 'success');
             resolve(result)
             break
           } catch (error) {
             console.log(
               'request rpc error:',
+              url,
               error.message,
               chainId,
               method,
@@ -327,9 +328,8 @@ export default {
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {
-        for (const rpc of rpcList) {
+        for (const url of rpcList) {
           try {
-            const url = rpc.url
             const web3 = new Web3(url)
             // result = await web3.eth[method](...args)
             const tokenContract = new web3.eth.Contract(Coin_ABI, tokenAddress)
@@ -340,13 +340,13 @@ export default {
             const result = await tokenContract.methods
               .balanceOf(userAddress)
               .call()
-            if (result) {
+              this.setStableRpc(chainId, url, 'success');
               resolve(result)
               break
-            }
           } catch (error) {
             console.log(
               'Request Web3 token Balance rpc error:',
+              url,
               error.message,
               chainId
             )
