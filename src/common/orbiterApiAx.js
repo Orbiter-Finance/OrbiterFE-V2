@@ -1,5 +1,4 @@
 import axios from 'axios';
-import openApiAx from "./openApiAx";
 
 const orbiterApiAx = axios.create({
     baseURL: 'https://api.orbiter.finance',
@@ -7,7 +6,7 @@ const orbiterApiAx = axios.create({
     timeout: 30000
 });
 
-openApiAx.interceptors.response.use(
+orbiterApiAx.interceptors.response.use(
     function (response) {
       return response.data;
     },
