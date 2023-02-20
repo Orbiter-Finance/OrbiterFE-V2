@@ -117,7 +117,6 @@ export default {
     console.log(chainId, rpc, msg || '', 'success')
     localStorage.setItem(`${chainId}_stable_rpc`, rpc)
   },
-
   getRpcList(chainId) {
     const chainInfo = this.getChainInfoByChainId(chainId)
     const rpcList = (chainInfo?.rpc || []).sort(function () {
@@ -127,7 +126,7 @@ export default {
     if (stableRpc) {
       return [stableRpc, ...rpcList]
     }
-    return rpcList
+    return rpcList.filter(rpc=> rpc!='')
   },
 
   // the actual transfer amount
@@ -299,7 +298,10 @@ export default {
         for (const url of rpcList) {
           try {
             const web3 = new Web3(url)
-            result = await web3.eth[method](...args)
+            result = await web3.eth[method](...args);
+            if (result && result.error) {
+
+            }
             this.setStableRpc(chainId, url, 'success');
             resolve(result)
             break
