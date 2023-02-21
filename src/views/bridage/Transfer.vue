@@ -1096,28 +1096,28 @@ export default {
           info.disabled = 'disabled';
           util.log('transferValue < 0', transferValue.toString());
         } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
-          // info.disabled = 'disabled';
+          info.disabled = 'disabled';
           util.log('transferValue > userMaxPrice', transferValue.toString(), this.userMaxPrice.toString());
         }
         if (transferValue.comparedTo(userMax) > 0) {
           info.text = 'INSUFFICIENT FUNDS';
-          // info.disabled = 'disabled';
+          info.disabled = 'disabled';
           util.log('transferValue > userMax', transferValue.toString(), userMax.toString());
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
-          // info.disabled = 'disabled';
+          info.disabled = 'disabled';
           util.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
         } else if (transferValue.comparedTo(makerMin) < 0) {
           info.text = 'INSUFFICIENT FUNDS';
-          // info.disabled = 'disabled';
+          info.disabled = 'disabled';
           util.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
         } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
           info.text = 'INSUFFICIENT FUNDS';
-          // info.disabled = 'disabled';
+          info.disabled = 'disabled';
           util.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
         } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
-          // info.disabled = 'disabled';
+          info.disabled = 'disabled';
           util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
         }
 
