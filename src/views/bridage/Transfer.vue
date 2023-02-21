@@ -896,6 +896,17 @@ export default {
       toChainID = toChainID || transferDataState.toChainID;
       fromCurrency = fromCurrency || transferDataState.fromCurrency;
       toCurrency = toCurrency || transferDataState.toCurrency;
+
+      if (fromCurrency === toCurrency) {
+        if (isCrossAddress && util.isExecuteXVMContract()) {
+          this.$notify.warning({
+            title: `Not supported yet Change Account.`,
+            duration: 3000,
+          });
+        }
+        this.isCrossAddress = false;
+      }
+
       const { tokens, source, dest } = this.queryParams;
       const fromTokens = tokens;
       const fromChainIdList = Array.from(new Set(
