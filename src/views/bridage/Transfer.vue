@@ -1661,13 +1661,13 @@ export default {
           })
           return
         }
-        if (toChainID == 2) {
-          this.$notify.error({
-            title: `Arbitrum network maintenance is in progress, please try again later`,
-            duration: 3000,
-          })
-          return
-        }
+        // if (toChainID == 2) {
+        //   this.$notify.error({
+        //     title: `Arbitrum network maintenance is in progress, please try again later`,
+        //     duration: 3000,
+        //   })
+        //   return
+        // }
         if (fromChainID == 10) {
           this.$notify.error({
             title: `Metis network maintenance is in progress, please try again later`,
