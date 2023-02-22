@@ -1031,7 +1031,8 @@ export default {
       this.toChainArray = []
       this.makerInfoList.filter((makerInfo) => {
         if (
-          makerInfo.c1ID === newValue && makerInfo.c2ID != 11 &&
+          makerInfo.c1ID === newValue &&
+          makerInfo.c2ID != 11 &&
           this.toChainArray.indexOf(makerInfo.c2ID) === -1
         ) {
           // dests fiter
@@ -1622,7 +1623,7 @@ export default {
       //   })
       //   return
       // }
-     
+
       if (check.checkIsBitKeep()) {
         this.$notify.error({
           title: `Bitkeep is not supported and please try another wallet.`,
@@ -1656,6 +1657,13 @@ export default {
         if (toChainID == 11) {
           this.$notify.error({
             title: `Dydx is under maintenance, please try again later`,
+            duration: 3000,
+          })
+          return
+        }
+        if (toChainID == 2) {
+          this.$notify.error({
+            title: `Arbitrum network maintenance is in progress, please try again later`,
             duration: 3000,
           })
           return
