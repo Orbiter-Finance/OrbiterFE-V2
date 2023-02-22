@@ -1,13 +1,10 @@
 [
     {
-        "api": {
-            "url": "https://api.etherscan.io/api",
-            "key": ""
-        },
+        "api": { "url": "https://api.etherscan.io/api", "key": "" },
         "chainId": "1",
         "networkId": "1",
         "internalId": "1",
-        "name": "Ethereum Mainnet",
+        "name": "Ethereum",
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -41,18 +38,16 @@
                 "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"]
+        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "infoURL": "https://etherscan.io"
     },
     {
-        "api": {
-            "url": "http://api.arbiscan.io/api",
-            "key": ""
-        },
+        "api": { "url": "http://api.arbiscan.io/api", "key": "" },
         "chainId": "42161",
         "networkId": "42161",
         "internalId": "2",
         "debug": false,
-        "name": "Arbitrum One",
+        "name": "Arbitrum",
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -85,16 +80,14 @@
                 "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"]
+        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "infoURL": "https://explorer.arbitrum.io"
     },
     {
-        "api": {
-            "url": "https://api.bobascan.com/api",
-            "key": ""
-        },
+        "api": { "url": "https://api.bobascan.com/api", "key": "" },
         "chainId": "288",
         "internalId": "13",
-        "name": "Boba Network",
+        "name": "Boba",
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -109,18 +102,16 @@
         ],
         "watch": ["rpc", "api"],
         "contracts": [],
-        "tokens": []
+        "tokens": [],
+        "infoURL": "https://bobascan.com"
     },
     {
-        "api": {
-            "url": "https://andromeda-explorer.metis.io/api",
-            "key": ""
-        },
+        "api": { "url": "https://andromeda-explorer.metis.io/api", "key": "" },
         "chain": "ETH",
         "chainId": "1088",
         "networkId": "1088",
         "internalId": "10",
-        "name": "Metis Andromeda Mainnet",
+        "name": "Metis",
         "nativeCurrency": {
             "name": "Metis Token",
             "symbol": "METIS",
@@ -146,17 +137,15 @@
                 "decimals": 6,
                 "address": "0xEA32A96608495e54156Ae48931A7c20f0dcc1a21"
             }
-        ]
+        ],
+        "infoURL": "https://andromeda-explorer.metis.io"
     },
     {
-        "api": {
-            "url": "https://api.zksync.io/api/v0.2",
-            "key": ""
-        },
+        "api": { "url": "https://api.zksync.io/api/v0.2", "key": "" },
         "chainId": "zksync",
         "networkId": "zksync",
         "internalId": "3",
-        "name": "ZKSync Mainnet",
+        "name": "ZKSync",
         "debug": false,
         "nativeCurrency": {
             "id": 0,
@@ -190,17 +179,15 @@
                 "decimals": 6,
                 "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
             }
-        ]
+        ],
+        "infoURL": ""
     },
     {
-        "api": {
-            "url": "https://api.polygonscan.com/api",
-            "key": ""
-        },
+        "api": { "url": "https://api.polygonscan.com/api", "key": "" },
         "chainId": "137",
         "networkId": "137",
         "internalId": "6",
-        "name": "Polygon Mainnet",
+        "name": "Polygon",
         "rpc": [
             "https://polygon.llamarpc.com",
             "https://polygon-bor.publicnode.com",
@@ -242,13 +229,11 @@
                 "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"]
+        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "infoURL": "https://polygonscan.com"
     },
     {
-        "api": {
-            "url": "https://api-optimistic.etherscan.io/api",
-            "key": ""
-        },
+        "api": { "url": "https://api-optimistic.etherscan.io/api", "key": "" },
         "chainId": "10",
         "networkId": "10",
         "internalId": "7",
@@ -287,13 +272,11 @@
                 "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"]
+        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "infoURL": "https://optimistic.etherscan.io"
     },
     {
-        "api": {
-            "url": "https://api.zkswap.info/v3",
-            "key": ""
-        },
+        "api": { "url": "https://api.zkswap.info/v3", "key": "" },
         "chainId": "ZKSpace",
         "networkId": "13",
         "internalId": "12",
@@ -316,17 +299,15 @@
                 "decimals": 6,
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
-        ]
+        ],
+        "infoURL": "https://zkspace.info"
     },
     {
-        "api": {
-            "url": "https://api.dydx.exchange",
-            "key": ""
-        },
+        "api": { "url": "https://api.dydx.exchange", "key": "" },
         "chainId": "dydx",
         "networkId": "dydx",
         "internalId": "11",
-        "name": "Dydx Mainnet",
+        "name": "Dydx",
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -343,17 +324,15 @@
                 "decimals": 6,
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
-        ]
+        ],
+        "infoURL": ""
     },
     {
-        "api": {
-            "url": "https://api.x.immutable.com/v1",
-            "key": ""
-        },
+        "api": { "url": "https://api.x.immutable.com/v1", "key": "" },
         "chainId": "immutableX",
         "networkId": "immutableX",
         "internalId": "8",
-        "name": "immutableX Mainnet",
+        "name": "Immutable X",
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -370,17 +349,15 @@
                 "decimals": 6,
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
-        ]
+        ],
+        "infoURL": ""
     },
     {
-        "api": {
-            "url": "https://api3.loopring.io/api/v3",
-            "key": ""
-        },
+        "api": { "url": "https://api3.loopring.io/api/v3", "key": "" },
         "chainId": "loopring",
         "networkId": "1",
         "internalId": "9",
-        "name": "Loopring Mainnet",
+        "name": "Loopring",
         "nativeCurrency": {
             "id": 0,
             "name": "Ethereum",
@@ -391,17 +368,15 @@
         "rpc": ["wss://ws.api3.loopring.io/v3/ws"],
         "watch": ["api"],
         "contracts": [],
-        "tokens": []
+        "tokens": [],
+        "infoURL": ""
     },
     {
-        "api": {
-            "url": "",
-            "key": ""
-        },
+        "api": { "url": "", "key": "" },
         "chainId": "SN_MAIN",
         "networkId": "mainnet-alpha",
         "internalId": "4",
-        "name": "Starknet Mainnet",
+        "name": "Starknet",
         "debug": false,
         "contracts": [
             "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"
@@ -422,17 +397,15 @@
                 "decimals": 18,
                 "address": "0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3"
             }
-        ]
+        ],
+        "infoURL": ""
     },
     {
-        "api": {
-            "url": "https://api.bscscan.com/api",
-            "key": ""
-        },
+        "api": { "url": "https://api.bscscan.com/api", "key": "" },
         "chainId": "56",
         "networkId": "56",
         "internalId": "15",
-        "name": "Binance Smart Chain",
+        "name": "BNB Chain",
         "debug": false,
         "contracts": [],
         "nativeCurrency": {
@@ -457,13 +430,11 @@
                 "decimals": 18,
                 "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
             }
-        ]
+        ],
+        "infoURL": "https://bscscan.com"
     },
     {
-        "api": {
-            "url": "https://api-nova.arbiscan.io/api",
-            "key": ""
-        },
+        "api": { "url": "https://api-nova.arbiscan.io/api", "key": "" },
         "chainId": "42170",
         "networkId": "42170",
         "internalId": "16",
@@ -485,6 +456,7 @@
                 "decimals": 6,
                 "address": "0x750ba8b76187092b0d1e87e28daaf484d1b5273b"
             }
-        ]
+        ],
+        "infoURL": "https://nova.arbiscan.io"
     }
 ]
