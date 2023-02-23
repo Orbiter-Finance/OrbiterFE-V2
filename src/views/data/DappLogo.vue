@@ -49,9 +49,9 @@ export default {
         return require('../../assets/data/apex.png')
       }
       if (this.chains) {
-        return `${ env.l2BaseUrl }/img/chains/${ name }.png`;
+        return `${ this.$env.l2BaseUrl }/img/chains/${ name }.png`;
       } else {
-        return `${ env.l2BaseUrl }/img/dapps/${ name }.png`;
+        return `${ this.$env.l2BaseUrl }/img/dapps/${ name }.png`;
       }
     },
   },

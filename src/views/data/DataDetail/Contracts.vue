@@ -178,6 +178,7 @@ export default {
   },
   async mounted() {
     this.rollups = await getTabRollups('contracts')
+    this.allTab = this.rollups.map(item => item.value);
   },
   methods: {
     numeral,
