@@ -1072,9 +1072,9 @@ export default {
       const { fromChain } = selectMakerConfig;
       await this.getMakerMaxBalance();
       this.updateToValue();
-      if (util.isStarkNet()) {
-          this.isCrossAddress = true;
-      }
+      // if (util.isStarkNet()) {
+      //     this.isCrossAddress = true;
+      // }
       const availableDigit = fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = new BigNumber(this.fromBalance)
@@ -1707,6 +1707,7 @@ export default {
         this.fromBalanceLoading = false;
       }
 
+      address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       if (toChainID === 4 || toChainID === 44) {
         address = web3State.starkNet.starkNetAddress;
       }
