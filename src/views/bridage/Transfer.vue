@@ -897,6 +897,11 @@ export default {
       fromCurrency = fromCurrency || transferDataState.fromCurrency;
       toCurrency = toCurrency || transferDataState.toCurrency;
 
+      // change toChainId,and toChainId equal fromChainId
+      if (oldToChainID !== toChainID && oldFromChainID === fromChainID && toChainID === fromChainID) {
+        fromChainID = oldToChainID;
+      }
+
       if (fromCurrency === toCurrency) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
@@ -917,13 +922,14 @@ export default {
       fromChainID = fromChainID || (source && fromChainIdList.find(item => item === +source) ?
               +source :
               fromChainIdList[0]);
-      const toChainIdList = Array.from(new Set(
-              makerConfigs.filter(item => item.fromChain.id === fromChainID)
+      let toChainIdList = Array.from(new Set(
+              makerConfigs
                       .map(item => {
                         if (item.fromChain.id === fromChainID) {
                           return item.toChain.id;
                         }
                       })
+                      .filter(item => item)
       )).sort(function (a, b) {
         return a - b;
       });
@@ -937,18 +943,26 @@ export default {
                 toChainIdList[0];
       }
 
-      const duplicateFromChainIdIndex = fromChainIdList.findIndex(item => item === toChainID);
-      if (duplicateFromChainIdIndex !== -1) {
-        fromChainIdList.splice(duplicateFromChainIdIndex, 1);
+      // Reverse path
+      if (makerConfigs.find(item => item.toChain.id === fromChainID) && makerConfigs.find(item => item.fromChain.id === toChainID)) {
+        toChainIdList.push(fromChainID);
+        toChainIdList = toChainIdList.sort(function (a, b) {
+          return a - b;
+        });
       }
+
+      // const duplicateFromChainIdIndex = fromChainIdList.findIndex(item => item === toChainID);
+      // if (duplicateFromChainIdIndex !== -1) {
+      //   fromChainIdList.splice(duplicateFromChainIdIndex, 1);
+      // }
       const selectedFromChainIdIndex = fromChainIdList.findIndex(item => item === fromChainID);
       if (selectedFromChainIdIndex !== -1) {
         fromChainIdList.splice(selectedFromChainIdIndex, 1);
       }
-      const duplicateToChainIdIndex = toChainIdList.findIndex(item => item === fromChainID);
-      if (duplicateToChainIdIndex !== -1) {
-        toChainIdList.splice(duplicateToChainIdIndex, 1);
-      }
+      // const duplicateToChainIdIndex = toChainIdList.findIndex(item => item === fromChainID);
+      // if (duplicateToChainIdIndex !== -1) {
+      //   toChainIdList.splice(duplicateToChainIdIndex, 1);
+      // }
       const selectedToChainIdIndex = toChainIdList.findIndex(item => item === toChainID);
       if (selectedToChainIdIndex !== -1) {
         toChainIdList.splice(selectedToChainIdIndex, 1);
@@ -1538,7 +1552,7 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
+        const walletAddress = ((isCrossAddress || toChainID === 44 || toChainID === 4) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
