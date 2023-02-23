@@ -1,6 +1,6 @@
 const baseDomain = `https://api.orbiter.finance`
 export default {
-  l2BaseUrl: 'http://datastation.joeyzhou.xyz',
+  l2BaseUrl: 'https://l2api.orbiter.finance',
   baseTraddingUrl: `${ baseDomain }/api`,
   chainIcon: {
     1: 'tokenLogo',
