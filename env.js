@@ -1,146 +1,45 @@
-const baseUrl = `https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com`
 const baseDomain = `https://api.orbiter.finance`
-export const netStateUrl = `${baseDomain}`
 export default {
-  // baseUrl: process.env.NODE_ENV === 'production' ? 'https://twy7zbm79a.execute-api.ap-northeast-1.amazonaws.com' : '/send',
-  baseUrl,
-  baseTraddingUrl: `${baseDomain}/api`,
-  credential: false,
-  localProvider: {
-    1: process.env.VUE_APP_HP,
-    2: process.env.VUE_APP_HP_AR,
-    6: process.env.VUE_APP_HP_PO,
-    7: process.env.VUE_APP_HP_OP,
-    5: process.env.VUE_APP_HP_R, // rinkeby
-    22: process.env.VUE_APP_HP_AR_R,
-    66: process.env.VUE_APP_HP_PO_G,
-    77: 'https://goerli.optimism.io',
-    10: process.env.VUE_APP_HP_MT,
-    510: process.env.VUE_APP_HP_MT_R,
-    13: process.env.VUE_APP_HP_BOBA,
-    513: process.env.VUE_APP_HP_BOBA_R,
-    514: 'https://zksync2-testnet.zksync.dev',
-    515: process.env.VUE_APP_HP_BSC_R,
-    15: process.env.VUE_APP_HP_BSC,
-    16: 'https://nova.arbitrum.io/rpc',
-    516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://public.zkevm-test.net:2083',
-    518: 'https://prealpha.scroll.io/l1',
-    519: 'https://prealpha.scroll.io/l2',
-  },
-  localWSProvider: {
-    1: process.env.VUE_APP_WP,
-    2: process.env.VUE_APP_WP_AR,
-    6: process.env.VUE_APP_WP_PO,
-    7: process.env.VUE_APP_WP_OP,
-    5: process.env.VUE_APP_WP_R, // rinkeby
-    22: process.env.VUE_APP_WP_AR_R,
-    66: process.env.VUE_APP_WP_PO_G,
-    77: process.env.VUE_APP_WP_OP_K,
-    10: process.env.VUE_APP_WP_MT,
-    510: process.env.VUE_APP_WP_MT_R,
-    13: process.env.VUE_APP_WP_BOBA,
-    513: process.env.VUE_APP_WP_BOBA_R,
-    514: 'wss://zksync2-testnet.zksync.dev/ws',
-    16: 'https://nova.arbitrum.io/rpc',
-    516: 'https://goerli-rollup.arbitrum.io/rpc',
-    517: 'https://public.zkevm-test.net:2083',
-    518: 'https://prealpha.scroll.io/l1',
-    519: 'https://prealpha.scroll.io/l2',
-  },
-  publicRPC: {
-    1: ["https://eth-mainnet.public.blastapi.io",'https://api.mycryptoapi.com/eth',"https://api.securerpc.com/v1",process.env.VUE_APP_HP],
-    2: ['https://arb1.arbitrum.io/rpc',"https://1rpc.io/arb", process.env.VUE_APP_HP_AR],
-    6: ["https://polygon-rpc.com/", 'https://poly-rpc.gateway.pokt.network', process.env.VUE_APP_HP_PO],
-    7: ['https://mainnet.optimism.io', process.env.VUE_APP_HP_OP],
-  },
-  supportLocalNetWorksIDs: [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-    '13',
-    '14',
-    '15',
-    '16',
-    '22',
-    '33',
-    '44',
-    '66',
-    '77',
-    '88',
-    '99',
-    '510',
-    '511',
-    '512',
-    '513',
-    '514',
-    '515',
-    '516',
-    '517',
-    '518',
-    '519',
-  ],
-  localChainID_netChainID: {
-    1: '1', // mainnet
-    2: '42161', // Arbitrum
-    3: '1', // zk
-    4: '1', // starknet
-    5: '5', // goerli
-    6: '137', // polygon
-    7: '10', // optimism
-    8: '1', // mainnet
-    9: '1', // loopring
-    10: '1088', //metis
-    11: '1', // dydx
-    12: '1', // zkspace
-    13: '288', // boba mainnet,
-    15: '56', // bsc mainnet,
-    22: '421611', // arbitrum test
-    33: '5', // zktest
-    44: '5', // starknet(R)
-    66: '80001', // polygon(R)
-    77: '420', // optimism(G)
-    88: '3', // ropsten
-    99: '5', // loopring(G)
-    510: '588', //metis test
-    511: '3', // dydx(R)
-    512: '4', // zkspace(R)s
-    513: '28', // boba rinkeby
-    514: '280', //zksync2(G)
-    515: '97', // bsc test
-    16: '42170', // ar nova
-    516: '421613', // ar nova g
-    517: '1402',
-    518: '534351', // Scroll L1 Testnet
-    519: '534354', // Scroll L2 Testnet
-  },
-  crossAddressContracts: {
-    1: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    2: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    3: '',
-    4: '',
-    5: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    6: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    7: '0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc',
-    8: '',
-    9: '',
-    22: '0x721fBB2C2C9cdFa5547feE6b683949c20F175457',
-    33: '',
-    44: '',
-    66: '0x40eC19690ebEd534e9b9C58e341727028cF143c0',
-    77: '0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39',
-    88: '',
-    99: '',
-    515: '',
+  l2BaseUrl: 'http://datastation.joeyzhou.xyz',
+  baseTraddingUrl: `${ baseDomain }/api`,
+  chainIcon: {
+    1: 'tokenLogo',
+    2: 'arblogo',
+    22: 'arblogo',
+    3: 'zklogo',
+    33: 'zklogo',
+    4: 'sknlogo',
+    44: 'sknlogo',
+    6: 'pglogo',
+    66: 'pglogo',
+    7: 'oplogo',
+    77: 'oplogo',
+    8: 'imxlogo',
+    88: 'imxlogo',
+    9: 'loopringlogo',
+    99: 'loopringlogo',
+    10: 'metislogo',
+    510: 'metislogo',
+    11: 'dydxlogo',
+    511: 'dydxlogo',
+    12: 'zkspacelogo',
+    512: 'zkspacelogo',
+    13: 'bobalogo',
+    513: 'bobalogo',
+    14: 'zk2logo',
+    514: 'zk2logo',
+    15: 'bsclogo',
+    515: 'bsclogo',
+    16: 'arnavologo',
+    516: 'arnavologo',
+    17: 'polygon_zkevm_logo',
+    517: 'polygon_zkevm_logo',
+    18: 'scrolllogo',
+    518: 'scrolllogo',
+    19: 'scrolllogo',
+    519: 'scrolllogo',
+    20: 'taikologo',
+    520: 'taikologo',
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -148,7 +47,7 @@ export default {
     2: 'https://arbiscan.io/tx/', // /tx/  /address/
     22: 'https://testnet.arbiscan.io/tx/',
     3: 'https://zkscan.io/explorer/transactions/',
-    33: 'https://rinkeby.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
+    33: 'https://goerli.zkscan.io/explorer/transactions/', // /explorer/transactions/   /explorer/accounts/
     4: 'https://starkscan.co/tx/',
     44: 'https://testnet.starkscan.co/tx/',
     6: 'https://polygonscan.com/tx/',
@@ -210,4 +109,66 @@ export default {
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
   },
-}
+  gasPriceMap: {
+    1: 100,
+    2: 1.9,
+    3: 100,
+    4: 100,
+    5: 1,
+    6: 60,
+    7: 0.001,
+    8: 1.7,
+    9: 100,
+    10: 1,
+    11: 1,
+    15: 1,
+    16: 1,
+    22: 0.02,
+    33: 100,
+    44: 50,
+    66: 60,
+    77: 0.001,
+    88: 1.7,
+    99: 1,
+    510: 1,
+    511: 1,
+    13: 1,
+    513: 1,
+    514: 0.000028572,
+    515: 1,
+    516: 1,
+    518: 1,
+    519: 1
+  },
+  gasLimitMap: {
+    1: 35000,
+    2: 810000,
+    3: 100,
+    4: 35000,
+    5: 35000,
+    6: 1500,
+    7: 21000,
+    8: 51000,
+    9: 75000,
+    10: 28000,
+    11: 100000,
+    13: 646496,
+    15: 150000,
+    16: 150000,
+    22: 810000,
+    33: 100,
+    44: 35000,
+    66: 1500,
+    77: 21000,
+    88: 51000,
+    99: 75000,
+    510: 16000,
+    511: 100000,
+    513: 646496,
+    514: 10560,
+    515: 150000,
+    516: 150000,
+    518: 21000,
+    519: 21000
+  }
+};

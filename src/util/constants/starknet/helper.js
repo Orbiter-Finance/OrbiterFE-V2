@@ -26,18 +26,18 @@ const L1_TO_L2_ADDRESSES = {
     'mainnet-alpha':
       '0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940',
     'georli-alpha':
-      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+      '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
   },
   '0x0043d60e87c5dd08c86c3123340705a1556c4719': {
     'mainnet-alpha': '',
     'georli-alpha':
-      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+      '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
   },
   '0x80c67432656d59144ceff962e8faf8926599bcf8': {
     'mainnet-alpha':
       '0x07b393627bd514d2aa4c83e9f0c468939df15ea3c29980cd8e7be3ec847795f0',
     'georli-alpha':
-      '0x33b88fc03a2ccb1433d6c70b73250d0513c6ee17a7ab61c5af0fbe16bd17a6e',
+      '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
   },
 }
 
@@ -54,14 +54,6 @@ const GAS_ADDRESS = {
     privateKey:
       '0x53ea9a5da3c9c1232dddf771b4660d07ebea36bfba1ce3619f3e867cb1c49b0',
   },
-}
-
-export function getStarkMakerAddress(makerAddress, chainID) {
-  makerAddress = makerAddress.toLowerCase()
-  let networkID = getNetworkIdByChainId(chainID)
-  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
-  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
-  return receiverAddress
 }
 
 export function getStarkNetValidAddress(address) {
@@ -194,7 +186,7 @@ export async function sendTransfer(
     getStarknet().provider
   )
 
-  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
+  const receiverAddress = makerAddress
   try {
     const calldata = stark.compileCalldata({
       token: tokenAddress,
@@ -258,7 +250,7 @@ export async function getStarkTransferFee(
     ec.getKeyPair(GAS_ADDRESS[network].privateKey)
   )
 
-  const receiverAddress = L1_TO_L2_ADDRESSES[makerAddress][network]
+  const receiverAddress = makerAddress
   const ethContract = new Contract(erc20Abi, tokenAddress, userSender)
   const crossContract = new Contract(
     starkNetCrossAbi,

@@ -208,11 +208,6 @@ export default {
             title: 'Wallet',
             value: web3State.starkNet?.starkNetWalletName,
           },
-          // {
-          //   icon: 'address',
-          //   title: 'Address',
-          //   value: this.showAddress,
-          // },
           {
             icon: 'address',
             title: 'StarkNetAddress',
@@ -224,10 +219,7 @@ export default {
           {
             icon: 'network',
             title: 'Network',
-            value: util.chainName(
-              '0',
-              compatibleGlobalWalletConf.value.walletPayload.networkId
-            ),
+            value: util.netWorkName(compatibleGlobalWalletConf.value.walletPayload.networkId),
           },
           {
             icon: 'wallet',

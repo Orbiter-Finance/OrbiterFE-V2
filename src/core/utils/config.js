@@ -59,7 +59,7 @@ export default {
   },
   immutableX: {
     Mainnet: 'https://api.x.immutable.com/v1',
-    Rinkeby: 'https://api.ropsten.x.immutable.com/v1',
+    Rinkeby: 'https://api.sandbox.x.immutable.com/v1',
     chainID: '8',
     rinkeyChainID: '88',
   },
@@ -71,11 +71,11 @@ export default {
   },
   ZKSpace: {
     Mainnet: 'https://api.zks.app/v3/1',
-    Rinkeby: 'https://api.zks.app/v3/4',
+    Rinkeby: 'https://api.zks.app/v3/5',
     chainID: '12',
     rinkeyChainID: '512',
     zksChainID: 13,
-    zksrinkebyChainID: 133,
+    zksrinkebyChainID: 129,
   },
   boba: {
     Mainnet: 'https://api.bobascan.com/api',

@@ -6,8 +6,8 @@ import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveD
 
 const CONTRACTS = {
   ropsten: {
-    starkContractAddress: '0x4527BE8f31E2ebFbEF4fCADDb5a17447B27d2aef',
-    registrationContractAddress: '0x6C21EC8DE44AE44D0992ec3e2d9f1aBb6207D864',
+    starkContractAddress: '0x7917eDb51ecD6CdB3F9854c3cc593F33de10c623',
+    registrationContractAddress: '0x1C97Ada273C9A52253f463042f29117090Cd7D83',
   },
   mainnet: {
     starkContractAddress: '0x5FDCCA53617f4d2b9134B29090C87D01058e27e9',
@@ -58,21 +58,20 @@ export class IMXHelper {
     if (!this.registrationContractAddress) {
       throw new Error('Sorry, miss param [registrationContractAddress]')
     }
-
     let signer = undefined
+  
     if (addressOrIndex) {
       const web3Provider = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
       const provider = new providers.Web3Provider(web3Provider.currentProvider)
       signer = provider.getSigner(addressOrIndex)
     }
-
-    return (IMMUTABLEX_CLIENTS[immutableXClientKey] =
-      await ImmutableXClient.build({
-        publicApiUrl: this.publicApiUrl,
-        signer,
-        starkContractAddress: this.starkContractAddress,
-        registrationContractAddress: this.registrationContractAddress,
-      }))
+    const client =  await ImmutableXClient.build({
+      publicApiUrl: this.publicApiUrl,
+      signer,
+      starkContractAddress: this.starkContractAddress,
+      registrationContractAddress: this.registrationContractAddress,
+    });
+    return (IMMUTABLEX_CLIENTS[immutableXClientKey] =client)
   }
 
   /**

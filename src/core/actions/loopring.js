@@ -71,7 +71,7 @@ export default {
         if (response.accInfo && response.raw_data) {
           accountInfo = response.accInfo
         } else {
-          if (response.code == 101002) {
+          if (response.code === 101002) {
             return 0
           } else {
             return 0
@@ -84,7 +84,7 @@ export default {
         }
         accountInfo = accountResult.accountInfo
       }
-      if (localChainID == 99) {
+      if (localChainID === 99) {
         configNet = config.loopring.Rinkeby
       }
       const resp = await axios.get(
@@ -92,11 +92,11 @@ export default {
           accountInfo.accountId
         }&tokens=${lpTokenInfo ? lpTokenInfo.tokenId : 0}`
       )
-      if (resp.status == 200) {
+      if (resp.status === 200) {
         if (!Array.isArray(resp.data)) {
           return 0
         }
-        if (resp.data.length == 0) {
+        if (resp.data.length === 0) {
           return 0
         }
         let balanceMap = resp.data[0]

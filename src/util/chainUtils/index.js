@@ -1,15 +1,7 @@
-import chainConfig from '../../config/chains.json'
-import env from '../../../env'
 import { transferDataState } from '../../composition/hooks'
-
-// get match chain config by the networkId passed in
-export const getChainInfo = (networkId) => {
-  return chainConfig.chainList.find(({ chainId }) => {
-    return chainId.toString() === networkId.toString()
-  })
-}
+import util from "../util";
 
 export const getNetworkIdByChainId = (chainId) => {
-  const selectIdByUser = transferDataState.fromChainID // chainId selected by user
-  return env.localChainID_netChainID[chainId || selectIdByUser]
-}
+  const selectIdByUser = transferDataState.fromChainID; // chainId selected by user
+  return util.chainNetWorkId(chainId || selectIdByUser);
+};

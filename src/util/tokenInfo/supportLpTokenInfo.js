@@ -6,12 +6,12 @@ import { store } from '../../store'
 export default {
     async getSupportLpTokenList() {
         try {
-            await getAllLpTokenList(9)
-            await getAllLpTokenList(99)
-            await util.sleep(30 * 1000)
-            this.getSupportLpTokenList()
+            await getAllLpTokenList(9);
+            await getAllLpTokenList(99);
+            await util.sleep(30 * 1000);
+            this.getSupportLpTokenList();
         } catch (err) {
-            console.error('getSupportLpTokenList error =', err.message)
+            console.error('getSupportLpTokenList error =', err.message);
         }
     },
 }

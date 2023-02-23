@@ -1,6 +1,5 @@
 import Web3 from 'web3'
 import { Coin_ABI } from './contract.js'
-import { localWeb3, localWSWeb3 } from './localWeb3.js'
 import util from '../../util'
 import {
   compatibleGlobalWalletConf,
@@ -11,7 +10,6 @@ import { web3State } from '../../../composition/hooks'
 function getLocalCoinContract(localChainID, tokenAddress, state, web3) {
   // 0 : http   1: ws
   // localChainID => rpcurl => web3Provider
-  // const web3 = state ? localWSWeb3(localChainID) : localWeb3(localChainID)
   if (web3) {
     const ecourseContractInstance = new web3.eth.Contract(
       Coin_ABI,
@@ -28,38 +26,29 @@ function getLocalCoinContract(localChainID, tokenAddress, state, web3) {
   }
 }
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
-function getTransferContract(localChainID, makerInfo) {
+function getTransferContract(localChainID, contractAddress) {
   // if localChain = 3 || 33
   if (localChainID === 3 || localChainID === 33) {
-    return
+    return;
   }
   if (localChainID === 4 || localChainID === 44) {
-    return
+    return;
   }
   if (walletIsLogin.value) {
-    const web3 = new Web3(
-      compatibleGlobalWalletConf.value.walletPayload.provider
-    )
-    var ABI = Coin_ABI
-    var Address = null
-    if (makerInfo.c1ID === localChainID) {
-      Address = makerInfo.t1Address
-    } else {
-      Address = makerInfo.t2Address
-    }
-    const ecourseContractInstance = new web3.eth.Contract(ABI, Address)
+    const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider);
+    const ecourseContractInstance = new web3.eth.Contract(Coin_ABI, contractAddress);
     if (!ecourseContractInstance) {
-      return null
+      return null;
     }
-    return ecourseContractInstance
+    return ecourseContractInstance;
   } else {
-    return null
+    return null;
   }
 }
 
 async function getTransferGasLimit(
   localChainID,
-  makerInfo,
+  selectMakerConfig,
   from,
   to,
   value,
@@ -68,19 +57,13 @@ async function getTransferGasLimit(
   // !walletIsLogin.value
   if (web3State.isInstallMeta || provider) {
     const web3 = new Web3(provider || window.ethereum)
-    let tokenAddress = null
-    if (makerInfo.c1ID === localChainID) {
-      tokenAddress = makerInfo.t1Address
-    } else {
-      tokenAddress = makerInfo.t2Address
-    }
-
+    const tokenAddress = selectMakerConfig.fromChain.tokenAddress
     let gasLimit = 55000
     try {
-      if (util.isEthTokenAddress(tokenAddress)) {
+      if (util.isEthTokenAddress(localChainID, tokenAddress)) {
         gasLimit = await web3.eth.estimateGas({
           from,
-          to: makerInfo.makerAddress,
+          to: selectMakerConfig.recipient,
           value,
         })
         return gasLimit

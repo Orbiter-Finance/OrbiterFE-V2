@@ -11,10 +11,10 @@
         <svg-icon v-else class="select-item-icon" :iconName="selectedItem.icon"></svg-icon>
       </template>
   </slot>
-  <span class="selected-label">{{ (datas.find(v => v.value == value) || {}).label || '' }}</span>
+  <span class="selected-label">{{ (dataList.find(v => v.value == value) || {}).label || '' }}</span>
   <SvgIconThemed />
   <div ref="dialog" v-if="!isMobile" class="dialog" :style="{ display: dialogVisible ? 'block' : 'none' }">
-    <div v-for="item in datas" @click="selectItem(item)" :key="item.value" :class="['select-item', {selected: item.value == value}]">
+    <div v-for="item in dataList" @click="selectItem(item)" :key="item.value" :class="['select-item', {selected: item.value == value}]">
       <template v-if="item.icon">
         <img
           v-if="item.iconType === 'img'"
@@ -53,8 +53,19 @@ export default {
     }
   },
   computed: {
+    dataList() {
+      return this.datas.map((v) => {
+        return {
+          ...v,
+          icon: v.icon || 'tokenLogo',
+          label: v.token,
+          value: v.token,
+          iconType: 'img',
+        }
+      })
+    },
     selectedItem() {
-      return this.datas.find(v => v.value == this.value) || {}
+      return this.dataList.find(v => v.value == this.value) || {}
     },
     isMobile() {
       return isMobile.value

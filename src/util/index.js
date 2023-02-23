@@ -1,6 +1,5 @@
 // import { isMobile } from '../composition/useMobile'
 
-export * from './chain2id'
 export * from './env'
 
 //copy success

@@ -6,7 +6,7 @@ import Web3 from "web3";
 import { findMatchWeb3ProviderByWalletType, modifyLocalLoginInfo } from "../utils.js";
 import { updateGlobalSelectWalletConf, updateSelectWalletAddress, updateSelectWalletConfPayload, globalSelectWalletConf } from "../walletsCoreData";
 import { showMessage } from "../../constants/web3/getWeb3";
-import { getChainInfo, getNetworkIdByChainId } from "../../chainUtils";
+import { getNetworkIdByChainId } from "../../chainUtils";
 import util from "../../util";
 
 // install wallet checks if target wallet extension is installed
@@ -151,7 +151,6 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
 // directs the user to append the chain
 export const universalWalletSwitchChainHandler = (walletConf, walletProvider, successCallback = () => { }, failCallback = () => { }) => {
     const presentNetWorkId = getNetworkIdByChainId();
-    // const matchChainConf = getChainInfo(presentNetWorkId);
     const switchParams = {
         chainId: util.toHex(presentNetWorkId)
     }
@@ -184,7 +183,7 @@ export const universalWalletSwitchChainHandler = (walletConf, walletProvider, su
 // extensions and directs the user to change the chain
 export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
     const presentNetWorkId = getNetworkIdByChainId();
-    const matchChainConf = getChainInfo(presentNetWorkId);
+    const matchChainConf = util.getChainInfoByNetworkId(presentNetWorkId);
     const { name, nativeCurrency, explorers, chainId, rpc, infoURL } = matchChainConf;
 
     const addParams = {

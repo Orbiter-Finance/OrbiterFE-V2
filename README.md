@@ -7,7 +7,7 @@
 
 ## Functional
 
-- Running this project requires setting the necessary parameters, such as localProvider and localWSProvider, which support each rollup node.
+- Running this project requires setting the necessary parameters, which support each rollup node.
 
 - By configuring the parameters, the project can realize the economic and time savings that users can make by Orbiter when configuring the rollup dynamics. After the user initiates payment through the front-end wallet, it will monitor the transaction data of each rollup in real time and feed back the real-time status of the user's cross-rollup transfer in time.
 
@@ -15,7 +15,7 @@
 
 **[config](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/config)** - Third-party and global configurations of the CSS
 
-**[core](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/core)** - Related network processing and interface implementation of the on-rollup and TheGraph.
+**[core](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/core)** - Related network processing and interface implementation of the on-rollup.
 
 **[icons](https://github.com/OrbiterCross/orbiterFE-V2/tree/main/src/icons)** - SVG Image Processing & SVG Image resources
 

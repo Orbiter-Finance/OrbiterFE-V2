@@ -5,8 +5,8 @@ import { store } from '../../store'
 
 export default {
     async getSupportZksTokenList() {
-        await getAllZksTokenList(12)
-        await getAllZksTokenList(512)
+        await getAllZksTokenList(12);
+        await getAllZksTokenList(512);
         await util.sleep(30 * 1000)
         this.getSupportZksTokenList()
     },
@@ -41,7 +41,7 @@ async function getAllZksTokenList(localChainID) {
         }
         store.commit('updateZksTokenList', zksTokenResult)
     } catch (error) {
-        console.log('zk_TokenListGetError =', error)
+        console.error('zk_TokenListGetError =', error)
     }
 }
 async function getZKSTokenList(req) {

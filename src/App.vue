@@ -41,6 +41,9 @@ import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import { performInitMobileAppWallet } from './util/walletsDispatchers/utils'
+import orbiterApiAx from "./common/orbiterApiAx";
+import { isProd } from "./util";
+import config from './config/index';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -108,11 +111,6 @@ export default {
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
   },
-  // watch: {
-  //   '$store.getters.realSelectMakerInfo': function (newValue) {
-  //     newValue && getTraddingHistory()
-  //   },
-  // },
   methods: {
     performInitCurrentLoginWallet() {
       performInitMobileAppWallet()

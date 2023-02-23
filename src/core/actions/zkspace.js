@@ -4,7 +4,6 @@ import axios from 'axios'
 import * as ethers from 'ethers'
 import * as zksync from 'zksync'
 import config from '../utils/config'
-import orbiterCore from '../../orbiterCore'
 import { private_key_to_pubkey_hash, sign_musig } from 'zksync-crypto'
 import { transferDataState } from '../../composition/hooks'
 
@@ -46,8 +45,8 @@ export default {
     try {
       const response = await axios.get(url)
       if (response.status === 200) {
-        var respData = response.data
-        if (respData.success == true) {
+        const respData = response.data
+        if (respData.success === true) {
           const gasFee = new BigNumber(respData.data.transfer).dividedBy(
             new BigNumber(ethPrice)
           )
@@ -178,109 +177,70 @@ export default {
     }
   },
 
-  getZKSapceTxList: async (
-    address,
-    localChainID,
-    startIndex,
-    tokenID,
-    limit
-  ) => {
-    if (localChainID !== 12 && localChainID !== 512) {
-      throw {
-        errorCode: 1,
-        errMsg: 'getZKSTransactinListError_wrongChainID',
-      }
-    }
-    let baseUrl =
-      localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
-    const url = `${baseUrl}/txs?types=Transfer&address=${address}&token=${tokenID}&start=${startIndex}&limit=${limit}`
-    try {
-      const response = await axios.get(url)
-      if (response.status === 200) {
-        var respData = response.data
-        if (respData.success === true) {
-          return respData
-        } else {
-          throw respData
-        }
-      } else {
-        throw {
-          errorCode: 1,
-          errMsg: 'NetWorkError',
-        }
-      }
-    } catch (error) {
-      throw {
-        errorCode: 2,
-        errMsg: error.message,
-      }
-    }
-  },
   async getL2SigTwoAndPK(
-    signer,
-    accountInfo,
-    selectMakerInfo,
-    transferValue,
-    fee,
-    zksChainID,
-    tokenInfo
+      signer,
+      accountInfo,
+      transferValue,
+      fee,
+      zksChainID,
+      tokenInfo
   ) {
+    const { selectMakerConfig } = transferDataState;
     try {
       const l2MsgParams = {
         accountId: accountInfo.id,
-        to: selectMakerInfo.makerAddress,
+        to: selectMakerConfig.recipient,
         tokenSymbol: tokenInfo ? tokenInfo.symbol : 'ETH',
         tokenAmount: ethers.utils.formatUnits(
-          transferValue,
-          tokenInfo.decimals
+            transferValue,
+            tokenInfo.decimals
         ),
         feeSymbol: 'ETH',
         fee: fee.toString(),
         zksChainID,
         nonce: accountInfo.nonce,
-      }
+      };
       const l2Msg =
-        `Transfer ${l2MsgParams.tokenAmount} ${l2MsgParams.tokenSymbol}\n` +
-        `To: ${l2MsgParams.to.toLowerCase()}\n` +
-        `Chain Id: ${l2MsgParams.zksChainID}\n` +
-        `Nonce: ${l2MsgParams.nonce}\n` +
-        `Fee: ${l2MsgParams.fee} ${l2MsgParams.feeSymbol}\n` +
-        `Account Id: ${l2MsgParams.accountId}`
-      const l2SignatureTwo = await signer.signMessage(l2Msg)
-      return l2SignatureTwo
+          `Transfer ${ l2MsgParams.tokenAmount } ${ l2MsgParams.tokenSymbol }\n` +
+          `To: ${ l2MsgParams.to.toLowerCase() }\n` +
+          `Chain Id: ${ l2MsgParams.zksChainID }\n` +
+          `Nonce: ${ l2MsgParams.nonce }\n` +
+          `Fee: ${ l2MsgParams.fee } ${ l2MsgParams.feeSymbol }\n` +
+          `Account Id: ${ l2MsgParams.accountId }`;
+      return await signer.signMessage(l2Msg);
     } catch (error) {
-      throw new Error(`getL2SigTwoAndPK error ${error.message}`)
+      throw new Error(`getL2SigTwoAndPK error ${ error.message }`);
     }
   },
   getL2SigOneAndPK(
-    privateKey,
-    accountInfo,
-    walletAccount,
-    selectMakerInfo,
-    tokenId,
-    transferValue,
-    feeTokenId,
-    transferFee,
-    zksChainID
+      privateKey,
+      accountInfo,
+      walletAccount,
+      tokenId,
+      transferValue,
+      feeTokenId,
+      transferFee,
+      zksChainID
   ) {
+    const { selectMakerConfig } = transferDataState;
     const msgBytes = ethers.utils.concat([
       '0x05',
       zksync.utils.numberToBytesBE(accountInfo.id, 4),
       walletAccount,
-      selectMakerInfo.makerAddress,
+      selectMakerConfig.recipient,
       zksync.utils.numberToBytesBE(tokenId, 2),
       zksync.utils.packAmountChecked(transferValue),
       zksync.utils.numberToBytesBE(feeTokenId, 1),
       zksync.utils.packFeeChecked(transferFee),
       zksync.utils.numberToBytesBE(zksChainID, 1),
       zksync.utils.numberToBytesBE(accountInfo.nonce, 4),
-    ])
-    const signaturePacked = sign_musig(privateKey, msgBytes)
-    const pubKey = ethers.utils.hexlify(signaturePacked.slice(0, 32)).substr(2)
+    ]);
+    const signaturePacked = sign_musig(privateKey, msgBytes);
+    const pubKey = ethers.utils.hexlify(signaturePacked.slice(0, 32)).substr(2);
     const l2SignatureOne = ethers.utils
-      .hexlify(signaturePacked.slice(32))
-      .substr(2)
-    return { pubKey, l2SignatureOne }
+        .hexlify(signaturePacked.slice(32))
+        .substr(2);
+    return { pubKey, l2SignatureOne };
   },
   async getAccountInfo(fromChainID, privateKey, signer, walletAccount) {
     try {
@@ -305,34 +265,6 @@ export default {
       return accountInfo
     } catch (error) {
       throw new Error(`getAccountInfo error ${error.message}`)
-    }
-  },
-  async getTransferValue(selectMakerInfo, fromChainID, toChainID) {
-    try {
-      var rAmount = new BigNumber(transferDataState.transferValue)
-        .plus(new BigNumber(selectMakerInfo.tradingFee))
-        .multipliedBy(new BigNumber(10 ** selectMakerInfo.precision))
-      var rAmountValue = rAmount.toFixed()
-      var p_text = 9000 + Number(toChainID) + ''
-      var tValue = orbiterCore.getTAmountFromRAmount(
-        fromChainID,
-        rAmountValue,
-        p_text
-      )
-      if (!tValue.state) {
-        this.$notify.error({
-          title: tValue.error,
-          duration: 3000,
-        })
-        this.transferLoading = false
-        return null
-      }
-      const transferValue = zksync.utils.closestPackableTransactionAmount(
-        tValue.tAmount
-      )
-      return { transferValue, tValue }
-    } catch (error) {
-      throw new Error(`getTransferValue error ${error.message}`)
     }
   },
   async getL1SigAndPriVateKey(signer) {

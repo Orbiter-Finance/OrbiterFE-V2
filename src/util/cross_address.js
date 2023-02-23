@@ -1,33 +1,9 @@
 import { Notification } from 'element-ui'
 import { ethers, utils } from 'ethers'
-import env from '../../env'
-import { Coin_ABI } from './constants/contract/contract'
+import { Coin_ABI, CROSS_ADDRESS_ABI } from './constants/contract/contract';
 import util from './util'
-import walletDispatchers from './walletsDispatchers'
-const CROSS_ADDRESS_ABI = [
-  {
-    inputs: [
-      { internalType: 'address payable', name: '_to', type: 'address' },
-      { internalType: 'bytes', name: '_ext', type: 'bytes' },
-    ],
-    name: 'transfer',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      { internalType: 'address', name: '_token', type: 'address' },
-      { internalType: 'address', name: '_to', type: 'address' },
-      { internalType: 'uint256', name: '_amount', type: 'uint256' },
-      { internalType: 'bytes', name: '_ext', type: 'bytes' },
-    ],
-    name: 'transferERC20',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-]
+import walletDispatchers, { WALLETCONNECT } from './walletsDispatchers';
+import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
 
 export const CrossAddressTypes = {
   '0x01': 'Cross Ethereum Address',
@@ -41,16 +17,17 @@ export class CrossAddress {
    * @param {number} orbiterChainId
    * @param {ethers.Signer | undefined} signer
    */
-  constructor(provider, orbiterChainId = 5, signer = undefined) {
-    this.contractAddress = env.crossAddressContracts[orbiterChainId]
+  constructor(provider, orbiterChainId = 5, signer = undefined, contractAddress) {
+    const chainInfo = util.getChainInfoByChainId(orbiterChainId);
+    this.contractAddress = contractAddress || (chainInfo?.xvmList && chainInfo.xvmList.length ? chainInfo.xvmList[0] : '');
     if (!this.contractAddress) {
-      throw new Error('Sorry, miss param [contractAddress]')
+      console.log('Sorry, miss param [contractAddress]');
     }
 
-    this.provider = provider
-    this.orbiterChainId = orbiterChainId
-    this.signer = signer || provider.getSigner()
-    this.networkId = env.localChainID_netChainID[orbiterChainId]
+    this.provider = provider;
+    this.orbiterChainId = orbiterChainId;
+    this.signer = signer || provider.getSigner();
+    this.networkId = util.chainNetWorkId(orbiterChainId);
   }
 
   async checkNetworkId() {
@@ -67,14 +44,12 @@ export class CrossAddress {
   /**
    * @param {Contract} contractErc20
    */
-  async getAllowance(contractErc20) {
-    
-    const ownerAddress = await this.signer.getAddress()
-    const allowance = await contractErc20.allowance(
-      ownerAddress,
-      this.contractAddress
-    )
-    return allowance
+  async getAllowance(contractErc20, contractAddress = this.contractAddress) {
+    const ownerAddress = await this.signer.getAddress();
+    return await contractErc20.allowance(
+        ownerAddress,
+        contractAddress
+    );
   }
 
   /**
@@ -82,11 +57,11 @@ export class CrossAddress {
    * @param {string} tokenAddress 0x...
    * @param {ethers.BigNumber} amount
    */
-  async approveERC20(tokenAddress, amount = ethers.constants.MaxUint256) {
+  async approveERC20(tokenAddress, amount = ethers.constants.MaxUint256, contractAddress = this.contractAddress) {
     await this.checkNetworkId()
 
     const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
-    await contract.approve(this.contractAddress, amount)
+    await contract.approve(contractAddress, amount)
 
     const n = Notification({
       duration: 0,
@@ -96,7 +71,7 @@ export class CrossAddress {
     try {
       // Waitting approve succeed
       for (let index = 0; index < 5000; index++) {
-        const allowance = await this.getAllowance(contract)
+        const allowance = await this.getAllowance(contract, contractAddress)
         if (amount.lte(allowance)) {
           break
         }
@@ -196,12 +171,12 @@ export class CrossAddress {
     )
   }
 
-  async walletConnApproveERC20(tokenAddress, amount = ethers.constants.MaxUint256) {
+  async walletConnApproveERC20(tokenAddress, amount = ethers.constants.MaxUint256, contractAddress = this.contractAddress) {
     await this.checkNetworkId()
 
     const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
     const iface = new ethers.utils.Interface(Coin_ABI)
-    const data = iface.encodeFunctionData('approve', [this.contractAddress, amount])
+    const data = iface.encodeFunctionData('approve', [contractAddress, amount])
     const ownerAddress = await this.signer.getAddress()
     const transferHash = await walletDispatchers.walletConnectSendTransaction(
       this.orbiterChainId,
@@ -210,7 +185,6 @@ export class CrossAddress {
       0,
       data
     )
-    console.log(transferHash, 'walletConnApproveERC20 transferHash---')
     const n = Notification({
       duration: 0,
       title: 'Approving...',
@@ -219,7 +193,7 @@ export class CrossAddress {
     try {
       // Waitting approve succeed
       for (let index = 0; index < 5000; index++) {
-        const allowance = await this.getAllowance(contract)
+        const allowance = await this.getAllowance(contract, contractAddress)
         if (amount.lte(allowance)) {
           break
         }
@@ -260,6 +234,22 @@ export class CrossAddress {
       0,
       data
     )
+  }
+
+  async contractApprove(tokenAddress, contractAddress, amount) {
+    const contractErc20 = new ethers.Contract(
+        tokenAddress,
+        Coin_ABI,
+        this.provider
+    );
+    const allowance = await this.getAllowance(contractErc20, contractAddress);
+    if (amount.gt(allowance)) {
+      if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+        await this.walletConnApproveERC20(tokenAddress, ethers.constants.MaxUint256, contractAddress);
+      } else {
+        await this.approveERC20(tokenAddress, ethers.constants.MaxUint256, contractAddress);
+      }
+    }
   }
   /**
    *

@@ -15,7 +15,7 @@ services:
     # volumes:
     # - './frontend:/app'
     ports:
-      - '80:80'
+      - '8001:80'
     # restart: always
     networks:
       - orbiter2
