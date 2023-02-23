@@ -65,7 +65,7 @@
             type="text"
             v-model="transferValue"
             class="right"
-            @input="checkTransferValue()"
+            @input="inputTransferValue()"
             :maxlength="18"
             :placeholder="
               userMinPrice ? (
@@ -697,27 +697,6 @@ export default {
               this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
       } using Orbiter.`;
     },
-    gasFeeToolTip() {
-      const { selectMakerConfig } = transferDataState;
-      const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${ this.originGasCost.toFixed(
-              2
-      ) }<br />`;
-      const tradingFee = ` <br /><b>Fees using Orbiter costs:</b><br />Trading Fee: $${ (
-              this.orbiterTradingFee * this.exchangeToUsdPrice
-      ).toFixed(2) }`;
-      const withholdingGasFee = `<br />Withholding Fee: $${
-              selectMakerConfig
-                      ? (
-                              selectMakerConfig.tradingFee * this.exchangeToUsdPrice
-                      ).toFixed(2)
-                      : 0
-      }`;
-      const total = `<br /><br /><b>Total: $${ (
-              this.gasTradingTotal * this.exchangeToUsdPrice
-      ).toFixed(2) }</b>`;
-
-      return gasFee + tradingFee + withholdingGasFee + total;
-    },
     timeSpent() {
       // const { selectMakerConfig } = transferDataState;
       // return selectMakerConfig.spendTime
@@ -731,46 +710,6 @@ export default {
               transferDataState.fromChainID,
               transferDataState.toChainID
       );
-    },
-    orbiterTradingFee() {
-      const { selectMakerConfig } = transferDataState;
-      if (!selectMakerConfig) return;
-      const { fromChain } = selectMakerConfig;
-      let tradingFee = new BigNumber(
-              this.transferValue ? this.transferValue : 0
-      )
-              .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
-              .dividedBy(new BigNumber(1000));
-      let digit = orbiterCore.getDigitByPrecision(fromChain.decimals);
-      let tradingFee_fix = tradingFee.decimalPlaces(digit, BigNumber.ROUND_UP);
-      return tradingFee_fix;
-    },
-    gasTradingTotal() {
-      const { selectMakerConfig } = transferDataState;
-      if (!selectMakerConfig) return "0.000000";
-      let gasFee = new BigNumber(selectMakerConfig.tradingFee);
-      return gasFee.plus(this.orbiterTradingFee).toFixed(6);
-    },
-    gasSavingMax() {
-      let savingValue =
-              this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice;
-      if (savingValue < 0) {
-        savingValue = 0;
-      }
-      let savingTokenName = '$';
-      return savingTokenName + savingValue.toFixed(2).toString();
-    },
-    gasSavingMin() {
-      const gasCost = this.gasCost();
-      let savingValue =
-              this.originGasCost -
-              this.gasTradingTotal * this.exchangeToUsdPrice -
-              gasCost;
-      if (savingValue < 0) {
-        savingValue = 0;
-      }
-      let savingTokenName = '$';
-      return savingTokenName + savingValue.toFixed(2).toString();
     },
     showSaveGas() {
       return (
@@ -876,6 +815,74 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+      refreshGasFeeToolTip() {
+          const { selectMakerConfig } = transferDataState;
+          const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${ this.originGasCost.toFixed(
+              2
+          ) }<br />`;
+          const tradingFee = ` <br /><b>Fees using Orbiter costs:</b><br />Trading Fee: $${ (
+              this.orbiterTradingFee * this.exchangeToUsdPrice
+          ).toFixed(2) }`;
+          const withholdingGasFee = `<br />Withholding Fee: $${
+              selectMakerConfig
+                  ? (
+                      selectMakerConfig.tradingFee * this.exchangeToUsdPrice
+                  ).toFixed(2)
+                  : 0
+          }`;
+          const total = `<br /><br /><b>Total: $${ (
+              this.gasTradingTotal * this.exchangeToUsdPrice
+          ).toFixed(2) }</b>`;
+
+          this.gasFeeToolTip =  gasFee + tradingFee + withholdingGasFee + total;
+      },
+      refreshOrbiterTradingFee() {
+          const { selectMakerConfig } = transferDataState;
+          if (!selectMakerConfig) return;
+          const { fromChain } = selectMakerConfig;
+          let tradingFee = new BigNumber(
+              this.transferValue ? this.transferValue : 0
+          )
+              .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
+              .dividedBy(new BigNumber(1000));
+          let digit = orbiterCore.getDigitByPrecision(fromChain.decimals);
+          this.orbiterTradingFee =  tradingFee.decimalPlaces(digit, BigNumber.ROUND_UP);
+      },
+      refreshGasSavingMax() {
+          let savingValue =
+              this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice;
+          if (savingValue < 0) {
+              savingValue = 0;
+          }
+          let savingTokenName = '$';
+          this.gasSavingMax =  savingTokenName + savingValue.toFixed(2).toString();
+      },
+      refreshGasSavingMin() {
+          const gasCost = this.gasCost();
+          let savingValue =
+              this.originGasCost -
+              this.gasTradingTotal * this.exchangeToUsdPrice -
+              gasCost;
+          if (savingValue < 0) {
+              savingValue = 0;
+          }
+          let savingTokenName = '$';
+          this.gasSavingMin = savingTokenName + savingValue.toFixed(2).toString();
+      },
+      refreshGasTradingTotal() {
+          const { selectMakerConfig } = transferDataState;
+          if (!selectMakerConfig) return "0.000000";
+          let gasFee = new BigNumber(selectMakerConfig.tradingFee);
+          this.gasTradingTotal = gasFee.plus(this.orbiterTradingFee).toFixed(6);
+      },
+      refreshGas(){
+          this.refreshOrbiterTradingFee();
+          this.refreshGasTradingTotal();
+          this.refreshGasSavingMin();
+          this.refreshGasSavingMin();
+          this.refreshGasSavingMax();
+          this.refreshGasFeeToolTip();
+      },
     async initWhiteList() {
       if (isProd()) {
         config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
@@ -897,6 +904,11 @@ export default {
       fromCurrency = fromCurrency || transferDataState.fromCurrency;
       toCurrency = toCurrency || transferDataState.toCurrency;
 
+      // change toChainId,and toChainId equal fromChainId
+      if (oldToChainID !== toChainID && oldFromChainID === fromChainID && toChainID === fromChainID) {
+        fromChainID = oldToChainID;
+      }
+
       if (fromCurrency === toCurrency) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
@@ -917,13 +929,14 @@ export default {
       fromChainID = fromChainID || (source && fromChainIdList.find(item => item === +source) ?
               +source :
               fromChainIdList[0]);
-      const toChainIdList = Array.from(new Set(
-              makerConfigs.filter(item => item.fromChain.id === fromChainID)
+      let toChainIdList = Array.from(new Set(
+              makerConfigs
                       .map(item => {
                         if (item.fromChain.id === fromChainID) {
                           return item.toChain.id;
                         }
                       })
+                      .filter(item => item)
       )).sort(function (a, b) {
         return a - b;
       });
@@ -937,18 +950,26 @@ export default {
                 toChainIdList[0];
       }
 
-      const duplicateFromChainIdIndex = fromChainIdList.findIndex(item => item === toChainID);
-      if (duplicateFromChainIdIndex !== -1) {
-        fromChainIdList.splice(duplicateFromChainIdIndex, 1);
+      // Reverse path
+      if (makerConfigs.find(item => item.toChain.id === fromChainID) && makerConfigs.find(item => item.fromChain.id === toChainID)) {
+        toChainIdList.push(fromChainID);
+        toChainIdList = toChainIdList.sort(function (a, b) {
+          return a - b;
+        });
       }
+
+      // const duplicateFromChainIdIndex = fromChainIdList.findIndex(item => item === toChainID);
+      // if (duplicateFromChainIdIndex !== -1) {
+      //   fromChainIdList.splice(duplicateFromChainIdIndex, 1);
+      // }
       const selectedFromChainIdIndex = fromChainIdList.findIndex(item => item === fromChainID);
       if (selectedFromChainIdIndex !== -1) {
         fromChainIdList.splice(selectedFromChainIdIndex, 1);
       }
-      const duplicateToChainIdIndex = toChainIdList.findIndex(item => item === fromChainID);
-      if (duplicateToChainIdIndex !== -1) {
-        toChainIdList.splice(duplicateToChainIdIndex, 1);
-      }
+      // const duplicateToChainIdIndex = toChainIdList.findIndex(item => item === fromChainID);
+      // if (duplicateToChainIdIndex !== -1) {
+      //   toChainIdList.splice(duplicateToChainIdIndex, 1);
+      // }
       const selectedToChainIdIndex = toChainIdList.findIndex(item => item === toChainID);
       if (selectedToChainIdIndex !== -1) {
         toChainIdList.splice(selectedToChainIdIndex, 1);
@@ -1165,7 +1186,10 @@ export default {
     },
     updateToValue() {
       const { fromCurrency, toCurrency, selectMakerConfig } = transferDataState;
-      if (!this.transferValue || !selectMakerConfig) return '0';
+      if (!this.transferValue || !selectMakerConfig) {
+        this.toValue = 0;
+        return;
+      }
       let amount = orbiterCore.getToAmountFromUserAmount(
               new BigNumber(this.transferValue).plus(
                       new BigNumber(selectMakerConfig.tradingFee)
@@ -1218,7 +1242,7 @@ export default {
       }
       if (fromChainID === 9 || fromChainID === 99 || toChainID === 9 || toChainID === 99) {
         if (walletIsLogin.value) {
-          this.checkTransferValue();
+          this.inputTransferValue();
         }
       }
       if (toChainID === 11 || toChainID === 511) {
@@ -1386,7 +1410,7 @@ export default {
     openUrl() {
       window.open('https://www.orbiter.finance/', '_blank');
     },
-    checkTransferValue() {
+    inputTransferValue() {
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
@@ -1399,6 +1423,10 @@ export default {
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       }
+      console.log('inputTransferValue')
+
+      this.refreshGas();
+
       this.updateSendBtnInfo();
     },
     async sendTransfer() {
@@ -1538,7 +1566,7 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = (isCrossAddress ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
+        const walletAddress = ((isCrossAddress || toChainID === 44 || toChainID === 4) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -1576,6 +1604,7 @@ export default {
                 toChainID,
                 fromCurrency !== 'ETH'
         );
+        this.refreshGas();
       } catch (error) {
         console.warn('updateOriginGasCost error =', error.message);
         this.$notify.error({
@@ -1698,13 +1727,13 @@ export default {
                   .catch((error) => {
                     console.warn(error);
                   }).finally(() => {
-            this.fromBalanceLoading = false;
+                  self.fromBalanceLoading = false;
           });
         } else {
           self.fromBalance = fromChainBalanceMap[fromChain.symbol];
           await self.updateUserMaxPrice();
         }
-        this.fromBalanceLoading = false;
+          self.fromBalanceLoading = false;
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
@@ -1724,12 +1753,12 @@ export default {
                   .catch((error) => {
                     console.warn(error);
                   }).finally(() => {
-            this.toBalanceLoading = false;
+                  self.toBalanceLoading = false;
           });
         } else {
           self.toBalance = toChainBalanceMap[toChain.symbol];
         }
-        this.toBalanceLoading = false;
+          self.toBalanceLoading = false;
       }
     },
   },
