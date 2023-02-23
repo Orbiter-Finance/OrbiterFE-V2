@@ -1423,7 +1423,6 @@ export default {
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       }
-      console.log('inputTransferValue')
 
       this.refreshGas();
 
