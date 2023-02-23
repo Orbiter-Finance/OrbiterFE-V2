@@ -98,7 +98,7 @@
         "rpc": [
             "https://mainnet.boba.network",
             "https://lightning-replica.boba.network",
-            "wss://ws.mainnet.boba.network"
+            "https://boba-mainnet.gateway.pokt.network/v1/lb/623ad21b20354900396fed7f"
         ],
         "watch": ["rpc", "api"],
         "contracts": [],
@@ -119,8 +119,7 @@
             "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
         },
         "rpc": [
-            "https://andromeda.metis.io/?owner=1088",
-            "wss://andromeda-ws.metis.io"
+            "https://andromeda.metis.io/?owner=1088"
         ],
         "watch": ["api", "rpc"],
         "contracts": [],
