@@ -88,7 +88,7 @@
             type="text"
             v-model="transferValue"
             class="right"
-            @input="checkTransferValue()"
+            @input="inputTransferValue()"
             :maxlength="18"
             :placeholder="
               userMinPrice
@@ -783,25 +783,6 @@ export default {
         this.timeSpent ? this.timeSpent.replace('~', '') : this.timeSpent
       } using Orbiter.`
     },
-    gasFeeToolTip() {
-      const { selectMakerConfig } = transferDataState
-      const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${this.originGasCost.toFixed(
-        2
-      )}<br />`
-      const tradingFee = ` <br /><b>Fees using Orbiter costs:</b><br />Trading Fee: $${(
-        this.orbiterTradingFee * this.exchangeToUsdPrice
-      ).toFixed(2)}`
-      const withholdingGasFee = `<br />Withholding Fee: $${
-        selectMakerConfig
-          ? (selectMakerConfig.tradingFee * this.exchangeToUsdPrice).toFixed(2)
-          : 0
-      }`
-      const total = `<br /><br /><b>Total: $${(
-        this.gasTradingTotal * this.exchangeToUsdPrice
-      ).toFixed(2)}</b>`
-
-      return gasFee + tradingFee + withholdingGasFee + total
-    },
     timeSpent() {
       // const { selectMakerConfig } = transferDataState;
       // return selectMakerConfig.spendTime
@@ -815,46 +796,6 @@ export default {
         transferDataState.fromChainID,
         transferDataState.toChainID
       )
-    },
-    orbiterTradingFee() {
-      const { selectMakerConfig } = transferDataState
-      if (!selectMakerConfig) return
-      const { fromChain } = selectMakerConfig
-      let tradingFee = new BigNumber(
-        this.transferValue ? this.transferValue : 0
-      )
-        .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
-        .dividedBy(new BigNumber(1000))
-      let digit = orbiterCore.getDigitByPrecision(fromChain.decimals)
-      let tradingFee_fix = tradingFee.decimalPlaces(digit, BigNumber.ROUND_UP)
-      return tradingFee_fix
-    },
-    gasTradingTotal() {
-      const { selectMakerConfig } = transferDataState
-      if (!selectMakerConfig) return '0.000000'
-      let gasFee = new BigNumber(selectMakerConfig.tradingFee)
-      return gasFee.plus(this.orbiterTradingFee).toFixed(6)
-    },
-    gasSavingMax() {
-      let savingValue =
-        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
-      if (savingValue < 0) {
-        savingValue = 0
-      }
-      let savingTokenName = '$'
-      return savingTokenName + savingValue.toFixed(2).toString()
-    },
-    gasSavingMin() {
-      const gasCost = this.gasCost()
-      let savingValue =
-        this.originGasCost -
-        this.gasTradingTotal * this.exchangeToUsdPrice -
-        gasCost
-      if (savingValue < 0) {
-        savingValue = 0
-      }
-      let savingTokenName = '$'
-      return savingTokenName + savingValue.toFixed(2).toString()
     },
     showSaveGas() {
       return (
@@ -960,6 +901,75 @@ export default {
     this.replaceStarknetWrongHref()
   },
   methods: {
+    refreshGasFeeToolTip() {
+      const { selectMakerConfig } = transferDataState
+      const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${this.originGasCost.toFixed(
+        2
+      )}<br />`
+      const tradingFee = ` <br /><b>Fees using Orbiter costs:</b><br />Trading Fee: $${(
+        this.orbiterTradingFee * this.exchangeToUsdPrice
+      ).toFixed(2)}`
+      const withholdingGasFee = `<br />Withholding Fee: $${
+        selectMakerConfig
+          ? (selectMakerConfig.tradingFee * this.exchangeToUsdPrice).toFixed(2)
+          : 0
+      }`
+      const total = `<br /><br /><b>Total: $${(
+        this.gasTradingTotal * this.exchangeToUsdPrice
+      ).toFixed(2)}</b>`
+
+      this.gasFeeToolTip = gasFee + tradingFee + withholdingGasFee + total
+    },
+    refreshOrbiterTradingFee() {
+      const { selectMakerConfig } = transferDataState
+      if (!selectMakerConfig) return
+      const { fromChain } = selectMakerConfig
+      let tradingFee = new BigNumber(
+        this.transferValue ? this.transferValue : 0
+      )
+        .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
+        .dividedBy(new BigNumber(1000))
+      let digit = orbiterCore.getDigitByPrecision(fromChain.decimals)
+      this.orbiterTradingFee = tradingFee.decimalPlaces(
+        digit,
+        BigNumber.ROUND_UP
+      )
+    },
+    refreshGasSavingMax() {
+      let savingValue =
+        this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice
+      if (savingValue < 0) {
+        savingValue = 0
+      }
+      let savingTokenName = '$'
+      this.gasSavingMax = savingTokenName + savingValue.toFixed(2).toString()
+    },
+    refreshGasSavingMin() {
+      const gasCost = this.gasCost()
+      let savingValue =
+        this.originGasCost -
+        this.gasTradingTotal * this.exchangeToUsdPrice -
+        gasCost
+      if (savingValue < 0) {
+        savingValue = 0
+      }
+      let savingTokenName = '$'
+      this.gasSavingMin = savingTokenName + savingValue.toFixed(2).toString()
+    },
+    refreshGasTradingTotal() {
+      const { selectMakerConfig } = transferDataState
+      if (!selectMakerConfig) return '0.000000'
+      let gasFee = new BigNumber(selectMakerConfig.tradingFee)
+      this.gasTradingTotal = gasFee.plus(this.orbiterTradingFee).toFixed(6)
+    },
+    refreshGas() {
+      this.refreshOrbiterTradingFee()
+      this.refreshGasTradingTotal()
+      this.refreshGasSavingMin()
+      this.refreshGasSavingMin()
+      this.refreshGasSavingMax()
+      this.refreshGasFeeToolTip()
+    },
     async initWhiteList() {
       if (isProd()) {
         config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/')
@@ -1366,7 +1376,10 @@ export default {
     },
     updateToValue() {
       const { fromCurrency, toCurrency, selectMakerConfig } = transferDataState
-      if (!this.transferValue || !selectMakerConfig) return '0'
+      if (!this.transferValue || !selectMakerConfig) {
+        this.toValue = 0
+        return
+      }
       let amount = orbiterCore.getToAmountFromUserAmount(
         new BigNumber(this.transferValue).plus(
           new BigNumber(selectMakerConfig.tradingFee)
@@ -1437,7 +1450,7 @@ export default {
         toChainID === 99
       ) {
         if (walletIsLogin.value) {
-          this.checkTransferValue()
+          this.inputTransferValue()
         }
       }
       if (toChainID === 11 || toChainID === 511) {
@@ -1615,7 +1628,7 @@ export default {
     openUrl() {
       window.open('https://www.orbiter.finance/', '_blank')
     },
-    checkTransferValue() {
+    inputTransferValue() {
       const { selectMakerConfig } = transferDataState
       if (!selectMakerConfig) return
       const { fromChain, toChain } = selectMakerConfig
@@ -1635,6 +1648,9 @@ export default {
             ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
             : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')
       }
+
+      this.refreshGas()
+
       this.updateSendBtnInfo()
     },
     async sendTransfer() {
@@ -1864,6 +1880,7 @@ export default {
           toChainID,
           fromCurrency !== 'ETH'
         )
+        this.refreshGas()
       } catch (error) {
         console.warn('updateOriginGasCost error =', error.message)
         this.$notify.error({
@@ -2007,13 +2024,13 @@ export default {
               console.warn(error)
             })
             .finally(() => {
-              this.fromBalanceLoading = false
+              self.fromBalanceLoading = false
             })
         } else {
           self.fromBalance = fromChainBalanceMap[fromChain.symbol]
           await self.updateUserMaxPrice()
         }
-        this.fromBalanceLoading = false
+        self.fromBalanceLoading = false
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -2042,12 +2059,12 @@ export default {
               console.warn(error)
             })
             .finally(() => {
-              this.toBalanceLoading = false
+              self.toBalanceLoading = false
             })
         } else {
           self.toBalance = toChainBalanceMap[toChain.symbol]
         }
-        this.toBalanceLoading = false
+        self.toBalanceLoading = false
       }
     },
   },

@@ -8,6 +8,7 @@ import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from "./env";
 
+
 export default {
   showMessage(message, type) {
     const _type = type || 'success'
@@ -17,13 +18,6 @@ export default {
       duration: 3000,
     })
   },
-  log(...msg) {
-    if (isProd()) {
-      return;
-    }
-    console.log(...msg);
-  },
-
   netWorkName(networkId) {
     return this.getChainInfoByNetworkId(networkId)?.name || 'unknown'
   },
@@ -124,6 +118,7 @@ export default {
     this.log(chainId, rpc, msg || '', 'success')
     localStorage.setItem(`${chainId}_stable_rpc`, rpc)
   },
+
   getRpcList(chainId) {
     const chainInfo = this.getChainInfoByChainId(chainId)
     const rpcList = (chainInfo?.rpc || []).sort(function () {
@@ -200,11 +195,17 @@ export default {
     return JSON.parse(JSON.stringify(info))
   },
 
+  log(...msg) {
+    if (isProd()) {
+      return;
+    }
+    console.log(...msg);
+  },
+
   isWhite() {
-        if(isProd() && !config?.whiteList.length){
+    if(isProd() && !config?.whiteList.length){
       return false;
     }
-
     return !(
       config.whiteList.length &&
       !config.whiteList.find((item) =>
@@ -309,12 +310,13 @@ export default {
         for (const url of rpcList) {
           try {
             const web3 = new Web3(url)
-            result = await web3.eth[method](...args);
+            result = await web3.eth[method](...args)
             this.setStableRpc(chainId, url, 'success');
             resolve(result)
             break
           } catch (error) {
-            console.log(
+            this.setStableRpc(chainId, '', 'error');
+            this.log(
               'request rpc error:',
               url,
               error.message,
@@ -354,7 +356,7 @@ export default {
               resolve(result)
               break
           } catch (error) {
-            console.log(
+            this.log(
               'Request Web3 token Balance rpc error:',
               url,
               error.message,

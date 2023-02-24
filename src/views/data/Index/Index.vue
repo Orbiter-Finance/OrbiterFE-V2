@@ -192,6 +192,7 @@ export default {
   },
   async mounted() {
     this.rollups = await getTabRollups('mainpage')
+    this.allTab = this.rollups.map(item => item.value);
   },
   methods: {
       numeral,

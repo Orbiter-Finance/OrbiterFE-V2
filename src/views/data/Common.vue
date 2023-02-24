@@ -9,6 +9,7 @@
     props: {},
     data () {
       return {
+          allTab: ['arbitrum', 'optimism', 'zksync', 'arbitrumnova', 'starknet']
       }
     },
     methods: {
@@ -39,7 +40,7 @@
             floater = floater[0];
         }
         if (rollup_tab) {
-            if (!['arbitrum', 'optimism', 'zksync', 'arbitrumnova', 'starknet'].includes(rollup_tab)) {
+            if (!this.allTab.includes(rollup_tab)) {
                 rollup_tab = 'arbitrum';
             }
           if (newQuery?.rollup_tab !== rollup_tab) {
