@@ -315,6 +315,7 @@ export default {
             resolve(result)
             break
           } catch (error) {
+            this.setStableRpc(chainId, '', 'error');
             this.log(
               'request rpc error:',
               url,
