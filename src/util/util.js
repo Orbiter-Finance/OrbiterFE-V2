@@ -7,6 +7,7 @@ import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from "./env";
+import env from "../../env";
 
 
 export default {
@@ -173,6 +174,9 @@ export default {
       (item) => +item.internalId === +chainId
     )
     if (!info) return null
+    if (env.localChainID_netChainID[chainId]) {
+      info.networkId = env.localChainID_netChainID[chainId]
+    }
     const chainInfo = JSON.parse(JSON.stringify(info))
     const localWsRpc = process.env[`VUE_APP_WP_${chainId}`]
     if (localWsRpc) {
@@ -263,12 +267,15 @@ export default {
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
       })
+      return true
     } catch (error) {
       if (error.code === 4902) {
         await this.addEthereumChain(chainId)
+        return false
       } else {
         console.error(error)
         this.showMessage(error.message, 'error')
+        return false
       }
     }
   },

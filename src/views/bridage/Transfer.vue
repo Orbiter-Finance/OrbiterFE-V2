@@ -1477,13 +1477,13 @@ export default {
         //   return;
         // }
 
-        if (nonce > 8999) {
-          this.$notify.error({
-            title: `Address with the nonce over 9000 are not supported by Orbiter`,
-            duration: 3000,
-          });
-          return;
-        }
+        // if (nonce > 8999) {
+        //   this.$notify.error({
+        //     title: `Address with the nonce over 9000 are not supported by Orbiter`,
+        //     duration: 3000,
+        //   });
+        //   return;
+        // }
 
         if (
                 !this.transferValue ||
@@ -1535,7 +1535,9 @@ export default {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
                 this.isWaitSend = true;
-                await util.ensureWalletNetwork(fromChainID);
+                if (!await util.ensureWalletNetwork(fromChainID)) {
+                  return;
+                }  
                 await util.sleep(1000);
                 this.isWaitSend = false;
               } catch (err) {
