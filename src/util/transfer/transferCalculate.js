@@ -1107,18 +1107,22 @@ export default {
         }
         const rpcList = util.getRpcList(fromChainID);
         for (const rpc of rpcList) {
-            let response = await axios.post(rpc, {
-                jsonrpc: '2.0',
-                method: 'eth_gasPrice',
-                params: [],
-                id: 0,
-            });
-            if (response.status === 200) {
-                util.setStableRpc(fromChainID, rpc, 'eth_gasPrice');
-                return parseInt(response.data.result);
+            try {
+                let response = await axios.post(rpc, {
+                    jsonrpc: '2.0',
+                    method: 'eth_gasPrice',
+                    params: [],
+                    id: 0,
+                });
+                if (response.status === 200) {
+                    util.setStableRpc(fromChainID, rpc, 'eth_gasPrice');
+                    return parseInt(response.data.result);
+                }
+            } catch (e) {
+                util.setStableRpc(fromChainID, '', 'eth_gasPrice');
             }
         }
-        console.error(fromChainID, rpcList, 'Get gasPrice error');
+        util.setStableRpc(fromChainID, '', 'eth_gasPrice');
         return null;
     },
 
