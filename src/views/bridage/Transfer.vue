@@ -1799,10 +1799,12 @@ export default {
           ) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
-                this.isWaitSend = true
-                await util.ensureWalletNetwork(fromChainID)
-                await util.sleep(1000)
-                this.isWaitSend = false
+                this.isWaitSend = true;
+                if (!await util.ensureWalletNetwork(fromChainID)) {
+                  return;
+                }  
+                await util.sleep(1000);
+                this.isWaitSend = false;
               } catch (err) {
                 util.showMessage(err.message, 'error')
                 return
