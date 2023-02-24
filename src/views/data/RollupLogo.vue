@@ -32,7 +32,7 @@ export default {
         return '#'
       }
       const name = this.name.replace(/\s+/g, '').toLowerCase()
-      return `${ env.l2BaseUrl }/img/rollups/${ name }.png`;
+      return `${ this.$env.l2BaseUrl }/img/rollups/${ name }.png`;
     },
   },
   watch: {
