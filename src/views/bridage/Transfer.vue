@@ -1510,21 +1510,21 @@ export default {
           walletAddress && (await imxHelper.ensureUser(walletAddress));
         }
 
-        if (fromChainID === 4 || fromChainID === 44) {
+        if (fromChainID === 4 || fromChainID === 44 || toChainID === 4 || toChainID === 44) {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
           if (!starkChain || starkChain === 'unlogin') {
             util.showMessage('please connect StarkNet Wallet', 'error');
             return;
           }
-          if (fromChainID === 4 && (starkChain === 44 || starkChain === 'localhost')) {
+          if (fromChainID === 4 || toChainID === 4 && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch StarkNet Wallet to mainnet',
                     'error'
             );
             return;
           }
-          if (fromChainID === 44 && (starkChain === 4 || starkChain == 'localhost')) {
+          if (fromChainID === 44 || toChainID === 44 && (starkChain === 4 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch StarkNet Wallet to testNet',
                     'error'
