@@ -1767,7 +1767,8 @@ export default {
         }
 
         if (fromChainID === 4 || fromChainID === 44) {
-          const { starkChain } = web3State.starkNet
+          let { starkChain } = web3State.starkNet;
+          starkChain = +starkChain ? +starkChain : starkChain;
           if (!starkChain || starkChain === 'unlogin') {
             util.showMessage('please connect StarkNet Wallet', 'error')
             return
