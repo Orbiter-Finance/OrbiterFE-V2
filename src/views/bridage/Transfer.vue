@@ -1536,7 +1536,9 @@ export default {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
                 this.isWaitSend = true;
-                await util.ensureWalletNetwork(fromChainID);
+                if (!await util.ensureWalletNetwork(fromChainID)) {
+                  return;
+                }  
                 await util.sleep(1000);
                 this.isWaitSend = false;
               } catch (err) {
