@@ -819,27 +819,28 @@ export default {
       }
     },
     async starknetTransfer(value) {
-      const { selectMakerConfig, fromChainID } = transferDataState;
+      const { selectMakerConfig, fromChainID, toChainID } = transferDataState;
       if (!walletIsLogin.value) {
         this.transferLoading = false;
         return;
       }
       const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (fromChainID === 4 || fromChainID === 44) {
-        const { starkChain } = web3State.starkNet;
+      if (fromChainID === 4 || fromChainID === 44 || toChainID === 4 || toChainID === 44) {
+        let { starkChain } = web3State.starkNet;
+        starkChain = +starkChain ? +starkChain : starkChain;
         if (!starkChain || starkChain === 'unlogin') {
           util.showMessage('please connect StarkNet Wallet', 'error');
           return;
         }
         if (
-                fromChainID === 4 &&
+                fromChainID === 4 || toChainID === 4 &&
                 (starkChain === 44 || starkChain === 'localhost')
         ) {
           util.showMessage('please switch StarkNet Wallet to mainnet', 'error');
           return;
         }
         if (
-                fromChainID === 44 &&
+                fromChainID === 44 || toChainID === 44 &&
                 (starkChain === 4 || starkChain === 'localhost')
         ) {
           util.showMessage('please switch StarkNet Wallet to testNet', 'error');
