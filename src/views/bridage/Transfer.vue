@@ -1517,14 +1517,14 @@ export default {
             util.showMessage('please connect StarkNet Wallet', 'error');
             return;
           }
-          if (fromChainID === 4 || toChainID === 4 && (starkChain === 44 || starkChain === 'localhost')) {
+          if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch StarkNet Wallet to mainnet',
                     'error'
             );
             return;
           }
-          if (fromChainID === 44 || toChainID === 44 && (starkChain === 4 || starkChain === 'localhost')) {
+          if ((fromChainID === 44 || toChainID === 44) && (starkChain === 4 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch StarkNet Wallet to testNet',
                     'error'
