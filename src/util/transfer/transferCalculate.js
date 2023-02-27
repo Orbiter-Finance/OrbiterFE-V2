@@ -1077,7 +1077,7 @@ export default {
                     (item) => item.id === tokenInfo.id
                 );
                 return theBalanceInfo
-                    ? theBalanceInfo.amount * 10 ** selectMakerConfig.fromChain.symbol
+                    ? theBalanceInfo.amount * 10 ** selectMakerConfig.fromChain.decimals
                     : 0;
             } catch (error) {
                 throw new Error(`getZKSBalanceError,${ error.message }`);

@@ -1,7 +1,8 @@
-import chain from './chain.json'
-import maker from './maker.json'
-import { isDev } from "../util";
-import orbiterApiAx from "../common/orbiterApiAx";
+import chainMain from './chain.json'
+import makerMain from './maker.json'
+import chainTest from './chainTest.json'
+import makerTest from './makerTest.json'
+import { isProd } from "../util";
 
 const tokenIcons = {
   ETH: require('../assets/ethlogo.svg'),
@@ -31,6 +32,9 @@ const getTokenIcon = (token) => {
 
   return tokenIcons[token] || ''
 }
+
+const chain = isProd() ? chainMain : chainTest;
+const maker = isProd() ? makerMain : makerTest;
 
 const chainConfig = [...chain].map(item => {
   if (process.env[`VUE_APP_CHAIN_API_KEY_${ item.internalId }`]) {

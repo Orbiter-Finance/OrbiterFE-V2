@@ -833,14 +833,14 @@ export default {
           return;
         }
         if (
-                fromChainID === 4 || toChainID === 4 &&
+                (fromChainID === 4 || toChainID === 4) &&
                 (starkChain === 44 || starkChain === 'localhost')
         ) {
           util.showMessage('please switch StarkNet Wallet to mainnet', 'error');
           return;
         }
         if (
-                fromChainID === 44 || toChainID === 44 &&
+                (fromChainID === 44 || toChainID === 44) &&
                 (starkChain === 4 || starkChain === 'localhost')
         ) {
           util.showMessage('please switch StarkNet Wallet to testNet', 'error');
@@ -890,7 +890,7 @@ export default {
         let tokenInfo = {
           type: ETHTokenType.ETH,
           data: {
-            decimals: selectMakerConfig.fromChain.tokenAddress,
+            decimals: selectMakerConfig.fromChain.decimals,
           },
         };
         if (!util.isEthTokenAddress(fromChainID, contractAddress)) {
@@ -1040,7 +1040,9 @@ export default {
         if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainNetWorkId(fromChainID)) {
           if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
             try {
-              await util.ensureWalletNetwork(fromChainID);
+              if (!await util.ensureWalletNetwork(fromChainID)) {
+                return;
+              }
             } catch (err) {
               util.showMessage(err.message, 'error');
               return;

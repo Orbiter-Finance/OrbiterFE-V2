@@ -251,25 +251,27 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    const chain = this.getChainInfoByChainId(chainId)
+    const chain = this.getChainInfoByChainId(chainId);
     if (!+chain.networkId) {
-      return
+      return;
     }
     const switchParams = {
       chainId: this.toHex(chain.networkId),
-    }
+    };
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
-      })
+      });
+      return true;
     } catch (error) {
       if (error.code === 4902) {
-        await this.addEthereumChain(chainId)
+        await this.addEthereumChain(chainId);
       } else {
-        console.error(error)
-        this.showMessage(error.message, 'error')
+        console.error(error);
+        this.showMessage(error.message, 'error');
       }
+      return false;
     }
   },
 

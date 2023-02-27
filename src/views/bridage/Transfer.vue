@@ -435,7 +435,6 @@ export default {
 
       transferValue: '',
       toValue: 0,
-      isWaitSend: false,
 
       exchangeToUsdPrice: 0,
 
@@ -758,7 +757,7 @@ export default {
       this.updateTransferInfo();
     },
     // currentNetwork(newValue, oldValue) {
-    //   if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
+    //   if (oldValue !== newValue) this.clearTransferValue();
     // },
     currentWalletAddress: function (newValue, oldValue) {
       util.log('Current wallet address', newValue);
@@ -1517,14 +1516,14 @@ export default {
             util.showMessage('please connect StarkNet Wallet', 'error');
             return;
           }
-          if (fromChainID === 4 || toChainID === 4 && (starkChain === 44 || starkChain === 'localhost')) {
+          if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch StarkNet Wallet to mainnet',
                     'error'
             );
             return;
           }
-          if (fromChainID === 44 || toChainID === 44 && (starkChain === 4 || starkChain === 'localhost')) {
+          if ((fromChainID === 44 || toChainID === 44) && (starkChain === 4 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch StarkNet Wallet to testNet',
                     'error'
@@ -1535,10 +1534,9 @@ export default {
           if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainNetWorkId(fromChainID)) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
-                this.isWaitSend = true;
-                await util.ensureWalletNetwork(fromChainID);
-                await util.sleep(1000);
-                this.isWaitSend = false;
+                if (!await util.ensureWalletNetwork(fromChainID)) {
+                  return;
+                }
               } catch (err) {
                 util.showMessage(err.message, 'error');
                 return;

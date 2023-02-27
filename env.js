@@ -1,6 +1,8 @@
+import { isProd } from "./src/util";
+
 const baseDomain = `https://api.orbiter.finance`
 export default {
-  l2BaseUrl: 'https://l2api.orbiter.finance',
+  l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
   baseTraddingUrl: `${ baseDomain }/api`,
   chainIcon: {
     1: 'tokenLogo',
