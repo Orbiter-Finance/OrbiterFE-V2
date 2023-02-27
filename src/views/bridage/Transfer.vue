@@ -1774,7 +1774,6 @@ export default {
             util.showMessage('please connect StarkNet Wallet', 'error')
             return
           }
-
           if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
               'please switch StarkNet Wallet to mainnet',
