@@ -221,12 +221,16 @@ export default {
                     console.warn(`lp getTransferFeeerror:`);
                 }
             }
+            const rpcList = util.getRpcList(fromChainID);
+            if (!rpcList.length) {
+                return 0;
+            }
 
             const estimateGas = await util.requestWeb3(fromChainID, 'estimateGas', {
                 from: web3State.coinbase,
                         to: makerAddress,
             })
-             const gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice');
+            const gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice');
             let gas = new BigNumber(gasPrice).multipliedBy(estimateGas);
             if (fromChainID === 7 || fromChainID === 77) {
                 let l1GasFee = await this.getOPFee(fromChainID);
