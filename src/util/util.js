@@ -291,11 +291,7 @@ export default {
       },
       rpcUrls: chainInfo.rpc,
       blockExplorerUrls: [
-        chainInfo.explorers &&
-        chainInfo.explorers.length &&
-        chainInfo.explorers[0].url
-          ? chainInfo.explorers[0].url
-          : chainInfo.infoURL,
+        chainInfo.infoURL
       ],
     }
     try {
