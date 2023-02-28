@@ -310,6 +310,9 @@ export default {
       let result
       if (rpcList && rpcList.length > 0) {
         for (const url of rpcList) {
+          if (!url || url === '') {
+            continue;
+          }
           try {
             const web3 = new Web3(url)
             result = await web3.eth[method](...args)
@@ -329,7 +332,6 @@ export default {
           }
         }
       }
-
       if (!result) {
         reject(
           `Reuqest Web3 RPC ERROR：${chainId}-${method}-${args.join(',')}`

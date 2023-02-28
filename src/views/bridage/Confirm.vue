@@ -880,7 +880,6 @@ export default {
         return;
       }
       const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-
       try {
         let contractAddress = selectMakerConfig.fromChain.tokenAddress;
 
@@ -903,14 +902,12 @@ export default {
             },
           };
         }
-
         const resp = await imxClient.transfer({
           sender: from,
           token: tokenInfo,
           quantity: ethers.BigNumber.from(value),
           receiver: selectMakerConfig.recipient,
         });
-
         this.onTransferSucceed(
                 from,
                 value,
