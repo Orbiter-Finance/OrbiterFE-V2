@@ -142,7 +142,7 @@
     {
         "api": { "url": "https://api.zksync.io/api/v0.2", "key": "" },
         "chainId": "zksync",
-        "networkId": "zksync",
+        "networkId": "1",
         "internalId": "3",
         "name": "ZKSync",
         "debug": false,
@@ -179,7 +179,7 @@
                 "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://etherscan.io"
     },
     {
         "api": { "url": "https://api.polygonscan.com/api", "key": "" },
@@ -277,7 +277,7 @@
     {
         "api": { "url": "https://api.zkswap.info/v3", "key": "" },
         "chainId": "ZKSpace",
-        "networkId": "13",
+        "networkId": "1",
         "internalId": "12",
         "name": "ZKSpace Mainnet",
         "nativeCurrency": {
@@ -304,7 +304,7 @@
     {
         "api": { "url": "https://api.dydx.exchange", "key": "" },
         "chainId": "dydx",
-        "networkId": "dydx",
+        "networkId": "1",
         "internalId": "11",
         "name": "Dydx",
         "nativeCurrency": {
@@ -324,12 +324,12 @@
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://etherscan.io"
     },
     {
         "api": { "url": "https://api.x.immutable.com/v1", "key": "" },
         "chainId": "immutableX",
-        "networkId": "immutableX",
+        "networkId": "1",
         "internalId": "8",
         "name": "Immutable X",
         "nativeCurrency": {
@@ -349,7 +349,7 @@
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://etherscan.io"
     },
     {
         "api": { "url": "https://api3.loopring.io/api/v3", "key": "" },
@@ -368,12 +368,12 @@
         "watch": ["api"],
         "contracts": [],
         "tokens": [],
-        "infoURL": ""
+        "infoURL": "https://etherscan.io"
     },
     {
         "api": { "url": "", "key": "" },
         "chainId": "SN_MAIN",
-        "networkId": "mainnet-alpha",
+        "networkId": "1",
         "internalId": "4",
         "name": "Starknet",
         "debug": false,
@@ -397,7 +397,7 @@
                 "address": "0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://etherscan.io"
     },
     {
         "api": { "url": "https://api.bscscan.com/api", "key": "" },
