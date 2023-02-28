@@ -27,6 +27,9 @@ export default {
   chainNetWorkId(chainId) {
     return this.getChainInfoByChainId(chainId)?.chainId
   },
+  chainL1NetWorkId(chainId) {
+    return this.getChainInfoByChainId(chainId)?.l1NetworkId;
+  },
   toHex(num) {
     return '0x' + Number(num).toString(16)
   },
@@ -252,11 +255,12 @@ export default {
    */
   async ensureWalletNetwork(chainId) {
     const chain = this.getChainInfoByChainId(chainId);
-    if (!+chain.networkId) {
+    const l1NetworkId = +chain.l1NetworkId;
+    if (!l1NetworkId) {
       return;
     }
     const switchParams = {
-      chainId: this.toHex(chain.networkId),
+      chainId: this.toHex(l1NetworkId),
     };
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
@@ -278,7 +282,7 @@ export default {
   async addEthereumChain(chainId) {
     const chainInfo = this.getChainInfoByChainId(chainId)
     const params = {
-      chainId: this.toHex(chainInfo.networkId), // A 0x-prefixed hexadecimal string
+      chainId: this.toHex(chainInfo.l1NetworkId), // A 0x-prefixed hexadecimal string
       chainName: chainInfo.name,
       nativeCurrency: {
         name: chainInfo.nativeCurrency.name,
@@ -310,6 +314,9 @@ export default {
       let result
       if (rpcList && rpcList.length > 0) {
         for (const url of rpcList) {
+          if (!url || url === '') {
+            continue;
+          }
           try {
             const web3 = new Web3(url)
             result = await web3.eth[method](...args)
@@ -329,7 +336,6 @@ export default {
           }
         }
       }
-
       if (!result) {
         reject(
           `Reuqest Web3 RPC ERROR：${chainId}-${method}-${args.join(',')}`

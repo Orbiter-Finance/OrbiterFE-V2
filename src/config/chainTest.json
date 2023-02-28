@@ -6,9 +6,11 @@
     },
     "chainId": "5",
     "networkId": "5",
+    "l1NetworkId": "5",
     "internalId": "5",
     "name": "Görli",
     "debug": false,
+    "isSupportOpenApi": true,
     "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
     "nativeCurrency": {
       "name": "ETH",
@@ -62,6 +64,7 @@
     },
     "chainId": "421613",
     "networkId": "421613",
+    "l1NetworkId": "421613",
     "internalId": "22",
     "name": "Arbitrum(G)",
     "nativeCurrency": {
@@ -78,6 +81,7 @@
     "watch": [
       "rpc"
     ],
+    "isSupportOpenApi": true,
     "contracts": ["0x721fBB2C2C9cdFa5547feE6b683949c20F175457"],
     "tokens": [
       {
@@ -120,9 +124,11 @@
       "key": ""
     },
     "chainId": "zksync_test",
-    "networkId": "5",
+    "networkId": "zksync",
+    "l1NetworkId": "5",
     "internalId": "33",
     "debug": false,
+    "isSupportOpenApi": true,
     "name": "ZKSync(G)",
     "nativeCurrency": {
       "name": "Ether",
@@ -157,10 +163,12 @@
       "intervalTime": 60000
     },
     "chainId": "SN_GOERLI",
-    "networkId": "5",
+    "networkId": "goerli-alpha",
+    "l1NetworkId": "5",
     "internalId": "44",
     "name": "Starknet(G)",
     "debug": false,
+    "isSupportOpenApi": true,
     "contracts": [
       "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"
     ],
@@ -191,6 +199,7 @@
     },
     "chainId": "80001",
     "networkId": "80001",
+    "l1NetworkId": "80001",
     "internalId": "66",
     "name": "Polygon Mumbai",
     "nativeCurrency": {},
@@ -203,6 +212,7 @@
     "watch": [
       "rpc"
     ],
+    "isSupportOpenApi": true,
     "contracts": [],
     "tokens": [
       {
@@ -243,6 +253,7 @@
     },
     "chainId": "420",
     "networkId": "420",
+    "l1NetworkId": "420",
     "internalId": "77",
     "name": "Optimism(G)",
     "nativeCurrency": {
@@ -258,6 +269,7 @@
     "watch": [
       "rpc"
     ],
+    "isSupportOpenApi": true,
     "contracts": [
       "0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39"
     ],
@@ -293,7 +305,8 @@
       "key": ""
     },
     "chainId": "immutableX_testnet",
-    "networkId": "3",
+    "networkId": "immutableX",
+    "l1NetworkId": "5",
     "internalId": "88",
     "name": "ImmutableX(G)",
     "nativeCurrency": {
@@ -306,6 +319,7 @@
     "watch": [
       "api"
     ],
+    "isSupportOpenApi": false,
     "contracts": [],
     "tokens": [
       {
@@ -323,6 +337,7 @@
     },
     "chainId": "loopring_testnet",
     "networkId": "5",
+    "l1NetworkId": "5",
     "internalId": "99",
     "name": "Loopring(R)",
     "nativeCurrency": {
@@ -336,6 +351,7 @@
     "watch": [
       "api"
     ],
+    "isSupportOpenApi": false,
     "contracts": [],
     "tokens": []
   },
@@ -348,6 +364,7 @@
     "chain": "ETH",
     "chainId": "599",
     "networkId": "599",
+    "l1NetworkId": "599",
     "internalId": "510",
     "features": ["EVM"],
     "name": "Metis(G)",
@@ -359,6 +376,7 @@
     },
     "rpc": ["https://goerli.gateway.metisdevops.link"],
     "watch": ["rpc", "api"],
+    "isSupportOpenApi": true,
     "contracts": [],
     "tokens": [
       {
@@ -396,7 +414,8 @@
       "key": ""
     },
     "chainId": "dydx_test",
-    "networkId": "3",
+    "networkId": "dydx",
+    "l1NetworkId": "5",
     "internalId": "511",
     "name": "Dydx(G)",
     "nativeCurrency": {},
@@ -404,6 +423,7 @@
     "watch": [
       "api"
     ],
+    "isSupportOpenApi": false,
     "contracts": [],
     "tokens": [{
       "name": "USDC",
@@ -418,9 +438,11 @@
       "key": ""
     },
     "chainId": "zkspace_test",
-    "networkId": "5",
+    "networkId": "zkspace",
+    "l1NetworkId": "5",
     "internalId": "512",
     "name": "ZKSpace(G)",
+    "isSupportOpenApi": false,
     "nativeCurrency": {
       "name": "Ether",
       "symbol": "ETH",
@@ -440,6 +462,8 @@
       "key": ""
     },
     "chainId": "28",
+    "networkId": "28",
+    "l1NetworkId": "28",
     "internalId": "513",
     "name": "Boba(G)",
     "nativeCurrency": {
@@ -448,7 +472,7 @@
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "networkId": "28",
+    "isSupportOpenApi": true,
     "rpc": [
       "https://goerli.boba.network"
     ],
@@ -467,8 +491,10 @@
     },
     "chainId": "280",
     "networkId": "280",
-    "debug": true,
+    "l1NetworkId": "280",
     "internalId": "514",
+    "debug": true,
+    "isSupportOpenApi": true,
     "name": "ZkSync 2.0(G)",
     "nativeCurrency": {
       "name": "Ether",
@@ -514,9 +540,11 @@
     },
     "chainId": "97",
     "networkId": "97",
+    "l1NetworkId": "97",
     "internalId": "515",
     "name": "BSC(G)",
     "debug": false,
+    "isSupportOpenApi": true,
     "contracts": [],
     "nativeCurrency": {
       "name": "ETH",
@@ -566,9 +594,11 @@
     },
     "chainId": "534354",
     "networkId": "534354",
+    "l1NetworkId": "534354",
     "internalId": "519",
     "name": "Scroll L2(G)",
     "debug": false,
+    "isSupportOpenApi": true,
     "contracts": [],
     "nativeCurrency": {
       "name": "ETH",
@@ -590,9 +620,11 @@
     },
     "chainId": "167003",
     "networkId": "167003",
+    "l1NetworkId": "167003",
     "internalId": "520",
     "name": "Taiko A1(G)",
     "debug": false,
+    "isSupportOpenApi": true,
     "contracts": [],
     "nativeCurrency": {
       "name": "ETH",

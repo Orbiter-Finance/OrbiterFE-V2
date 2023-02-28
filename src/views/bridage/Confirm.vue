@@ -880,7 +880,6 @@ export default {
         return;
       }
       const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-
       try {
         let contractAddress = selectMakerConfig.fromChain.tokenAddress;
 
@@ -903,14 +902,12 @@ export default {
             },
           };
         }
-
         const resp = await imxClient.transfer({
           sender: from,
           token: tokenInfo,
           quantity: ethers.BigNumber.from(value),
           receiver: selectMakerConfig.recipient,
         });
-
         this.onTransferSucceed(
                 from,
                 value,
@@ -1037,7 +1034,7 @@ export default {
       }
       const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (fromChainID !== 4 && fromChainID !== 44) {
-        if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainNetWorkId(fromChainID)) {
+        if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainL1NetWorkId(fromChainID)) {
           if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
             try {
               if (!await util.ensureWalletNetwork(fromChainID)) {
