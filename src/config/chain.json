@@ -3,6 +3,7 @@
         "api": { "url": "https://api.etherscan.io/api", "key": "" },
         "chainId": "1",
         "networkId": "1",
+        "l1NetworkId": "1",
         "internalId": "1",
         "name": "Ethereum",
         "nativeCurrency": {
@@ -45,6 +46,7 @@
         "api": { "url": "http://api.arbiscan.io/api", "key": "" },
         "chainId": "42161",
         "networkId": "42161",
+        "l1NetworkId": "42161",
         "internalId": "2",
         "debug": false,
         "name": "Arbitrum",
@@ -84,65 +86,10 @@
         "infoURL": "https://explorer.arbitrum.io"
     },
     {
-        "api": { "url": "https://api.bobascan.com/api", "key": "" },
-        "chainId": "288",
-        "internalId": "13",
-        "name": "Boba",
-        "nativeCurrency": {
-            "name": "Ether",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x0000000000000000000000000000000000000000"
-        },
-        "networkId": "288",
-        "rpc": [
-            "https://mainnet.boba.network",
-            "https://lightning-replica.boba.network",
-            "https://boba-mainnet.gateway.pokt.network/v1/lb/623ad21b20354900396fed7f"
-        ],
-        "watch": ["rpc", "api"],
-        "contracts": [],
-        "tokens": [],
-        "infoURL": "https://bobascan.com"
-    },
-    {
-        "api": { "url": "https://andromeda-explorer.metis.io/api", "key": "" },
-        "chain": "ETH",
-        "chainId": "1088",
-        "networkId": "1088",
-        "internalId": "10",
-        "name": "Metis",
-        "nativeCurrency": {
-            "name": "Metis Token",
-            "symbol": "METIS",
-            "decimals": 18,
-            "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
-        },
-        "rpc": [
-            "https://andromeda.metis.io/?owner=1088"
-        ],
-        "watch": ["api", "rpc"],
-        "contracts": [],
-        "tokens": [
-            {
-                "name": "Ether (WETH)",
-                "symbol": "ETH",
-                "decimals": 18,
-                "address": "0x420000000000000000000000000000000000000a"
-            },
-            {
-                "name": "USDC Token",
-                "symbol": "USDC",
-                "decimals": 6,
-                "address": "0xEA32A96608495e54156Ae48931A7c20f0dcc1a21"
-            }
-        ],
-        "infoURL": "https://andromeda-explorer.metis.io"
-    },
-    {
         "api": { "url": "https://api.zksync.io/api/v0.2", "key": "" },
         "chainId": "zksync",
-        "networkId": "1",
+        "networkId": "zksync",
+        "l1NetworkId": "1",
         "internalId": "3",
         "name": "ZKSync",
         "debug": false,
@@ -179,12 +126,43 @@
                 "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
             }
         ],
-        "infoURL": "https://etherscan.io"
+        "infoURL": ""
+    },
+    {
+        "api": { "url": "", "key": "" },
+        "chainId": "SN_MAIN",
+        "networkId": "mainnet-alpha",
+        "l1NetworkId": "1",
+        "internalId": "4",
+        "name": "Starknet",
+        "debug": false,
+        "contracts": [
+            "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"
+        ],
+        "nativeCurrency": {
+            "id": 0,
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
+        },
+        "rpc": [],
+        "watch": ["rpc"],
+        "tokens": [
+            {
+                "name": "DAI",
+                "symbol": "DAI",
+                "decimals": 18,
+                "address": "0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3"
+            }
+        ],
+        "infoURL": ""
     },
     {
         "api": { "url": "https://api.polygonscan.com/api", "key": "" },
         "chainId": "137",
         "networkId": "137",
+        "l1NetworkId": "137",
         "internalId": "6",
         "name": "Polygon",
         "rpc": [
@@ -235,6 +213,7 @@
         "api": { "url": "https://api-optimistic.etherscan.io/api", "key": "" },
         "chainId": "10",
         "networkId": "10",
+        "l1NetworkId": "10",
         "internalId": "7",
         "name": "Optimism",
         "nativeCurrency": {
@@ -275,11 +254,119 @@
         "infoURL": "https://optimistic.etherscan.io"
     },
     {
+        "api": { "url": "https://api.x.immutable.com/v1", "key": "" },
+        "chainId": "immutableX",
+        "networkId": "immutableX",
+        "l1NetworkId": "1",
+        "internalId": "8",
+        "name": "Immutable X",
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [],
+        "watch": ["api"],
+        "contracts": [],
+        "tokens": [
+            {
+                "name": "USD Coin",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            }
+        ],
+        "infoURL": ""
+    },
+    {
+        "api": { "url": "https://api3.loopring.io/api/v3", "key": "" },
+        "chainId": "loopring",
+        "networkId": "1",
+        "l1NetworkId": "1",
+        "internalId": "9",
+        "name": "Loopring",
+        "nativeCurrency": {
+            "id": 0,
+            "name": "Ethereum",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": ["wss://ws.api3.loopring.io/v3/ws"],
+        "watch": ["api"],
+        "contracts": [],
+        "tokens": [],
+        "infoURL": ""
+    },
+    {
+        "api": { "url": "https://andromeda-explorer.metis.io/api", "key": "" },
+        "chain": "ETH",
+        "chainId": "1088",
+        "networkId": "1088",
+        "l1NetworkId": "1088",
+        "internalId": "10",
+        "name": "Metis",
+        "nativeCurrency": {
+            "name": "Metis Token",
+            "symbol": "METIS",
+            "decimals": 18,
+            "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
+        },
+        "rpc": [
+            "https://andromeda.metis.io/?owner=1088"
+        ],
+        "watch": ["api", "rpc"],
+        "contracts": [],
+        "tokens": [
+            {
+                "name": "Ether (WETH)",
+                "symbol": "ETH",
+                "decimals": 18,
+                "address": "0x420000000000000000000000000000000000000a"
+            },
+            {
+                "name": "USDC Token",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0xEA32A96608495e54156Ae48931A7c20f0dcc1a21"
+            }
+        ],
+        "infoURL": "https://andromeda-explorer.metis.io"
+    },
+    {
+        "api": { "url": "https://api.dydx.exchange", "key": "" },
+        "chainId": "dydx",
+        "networkId": "dydx",
+        "l1NetworkId": "1",
+        "internalId": "11",
+        "name": "Dydx",
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 0,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [],
+        "watch": ["api"],
+        "contracts": [],
+        "tokens": [
+            {
+                "name": "USD Coin",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+            }
+        ],
+        "infoURL": ""
+    },
+    {
         "api": { "url": "https://api.zkswap.info/v3", "key": "" },
         "chainId": "ZKSpace",
-        "networkId": "1",
+        "networkId": "13",
+        "l1NetworkId": "1",
         "internalId": "12",
-        "name": "ZKSpace Mainnet",
+        "name": "ZKSpace",
         "nativeCurrency": {
             "id": 0,
             "name": "Ether",
@@ -302,107 +389,33 @@
         "infoURL": "https://zkspace.info"
     },
     {
-        "api": { "url": "https://api.dydx.exchange", "key": "" },
-        "chainId": "dydx",
-        "networkId": "1",
-        "internalId": "11",
-        "name": "Dydx",
-        "nativeCurrency": {
-            "name": "Ether",
-            "symbol": "ETH",
-            "decimals": 0,
-            "address": "0x0000000000000000000000000000000000000000"
-        },
-        "rpc": [],
-        "watch": ["api"],
-        "contracts": [],
-        "tokens": [
-            {
-                "name": "USD Coin",
-                "symbol": "USDC",
-                "decimals": 6,
-                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-            }
-        ],
-        "infoURL": "https://etherscan.io"
-    },
-    {
-        "api": { "url": "https://api.x.immutable.com/v1", "key": "" },
-        "chainId": "immutableX",
-        "networkId": "1",
-        "internalId": "8",
-        "name": "Immutable X",
+        "api": { "url": "https://api.bobascan.com/api", "key": "" },
+        "chainId": "288",
+        "networkId": "288",
+        "l1NetworkId": "288",
+        "internalId": "13",
+        "name": "Boba",
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
-        "watch": ["api"],
-        "contracts": [],
-        "tokens": [
-            {
-                "name": "USD Coin",
-                "symbol": "USDC",
-                "decimals": 6,
-                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
-            }
+        "rpc": [
+            "https://mainnet.boba.network",
+            "https://lightning-replica.boba.network",
+            "https://boba-mainnet.gateway.pokt.network/v1/lb/623ad21b20354900396fed7f"
         ],
-        "infoURL": "https://etherscan.io"
-    },
-    {
-        "api": { "url": "https://api3.loopring.io/api/v3", "key": "" },
-        "chainId": "loopring",
-        "networkId": "1",
-        "internalId": "9",
-        "name": "Loopring",
-        "nativeCurrency": {
-            "id": 0,
-            "name": "Ethereum",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x0000000000000000000000000000000000000000"
-        },
-        "rpc": ["wss://ws.api3.loopring.io/v3/ws"],
-        "watch": ["api"],
+        "watch": ["rpc", "api"],
         "contracts": [],
         "tokens": [],
-        "infoURL": "https://etherscan.io"
-    },
-    {
-        "api": { "url": "", "key": "" },
-        "chainId": "SN_MAIN",
-        "networkId": "1",
-        "internalId": "4",
-        "name": "Starknet",
-        "debug": false,
-        "contracts": [
-            "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"
-        ],
-        "nativeCurrency": {
-            "id": 0,
-            "name": "Ether",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-        },
-        "rpc": [],
-        "watch": ["rpc"],
-        "tokens": [
-            {
-                "name": "DAI",
-                "symbol": "DAI",
-                "decimals": 18,
-                "address": "0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3"
-            }
-        ],
-        "infoURL": "https://etherscan.io"
+        "infoURL": "https://bobascan.com"
     },
     {
         "api": { "url": "https://api.bscscan.com/api", "key": "" },
         "chainId": "56",
         "networkId": "56",
+        "l1NetworkId": "56",
         "internalId": "15",
         "name": "BNB Chain",
         "debug": false,
@@ -436,6 +449,7 @@
         "api": { "url": "https://api-nova.arbiscan.io/api", "key": "" },
         "chainId": "42170",
         "networkId": "42170",
+        "l1NetworkId": "42170",
         "internalId": "16",
         "name": "Arbitrum Nova",
         "debug": false,

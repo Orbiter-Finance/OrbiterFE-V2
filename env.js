@@ -172,37 +172,5 @@ export default {
     516: 150000,
     518: 21000,
     519: 21000
-  },
-  localChainID_netChainID: {
-    1: '1', // mainnet
-    2: '42161', // Arbitrum
-    3: '1', // zk
-    4: '1', // starknet
-    5: '5', // goerli
-    6: '137', // polygon
-    7: '10', // optimism
-    8: '1', // mainnet
-    9: '1', // loopring
-    10: '1088', //metis
-    11: '1', // dydx
-    12: '1', // zkspace
-    13: '288', // boba mainnet,
-    15: "56", // bsc mainnet,
-    22: '421611', // arbitrum test
-    33: '5', // zktest
-    44: '5', // starknet(R)
-    66: '80001', // polygon(R)
-    77: '420', // optimism(G)
-    88: '3', // ropsten
-    99: '5', // loopring(G)
-    510: '588', //metis test
-    511: '3', // dydx(R)
-    512: '4', // zkspace(R)s
-    513: '28', // boba rinkeby
-    514: '280',//zksync2(G)
-    515: "97", // bsc test
-    16: '42170', // ar nova
-    516: '421613', // ar nova g
-    599: '599'
   }
 };
