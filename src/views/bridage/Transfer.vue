@@ -171,7 +171,7 @@
         >More</a
       >
     </div>
-    <div v-if="isNewVersion && selectFromToken !== selectToToken" :hidden="!isSupportXVM && !isLoopring">
+    <div v-if="isNewVersion" :hidden="(selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
       <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
         <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Change Account </label>
@@ -405,6 +405,7 @@ export default {
     return {
       isWhiteWallet: false,
       isNewVersion: false,
+      isLoopring: false,
 
       isCrossAddress: false,
       isRaiseUpFromTokenListVisible: false,
@@ -491,9 +492,6 @@ export default {
     },
     isSupportXVM() {
       return util.isSupportXVMContract();
-    },
-    isLoopring() {
-      return transferDataState.fromChainID === 9 || transferDataState.fromChainID === 99;
     },
     transferDataState() {
       return transferDataState;
@@ -885,7 +883,7 @@ export default {
         fromChainID = oldToChainID;
       }
 
-      if (fromCurrency === toCurrency) {
+      if (fromCurrency === toCurrency && !this.isLoopring) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
             title: `Not supported yet Change Account.`,
@@ -1025,6 +1023,8 @@ export default {
               item.fromChain.symbol === toCurrency &&
               item.toChain.id === fromChainID &&
               item.toChain.symbol === fromCurrency);
+
+      this.isLoopring = fromChainID === 9 || fromChainID === 99;
 
       const makerConfig = makerConfigs.find(item =>
               item.fromChain.id === fromChainID &&
