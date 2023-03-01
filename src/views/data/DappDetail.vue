@@ -32,7 +32,7 @@
           trigger="hover"
         >
           <div class="supported-l2-desc">
-            Only the chains supported by Orbier-L2 Data are listed.
+            Only the chains supported by Orbiter-L2 Data are listed.
           </div>
           <span class="supported-l2-help" slot="reference"> </span>
         </el-popover>

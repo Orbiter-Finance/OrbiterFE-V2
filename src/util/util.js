@@ -7,7 +7,6 @@ import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from "./env";
-import env from "../../env";
 
 
 export default {
@@ -27,6 +26,9 @@ export default {
   },
   chainNetWorkId(chainId) {
     return this.getChainInfoByChainId(chainId)?.chainId
+  },
+  chainL1NetWorkId(chainId) {
+    return this.getChainInfoByChainId(chainId)?.l1NetworkId;
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -129,7 +131,7 @@ export default {
     if (stableRpc) {
       return [stableRpc, ...rpcList]
     }
-    return rpcList.filter(rpc=> rpc!='')
+    return rpcList
   },
 
   // the actual transfer amount
@@ -174,9 +176,6 @@ export default {
       (item) => +item.internalId === +chainId
     )
     if (!info) return null
-    if (env.localChainID_netChainID[chainId]) {
-      info.networkId = env.localChainID_netChainID[chainId]
-    }
     const chainInfo = JSON.parse(JSON.stringify(info))
     const localWsRpc = process.env[`VUE_APP_WP_${chainId}`]
     if (localWsRpc) {
@@ -255,35 +254,35 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    const chain = this.getChainInfoByChainId(chainId)
-    if (!+chain.networkId) {
-      return
+    const chain = this.getChainInfoByChainId(chainId);
+    const l1NetworkId = +chain.l1NetworkId;
+    if (!l1NetworkId) {
+      return;
     }
     const switchParams = {
-      chainId: this.toHex(chain.networkId),
-    }
+      chainId: this.toHex(l1NetworkId),
+    };
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
-      })
-      return true
+      });
+      return true;
     } catch (error) {
       if (error.code === 4902) {
-        await this.addEthereumChain(chainId)
-        return false
+        await this.addEthereumChain(chainId);
       } else {
-        console.error(error)
-        this.showMessage(error.message, 'error')
-        return false
+        console.error(error);
+        this.showMessage(error.message, 'error');
       }
+      return false;
     }
   },
 
   async addEthereumChain(chainId) {
     const chainInfo = this.getChainInfoByChainId(chainId)
     const params = {
-      chainId: this.toHex(chainInfo.networkId), // A 0x-prefixed hexadecimal string
+      chainId: this.toHex(chainInfo.l1NetworkId), // A 0x-prefixed hexadecimal string
       chainName: chainInfo.name,
       nativeCurrency: {
         name: chainInfo.nativeCurrency.name,
@@ -315,6 +314,9 @@ export default {
       let result
       if (rpcList && rpcList.length > 0) {
         for (const url of rpcList) {
+          if (!url || url === '') {
+            continue;
+          }
           try {
             const web3 = new Web3(url)
             result = await web3.eth[method](...args)
@@ -334,7 +336,6 @@ export default {
           }
         }
       }
-
       if (!result) {
         reject(
           `Reuqest Web3 RPC ERROR：${chainId}-${method}-${args.join(',')}`

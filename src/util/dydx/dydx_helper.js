@@ -77,7 +77,9 @@ export class DydxHelper {
     //   throw new Error('Sorry, miss param [web3]')
     // }
     // Ensure network
-    await util.ensureWalletNetwork(this.chainId);
+    if (!await util.ensureWalletNetwork(this.chainId)) {
+      throw new Error('Network error');
+    }
     const client = new DydxClient(this.host, {
       networkId: this.networkId,
       web3: this.web3,

@@ -220,7 +220,10 @@ export default {
           console.warn(`lp getTransferFeeerror:`)
         }
       }
-
+      const rpcList = util.getRpcList(fromChainID);
+      if (!rpcList.length) {
+          return 0;
+      }
       const estimateGas = await util.requestWeb3(fromChainID, 'estimateGas', {
         from: web3State.coinbase,
         to: makerAddress,
@@ -299,6 +302,7 @@ export default {
       )
       return (starkFee / 10 ** 18).toFixed(6)
     }
+    
     let gasPrice = await this.getGasPrice(fromChainID.toString())
     if (!gasPrice) {
       let gas =

@@ -482,7 +482,7 @@ export default {
 
       transferValue: '',
       toValue: 0,
-      isWaitSend: false,
+      isShowExchangeIcon: true,
 
       exchangeToUsdPrice: 0,
 
@@ -557,10 +557,7 @@ export default {
       return util.isSupportXVMContract()
     },
     isLoopring() {
-      return (
-        transferDataState.fromChainID == 9 ||
-        transferDataState.fromChainID == 99
-      )
+      return transferDataState.fromChainID === 9 || transferDataState.fromChainID === 99;
     },
     transferDataState() {
       return transferDataState
@@ -569,28 +566,20 @@ export default {
       return web3State
     },
     isLogin() {
-      util.log('walletIsLogin.value', walletIsLogin.value)
-      if (!walletIsLogin.value) {
-        this.isNewVersion = false
-        this.isWhiteWallet = false
-      } else {
-        this.isWhiteWallet = !!util.isWhite()
-      }
-      return walletIsLogin.value
+        util.log('walletIsLogin.value',walletIsLogin.value);
+        if (!walletIsLogin.value) {
+            this.isNewVersion = false;
+            this.isWhiteWallet = false;
+        } else {
+            this.isWhiteWallet = !!util.isWhite();
+        }
+      return walletIsLogin.value;
     },
     currentWalletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     currentNetwork() {
       return compatibleGlobalWalletConf.value.walletPayload.networkId
-    },
-    isShowExchangeIcon() {
-      return (
-        !this.queryParams.fixed &&
-        transferDataState.toChainID !== 11 &&
-        transferDataState.toChainID !== 511 &&
-        !this.starkMid
-      )
     },
     isStarknet() {
       return this.refererUpper === 'STARKNET'
@@ -619,22 +608,6 @@ export default {
         return ''
       }
       return stark
-    },
-    starkMid() {
-      const fromChainID = transferDataState.fromChainID
-      const toChainID = transferDataState.toChainID
-      if (
-        (fromChainID === 4 || fromChainID === 44) &&
-        toChainID !== 1 &&
-        toChainID !== 5 &&
-        toChainID !== 2 &&
-        toChainID !== 22 &&
-        toChainID !== 6 &&
-        toChainID !== 66
-      ) {
-        return true
-      }
-      return false
     },
     queryParams() {
       const { query } = this.$route
@@ -844,7 +817,7 @@ export default {
       this.updateTransferInfo()
     },
     // currentNetwork(newValue, oldValue) {
-    //   if (oldValue !== newValue && !this.isWaitSend) this.clearTransferValue();
+    //   if (oldValue !== newValue) this.clearTransferValue();
     // },
     currentWalletAddress: function (newValue, oldValue) {
       util.log('Current wallet address', newValue)
@@ -1170,23 +1143,24 @@ export default {
       updateTransferFromCurrency(fromCurrency)
       updateTransferToCurrency(toCurrency)
 
-      const makerConfig = makerConfigs.find(
-        (item) =>
-          item.fromChain.id === fromChainID &&
-          item.toChain.id === toChainID &&
-          item.fromChain.symbol === fromCurrency &&
-          item.toChain.symbol === toCurrency
-      )
-      const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig))
-      if (
-        fromCurrency === toCurrency &&
-        isCrossAddress &&
-        makerConfigInfo.crossAddress?.recipient
-      ) {
-        makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient
-        makerConfigInfo.sender = makerConfigInfo.crossAddress?.sender
-        makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee
-        makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee
+      this.isShowExchangeIcon = !!makerConfigs.find(item =>
+              item.fromChain.id === toChainID &&
+              item.fromChain.symbol === toCurrency &&
+              item.toChain.id === fromChainID &&
+              item.toChain.symbol === fromCurrency);
+
+      const makerConfig = makerConfigs.find(item =>
+              item.fromChain.id === fromChainID &&
+              item.toChain.id === toChainID &&
+              item.fromChain.symbol === fromCurrency &&
+              item.toChain.symbol === toCurrency
+      );
+      const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
+      if (fromCurrency === toCurrency && isCrossAddress && makerConfigInfo.crossAddress?.recipient) {
+        makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient;
+        makerConfigInfo.sender = makerConfigInfo.crossAddress?.sender;
+        makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee;
+        makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo)
 
@@ -1403,15 +1377,10 @@ export default {
       }
     },
     async specialProcessing(oldToChainID) {
-      const { fromChainID, toChainID } = transferDataState
-      if (
-        oldToChainID === 4 ||
-        oldToChainID === 44 ||
-        oldToChainID === 11 ||
-        oldToChainID === 511
-      ) {
-        this.isCrossAddress = false
-        this.crossAddressReceipt = ''
+      const { fromChainID, toChainID } = transferDataState;
+      if (toChainID !== oldToChainID && oldToChainID === 4 || oldToChainID === 44 || oldToChainID === 11 || oldToChainID === 511) {
+        if (this.isCrossAddress) this.isCrossAddress = false;
+        if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
       if (
         fromChainID === 4 ||
@@ -1453,13 +1422,14 @@ export default {
           this.inputTransferValue()
         }
       }
-      if (toChainID === 11 || toChainID === 511) {
-        this.isCrossAddress = true
-        const self = this
-        setTimeout(() => {
-          self.crossAddressReceipt =
-            compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        }, 500)
+      if (toChainID !== oldToChainID && (toChainID === 11 || toChainID === 511)) {
+        if (!this.isCrossAddress) this.isCrossAddress = true;
+        const self = this;
+        if (self.crossAddressReceipt !== compatibleGlobalWalletConf.value.walletPayload.walletAddress){
+          setTimeout(() => {
+            self.crossAddressReceipt = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+          }, 500);
+        }
       }
     },
     async updateUserMaxPrice() {
@@ -1789,18 +1759,12 @@ export default {
             return
           }
         } else {
-          if (
-            compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-            util.chainNetWorkId(fromChainID)
-          ) {
+          if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainL1NetWorkId(fromChainID)) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
-                this.isWaitSend = true;
                 if (!await util.ensureWalletNetwork(fromChainID)) {
                   return;
-                }  
-                await util.sleep(1000);
-                this.isWaitSend = false;
+                }
               } catch (err) {
                 util.showMessage(err.message, 'error')
                 return
