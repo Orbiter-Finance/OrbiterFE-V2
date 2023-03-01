@@ -1420,9 +1420,10 @@ export default {
         });
         return;
       }
-      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-        return;
-      }
+      // TODO Test
+      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+      //   return;
+      // }
       // if unlogin  login first
       if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true);
