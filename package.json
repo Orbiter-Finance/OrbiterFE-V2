@@ -9,7 +9,7 @@
     "clear": "rimraf ./dist",
     "lint": "eslint --ext .js --ext .jsx --ext .vue src/",
     "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/",
-    "prettier": "prettier --check --write --config .prettierrc.json '**/*.{vue,js}'",
+    "prettier": "prettier --check --write --config .prettierrc.json 'src/*.{vue,js}'",
     "prepare": "husky install",
     "report": "npm run build -- --report"
   },
