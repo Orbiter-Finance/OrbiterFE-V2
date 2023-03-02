@@ -205,25 +205,10 @@
         >More</a
       >
     </div>
-    <div
-      v-if="isNewVersion && selectFromToken !== selectToToken"
-      :hidden="!isSupportXVM && !isLoopring"
-    >
-      <div
-        style="
-          text-align: left;
-          margin-top: 10px;
-          padding-left: 20px;
-          font-size: 16px;
-        "
-      >
-        <input
-          type="checkbox"
-          style="margin-right: 5px"
-          id="checkbox"
-          :disabled="crossAddressInputDisable"
-          v-model="isCrossAddress"
-        />
+<!--    TODO <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">-->
+    <div :hidden="!isNewVersion || selectFromToken === selectToToken || !isSupportXVM">
+      <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
+        <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Change Account </label>
       </div>
       <div
@@ -452,6 +437,7 @@ export default {
     return {
       isWhiteWallet: false,
       isNewVersion: false,
+      isLoopring: false,
 
       isCrossAddress: false,
       isRaiseUpFromTokenListVisible: false,
@@ -555,9 +541,6 @@ export default {
     },
     isSupportXVM() {
       return util.isSupportXVMContract()
-    },
-    isLoopring() {
-      return transferDataState.fromChainID === 9 || transferDataState.fromChainID === 99;
     },
     transferDataState() {
       return transferDataState
@@ -820,27 +803,16 @@ export default {
     //   if (oldValue !== newValue) this.clearTransferValue();
     // },
     currentWalletAddress: function (newValue, oldValue) {
-      util.log('Current wallet address', newValue)
-      this.isNewVersion = false
-      this.isWhiteWallet = !!util.isWhite()
-      if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance()
+      util.log('Current wallet address', newValue);
+      this.isNewVersion = false;
+      this.isWhiteWallet = !!util.isWhite();
+      if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
-        this.crossAddressReceipt = newValue
-        this.refreshUserBalance()
+        this.crossAddressReceipt = newValue;
+        this.updateTransferInfo();
       }
-    },
-    transferValue: function (newValue) {
-      transferDataState.transferValue !== newValue &&
-        updateTransferValue(newValue)
-    },
-  },
-  async mounted() {
-    this.initWhiteList()
-
-    this.updateTransferInfo()
-
     if (isDev() && !isMobile.value) {
       this.showTipPopup()
     }
@@ -850,7 +822,6 @@ export default {
         .getTokenConvertUsd('ETH')
         .then((response) => updateETHPrice(response))
         .catch((error) => console.warn('GetETHPriceError =', error))
-    }
 
     updateETHPriceI()
 
@@ -978,7 +949,7 @@ export default {
         fromChainID = oldToChainID
       }
 
-      if (fromCurrency === toCurrency) {
+      if (fromCurrency === toCurrency && !this.isLoopring) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
             title: `Not supported yet Change Account.`,
@@ -1149,6 +1120,8 @@ export default {
               item.toChain.id === fromChainID &&
               item.toChain.symbol === fromCurrency);
 
+      this.isLoopring = fromChainID === 9 || fromChainID === 99;
+
       const makerConfig = makerConfigs.find(item =>
               item.fromChain.id === fromChainID &&
               item.toChain.id === toChainID &&
@@ -1162,11 +1135,10 @@ export default {
         makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee;
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
-      updateTransferMakerConfig(makerConfigInfo)
-
+      updateTransferMakerConfig(makerConfigInfo);
+      this.specialProcessing(oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
-        this.updateOriginGasCost()
-        this.specialProcessing(oldToChainID)
+        this.updateOriginGasCost();
       }
       if (fromChainID !== oldFromChainID) {
         let self = this
