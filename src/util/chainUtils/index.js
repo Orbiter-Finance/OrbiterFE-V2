@@ -1,7 +1,7 @@
 import { transferDataState } from '../../composition/hooks'
-import util from "../util";
+import util from '../util'
 
 export const getNetworkIdByChainId = (chainId) => {
-  const selectIdByUser = transferDataState.fromChainID; // chainId selected by user
-  return util.chainL1NetWorkId(chainId || selectIdByUser);
-};
+    const selectIdByUser = transferDataState.fromChainID // chainId selected by user
+    return util.chainL1NetWorkId(chainId || selectIdByUser)
+}

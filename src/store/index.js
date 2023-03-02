@@ -9,9 +9,9 @@ Vue.use(Vuex)
 
 // const isDev = process.env.NODE_ENV === 'development'
 export const store = new Vuex.Store({
-  strict: false,
-  state,
-  mutations,
-  getters,
-  actions
+    strict: false,
+    state,
+    mutations,
+    getters,
+    actions,
 })
