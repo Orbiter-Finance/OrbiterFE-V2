@@ -171,7 +171,8 @@
         >More</a
       >
     </div>
-    <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
+<!--    TODO <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">-->
+    <div :hidden="!isNewVersion || selectFromToken === selectToToken || !isSupportXVM">
       <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
         <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Change Account </label>
@@ -738,12 +739,12 @@ export default {
       util.log('Current wallet address', newValue);
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
-      if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance();
+      if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         this.crossAddressReceipt = newValue;
-        this.refreshUserBalance();
+        this.updateTransferInfo();
       }
     },
     transferValue: function (newValue) {
@@ -1040,10 +1041,9 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
-
+      this.specialProcessing(oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
-        this.specialProcessing(oldToChainID);
       }
       if (fromChainID !== oldFromChainID) {
         let self = this;
