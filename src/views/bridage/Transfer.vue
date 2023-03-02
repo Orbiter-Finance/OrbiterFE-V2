@@ -739,12 +739,12 @@ export default {
       util.log('Current wallet address', newValue);
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
-      if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance();
+      if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         this.crossAddressReceipt = newValue;
-        this.refreshUserBalance();
+        this.updateTransferInfo();
       }
     },
     transferValue: function (newValue) {
@@ -1041,10 +1041,9 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
-
+      this.specialProcessing(oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
-        this.specialProcessing(oldToChainID);
       }
       if (fromChainID !== oldFromChainID) {
         let self = this;
