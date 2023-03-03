@@ -1144,6 +1144,13 @@ export default {
           util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
                   this.crossAddressReceipt, this.isErrorAddress);
         }
+
+        if (this.isLoopring && !this.crossAddressReceipt) {
+          info.text = 'SEND';
+          info.disabled = 'disabled';
+          util.log('this.isLoopring && !this.crossAddressReceipt',
+                  this.isLoopring, !this.crossAddressReceipt);
+        }
       }
       this.sendBtnInfo = info;
     },
