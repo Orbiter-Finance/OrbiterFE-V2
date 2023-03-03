@@ -1144,8 +1144,9 @@ export default {
           util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
                   this.crossAddressReceipt, this.isErrorAddress);
         }
-
-        if (this.isLoopring && !this.crossAddressReceipt) {
+        const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+        const isCheck = !reg.test(this.crossAddressReceipt);
+        if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
           info.text = 'SEND';
           info.disabled = 'disabled';
           util.log('this.isLoopring && !this.crossAddressReceipt',
