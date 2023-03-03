@@ -859,9 +859,9 @@ export default {
           this.refreshGasFeeToolTip();
       },
     async initWhiteList() {
-      if (isProd()) {
-        config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      }
+      // if (isProd()) {
+      //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
+      // }
       this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
