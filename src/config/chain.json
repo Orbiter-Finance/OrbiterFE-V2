@@ -39,7 +39,10 @@
                 "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x3bE8b60DDF9Feff6b2426E47a7619d7cbc786D97",
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://etherscan.io"
     },
     {
@@ -82,7 +85,9 @@
                 "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://explorer.arbitrum.io"
     },
     {
@@ -206,7 +211,9 @@
                 "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://polygonscan.com"
     },
     {
@@ -250,7 +257,9 @@
                 "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://optimistic.etherscan.io"
     },
     {

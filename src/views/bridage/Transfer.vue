@@ -738,12 +738,12 @@ export default {
       util.log('Current wallet address', newValue);
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
-      if (oldValue !== newValue && newValue !== '0x') this.refreshUserBalance();
+      if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
         this.crossAddressReceipt = newValue;
-        this.refreshUserBalance();
+        this.updateTransferInfo();
       }
     },
     transferValue: function (newValue) {
@@ -858,9 +858,9 @@ export default {
           this.refreshGasFeeToolTip();
       },
     async initWhiteList() {
-      if (isProd()) {
-        config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      }
+      // if (isProd()) {
+      //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
+      // }
       this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
@@ -882,6 +882,8 @@ export default {
       if (oldToChainID !== toChainID && oldFromChainID === fromChainID && toChainID === fromChainID) {
         fromChainID = oldToChainID;
       }
+
+      this.isLoopring = fromChainID === 9 || fromChainID === 99;
 
       if (fromCurrency === toCurrency && !this.isLoopring) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
@@ -1024,8 +1026,6 @@ export default {
               item.toChain.id === fromChainID &&
               item.toChain.symbol === fromCurrency);
 
-      this.isLoopring = fromChainID === 9 || fromChainID === 99;
-
       const makerConfig = makerConfigs.find(item =>
               item.fromChain.id === fromChainID &&
               item.toChain.id === toChainID &&
@@ -1040,10 +1040,9 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
-
+      this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
-        this.specialProcessing(oldToChainID);
       }
       if (fromChainID !== oldFromChainID) {
         let self = this;
@@ -1144,6 +1143,14 @@ export default {
           util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
                   this.crossAddressReceipt, this.isErrorAddress);
         }
+        const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+        const isCheck = !reg.test(this.crossAddressReceipt);
+        if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
+          info.text = 'SEND';
+          info.disabled = 'disabled';
+          util.log('this.isLoopring && !this.crossAddressReceipt',
+                  this.isLoopring, !this.crossAddressReceipt);
+        }
       }
       this.sendBtnInfo = info;
     },
@@ -1194,7 +1201,7 @@ export default {
         this.toValue = amount;
       }
     },
-    async specialProcessing(oldToChainID) {
+    async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
       if (toChainID !== oldToChainID && oldToChainID === 4 || oldToChainID === 44 || oldToChainID === 11 || oldToChainID === 511) {
         if (this.isCrossAddress) this.isCrossAddress = false;
@@ -1226,6 +1233,9 @@ export default {
         if (walletIsLogin.value) {
           this.inputTransferValue();
         }
+      }
+      if (oldFromChainID !== fromChainID && (fromChainID === 9 || fromChainID === 99)) {
+        this.isCrossAddress = true;
       }
       if (toChainID !== oldToChainID && (toChainID === 11 || toChainID === 511)) {
         if (!this.isCrossAddress) this.isCrossAddress = true;
