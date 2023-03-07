@@ -16,6 +16,7 @@ const MAX_BITS = {
   boba: 256,
   bsc: 256,
   arbitrum_nova: 256,
+  polygon_zkevm: 256,
   scroll_l1_test: 256,
   scroll_l2_test: 256,
   taiko_a1_test: 256
@@ -52,6 +53,7 @@ const CHAIN_INDEX = {
   15: "bsc",
   16: 'arbitrum_nova',
   516: 'arbitrum_nova',
+  517: 'polygon_zkevm',
   518: 'scroll_l1_test',
   519: 'scroll_l2_test',
   520: 'taiko_a1_test'
