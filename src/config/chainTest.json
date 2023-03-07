@@ -589,6 +589,35 @@
   },
   {
     "api": {
+      "url": "https://explorer.public.zkevm-test.net/api",
+      "key": "",
+      "intervalTime": 10000
+    },
+    "chainId": "1422",
+    "networkId": "1422",
+    "internalId": "517",
+    "name": "Polygon EVM",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://rpc.public.zkevm-test.net"
+    ],
+    "xvmList": [],
+    "watch": [
+      "rpc",
+      "api"
+    ],
+    "tokens": [],
+    "infoURL": "https://explorer.public.zkevm-test.net/"
+  },
+  {
+    "api": {
       "url": "https://l2scan.scroll.io/api",
       "key": ""
     },
