@@ -5,8 +5,8 @@ import { store } from '../../store'
 
 export default {
     async getSupportZksTokenList() {
-        await getAllZksTokenList(12);
-        await getAllZksTokenList(512);
+        await getAllZksTokenList(12)
+        await getAllZksTokenList(512)
         await util.sleep(30 * 1000)
         this.getSupportZksTokenList()
     },
@@ -21,13 +21,13 @@ async function getAllZksTokenList(localChainID) {
     let zksTokenAllList = []
     try {
         while (isContiue) {
-            var zksTokenListReq = {
+            const zksTokenListReq = {
                 from: startID,
                 limit: 100,
                 direction: 'newer',
-                localChainID: localChainID,
+                localChainID,
             }
-            let zksList = await getZKSTokenList(zksTokenListReq)
+            const zksList = await getZKSTokenList(zksTokenListReq)
             if (zksList.length !== 100) {
                 isContiue = false
             } else {
@@ -35,7 +35,7 @@ async function getAllZksTokenList(localChainID) {
             }
             zksTokenAllList = zksTokenAllList.concat(zksList)
         }
-        let zksTokenResult = {
+        const zksTokenResult = {
             chainID: localChainID,
             tokenList: zksTokenAllList,
         }
@@ -45,19 +45,22 @@ async function getAllZksTokenList(localChainID) {
     }
 }
 async function getZKSTokenList(req) {
-    const url = `${req.localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
-        }/tokens?from=${req.from}&limit=${req.limit}&direction=${req.direction}`
+    const url = `${
+        req.localChainID === 512
+            ? config.ZKSpace.Rinkeby
+            : config.ZKSpace.Mainnet
+    }/tokens?from=${req.from}&limit=${req.limit}&direction=${req.direction}`
     try {
         const response = await axios.get(url)
         if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.success) {
                 return respData.data
             } else {
-                throw new Error(`respData.status not success`)
+                throw new Error('respData.status not success')
             }
         } else {
-            throw new Error(`getZKSTokenList NetWorkError`)
+            throw new Error('getZKSTokenList NetWorkError')
         }
     } catch (error) {
         console.error('getZKSTokenList error =', error)

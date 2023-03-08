@@ -171,8 +171,7 @@
         >More</a
       >
     </div>
-   <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
-    <!-- <div :hidden="!isNewVersion || selectFromToken === selectToToken || !isSupportXVM"> -->
+    <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
       <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
         <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
         <label for="checkbox"> Change Account </label>
@@ -884,6 +883,8 @@ export default {
         fromChainID = oldToChainID;
       }
 
+      this.isLoopring = fromChainID === 9 || fromChainID === 99;
+
       if (fromCurrency === toCurrency && !this.isLoopring) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
@@ -1025,8 +1026,6 @@ export default {
               item.toChain.id === fromChainID &&
               item.toChain.symbol === fromCurrency);
 
-      this.isLoopring = fromChainID === 9 || fromChainID === 99;
-
       const makerConfig = makerConfigs.find(item =>
               item.fromChain.id === fromChainID &&
               item.toChain.id === toChainID &&
@@ -1041,7 +1040,7 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
-      this.specialProcessing(oldToChainID);
+      this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
       }
@@ -1202,7 +1201,7 @@ export default {
         this.toValue = amount;
       }
     },
-    async specialProcessing(oldToChainID) {
+    async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
       if (toChainID !== oldToChainID && oldToChainID === 4 || oldToChainID === 44 || oldToChainID === 11 || oldToChainID === 511) {
         if (this.isCrossAddress) this.isCrossAddress = false;
@@ -1234,6 +1233,9 @@ export default {
         if (walletIsLogin.value) {
           this.inputTransferValue();
         }
+      }
+      if (oldFromChainID !== fromChainID && (fromChainID === 9 || fromChainID === 99)) {
+        this.isCrossAddress = true;
       }
       if (toChainID !== oldToChainID && (toChainID === 11 || toChainID === 511)) {
         if (!this.isCrossAddress) this.isCrossAddress = true;

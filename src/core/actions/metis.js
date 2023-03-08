@@ -6,7 +6,7 @@ import config from '../utils/config'
 
 Axios.axios()
 
-var configNet = config.metis.Mainnet
+let configNet = config.metis.Mainnet
 
 export default {
     getTxList: function (req, chainId, isTokentx = true) {
@@ -28,8 +28,11 @@ export default {
                 .get(configNet, { params })
                 .then(function (response) {
                     if (response.status === 200) {
-                        var respData = response.data
-                        if (respData.status === '1' && respData.message === 'OK') {
+                        const respData = response.data
+                        if (
+                            respData.status === '1' &&
+                            respData.message === 'OK'
+                        ) {
                             resolve(respData)
                         } else if (
                             respData.status === '0' &&
@@ -85,28 +88,34 @@ export default {
                 timestamp: req.timestamp,
                 closest: req.closest,
             }
-            axios.get(configNet, { params }).then(function (response) {
-                if (response.status === 200) {
-                    var respData = response.data
-                    if (respData.status === '1' && respData.message === 'OK') {
-                        cacheMemorySet(cacheKey, respData, 7200000)
+            axios
+                .get(configNet, { params })
+                .then(function (response) {
+                    if (response.status === 200) {
+                        const respData = response.data
+                        if (
+                            respData.status === '1' &&
+                            respData.message === 'OK'
+                        ) {
+                            cacheMemorySet(cacheKey, respData, 7200000)
 
-                        resolve(respData)
+                            resolve(respData)
+                        } else {
+                            reject(respData)
+                        }
                     } else {
-                        reject(respData)
+                        reject({
+                            errorCode: 1,
+                            errorMsg: 'NetWork Error',
+                        })
                     }
-                } else {
-                    reject({
-                        errorCode: 1,
-                        errorMsg: 'NetWork Error',
-                    })
-                }
-            }).catch(function (error) {
-                reject({
-                    errorCode: 2,
-                    errorMsg: error,
                 })
-            })
+                .catch(function (error) {
+                    reject({
+                        errorCode: 2,
+                        errorMsg: error,
+                    })
+                })
         })
     },
 }
