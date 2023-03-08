@@ -42,7 +42,8 @@ export default {
     519: 'scrolllogo',
     20: 'taikologo',
     520: 'taikologo',
-    521: 'baselogo'
+    521: 'baselogo',
+    522: 'consensyslogo'
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -77,7 +78,8 @@ export default {
     517: 'https://public.zkevm-test.net:8443/tx/',
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
-    521: 'https://goerli.basescan.org/tx/'
+    521: 'https://goerli.basescan.org/tx/',
+    522: 'https://explorer.goerli.zkevm.consensys.net/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -112,7 +114,8 @@ export default {
     517: 'https://public.zkevm-test.net:8443/address/',
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
-    521: 'https://goerli.basescan.org/address/'
+    521: 'https://goerli.basescan.org/address/',
+    522: 'https://explorer.goerli.zkevm.consensys.net/address/'
   },
   gasPriceMap: {
     1: 100,
@@ -145,7 +148,8 @@ export default {
     517: 1,
     518: 1,
     519: 1,
-    521: 1
+    521: 1,
+    522: 1
   },
   gasLimitMap: {
     1: 35000,
@@ -178,6 +182,7 @@ export default {
     517: 21000,
     518: 21000,
     519: 21000,
-    521: 21000
+    521: 21000,
+    522: 21000
   }
 };
