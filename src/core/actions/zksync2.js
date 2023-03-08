@@ -1,7 +1,6 @@
-
 import config from '../utils/config'
 import { cacheMemoryGet, cacheMemorySet } from '../../util/cache/memory'
-import { axiosPlus } from "../utils/Axios"
+import { axiosPlus } from '../utils/Axios'
 let configNet = config.zkSync2.Mainnet
 
 export default {
@@ -24,14 +23,18 @@ export default {
             configNet = config.zkSync2.Rinkeby
         }
         try {
-            const respData = await axiosPlus("get", configNet, params)
-            if ((respData.status === '1' && respData.message === 'OK') || (respData.status === '0' && respData.message === 'No transactions found')) {
+            const respData = await axiosPlus('get', configNet, params)
+            if (
+                (respData.status === '1' && respData.message === 'OK') ||
+                (respData.status === '0' &&
+                    respData.message === 'No transactions found')
+            ) {
                 return respData
             } else {
-                throw new Error("zk2 get txList error")
+                throw new Error('zk2 get txList error')
             }
         } catch (error) {
-            throw new Error("zk2 get txList error")
+            throw new Error('zk2 get txList error')
         }
     },
     getBlockNumberWithTimeStamp: async function (req, chainId) {
@@ -50,15 +53,17 @@ export default {
             closest: req.closest,
         }
         try {
-            const respData = await axiosPlus("get", configNet, params)
+            const respData = await axiosPlus('get', configNet, params)
             if (respData.status === '1' && respData.message === 'OK') {
                 cacheMemorySet(cacheKey, respData, 7200000)
                 return respData
             } else {
-                throw new Error("zk2 blocknumber by time get nothing")
+                throw new Error('zk2 blocknumber by time get nothing')
             }
         } catch (error) {
-            throw new Error(`zk2 blocknumber by time network error ${error.message}`)
+            throw new Error(
+                `zk2 blocknumber by time network error ${error.message}`
+            )
         }
     },
 }
