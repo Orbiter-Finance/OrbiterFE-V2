@@ -1,3 +1,5 @@
+import util from "./util/util";
+
 const BigNumber = require('bignumber.js')
 
 const MAX_BITS = {
@@ -278,16 +280,7 @@ function getRAmountFromTAmount(chain, amount) {
 }
 
 function isChainSupport(chain) {
-  if (typeof chain === 'number') {
-    if (CHAIN_INDEX[chain] && MAX_BITS[CHAIN_INDEX[chain]]) {
-      return true
-    }
-  } else if (typeof chain === 'string') {
-    if (MAX_BITS[chain.toLowerCase()]) {
-      return true
-    }
-  }
-  return false
+  return !!util.getChainInfoByChainId(chain);
 }
 
 // 0 ~ (2 ** N - 1)
@@ -298,13 +291,13 @@ function AmountRegion(chain) {
     }
   }
   if (typeof chain === 'number') {
-    let max = BigNumber(2 ** MAX_BITS[CHAIN_INDEX[chain]] - 1)
+    let max = BigNumber(2 ** (MAX_BITS[CHAIN_INDEX[chain]] || 256) - 1)
     return {
       min: BigNumber(0),
       max: max,
     }
   } else if (typeof chain === 'string') {
-    let max = BigNumber(2 ** MAX_BITS[chain.toLowerCase()] - 1)
+    let max = BigNumber(2 ** (MAX_BITS[chain.toLowerCase()] || 256) - 1)
     return {
       min: BigNumber(0),
       max: max,
@@ -437,7 +430,7 @@ function getDigitByPrecision(precision) {
   return precision === 18 ? 6 : 2
 }
 
-module.exports = {
+export default {
   getPTextFromTAmount,
   getToChainIDFromAmount,
   isAmountValid,
