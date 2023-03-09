@@ -1,30 +1,34 @@
-import { reactive } from "../../composition";
+import { reactive } from '../../composition'
 
 // responsive data of the wallet information that already login
 // change wallet will update this data
 export const globalSelectWalletConf = reactive({
-    walletType: "",
+    walletType: '',
     walletPayload: {
-        walletAddress: "",
-        networkId: "",
+        walletAddress: '',
+        networkId: '',
         provider: null, // ethereum node match this wallet type
     },
-    loginSuccess: false
+    loginSuccess: false,
 })
 
-export const updateGlobalSelectWalletConf = (type = "", conf = {}, loginSuccess = false) => {
-    globalSelectWalletConf.walletPayload = conf;
-    globalSelectWalletConf.walletType = type;
-    globalSelectWalletConf.loginSuccess = loginSuccess;
+export const updateGlobalSelectWalletConf = (
+    type = '',
+    conf = {},
+    loginSuccess = false
+) => {
+    globalSelectWalletConf.walletPayload = conf
+    globalSelectWalletConf.walletType = type
+    globalSelectWalletConf.loginSuccess = loginSuccess
 }
 
 export const updateSelectWalletConfPayload = (payload) => {
     globalSelectWalletConf.walletPayload = {
         ...globalSelectWalletConf.walletPayload,
-        ...payload
+        ...payload,
     }
 }
 
 export const updateSelectWalletAddress = (newAddress) => {
-    globalSelectWalletConf.walletPayload.walletAddress = newAddress;
+    globalSelectWalletConf.walletPayload.walletAddress = newAddress
 }

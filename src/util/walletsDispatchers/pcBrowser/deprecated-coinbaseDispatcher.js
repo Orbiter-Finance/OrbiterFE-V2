@@ -1,21 +1,20 @@
-
 /**
  * Warning!!!!!!!!!!!!!!!!!!
  * this file will be deprecated
  * please head over to the standardWalletLoader.js to get more information
  */
-import { COINBASE } from "../constants";
-import { universalWalletInitHandler } from "./standardWalletAPI";
-import { withPerformInterruptWallet } from "../utils";
+import { COINBASE } from '../constants'
+import { universalWalletInitHandler } from './standardWalletAPI'
+import { withPerformInterruptWallet } from '../utils'
 
 /**
  * @deprecated
  */
 export const coinbaseDispatcherOnInit = () => {
     // because of coinbase supports mobile env (app?),
-    // so i am going to differentiate the env, 
+    // so i am going to differentiate the env,
     // convenient for the feature maintenance
-    return coinbaseDispatcherOnBrowserInit();
+    return coinbaseDispatcherOnBrowserInit()
 }
 
 // coinbase init in browser
@@ -23,7 +22,7 @@ export const coinbaseDispatcherOnInit = () => {
  * @deprecated
  */
 const coinbaseDispatcherOnBrowserInit = () => {
-    universalWalletInitHandler(COINBASE);
+    universalWalletInitHandler(COINBASE)
     // ---------------- deprecated ----------------------------
     // const coinbaseProvider = findMatchWeb3ProviderByWalletType(COINBASE);
     // // request coinbase extension
@@ -45,4 +44,6 @@ const coinbaseDispatcherOnBrowserInit = () => {
 /**
  * @deprecated
  */
-export const coinbaseDispatcherOnDisconnect = withPerformInterruptWallet(() => {});
+export const coinbaseDispatcherOnDisconnect = withPerformInterruptWallet(
+    () => {}
+)
