@@ -1,3 +1,3 @@
 export const isBraveBrowser = () => {
-    return !!window.navigator.brave;
+  return !!window.navigator.brave
 }

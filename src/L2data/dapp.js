@@ -1,7 +1,7 @@
 import http from './index'
 
 export async function getDapps(rollup) {
-  let res = undefined
+  let res
   try {
     res = await http.get(`/dapp_data/${rollup}`)
     if (res.data.status !== 'success') {
@@ -14,7 +14,7 @@ export async function getDapps(rollup) {
 }
 
 export async function getDappDetail(rollup, name) {
-  let res = undefined
+  let res
   try {
     res = await http.get(
       `/dapp/details/${rollup}/${name.replace(' ', '').toLowerCase()}`

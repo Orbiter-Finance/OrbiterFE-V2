@@ -1,9 +1,9 @@
 import http from './index'
 
-let tabs = {}
+const tabs = {}
 
 export async function getRollups() {
-  let res = undefined
+  let res
   try {
     res = await http.get('/rollups_data')
     if (res.data.status !== 'success') {
@@ -16,7 +16,7 @@ export async function getRollups() {
 }
 
 export async function getTabRollups(from) {
-  let res = undefined
+  let res
   if (tabs[from]) {
     return tabs[from]
   }

@@ -2,9 +2,9 @@ import axios from 'axios'
 import { cacheMemoryGet, cacheMemorySet } from '../../util/cache/memory'
 import Axios from '../utils/Axios'
 import config from '../utils/config'
-Axios.axios()
 
 import { GraphQLClient, gql } from 'graphql-request'
+Axios.axios()
 export default {
   async queryAddressTrxList(graphQLClient, address) {
     const query = gql`
@@ -119,12 +119,14 @@ export default {
         // apikey: config.polygon.key,
       }
       const configNet =
-        chainId === 516 ? config.arbitrum_nova.Rinkeby : config.arbitrum_nova.Mainnet
+        chainId === 516
+          ? config.arbitrum_nova.Rinkeby
+          : config.arbitrum_nova.Mainnet
       axios
         .get(configNet, { params })
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === '1' && respData.message === 'OK') {
               cacheMemorySet(cacheKey, respData, 7200000)
               resolve(respData)

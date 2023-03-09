@@ -11,7 +11,7 @@ export default {
 }
 async function axiosPlus(method, url, params = {}, count = 5) {
   try {
-    let resp;
+    let resp
     if (method.toLowerCase() == 'get') {
       resp = await axios.get(url, { params })
     } else {
@@ -24,7 +24,7 @@ async function axiosPlus(method, url, params = {}, count = 5) {
       throw new Error(`get ${url} error`)
     }
   } catch (error) {
-    count--;
+    count--
     if (count >= 0) {
       return await axiosPlus(method, url, params, count)
     } else {

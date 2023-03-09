@@ -6,7 +6,7 @@ import config from '../utils/config'
 
 Axios.axios()
 
-var configNet = config.etherscan.Mainnet
+let configNet = config.etherscan.Mainnet
 
 export default {
   getTxList: function (req, chainId, isTokentx = true) {
@@ -30,7 +30,7 @@ export default {
         .get(configNet, { params })
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === '1' && respData.message === 'OK') {
               resolve(respData)
             } else if (
@@ -94,7 +94,7 @@ export default {
         .get(configNet, { params })
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === '1' && respData.message === 'OK') {
               cacheMemorySet(cacheKey, respData, 7200000)
 

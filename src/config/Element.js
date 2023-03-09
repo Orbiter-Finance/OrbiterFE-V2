@@ -19,7 +19,7 @@ import {
   Col,
 } from 'element-ui'
 const element = {
-  install: function(Vue) {
+  install: function (Vue) {
     Vue.use(Switch)
     Vue.use(Steps)
     Vue.use(Step)

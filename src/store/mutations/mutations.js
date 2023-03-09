@@ -1,5 +1,9 @@
 import { toggleBodyCls } from '../../util'
-import { updatelpApiKey, updatelpAccountInfo, web3State } from '../../composition/hooks'
+import {
+  updatelpApiKey,
+  updatelpAccountInfo,
+  web3State,
+} from '../../composition/hooks'
 
 export default {
   updateZKTokenList(state, obj) {

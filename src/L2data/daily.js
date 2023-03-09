@@ -1,9 +1,7 @@
-
-
 import http from './index'
 
 export async function getDappDailyData(rollup) {
-  let res = undefined
+  let res
   try {
     res = await http.get(`/mainpage_dapp_daily_data/${rollup}`)
     if (res.data.status !== 'success') {

@@ -159,7 +159,7 @@ export async function sendTransfer(
   l1Address = l1Address.toLowerCase()
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
-  let networkID = getNetworkIdByChainId(chainID)
+  const networkID = getNetworkIdByChainId(chainID)
   const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
@@ -216,7 +216,7 @@ export async function sendTransfer(
 export async function getAllowance(contractErc20, contractAddress) {
   const ownerAddress = getStarknet().selectedAddress
   const allowance = await contractErc20.allowance(ownerAddress, contractAddress)
-  return allowance['remaining']['low']
+  return allowance.remaining.low
 }
 
 export async function getStarkNonce() {
@@ -239,11 +239,11 @@ export async function getStarkTransferFee(
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
 
-  let networkID = getNetworkIdByChainId(chainID)
+  const networkID = getNetworkIdByChainId(chainID)
   const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
-  const provider = new Provider({ network: network })
+  const provider = new Provider({ network })
   const userSender = new Account(
     provider,
     GAS_ADDRESS[network].address,
@@ -270,7 +270,7 @@ export async function getStarkTransferFee(
   }
 
   try {
-    let est2 = await crossContract.estimate('transferERC20', [
+    const est2 = await crossContract.estimate('transferERC20', [
       tokenAddress,
       receiverAddress,
       getUint256CalldataFromBN(String(0)),
@@ -358,11 +358,11 @@ export async function getErc20Balance(
   const provider = new Provider({ network })
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
   const resp = await tokenContract.balanceOf(starknetAddress)
-  if (!resp || !resp.balance || !resp.balance['low']) {
+  if (!resp || !resp.balance || !resp.balance.low) {
     return 0
   }
 
-  return new BigNumber(resp.balance['low']).toNumber()
+  return new BigNumber(resp.balance.low).toNumber()
 }
 
 /**

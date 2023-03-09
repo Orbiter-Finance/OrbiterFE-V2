@@ -1,7 +1,7 @@
 import http from './index'
 
 export async function getContracts(rollup) {
-  let res = undefined
+  let res
   try {
     res = await http.get(`/new_contracts/${rollup}`)
     if (res.data.status !== 'success') {

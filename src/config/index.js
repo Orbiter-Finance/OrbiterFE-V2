@@ -2,7 +2,7 @@ import chainMain from './chain.json'
 import makerMain from './maker.json'
 import chainTest from './chainTest.json'
 import makerTest from './makerTest.json'
-import { isProd } from "../util";
+import { isProd } from '../util'
 
 const tokenIcons = {
   ETH: require('../assets/ethlogo.svg'),
@@ -15,7 +15,7 @@ const tokenIcons = {
   LRC: require('../assets/lrclogo.png'),
   BNB: require('../assets/bnblogo.png'),
   DAI: require('../assets/dailogo.png'),
-  MATIC: require('../assets/maticlogo.png')
+  MATIC: require('../assets/maticlogo.png'),
 }
 
 /**
@@ -33,48 +33,48 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-const chain = isProd() ? chainMain : chainTest;
-const maker = isProd() ? makerMain : makerTest;
+const chain = isProd() ? chainMain : chainTest
+const maker = isProd() ? makerMain : makerTest
 
-const chainConfig = [...chain].map(item => {
-  if (process.env[`VUE_APP_CHAIN_API_KEY_${ item.internalId }`]) {
-    item.api = item.api || {};
-    item.api.key = process.env[`VUE_APP_CHAIN_API_KEY_${ item.internalId }`];
+const chainConfig = [...chain].map((item) => {
+  if (process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`]) {
+    item.api = item.api || {}
+    item.api.key = process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`]
   }
-  return item;
-});
+  return item
+})
 
 function convertMakerConfig() {
-  const makerMap = maker;
-  const chainList = chainConfig;
-  const configs = [];
+  const makerMap = maker
+  const chainList = chainConfig
+  const configs = []
   const getChainTokenList = (chain) => {
-    return chain.nativeCurrency ? [chain.nativeCurrency, ...chain.tokens] : [...chain.tokens];
-  };
+    return chain.nativeCurrency
+      ? [chain.nativeCurrency, ...chain.tokens]
+      : [...chain.tokens]
+  }
   for (const chainIdPair in makerMap) {
-    if (!makerMap.hasOwnProperty(chainIdPair)) continue;
-    const symbolPairMap = makerMap[chainIdPair];
-    const [fromChainId, toChainId] = chainIdPair.split("-");
-    const c1Chain = chainList.find(item => +item.internalId === +fromChainId);
-    const c2Chain = chainList.find(item => +item.internalId === +toChainId);
-    if (!c1Chain || !c2Chain) continue;
+    if (!makerMap.hasOwnProperty(chainIdPair)) continue
+    const symbolPairMap = makerMap[chainIdPair]
+    const [fromChainId, toChainId] = chainIdPair.split('-')
+    const c1Chain = chainList.find((item) => +item.internalId === +fromChainId)
+    const c2Chain = chainList.find((item) => +item.internalId === +toChainId)
+    if (!c1Chain || !c2Chain) continue
     for (const symbolPair in symbolPairMap) {
-      if (!symbolPairMap.hasOwnProperty(symbolPair)) continue;
-      const makerData = symbolPairMap[symbolPair];
-      const [fromChainSymbol, toChainSymbol] = symbolPair.split("-");
-      const fromTokenList = getChainTokenList(c1Chain);
-      const toTokenList = getChainTokenList(c2Chain);
+      if (!symbolPairMap.hasOwnProperty(symbolPair)) continue
+      const makerData = symbolPairMap[symbolPair]
+      const [fromChainSymbol, toChainSymbol] = symbolPair.split('-')
+      const fromTokenList = getChainTokenList(c1Chain)
+      const toTokenList = getChainTokenList(c2Chain)
       const fromToken = fromTokenList.find(
-          item => item.symbol === fromChainSymbol,
-      );
-      const toToken = toTokenList.find(
-          item => item.symbol === toChainSymbol,
-      );
-      if (!fromToken || !toToken) continue;
+        (item) => item.symbol === fromChainSymbol
+      )
+      const toToken = toTokenList.find((item) => item.symbol === toChainSymbol)
+      if (!fromToken || !toToken) continue
       const config = {
-        id: "",
-        makerId: "",
-        ebcId: "",
+        id: '',
+        makerId: '',
+        ebcId: '',
         slippage: makerData.slippage || 0,
         recipient: makerData.makerAddress,
         sender: makerData.sender,
@@ -101,24 +101,30 @@ function convertMakerConfig() {
           recipient: makerData.crossAddress?.makerAddress,
           sender: makerData.crossAddress?.sender,
           tradingFee: makerData.crossAddress?.tradingFee,
-          gasFee: makerData.crossAddress?.gasFee
-        }
-      };
+          gasFee: makerData.crossAddress?.gasFee,
+        },
+      }
       // handle makerConfigs
-      configs.push(config);
+      configs.push(config)
       // v1 maker configs
       if (fromChainSymbol === toChainSymbol) {
-        v1MakerConfigs.push(config);
+        v1MakerConfigs.push(config)
       }
     }
   }
-  return configs;
+  return configs
 }
 
-const v1MakerConfigs = [];
+const v1MakerConfigs = []
 
-const makerConfigs = convertMakerConfig();
+const makerConfigs = convertMakerConfig()
 
-let whiteList = [];
+const whiteList = []
 
-export default { getTokenIcon, chainConfig, makerConfigs, v1MakerConfigs, whiteList };
+export default {
+  getTokenIcon,
+  chainConfig,
+  makerConfigs,
+  v1MakerConfigs,
+  whiteList,
+}

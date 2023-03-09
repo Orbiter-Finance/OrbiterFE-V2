@@ -589,6 +589,37 @@
   },
   {
     "api": {
+      "url": "https://explorer.public.zkevm-test.net/api",
+      "key": "",
+      "intervalTime": 10000
+    },
+    "chainId": "1442",
+    "networkId": "1442",
+    "l1NetworkId": "1442",
+    "internalId": "517",
+    "isSupportOpenApi": true,
+    "name": "Polygon EVM",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://rpc.public.zkevm-test.net"
+    ],
+    "xvmList": [],
+    "watch": [
+      "rpc",
+      "api"
+    ],
+    "tokens": [],
+    "infoURL": "https://explorer.public.zkevm-test.net/"
+  },
+  {
+    "api": {
       "url": "https://l2scan.scroll.io/api",
       "key": ""
     },
@@ -646,5 +677,53 @@
     ],
     "infoURL": "https://taiko.xyz/",
     "parent": {}
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "84531",
+    "networkId": "84531",
+    "l1NetworkId": "84531",
+    "internalId": "521",
+    "name": "Base(G)",
+    "debug": false,
+    "isSupportOpenApi": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://goerli.base.org"],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://goerli.basescan.org"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "59140",
+    "networkId": "59140",
+    "l1NetworkId": "59140",
+    "internalId": "522",
+    "name": "ConsenSys zkEVM(G)",
+    "debug": false,
+    "isSupportOpenApi": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "crETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://consensys-zkevm-goerli-prealpha.infura.io/v3/bdf92864a1d3482b977c8d05f7ddebda"],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": " https://explorer.goerli.zkevm.consensys.net"
   }
 ]

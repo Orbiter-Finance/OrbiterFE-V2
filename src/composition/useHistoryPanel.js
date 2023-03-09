@@ -1,6 +1,8 @@
 import { reactive, watchEffect } from '.'
-import { walletIsLogin } from './walletsResponsiveData'
-import { compatibleGlobalWalletConf } from './walletsResponsiveData'
+import {
+  walletIsLogin,
+  compatibleGlobalWalletConf,
+} from './walletsResponsiveData'
 import { getTransactionsHistoryApi } from '../core/routes/transactions'
 import { formatDateShort } from '../util'
 
@@ -99,7 +101,7 @@ export async function getTransactionsHistory(params = {}) {
           v.makerAddress.slice(0, 4) + '...' + v.makerAddress.slice(-4),
         userAmount: v.fromValueFormat,
         fromTimeStamp: v.fromTimeStamp,
-        fromTimeStampShow: fromTimeStampShow,
+        fromTimeStampShow,
         toTimeStamp: v.toTimeStamp,
         tokenName: v.tokenName,
         fromTxHash: v.fromTx,

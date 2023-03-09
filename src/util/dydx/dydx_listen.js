@@ -27,7 +27,9 @@ export class DydxListen {
       const dydxHelper = new DydxHelper(this.chainId, this.web3, 'MetaMask')
       const dydxClient = await dydxHelper.getDydxClient(this.ethereumAddress)
 
-      const transfers = await dydxClient.private.getTransfers({ limit: 10 })
+      const transfers = await dydxClient.private.getTransfers({
+        limit: 10,
+      })
       if (!transfers.transfers) {
         return
       }

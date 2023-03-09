@@ -22,7 +22,6 @@ import CommLoading from './components/CommLoading.vue'
 import Loader from './views/data/Loader'
 import { isDev, isLocal } from './util/env'
 import { GOOGLE_ANALYTICS_ID_TEST, GOOGLE_ANALYTICS_ID } from './const/index'
-import eruda from 'eruda'
 
 // inject more powerful log method on the console object
 import './util/enhancedLogger'

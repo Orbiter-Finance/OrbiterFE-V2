@@ -79,7 +79,7 @@ class StarknetListen {
             getStarkNetValidAddress(tx.contract_address) ==
               getStarkNetValidAddress(this.apiParamsTo)
         )) {
-          let calldata = tx.calldata
+          const calldata = tx.calldata
           // Check data
           if (!calldata || calldata.length < 7) {
             break

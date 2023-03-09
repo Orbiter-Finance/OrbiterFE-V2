@@ -32,7 +32,7 @@ export default {
     if (!account) {
       return 0
     }
-    let ethPrice = transferDataState.ethPrice
+    const ethPrice = transferDataState.ethPrice
       ? transferDataState.ethPrice
       : 2000
 
@@ -50,7 +50,7 @@ export default {
           const gasFee = new BigNumber(respData.data.transfer).dividedBy(
             new BigNumber(ethPrice)
           )
-          let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
+          const gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
           return Number(gasFee_fix)
         } else {
           throw new Error('getZKSpaceGasFee->respData.success no true')
@@ -66,7 +66,7 @@ export default {
     if (!account) {
       return
     }
-    let ethPrice = transferDataState.ethPrice
+    const ethPrice = transferDataState.ethPrice
       ? transferDataState.ethPrice
       : 2000
 
@@ -79,14 +79,14 @@ export default {
     try {
       const response = await axios.get(url)
       if (response.status === 200 && response.data.success) {
-        var respData = response.data
+        const respData = response.data
         const gasFee = new BigNumber(respData.data.withdraw).dividedBy(
           new BigNumber(ethPrice)
         )
-        let gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
+        const gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
         return Number(gasFee_fix)
       }
-      throw new Error(`getZKSpaceWithDrawGasFee response.status not 200`)
+      throw new Error('getZKSpaceWithDrawGasFee response.status not 200')
     } catch (error) {
       throw new Error(`getZKSpaceWithDrawGasFee error：${error.message}`)
     }
@@ -116,7 +116,7 @@ export default {
         .get(url)
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.success == true) {
               resolve(respData.data)
             } else {
@@ -144,7 +144,7 @@ export default {
         error: 'sendZKSpaceTransferError_wrongChainID',
       }
     }
-    let response = await axios.post(
+    const response = await axios.post(
       (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
         '/tx',
       {
@@ -166,7 +166,7 @@ export default {
     const response = await axios.get(url)
 
     if (response.status === 200) {
-      var respData = response.data
+      const respData = response.data
       if (respData.success === true) {
         return respData
       } else {
@@ -178,51 +178,51 @@ export default {
   },
 
   async getL2SigTwoAndPK(
-      signer,
-      accountInfo,
-      transferValue,
-      fee,
-      zksChainID,
-      tokenInfo
+    signer,
+    accountInfo,
+    transferValue,
+    fee,
+    zksChainID,
+    tokenInfo
   ) {
-    const { selectMakerConfig } = transferDataState;
+    const { selectMakerConfig } = transferDataState
     try {
       const l2MsgParams = {
         accountId: accountInfo.id,
         to: selectMakerConfig.recipient,
         tokenSymbol: tokenInfo ? tokenInfo.symbol : 'ETH',
         tokenAmount: ethers.utils.formatUnits(
-            transferValue,
-            tokenInfo.decimals
+          transferValue,
+          tokenInfo.decimals
         ),
         feeSymbol: 'ETH',
         fee: fee.toString(),
         zksChainID,
         nonce: accountInfo.nonce,
-      };
+      }
       const l2Msg =
-          `Transfer ${ l2MsgParams.tokenAmount } ${ l2MsgParams.tokenSymbol }\n` +
-          `To: ${ l2MsgParams.to.toLowerCase() }\n` +
-          `Chain Id: ${ l2MsgParams.zksChainID }\n` +
-          `Nonce: ${ l2MsgParams.nonce }\n` +
-          `Fee: ${ l2MsgParams.fee } ${ l2MsgParams.feeSymbol }\n` +
-          `Account Id: ${ l2MsgParams.accountId }`;
-      return await signer.signMessage(l2Msg);
+        `Transfer ${l2MsgParams.tokenAmount} ${l2MsgParams.tokenSymbol}\n` +
+        `To: ${l2MsgParams.to.toLowerCase()}\n` +
+        `Chain Id: ${l2MsgParams.zksChainID}\n` +
+        `Nonce: ${l2MsgParams.nonce}\n` +
+        `Fee: ${l2MsgParams.fee} ${l2MsgParams.feeSymbol}\n` +
+        `Account Id: ${l2MsgParams.accountId}`
+      return await signer.signMessage(l2Msg)
     } catch (error) {
-      throw new Error(`getL2SigTwoAndPK error ${ error.message }`);
+      throw new Error(`getL2SigTwoAndPK error ${error.message}`)
     }
   },
   getL2SigOneAndPK(
-      privateKey,
-      accountInfo,
-      walletAccount,
-      tokenId,
-      transferValue,
-      feeTokenId,
-      transferFee,
-      zksChainID
+    privateKey,
+    accountInfo,
+    walletAccount,
+    tokenId,
+    transferValue,
+    feeTokenId,
+    transferFee,
+    zksChainID
   ) {
-    const { selectMakerConfig } = transferDataState;
+    const { selectMakerConfig } = transferDataState
     const msgBytes = ethers.utils.concat([
       '0x05',
       zksync.utils.numberToBytesBE(accountInfo.id, 4),
@@ -234,13 +234,13 @@ export default {
       zksync.utils.packFeeChecked(transferFee),
       zksync.utils.numberToBytesBE(zksChainID, 1),
       zksync.utils.numberToBytesBE(accountInfo.nonce, 4),
-    ]);
-    const signaturePacked = sign_musig(privateKey, msgBytes);
-    const pubKey = ethers.utils.hexlify(signaturePacked.slice(0, 32)).substr(2);
+    ])
+    const signaturePacked = sign_musig(privateKey, msgBytes)
+    const pubKey = ethers.utils.hexlify(signaturePacked.slice(0, 32)).substr(2)
     const l2SignatureOne = ethers.utils
-        .hexlify(signaturePacked.slice(32))
-        .substr(2);
-    return { pubKey, l2SignatureOne };
+      .hexlify(signaturePacked.slice(32))
+      .substr(2)
+    return { pubKey, l2SignatureOne }
   },
   async getAccountInfo(fromChainID, privateKey, signer, walletAccount) {
     try {
@@ -297,7 +297,7 @@ export default {
       // Don't move here any way and don't format it anyway!!!
       // Don't move here any way and don't format it anyway!!!
       // Don't move here any way and don't format it anyway!!!
-      let resgiterMsg = `Register ZKSwap pubkey:
+      const resgiterMsg = `Register ZKSwap pubkey:
 
 ${pubKeyHash}
 nonce: ${hexlifiedNonce}
@@ -309,7 +309,7 @@ Only sign this message for a trusted client!`
       const url = `${
         fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
       }/tx`
-      let transferResult = await axios.post(
+      const transferResult = await axios.post(
         url,
         {
           signature: null,
@@ -319,7 +319,7 @@ Only sign this message for a trusted client!`
             account: walletAccount,
             accountId: accountInfo.id,
             ethSignature: registerSignature,
-            newPkHash: `sync:` + pubKeyHash,
+            newPkHash: 'sync:' + pubKeyHash,
             nonce: 0,
             type: 'ChangePubKey',
           },
@@ -340,13 +340,13 @@ Only sign this message for a trusted client!`
     }
   },
   toHex(num, length) {
-    var charArray = ['a', 'b', 'c', 'd', 'e', 'f']
-    let strArr = Array(length * 2).fill('0')
-    var i = length * 2 - 1
+    const charArray = ['a', 'b', 'c', 'd', 'e', 'f']
+    const strArr = Array(length * 2).fill('0')
+    let i = length * 2 - 1
     while (num > 15) {
-      var yushu = num % 16
+      const yushu = num % 16
       if (yushu >= 10) {
-        let index = yushu % 10
+        const index = yushu % 10
         strArr[i--] = charArray[index]
       } else {
         strArr[i--] = yushu.toString()
@@ -356,14 +356,14 @@ Only sign this message for a trusted client!`
 
     if (num != 0) {
       if (num >= 10) {
-        let index = num % 10
+        const index = num % 10
         strArr[i--] = charArray[index]
       } else {
         strArr[i--] = num.toString()
       }
     }
     strArr.unshift('0x')
-    var hex = strArr.join('')
+    const hex = strArr.join('')
     return hex
   },
 }

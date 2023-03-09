@@ -5,7 +5,7 @@ import config from '../utils/config'
 
 Axios.axios()
 
-var zkConfigNet = config.zkSync.TestNet
+const zkConfigNet = config.zkSync.TestNet
 // var arConfigNet = config.arbitrum.Ropsten
 // var l1ConfigNet = config.L1.Mainnet
 
@@ -18,12 +18,13 @@ export default {
           errMsg: 'getZKAccountError_wrongChainID',
         })
       }
-      const prefix = req.localChainID === 33 ? config.zkSync.TestNet : config.zkSync.Mainnet
+      const prefix =
+        req.localChainID === 33 ? config.zkSync.TestNet : config.zkSync.Mainnet
       axios
         .get(`${prefix}/accounts/${req.account}/${req.stateType}`)
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === 'success') {
               resolve(respData)
             } else {
@@ -69,7 +70,7 @@ export default {
         .get(url)
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === 'success') {
               resolve(respData)
             } else {
@@ -106,19 +107,20 @@ export default {
           errMsg: 'getZKInfoError_wrongChainID',
         })
       }
-      var params = {
+      const params = {
         from: req.from,
         limit: req.limit,
         direction: req.direction,
       }
-      const prefix = req.localChainID === 33 ? config.zkSync.TestNet : config.zkSync.Mainnet
+      const prefix =
+        req.localChainID === 33 ? config.zkSync.TestNet : config.zkSync.Mainnet
       axios
         .get(`${prefix}/accounts/${req.account}/transactions`, {
-          params: params,
+          params,
         })
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === 'success') {
               resolve(respData)
             } else {
@@ -149,7 +151,7 @@ export default {
         .get(url)
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === 'success') {
               resolve(respData)
             } else {
@@ -186,7 +188,7 @@ export default {
         .get(url)
         .then(function (response) {
           if (response.status === 200) {
-            var respData = response.data
+            const respData = response.data
             if (respData.status === 'success') {
               resolve(respData)
             } else {

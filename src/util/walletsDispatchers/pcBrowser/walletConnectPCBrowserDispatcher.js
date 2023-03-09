@@ -8,7 +8,7 @@ import {
 } from '../walletsCoreData'
 import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
-import util from "../../util";
+import util from '../../util'
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code
@@ -54,7 +54,7 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
       _peerMeta = {},
     } = payload
     return {
-      provider: provider,
+      provider,
       // connector,
       walletAddress: _accounts[0] || '',
       networkId: _chainId,
@@ -67,7 +67,7 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
   const { accounts = [], chainId = '', peerId = '', peerMeta = {} } = payloadObj
   const [walletAddress = ''] = accounts
   return {
-    provider: provider,
+    provider,
     // connector,
     walletAddress,
     networkId: chainId,
@@ -111,7 +111,7 @@ const onSessionUpdateCallback = withErrorCatcher((payload) => {
   }
   const [walletAddress] = accounts
   if (walletAddress !== globalSelectWalletConf.walletPayload.walletAddress) {
-    updateSelectWalletConfPayload({ walletAddress: walletAddress }) // UPDATE address
+    updateSelectWalletConfPayload({ walletAddress }) // UPDATE address
   }
 })
 
@@ -129,7 +129,7 @@ export const walletConnectDispatcherOnInit = async () => {
     bridge: 'https://bridge.walletconnect.org',
     qrcodeModal: QRCodeModule,
   })
- 
+
   if (connector.connected) {
     // if it's already connected, invoke onConnectSuccessCallback for the data init
     onConnectSuccessCallback(null, connector, true)
@@ -160,7 +160,7 @@ export const walletConnectDispatcherOnSignature = async (
     to: selectMakerConfig.recipient,
     value,
   })
-  const nonce = await util.requestWeb3(fromChainID, "getTransactionCount", from);
+  const nonce = await util.requestWeb3(fromChainID, 'getTransactionCount', from)
   connector
     .sendTransaction({
       from,
@@ -185,7 +185,7 @@ export async function walletConnectSendTransaction(
   value,
   data
 ) {
-  const nonce= await util.requestWeb3(chainId, 'getTransactionCount', from)
+  const nonce = await util.requestWeb3(chainId, 'getTransactionCount', from)
   return new Promise((resolve, reject) => {
     connector
       .sendTransaction({
@@ -221,7 +221,7 @@ export async function walletConnectSwitchChain(params) {
     // bc Metamask Mobile and Walletconnect appear to have issues with wallet_switchEthereumChain (the above will never finish)
     // the following will time out rejecting the promise
     let timeout = 0
-    let timer = setInterval(() => {
+    const timer = setInterval(() => {
       if (
         Number(params[0].chainId) ===
         Number(globalSelectWalletConf.walletPayload.networkId)

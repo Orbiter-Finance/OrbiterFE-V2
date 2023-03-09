@@ -6,7 +6,7 @@ import { web3State } from '../../../composition/hooks'
 import { getWeb3 } from '../../constants/web3/getWeb3'
 
 /**
- * 
+ *
  * metamask pc browser dispatcher.js is not incorporated into standard processing reducers
  * because the risk is large, if it's plugged in later, this file can be deprecated
  * u can find more information in ./deprecated-coinbaseDispatcher.js

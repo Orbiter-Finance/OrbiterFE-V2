@@ -1,9 +1,9 @@
 import { Notification } from 'element-ui'
 import { ethers, utils } from 'ethers'
-import { Coin_ABI, CROSS_ADDRESS_ABI } from './constants/contract/contract';
+import { Coin_ABI, CROSS_ADDRESS_ABI } from './constants/contract/contract'
 import util from './util'
-import walletDispatchers, { WALLETCONNECT } from './walletsDispatchers';
-import { compatibleGlobalWalletConf } from "../composition/walletsResponsiveData";
+import walletDispatchers, { WALLETCONNECT } from './walletsDispatchers'
+import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 
 export const CrossAddressTypes = {
   '0x01': 'Cross Ethereum Address',
@@ -17,17 +17,26 @@ export class CrossAddress {
    * @param {number} orbiterChainId
    * @param {ethers.Signer | undefined} signer
    */
-  constructor(provider, orbiterChainId = 5, signer = undefined, contractAddress) {
-    const chainInfo = util.getChainInfoByChainId(orbiterChainId);
-    this.contractAddress = contractAddress || (chainInfo?.xvmList && chainInfo.xvmList.length ? chainInfo.xvmList[0] : '');
+  constructor(
+    provider,
+    orbiterChainId = 5,
+    signer = undefined,
+    contractAddress
+  ) {
+    const chainInfo = util.getChainInfoByChainId(orbiterChainId)
+    this.contractAddress =
+      contractAddress ||
+      (chainInfo?.xvmList && chainInfo.xvmList.length
+        ? chainInfo.xvmList[0]
+        : '')
     if (!this.contractAddress) {
-      console.log('Sorry, miss param [contractAddress]');
+      console.log('Sorry, miss param [contractAddress]')
     }
 
-    this.provider = provider;
-    this.orbiterChainId = orbiterChainId;
-    this.signer = signer || provider.getSigner();
-    this.networkId = util.chainNetWorkId(orbiterChainId);
+    this.provider = provider
+    this.orbiterChainId = orbiterChainId
+    this.signer = signer || provider.getSigner()
+    this.networkId = util.chainNetWorkId(orbiterChainId)
   }
 
   async checkNetworkId() {
@@ -45,11 +54,8 @@ export class CrossAddress {
    * @param {Contract} contractErc20
    */
   async getAllowance(contractErc20, contractAddress = this.contractAddress) {
-    const ownerAddress = await this.signer.getAddress();
-    return await contractErc20.allowance(
-        ownerAddress,
-        contractAddress
-    );
+    const ownerAddress = await this.signer.getAddress()
+    return await contractErc20.allowance(ownerAddress, contractAddress)
   }
 
   /**
@@ -57,7 +63,11 @@ export class CrossAddress {
    * @param {string} tokenAddress 0x...
    * @param {ethers.BigNumber} amount
    */
-  async approveERC20(tokenAddress, amount = ethers.constants.MaxUint256, contractAddress = this.contractAddress) {
+  async approveERC20(
+    tokenAddress,
+    amount = ethers.constants.MaxUint256,
+    contractAddress = this.contractAddress
+  ) {
     await this.checkNetworkId()
 
     const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
@@ -113,7 +123,8 @@ export class CrossAddress {
 
     return await contract.transfer(to, extHex, options)
   }
-  async wallConnTransfer(to,value, ext = undefined) {
+
+  async wallConnTransfer(to, value, ext = undefined) {
     if (ext && !CrossAddressTypes[ext.type]) {
       throw new Error(`Invalid crossAddressType : ${ext.type}`)
     }
@@ -151,7 +162,7 @@ export class CrossAddress {
       Coin_ABI,
       this.provider
     )
-    
+
     const allowance = await this.getAllowance(contractErc20)
     if (amount.gt(allowance)) {
       await this.approveERC20(tokenAddress)
@@ -171,7 +182,11 @@ export class CrossAddress {
     )
   }
 
-  async walletConnApproveERC20(tokenAddress, amount = ethers.constants.MaxUint256, contractAddress = this.contractAddress) {
+  async walletConnApproveERC20(
+    tokenAddress,
+    amount = ethers.constants.MaxUint256,
+    contractAddress = this.contractAddress
+  ) {
     await this.checkNetworkId()
 
     const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
@@ -207,8 +222,8 @@ export class CrossAddress {
       throw error
     }
   }
-  async walletConnTransferERC20(tokenAddress, to, amount, ext = undefined) {
 
+  async walletConnTransferERC20(tokenAddress, to, amount, ext = undefined) {
     if (ext && !CrossAddressTypes[ext.type]) {
       throw new Error(`Invalid crossAddressType : ${ext.type}`)
     }
@@ -225,7 +240,12 @@ export class CrossAddress {
     // transfer
     const extHex = CrossAddress.encodeExt(ext)
     const iface = new ethers.utils.Interface(CROSS_ADDRESS_ABI)
-    const data = iface.encodeFunctionData('transferERC20', [tokenAddress, to,amount.toHexString(), extHex])
+    const data = iface.encodeFunctionData('transferERC20', [
+      tokenAddress,
+      to,
+      amount.toHexString(),
+      extHex,
+    ])
     const ownerAddress = await this.signer.getAddress()
     return await walletDispatchers.walletConnectSendTransaction(
       this.orbiterChainId,
@@ -238,19 +258,28 @@ export class CrossAddress {
 
   async contractApprove(tokenAddress, contractAddress, amount) {
     const contractErc20 = new ethers.Contract(
-        tokenAddress,
-        Coin_ABI,
-        this.provider
-    );
-    const allowance = await this.getAllowance(contractErc20, contractAddress);
+      tokenAddress,
+      Coin_ABI,
+      this.provider
+    )
+    const allowance = await this.getAllowance(contractErc20, contractAddress)
     if (amount.gt(allowance)) {
       if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
-        await this.walletConnApproveERC20(tokenAddress, ethers.constants.MaxUint256, contractAddress);
+        await this.walletConnApproveERC20(
+          tokenAddress,
+          ethers.constants.MaxUint256,
+          contractAddress
+        )
       } else {
-        await this.approveERC20(tokenAddress, ethers.constants.MaxUint256, contractAddress);
+        await this.approveERC20(
+          tokenAddress,
+          ethers.constants.MaxUint256,
+          contractAddress
+        )
       }
     }
   }
+
   /**
    *
    * @param {{type: string, value: string} | undefined} ext
@@ -269,7 +298,7 @@ export class CrossAddress {
       utils.isHexString(ext.value) &&
       ext.value.length % 2 == 1
     ) {
-      let starkAddress = ext.value.substring(2)
+      const starkAddress = ext.value.substring(2)
       ext.value = '0x0' + starkAddress
     }
     return utils.hexConcat([ext.type, ext.value])

@@ -46,7 +46,7 @@ export class ArNovaListen {
           startblock = await this.blockProvider(isFirstTicker)
           isFirstTicker = false
         }
-        let MtscanReq = {
+        const MtscanReq = {
           maker: this.address,
           startblock,
           endblock: 999999999,

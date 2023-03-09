@@ -9,26 +9,26 @@ export function init() {
     innerHeight: document.documentElement.clientHeight,
   }
   store.commit('setInnerWH', innerWH)
-  var ww = innerWH.innerWidth
+  let ww = innerWH.innerWidth
   setMobileOrNot(ww < 820)
   if (ww > 375) {
     ww = 375
   }
-  
+
   document.documentElement.style.fontSize = ww / 37.5 + 'px'
 
   // We execute the same script as before
-  let vh = window.innerHeight * 0.01
+  const vh = window.innerHeight * 0.01
   document.documentElement.style.setProperty('--vh', `${vh}px`)
 
   toggleBodyCls()
 }
 
 // ms
-var ms = 300
-var lastClick = Date.now() - ms
+const ms = 300
+let lastClick = Date.now() - ms
 
-window.onresize = function() {
+window.onresize = function () {
   if (Date.now() - lastClick >= ms) {
     init()
     lastClick = Date.now()

@@ -7,7 +7,7 @@ export default function getTimeDiff(timestamp) {
   const limit = now - timestamp
 
   if (limit < 60) {
-    return `just now`
+    return 'just now'
   } else if (limit >= 60 && limit < 3600) {
     return `${Math.floor(limit / 60)}m ago`
   } else if (limit >= 3600 && limit < 86400) {

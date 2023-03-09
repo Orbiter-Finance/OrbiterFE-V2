@@ -29,20 +29,25 @@ function getLocalCoinContract(localChainID, tokenAddress, state, web3) {
 function getTransferContract(localChainID, contractAddress) {
   // if localChain = 3 || 33
   if (localChainID === 3 || localChainID === 33) {
-    return;
+    return
   }
   if (localChainID === 4 || localChainID === 44) {
-    return;
+    return
   }
   if (walletIsLogin.value) {
-    const web3 = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider);
-    const ecourseContractInstance = new web3.eth.Contract(Coin_ABI, contractAddress);
+    const web3 = new Web3(
+      compatibleGlobalWalletConf.value.walletPayload.provider
+    )
+    const ecourseContractInstance = new web3.eth.Contract(
+      Coin_ABI,
+      contractAddress
+    )
     if (!ecourseContractInstance) {
-      return null;
+      return null
     }
-    return ecourseContractInstance;
+    return ecourseContractInstance
   } else {
-    return null;
+    return null
   }
 }
 
@@ -77,7 +82,7 @@ async function getTransferGasLimit(
         gasLimit = await ecourseContractInstance.methods
           .transfer(to, value)
           .estimateGas({
-            from: from,
+            from,
           })
         return gasLimit
       }

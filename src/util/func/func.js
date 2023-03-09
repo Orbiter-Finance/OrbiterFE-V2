@@ -1,8 +1,8 @@
 export default {
-  debounce: function(fnName, delay) {
-    var timeout = null
-    var newDelay = delay || 200
-    return function() {
+  debounce: function (fnName, delay) {
+    let timeout = null
+    const newDelay = delay || 200
+    return function () {
       if (timeout) {
         clearTimeout(timeout)
       }
@@ -10,6 +10,5 @@ export default {
         this[fnName]()
       }, newDelay)
     }
-  }
+  },
 }
-

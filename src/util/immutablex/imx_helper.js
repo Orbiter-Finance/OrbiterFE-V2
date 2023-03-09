@@ -2,7 +2,7 @@ import { ETHTokenType, ImmutableXClient } from '@imtbl/imx-sdk'
 import { ethers, providers } from 'ethers'
 import Web3 from 'web3'
 import config from '../../core/utils/config'
-import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
 const CONTRACTS = {
   ropsten: {
@@ -58,20 +58,22 @@ export class IMXHelper {
     if (!this.registrationContractAddress) {
       throw new Error('Sorry, miss param [registrationContractAddress]')
     }
-    let signer = undefined
-  
+    let signer
+
     if (addressOrIndex) {
-      const web3Provider = new Web3(compatibleGlobalWalletConf.value.walletPayload.provider)
+      const web3Provider = new Web3(
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
       const provider = new providers.Web3Provider(web3Provider.currentProvider)
       signer = provider.getSigner(addressOrIndex)
     }
-    const client =  await ImmutableXClient.build({
+    const client = await ImmutableXClient.build({
       publicApiUrl: this.publicApiUrl,
       signer,
       starkContractAddress: this.starkContractAddress,
       registrationContractAddress: this.registrationContractAddress,
-    });
-    return (IMMUTABLEX_CLIENTS[immutableXClientKey] =client)
+    })
+    return (IMMUTABLEX_CLIENTS[immutableXClientKey] = client)
   }
 
   /**

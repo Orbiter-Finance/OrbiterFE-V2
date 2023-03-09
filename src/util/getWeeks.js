@@ -7,7 +7,7 @@ export default function getWeeks(startTime, endTime) {
   const start = new Date(
     typeof startTime === 'string' ? startTime.replace(/-/g, '/') : startTime
   ).getTime()
-  
+
   const weeks = []
 
   for (let d = end; d >= start; ) {

@@ -77,7 +77,9 @@ export class IMXListen {
     if (retryCount > 0) {
       try {
         const imxClient = await imxHelper.getImmutableXClient()
-        transfer = await imxClient.getTransfer({ id: transfer.transaction_id })
+        transfer = await imxClient.getTransfer({
+          id: transfer.transaction_id,
+        })
       } catch (err) {
         console.error(
           `Get imx transaction [${transaction_id}] failed: ${err.message}, retryCount: ${retryCount}`

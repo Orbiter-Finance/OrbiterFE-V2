@@ -21,16 +21,16 @@ import {
   updatelpApiKey,
 } from '../../composition/hooks'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
-var configNet = config.loopring.Mainnet
+let configNet = config.loopring.Mainnet
 
 export default {
   getUserAPI: function (localChainID) {
-    let netWorkID = localChainID == 9 ? 1 : 5
+    const netWorkID = localChainID == 9 ? 1 : 5
     return new UserAPI({ chainId: netWorkID })
   },
 
   getExchangeAPI: function (localChainID) {
-    let netWorkID = localChainID == 9 ? 1 : 5
+    const netWorkID = localChainID == 9 ? 1 : 5
     return new ExchangeAPI({ chainId: netWorkID })
   },
   getLpTokenInfoOnce(fromChainID, tokenAddress) {
@@ -64,10 +64,10 @@ export default {
       let accountInfo
       if (isMaker) {
         const exchangeApi = this.getExchangeAPI(localChainID)
-        let GetAccountRequest = {
+        const GetAccountRequest = {
           owner: address,
         }
-        let response = await exchangeApi.getAccount(GetAccountRequest)
+        const response = await exchangeApi.getAccount(GetAccountRequest)
         if (response.accInfo && response.raw_data) {
           accountInfo = response.accInfo
         } else {
@@ -99,10 +99,10 @@ export default {
         if (resp.data.length === 0) {
           return 0
         }
-        let balanceMap = resp.data[0]
-        let totalBalance = balanceMap.total ? Number(balanceMap.total) : 0
-        let locked = balanceMap.locked ? Number(balanceMap.locked) : 0
-        let withdraw = balanceMap.pending.withdraw
+        const balanceMap = resp.data[0]
+        const totalBalance = balanceMap.total ? Number(balanceMap.total) : 0
+        const locked = balanceMap.locked ? Number(balanceMap.locked) : 0
+        const withdraw = balanceMap.pending.withdraw
           ? Number(balanceMap.pending.withdraw)
           : 0
         return totalBalance - locked - withdraw
@@ -113,10 +113,10 @@ export default {
   },
 
   accountInfo: async function (address, localChainID) {
-    let accountInfo = lpAccountInfo.value
+    const accountInfo = lpAccountInfo.value
     if (accountInfo) {
       return {
-        accountInfo: accountInfo,
+        accountInfo,
         code: 0,
       }
     }
@@ -125,16 +125,16 @@ export default {
     }
     try {
       const exchangeApi = this.getExchangeAPI(localChainID)
-      let response = await exchangeApi.getAccount({ owner: address })
+      const response = await exchangeApi.getAccount({ owner: address })
       if (response.accInfo && response.raw_data) {
-        let info = {
+        const info = {
           accountInfo: response.accInfo,
           code: 0,
         }
         updatelpAccountInfo(response.accInfo)
         return info
       } else {
-        let info = {
+        const info = {
           code: response.code,
           errorMessage:
             response.code == 101002 ? 'noAccount' : response.message,
@@ -184,7 +184,7 @@ export default {
     const web3 = new Web3(
       compatibleGlobalWalletConf.value.walletPayload.provider
     )
-    let options = {
+    const options = {
       web3,
       address: accInfo.owner,
       keySeed:
@@ -200,7 +200,7 @@ export default {
 
     const eddsaKey = await generateKeyPair(options)
 
-    let GetUserApiKeyRequest = {
+    const GetUserApiKeyRequest = {
       accountId: accInfo.accountId,
     }
     const { apiKey } = await userApi.getUserApiKey(
@@ -239,15 +239,15 @@ export default {
         volume: '94000000000000000',
       },
       validUntil: ts,
-      memo: memo,
+      memo,
     }
     const response = await userApi.submitInternalTransfer({
       request: OriginTransferRequestV3,
-      web3: web3,
+      web3,
       chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
       walletType: ConnectorNames.MetaMask,
       eddsaKey: eddsaKey.sk,
-      apiKey: apiKey,
+      apiKey,
       isHWAddr: false,
     })
     return response
@@ -264,14 +264,14 @@ export default {
     } else {
       acc = accountResult.accountInfo
     }
-    let sendAmount = transferDataState.transferValue
+    const sendAmount = transferDataState.transferValue
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.OFFCHAIN_WITHDRAWAL,
       tokenSymbol: tokenName,
       amount: sendAmount,
     }
-    let userApi = this.getUserAPI(localChainID)
+    const userApi = this.getUserAPI(localChainID)
     const response = await userApi.getOffchainFeeAmt(
       GetOffchainFeeAmtRequest,
       ''
@@ -293,14 +293,14 @@ export default {
     } else {
       acc = accountResult.accountInfo
     }
-    let sendAmount = transferDataState.transferValue
+    const sendAmount = transferDataState.transferValue
     const GetOffchainFeeAmtRequest = {
       accountId: acc.accountId,
       requestType: OffchainFeeReqType.TRANSFER,
       tokenSymbol: lpTokenInfo ? lpTokenInfo.symbol : 'ETH',
       amount: sendAmount,
     }
-    let userApi = this.getUserAPI(localChainID)
+    const userApi = this.getUserAPI(localChainID)
     const response = await userApi.getOffchainFeeAmt(
       GetOffchainFeeAmtRequest,
       ''
@@ -319,8 +319,8 @@ export default {
     limit,
     offset
   ) {
-    let userApi = this.getUserAPI(localChainID)
-    let accountResult = await this.accountInfo(address, localChainID)
+    const userApi = this.getUserAPI(localChainID)
+    const accountResult = await this.accountInfo(address, localChainID)
     let accountInfo
     if (!accountResult || accountResult.code) {
       return
@@ -332,8 +332,8 @@ export default {
       start: startTime,
       end: endTime,
       status: 'processed,processing,received',
-      limit: limit,
-      offset: offset,
+      limit,
+      offset,
       tokenSymbol: tokenName,
       transferTypes: 'transfer',
     }
@@ -359,7 +359,7 @@ export default {
         acc = accountResult.accountInfo
       }
 
-      let userApi = this.getUserAPI(localChainID)
+      const userApi = this.getUserAPI(localChainID)
 
       const GetNextStorageIdRequest = {
         accountId: acc.accountId,

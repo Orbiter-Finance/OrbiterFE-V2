@@ -12,15 +12,15 @@ async function cacheExchangeRates(currency = 'USD') {
   // cache
   exchangeRates = await getRates(currency)
   if (exchangeRates) {
-    let metisExchangeRates = await getRates('metis')
-    if (metisExchangeRates && metisExchangeRates['USD']) {
-      let usdToMetis = 1 / Number(metisExchangeRates['USD'])
-      exchangeRates['METIS'] = String(usdToMetis)
+    const metisExchangeRates = await getRates('metis')
+    if (metisExchangeRates && metisExchangeRates.USD) {
+      const usdToMetis = 1 / Number(metisExchangeRates.USD)
+      exchangeRates.METIS = String(usdToMetis)
     }
-    let bnbExchangeRates = await getRates('bnb')
-    if (bnbExchangeRates && bnbExchangeRates['USD']) {
-      let usdTobnb = 1 / Number(bnbExchangeRates['USD'])
-      exchangeRates['BNB'] = String(usdTobnb)
+    const bnbExchangeRates = await getRates('bnb')
+    if (bnbExchangeRates && bnbExchangeRates.USD) {
+      const usdTobnb = 1 / Number(bnbExchangeRates.USD)
+      exchangeRates.BNB = String(usdTobnb)
     }
     return exchangeRates
   } else {
@@ -41,7 +41,7 @@ export async function getRates(currency) {
     ) {
       return undefined
     }
-    return data.rates;
+    return data.rates
   } catch (error) {
     return undefined
   }
@@ -103,17 +103,21 @@ export async function exchangeToUsd(value = 1, sourceCurrency = 'ETH') {
   return value.dividedBy(rate)
 }
 
-
-export async function exchangeToCoin(value = 1, sourceCurrency = 'ETH', toCurrency, rates) {
+export async function exchangeToCoin(
+  value = 1,
+  sourceCurrency = 'ETH',
+  toCurrency,
+  rates
+) {
   if (!(value instanceof BigNumber)) {
-    value = new BigNumber(value);
+    value = new BigNumber(value)
   }
-  const exchangeRates = rates || await getRates(sourceCurrency);
-  const fromRate = exchangeRates[sourceCurrency];
-  const toRate = exchangeRates[toCurrency];
+  const exchangeRates = rates || (await getRates(sourceCurrency))
+  const fromRate = exchangeRates[sourceCurrency]
+  const toRate = exchangeRates[toCurrency]
   if (!fromRate || !toRate) {
-    return new BigNumber(0);
+    return new BigNumber(0)
   }
-  util.log(`${ sourceCurrency } rate`, fromRate, `${ toCurrency } rate`, toRate);
-  return value.dividedBy(fromRate).multipliedBy(toRate);
+  util.log(`${sourceCurrency} rate`, fromRate, `${toCurrency} rate`, toRate)
+  return value.dividedBy(fromRate).multipliedBy(toRate)
 }

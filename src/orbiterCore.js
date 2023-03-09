@@ -1,3 +1,5 @@
+import util from './util/util'
+
 const BigNumber = require('bignumber.js')
 
 const MAX_BITS = {
@@ -16,9 +18,10 @@ const MAX_BITS = {
   boba: 256,
   bsc: 256,
   arbitrum_nova: 256,
+  polygon_zkevm: 256,
   scroll_l1_test: 256,
   scroll_l2_test: 256,
-  taiko_a1_test: 256
+  taiko_a1_test: 256,
 }
 
 const CHAIN_INDEX = {
@@ -48,13 +51,14 @@ const CHAIN_INDEX = {
   513: 'boba',
   14: 'zksync2',
   514: 'zksync2',
-  515: "bsc",
-  15: "bsc",
+  515: 'bsc',
+  15: 'bsc',
   16: 'arbitrum_nova',
   516: 'arbitrum_nova',
+  517: 'polygon_zkevm',
   518: 'scroll_l1_test',
   519: 'scroll_l2_test',
-  520: 'taiko_a1_test'
+  520: 'taiko_a1_test',
 }
 
 const SIZE_OP = {
@@ -102,26 +106,25 @@ function isLimitNumber(chain) {
 }
 
 function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
-  const decimals = selectMakerConfig.fromChain?.decimals || selectMakerConfig.precision;
+  const decimals =
+    selectMakerConfig.fromChain?.decimals || selectMakerConfig.precision
   let toAmount_tradingFee = new BigNumber(userAmount).minus(
-      new BigNumber(selectMakerConfig.tradingFee)
-  );
+    new BigNumber(selectMakerConfig.tradingFee)
+  )
   let gasFee = toAmount_tradingFee
-      .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
-      .dividedBy(new BigNumber(1000));
-  let digit = decimals === 18 ? 5 : 2;
-  let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP);
-  let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix);
+    .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
+    .dividedBy(new BigNumber(1000))
+  let digit = decimals === 18 ? 5 : 2
+  let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
+  let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
 
   if (!toAmount_fee || isNaN(toAmount_fee)) {
-    return 0;
+    return 0
   }
   if (isWei) {
-    return toAmount_fee.multipliedBy(
-        new BigNumber(10 ** decimals)
-    );
+    return toAmount_fee.multipliedBy(new BigNumber(10 ** decimals))
   } else {
-    return toAmount_fee;
+    return toAmount_fee
   }
 }
 
@@ -160,7 +163,7 @@ function getTAmountFromRAmount(chain, amount, pText) {
       amount.toString().slice(validDigit)
     return {
       state: true,
-      tAmount: tAmount,
+      tAmount,
     }
   } else if (isLPChain(chain)) {
     return {
@@ -172,7 +175,7 @@ function getTAmountFromRAmount(chain, amount, pText) {
       amount.toString().slice(0, amountLength - pText.length) + pText
     return {
       state: true,
-      tAmount: tAmount,
+      tAmount,
     }
   }
 }
@@ -263,29 +266,20 @@ function getRAmountFromTAmount(chain, amount) {
       amount.toString().slice(validDigit)
     return {
       state: true,
-      rAmount: rAmount,
+      rAmount,
     }
   } else {
     let rAmount =
       amount.toString().slice(0, amountLength - SIZE_OP.P_NUMBER) + pText
     return {
       state: true,
-      rAmount: rAmount,
+      rAmount,
     }
   }
 }
 
 function isChainSupport(chain) {
-  if (typeof chain === 'number') {
-    if (CHAIN_INDEX[chain] && MAX_BITS[CHAIN_INDEX[chain]]) {
-      return true
-    }
-  } else if (typeof chain === 'string') {
-    if (MAX_BITS[chain.toLowerCase()]) {
-      return true
-    }
-  }
-  return false
+  return !!util.getChainInfoByChainId(chain)
 }
 
 // 0 ~ (2 ** N - 1)
@@ -296,16 +290,16 @@ function AmountRegion(chain) {
     }
   }
   if (typeof chain === 'number') {
-    let max = BigNumber(2 ** MAX_BITS[CHAIN_INDEX[chain]] - 1)
+    let max = BigNumber(2 ** (MAX_BITS[CHAIN_INDEX[chain]] || 256) - 1)
     return {
       min: BigNumber(0),
-      max: max,
+      max,
     }
   } else if (typeof chain === 'string') {
-    let max = BigNumber(2 ** MAX_BITS[chain.toLowerCase()] - 1)
+    let max = BigNumber(2 ** (MAX_BITS[chain.toLowerCase()] || 256) - 1)
     return {
       min: BigNumber(0),
-      max: max,
+      max,
     }
   }
 }
@@ -435,7 +429,7 @@ function getDigitByPrecision(precision) {
   return precision === 18 ? 6 : 2
 }
 
-module.exports = {
+export default {
   getPTextFromTAmount,
   getToChainIDFromAmount,
   isAmountValid,

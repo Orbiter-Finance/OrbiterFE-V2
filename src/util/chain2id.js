@@ -1,4 +1,3 @@
-
 export const chain2idMap = {
   Mainnet: 1,
   Arbitrum: 2,
@@ -9,7 +8,7 @@ export const chain2idMap = {
   ImmutableX: 8,
   Metis: 10,
   dYdX: 11,
-  "Polygon ZKEVM": 17,
+  'Polygon ZKEVM': 17,
   Rinkeby: 5,
   'Arbitrum(R)': 22,
   'ZkSync(R)': 33,
@@ -25,19 +24,19 @@ export const chain2idMap = {
   'zkspace(R)': 512,
   'Boba(R)': 513,
   Boba: 13,
-  'zkSync2': 14,
+  zkSync2: 14,
   'zkSync2(G)': 514,
-  "BNBChain(R)": 515,
-  "BNBChain": 15,
-  "Arbitrum Nova": 16,
-  "Arbitrum Nova(Goerli)": 516,
-  "Polygon ZKEVM(Goerli)": 517,
+  'BNBChain(R)': 515,
+  BNBChain: 15,
+  'Arbitrum Nova': 16,
+  'Arbitrum Nova(Goerli)': 516,
+  'Polygon ZKEVM(Goerli)': 517,
   ScrollL1: 518,
   ScrollL2: 519,
-  Taiko: 520
+  Taiko: 520,
 }
 
-export const chain2icon = item => {
+export const chain2icon = (item) => {
   let iconName = 'tokenLogo'
   if (item === 2 || item === 22) {
     iconName = 'arblogo'

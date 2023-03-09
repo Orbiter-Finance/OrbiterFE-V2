@@ -49,15 +49,15 @@ async function getTokenList(localChainID) {
     let hasMore = true
     while (isContiue) {
       setWaitingFlag(isMainnet, true)
-      let result = await thirdapi.getZKTokenList({
+      const result = await thirdapi.getZKTokenList({
         from: startID,
         limit: 100,
         direction: 'newer',
-        localChainID: localChainID,
+        localChainID,
       })
       if (result.status === 'success') {
         if (result.result.list.length !== 0) {
-          let zk_list = result.result.list
+          const zk_list = result.result.list
           if (zk_list.length !== 100) {
             isContiue = false
           } else {

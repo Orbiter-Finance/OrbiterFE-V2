@@ -2,7 +2,7 @@ import thirdapi from '../actions/thirdapi'
 import loopring from '../actions/loopring'
 import zkspace from '../actions/zkspace'
 import { getStarkNonce } from '../../util/constants/starknet/helper'
-import util from "../../util/util";
+import util from '../../util/util'
 
 export default {
   getNonce: async function (
@@ -12,13 +12,13 @@ export default {
     userAddress
   ) {
     if (localChainID == 3 || localChainID == 33) {
-      var req = {
+      const req = {
         account: userAddress,
-        localChainID: localChainID,
+        localChainID,
         stateType: 'committed',
       }
       try {
-        let accountInfo = await thirdapi.getZKAccountInfo(req)
+        const accountInfo = await thirdapi.getZKAccountInfo(req)
         if (!accountInfo || !accountInfo.result) {
           return 0
         }
@@ -30,7 +30,7 @@ export default {
       }
     } else if (localChainID === 4 || localChainID === 44) {
       try {
-        let nonce = Number(await getStarkNonce())
+        const nonce = Number(await getStarkNonce())
         return nonce
       } catch (error) {
         return 0
@@ -61,7 +61,11 @@ export default {
       return 0
     } else {
       try {
-        const nonce = await util.requestWeb3(localChainID, 'getTransactionCount', userAddress);
+        const nonce = await util.requestWeb3(
+          localChainID,
+          'getTransactionCount',
+          userAddress
+        )
         return nonce
       } catch (err) {
         console.warn('getWeb3NonceError =', err)

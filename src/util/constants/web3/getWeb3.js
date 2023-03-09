@@ -11,7 +11,7 @@ import { Notification } from 'element-ui'
 const showMessage = util.showMessage
 
 async function installWeb3() {
-  var web3Provider = findMatchWeb3ProviderByWalletType(METAMASK);
+  const web3Provider = findMatchWeb3ProviderByWalletType(METAMASK)
   if (web3Provider) {
     try {
       await web3Provider.enable()
@@ -24,15 +24,20 @@ async function installWeb3() {
   } else {
     updateIsInstallMeta(false)
     updateCoinbase('')
-    if (window.ethereum && (window.ethereum.isBlockWallet == true && window.ethereum.isMetaMask === false)) {
+    if (
+      window.ethereum &&
+      window.ethereum.isBlockWallet == true &&
+      window.ethereum.isMetaMask === false
+    ) {
       return Notification({
         title: 'Error: MetaMask has not been installed.',
         dangerouslyUseHTMLString: true,
         type: 'warning',
-        customClass:"installWalletTips",
+        customClass: 'installWalletTips',
         duration: 3000,
-        message: '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>'
-      });
+        message:
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
     }
     return showMessage('not install metamask', 'error')
   }
@@ -40,7 +45,7 @@ async function installWeb3() {
 }
 
 async function getWeb3() {
-  var web3 = await installWeb3()
+  const web3 = await installWeb3()
   if (!web3) {
     return
   }
@@ -49,7 +54,6 @@ async function getWeb3() {
     if (error || !netWorkId) {
       showMessage('get netWorkID failed, refresh and try again', 'error')
       updateCoinbase('')
-      return
     } else {
       store.commit('updateNetWorkId', netWorkId.toString())
     }
