@@ -12,20 +12,20 @@ import standardMobileAppConf from './standardMobileAppConf'
 // every mobile app(imtoken, metamask, tokenpocket, ...etc)
 // u can find more implementation in ./standardWalletReducer/standardWalletLoader.js
 const {
-  standardWalletDispatchersOnInit: mobileAppWebviewDispatchersOnInit,
-  standardWalletDispatchersOnDisconnect:
-    mobileAppWebviewDispatchersOnDisconnect,
-  standardLoginStatusCheckerOfWallets: loginStatusCheckerOfAppWebview,
-  standardWalletDispatchersOnAddChain: mobileAppWebviewDispatchersOnAddChain,
-  standardWalletDispatchersOnSwitchChain:
-    mobileAppWebviewDispatchersOnSwitchChain,
+    standardWalletDispatchersOnInit: mobileAppWebviewDispatchersOnInit,
+    standardWalletDispatchersOnDisconnect:
+        mobileAppWebviewDispatchersOnDisconnect,
+    standardLoginStatusCheckerOfWallets: loginStatusCheckerOfAppWebview,
+    standardWalletDispatchersOnAddChain: mobileAppWebviewDispatchersOnAddChain,
+    standardWalletDispatchersOnSwitchChain:
+        mobileAppWebviewDispatchersOnSwitchChain,
 } = standardWalletLoader(standardMobileAppConf)
 
 export default {
-  walletDispatchersOnInit: mobileAppWebviewDispatchersOnInit,
-  walletDispatchersOnAddChain: mobileAppWebviewDispatchersOnAddChain,
-  walletDispatchersOnSwitchChain: mobileAppWebviewDispatchersOnSwitchChain,
-  walletDispatchersOnDisconnect: mobileAppWebviewDispatchersOnDisconnect,
-  loginStatusCheckerOfWallets: loginStatusCheckerOfAppWebview,
-  walletDispatchersOnSignature: {},
+    walletDispatchersOnInit: mobileAppWebviewDispatchersOnInit,
+    walletDispatchersOnAddChain: mobileAppWebviewDispatchersOnAddChain,
+    walletDispatchersOnSwitchChain: mobileAppWebviewDispatchersOnSwitchChain,
+    walletDispatchersOnDisconnect: mobileAppWebviewDispatchersOnDisconnect,
+    loginStatusCheckerOfWallets: loginStatusCheckerOfAppWebview,
+    walletDispatchersOnSignature: {},
 }
