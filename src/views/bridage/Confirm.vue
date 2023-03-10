@@ -116,7 +116,7 @@
         >
             <SvgIconThemed style="margin-right: 10px" icon="info" />
             <span style="color: #df2e2d; flex: 1"
-                >StarkNet is still in alpha version, the transaction on it maybe
+                >Starknet is still in alpha version, the transaction on it maybe
                 will be done in 1~2 hours. Orbiter keeps your funds safe.</span
             >
         </div>
@@ -958,7 +958,7 @@ export default {
                 let { starkChain } = web3State.starkNet
                 starkChain = +starkChain ? +starkChain : starkChain
                 if (!starkChain || starkChain === 'unlogin') {
-                    util.showMessage('please connect StarkNet Wallet', 'error')
+                    util.showMessage('please connect Starknet Wallet', 'error')
                     return
                 }
                 if (
@@ -966,7 +966,7 @@ export default {
                     (starkChain === 44 || starkChain === 'localhost')
                 ) {
                     util.showMessage(
-                        'please switch StarkNet Wallet to mainnet',
+                        'please switch Starknet Wallet to mainnet',
                         'error'
                     )
                     return
@@ -976,7 +976,7 @@ export default {
                     (starkChain === 4 || starkChain === 'localhost')
                 ) {
                     util.showMessage(
-                        'please switch StarkNet Wallet to testNet',
+                        'please switch Starknet Wallet to testNet',
                         'error'
                     )
                     return

@@ -1,8 +1,7 @@
-import { isProd } from "./src/util";
-
 const baseDomain = `https://api.orbiter.finance`
 export default {
-  l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
+  // l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
+  l2BaseUrl: 'https://l2api.orbiter.finance',
   baseTraddingUrl: `${ baseDomain }/api`,
   chainIcon: {
     1: 'tokenLogo',
@@ -34,8 +33,8 @@ export default {
     515: 'bsclogo',
     16: 'arnavologo',
     516: 'arnavologo',
-    17: 'polygon_zkevm_logo',
-    517: 'polygon_zkevm_logo',
+    17: 'pglogo',
+    517: 'pglogo',
     18: 'scrolllogo',
     518: 'scrolllogo',
     19: 'scrolllogo',
@@ -75,9 +74,10 @@ export default {
     514: 'https://zksync2-testnet.zkscan.io/tx/',
     16: 'https://nova.arbiscan.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
-    517: 'https://public.zkevm-test.net:8443/tx/',
+    517: 'https://explorer.public.zkevm-test.net/tx/',
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
+    520: 'https://l2explorer.a1.taiko.xyz/tx/',
     521: 'https://goerli.basescan.org/tx/',
     522: 'https://explorer.goerli.zkevm.consensys.net/tx/'
   },
@@ -111,9 +111,10 @@ export default {
     515: 'https://testnet.bscscan.com/address/',
     16: 'https://nova.arbiscan.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
-    517: 'https://public.zkevm-test.net:8443/address/',
+    517: 'https://explorer.public.zkevm-test.net/address/',
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
+    520: 'https://l2explorer.a1.taiko.xyz/address/',
     521: 'https://goerli.basescan.org/address/',
     522: 'https://explorer.goerli.zkevm.consensys.net/address/'
   },

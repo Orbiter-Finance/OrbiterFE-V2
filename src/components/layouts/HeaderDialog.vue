@@ -212,7 +212,7 @@ export default {
                 let networkName = ''
                 if (starkChain) {
                     if (starkChain == 4) {
-                        networkName = 'StarkNet Mainnet'
+                        networkName = 'Starknet Mainnet'
                     } else if (starkChain == 44) {
                         networkName = 'Goerli Testnet'
                     }
