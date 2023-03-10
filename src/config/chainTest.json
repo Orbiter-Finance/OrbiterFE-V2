@@ -623,11 +623,11 @@
       "url": "https://l2scan.scroll.io/api",
       "key": ""
     },
-    "chainId": "534354",
-    "networkId": "534354",
-    "l1NetworkId": "534354",
+    "chainId": "534353",
+    "networkId": "534353",
+    "l1NetworkId": "534353",
     "internalId": "519",
-    "name": "Scroll L2(G)",
+    "name": "Scroll Alpha(G)",
     "debug": false,
     "isSupportOpenApi": true,
     "contracts": [],
@@ -637,11 +637,11 @@
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": ["https://prealpha.scroll.io/l2"],
+    "rpc": ["https://alpha-rpc.scroll.io/l2"],
     "watch": ["rpc"],
     "tokens": [],
     "faucets": [],
-    "infoURL": "https://l2scan.scroll.io/"
+    "infoURL": "https://blockscout.scroll.io/"
   },
   {
     "api": {
@@ -691,6 +691,9 @@
     "debug": false,
     "isSupportOpenApi": false,
     "contracts": [],
+    "features":[
+      "Etherscan"
+    ],
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
@@ -711,10 +714,13 @@
     "networkId": "59140",
     "l1NetworkId": "59140",
     "internalId": "522",
-    "name": "ConsenSys zkEVM(G)",
+    "name": "ConsenSys(G)",
     "debug": false,
     "isSupportOpenApi": false,
     "contracts": [],
+    "features":[
+      "BlockScout"
+    ],
     "nativeCurrency": {
       "name": "crETH",
       "symbol": "ETH",

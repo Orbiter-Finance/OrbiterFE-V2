@@ -1,5 +1,5 @@
 export const METAMASK = 'MetaMask' // metamask wallet constant
-export const TALLYHO = 'TallyHo' // tally wallet constant 
+export const TALLYHO = 'TallyHo' // tally wallet constant
 export const BLOCKWALLET = 'BlockWallet' // BlockWallet wallet constant
 export const WALLETCONNECT = 'WalletConnect' // walletConnect wallet constant
 export const COINBASE = 'Coinbase' // coinbase wallet constant

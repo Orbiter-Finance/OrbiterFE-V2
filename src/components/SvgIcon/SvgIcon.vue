@@ -1,25 +1,22 @@
 <template>
-  <svg class="svg">
-    <use :xlink:href="`#icon-${iconName || 'tokenLogo'}`" />
-  </svg>
+    <svg class="svg">
+        <use :xlink:href="`#icon-${iconName || 'tokenLogo'}`" />
+    </svg>
 </template>
 
 <script>
 export default {
-  props: {
-    iconName: {
-      type: String,
-      require: true
-    }
-  }
+    props: {
+        iconName: {
+            type: String,
+            require: true,
+        },
+    },
 }
 </script>
 <style lang="scss">
 .svg {
-  outline: none;
-  fill: currentColor;
+    outline: none;
+    fill: currentColor;
 }
 </style>
-
-
-
