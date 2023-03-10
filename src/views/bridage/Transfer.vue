@@ -1465,7 +1465,7 @@ export default {
         // if ((toChainID === 4 || toChainID === 44) && fromCurrency == 'DAI'
         // ) {
         //   this.$notify.error({
-        //     title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
+        //     title: `Due to the Insufficient liquidity of DAI for Starknet, “to Starknet” function is suspende.`,
         //     duration: 6000,
         //   });
         //   return;
@@ -1508,19 +1508,19 @@ export default {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
           if (!starkChain || starkChain === 'unlogin') {
-            util.showMessage('please connect StarkNet Wallet', 'error');
+            util.showMessage('please connect Starknet Wallet', 'error');
             return;
           }
           if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
-                    'please switch StarkNet Wallet to mainnet',
+                    'please switch Starknet Wallet to mainnet',
                     'error'
             );
             return;
           }
           if ((fromChainID === 44 || toChainID === 44) && (starkChain === 4 || starkChain === 'localhost')) {
             util.showMessage(
-                    'please switch StarkNet Wallet to testNet',
+                    'please switch Starknet Wallet to testNet',
                     'error'
             );
             return;
