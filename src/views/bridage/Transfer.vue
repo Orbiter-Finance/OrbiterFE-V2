@@ -1460,13 +1460,13 @@ export default {
         //       })
         //       return
         //   }
-        // if (toChainID === 16 && toCurrency == 'USDC') {
-        //   this.$notify.error({
-        //         title: 'To Arbitrum Nova USDC transaction is under maintenance, please try again later',
-        //         duration: 3000,
-        //     })
-        //     return
-        // }
+        if (toChainID === 4) {
+          this.$notify.error({
+                title: 'This function is suspended due to network issues, please try again later. ',
+                duration: 3000,
+            })
+            return
+        }
         
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
