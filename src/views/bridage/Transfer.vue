@@ -1453,6 +1453,15 @@ export default {
           return;
         }
         const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+
+        if (toChainID ==1) {
+                this.$notify.error({
+                    title: 'To Ethereum main network transaction maintenance, please try again later',
+                    duration: 3000,
+                })
+                return
+            }
+        
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
         let nonce = await getNonce.getNonce(
