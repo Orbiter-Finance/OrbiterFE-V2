@@ -1452,15 +1452,21 @@ export default {
           });
           return;
         }
-        const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
-
-        if (toChainID ==1) {
-                this.$notify.error({
-                    title: 'To Ethereum main network transaction maintenance, please try again later',
-                    duration: 3000,
-                })
-                return
-            }
+        const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
+        // if (toChainID ==1) {
+        //       this.$notify.error({
+        //           title: 'To Ethereum main network transaction maintenance, please try again later',
+        //           duration: 3000,
+        //       })
+        //       return
+        //   }
+        // if (toChainID === 16 && toCurrency == 'USDC') {
+        //   this.$notify.error({
+        //         title: 'To Arbitrum Nova USDC transaction is under maintenance, please try again later',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
         
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;

@@ -5,7 +5,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
             "minPrice": 0.005,
-            "tradingFee": 0.002,
+            "tradingFee": 0.0062,
             "gasFee": 6,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -15,7 +15,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 3000,
             "minPrice": 0.1,
-            "tradingFee": 7,
+            "tradingFee": 17,
             "gasFee": 0.1,
             "startTime": 0,
             "endTime": 99999999999999
@@ -415,7 +415,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.005,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -425,7 +425,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 12,
+            "tradingFee": 17,
             "gasFee": 0.7,
             "startTime": 1651842601,
             "endTime": 99999999999999
@@ -435,7 +435,7 @@
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
@@ -445,7 +445,7 @@
             "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
             "maxPrice": 3000,
             "minPrice": 0.1,
-            "tradingFee": 8.5,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 0,
             "endTime": 99999999999999
@@ -565,7 +565,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.005,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -575,7 +575,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 12,
+            "tradingFee": 17,
             "gasFee": 0.3,
             "startTime": 1651842601,
             "endTime": 99999999999999
@@ -585,7 +585,7 @@
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
@@ -595,7 +595,7 @@
             "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
             "maxPrice": 3000,
             "minPrice": 0.1,
-            "tradingFee": 8.5,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 0,
             "endTime": 99999999999999
@@ -607,7 +607,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
             "minPrice": 0.005,
-            "tradingFee": 0.0025,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -617,7 +617,7 @@
             "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
             "maxPrice": 3000,
             "minPrice": 0.1,
-            "tradingFee": 8.5,
+            "tradingFee": 17,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -759,7 +759,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.005,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -769,7 +769,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 8,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -779,7 +779,7 @@
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
@@ -789,7 +789,7 @@
             "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
             "maxPrice": 3000,
             "minPrice": 0.1,
-            "tradingFee": 8.5,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 0,
             "endTime": 99999999999999
@@ -975,7 +975,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.005,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -985,7 +985,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 8,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -995,7 +995,7 @@
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
@@ -1005,7 +1005,7 @@
             "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
             "maxPrice": 3000,
             "minPrice": 0.1,
-            "tradingFee": 8.5,
+            "tradingFee": 17,
             "gasFee": 0.2,
             "startTime": 0,
             "endTime": 99999999999999
@@ -1083,7 +1083,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.005,
-            "tradingFee": 0.0025,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -1119,7 +1119,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.005,
-            "tradingFee": 0.0055,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -1131,7 +1131,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.005,
-            "tradingFee": 0.0025,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -1155,7 +1155,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.005,
-            "tradingFee": 0.0027,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -1179,7 +1179,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.005,
-            "tradingFee": 0.002,
+            "tradingFee": 0.0062,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
