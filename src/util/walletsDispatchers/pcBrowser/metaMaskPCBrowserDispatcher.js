@@ -13,22 +13,20 @@ import { getWeb3 } from '../../constants/web3/getWeb3'
  */
 
 export const loginStatusCheckerOfMetaMask = () => {
-    return (
-        web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
-    )
+  return web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
 }
 
 export const metaMaskDispatcherOnDisconnect = withPerformInterruptWallet(() => {
-    store.commit('updateLocalLogin', false)
+  store.commit('updateLocalLogin', false)
 })
 
 export const metaMaskDispatcherOnInit = () => {
-    getWeb3()
-    updateGlobalSelectWalletConf(METAMASK)
-    modifyLocalLoginInfo({
-        walletType: METAMASK,
-        loginSuccess: true,
-        walletPayload: {},
-    })
-    // universalWalletInitHandler(METAMASK);
+  getWeb3()
+  updateGlobalSelectWalletConf(METAMASK)
+  modifyLocalLoginInfo({
+    walletType: METAMASK,
+    loginSuccess: true,
+    walletPayload: {},
+  })
+  // universalWalletInitHandler(METAMASK);
 }
