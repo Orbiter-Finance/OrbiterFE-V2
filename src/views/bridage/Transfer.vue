@@ -438,6 +438,8 @@ export default {
       toValue: 0,
       isShowExchangeIcon: true,
 
+      toValueToolTip: 'Sender pays a 0.00% trading fee for each transfer.',
+
       exchangeToUsdPrice: 0,
 
       fromBalance: Number(0).toFixed(6),
@@ -655,12 +657,6 @@ export default {
     },
     maxPrice() {
       return transferDataState.selectMakerConfig?.fromChain?.maxPrice;
-    },
-    toValueToolTip() {
-      const { selectMakerConfig } = transferDataState;
-      let value = selectMakerConfig?.gasFee || 0;
-      value = parseFloat((value / 10).toFixed(2));
-      return `Sender pays a ${ value }% trading fee for each transfer.`;
     },
     timeSpenToolTip() {
       return `It takes about ${
@@ -1040,6 +1036,7 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
+      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(2)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
