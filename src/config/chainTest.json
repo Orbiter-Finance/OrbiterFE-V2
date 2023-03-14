@@ -506,7 +506,8 @@
       "https://zksync2-testnet.zksync.dev"
     ],
     "watch": [
-      "rpc"
+      "rpc",
+      "api"
     ],
     "contracts": [],
     "tokens": [],
