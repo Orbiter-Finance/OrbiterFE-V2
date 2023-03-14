@@ -1450,13 +1450,13 @@ export default {
           return;
         }
         const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
-        // if (toChainID ==1) {
-        //       this.$notify.error({
-        //           title: 'To Ethereum main network transaction maintenance, please try again later',
-        //           duration: 3000,
-        //       })
-        //       return
-        //   }
+        if (fromChainID == 9) {
+              this.$notify.error({
+                  title: 'From Loopring network transaction maintenance, please try again later',
+                  duration: 3000,
+              })
+              return
+          }
         // if (toChainID === 4) {
         //   this.$notify.error({
         //         title: 'This function is suspended due to network issues, please try again later. ',
