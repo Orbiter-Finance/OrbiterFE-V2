@@ -13,40 +13,39 @@ Vue.use(Router)
 // }
 
 export default new Router({
-    mode: 'history',
-    routes: [
-        {
-            path: '/',
-            component: (resolve) =>
-                require(['./views/bridage/Bridage'], resolve),
-            meta: {
-                title: 'Orbiter',
-                keepAlive: true,
-            },
-        },
-        {
-            path: '/history',
-            component: (resolve) => require(['./views/History'], resolve),
-            meta: {
-                title: 'Orbiter',
-                keepAlive: true,
-            },
-        },
-        {
-            path: '/data',
-            component: Data,
-            meta: {
-                title: 'Orbiter',
-                keepAlive: false,
-            },
-        },
-        {
-            path: '/dataDetail',
-            component: DataDetail,
-            meta: {
-                title: 'Orbiter',
-                keepAlive: false,
-            },
-        },
-    ],
+  mode: 'history',
+  routes: [
+    {
+      path: '/',
+      component: (resolve) => require(['./views/bridage/Bridage'], resolve),
+      meta: {
+        title: 'Orbiter',
+        keepAlive: true,
+      },
+    },
+    {
+      path: '/history',
+      component: (resolve) => require(['./views/History'], resolve),
+      meta: {
+        title: 'Orbiter',
+        keepAlive: true,
+      },
+    },
+    {
+      path: '/data',
+      component: Data,
+      meta: {
+        title: 'Orbiter',
+        keepAlive: false,
+      },
+    },
+    {
+      path: '/dataDetail',
+      component: DataDetail,
+      meta: {
+        title: 'Orbiter',
+        keepAlive: false,
+      },
+    },
+  ],
 })

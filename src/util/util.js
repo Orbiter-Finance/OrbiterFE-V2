@@ -6,14 +6,13 @@ import BigNumber from 'bignumber.js'
 import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
-import { isProd } from "./env";
-
+import { isProd } from './env'
 
 export default {
   showMessage(message, type) {
     const _type = type || 'success'
     Notification[_type]({
-      message: message,
+      message,
       dangerouslyUseHTMLString: true,
       duration: 3000,
     })
@@ -28,7 +27,7 @@ export default {
     return this.getChainInfoByChainId(chainId)?.chainId
   },
   chainL1NetWorkId(chainId) {
-    return this.getChainInfoByChainId(chainId)?.l1NetworkId;
+    return this.getChainInfoByChainId(chainId)?.l1NetworkId
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -200,9 +199,9 @@ export default {
 
   log(...msg) {
     if (isProd()) {
-      return;
+      return
     }
-    console.log(...msg);
+    console.log(...msg)
   },
 
   isWhite() {
@@ -254,28 +253,28 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    const chain = this.getChainInfoByChainId(chainId);
-    const l1NetworkId = +chain.l1NetworkId;
+    const chain = this.getChainInfoByChainId(chainId)
+    const l1NetworkId = +chain.l1NetworkId
     if (!l1NetworkId) {
-      return;
+      return
     }
     const switchParams = {
       chainId: this.toHex(l1NetworkId),
-    };
+    }
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
         method: 'wallet_switchEthereumChain',
         params: [switchParams],
-      });
-      return true;
+      })
+      return true
     } catch (error) {
       if (error.code === 4902) {
-        await this.addEthereumChain(chainId);
+        await this.addEthereumChain(chainId)
       } else {
-        console.error(error);
-        this.showMessage(error.message, 'error');
+        console.error(error)
+        this.showMessage(error.message, 'error')
       }
-      return false;
+      return false
     }
   },
 
@@ -290,9 +289,7 @@ export default {
         decimals: chainInfo.nativeCurrency.decimals,
       },
       rpcUrls: chainInfo.rpc,
-      blockExplorerUrls: [
-        chainInfo.infoURL
-      ],
+      blockExplorerUrls: [chainInfo.infoURL],
     }
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
@@ -311,16 +308,16 @@ export default {
       if (rpcList && rpcList.length > 0) {
         for (const url of rpcList) {
           if (!url || url === '') {
-            continue;
+            continue
           }
           try {
             const web3 = new Web3(url)
             result = await web3.eth[method](...args)
-            this.setStableRpc(chainId, url, 'success');
+            this.setStableRpc(chainId, url, 'success')
             resolve(result)
             break
           } catch (error) {
-            this.setStableRpc(chainId, '', 'error');
+            this.setStableRpc(chainId, '', 'error')
             this.log(
               'request rpc error:',
               url,
@@ -333,9 +330,7 @@ export default {
         }
       }
       if (!result) {
-        reject(
-          `Reuqest Web3 RPC ERROR：${chainId}-${method}-${args.join(',')}`
-        )
+        reject(`Reuqest Web3 RPC ERROR：${chainId}-${method}-${args.join(',')}`)
       }
     })
   },
@@ -356,9 +351,9 @@ export default {
             const result = await tokenContract.methods
               .balanceOf(userAddress)
               .call()
-              this.setStableRpc(chainId, url, 'success');
-              resolve(result)
-              break
+            this.setStableRpc(chainId, url, 'success')
+            resolve(result)
+            break
           } catch (error) {
             this.log(
               'Request Web3 token Balance rpc error:',

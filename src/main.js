@@ -29,8 +29,8 @@ import './util/enhancedLogger'
 // in some cases, we may need do something in webview(like imToken's webview environment)
 // local only!!!
 if (isLocal()) {
-    // eruda.init()
-    // eruda.position("center");
+  // eruda.init()
+  // eruda.position("center");
 }
 
 Vue.use(Loader)
@@ -45,25 +45,22 @@ Vue.use(VueClipboard)
 Vue.prototype.$env = env
 
 Vue.use(VueGtag, {
-    config: {
-        id:
-            isLocal() || isDev()
-                ? GOOGLE_ANALYTICS_ID_TEST
-                : GOOGLE_ANALYTICS_ID,
-    },
+  config: {
+    id: isLocal() || isDev() ? GOOGLE_ANALYTICS_ID_TEST : GOOGLE_ANALYTICS_ID,
+  },
 })
 
 const defaultTitle = 'Orbiter'
 router.beforeEach((to, from, next) => {
-    document.title = to.meta.title ? to.meta.title : defaultTitle
-    next()
+  document.title = to.meta.title ? to.meta.title : defaultTitle
+  next()
 })
 
 export default new Vue({
-    router,
-    store,
-    render: (h) => h(App),
-    mounted() {
-        init()
-    },
+  router,
+  store,
+  render: (h) => h(App),
+  mounted() {
+    init()
+  },
 }).$mount('#app')

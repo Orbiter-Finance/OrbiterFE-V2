@@ -10,22 +10,22 @@
  * @returns void
  */
 console.enhancedLog = (
-    bgColor = '#fff',
-    textColor = '#333',
-    description = '',
-    ...printParams
+  bgColor = '#fff',
+  textColor = '#333',
+  description = '',
+  ...printParams
 ) => {
-    console.log(
-        `%c${description}`,
-        `color:${textColor};background:${bgColor}`,
-        ...printParams
-    )
+  console.log(
+    `%c${description}`,
+    `color:${textColor};background:${bgColor}`,
+    ...printParams
+  )
 }
 
 const withColorBinding = (bgColor) => {
-    return (description = '', ...printParams) => {
-        console.enhancedLog(bgColor, '#fff', description, ...printParams)
-    }
+  return (description = '', ...printParams) => {
+    console.enhancedLog(bgColor, '#fff', description, ...printParams)
+  }
 }
 
 console.errorLog = withColorBinding('red')
