@@ -13,13 +13,13 @@ export { globalSelectWalletConf } from './walletsCoreData'
 
 export * from './constants'
 export {
-    modifyLocalLoginInfo,
-    getCurrentLoginInfoFromLocalStorage,
+  modifyLocalLoginInfo,
+  getCurrentLoginInfoFromLocalStorage,
 } from './utils'
 
 const dispatchersInEachDeviceEnv = {
-    [PC_BROWSER]: pcBrowserWalletDispatchers,
-    [MOBILE_APP]: mobileAppWebviewWalletDispatchers,
+  [PC_BROWSER]: pcBrowserWalletDispatchers,
+  [MOBILE_APP]: mobileAppWebviewWalletDispatchers,
 }
 
 // provide different wallet methods according to the different user environment
@@ -30,5 +30,5 @@ const dispatchersInEachDeviceEnv = {
 // disconnect wallet
 // login status checker
 export default isMobileEnv()
-    ? dispatchersInEachDeviceEnv[MOBILE_APP]
-    : dispatchersInEachDeviceEnv[PC_BROWSER]
+  ? dispatchersInEachDeviceEnv[MOBILE_APP]
+  : dispatchersInEachDeviceEnv[PC_BROWSER]

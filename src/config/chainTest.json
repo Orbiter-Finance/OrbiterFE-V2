@@ -332,7 +332,7 @@
   },
   {
     "api": {
-      "url": "https://uat2.loopring.io",
+      "url": "https://uat2.loopring.io/api/v3",
       "key": ""
     },
     "chainId": "loopring_testnet",
@@ -495,7 +495,7 @@
     "internalId": "514",
     "debug": true,
     "isSupportOpenApi": true,
-    "name": "ZkSync 2.0(G)",
+    "name": "zkSync Era(G)",
     "nativeCurrency": {
       "name": "Ether",
       "symbol": "ETH",
@@ -503,35 +503,16 @@
       "address": "0x000000000000000000000000000000000000800A"
     },
     "rpc": [
-      "https://zksync2-testnet.zksync.dev",
-      "wss://zksync2-testnet.zksync.dev/ws"
+      "https://zksync2-testnet.zksync.dev"
     ],
     "watch": [
-      "rpc"
+      "rpc",
+      "api"
     ],
     "contracts": [],
-    "tokens": [
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-      },
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-      }
-    ],
+    "tokens": [],
     "faucets": [],
-    "infoURL": "https://zksync2-testnet.zkscan.io/"
+    "infoURL": "https://goerli.explorer.zksync.io/"
   },
   {
     "api": {

@@ -7,8 +7,8 @@
     "build:rinkeby": "cross-env NODE_ENV=development npm run clear && vue-cli-service build",
     "build": "cross-env NODE_ENV=production npm run clear && vue-cli-service build",
     "clear": "rimraf ./dist",
-    "lint": "eslint --ext .js --ext .jsx --ext .vue src/",
-    "lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/",
+    "lint": "eslint --ext .js --ext .jsx src/",
+    "lint-fix": "eslint --fix --ext .js --ext .jsx src/",
     "prettier": "prettier --check --write --config .prettierrc.json 'src/*.{vue,js}'",
     "prepare": "husky install",
     "report": "npm run build -- --report"

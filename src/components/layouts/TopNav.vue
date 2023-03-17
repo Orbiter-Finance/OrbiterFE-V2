@@ -64,7 +64,7 @@
             <el-drawer
                 :size="280"
                 title=""
-                v-model:visible="drawerVisible"
+                :visible.sync="drawerVisible"
                 direction="rtl"
                 :before-close="() => (drawerVisible = false)"
             >

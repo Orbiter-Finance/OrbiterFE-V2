@@ -438,6 +438,8 @@ export default {
       toValue: 0,
       isShowExchangeIcon: true,
 
+      toValueToolTip: 'Sender pays a 0.00% trading fee for each transfer.',
+
       exchangeToUsdPrice: 0,
 
       fromBalance: Number(0).toFixed(6),
@@ -655,12 +657,6 @@ export default {
     },
     maxPrice() {
       return transferDataState.selectMakerConfig?.fromChain?.maxPrice;
-    },
-    toValueToolTip() {
-      const { selectMakerConfig } = transferDataState;
-      let value = selectMakerConfig?.gasFee || 0;
-      value = parseFloat((value / 10).toFixed(2));
-      return `Sender pays a ${ value }% trading fee for each transfer.`;
     },
     timeSpenToolTip() {
       return `It takes about ${
@@ -1040,6 +1036,7 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
+      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(2)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
@@ -1452,7 +1449,22 @@ export default {
           });
           return;
         }
-        const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+        const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
+        // if (toChainID ==1) {
+        //       this.$notify.error({
+        //           title: 'To Ethereum main network transaction maintenance, please try again later',
+        //           duration: 3000,
+        //       })
+        //       return
+        //   }
+        // if (toChainID === 4) {
+        //   this.$notify.error({
+        //         title: 'This function is suspended due to network issues, please try again later. ',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
+        
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
         let nonce = await getNonce.getNonce(
