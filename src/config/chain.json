@@ -93,7 +93,7 @@
         "networkId": "zksync",
         "l1NetworkId": "1",
         "internalId": "3",
-        "name": "ZKSync",
+        "name": "zkSync Lite",
         "isSupportOpenApi": true,
         "debug": false,
         "nativeCurrency": {
@@ -140,9 +140,7 @@
         "name": "Starknet",
         "isSupportOpenApi": true,
         "debug": false,
-        "contracts": [
-            "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"
-        ],
+        "contracts": ["0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"],
         "nativeCurrency": {
             "id": 0,
             "name": "Ether",
@@ -325,9 +323,7 @@
             "decimals": 18,
             "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
         },
-        "rpc": [
-            "https://andromeda.metis.io/?owner=1088"
-        ],
+        "rpc": ["https://andromeda.metis.io/?owner=1088"],
         "watch": ["api", "rpc"],
         "contracts": [],
         "tokens": [
@@ -443,10 +439,8 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [
-            "https://zksync2-mainnet.zksync.io"
-        ],
-        "watch": ["rpc", "api"],
+        "rpc": ["https://zksync2-mainnet.zksync.io"],
+        "watch": ["rpc"],
         "contracts": [],
         "tokens": [],
         "infoURL": "https://explorer.zksync.io"
