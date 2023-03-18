@@ -1482,6 +1482,13 @@ export default {
         //   });
         //   return;
         // }
+        if (toChainID === 3 || fromChainID === 3) {
+          this.$notify.error({
+            title: `The Zksync network transaction maintenance, please try again later`,
+            duration: 6000,
+          });
+          return;
+        }
 
         if (nonce > 8999) {
           this.$notify.error({
