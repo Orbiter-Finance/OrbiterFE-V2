@@ -1474,14 +1474,13 @@ export default {
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
 
-        // if ((toChainID === 4 || toChainID === 44) && fromCurrency == 'DAI'
-        // ) {
-        //   this.$notify.error({
-        //     title: `Due to the Insufficient liquidity of DAI for Starknet, “to Starknet” function is suspende.`,
-        //     duration: 6000,
-        //   });
-        //   return;
-        // }
+        if (toChainID === 4 || toChainID === 44) {
+          this.$notify.error({
+            title: `The StarkNet network transaction maintenance, please try again later`,
+            duration: 6000,
+          });
+          return;
+        }
         // if (toChainID === 3 || fromChainID === 3) {
         //   this.$notify.error({
         //     title: `The Zksync network transaction maintenance, please try again later`,
