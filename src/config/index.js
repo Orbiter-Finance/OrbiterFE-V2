@@ -119,6 +119,8 @@ function convertMakerConfig(maker) {
   return configs
 }
 
+console.log('makerAddress', makerConfigs[0].recipient);
+
 const whiteList = []
 
 export default {
