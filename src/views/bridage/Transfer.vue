@@ -546,8 +546,8 @@ export default {
       let { token, tokens, amount, fixed } = query;
       amount = new BigNumber(amount);
       tokens = !tokens ? [] : tokens.split(',');
-      let source = makerConfigs.find(item => item.fromChain.name === query.source)?.fromChain?.id || 0;
-      let dest = makerConfigs.find(item => item.toChain.name === query.dest)?.toChain?.id || 0;
+      let source = makerConfigs.find(item => item.fromChain.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.id || 0;
+      let dest = makerConfigs.find(item => item.toChain.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.id || 0;
       const getMapChainIds = (chainNames, isDest) => {
         const chainIds = [];
         if (!chainNames) {
