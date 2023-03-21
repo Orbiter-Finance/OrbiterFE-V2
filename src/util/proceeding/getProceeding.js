@@ -72,7 +72,7 @@ export default {
     store.commit('updateProceedingUserTransferAmount', realAmount)
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
-    console.log(txHash)
+    // console.log(txHash)
     return confirmUserTransaction(txHash)
   },
 }

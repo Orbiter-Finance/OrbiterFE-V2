@@ -119,7 +119,7 @@ function convertMakerConfig(maker) {
   return configs
 }
 
-console.log('makerAddress', makerConfigs[0].recipient);
+// console.log('makerAddress', makerConfigs[0].recipient);
 
 const whiteList = []
 
