@@ -3,10 +3,8 @@
         "api": { "url": "https://api.etherscan.io/api", "key": "" },
         "chainId": "1",
         "networkId": "1",
-        "l1NetworkId": "1",
         "internalId": "1",
         "name": "Ethereum",
-        "isSupportOpenApi": true,
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -47,10 +45,8 @@
         "api": { "url": "http://api.arbiscan.io/api", "key": "" },
         "chainId": "42161",
         "networkId": "42161",
-        "l1NetworkId": "42161",
         "internalId": "2",
         "name": "Arbitrum",
-        "isSupportOpenApi": true,
         "debug": false,
         "nativeCurrency": {
             "name": "Ether",
@@ -91,10 +87,8 @@
         "api": { "url": "https://api.zksync.io/api/v0.2", "key": "" },
         "chainId": "zksync",
         "networkId": "zksync",
-        "l1NetworkId": "1",
         "internalId": "3",
-        "name": "ZKSync",
-        "isSupportOpenApi": true,
+        "name": "zkSync Lite",
         "debug": false,
         "nativeCurrency": {
             "id": 0,
@@ -135,14 +129,10 @@
         "api": { "url": "", "key": "" },
         "chainId": "SN_MAIN",
         "networkId": "mainnet-alpha",
-        "l1NetworkId": "1",
         "internalId": "4",
         "name": "Starknet",
-        "isSupportOpenApi": true,
         "debug": false,
-        "contracts": [
-            "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"
-        ],
+        "contracts": ["0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"],
         "nativeCurrency": {
             "id": 0,
             "name": "Ether",
@@ -166,10 +156,8 @@
         "api": { "url": "https://api.polygonscan.com/api", "key": "" },
         "chainId": "137",
         "networkId": "137",
-        "l1NetworkId": "137",
         "internalId": "6",
         "name": "Polygon",
-        "isSupportOpenApi": true,
         "rpc": [
             "https://polygon.llamarpc.com",
             "https://polygon-bor.publicnode.com",
@@ -218,10 +206,8 @@
         "api": { "url": "https://api-optimistic.etherscan.io/api", "key": "" },
         "chainId": "10",
         "networkId": "10",
-        "l1NetworkId": "10",
         "internalId": "7",
         "name": "Optimism",
-        "isSupportOpenApi": true,
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -263,10 +249,8 @@
         "api": { "url": "https://api.x.immutable.com/v1", "key": "" },
         "chainId": "immutableX",
         "networkId": "immutableX",
-        "l1NetworkId": "1",
         "internalId": "8",
         "name": "Immutable X",
-        "isSupportOpenApi": false,
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -293,10 +277,8 @@
         },
         "chainId": "loopring",
         "networkId": "1",
-        "l1NetworkId": "1",
         "internalId": "9",
         "name": "Loopring",
-        "isSupportOpenApi": false,
         "nativeCurrency": {
             "id": 0,
             "name": "Ethereum",
@@ -315,19 +297,15 @@
         "chain": "ETH",
         "chainId": "1088",
         "networkId": "1088",
-        "l1NetworkId": "1088",
         "internalId": "10",
         "name": "Metis",
-        "isSupportOpenApi": true,
         "nativeCurrency": {
             "name": "Metis Token",
             "symbol": "METIS",
             "decimals": 18,
             "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
         },
-        "rpc": [
-            "https://andromeda.metis.io/?owner=1088"
-        ],
+        "rpc": ["https://andromeda.metis.io/?owner=1088"],
         "watch": ["api", "rpc"],
         "contracts": [],
         "tokens": [
@@ -350,10 +328,8 @@
         "api": { "url": "https://api.dydx.exchange", "key": "" },
         "chainId": "dydx",
         "networkId": "dydx",
-        "l1NetworkId": "1",
         "internalId": "11",
         "name": "Dydx",
-        "isSupportOpenApi": false,
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -374,13 +350,11 @@
         "infoURL": ""
     },
     {
-        "api": { "url": "https://api.zkswap.info/v3", "key": "" },
+        "api": { "url": "https://api.zks.app/v3/1", "key": "" },
         "chainId": "ZKSpace",
         "networkId": "13",
-        "l1NetworkId": "1",
         "internalId": "12",
         "name": "ZKSpace",
-        "isSupportOpenApi": false,
         "nativeCurrency": {
             "id": 0,
             "name": "Ether",
@@ -406,10 +380,8 @@
         "api": { "url": "https://api.bobascan.com/api", "key": "" },
         "chainId": "288",
         "networkId": "288",
-        "l1NetworkId": "288",
         "internalId": "13",
         "name": "Boba",
-        "isSupportOpenApi": true,
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
@@ -433,20 +405,16 @@
         },
         "chainId": "324",
         "networkId": "324",
-        "l1NetworkId": "324",
         "internalId": "14",
         "name": "zkSync Era",
-        "isSupportOpenApi": true,
         "nativeCurrency": {
             "name": "Ether",
             "symbol": "ETH",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [
-            "https://zksync2-mainnet.zksync.io"
-        ],
-        "watch": ["rpc", "api"],
+        "rpc": ["https://zksync2-mainnet.zksync.io"],
+        "watch": ["rpc"],
         "contracts": [],
         "tokens": [],
         "infoURL": "https://explorer.zksync.io"
@@ -455,10 +423,8 @@
         "api": { "url": "https://api.bscscan.com/api", "key": "" },
         "chainId": "56",
         "networkId": "56",
-        "l1NetworkId": "56",
         "internalId": "15",
         "name": "BNB Chain",
-        "isSupportOpenApi": true,
         "debug": false,
         "contracts": [],
         "nativeCurrency": {
@@ -490,10 +456,8 @@
         "api": { "url": "https://api-nova.arbiscan.io/api", "key": "" },
         "chainId": "42170",
         "networkId": "42170",
-        "l1NetworkId": "42170",
         "internalId": "16",
         "name": "Arbitrum Nova",
-        "isSupportOpenApi": true,
         "debug": false,
         "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
         "nativeCurrency": {

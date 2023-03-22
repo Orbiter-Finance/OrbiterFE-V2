@@ -16,6 +16,7 @@ import {
 import { showMessage } from '../../constants/web3/getWeb3'
 import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
+import env from "../../../../env";
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
@@ -232,7 +233,7 @@ export const universalWalletSwitchChainHandler = (
 export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
   const presentNetWorkId = getNetworkIdByChainId()
   const matchChainConf = util.getChainInfoByNetworkId(presentNetWorkId)
-  const { name, nativeCurrency, explorers, chainId, rpc, infoURL } =
+  const { name, nativeCurrency, chainId, rpc } =
     matchChainConf
 
   const addParams = {
@@ -244,11 +245,7 @@ export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
       decimals: nativeCurrency.decimals,
     },
     rpcUrls: rpc,
-    blockExplorerUrls: [
-      explorers && explorers.length > 0 && explorers[0].url
-        ? explorers[0].url
-        : infoURL,
-    ],
+    blockExplorerUrls: [env.networkUrl[chainId]],
   }
   walletProvider
     .request({
