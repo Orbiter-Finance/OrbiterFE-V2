@@ -3,5 +3,5 @@ import util from '../util'
 
 export const getNetworkIdByChainId = (chainId) => {
   const selectIdByUser = transferDataState.fromChainID // chainId selected by user
-  return util.chainL1NetWorkId(chainId || selectIdByUser)
+  return util.getMetaMaskNetworkId(chainId || selectIdByUser)
 }

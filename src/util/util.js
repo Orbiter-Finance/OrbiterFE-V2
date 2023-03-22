@@ -7,6 +7,7 @@ import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
+import env from "../../env";
 
 export default {
   showMessage(message, type) {
@@ -26,8 +27,8 @@ export default {
   chainNetWorkId(chainId) {
     return this.getChainInfoByChainId(chainId)?.chainId
   },
-  chainL1NetWorkId(chainId) {
-    return this.getChainInfoByChainId(chainId)?.l1NetworkId
+  getMetaMaskNetworkId(chainId) {
+    return env.metaMaskNetworkId[chainId];
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -253,13 +254,12 @@ export default {
    * @param {number} chainId
    */
   async ensureWalletNetwork(chainId) {
-    const chain = this.getChainInfoByChainId(chainId)
-    const l1NetworkId = +chain.l1NetworkId
-    if (!l1NetworkId) {
-      return
+    const maskNetworkId = this.getMetaMaskNetworkId(chainId)
+    if (!maskNetworkId) {
+      return;
     }
     const switchParams = {
-      chainId: this.toHex(l1NetworkId),
+      chainId: this.toHex(maskNetworkId),
     }
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
@@ -280,8 +280,9 @@ export default {
 
   async addEthereumChain(chainId) {
     const chainInfo = this.getChainInfoByChainId(chainId)
+    const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     const params = {
-      chainId: this.toHex(chainInfo.l1NetworkId), // A 0x-prefixed hexadecimal string
+      chainId: this.toHex(maskNetworkId), // A 0x-prefixed hexadecimal string
       chainName: chainInfo.name,
       nativeCurrency: {
         name: chainInfo.nativeCurrency.name,
@@ -289,7 +290,7 @@ export default {
         decimals: chainInfo.nativeCurrency.decimals,
       },
       rpcUrls: chainInfo.rpc,
-      blockExplorerUrls: [chainInfo.infoURL],
+      blockExplorerUrls: [env.networkUrl[chainId]],
     }
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
