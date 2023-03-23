@@ -117,7 +117,7 @@
                                     <el-popover popper-class="supported-l2-popover" :placement="'bottom'" width="280"
                                         trigger="hover">
                                         <div class="supported-l2-desc">
-                                            StarkNet Received on L2: Total gas received of every successful transaction on StarkNet StarkNet Spent on L1: Total gas used by StarkNet's L1 contracts to settle L2 proof on Ethereum
+                                            Starknet Received on L2: Total gas received of every successful transaction on Starknet Starknet Spent on L1: Total gas used by Starknet's L1 contracts to settle L2 proof on Ethereum
                                         </div>
                                         <span class="title-help" slot="reference"> </span>
                                     </el-popover>

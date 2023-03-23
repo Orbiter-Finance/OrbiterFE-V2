@@ -422,7 +422,7 @@ export default {
 
       saveTimeLoading: false,
 
-      balanceMap: {},
+      // balanceMap: {},
       originGasCost: 0,
       sendBtnInfo: {
         text: 'SEND',
@@ -437,6 +437,8 @@ export default {
       transferValue: '',
       toValue: 0,
       isShowExchangeIcon: true,
+
+      toValueToolTip: 'Sender pays a 0.00% trading fee for each transfer.',
 
       exchangeToUsdPrice: 0,
 
@@ -544,8 +546,8 @@ export default {
       let { token, tokens, amount, fixed } = query;
       amount = new BigNumber(amount);
       tokens = !tokens ? [] : tokens.split(',');
-      let source = makerConfigs.find(item => item.fromChain.name === query.source)?.fromChain?.id || 0;
-      let dest = makerConfigs.find(item => item.toChain.name === query.dest)?.toChain?.id || 0;
+      let source = makerConfigs.find(item => item.fromChain.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.id || 0;
+      let dest = makerConfigs.find(item => item.toChain.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.id || 0;
       const getMapChainIds = (chainNames, isDest) => {
         const chainIds = [];
         if (!chainNames) {
@@ -655,12 +657,6 @@ export default {
     },
     maxPrice() {
       return transferDataState.selectMakerConfig?.fromChain?.maxPrice;
-    },
-    toValueToolTip() {
-      const { selectMakerConfig } = transferDataState;
-      let value = selectMakerConfig?.gasFee || 0;
-      value = parseFloat((value / 10).toFixed(2));
-      return `Sender pays a ${ value }% trading fee for each transfer.`;
     },
     timeSpenToolTip() {
       return `It takes about ${
@@ -1040,6 +1036,7 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
+      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(2)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
@@ -1292,13 +1289,13 @@ export default {
       }
       this.userMaxPrice = max.toString();
     },
-    addBalance(chainId, symbol, value, address) {
-      const walletAddress = address || compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
-      const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
-      chainBalanceMap[symbol] = value || Number(0).toFixed(6);
-      this.balanceMap = JSON.parse(JSON.stringify(this.balanceMap));
-    },
+    // addBalance(chainId, symbol, value, address) {
+    //   const walletAddress = address || compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+    //   const addressBalanceMap = this.balanceMap[walletAddress] = this.balanceMap[walletAddress] || {};
+    //   const chainBalanceMap = addressBalanceMap[chainId] = addressBalanceMap[chainId] || {};
+    //   chainBalanceMap[symbol] = value || Number(0).toFixed(6);
+    //   this.balanceMap = JSON.parse(JSON.stringify(this.balanceMap));
+    // },
     clearTransferValue() {
       this.transferValue = '';
       this.toValue = 0;
@@ -1453,20 +1450,20 @@ export default {
           return;
         }
         const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
-        // if (toChainID ==1) {
-        //       this.$notify.error({
-        //           title: 'To Ethereum main network transaction maintenance, please try again later',
-        //           duration: 3000,
-        //       })
-        //       return
-        //   }
-        // if (toChainID === 4) {
+        // if (fromChainID == 9) {
         //   this.$notify.error({
-        //         title: 'This function is suspended due to network issues, please try again later. ',
-        //         duration: 3000,
-        //     })
-        //     return
+        //     title: 'From Loopring network transaction maintenance, please try again later',
+        //     duration: 3000,
+        //   });
+        //   return;
         // }
+        if (toChainID === 4) {
+          this.$notify.error({
+                title: 'This function is suspended due to network issues, please try again later. ',
+                duration: 3000,
+            })
+            return
+        }
         
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
@@ -1477,10 +1474,16 @@ export default {
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
 
-        // if ((toChainID === 4 || toChainID === 44) && fromCurrency == 'DAI'
-        // ) {
+        // if (toChainID === 4 || toChainID === 44) {
         //   this.$notify.error({
-        //     title: `Due to the Insufficient liquidity of DAI for StarkNet, “to StarkNet” function is suspende.`,
+        //     title: `The StarkNet network transaction maintenance, please try again later`,
+        //     duration: 6000,
+        //   });
+        //   return;
+        // }
+        // if (toChainID === 3 || fromChainID === 3) {
+        //   this.$notify.error({
+        //     title: `The Zksync network transaction maintenance, please try again later`,
         //     duration: 6000,
         //   });
         //   return;
@@ -1523,19 +1526,19 @@ export default {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
           if (!starkChain || starkChain === 'unlogin') {
-            util.showMessage('please connect StarkNet Wallet', 'error');
+            util.showMessage('please connect Starknet Wallet', 'error');
             return;
           }
           if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
-                    'please switch StarkNet Wallet to mainnet',
+                    'please switch Starknet Wallet to mainnet',
                     'error'
             );
             return;
           }
           if ((fromChainID === 44 || toChainID === 44) && (starkChain === 4 || starkChain === 'localhost')) {
             util.showMessage(
-                    'please switch StarkNet Wallet to testNet',
+                    'please switch Starknet Wallet to testNet',
                     'error'
             );
             return;
@@ -1670,12 +1673,12 @@ export default {
         return;
       }
       const makerAddress = selectMakerConfig.sender;
-      const addressBalanceMap = this.balanceMap[makerAddress] = this.balanceMap[makerAddress] || {};
-      const chainBalanceMap = addressBalanceMap[toChain.id] = addressBalanceMap[toChain.id] || {};
-      if (chainBalanceMap[toChain.symbol]) {
-        this.makerMaxBalance = chainBalanceMap[toChain.symbol];
-        return;
-      }
+      // const addressBalanceMap = this.balanceMap[makerAddress] = this.balanceMap[makerAddress] || {};
+      // const chainBalanceMap = addressBalanceMap[toChain.id] = addressBalanceMap[toChain.id] || {};
+      // if (chainBalanceMap[toChain.symbol]) {
+      //   this.makerMaxBalance = chainBalanceMap[toChain.symbol];
+      //   return;
+      // }
 
       const _balance = await this.getBalance(
               toChain.id,
@@ -1686,7 +1689,7 @@ export default {
       if (_balance > 0) {
         // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
         this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
-        this.addBalance(toChain.id, toChain.symbol, this.makerMaxBalance, makerAddress)
+        // this.addBalance(toChain.id, toChain.symbol, this.makerMaxBalance, makerAddress)
       }
     },
     gasCost() {
@@ -1722,13 +1725,13 @@ export default {
         address = web3State.starkNet.starkNetAddress;
       }
       if (address && address !== '0x') {
-        const addressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
-        const fromChainBalanceMap = addressBalanceMap[fromChain.id] = addressBalanceMap[fromChain.id] || {};
-        if (typeof fromChainBalanceMap[fromChain.symbol] === 'undefined') {
+        // const addressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
+        // const fromChainBalanceMap = addressBalanceMap[fromChain.id] = addressBalanceMap[fromChain.id] || {};
+        // if (typeof fromChainBalanceMap[fromChain.symbol] === 'undefined') {
           await transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
                   .then(async (response) => {
                     const balance = (response / 10 ** fromChain.decimals).toFixed(6);
-                    self.addBalance(fromChain.id, fromChain.symbol, balance, address);
+                    // self.addBalance(fromChain.id, fromChain.symbol, balance, address);
                     self.fromBalance = balance;
                     await self.updateUserMaxPrice();
                   })
@@ -1737,10 +1740,11 @@ export default {
                   }).finally(() => {
                   self.fromBalanceLoading = false;
           });
-        } else {
-          self.fromBalance = fromChainBalanceMap[fromChain.symbol];
           await self.updateUserMaxPrice();
-        }
+        // } else {
+        //   self.fromBalance = fromChainBalanceMap[fromChain.symbol];
+        //   await self.updateUserMaxPrice();
+        // }
           self.fromBalanceLoading = false;
       }
 
@@ -1749,13 +1753,13 @@ export default {
         address = web3State.starkNet.starkNetAddress;
       }
       if (address && address !== '0x') {
-        const toAddressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
-        const toChainBalanceMap = toAddressBalanceMap[toChain.id] = toAddressBalanceMap[toChain.id] || {};
-        if (typeof toChainBalanceMap[toChain.symbol] === 'undefined') {
+        // const toAddressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
+        // const toChainBalanceMap = toAddressBalanceMap[toChain.id] = toAddressBalanceMap[toChain.id] || {};
+        // if (typeof toChainBalanceMap[toChain.symbol] === 'undefined') {
           await transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
                   .then((response) => {
                     const balance = (response / 10 ** toChain.decimals).toFixed(6);
-                    self.addBalance(toChain.id, toChain.symbol, balance, address);
+                    // self.addBalance(toChain.id, toChain.symbol, balance, address);
                     self.toBalance = balance;
                   })
                   .catch((error) => {
@@ -1763,9 +1767,9 @@ export default {
                   }).finally(() => {
                   self.toBalanceLoading = false;
           });
-        } else {
-          self.toBalance = toChainBalanceMap[toChain.symbol];
-        }
+        // } else {
+        //   self.toBalance = toChainBalanceMap[toChain.symbol];
+        // }
           self.toBalanceLoading = false;
       }
     },

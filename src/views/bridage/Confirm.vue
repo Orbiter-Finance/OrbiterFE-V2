@@ -116,7 +116,7 @@
         >
             <SvgIconThemed style="margin-right: 10px" icon="info" />
             <span style="color: #df2e2d; flex: 1"
-                >StarkNet is still in alpha version, the transaction on it maybe
+                >Starknet is still in alpha version, the transaction on it maybe
                 will be done in 1~2 hours. Orbiter keeps your funds safe.</span
             >
         </div>
@@ -540,16 +540,15 @@ export default {
         },
         async zk2Transfer() {
             const { selectMakerConfig, fromChainID } = transferDataState
-            const zksync2Provider = new zksync2.Provider(
-                util.stableRpc(fromChainID)
-            )
-            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
-            const isTokenLiquid = await zksync2Provider.isTokenLiquid(
-                tokenAddress
-            )
-            if (!isTokenLiquid) {
-                // throw new Error('the token can not be used for fee')
+            if (selectMakerConfig.fromChain.symbol !== 'ETH') {
+                throw new Error('Tokens are not supported at this time');
             }
+            // const isTokenLiquid = await zksync2Provider.isTokenLiquid(
+            //     tokenAddress
+            // )
+            // if (!isTokenLiquid) {
+            //     // throw new Error('the token can not be used for fee')
+            // }
             const tValue = transferCalculate.getTransferTValue()
             if (!tValue.state) {
                 this.$notify.error({
@@ -559,53 +558,60 @@ export default {
                 this.transferLoading = false
                 return
             }
-            const provider = new zksync2.Web3Provider(
-                compatibleGlobalWalletConf.value.walletPayload.provider
-            )
-            const signer = provider.getSigner()
-            // const toAddress = '0xEFc6089224068b20197156A91D50132b2A47b908'
-            const toAddress = selectMakerConfig.recipient
-            // const amountToSend = '100000000000000'
-            const amountToSend = tValue.tAmount
-            const params = {
-                from: compatibleGlobalWalletConf.value.walletPayload
-                    .walletAddress,
-                txType: 0x71,
-                customData: {
-                    feeToken: '',
-                },
-                to: '',
-                value: ethers.BigNumber.from(0),
-                data: '0x',
-            }
-            const isMainCoin =
-                tokenAddress.toLowerCase() ===
-                '0x000000000000000000000000000000000000800a'
-            if (!isMainCoin) {
-                const web3 = new Web3()
-                const tokenContract = new web3.eth.Contract(
-                    Coin_ABI,
-                    tokenAddress
-                )
-                params.data = tokenContract.methods
-                    .transfer(toAddress, web3.utils.toHex(amountToSend))
-                    .encodeABI()
-                params.to = tokenAddress
-                params.customData.feeToken = tokenAddress
-            } else {
-                params.value = ethers.BigNumber.from(amountToSend)
-                params.to = toAddress
-                params.customData.feeToken =
-                    '0x0000000000000000000000000000000000000000'
-            }
-            const transferResult = await signer.sendTransaction(params)
+            // const provider = new zksync2.Web3Provider(
+            //     compatibleGlobalWalletConf.value.walletPayload.provider
+            // )
+            // const signer = provider.getSigner()
+            // // const toAddress = '0xEFc6089224068b20197156A91D50132b2A47b908'
+            // const toAddress = selectMakerConfig.recipient
+            // // const amountToSend = '100000000000000'
+            // const amountToSend = tValue.tAmount
+            // const params = {
+            //     from: compatibleGlobalWalletConf.value.walletPayload
+            //         .walletAddress,
+            //     txType: 0x71,
+            //     customData: {
+            //         feeToken: '',
+            //     },
+            //     to: '',
+            //     value: ethers.BigNumber.from(0),
+            //     data: '0x',
+            // }
+            // const isMainCoin =
+            //     tokenAddress.toLowerCase() ===
+            //     '0x000000000000000000000000000000000000800a'
+            // if (!isMainCoin) {
+            //     const web3 = new Web3()
+            //     const tokenContract = new web3.eth.Contract(
+            //         Coin_ABI,
+            //         tokenAddress
+            //     )
+            //     params.data = tokenContract.methods
+            //         .transfer(toAddress, web3.utils.toHex(amountToSend))
+            //         .encodeABI()
+            //     params.to = tokenAddress
+            //     params.customData.feeToken = tokenAddress
+            // } else {
+            //     params.value = ethers.BigNumber.from(amountToSend)
+            //     params.to = toAddress
+            //     params.customData.feeToken =
+            //         '0x0000000000000000000000000000000000000000'
+            // }
+            // const transferResult = await signer.sendTransaction(params)
+            const provider = new zksync2.Web3Provider(compatibleGlobalWalletConf.value.walletPayload.provider);
+            const signer = provider.getSigner();
+            const amount = (new BigNumber(tValue.tAmount).dividedBy(10 ** 18)).toString();
+            const transferResult = await signer.transfer({
+                to: selectMakerConfig.recipient,
+                amount: ethers.utils.parseEther(amount),
+            });
             if (transferResult.hash) {
                 this.onTransferSucceed(
                     web3State.coinbase,
                     tValue.tAmount,
                     fromChainID,
                     transferResult.hash
-                )
+                );
             }
             this.transferLoading = false
         },
@@ -958,7 +964,7 @@ export default {
                 let { starkChain } = web3State.starkNet
                 starkChain = +starkChain ? +starkChain : starkChain
                 if (!starkChain || starkChain === 'unlogin') {
-                    util.showMessage('please connect StarkNet Wallet', 'error')
+                    util.showMessage('please connect Starknet Wallet', 'error')
                     return
                 }
                 if (
@@ -966,7 +972,7 @@ export default {
                     (starkChain === 44 || starkChain === 'localhost')
                 ) {
                     util.showMessage(
-                        'please switch StarkNet Wallet to mainnet',
+                        'please switch Starknet Wallet to mainnet',
                         'error'
                     )
                     return
@@ -976,7 +982,7 @@ export default {
                     (starkChain === 4 || starkChain === 'localhost')
                 ) {
                     util.showMessage(
-                        'please switch StarkNet Wallet to testNet',
+                        'please switch Starknet Wallet to testNet',
                         'error'
                     )
                     return

@@ -1,7 +1,5 @@
 import chainMain from './chain.json'
-import makerMain from './maker.json'
 import chainTest from './chainTest.json'
-import makerTest from './makerTest.json'
 import { isProd } from '../util'
 
 const tokenIcons = {
@@ -33,8 +31,12 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-const chain = isProd() ? chainMain : chainTest
-const maker = isProd() ? makerMain : makerTest
+const random = [1, 2].sort(function () {
+  return 0.5 - Math.random();
+})[0];
+const chain = isProd() ? chainMain : chainTest;
+const maker = require(`./${ isProd() ? `maker-${ random }.json` : `makerTest-${ random }.json` }`);
+const v1MakerConfigs = [];
 
 const chainConfig = [...chain].map((item) => {
   if (process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`]) {
@@ -44,7 +46,9 @@ const chainConfig = [...chain].map((item) => {
   return item
 })
 
-function convertMakerConfig() {
+const makerConfigs = convertMakerConfig(maker);
+
+function convertMakerConfig(maker) {
   const makerMap = maker
   const chainList = chainConfig
   const configs = []
@@ -115,9 +119,7 @@ function convertMakerConfig() {
   return configs
 }
 
-const v1MakerConfigs = []
-
-const makerConfigs = convertMakerConfig()
+// console.log('makerAddress', makerConfigs[0].recipient);
 
 const whiteList = []
 
@@ -126,5 +128,5 @@ export default {
   chainConfig,
   makerConfigs,
   v1MakerConfigs,
-  whiteList,
-}
+  whiteList
+};
