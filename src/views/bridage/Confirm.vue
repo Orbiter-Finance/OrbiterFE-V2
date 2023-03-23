@@ -1225,7 +1225,7 @@ export default {
             if (fromChainID !== 4 && fromChainID !== 44) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-                    util.chainL1NetWorkId(fromChainID)
+                    util.getMetaMaskNetworkId(fromChainID)
                 ) {
                     if (
                         compatibleGlobalWalletConf.value.walletType === METAMASK
