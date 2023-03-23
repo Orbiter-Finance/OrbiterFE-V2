@@ -42,7 +42,7 @@ export default {
     1: 'https://etherscan.io',
     5: 'https://goerli.etherscan.io',
     2: 'https://arbiscan.io',
-    22: 'https://goerli-rollup.arbitrum.io',
+    22: 'https://testnet.arbiscan.io',
     3: 'https://zkscan.io/explorer',
     33: 'https://goerli.zkscan.io/explorer',
     4: 'https://starkscan.co',
