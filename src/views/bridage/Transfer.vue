@@ -1554,7 +1554,9 @@ export default {
                 const successCallback = () => this.$emit('stateChanged', '2');
                 matchSwitchChainDispatcher(
                         compatibleGlobalWalletConf.value.walletPayload.provider,
-                        () => successCallback.bind(this)
+                        () => {
+                          this.$emit('stateChanged', '2')
+                        }
                 );
                 return;
               }
