@@ -10,7 +10,7 @@
                 @show="() => (isRaiseUpFromTokenListVisible = true)"
         ></ObSelect>
       </div>
-      <div :hidden="!isWhiteWallet" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+      <div style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
         <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
         <el-switch :hidden="isLightMode"
                 v-model="isNewVersion"
@@ -694,14 +694,11 @@ export default {
     },
   },
   watch: {
+    isWhiteWallet(){
+      this.refreshConfig();
+    },
     isNewVersion() {
-      if (this.isNewVersion) {
-        makerConfigs = config.makerConfigs;
-        this.updateTransferInfo();
-      } else {
-        makerConfigs = config.v1MakerConfigs;
-        this.updateTransferInfo();
-      }
+      this.refreshConfig();
     },
     queryParams: function (nv) {
       // When transferValue is empty, set it = nv.amount
@@ -853,10 +850,23 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
+    refreshConfig(){
+      if (this.isNewVersion) {
+        makerConfigs = config.makerConfigs;
+      } else {
+        makerConfigs = config.v1MakerConfigs;
+      }
+      if (!this.isWhiteWallet) {
+        makerConfigs = makerConfigs.filter(item => {
+          return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
+        });
+      }
+      this.updateTransferInfo();
+    },
     async initWhiteList() {
-      // if (isProd()) {
-      //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      // }
+      if (isProd()) {
+        config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
+      }
       this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {

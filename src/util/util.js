@@ -206,9 +206,9 @@ export default {
   },
 
   isWhite() {
-    // if(isProd() && !config?.whiteList.length){
-    //   return false;
-    // }
+    if(isProd() && !config?.whiteList.length){
+      return false;
+    }
     return !(
       config.whiteList.length &&
       !config.whiteList.find((item) =>
