@@ -1,7 +1,9 @@
+import { isLocal } from "./src/util";
+
 const baseDomain = `https://api.orbiter.finance`
 export default {
   // l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
-  l2BaseUrl: 'https://l2api.orbiter.finance',
+  l2BaseUrl: isLocal() ? 'http://datastation.joeyzhou.xyz' : 'https://l2api.orbiter.finance',
   baseTraddingUrl: `${ baseDomain }/api`,
   metaMaskNetworkId: {
     1: 1,
@@ -34,7 +36,7 @@ export default {
     515: 97,
     517: 1442,
     519: 534353,
-    520: 167003,
+    520: 167004,
     521: 84531,
     522: 59140
   },
@@ -42,7 +44,7 @@ export default {
     1: 'https://etherscan.io',
     5: 'https://goerli.etherscan.io',
     2: 'https://arbiscan.io',
-    22: 'https://goerli-rollup.arbitrum.io',
+    22: 'https://testnet.arbiscan.io',
     3: 'https://zkscan.io/explorer',
     33: 'https://goerli.zkscan.io/explorer',
     4: 'https://starkscan.co',
@@ -72,7 +74,7 @@ export default {
     517: 'https://explorer.public.zkevm-test.net',
     518: 'https://l1scan.scroll.io',
     519: 'https://l2scan.scroll.io',
-    520: 'https://l2explorer.a1.taiko.xyz',
+    520: 'https://l2explorer.a2.taiko.xyz',
     521: 'https://goerli.basescan.org',
     522: 'https://explorer.goerli.zkevm.consensys.net'
   },
@@ -151,7 +153,7 @@ export default {
     517: 'https://explorer.public.zkevm-test.net/tx/',
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
-    520: 'https://l2explorer.a1.taiko.xyz/tx/',
+    520: 'https://l2explorer.a2.taiko.xyz/tx/',
     521: 'https://goerli.basescan.org/tx/',
     522: 'https://explorer.goerli.zkevm.consensys.net/tx/'
   },
@@ -189,7 +191,7 @@ export default {
     517: 'https://explorer.public.zkevm-test.net/address/',
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
-    520: 'https://l2explorer.a1.taiko.xyz/address/',
+    520: 'https://l2explorer.a2.taiko.xyz/address/',
     521: 'https://goerli.basescan.org/address/',
     522: 'https://explorer.goerli.zkevm.consensys.net/address/'
   },
@@ -225,6 +227,7 @@ export default {
     517: 1,
     518: 1,
     519: 1,
+    520: 1,
     521: 1,
     522: 1
   },
@@ -260,6 +263,7 @@ export default {
     517: 21000,
     518: 21000,
     519: 21000,
+    520: 21000,
     521: 21000,
     522: 21000
   }
