@@ -1,7 +1,9 @@
+import { isLocal } from "./src/util";
+
 const baseDomain = `https://api.orbiter.finance`
 export default {
   // l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
-  l2BaseUrl: 'https://l2api.orbiter.finance',
+  l2BaseUrl: isLocal() ? 'http://datastation.joeyzhou.xyz' : 'https://l2api.orbiter.finance',
   baseTraddingUrl: `${ baseDomain }/api`,
   metaMaskNetworkId: {
     1: 1,
