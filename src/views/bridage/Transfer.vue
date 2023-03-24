@@ -871,10 +871,10 @@ export default {
       this.updateTransferInfo();
     },
     async initWhiteList() {
-      if (isProd()) {
-        config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      }
-      this.isWhiteWallet = !!util.isWhite();
+      // if (isProd()) {
+      //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
+      // }
+      // this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
