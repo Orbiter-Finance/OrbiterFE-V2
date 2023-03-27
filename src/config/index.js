@@ -62,7 +62,7 @@ function convertMakerConfig(maker) {
     const symbolPairMap = makerMap[chainIdPair]
     const [fromChainId, toChainId] = chainIdPair.split('-')
     // Temporary offline configuration
-    const offlineList = [];
+    const offlineList = [12,13];
     if (
         offlineList.find(item => +item === +fromChainId) ||
         offlineList.find(item => +item === +toChainId)) {
