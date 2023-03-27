@@ -1224,8 +1224,8 @@ export default {
                 transferDataState
             if (fromChainID !== 4 && fromChainID !== 44) {
                 if (
-                    compatibleGlobalWalletConf.value.walletPayload.networkId !==
-                    util.getMetaMaskNetworkId(fromChainID)
+                    compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
+                    util.getMetaMaskNetworkId(fromChainID).toString()
                 ) {
                     if (
                         compatibleGlobalWalletConf.value.walletType === METAMASK
