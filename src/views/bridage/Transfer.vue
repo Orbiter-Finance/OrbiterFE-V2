@@ -10,7 +10,7 @@
                 @show="() => (isRaiseUpFromTokenListVisible = true)"
         ></ObSelect>
       </div>
-      <div :hidden="!isWhiteWallet" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+      <div style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
         <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
         <el-switch :hidden="isLightMode"
                 v-model="isNewVersion"
@@ -403,7 +403,7 @@ export default {
   },
   data() {
     return {
-      isWhiteWallet: false,
+      isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
 
@@ -694,14 +694,11 @@ export default {
     },
   },
   watch: {
+    isWhiteWallet(){
+      this.refreshConfig();
+    },
     isNewVersion() {
-      if (this.isNewVersion) {
-        makerConfigs = config.makerConfigs;
-        this.updateTransferInfo();
-      } else {
-        makerConfigs = config.v1MakerConfigs;
-        this.updateTransferInfo();
-      }
+      this.refreshConfig();
     },
     queryParams: function (nv) {
       // When transferValue is empty, set it = nv.amount
@@ -853,11 +850,31 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
+    refreshConfig(){
+      if (this.isNewVersion) {
+        makerConfigs = config.makerConfigs;
+      } else {
+        makerConfigs = config.v1MakerConfigs;
+      }
+      if (!this.isWhiteWallet) {
+        makerConfigs = makerConfigs.filter(item => {
+          return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
+        });
+        const { fromChainID, toChainID } = transferDataState;
+        if (fromChainID === 514 || fromChainID === 14) {
+          this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
+        }
+        if (toChainID === 514 || toChainID === 14) {
+          this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
+        }
+      }
+      this.updateTransferInfo();
+    },
     async initWhiteList() {
       // if (isProd()) {
       //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
       // }
-      this.isWhiteWallet = !!util.isWhite();
+      // this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
@@ -1457,13 +1474,27 @@ export default {
         //   });
         //   return;
         // }
-        if (toChainID === 4) {
-          this.$notify.error({
-                title: 'This function is suspended due to network issues, please try again later. ',
-                duration: 3000,
-            })
-            return
-        }
+        // if (toChainID === 4) {
+        //   this.$notify.error({
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
+        // if (toChainID === 3) {
+        //   this.$notify.error({
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
+        // if (toChainID === 14) {
+        //   this.$notify.error({
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
         
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
@@ -1474,13 +1505,13 @@ export default {
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
 
-        // if (toChainID === 4 || toChainID === 44) {
-        //   this.$notify.error({
-        //     title: `The StarkNet network transaction maintenance, please try again later`,
-        //     duration: 6000,
-        //   });
-        //   return;
-        // }
+        if (toChainID === 4 || toChainID === 44) {
+          this.$notify.error({
+            title: `The StarkNet network transaction maintenance, please try again later`,
+            duration: 6000,
+          });
+          return;
+        }
         // if (toChainID === 3 || fromChainID === 3) {
         //   this.$notify.error({
         //     title: `The Zksync network transaction maintenance, please try again later`,
@@ -1488,7 +1519,7 @@ export default {
         //   });
         //   return;
         // }
-
+        
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
@@ -1544,7 +1575,7 @@ export default {
             return;
           }
         } else {
-          if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.chainL1NetWorkId(fromChainID)) {
+          if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.getMetaMaskNetworkId(fromChainID)) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
@@ -1560,7 +1591,9 @@ export default {
                 const successCallback = () => this.$emit('stateChanged', '2');
                 matchSwitchChainDispatcher(
                         compatibleGlobalWalletConf.value.walletPayload.provider,
-                        () => successCallback.bind(this)
+                        () => {
+                          this.$emit('stateChanged', '2')
+                        }
                 );
                 return;
               }

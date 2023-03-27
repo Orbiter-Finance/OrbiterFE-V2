@@ -31,7 +31,7 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-const random = [1, 2].sort(function () {
+const random = [1,2].sort(function () {
   return 0.5 - Math.random();
 })[0];
 const chain = isProd() ? chainMain : chainTest;
@@ -61,6 +61,13 @@ function convertMakerConfig(maker) {
     if (!makerMap.hasOwnProperty(chainIdPair)) continue
     const symbolPairMap = makerMap[chainIdPair]
     const [fromChainId, toChainId] = chainIdPair.split('-')
+    // Temporary offline configuration
+    const offlineList = [12,13];
+    if (
+        offlineList.find(item => +item === +fromChainId) ||
+        offlineList.find(item => +item === +toChainId)) {
+      continue;
+    }
     const c1Chain = chainList.find((item) => +item.internalId === +fromChainId)
     const c2Chain = chainList.find((item) => +item.internalId === +toChainId)
     if (!c1Chain || !c2Chain) continue
@@ -118,8 +125,6 @@ function convertMakerConfig(maker) {
   }
   return configs
 }
-
-// console.log('makerAddress', makerConfigs[0].recipient);
 
 const whiteList = []
 
