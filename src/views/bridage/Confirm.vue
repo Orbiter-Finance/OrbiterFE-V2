@@ -189,6 +189,7 @@ import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
 import walletDispatchers, {
     METAMASK,
+    BLOCKWALLET
 } from '../../util/walletsDispatchers/index'
 import {
     walletIsLogin,
@@ -1228,7 +1229,7 @@ export default {
                     util.getMetaMaskNetworkId(fromChainID)
                 ) {
                     if (
-                        compatibleGlobalWalletConf.value.walletType === METAMASK
+                        compatibleGlobalWalletConf.value.walletType === METAMASK || ompatibleGlobalWalletConf.value.walletType === BLOCKWALLET
                     ) {
                         try {
                             if (
