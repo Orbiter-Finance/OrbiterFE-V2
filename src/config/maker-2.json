@@ -3314,10 +3314,10 @@
     "1-17": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.0012,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3326,7 +3326,7 @@
     "17-1": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.006,
+            "tradingFee": 0.005,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
@@ -3339,10 +3339,10 @@
     "2-17": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3363,10 +3363,10 @@
     "3-17": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3378,7 +3378,7 @@
             "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3423,10 +3423,10 @@
     "6-17": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3438,7 +3438,7 @@
             "tradingFee": 0.0006,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3447,10 +3447,10 @@
     "7-17": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3495,10 +3495,10 @@
     "15-17": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 10,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3519,7 +3519,7 @@
     "16-17": {
         "ETH-ETH": {
             "gasFee": 0.3,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
@@ -3540,5 +3540,4 @@
             "endTime": 99999999999999
         }
     }
-
 }
