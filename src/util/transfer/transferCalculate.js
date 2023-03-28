@@ -88,6 +88,10 @@ const DYDX_ETH_DEPOSIT_DEPOSIT_ONL1 = 260000
 const BOBA_TRANSFER_OUT_LIMIT = 10123935
 const BOBA_TRANSFER_IN_LIMIT = 1787707
 
+// polygon zkEVM
+const PG_EVM_ETH_DEPOSIT_DEPOSIT_ONL1 = 122939
+const PG_EVM_ETH_WITHDRAW_ONPG = 94708
+
 // zksync2 deposit
 const ZK2_ETH_DEPOSIT_DEPOSIT_ONL1 = 142000
 const ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1 = 142000
@@ -795,6 +799,11 @@ export default {
         throw new Error('ar withdraw error')
       }
     }
+    if (fromChainID === 17 || fromChainID === 517) {
+      const fromGasPrice = await this.getGasPrice(fromChainID);
+      ethGas =
+          fromGasPrice * PG_EVM_ETH_WITHDRAW_ONPG;
+    }
     if (fromChainID === 518 || fromChainID === 519) {
       try {
         // scroll get
@@ -953,6 +962,12 @@ export default {
         (isErc20
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
+    }
+    if (toChainID === 17 || toChainID === 517) {
+      // zk2 get
+      const toGasPrice = await this.getGasPrice(toChainID)
+      ethGas =
+          toGasPrice * PG_EVM_ETH_DEPOSIT_DEPOSIT_ONL1
     }
     if (toChainID === 518 || toChainID === 519) {
       try {
