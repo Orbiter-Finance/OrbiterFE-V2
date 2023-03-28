@@ -31,7 +31,7 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-const random = [1, 2].sort(function () {
+const random = [1,2].sort(function () {
   return 0.5 - Math.random();
 })[0];
 const chain = isProd() ? chainMain : chainTest;
@@ -62,7 +62,7 @@ function convertMakerConfig(maker) {
     const symbolPairMap = makerMap[chainIdPair]
     const [fromChainId, toChainId] = chainIdPair.split('-')
     // Temporary offline configuration
-    const offlineList = [];
+    const offlineList = [12,13];
     if (
         offlineList.find(item => +item === +fromChainId) ||
         offlineList.find(item => +item === +toChainId)) {

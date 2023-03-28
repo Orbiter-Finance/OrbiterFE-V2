@@ -1,8 +1,12 @@
 <template>
     <div class="history-page">
         <div class="history-content">
-            <div class="title">History</div>
-            <div class="table historyContent">
+            <div class="title" style="margin-bottom: 100px;">History</div>
+            <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">
+                Our Hisory is temporarily offline for essential maintenance.<br>
+                 Apologies for any inconvenience.
+            </span>
+            <!-- <div class="table historyContent">
                 <div class="table-header">
                     <span class="col col-1">&nbsp;</span>
                     <span class="col col-2">Time</span>
@@ -81,13 +85,14 @@
                 :current-page="currentPage"
                 :total="transactionListInfo.total"
             >
-            </el-pagination>
+            </el-pagination> -->
 
             <svg-icon
                 @click.native="closeDialog"
                 class="close"
                 iconName="close"
             ></svg-icon>
+          
         </div>
     </div>
 </template>
@@ -155,7 +160,7 @@ export default {
         timer = setInterval(() => {
             if (compatibleGlobalWalletConf.value.walletPayload.walletAddress) {
                 clearInterval(timer)
-                getTransactionsHistory()
+                // getTransactionsHistory()
             }
         }, 500)
     },
@@ -166,7 +171,7 @@ export default {
     // },
     methods: {
         curChange(cur) {
-            getTransactionsHistory({ current: cur })
+            // getTransactionsHistory({ current: cur })
         },
         closeDialog() {
             const last = JSON.parse(

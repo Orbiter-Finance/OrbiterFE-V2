@@ -7,7 +7,7 @@ import config from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
-import env from "../../env";
+import env from '../../env'
 
 export default {
   showMessage(message, type) {
@@ -28,7 +28,7 @@ export default {
     return this.getChainInfoByChainId(chainId)?.chainId
   },
   getMetaMaskNetworkId(chainId) {
-    return env.metaMaskNetworkId[chainId];
+    return env.metaMaskNetworkId[chainId]
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -206,9 +206,9 @@ export default {
   },
 
   isWhite() {
-    if(isProd() && !config?.whiteList.length){
-      return false;
-    }
+    // if(isProd() && !config?.whiteList.length){
+    //   return false;
+    // }
     return !(
       config.whiteList.length &&
       !config.whiteList.find((item) =>
@@ -256,7 +256,7 @@ export default {
   async ensureWalletNetwork(chainId) {
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     if (!maskNetworkId) {
-      return;
+      return
     }
     const switchParams = {
       chainId: this.toHex(maskNetworkId),
