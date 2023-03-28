@@ -1548,7 +1548,7 @@ export default {
             return;
           }
         } else {
-          if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.getMetaMaskNetworkId(fromChainID)) {
+          if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== util.getMetaMaskNetworkId(fromChainID)) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
