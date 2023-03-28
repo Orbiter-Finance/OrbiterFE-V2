@@ -35,6 +35,14 @@ export default {
     }
     return false
   },
+  checkIsFoxWallet: function () {
+    if (compatibleGlobalWalletConf.value.walletPayload.provider) {
+      if (compatibleGlobalWalletConf.value.walletPayload.provider.isFoxWallet) {
+        return true
+      }
+    }
+    return false
+  },
   checkIsMetaMask: function () {
     if (compatibleGlobalWalletConf.value.walletPayload.provider) {
       if (compatibleGlobalWalletConf.value.walletPayload.provider.isMetaMask) {
@@ -54,6 +62,18 @@ export default {
   checkIsBitKeep: function () {
     if (compatibleGlobalWalletConf.value.walletPayload.provider) {
       if (compatibleGlobalWalletConf.value.walletPayload.provider.isBitKeep) {
+        return true
+      }
+    }
+    return false
+  },
+  checkIsCoinBaseApp: function () {
+    if (compatibleGlobalWalletConf.value.walletPayload.provider) {
+      if (
+        compatibleGlobalWalletConf.value.walletPayload.provider
+          .isCoinbaseBrowser &&
+        compatibleGlobalWalletConf.value.walletPayload.provider.isCoinbaseWallet
+      ) {
         return true
       }
     }

@@ -10,6 +10,7 @@ import {
   TOKEN_POCKET_APP,
   BIT_KEEP_APP,
   COINBASE_APP,
+  FOXWALLET_APP,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -55,6 +56,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
   if (walletType === BRAVE) return ethereum.isBraveWallet
+  if (walletType === FOXWALLET_APP) return ethereum.isFoxWallet
   if (walletType === IM_TOKEN_APP) return ethereum.isImToken
   if (walletType === METAMASK_APP) return ethereum.isMetaMask
   if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket
@@ -115,6 +117,7 @@ export const fetchTargetWalletLoginStatus = ({ walletType }) => {
 export const getMobileAppTypeByProvider = () => {
   const provider = window.ethereum
   if (provider.isImToken) return IM_TOKEN_APP
+  if (provider.isFoxWallet) return FOXWALLET_APP
   if (provider.isTokenPocket) return TOKEN_POCKET_APP
   if (provider.isMetaMask && !provider.isTokenPocket) return METAMASK_APP
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP

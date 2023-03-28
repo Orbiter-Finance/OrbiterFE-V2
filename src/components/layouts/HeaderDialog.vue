@@ -140,6 +140,18 @@ import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
 import walletDispatchers from '../../util/walletsDispatchers'
 import { onCopySuccess, onCopyError, isMobileEnv } from '../../util'
+import {
+    COINBASE,
+    METAMASK,
+    BRAVE,
+    BLOCKWALLET,
+    TALLYHO,
+    IM_TOKEN_APP,
+    METAMASK_APP,
+    BIT_KEEP_APP,
+    COINBASE_APP,
+    FOXWALLET_APP,
+} from '../../util/walletsDispatchers/constants'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
     walletDispatchers
@@ -167,36 +179,93 @@ export default {
             return walletIsLogin.value
         },
         loginData() {
+            if (this.isMobile) {
+                if (check.checkIsFoxWallet()) {
+                    return [
+                        {
+                            isConnect: false,
+                            icon: "foxwalletapp",
+                            title: "FoxWallet",
+                            type: FOXWALLET_APP,
+                        }
+                    ]
+                }
+                if (check.checkIsImToken()) {
+                    return [
+                        {
+                            isConnect: false,
+                            icon: "imtokenapp",
+                            title: "imToken",
+                            type: IM_TOKEN_APP,
+                        }
+                    ]
+                }
+                if (check.checkIsBitKeep()) {
+                    return [
+                        {
+                            isConnect: false,
+                            icon: "bitkeepapp",
+                            title: "BitKeep",
+                            type: BIT_KEEP_APP,
+                        }
+                    ]
+                }
+                if (check.checkIsCoinBaseApp()) {
+                    return [
+                        {
+                            isConnect: false,
+                            icon: "coinbase",
+                            title: "Coinbase",
+                            type: COINBASE_APP,
+                        }
+                    ]
+                }
+                return [
+                    {
+                        isConnect: false,
+                        icon: 'metamask',
+                        title: 'MetaMask',
+                        type: METAMASK_APP,
+                    }
+                ]
+            }
+
             const wallets = [
                 {
                     isConnect: walletIsLogin.value && check.checkIsMetaMask(),
                     icon: 'metamask',
                     title: 'MetaMask',
+                    type: METAMASK,
                 },
                 {
                     isConnect: false,
                     icon: 'tallyho',
                     title: 'TallyHo',
+                    type: TALLYHO,
                 },
                 {
                     isConnect: false,
                     icon: 'blockwallet',
                     title: 'BlockWallet',
+                    type: BLOCKWALLET,
                 },
                 {
                     isConnect: false,
                     icon: 'walletConnect',
                     title: 'WalletConnect',
+                    type: WALLETCONNECT,
                 },
                 {
                     isConnect: false,
                     icon: 'coinbase',
                     title: 'Coinbase',
+                    type: COINBASE,
                 },
                 {
                     isConnect: false,
                     icon: 'brave',
                     title: 'Brave',
+                    type: BRAVE,
                 },
             ]
             // the brave wallet is exclusive to the brave browser
@@ -278,7 +347,7 @@ export default {
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
-            walletDispatchersOnInit[walletConf.title]()
+            walletDispatchersOnInit[walletConf.type]()
         },
         checkIsMobileEnv() {
             return isMobileEnv()

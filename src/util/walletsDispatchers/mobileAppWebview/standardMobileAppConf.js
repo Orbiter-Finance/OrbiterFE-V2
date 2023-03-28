@@ -4,6 +4,7 @@ import {
   IM_TOKEN_APP,
   BIT_KEEP_APP,
   COINBASE_APP,
+  FOXWALLET_APP,
 } from '../constants'
 
 // open ./pcBrowser/standardPCBrowserWalletConf to get the meaning of each prop member
@@ -13,6 +14,11 @@ const standardMobileAppConf = [
   {
     walletType: IM_TOKEN_APP,
     walletIsInstalledInvestigator: (provider) => provider.isImToken,
+    chainIdTransfer: defaultChainIdTransfer,
+  },
+  {
+    walletType: FOXWALLET_APP,
+    walletIsInstalledInvestigator: (provider) => provider.isFoxWallet,
     chainIdTransfer: defaultChainIdTransfer,
   },
   {
