@@ -403,7 +403,7 @@ export default {
   },
   data() {
     return {
-      isWhiteWallet: false,
+      isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
 
@@ -860,6 +860,13 @@ export default {
         makerConfigs = makerConfigs.filter(item => {
           return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
         });
+        const { fromChainID, toChainID } = transferDataState;
+        if (fromChainID === 514 || fromChainID === 14) {
+          this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
+        }
+        if (toChainID === 514 || toChainID === 14) {
+          this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
+        }
       }
       this.updateTransferInfo();
     },
