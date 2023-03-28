@@ -487,7 +487,7 @@
         "chainId": "1101",
         "networkId": "1101",
         "internalId": "17",
-        "name": "Polygon EVM",
+        "name": "Polygon zkEVM",
         "debug": false,
         "contracts": [],
         "nativeCurrency": {
