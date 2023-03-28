@@ -31,7 +31,7 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-const random = [1, 2].sort(function () {
+const random = [1,2].sort(function () {
   return 0.5 - Math.random();
 })[0];
 const chain = isProd() ? chainMain : chainTest;

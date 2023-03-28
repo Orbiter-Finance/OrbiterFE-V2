@@ -871,10 +871,10 @@ export default {
       this.updateTransferInfo();
     },
     async initWhiteList() {
-      if (isProd()) {
-        config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      }
-      this.isWhiteWallet = !!util.isWhite();
+      // if (isProd()) {
+      //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
+      // }
+      // this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
@@ -1467,16 +1467,30 @@ export default {
           return;
         }
         const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
-        // if (toChainID ==1) {
-        //       this.$notify.error({
-        //           title: 'To Ethereum main network transaction maintenance, please try again later',
-        //           duration: 3000,
-        //       })
-        //       return
-        //   }
+        // if (fromChainID == 9) {
+        //   this.$notify.error({
+        //     title: 'From Loopring network transaction maintenance, please try again later',
+        //     duration: 3000,
+        //   });
+        //   return;
+        // }
         // if (toChainID === 4) {
         //   this.$notify.error({
-        //         title: 'This function is suspended due to network issues, please try again later. ',
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
+        // if (toChainID === 3) {
+        //   this.$notify.error({
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
+        // if (toChainID === 14) {
+        //   this.$notify.error({
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
         //         duration: 3000,
         //     })
         //     return
@@ -1491,15 +1505,21 @@ export default {
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
 
-        // if ((toChainID === 4 || toChainID === 44) && fromCurrency == 'DAI'
-        // ) {
+        // if (toChainID === 4 || toChainID === 44) {
         //   this.$notify.error({
-        //     title: `Due to the Insufficient liquidity of DAI for Starknet, “to Starknet” function is suspende.`,
+        //     title: `The StarkNet network transaction maintenance, please try again later`,
         //     duration: 6000,
         //   });
         //   return;
         // }
-
+        // if (toChainID === 3 || fromChainID === 3) {
+        //   this.$notify.error({
+        //     title: `The Zksync network transaction maintenance, please try again later`,
+        //     duration: 6000,
+        //   });
+        //   return;
+        // }
+        
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
