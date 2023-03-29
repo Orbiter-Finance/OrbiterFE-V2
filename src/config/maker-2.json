@@ -3088,7 +3088,7 @@
             "tradingFee": 0.0012,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3112,7 +3112,7 @@
             "tradingFee": 0.0013,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3137,7 +3137,7 @@
             "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3161,7 +3161,7 @@
             "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3185,7 +3185,7 @@
             "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3209,7 +3209,7 @@
             "tradingFee": 0.0012,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3233,7 +3233,7 @@
             "tradingFee": 0.0012,
             "makerAddress": "0x064A24243F2Aabae8D2148FA878276e6E6E452E3941b417f3c33b1649EA83e11",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3245,7 +3245,7 @@
             "tradingFee": 0.0012,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3269,7 +3269,7 @@
             "tradingFee": 0.0012,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3293,7 +3293,7 @@
             "tradingFee": 0.0012,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 1,
+            "maxPrice": 10,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
