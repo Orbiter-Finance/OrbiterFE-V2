@@ -1505,7 +1505,7 @@ export default {
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
 
-        if (toChainID === 4 || toChainID === 44) {
+        if (toChainID === 4 || toChainID === 44 || fromChainID === 4 || fromChainID === 44) {
           this.$notify.error({
             title: `The StarkNet network transaction maintenance, please try again later`,
             duration: 6000,
