@@ -3,7 +3,7 @@
         <div class="history-content">
             <div class="title" style="margin-bottom: 100px;">History</div>
             <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">
-                Our Hisory is temporarily offline for essential maintenance.<br>
+                Our History is temporarily offline for essential maintenance.<br>
                  Apologies for any inconvenience.
             </span>
             <!-- <div class="table historyContent">
