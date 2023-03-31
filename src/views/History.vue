@@ -2,11 +2,11 @@
     <div class="history-page">
         <div class="history-content">
             <div class="title" style="margin-bottom: 100px;">History</div>
-            <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">
-                Our Hisory is temporarily offline for essential maintenance.<br>
-                 Apologies for any inconvenience.
-            </span>
-            <!-- <div class="table historyContent">
+<!--            <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">-->
+<!--                Our Hisory is temporarily offline for essential maintenance.<br>-->
+<!--                 Apologies for any inconvenience.-->
+<!--            </span>-->
+            <div class="table historyContent">
                 <div class="table-header">
                     <span class="col col-1">&nbsp;</span>
                     <span class="col col-2">Time</span>
@@ -85,7 +85,7 @@
                 :current-page="currentPage"
                 :total="transactionListInfo.total"
             >
-            </el-pagination> -->
+            </el-pagination>
 
             <svg-icon
                 @click.native="closeDialog"
@@ -160,18 +160,18 @@ export default {
         timer = setInterval(() => {
             if (compatibleGlobalWalletConf.value.walletPayload.walletAddress) {
                 clearInterval(timer)
-                // getTransactionsHistory()
+                getTransactionsHistory()
             }
         }, 500)
     },
-    // beforeRouteEnter(to, from, next) {
-    //   next(() => {
-    //     getTransactionsHistory()
-    //   })
-    // },
+    beforeRouteEnter(to, from, next) {
+      next(() => {
+        getTransactionsHistory()
+      })
+    },
     methods: {
         curChange(cur) {
-            // getTransactionsHistory({ current: cur })
+            getTransactionsHistory({ current: cur })
         },
         closeDialog() {
             const last = JSON.parse(
@@ -205,39 +205,40 @@ export default {
             }
         },
         logoName(chainID) {
-            if (chainID == '2' || chainID == '22') {
-                return 'arblogo'
-            } else if (chainID == '3' || chainID == '33') {
-                return 'zklogo'
-            } else if (chainID == '4' || chainID == '44') {
-                return 'sknlogo'
-            } else if (chainID == '6' || chainID == '66') {
-                return 'pglogo'
-            } else if (chainID == '7' || chainID == '77') {
-                return 'oplogo'
-            } else if (chainID == '8' || chainID == '88') {
-                return 'imxlogo'
-            } else if (chainID == '9' || chainID == '99') {
-                return 'loopringlogo'
-            } else if (chainID == '10' || chainID == '510') {
-                return 'metislogo'
-            } else if (chainID == '11' || chainID == '511') {
-                return 'dydxlogo'
-            } else if (chainID == '12' || chainID == '512') {
-                return 'zkspacelogo'
-            } else if (chainID == '13' || chainID == '513') {
-                return 'bobalogo'
-            } else if (chainID == '15' || chainID == '515') {
-                return 'bsclogo'
-            } else if (chainID == '16' || chainID == '516') {
-                return 'arnavologo'
-            } else if (chainID == '518' || chainID == '519') {
-                return 'scrolllogo'
-            } else if (chainID == '520' || chainID == '520') {
-                return 'taiko'
-            } else {
-                return 'ethlogo'
-            }
+            return this.$env.chainIcon[+chainID]
+            // if (chainID == '2' || chainID == '22') {
+            //     return 'arblogo'
+            // } else if (chainID == '3' || chainID == '33') {
+            //     return 'zklogo'
+            // } else if (chainID == '4' || chainID == '44') {
+            //     return 'sknlogo'
+            // } else if (chainID == '6' || chainID == '66') {
+            //     return 'pglogo'
+            // } else if (chainID == '7' || chainID == '77') {
+            //     return 'oplogo'
+            // } else if (chainID == '8' || chainID == '88') {
+            //     return 'imxlogo'
+            // } else if (chainID == '9' || chainID == '99') {
+            //     return 'loopringlogo'
+            // } else if (chainID == '10' || chainID == '510') {
+            //     return 'metislogo'
+            // } else if (chainID == '11' || chainID == '511') {
+            //     return 'dydxlogo'
+            // } else if (chainID == '12' || chainID == '512') {
+            //     return 'zkspacelogo'
+            // } else if (chainID == '13' || chainID == '513') {
+            //     return 'bobalogo'
+            // } else if (chainID == '15' || chainID == '515') {
+            //     return 'bsclogo'
+            // } else if (chainID == '16' || chainID == '516') {
+            //     return 'arnavologo'
+            // } else if (chainID == '518' || chainID == '519') {
+            //     return 'scrolllogo'
+            // } else if (chainID == '520' || chainID == '520') {
+            //     return 'taiko'
+            // } else {
+            //     return 'ethlogo'
+            // }
         },
     },
 }
