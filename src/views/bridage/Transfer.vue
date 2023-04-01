@@ -1488,7 +1488,7 @@ export default {
         //     })
         //     return
         // }
-        if (toChainID === 14 ) {
+        if (toChainID === 14 || fromChainID === 14 ) {
           this.$notify.error({
                 title: 'Due to network issues, this feature is temporarily suspended.',
                 duration: 3000,
