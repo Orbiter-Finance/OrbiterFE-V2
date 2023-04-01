@@ -1488,13 +1488,13 @@ export default {
         //     })
         //     return
         // }
-        // if (toChainID === 14) {
-        //   this.$notify.error({
-        //         title: 'Due to network issues, this feature is temporarily suspended.',
-        //         duration: 3000,
-        //     })
-        //     return
-        // }
+        if (toChainID === 14) {
+          this.$notify.error({
+                title: 'Due to network issues, this feature is temporarily suspended.',
+                duration: 3000,
+            })
+            return
+        }
         
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
