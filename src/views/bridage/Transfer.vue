@@ -1480,7 +1480,7 @@ export default {
           if (ban.dest) {
             if (toChainID === ban.dest) {
               this.$notify.error({
-                title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                 duration: 3000,
               });
               return;
