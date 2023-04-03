@@ -384,6 +384,7 @@ import {
 } from '../../composition/hooks';
 import { isDev, isProd } from "../../util";
 import orbiterApiAx from "../../common/orbiterApiAx";
+import openApiAx from "../../common/openApiAx";
 
 let makerConfigs = config.v1MakerConfigs;
 
@@ -451,7 +452,8 @@ export default {
 
       formWith: 0,
 
-      cronList: []
+      cronList: [],
+      banList: []
     };
   },
   computed: {
@@ -745,6 +747,8 @@ export default {
     },
   },
   async mounted() {
+    this.openApiFilter();
+
     this.initWhiteList()
 
     this.updateTransferInfo();
@@ -782,6 +786,9 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async openApiFilter() {
+      this.banList = await openApiAx.get('/frontend/net');
+    },
       refreshGasFeeToolTip() {
           const { selectMakerConfig } = transferDataState;
           const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${ this.originGasCost.toFixed(
@@ -856,18 +863,18 @@ export default {
       } else {
         makerConfigs = config.v1MakerConfigs;
       }
-      if (!this.isWhiteWallet) {
-        makerConfigs = makerConfigs.filter(item => {
-          return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
-        });
-        const { fromChainID, toChainID } = transferDataState;
-        if (fromChainID === 514 || fromChainID === 14) {
-          this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
-        }
-        if (toChainID === 514 || toChainID === 14) {
-          this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
-        }
-      }
+      // if (!this.isWhiteWallet) {
+      //   makerConfigs = makerConfigs.filter(item => {
+      //     return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
+      //   });
+      //   const { fromChainID, toChainID } = transferDataState;
+      //   if (fromChainID === 514 || fromChainID === 14) {
+      //     this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
+      //   }
+      //   if (toChainID === 514 || toChainID === 14) {
+      //     this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
+      //   }
+      // }
       this.updateTransferInfo();
     },
     async initWhiteList() {
@@ -1447,6 +1454,40 @@ export default {
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      if (this.banList) {
+        for (const ban of this.banList) {
+          if (ban.source && ban.dest) {
+            if (fromChainID === ban.source && toChainID === ban.dest) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+            continue;
+          }
+          if (ban.source) {
+            if (fromChainID === ban.source) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+            continue;
+          }
+          if (ban.dest) {
+            if (toChainID === ban.dest) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+          }
+        }
+      }
       // if unlogin  login first
       if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true);
@@ -1466,7 +1507,6 @@ export default {
           });
           return;
         }
-        const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
         // if (fromChainID == 9) {
         //   this.$notify.error({
         //     title: 'From Loopring network transaction maintenance, please try again later',
