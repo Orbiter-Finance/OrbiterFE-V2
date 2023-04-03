@@ -1488,7 +1488,7 @@ export default {
         //     })
         //     return
         // }
-        // if (toChainID === 14) {
+        // if (toChainID === 14 || fromChainID === 14 ) {
         //   this.$notify.error({
         //         title: 'Due to network issues, this feature is temporarily suspended.',
         //         duration: 3000,
@@ -1575,7 +1575,7 @@ export default {
             return;
           }
         } else {
-          if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.getMetaMaskNetworkId(fromChainID)) {
+          if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== util.getMetaMaskNetworkId(fromChainID)) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
