@@ -856,18 +856,18 @@ export default {
       } else {
         makerConfigs = config.v1MakerConfigs;
       }
-      if (!this.isWhiteWallet) {
-        makerConfigs = makerConfigs.filter(item => {
-          return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
-        });
-        const { fromChainID, toChainID } = transferDataState;
-        if (fromChainID === 514 || fromChainID === 14) {
-          this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
-        }
-        if (toChainID === 514 || toChainID === 14) {
-          this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
-        }
-      }
+      // if (!this.isWhiteWallet) {
+      //   makerConfigs = makerConfigs.filter(item => {
+      //     return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
+      //   });
+      //   const { fromChainID, toChainID } = transferDataState;
+      //   if (fromChainID === 514 || fromChainID === 14) {
+      //     this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
+      //   }
+      //   if (toChainID === 514 || toChainID === 14) {
+      //     this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
+      //   }
+      // }
       this.updateTransferInfo();
     },
     async initWhiteList() {
