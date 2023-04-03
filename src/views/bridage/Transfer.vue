@@ -788,6 +788,11 @@ export default {
   methods: {
     async openApiFilter() {
       this.banList = await openApiAx.get('/frontend/net');
+      const self = this;
+      const cron = setInterval(async () => {
+        self.banList = await openApiAx.get('/frontend/net');
+      }, 30000);
+      this.cronList.push(cron);
     },
       refreshGasFeeToolTip() {
           const { selectMakerConfig } = transferDataState;
