@@ -34,6 +34,7 @@
                     @click="getHistoryInfo(item)"
                     class="contentItem"
                 >
+
                     <svg-icon
                         class="logo col-val col-1"
                         color="#df2e2d"
@@ -43,7 +44,7 @@
                         item.fromTimeStampShow
                     }}</span>
                     <span class="col-val col-3">{{
-                        item.userAmount + item.tokenName
+                        item.fromAmountValue + item.fromToken
                     }}</span>
                     <div
                         class="col-val col-4"
@@ -54,7 +55,7 @@
                         "
                     >
                         <svg-icon
-                            :iconName="logoName(item.fromChainID)"
+                            :iconName="logoName(item.fromChain)"
                             style="width: 1.6rem; height: 1.6rem"
                         ></svg-icon>
                     </div>
@@ -67,7 +68,7 @@
                         "
                     >
                         <svg-icon
-                            :iconName="logoName(item.toChainID)"
+                            :iconName="logoName(item.toChain)"
                             style="width: 1.6rem; height: 1.6rem"
                         ></svg-icon>
                     </div>
@@ -197,13 +198,14 @@ export default {
             e.stopPropagation()
         },
         iconName(item) {
-            if (item.state === 0) {
+            if (item.fromHash && item.toHash) {
                 return 'history_success'
-            } else if (item.state === 1) {
-                return 'history_waiting'
-            } else {
-                return 'history_fail'
             }
+            //  else if (item.state === 1) {
+            //     return 'history_waiting'
+            // } else {
+            //     return 'history_fail'
+            // }
         },
         logoName(chainID) {
             return this.$env.chainIcon[+chainID]
