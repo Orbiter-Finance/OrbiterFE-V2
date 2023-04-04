@@ -22,9 +22,6 @@
                 ]"
                         >
                             {{ nav }}
-                            <SvgIconThemed
-                                    v-if="!isMobile"
-                            />
                         </div>
                     </template>
                 </div>
