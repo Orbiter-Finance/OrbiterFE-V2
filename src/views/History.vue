@@ -1,118 +1,209 @@
 <template>
-    <div class="history-page">
-        <div class="history-content">
-            <div class="title">History</div>
-<!--            <div class="title" style="margin-bottom: 100px;">History</div>-->
-<!--            <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">-->
-<!--                Our Hisory is temporarily offline for essential maintenance.<br>-->
-<!--                 Apologies for any inconvenience.-->
-<!--            </span>-->
-            <div class="table historyContent">
-                <div class="table-header">
-                    <span class="col col-1">&nbsp;</span>
-                    <span class="col col-2">Time</span>
-                    <span class="col col-3">Value</span>
-                    <span class="col col-4" style="text-align: center"
-                        >From</span
-                    >
-                    <span class="col col-5" style="text-align: center">To</span>
-                </div>
-                <div class="dydx-limit" v-if="isShowDydxLimit">
-                    Limited by the dydx mechanism, the history of dYdX cannot be
-                    queried temporarily
-                </div>
-                <CommLoading
-                    v-if="isApiLoading"
-                    style="margin: auto; margin-top: 5rem"
-                    width="4rem"
-                    height="4rem"
-                />
-                <div
-                    v-else-if="historyData && historyData.length !== 0"
-                    v-for="(item, index) in historyData"
-                    :key="index"
-                    @click="getHistoryInfo(item)"
-                    class="contentItem"
-                >
+    <div>
+        <div class="history-page">
 
-                    <svg-icon
-                        class="logo col-val col-1"
-                        color="#df2e2d"
-                        :iconName="iconName(item)"
-                    ></svg-icon>
-                    <span class="col-val col-2">{{
+            <div class="history-content">
+                <div
+                        class="header-links-box"
+                        :style="`flex-direction: ${verical ? 'column' : 'row'};`"
+                >
+                    <template v-for="(nav, idx) in navs">
+                        <div
+                                :key="nav"
+                                @click="changeNav(nav)"
+                                :class="[
+                    'nav-item',
+                    'center',
+                    {
+                        selected:nav === currentNav,
+                        'nav-item-border-bottom':true,
+                        'nav-item-border-top':true,
+                    },
+                ]"
+                        >
+                            {{ nav }}
+<!--                            <SvgIconThemed-->
+<!--                                    v-if="!verical && !isMobile"-->
+<!--                            />-->
+                        </div>
+                    </template>
+                </div>
+                <div :hidden="currentNav !== 'History'">
+                    <div class="title">History</div>
+                    <!--            <div class="title" style="margin-bottom: 100px;">History</div>-->
+                    <!--            <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">-->
+                    <!--                Our Hisory is temporarily offline for essential maintenance.<br>-->
+                    <!--                 Apologies for any inconvenience.-->
+                    <!--            </span>-->
+                    <div class="table historyContent">
+                        <div class="table-header">
+                            <span class="col col-1">&nbsp;</span>
+                            <span class="col col-2">Time</span>
+                            <span class="col col-3">Value</span>
+                            <span class="col col-4" style="text-align: center"
+                            >From</span
+                            >
+                            <span class="col col-5" style="text-align: center">To</span>
+                        </div>
+                        <div class="dydx-limit" v-if="isShowDydxLimit">
+                            Limited by the dydx mechanism, the history of dYdX cannot be
+                            queried temporarily
+                        </div>
+                        <CommLoading
+                                v-if="isApiLoading"
+                                style="margin: auto; margin-top: 5rem"
+                                width="4rem"
+                                height="4rem"
+                        />
+                        <div
+                                v-else-if="historyData && historyData.length !== 0"
+                                v-for="(item, index) in historyData"
+                                :key="index"
+                                @click="getHistoryInfo(item)"
+                                class="contentItem"
+                        >
+                            <svg-icon
+                                    class="logo col-val col-1"
+                                    color="#df2e2d"
+                                    :iconName="iconName(item)"
+                            ></svg-icon>
+                            <span class="col-val col-2">{{
                         item.fromTimeStampShow
                     }}</span>
-                    <span class="col-val col-3">{{
+                            <span class="col-val col-3">{{
                         item.fromAmountValue + item.fromToken
                     }}</span>
-                    <div
-                        class="col-val col-4"
-                        style="
+                            <div
+                                    class="col-val col-4"
+                                    style="
                             display: flex;
                             align-items: center;
                             justify-content: center;
                         "
-                    >
-                        <svg-icon
-                            :iconName="logoName(item.fromChain)"
-                            style="width: 1.6rem; height: 1.6rem"
-                        ></svg-icon>
+                            >
+                                <svg-icon
+                                        :iconName="logoName(item.fromChain)"
+                                        style="width: 1.6rem; height: 1.6rem"
+                                ></svg-icon>
+                            </div>
+                            <div
+                                    class="col-val col-5"
+                                    style="
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        "
+                            >
+                                <svg-icon
+                                        :iconName="logoName(item.toChain)"
+                                        style="width: 1.6rem; height: 1.6rem"
+                                ></svg-icon>
+                            </div>
+                        </div>
                     </div>
-                    <div
-                        class="col-val col-5"
-                        style="
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                        "
+                    <NoData
+                            v-if="!isApiLoading && historyData && historyData.length === 0"
+                            style="padding-top: 200px"
+                    >No history</NoData
                     >
-                        <svg-icon
-                            :iconName="logoName(item.toChain)"
-                            style="width: 1.6rem; height: 1.6rem"
-                        ></svg-icon>
+                    <el-pagination
+                            v-if="!isApiLoading && historyData && historyData.length !== 0"
+                            @current-change="curChange"
+                            class="pagination"
+                            layout="prev, pager, next"
+                            :current-page="currentPage"
+                            :total="transactionListInfo.total"
+                    >
+                    </el-pagination>
+
+                    <svg-icon
+                            @click.native="closeDialog"
+                            class="close"
+                            iconName="close"
+                    ></svg-icon>
+                </div>
+                <div :hidden="currentNav !== 'Search'" style="margin: 20px">
+                    <el-form
+                            ref="formRef"
+                            label-width="140px"
+                    >
+                        <div style="text-align: left;justify-content: left;padding-left: 20px;margin-bottom: 30px">
+                            Your Transaction Details
+                        </div>
+                        <el-form-item label="* Tx Hash">
+                            <el-input style="width: 70%;height:30px"
+                                    type="text"
+                                    v-model="txHash"
+                                   placeholder="Please enter Tx Hash"
+                            />
+                        </el-form-item>
+                        <el-form-item label="* From Chain">
+                            <el-select v-model="selectChainId" style="width: 70%;height:30px" placeholder="Please select From Chain">
+                                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div class="search">
+                        <CommBtn v-loading="searchLoading"
+                                @click="submitTx"
+                                :style="`border-radius: 40px;margin-right:40px;width:100%`"
+                        >
+                          <span style="letter-spacing: 0.15rem">
+                            Submit
+                          </span>
+                        </CommBtn>
+                    </div>
+                    <div>
+                        <div v-if="showError" class="search" style="font-weight: bolder;">
+                            No relevant destination Transaction Hash is found. You can submit your source Transaction Hash on the
+                            <span class="url" @click="openUrl('http://discord.gg/hJJvXP7C73')">Discord-support</span>
+                             channel, we will help you on this. Your assets are safe.
+                        </div>
+                        <div class="search" style="margin-top: 20px;">
+                            <span class="text" style="font-size: 16px;">To confirm that your Transaction Hash was generated from Orbiter, you can:</span><br>
+                            <span class="text">1. Make sure that this Transaction Hash was initiated at <span class="bold">Orbiter official website</span>.</span><br>
+                            <span class="text">2. The last four digits of your Tx value contain an ID code starts with <span class="bold">90XX</span>.</span><br>
+                            <span class="text">3. Your transaction <span class="bold">amount</span> is supported by Orbiter.</span>
+                        </div>
                     </div>
                 </div>
             </div>
-            <NoData
-                v-if="!isApiLoading && historyData && historyData.length === 0"
-                style="padding-top: 200px"
-                >No history</NoData
-            >
-            <el-pagination
-                v-if="!isApiLoading && historyData && historyData.length !== 0"
-                @current-change="curChange"
-                class="pagination"
-                layout="prev, pager, next"
-                :current-page="currentPage"
-                :total="transactionListInfo.total"
-            >
-            </el-pagination>
-
-            <svg-icon
-                @click.native="closeDialog"
-                class="close"
-                iconName="close"
-            ></svg-icon>
-          
         </div>
     </div>
 </template>
 
 <script>
-import { NoData } from '../components'
+import BigNumber from 'bignumber.js'
+import config from '../config'
+import { NoData,CommBtn } from '../components'
 import {
     historyPanelState,
     getTransactionsHistory,
     recoverSenderPageWorkingState,
     setHistoryInfo,
-} from '../composition/hooks'
+} from '../composition/hooks';
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
+import openApiAx from "../common/openApiAx";
+import util from "../util/util";
 let timer = 0
 export default {
     name: 'History',
     components: {
         NoData,
+        CommBtn
+    },
+    data() {
+        return {
+            searchLoading: false,
+            verical: false,
+            txHash: "",
+            navs: ['History', "Search"],
+            currentNav: 'History',
+            options: [],
+            selectChainId: '',
+            showError: false
+        };
     },
     computed: {
         currentPage() {
@@ -165,6 +256,11 @@ export default {
                 getTransactionsHistory()
             }
         }, 500)
+        this.options = [];
+        const chainConfig = config.chainConfig;
+        for (const data of chainConfig) {
+            this.options.push({ label: data.name, value: data.internalId });
+        }
     },
     beforeRouteEnter(to, from, next) {
       next(() => {
@@ -172,6 +268,76 @@ export default {
       })
     },
     methods: {
+        openUrl(url) {
+            window.open(url, '_blank');
+        },
+        changeNav(nav) {
+            this.currentNav = nav;
+        },
+        async submitTx() {
+            const selectChainId = +this.selectChainId;
+            let txHash = this.txHash;
+            if (!selectChainId) {
+                util.showMessage("Please enter From Chain", "error");
+                return;
+            }
+            if (!txHash) {
+                util.showMessage("Hash error", "error");
+                return;
+            }
+            if (selectChainId === 4 || selectChainId === 44) {
+                // starknet
+                txHash = txHash.replace("0x0", "0x");
+            } else if (selectChainId === 8 || selectChainId === 88) {
+                if (!Number(txHash)) {
+                    util.showMessage("Hash error", "error");
+                    return;
+                }
+            } else if (txHash.length !== 66 || txHash.substring(0, 2) !== '0x') {
+                util.showMessage("Hash error", "error");
+                return;
+            }
+
+            this.searchLoading = true;
+            const res = await openApiAx.get(`/status?hash=${ txHash }`);
+            this.searchLoading = false;
+            if (!res) return;
+            const { status, txList } = res;
+            if (status === 99) {
+                const data = {};
+                for (const tx of txList) {
+                    let decimal = 18;
+                    if (tx.symbol === 'USDC' || tx.symbol === 'USDT') {
+                        decimal = 6;
+                    }
+                    if (tx.side === 0) {
+                        const date = new Date(tx.timestamp);
+                        data.fromHash = tx.hash;
+                        data.fromChain = tx.chainId;
+                        data.fromTime = tx.timestamp;
+                        data.fromAmount = tx.value;
+                        data.fromToken = tx.symbol;
+                        data.fromTimeStampShow = `${ date.toLocaleTimeString() } ${ date.toLocaleDateString() }`;
+                        data.fromAmountValue = (new BigNumber(tx.value).dividedBy(10 ** decimal)).toFixed(8);
+                    }
+                    if (tx.side === 1) {
+                        const date = new Date(tx.timestamp);
+                        data.toHash = tx.hash;
+                        data.toChain = tx.chainId;
+                        data.toTime = tx.timestamp;
+                        data.toAmount = tx.value;
+                        data.toToken = tx.symbol;
+                        data.toTimeStampShow = `${ date.toLocaleTimeString() } ${ date.toLocaleDateString() }`;
+                        data.toAmountValue = (new BigNumber(tx.value).dividedBy(10 ** decimal)).toFixed(8);
+                    }
+                }
+                this.showError = false;
+                this.getHistoryInfo(data);
+            } else {
+                await openApiAx.get(`/collectUserTransactions?fromHash=${ txHash }&fromChain=${ selectChainId }`);
+                this.showError = true;
+            }
+        },
         curChange(cur) {
             getTransactionsHistory({ current: cur })
         },
@@ -201,57 +367,75 @@ export default {
             if (item.fromHash && item.toHash) {
                 return 'history_success'
             }
-            //  else if (item.state === 1) {
-            //     return 'history_waiting'
-            // } else {
-            //     return 'history_fail'
-            // }
         },
         logoName(chainID) {
             return this.$env.chainIcon[+chainID]
-            // if (chainID == '2' || chainID == '22') {
-            //     return 'arblogo'
-            // } else if (chainID == '3' || chainID == '33') {
-            //     return 'zklogo'
-            // } else if (chainID == '4' || chainID == '44') {
-            //     return 'sknlogo'
-            // } else if (chainID == '6' || chainID == '66') {
-            //     return 'pglogo'
-            // } else if (chainID == '7' || chainID == '77') {
-            //     return 'oplogo'
-            // } else if (chainID == '8' || chainID == '88') {
-            //     return 'imxlogo'
-            // } else if (chainID == '9' || chainID == '99') {
-            //     return 'loopringlogo'
-            // } else if (chainID == '10' || chainID == '510') {
-            //     return 'metislogo'
-            // } else if (chainID == '11' || chainID == '511') {
-            //     return 'dydxlogo'
-            // } else if (chainID == '12' || chainID == '512') {
-            //     return 'zkspacelogo'
-            // } else if (chainID == '13' || chainID == '513') {
-            //     return 'bobalogo'
-            // } else if (chainID == '15' || chainID == '515') {
-            //     return 'bsclogo'
-            // } else if (chainID == '16' || chainID == '516') {
-            //     return 'arnavologo'
-            // } else if (chainID == '518' || chainID == '519') {
-            //     return 'scrolllogo'
-            // } else if (chainID == '520' || chainID == '520') {
-            //     return 'taiko'
-            // } else {
-            //     return 'ethlogo'
-            // }
         },
     },
 }
 </script>
 
 <style scoped lang="scss">
+    .header-links-box {
+        display: flex;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 24px;
+        .nav-item {
+            height: 60px;
+            position: relative;
+            display: inline-flex;
+        }
+        .nav-item.selected::after {
+            content: '';
+            position: absolute;
+            width: 40px;
+            height: 6px;
+            background: #df2e2d;
+            bottom: 8px;
+            left: calc(50% - 20px);
+            border-radius: 11px;
+        }
+    }
 .app {
+    .header-links-box {
+        height: 40px;
+        .nav-item {
+            height: 24px;
+            margin-right: 39px;
+            cursor: pointer;
+        }
+        .nav-item:last-child {
+            margin-right: 0;
+        }
+        .nav-item.selected::after {
+            bottom: -10px;
+        }
+    }
     .history-page {
         border-radius: 20px;
         .history-content {
+            .search {
+                margin-top: 40px;
+                font-size: 12px;
+                font-family: 'Inter Regular';
+                text-align: left;
+                .url {
+                    color: #000000;
+                    white-space: nowrap;
+                    cursor: pointer;
+                    display: inline-block;
+                    line-height: 25px;
+                    text-decoration: underline;
+                }
+                .bold {
+                    font-weight: bolder;
+                }
+                .text {
+                    line-height: 20px;
+                    height: 20px;
+                }
+            }
             min-height: 630px;
             width: 600px;
             .table {
@@ -276,6 +460,25 @@ export default {
     }
 }
 .app-mobile {
+    .nav-item-sub {
+        // height: 50px;
+        position: relative;
+        display: inline-flex;
+        font-family: 'Inter Regular';
+        line-height: 24px;
+        margin-bottom: 12px;
+        padding-bottom: 16px;
+    }
+    .nav-item-sub.selected::after {
+        content: '';
+        position: absolute;
+        width: 40px;
+        height: 6px;
+        background: #df2e2d;
+        bottom: 0px;
+        left: calc(50% - 20px);
+        border-radius: 11px;
+    }
     .history-page {
         .history-content {
             min-width: 335px;
