@@ -5,7 +5,7 @@
             <div class="history-content">
                 <div
                         class="header-links-box"
-                        :style="`flex-direction: ${verical ? 'column' : 'row'};`"
+                        :style="`flex-direction: ${isMobile ? 'column' : 'row'};`"
                 >
                     <template v-for="(nav, idx) in navs">
                         <div
@@ -22,14 +22,14 @@
                 ]"
                         >
                             {{ nav }}
-<!--                            <SvgIconThemed-->
-<!--                                    v-if="!verical && !isMobile"-->
-<!--                            />-->
+                            <SvgIconThemed
+                                    v-if="!isMobile"
+                            />
                         </div>
                     </template>
                 </div>
                 <div :hidden="currentNav !== 'History'">
-                    <div class="title">History</div>
+                    <div v-if="!isMobile" class="title">History</div>
                     <!--            <div class="title" style="margin-bottom: 100px;">History</div>-->
                     <!--            <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">-->
                     <!--                Our Hisory is temporarily offline for essential maintenance.<br>-->
@@ -68,7 +68,7 @@
                                     :iconName="iconName(item)"
                             ></svg-icon>
                             <span class="col-val col-2">{{
-                        item.fromTimeStampShow
+                                isMobile ? item.fromTimeStampShowShort : item.fromTimeStampShow
                     }}</span>
                             <span class="col-val col-3">{{
                         item.fromAmountValue + item.fromToken
@@ -178,6 +178,7 @@ import BigNumber from 'bignumber.js'
 import config from '../config'
 import { NoData,CommBtn } from '../components'
 import {
+    isMobile,
     historyPanelState,
     getTransactionsHistory,
     recoverSenderPageWorkingState,
@@ -196,7 +197,6 @@ export default {
     data() {
         return {
             searchLoading: false,
-            verical: false,
             txHash: "",
             navs: ['History', "Search"],
             currentNav: 'History',
@@ -206,6 +206,9 @@ export default {
         };
     },
     computed: {
+        isMobile() {
+            return isMobile.value
+        },
         currentPage() {
             return this.transactionListInfo.current
         },
@@ -245,27 +248,24 @@ export default {
         transactionListInfo() {
             return historyPanelState.transactionListInfo
         },
+        currentWalletAddress() {
+            return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        },
     },
-    deactivated() {
-        clearInterval(timer)
+    watch: {
+        currentWalletAddress: function (newValue, oldValue) {
+            if (oldValue !== newValue && newValue !== '0x') getTransactionsHistory();
+        },
     },
     created() {
-        timer = setInterval(() => {
-            if (compatibleGlobalWalletConf.value.walletPayload.walletAddress) {
-                clearInterval(timer)
-                getTransactionsHistory()
-            }
-        }, 500)
         this.options = [];
         const chainConfig = config.chainConfig;
         for (const data of chainConfig) {
             this.options.push({ label: data.name, value: data.internalId });
         }
     },
-    beforeRouteEnter(to, from, next) {
-      next(() => {
-        getTransactionsHistory()
-      })
+    mounted() {
+        getTransactionsHistory();
     },
     methods: {
         openUrl(url) {
@@ -317,7 +317,7 @@ export default {
                         data.fromTime = tx.timestamp;
                         data.fromAmount = tx.value;
                         data.fromToken = tx.symbol;
-                        data.fromTimeStampShow = `${ date.toLocaleTimeString() } ${ date.toLocaleDateString() }`;
+                        data.fromTimeStampShow = util.formatDate(date);
                         data.fromAmountValue = (new BigNumber(tx.value).dividedBy(10 ** decimal)).toFixed(8);
                     }
                     if (tx.side === 1) {
@@ -327,7 +327,7 @@ export default {
                         data.toTime = tx.timestamp;
                         data.toAmount = tx.value;
                         data.toToken = tx.symbol;
-                        data.toTimeStampShow = `${ date.toLocaleTimeString() } ${ date.toLocaleDateString() }`;
+                        data.toTimeStampShow = util.formatDate(date);
                         data.toAmountValue = (new BigNumber(tx.value).dividedBy(10 ** decimal)).toFixed(8);
                     }
                 }
@@ -397,6 +397,27 @@ export default {
             border-radius: 11px;
         }
     }
+    .search {
+        margin-top: 40px;
+        font-size: 12px;
+        font-family: 'Inter Regular';
+        text-align: left;
+        .url {
+            color: #000000;
+            white-space: nowrap;
+            cursor: pointer;
+            display: inline-block;
+            line-height: 25px;
+            text-decoration: underline;
+        }
+        .bold {
+            font-weight: bolder;
+        }
+        .text {
+            line-height: 20px;
+            height: 20px;
+        }
+    }
 .app {
     .header-links-box {
         height: 40px;
@@ -415,27 +436,6 @@ export default {
     .history-page {
         border-radius: 20px;
         .history-content {
-            .search {
-                margin-top: 40px;
-                font-size: 12px;
-                font-family: 'Inter Regular';
-                text-align: left;
-                .url {
-                    color: #000000;
-                    white-space: nowrap;
-                    cursor: pointer;
-                    display: inline-block;
-                    line-height: 25px;
-                    text-decoration: underline;
-                }
-                .bold {
-                    font-weight: bolder;
-                }
-                .text {
-                    line-height: 20px;
-                    height: 20px;
-                }
-            }
             min-height: 630px;
             width: 600px;
             .table {
