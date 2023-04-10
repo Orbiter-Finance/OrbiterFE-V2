@@ -284,8 +284,16 @@ export default {
             }
             const isStarknet = selectChainId === 4 || selectChainId === 44;
             if (selectChainId === 4 || selectChainId === 44) {
-                // // starknet
-                // txHash = txHash.replace("0x0", "0x");
+                // starknet
+                if (txHash.length < 66) {
+                    const end = txHash.substring(2, txHash.length);
+                    const add = 64 - end.length;
+                    let addStr = '';
+                    for (let i = 0; i < add; i++) {
+                        addStr += "0";
+                    }
+                    txHash = '0x' + addStr + end;
+                }
             } else if (selectChainId === 8 || selectChainId === 88) {
                 if (!Number(txHash)) {
                     util.showMessage("Hash error", "error");
