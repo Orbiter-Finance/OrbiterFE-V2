@@ -283,8 +283,8 @@ export default {
                 return;
             }
             if (selectChainId === 4 || selectChainId === 44) {
-                // starknet
-                txHash = txHash.replace("0x0", "0x");
+                // // starknet
+                // txHash = txHash.replace("0x0", "0x");
             } else if (selectChainId === 8 || selectChainId === 88) {
                 if (!Number(txHash)) {
                     util.showMessage("Hash error", "error");
