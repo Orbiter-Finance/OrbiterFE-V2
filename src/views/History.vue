@@ -282,7 +282,6 @@ export default {
                 util.showMessage("Hash error", "error");
                 return;
             }
-            const isStarknet = selectChainId === 4 || selectChainId === 44;
             if (selectChainId === 4 || selectChainId === 44) {
                 // starknet
                 if (txHash.length < 66) {
@@ -305,9 +304,7 @@ export default {
             }
 
             this.searchLoading = true;
-            const res = isStarknet ?
-                await openApiAx.get(`/status?hash=${ txHash }&chainId=${ selectChainId }`) :
-                await openApiAx.get(`/status?hash=${ txHash }`);
+            const res = await openApiAx.get(`/status?hash=${ txHash }`);
             this.searchLoading = false;
             if (!res) return;
             const { status, txList } = res;
