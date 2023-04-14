@@ -69,7 +69,7 @@
       "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
     ],
     "watch": ["rpc"],
-    "contracts": ["0x721fBB2C2C9cdFa5547feE6b683949c20F175457"],
+    "contracts": ["0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a"],
     "tokens": [
       {
         "name": "USDT",
@@ -232,7 +232,7 @@
     },
     "rpc": ["https://goerli.optimism.io", "https://opt-goerli.g.alchemy.com/v2/demo"],
     "watch": ["rpc"],
-    "contracts": ["0x2200a79aDdFE2EFd7bDe34300f4C8FE902E31d39"],
+    "contracts": ["0x89EBCf7253f5E27b45E82cd228c977Fd03E47f54"],
     "tokens": [
       {
         "name": "USDT",
@@ -495,7 +495,7 @@
     "chainId": "1442",
     "networkId": "1442",
     "internalId": "517",
-    "name": "Polygon EVM",
+    "name": "zkEVM(G)",
     "debug": false,
     "contracts": [],
     "nativeCurrency": {

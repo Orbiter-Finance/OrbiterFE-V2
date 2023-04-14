@@ -227,10 +227,13 @@ export default {
       if (!rpcList.length) {
         return 0
       }
-      const estimateGas = await util.requestWeb3(fromChainID, 'estimateGas', {
+      let estimateGas = await util.requestWeb3(fromChainID, 'estimateGas', {
         from: web3State.coinbase,
         to: makerAddress,
       })
+      if (fromChainID === 14 || fromChainID === 514) {
+        estimateGas = estimateGas * 1.5;
+      }
       const gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
       let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
       if (fromChainID === 7 || fromChainID === 77) {

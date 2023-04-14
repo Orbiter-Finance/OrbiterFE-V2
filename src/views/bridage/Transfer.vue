@@ -828,8 +828,8 @@ export default {
           this.orbiterTradingFee =  tradingFee.decimalPlaces(digit, BigNumber.ROUND_UP);
       },
       refreshGasSavingMax() {
-          let savingValue =
-              this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice;
+        let savingValue =
+                (this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice) || 0;
           if (savingValue < 0) {
               savingValue = 0;
           }
@@ -838,10 +838,9 @@ export default {
       },
       refreshGasSavingMin() {
           const gasCost = this.gasCost();
-          let savingValue =
-              this.originGasCost -
-              this.gasTradingTotal * this.exchangeToUsdPrice -
-              gasCost;
+        let savingValue = (this.originGasCost -
+                this.gasTradingTotal * this.exchangeToUsdPrice -
+                gasCost) || 0;
           if (savingValue < 0) {
               savingValue = 0;
           }

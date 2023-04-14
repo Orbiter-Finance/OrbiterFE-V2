@@ -175,7 +175,7 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
-import { sendTransfer } from '../../util/constants/starknet/helper'
+import { connectStarkNetWallet, sendTransfer } from '../../util/constants/starknet/helper';
 import { getZkSyncProvider } from '../../util/zksync/zkysnc_helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
@@ -199,7 +199,9 @@ import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
-
+import {
+    getStarknet
+} from 'get-starknet'
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -952,6 +954,9 @@ export default {
             if (!walletIsLogin.value) {
                 this.transferLoading = false
                 return
+            }
+            if (!getStarknet().selectedAddress) {
+                await connectStarkNetWallet();
             }
             const from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
