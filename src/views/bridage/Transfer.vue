@@ -385,7 +385,9 @@ import {
 import { isDev, isProd } from "../../util";
 import orbiterApiAx from "../../common/orbiterApiAx";
 import openApiAx from "../../common/openApiAx";
-
+import {
+  getStarknet
+} from 'get-starknet';
 let makerConfigs = config.v1MakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
@@ -1603,6 +1605,10 @@ export default {
           if (!starkChain || starkChain === 'unlogin') {
             util.showMessage('please connect Starknet Wallet', 'error');
             return;
+          }
+          if (!getStarknet().selectedAddress) {
+            await connectStarkNetWallet();
+            util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
           }
           if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
