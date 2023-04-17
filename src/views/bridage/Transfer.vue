@@ -380,14 +380,11 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
-  updateTransferExt,
+  updateTransferExt, curPageStatus,
 } from '../../composition/hooks';
 import { isDev, isProd } from "../../util";
 import orbiterApiAx from "../../common/orbiterApiAx";
 import openApiAx from "../../common/openApiAx";
-import {
-  getStarknet
-} from 'get-starknet';
 let makerConfigs = config.v1MakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
@@ -517,6 +514,9 @@ export default {
     },
     currentWalletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+    },
+    curPageStatus(){
+      return curPageStatus.value;
     },
     currentNetwork() {
       return compatibleGlobalWalletConf.value.walletPayload.networkId;
@@ -698,6 +698,9 @@ export default {
     },
   },
   watch: {
+    curPageStatus(value) {
+      if (Number(value) === 1) this.updateTransferInfo();
+    },
     isWhiteWallet(){
       this.refreshConfig();
     },
@@ -1460,6 +1463,13 @@ export default {
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
+      if (!await util.isLegalAddress()) {
+        this.$notify.error({
+          title: `Contract address is not supported, please use EVM address.`,
+          duration: 3000,
+        });
+        return;
+      }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       if (this.banList) {
         for (const ban of this.banList) {
@@ -1606,10 +1616,10 @@ export default {
             util.showMessage('please connect Starknet Wallet', 'error');
             return;
           }
-          if (!getStarknet().selectedAddress) {
-            await connectStarkNetWallet();
-            util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
-          }
+          // if (!getStarknet().selectedAddress) {
+          //   await connectStarkNetWallet();
+          //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
+          // }
           if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to mainnet',

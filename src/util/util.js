@@ -137,6 +137,17 @@ export default {
     return data;
   },
 
+  async isLegalAddress() {
+    const { fromChainID } = transferDataState;
+    if (fromChainID === 4 || fromChainID === 44) {
+      return true;
+    }
+    const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+    const web3 = this.stableWeb3(fromChainID);
+    const code = await web3.eth.getCode(walletAddress);
+    return code === "0x";
+  },
+
   stableWeb3(chainId) {
     return new Web3(this.stableRpc(chainId))
   },
