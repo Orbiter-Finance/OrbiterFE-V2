@@ -1220,13 +1220,13 @@ export default {
                 Middle.$emit('connectWallet', true)
                 return
             }
-            if (!await util.isLegalAddress()) {
-                this.$notify.error({
-                    title: `Contract address is not supported, please use EVM address.`,
-                    duration: 3000,
-                });
-                return;
-            }
+            // if (!await util.isLegalAddress()) {
+            //     this.$notify.error({
+            //         title: `Contract address is not supported, please use EVM address.`,
+            //         duration: 3000,
+            //     });
+            //     return;
+            // }
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
             if (fromChainID !== 4 && fromChainID !== 44) {

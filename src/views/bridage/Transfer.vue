@@ -1463,13 +1463,13 @@ export default {
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
-      if (!await util.isLegalAddress()) {
-        this.$notify.error({
-          title: `Contract address is not supported, please use EVM address.`,
-          duration: 3000,
-        });
-        return;
-      }
+      // if (!await util.isLegalAddress()) {
+      //   this.$notify.error({
+      //     title: `Contract address is not supported, please use EVM address.`,
+      //     duration: 3000,
+      //   });
+      //   return;
+      // }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       if (this.banList) {
         for (const ban of this.banList) {
