@@ -167,7 +167,7 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
   // the window.ethereum.emit method will be called, due to multiple wallets
   // will generate the ethereum injection conflict, so the emit that wallet extension
   // called maybe not pure
-  window.ethereum.emit = walletProvider.emit
+  if (!window.ethereum.isOkxWallet) window.ethereum.emit = walletProvider.emit;
   console.notifyLog('wallet provider listening....', walletProvider)
   walletProvider.on('chainChanged', (chainId) => {
     console.successLog(
