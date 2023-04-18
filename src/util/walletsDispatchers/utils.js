@@ -9,8 +9,8 @@ import {
   METAMASK_APP,
   TOKEN_POCKET_APP,
   BIT_KEEP_APP,
-  COINBASE_APP,
-} from './constants'
+  COINBASE_APP, OKXWALLET,
+} from './constants';
 import {
   updateGlobalSelectWalletConf,
   globalSelectWalletConf,
@@ -62,6 +62,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === COINBASE_APP)
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
+  if (walletType === OKXWALLET) return ethereum.isOkxWallet
   // we never care wallet connect, because it's a protocol, not a wallet
   // so it doesn't follow the Ethereum standard api
 }

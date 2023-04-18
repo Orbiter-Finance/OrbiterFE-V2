@@ -1,5 +1,5 @@
 import { showMessage } from '../../constants/web3/getWeb3'
-import { COINBASE, BRAVE, BLOCKWALLET, TALLYHO } from '../constants'
+import { COINBASE, BRAVE, BLOCKWALLET, TALLYHO, OKXWALLET } from '../constants';
 import { Notification } from 'element-ui'
 
 /**
@@ -73,6 +73,22 @@ export default [
         'Tally Ho wallet not installed or set as default wallet',
         'error'
       )
+    },
+  },
+  {
+    walletType: OKXWALLET,
+    icon: OKXWALLET,
+    shouldAddChainCode: -32603,
+    walletNotInstallReducer: () => {
+      return Notification({
+        title: 'Error: OKXWallet has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+            '<div style="font-family:Inter Regular;text-align: left;">If you already have OKXWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
     },
   },
 ]
