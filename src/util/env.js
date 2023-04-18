@@ -16,6 +16,10 @@ export const getEnv = (key) => {
 
 // if u r in a mobile webview environment, return true, otherwise return false
 export const isMobileEnv = () => {
+  if (typeof window.okxwallet !== 'undefined') {
+    return false;
+  }
+
   if (isWebSimulation) return false
   const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
   return regex.test(navigator.userAgent)

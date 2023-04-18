@@ -143,7 +143,7 @@ export default {
       return true;
     }
     const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-    const web3 = this.stableWeb3(fromChainID);
+    const web3 = this.stableWeb3(1);
     const code = await web3.eth.getCode(walletAddress);
     return code === "0x";
   },
