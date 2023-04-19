@@ -284,15 +284,7 @@ export default {
             }
             if (selectChainId === 4 || selectChainId === 44) {
                 // starknet
-                if (txHash.length < 66) {
-                    const end = txHash.substring(2, txHash.length);
-                    const add = 64 - end.length;
-                    let addStr = '';
-                    for (let i = 0; i < add; i++) {
-                        addStr += "0";
-                    }
-                    txHash = '0x' + addStr + end;
-                }
+                txHash = util.starknetHashFormat(txHash);
             } else if (selectChainId === 8 || selectChainId === 88) {
                 if (!Number(txHash)) {
                     util.showMessage("Hash error", "error");
@@ -306,7 +298,10 @@ export default {
             this.searchLoading = true;
             const res = await openApiAx.get(`/status?hash=${ txHash }`);
             this.searchLoading = false;
-            if (!res) return;
+            if (!res) {
+                util.showMessage("Request frequent", "error");
+                return;
+            }
             const { status, txList } = res;
             if (status === 99) {
                 const data = {};

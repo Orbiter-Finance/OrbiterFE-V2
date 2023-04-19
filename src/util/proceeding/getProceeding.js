@@ -59,6 +59,9 @@ export default {
     if (localChainID === 12 || localChainID === 512) {
       txHash = txHash.replace('sync-tx:', '0x')
     }
+    if (localChainID === 4 || localChainID === 44) {
+      txHash = util.starknetHashFormat(txHash);
+    }
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)
