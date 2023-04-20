@@ -297,7 +297,6 @@ export default {
                 });
                 return;
             }
-            console.log(walletConf.title,walletDispatchersOnInit)
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {

@@ -10,6 +10,19 @@ import { isProd } from './env'
 import env from '../../env'
 
 export default {
+  starknetHashFormat(txHash) {
+    if (txHash.length < 66) {
+      const end = txHash.substring(2, txHash.length);
+      const add = 64 - end.length;
+      let addStr = '';
+      for (let i = 0; i < add; i++) {
+        addStr += "0";
+      }
+      txHash = '0x' + addStr + end;
+    }
+    return txHash;
+  },
+
   showMessage(message, type) {
     const _type = type || 'success'
     Notification[_type]({
