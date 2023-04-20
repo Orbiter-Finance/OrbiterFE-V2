@@ -56,9 +56,6 @@ function confirmUserTransaction(hash) {
 
 export default {
   UserTransferReady(user, maker, amount, localChainID, txHash) {
-    if (localChainID === 12 || localChainID === 512) {
-      txHash = txHash.replace('sync-tx:', '0x')
-    }
     if (localChainID === 4 || localChainID === 44) {
       txHash = util.starknetHashFormat(txHash);
     }
