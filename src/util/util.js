@@ -10,6 +10,19 @@ import { isProd } from './env'
 import env from '../../env'
 
 export default {
+  starknetHashFormat(txHash) {
+    if (txHash.length < 66) {
+      const end = txHash.substring(2, txHash.length);
+      const add = 64 - end.length;
+      let addStr = '';
+      for (let i = 0; i < add; i++) {
+        addStr += "0";
+      }
+      txHash = '0x' + addStr + end;
+    }
+    return txHash;
+  },
+
   showMessage(message, type) {
     const _type = type || 'success'
     Notification[_type]({
@@ -139,13 +152,20 @@ export default {
 
   async isLegalAddress() {
     const { fromChainID } = transferDataState;
-    if (fromChainID === 4 || fromChainID === 44) {
+    const supportContractWallet = [1, 2, 6, 7, 10, 13, 14, 15, 16, 17];
+    if (!supportContractWallet.find(item => item === Number(fromChainID))) {
       return true;
     }
-    const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-    const web3 = this.stableWeb3(fromChainID);
-    const code = await web3.eth.getCode(walletAddress);
-    return code === "0x";
+    const rpc = this.stableRpc(fromChainID);
+    if (rpc) {
+      const web3 = new Web3(rpc);
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      const code = await web3.eth.getCode(walletAddress);
+      if (code && code !== "0x") {
+        return false;
+      }
+    }
+    return true;
   },
 
   stableWeb3(chainId) {
