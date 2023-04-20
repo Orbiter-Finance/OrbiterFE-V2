@@ -17,11 +17,7 @@ export const updateGlobalSelectWalletConf = (
   conf = {},
   loginSuccess = false
 ) => {
-  if (type === "Brave") {
-    globalSelectWalletConf.walletPayload = JSON.parse(JSON.stringify(conf));
-  } else {
-    globalSelectWalletConf.walletPayload = conf;
-  }
+  globalSelectWalletConf.walletPayload = conf
   globalSelectWalletConf.walletType = type
   globalSelectWalletConf.loginSuccess = loginSuccess
 }

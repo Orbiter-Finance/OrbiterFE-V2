@@ -85,7 +85,7 @@
                     </div>
 
                     <div class="bottom-box">
-                        <CommBtn class="bottom-btn">
+                        <CommBtn @click="openUrl(99)" class="bottom-btn">
                             Learn More on Testnet
                         </CommBtn>
                     </div>
@@ -305,8 +305,8 @@ export default {
                     margin-bottom: 20px;
                     background: linear-gradient(
                         90.46deg,
-                        #888888 4.07%,
-                        #555555 98.55%
+                        #eb382d 4.07%,
+                        #bc3035 98.55%
                     );
                     border-radius: 40px;
                 }
