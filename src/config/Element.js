@@ -17,9 +17,15 @@ import {
   Popover,
   Row,
   Col,
+  Form,
+  FormItem,
+  Input
 } from 'element-ui'
 const element = {
   install: function (Vue) {
+    Vue.use(Input)
+    Vue.use(Form)
+    Vue.use(FormItem)
     Vue.use(Switch)
     Vue.use(Steps)
     Vue.use(Step)

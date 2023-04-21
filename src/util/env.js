@@ -1,6 +1,7 @@
 export const isLocal = () => process.env.VUE_APP_ENV === 'local'
 export const isDev = () => process.env.VUE_APP_ENV === 'development'
 export const isProd = () => process.env.VUE_APP_ENV === 'production'
+export const isL2DataDev = () => process.env.VUE_APP_L2Data_ENV === 'development'
 
 // TODO: should check by code
 export const isWebSimulation = false
@@ -15,6 +16,10 @@ export const getEnv = (key) => {
 
 // if u r in a mobile webview environment, return true, otherwise return false
 export const isMobileEnv = () => {
+  if (typeof window.okxwallet !== 'undefined') {
+    return false;
+  }
+
   if (isWebSimulation) return false
   const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
   return regex.test(navigator.userAgent)

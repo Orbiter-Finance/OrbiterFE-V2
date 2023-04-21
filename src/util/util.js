@@ -10,6 +10,19 @@ import { isProd } from './env'
 import env from '../../env'
 
 export default {
+  starknetHashFormat(txHash) {
+    if (txHash.length < 66) {
+      const end = txHash.substring(2, txHash.length);
+      const add = 64 - end.length;
+      let addStr = '';
+      for (let i = 0; i < add; i++) {
+        addStr += "0";
+      }
+      txHash = '0x' + addStr + end;
+    }
+    return txHash;
+  },
+
   showMessage(message, type) {
     const _type = type || 'success'
     Notification[_type]({
@@ -102,6 +115,57 @@ export default {
         resolve(null)
       }, ms)
     })
+  },
+
+  formatDate(date, isShort) {
+    date = new Date(date);
+    const year = date.getFullYear();
+    const mon = (date.getMonth() + 1) < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+    const data = date.getDate() < 10 ? "0" + (date.getDate()) : date.getDate();
+    const hour = date.getHours() < 10 ? "0" + (date.getHours()) : date.getHours();
+    const min = date.getMinutes() < 10 ? "0" + (date.getMinutes()) : date.getMinutes();
+    const seon = date.getSeconds() < 10 ? "0" + (date.getSeconds()) : date.getSeconds();
+
+    if (isShort) return mon + "-" + data + " " + hour + ":" + min;
+    const toYear = new Date().getFullYear();
+    if(toYear === year){
+      return mon + "-" + data + " " + hour + ":" + min + ":" + seon;
+    }else{
+      return year + "-" + mon + "-" + data + " " + hour + ":" + min;
+    }
+  },
+
+  setCache(key, data, sec) {
+    localStorage.setItem(key, JSON.stringify({ data, expireTime: new Date().valueOf() + sec }));
+  },
+
+  getCache(key) {
+    const storage = localStorage.getItem(key);
+    if (!storage) return null;
+    const { data, expireTime } = JSON.parse(storage);
+    // this.log("expireTime", new Date(expireTime), `left ${ ((expireTime - new Date().valueOf()) / 1000).toFixed(0) }s`);
+    if (new Date().valueOf() > expireTime) {
+      return null;
+    }
+    return data;
+  },
+
+  async isLegalAddress() {
+    const { fromChainID } = transferDataState;
+    const supportContractWallet = [1, 2, 6, 7, 10, 13, 14, 15, 16, 17];
+    if (!supportContractWallet.find(item => item === Number(fromChainID))) {
+      return true;
+    }
+    const rpc = this.stableRpc(fromChainID);
+    if (rpc) {
+      const web3 = new Web3(rpc);
+      const walletAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      const code = await web3.eth.getCode(walletAddress);
+      if (code && code !== "0x") {
+        return false;
+      }
+    }
+    return true;
   },
 
   stableWeb3(chainId) {

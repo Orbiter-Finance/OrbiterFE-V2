@@ -138,8 +138,9 @@ import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers from '../../util/walletsDispatchers'
+import walletDispatchers, { METAMASK } from '../../util/walletsDispatchers';
 import { onCopySuccess, onCopyError, isMobileEnv } from '../../util'
+import { Notification } from 'element-ui'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
     walletDispatchers
@@ -182,6 +183,11 @@ export default {
                     isConnect: false,
                     icon: 'blockwallet',
                     title: 'BlockWallet',
+                },
+                {
+                    isConnect: false,
+                    icon: 'okxwallet',
+                    title: 'OKXWallet',
                 },
                 {
                     isConnect: false,
@@ -278,6 +284,19 @@ export default {
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
+            const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+            if (walletConf.title === METAMASK && window.ethereum.isOkxWallet && !regex.test(navigator.userAgent)) {
+                Notification({
+                    title: 'Error: MetaMask has not been installed.',
+                    dangerouslyUseHTMLString: true,
+                    type: 'warning',
+                    customClass: 'installWalletTips',
+                    duration: 3000,
+                    message:
+                        '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+                });
+                return;
+            }
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {

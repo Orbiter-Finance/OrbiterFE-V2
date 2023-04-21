@@ -380,11 +380,11 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
-  updateTransferExt,
+  updateTransferExt, curPageStatus,
 } from '../../composition/hooks';
 import { isDev, isProd } from "../../util";
 import orbiterApiAx from "../../common/orbiterApiAx";
-
+import openApiAx from "../../common/openApiAx";
 let makerConfigs = config.v1MakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
@@ -451,7 +451,8 @@ export default {
 
       formWith: 0,
 
-      cronList: []
+      cronList: [],
+      banList: []
     };
   },
   computed: {
@@ -513,6 +514,9 @@ export default {
     },
     currentWalletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+    },
+    curPageStatus(){
+      return curPageStatus.value;
     },
     currentNetwork() {
       return compatibleGlobalWalletConf.value.walletPayload.networkId;
@@ -694,6 +698,9 @@ export default {
     },
   },
   watch: {
+    curPageStatus(value) {
+      if (Number(value) === 1) this.updateTransferInfo();
+    },
     isWhiteWallet(){
       this.refreshConfig();
     },
@@ -745,6 +752,8 @@ export default {
     },
   },
   async mounted() {
+    this.openApiFilter();
+
     this.initWhiteList()
 
     this.updateTransferInfo();
@@ -782,6 +791,14 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async openApiFilter() {
+      this.banList = await openApiAx.get('/frontend/net');
+      const self = this;
+      const cron = setInterval(async () => {
+        self.banList = await openApiAx.get('/frontend/net');
+      }, 30000);
+      this.cronList.push(cron);
+    },
       refreshGasFeeToolTip() {
           const { selectMakerConfig } = transferDataState;
           const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${ this.originGasCost.toFixed(
@@ -816,8 +833,8 @@ export default {
           this.orbiterTradingFee =  tradingFee.decimalPlaces(digit, BigNumber.ROUND_UP);
       },
       refreshGasSavingMax() {
-          let savingValue =
-              this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice;
+        let savingValue =
+                (this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice) || 0;
           if (savingValue < 0) {
               savingValue = 0;
           }
@@ -826,10 +843,9 @@ export default {
       },
       refreshGasSavingMin() {
           const gasCost = this.gasCost();
-          let savingValue =
-              this.originGasCost -
-              this.gasTradingTotal * this.exchangeToUsdPrice -
-              gasCost;
+        let savingValue = (this.originGasCost -
+                this.gasTradingTotal * this.exchangeToUsdPrice -
+                gasCost) || 0;
           if (savingValue < 0) {
               savingValue = 0;
           }
@@ -856,18 +872,18 @@ export default {
       } else {
         makerConfigs = config.v1MakerConfigs;
       }
-      if (!this.isWhiteWallet) {
-        makerConfigs = makerConfigs.filter(item => {
-          return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
-        });
-        const { fromChainID, toChainID } = transferDataState;
-        if (fromChainID === 514 || fromChainID === 14) {
-          this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
-        }
-        if (toChainID === 514 || toChainID === 14) {
-          this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
-        }
-      }
+      // if (!this.isWhiteWallet) {
+      //   makerConfigs = makerConfigs.filter(item => {
+      //     return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
+      //   });
+      //   const { fromChainID, toChainID } = transferDataState;
+      //   if (fromChainID === 514 || fromChainID === 14) {
+      //     this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
+      //   }
+      //   if (toChainID === 514 || toChainID === 14) {
+      //     this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
+      //   }
+      // }
       this.updateTransferInfo();
     },
     async initWhiteList() {
@@ -1447,6 +1463,47 @@ export default {
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
+      if (!await util.isLegalAddress()) {
+        this.$notify.error({
+          title: `Contract address is not supported, please use EVM address.`,
+          duration: 3000,
+        });
+        return;
+      }
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      if (this.banList) {
+        for (const ban of this.banList) {
+          if (ban.source && ban.dest) {
+            if (fromChainID === ban.source && toChainID === ban.dest) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+            continue;
+          }
+          if (ban.source) {
+            if (fromChainID === ban.source) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+            continue;
+          }
+          if (ban.dest) {
+            if (toChainID === ban.dest) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+          }
+        }
+      }
       // if unlogin  login first
       if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true);
@@ -1466,7 +1523,6 @@ export default {
           });
           return;
         }
-        const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
         // if (fromChainID == 9) {
         //   this.$notify.error({
         //     title: 'From Loopring network transaction maintenance, please try again later',
@@ -1504,7 +1560,6 @@ export default {
                 fromChain.symbol,
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
-
         if (toChainID === 4 || toChainID === 44) {
           this.$notify.error({
             title: `The StarkNet network transaction maintenance, please try again later`,
@@ -1560,6 +1615,10 @@ export default {
             util.showMessage('please connect Starknet Wallet', 'error');
             return;
           }
+          // if (!getStarknet().selectedAddress) {
+          //   await connectStarkNetWallet();
+          //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
+          // }
           if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to mainnet',
