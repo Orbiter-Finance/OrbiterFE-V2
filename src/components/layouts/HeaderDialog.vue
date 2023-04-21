@@ -285,7 +285,7 @@ export default {
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
             const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-            if (walletConf.title === METAMASK && window.ethereum.isOkxWallet && !regex.test(navigator.userAgent)) {
+            if (walletConf.title === METAMASK && window.ethereum?.isOkxWallet && !regex.test(navigator.userAgent)) {
                 Notification({
                     title: 'Error: MetaMask has not been installed.',
                     dangerouslyUseHTMLString: true,
