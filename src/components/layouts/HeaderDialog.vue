@@ -139,7 +139,7 @@ import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
 import walletDispatchers, { METAMASK } from '../../util/walletsDispatchers';
-import { onCopySuccess, onCopyError, isMobileEnv } from '../../util'
+import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
 import { Notification } from 'element-ui'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
@@ -242,6 +242,7 @@ export default {
                     },
                 ]
             } else {
+                const isOkxwalletApp = window.ethereum?.isOkxWallet && this.checkIsMobileEnv();
                 return [
                     {
                         icon: 'network',
@@ -254,7 +255,7 @@ export default {
                     {
                         icon: 'wallet',
                         title: 'Wallet',
-                        value: compatibleGlobalWalletConf.value.walletType,
+                        value: isOkxwalletApp ? "okxwalletApp" : compatibleGlobalWalletConf.value.walletType,
                     },
                     {
                         icon: 'address',
@@ -284,8 +285,7 @@ export default {
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
-            const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-            if (walletConf.title === METAMASK && window.ethereum?.isOkxWallet && !regex.test(navigator.userAgent)) {
+            if (walletConf.title === METAMASK && window.ethereum?.isOkxWallet && !this.checkIsMobileEnv()) {
                 Notification({
                     title: 'Error: MetaMask has not been installed.',
                     dangerouslyUseHTMLString: true,
@@ -300,10 +300,10 @@ export default {
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {
-            return isMobileEnv()
+            return isMobileDevice();
         },
         disconnect() {
-            if (isMobileEnv()) return
+            if (this.checkIsMobileEnv()) return
             this.closeSelectWalletDialog()
             this.selectedWallet = {}
             localStorage.setItem('selectedWallet', JSON.stringify({}))
