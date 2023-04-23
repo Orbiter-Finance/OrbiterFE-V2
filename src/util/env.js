@@ -21,6 +21,10 @@ export const isMobileEnv = () => {
   }
 
   if (isWebSimulation) return false
+  return isMobileDevice()
+}
+
+export const isMobileDevice = () => {
   const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
   return regex.test(navigator.userAgent)
 }

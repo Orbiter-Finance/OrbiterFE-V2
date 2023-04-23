@@ -31,8 +31,8 @@ import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
-  getCurrentLoginInfoFromLocalStorage,
-} from './util/walletsDispatchers'
+  getCurrentLoginInfoFromLocalStorage, METAMASK,
+} from './util/walletsDispatchers';
 import { isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
@@ -41,6 +41,7 @@ import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import { performInitMobileAppWallet } from './util/walletsDispatchers/utils'
+import { isMobileDevice } from './util';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -114,6 +115,13 @@ export default {
 
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
+
+      const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()
+      if (isOkxwalletApp) {
+        const matchInitDispatcher = walletDispatchersOnInit[METAMASK];
+        matchInitDispatcher && matchInitDispatcher();
+        return;
+      }
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
       // us locate last wallet that user connected
