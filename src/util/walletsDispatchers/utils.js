@@ -86,7 +86,7 @@ export const findMatchWeb3ProviderByWalletType = (
   if (!checkEthereumConflicts()) {
     // if there is no conflict, there's only one "ethereum" instance in window
     // so we should confirm one thing: this "ethereum" object fits our wallet type
-    if (window.braveSolana) {
+    if (window.braveSolana && walletType === BRAVE) {
       if (ethereumWalletTypeFitChecker(walletType, window.braveSolana)) {
         return window.ethereum;
       }
