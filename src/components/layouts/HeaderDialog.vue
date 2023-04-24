@@ -138,7 +138,7 @@ import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { METAMASK } from '../../util/walletsDispatchers';
+import walletDispatchers, { BRAVE, METAMASK } from '../../util/walletsDispatchers';
 import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
 import { Notification } from 'element-ui'
 
@@ -148,6 +148,11 @@ const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
 export default {
     name: 'HeaderDialog',
     components: { CommBtn, SvgIconThemed },
+    data() {
+        return {
+            refreshBrave: false
+        };
+    },
     computed: {
         web3State() {
             return web3State
@@ -285,6 +290,18 @@ export default {
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
+            if (isBraveBrowser() && walletConf.title === BRAVE && this.refreshBrave) {
+                Notification({
+                    title: 'Error: Brave has not been installed.',
+                    dangerouslyUseHTMLString: true,
+                    type: 'warning',
+                    customClass: 'installWalletTips',
+                    duration: 3000,
+                    message:
+                        '<div style="font-family:Inter Regular;text-align: left;">If you already have Brave installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+                });
+                return;
+            }
             if (walletConf.title === METAMASK && window.ethereum?.isOkxWallet && !this.checkIsMobileEnv()) {
                 Notification({
                     title: 'Error: MetaMask has not been installed.',
@@ -305,6 +322,9 @@ export default {
         disconnect() {
             if (this.checkIsMobileEnv()) return
             this.closeSelectWalletDialog()
+            if (isBraveBrowser() && compatibleGlobalWalletConf.value.walletType === METAMASK) {
+                this.refreshBrave = true;
+            }
             this.selectedWallet = {}
             localStorage.setItem('selectedWallet', JSON.stringify({}))
             this.$store.commit('updateLocalLogin', false)

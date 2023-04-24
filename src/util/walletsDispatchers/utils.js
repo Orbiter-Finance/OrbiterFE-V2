@@ -17,6 +17,7 @@ import {
 } from './walletsCoreData'
 import { toRefs } from '../../composition'
 import { isMobileEnv } from '../env'
+import { showMessage } from "../constants/web3/getWeb3";
 
 // update global wallet login status
 export const modifyLocalLoginInfo = (loginInfo = {}) => {
@@ -47,9 +48,33 @@ export const withPerformInterruptWallet = (fn) => {
   }
 }
 
+let mark;
+function throttle(func){
+  let context, args;
+  context = this;
+  args = arguments;
+  if(!mark) {
+    mark = 1;
+    setTimeout(() => {
+      mark = 0;
+    }, 1000);
+    return func.apply(context, args);
+  }
+}
+
 // wallet type & ethereum fit checker
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
+  if (window.braveSolana && walletType === METAMASK) {
+    const fn = () => {
+      try {
+        return ethereum.isMetaMask && !ethereum.isBraveWallet;
+      } catch (e) {
+        showMessage("not install metamask", 'error');
+      }
+    };
+    return throttle(fn);
+  }
   if (walletType === METAMASK)
     return ethereum.isMetaMask && !ethereum.isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
