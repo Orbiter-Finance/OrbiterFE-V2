@@ -152,6 +152,10 @@ export default {
 
   async isLegalAddress() {
     const { fromChainID } = transferDataState;
+    const supportContractWallet = [1, 2, 6, 7, 10, 13, 14, 15, 16, 17];
+    if (!supportContractWallet.find(item => item === Number(fromChainID))) {
+      return true;
+    }
     const rpc = this.stableRpc(fromChainID);
     if (rpc) {
       const web3 = new Web3(rpc);

@@ -138,8 +138,8 @@ import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { METAMASK } from '../../util/walletsDispatchers';
-import { onCopySuccess, onCopyError, isMobileEnv } from '../../util'
+import walletDispatchers, { BRAVE, METAMASK } from '../../util/walletsDispatchers';
+import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
 import { Notification } from 'element-ui'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
@@ -148,6 +148,11 @@ const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
 export default {
     name: 'HeaderDialog',
     components: { CommBtn, SvgIconThemed },
+    data() {
+        return {
+            refreshBrave: false
+        };
+    },
     computed: {
         web3State() {
             return web3State
@@ -242,6 +247,7 @@ export default {
                     },
                 ]
             } else {
+                const isOkxwalletApp = window.ethereum?.isOkxWallet && this.checkIsMobileEnv();
                 return [
                     {
                         icon: 'network',
@@ -254,7 +260,7 @@ export default {
                     {
                         icon: 'wallet',
                         title: 'Wallet',
-                        value: compatibleGlobalWalletConf.value.walletType,
+                        value: isOkxwalletApp ? "okxwalletApp" : compatibleGlobalWalletConf.value.walletType,
                     },
                     {
                         icon: 'address',
@@ -284,8 +290,19 @@ export default {
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
-            const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
-            if (walletConf.title === METAMASK && window.ethereum.isOkxWallet && !regex.test(navigator.userAgent)) {
+            if (isBraveBrowser() && walletConf.title === BRAVE && this.refreshBrave) {
+                Notification({
+                    title: 'Error: Brave has not been installed.',
+                    dangerouslyUseHTMLString: true,
+                    type: 'warning',
+                    customClass: 'installWalletTips',
+                    duration: 3000,
+                    message:
+                        '<div style="font-family:Inter Regular;text-align: left;">If you already have Brave installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+                });
+                return;
+            }
+            if (walletConf.title === METAMASK && window.ethereum?.isOkxWallet && !this.checkIsMobileEnv()) {
                 Notification({
                     title: 'Error: MetaMask has not been installed.',
                     dangerouslyUseHTMLString: true,
@@ -300,11 +317,14 @@ export default {
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {
-            return isMobileEnv()
+            return isMobileDevice();
         },
         disconnect() {
-            if (isMobileEnv()) return
+            if (this.checkIsMobileEnv()) return
             this.closeSelectWalletDialog()
+            if (isBraveBrowser() && compatibleGlobalWalletConf.value.walletType === METAMASK) {
+                this.refreshBrave = true;
+            }
             this.selectedWallet = {}
             localStorage.setItem('selectedWallet', JSON.stringify({}))
             this.$store.commit('updateLocalLogin', false)

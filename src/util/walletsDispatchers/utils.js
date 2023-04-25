@@ -17,6 +17,7 @@ import {
 } from './walletsCoreData'
 import { toRefs } from '../../composition'
 import { isMobileEnv } from '../env'
+import { showMessage } from "../constants/web3/getWeb3";
 
 // update global wallet login status
 export const modifyLocalLoginInfo = (loginInfo = {}) => {
@@ -47,9 +48,33 @@ export const withPerformInterruptWallet = (fn) => {
   }
 }
 
+let mark;
+function throttle(func){
+  let context, args;
+  context = this;
+  args = arguments;
+  if(!mark) {
+    mark = 1;
+    setTimeout(() => {
+      mark = 0;
+    }, 1000);
+    return func.apply(context, args);
+  }
+}
+
 // wallet type & ethereum fit checker
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
+  if (window.braveSolana && walletType === METAMASK) {
+    const fn = () => {
+      try {
+        return ethereum.isMetaMask && !ethereum.isBraveWallet;
+      } catch (e) {
+        showMessage("not install metamask", 'error');
+      }
+    };
+    return throttle(fn);
+  }
   if (walletType === METAMASK)
     return ethereum.isMetaMask && !ethereum.isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
@@ -86,6 +111,13 @@ export const findMatchWeb3ProviderByWalletType = (
   if (!checkEthereumConflicts()) {
     // if there is no conflict, there's only one "ethereum" instance in window
     // so we should confirm one thing: this "ethereum" object fits our wallet type
+    if (window.braveSolana && walletType === BRAVE) {
+      if (ethereumWalletTypeFitChecker(walletType, window.braveSolana)) {
+        return window.ethereum;
+      }
+      return null;
+    }
+
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
       return window.ethereum
     return null
