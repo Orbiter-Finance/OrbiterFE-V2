@@ -40,8 +40,9 @@ import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
-import { performInitMobileAppWallet } from './util/walletsDispatchers/utils'
+import { setIsBraveWallet, performInitMobileAppWallet } from './util/walletsDispatchers/utils';
 import { isMobileDevice } from './util';
+import { isBraveBrowser } from "./util/browserUtils";
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -104,6 +105,13 @@ export default {
     HeaderDialog,
   },
   async mounted() {
+    if (isBraveBrowser()) {
+      setIsBraveWallet(await window.ethereum.request({
+        method: 'web3_clientVersion'
+      }).then((clientVersion) => {
+        return clientVersion.split('/')[0] === 'BraveWallet';
+      }))
+    }
     getZkToken.getSupportZKTokenList()
 
     // init wallet info by the localStorage

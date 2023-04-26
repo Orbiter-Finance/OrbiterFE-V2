@@ -162,12 +162,12 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
   walletProvider.autoRefreshOnNetworkChange = false
   // why call Object.assign? because "window.ethereum" is frozen in brave browser
   // so we defrosted it to ensure that the emit can be assign again
-  if (!window.braveSolana) window.ethereum = Object.assign({}, window.ethereum);
+  window.ethereum = Object.assign({}, window.ethereum);
   // rewrite ethereum.emit because when a wallet extension switches networks
   // the window.ethereum.emit method will be called, due to multiple wallets
   // will generate the ethereum injection conflict, so the emit that wallet extension
   // called maybe not pure
-  if (!window.ethereum?.isOkxWallet && !window.braveSolana) window.ethereum.emit = walletProvider.emit;
+  if (!window.ethereum?.isOkxWallet) window.ethereum.emit = walletProvider.emit;
   console.notifyLog('wallet provider listening....', walletProvider)
   walletProvider.on('chainChanged', (chainId) => {
     console.successLog(
