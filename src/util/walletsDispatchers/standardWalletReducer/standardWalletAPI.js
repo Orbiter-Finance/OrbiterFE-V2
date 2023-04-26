@@ -18,6 +18,7 @@ import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
 import env from "../../../../env";
 import { isBraveWallet } from "../utils";
+import { BRAVE } from "../constants";
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
@@ -131,16 +132,38 @@ export const universalWalletInitHandler = (walletConf) => {
         loginSuccess: true,
         walletPayload: performResult,
       }
-      // provider can't be stored in localStorage, but to facilitate global access
-      // to this ethereum instance(wallet matched), i put it in the global responsive data
-      updateGlobalSelectWalletConf(
-        legalWalletConfig.walletType,
-        {
-          ...legalWalletConfig.walletPayload,
-          provider,
-        },
-        true
-      )
+      if (isBraveWallet && walletType === BRAVE) {
+        try {
+          updateGlobalSelectWalletConf(
+              legalWalletConfig.walletType,
+              {
+                ...legalWalletConfig.walletPayload,
+                provider,
+              },
+              true
+          );
+        } catch (e) {
+          updateGlobalSelectWalletConf(
+              legalWalletConfig.walletType,
+              {
+                ...legalWalletConfig.walletPayload,
+                provider,
+              },
+              true
+          );
+        }
+      } else {
+        // provider can't be stored in localStorage, but to facilitate global access
+        // to this ethereum instance(wallet matched), i put it in the global responsive data
+        updateGlobalSelectWalletConf(
+            legalWalletConfig.walletType,
+            {
+              ...legalWalletConfig.walletPayload,
+              provider,
+            },
+            true
+        );
+      }
       modifyLocalLoginInfo(legalWalletConfig)
 
       // listen for changes
