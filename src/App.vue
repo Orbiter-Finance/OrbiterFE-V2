@@ -31,7 +31,8 @@ import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
-  getCurrentLoginInfoFromLocalStorage, METAMASK,
+  BRAVE_APP,
+  getCurrentLoginInfoFromLocalStorage, METAMASK, METAMASK_APP,
 } from './util/walletsDispatchers';
 import { isMobile } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
@@ -40,7 +41,7 @@ import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
-import { setIsBraveWallet, performInitMobileAppWallet } from './util/walletsDispatchers/utils';
+import { setIsBraveWallet, performInitMobileAppWallet, isBraveWallet } from './util/walletsDispatchers/utils';
 import { isMobileDevice } from './util';
 import { isBraveBrowser } from "./util/browserUtils";
 
@@ -127,6 +128,12 @@ export default {
       const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()
       if (isOkxwalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[METAMASK];
+        matchInitDispatcher && matchInitDispatcher();
+        return;
+      }
+      const isBraveWalletApp = isBraveWallet && isMobileDevice()
+      if (isBraveWalletApp) {
+        const matchInitDispatcher = walletDispatchersOnInit[BRAVE_APP]
         matchInitDispatcher && matchInitDispatcher();
         return;
       }

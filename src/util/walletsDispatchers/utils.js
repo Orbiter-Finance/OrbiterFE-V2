@@ -9,7 +9,7 @@ import {
   METAMASK_APP,
   TOKEN_POCKET_APP,
   BIT_KEEP_APP,
-  COINBASE_APP, OKXWALLET,
+  COINBASE_APP, OKXWALLET, BRAVE_APP,
 } from './constants';
 import {
   updateGlobalSelectWalletConf,
@@ -60,6 +60,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
   if (walletType === BRAVE) return isBraveWallet
+  if (walletType === BRAVE_APP) return isBraveWallet
   if (walletType === IM_TOKEN_APP) return ethereum.isImToken
   if (walletType === METAMASK_APP) return ethereum.isMetaMask
   if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket
@@ -127,6 +128,7 @@ export const getMobileAppTypeByProvider = () => {
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP
   if (provider.isCoinbaseWallet && provider.isCoinbaseBrowser)
     return COINBASE_APP
+  if (isBraveWallet) return BRAVE_APP;
 }
 
 /**

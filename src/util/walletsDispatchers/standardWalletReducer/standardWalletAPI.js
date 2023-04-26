@@ -18,7 +18,7 @@ import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
 import env from "../../../../env";
 import { isBraveWallet } from "../utils";
-import { BRAVE } from "../constants";
+import { BRAVE, BRAVE_APP } from "../constants";
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
@@ -132,7 +132,7 @@ export const universalWalletInitHandler = (walletConf) => {
         loginSuccess: true,
         walletPayload: performResult,
       }
-      if (isBraveWallet && walletType === BRAVE) {
+      if (isBraveWallet && (walletType === BRAVE || walletType === BRAVE_APP)) {
         try {
           updateGlobalSelectWalletConf(
               legalWalletConfig.walletType,
