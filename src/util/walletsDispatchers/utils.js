@@ -9,7 +9,7 @@ import {
   METAMASK_APP,
   TOKEN_POCKET_APP,
   BIT_KEEP_APP,
-  COINBASE_APP, OKXWALLET,
+  COINBASE_APP, OKXWALLET, BRAVE_APP,
 } from './constants';
 import {
   updateGlobalSelectWalletConf,
@@ -17,7 +17,11 @@ import {
 } from './walletsCoreData'
 import { toRefs } from '../../composition'
 import { isMobileEnv } from '../env'
-import { showMessage } from "../constants/web3/getWeb3";
+export let isBraveWallet = false;
+
+export function setIsBraveWallet(status) {
+  isBraveWallet = status;
+}
 
 // update global wallet login status
 export const modifyLocalLoginInfo = (loginInfo = {}) => {
@@ -48,38 +52,15 @@ export const withPerformInterruptWallet = (fn) => {
   }
 }
 
-let mark;
-function throttle(func){
-  let context, args;
-  context = this;
-  args = arguments;
-  if(!mark) {
-    mark = 1;
-    setTimeout(() => {
-      mark = 0;
-    }, 1000);
-    return func.apply(context, args);
-  }
-}
-
 // wallet type & ethereum fit checker
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
-  if (window.braveSolana && walletType === METAMASK) {
-    const fn = () => {
-      try {
-        return ethereum.isMetaMask && !ethereum.isBraveWallet;
-      } catch (e) {
-        showMessage("not install metamask", 'error');
-      }
-    };
-    return throttle(fn);
-  }
   if (walletType === METAMASK)
-    return ethereum.isMetaMask && !ethereum.isBraveWallet
+    return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
-  if (walletType === BRAVE) return ethereum.isBraveWallet
+  if (walletType === BRAVE) return isBraveWallet
+  if (walletType === BRAVE_APP) return isBraveWallet
   if (walletType === IM_TOKEN_APP) return ethereum.isImToken
   if (walletType === METAMASK_APP) return ethereum.isMetaMask
   if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket
@@ -111,12 +92,6 @@ export const findMatchWeb3ProviderByWalletType = (
   if (!checkEthereumConflicts()) {
     // if there is no conflict, there's only one "ethereum" instance in window
     // so we should confirm one thing: this "ethereum" object fits our wallet type
-    if (window.braveSolana && walletType === BRAVE) {
-      if (ethereumWalletTypeFitChecker(walletType, window.braveSolana)) {
-        return window.ethereum;
-      }
-      return null;
-    }
 
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
       return window.ethereum
@@ -127,7 +102,7 @@ export const findMatchWeb3ProviderByWalletType = (
   // so we can do a special treatment for metamask, for temporary use and will be removed in the feature!
   if (!walletIsInstalledInvestigator && walletType === METAMASK) {
     walletIsInstalledInvestigator = (provider) =>
-      provider.isMetaMask && !provider.isBraveWallet
+      provider.isMetaMask && !isBraveWallet
   }
 
   if (!walletIsInstalledInvestigator) return null
@@ -153,6 +128,7 @@ export const getMobileAppTypeByProvider = () => {
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP
   if (provider.isCoinbaseWallet && provider.isCoinbaseBrowser)
     return COINBASE_APP
+  if (isBraveWallet) return BRAVE_APP;
 }
 
 /**
