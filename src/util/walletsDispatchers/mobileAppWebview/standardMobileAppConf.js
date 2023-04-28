@@ -3,8 +3,9 @@ import {
   METAMASK_APP,
   IM_TOKEN_APP,
   BIT_KEEP_APP,
-  COINBASE_APP,
-} from '../constants'
+  COINBASE_APP, BRAVE_APP,
+} from '../constants';
+import { isBraveWallet } from "../utils";
 
 // open ./pcBrowser/standardPCBrowserWalletConf to get the meaning of each prop member
 // chainIdTransfer maybe can be optimize
@@ -22,6 +23,11 @@ const standardMobileAppConf = [
     shouldAddChainCode: -32603,
     chainIdTransfer: defaultChainIdTransfer,
     chainIdTransferOnInitProcess: true,
+  },
+  {
+    walletType: BRAVE_APP,
+    walletIsInstalledInvestigator: (provider) => isBraveWallet,
+    chainIdTransfer: defaultChainIdTransfer,
   },
   {
     walletType: TOKEN_POCKET_APP,

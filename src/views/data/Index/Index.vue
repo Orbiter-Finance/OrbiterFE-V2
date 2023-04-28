@@ -1,138 +1,148 @@
 <template>
-  <div class="l2data">
-    <Chart />
-    <div class="dapp-daily-data">
-      <div class="head">
-        <rollups
-          :customRollups="rollups"
-          :value="currentRollup"
-          @rollup-change="rollupChange"
-        />
-        <div
-          class="more"
-          @click="
+  <div>
+    <div v-if="webStatus === 2" class="l2data" style="display: flex;justify-content: center;align-items: center;text-align: center;height:350px">
+     <span style="line-height: 25px;width:400px;font-size:18px;font-family: 'Inter Regular';color:#81807C">
+       Our L2Data dashboard is temporarily offline for essential maintenance.<br>
+       Apologies for any inconvenience.<br>
+      For feedback or concerns, please reach out to us on
+       <span class="url" @click="openUrl('https://twitter.com/OrbiterResearch')">Twitter</span> or
+       <span class="url" @click="openUrl('http://discord.gg/hJJvXP7C73')">Discord</span>.</span>
+    </div>
+    <div v-if="webStatus === 1" class="l2data" >
+      <Chart />
+      <div class="dapp-daily-data">
+        <div class="head">
+          <rollups
+                  :customRollups="rollups"
+                  :value="currentRollup"
+                  @rollup-change="rollupChange"
+          />
+          <div
+                  class="more"
+                  @click="
             $router.push({
               path: '/dataDetail',
               query: { nav: 'Dapps' },
             })
           "
-        >
-          More
-          <img src="../../../assets/data/right.png" width="8" height="12" />
-        </div>
-      </div>
-      <div class="title">
-        {{ name }} Dapp Daily Data
-        {{
-          !isMobile && baseDappDailyData && baseDappDailyData.update_time
-            ? ',' +
-              dateFormat(
-                (baseDappDailyData.update_time - 60 * 60 * 24) * 1000,
-                'yyyy-MM-dd'
-              )
-            : isMobile
-            ? ''
-            : '-'
-        }}
-        <time-diff
-          v-if="!isMobile && baseDappDailyData && baseDappDailyData.update_time"
-          :timestamp="baseDappDailyData.update_time"
-        />
-        <div class="contact">
-          <div class="rollup active" @click="openTwitter">
-            Contact{{ !isMobile ? ' Us' : '' }}
+          >
+            More
+            <img src="../../../assets/data/right.png" width="8" height="12" />
           </div>
         </div>
-      </div>
-      <div :class="tableData.find(item=>item.rank === 0) ? 'table' : 'table-none'">
-        <el-table :data="tableData" style="width: 100%" empty-text="No Items" @sort-change="onSortChange">
-          <el-table-column
-            fixed
-            label="Dapp Name"
-            :width="isMobile ? 150 : 300"
-          >
-            <template slot-scope="scope">
-              <div class="name-column">
-                <template>
-                  <div class="rank" v-if="scope.row.rank !== 0">
-                    {{ scope.row.rank }}
-                  </div>
-                  <div class="new" v-else>
-                    <span> NEW </span>
-                  </div>
-                </template>
-                <dapp-logo v-if="(scope.row.rank === 0 && !isMobile) || scope.row.rank !== 0"
-                           :name="scope.row.dapp_name"
-                           :rollup="currentRollup"
-                />
-                <div v-if="scope.row.rank !== 0" @click="onRowClick(scope.row)" class="name" :title="scope.row.dapp_name">
-                  {{ scope.row.dapp_name }}
-                </div>
-                <div v-if="scope.row.rank === 0" class="name-disable" :title="scope.row.dapp_name">
-                  {{ scope.row.dapp_name }}
-                </div>
-                <div v-if="!isMobile" style="width: 50px;display: flex">
-                  <template v-if="scope.row.rank === 0">
-                    <scan-link
-                            :href="scope.row.dapp_url"
-                            :width="13"
-                            :height="13"
-                    />
+        <div class="title">
+          {{ name }} Dapp Daily Data
+          {{
+          !isMobile && baseDappDailyData && baseDappDailyData.update_time
+          ? ',' +
+          dateFormat(
+          (baseDappDailyData.update_time - 60 * 60 * 24) * 1000,
+          'yyyy-MM-dd'
+          )
+          : isMobile
+          ? ''
+          : '-'
+          }}
+          <time-diff
+                  v-if="!isMobile && baseDappDailyData && baseDappDailyData.update_time"
+                  :timestamp="baseDappDailyData.update_time"
+          />
+          <div class="contact">
+            <div class="rollup active" @click="openTwitter">
+              Contact{{ !isMobile ? ' Us' : '' }}
+            </div>
+          </div>
+        </div>
+        <div :class="tableData.find(item=>item.rank === 0) ? 'table' : 'table-none'">
+          <el-table :data="tableData" style="width: 100%" empty-text="No Items" @sort-change="onSortChange">
+            <el-table-column
+                    fixed
+                    label="Dapp Name"
+                    :width="isMobile ? 150 : 300"
+            >
+              <template slot-scope="scope">
+                <div class="name-column">
+                  <template>
+                    <div class="rank" v-if="scope.row.rank !== 0">
+                      {{ scope.row.rank }}
+                    </div>
+                    <div class="new" v-else>
+                      <span> NEW </span>
+                    </div>
                   </template>
-                  <template v-else>
-                    <icon-link :href="scope.row.dapp_url" />
-                    <twitter-link
-                            v-if="scope.row.dapp_twitter"
-                            :href="scope.row.dapp_twitter"
-                    />
-                  </template>
+                  <dapp-logo v-if="(scope.row.rank === 0 && !isMobile) || scope.row.rank !== 0"
+                             :name="scope.row.dapp_name"
+                             :rollup="currentRollup"
+                  />
+                  <div v-if="scope.row.rank !== 0" @click="onRowClick(scope.row)" class="name" :title="scope.row.dapp_name">
+                    {{ scope.row.dapp_name }}
+                  </div>
+                  <div v-if="scope.row.rank === 0" class="name-disable" :title="scope.row.dapp_name">
+                    {{ scope.row.dapp_name }}
+                  </div>
+                  <div v-if="!isMobile" style="width: 50px;display: flex">
+                    <template v-if="scope.row.rank === 0">
+                      <scan-link
+                              :href="scope.row.dapp_url"
+                              :width="13"
+                              :height="13"
+                      />
+                    </template>
+                    <template v-else>
+                      <icon-link :href="scope.row.dapp_url" />
+                      <twitter-link
+                              v-if="scope.row.dapp_twitter"
+                              :href="scope.row.dapp_twitter"
+                      />
+                    </template>
+                  </div>
                 </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="launch_time" label="Launch Date" width="145" align="right"
-                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
-            <template slot-scope="scope">
-              <div class="data">
-                {{ dateFormat(scope.row.launch_time, 'yyyy-MM-dd') }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="all_users" label="All Users" width="110" align="right"
-                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
-            <template slot-scope="scope">
-              <div class="data">
-                {{ numeral(scope.row.all_users).format('0,0') }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="24h_active_users" label="24h Active Users" width="175" align="right"
-                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
-            <template slot-scope="scope">
-              <div class="data">
-                {{ numeral(scope.row['24h_active_users']).format('0,0') }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="24h_new_users" label="24h New Users" width="170" align="right"
-                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
-            <template slot-scope="scope">
-              <div class="data">
-                {{ numeral(scope.row['24h_new_users']).format('0,0') }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="24h_interactions" label="24h Interactions" width="180" align="right"
-                           :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
-            <template slot-scope="scope">
-              <div class="data">
-                {{ numeral(scope.row['24h_interactions']).format('0,0') }}
-              </div>
-            </template>
-          </el-table-column>
-        </el-table>
+              </template>
+            </el-table-column>
+            <el-table-column prop="launch_time" label="Launch Date" width="145" align="right"
+                             :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
+              <template slot-scope="scope">
+                <div class="data">
+                  {{ dateFormat(scope.row.launch_time, 'yyyy-MM-dd') }}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="all_users" label="All Users" width="110" align="right"
+                             :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
+              <template slot-scope="scope">
+                <div class="data">
+                  {{ numeral(scope.row.all_users).format('0,0') }}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="24h_active_users" label="24h Active Users" width="175" align="right"
+                             :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
+              <template slot-scope="scope">
+                <div class="data">
+                  {{ numeral(scope.row['24h_active_users']).format('0,0') }}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="24h_new_users" label="24h New Users" width="170" align="right"
+                             :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
+              <template slot-scope="scope">
+                <div class="data">
+                  {{ numeral(scope.row['24h_new_users']).format('0,0') }}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="24h_interactions" label="24h Interactions" width="180" align="right"
+                             :sortable="'custom'" :sort-orders="['descending', 'ascending', null]">
+              <template slot-scope="scope">
+                <div class="data">
+                  {{ numeral(scope.row['24h_interactions']).format('0,0') }}
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <dapp-detail @close="closeDappDetail" ref="dappDetail" />
       </div>
-      <dapp-detail @close="closeDappDetail" ref="dappDetail" />
     </div>
   </div>
 </template>
@@ -152,11 +162,13 @@ import dateFormat from '../../../util/dateFormat'
 import { isMobile } from '../../../composition/hooks'
 import { getTabRollups } from '../../../L2data/rollups'
 import Common from '../Common'
+import { getWebStatus } from '../../../L2data/system.js'
 
 export default {
     mixins: [Common],
   data() {
     return {
+      webStatus: 0,
       currentRollup: undefined,
       baseDappDailyData: {},
       tableData: [],
@@ -191,6 +203,8 @@ export default {
     DappDetail
   },
   async mounted() {
+    this.webStatus = await getWebStatus() ? 1 : 2;
+    if (this.webStatus === 2) return;
     this.rollups = await getTabRollups('mainpage')
     this.allTab = this.rollups.map(item => item.value);
   },
@@ -266,12 +280,23 @@ export default {
       },
       openTwitter() {
         window.open('https://twitter.com/OrbiterResearch', '_blank');
-      }
+      },
+    openUrl(url) {
+      window.open(url, '_blank');
+    },
   },
 }
 </script>
 
 <style lang="scss">
+  .url {
+    color: #3A98F1;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    line-height: 25px;
+  }
+
 .l2data {
   max-width: 1120px;
   margin: 0 auto;

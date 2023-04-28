@@ -10,7 +10,7 @@
                 @show="() => (isRaiseUpFromTokenListVisible = true)"
         ></ObSelect>
       </div>
-      <div :hidden="!isWhiteWallet" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+      <div style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
         <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
         <el-switch :hidden="isLightMode"
                 v-model="isNewVersion"
@@ -380,11 +380,11 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
-  updateTransferExt,
+  updateTransferExt, curPageStatus,
 } from '../../composition/hooks';
 import { isDev, isProd } from "../../util";
 import orbiterApiAx from "../../common/orbiterApiAx";
-
+import openApiAx from "../../common/openApiAx";
 let makerConfigs = config.v1MakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
@@ -403,7 +403,7 @@ export default {
   },
   data() {
     return {
-      isWhiteWallet: false,
+      isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
 
@@ -451,7 +451,8 @@ export default {
 
       formWith: 0,
 
-      cronList: []
+      cronList: [],
+      banList: []
     };
   },
   computed: {
@@ -513,6 +514,9 @@ export default {
     },
     currentWalletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+    },
+    curPageStatus(){
+      return curPageStatus.value;
     },
     currentNetwork() {
       return compatibleGlobalWalletConf.value.walletPayload.networkId;
@@ -694,14 +698,14 @@ export default {
     },
   },
   watch: {
+    curPageStatus(value) {
+      if (Number(value) === 1) this.updateTransferInfo();
+    },
+    isWhiteWallet(){
+      this.refreshConfig();
+    },
     isNewVersion() {
-      if (this.isNewVersion) {
-        makerConfigs = config.makerConfigs;
-        this.updateTransferInfo();
-      } else {
-        makerConfigs = config.v1MakerConfigs;
-        this.updateTransferInfo();
-      }
+      this.refreshConfig();
     },
     queryParams: function (nv) {
       // When transferValue is empty, set it = nv.amount
@@ -748,6 +752,8 @@ export default {
     },
   },
   async mounted() {
+    this.openApiFilter();
+
     this.initWhiteList()
 
     this.updateTransferInfo();
@@ -785,6 +791,14 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async openApiFilter() {
+      this.banList = await openApiAx.get('/frontend/net');
+      const self = this;
+      const cron = setInterval(async () => {
+        self.banList = await openApiAx.get('/frontend/net');
+      }, 30000);
+      this.cronList.push(cron);
+    },
       refreshGasFeeToolTip() {
           const { selectMakerConfig } = transferDataState;
           const gasFee = `<b>Fees using the native bridge costs around:</b><br />Gas Fee: $${ this.originGasCost.toFixed(
@@ -819,8 +833,8 @@ export default {
           this.orbiterTradingFee =  tradingFee.decimalPlaces(digit, BigNumber.ROUND_UP);
       },
       refreshGasSavingMax() {
-          let savingValue =
-              this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice;
+        let savingValue =
+                (this.originGasCost - this.gasTradingTotal * this.exchangeToUsdPrice) || 0;
           if (savingValue < 0) {
               savingValue = 0;
           }
@@ -829,10 +843,9 @@ export default {
       },
       refreshGasSavingMin() {
           const gasCost = this.gasCost();
-          let savingValue =
-              this.originGasCost -
-              this.gasTradingTotal * this.exchangeToUsdPrice -
-              gasCost;
+        let savingValue = (this.originGasCost -
+                this.gasTradingTotal * this.exchangeToUsdPrice -
+                gasCost) || 0;
           if (savingValue < 0) {
               savingValue = 0;
           }
@@ -853,11 +866,31 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
+    refreshConfig(){
+      if (this.isNewVersion) {
+        makerConfigs = config.makerConfigs;
+      } else {
+        makerConfigs = config.v1MakerConfigs;
+      }
+      // if (!this.isWhiteWallet) {
+      //   makerConfigs = makerConfigs.filter(item => {
+      //     return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
+      //   });
+      //   const { fromChainID, toChainID } = transferDataState;
+      //   if (fromChainID === 514 || fromChainID === 14) {
+      //     this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
+      //   }
+      //   if (toChainID === 514 || toChainID === 14) {
+      //     this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
+      //   }
+      // }
+      this.updateTransferInfo();
+    },
     async initWhiteList() {
       // if (isProd()) {
       //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
       // }
-      this.isWhiteWallet = !!util.isWhite();
+      // this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
@@ -1430,6 +1463,47 @@ export default {
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
+      if (!await util.isLegalAddress()) {
+        this.$notify.error({
+          title: `Contract address is not supported, please use EVM address.`,
+          duration: 3000,
+        });
+        return;
+      }
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      if (this.banList) {
+        for (const ban of this.banList) {
+          if (ban.source && ban.dest) {
+            if (fromChainID === ban.source && toChainID === ban.dest) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+            continue;
+          }
+          if (ban.source) {
+            if (fromChainID === ban.source) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+            continue;
+          }
+          if (ban.dest) {
+            if (toChainID === ban.dest) {
+              this.$notify.error({
+                title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                duration: 3000,
+              });
+              return;
+            }
+          }
+        }
+      }
       // if unlogin  login first
       if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true);
@@ -1449,17 +1523,30 @@ export default {
           });
           return;
         }
-        const { fromChainID, toChainID, fromCurrency, selectMakerConfig,toCurrency } = transferDataState;
-        // if (toChainID ==1) {
-        //       this.$notify.error({
-        //           title: 'To Ethereum main network transaction maintenance, please try again later',
-        //           duration: 3000,
-        //       })
-        //       return
-        //   }
+        // if (fromChainID == 9) {
+        //   this.$notify.error({
+        //     title: 'From Loopring network transaction maintenance, please try again later',
+        //     duration: 3000,
+        //   });
+        //   return;
+        // }
         // if (toChainID === 4) {
         //   this.$notify.error({
-        //         title: 'This function is suspended due to network issues, please try again later. ',
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
+        // if (toChainID === 3) {
+        //   this.$notify.error({
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
+        //         duration: 3000,
+        //     })
+        //     return
+        // }
+        // if (toChainID === 14 || fromChainID === 14 ) {
+        //   this.$notify.error({
+        //         title: 'Due to network issues, this feature is temporarily suspended.',
         //         duration: 3000,
         //     })
         //     return
@@ -1473,16 +1560,21 @@ export default {
                 fromChain.symbol,
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
-
-        // if ((toChainID === 4 || toChainID === 44) && fromCurrency == 'DAI'
-        // ) {
+        if (toChainID === 4) {
+          this.$notify.error({
+            title: `The StarkNet network transaction maintenance, please try again later`,
+            duration: 6000,
+          });
+          return;
+        }
+        // if (toChainID === 3 || fromChainID === 3) {
         //   this.$notify.error({
-        //     title: `Due to the Insufficient liquidity of DAI for Starknet, “to Starknet” function is suspende.`,
+        //     title: `The Zksync network transaction maintenance, please try again later`,
         //     duration: 6000,
         //   });
         //   return;
         // }
-
+        
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
@@ -1523,6 +1615,10 @@ export default {
             util.showMessage('please connect Starknet Wallet', 'error');
             return;
           }
+          // if (!getStarknet().selectedAddress) {
+          //   await connectStarkNetWallet();
+          //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
+          // }
           if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to mainnet',
@@ -1538,7 +1634,7 @@ export default {
             return;
           }
         } else {
-          if (compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !== util.getMetaMaskNetworkId(fromChainID)) {
+          if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== util.getMetaMaskNetworkId(fromChainID)) {
             if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
@@ -1554,7 +1650,9 @@ export default {
                 const successCallback = () => this.$emit('stateChanged', '2');
                 matchSwitchChainDispatcher(
                         compatibleGlobalWalletConf.value.walletPayload.provider,
-                        () => successCallback.bind(this)
+                        () => {
+                          this.$emit('stateChanged', '2')
+                        }
                 );
                 return;
               }

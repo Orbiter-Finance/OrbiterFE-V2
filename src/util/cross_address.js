@@ -65,12 +65,12 @@ export class CrossAddress {
    */
   async approveERC20(
     tokenAddress,
-    amount = ethers.constants.MaxUint256,
+    amount,
     contractAddress = this.contractAddress
   ) {
     await this.checkNetworkId()
-
     const contract = new ethers.Contract(tokenAddress, Coin_ABI, this.signer)
+    const currentAllowance = await this.getAllowance(contract, contractAddress)
     await contract.approve(contractAddress, amount)
 
     const n = Notification({
@@ -82,7 +82,11 @@ export class CrossAddress {
       // Waitting approve succeed
       for (let index = 0; index < 5000; index++) {
         const allowance = await this.getAllowance(contract, contractAddress)
-        if (amount.lte(allowance)) {
+        if (!currentAllowance.eq(allowance)) {
+          n.close();
+          if (amount.gt(allowance)) {
+            throw new Error(`Approval amount is insufficient`);
+          }
           break
         }
 
@@ -165,7 +169,7 @@ export class CrossAddress {
 
     const allowance = await this.getAllowance(contractErc20)
     if (amount.gt(allowance)) {
-      await this.approveERC20(tokenAddress)
+      await this.approveERC20(tokenAddress, amount)
     }
 
     const contract = new ethers.Contract(
@@ -273,7 +277,7 @@ export class CrossAddress {
       } else {
         await this.approveERC20(
           tokenAddress,
-          ethers.constants.MaxUint256,
+            amount,
           contractAddress
         )
       }

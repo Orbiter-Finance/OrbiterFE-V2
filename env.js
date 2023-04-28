@@ -1,7 +1,9 @@
+import { isL2DataDev } from "./src/util";
+
 const baseDomain = `https://api.orbiter.finance`
 export default {
   // l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
-  l2BaseUrl: 'https://l2api.orbiter.finance',
+  l2BaseUrl: isL2DataDev() ? 'http://datastation.joeyzhou.xyz' : 'https://l2api.orbiter.finance',
   baseTraddingUrl: `${ baseDomain }/api`,
   metaMaskNetworkId: {
     1: 1,
@@ -19,6 +21,7 @@ export default {
     14: 324,
     15: 56,
     16: 42170,
+    17: 1101,
 
     5: 5,
     22: 421613,
@@ -34,7 +37,7 @@ export default {
     515: 97,
     517: 1442,
     519: 534353,
-    520: 167003,
+    520: 167004,
     521: 84531,
     522: 59140
   },
@@ -69,10 +72,11 @@ export default {
     514: 'https://goerli.explorer.zksync.io',
     16: 'https://nova.arbiscan.io',
     516: 'https://goerli-rollup-explorer.arbitrum.io',
+    17: "https://zkevm.polygonscan.com",
     517: 'https://explorer.public.zkevm-test.net',
     518: 'https://l1scan.scroll.io',
     519: 'https://l2scan.scroll.io',
-    520: 'https://l2explorer.a1.taiko.xyz',
+    520: 'https://l2explorer.a2.taiko.xyz',
     521: 'https://goerli.basescan.org',
     522: 'https://explorer.goerli.zkevm.consensys.net'
   },
@@ -148,10 +152,11 @@ export default {
     514: 'https://goerli.explorer.zksync.io/tx/',
     16: 'https://nova.arbiscan.io/tx/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/tx/',
+    17: "https://zkevm.polygonscan.com/tx/",
     517: 'https://explorer.public.zkevm-test.net/tx/',
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
-    520: 'https://l2explorer.a1.taiko.xyz/tx/',
+    520: 'https://l2explorer.a2.taiko.xyz/tx/',
     521: 'https://goerli.basescan.org/tx/',
     522: 'https://explorer.goerli.zkevm.consensys.net/tx/'
   },
@@ -186,10 +191,11 @@ export default {
     515: 'https://testnet.bscscan.com/address/',
     16: 'https://nova.arbiscan.io/address/',
     516: 'https://goerli-rollup-explorer.arbitrum.io/address/',
+    17: "https://zkevm.polygonscan.com/address/",
     517: 'https://explorer.public.zkevm-test.net/address/',
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
-    520: 'https://l2explorer.a1.taiko.xyz/address/',
+    520: 'https://l2explorer.a2.taiko.xyz/address/',
     521: 'https://goerli.basescan.org/address/',
     522: 'https://explorer.goerli.zkevm.consensys.net/address/'
   },
@@ -208,6 +214,7 @@ export default {
     14: 1,
     15: 1,
     16: 1,
+    17: 1,
     22: 0.02,
     33: 100,
     44: 50,
@@ -225,6 +232,7 @@ export default {
     517: 1,
     518: 1,
     519: 1,
+    520: 1,
     521: 1,
     522: 1
   },
@@ -244,6 +252,7 @@ export default {
     14: 10560,
     15: 150000,
     16: 150000,
+    17: 300000,
     22: 810000,
     33: 100,
     44: 35000,
@@ -260,6 +269,7 @@ export default {
     517: 21000,
     518: 21000,
     519: 21000,
+    520: 21000,
     521: 21000,
     522: 21000
   }

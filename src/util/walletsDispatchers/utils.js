@@ -9,14 +9,19 @@ import {
   METAMASK_APP,
   TOKEN_POCKET_APP,
   BIT_KEEP_APP,
-  COINBASE_APP,
-} from './constants'
+  COINBASE_APP, OKXWALLET, BRAVE_APP,
+} from './constants';
 import {
   updateGlobalSelectWalletConf,
   globalSelectWalletConf,
 } from './walletsCoreData'
 import { toRefs } from '../../composition'
 import { isMobileEnv } from '../env'
+export let isBraveWallet = false;
+
+export function setIsBraveWallet(status) {
+  isBraveWallet = status;
+}
 
 // update global wallet login status
 export const modifyLocalLoginInfo = (loginInfo = {}) => {
@@ -51,10 +56,11 @@ export const withPerformInterruptWallet = (fn) => {
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === METAMASK)
-    return ethereum.isMetaMask && !ethereum.isBraveWallet
+    return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
-  if (walletType === BRAVE) return ethereum.isBraveWallet
+  if (walletType === BRAVE) return isBraveWallet
+  if (walletType === BRAVE_APP) return isBraveWallet
   if (walletType === IM_TOKEN_APP) return ethereum.isImToken
   if (walletType === METAMASK_APP) return ethereum.isMetaMask
   if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket
@@ -62,6 +68,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === COINBASE_APP)
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
+  if (walletType === OKXWALLET) return ethereum.isOkxWallet
   // we never care wallet connect, because it's a protocol, not a wallet
   // so it doesn't follow the Ethereum standard api
 }
@@ -85,6 +92,7 @@ export const findMatchWeb3ProviderByWalletType = (
   if (!checkEthereumConflicts()) {
     // if there is no conflict, there's only one "ethereum" instance in window
     // so we should confirm one thing: this "ethereum" object fits our wallet type
+
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
       return window.ethereum
     return null
@@ -94,7 +102,7 @@ export const findMatchWeb3ProviderByWalletType = (
   // so we can do a special treatment for metamask, for temporary use and will be removed in the feature!
   if (!walletIsInstalledInvestigator && walletType === METAMASK) {
     walletIsInstalledInvestigator = (provider) =>
-      provider.isMetaMask && !provider.isBraveWallet
+      provider.isMetaMask && !isBraveWallet
   }
 
   if (!walletIsInstalledInvestigator) return null
@@ -120,6 +128,7 @@ export const getMobileAppTypeByProvider = () => {
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP
   if (provider.isCoinbaseWallet && provider.isCoinbaseBrowser)
     return COINBASE_APP
+  if (isBraveWallet) return BRAVE_APP;
 }
 
 /**

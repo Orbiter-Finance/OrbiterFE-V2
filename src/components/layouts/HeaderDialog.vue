@@ -138,8 +138,9 @@ import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers from '../../util/walletsDispatchers'
-import { onCopySuccess, onCopyError, isMobileEnv } from '../../util'
+import walletDispatchers, { BRAVE, METAMASK } from '../../util/walletsDispatchers';
+import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
+import { Notification } from 'element-ui'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
     walletDispatchers
@@ -182,6 +183,11 @@ export default {
                     isConnect: false,
                     icon: 'blockwallet',
                     title: 'BlockWallet',
+                },
+                {
+                    isConnect: false,
+                    icon: 'okxwallet',
+                    title: 'OKXWallet',
                 },
                 {
                     isConnect: false,
@@ -236,6 +242,7 @@ export default {
                     },
                 ]
             } else {
+                const isOkxwalletApp = window.ethereum?.isOkxWallet && this.checkIsMobileEnv();
                 return [
                     {
                         icon: 'network',
@@ -248,7 +255,7 @@ export default {
                     {
                         icon: 'wallet',
                         title: 'Wallet',
-                        value: compatibleGlobalWalletConf.value.walletType,
+                        value: isOkxwalletApp ? "okxwalletApp" : compatibleGlobalWalletConf.value.walletType,
                     },
                     {
                         icon: 'address',
@@ -278,13 +285,25 @@ export default {
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
+            if (walletConf.title === METAMASK && window.ethereum?.isOkxWallet && !this.checkIsMobileEnv()) {
+                Notification({
+                    title: 'Error: MetaMask has not been installed.',
+                    dangerouslyUseHTMLString: true,
+                    type: 'warning',
+                    customClass: 'installWalletTips',
+                    duration: 3000,
+                    message:
+                        '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+                });
+                return;
+            }
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {
-            return isMobileEnv()
+            return isMobileDevice();
         },
         disconnect() {
-            if (isMobileEnv()) return
+            if (this.checkIsMobileEnv()) return
             this.closeSelectWalletDialog()
             this.selectedWallet = {}
             localStorage.setItem('selectedWallet', JSON.stringify({}))

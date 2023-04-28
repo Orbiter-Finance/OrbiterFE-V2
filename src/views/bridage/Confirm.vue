@@ -175,7 +175,7 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
-import { sendTransfer } from '../../util/constants/starknet/helper'
+import { sendTransfer } from '../../util/constants/starknet/helper';
 import { getZkSyncProvider } from '../../util/zksync/zkysnc_helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
@@ -199,7 +199,6 @@ import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
-
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -1220,12 +1219,19 @@ export default {
                 Middle.$emit('connectWallet', true)
                 return
             }
+            if (!await util.isLegalAddress()) {
+                this.$notify.error({
+                    title: `Contract address is not supported, please use EVM address.`,
+                    duration: 3000,
+                });
+                return;
+            }
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
             if (fromChainID !== 4 && fromChainID !== 44) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
-                    util.getMetaMaskNetworkId(fromChainID)
+                    util.getMetaMaskNetworkId(fromChainID).toString()
                 ) {
                     if (
                         compatibleGlobalWalletConf.value.walletType === METAMASK
