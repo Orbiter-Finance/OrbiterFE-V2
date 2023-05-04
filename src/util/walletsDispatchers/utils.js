@@ -93,6 +93,10 @@ export const findMatchWeb3ProviderByWalletType = (
     // if there is no conflict, there's only one "ethereum" instance in window
     // so we should confirm one thing: this "ethereum" object fits our wallet type
 
+    if (walletType === OKXWALLET && typeof window.okxwallet !== 'undefined') {
+      return window.okxwallet;
+    }
+
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
       return window.ethereum
     return null
