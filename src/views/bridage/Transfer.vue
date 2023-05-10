@@ -1523,20 +1523,6 @@ export default {
           });
           return;
         }
-        // if (fromChainID == 9) {
-        //   this.$notify.error({
-        //     title: 'From Loopring network transaction maintenance, please try again later',
-        //     duration: 3000,
-        //   });
-        //   return;
-        // }
-        // if (toChainID === 4) {
-        //   this.$notify.error({
-        //         title: 'Due to network issues, this feature is temporarily suspended.',
-        //         duration: 3000,
-        //     })
-        //     return
-        // }
         // if (toChainID === 3) {
         //   this.$notify.error({
         //         title: 'Due to network issues, this feature is temporarily suspended.',
@@ -1567,13 +1553,13 @@ export default {
         //   });
         //   return;
         // }
-        // if (toChainID === 16 || toChainID === 516) {
-        //   this.$notify.error({
-        //     title: `The Arbitrum Nova network transaction maintenance, please try again later`,
-        //     duration: 6000,
-        //   });
-        //   return;
-        // }
+        if (fromChainID === 7 && toChainID === 4) {
+          this.$notify.error({
+              title: `The optimism-starkNet network transaction maintenance, please try again later`,
+              duration: 3000,
+          });
+          return;
+        }
         // if (toChainID === 14 || fromChainID === 14) {
         //   this.$notify.error({
         //     title: `The Zksync Era network transaction maintenance, please try again later`,
