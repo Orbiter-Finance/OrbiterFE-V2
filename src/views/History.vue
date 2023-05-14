@@ -262,6 +262,12 @@ export default {
         }
     },
     mounted() {
+        const { query } = this.$route;
+        if (query.nav === 'History') {
+            this.currentNav = "History";
+        } else if (query.nav === 'Search') {
+            this.currentNav = "Search";
+        }
         getTransactionsHistory();
     },
     methods: {
@@ -270,6 +276,11 @@ export default {
         },
         changeNav(nav) {
             this.currentNav = nav;
+            const { path } = this.$route;
+            this.$router.push({
+                path,
+                query: { nav }
+            });
         },
         async submitTx() {
             const selectChainId = +this.selectChainId;
