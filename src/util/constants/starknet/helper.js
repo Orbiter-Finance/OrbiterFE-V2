@@ -188,9 +188,7 @@ export async function sendTransfer(
       const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       tx = await getStarknet().account.execute(transferERC20TxCall);
     }
-    if (tx?.code === 'TRANSACTION_RECEIVED') {
-      return tx.transaction_hash;
-    }
+    return tx?.transaction_hash;
   } catch (e) {
     util.showMessage(e.message, 'error');
   }
