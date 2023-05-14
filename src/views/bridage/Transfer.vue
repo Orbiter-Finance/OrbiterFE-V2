@@ -1553,6 +1553,13 @@ export default {
           });
           return;
         }
+        if (toChainID === 4 && fromChain.symbol == 'DAI') {
+          this.$notify.error({
+            title: `The StarkNet network transaction maintenance, please try again later`,
+            duration: 6000,
+          });
+          return;
+        }
         if (fromChainID === 7 && toChainID === 4) {
           this.$notify.error({
               title: `The optimism-starkNet network transaction maintenance, please try again later`,
