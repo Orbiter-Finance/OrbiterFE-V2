@@ -175,7 +175,7 @@ import { utils } from 'zksync'
 import { submitSignedTransactionsBatch } from 'zksync/build/wallet'
 import Web3 from 'web3'
 import { WALLETCONNECT } from '../../util/walletsDispatchers/constants'
-import { sendTransfer } from '../../util/constants/starknet/helper'
+import { sendTransfer } from '../../util/constants/starknet/helper';
 import { getZkSyncProvider } from '../../util/zksync/zkysnc_helper'
 import loopring from '../../core/actions/loopring'
 import { IMXHelper } from '../../util/immutablex/imx_helper'
@@ -199,7 +199,6 @@ import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
-
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -293,6 +292,14 @@ export default {
             const contractAddress = selectMakerConfig.fromChain.tokenAddress
             const recipient = selectMakerConfig.recipient
             const amount = ethers.BigNumber.from(value)
+
+            if (!ext?.value || util.starknetHashFormat(ext.value).length !== 66 || util.starknetHashFormat(ext.value) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
+                this.$notify.error({
+                    title: 'please connect correct starknet wallet address',
+                    duration: 3000,
+                });
+                return;
+            }
             const chainInfo = util.getChainInfoByChainId(fromChainID)
             if (!chainInfo.contracts || !chainInfo.contracts.length) {
                 this.$notify.error({
@@ -955,6 +962,10 @@ export default {
             }
             const from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
+            if (!from || !(new RegExp(/^0x[a-fA-F0-9]{40}$/)).test(from) || from === "0x0000000000000000000000000000000000000000") {
+                util.showMessage('please connect correct evm wallet address', 'error');
+                return;
+            }
             if (
                 fromChainID === 4 ||
                 fromChainID === 44 ||
