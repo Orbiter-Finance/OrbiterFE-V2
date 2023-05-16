@@ -32,9 +32,9 @@ import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
   BRAVE_APP,
-  getCurrentLoginInfoFromLocalStorage, METAMASK, METAMASK_APP,
+  getCurrentLoginInfoFromLocalStorage, METAMASK,
 } from './util/walletsDispatchers';
-import { isMobile } from './composition/hooks'
+import { isMobile, web3State } from './composition/hooks';
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import * as lightbg from './assets/v2/light-bg.png'
@@ -44,6 +44,7 @@ import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import { setIsBraveWallet, performInitMobileAppWallet, isBraveWallet } from './util/walletsDispatchers/utils';
 import { isMobileDevice } from './util';
 import { isBraveBrowser } from "./util/browserUtils";
+import { getWeb3 } from "./util/constants/web3/getWeb3";
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -150,6 +151,10 @@ export default {
       // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
       const matchInitDispatcher = walletDispatchersOnInit[walletType]
       matchInitDispatcher && matchInitDispatcher()
+
+      if (!web3State.coinbase) {
+        getWeb3();
+      }
     },
   },
 }
