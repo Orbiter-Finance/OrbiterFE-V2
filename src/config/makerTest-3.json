@@ -1,0 +1,15 @@
+{
+    "22-5": {
+        "ETH-ETH": {
+            "makerAddress": "0x3Fbd1E8CFc71b5B8814525E7129a3f41870A238B",
+            "sender": "0x3Fbd1E8CFc71b5B8814525E7129a3f41870A238B",
+            "gasFee": 0.0001,
+            "tradingFee": 0.001,
+            "maxPrice": 0.01,
+            "minPrice": 0.005,
+            "slippage": 200,
+            "startTime": 1636019587,
+            "endTime": 99999999999999
+        }
+    }
+}
