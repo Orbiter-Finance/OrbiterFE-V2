@@ -31,13 +31,23 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-const random = [1,2].sort(function () {
-  return 0.5 - Math.random();
-})[0];
-const chain = isProd() ? chainMain : chainTest;
-const maker = require(`./${ isProd() ? `maker-${ random }.json` : `makerTest-${ random }.json` }`);
-const v1MakerConfigs = [];
+const makerNum = parseInt(Math.random() * 2) + 1;
+const maker = require(`./${ isProd() ? `maker-${ makerNum }.json` : `makerTest-${ makerNum }.json` }`);
 
+const otherNum = parseInt(Math.random() * 4) + 1;
+if (otherNum > 2) {
+  const makerOther = require(`./${ isProd() ? `maker-${ otherNum }.json` : `makerTest-${ otherNum }.json` }`);
+  for (const key1 in maker) {
+    for (const key2 in maker[key1]) {
+      if (makerOther[key1]?.[key2]) {
+        maker[key1][key2] = makerOther[key1][key2];
+      }
+    }
+  }
+}
+
+const v1MakerConfigs = [];
+const chain = isProd() ? chainMain : chainTest;
 const chainConfig = [...chain].map((item) => {
   if (process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`]) {
     item.api = item.api || {}

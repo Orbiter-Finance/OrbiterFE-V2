@@ -288,16 +288,10 @@ export default {
         proceedData() {
             const { selectMakerConfig, fromCurrency } = transferDataState
             if (this.detailData) {
-                const timestamp = new Date(
-                    `${this.detailData.fromTimeStamp} UTC+0`
-                )
-                    .toLocaleString()
-                    ?.replace(/\..*/g, '')
-                    ?.replace('T', ' ')
                 return [
                     {
                         title: 'Timestamp',
-                        desc: timestamp,
+                        desc: this.detailData.fromTimeStamp,
                     },
                     {
                         title: 'Value',
