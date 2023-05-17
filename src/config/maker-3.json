@@ -71,18 +71,6 @@
             "endTime": 99999999999999
         }
     },
-    "4-14": {
-        "ETH-ETH": {
-            "gasFee": 3.5,
-            "tradingFee": 0.0018,
-            "makerAddress": "0x07b393627bd514d2aa4c83e9f0c468939df15ea3c29980cd8e7be3ec847795f0",
-            "sender": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
-            "maxPrice": 10,
-            "minPrice": 0.005,
-            "startTime": 0,
-            "endTime": 99999999999999
-        }
-    },
     "9-14": {
         "ETH-ETH": {
             "gasFee": 0.2,
@@ -126,6 +114,44 @@
             "makerAddress": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
             "sender": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
             "maxPrice": 5,
+            "minPrice": 0.005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+
+    "14-2": {
+        "ETH-ETH": {
+            "gasFee": 0.8,
+            "tradingFee": 0.0009,
+            "makerAddress": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
+            "sender": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
+            "maxPrice": 3,
+            "minPrice": 0.005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "14-7": {
+        "ETH-ETH": {
+            "gasFee": 0.8,
+            "tradingFee": 0.0017,
+            "makerAddress": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
+            "sender": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
+            "maxPrice": 3,
+            "minPrice": 0.005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "14-1": {
+        "ETH-ETH": {
+            "gasFee": 0.8,
+            "tradingFee": 0.0072,
+            "slippage": 280,
+            "makerAddress": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
+            "sender": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
+            "maxPrice": 3,
             "minPrice": 0.005,
             "startTime": 0,
             "endTime": 99999999999999
