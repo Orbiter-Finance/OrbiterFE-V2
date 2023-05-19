@@ -263,9 +263,9 @@ export default {
     },
     mounted() {
         const { query } = this.$route;
-        if (query.nav === 'History') {
+        if (query.page === 'History') {
             this.currentNav = "History";
-        } else if (query.nav === 'Search') {
+        } else if (query.page === 'Search') {
             this.currentNav = "Search";
         }
         getTransactionsHistory();
@@ -279,7 +279,7 @@ export default {
             const { path } = this.$route;
             this.$router.push({
                 path,
-                query: { nav }
+                query: { page: nav }
             });
         },
         async submitTx() {
