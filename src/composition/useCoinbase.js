@@ -30,7 +30,11 @@ export function updateCoinbase(coinbase) {
   }
   updatelpAccountInfo(null)
   updatelpApiKey(null)
-  web3State.coinbase = coinbase
+  if (coinbase instanceof Array) {
+    web3State.coinbase = coinbase[0];
+  } else {
+    web3State.coinbase = coinbase;
+  }
 }
 export function updatelpApiKey(accountInfo) {
   lpApiKey.value = accountInfo

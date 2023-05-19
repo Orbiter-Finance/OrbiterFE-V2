@@ -292,6 +292,14 @@ export default {
             const contractAddress = selectMakerConfig.fromChain.tokenAddress
             const recipient = selectMakerConfig.recipient
             const amount = ethers.BigNumber.from(value)
+
+            if (!ext?.value || util.starknetHashFormat(ext.value).length !== 66 || util.starknetHashFormat(ext.value) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
+                this.$notify.error({
+                    title: 'please connect correct starknet wallet address',
+                    duration: 3000,
+                });
+                return;
+            }
             const chainInfo = util.getChainInfoByChainId(fromChainID)
             if (!chainInfo.contracts || !chainInfo.contracts.length) {
                 this.$notify.error({
@@ -954,6 +962,10 @@ export default {
             }
             const from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
+            if (!from || !(new RegExp(/^0x[a-fA-F0-9]{40}$/)).test(from) || from === "0x0000000000000000000000000000000000000000") {
+                util.showMessage('please connect correct evm wallet address', 'error');
+                return;
+            }
             if (
                 fromChainID === 4 ||
                 fromChainID === 44 ||
