@@ -183,7 +183,7 @@ export default {
 
   setStableRpc(chainId, rpc, msg) {
     this.log(chainId, rpc, msg || '', 'success')
-    localStorage.setItem(`${chainId}_stable_rpc`, rpc)
+    localStorage.setItem(`${ chainId }_stable_rpc`, JSON.stringify({ rpc, expireTime: new Date().valueOf() + 60 * 1000 }));
   },
 
   getRpcList(chainId) {
@@ -191,9 +191,13 @@ export default {
     const rpcList = (chainInfo?.rpc || []).sort(function () {
       return 0.5 - Math.random()
     })
-    const stableRpc = localStorage.getItem(`${chainId}_stable_rpc`)
-    if (stableRpc) {
-      return [stableRpc, ...rpcList]
+    const storageRpc = localStorage.getItem(`${ chainId }_stable_rpc`);
+    try {
+      const stableRpc = JSON.parse(storageRpc);
+      if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
+        return [stableRpc.rpc, ...rpcList];
+      }
+    } catch (e) {
     }
     return rpcList
   },

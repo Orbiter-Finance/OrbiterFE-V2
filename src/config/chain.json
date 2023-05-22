@@ -215,9 +215,9 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://mainnet.optimism.io",
-            "https://endpoints.omniatech.io/v1/op/mainnet/public",
-            "https://optimism-mainnet.public.blastapi.io"
+            "https://opt-mainnet.g.alchemy.com/v2/demo",
+            "https://optimism-mainnet.public.blastapi.io",
+            "https://optimism.blockpi.network/v1/rpc/public"
         ],
         "watch": ["api", "rpc"],
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
