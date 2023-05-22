@@ -1546,6 +1546,7 @@ export default {
                 fromChain.symbol,
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
+<<<<<<< HEAD
         // if (toChainID === 4 || toChainID === 44) {
         //   this.$notify.error({
         //     title: `The StarkNet network transaction maintenance, please try again later`,
@@ -1554,6 +1555,9 @@ export default {
         //   return;
         // }
         if (toChainID === 4 && fromChain.symbol == 'DAI') {
+=======
+        if (toChainID === 4) {
+>>>>>>> main_test
           this.$notify.error({
             title: `The StarkNet network transaction maintenance, please try again later`,
             duration: 6000,
