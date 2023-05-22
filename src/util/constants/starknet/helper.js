@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ec, Account, Contract, Provider, uint256, stark } from 'starknet'
+import { ec, Account, Contract, Provider, uint256, stark } from 'starknet';
 import util from '../../util'
 import erc20Abi from './erc20_abi.json'
 import starkNetCrossAbi from './ob_source_abi.json'
@@ -171,43 +171,55 @@ export async function sendTransfer(
   )
 
   const allowance = await getAllowance(tokenContract, contractAddress)
-
-  if (amount.gt(allowance)) {
-    try {
-      await approveERC20(tokenContract, contractAddress, amount)
-    } catch (error) {
-      util.showMessage(error.message, 'error')
-      return 0
-    }
-  }
   const crossContract = new Contract(
-    starkNetCrossAbi,
-    contractAddress,
-    getStarknet().provider
-  )
+      starkNetCrossAbi,
+      contractAddress,
+      getStarknet().provider
+  );
+  const receiverAddress = makerAddress;
 
-  const receiverAddress = makerAddress
   try {
-    const calldata = stark.compileCalldata({
-      token: tokenAddress,
-      to: receiverAddress,
-      amount: getUint256CalldataFromBN(String(amount)),
-      ext: l1Address,
-    })
-    const transaction = {
-      contractAddress: crossContract.address,
-      entrypoint: 'transferERC20',
-      calldata,
+    let tx;
+    if (amount.gt(allowance)) {
+      const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
+      const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      tx = await getStarknet().account.execute([approveTxCall, transferERC20TxCall]);
+    } else {
+      const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      tx = await getStarknet().account.execute(transferERC20TxCall);
     }
-    const txhash = await getStarknet().account.execute(transaction)
-    if (txhash?.code == 'TRANSACTION_RECEIVED') {
-      return txhash.transaction_hash
-    }
-    return 0
-  } catch (ex) {
-    util.showMessage(ex.message, 'error')
-    return 0
+    return tx?.transaction_hash;
+  } catch (e) {
+    util.showMessage(e.message, 'error');
   }
+  return null;
+}
+
+function getApproveTxCall(spender, contractAddress) {
+  const calldata = stark.compileCalldata({
+    spender,
+    amount: getUint256CalldataFromBN(String(UINT_256_MAX)),
+  });
+
+  return {
+    contractAddress,
+    entrypoint: 'approve',
+    calldata,
+  };
+}
+
+function getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, contractAddress) {
+  const calldata = stark.compileCalldata({
+    token: tokenAddress,
+    to: receiverAddress,
+    amount: getUint256CalldataFromBN(String(amount)),
+    ext: l1Address,
+  });
+  return {
+    contractAddress,
+    entrypoint: 'transferERC20',
+    calldata,
+  };
 }
 
 /**
@@ -257,31 +269,16 @@ export async function getStarkTransferFee(
     contractAddress,
     userSender
   )
-  let fee = 0
-  try {
-    const est1 = await ethContract.estimate('approve', [
-      contractAddress,
-      getUint256CalldataFromBN(String(UINT_256_MAX)),
-    ])
-    fee += Number(est1.amount)
-  } catch (error) {
-    console.warn('est1Error:', error)
-    return fee
-  }
 
   try {
-    const est2 = await crossContract.estimate('transferERC20', [
-      tokenAddress,
-      receiverAddress,
-      getUint256CalldataFromBN(String(0)),
-      l1Address,
-    ])
-    fee += Number(est2.amount)
-  } catch (error) {
-    console.warn('est2Error: ', error)
-    return fee
+    const approveTxCall = getApproveTxCall(contractAddress, ethContract.address);
+    const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, 0, crossContract.address);
+    const { overall_fee } = await userSender.estimateFee([approveTxCall, transferERC20TxCall]);
+    return Number(overall_fee);
+  } catch (e) {
+    console.warn('estError: ', e)
   }
-  return fee
+  return 0
 }
 
 /**
