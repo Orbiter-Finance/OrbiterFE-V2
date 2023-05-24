@@ -8,8 +8,26 @@ import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
+import { validateAndParseAddress } from "starknet";
 
 export default {
+  getAccountAddressError(address, isStarknet) {
+    if (isStarknet) {
+      try {
+        validateAndParseAddress(this.starknetHashFormat(address));
+        return null;
+      } catch (e) {
+        return e.message;
+      }
+    } else {
+      if ((new RegExp(/^0x[a-fA-F0-9]{40}$/)).test(address)) {
+        return null;
+      } else {
+        return "Invalid evm address";
+      }
+    }
+  },
+
   starknetHashFormat(txHash) {
     if (txHash.length < 66) {
       const end = txHash.substring(2, txHash.length);

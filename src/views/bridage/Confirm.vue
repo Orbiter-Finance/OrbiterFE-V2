@@ -300,6 +300,14 @@ export default {
                 });
                 return;
             }
+            const error = util.getAccountAddressError(ext.value, true);
+            if (error) {
+                this.$notify.error({
+                    title: error,
+                    duration: 3000,
+                });
+                return;
+            }
             const chainInfo = util.getChainInfoByChainId(fromChainID)
             if (!chainInfo.contracts || !chainInfo.contracts.length) {
                 this.$notify.error({
