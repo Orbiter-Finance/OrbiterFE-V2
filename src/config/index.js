@@ -34,7 +34,7 @@ const getTokenIcon = (token) => {
 const makerNum = parseInt(Math.random() * 2) + 1;
 const maker = require(`./${ isProd() ? `maker-${ makerNum }.json` : `makerTest-${ makerNum }.json` }`);
 
-const otherNum = parseInt(Math.random() * 4) + 1;
+const otherNum = parseInt(Math.random() * 3) + 1;
 if (otherNum > 2) {
   const makerOther = require(`./${ isProd() ? `maker-${ otherNum }.json` : `makerTest-${ otherNum }.json` }`);
   for (const key1 in maker) {
