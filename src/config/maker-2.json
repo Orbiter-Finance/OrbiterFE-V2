@@ -3121,7 +3121,7 @@
     "14-1": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0072,
+            "tradingFee": 0.006,
             "slippage": 280,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
@@ -3146,7 +3146,7 @@
     "14-2": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.0013,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 3,
@@ -3194,7 +3194,7 @@
     "14-6": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0006,
+            "tradingFee": 0.0009,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 3,
@@ -3218,7 +3218,7 @@
     "14-8": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0007,
+            "tradingFee": 0.0009,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 3,
@@ -3254,7 +3254,7 @@
     "14-9": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0007,
+            "tradingFee": 0.0009,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 3,
@@ -3278,7 +3278,7 @@
     "14-15": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0008,
+            "tradingFee": 0.0013,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 3,
@@ -3387,7 +3387,7 @@
     "14-17": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0013,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 3,

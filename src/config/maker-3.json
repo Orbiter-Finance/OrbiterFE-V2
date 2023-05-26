@@ -123,7 +123,7 @@
     "14-2": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0009,
+            "tradingFee": 0.0013,
             "makerAddress": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
             "sender": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
             "maxPrice": 3,
@@ -147,7 +147,7 @@
     "14-1": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.0072,
+            "tradingFee": 0.006,
             "slippage": 280,
             "makerAddress": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
             "sender": "0xee73323912a4e3772B74eD0ca1595a152b0ef282",
