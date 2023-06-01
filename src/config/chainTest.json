@@ -508,7 +508,7 @@
     "xvmList": [],
     "watch": ["rpc", "api"],
     "tokens": [],
-    "infoURL": "https://explorer.public.zkevm-test.net/"
+    "infoURL": "https://testnet-zkevm.polygonscan.com"
   },
   {
     "api": {
