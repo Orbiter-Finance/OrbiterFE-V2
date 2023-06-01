@@ -25,7 +25,8 @@ import { BRAVE, BRAVE_APP } from "../constants";
 // otherwise it will throw error;
 export const installWallet = (walletType, walletIsInstalledInvestigator) => {
   return new Promise((resolve) => {
-    if (window.ethereum) {
+    console.log("window.okxwallet fix 2 ====")
+    if (window.ethereum || typeof window.okxwallet !== 'undefined') {
       try {
         // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
         const matchProvider = findMatchWeb3ProviderByWalletType(
