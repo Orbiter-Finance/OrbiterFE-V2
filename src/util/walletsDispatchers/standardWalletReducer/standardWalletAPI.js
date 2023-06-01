@@ -170,6 +170,7 @@ export const universalWalletInitHandler = (walletConf) => {
       walletInfoChangeWatcher(walletConf, provider)
     })
     .catch((err) => {
+      console.error(err);
       if (walletNotInstallReducer) {
         walletNotInstallReducer()
         return
