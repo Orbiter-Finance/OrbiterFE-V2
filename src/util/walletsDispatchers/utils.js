@@ -68,7 +68,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === COINBASE_APP)
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
-  if (walletType === OKXWALLET) return ethereum.isOkxWallet
+  if (walletType === OKXWALLET) return typeof window.okxwallet !== 'undefined'
   // we never care wallet connect, because it's a protocol, not a wallet
   // so it doesn't follow the Ethereum standard api
 }
