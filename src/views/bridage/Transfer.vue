@@ -1545,13 +1545,13 @@ export default {
           });
           return;
         }
-        // if (fromChainID === 7 && toChainID === 4) {
-        //   this.$notify.error({
-        //       title: `The optimism-starkNet network transaction maintenance, please try again later`,
-        //       duration: 3000,
-        //   });
-        //   return;
-        // }
+        if (fromChainID === 7 && toChainID === 4) {
+          this.$notify.error({
+              title: `The optimism-starkNet network transaction maintenance, please try again later`,
+              duration: 3000,
+          });
+          return;
+        }
         // if (toChainID === 14 || fromChainID === 14) {
         //   this.$notify.error({
         //     title: `The Zksync Era network transaction maintenance, please try again later`,
