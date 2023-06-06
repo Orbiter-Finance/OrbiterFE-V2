@@ -8,8 +8,26 @@ import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
+import { validateAndParseAddress } from "starknet";
 
 export default {
+  getAccountAddressError(address, isStarknet) {
+    if (isStarknet) {
+      try {
+        validateAndParseAddress(this.starknetHashFormat(address));
+        return null;
+      } catch (e) {
+        return e.message;
+      }
+    } else {
+      if ((new RegExp(/^0x[a-fA-F0-9]{40}$/)).test(address)) {
+        return null;
+      } else {
+        return "Invalid evm address";
+      }
+    }
+  },
+
   starknetHashFormat(txHash) {
     if (txHash.length < 66) {
       const end = txHash.substring(2, txHash.length);
@@ -183,7 +201,7 @@ export default {
 
   setStableRpc(chainId, rpc, msg) {
     this.log(chainId, rpc, msg || '', 'success')
-    localStorage.setItem(`${chainId}_stable_rpc`, rpc)
+    localStorage.setItem(`${ chainId }_stable_rpc`, JSON.stringify({ rpc, expireTime: new Date().valueOf() + 60 * 1000 }));
   },
 
   getRpcList(chainId) {
@@ -191,9 +209,13 @@ export default {
     const rpcList = (chainInfo?.rpc || []).sort(function () {
       return 0.5 - Math.random()
     })
-    const stableRpc = localStorage.getItem(`${chainId}_stable_rpc`)
-    if (stableRpc) {
-      return [stableRpc, ...rpcList]
+    const storageRpc = localStorage.getItem(`${ chainId }_stable_rpc`);
+    try {
+      const stableRpc = JSON.parse(storageRpc);
+      if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
+        return [stableRpc.rpc, ...rpcList];
+      }
+    } catch (e) {
     }
     return rpcList
   },
