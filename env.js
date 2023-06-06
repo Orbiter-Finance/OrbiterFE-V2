@@ -39,7 +39,8 @@ export default {
     519: 534353,
     520: 167004,
     521: 84531,
-    522: 59140
+    522: 59140,
+    523: 195
   },
   networkUrl: {
     1: 'https://etherscan.io',
@@ -78,7 +79,8 @@ export default {
     519: 'https://l2scan.scroll.io',
     520: 'https://l2explorer.a2.taiko.xyz',
     521: 'https://goerli.basescan.org',
-    522: 'https://explorer.goerli.zkevm.consensys.net'
+    522: 'https://explorer.goerli.zkevm.consensys.net',
+    523: 'https://www.okx.com/explorer/okbc-test'
   },
   chainIcon: {
     1: 'tokenLogo',
@@ -119,7 +121,8 @@ export default {
     20: 'taikologo',
     520: 'taikologo',
     521: 'baselogo',
-    522: 'consensyslogo'
+    522: 'consensyslogo',
+    523: 'okblogo'
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -158,7 +161,8 @@ export default {
     519: 'https://l2scan.scroll.io/tx/',
     520: 'https://l2explorer.a2.taiko.xyz/tx/',
     521: 'https://goerli.basescan.org/tx/',
-    522: 'https://explorer.goerli.zkevm.consensys.net/tx/'
+    522: 'https://explorer.goerli.zkevm.consensys.net/tx/',
+    523: 'https://www.okx.com/explorer/okbc-test/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -197,7 +201,8 @@ export default {
     519: 'https://l2scan.scroll.io/address/',
     520: 'https://l2explorer.a2.taiko.xyz/address/',
     521: 'https://goerli.basescan.org/address/',
-    522: 'https://explorer.goerli.zkevm.consensys.net/address/'
+    522: 'https://explorer.goerli.zkevm.consensys.net/address/',
+    523: 'https://www.okx.com/explorer/okbc-test/address/'
   },
   gasPriceMap: {
     1: 100,
@@ -234,7 +239,8 @@ export default {
     519: 1,
     520: 1,
     521: 1,
-    522: 1
+    522: 1,
+    523: 1
   },
   gasLimitMap: {
     1: 35000,
@@ -271,6 +277,7 @@ export default {
     519: 21000,
     520: 21000,
     521: 21000,
-    522: 21000
+    522: 21000,
+    523: 21000
   }
 };

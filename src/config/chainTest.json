@@ -611,5 +611,41 @@
     "watch": ["rpc"],
     "tokens": [],
     "infoURL": " https://explorer.goerli.linea.build"
+  },
+  {
+    "api": {
+      "url": "https://okbrpc.okbchain.org/v1",
+      "key": ""
+    },
+    "chainId": "195",
+    "networkId": "195",
+    "internalId": "523",
+    "name": "OKB(G)",
+    "debug": false,
+    "contracts": [],
+    "features": ["Etherscan"],
+    "nativeCurrency": {
+      "name": "OKB",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://okbtestrpc.okbchain.org"],
+    "watch": ["rpc"],
+    "tokens": [
+      {
+        "name": "Ether (WETH)",
+        "symbol": "WETH",
+        "decimals": 18,
+        "address": "0xaf99998DCFaB1A506213B73Fe50E3f31166B7EB1"
+      },
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x01a22c7aB5dc856884eB61be019044C8f844A005"
+      }
+    ],
+    "infoURL": "https://www.okx.com/explorer/okbc-test"
   }
 ]
