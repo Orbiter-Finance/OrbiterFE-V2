@@ -428,7 +428,7 @@
     "chainId": "280",
     "networkId": "280",
     "internalId": "514",
-    "debug": true,
+    "debug": false,
     "name": "zkSync Era(G)",
     "nativeCurrency": {
       "name": "Ether",
@@ -437,11 +437,11 @@
       "address": "0x0000000000000000000000000000000000000000"
     },
     "rpc": ["https://zksync2-testnet.zksync.dev"],
-    "watch": ["rpc"],
-    "contracts": [],
+    "watch": ["rpc", "api"],
+    "contracts": ["0x9147eE8678C27a2E677A84aB14F7303E451E99Fb"],
     "tokens": [
       {
-        "name": "TestToken",
+        "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
         "address": "0x0faF6df7054946141266420b43783387A78d82A9"
@@ -504,7 +504,7 @@
     "internalId": "517",
     "name": "zkEVM(G)",
     "debug": false,
-    "contracts": [],
+    "contracts": ["0x99c0b2B824D7291E832DC9018B24CaA6B68673E2"],
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
@@ -514,7 +514,20 @@
     "rpc": ["https://rpc.public.zkevm-test.net"],
     "xvmList": [],
     "watch": ["rpc", "api"],
-    "tokens": [],
+    "tokens": [
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x6aB2235c5F8FbEf7834c051C029B8F2af02DEF55"
+      },
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0xB3E5fd0FC4e7854f9c22250F2d8a9B135c9a476b"
+      }
+    ],
     "infoURL": "https://testnet-zkevm.polygonscan.com"
   },
   {
@@ -542,14 +555,14 @@
   },
   {
     "api": {
-      "url": "https://l2explorer.a1.taiko.xyz/api",
+      "url": "https://l2explorer.a2.taiko.xyz/api",
       "key": "",
       "intervalTime": 60000
     },
-    "chainId": "167003",
-    "networkId": "167003",
+    "chainId": "167005",
+    "networkId": "167005",
     "internalId": "520",
-    "name": "Taiko A2(G)",
+    "name": "Taiko(G)",
     "debug": false,
     "contracts": [],
     "nativeCurrency": {
@@ -558,20 +571,10 @@
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": ["https://rpc.a2.taiko.xyz"],
+    "rpc": ["https://rpc.test.taiko.xyz"],
     "watch": ["rpc"],
     "tokens": [],
-    "faucets": [],
-    "explorers": [
-      {
-        "name": "Arbitrum Nova Chain Explorer",
-        "url": "https://l2explorer.a1.taiko.xyz/address",
-        "icon": "blockscout",
-        "standard": "EIP3091"
-      }
-    ],
-    "infoURL": "https://taiko.xyz/",
-    "parent": {}
+    "infoURL": "https://explorer.test.taiko.xyz"
   },
   {
     "api": {
