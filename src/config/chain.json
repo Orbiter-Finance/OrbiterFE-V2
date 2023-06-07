@@ -427,7 +427,7 @@
         },
         "rpc": ["https://zksync2-mainnet.zksync.io"],
         "watch": ["rpc"],
-        "contracts": ["0x"],
+        "contracts": ["0xBF3922a0cEBbcD718e715e83d9187cC4BbA23f11"],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -508,7 +508,7 @@
         "internalId": "17",
         "name": "Polygon zkEVM",
         "debug": false,
-        "contracts": ["0x"],
+        "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
