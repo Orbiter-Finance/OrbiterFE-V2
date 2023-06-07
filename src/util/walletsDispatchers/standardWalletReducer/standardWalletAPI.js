@@ -87,14 +87,16 @@ export const performWalletInformation = async (
       networkId = walletConf.chainIdTransfer(networkId)
     performResult.networkId = networkId
   }
+  console.log('matchWalletProvider.request',matchWalletProvider.request)
   if (matchWalletProvider.request) {
     ;[walletAddress] = await matchWalletProvider.request({
       method: 'eth_accounts',
     })
   } else {
-    ;[walletAddress] = await matchWalletWeb3Provider.eth.request({
+    const rs = [walletAddress] = await matchWalletWeb3Provider.eth.request({
       method: 'eth_accounts',
     })
+    console.log('rs',rs)
   }
   if (!walletAddress)
     showMessage(
