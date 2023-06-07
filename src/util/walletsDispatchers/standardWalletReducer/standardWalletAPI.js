@@ -89,14 +89,15 @@ export const performWalletInformation = async (
   }
   console.log('matchWalletProvider.request',matchWalletProvider.request)
   if (matchWalletProvider.request) {
-    ;[walletAddress] = await matchWalletProvider.request({
+    const rs = [walletAddress] = await matchWalletProvider.request({
       method: 'eth_accounts',
     })
+      console.log('rs1',rs)
   } else {
     const rs = [walletAddress] = await matchWalletWeb3Provider.eth.request({
       method: 'eth_accounts',
     })
-    console.log('rs',rs)
+    console.log('rs2',rs)
   }
   if (!walletAddress)
     showMessage(
