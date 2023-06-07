@@ -12,7 +12,6 @@ const showMessage = util.showMessage
 
 async function installWeb3() {
   const web3Provider = findMatchWeb3ProviderByWalletType(METAMASK)
-  console.log('web3Provider ====',web3Provider)
   if (web3Provider) {
     try {
       await web3Provider.enable()
@@ -60,7 +59,6 @@ async function getWeb3() {
     }
   })
   await web3.eth.getCoinbase((error, coinbase) => {
-    console.log('err', error, "coinbase", coinbase);
     if (error || !coinbase) {
       showMessage(
         'get coinbase failed，please unlock metamask or generate a new address',
