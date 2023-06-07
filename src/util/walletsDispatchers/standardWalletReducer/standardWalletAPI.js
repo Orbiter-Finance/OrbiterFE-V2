@@ -56,6 +56,7 @@ export const performWalletInformation = async (
   walletIsInstalledInvestigator,
   walletConf
 ) => {
+  console.log('step ====')
   const matchWalletProvider = await installWallet(
     walletType,
     walletIsInstalledInvestigator
@@ -67,6 +68,7 @@ export const performWalletInformation = async (
     networkId: null,
     walletAddress: null,
   }
+  console.log('step2 ====')
   const matchWalletWeb3Provider = new Web3(matchWalletProvider) // inject web3
   let networkId, walletAddress
   if (matchWalletProvider.request) {
@@ -79,6 +81,7 @@ export const performWalletInformation = async (
       method: 'net_version ',
     })
   }
+  console.log('step3 ====')
   if (!networkId)
     showMessage('get netWorkID failed, refresh and try again', 'error')
   else {
@@ -88,22 +91,28 @@ export const performWalletInformation = async (
     performResult.networkId = networkId
   }
   console.log('matchWalletProvider.request',matchWalletProvider.request)
+  let rs,index;
   if (matchWalletProvider.request) {
-    const rs = [walletAddress] = await matchWalletProvider.request({
+    rs = [walletAddress] = await matchWalletProvider.request({
       method: 'eth_accounts',
     })
+    index = 1
       console.log('rs1',rs)
   } else {
-    const rs = [walletAddress] = await matchWalletWeb3Provider.eth.request({
+    rs = [walletAddress] = await matchWalletWeb3Provider.eth.request({
       method: 'eth_accounts',
     })
     console.log('rs2',rs)
+    index = 2
   }
-  if (!walletAddress)
+  if (!walletAddress){
+    console.log('==== rs',rs,'index',index)
     showMessage(
-      `get coinbase failed，please unlock ${walletType} or generate a new address`,
-      'error'
+        `get coinbase failed，please unlock ${walletType} or generate a new address`,
+        'error'
     )
+  }
+
   else performResult.walletAddress = walletAddress
   return {
     performResult,
@@ -117,12 +126,14 @@ export const universalWalletInitHandler = (walletConf) => {
   const { walletType, walletIsInstalledInvestigator, walletNotInstallReducer } =
     walletConf
 
+  console.log(' kkkk1')
   performWalletInformation(
     walletType,
     walletIsInstalledInvestigator,
     walletConf
   )
     .then(({ performResult, provider }) => {
+      console.log(' kkkk2')
       /**
        * result contains following properties
        * 1. walletAddress
