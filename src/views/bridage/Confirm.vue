@@ -1299,8 +1299,6 @@ export default {
 
             if (fromChainID === 3 || fromChainID === 33) {
                 this.zkTransfer()
-            } else if (fromChainID === 14 || fromChainID === 514) {
-                this.zk2Transfer()
             } else if (fromChainID === 9 || fromChainID === 99) {
                 this.loopringTransfer()
             } else if (fromChainID === 12 || fromChainID === 512) {

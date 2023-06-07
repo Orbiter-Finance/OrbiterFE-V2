@@ -1523,35 +1523,6 @@ export default {
           });
           return;
         }
-        // if (fromChainID == 9) {
-        //   this.$notify.error({
-        //     title: 'From Loopring network transaction maintenance, please try again later',
-        //     duration: 3000,
-        //   });
-        //   return;
-        // }
-        // if (toChainID === 4) {
-        //   this.$notify.error({
-        //         title: 'Due to network issues, this feature is temporarily suspended.',
-        //         duration: 3000,
-        //     })
-        //     return
-        // }
-        // if (toChainID === 3) {
-        //   this.$notify.error({
-        //         title: 'Due to network issues, this feature is temporarily suspended.',
-        //         duration: 3000,
-        //     })
-        //     return
-        // }
-        // if (toChainID === 14 || fromChainID === 14 ) {
-        //   this.$notify.error({
-        //         title: 'Due to network issues, this feature is temporarily suspended.',
-        //         duration: 3000,
-        //     })
-        //     return
-        // }
-        
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
         let nonce = await getNonce.getNonce(
@@ -1560,16 +1531,30 @@ export default {
                 fromChain.symbol,
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
-        if (toChainID === 4) {
+        // if (toChainID === 4 || toChainID === 44) {
+        //   this.$notify.error({
+        //     title: `The StarkNet network transaction maintenance, please try again later`,
+        //     duration: 6000,
+        //   });
+        //   return;
+        // }
+        if (toChainID === 4 && fromChain.symbol == 'DAI') {
           this.$notify.error({
             title: `The StarkNet network transaction maintenance, please try again later`,
             duration: 6000,
           });
           return;
         }
-        // if (toChainID === 3 || fromChainID === 3) {
+        // if (fromChainID === 7 && toChainID === 4) {
         //   this.$notify.error({
-        //     title: `The Zksync network transaction maintenance, please try again later`,
+        //       title: `The optimism-starkNet network transaction maintenance, please try again later`,
+        //       duration: 3000,
+        //   });
+        //   return;
+        // }
+        // if (toChainID === 14 || fromChainID === 14) {
+        //   this.$notify.error({
+        //     title: `The Zksync Era network transaction maintenance, please try again later`,
         //     duration: 6000,
         //   });
         //   return;

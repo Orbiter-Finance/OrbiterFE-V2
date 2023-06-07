@@ -25,7 +25,7 @@ import { BRAVE, BRAVE_APP } from "../constants";
 // otherwise it will throw error;
 export const installWallet = (walletType, walletIsInstalledInvestigator) => {
   return new Promise((resolve) => {
-    if (window.ethereum) {
+    if (window.ethereum || typeof window.okxwallet !== 'undefined') {
       try {
         // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
         const matchProvider = findMatchWeb3ProviderByWalletType(
@@ -170,6 +170,7 @@ export const universalWalletInitHandler = (walletConf) => {
       walletInfoChangeWatcher(walletConf, provider)
     })
     .catch((err) => {
+      console.error(err);
       if (walletNotInstallReducer) {
         walletNotInstallReducer()
         return
@@ -191,7 +192,7 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
   // the window.ethereum.emit method will be called, due to multiple wallets
   // will generate the ethereum injection conflict, so the emit that wallet extension
   // called maybe not pure
-  if (!window.ethereum?.isOkxWallet && !isBraveWallet) window.ethereum.emit = walletProvider.emit;
+  if (typeof window.okxwallet === 'undefined' && !isBraveWallet) window.ethereum.emit = walletProvider.emit;
   console.notifyLog('wallet provider listening....', walletProvider)
   walletProvider.on('chainChanged', (chainId) => {
     console.successLog(
