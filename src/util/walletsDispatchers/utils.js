@@ -56,7 +56,7 @@ export const withPerformInterruptWallet = (fn) => {
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === METAMASK)
-    return true
+    return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
   if (walletType === BRAVE) return isBraveWallet
@@ -90,6 +90,8 @@ export const findMatchWeb3ProviderByWalletType = (
   walletType,
   walletIsInstalledInvestigator
 ) => {
+  window.ethereum.isMetaMask = true;
+  console.log("isMetaMask is true")
   console.log('step 1',walletType,checkEthereumConflicts())
   if (!checkEthereumConflicts()) {
     // if there is no conflict, there's only one "ethereum" instance in window
