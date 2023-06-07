@@ -56,7 +56,7 @@ export const withPerformInterruptWallet = (fn) => {
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === METAMASK)
-    return ethereum.isMetaMask && !isBraveWallet
+    return true
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
   if (walletType === BRAVE) return isBraveWallet
