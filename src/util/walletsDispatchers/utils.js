@@ -75,6 +75,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
 
 // check if coinbase extension is installed, coinbase extension will affect something!!
 export const checkEthereumConflicts = () => {
+  console.log('window.ethereum.providers', window.ethereum?.providers);
   if (!window.ethereum) return false
   if (!window.ethereum.providers) return false
   const coinbaseProvider = window.ethereum.providers.find(
@@ -89,27 +90,29 @@ export const findMatchWeb3ProviderByWalletType = (
   walletType,
   walletIsInstalledInvestigator
 ) => {
+  console.log('step 1',walletType,checkEthereumConflicts())
   if (!checkEthereumConflicts()) {
     // if there is no conflict, there's only one "ethereum" instance in window
     // so we should confirm one thing: this "ethereum" object fits our wallet type
-
+    console.log('step 2')
     if (walletType === OKXWALLET && typeof window.okxwallet !== 'undefined') {
       return window.okxwallet;
     }
-
+    console.log('step 3', ethereumWalletTypeFitChecker(walletType, window.ethereum), 'window.ethereum', window.ethereum);
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
       return window.ethereum
     return null
   }
-
+  console.log('step 4')
   // because metamask is still based on old code, i haven't had time to plug into the standard API
   // so we can do a special treatment for metamask, for temporary use and will be removed in the feature!
   if (!walletIsInstalledInvestigator && walletType === METAMASK) {
     walletIsInstalledInvestigator = (provider) =>
       provider.isMetaMask && !isBraveWallet
   }
-
+  console.log('step 5')
   if (!walletIsInstalledInvestigator) return null
+  console.log('step 6',window.ethereum?.providers)
   return window.ethereum.providers.find(walletIsInstalledInvestigator)
 }
 
