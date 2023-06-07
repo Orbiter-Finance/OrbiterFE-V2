@@ -148,6 +148,18 @@
                 "symbol": "DAI",
                 "decimals": 18,
                 "address": "0x00da114221cb83fa859dbdb4c44beeaa0bb37c7537ad5ae66fe5e0efd20e6eb3"
+            },
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8"
+            },
+            {
+                "name": "USDT",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"
             }
         ],
         "infoURL": ""
@@ -415,8 +427,15 @@
         },
         "rpc": ["https://zksync2-mainnet.zksync.io"],
         "watch": ["rpc"],
-        "contracts": [],
-        "tokens": [],
+        "contracts": ["0xBF3922a0cEBbcD718e715e83d9187cC4BbA23f11"],
+        "tokens": [
+            {
+                "name": "USD Coin",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4"
+            }
+        ],
         "infoURL": "https://explorer.zksync.io"
     },
     {
@@ -489,7 +508,7 @@
         "internalId": "17",
         "name": "Polygon zkEVM",
         "debug": false,
-        "contracts": [],
+        "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -499,7 +518,20 @@
         "rpc": ["https://zkevm-rpc.com"],
         "xvmList": [],
         "watch": ["rpc"],
-        "tokens": [],
+        "tokens": [
+            {
+                "name": "USD Coin",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035"
+            },
+            {
+                "name": "Tether USD",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0x1E4a5963aBFD975d8c9021ce480b42188849D41d"
+            }
+        ],
         "infoURL": "https://zkevm.polygonscan.com/"
     }
 ]
