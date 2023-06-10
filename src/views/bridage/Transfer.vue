@@ -1545,13 +1545,13 @@ export default {
           });
           return;
         }
-        if (toChainID === 14 || fromChainID === 14) {
-          this.$notify.error({
-            title: `The zkSync Era network transaction maintenance, please try again later`,
-            duration: 6000,
-          });
-          return;
-        }
+        // if (toChainID === 14 || fromChainID === 14) {
+        //   this.$notify.error({
+        //     title: `The zkSync Era network transaction maintenance, please try again later`,
+        //     duration: 6000,
+        //   });
+        //   return;
+        // }
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
