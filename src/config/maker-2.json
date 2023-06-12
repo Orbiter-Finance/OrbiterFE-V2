@@ -4095,6 +4095,16 @@
         }
     },
     "14-4": {
+        "ETH-ETH": {
+            "gasFee": 0.3,
+            "tradingFee": 0.0012,
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "maxPrice": 3,
+            "minPrice": 0.005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
@@ -4107,6 +4117,16 @@
         }
     },
     "17-4": {
+        "ETH-ETH": {
+            "gasFee": 0.5,
+            "tradingFee": 0.0012,
+            "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
+            "maxPrice": 3,
+            "minPrice": 0.005,
+            "startTime": 0,
+            "endTime": 99999999999999
+        },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
