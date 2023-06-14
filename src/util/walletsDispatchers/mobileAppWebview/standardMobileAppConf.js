@@ -3,7 +3,7 @@ import {
   METAMASK_APP,
   IM_TOKEN_APP,
   BIT_KEEP_APP,
-  COINBASE_APP, BRAVE_APP,
+  COINBASE_APP, BRAVE_APP, LOOPRING_APP,
 } from '../constants';
 import { isBraveWallet } from "../utils";
 
@@ -14,6 +14,11 @@ const standardMobileAppConf = [
   {
     walletType: IM_TOKEN_APP,
     walletIsInstalledInvestigator: (provider) => provider.isImToken,
+    chainIdTransfer: defaultChainIdTransfer,
+  },
+  {
+    walletType: LOOPRING_APP,
+    walletIsInstalledInvestigator: (provider) => provider.isLoopring,
     chainIdTransfer: defaultChainIdTransfer,
   },
   {

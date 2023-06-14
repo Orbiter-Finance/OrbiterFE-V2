@@ -12,3 +12,4 @@ export const METAMASK_APP = 'metamaskApp' // metamask app name
 export const TOKEN_POCKET_APP = 'tokenPocketApp' // token pocket app name
 export const LOCALLOGINDATA = 'localLoginData' // mainly used in localStorage for store the information if any wallets have been logged in
 export const BRAVE_APP = 'braveApp' // brave wallet constant
+export const LOOPRING_APP = 'loopringApp' // brave wallet constant

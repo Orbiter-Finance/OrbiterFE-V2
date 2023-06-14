@@ -32,7 +32,7 @@ import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
   BRAVE_APP,
-  getCurrentLoginInfoFromLocalStorage, METAMASK,
+  getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK,
 } from './util/walletsDispatchers';
 import { isMobile, web3State } from './composition/hooks';
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
@@ -136,6 +136,12 @@ export default {
       const isBraveWalletApp = isBraveWallet && isMobileDevice()
       if (isBraveWalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[BRAVE_APP]
+        matchInitDispatcher && matchInitDispatcher();
+        return;
+      }
+      const isLoopringWalletApp = window.ethereum?.isLoopring && isMobileDevice()
+      if (isLoopringWalletApp) {
+        const matchInitDispatcher = walletDispatchersOnInit[LOOPRING_APP]
         matchInitDispatcher && matchInitDispatcher();
         return;
       }
