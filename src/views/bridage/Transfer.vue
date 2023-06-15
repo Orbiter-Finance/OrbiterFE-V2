@@ -1453,13 +1453,13 @@ export default {
       this.updateSendBtnInfo();
     },
     async sendTransfer() {
-      if (check.checkIsBitKeep()) {
-        this.$notify.error({
-          title: `Bitkeep is not supported and please try another wallet.`,
-          duration: 3000,
-        });
-        return;
-      }
+      // if (check.checkIsBitKeep()) {
+      //   this.$notify.error({
+      //     title: `Bitkeep is not supported and please try another wallet.`,
+      //     duration: 3000,
+      //   });
+      //   return;
+      // }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }

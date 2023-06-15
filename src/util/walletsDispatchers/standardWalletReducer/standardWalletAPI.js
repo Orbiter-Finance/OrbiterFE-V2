@@ -61,6 +61,9 @@ export const performWalletInformation = async (
     walletIsInstalledInvestigator
   )
   if (!matchWalletProvider) throw new Error(`not install ${walletType}`)
+  if (window.ethereum?.isLoopring) {
+    await matchWalletProvider.enable();
+  }
   const performResult = {
     walletType,
     isInstalled: true, // matchWalletProvider !== null, web extension definitely be installed

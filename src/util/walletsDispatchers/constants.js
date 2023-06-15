@@ -1,5 +1,5 @@
 export const METAMASK = 'MetaMask' // metamask wallet constant
-export const TALLYHO = 'TallyHo' // tally wallet constant
+export const TALLYHO = 'Taho' // tally wallet constant
 export const BLOCKWALLET = 'BlockWallet' // BlockWallet wallet constant
 export const WALLETCONNECT = 'WalletConnect' // walletConnect wallet constant
 export const COINBASE = 'Coinbase' // coinbase wallet constant
@@ -12,3 +12,4 @@ export const METAMASK_APP = 'metamaskApp' // metamask app name
 export const TOKEN_POCKET_APP = 'tokenPocketApp' // token pocket app name
 export const LOCALLOGINDATA = 'localLoginData' // mainly used in localStorage for store the information if any wallets have been logged in
 export const BRAVE_APP = 'braveApp' // brave wallet constant
+export const LOOPRING_APP = 'loopringApp' // brave wallet constant

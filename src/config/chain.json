@@ -427,13 +427,13 @@
         },
         "rpc": ["https://zksync2-mainnet.zksync.io"],
         "watch": ["rpc"],
-        "contracts": ["0xBF3922a0cEBbcD718e715e83d9187cC4BbA23f11"],
+        "contracts": ["0xbf3922a0cebbcd718e715e83d9187cc4bba23f11"],
         "tokens": [
             {
                 "name": "USD Coin",
                 "symbol": "USDC",
                 "decimals": 6,
-                "address": "0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4"
+                "address": "0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4"
             }
         ],
         "infoURL": "https://explorer.zksync.io"
@@ -508,7 +508,7 @@
         "internalId": "17",
         "name": "Polygon zkEVM",
         "debug": false,
-        "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -523,13 +523,13 @@
                 "name": "USD Coin",
                 "symbol": "USDC",
                 "decimals": 6,
-                "address": "0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035"
+                "address": "0xa8ce8aee21bc2a48a5ef670afcc9274c7bbbc035"
             },
             {
                 "name": "Tether USD",
                 "symbol": "USDT",
                 "decimals": 6,
-                "address": "0x1E4a5963aBFD975d8c9021ce480b42188849D41d"
+                "address": "0x1e4a5963abfd975d8c9021ce480b42188849d41d"
             }
         ],
         "infoURL": "https://zkevm.polygonscan.com/"
