@@ -177,7 +177,7 @@ export default {
                 {
                     isConnect: false,
                     icon: 'tallyho',
-                    title: 'TallyHo',
+                    title: 'Taho',
                 },
                 {
                     isConnect: false,
