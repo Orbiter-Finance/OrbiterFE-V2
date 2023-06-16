@@ -1,7 +1,14 @@
 import { showMessage } from '../../constants/web3/getWeb3'
-import { COINBASE, BRAVE, BLOCKWALLET, TALLYHO, OKXWALLET, BIT_KEEP } from '../constants';
+import {
+  COINBASE,
+  BRAVE,
+  BLOCKWALLET,
+  TALLYHO,
+  OKXWALLET,
+  BIT_KEEP,
+} from '../constants'
 import { Notification } from 'element-ui'
-import { isBraveWallet } from "../utils";
+import { isBraveWallet } from '../utils'
 
 /**
  * Description:
@@ -88,7 +95,7 @@ export default [
         customClass: 'installWalletTips',
         duration: 3000,
         message:
-            '<div style="font-family:Inter Regular;text-align: left;">If you already have OKXWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have OKXWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },
@@ -104,7 +111,7 @@ export default [
         customClass: 'installWalletTips',
         duration: 3000,
         message:
-            '<div style="font-family:Inter Regular;text-align: left;">If you already have BitKeep Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have BitKeep Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },
