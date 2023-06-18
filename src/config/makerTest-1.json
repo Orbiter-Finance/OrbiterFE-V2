@@ -6665,9 +6665,9 @@
         "ETH-ETH": {
             "makerAddress": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
             "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
-            "gasFee": 0.0001,
+            "gasFee": 10,
             "tradingFee": 0.001,
-            "maxPrice": 0.01,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "slippage": 200,
             "startTime": 1636019587,
