@@ -57,7 +57,7 @@ function confirmUserTransaction(hash) {
 export default {
   UserTransferReady(user, maker, amount, localChainID, txHash) {
     if (localChainID === 4 || localChainID === 44) {
-      txHash = util.starknetHashFormat(txHash);
+      txHash = util.starknetHashFormat(txHash)
     }
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)

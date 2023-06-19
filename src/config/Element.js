@@ -19,7 +19,7 @@ import {
   Col,
   Form,
   FormItem,
-  Input
+  Input,
 } from 'element-ui'
 const element = {
   install: function (Vue) {

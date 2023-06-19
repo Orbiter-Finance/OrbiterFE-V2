@@ -31,23 +31,27 @@ const getTokenIcon = (token) => {
   return tokenIcons[token] || ''
 }
 
-const makerNum = parseInt(Math.random() * 2) + 1;
-const maker = require(`./${ isProd() ? `maker-${ makerNum }.json` : `makerTest-${ makerNum }.json` }`);
+const makerNum = parseInt(Math.random() * 2) + 1
+const maker = require(`./${
+  isProd() ? `maker-${makerNum}.json` : `makerTest-${makerNum}.json`
+}`)
 
-const otherNum = parseInt(Math.random() * 3) + 1;
+const otherNum = parseInt(Math.random() * 3) + 1
 if (otherNum > 2) {
-  const makerOther = require(`./${ isProd() ? `maker-${ otherNum }.json` : `makerTest-${ otherNum }.json` }`);
+  const makerOther = require(`./${
+    isProd() ? `maker-${otherNum}.json` : `makerTest-${otherNum}.json`
+  }`)
   for (const key1 in maker) {
     for (const key2 in maker[key1]) {
       if (makerOther[key1]?.[key2]) {
-        maker[key1][key2] = makerOther[key1][key2];
+        maker[key1][key2] = makerOther[key1][key2]
       }
     }
   }
 }
 
-const v1MakerConfigs = [];
-const chain = isProd() ? chainMain : chainTest;
+const v1MakerConfigs = []
+const chain = isProd() ? chainMain : chainTest
 const chainConfig = [...chain].map((item) => {
   if (process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`]) {
     item.api = item.api || {}
@@ -56,7 +60,7 @@ const chainConfig = [...chain].map((item) => {
   return item
 })
 
-const makerConfigs = convertMakerConfig(maker);
+const makerConfigs = convertMakerConfig(maker)
 
 function convertMakerConfig(maker) {
   const makerMap = maker
@@ -72,11 +76,12 @@ function convertMakerConfig(maker) {
     const symbolPairMap = makerMap[chainIdPair]
     const [fromChainId, toChainId] = chainIdPair.split('-')
     // Temporary offline configuration
-    const offlineList = [12,13];
+    const offlineList = [12, 13]
     if (
-        offlineList.find(item => +item === +fromChainId) ||
-        offlineList.find(item => +item === +toChainId)) {
-      continue;
+      offlineList.find((item) => +item === +fromChainId) ||
+      offlineList.find((item) => +item === +toChainId)
+    ) {
+      continue
     }
     const c1Chain = chainList.find((item) => +item.internalId === +fromChainId)
     const c2Chain = chainList.find((item) => +item.internalId === +toChainId)
@@ -143,5 +148,5 @@ export default {
   chainConfig,
   makerConfigs,
   v1MakerConfigs,
-  whiteList
-};
+  whiteList,
+}
