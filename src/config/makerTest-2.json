@@ -6667,7 +6667,7 @@
             "sender": "0x0043d60e87c5dd08C86C3123340705a1556C4719",
             "gasFee": 10,
             "tradingFee": 0.001,
-            "maxPrice": 0.1,
+            "maxPrice": 5,
             "minPrice": 0.005,
             "slippage": 200,
             "startTime": 1636019587,
