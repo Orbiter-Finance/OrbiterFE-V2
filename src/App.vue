@@ -32,19 +32,25 @@ import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
   BRAVE_APP,
-  getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK,
-} from './util/walletsDispatchers';
-import { isMobile, web3State } from './composition/hooks';
+  getCurrentLoginInfoFromLocalStorage,
+  LOOPRING_APP,
+  METAMASK,
+} from './util/walletsDispatchers'
+import { isMobile, web3State } from './composition/hooks'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
-import { setIsBraveWallet, performInitMobileAppWallet, isBraveWallet } from './util/walletsDispatchers/utils';
-import { isMobileDevice } from './util';
-import { isBraveBrowser } from "./util/browserUtils";
-import { getWeb3 } from "./util/constants/web3/getWeb3";
+import {
+  setIsBraveWallet,
+  performInitMobileAppWallet,
+  isBraveWallet,
+} from './util/walletsDispatchers/utils'
+import { isMobileDevice } from './util'
+import { isBraveBrowser } from './util/browserUtils'
+import { getWeb3 } from './util/constants/web3/getWeb3'
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -107,13 +113,17 @@ export default {
     HeaderDialog,
   },
   async mounted() {
-    console.log("window.ethereum", window.ethereum);
+    console.log('window.ethereum', window.ethereum)
     if (isBraveBrowser()) {
-      setIsBraveWallet(await window.ethereum.request({
-        method: 'web3_clientVersion'
-      }).then((clientVersion) => {
-        return clientVersion.split('/')[0] === 'BraveWallet';
-      }))
+      setIsBraveWallet(
+        await window.ethereum
+          .request({
+            method: 'web3_clientVersion',
+          })
+          .then((clientVersion) => {
+            return clientVersion.split('/')[0] === 'BraveWallet'
+          })
+      )
     }
     getZkToken.getSupportZKTokenList()
 
@@ -129,21 +139,22 @@ export default {
 
       const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()
       if (isOkxwalletApp) {
-        const matchInitDispatcher = walletDispatchersOnInit[METAMASK];
-        matchInitDispatcher && matchInitDispatcher();
-        return;
+        const matchInitDispatcher = walletDispatchersOnInit[METAMASK]
+        matchInitDispatcher && matchInitDispatcher()
+        return
       }
       const isBraveWalletApp = isBraveWallet && isMobileDevice()
       if (isBraveWalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[BRAVE_APP]
-        matchInitDispatcher && matchInitDispatcher();
-        return;
+        matchInitDispatcher && matchInitDispatcher()
+        return
       }
-      const isLoopringWalletApp = window.ethereum?.isLoopring && isMobileDevice()
+      const isLoopringWalletApp =
+        window.ethereum?.isLoopring && isMobileDevice()
       if (isLoopringWalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[LOOPRING_APP]
-        matchInitDispatcher && matchInitDispatcher();
-        return;
+        matchInitDispatcher && matchInitDispatcher()
+        return
       }
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
@@ -160,7 +171,7 @@ export default {
       matchInitDispatcher && matchInitDispatcher()
 
       if (!web3State.coinbase) {
-        getWeb3();
+        getWeb3()
       }
     },
   },

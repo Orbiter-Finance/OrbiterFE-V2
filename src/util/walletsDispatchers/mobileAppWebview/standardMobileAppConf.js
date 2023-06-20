@@ -3,9 +3,11 @@ import {
   METAMASK_APP,
   IM_TOKEN_APP,
   BIT_KEEP_APP,
-  COINBASE_APP, BRAVE_APP, LOOPRING_APP,
-} from '../constants';
-import { isBraveWallet } from "../utils";
+  COINBASE_APP,
+  BRAVE_APP,
+  LOOPRING_APP,
+} from '../constants'
+import { isBraveWallet } from '../utils'
 
 // open ./pcBrowser/standardPCBrowserWalletConf to get the meaning of each prop member
 // chainIdTransfer maybe can be optimize

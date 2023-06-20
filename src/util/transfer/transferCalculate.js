@@ -232,7 +232,7 @@ export default {
         to: makerAddress,
       })
       if (fromChainID === 14 || fromChainID === 514) {
-        estimateGas = estimateGas * 1.5;
+        estimateGas = estimateGas * 1.5
       }
       const gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
       let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
@@ -803,9 +803,8 @@ export default {
       }
     }
     if (fromChainID === 17 || fromChainID === 517) {
-      const fromGasPrice = await this.getGasPrice(fromChainID);
-      ethGas =
-          fromGasPrice * PG_EVM_ETH_WITHDRAW_ONPG;
+      const fromGasPrice = await this.getGasPrice(fromChainID)
+      ethGas = fromGasPrice * PG_EVM_ETH_WITHDRAW_ONPG
     }
     if (fromChainID === 518 || fromChainID === 519) {
       try {
@@ -969,8 +968,7 @@ export default {
     if (toChainID === 17 || toChainID === 517) {
       // zk2 get
       const toGasPrice = await this.getGasPrice(toChainID)
-      ethGas =
-          toGasPrice * PG_EVM_ETH_DEPOSIT_DEPOSIT_ONL1
+      ethGas = toGasPrice * PG_EVM_ETH_DEPOSIT_DEPOSIT_ONL1
     }
     if (toChainID === 518 || toChainID === 519) {
       try {

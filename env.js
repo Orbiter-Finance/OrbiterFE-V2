@@ -40,7 +40,9 @@ export default {
     520: 167004,
     521: 84531,
     522: 59140,
-    523: 195
+    523: 195,
+    524: 5001,
+    525: 5611
   },
   networkUrl: {
     1: 'https://etherscan.io',
@@ -80,7 +82,9 @@ export default {
     520: 'https://l2explorer.a2.taiko.xyz',
     521: 'https://goerli.basescan.org',
     522: 'https://explorer.goerli.zkevm.consensys.net',
-    523: 'https://www.okx.com/explorer/okbc-test'
+    523: 'https://www.okx.com/explorer/okbc-test',
+    524: 'https://explorer.testnet.mantle.xyz',
+    525: 'https://opbnbscan.com'
   },
   chainIcon: {
     1: 'tokenLogo',
@@ -122,7 +126,9 @@ export default {
     520: 'taikologo',
     521: 'baselogo',
     522: 'consensyslogo',
-    523: 'okblogo'
+    523: 'okblogo',
+    524: 'mantlelogo',
+    525: 'bsclogo'
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -162,7 +168,9 @@ export default {
     520: 'https://l2explorer.a2.taiko.xyz/tx/',
     521: 'https://goerli.basescan.org/tx/',
     522: 'https://explorer.goerli.zkevm.consensys.net/tx/',
-    523: 'https://www.okx.com/explorer/okbc-test/tx/'
+    523: 'https://www.okx.com/explorer/okbc-test/tx/',
+    524: 'https://explorer.testnet.mantle.xyz/tx/',
+    525: 'https://opbnbscan.com/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -202,7 +210,9 @@ export default {
     520: 'https://l2explorer.a2.taiko.xyz/address/',
     521: 'https://goerli.basescan.org/address/',
     522: 'https://explorer.goerli.zkevm.consensys.net/address/',
-    523: 'https://www.okx.com/explorer/okbc-test/address/'
+    523: 'https://www.okx.com/explorer/okbc-test/address/',
+    524: 'https://explorer.testnet.mantle.xyz/address/',
+    525: 'https://opbnbscan.com/address/'
   },
   gasPriceMap: {
     1: 100,
@@ -240,7 +250,9 @@ export default {
     520: 1,
     521: 1,
     522: 1,
-    523: 1
+    523: 1,
+    524: 1,
+    525: 1
   },
   gasLimitMap: {
     1: 35000,
@@ -278,6 +290,8 @@ export default {
     520: 21000,
     521: 21000,
     522: 21000,
-    523: 21000
+    523: 21000,
+    524: 207810,
+    525: 269544
   }
 };
