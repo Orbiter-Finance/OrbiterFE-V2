@@ -26,6 +26,12 @@
     "watch": ["rpc"],
     "tokens": [
       {
+        "name": "BNB",
+        "symbol": "BNB",
+        "decimals": 18,
+        "address": "0x0000000000000000000000000000000000000000"
+      },
+      {
         "name": "USDT",
         "symbol": "USDT",
         "decimals": 6,
@@ -474,14 +480,20 @@
     "debug": false,
     "contracts": [],
     "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
+      "name": "BNB",
+      "symbol": "BNB",
       "decimals": 18,
-      "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
+      "address": "0x0000000000000000000000000000000000000000"
     },
     "rpc": ["https://data-seed-prebsc-1-s1.binance.org:8545", "https://bsc-testnet.public.blastapi.io"],
     "watch": ["rpc"],
     "tokens": [
+      {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
+      },
       {
         "name": "USDT",
         "symbol": "USDT",
@@ -648,7 +660,7 @@
     "features": ["Etherscan"],
     "nativeCurrency": {
       "name": "OKB",
-      "symbol": "ETH",
+      "symbol": "OKB",
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
@@ -657,7 +669,7 @@
     "tokens": [
       {
         "name": "Ether (WETH)",
-        "symbol": "WETH",
+        "symbol": "ETH",
         "decimals": 18,
         "address": "0xaf99998DCFaB1A506213B73Fe50E3f31166B7EB1"
       },
@@ -669,5 +681,56 @@
       }
     ],
     "infoURL": "https://www.okx.com/explorer/okbc-test"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "5001",
+    "networkId": "5001",
+    "internalId": "524",
+    "name": "mantle(G)",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "MNT",
+      "symbol": "MNT",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://rpc.testnet.mantle.xyz", "https://rpc.ankr.com/mantle_testnet"],
+    "watch": ["rpc"],
+    "tokens": [
+      {
+        "name": "Ether (WETH)",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111"
+      }
+    ],
+    "infoURL": "https://explorer.testnet.mantle.xyz"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "5611",
+    "networkId": "5611",
+    "internalId": "525",
+    "name": "opBSC(G)",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "tBNB",
+      "symbol": "BNB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://opbnb-testnet-rpc.bnbchain.org"],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://opbnbscan.com"
   }
 ]
