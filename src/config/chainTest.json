@@ -728,9 +728,16 @@
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
+    "tokens": [
+      {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0x0000000000000000000000000000000000000000"
+      }
+    ],
     "rpc": ["https://opbnb-testnet-rpc.bnbchain.org"],
     "watch": ["rpc"],
-    "tokens": [],
     "infoURL": "https://opbnbscan.com"
   }
 ]
