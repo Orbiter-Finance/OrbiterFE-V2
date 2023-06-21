@@ -6665,10 +6665,10 @@
         "ETH-ETH": {
             "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
             "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-            "gasFee": 10,
-            "tradingFee": 0.001,
-            "maxPrice": 1,
-            "minPrice": 0.005,
+            "gasFee": 30,
+            "tradingFee": 0.01,
+            "maxPrice": 5,
+            "minPrice": 0.01,
             "slippage": 200,
             "startTime": 1636019587,
             "endTime": 99999999999999
