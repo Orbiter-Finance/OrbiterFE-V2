@@ -2,6 +2,7 @@ import chainMain from './chain.json';
 import chainTest from './chainTest.json';
 import { isProd } from '../util';
 import openApiAx from '../common/openApiAx';
+import env from '../../env'
 
 const tokenIcons = {
     ETH: require('../assets/ethlogo.svg'),
@@ -32,9 +33,7 @@ const getTokenIcon = (token) => {
     return tokenIcons[token] || '';
 };
 
-const maker = require(`./${
-    isProd() ? `maker.json` : `makerTest.json`
-}`);
+const maker = require(`./${ isProd() ? `maker.json` : `makerTest.json` }`);
 const cacheChain = JSON.parse(localStorage.getItem('netWorkChain') || '[]');
 const cacheMaker = JSON.parse(localStorage.getItem('netWorkMaker') || '{}');
 let chain = cacheChain.length ? cacheChain : isProd() ? chainMain : chainTest;
@@ -143,23 +142,28 @@ function convertMakerConfig(maker) {
             }
         }
     }
-    v1MakerConfigs = v1MakerConfigsTmp
-    makerConfigs = configs
+    v1MakerConfigs = v1MakerConfigsTmp;
+    makerConfigs = configs;
     return { chainConfig, v1MakerConfigs, makerConfigs };
 }
 
-convertMakerConfig(maker)
+convertMakerConfig(maker);
 
 const whiteList = [];
 
 async function pullNetworkConfig() {
     const timestamp = await openApiAx.get('frontend/v');
     const timestampCache = localStorage.getItem('timestamp');
-    if (+timestampCache !== +timestamp) {
+    if (+timestampCache !== +timestamp || !localStorage.getItem('netWorkEnv') ||
+        !localStorage.getItem('netWorkChain') || !localStorage.getItem('netWorkMaker')) {
         const netWorkChain = await openApiAx.get('chain');
         const netWorkMaker = await openApiAx.get('maker');
+        const frontendEnv = await openApiAx.get('frontend/env');
+        if (frontendEnv) {
+            const netWorkEnv = Object.assign(env, frontendEnv);
+            localStorage.setItem('netWorkEnv', JSON.stringify(netWorkEnv));
+        }
         if (netWorkChain && netWorkMaker) {
-            console.log("pull network maker", netWorkMaker);
             chain = netWorkChain;
             localStorage.setItem('netWorkChain', JSON.stringify(netWorkChain));
             localStorage.setItem('netWorkMaker', JSON.stringify(netWorkMaker));
@@ -167,8 +171,10 @@ async function pullNetworkConfig() {
             return convertMakerConfig(netWorkMaker);
         }
     } else {
-        console.log("get cache maker", cacheMaker);
-        return convertMakerConfig(Object.keys(cacheMaker).length ? cacheMaker : maker);
+        Object.assign(env, JSON.parse(localStorage.getItem('netWorkEnv') || "{}"));
+        return convertMakerConfig(
+            Object.keys(cacheMaker).length ? cacheMaker : maker
+        );
     }
 }
 

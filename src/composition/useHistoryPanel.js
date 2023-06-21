@@ -5,7 +5,6 @@ import {
 } from './walletsResponsiveData'
 import openApiAx from '../common/openApiAx'
 import util from '../util/util'
-// import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
   isLoading: false,
