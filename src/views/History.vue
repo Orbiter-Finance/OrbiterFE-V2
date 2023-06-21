@@ -255,13 +255,13 @@ export default {
         },
     },
     created() {
+    },
+    mounted() {
         this.options = [];
         const chainConfig = config.chainConfig;
         for (const data of chainConfig) {
             this.options.push({ label: data.name, value: data.internalId });
         }
-    },
-    mounted() {
         const { query } = this.$route;
         if (query.page === 'History') {
             this.currentNav = "History";
