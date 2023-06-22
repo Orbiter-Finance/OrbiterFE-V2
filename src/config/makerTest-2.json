@@ -7618,17 +7618,6 @@
             "slippage": 200,
             "startTime": 1636019587,
             "endTime": 99999999999999
-        },
-        "MNT-MNT": {
-            "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-            "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-            "gasFee": 100,
-            "tradingFee": 0.005,
-            "maxPrice": 10,
-            "minPrice": 0.005,
-            "slippage": 200,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
         }
     },
     "524-5": {
