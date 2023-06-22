@@ -14,6 +14,7 @@ const tokenIcons = {
   BNB: require('../assets/bnblogo.png'),
   DAI: require('../assets/dailogo.png'),
   MATIC: require('../assets/maticlogo.png'),
+  MNT: require('../assets/mntlogo.svg'),
 }
 
 /**
