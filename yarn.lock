@@ -2321,10 +2321,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@loopring-web/loopring-sdk@2.1.14":
-  version "2.1.14"
-  resolved "https://registry.npmmirror.com/@loopring-web/loopring-sdk/-/loopring-sdk-2.1.14.tgz#1abc001084d0dca9b6a08a2b0cf1605810e1805b"
-  integrity sha512-oDljoTAtSD6cJspCdxjdQbkgycwekjfHtPMAHrCPhxZEmLzN5u+ouKAoea8ma+fj8OetndvGJQKnb8WQ1/8vfw==
+"@loopring-web/loopring-sdk@3.3.29":
+  version "3.3.29"
+  resolved "https://registry.npmmirror.com/@loopring-web/loopring-sdk/-/loopring-sdk-3.3.29.tgz#0b0971e327dc3be812221bf274095fb82dcca563"
+  integrity sha512-aLYc1rH9RiXBMriZVyfDwd8YNdIodwMDvFs2E3PaISnyjvskCborHjw/dziX6TnVdL+bW3bhVmaJB6IZGDGj1A==
   dependencies:
     "@ethereumjs/common" "^2.4.0"
     "@ethereumjs/tx" "^3.3.0"
@@ -4701,14 +4701,9 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001358:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001109, caniuse-lite@^1.0.30001358, caniuse-lite@^1.0.30001458:
   version "1.0.30001458"
   resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001458.tgz"
-  integrity sha512-lQ1VlUUq5q9ro9X+5gOEyH7i3vm+AYVT1WDCVB69XOZ17KZRhnZ9J0Sqz7wTHQaLBJccNCHq8/Ww5LlOIZbB0w==
-
-caniuse-lite@^1.0.30001458:
-  version "1.0.30001458"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001458.tgz#871e35866b4654a7d25eccca86864f411825540c"
   integrity sha512-lQ1VlUUq5q9ro9X+5gOEyH7i3vm+AYVT1WDCVB69XOZ17KZRhnZ9J0Sqz7wTHQaLBJccNCHq8/Ww5LlOIZbB0w==
 
 case-sensitive-paths-webpack-plugin@^2.3.0:
