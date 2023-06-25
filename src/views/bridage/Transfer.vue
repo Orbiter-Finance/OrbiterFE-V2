@@ -382,8 +382,7 @@ import {
   updateTransferMakerConfig,
   updateTransferExt, curPageStatus,
 } from '../../composition/hooks';
-import { isDev, isProd } from "../../util";
-import orbiterApiAx from "../../common/orbiterApiAx";
+import { isDev } from "../../util";
 import openApiAx from "../../common/openApiAx";
 let makerConfigs = config.v1MakerConfigs;
 
@@ -752,6 +751,11 @@ export default {
     },
   },
   async mounted() {
+    const networkConfig = await config.pullNetworkConfig();
+    config.chainConfig = networkConfig.chainConfig;
+    makerConfigs = config.v1MakerConfigs = networkConfig.v1MakerConfigs;
+    config.makerConfigs = networkConfig.makerConfigs;
+
     this.openApiFilter();
 
     this.initWhiteList()
@@ -1061,6 +1065,7 @@ export default {
               item.fromChain.symbol === fromCurrency &&
               item.toChain.symbol === toCurrency
       );
+      if (!makerConfig) return;
       const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
       if (fromCurrency === toCurrency && isCrossAddress && makerConfigInfo.crossAddress?.recipient) {
         makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient;
