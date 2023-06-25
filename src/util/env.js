@@ -1,6 +1,6 @@
 export const isLocal = () => process.env.VUE_APP_ENV === 'local'
-export const isDev = () => process.env.VUE_APP_ENV === 'production'
-export const isProd = () => process.env.VUE_APP_ENV === 'development'
+export const isDev = () => process.env.VUE_APP_ENV === 'development'
+export const isProd = () => process.env.VUE_APP_ENV === 'production'
 export const isL2DataDev = () =>
   process.env.VUE_APP_L2Data_ENV === 'development'
 
