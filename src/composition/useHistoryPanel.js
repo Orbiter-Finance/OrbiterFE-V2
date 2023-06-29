@@ -51,7 +51,7 @@ export function setHistoryInfo(info = {}, isShowHistory = true) {
         userAddress: info.replyAccount,
         userAmount: info.fromAmountValue,
   }
- 
+
 }
 
 export async function getTransactionsHistory(params = {}) {
