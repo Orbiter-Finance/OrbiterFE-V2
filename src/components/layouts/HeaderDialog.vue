@@ -204,11 +204,6 @@ export default {
                     icon: 'brave',
                     title: 'Brave',
                 },
-                {
-                    isConnect: false,
-                    icon: 'bitkeep',
-                    title: 'BitKeep',
-                },
             ]
             // the brave wallet is exclusive to the brave browser
             // so if in other browsers, we should hide brave wallet connect option to users
