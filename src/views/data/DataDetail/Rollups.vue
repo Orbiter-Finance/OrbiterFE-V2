@@ -33,7 +33,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="total_tx" label="Total Transactions" width="145" align="right" :sortable="'custom'"
+        <el-table-column prop="total_tx" label="Total Transactions" width="150" align="right" :sortable="'custom'"
           :sort-orders="['descending', 'ascending', null]">
           <template slot-scope="scope">
             <div class="data">
@@ -277,6 +277,23 @@ export default {
         this.tableData = tableData.sort((a, b) => {
           const nA = Number(a[prop][this.currentFilter])
           const nB = Number(b[prop][this.currentFilter])
+          if(!isAscending){
+            if(a[prop][this.currentFilter] === ""){
+              return 1
+            }
+            if(b[prop][this.currentFilter] === ""){
+              return -1
+            }
+          }
+          if(isAscending){
+            if(a[prop][this.currentFilter] === ""){
+              return -1
+            }
+            if(b[prop][this.currentFilter] === ""){
+              return 1
+            }
+          }
+          // console.log("nA", a[prop][this.currentFilter] === "", b[prop][this.currentFilter] === "");
           return isAscending ? nA - nB : nB - nA
         })
         return
