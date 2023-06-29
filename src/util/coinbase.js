@@ -97,7 +97,10 @@ export async function exchangeToUsd(value = 1, sourceCurrency = 'ETH') {
 
   const rate = await getExchangeToUsdRate(sourceCurrency)
   if (rate.comparedTo(0) !== 1) {
-    return new BigNumber(0)
+        if (sourceCurrency === 'USDT' || sourceCurrency === 'USDC') {
+            return value;
+        }
+        return new BigNumber(0);
   }
 
   return value.dividedBy(rate)
