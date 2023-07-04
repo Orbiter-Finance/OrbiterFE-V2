@@ -189,11 +189,11 @@ export default {
                     icon: 'okxwallet',
                     title: 'OKXWallet',
                 },
-                {
-                    isConnect: false,
-                    icon: 'walletConnect',
-                    title: 'WalletConnect',
-                },
+                // {
+                //     isConnect: false,
+                //     icon: 'walletConnect',
+                //     title: 'WalletConnect',
+                // },
                 {
                     isConnect: false,
                     icon: 'coinbase',
