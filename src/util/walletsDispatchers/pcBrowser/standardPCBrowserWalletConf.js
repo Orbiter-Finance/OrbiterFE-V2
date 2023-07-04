@@ -1,5 +1,5 @@
 import { showMessage } from '../../constants/web3/getWeb3'
-import { COINBASE, BRAVE, BLOCKWALLET, TALLYHO, OKXWALLET } from '../constants';
+import { COINBASE, BRAVE, BLOCKWALLET, TALLYHO, OKXWALLET, BIT_KEEP } from '../constants';
 import { Notification } from 'element-ui'
 import { isBraveWallet } from "../utils";
 
@@ -89,6 +89,22 @@ export default [
         duration: 3000,
         message:
             '<div style="font-family:Inter Regular;text-align: left;">If you already have OKXWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
+    },
+  },
+  {
+    walletType: BIT_KEEP,
+    icon: BIT_KEEP,
+    shouldAddChainCode: -32603,
+    walletNotInstallReducer: () => {
+      return Notification({
+        title: 'Error: BitKeep Wallet has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+            '<div style="font-family:Inter Regular;text-align: left;">If you already have BitKeep Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },

@@ -9,7 +9,7 @@ import {
   METAMASK_APP,
   TOKEN_POCKET_APP,
   BIT_KEEP_APP,
-  COINBASE_APP, OKXWALLET, BRAVE_APP, LOOPRING_APP,
+  COINBASE_APP, OKXWALLET, BRAVE_APP, LOOPRING_APP, BIT_KEEP,
 } from './constants';
 import {
   updateGlobalSelectWalletConf,
@@ -70,6 +70,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
   if (walletType === OKXWALLET) return typeof window.okxwallet !== 'undefined'
   if (walletType === LOOPRING_APP) return ethereum.isLoopring;
+  if (walletType === BIT_KEEP) return typeof window.bitkeep !== 'undefined';
   // we never care wallet connect, because it's a protocol, not a wallet
   // so it doesn't follow the Ethereum standard api
 }
@@ -96,6 +97,10 @@ export const findMatchWeb3ProviderByWalletType = (
 
     if (walletType === OKXWALLET && typeof window.okxwallet !== 'undefined') {
       return window.okxwallet;
+    }
+
+    if (walletType === BIT_KEEP && typeof window.bitkeep !== 'undefined') {
+      return window.bitkeep.ethereum;
     }
 
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
