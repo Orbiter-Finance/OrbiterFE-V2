@@ -88,7 +88,7 @@ export default {
     "522": "consensyslogo",
     "523": "okblogo",
     "524": "mantlelogo",
-    "525": "bsclogo"
+    "525": "opbsclogo"
   },
   "txExploreUrl": {
     "1": "https://etherscan.io/tx/",
