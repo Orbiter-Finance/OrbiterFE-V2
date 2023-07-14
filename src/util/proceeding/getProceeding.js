@@ -11,7 +11,7 @@ function confirmUserTransaction(hash) {
   let currentStatus = 1
   const cron = setInterval(async () => {
     try {
-      const { status, txList } = await openApiAx.get(`/status?hash=${hash}`)
+      const { status, txList = [] } = await openApiAx.get(`/status?hash=${hash}`) || {}
       util.log('txStatus', status, 'txList', txList)
       switch (status) {
         case 0: {

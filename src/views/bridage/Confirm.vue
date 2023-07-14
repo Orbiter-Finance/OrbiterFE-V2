@@ -188,7 +188,7 @@ import * as ethers from 'ethers'
 import * as zksync2 from 'zksync-web3'
 import * as zksync from 'zksync'
 import walletDispatchers, {
-    METAMASK,
+    METAMASK
 } from '../../util/walletsDispatchers/index'
 import {
     walletIsLogin,
@@ -1249,12 +1249,15 @@ export default {
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
             if (fromChainID !== 4 && fromChainID !== 44) {
+                console.log(compatibleGlobalWalletConf.value.walletPayload.networkId);
+                console.log(util.getMetaMaskNetworkId(fromChainID))
+
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
                 ) {
                     if (
-                        compatibleGlobalWalletConf.value.walletType === METAMASK
+                        [METAMASK, WALLETCONNECT].includes(compatibleGlobalWalletConf.value.walletType)
                     ) {
                         try {
                             if (
