@@ -365,7 +365,7 @@ import {
   compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
 import walletDispatchers from '../../util/walletsDispatchers'
-import { METAMASK } from '../../util/walletsDispatchers/index'
+import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
 import {
   isMobile,
   transferDataState,
@@ -1612,7 +1612,7 @@ export default {
           }
         } else {
           if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== util.getMetaMaskNetworkId(fromChainID)) {
-            if (compatibleGlobalWalletConf.value.walletType === METAMASK) {
+            if ([METAMASK, WALLETCONNECT].includes(compatibleGlobalWalletConf.value.walletType)) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
                   return;
