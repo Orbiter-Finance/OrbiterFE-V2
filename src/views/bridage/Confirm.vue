@@ -1249,9 +1249,6 @@ export default {
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
             if (fromChainID !== 4 && fromChainID !== 44) {
-                console.log(compatibleGlobalWalletConf.value.walletPayload.networkId);
-                console.log(util.getMetaMaskNetworkId(fromChainID))
-
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
