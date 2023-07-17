@@ -144,7 +144,7 @@ export const walletConnectDispatcherOnInit = async () => {
     if (e.isDisconnected) {
       onDisconnectCallback(e)
     }
-    
+
     if (e.isConnected) {
       onConnectSuccessCallback()
     }
@@ -217,9 +217,9 @@ export async function walletConnectSendTransaction(
 
   return sendTransaction({
     from,
-    to: selectMakerConfig.recipient,
-    gasLimit: gaslimit,
+    to,
     value,
+    data,
     nonce,
   })
     .then((result) => {
