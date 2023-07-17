@@ -83,9 +83,9 @@ export class CrossAddress {
       for (let index = 0; index < 5000; index++) {
         const allowance = await this.getAllowance(contract, contractAddress)
         if (!currentAllowance.eq(allowance)) {
-          n.close()
+          n.close();
           if (amount.gt(allowance)) {
-            throw new Error(`Approval amount is insufficient`)
+            throw new Error(`Approval amount is insufficient`);
           }
           break
         }
@@ -275,7 +275,11 @@ export class CrossAddress {
           contractAddress
         )
       } else {
-        await this.approveERC20(tokenAddress, amount, contractAddress)
+        await this.approveERC20(
+          tokenAddress,
+            amount,
+          contractAddress
+        )
       }
     }
   }

@@ -496,6 +496,7 @@ export default {
         font-size: 14px;
         color: rgba(51, 51, 51, 0.8);
         padding-right: 24px;
+        white-space: nowrap;
       }
     }
 
@@ -627,6 +628,7 @@ export default {
             font-size: 14px;
             color: rgba(51, 51, 51, 0.8);
             padding-right: 24px;
+            white-space: nowrap;
         }
     }
 

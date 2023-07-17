@@ -50,11 +50,11 @@ export default {
                     title: 'Medium',
                     value: 'https://orbiter-finance.medium.com/',
                 },
-                {
-                    icon: 'discord',
-                    title: 'Discord',
-                    value: 'https://discord.gg/hJJvXP7C73',
-                },
+                // {
+                //     icon: 'discord',
+                //     title: 'Discord',
+                //     value: 'https://discord.gg/hJJvXP7C73',
+                // },
             ],
         }
     },

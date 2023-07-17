@@ -189,5 +189,5 @@ export default {
   chainConfig,
   makerConfigs,
   v1MakerConfigs,
-  whiteList,
-}
+  whiteList
+};

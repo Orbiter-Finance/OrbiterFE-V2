@@ -12,11 +12,11 @@ async function cacheExchangeRates(currency = 'USD') {
   // cache
   exchangeRates = await getRates(currency)
   if (exchangeRates) {
-    const metisExchangeRates = await getRates('metis')
-    if (metisExchangeRates && metisExchangeRates.USD) {
-      const usdToMetis = 1 / Number(metisExchangeRates.USD)
-      exchangeRates.METIS = String(usdToMetis)
-    }
+    // const metisExchangeRates = await getRates('metis')
+    // if (metisExchangeRates && metisExchangeRates.USD) {
+    //   const usdToMetis = 1 / Number(metisExchangeRates.USD)
+    //   exchangeRates.METIS = String(usdToMetis)
+    // }
     const bnbExchangeRates = await getRates('bnb')
     if (bnbExchangeRates && bnbExchangeRates.USD) {
       const usdTobnb = 1 / Number(bnbExchangeRates.USD)
@@ -97,7 +97,10 @@ export async function exchangeToUsd(value = 1, sourceCurrency = 'ETH') {
 
   const rate = await getExchangeToUsdRate(sourceCurrency)
   if (rate.comparedTo(0) !== 1) {
-    return new BigNumber(0)
+        if (sourceCurrency === 'USDT' || sourceCurrency === 'USDC') {
+            return value;
+        }
+        return new BigNumber(0);
   }
 
   return value.dividedBy(rate)
