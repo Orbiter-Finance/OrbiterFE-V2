@@ -1,5 +1,8 @@
-import WalletConnect from '@walletconnect/client'
-import QRCodeModule from '@walletconnect/qrcode-modal'
+import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
+import { Web3Modal } from '@web3modal/html'
+import { configureChains, createConfig, sendTransaction } from '@wagmi/core'
+import * as chainsModule from '@wagmi/core/chains'
+
 import { userDeniedMessage, showMessage } from '../../constants/web3/getWeb3'
 import {
   globalSelectWalletConf,
@@ -9,32 +12,37 @@ import {
 import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
 import util from '../../util'
+import { updateCoinbase } from '../../../composition/useCoinbase'
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code
-export const withErrorCatcher = (fn) => {
-  return (error, ...args) => {
-    if (error) throw error
-    return fn(...args)
-  }
+let ethereumClient = null
+let ethProvider = null
+export function switchNetwork(chainId) {
+  if (!ethereumClient) return Promise.reject('no ethereumClient')
+  return ethereumClient.switchNetwork(chainId)
 }
 
+const deHex = (hex) => {
+  return parseInt(hex.slice(2), 16)
+}
 const provider = {
   request: async (request) => {
     let result = null
     switch (request.method) {
       case 'wallet_switchEthereumChain':
-        result = await walletConnectSwitchChain(request.params).then()
+      case 'wallet_addEthereumChain':
+        result = await walletConnectSwitchChain(request.params)
         break
       default:
-        result = await connector.sendCustomRequest(request)
+        result = await ethProvider.request(request)
         break
     }
     return result
   },
   sendAsync: async (params, callback) => {
-    connector
-      .sendCustomRequest(params)
+    ethProvider
+      .sendAsync(params)
       .then((result) => {
         callback(null, { result })
       })
@@ -47,19 +55,20 @@ const provider = {
 // there r different processing between the initial connect and the repeated connect
 const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
   if (connected) {
-    const {
-      _accounts = [],
-      _chainId = '',
-      _peerId = '',
-      _peerMeta = {},
-    } = payload
+    const { address } = payload.getAccount()
+    const { chain = {} } = payload.getNetwork()
+    if (!ethProvider) {
+      connector.getProvider({ chainId: chain.id }).then((provider) => {
+        ethProvider = provider
+      })
+    }
     return {
       provider,
       // connector,
-      walletAddress: _accounts[0] || '',
-      networkId: _chainId,
-      peerId: _peerId,
-      peerMeta: _peerMeta,
+      walletAddress: address || '',
+      networkId: chain.id,
+      peerId: '',
+      peerMeta: '',
     }
   }
   const { params = [] } = payload
@@ -76,22 +85,22 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
   }
 }
 
-const onConnectSuccessCallback = withErrorCatcher(
-  (payload, connected = false) => {
-    // this console is necessary
-    console.successLog('WalletConnect connect success', payload, connected)
-    const walletInfo = performWalletConnectAccountInfo(payload, connected)
-    updateGlobalSelectWalletConf(WALLETCONNECT, walletInfo, true)
-    // if connect successful, set the local login info
-    modifyLocalLoginInfo({
-      walletType: WALLETCONNECT,
-      loginSuccess: true,
-      walletPayload: walletInfo,
-    })
-  }
-)
+const onConnectSuccessCallback = () => {
+  // this console is necessary
 
-const onDisconnectCallback = withErrorCatcher((payload) => {
+  console.successLog('WalletConnect connect success', ethereumClient, true)
+  const walletInfo = performWalletConnectAccountInfo(ethereumClient, true)
+  updateCoinbase(walletInfo.walletAddress)
+  updateGlobalSelectWalletConf(WALLETCONNECT, walletInfo, true)
+  // if connect successful, set the local login info
+  modifyLocalLoginInfo({
+    walletType: WALLETCONNECT,
+    loginSuccess: true,
+    walletPayload: walletInfo,
+  })
+}
+
+const onDisconnectCallback = (payload) => {
   console.errorLog('WalletConnect disconnected', payload)
   if (!connector) {
     userDeniedMessage() // first in
@@ -99,52 +108,73 @@ const onDisconnectCallback = withErrorCatcher((payload) => {
     // this only happens when the user disconnects on the phone manually
     walletConnectDispatcherOnDisconnect(false)
   }
-})
+}
 
-const onSessionUpdateCallback = withErrorCatcher((payload) => {
+const onSessionUpdateCallback = (payload) => {
   console.warnLog('WalletConnect session updated', payload)
-  const { params = [] } = payload
-  const [chainIdAndAccountInfo = {}] = params
-  const { chainId, accounts } = chainIdAndAccountInfo
-  if (chainId !== globalSelectWalletConf.walletPayload.networkId) {
-    updateSelectWalletConfPayload({ networkId: chainId }) // UPDATE chainId
+  if (!payload.chain) return
+  const { address } = ethereumClient.getAccount()
+  const { chain = {} } = ethereumClient.getNetwork()
+  const { id } = chain
+  if (id !== globalSelectWalletConf.walletPayload.networkId) {
+    updateSelectWalletConfPayload({ networkId: id }) // UPDATE chainId
   }
-  const [walletAddress] = accounts
-  if (walletAddress !== globalSelectWalletConf.walletPayload.walletAddress) {
-    updateSelectWalletConfPayload({ walletAddress }) // UPDATE address
+  if (address !== globalSelectWalletConf.walletPayload.walletAddress) {
+    updateSelectWalletConfPayload({ walletAddress: address }) // UPDATE address
   }
-})
-
-const subscribeWalletEvents = () => {
-  if (!connector) return
-  connector.on('connect', onConnectSuccessCallback)
-  connector.on('disconnect', onDisconnectCallback)
-  // if wallet data changed, such as chainId? account info? session_update event will be invoked
-  connector.on('session_update', onSessionUpdateCallback)
 }
 
 // wake up the wallet connect modal by invoke this method
 export const walletConnectDispatcherOnInit = async () => {
-  connector = new WalletConnect({
-    bridge: 'https://bridge.walletconnect.org',
-    qrcodeModal: QRCodeModule,
+  const projectId = process.env.walletConnectProjectId
+  if (!projectId) throw new Error('Project id missing.')
+  const chains = Object.values(chainsModule)
+  const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
+  const wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors: w3mConnectors({ projectId, chains }),
+    publicClient,
   })
+  ethereumClient = new EthereumClient(wagmiConfig, chains)
 
-  if (connector.connected) {
+  const web3Modal = new Web3Modal({ projectId }, ethereumClient)
+  const networkId = globalSelectWalletConf.walletPayload.networkId
+  const currentChain = chains.find((chain) => chain.id === networkId)
+  currentChain && web3Modal.setDefaultChain(currentChain)
+  ethereumClient.watchAccount((e) => {
+    if (e.isDisconnected) {
+      onDisconnectCallback(e)
+    }
+
+    if (e.isConnected) {
+      onConnectSuccessCallback()
+    }
+  })
+  ethereumClient.watchNetwork(onSessionUpdateCallback)
+  // web3Modal.subscribeEvents(event => {
+  //   console.log(event, 'evnt')
+  //   if (event.name === 'ACCOUNT_CONNECTED') {
+  //     onConnectSuccessCallback()
+  //   }
+  //   if (event.name === 'ACCOUNT_DISCONNECTED') {
+  //     onDisconnectCallback(event)
+  //   }
+  // })
+  connector = wagmiConfig.connectors[0]
+  window.connector = connector
+  if (ethereumClient.getAccount().isConnected) {
     // if it's already connected, invoke onConnectSuccessCallback for the data init
-    onConnectSuccessCallback(null, connector, true)
+    onConnectSuccessCallback()
   } else {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
-    await connector.createSession()
+    await web3Modal.openModal()
   }
-
-  subscribeWalletEvents()
 }
 
 // disconnect the walletconnect manually
 export const walletConnectDispatcherOnDisconnect = withPerformInterruptWallet(
   (shouldKill = true) => {
-    shouldKill && connector.killSession()
+    shouldKill && ethereumClient.disconnect()
   }
 )
 
@@ -161,16 +191,15 @@ export const walletConnectDispatcherOnSignature = async (
     value,
   })
   const nonce = await util.requestWeb3(fromChainID, 'getTransactionCount', from)
-  connector
-    .sendTransaction({
-      from,
-      to: selectMakerConfig.recipient,
-      gasLimit: gaslimit,
-      value,
-      nonce,
-    })
+  return sendTransaction({
+    from,
+    to: selectMakerConfig.recipient,
+    gasLimit: gaslimit,
+    value,
+    nonce,
+  })
     .then((result) => {
-      onTransferSucceed(from, value, fromChainID, result)
+      onTransferSucceed(from, value, fromChainID, result.hash)
     })
     .catch((err) => {
       console.log('err', err)
@@ -186,33 +215,30 @@ export async function walletConnectSendTransaction(
   data
 ) {
   const nonce = await util.requestWeb3(chainId, 'getTransactionCount', from)
-  return new Promise((resolve, reject) => {
-    connector
-      .sendTransaction({
-        from,
-        to,
-        value,
-        data,
-        nonce,
-      })
-      .then((result) => {
-        resolve(result)
-      })
-      .catch((err) => {
-        // showMessage(err, 'error')
-        reject(err)
-      })
+
+  return sendTransaction({
+    from,
+    to,
+    value,
+    data,
+    nonce,
   })
+    .then((result) => {
+      return result.hash
+    })
+    .catch((err) => {
+      // showMessage(err, 'error')
+      throw err
+    })
 }
 
 export async function walletConnectSwitchChain(params) {
+  let { chainId } = params[0] || {}
+  if (typeof chainId === 'string') chainId = deHex(chainId)
   return new Promise((resolve, reject) => {
     connector
-      .sendCustomRequest({
-        method: 'wallet_switchEthereumChain',
-        params,
-      })
-      .then(() => {
+      .getProvider({ chainId })
+      .then((rtn) => {
         resolve(null)
       })
       .catch((e) => {

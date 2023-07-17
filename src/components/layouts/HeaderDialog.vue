@@ -191,7 +191,7 @@ export default {
                 },
                 {
                     isConnect: false,
-                    icon: 'walletConnect',
+                    icon: 'walletconnect',
                     title: 'WalletConnect',
                 },
                 {
