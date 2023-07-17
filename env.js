@@ -39,8 +39,14 @@ export default {
     519: 534353,
     520: 167004,
     521: 84531,
-    522: 59140,
-    523: 195
+    525: 5611,
+    526: 11155111,
+    527: 195,
+
+    23: 59144,
+    523: 59140,
+    24: 5000,
+    524: 5001
   },
   networkUrl: {
     1: 'https://etherscan.io',
@@ -79,8 +85,14 @@ export default {
     519: 'https://l2scan.scroll.io',
     520: 'https://l2explorer.a2.taiko.xyz',
     521: 'https://goerli.basescan.org',
-    522: 'https://explorer.goerli.zkevm.consensys.net',
-    523: 'https://www.okx.com/explorer/okbc-test'
+
+    23: 'https://explorer.linea.build',
+    24: 'https://explorer.mantle.xyz',
+    523: 'https://goerli.lineascan.build',
+    524: 'https://explorer.testnet.mantle.xyz',
+    525: 'https://opbnbscan.com',
+    526: 'https://sepolia.etherscan.io',
+    527: 'https://www.okx.com/explorer/okbc-test'
   },
   chainIcon: {
     1: 'tokenLogo',
@@ -108,8 +120,8 @@ export default {
     513: 'bobalogo',
     14: 'zk2logo',
     514: 'zk2logo',
-    15: 'bsclogo',
-    515: 'bsclogo',
+    15: 'opbsclogo',
+    515: 'opbsclogo',
     16: 'arnavologo',
     516: 'arnavologo',
     17: 'pglogo',
@@ -121,8 +133,14 @@ export default {
     20: 'taikologo',
     520: 'taikologo',
     521: 'baselogo',
-    522: 'consensyslogo',
-    523: 'okblogo'
+
+    23: 'linealogo',
+    24: 'mntlogo',
+    523: 'linealogo',
+    524: 'mntlogo',
+    525: 'opbsclogo',
+    526: 'tokenLogo',
+    527: 'okblogo'
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -161,8 +179,14 @@ export default {
     519: 'https://l2scan.scroll.io/tx/',
     520: 'https://l2explorer.a2.taiko.xyz/tx/',
     521: 'https://goerli.basescan.org/tx/',
-    522: 'https://explorer.goerli.zkevm.consensys.net/tx/',
-    523: 'https://www.okx.com/explorer/okbc-test/tx/'
+
+    23: 'https://explorer.linea.build/tx/',
+    24: 'https://explorer.mantle.xyz/tx/',
+    523: 'https://goerli.lineascan.build/tx/',
+    524: 'https://explorer.testnet.mantle.xyz/tx/',
+    525: 'https://opbnbscan.com/tx/',
+    526: 'https://sepolia.etherscan.io/tx/',
+    527: 'https://www.okx.com/explorer/okbc-test/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -201,8 +225,14 @@ export default {
     519: 'https://l2scan.scroll.io/address/',
     520: 'https://l2explorer.a2.taiko.xyz/address/',
     521: 'https://goerli.basescan.org/address/',
-    522: 'https://explorer.goerli.zkevm.consensys.net/address/',
-    523: 'https://www.okx.com/explorer/okbc-test/address/'
+
+    23: 'https://explorer.linea.build/address/',
+    24: 'https://explorer.mantle.xyz/address/',
+    523: 'https://goerli.lineascan.build/address/',
+    524: 'https://explorer.testnet.mantle.xyz/address/',
+    525: 'https://opbnbscan.com/address/',
+    526: 'https://sepolia.etherscan.io/address/',
+    527: 'https://www.okx.com/explorer/okbc-test/address/'
   },
   gasPriceMap: {
     1: 100,
@@ -240,7 +270,13 @@ export default {
     520: 1,
     521: 1,
     522: 1,
-    523: 1
+    23: 1,
+    24: 1,
+    523: 1,
+    524: 1,
+    525: 1,
+    526: 1,
+    527: 1
   },
   gasLimitMap: {
     1: 35000,
@@ -278,6 +314,12 @@ export default {
     520: 21000,
     521: 21000,
     522: 21000,
-    523: 21000
+    23: 21000,
+    24: 21000,
+    523: 21000,
+    524: 21000,
+    525: 21000,
+    526: 21000,
+    527: 21000
   }
 };

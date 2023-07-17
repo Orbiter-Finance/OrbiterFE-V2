@@ -533,5 +533,62 @@
             }
         ],
         "infoURL": "https://zkevm.polygonscan.com/"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "59144",
+        "networkId": "59144",
+        "internalId": "23",
+        "name": "linea",
+        "debug": false,
+        "contracts": [""],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [],
+        "watch": ["rpc"],
+        "router": {
+            "": "OrbiterRouterV3"
+        },
+        "tokens": [],
+        "infoURL": "https://explorer.linea.build"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "5000",
+        "networkId": "5000",
+        "internalId": "24",
+        "name": "mantle",
+        "debug": false,
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "nativeCurrency": {
+            "name": "MNT",
+            "symbol": "MNT",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": ["https://rpc.mantle.xyz"],
+        "watch": ["rpc"],
+        "router": {
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
+        "tokens": [
+            {
+                "name": "WETH",
+                "symbol": "ETH",
+                "decimals": 18,
+                "address": "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111"
+            }
+        ],
+        "infoURL": "https://explorer.mantle.xyz"
     }
 ]

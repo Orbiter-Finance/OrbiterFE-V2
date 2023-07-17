@@ -8,6 +8,7 @@
     "networkId": "5",
     "internalId": "5",
     "name": "Görli",
+    "features": ["EIP1559"],
     "debug": false,
     "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
     "nativeCurrency": {
@@ -25,6 +26,12 @@
     ],
     "watch": ["rpc"],
     "tokens": [
+      {
+        "name": "BNB",
+        "symbol": "BNB",
+        "decimals": 18,
+        "address": "0x0000000000000000000000000000000000000000"
+      },
       {
         "name": "USDT",
         "symbol": "USDT",
@@ -44,9 +51,12 @@
         "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
       }
     ],
+    "router": {
+      "0xc7a54a6ec85344fabb645bf9ff9b2e88066fe601": "OrbiterRouterV3"
+    },
     "xvmList": ["0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"],
     "faucets": ["https://goerli-faucet.slock.it/?address=${ADDRESS}", "https://faucet.goerli.mudit.blog"],
-    "infoURL": "https://goerli.net/#about"
+    "infoURL": "https://goerli.etherscan.io"
   },
   {
     "api": {
@@ -57,6 +67,7 @@
     "networkId": "421613",
     "internalId": "22",
     "name": "Arbitrum(G)",
+    "features": ["EIP1559"],
     "nativeCurrency": {
       "name": "Ether",
       "symbol": "ETH",
@@ -100,42 +111,8 @@
         "standard": "EIP3091"
       }
     ],
-    "infoURL": "https://arbitrum.io",
+    "infoURL": "https://testnet.arbiscan.io",
     "parent": {}
-  },
-  {
-    "api": {
-      "url": "https://goerli-api.zksync.io/api/v0.2",
-      "key": ""
-    },
-    "chainId": "zksync_test",
-    "networkId": "zksync",
-    "internalId": "33",
-    "debug": false,
-    "name": "zkSync Lite(G)",
-    "nativeCurrency": {
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [],
-    "watch": ["api"],
-    "contracts": [],
-    "tokens": [
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0x5c221e77624690fff6dd741493d735a17716c26b"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0xd35cceead182dcee0f148ebac9447da2c4d449c4"
-      }
-    ]
   },
   {
     "api": {
@@ -190,6 +167,7 @@
     "name": "Polygon Mumbai",
     "nativeCurrency": {},
     "rpc": [
+      "https://polygon-mumbai.gateway.tenderly.co",
       "https://matic-testnet-archive-rpc.bwarelabs.com",
       "https://polygon-testnet.public.blastapi.io",
       "https://rpc.ankr.com/polygon_mumbai",
@@ -271,169 +249,6 @@
   },
   {
     "api": {
-      "url": "https://api.sandbox.x.immutable.com/v1",
-      "key": ""
-    },
-    "chainId": "immutableX_testnet",
-    "networkId": "immutableX",
-    "internalId": "88",
-    "name": "ImmutableX(G)",
-    "nativeCurrency": {
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [],
-    "watch": ["api"],
-    "contracts": [],
-    "tokens": [
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x07865c6e87b9f70255377e024ace6630c1eaa37f"
-      }
-    ]
-  },
-  {
-    "api": {
-      "url": "https://uat2.loopring.io/api/v3",
-      "key": ""
-    },
-    "chainId": "loopring_testnet",
-    "networkId": "5",
-    "internalId": "99",
-    "name": "Loopring(R)",
-    "nativeCurrency": {
-      "name": "Ethereum",
-      "symbol": "ETH",
-      "decimals": 18,
-      "id": 0,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [],
-    "watch": ["api"],
-    "contracts": [],
-    "tokens": []
-  },
-  {
-    "api": {
-      "url": "https://goerli.explorer.metisdevops.link/api",
-      "key": "",
-      "intervalTime": 10000
-    },
-    "chain": "ETH",
-    "chainId": "599",
-    "networkId": "599",
-    "internalId": "510",
-    "features": ["EVM"],
-    "name": "Metis(G)",
-    "nativeCurrency": {
-      "name": "Metis Token",
-      "symbol": "METIS",
-      "decimals": 18,
-      "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
-    },
-    "rpc": ["https://goerli.gateway.metisdevops.link"],
-    "watch": ["rpc", "api"],
-    "contracts": [],
-    "tokens": [
-      {
-        "name": "Ether (WETH)",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x420000000000000000000000000000000000000a"
-      },
-      {
-        "name": "TestToken",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-      },
-      {
-        "name": "TestToken",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-      },
-      {
-        "name": "TestToken",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-      }
-    ],
-    "xvmList": ["0x6838e53488B9F75894a9fDF9feB509eE22c281dd"],
-    "faucets": [],
-    "infoURL": "https://stardust-explorer.metis.io"
-  },
-  {
-    "api": {
-      "url": "https://api.stage.dydx.exchange",
-      "key": ""
-    },
-    "chainId": "dydx_test",
-    "networkId": "dydx",
-    "internalId": "511",
-    "name": "Dydx(G)",
-    "nativeCurrency": {},
-    "rpc": [],
-    "watch": ["api"],
-    "contracts": [],
-    "tokens": [
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x8707a5bf4c2842d46b31a405ba41b858c0f876c4"
-      }
-    ]
-  },
-  {
-    "api": {
-      "url": "https://api.zks.app/v3/5",
-      "key": ""
-    },
-    "chainId": "zkspace_test",
-    "networkId": "zkspace",
-    "internalId": "512",
-    "name": "ZKSpace(G)",
-    "nativeCurrency": {
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "id": 0,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [],
-    "watch": ["api"],
-    "tokens": []
-  },
-  {
-    "api": {
-      "url": "https://api-testnet.bobascan.com/api",
-      "key": ""
-    },
-    "chainId": "28",
-    "networkId": "28",
-    "internalId": "513",
-    "name": "Boba(G)",
-    "nativeCurrency": {
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": ["https://goerli.boba.network"],
-    "watch": ["rpc"],
-    "contracts": [],
-    "tokens": [],
-    "faucets": [],
-    "infoURL": "https://gateway.boba.network/"
-  },
-  {
-    "api": {
       "url": "https://zksync2-testnet.zkscan.io/api",
       "key": ""
     },
@@ -474,14 +289,20 @@
     "debug": false,
     "contracts": [],
     "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
+      "name": "BNB",
+      "symbol": "BNB",
       "decimals": 18,
-      "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
+      "address": "0x0000000000000000000000000000000000000000"
     },
     "rpc": ["https://data-seed-prebsc-1-s1.binance.org:8545", "https://bsc-testnet.public.blastapi.io"],
     "watch": ["rpc"],
     "tokens": [
+      {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
+      },
       {
         "name": "USDT",
         "symbol": "USDT",
@@ -618,21 +439,110 @@
     },
     "chainId": "59140",
     "networkId": "59140",
-    "internalId": "522",
+    "internalId": "523",
     "name": "Linea(G)",
     "debug": false,
+    "features": ["EIP1559", "Etherscan"],
     "contracts": [],
-    "features": ["BlockScout"],
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": ["https://rpc.goerli.linea.build/"],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x81a8cD37af3F5570E79E75Ccd17A877159cF226E"
+      }
+    ],
+    "router": {
+      "0xa14113c142e1b3f33f1da3ee43eccb9e0471ff2d": "OrbiterRouterV3"
+    },
+    "rpc": ["https://rpc.goerli.linea.build"],
+    "watch": ["rpc"],
+    "infoURL": "https://goerli.lineascan.build"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "5001",
+    "networkId": "5001",
+    "internalId": "524",
+    "name": "mantle(G)",
+    "debug": false,
+    "contracts": ["0xf1e276a6518dff455fdabfdc582591fda35797ea"],
+    "features": ["Etherscan"],
+    "nativeCurrency": {
+      "name": "MNT",
+      "symbol": "MNT",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://rpc.testnet.mantle.xyz", "https://rpc.ankr.com/mantle_testnet"],
+    "watch": ["rpc"],
+    "tokens": [
+      {
+        "name": "Ether (WETH)",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111"
+      }
+    ],
+    "router": {
+      "0xf06a54463c6dbc6d64547760891167aff9de76c5": "OrbiterRouterV3"
+    },
+    "infoURL": "https://explorer.testnet.mantle.xyz"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "5611",
+    "networkId": "5611",
+    "internalId": "525",
+    "name": "opBSC(G)",
+    "debug": false,
+    "features": ["Etherscan"],
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "tBNB",
+      "symbol": "BNB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://opbnb-testnet-rpc.bnbchain.org"],
     "watch": ["rpc"],
     "tokens": [],
-    "infoURL": " https://explorer.goerli.linea.build"
+    "infoURL": "https://opbnbscan.com"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "11155111",
+    "networkId": "11155111",
+    "internalId": "526",
+    "name": "Sepolia(G)",
+    "features": ["Etherscan"],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://rpc.sepolia.org"],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://sepolia.etherscan.io"
   },
   {
     "api": {
@@ -641,14 +551,14 @@
     },
     "chainId": "195",
     "networkId": "195",
-    "internalId": "523",
+    "internalId": "527",
     "name": "OKB(G)",
     "debug": false,
     "contracts": [],
     "features": ["Etherscan"],
     "nativeCurrency": {
       "name": "OKB",
-      "symbol": "ETH",
+      "symbol": "OKB",
       "decimals": 18,
       "address": "0x0000000000000000000000000000000000000000"
     },
@@ -657,7 +567,7 @@
     "tokens": [
       {
         "name": "Ether (WETH)",
-        "symbol": "WETH",
+        "symbol": "ETH",
         "decimals": 18,
         "address": "0xaf99998DCFaB1A506213B73Fe50E3f31166B7EB1"
       },
