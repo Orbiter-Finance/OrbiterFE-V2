@@ -126,7 +126,8 @@ const onSessionUpdateCallback = (payload) => {
 
 // wake up the wallet connect modal by invoke this method
 export const walletConnectDispatcherOnInit = async () => {
-  const projectId = '7ce1dd730efae4669ec8dfa02e593a01'
+  const projectId = process.env.walletConnectProjectId
+  if (!projectId) throw new Error('Project id missing.')
   const chains = Object.values(chainsModule)
   const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
   const wagmiConfig = createConfig({
