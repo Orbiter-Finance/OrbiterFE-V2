@@ -1,5 +1,4 @@
 import { isL2DataDev } from "./src/util";
-
 export default {
   // l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
   l2BaseUrl: isL2DataDev() ? 'http://datastation.joeyzhou.xyz' : 'https://l2api.orbiter.finance',
@@ -47,7 +46,6 @@ export default {
     "524": "https://explorer.testnet.mantle.xyz",
     "525": "https://opbnbscan.com"
   },
-  baseTraddingUrl: `${ baseDomain }/api`,
   metaMaskNetworkId: {
     1: 1,
     2: 42161,
