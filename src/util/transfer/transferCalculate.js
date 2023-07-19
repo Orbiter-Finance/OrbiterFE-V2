@@ -423,11 +423,24 @@ export default {
     if (toChainID === 519) {
       timeSpent += 6.828
     }
+    if (toChainID === 523 || toChainID === 23) {
+      timeSpent += 30
+    }
+    if (toChainID === 517 || toChainID === 17) {
+      timeSpent += 30
+    }
+
     const timeSpentStr = timeSpent + 's'
     return timeSpentStr
   },
 
   transferOrginTime(fromChainID, toChainID) {
+    if (fromChainID === 523 || fromChainID === 23) {
+      return '~24 hours'
+    }
+    if (fromChainID === 517 || fromChainID === 17) {
+      return '~6 hours'
+    }
     if (fromChainID === 2 || fromChainID === 22) {
       return '~7 days'
     }
