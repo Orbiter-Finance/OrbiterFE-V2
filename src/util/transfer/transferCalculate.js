@@ -435,6 +435,12 @@ export default {
   },
 
   transferOrginTime(fromChainID, toChainID) {
+    if (fromChainID === 523 || fromChainID === 23) {
+      return '~24 hours'
+    }
+    if (fromChainID === 517 || fromChainID === 17) {
+      return '~6 hours'
+    }
     if (fromChainID === 2 || fromChainID === 22) {
       return '~7 days'
     }
@@ -484,6 +490,13 @@ export default {
     }
 
     if (fromChainID === 1 || fromChainID === 5) {
+      if (toChainID === 523 || toChainID === 23) {
+        return '~10min'
+      }
+      if (toChainID === 517 || toChainID === 17) {
+        return '~10min'
+      }
+
       if (toChainID === 2 || toChainID === 22) {
         //  eth ->  ar
         return '~10min'
