@@ -86,7 +86,7 @@ export default {
     520: 'https://l2explorer.a2.taiko.xyz',
     521: 'https://goerli.basescan.org',
 
-    23: 'https://explorer.linea.build',
+    23: 'https://lineascan.build',
     24: 'https://explorer.mantle.xyz',
     523: 'https://goerli.lineascan.build',
     524: 'https://explorer.testnet.mantle.xyz',
@@ -180,7 +180,7 @@ export default {
     520: 'https://l2explorer.a2.taiko.xyz/tx/',
     521: 'https://goerli.basescan.org/tx/',
 
-    23: 'https://explorer.linea.build/tx/',
+    23: 'https://lineascan.build/tx/',
     24: 'https://explorer.mantle.xyz/tx/',
     523: 'https://goerli.lineascan.build/tx/',
     524: 'https://explorer.testnet.mantle.xyz/tx/',
@@ -226,7 +226,7 @@ export default {
     520: 'https://l2explorer.a2.taiko.xyz/address/',
     521: 'https://goerli.basescan.org/address/',
 
-    23: 'https://explorer.linea.build/address/',
+    23: 'https://lineascan.build/address/',
     24: 'https://explorer.mantle.xyz/address/',
     523: 'https://goerli.lineascan.build/address/',
     524: 'https://explorer.testnet.mantle.xyz/address/',
