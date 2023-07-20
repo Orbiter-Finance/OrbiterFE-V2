@@ -55,7 +55,7 @@ function confirmUserTransaction(hash) {
     } catch (e) {
       console.error(e)
     }
-  }, 20 * 1000);
+  }, 10 * 1000);
 }
 
 export default {
