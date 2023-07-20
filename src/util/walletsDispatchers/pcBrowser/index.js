@@ -5,7 +5,7 @@
  * @LastEditors: Eric
  * @LastEditTime: 2022-08-09 14:16:34
  */
-import { METAMASK, WALLETCONNECT } from '../constants'
+import { IM_TOKEN_APP, METAMASK, WALLETCONNECT } from '../constants'
 import standardWalletLoader from '../standardWalletReducer/standardWalletLoader'
 import standardWalletConf from './standardPCBrowserWalletConf'
 import { fetchTargetWalletLoginStatus } from '../utils'
@@ -40,13 +40,15 @@ const {
 // init method for each supported wallet
 const pcBrowserWalletDispatchersOnInit = {
   [METAMASK]: metaMaskDispatcherOnInit,
-  [WALLETCONNECT]: walletConnectDispatcherOnInit,
+  [WALLETCONNECT]: () => walletConnectDispatcherOnInit(WALLETCONNECT),
+  [IM_TOKEN_APP]: () => walletConnectDispatcherOnInit(IM_TOKEN_APP),
   ...standardPCBrowserDispatchersOnInit,
 }
 // disconnect method for each supported wallet
 const pcBrowserWalletDispatchersOnDisconnect = {
   [METAMASK]: metaMaskDispatcherOnDisconnect,
   [WALLETCONNECT]: walletConnectDispatcherOnDisconnect,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnDisconnect,
   ...standardPCBrowserWalletDispatchersOnDisconnect,
 }
 
@@ -55,6 +57,8 @@ const loginStatusCheckerOfPCBrowserWallet = {
   [METAMASK]: () => fetchTargetWalletLoginStatus({ walletType: METAMASK }),
   [WALLETCONNECT]: () =>
     fetchTargetWalletLoginStatus({ walletType: WALLETCONNECT }),
+  [IM_TOKEN_APP]: () =>
+    fetchTargetWalletLoginStatus({ walletType: IM_TOKEN_APP }),
   ...standardLoginStatusCheckerOfPCBrowser,
 }
 
@@ -62,15 +66,18 @@ const loginStatusCheckerOfPCBrowserWallet = {
 // invoke specified method can sign the wallet to confirm the trade request
 const pcBrowserWalletDispatchersOnSignature = {
   [WALLETCONNECT]: walletConnectDispatcherOnSignature,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnSignature,
 }
 
 const pcBrowserWalletDispatchersOnAddChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnAddChain,
 }
 
 const pcBrowserDispatchersOnSwitchChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnSwitchChain,
 }
 

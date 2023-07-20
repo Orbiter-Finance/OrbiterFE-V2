@@ -13,7 +13,6 @@ import {
   updateSelectWalletConfPayload,
   updateGlobalSelectWalletConf,
 } from '../walletsCoreData'
-import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
 import util from '../../util'
 import { updateCoinbase } from '../../../composition/useCoinbase'
@@ -91,16 +90,16 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
   }
 }
 
-const onConnectSuccessCallback = (walletConnector) => {
+const onConnectSuccessCallback = (walletConnector, walletType) => {
   // this console is necessary
   connector = walletConnector
   console.successLog('WalletConnect connect success', ethereumClient, true)
   const walletInfo = performWalletConnectAccountInfo(ethereumClient, true)
   updateCoinbase(walletInfo.walletAddress)
-  updateGlobalSelectWalletConf(WALLETCONNECT, walletInfo, true)
+  updateGlobalSelectWalletConf(walletType, walletInfo, true)
   // if connect successful, set the local login info
   modifyLocalLoginInfo({
-    walletType: WALLETCONNECT,
+    walletType,
     loginSuccess: true,
     walletPayload: walletInfo,
   })
@@ -132,7 +131,7 @@ const onSessionUpdateCallback = (payload) => {
 }
 
 // wake up the wallet connect modal by invoke this method
-export const walletConnectDispatcherOnInit = async () => {
+export const walletConnectDispatcherOnInit = async (walletType) => {
   const projectId = process.env.VUE_APP_WALLET_CONNECT_PROJECTID
   if (!projectId) throw new Error('Project id missing.')
   const chains = Object.values(chainsModule)
@@ -158,7 +157,7 @@ export const walletConnectDispatcherOnInit = async () => {
     }
 
     if (e.isConnected) {
-      onConnectSuccessCallback(wagmiConfig.connectors[0])
+      onConnectSuccessCallback(wagmiConfig.connectors[0], walletType)
     }
   })
   ethereumClient.watchNetwork(onSessionUpdateCallback)
@@ -174,7 +173,7 @@ export const walletConnectDispatcherOnInit = async () => {
   connector = wagmiConfig.connectors[0]
   if (ethereumClient.getAccount().isConnected) {
     // if it's already connected, invoke onConnectSuccessCallback for the data init
-    onConnectSuccessCallback(wagmiConfig.connectors[0])
+    onConnectSuccessCallback(wagmiConfig.connectors[0], walletType)
   } else {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
     await web3Modal.openModal()

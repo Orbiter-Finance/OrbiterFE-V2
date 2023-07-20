@@ -209,6 +209,11 @@ export default {
                     icon: 'bitkeep',
                     title: 'BitKeep',
                 },
+                {
+                    isConnect: false,
+                    icon: 'imtokenapp',
+                    title: 'imTokenApp',
+                },
             ]
             // the brave wallet is exclusive to the brave browser
             // so if in other browsers, we should hide brave wallet connect option to users
@@ -302,6 +307,7 @@ export default {
                 });
                 return;
             }
+            console.log(walletDispatchersOnInit, walletConf);
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {
