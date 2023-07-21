@@ -5,11 +5,15 @@
  * @LastEditors: Eric
  * @LastEditTime: 2022-08-09 14:16:34
  */
-import { METAMASK, WALLETCONNECT } from '../constants'
+import {
+  IM_TOKEN_APP,
+  METAMASK,
+  WALLETCONNECT,
+  TOKEN_POCKET_APP,
+} from '../constants'
 import standardWalletLoader from '../standardWalletReducer/standardWalletLoader'
 import standardWalletConf from './standardPCBrowserWalletConf'
 import { fetchTargetWalletLoginStatus } from '../utils'
-
 // wallet connect
 import {
   walletConnectDispatcherOnDisconnect,
@@ -19,7 +23,7 @@ import {
   walletConnectDispatcherOnAddChain,
   walletConnectSwitchChain,
 } from './walletConnectPCBrowserDispatcher'
-
+import { tokenPocketDispatcherOnDisconnect } from './tokenPocketPCDispatcher'
 // metamask
 import {
   metaMaskDispatcherOnInit,
@@ -47,6 +51,8 @@ const pcBrowserWalletDispatchersOnInit = {
 const pcBrowserWalletDispatchersOnDisconnect = {
   [METAMASK]: metaMaskDispatcherOnDisconnect,
   [WALLETCONNECT]: walletConnectDispatcherOnDisconnect,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnDisconnect,
+  [TOKEN_POCKET_APP]: tokenPocketDispatcherOnDisconnect,
   ...standardPCBrowserWalletDispatchersOnDisconnect,
 }
 
