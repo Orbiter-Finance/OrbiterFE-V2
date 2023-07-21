@@ -312,6 +312,7 @@ export default {
                 });
                 return;
             }
+            console.log(walletDispatchersOnInit, walletConf);
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {

@@ -44,7 +44,8 @@ const {
 // init method for each supported wallet
 const pcBrowserWalletDispatchersOnInit = {
   [METAMASK]: metaMaskDispatcherOnInit,
-  [WALLETCONNECT]: walletConnectDispatcherOnInit,
+  [WALLETCONNECT]: () => walletConnectDispatcherOnInit(WALLETCONNECT),
+  [IM_TOKEN_APP]: () => walletConnectDispatcherOnInit(IM_TOKEN_APP),
   ...standardPCBrowserDispatchersOnInit,
 }
 // disconnect method for each supported wallet
@@ -61,6 +62,8 @@ const loginStatusCheckerOfPCBrowserWallet = {
   [METAMASK]: () => fetchTargetWalletLoginStatus({ walletType: METAMASK }),
   [WALLETCONNECT]: () =>
     fetchTargetWalletLoginStatus({ walletType: WALLETCONNECT }),
+  [IM_TOKEN_APP]: () =>
+    fetchTargetWalletLoginStatus({ walletType: IM_TOKEN_APP }),
   ...standardLoginStatusCheckerOfPCBrowser,
 }
 
@@ -68,15 +71,18 @@ const loginStatusCheckerOfPCBrowserWallet = {
 // invoke specified method can sign the wallet to confirm the trade request
 const pcBrowserWalletDispatchersOnSignature = {
   [WALLETCONNECT]: walletConnectDispatcherOnSignature,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnSignature,
 }
 
 const pcBrowserWalletDispatchersOnAddChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnAddChain,
 }
 
 const pcBrowserDispatchersOnSwitchChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
+  [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnSwitchChain,
 }
 
