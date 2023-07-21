@@ -6,6 +6,8 @@ import Web3 from 'web3'
 import {
   findMatchWeb3ProviderByWalletType,
   modifyLocalLoginInfo,
+  isBraveWallet,
+  withPerformInterruptWallet,
 } from '../utils.js'
 import {
   updateGlobalSelectWalletConf,
@@ -16,9 +18,8 @@ import {
 import { showMessage } from '../../constants/web3/getWeb3'
 import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
-import env from "../../../../env";
-import { isBraveWallet } from "../utils";
-import { BRAVE, BRAVE_APP } from "../constants";
+import env from '../../../../env'
+import { BRAVE, BRAVE_APP } from '../constants'
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
@@ -62,7 +63,7 @@ export const performWalletInformation = async (
   )
   if (!matchWalletProvider) throw new Error(`not install ${walletType}`)
   if (window.ethereum?.isLoopring) {
-    await matchWalletProvider.enable();
+    await matchWalletProvider.enable()
   }
   const performResult = {
     walletType,
@@ -138,34 +139,34 @@ export const universalWalletInitHandler = (walletConf) => {
       if (isBraveWallet && (walletType === BRAVE || walletType === BRAVE_APP)) {
         try {
           updateGlobalSelectWalletConf(
-              legalWalletConfig.walletType,
-              {
-                ...legalWalletConfig.walletPayload,
-                provider,
-              },
-              true
-          );
-        } catch (e) {
-          updateGlobalSelectWalletConf(
-              legalWalletConfig.walletType,
-              {
-                ...legalWalletConfig.walletPayload,
-                provider,
-              },
-              true
-          );
-        }
-      } else {
-        // provider can't be stored in localStorage, but to facilitate global access
-        // to this ethereum instance(wallet matched), i put it in the global responsive data
-        updateGlobalSelectWalletConf(
             legalWalletConfig.walletType,
             {
               ...legalWalletConfig.walletPayload,
               provider,
             },
             true
-        );
+          )
+        } catch (e) {
+          updateGlobalSelectWalletConf(
+            legalWalletConfig.walletType,
+            {
+              ...legalWalletConfig.walletPayload,
+              provider,
+            },
+            true
+          )
+        }
+      } else {
+        // provider can't be stored in localStorage, but to facilitate global access
+        // to this ethereum instance(wallet matched), i put it in the global responsive data
+        updateGlobalSelectWalletConf(
+          legalWalletConfig.walletType,
+          {
+            ...legalWalletConfig.walletPayload,
+            provider,
+          },
+          true
+        )
       }
       modifyLocalLoginInfo(legalWalletConfig)
 
@@ -173,7 +174,7 @@ export const universalWalletInitHandler = (walletConf) => {
       walletInfoChangeWatcher(walletConf, provider)
     })
     .catch((err) => {
-      console.error(err);
+      console.error(err)
       if (walletNotInstallReducer) {
         walletNotInstallReducer()
         return
@@ -190,12 +191,18 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
   walletProvider.autoRefreshOnNetworkChange = false
   // why call Object.assign? because "window.ethereum" is frozen in brave browser
   // so we defrosted it to ensure that the emit can be assign again
-  if (!isBraveWallet) window.ethereum = Object.assign({}, window.ethereum);
+  if (
+    !isBraveWallet &&
+    !window.ethereum?.isLoopring &&
+    !window.ethereum.isTokenPocket
+  )
+    window.ethereum = Object.assign({}, window.ethereum)
   // rewrite ethereum.emit because when a wallet extension switches networks
   // the window.ethereum.emit method will be called, due to multiple wallets
   // will generate the ethereum injection conflict, so the emit that wallet extension
   // called maybe not pure
-  if (typeof window.okxwallet === 'undefined' && !isBraveWallet) window.ethereum.emit = walletProvider.emit;
+  if (typeof window.okxwallet === 'undefined' && !isBraveWallet)
+    window.ethereum.emit = walletProvider.emit
   console.notifyLog('wallet provider listening....', walletProvider)
   walletProvider.on('chainChanged', (chainId) => {
     console.successLog(
@@ -206,9 +213,11 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
       networkId: chainIdTransfer(chainId),
     })
   })
-
   walletProvider.on('accountsChanged', ([newWalletAddress = '']) => {
     console.successLog('user wallet address updated', newWalletAddress)
+    if (!newWalletAddress) {
+      withPerformInterruptWallet(() => {})()
+    }
     updateSelectWalletAddress(newWalletAddress)
   })
 }
@@ -261,8 +270,7 @@ export const universalWalletSwitchChainHandler = (
 export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
   const presentNetWorkId = getNetworkIdByChainId()
   const matchChainConf = util.getChainInfoByNetworkId(presentNetWorkId)
-  const { name, nativeCurrency, chainId, rpc } =
-    matchChainConf
+  const { name, nativeCurrency, chainId, rpc } = matchChainConf
 
   const addParams = {
     chainId: util.toHex(chainId), // A 0x-prefixed hexadecimal string

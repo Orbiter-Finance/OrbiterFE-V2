@@ -138,7 +138,7 @@ import Middle from '../../util/middle/middle'
 import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { BRAVE, METAMASK } from '../../util/walletsDispatchers';
+import walletDispatchers, { BRAVE, METAMASK,TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
 import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
 import { Notification } from 'element-ui'
 
@@ -170,7 +170,7 @@ export default {
         loginData() {
             const wallets = [
                 {
-                    isConnect: walletIsLogin.value && check.checkIsMetaMask(),
+                    isConnect: false,
                     icon: 'metamask',
                     title: 'MetaMask',
                 },
@@ -208,6 +208,16 @@ export default {
                     isConnect: false,
                     icon: 'bitkeep',
                     title: 'BitKeep',
+                },
+                {
+                    isConnect: false,
+                    icon: 'imtokenapp',
+                    title: 'imTokenApp',
+                },
+                {
+                    isConnect: false,
+                    icon: 'tokenpocketapp',
+                    title: TOKEN_POCKET_APP,
                 },
             ]
             // the brave wallet is exclusive to the brave browser
@@ -302,6 +312,7 @@ export default {
                 });
                 return;
             }
+            console.log(walletDispatchersOnInit, walletConf);
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {

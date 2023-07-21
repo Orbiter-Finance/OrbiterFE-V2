@@ -1,26 +1,31 @@
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/html'
-import { configureChains, createConfig, sendTransaction } from '@wagmi/core'
+import {
+  configureChains,
+  createConfig,
+  sendTransaction,
+  switchNetwork as switchChain,
+} from '@wagmi/core'
 import * as chainsModule from '@wagmi/core/chains'
-
 import { userDeniedMessage, showMessage } from '../../constants/web3/getWeb3'
 import {
   globalSelectWalletConf,
   updateSelectWalletConfPayload,
   updateGlobalSelectWalletConf,
 } from '../walletsCoreData'
-import { WALLETCONNECT } from '../constants'
 import { modifyLocalLoginInfo, withPerformInterruptWallet } from '../utils'
 import util from '../../util'
 import { updateCoinbase } from '../../../composition/useCoinbase'
+import { transferDataState } from '../../../composition/useTransferData'
+import config from '../../../config'
+
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code
 let ethereumClient = null
 let ethProvider = null
 export function switchNetwork(chainId) {
-  if (!ethereumClient) return Promise.reject('no ethereumClient')
-  return ethereumClient.switchNetwork(chainId)
+  return switchChain({ chainId })
 }
 
 const deHex = (hex) => {
@@ -85,16 +90,16 @@ const performWalletConnectAccountInfo = (payload = {}, connected = false) => {
   }
 }
 
-const onConnectSuccessCallback = () => {
+const onConnectSuccessCallback = (walletConnector, walletType) => {
   // this console is necessary
-
+  connector = walletConnector
   console.successLog('WalletConnect connect success', ethereumClient, true)
   const walletInfo = performWalletConnectAccountInfo(ethereumClient, true)
   updateCoinbase(walletInfo.walletAddress)
-  updateGlobalSelectWalletConf(WALLETCONNECT, walletInfo, true)
+  updateGlobalSelectWalletConf(walletType, walletInfo, true)
   // if connect successful, set the local login info
   modifyLocalLoginInfo({
-    walletType: WALLETCONNECT,
+    walletType,
     loginSuccess: true,
     walletPayload: walletInfo,
   })
@@ -105,6 +110,7 @@ const onDisconnectCallback = (payload) => {
   if (!connector) {
     userDeniedMessage() // first in
   } else {
+    connector = null
     // this only happens when the user disconnects on the phone manually
     walletConnectDispatcherOnDisconnect(false)
   }
@@ -125,7 +131,7 @@ const onSessionUpdateCallback = (payload) => {
 }
 
 // wake up the wallet connect modal by invoke this method
-export const walletConnectDispatcherOnInit = async () => {
+export const walletConnectDispatcherOnInit = async (walletType) => {
   const projectId = process.env.VUE_APP_WALLET_CONNECT_PROJECTID
   if (!projectId) throw new Error('Project id missing.')
   const chains = Object.values(chainsModule)
@@ -136,10 +142,14 @@ export const walletConnectDispatcherOnInit = async () => {
     publicClient,
   })
   ethereumClient = new EthereumClient(wagmiConfig, chains)
-
   const web3Modal = new Web3Modal({ projectId }, ethereumClient)
-  const networkId = globalSelectWalletConf.walletPayload.networkId
-  const currentChain = chains.find((chain) => chain.id === networkId)
+  const networkId =
+    globalSelectWalletConf.walletPayload.networkId ||
+    config.chainConfig.find(
+      (chain) => +chain.internalId === +transferDataState.fromChainID
+    )?.chainId
+  const currentChain = chains.find((chain) => +chain.id === +networkId)
+
   currentChain && web3Modal.setDefaultChain(currentChain)
   ethereumClient.watchAccount((e) => {
     if (e.isDisconnected) {
@@ -147,7 +157,7 @@ export const walletConnectDispatcherOnInit = async () => {
     }
 
     if (e.isConnected) {
-      onConnectSuccessCallback()
+      onConnectSuccessCallback(wagmiConfig.connectors[0], walletType)
     }
   })
   ethereumClient.watchNetwork(onSessionUpdateCallback)
@@ -161,10 +171,9 @@ export const walletConnectDispatcherOnInit = async () => {
   //   }
   // })
   connector = wagmiConfig.connectors[0]
-  window.connector = connector
   if (ethereumClient.getAccount().isConnected) {
     // if it's already connected, invoke onConnectSuccessCallback for the data init
-    onConnectSuccessCallback()
+    onConnectSuccessCallback(wagmiConfig.connectors[0], walletType)
   } else {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
     await web3Modal.openModal()
@@ -236,9 +245,8 @@ export async function walletConnectSwitchChain(params) {
   let { chainId } = params[0] || {}
   if (typeof chainId === 'string') chainId = deHex(chainId)
   return new Promise((resolve, reject) => {
-    connector
-      .getProvider({ chainId })
-      .then((rtn) => {
+    switchNetwork(chainId)
+      .then(() => {
         resolve(null)
       })
       .catch((e) => {

@@ -9,18 +9,22 @@ import {
   METAMASK_APP,
   TOKEN_POCKET_APP,
   BIT_KEEP_APP,
-  COINBASE_APP, OKXWALLET, BRAVE_APP, LOOPRING_APP, BIT_KEEP,
-} from './constants';
+  COINBASE_APP,
+  OKXWALLET,
+  BRAVE_APP,
+  LOOPRING_APP,
+  BIT_KEEP,
+} from './constants'
 import {
   updateGlobalSelectWalletConf,
   globalSelectWalletConf,
 } from './walletsCoreData'
 import { toRefs } from '../../composition'
 import { isMobileEnv } from '../env'
-export let isBraveWallet = false;
+export let isBraveWallet = false
 
 export function setIsBraveWallet(status) {
-  isBraveWallet = status;
+  isBraveWallet = status
 }
 
 // update global wallet login status
@@ -55,8 +59,7 @@ export const withPerformInterruptWallet = (fn) => {
 // wallet type & ethereum fit checker
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
-  if (walletType === METAMASK)
-    return ethereum.isMetaMask && !isBraveWallet
+  if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
   if (walletType === BRAVE) return isBraveWallet
@@ -69,8 +72,8 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
   if (walletType === OKXWALLET) return typeof window.okxwallet !== 'undefined'
-  if (walletType === LOOPRING_APP) return ethereum.isLoopring;
-  if (walletType === BIT_KEEP) return typeof window.bitkeep !== 'undefined';
+  if (walletType === LOOPRING_APP) return ethereum.isLoopring
+  if (walletType === BIT_KEEP) return typeof window.bitkeep !== 'undefined'
   // we never care wallet connect, because it's a protocol, not a wallet
   // so it doesn't follow the Ethereum standard api
 }
@@ -96,11 +99,11 @@ export const findMatchWeb3ProviderByWalletType = (
     // so we should confirm one thing: this "ethereum" object fits our wallet type
 
     if (walletType === OKXWALLET && typeof window.okxwallet !== 'undefined') {
-      return window.okxwallet;
+      return window.okxwallet
     }
 
     if (walletType === BIT_KEEP && typeof window.bitkeep !== 'undefined') {
-      return window.bitkeep.ethereum;
+      return window.bitkeep.ethereum
     }
 
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
@@ -138,8 +141,8 @@ export const getMobileAppTypeByProvider = () => {
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP
   if (provider.isCoinbaseWallet && provider.isCoinbaseBrowser)
     return COINBASE_APP
-  if (isBraveWallet) return BRAVE_APP;
-  if (provider.isLoopring) return LOOPRING_APP;
+  if (isBraveWallet) return BRAVE_APP
+  if (provider.isLoopring) return LOOPRING_APP
 }
 
 /**
