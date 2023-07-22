@@ -4,10 +4,15 @@ import pollWeb3 from './pollWeb3'
 import { findMatchWeb3ProviderByWalletType } from '../../walletsDispatchers/utils'
 import { METAMASK } from '../../walletsDispatchers'
 import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
-import { updateCoinbase, updateIsInstallMeta } from '../../../composition/hooks'
+import {
+  updateCoinbase,
+  updateIsInstallMeta,
+  transferDataState,
+} from '../../../composition/hooks'
 import util from '../../util'
 import { Notification } from 'element-ui'
-
+import config from '../../../config'
+import { universalWalletSwitchChainHandler } from '../../walletsDispatchers/standardWalletReducer/standardWalletAPI'
 const showMessage = util.showMessage
 
 async function installWeb3(walletType) {
@@ -69,6 +74,16 @@ async function getWeb3(walletType) {
       showMessage('get netWorkID failed, refresh and try again', 'error')
       updateCoinbase('')
     } else {
+      let chainId = config.chainConfig.find(
+        (chain) => +chain.internalId === +transferDataState.fromChainID
+      )?.chainId
+      if (chainId && netWorkId.toString() !== chainId.toString()) {
+        const walletConf = compatibleGlobalWalletConf.value
+        universalWalletSwitchChainHandler(
+          walletConf.walletPayload,
+          window.ethereum
+        )
+      }
       store.commit('updateNetWorkId', netWorkId.toString())
     }
   })
