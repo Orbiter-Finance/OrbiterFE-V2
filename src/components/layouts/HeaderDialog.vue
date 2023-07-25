@@ -21,6 +21,8 @@
                 />
             </div>
             <template v-if="!isLogin">
+                <div style="height:310px;overflow:auto;">
+
                 <div
                     v-for="item in loginData"
                     :key="item.title"
@@ -33,12 +35,16 @@
                         ></svg-icon>
                         <span class="wallet-title">{{ item.title }}</span>
                     </div>
+
                     <CommBtn class="wallet-btn" @click="connectWallet(item)"
                         >Connect</CommBtn
                     >
                 </div>
+            </div>
+
             </template>
             <template v-else>
+
                 <div
                     v-for="item in loginInfoData"
                     :key="item.title"
@@ -107,6 +113,7 @@
                         </div>
                     </div>
                 </div>
+
                 <CommBtn
                     v-if="!isStarkNetDialog"
                     :disabled="checkIsMobileEnv()"
@@ -176,21 +183,6 @@ export default {
                 },
                 {
                     isConnect: false,
-                    icon: 'tallyho',
-                    title: 'Taho',
-                },
-                {
-                    isConnect: false,
-                    icon: 'blockwallet',
-                    title: 'BlockWallet',
-                },
-                {
-                    isConnect: false,
-                    icon: 'okxwallet',
-                    title: 'OKXWallet',
-                },
-                {
-                    isConnect: false,
                     icon: 'walletconnect',
                     title: 'WalletConnect',
                 },
@@ -201,23 +193,33 @@ export default {
                 },
                 {
                     isConnect: false,
-                    icon: 'brave',
-                    title: 'Brave',
-                },
-                {
-                    isConnect: false,
                     icon: 'bitkeep',
                     title: 'BitKeep',
                 },
                 {
                     isConnect: false,
-                    icon: 'imtokenapp',
-                    title: 'imTokenApp',
+                    icon: 'okxwallet',
+                    title: 'OKXWallet',
                 },
                 {
                     isConnect: false,
                     icon: 'tokenpocketapp',
                     title: TOKEN_POCKET_APP,
+                },
+                {
+                    isConnect: false,
+                    icon: 'blockwallet',
+                    title: 'BlockWallet',
+                },
+                {
+                    isConnect: false,
+                    icon: 'brave',
+                    title: 'Brave',
+                },
+                {
+                    isConnect: false,
+                    icon: 'tallyho',
+                    title: 'Taho',
                 },
             ]
             // the brave wallet is exclusive to the brave browser
