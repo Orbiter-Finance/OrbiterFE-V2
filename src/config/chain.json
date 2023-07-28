@@ -567,7 +567,7 @@
         "chainId": "5000",
         "networkId": "5000",
         "internalId": "24",
-        "name": "mantle",
+        "name": "Mantle",
         "debug": false,
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "nativeCurrency": {
