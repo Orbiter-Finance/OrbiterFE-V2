@@ -158,9 +158,8 @@ export default {
       // and we'r going to stop accessing localStorage and instead access this global responsive data !!!!
       const matchInitDispatcher = walletDispatchersOnInit[walletType]
       matchInitDispatcher && matchInitDispatcher()
-
       if (!web3State.coinbase) {
-        getWeb3();
+        getWeb3(walletType || METAMASK);
       }
     },
   },
