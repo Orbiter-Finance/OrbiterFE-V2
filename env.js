@@ -38,6 +38,7 @@ export default {
     517: 1442,
     519: 534353,
     520: 167004,
+    21: 8453,
     521: 84531,
     525: 5611,
     526: 11155111,
@@ -84,6 +85,7 @@ export default {
     518: 'https://l1scan.scroll.io',
     519: 'https://l2scan.scroll.io',
     520: 'https://l2explorer.a2.taiko.xyz',
+    21: 'https://basescan.org',
     521: 'https://goerli.basescan.org',
 
     23: 'https://lineascan.build',
