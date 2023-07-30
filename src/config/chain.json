@@ -536,6 +536,35 @@
     },
     {
         "api": {
+            "url": "https://api.basescan.org/api",
+            "key": ""
+        },
+        "chainId": "8453",
+        "networkId": "8453",
+        "internalId": "21",
+        "name": "Base",
+        "debug": false,
+        "contracts": [],
+        "features": [],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://base.blockpi.network/v1/rpc/public",
+            "https://developer-access-mainnet.base.org"
+        ],
+        "watch": [
+            "rpc",
+            "api"
+        ],
+        "tokens": [],
+        "infoURL": "https://basescan.org"
+    },
+    {
+        "api": {
             "url": "http://explorer.linea.build/api",
             "key": ""
         },
