@@ -553,8 +553,8 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://base.blockpi.network/v1/rpc/public",
-            "https://developer-access-mainnet.base.org"
+            "https://developer-access-mainnet.base.org",
+            "https://base.blockpi.network/v1/rpc/public"
         ],
         "watch": [
             "rpc",
