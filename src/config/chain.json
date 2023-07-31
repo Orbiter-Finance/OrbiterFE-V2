@@ -544,7 +544,7 @@
         "internalId": "21",
         "name": "Base",
         "debug": false,
-        "contracts": [],
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "features": [],
         "nativeCurrency": {
             "name": "ETH",
