@@ -456,6 +456,14 @@ export default {
     };
   },
   computed: {
+    isSelectedStarkNet() {
+        return (
+            transferDataState.fromChainID == 4 ||
+            transferDataState.fromChainID == 44 ||
+            transferDataState.toChainID == 4 ||
+            transferDataState.toChainID == 44
+        )
+    },
     isLightMode() {
       return this.$store.state.themeMode === 'light';
     },

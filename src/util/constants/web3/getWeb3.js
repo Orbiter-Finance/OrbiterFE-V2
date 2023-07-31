@@ -13,6 +13,7 @@ import util from '../../util'
 import { Notification } from 'element-ui'
 import config from '../../../config'
 import { universalWalletSwitchChainHandler } from '../../walletsDispatchers/standardWalletReducer/standardWalletAPI'
+import { utils } from 'ethers'
 const showMessage = util.showMessage
 
 async function installWeb3(walletType) {
@@ -77,7 +78,11 @@ async function getWeb3(walletType) {
       let chainId = config.chainConfig.find(
         (chain) => +chain.internalId === +transferDataState.fromChainID
       )?.chainId
-      if (chainId && netWorkId.toString() !== chainId.toString()) {
+      if (
+        chainId &&
+        utils.isHexString(chainId) &&
+        netWorkId.toString() !== chainId.toString()
+      ) {
         const walletConf = compatibleGlobalWalletConf.value
         universalWalletSwitchChainHandler(
           walletConf.walletPayload,

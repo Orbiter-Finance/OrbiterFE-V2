@@ -108,7 +108,6 @@
                     </div>
                 </div>
                 <CommBtn
-                    v-if="!isStarkNetDialog"
                     :disabled="checkIsMobileEnv()"
                     class="wallet-btn"
                     @click="disconnect"
@@ -140,6 +139,9 @@ import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
 import walletDispatchers, { BRAVE, METAMASK,TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
 import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
+import {disConnectStarkNetWallet} from '../../util/constants/starknet/helper.js'
+import { updateSelectWalletAddress } from '../../util/walletsDispatchers/walletsCoreData';
+
 import { Notification } from 'element-ui'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
@@ -307,7 +309,6 @@ export default {
                 });
                 return;
             }
-            console.log(walletDispatchersOnInit, walletConf);
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {
@@ -316,6 +317,11 @@ export default {
         disconnect() {
             if (this.checkIsMobileEnv()) return
             this.closeSelectWalletDialog()
+            if (this.isStarkNetDialog) {
+                this.$store.commit('updateStarkNetIsConnect', false)
+                disConnectStarkNetWallet()
+                return
+            }
             this.selectedWallet = {}
             localStorage.setItem('selectedWallet', JSON.stringify({}))
             this.$store.commit('updateLocalLogin', false)
