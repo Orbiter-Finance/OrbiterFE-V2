@@ -264,7 +264,7 @@ export default {
                             }
                         }
                     })
-                    filterChartData[key].sort((a, b) => a.timestamp - b.timestamp)
+                    if (filterChartData[key]) filterChartData[key].sort((a, b) => a.timestamp - b.timestamp);
                 } else {
                     filterChartData[key] = chartData[key]
                 }
