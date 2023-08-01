@@ -19,9 +19,9 @@ async function installWeb3(walletType) {
   const web3Provider = findMatchWeb3ProviderByWalletType(walletType || METAMASK)
   if (web3Provider) {
     try {
-      if (walletType === METAMASK && web3Provider.isTokenPocket) {
-        throw Error('plugin-mutual-exclusion')
-      }
+      // if (walletType === METAMASK && web3Provider.isTokenPocket) {
+      //   throw Error('plugin-mutual-exclusion')
+      // }
       await web3Provider.enable()
     } catch (error) {
       updateIsInstallMeta(true)
