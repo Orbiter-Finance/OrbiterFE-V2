@@ -305,7 +305,7 @@ export default {
         height: calc(100% - 90px);
 
         .title {
-            font-size: 0.6rem;
+            font-size: 13px;
             text-align: start;
             font-family: inherit;
             font-weight: 600;
