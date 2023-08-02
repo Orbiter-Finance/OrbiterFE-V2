@@ -792,12 +792,27 @@ export default {
   },
   methods: {
     async openApiFilter() {
-      this.banList = await openApiAx.get('/frontend/net');
+      try {
+        const banList = await openApiAx.get('/frontend/net');
+        if (Array.isArray(banList)) {
+          this.banList = banList;
+        }
+      }catch(error){
+        console.error('openApiFilter error', error);
+      }
+
       const self = this;
       const cron = setInterval(async () => {
-        self.banList = await openApiAx.get('/frontend/net');
+        try {
+          const banList = await openApiAx.get('/frontend/net');
+          if (Array.isArray(banList)) {
+            self.banList = banList;
+          }
+        }catch(error) {
+        }
       }, 30000);
       this.cronList.push(cron);
+     
     },
       refreshGasFeeToolTip() {
           const { selectMakerConfig } = transferDataState;
@@ -1471,39 +1486,45 @@ export default {
         return;
       }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
-      if (this.banList) {
-        for (const ban of this.banList) {
-          if (ban.source && ban.dest) {
-            if (fromChainID === ban.source && toChainID === ban.dest) {
-              this.$notify.error({
-                title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
-                duration: 3000,
-              });
-              return;
+      console.log(selectMakerConfig, '==selectMakerConfig')
+      try {
+        if (this.banList) {
+          for (const ban of this.banList) {
+            if (ban.source && ban.dest) {
+              if (fromChainID === ban.source && toChainID === ban.dest) {
+                this.$notify.error({
+                  title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                  duration: 3000,
+                });
+                return;
+              }
+              continue;
             }
-            continue;
-          }
-          if (ban.source) {
-            if (fromChainID === ban.source) {
-              this.$notify.error({
-                title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
-                duration: 3000,
-              });
-              return;
+            if (ban.source) {
+              if (fromChainID === ban.source) {
+                this.$notify.error({
+                  title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                  duration: 3000,
+                });
+                return;
+              }
+              continue;
             }
-            continue;
-          }
-          if (ban.dest) {
-            if (toChainID === ban.dest) {
-              this.$notify.error({
-                title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
-                duration: 3000,
-              });
-              return;
+            if (ban.dest) {
+              if (toChainID === ban.dest) {
+                this.$notify.error({
+                  title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                  duration: 3000,
+                });
+                return;
+              }
             }
           }
         }
+      }catch(error) {
+        console.error(error);
       }
+    
       // if unlogin  login first
       if (!walletIsLogin.value) {
         Middle.$emit('connectWallet', true);
