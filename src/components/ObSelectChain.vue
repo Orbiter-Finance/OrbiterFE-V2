@@ -3,52 +3,48 @@
         <div @click.stop="stopPenetrate" class="selectChainContent">
             <div class="topItem">
                 <span>Select a Chain</span>
-                <div
-                    @click="closerButton"
-                    style="position: absolute; top: 0; right: 0"
-                >
-                    <SvgIconThemed
-                        style="width: 20px; height: 20px; cursor: pointer"
-                        iconName="close"
-                    />
+                <div @click="closerButton" style="position: absolute; top: 0; right: 0">
+                    <SvgIconThemed style="width: 20px; height: 20px; cursor: pointer" iconName="close" />
                 </div>
             </div>
             <div style="width: 100%; position: relative">
-                <input
-                    type="text"
-                    v-model="keyword"
-                    class="input"
-                    @input="checkKeyWord()"
-                    :placeholder="`input search text`"
-                />
-                <SvgIconThemed
-                    @click="search"
-                    class="searchIcon"
-                    icon="search"
-                />
+                <input type="text" v-model="keyword" class="input" @input="checkKeyWord()"
+                    :placeholder="`input search text`" />
+                <SvgIconThemed @click="search" class="searchIcon" icon="search" />
             </div>
         </div>
         <div class="list-content-box ob-scrollbar">
+
             <div class="list-content">
-                <div
-                    v-for="(item, index) in newChainData"
-                    :key="item.chain"
-                    @click="getChainInfo(item, index)"
-                    class="contentItem"
-                >
-                    <svg-icon
-                        class="logo"
-                        style="margin-right: 1.5rem"
-                        :iconName="item.icon"
-                    ></svg-icon>
-                    <span>{{ item.chain }}</span>
-                    <CommLoading
-                        v-if="loadingIndex == index"
-                        style="left: 1rem; top: 0rem"
-                        width="1.5rem"
-                        height="1.5rem"
-                    />
-                </div>
+                <template v-if="isExistChainsGroup">
+                    <template v-for="([key, chainLocalIds], i) in Object.entries(chainsGroup)">
+                        <div class="contentItem title">{{ toCapitalize(key) }}</div>
+                        <div v-for="(item, index) in getChainsInGroup(chainLocalIds)" :key="item.chain + index + i"
+                            @click="getChainInfo(item, index)" class="contentItem">
+                            <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+                            <span>{{ item.chain }}</span>
+                            <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                                height="1.5rem" />
+                        </div>
+                    </template>
+                    <div class="contentItem title">{{ toCapitalize('networks') }}</div>
+                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
+                        class="contentItem">
+                        <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+                        <span>{{ item.chain }}</span>
+                        <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                    </div>
+                </template>
+                <template v-else>
+                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
+                        class="contentItem">
+                        <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+                        <span>{{ item.chain }}</span>
+                        <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                    </div>
+                </template>
             </div>
         </div>
     </div>
@@ -63,6 +59,7 @@ import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 import { web3State } from '../composition/hooks'
+import config from '../config' 
 
 export default {
     name: 'ObSelectChain',
@@ -82,6 +79,20 @@ export default {
         }
     },
     computed: {
+        isExistChainsGroup() {
+            return !!Object.keys(this.chainsGroup).length
+        },
+        chainsGroup() {
+            const chainsGroup = config.chainsGroup || {}
+            return chainsGroup
+        },
+        localIdsInGroup() {
+            const localIdsInGroup = Object.values(this.chainsGroup).reduce((localIds, ids) => {
+                localIds.push(...ids)
+                return localIds
+            }, [])
+            return localIdsInGroup || []
+        },
         transferChainData: function () {
             const newArray = []
             for (let index = 0; index < this.ChainData.length; index++) {
@@ -103,19 +114,36 @@ export default {
         },
         newChainData: function () {
             if (!this.keyword || this.keyword === '') {
-                return this.transferChainData
+                return this.transferChainData.filter(
+                    (item) => !this.localIdsInGroup.includes(item.localID)
+                )
             }
             return this.transferChainData.filter(
                 (item) =>
                     item.chain
                         .toLowerCase()
-                        .indexOf(this.keyword.toLowerCase()) !== -1
+                        .indexOf(this.keyword.toLowerCase()) !== -1 || !this.localIdsInGroup.includes(item.localID)
             )
         },
     },
     watch: {},
-    mounted() {},
+    mounted() { },
     methods: {
+        getChainsInGroup(chainLocalIds) {
+            if (!chainLocalIds) {
+                return []
+            }
+            return this.transferChainData.reduce((chains, chain) => {
+                if (chainLocalIds.includes(chain.localID)) {
+                    chains.push(chain)
+                }
+                return chains
+            }, [])
+        },
+        toCapitalize(str) {
+            if (!str) return ''
+            return str.charAt(0).toUpperCase() + str.slice(1)
+        },
         orderChainIds: function (chainOrderIds, theArray) {
             theArray.sort((chainInfo, nextChainInfo) => {
                 return (
@@ -192,12 +220,12 @@ export default {
         stopPenetrate(e) {
             e.stopPropagation
         },
-        search() {},
-        checkKeyWord() {},
+        search() { },
+        checkKeyWord() { },
         isStarkSystem(chainId) {
             return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1
         },
-    },
+    }
 }
 </script>
 
@@ -209,6 +237,7 @@ export default {
         height: 372px;
     }
 }
+
 .app-mobile {
     .obSelectChainBody {
         width: calc(100% - 30px);
@@ -216,15 +245,14 @@ export default {
         height: 372px;
     }
 }
+
 .obSelectChainBody {
     position: relative;
     margin: 4.2rem auto;
     // height: calc(
     //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
     // );
-    height: calc(
-        100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
-    );
+    height: calc(100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
     border-radius: 20px;
     padding: 20px 0;
 
@@ -275,6 +303,14 @@ export default {
     .list-content-box {
         overflow-y: scroll;
         height: calc(100% - 90px);
+
+        .title {
+            font-size: 13px;
+            text-align: start;
+            font-family: inherit;
+            font-weight: 600;
+            color: #696969;
+        }
     }
 
     .contentItem {
