@@ -142,8 +142,10 @@ function convertMakerConfig(maker) {
 }
 
 const whiteList = []
-
-const chainsGroup = JSON.parse(process.env.VUE_APP_CHAINS_GROUP || '{}')
+const chainsGroup = {}
+try {
+  chainsGroup = JSON.parse(process.env.VUE_APP_CHAINS_GROUP || '{}')
+} catch (err) {}
 
 export default {
   getTokenIcon,
