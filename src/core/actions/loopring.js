@@ -168,6 +168,10 @@ export default {
     } else {
       accInfo = accountResult?.accountInfo
     }
+    const accountId = accInfo?.accountId;
+    const info = await userApi?.getCounterFactualInfo({ accountId });
+    const isCounterFactual = !!info?.counterFactualInfo?.walletOwner;
+
     if (
       accInfo.nonce == 0 &&
       accInfo.keyNonce == 0 &&
@@ -197,11 +201,14 @@ export default {
       walletType: ConnectorNames.MetaMask,
       chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
     }
+    if (isCounterFactual) {
+      Object.assign(options, { accountId });
+    }
 
     const eddsaKey = await generateKeyPair(options)
 
     const GetUserApiKeyRequest = {
-      accountId: accInfo.accountId,
+      accountId
     }
     const { apiKey } = await userApi.getUserApiKey(
       GetUserApiKeyRequest,
@@ -214,7 +221,7 @@ export default {
     // step 3 get storageId
     const lpTokenInfo = await this.getLpTokenInfo(localChainID, tokenAddress)
     const GetNextStorageIdRequest = {
-      accountId: accInfo.accountId,
+      accountId,
       sellTokenId: lpTokenInfo.tokenId,
     }
     const storageId = await userApi.getNextStorageId(
@@ -226,7 +233,7 @@ export default {
     const OriginTransferRequestV3 = {
       exchange: exchangeInfo.exchangeAddress,
       payerAddr: address,
-      payerId: accInfo.accountId,
+      payerId: accountId,
       payeeAddr: toAddress,
       payeeId: toAddressID,
       storageId: storageId.offchainId,
@@ -241,7 +248,15 @@ export default {
       validUntil: ts,
       memo,
     }
-    const response = await userApi.submitInternalTransfer({
+    const response = isCounterFactual ? await userApi.submitInternalTransfer({
+      request: OriginTransferRequestV3,
+      web3,
+      chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
+      walletType: ConnectorNames.MetaMask,
+      eddsaKey: eddsaKey.sk,
+      apiKey,
+      isHWAddr: false,
+    }, { accountId, counterFactualInfo: info.counterFactualInfo }) : await userApi.submitInternalTransfer({
       request: OriginTransferRequestV3,
       web3,
       chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,

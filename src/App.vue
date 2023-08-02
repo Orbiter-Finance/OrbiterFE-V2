@@ -107,6 +107,7 @@ export default {
     HeaderDialog,
   },
   async mounted() {
+    console.log("v 1.0.0");
     console.log("window.ethereum", window.ethereum);
     if (isBraveBrowser()) {
       setIsBraveWallet(await window.ethereum.request({
