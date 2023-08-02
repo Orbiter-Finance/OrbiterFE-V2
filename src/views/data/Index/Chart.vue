@@ -549,7 +549,7 @@ export default {
                         (rollup) =>
                           `<div class="chart-popover-rollup">
                             <div class="name">${rollup.name}</div>
-                            <div class="transactions">
+                            <div class="transactions" style="font-family: monospace;">
                                 ${numeral(rollup.value).format('0,0')}
                             </div>
                             <div class="percentage">
