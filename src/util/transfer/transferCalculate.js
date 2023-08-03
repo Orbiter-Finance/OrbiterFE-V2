@@ -328,7 +328,7 @@ export default {
       return gas.toFixed(6).toString()
     } else {
       let gas = gasPrice * (gasLimitMap[fromChainID.toString()] || 21000)
-      if (fromChainID === 7 || fromChainID === 77) {
+      if (fromChainID === 7 || fromChainID === 77 || fromChainID === 21 || fromChainID === 521) {
         const l1GasFee = await this.getOPFee(fromChainID)
         gas += l1GasFee
       }
