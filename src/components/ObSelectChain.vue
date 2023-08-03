@@ -27,7 +27,7 @@
                                 height="1.5rem" />
                         </div>
                     </template>
-                    <div class="contentItem title">{{ toCapitalize('networks') }}</div>
+                    <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
                     <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
                         class="contentItem">
                         <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
@@ -55,6 +55,8 @@ import Web3 from 'web3'
 import { DydxHelper } from '../util/dydx/dydx_helper'
 import { IMXHelper } from '../util/immutablex/imx_helper'
 import util from '../util/util.js'
+import {customSort} from '../util/index'
+
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
@@ -113,17 +115,17 @@ export default {
             return this.orderChainIds(chainOrderIds, newArray)
         },
         newChainData: function () {
-            if (!this.keyword || this.keyword === '') {
-                return this.transferChainData.filter(
+            let chains = this.transferChainData.filter(
                     (item) => !this.localIdsInGroup.includes(item.localID)
                 )
+            if (this.keyword || this.keyword !== '') {
+                chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
             }
-            return this.transferChainData.filter(
-                (item) =>
-                    item.chain
-                        .toLowerCase()
-                        .indexOf(this.keyword.toLowerCase()) !== -1 || !this.localIdsInGroup.includes(item.localID)
-            )
+            const chainOrderIds = [
+                14, 514, 3, 33, 17, 517, 6, 66, 1, 5, 2, 22, 16, 516, 9, 99, 7, 77, 12, 512, 8,
+                88, 10, 510, 11, 511, 13, 513, 4, 44, 15, 515, 518, 519, 520,
+            ]
+            return customSort(chainOrderIds,chains)
         },
     },
     watch: {},
