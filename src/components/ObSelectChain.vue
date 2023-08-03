@@ -133,12 +133,9 @@ export default {
             if (!chainLocalIds) {
                 return []
             }
-            return this.transferChainData.reduce((chains, chain) => {
-                if (chainLocalIds.includes(chain.localID)) {
-                    chains.push(chain)
-                }
-                return chains
-            }, [])
+            return chainLocalIds.map(id=> {
+                return this.transferChainData.find(c => id == c.localID);
+            }).filter(row => row && row.localID)
         },
         toCapitalize(str) {
             if (!str) return ''
