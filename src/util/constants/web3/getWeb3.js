@@ -7,8 +7,8 @@ import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsi
 import {
   updateCoinbase,
   updateIsInstallMeta,
-  transferDataState,
-} from '../../../composition/hooks'
+  transferDataState, web3State,
+} from '../../../composition/hooks';
 import util from '../../util'
 import { Notification } from 'element-ui'
 import config from '../../../config'
@@ -74,10 +74,8 @@ async function getWeb3(walletType) {
       showMessage('get netWorkID failed, refresh and try again', 'error')
       updateCoinbase('')
     } else {
-      let chainId = config.chainConfig.find(
-        (chain) => +chain.internalId === +transferDataState.fromChainID
-      )?.chainId
-      if (chainId && netWorkId.toString() !== chainId.toString()) {
+      const chainId = util.getMetaMaskNetworkId(+transferDataState.fromChainID);
+      if (chainId && Number(netWorkId) !== Number(chainId) && Number(netWorkId) !== Number(web3State.networkId)) {
         const walletConf = compatibleGlobalWalletConf.value
         universalWalletSwitchChainHandler(
           walletConf.walletPayload,

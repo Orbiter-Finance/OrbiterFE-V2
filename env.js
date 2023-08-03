@@ -38,6 +38,7 @@ export default {
     517: 1442,
     519: 534353,
     520: 167004,
+    21: 8453,
     521: 84531,
     525: 5611,
     526: 11155111,
@@ -84,6 +85,7 @@ export default {
     518: 'https://l1scan.scroll.io',
     519: 'https://l2scan.scroll.io',
     520: 'https://l2explorer.a2.taiko.xyz',
+    21: 'https://basescan.org',
     521: 'https://goerli.basescan.org',
 
     23: 'https://lineascan.build',
@@ -132,6 +134,7 @@ export default {
     519: 'scrolllogo',
     20: 'taikologo',
     520: 'taikologo',
+    21: 'baselogo',
     521: 'baselogo',
 
     23: 'linealogo',
@@ -178,6 +181,7 @@ export default {
     518: 'https://l1scan.scroll.io/tx/',
     519: 'https://l2scan.scroll.io/tx/',
     520: 'https://l2explorer.a2.taiko.xyz/tx/',
+    21: 'https://basescan.org/tx/',
     521: 'https://goerli.basescan.org/tx/',
 
     23: 'https://lineascan.build/tx/',
@@ -224,6 +228,7 @@ export default {
     518: 'https://l1scan.scroll.io/address/',
     519: 'https://l2scan.scroll.io/address/',
     520: 'https://l2explorer.a2.taiko.xyz/address/',
+    21: 'https://basescan.org/address/',
     521: 'https://goerli.basescan.org/address/',
 
     23: 'https://lineascan.build/address/',
@@ -268,6 +273,7 @@ export default {
     518: 1,
     519: 1,
     520: 1,
+    21: 1,
     521: 1,
     522: 1,
     23: 1,
@@ -313,6 +319,7 @@ export default {
     519: 21000,
     520: 21000,
     521: 21000,
+    21: 222177,
     522: 21000,
     23: 21000,
     24: 21000,

@@ -1486,7 +1486,6 @@ export default {
         return;
       }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
-      console.log(selectMakerConfig, '==selectMakerConfig')
       try {
         if (this.banList) {
           for (const ban of this.banList) {
