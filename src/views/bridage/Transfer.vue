@@ -1565,9 +1565,9 @@ export default {
           });
           return;
         }
-        // if (toChainID === 14 || fromChainID === 14) {
+        // if (toChainID === 17) {
         //   this.$notify.error({
-        //     title: `The zkSync Era network transaction maintenance, please try again later`,
+        //     title: `The Polygon zkEVM network transaction maintenance, please try again later`,
         //     duration: 6000,
         //   });
         //   return;

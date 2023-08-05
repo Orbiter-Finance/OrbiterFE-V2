@@ -547,7 +547,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0015,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -560,7 +560,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.005,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -584,7 +584,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0011,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -608,7 +608,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0013,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -632,7 +632,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.001,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -656,7 +656,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0015,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -680,7 +680,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0015,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -704,7 +704,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0009,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -728,7 +728,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.001,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -752,7 +752,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0009,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -776,7 +776,7 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0011,
-            "gasFee": 5,
+            "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         }
