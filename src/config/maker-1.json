@@ -607,6 +607,16 @@
             "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
+        },
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 20000,
+            "minPrice": 0.1,
+            "tradingFee": 2,
+            "gasFee": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
         }
     },
     "14-23": {
@@ -616,6 +626,16 @@
             "maxPrice": 5,
             "minPrice": 0.005,
             "tradingFee": 0.0011,
+            "gasFee": 0,
+            "startTime": 0,
+            "endTime": 99999999999999
+        },
+        "USDC-USDC": {
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 20000,
+            "minPrice": 0.1,
+            "tradingFee": 2,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
