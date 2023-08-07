@@ -585,7 +585,14 @@
         "router": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
-        "tokens": [],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0x176211869ca2b568f2a7d4ee941e073a821ee1ff"
+            }
+        ],
         "infoURL": "https://lineascan.build"
     },
     {
