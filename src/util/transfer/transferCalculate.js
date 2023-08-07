@@ -252,6 +252,7 @@ export default {
         });
         const fee = await provider.getFeeData();
         gasPrice = fee.maxPriorityFeePerGas.toString();
+        estimateGas = 55000;
       }
 
       let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
