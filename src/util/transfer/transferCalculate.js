@@ -1,7 +1,7 @@
 import { getContractFactory, predeploys } from '@eth-optimism/contracts'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
-import { ethers } from 'ethers'
+import { ethers, providers } from 'ethers'
 import thirdapi from '../../core/actions/thirdapi'
 import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
@@ -244,7 +244,17 @@ export default {
       if (fromChainID === 14 || fromChainID === 514) {
         estimateGas = estimateGas * 1.5
       }
-      const gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
+      let gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
+      // EIP1559
+      if (fromChainID === 21 || fromChainID === 521) {
+        const provider = new providers.JsonRpcProvider({
+          url: util.stableRpc(fromChainID)
+        });
+        const fee = await provider.getFeeData();
+        gasPrice = fee.maxPriorityFeePerGas.toString();
+        estimateGas = 55000;
+      }
+
       let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
       if (fromChainID === 7 || fromChainID === 77) {
         const l1GasFee = await this.getOPFee(fromChainID)
