@@ -1,6 +1,5 @@
 const isProduction = process.env.NODE_ENV !== 'development'
 const path = require('path')
-const NullishCoalescingOperatorPlugin = require('@babel/plugin-proposal-nullish-coalescing-operator');
 function resolve(dir) {
     return path.join(__dirname, dir)
 }
@@ -17,22 +16,6 @@ module.exports = {
             args[0].title = 'Orbiter'
             return args
         })
-        config.module
-        .rule('walletconnect')
-        .test(/\.js$/)
-        .include
-        .add(resolve('node_modules/@walletconnect'))
-        .add(resolve('node_modules/viem'))
-        .add(resolve('node_modules/@wagmi'))
-        .add(resolve('node_modules/@web3modal'))
-        .add(resolve('node_modules/@noble'))
-        .end()
-        .use('babel-loader')
-        .loader('babel-loader')
-        .options({
-            plugins: [NullishCoalescingOperatorPlugin],
-        })
-        .end()
         config.externals({
             web3: 'Web3',
         })
