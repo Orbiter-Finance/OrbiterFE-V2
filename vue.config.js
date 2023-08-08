@@ -17,7 +17,6 @@ module.exports = {
             args[0].title = 'Orbiter'
             return args
         })
-        config.module.rules
         config.module
             .rule('walletconnect')
             .test(/\.js$/)
