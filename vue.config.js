@@ -123,7 +123,7 @@ module.exports = {
                             chunks: 'all',
                             test: /node_modules/,
                             name: 'vendor',
-                            minChunks: 1,
+                            minChunks: Infinity,
                             maxInitialRequests: 5,
                             minSize: 0,
                             priority: 100,
