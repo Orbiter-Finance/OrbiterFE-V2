@@ -106,13 +106,13 @@ export default [
     shouldAddChainCode: -32603,
     walletNotInstallReducer: () => {
       return Notification({
-        title: 'Error: BitKeep Wallet has not been installed.',
+        title: 'Error: Bitget Wallet has not been installed.',
         dangerouslyUseHTMLString: true,
         type: 'warning',
         customClass: 'installWalletTips',
         duration: 3000,
         message:
-          '<div style="font-family:Inter Regular;text-align: left;">If you already have BitKeep Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have Bitget Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },

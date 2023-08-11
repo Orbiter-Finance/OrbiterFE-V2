@@ -626,5 +626,30 @@
             }
         ],
         "infoURL": "https://explorer.mantle.xyz"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "7777777",
+        "networkId": "7777777",
+        "internalId": "30",
+        "name": "Zora",
+        "features": [],
+        "debug": false,
+        "contracts": [],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://rpc.zora.energy"
+        ],
+        "watch": ["rpc"],
+        "tokens": [],
+        "infoURL": "https://explorer.zora.energy"
     }
 ]
