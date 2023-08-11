@@ -12,7 +12,8 @@ import {
 } from 'get-starknet'
 
 import { store } from '../../../store'
-import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
+// import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
+const UINT_256_MAX = (1n << 256n) - 1n;
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha':
@@ -83,18 +84,20 @@ export async function connectStarkNetWallet() {
     const isBraavos = refer === 'braavos'.toUpperCase()
 
     const obj = {
-      order: isArgentX
-        ? ['argentX']
-        : isBraavos
-        ? ['braavos']
-        : ['argentX', 'braavos'],
+      // order: isArgentX
+      //   ? ['argentX']
+      //   : isBraavos
+      //   ? ['braavos']
+      //   : ['argentX', 'braavos'],
+      include: ["argentWebWallet"],
+      modalWalletAppearance: "email_only",
     }
     const wallet = await getStarknetWallet(obj)
     if (!wallet) {
       return
     }
     const enabled = await wallet
-      .enable({ showModal: false })
+      .enable({webWalletUrl: "https://web.argent.xyz"})
       .then((address) => !!address?.length)
 
     if (enabled) {

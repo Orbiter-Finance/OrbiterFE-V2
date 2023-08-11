@@ -14,6 +14,8 @@
     "report": "npm run build -- --report"
   },
   "dependencies": {
+    "@argent/get-starknet": "^6.4.7",
+    "@argent/starknet-react-webwallet-connector": "^6.5.0",
     "@dydxprotocol/starkex-lib": "^1.1.6",
     "@dydxprotocol/v3-client": "^1.8.2",
     "@eth-optimism/contracts": "^0.5.14",
@@ -50,7 +52,7 @@
     "husky": "^8.0.3",
     "numeral": "^2.0.6",
     "rlp": "^3.0.0",
-    "starknet": "^3.10.0",
+    "starknet": "^5.14.1",
     "truffle-privatekey-provider": "^1.5.0",
     "tunnel": "0.0.6",
     "viem": "^1.2.14",

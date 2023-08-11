@@ -33,6 +33,18 @@ module.exports = {
             plugins: [NullishCoalescingOperatorPlugin],
         })
         .end()
+        config.module
+            .rule('starknet')
+            .test(/\.mjs$/)
+            .include
+            .add(resolve('node_modules/starknet'))
+            .end()
+            .use('babel-loader')
+            .loader('babel-loader')
+            .options({
+                plugins: [NullishCoalescingOperatorPlugin],
+            })
+            .end()
         config.externals({
             web3: 'Web3',
         })
