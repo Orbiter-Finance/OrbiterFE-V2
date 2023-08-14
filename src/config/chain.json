@@ -638,7 +638,7 @@
         "name": "Zora",
         "features": [],
         "debug": false,
-        "contracts": [],
+        "contracts": ["0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172"],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -649,7 +649,7 @@
             "https://rpc.zora.energy"
         ],
         "router": {
-            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+            "0x2598d7bc9d3b4b6124f3282e49eee68db270f516": "OrbiterRouterV3"
         },
         "watch": ["rpc"],
         "tokens": [],
