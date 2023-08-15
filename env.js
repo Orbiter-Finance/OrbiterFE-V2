@@ -47,7 +47,10 @@ export default {
     23: 59144,
     523: 59140,
     24: 5000,
-    524: 5001
+    524: 5001,
+
+    30: 7777777,
+    530: 999
   },
   networkUrl: {
     1: 'https://etherscan.io',
@@ -94,7 +97,10 @@ export default {
     524: 'https://explorer.testnet.mantle.xyz',
     525: 'https://opbnbscan.com',
     526: 'https://sepolia.etherscan.io',
-    527: 'https://www.okx.com/explorer/okbc-test'
+    527: 'https://www.okx.com/explorer/okbc-test',
+
+    30: 'https://explorer.zora.energy',
+    530: 'https://testnet.explorer.zora.energy'
   },
   chainIcon: {
     1: 'tokenLogo',
@@ -143,7 +149,10 @@ export default {
     524: 'mntlogo',
     525: 'opbsclogo',
     526: 'tokenLogo',
-    527: 'okblogo'
+    527: 'okblogo',
+
+    30: 'zoralogo',
+    530: 'zoralogo'
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -190,7 +199,10 @@ export default {
     524: 'https://explorer.testnet.mantle.xyz/tx/',
     525: 'https://opbnbscan.com/tx/',
     526: 'https://sepolia.etherscan.io/tx/',
-    527: 'https://www.okx.com/explorer/okbc-test/tx/'
+    527: 'https://www.okx.com/explorer/okbc-test/tx/',
+
+    30: 'https://explorer.zora.energy/tx/',
+    530: 'https://testnet.explorer.zora.energy/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -237,7 +249,10 @@ export default {
     524: 'https://explorer.testnet.mantle.xyz/address/',
     525: 'https://opbnbscan.com/address/',
     526: 'https://sepolia.etherscan.io/address/',
-    527: 'https://www.okx.com/explorer/okbc-test/address/'
+    527: 'https://www.okx.com/explorer/okbc-test/address/',
+
+    30: 'https://explorer.zora.energy/address/',
+    530: 'https://testnet.explorer.zora.energy/address/'
   },
   gasPriceMap: {
     1: 100,
@@ -282,7 +297,9 @@ export default {
     524: 1,
     525: 1,
     526: 1,
-    527: 1
+    527: 1,
+    30: 1,
+    530: 1
   },
   gasLimitMap: {
     1: 35000,
@@ -327,6 +344,8 @@ export default {
     524: 21000,
     525: 21000,
     526: 21000,
-    527: 21000
+    527: 21000,
+    30: 21000,
+    530: 21000
   }
 };

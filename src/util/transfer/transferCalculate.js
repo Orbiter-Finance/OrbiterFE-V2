@@ -252,9 +252,7 @@ export default {
         });
         const fee = await provider.getFeeData();
         gasPrice = fee.maxPriorityFeePerGas.toString();
-        if (fromChainID === 21 || fromChainID === 521) {
-          estimateGas = 55000;
-        }
+        estimateGas = 55000;
       }
 
       let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
@@ -363,6 +361,9 @@ export default {
     if (fromChainID === 21 || fromChainID === 521) {
       timeSpent = 15
     }
+    if (fromChainID === 30 || fromChainID === 530) {
+      timeSpent = 15
+    }
     if (
       fromChainID === 3 ||
       fromChainID === 33 ||
@@ -451,6 +452,9 @@ export default {
     if (toChainID === 21 || toChainID === 521) {
       timeSpent += 15
     }
+    if (toChainID === 30 || toChainID === 530) {
+      timeSpent += 15
+    }
     if (toChainID === 523 || toChainID === 23) {
       timeSpent += 30
     }
@@ -479,6 +483,9 @@ export default {
       return '~7 days'
     }
     if (fromChainID === 21 || fromChainID === 521) {
+      return '~7 days'
+    }
+    if (fromChainID === 30 || fromChainID === 530) {
       return '~7 days'
     }
     if (
@@ -581,6 +588,9 @@ export default {
       if (toChainID === 21 || toChainID === 521) {
         return '~15min'
       }
+      if (toChainID === 30 || toChainID === 530) {
+        return '~15min'
+      }
     }
   },
 
@@ -626,6 +636,9 @@ export default {
     }
 
     if (fromChainID === 21 || fromChainID === 521) {
+      return ' 7 days'
+    }
+    if (fromChainID === 30 || fromChainID === 530) {
       return ' 7 days'
     }
     if (fromChainID === 1 || fromChainID === 5) {
