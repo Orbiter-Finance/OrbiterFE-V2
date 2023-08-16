@@ -69,7 +69,7 @@ export async function getTransactionsHistory(params = {}) {
       res = cache;
     } else {
       res = await openApiAx.get(
-          `/userHistory?address=${ walletAddress }&page=${ params.current || 1 }`
+          `/v1/userHistory?address=${ walletAddress }&page=${ params.current || 1 }`
       );
       util.setCache(`history_${ walletAddress }_${ params.current || 1 }`, res, 10000);
     }

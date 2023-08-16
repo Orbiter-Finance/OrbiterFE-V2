@@ -162,7 +162,7 @@
                 "address": "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://starkscan.co"
     },
     {
         "api": { "url": "https://api.polygonscan.com/api", "key": "" },
@@ -280,7 +280,7 @@
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://immutascan.io"
     },
     {
         "api": {
@@ -302,7 +302,7 @@
         "watch": ["api"],
         "contracts": [],
         "tokens": [],
-        "infoURL": ""
+        "infoURL": "https://explorer.loopring.io"
     },
     {
         "api": { "url": "https://andromeda-explorer.metis.io/api", "key": "" },

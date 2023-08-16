@@ -9,7 +9,6 @@ import { store } from '../../store'
 import { exchangeToUsd } from '../coinbase'
 import {
   getErc20Balance,
-  getNetworkIdByChainId,
   getStarkTransferFee,
 } from '../constants/starknet/helper'
 import { IMXHelper } from '../immutablex/imx_helper'
@@ -20,6 +19,7 @@ import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import { transferDataState, web3State } from '../../composition/hooks'
+import { CHAIN_ID } from "../../config";
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -120,13 +120,13 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
-    if (fromChainID === 3 || fromChainID === 33) {
+    if (fromChainID === CHAIN_ID.zksync || fromChainID === CHAIN_ID.zksync_test) {
       const syncHttpProvider = await getZkSyncProvider(fromChainID)
       if (!makerAddress) {
         return null
       }
       const zkTokenList =
-        fromChainID === 3
+        fromChainID === CHAIN_ID.zksync
           ? store.state.zktokenList.mainnet
           : store.state.zktokenList.rinkeby
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -158,7 +158,7 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
-    } else if (fromChainID === 12 || fromChainID === 512) {
+    } else if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
@@ -169,7 +169,7 @@ export default {
         console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (fromChainID === 4 || fromChainID === 44) {
+    } else if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
       const realTransferAmount = this.realTransferAmount().toString()
       const starkFee = await getStarkTransferFee(
         web3State.coinbase,
@@ -179,7 +179,7 @@ export default {
         fromChainID
       )
       return starkFee / 10 ** 18
-    } else if (fromChainID === 9 || fromChainID === 99) {
+    } else if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
       // loopring fee can only use eth。other erc20 fee will be error
       try {
         const lpTokenInfo = await loopring.getLpTokenInfo(
@@ -196,14 +196,14 @@ export default {
       } catch (error) {
         console.warn('lp getTransferFeeerror:')
       }
-    } else if (fromChainID === 8 || fromChainID === 88) {
+    } else if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
       return 0
     } else if (
       util.isEthTokenAddress(fromChainID, fromTokenAddress) ||
-      ((fromChainID === 14 || fromChainID === 514) &&
+      ((fromChainID === CHAIN_ID.zksync2 || fromChainID === CHAIN_ID.zksync2_test) &&
         fromTokenAddress.toUpperCase() === `0X${'E'.repeat(40)}`)
     ) {
-      if (fromChainID === 12 || fromChainID === 512) {
+      if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
         // zkspace can only use eth as fee
         let transferFee = 0
         try {
@@ -215,7 +215,7 @@ export default {
           console.warn('getZKSpaceTransferGasFeeError =', error)
         }
         return transferFee
-      } else if (fromChainID === 9 || fromChainID === 99) {
+      } else if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
         // loopring fee can only use eth。other erc20 fee will be error
         try {
           const lpTokenInfo = await loopring.getLpTokenInfo(
@@ -241,12 +241,12 @@ export default {
         from: web3State.coinbase,
         to: makerAddress,
       })
-      if (fromChainID === 14 || fromChainID === 514) {
+      if (fromChainID === CHAIN_ID.zksync2 || fromChainID === CHAIN_ID.zksync2_test) {
         estimateGas = estimateGas * 1.5
       }
       let gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
       // EIP1559
-      if (fromChainID === 21 || fromChainID === 521 || fromChainID === 30 || fromChainID === 530) {
+      if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test || fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
         const provider = new providers.JsonRpcProvider({
           url: util.stableRpc(fromChainID)
         });
@@ -256,7 +256,7 @@ export default {
       }
 
       let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
-      if (fromChainID === 7 || fromChainID === 77) {
+      if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
         const l1GasFee = await this.getOPFee(fromChainID)
         gas = gas.plus(l1GasFee)
       }
@@ -268,10 +268,10 @@ export default {
   // gasCost-> savingValue
   async transferSpentGas(fromChainID, gasPriceMap, gasLimitMap) {
     const { selectMakerConfig } = transferDataState
-    if (fromChainID === 3 || fromChainID === 33) {
+    if (fromChainID === CHAIN_ID.zksync || fromChainID === CHAIN_ID.zksync_test) {
       const syncHttpProvider = await getZkSyncProvider(fromChainID)
       const zkTokenList =
-        fromChainID === 3
+        fromChainID === CHAIN_ID.zksync
           ? store.state.zktokenList.mainnet
           : store.state.zktokenList.rinkeby
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -289,7 +289,7 @@ export default {
       )
       return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
     }
-    if (fromChainID === 9 || fromChainID === 99) {
+    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress
       const lpTokenInfo = await loopring.getLpTokenInfo(
         fromChainID,
@@ -303,7 +303,7 @@ export default {
       // lpGasFee must use eth
       return (Number(loopringFee) / 10 ** 18).toFixed(6)
     }
-    if (fromChainID === 12 || fromChainID === 512) {
+    if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
@@ -316,7 +316,7 @@ export default {
       }
       return transferFee.toFixed(6)
     }
-    if (fromChainID === 4 || fromChainID === 44) {
+    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
       const realTransferAmount = this.realTransferAmount().toString()
       const fromTokenAddress = selectMakerConfig.fromChain.tokenAddress
       const starkFee = await getStarkTransferFee(
@@ -338,7 +338,7 @@ export default {
       return gas.toFixed(6).toString()
     } else {
       let gas = gasPrice * (gasLimitMap[fromChainID.toString()] || 21000)
-      if (fromChainID === 7 || fromChainID === 77 || fromChainID === 21 || fromChainID === 521) {
+      if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test || fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
         const l1GasFee = await this.getOPFee(fromChainID)
         gas += l1GasFee
       }
@@ -349,357 +349,338 @@ export default {
 
   transferSpentTime(fromChainID, toChainID) {
     let timeSpent = 0
-    if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
+    if (fromChainID === CHAIN_ID.mainnet || fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.goerli) {
       timeSpent = 30
     }
-    if (fromChainID === 2 || fromChainID === 22) {
+    if (fromChainID === CHAIN_ID.ar || fromChainID === CHAIN_ID.ar_test) {
       timeSpent = 15
     }
-    if (fromChainID === 10 || fromChainID === 510) {
+    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
       timeSpent = 15
     }
-    if (fromChainID === 21 || fromChainID === 521) {
+    if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
       timeSpent = 15
     }
-    if (fromChainID === 30 || fromChainID === 530) {
+    if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
       timeSpent = 15
     }
     if (
-      fromChainID === 3 ||
-      fromChainID === 33 ||
-      fromChainID === 12 ||
-      fromChainID === 512
+      fromChainID === CHAIN_ID.zksync ||
+      fromChainID === CHAIN_ID.zksync_test ||
+      fromChainID === CHAIN_ID.zkspace ||
+      fromChainID === CHAIN_ID.zkspace_test
     ) {
       timeSpent = 5
     }
-    if (fromChainID === 6 || fromChainID === 66) {
+    if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       timeSpent = 15
     }
-    if (fromChainID === 7 || fromChainID === 77) {
+    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
       timeSpent = 15
     }
-    if (fromChainID === 8 || fromChainID === 88) {
+    if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
       timeSpent = 5
     }
-    if (fromChainID === 9 || fromChainID === 99) {
+    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
       timeSpent = 15
     }
-    if (fromChainID === 13 || fromChainID === 513) {
+    if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
       timeSpent = 20
     }
-    if (fromChainID === 16 || fromChainID === 516) {
+    if (fromChainID === CHAIN_ID.nova) {
       timeSpent = 30
     }
-    if (fromChainID === 4 || fromChainID === 44) {
+    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
       timeSpent = 180
     }
-    if (fromChainID === 518) {
-      timeSpent = 15
-    }
-    if (fromChainID === 519) {
-      timeSpent = 6.828
-    }
-    if (toChainID === 4 || toChainID === 44) {
+    if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
       timeSpent = 180
     }
-    if (toChainID === 1 || toChainID === 5) {
+    if (toChainID === CHAIN_ID.mainnet || toChainID === CHAIN_ID.goerli) {
       timeSpent += 30
     }
-    if (toChainID === 16 || toChainID === 516) {
+    if (toChainID === CHAIN_ID.nova) {
       timeSpent += 30
     }
-    if (toChainID === 2 || toChainID === 22) {
+    if (toChainID === CHAIN_ID.ar || toChainID === CHAIN_ID.ar_test) {
       timeSpent += 15
     }
     if (
-      toChainID === 3 ||
-      toChainID === 33 ||
-      toChainID === 12 ||
-      toChainID === 512
+      toChainID === CHAIN_ID.zksync ||
+      toChainID === CHAIN_ID.zksync_test ||
+      toChainID === CHAIN_ID.zkspace ||
+      toChainID === CHAIN_ID.zksync_test
     ) {
       timeSpent += 5
     }
-    if (toChainID === 6 || toChainID === 66) {
+    if (toChainID === CHAIN_ID.po || toChainID === CHAIN_ID.po_test) {
       timeSpent += 15
     }
-    if (toChainID === 7 || toChainID === 77) {
+    if (toChainID === CHAIN_ID.op || toChainID === CHAIN_ID.op_test) {
       timeSpent += 15
     }
-    if (toChainID === 8 || toChainID === 88) {
+    if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
       timeSpent += 5
     }
-    if (toChainID === 9 || toChainID === 99) {
+    if (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
       timeSpent += 15
     }
-    if (toChainID === 10 || toChainID === 510) {
+    if (toChainID === CHAIN_ID.metis) {
       timeSpent += 15
     }
-    if (toChainID === 11 || toChainID === 511) {
+    if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
       timeSpent += 5
     }
-    if (toChainID === 13 || toChainID === 513) {
+    if (toChainID === CHAIN_ID.boba) {
       timeSpent += 20
     }
-    if (toChainID === 14 || toChainID === 514) {
+    if (toChainID === CHAIN_ID.zksync2 || toChainID === CHAIN_ID.zksync2_test) {
       timeSpent += 15
     }
-    if (toChainID === 518) {
+    if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
       timeSpent += 15
     }
-    if (toChainID === 519) {
-      timeSpent += 6.828
-    }
-    if (toChainID === 21 || toChainID === 521) {
+    if (toChainID === CHAIN_ID.zora || toChainID === CHAIN_ID.zora_test) {
       timeSpent += 15
     }
-    if (toChainID === 30 || toChainID === 530) {
-      timeSpent += 15
-    }
-    if (toChainID === 523 || toChainID === 23) {
+    if (toChainID === CHAIN_ID.linea || toChainID === CHAIN_ID.linea_test) {
       timeSpent += 30
     }
-    if (toChainID === 517 || toChainID === 17) {
+    if (toChainID === CHAIN_ID.pozkevm || toChainID === CHAIN_ID.pozkevm_test) {
       timeSpent += 30
     }
 
-    const timeSpentStr = timeSpent + 's'
-    return timeSpentStr
+    return timeSpent + 's';
   },
 
   transferOrginTime(fromChainID, toChainID) {
-    if (fromChainID === 523 || fromChainID === 23) {
+    if (fromChainID === CHAIN_ID.linea || fromChainID === CHAIN_ID.linea_test) {
       return '~24 hours'
     }
-    if (fromChainID === 517 || fromChainID === 17) {
+    if (fromChainID === CHAIN_ID.pozkevm || fromChainID === CHAIN_ID.pozkevm_test) {
       return '~6 hours'
     }
-    if (fromChainID === 2 || fromChainID === 22) {
+    if (fromChainID === CHAIN_ID.ar || fromChainID === CHAIN_ID.ar_test) {
       return '~7 days'
     }
-    if (fromChainID === 4 || fromChainID === 44) {
+    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
       return '~24 hours'
     }
-    if (fromChainID === 16 || fromChainID === 516) {
+    if (fromChainID === CHAIN_ID.nova) {
       return '~7 days'
     }
-    if (fromChainID === 21 || fromChainID === 521) {
+    if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
       return '~7 days'
     }
-    if (fromChainID === 30 || fromChainID === 530) {
+    if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
       return '~7 days'
     }
     if (
-      fromChainID === 3 ||
-      fromChainID === 33 ||
-      fromChainID === 12 ||
-      fromChainID === 512 ||
-      fromChainID === 14 ||
-      fromChainID === 514
+      fromChainID === CHAIN_ID.zksync ||
+      fromChainID === CHAIN_ID.zksync_test ||
+      fromChainID === CHAIN_ID.zkspace ||
+      fromChainID === CHAIN_ID.zkspace_test ||
+      fromChainID === CHAIN_ID.zksync2 ||
+      fromChainID === CHAIN_ID.zksync2_test
     ) {
       return '~4 hours'
     }
     // https://docs.polygon.technology/docs/develop/ethereum-polygon/getting-started/
-    if (fromChainID === 6 || fromChainID === 66) {
+    if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       return '~3 hours'
     }
-    if (fromChainID === 7 || fromChainID === 77) {
+    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
       return '~7 days'
     }
-    if (fromChainID === 8 || fromChainID === 88) {
+    if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
       return '~5 hours'
     }
-    if (fromChainID === 9 || fromChainID === 99) {
+    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
       return '~4 hours'
     }
-    if (fromChainID === 10 || fromChainID === 510) {
+    if (fromChainID === CHAIN_ID.metis) {
       return '~7 days'
     }
-    if (fromChainID === 13 || fromChainID === 513) {
+    if (fromChainID === CHAIN_ID.boba) {
       return '~7 days'
     }
-    if (fromChainID === 15 || fromChainID === 515) {
+    if (fromChainID === CHAIN_ID.bsc || fromChainID === CHAIN_ID.bsc_test) {
       return '~15min'
     }
-    if (fromChainID === 518 && toChainID === 519) {
-      return '~2min'
-    }
-    if (fromChainID === 519 && toChainID === 518) {
-      return '~10min'
-    }
 
-    if (fromChainID === 1 || fromChainID === 5) {
-      if (toChainID === 523 || toChainID === 23) {
+    if (fromChainID === CHAIN_ID.mainnet || fromChainID === CHAIN_ID.goerli) {
+      if (toChainID === CHAIN_ID.linea || toChainID === CHAIN_ID.linea_test) {
         return '~10min'
       }
-      if (toChainID === 517 || toChainID === 17) {
+      if (toChainID === CHAIN_ID.pozkevm || toChainID === CHAIN_ID.pozkevm_test) {
         return '~10min'
       }
 
-      if (toChainID === 2 || toChainID === 22) {
+      if (toChainID === CHAIN_ID.ar || toChainID === CHAIN_ID.ar_test) {
         //  eth ->  ar
         return '~10min'
       }
-      if (toChainID === 4 || toChainID === 44) {
+      if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
         //  eth ->  ar
         return '~10min'
       }
       if (
-        toChainID === 3 ||
-        toChainID === 33 ||
-        toChainID === 12 ||
-        toChainID === 512 ||
-        toChainID === 14 ||
-        toChainID === 514
+        toChainID === CHAIN_ID.zksync ||
+        toChainID === CHAIN_ID.zksync2 ||
+        toChainID === CHAIN_ID.zkspace ||
+        toChainID === CHAIN_ID.zkspace_test ||
+        toChainID === CHAIN_ID.zksync2 ||
+        toChainID === CHAIN_ID.zksync2_test
       ) {
         // eth -> zk
         return '~10min'
       }
-      if (toChainID === 6 || toChainID === 66) {
+      if (toChainID === CHAIN_ID.po || toChainID === CHAIN_ID.po_test) {
         // eth -> polygon
         return '~5min'
       }
-      if (toChainID === 7 || toChainID === 77) {
+      if (toChainID === CHAIN_ID.op || toChainID === CHAIN_ID.op_test) {
         // eth -> optimistic
         return '~5min'
       }
-      if (toChainID === 8 || toChainID === 88) {
+      if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
         // eth -> immutablex
         return '~20min'
       }
-      if (toChainID === 9 || toChainID === 99) {
+      if (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
         return '~10min'
       }
-      if (toChainID === 10 || toChainID === 510) {
+      if (toChainID === CHAIN_ID.metis) {
         // eth -> metis
         return '~5min'
       }
-      if (toChainID === 11 || toChainID === 511) {
+      if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
         return '~20min'
       }
-      if (toChainID === 13 || toChainID === 513) {
+      if (toChainID === CHAIN_ID.boba) {
         return '~10min'
       }
-      if (toChainID === 15 || toChainID === 515) {
+      if (toChainID === CHAIN_ID.bsc || toChainID === CHAIN_ID.bsc_test) {
         return '~15min'
       }
-      if (toChainID === 16 || toChainID === 516) {
+      if (toChainID === CHAIN_ID.nova) {
         return '~10min'
       }
-      if (toChainID === 21 || toChainID === 521) {
+      if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
         return '~15min'
       }
-      if (toChainID === 30 || toChainID === 530) {
+      if (toChainID === CHAIN_ID.zora || toChainID === CHAIN_ID.zora_test) {
         return '~15min'
       }
     }
   },
 
   transferSavingTime(fromChainID, toChainID) {
-    if (fromChainID === 523 || fromChainID === 23) {
+    if (fromChainID === CHAIN_ID.linea || fromChainID === CHAIN_ID.linea_test) {
       return '24 hours'
     }
-    if (fromChainID === 517 || fromChainID === 17) {
+    if (fromChainID === CHAIN_ID.pozkevm || fromChainID === CHAIN_ID.pozkevm_test) {
       return '6 hours'
     }
 
-    if (fromChainID === 2 || fromChainID === 22) {
+    if (fromChainID === CHAIN_ID.ar || fromChainID === CHAIN_ID.ar_test) {
       return ' 7 days'
     }
     if (
-      fromChainID === 3 ||
-      fromChainID === 33 ||
-      fromChainID === 12 ||
-      fromChainID === 512
+      fromChainID === CHAIN_ID.zksync ||
+      fromChainID === CHAIN_ID.zksync_test ||
+      fromChainID === CHAIN_ID.zkspace ||
+      fromChainID === CHAIN_ID.zkspace_test
     ) {
       return ' 4 hours'
     }
-    if (fromChainID === 6 || fromChainID === 66) {
+    if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       return ' 3 hours'
     }
-    if (fromChainID === 7 || fromChainID === 77) {
+    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
       return ' 7 days'
     }
-    if (fromChainID === 8 || fromChainID === 88) {
+    if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
       return ' 4 hours'
     }
-    if (fromChainID === 9 || fromChainID === 99) {
+    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
       return ' 4 hours'
     }
-    if (fromChainID === 10 || fromChainID === 510) {
+    if (fromChainID === CHAIN_ID.metis) {
       return ' 7 days'
     }
-    if (fromChainID === 4 || fromChainID === 44) {
+    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
       return ' 24 hours'
     }
-    if (fromChainID === 16 || fromChainID === 516) {
+    if (fromChainID === CHAIN_ID.nova) {
       return ' 7 days'
     }
 
-    if (fromChainID === 21 || fromChainID === 521) {
+    if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
       return ' 7 days'
     }
-    if (fromChainID === 30 || fromChainID === 530) {
+    if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
       return ' 7 days'
     }
-    if (fromChainID === 1 || fromChainID === 5) {
-      if (toChainID === 2 || toChainID === 22) {
+    if (fromChainID === CHAIN_ID.mainnet || fromChainID === CHAIN_ID.goerli) {
+      if (toChainID === CHAIN_ID.ar || toChainID === CHAIN_ID.ar_test) {
         //  eth ->  ar
         return ' 9.25min'
       }
-      if (toChainID === 523 || toChainID === 23) {
+      if (toChainID === CHAIN_ID.linea || toChainID === CHAIN_ID.linea_test) {
         return '10min'
       }
-      if (toChainID === 517 || toChainID === 17) {
+      if (toChainID === CHAIN_ID.pozkevm || toChainID === CHAIN_ID.pozkevm_test) {
         return '10min'
       }
-      if (toChainID === 21 || toChainID === 521) {
+      if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
         return '10min'
       }
       if (
-        toChainID === 3 ||
-        toChainID === 33 ||
-        toChainID === 12 ||
-        toChainID === 512
+        toChainID === CHAIN_ID.zksync ||
+        toChainID === CHAIN_ID.zksync_test ||
+        toChainID === CHAIN_ID.zkspace ||
+        toChainID === CHAIN_ID.zkspace_test
       ) {
         // eth -> zk
         return ' 9.5min'
       }
-      if (toChainID === 6 || toChainID === 66) {
+      if (toChainID === CHAIN_ID.po || toChainID === CHAIN_ID.po_test) {
         // eth -> polygon
         return ' 4.25min'
       }
-      if (toChainID === 7 || toChainID === 77) {
+      if (toChainID === CHAIN_ID.op || toChainID === CHAIN_ID.op_test) {
         // eth -> optimistic
         return ' 9.25min'
       }
-      if (toChainID === 8 || toChainID === 88) {
+      if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
         // eth -> immutablex
         return ' 19.95min'
       }
-      if (toChainID === 9 || toChainID === 99) {
+      if (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
         // eth -> loopring
         return ' 9.25min'
       }
-      if (toChainID === 10 || toChainID === 510) {
+      if (toChainID === CHAIN_ID.metis) {
         // eth -> metis
         return ' 4.25min'
       }
-      if (toChainID === 11 || toChainID === 511) {
+      if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
         // eth -> dydx
         return ' 19.95min'
       }
-      if (toChainID === 13 || toChainID === 513) {
+      if (toChainID === CHAIN_ID.boba) {
         // eth -> dydx
         return ' 10 min'
       }
-      if (toChainID === 4 || toChainID === 44) {
+      if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
         return ' 7 min'
       }
     }
-    if (fromChainID === 13 || fromChainID === 513) {
+    if (fromChainID === CHAIN_ID.boba) {
       return ' 7 days'
     }
-    if (fromChainID === 15 || fromChainID === 515) {
+    if (fromChainID === CHAIN_ID.bsc || fromChainID === CHAIN_ID.bsc_test) {
       return ' 35 minute'
     }
   },
@@ -711,8 +692,10 @@ export default {
     let bscGas = 0
     const { selectMakerConfig } = transferDataState
 
+    const m = CHAIN_ID.mainnet;
+    const g = CHAIN_ID.goerli;
     // withdraw
-    if (fromChainID === 2 || fromChainID === 22) {
+    if (fromChainID === CHAIN_ID.ar || fromChainID === CHAIN_ID.ar_test) {
       try {
         // Ar get
         const fromGasPrice = await this.getGasPrice(fromChainID)
@@ -721,7 +704,7 @@ export default {
           fromGasPrice *
           (isErc20 ? AR_ERC20_WITHDRAW_ONAR : AR_ETH_WITHDRAW_ONAR)
 
-        const L1ChainID = fromChainID === 2 ? 1 : 5
+        const L1ChainID = fromChainID === CHAIN_ID.ar ? m : g
         const L1GasPrice = await this.getGasPrice(L1ChainID)
         const ARWithDrawL1Gas =
           L1GasPrice * (isErc20 ? AR_ERC20_WITHDRAW_ONL1 : AR_ETH_WITHDRAW_ONL1)
@@ -730,19 +713,19 @@ export default {
         throw new Error('ar withdraw error')
       }
     }
-    if (fromChainID === 21 || fromChainID === 521) {
+    if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
       // base w
       const fromGasPrice = await this.getGasPrice(fromChainID)
       const l2Fee = fromGasPrice * (isErc20  ? BASE_ERC20_WITHDRAW_ONAR : BASE_ETH_WITHDRAW_ONAR);
       // l1 w
-      const L1ChainID = fromChainID === 21 ? 1 : 5
+      const L1ChainID = fromChainID === CHAIN_ID.base ? m : g
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const l1Fee = L1GasPrice * (isErc20  ? BASE_ERC20_WITHDRAW_ONL1 : BASE_ETH_WITHDRAW_ONL1);
       ethGas = l2Fee + l1Fee
 
     }
 
-    if (fromChainID === 3 || fromChainID === 33) {
+    if (fromChainID === CHAIN_ID.zksync || fromChainID === CHAIN_ID.zksync_test) {
       try {
         // zk withdraw
         const syncHttpProvider = await getZkSyncProvider(fromChainID)
@@ -756,16 +739,16 @@ export default {
         throw new Error('zksync withdraw error')
       }
     }
-    if (fromChainID === 4 || fromChainID === 44) {
+    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
       // stark cost
       ethGas = 200000000000000
       // mainnet cost
-      const L1ChainID = fromChainID === 4 ? 1 : 5
+      const L1ChainID = fromChainID === CHAIN_ID.starknet ? m : g
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
       ethGas += SNWithDrawL1Gas
     }
-    if (fromChainID === 6 || fromChainID === 66) {
+    if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
 
@@ -773,7 +756,7 @@ export default {
         const PGWithDrawARGas = fromGasPrice * PG_ERC20_WITHDRAW_ONPG
         maticGas += PGWithDrawARGas
 
-        const L1ChainID = fromChainID === 6 ? 1 : 5
+        const L1ChainID = fromChainID === CHAIN_ID.po ? m : g
         const L1GasPrice = await this.getGasPrice(L1ChainID)
         const PGWithDrawL1Gas = L1GasPrice * PG_ERC20_WITHDRAW_ONL1
         ethGas += PGWithDrawL1Gas
@@ -781,7 +764,7 @@ export default {
         throw new Error('po withdraw error')
       }
     }
-    if (fromChainID === 7 || fromChainID === 77) {
+    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
       try {
         // OP get
         const fromGasPrice = await this.getGasPrice(fromChainID)
@@ -790,7 +773,7 @@ export default {
           fromGasPrice *
           (isErc20 ? OP_ERC20_WITHDRAW_ONOP_L2 : OP_ETH_WITHDRAW_ONOP_L2)
 
-        const L1ChainID = fromChainID === 7 ? 1 : 5
+        const L1ChainID = fromChainID === CHAIN_ID.op ? m : g
 
         const L1GasPrice = await this.getGasPrice(L1ChainID)
 
@@ -812,9 +795,9 @@ export default {
         throw new Error('op withdraw error')
       }
     }
-    if (fromChainID === 8 || fromChainID === 88) {
+    if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
       try {
-        const L1ChainID = fromChainID === 8 ? 1 : 5
+        const L1ChainID = fromChainID === CHAIN_ID.imx ? m : g
         const L1GasPrice = await this.getGasPrice(L1ChainID)
         const IMXWithDrawL1Gas =
           L1GasPrice *
@@ -824,7 +807,7 @@ export default {
         throw new Error('imx withdraw error')
       }
     }
-    if (fromChainID === 9 || fromChainID === 99) {
+    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
       try {
         const loopringWithDrawFee = await loopring.getWithDrawFee(
           web3State.coinbase,
@@ -836,14 +819,14 @@ export default {
         throw new Error('loopring withdraw error')
       }
     }
-    if (fromChainID === 10 || fromChainID === 510) {
+    if (fromChainID === CHAIN_ID.metis) {
       try {
         // MT get
         const fromGasPrice = await this.getGasPrice(fromChainID)
         // MT WithDraw
         const MTWithDrawARGas = fromGasPrice * MT_ERC20_WITHDRAW_ONMT
         metisGas += MTWithDrawARGas
-        const L1ChainID = fromChainID === 10 ? 1 : 5
+        const L1ChainID = fromChainID === CHAIN_ID.metis ? m : g
         const L1GasPrice = await this.getGasPrice(L1ChainID)
         const MTWithDrawL1Gas = L1GasPrice * MT_ERC20_WITHDRAW_ONL1
         ethGas += MTWithDrawL1Gas
@@ -851,7 +834,7 @@ export default {
         throw new Error('metis withdraw error')
       }
     }
-    if (fromChainID === 12 || fromChainID === 512) {
+    if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
       try {
         const zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
@@ -864,12 +847,12 @@ export default {
         throw new Error('zkspace withdraw error')
       }
     }
-    if (fromChainID === 13 || fromChainID === 513) {
+    if (fromChainID === CHAIN_ID.boba) {
       // BOBA get
       const fromGasPrice = await this.getGasPrice(fromChainID)
       ethGas = fromGasPrice * BOBA_TRANSFER_OUT_LIMIT
     }
-    if (fromChainID === 15 || fromChainID === 515) {
+    if (fromChainID === CHAIN_ID.bsc || fromChainID === CHAIN_ID.bsc_test) {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
         // BSC WithDraw
@@ -879,20 +862,20 @@ export default {
         throw new Error('bsc withdraw error')
       }
     }
-    if (fromChainID === 14 || fromChainID === 514) {
+    if (fromChainID === CHAIN_ID.zksync2 || fromChainID === CHAIN_ID.zksync2_test) {
       // zk2 widthdraw
       const fromGasPrice = await this.getGasPrice(fromChainID)
       ethGas =
         fromGasPrice *
         (isErc20 ? ZK2_ERC20_WITHDRAW_ONZK2 : ZK2_ETH_WITHDRAW_ONZK2)
     }
-    if (fromChainID === 16 || fromChainID === 516) {
+    if (fromChainID === CHAIN_ID.nova) {
       try {
         // Ar get
         const fromGasPrice = await this.getGasPrice(fromChainID)
         // AR WithDraw
         const ARWithDrawARGas = fromGasPrice * (isErc20 ? 300000 : 65000)
-        const L1ChainID = fromChainID === 16 ? 1 : 5
+        const L1ChainID = fromChainID === CHAIN_ID.nova ? m : g
         const L1GasPrice = await this.getGasPrice(L1ChainID)
         const WithDrawL1Gas = L1GasPrice * (isErc20 ? 160000 : 115000)
         ethGas = ARWithDrawARGas + WithDrawL1Gas
@@ -900,26 +883,16 @@ export default {
         throw new Error('ar withdraw error')
       }
     }
-    if (fromChainID === 17 || fromChainID === 517) {
+    if (fromChainID === CHAIN_ID.pozkevm || fromChainID === CHAIN_ID.pozkevm_test) {
       const fromGasPrice = await this.getGasPrice(fromChainID)
       ethGas = fromGasPrice * PG_EVM_ETH_WITHDRAW_ONPG
     }
-    if (fromChainID === 518 || fromChainID === 519) {
-      try {
-        // scroll get
-        const fromGasPrice = await this.getGasPrice(fromChainID)
-        // scroll WithDraw
-        ethGas = fromGasPrice * SCROLL_ETH_WITHDRAW
-      } catch (error) {
-        throw new Error('scroll withdraw error')
-      }
-    }
 
     // deposit
-    if (toChainID === 2 || toChainID === 22) {
+    if (toChainID === CHAIN_ID.ar || toChainID === CHAIN_ID.ar_test) {
       try {
         // Ar deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 2 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === toChainID === CHAIN_ID.ar ? m : g)
         const arDepositGas =
           toGasPrice *
           (isErc20
@@ -930,8 +903,8 @@ export default {
         throw new Error('ar deposit error')
       }
     }
-    if (toChainID ==21 || toChainID == 521) {
-      const toGasPrice = await this.getGasPrice(toChainID === 2 ? 1 : 5)
+    if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
+      const toGasPrice = await this.getGasPrice(toChainID === toChainID === CHAIN_ID.base ? m : g)
       const arDepositGas =
         toGasPrice *
         (isErc20
@@ -940,10 +913,10 @@ export default {
       ethGas += arDepositGas
 
     }
-    if (toChainID === 3 || toChainID === 33) {
+    if (toChainID === CHAIN_ID.zksync || toChainID === CHAIN_ID.zksync_test) {
       try {
         // zk deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 3 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.zksync ? m : g)
         const zkDepositGas =
           toGasPrice *
           (isErc20
@@ -954,26 +927,26 @@ export default {
         throw new Error('zksync deposit error')
       }
     }
-    if (toChainID === 4 || toChainID === 44) {
-      const L1ChainID = toChainID == 4 ? 1 : 5
+    if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+      const L1ChainID = toChainID === CHAIN_ID.starknet ? m : g
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const SNDepositL1Gas = L1GasPrice * STARKNET_ETH_DEPOSIT_ONL1
       ethGas += SNDepositL1Gas
     }
-    if (toChainID === 6 || toChainID === 66) {
+    if (toChainID === CHAIN_ID.po || toChainID === CHAIN_ID.po_test) {
       try {
         // Polygon deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 6 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.po ? m : g)
         const pgDepositGas = toGasPrice * PG_ERC20_DEPOSIT_DEPOSIT_ONL1
         ethGas += pgDepositGas
       } catch (error) {
         throw new Error('po deposit error')
       }
     }
-    if (toChainID === 7 || toChainID === 77) {
+    if (toChainID === CHAIN_ID.op || toChainID === CHAIN_ID.op_test) {
       try {
         // op deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 7 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.op ? m : g)
         const opDepositGas =
           toGasPrice *
           (isErc20
@@ -984,10 +957,10 @@ export default {
         throw new Error('op deposit error')
       }
     }
-    if (toChainID === 8 || toChainID === 88) {
+    if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
       try {
         // imx deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 8 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.imx ? m : g)
         const imxDepositGas =
           toGasPrice *
           (isErc20
@@ -998,10 +971,10 @@ export default {
         throw new Error('imx deposit error')
       }
     }
-    if (toChainID === 9 || toChainID === 99) {
+    if (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
       try {
         // loopring deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 9 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.loopring ? m : g)
         const lpDepositGas =
           toGasPrice *
           (isErc20
@@ -1012,10 +985,10 @@ export default {
         throw new Error('loopring deposit error')
       }
     }
-    if (toChainID === 10 || toChainID === 510) {
+    if (toChainID === CHAIN_ID.metis) {
       try {
         // MT deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 10 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.metis ? m : g)
         // MT deposit
         const mtDepositGas = toGasPrice * MT_ERC20_DEPOSIT_DEPOSIT_ONL1
         ethGas += mtDepositGas
@@ -1023,19 +996,19 @@ export default {
         throw new Error('metis deposit error')
       }
     }
-    if (toChainID === 11 || toChainID === 511) {
+    if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
       try {
         // dydx deposit
-        const toGasPrice = await this.getGasPrice(toChainID === 11 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.dydx ? m : g)
         const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
         ethGas += dydxDepositGas
       } catch (error) {
         throw new Error('metis deposit error')
       }
     }
-    if (toChainID === 12 || toChainID === 512) {
+    if (toChainID === CHAIN_ID.zkspace || toChainID === CHAIN_ID.zkspace_test) {
       try {
-        const toGasPrice = await this.getGasPrice(toChainID === 12 ? 1 : 5)
+        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.zkspace ? m : g)
         const zkspaceDepositGas =
           toGasPrice *
           (isErc20
@@ -1046,14 +1019,14 @@ export default {
         throw new Error('zkspace deposit error')
       }
     }
-    if (toChainID === 13 || toChainID === 513) {
+    if (toChainID === CHAIN_ID.boba) {
       // BOBA deposit
       const toGasPrice = await this.getGasPrice(toChainID)
       const depositGas = toGasPrice * BOBA_TRANSFER_IN_LIMIT
       ethGas += depositGas
     }
 
-    if (toChainID === 15 || toChainID === 515) {
+    if (toChainID === CHAIN_ID.bsc || toChainID === CHAIN_ID.bsc_test) {
       try {
         // MT deposit
         const toGasPrice = await this.getGasPrice(toChainID)
@@ -1064,29 +1037,18 @@ export default {
         throw new Error('bsc deposit error')
       }
     }
-    if (toChainID === 14 || toChainID === 514) {
+    if (toChainID === CHAIN_ID.zksync2 || toChainID === CHAIN_ID.zksync2_test) {
       // zk2 get
-      const toGasPrice = await this.getGasPrice(toChainID === 14 ? 1 : 5)
+      const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.zksync2 ? m : g)
       ethGas =
         toGasPrice *
         (isErc20
           ? ZK2_ERC20_DEPOSIT_DEPOSIT_ONL1
           : ZK2_ETH_DEPOSIT_DEPOSIT_ONL1)
     }
-    if (toChainID === 17 || toChainID === 517) {
-      // zk2 get
+    if (toChainID === CHAIN_ID.pozkevm || toChainID === CHAIN_ID.pozkevm_test) {
       const toGasPrice = await this.getGasPrice(toChainID)
       ethGas = toGasPrice * PG_EVM_ETH_DEPOSIT_DEPOSIT_ONL1
-    }
-    if (toChainID === 518 || toChainID === 519) {
-      try {
-        // scroll get
-        const toGasPrice = await this.getGasPrice(toChainID)
-        // scroll DEPOSIT
-        ethGas += toGasPrice * SCROLL_ETH_DEPOSIT
-      } catch (error) {
-        throw new Error('scroll deposit error')
-      }
     }
 
     let usd = new BigNumber(0)
@@ -1127,7 +1089,7 @@ export default {
     isMaker = false
   ) {
     const { selectMakerConfig } = transferDataState
-    if (localChainID === 3 || localChainID === 33) {
+    if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
       const req = {
         account: userAddress,
         localChainID,
@@ -1148,8 +1110,8 @@ export default {
         console.warn('error =', error)
         throw 'getZKBalanceError'
       }
-    } else if (localChainID === 4 || localChainID === 44) {
-      const networkId = getNetworkIdByChainId(localChainID)
+    } else if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
+      const networkId = localChainID === CHAIN_ID.starknet ? 1 : 5
       let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
         if (!starknetAddress) {
@@ -1159,11 +1121,11 @@ export default {
         starknetAddress = userAddress
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
-    } else if (localChainID === 8 || localChainID === 88) {
+    } else if (localChainID === CHAIN_ID.imx || localChainID === CHAIN_ID.imx_test) {
       const imxHelper = new IMXHelper(localChainID)
       const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
       return Number(balance + '')
-    } else if (localChainID === 9 || localChainID === 99) {
+    } else if (localChainID === CHAIN_ID.loopring || localChainID === CHAIN_ID.loopring_test) {
       const lpTokenInfo = await loopring.getLpTokenInfo(
         localChainID,
         tokenAddress
@@ -1174,14 +1136,14 @@ export default {
         isMaker,
         lpTokenInfo
       )
-    } else if (localChainID === 11 || localChainID === 511) {
+    } else if (localChainID === CHAIN_ID.dydx || localChainID === CHAIN_ID.dydx_test) {
       const dydxHelper = new DydxHelper(
         localChainID,
         new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
         'MetaMask'
       )
       return await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
-    } else if (localChainID === 12 || localChainID === 512) {
+    } else if (localChainID === CHAIN_ID.zkspace || localChainID === CHAIN_ID.zkspace_test) {
       const zkReq = {
         account: userAddress,
         localChainID,
@@ -1192,7 +1154,7 @@ export default {
           return 0
         }
         const zksTokenInfos =
-          localChainID === 12
+          localChainID === CHAIN_ID.zkspace
             ? store.state.zksTokenList.mainnet
             : store.state.zksTokenList.rinkeby
         const tokenInfo = zksTokenInfos.find(
@@ -1226,11 +1188,11 @@ export default {
       return Number(tokenBalance)
     }
   },
-  async getGasPrice(fromChainID) {
-    if (fromChainID === 33 || fromChainID === 3) {
+  async getGasPrice(fromChainId) {
+    if (fromChainId === CHAIN_ID.zksync || fromChainId === CHAIN_ID.zksync_test) {
       return null
     }
-    const rpcList = util.getRpcList(fromChainID)
+    const rpcList = util.getRpcList(fromChainId)
     for (const rpc of rpcList) {
       try {
         const response = await axios.post(rpc, {
@@ -1240,14 +1202,14 @@ export default {
           id: 0,
         })
         if (response.status === 200) {
-          util.setStableRpc(fromChainID, rpc, 'eth_gasPrice')
+          util.setStableRpc(fromChainId, rpc, 'eth_gasPrice')
           return parseInt(response.data.result)
         }
       } catch (e) {
-        util.setStableRpc(fromChainID, '', 'eth_gasPrice')
+        util.setStableRpc(fromChainId, '', 'eth_gasPrice')
       }
     }
-    util.setStableRpc(fromChainID, '', 'eth_gasPrice')
+    util.setStableRpc(fromChainId, '', 'eth_gasPrice')
     return null
   },
 
@@ -1287,20 +1249,22 @@ export default {
     }
   },
 
-  realTransferOPID() {
-    const toChainID = transferDataState.toChainID
-    return 9000 + Number(toChainID) + ''
+  safeCode() {
+    const { selectMakerConfig, toChainID } = transferDataState;
+    const internalId = selectMakerConfig.fromChain.id.length < 2 ? ("0" + selectMakerConfig.fromChain.id) : selectMakerConfig.fromChain.id;
+    return selectMakerConfig.ebcId ?
+        selectMakerConfig.ebcId + selectMakerConfig.dealerId + internalId : (9000 + Number(toChainID) + '');
   },
 
   getTransferTValue() {
-    const { selectMakerConfig, transferValue, fromChainID, toChainID } =
-      transferDataState
+    const { selectMakerConfig, transferValue, fromChainID } =
+        transferDataState;
     const rAmount = new BigNumber(transferValue)
-      .plus(new BigNumber(selectMakerConfig.tradingFee))
-      .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
-    const rAmountValue = rAmount.toFixed()
-    const p_text = 9000 + Number(toChainID) + ''
-    return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals));
+    const rAmountValue = rAmount.toFixed();
+    const p_text = this.safeCode();
+    return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text);
   },
   realTransferAmount() {
     const { selectMakerConfig, transferValue, fromChainID, toChainID } =
@@ -1315,7 +1279,7 @@ export default {
       new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
     )
     const rAmountValue = rAmount.toFixed()
-    const p_text = 9000 + Number(toChainID) + ''
+    const p_text = this.safeCode();
     const tValue = orbiterCore.getTAmountFromRAmount(
       fromChainID,
       rAmountValue,

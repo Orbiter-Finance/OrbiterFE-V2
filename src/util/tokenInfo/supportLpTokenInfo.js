@@ -2,12 +2,13 @@ import util from '../util'
 import axios from 'axios'
 import config from '../../core/utils/config'
 import { store } from '../../store'
+import { CHAIN_ID } from "../../config";
 
 export default {
   async getSupportLpTokenList() {
     try {
-      await getAllLpTokenList(9)
-      await getAllLpTokenList(99)
+      await getAllLpTokenList(CHAIN_ID.loopring)
+      await getAllLpTokenList(CHAIN_ID.loopring_test)
       await util.sleep(30 * 1000)
       this.getSupportLpTokenList()
     } catch (err) {
@@ -31,7 +32,7 @@ async function getAllLpTokenList(localChainID, count = 0) {
 }
 async function getLpTokenList(localChainID) {
   const url = `${
-    localChainID === 99 ? config.loopring.Rinkeby : config.loopring.Mainnet
+    localChainID === CHAIN_ID.loopring_test ? config.loopring.Rinkeby : config.loopring.Mainnet
   }/api/v3/exchange/tokens`
   try {
     const response = await axios.get(url)

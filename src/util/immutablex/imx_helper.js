@@ -3,6 +3,7 @@ import { ethers, providers } from 'ethers'
 import Web3 from 'web3'
 import config from '../../core/utils/config'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import { CHAIN_ID } from "../../config";
 
 const CONTRACTS = {
   ropsten: {
@@ -26,13 +27,13 @@ export class IMXHelper {
    * @param {number} chainId
    */
   constructor(chainId) {
-    if (chainId == 8) {
+    if (String(chainId) === CHAIN_ID.imx) {
       this.publicApiUrl = config.immutableX.Mainnet
       this.starkContractAddress = CONTRACTS.mainnet.starkContractAddress
       this.registrationContractAddress =
         CONTRACTS.mainnet.registrationContractAddress
     }
-    if (chainId == 88) {
+    if (String(chainId) === CHAIN_ID.imx_test) {
       this.publicApiUrl = config.immutableX.Rinkeby
       this.starkContractAddress = CONTRACTS.ropsten.starkContractAddress
       this.registrationContractAddress =

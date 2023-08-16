@@ -9,6 +9,7 @@ import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
+import { CHAIN_ID } from "../config";
 
 export default {
   getAccountAddressError(address, isStarknet) {
@@ -59,7 +60,15 @@ export default {
     return this.getChainInfoByChainId(chainId)?.chainId
   },
   getMetaMaskNetworkId(chainId) {
-    return env.metaMaskNetworkId[chainId]
+    return env.metaMaskNetworkId[chainId] || chainId
+  },
+  getTxExploreUrl(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    return env.txExploreUrl[chainId] || `${ chainInfo?.infoURL }/tx/`;
+  },
+  getAccountExploreUrl(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    return env.accountExploreUrl[chainId] || `${ chainInfo?.infoURL }/address/`;
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -102,12 +111,8 @@ export default {
     return value1.toUpperCase() === value2.toUpperCase()
   },
 
-  /**
-   * @param {string} tokenAddress when tokenAddress=/^0x0+$/i,
-   * @returns {boolean}
-   */
   isEthTokenAddress(chainId, tokenAddress) {
-    const chainInfo = this.getChainInfoByChainId(chainId)
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
     if (chainInfo) {
       // main coin
       if (
@@ -178,8 +183,10 @@ export default {
 
   async isLegalAddress() {
     const { fromChainID } = transferDataState
-    const supportContractWallet = [1, 2, 6, 7, 10, 13, 14, 15, 16, 17]
-    if (!supportContractWallet.find((item) => item === Number(fromChainID))) {
+    const supportContractWallet = [CHAIN_ID.mainnet, CHAIN_ID.ar, CHAIN_ID.po, CHAIN_ID.op, CHAIN_ID.metis,
+      CHAIN_ID.boba, CHAIN_ID.zksync2, CHAIN_ID.bsc, CHAIN_ID.nova, CHAIN_ID.pozkevm, CHAIN_ID.base, CHAIN_ID.linea,
+      CHAIN_ID.zora];
+    if (!supportContractWallet.find((item) => item === fromChainID)) {
       return true
     }
     const rpc = this.stableRpc(fromChainID)
@@ -217,7 +224,7 @@ export default {
   },
 
   getRpcList(chainId) {
-    const chainInfo = this.getChainInfoByChainId(chainId)
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
     const rpcList = (chainInfo?.rpc || []).sort(function () {
       return 0.5 - Math.random()
     })
@@ -266,6 +273,25 @@ export default {
     } else {
       return expectValue.toFixed(0)
     }
+  },
+
+  getV3ChainInfoByChainId(chainId) {
+    const info = config.chainConfig.find(
+        (item) => item.chainId === chainId
+    )
+    if (!info) return null
+    const chainInfo = JSON.parse(JSON.stringify(info))
+    const localWsRpc = process.env[`VUE_APP_WP_${chainId}`]
+    if (localWsRpc) {
+      chainInfo.rpc = chainInfo.rpc || []
+      chainInfo.rpc.push(localWsRpc)
+    }
+    const localHttpRpc = process.env[`VUE_APP_HP_${chainId}`]
+    if (localHttpRpc) {
+      chainInfo.rpc = chainInfo.rpc || []
+      chainInfo.rpc.push(localHttpRpc)
+    }
+    return chainInfo
   },
 
   getChainInfoByChainId(chainId) {
@@ -320,10 +346,10 @@ export default {
   isStarkNet() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === 4 ||
-      fromChainID === 44 ||
-      toChainID === 4 ||
-      toChainID === 44
+      fromChainID === CHAIN_ID.starknet ||
+      fromChainID === CHAIN_ID.starknet_test ||
+      toChainID === CHAIN_ID.starknet ||
+      toChainID === CHAIN_ID.starknet_test
     )
   },
 
@@ -348,7 +374,7 @@ export default {
   },
 
   /**
-   * @param {number} chainId
+   * @param {string} chainId
    */
   async ensureWalletNetwork(chainId) {
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
@@ -376,7 +402,7 @@ export default {
   },
 
   async addEthereumChain(chainId) {
-    const chainInfo = this.getChainInfoByChainId(chainId)
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     const params = {
       chainId: this.toHex(maskNetworkId), // A 0x-prefixed hexadecimal string
@@ -387,8 +413,8 @@ export default {
         decimals: chainInfo.nativeCurrency.decimals,
       },
       rpcUrls: chainInfo.rpc,
-      blockExplorerUrls: env.networkUrl[chainId]
-        ? [env.networkUrl[chainId]]
+      blockExplorerUrls: chainInfo?.infoURL
+        ? [chainInfo.infoURL]
         : null,
     }
     try {

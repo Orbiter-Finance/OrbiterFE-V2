@@ -9,11 +9,11 @@ const openApiAx = axios.create({
 openApiAx.interceptors.response.use(
   function (response) {
     const respData = response.data
-    if (respData.code !== 0) {
-        // util.showMessage(respData.msg, 'error');
-        return null;
-    }
-    return respData.result
+    // if (respData.code !== 0) {
+    //     // util.showMessage(respData.msg, 'error');
+    //     return null;
+    // }
+    return respData?.result
   },
   function (error) {
     return Promise.reject(error)

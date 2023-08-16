@@ -3,6 +3,7 @@ import loopring from '../actions/loopring'
 import zkspace from '../actions/zkspace'
 import { getStarkNonce } from '../../util/constants/starknet/helper'
 import util from '../../util/util'
+import { CHAIN_ID } from "../../config";
 
 export default {
   getNonce: async function (
@@ -11,7 +12,7 @@ export default {
     tokenName,
     userAddress
   ) {
-    if (localChainID == 3 || localChainID == 33) {
+    if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
       const req = {
         account: userAddress,
         localChainID,
@@ -28,16 +29,16 @@ export default {
         console.warn('error =', error)
         return 0
       }
-    } else if (localChainID === 4 || localChainID === 44) {
+    } else if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       try {
         const nonce = Number(await getStarkNonce())
         return nonce
       } catch (error) {
         return 0
       }
-    } else if (localChainID === 8 || localChainID === 88) {
+    } else if (localChainID === CHAIN_ID.imx || localChainID === CHAIN_ID.imx_test) {
       return 0
-    } else if (localChainID === 9 || localChainID === 99) {
+    } else if (localChainID === CHAIN_ID.loopring || localChainID === CHAIN_ID.loopring_test) {
       // https://api3.loopring.io/api/v3/user/balances?accountId=1&tokens=0,1
       const nonceObj = await loopring.getAccountStorageID(
         userAddress,
@@ -48,9 +49,9 @@ export default {
         return (nonceObj.offchainId - 1) / 2
       }
       return 0
-    } else if (localChainID === 11 || localChainID === 511) {
+    } else if (localChainID === CHAIN_ID.dydx || localChainID === CHAIN_ID.dydx_test) {
       return 0
-    } else if (localChainID === 12 || localChainID === 512) {
+    } else if (localChainID === CHAIN_ID.zkspace || localChainID === CHAIN_ID.zkspace_test) {
       const accountInfo = await zkspace.getZKAccountInfo(
         localChainID,
         userAddress

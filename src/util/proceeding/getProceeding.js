@@ -2,6 +2,7 @@ import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
 import openApiAx from '../../common/openApiAx'
 import util from '../util'
+import { CHAIN_ID } from "../../config";
 
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
@@ -16,7 +17,7 @@ function confirmUserTransaction(hash) {
   }
    cron = setInterval(async () => {
     try {
-      const { status, txList = [] } = await openApiAx.get(`/status?hash=${hash}`) || {}
+      const { status, txList = [] } = await openApiAx.get(`/v1/status?hash=${hash}`) || {}
       util.log('txStatus', status, 'txList', txList)
       switch (status) {
         case 0: {
@@ -60,10 +61,10 @@ function confirmUserTransaction(hash) {
 
 export default {
   UserTransferReady(user, maker, amount, localChainID, txHash) {
-    if (localChainID === 4 || localChainID === 44) {
+    if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       txHash = util.starknetHashFormat(txHash);
     }
-    if (localChainID === 3 || localChainID === 33) {
+    if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
       txHash = txHash.replace('sync-tx:', '0x');
     }
     store.commit('updateProceedTxID', txHash)

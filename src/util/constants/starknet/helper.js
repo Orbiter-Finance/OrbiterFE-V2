@@ -13,6 +13,7 @@ import {
 
 import { store } from '../../../store'
 import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
+import { CHAIN_ID } from "../../../config";
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha':
@@ -118,9 +119,9 @@ export async function connectStarkNetWallet() {
 export function getStarkNetCurrentChainId() {
   const { baseUrl } = getStarknet().provider
   if (baseUrl.includes('alpha-mainnet.starknet.io')) {
-    return '4'
+    return CHAIN_ID.starknet
   } else if (baseUrl.includes('alpha4.starknet.io')) {
-    return '44'
+    return CHAIN_ID.starknet_test
   } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
     return 'localhost'
   } else {

@@ -61,7 +61,7 @@ import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 import { web3State } from '../composition/hooks'
-import config from '../config' 
+import config, { CHAIN_ID } from '../config';
 
 export default {
     name: 'ObSelectChain',
@@ -109,7 +109,9 @@ export default {
                 newArray.push(chainData)
             }
             const chainOrderIds = [
-                14, 514, 3, 33, 17, 517, 6, 66, 1, 5, 2, 22, 16, 516, 9, 99, 7, 77, 12, 512, 8,
+                CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.zksync, CHAIN_ID.zksync_test,
+                CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test, CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.mainnet,
+                CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, 16, 516, 9, 99, 7, 77, 12, 512, 8,
                 88, 10, 510, 11, 511, 13, 513, 4, 44, 15, 515, 518, 519, 520,
             ]
             return this.orderChainIds(chainOrderIds, newArray)
@@ -136,7 +138,7 @@ export default {
                 return []
             }
             return chainLocalIds.map(id=> {
-                return this.transferChainData.find(c => id == c.localID);
+                return this.transferChainData.find(c => id === c.localID);
             }).filter(row => row && row.localID)
         },
         toCapitalize(str) {
@@ -160,7 +162,7 @@ export default {
             if (this.isStarkSystem(e.localID)) {
                 try {
                     // starknet
-                    if (e.localID == 4 || e.localID == 44) {
+                    if (e.localID === CHAIN_ID.starknet || e.localID === CHAIN_ID.starknet_test) {
                         const { starkIsConnected, starkNetAddress } =
                             web3State.starkNet
                         if (!starkIsConnected && !starkNetAddress) {
@@ -174,7 +176,7 @@ export default {
                         }
                     }
                     // immutableX
-                    if (e.localID == 8 || e.localID == 88) {
+                    if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
                         this.loadingIndex = index
                         const coinbase =
                             compatibleGlobalWalletConf.value.walletPayload
@@ -184,7 +186,7 @@ export default {
                     }
 
                     // dydx
-                    if (e.localID == 11 || e.localID == 511) {
+                    if (e.localID === CHAIN_ID.dydx || e.localID === CHAIN_ID.dydx_test) {
                         try {
                             this.loadingIndex = index
                             const coinbase =

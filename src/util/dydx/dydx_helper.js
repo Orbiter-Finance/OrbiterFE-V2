@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js'
 import { ethers, utils } from 'ethers'
 import config from '../../core/utils/config'
 import util from '../util'
+import { CHAIN_ID } from "../../config";
 const DYDX_MAKERS = {
   '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5': {
     starkKey:
@@ -23,16 +24,16 @@ export class DydxHelper {
   signingMethod = ''
 
   /**
-   * @param {number} chainId
+   * @param {string} chainId
    * @param {Web3 | undefined} web3
    * @param {string} signingMethod TypedData | MetaMask
    */
   constructor(chainId, web3, signingMethod = 'TypedData') {
-    if (chainId == 11) {
+    if (String(chainId) === CHAIN_ID.dydx) {
       this.networkId = 1
       this.host = config.dydx.Mainnet
     }
-    if (chainId == 511) {
+    if (String(chainId) === CHAIN_ID.dydx_test) {
       this.networkId = 3
       this.host = config.dydx.Rinkeby
     }

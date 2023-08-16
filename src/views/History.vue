@@ -172,7 +172,7 @@
 
 <script>
 import BigNumber from 'bignumber.js'
-import config from '../config'
+import config, { CHAIN_ID } from '../config';
 import { NoData,CommBtn } from '../components'
 import {
     isMobile,
@@ -218,10 +218,10 @@ export default {
             const list = []
             for (const item of transactionList) {
                 if (
-                    item.fromChainID == 11 ||
-                    item.fromChainID == 511 ||
-                    item.toChainID == 11 ||
-                    item.toChainID == 511
+                    item.fromChainID === CHAIN_ID.dydx ||
+                    item.fromChainID === CHAIN_ID.dydx_test ||
+                    item.toChainID === CHAIN_ID.dydx ||
+                    item.toChainID === CHAIN_ID.dydx_test
                 ) {
                     continue
                 }
@@ -293,10 +293,10 @@ export default {
                 util.showMessage("Hash error", "error");
                 return;
             }
-            if (selectChainId === 4 || selectChainId === 44) {
+            if (selectChainId === CHAIN_ID.starknet || selectChainId === CHAIN_ID.starknet_test) {
                 // starknet
                 txHash = util.starknetHashFormat(txHash);
-            } else if (selectChainId === 8 || selectChainId === 88) {
+            } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
                 if (!Number(txHash)) {
                     util.showMessage("Hash error", "error");
                     return;
@@ -307,7 +307,7 @@ export default {
             }
 
             this.searchLoading = true;
-            const res = await openApiAx.get(`/status?hash=${ txHash }`);
+            const res = await openApiAx.get(`/v1/status?hash=${ txHash }`);
             this.searchLoading = false;
             if (!res) {
                 util.showMessage("Request frequent", "error");
@@ -345,7 +345,7 @@ export default {
                 this.showError = false;
                 this.getHistoryInfo(data);
             } else {
-                await openApiAx.get(`/collectUserTransactions?fromHash=${ txHash }&fromChain=${ selectChainId }`);
+                await openApiAx.get(`/v1/collectUserTransactions?fromHash=${ txHash }&fromChain=${ selectChainId }`);
                 this.showError = true;
             }
         },
@@ -380,7 +380,7 @@ export default {
             }
         },
         logoName(chainID) {
-            return this.$env.chainIcon[+chainID]
+            return this.$env.chainIcon[chainID]
         },
     },
 }

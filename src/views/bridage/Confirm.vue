@@ -199,6 +199,7 @@ import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
+import { CHAIN_ID } from "../../config";
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -221,10 +222,10 @@ export default {
         isStarkNetChain() {
             const { fromChainID, toChainID } = transferDataState
             return (
-                fromChainID == 4 ||
-                fromChainID == 44 ||
-                toChainID == 4 ||
-                toChainID == 44
+                fromChainID === CHAIN_ID.starknet ||
+                fromChainID === CHAIN_ID.starknet_test ||
+                toChainID === CHAIN_ID.starknet ||
+                toChainID === CHAIN_ID.starknet_test
             )
         },
         confirmData() {
@@ -251,7 +252,7 @@ export default {
                     icon: 'security',
                     title: 'Identification Code',
                     notice: 'In Orbiter, each transaction has a four digit identification code. The identification code can be seen at the end of the total amount being transferred as a way to identify the transaction. The identification code will be the evidence in the case that the ‘Maker’ does not send the assets to the target network. This will act as an evidence to claim your funds from the margin contract.',
-                    desc: transferCalculate.realTransferOPID(),
+                    desc: transferCalculate.safeCode(),
                     haveSep: true,
                 },
                 {
@@ -435,9 +436,9 @@ export default {
                 )
                 const feeTokenId = 0
                 const zksNetWorkID =
-                    fromChainID === 512
-                        ? config.ZKSpace.zksrinkebyChainID
-                        : config.ZKSpace.zksChainID
+                    fromChainID === CHAIN_ID.zkspace_test
+                        ? 129
+                        : 13
 
                 const fee = await zkspace.getZKSpaceTransferGasFee(
                     fromChainID,
@@ -449,7 +450,7 @@ export default {
                 )
 
                 const zksTokenInfos =
-                    fromChainID === 12
+                    fromChainID === CHAIN_ID.zkspace
                         ? this.$store.state.zksTokenList.mainnet
                         : this.$store.state.zksTokenList.rinkeby
                 const tokenAddress = selectMakerConfig.toChain.tokenAddress
@@ -975,10 +976,10 @@ export default {
                 return;
             }
             if (
-                fromChainID === 4 ||
-                fromChainID === 44 ||
-                toChainID === 4 ||
-                toChainID === 44
+                fromChainID === CHAIN_ID.starknet ||
+                fromChainID === CHAIN_ID.starknet_test ||
+                toChainID === CHAIN_ID.starknet ||
+                toChainID === CHAIN_ID.starknet_test
             ) {
                 let { starkChain } = web3State.starkNet
                 starkChain = +starkChain ? +starkChain : starkChain
@@ -987,8 +988,8 @@ export default {
                     return
                 }
                 if (
-                    (fromChainID === 4 || toChainID === 4) &&
-                    (starkChain === 44 || starkChain === 'localhost')
+                    (fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) &&
+                    (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
                 ) {
                     util.showMessage(
                         'please switch Starknet Wallet to mainnet',
@@ -997,8 +998,8 @@ export default {
                     return
                 }
                 if (
-                    (fromChainID === 44 || toChainID === 44) &&
-                    (starkChain === 4 || starkChain === 'localhost')
+                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
+                    (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
                 ) {
                     util.showMessage(
                         'please switch Starknet Wallet to testNet',
@@ -1248,7 +1249,7 @@ export default {
             }
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
-            if (fromChainID !== 4 && fromChainID !== 44) {
+            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
@@ -1297,11 +1298,11 @@ export default {
 
             this.transferLoading = true
 
-            if (fromChainID === 3 || fromChainID === 33) {
+            if (fromChainID === CHAIN_ID.zksync || fromChainID === CHAIN_ID.zksync_test) {
                 this.zkTransfer()
-            } else if (fromChainID === 9 || fromChainID === 99) {
+            } else if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
                 this.loopringTransfer()
-            } else if (fromChainID === 12 || fromChainID === 512) {
+            } else if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
                 this.zkspaceTransfer()
             } else {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -1315,23 +1316,23 @@ export default {
                     this.transferLoading = false
                     return
                 }
-                if (toChainID === 4 || toChainID === 44) {
+                if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
                     this.transferToStarkNet(tValue.tAmount)
                     return
                 }
                 const account =
                     compatibleGlobalWalletConf.value.walletPayload.walletAddress
-                if (fromChainID === 4 || fromChainID === 44) {
+                if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
                     this.starknetTransfer(tValue.tAmount)
                     return
                 }
 
-                if (fromChainID === 8 || fromChainID === 88) {
+                if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
                     this.imxTransfer(tValue.tAmount)
                     return
                 }
 
-                if (fromChainID === 11 || fromChainID === 511) {
+                if (fromChainID === CHAIN_ID.dydx || fromChainID === CHAIN_ID.dydx_test) {
                     this.dydxTransfer(tValue.tAmount)
                     return
                 }
@@ -1387,7 +1388,7 @@ export default {
                         to,
                         tValue.tAmount
                     )
-                    if (fromChainID === 2 && gasLimit < 21000) {
+                    if (String(fromChainID) === "42161" && gasLimit < 21000) {
                         gasLimit = 21000
                     }
                     const objOption = { from: account, gas: gasLimit }
@@ -1424,7 +1425,7 @@ export default {
 
             // Immutablex's identifier is not a hash
             let title = transactionHash
-            if (fromChainID === 8 || fromChainID === 88) {
+            if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
                 title = 'TransferId: ' + title
             }
             this.$notify.success({

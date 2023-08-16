@@ -154,7 +154,8 @@
         "decimals": 6,
         "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
       }
-    ]
+    ],
+    "infoURL": "https://testnet.starkscan.co"
   },
   {
     "api": {
@@ -579,5 +580,85 @@
       }
     ],
     "infoURL": "https://www.okx.com/explorer/okbc-test"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "534351",
+    "networkId": "534351",
+    "internalId": "528",
+    "name": "Scroll Sepolia",
+    "swapContract": "0xC9ed54B77c4929bCC773a6e0021dfBd1d0BcEb31",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://sepolia-rpc.scroll.io",
+      "http://scroll-testnet-public.unifra.io/",
+      "https://rpc.ankr.com/scroll_sepolia_testnet"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://sepolia-blockscout.scroll.io"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "91715",
+    "networkId": "91715",
+    "internalId": "529",
+    "name": "Combo Görli",
+    "swapContract": "0x2ec02e3DB531F9c4eA04590a9A55C5791399538E",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "BNB",
+      "symbol": "BNB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://test-rpc.combonetwork.io"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://combotrace-testnet.nodereal.io"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "999",
+    "networkId": "999",
+    "internalId": "530",
+    "name": "Zora Görli",
+    "swapContract": "0x6aca21c6c79066F41B4D0c32574DDb07FC2e7131",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://testnet.rpc.zora.energy"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://testnet.explorer.zora.energy"
   }
 ]
