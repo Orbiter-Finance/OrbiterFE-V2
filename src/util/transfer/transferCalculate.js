@@ -246,7 +246,7 @@ export default {
       }
       let gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
       // EIP1559
-      if (fromChainID === 21 || fromChainID === 521 || fromChainID === 30 || fromChainID === 530) {
+      if (fromChainID === 21 || fromChainID === 521 || fromChainID === 25 || fromChainID === 525 || fromChainID === 30 || fromChainID === 530) {
         const provider = new providers.JsonRpcProvider({
           url: util.stableRpc(fromChainID)
         });
@@ -338,7 +338,8 @@ export default {
       return gas.toFixed(6).toString()
     } else {
       let gas = gasPrice * (gasLimitMap[fromChainID.toString()] || 21000)
-      if (fromChainID === 7 || fromChainID === 77 || fromChainID === 21 || fromChainID === 521) {
+      if (fromChainID === 7 || fromChainID === 77 || fromChainID === 21 || fromChainID === 521
+          || fromChainID === 25 || fromChainID === 525 || fromChainID === 30 || fromChainID === 530) {
         const l1GasFee = await this.getOPFee(fromChainID)
         gas += l1GasFee
       }
@@ -359,6 +360,9 @@ export default {
       timeSpent = 15
     }
     if (fromChainID === 21 || fromChainID === 521) {
+      timeSpent = 15
+    }
+    if (fromChainID === 25 || fromChainID === 525) {
       timeSpent = 15
     }
     if (fromChainID === 30 || fromChainID === 530) {
@@ -452,6 +456,9 @@ export default {
     if (toChainID === 21 || toChainID === 521) {
       timeSpent += 15
     }
+    if (toChainID === 25 || toChainID === 525) {
+      timeSpent += 15
+    }
     if (toChainID === 30 || toChainID === 530) {
       timeSpent += 15
     }
@@ -483,6 +490,9 @@ export default {
       return '~7 days'
     }
     if (fromChainID === 21 || fromChainID === 521) {
+      return '~7 days'
+    }
+    if (fromChainID === 25 || fromChainID === 525) {
       return '~7 days'
     }
     if (fromChainID === 30 || fromChainID === 530) {
@@ -588,6 +598,9 @@ export default {
       if (toChainID === 21 || toChainID === 521) {
         return '~15min'
       }
+      if (toChainID === 25 || toChainID === 525) {
+        return '~15min'
+      }
       if (toChainID === 30 || toChainID === 530) {
         return '~15min'
       }
@@ -638,6 +651,9 @@ export default {
     if (fromChainID === 21 || fromChainID === 521) {
       return ' 7 days'
     }
+    if (fromChainID === 25 || fromChainID === 525) {
+      return ' 7 days'
+    }
     if (fromChainID === 30 || fromChainID === 530) {
       return ' 7 days'
     }
@@ -653,6 +669,9 @@ export default {
         return '10min'
       }
       if (toChainID === 21 || toChainID === 521) {
+        return '10min'
+      }
+      if (toChainID === 25 || toChainID === 525) {
         return '10min'
       }
       if (
