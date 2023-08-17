@@ -27,10 +27,10 @@
     "watch": ["rpc"],
     "tokens": [
       {
-        "name": "BNB",
-        "symbol": "BNB",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
+        "name": "OUSDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0xa0321efEb50c46C17A7D72A52024eeA7221b215A"
       },
       {
         "name": "USDT",
@@ -82,6 +82,12 @@
     "watch": ["rpc"],
     "contracts": ["0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a"],
     "tokens": [
+      {
+        "name": "OUSDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0xa3fdf06e3c59df2deaae6d597353477fc3daaeaf"
+      },
       {
         "name": "USDT",
         "symbol": "USDT",
@@ -225,6 +231,12 @@
     "watch": ["rpc"],
     "contracts": ["0x89EBCf7253f5E27b45E82cd228c977Fd03E47f54"],
     "tokens": [
+      {
+        "name": "OUSDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x17464cffd501430302f20f37145e36cc47842790"
+      },
       {
         "name": "USDT",
         "symbol": "USDT",

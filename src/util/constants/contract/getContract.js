@@ -76,4 +76,4 @@ async function getTransferGasLimit(
   }
 }
 
-export { getTransferContract, getLocalCoinContract, getTransferGasLimit }
+export { getTransferContract, getTransferGasLimit }

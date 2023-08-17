@@ -111,8 +111,10 @@ export default {
             const chainOrderIds = [
                 CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.zksync, CHAIN_ID.zksync_test,
                 CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test, CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.mainnet,
-                CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, 16, 516, 9, 99, 7, 77, 12, 512, 8,
-                88, 10, 510, 11, 511, 13, 513, 4, 44, 15, 515, 518, 519, 520,
+                CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
+                CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
+                CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
+                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test
             ]
             return this.orderChainIds(chainOrderIds, newArray)
         },
@@ -124,8 +126,12 @@ export default {
                 chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
             }
             const chainOrderIds = [
-                14, 514, 3, 33, 17, 517, 6, 66, 1, 5, 2, 22, 16, 516, 9, 99, 7, 77, 12, 512, 8,
-                88, 10, 510, 11, 511, 13, 513, 4, 44, 15, 515, 518, 519, 520,
+                CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.zksync, CHAIN_ID.zksync_test,
+                CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test, CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.mainnet,
+                CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
+                CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
+                CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
+                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test
             ]
             return customSort(chainOrderIds,chains)
         },

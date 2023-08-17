@@ -1251,9 +1251,10 @@ export default {
 
   safeCode() {
     const { selectMakerConfig, toChainID } = transferDataState;
-    const internalId = selectMakerConfig.fromChain.id.length < 2 ? ("0" + selectMakerConfig.fromChain.id) : selectMakerConfig.fromChain.id;
+    const internalId = String(selectMakerConfig.fromChain.id).length < 2 ? ("0" + selectMakerConfig.fromChain.id) : selectMakerConfig.fromChain.id;
+    const chainInfo = util.getV3ChainInfoByChainId(toChainID);
     return selectMakerConfig.ebcId ?
-        selectMakerConfig.ebcId + selectMakerConfig.dealerId + internalId : (9000 + Number(toChainID) + '');
+        selectMakerConfig.ebcId + selectMakerConfig.dealerId + internalId : (9000 + Number(chainInfo.internalId) + '');
   },
 
   getTransferTValue() {
@@ -1267,7 +1268,7 @@ export default {
     return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text);
   },
   realTransferAmount() {
-    const { selectMakerConfig, transferValue, fromChainID, toChainID } =
+    const { selectMakerConfig, transferValue, fromChainID } =
       transferDataState
     const userValue = new BigNumber(transferValue).plus(
       new BigNumber(selectMakerConfig.tradingFee)

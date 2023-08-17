@@ -29,6 +29,22 @@ export default {
     }
   },
 
+  evmAddressFormat(txHash) {
+      if (txHash === "00x0") {
+          return "0x0000000000000000000000000000000000000000";
+      }
+    if (txHash.length < 42) {
+      const end = txHash.substring(2, txHash.length);
+      const add = 42 - end.length;
+      let addStr = '';
+      for (let i = 0; i < add; i++) {
+        addStr += '0';
+      }
+      txHash = '0x' + addStr + end;
+    }
+    return txHash;
+  },
+
   starknetHashFormat(txHash) {
     if (txHash.length < 66) {
       const end = txHash.substring(2, txHash.length)
@@ -54,10 +70,10 @@ export default {
     return this.getChainInfoByNetworkId(networkId)?.name || 'unknown'
   },
   chainName(chainId) {
-    return this.getChainInfoByChainId(chainId)?.name || 'unknown'
+    return this.getV3ChainInfoByChainId(chainId)?.name || 'unknown'
   },
   chainNetWorkId(chainId) {
-    return this.getChainInfoByChainId(chainId)?.chainId
+    return this.getV3ChainInfoByChainId(chainId)?.chainId
   },
   getMetaMaskNetworkId(chainId) {
     return env.metaMaskNetworkId[chainId] || chainId
@@ -112,6 +128,8 @@ export default {
   },
 
   isEthTokenAddress(chainId, tokenAddress) {
+    tokenAddress = this.evmAddressFormat(tokenAddress);
+    console.log("tokenAddress",tokenAddress)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
     if (chainInfo) {
       // main coin
@@ -294,25 +312,6 @@ export default {
     return chainInfo
   },
 
-  getChainInfoByChainId(chainId) {
-    const info = config.chainConfig.find(
-      (item) => +item.internalId === +chainId
-    )
-    if (!info) return null
-    const chainInfo = JSON.parse(JSON.stringify(info))
-    const localWsRpc = process.env[`VUE_APP_WP_${chainId}`]
-    if (localWsRpc) {
-      chainInfo.rpc = chainInfo.rpc || []
-      chainInfo.rpc.push(localWsRpc)
-    }
-    const localHttpRpc = process.env[`VUE_APP_HP_${chainId}`]
-    if (localHttpRpc) {
-      chainInfo.rpc = chainInfo.rpc || []
-      chainInfo.rpc.push(localHttpRpc)
-    }
-    return chainInfo
-  },
-
   getChainInfoByNetworkId(networkId) {
     const info = config.chainConfig.find(
       (item) => +item.networkId === +networkId
@@ -361,7 +360,7 @@ export default {
     if (this.isStarkNet()) {
       return false
     }
-    const chainInfo = this.getChainInfoByChainId(fromChainID)
+    const chainInfo = this.getV3ChainInfoByChainId(fromChainID)
     return chainInfo?.xvmList && chainInfo.xvmList.length
   },
 

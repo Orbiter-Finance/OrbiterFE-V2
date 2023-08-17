@@ -457,6 +457,9 @@ export default {
     };
   },
   computed: {
+    CHAIN_ID() {
+      return CHAIN_ID;
+    },
     isLightMode() {
       return this.$store.state.themeMode === 'light';
     },
@@ -551,8 +554,12 @@ export default {
       let { token, tokens, amount, fixed } = query;
       amount = new BigNumber(amount);
       tokens = !tokens ? [] : tokens.split(',');
-      let source = makerConfigs.find(item => item.fromChain.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.id || 0;
-      let dest = makerConfigs.find(item => item.toChain.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.id || 0;
+      // if (!makerConfigs || !makerConfigs.length) {
+      //   return;
+      // }
+
+      let source = makerConfigs.find(item => item?.fromChain?.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.chainId || 0;
+      let dest = makerConfigs.find(item => item?.toChain?.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.chainId || 0;
       const getMapChainIds = (chainNames, isDest) => {
         const chainIds = [];
         if (!chainNames) {
@@ -560,8 +567,8 @@ export default {
         }
         for (const chainName of chainNames.split(',')) {
           const chainId = isDest ?
-                  makerConfigs.find(item => item.toChain.name === chainName)?.toChain?.id || 0 :
-                  makerConfigs.find(item => item.fromChain.name === chainName)?.fromChain?.id || 0;
+                  makerConfigs.find(item => item.toChain.name === chainName)?.toChain?.chainId || 0 :
+                  makerConfigs.find(item => item.fromChain.name === chainName)?.fromChain?.chainId || 0;
           if (chainId) {
             chainIds.push(chainId);
           }
@@ -673,9 +680,8 @@ export default {
       } using Orbiter.`;
     },
     timeSpent() {
-      // const { selectMakerConfig } = transferDataState;
-      // return selectMakerConfig.spendTime
-      return transferCalculate.transferSpentTime(
+      const { selectMakerConfig } = transferDataState;
+      return selectMakerConfig?.spentTime ? `${selectMakerConfig.spentTime}s` : transferCalculate.transferSpentTime(
               transferDataState.fromChainID,
               transferDataState.toChainID
       );
@@ -753,7 +759,7 @@ export default {
     },
   },
   async mounted() {
-    this.syncV3Data(v1MakerConfigs);
+    await this.syncV3Data(v1MakerConfigs);
 
     this.openApiFilter();
 
@@ -805,6 +811,7 @@ export default {
         makerConfigs = makerConfigs.sort(function () {
           return Math.random() - 0.5;
         });
+        console.log("makerConfigs",makerConfigs)
       } catch (e) {
         console.error(e);
         makerConfigs = originMakerConfigs;
@@ -945,6 +952,7 @@ export default {
         toCurrency = fromCurrency;
       }
       this.sendBtnInfo.disabled = 'disabled';
+      // console.warn("updateTransferInfo ======================")
 
       const isCrossAddress = transferDataState.isCrossAddress;
       const oldFromChainID = transferDataState.fromChainID;
@@ -1035,7 +1043,7 @@ export default {
         );
       }
 
-      const fromTokenList = [];
+      let fromTokenList = [];
       const toTokenList = [];
       makerConfigList.forEach(item => {
         if (!fromTokenList.find(it => it.token === item.fromChain.symbol)) {
@@ -1053,6 +1061,11 @@ export default {
           });
         }
       });
+      if (fromTokenList.length) {
+        fromTokenList = fromTokenList.sort(function (a, b) {
+          return a.token !== 'ETH';
+        });
+      }
       if (fromTokenList.length && !fromTokenList.find((item) => item.token === fromCurrency)) {
         fromCurrency = fromTokenList[0].token;
         if (oldFromChainID !== fromChainID) this.selectFromToken = fromTokenList[0].token;
@@ -1109,6 +1122,10 @@ export default {
               item.fromChain.symbol === fromCurrency &&
               item.toChain.symbol === toCurrency
       );
+      if (!makerConfig) {
+        console.error(`can't find makerConfig`);
+        return;
+      }
       const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
       if (fromCurrency === toCurrency && isCrossAddress && makerConfigInfo.crossAddress?.recipient) {
         makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient;
@@ -1508,9 +1525,9 @@ export default {
       //   });
       //   return;
       // }
-      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-        return;
-      }
+      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+      //   return;
+      // }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,
@@ -1669,7 +1686,7 @@ export default {
             }
           }
         }
-        const chainInfo = util.getChainInfoByChainId(fromChainID);
+        const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
         const toAddressAll = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
                 selectMakerConfig.recipient).toLowerCase();
@@ -1686,7 +1703,7 @@ export default {
             no: 1,
             from: new BigNumber(this.transferValue).plus(
                     new BigNumber(selectMakerConfig.tradingFee)
-            ) + fromCurrency,
+            ).toFixed(4) + fromCurrency,
             to: toAddress,
             fromTip: '',
             toTip: toAddressAll,

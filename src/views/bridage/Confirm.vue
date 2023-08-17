@@ -309,7 +309,7 @@ export default {
                 });
                 return;
             }
-            const chainInfo = util.getChainInfoByChainId(fromChainID)
+            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
             if (!chainInfo.contracts || !chainInfo.contracts.length) {
                 this.$notify.error({
                     title: 'Contract not supported temporarily',
@@ -1172,7 +1172,7 @@ export default {
                 return
             }
 
-            const chainInfo = util.getChainInfoByChainId(fromChainID)
+            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
             const contractAddress = chainInfo.xvmList[0]
             const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             // approve

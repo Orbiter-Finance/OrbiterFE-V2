@@ -23,7 +23,7 @@ export class CrossAddress {
     signer = undefined,
     contractAddress
   ) {
-    const chainInfo = util.getChainInfoByChainId(orbiterChainId)
+    const chainInfo = util.getV3ChainInfoByChainId(orbiterChainId)
     this.contractAddress =
       contractAddress ||
       (chainInfo?.xvmList && chainInfo.xvmList.length

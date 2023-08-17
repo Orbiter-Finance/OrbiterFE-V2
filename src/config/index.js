@@ -141,7 +141,7 @@ function convertMakerConfig(maker) {
         makerId: '',
         ebcId: '',
         slippage: makerData.slippage || 0,
-        recipient: makerData.makerAddress,
+        recipient: makerData.makerAddress || makerData.sender,
         sender: makerData.sender,
         tradingFee: makerData.tradingFee,
         gasFee: makerData.gasFee,
