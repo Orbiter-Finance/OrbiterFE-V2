@@ -382,9 +382,9 @@ import {
   updateTransferMakerConfig,
   updateTransferExt, curPageStatus,
 } from '../../composition/hooks';
-import { isDev, isProd } from "../../util";
-import orbiterApiAx from "../../common/orbiterApiAx";
+import { isDev } from "../../util";
 import openApiAx from "../../common/openApiAx";
+import { getMdcRuleLatest } from "../../common/thegraph";
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
 
@@ -785,11 +785,6 @@ export default {
     updateCrossAddressReceipt(this.crossAddressReceipt);
 
     this.rates = await getRates('ETH');
-
-    const self = this;
-    this.cronList.push(setInterval(() => {
-      self.checkRuleUpdate();
-    }, 30 * 1000));
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -800,47 +795,23 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
-    async syncV3Data(originMakerConfigs, address) {
+    async syncV3Data(originMakerConfigs) {
+      const dealerId = this.$route?.query?.dealerId;
+      if (!dealerId) {
+        return;
+      }
       try {
-        let ruleList = localStorage.getItem('v3_rule') ? JSON.parse(localStorage.getItem('v3_rule')) : [];
-        if (address || !ruleList.length) {
-          ruleList = await this.getRuleLatest(address);
-          localStorage.setItem('v3_rule', JSON.stringify(ruleList));
-        }
-        makerConfigs = [...ruleList, ...originMakerConfigs];
-        makerConfigs = makerConfigs.sort(function () {
-          return Math.random() - 0.5;
-        });
-        console.log("makerConfigs",makerConfigs)
+        const ruleList = await getMdcRuleLatest(dealerId);
+        if (!ruleList || !ruleList.length) return;
+        makerConfigs = ruleList;
+        this.cronList.push(setInterval(async () => {
+          const ruleList = await getMdcRuleLatest(dealerId);
+          if (!ruleList || !ruleList.length) return;
+          makerConfigs = ruleList;
+        }, 30 * 1000));
       } catch (e) {
         console.error(e);
         makerConfigs = originMakerConfigs;
-      }
-    },
-    async getRuleLatest(address) {
-      const params = address ? [address] : [];
-      return await openApiAx.post('/v3/yj6toqvwh1177e1sexfy0u1pxx5j8o47', {
-        "id": 1,
-        "jsonrpc": "2.0",
-        "method": "orbiter_getRuleLatest",
-        "params": params
-      }) || [];
-    },
-    async checkRuleUpdate() {
-      const selectMakerConfig = transferDataState.selectMakerConfig;
-      if (!selectMakerConfig || !selectMakerConfig.ebcId) {
-        return;
-      }
-      const updateTimeCache = localStorage.getItem('v3_updateTime');
-      const updateTime = await openApiAx.post('/v3/yj6toqvwh1177e1sexfy0u1pxx5j8o47', {
-        "id": 1,
-        "jsonrpc": "2.0",
-        "method": "orbiter_updateTime",
-        "params": []
-      });
-      if (+updateTime !== +updateTimeCache) {
-        this.refreshConfig(selectMakerConfig.recipient);
-        localStorage.setItem('v3_updateTime', String(updateTime));
       }
     },
     async openApiFilter() {
@@ -933,11 +904,11 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
-    refreshConfig(address) {
+    refreshConfig() {
       if (this.isNewVersion) {
-        this.syncV3Data(config.makerConfigs, address);
+        this.syncV3Data(config.makerConfigs);
       } else {
-        this.syncV3Data(config.v1MakerConfigs, address);
+        this.syncV3Data(config.v1MakerConfigs);
       }
       this.updateTransferInfo();
     },
@@ -952,7 +923,6 @@ export default {
         toCurrency = fromCurrency;
       }
       this.sendBtnInfo.disabled = 'disabled';
-      // console.warn("updateTransferInfo ======================")
 
       const isCrossAddress = transferDataState.isCrossAddress;
       const oldFromChainID = transferDataState.fromChainID;
@@ -968,7 +938,7 @@ export default {
         fromChainID = oldToChainID;
       }
 
-      this.isLoopring = fromChainID === 9 || fromChainID === 99;
+      this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
 
       if (fromCurrency === toCurrency && !this.isLoopring) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
@@ -980,8 +950,9 @@ export default {
         this.isCrossAddress = false;
       }
 
-      const { tokens, source, dest } = this.queryParams;
-      const fromTokens = tokens;
+      const { query } = this.$route;
+      const source = makerConfigs.find(item => item?.fromChain?.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.chainId || 0;
+      const dest = makerConfigs.find(item => item?.toChain?.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.chainId || 0;
       const fromChainIdList = Array.from(new Set(
               makerConfigs.map(item => item.fromChain.chainId)
       )).sort(function (a, b) {
@@ -1037,11 +1008,6 @@ export default {
       }
 
       let makerConfigList = makerConfigs.filter(item => item.fromChain.chainId === fromChainID && item.toChain.chainId === toChainID);
-      if (fromTokens.length) {
-        makerConfigList = makerConfigList.filter(item =>
-                fromTokens.find((it) => util.equalsIgnoreCase(it, item.fromChain.symbol))
-        );
-      }
 
       let fromTokenList = [];
       const toTokenList = [];

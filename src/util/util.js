@@ -30,9 +30,6 @@ export default {
   },
 
   evmAddressFormat(txHash) {
-      if (txHash === "00x0") {
-          return "0x0000000000000000000000000000000000000000";
-      }
     if (txHash.length < 42) {
       const end = txHash.substring(2, txHash.length);
       const add = 42 - end.length;
@@ -129,7 +126,6 @@ export default {
 
   isEthTokenAddress(chainId, tokenAddress) {
     tokenAddress = this.evmAddressFormat(tokenAddress);
-    console.log("tokenAddress",tokenAddress)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
     if (chainInfo) {
       // main coin
@@ -320,6 +316,25 @@ export default {
     return JSON.parse(JSON.stringify(info))
   },
 
+  getTokenByTokenAddress(chainId, tokenAddress) {
+    const chainInfo = this.getV3ChainInfoByChainId(String(chainId));
+    if (!chainInfo) return null;
+    const tokenList = this.getChainTokenList(chainInfo);
+    return tokenList.find(item => item.address.toLowerCase() === tokenAddress.toLowerCase());
+  },
+
+  getChainTokenList(chain) {
+    const allTokenList = [];
+    if (!chain) return [];
+    if (chain.tokens && chain.tokens.length) {
+      allTokenList.push(...chain.tokens);
+    }
+    if (chain.nativeCurrency) {
+      allTokenList.push(chain.nativeCurrency);
+    }
+    return allTokenList;
+  },
+
   log(...msg) {
     if (isProd()) {
       return
@@ -353,12 +368,15 @@ export default {
   },
 
   isSupportXVMContract() {
-    const { fromChainID } = transferDataState
+    const { fromChainID, selectMakerConfig,fromCurrency, toCurrency } = transferDataState
     if (!this.isWhite()) {
       return false
     }
     if (this.isStarkNet()) {
       return false
+    }
+    if (selectMakerConfig.ebcId) {
+      return false;
     }
     const chainInfo = this.getV3ChainInfoByChainId(fromChainID)
     return chainInfo?.xvmList && chainInfo.xvmList.length
