@@ -181,7 +181,11 @@ export default {
     524: 'mntlogo',
     525: 'opbsclogo',
     526: 'tokenLogo',
-    527: 'okblogo'
+    527: 'okblogo',
+    528: "scrolllogo",
+    529: "combologo",
+    530: "zoralogo",
+    531: "mantalogo"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
