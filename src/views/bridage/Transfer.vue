@@ -710,7 +710,7 @@ export default {
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
     },
-    isWhiteWallet(){
+    isWhiteWallet() {
       this.refreshConfig();
     },
     isNewVersion() {
@@ -805,19 +805,32 @@ export default {
         return;
       }
       try {
-        const ruleList = await getMdcRuleLatest(dealerId);
-        if (!ruleList || !ruleList.length) return;
+        const self = this;
+        const ruleCache = localStorage.getItem(`${ dealerId }_rule`);
+        if (!ruleCache) {
+          const ruleList = await self.getNetWorkRule(dealerId);
+          if (!ruleList.length) return;
+        } else {
+          makerConfigs = JSON.parse(ruleCache);
+          setTimeout(async () => {
+            await self.getNetWorkRule(dealerId);
+          }, 0);
+        }
         this.isV3 = true;
-        makerConfigs = ruleList;
         this.cronList.push(setInterval(async () => {
-          const ruleList = await getMdcRuleLatest(dealerId);
-          if (!ruleList || !ruleList.length) return;
-          makerConfigs = ruleList;
+          await self.getNetWorkRule(dealerId);
         }, 30 * 1000));
       } catch (e) {
         console.error(e);
         makerConfigs = v1MakerConfigs;
       }
+    },
+    async getNetWorkRule(dealerId) {
+      const ruleList = await getMdcRuleLatest(dealerId);
+      if (!ruleList || !ruleList.length) return [];
+      makerConfigs = ruleList;
+      localStorage.setItem(`${ dealerId }_rule`, JSON.stringify(ruleList));
+      return ruleList;
     },
     async openApiFilter() {
       try {
@@ -910,6 +923,9 @@ export default {
           this.refreshGasFeeToolTip();
       },
     refreshConfig() {
+      if (this.isV3) {
+        return;
+      }
       if (this.isNewVersion) {
         makerConfigs = config.makerConfigs;
       } else {
@@ -1500,9 +1516,9 @@ export default {
       //   });
       //   return;
       // }
-      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-      //   return;
-      // }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return;
+      }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,

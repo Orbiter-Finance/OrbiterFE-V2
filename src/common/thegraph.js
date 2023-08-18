@@ -69,6 +69,9 @@ export async function getMdcRuleLatest(dealerAddress) {
         const ruleLatests = mdc.ruleLatest;
         for (const ruleLatest of ruleLatests) {
             const ebcId = mdc.mapping.ebcMapping.find(item => item.ebcAddr === ruleLatest.ebc.id)?.ebcIndex;
+            if (!ebcId) {
+                continue;
+            }
             const dealerId = mdc.mapping.dealerMapping.find(item => item.dealerAddr === dealerAddress)?.dealerIndex;
             if (ruleLatest.chain0) {
                 const token0 = util.getTokenByTokenAddress(String(ruleLatest.chain0), ruleLatest.chain0Token);
@@ -76,7 +79,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                 const chainInfo0 = util.getV3ChainInfoByChainId(String(ruleLatest.chain0));
                 const chainInfo1 = util.getV3ChainInfoByChainId(String(ruleLatest.chain1));
                 if (!token0 || !token0) {
-                    console.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
+                    // util.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
                     continue;
                 }
                 marketList.push({
@@ -90,23 +93,23 @@ export async function getMdcRuleLatest(dealerAddress) {
                         networkId: ruleLatest.chain0,
                         chainId: ruleLatest.chain0,
                         name: chainInfo0.name,
-                        symbol: token0?.symbol,
+                        symbol: token0.symbol,
                         tokenAddress: ruleLatest.chain0Token,
-                        decimals: token0?.decimals,
-                        maxPrice: +ruleLatest.chain0maxPrice,
-                        minPrice: +ruleLatest.chain0minPrice,
+                        decimals: token0.decimals,
+                        maxPrice: floor(Number(new BigNumber(ruleLatest.chain0maxPrice).dividedBy(10 ** token0.decimals))),
+                        minPrice: ceil(Number(new BigNumber(ruleLatest.chain0minPrice).dividedBy(10 ** token0.decimals))),
                     },
                     toChain: {
                         id: chainIdMap[ruleLatest.chain1],
                         networkId: ruleLatest.chain1,
                         chainId: ruleLatest.chain1,
                         name: chainInfo1.name,
-                        symbol: token1?.symbol,
+                        symbol: token1.symbol,
                         tokenAddress: ruleLatest.chain1Token,
-                        decimals: token1?.decimals,
+                        decimals: token1.decimals,
                     },
                     gasFee: new BigNumber(ruleLatest.chain0TradeFee).multipliedBy(10).toFixed(),
-                    tradingFee: new BigNumber(ruleLatest.chain0WithholdingFee).dividedBy(10 ** (token0?.decimals || 18)).toFixed(),
+                    tradingFee: new BigNumber(ruleLatest.chain0WithholdingFee).dividedBy(10 ** token0.decimals).toFixed(),
                     times: [0, 99999999999999],
                 });
             }
@@ -116,7 +119,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                 const chainInfo0 = util.getChainInfoByNetworkId(Number(ruleLatest.chain0));
                 const chainInfo1 = util.getChainInfoByNetworkId(Number(ruleLatest.chain1));
                 if (!token0 || !token0) {
-                    console.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
+                    // util.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
                     continue;
                 }
                 marketList.push({
@@ -133,8 +136,8 @@ export async function getMdcRuleLatest(dealerAddress) {
                         symbol: token1?.symbol,
                         tokenAddress: ruleLatest.chain1Token,
                         decimals: token1?.decimals,
-                        maxPrice: +ruleLatest.chain1maxPrice,
-                        minPrice: +ruleLatest.chain1minPrice,
+                        maxPrice: floor(Number(new BigNumber(ruleLatest.chain1maxPrice).dividedBy(10 ** token1.decimals))),
+                        minPrice: ceil(Number(new BigNumber(ruleLatest.chain1minPrice).dividedBy(10 ** token1.decimals))),
                     },
                     toChain: {
                         id: Number(chainIdMap[ruleLatest.chain0]),
@@ -146,12 +149,19 @@ export async function getMdcRuleLatest(dealerAddress) {
                         decimals: token0?.decimals,
                     },
                     gasFee: new BigNumber(ruleLatest.chain1TradeFee).multipliedBy(10).toFixed(),
-                    tradingFee: new BigNumber(ruleLatest.chain1WithholdingFee).dividedBy(10 ** (token1?.decimals || 18)).toFixed(),
+                    tradingFee: new BigNumber(ruleLatest.chain1WithholdingFee).dividedBy(10 ** token1.decimals).toFixed(),
                     times: [0, 99999999999999],
                 });
             }
         }
     }
-    console.log("marketList ====", marketList);
     return marketList;
+}
+
+function ceil(n) {
+    return Number(new BigNumber(Math.ceil(n * 10 ** 6)).dividedBy(10 ** 6));
+}
+
+function floor(n) {
+    return Number(new BigNumber(Math.floor(n * 10 ** 6)).dividedBy(10 ** 6));
 }

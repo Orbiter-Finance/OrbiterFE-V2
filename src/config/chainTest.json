@@ -27,28 +27,16 @@
     "watch": ["rpc"],
     "tokens": [
       {
-        "name": "OUSDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0xa0321efEb50c46C17A7D72A52024eeA7221b215A"
-      },
-      {
         "name": "USDT",
         "symbol": "USDT",
         "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
+        "address": "0xa0321efEb50c46C17A7D72A52024eeA7221b215A"
       },
       {
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-      },
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+        "address": "0xA3a8A6b323E3d38f5284db9337e7c6d74Af3366a"
       }
     ],
     "router": {
@@ -83,22 +71,16 @@
     "contracts": ["0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a"],
     "tokens": [
       {
-        "name": "OUSDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0xa3fdf06e3c59df2deaae6d597353477fc3daaeaf"
-      },
-      {
         "name": "USDT",
         "symbol": "USDT",
         "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
+        "address": "0x76FC39362EF66DAd742791BDe738b9B050C3cBf5"
       },
       {
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+        "address": "0xA3FDF06e3c59Df2DEaAE6D597353477FC3daaEaf"
       },
       {
         "name": "DAI",
@@ -232,22 +214,16 @@
     "contracts": ["0x89EBCf7253f5E27b45E82cd228c977Fd03E47f54"],
     "tokens": [
       {
-        "name": "OUSDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x17464cffd501430302f20f37145e36cc47842790"
-      },
-      {
         "name": "USDT",
         "symbol": "USDT",
         "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
+        "address": "0x4C6c591254769CD6D1850aa626bc45B12d8d9ce0"
       },
       {
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+        "address": "0x17464cFfd501430302f20F37145E36cC47842790"
       },
       {
         "name": "DAI",

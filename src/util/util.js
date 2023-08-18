@@ -32,7 +32,7 @@ export default {
   evmAddressFormat(txHash) {
     if (txHash.length < 42) {
       const end = txHash.substring(2, txHash.length);
-      const add = 42 - end.length;
+      const add = 40 - end.length;
       let addStr = '';
       for (let i = 0; i < add; i++) {
         addStr += '0';
@@ -320,7 +320,7 @@ export default {
     const chainInfo = this.getV3ChainInfoByChainId(String(chainId));
     if (!chainInfo) return null;
     const tokenList = this.getChainTokenList(chainInfo);
-    return tokenList.find(item => item.address.toLowerCase() === tokenAddress.toLowerCase());
+    return tokenList.find(item => item.address.toLowerCase() === (this.evmAddressFormat(tokenAddress)).toLowerCase());
   },
 
   getChainTokenList(chain) {
