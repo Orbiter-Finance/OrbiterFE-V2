@@ -185,7 +185,8 @@ export default {
     528: "scrolllogo",
     529: "combologo",
     530: "zoralogo",
-    531: "mantalogo"
+    531: "mantalogo",
+    532: "altlayerlogo"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
