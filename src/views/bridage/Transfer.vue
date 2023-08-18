@@ -928,8 +928,9 @@ export default {
         this.isCrossAddress = false;
       }
 
-      const { tokens, source, dest } = this.queryParams;
-      const fromTokens = tokens;
+      const { query } = this.$route;
+      const source = makerConfigs.find(item => item.fromChain.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.id || 0;
+      const dest = makerConfigs.find(item => item.toChain.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.id || 0;
       const fromChainIdList = Array.from(new Set(
               makerConfigs.map(item => item.fromChain.id)
       )).sort(function (a, b) {
@@ -985,11 +986,6 @@ export default {
       }
 
       let makerConfigList = makerConfigs.filter(item => item.fromChain.id === fromChainID && item.toChain.id === toChainID);
-      if (fromTokens.length) {
-        makerConfigList = makerConfigList.filter(item =>
-                fromTokens.find((it) => util.equalsIgnoreCase(it, item.fromChain.symbol))
-        );
-      }
 
       const fromTokenList = [];
       const toTokenList = [];
