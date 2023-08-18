@@ -632,6 +632,29 @@
             "url": "",
             "key": ""
         },
+        "chainId": "204",
+        "networkId": "204",
+        "internalId": "25",
+        "name": "OpBNB",
+        "debug": false,
+        "features": [],
+        "contracts": [],
+        "nativeCurrency": {
+            "name": "BNB",
+            "symbol": "BNB",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": ["https://opbnb-mainnet-rpc.bnbchain.org"],
+        "watch": ["rpc"],
+        "tokens": [],
+        "infoURL": "https://mainnet.opbnbscan.com"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
         "chainId": "7777777",
         "networkId": "7777777",
         "internalId": "30",

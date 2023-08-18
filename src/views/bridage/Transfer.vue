@@ -1,5 +1,5 @@
 <template>
-  <div class="transfer-box">
+  <div class="transfer-box" v-loading="boxLoading">
     <div class="top-area" style="position: relative">
       <span class="title">Token</span>
       <div v-if="!isNewVersion" class="symbol">
@@ -10,7 +10,7 @@
                 @show="() => (isRaiseUpFromTokenListVisible = true)"
         ></ObSelect>
       </div>
-      <div style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+      <div v-if="!isV3" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
         <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
         <el-switch :hidden="isLightMode"
                 v-model="isNewVersion"
@@ -407,6 +407,7 @@ export default {
       isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
+      isV3: false,
 
       isCrossAddress: false,
       isRaiseUpFromTokenListVisible: false,
@@ -420,8 +421,9 @@ export default {
       originGasLoading: false,
       fromBalanceLoading: false,
       toBalanceLoading: false,
-
       saveTimeLoading: false,
+
+      boxLoading: false,
 
       // balanceMap: {},
       originGasCost: 0,
@@ -759,7 +761,9 @@ export default {
     },
   },
   async mounted() {
-    await this.syncV3Data(v1MakerConfigs);
+    this.boxLoading = true;
+    await this.syncV3Data();
+    this.boxLoading = false;
 
     this.openApiFilter();
 
@@ -795,7 +799,7 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
-    async syncV3Data(originMakerConfigs) {
+    async syncV3Data() {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
         return;
@@ -803,6 +807,7 @@ export default {
       try {
         const ruleList = await getMdcRuleLatest(dealerId);
         if (!ruleList || !ruleList.length) return;
+        this.isV3 = true;
         makerConfigs = ruleList;
         this.cronList.push(setInterval(async () => {
           const ruleList = await getMdcRuleLatest(dealerId);
@@ -811,7 +816,7 @@ export default {
         }, 30 * 1000));
       } catch (e) {
         console.error(e);
-        makerConfigs = originMakerConfigs;
+        makerConfigs = v1MakerConfigs;
       }
     },
     async openApiFilter() {
@@ -906,9 +911,9 @@ export default {
       },
     refreshConfig() {
       if (this.isNewVersion) {
-        this.syncV3Data(config.makerConfigs);
+        makerConfigs = config.makerConfigs;
       } else {
-        this.syncV3Data(config.v1MakerConfigs);
+        makerConfigs = config.v1MakerConfigs;
       }
       this.updateTransferInfo();
     },
@@ -1013,18 +1018,22 @@ export default {
       const toTokenList = [];
       makerConfigList.forEach(item => {
         if (!fromTokenList.find(it => it.token === item.fromChain.symbol)) {
-          fromTokenList.push({
-            icon: config.getTokenIcon(item.fromChain.symbol),
-            token: item.fromChain.symbol,
-            amount: 0,
-          });
+            if (item.fromChain.symbol) {
+                fromTokenList.push({
+                    icon: config.getTokenIcon(item.fromChain.symbol),
+                    token: item.fromChain.symbol,
+                    amount: 0,
+                });
+            }
         }
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
-          toTokenList.push({
-            icon: config.getTokenIcon(item.toChain.symbol),
-            token: item.toChain.symbol,
-            amount: 0,
-          });
+            if (item.toChain.symbol) {
+                toTokenList.push({
+                    icon: config.getTokenIcon(item.toChain.symbol),
+                    token: item.toChain.symbol,
+                    amount: 0,
+                });
+            }
         }
       });
       if (fromTokenList.length) {
