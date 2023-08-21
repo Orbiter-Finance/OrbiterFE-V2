@@ -67,6 +67,7 @@ export default {
     if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
       txHash = txHash.replace('sync-tx:', '0x');
     }
+    console.log(txHash);
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)

@@ -69,6 +69,7 @@ import {
     walletIsLogin,
 } from '../../composition/walletsResponsiveData'
 import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
+import { CHAIN_ID } from "../../config";
 
 export default {
     name: 'HeaderOps',
@@ -92,10 +93,10 @@ export default {
         },
         isSelectedStarkNet() {
             return (
-                transferDataState.fromChainID == 4 ||
-                transferDataState.fromChainID == 44 ||
-                transferDataState.toChainID == 4 ||
-                transferDataState.toChainID == 44
+                transferDataState.fromChainID === CHAIN_ID.starknet ||
+                transferDataState.fromChainID === CHAIN_ID.starknet_test ||
+                transferDataState.toChainID === CHAIN_ID.starknet ||
+                transferDataState.toChainID === CHAIN_ID.starknet_test
             )
         },
         starkAddress() {

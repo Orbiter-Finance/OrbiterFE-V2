@@ -241,7 +241,7 @@ export default {
             if (this.detailData) {
                 const { fromTxHash, fromChainID } = this.detailData
                 // immutablex
-                if (fromChainID == 8 || fromChainID == 88) {
+                if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
                     return `TransferId: ${fromTxHash}`
                 }
                 return `Tx:${util.shortAddress(fromTxHash)}`
@@ -253,8 +253,8 @@ export default {
             } else {
                 // immutablex
                 if (
-                    transferDataState.fromChainID == 8 ||
-                    transferDataState.fromChainID == 88
+                    transferDataState.fromChainID === CHAIN_ID.imx ||
+                    transferDataState.fromChainID === CHAIN_ID.imx_test
                 ) {
                     return `TransferId: ${proceeding.userTransfer.txid}`
                 }
@@ -268,7 +268,7 @@ export default {
                     return 'View on Explore'
                 } else {
                     // immutablex
-                    if (toChainID === 8 || toChainID === 88) {
+                    if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
                         return `TransferId: ${toTxHash}`
                     }
                     return `Tx:${util.shortAddress(toTxHash)}`
@@ -280,7 +280,7 @@ export default {
                 return 'View on Explore'
             } else {
                 // immutablex
-                if (toChainID === 8 || toChainID === 88) {
+                if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
                     return `TransferId: ${proceeding.makerTransfer.txid}`
                 }
                 return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`

@@ -141,6 +141,7 @@ import walletDispatchers, { BRAVE, METAMASK,TOKEN_POCKET_APP } from '../../util/
 import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
+import { CHAIN_ID } from "../../config";
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
     walletDispatchers
@@ -227,9 +228,9 @@ export default {
                 const starkChain = web3State.starkNet?.starkChain
                 let networkName = ''
                 if (starkChain) {
-                    if (starkChain == 4) {
+                    if (starkChain === CHAIN_ID.starknet) {
                         networkName = 'Starknet Mainnet'
-                    } else if (starkChain == 44) {
+                    } else if (starkChain === CHAIN_ID.starknet_test) {
                         networkName = 'Goerli Testnet'
                     }
                 }

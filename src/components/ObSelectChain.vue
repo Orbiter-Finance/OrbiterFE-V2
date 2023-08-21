@@ -230,7 +230,7 @@ export default {
         search() { },
         checkKeyWord() { },
         isStarkSystem(chainId) {
-            return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1
+            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
         },
     }
 }

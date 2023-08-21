@@ -72,8 +72,9 @@ export async function getMdcRuleLatest(dealerAddress) {
             if (!ebcId) {
                 continue;
             }
+            if (!ruleLatest.ruleValidation) continue;
             const dealerId = mdc.mapping.dealerMapping.find(item => item.dealerAddr === dealerAddress)?.dealerIndex;
-            if (ruleLatest.chain0) {
+            if (ruleLatest.chain0Status) {
                 const token0 = util.getTokenByTokenAddress(String(ruleLatest.chain0), ruleLatest.chain0Token);
                 const token1 = util.getTokenByTokenAddress(String(ruleLatest.chain1), ruleLatest.chain1Token);
                 const chainInfo0 = util.getV3ChainInfoByChainId(String(ruleLatest.chain0));
@@ -113,7 +114,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                     times: [0, 99999999999999],
                 });
             }
-            if (ruleLatest.chain1) {
+            if (ruleLatest.chain1Status) {
                 const token0 = util.getTokenByTokenAddress(Number(ruleLatest.chain0), ruleLatest.chain0Token);
                 const token1 = util.getTokenByTokenAddress(Number(ruleLatest.chain1), ruleLatest.chain1Token);
                 const chainInfo0 = util.getChainInfoByNetworkId(Number(ruleLatest.chain0));

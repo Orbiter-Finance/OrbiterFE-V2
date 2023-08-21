@@ -104,15 +104,13 @@
   },
   {
     "api": {
-      "url": "",
-      "key": "",
-      "intervalTime": 60000
+      "url": "https://alpha4.starknet.io",
+      "key": ""
     },
     "chainId": "SN_GOERLI",
     "networkId": "goerli-alpha",
     "internalId": "44",
     "name": "Starknet(G)",
-    "debug": false,
     "contracts": ["0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"],
     "nativeCurrency": {
       "id": 0,
@@ -121,7 +119,7 @@
       "decimals": 18,
       "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
     },
-    "rpc": [],
+    "rpc": ["https://starknet-testnet.public.blastapi.io"],
     "watch": ["rpc"],
     "tokens": [
       {
@@ -142,8 +140,7 @@
         "decimals": 6,
         "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
       }
-    ],
-    "infoURL": "https://testnet.starkscan.co"
+    ]
   },
   {
     "api": {
