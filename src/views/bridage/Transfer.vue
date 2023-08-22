@@ -1,336 +1,344 @@
 <template>
-  <div class="transfer-box" v-loading="boxLoading">
-    <div class="top-area" style="position: relative">
-      <span class="title">Token</span>
-      <div v-if="!isNewVersion" class="symbol">
-        <ObSelect
-                :datas="fromTokenList"
-                v-model="selectFromToken"
-                @input="selectFromTokenChange"
-                @show="() => (isRaiseUpFromTokenListVisible = true)"
-        ></ObSelect>
+  <div>
+    <div class="transfer-box" v-loading="boxLoading" v-if="!isEmpty">
+      <div class="top-area" style="position: relative">
+        <span class="title">Token</span>
+        <div v-if="!isNewVersion" class="symbol">
+          <ObSelect
+                  :datas="fromTokenList"
+                  v-model="selectFromToken"
+                  @input="selectFromTokenChange"
+                  @show="() => (isRaiseUpFromTokenListVisible = true)"
+          ></ObSelect>
+        </div>
+        <div v-if="!isV3" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+          <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
+          <el-switch :hidden="isLightMode"
+                     v-model="isNewVersion"
+                     active-color="#22DED7"
+                     inactive-color="#888888">
+          </el-switch>
+          <el-switch :hidden="!isLightMode"
+                     v-model="isNewVersion"
+                     active-color="#4890FE"
+                     inactive-color="#888888">
+          </el-switch>
+        </div>
       </div>
-      <div v-if="!isV3" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
-        <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
-        <el-switch :hidden="isLightMode"
-                v-model="isNewVersion"
-                active-color="#22DED7"
-                inactive-color="#888888">
-        </el-switch>
-        <el-switch :hidden="!isLightMode"
-                v-model="isNewVersion"
-                active-color="#4890FE"
-                inactive-color="#888888">
-        </el-switch>
-      </div>
-    </div>
-    <div class="from-area">
-      <div class="topItem">
-        <o-tooltip
-          v-if="
+      <div class="from-area">
+        <div class="topItem">
+          <o-tooltip
+                  v-if="
             transferDataState.fromChainID === CHAIN_ID.starknet ||
             transferDataState.fromChainID === CHAIN_ID.starknet_test
           "
-        >
-          <template v-slot:titleDesc>
-            <span v-html="starkAddress"></span>
-          </template>
-          <div class="left">From</div>
-        </o-tooltip>
-        <div v-else class="left">From</div>
-        <div v-if="isLogin" class="right">
-          Balance:
-          <CommLoading
-            :hidden="!fromBalanceLoading"
-            style="left: 0.3rem; top: 0.2rem"
-            width="1.2rem"
-            height="1.2rem"
-          />
-          <span :hidden="fromBalanceLoading">{{ fromBalance }}</span>
+          >
+            <template v-slot:titleDesc>
+              <span v-html="starkAddress"></span>
+            </template>
+            <div class="left">From</div>
+          </o-tooltip>
+          <div v-else class="left">From</div>
+          <div v-if="isLogin" class="right">
+            Balance:
+            <CommLoading
+                    :hidden="!fromBalanceLoading"
+                    style="left: 0.3rem; top: 0.2rem"
+                    width="1.2rem"
+                    height="1.2rem"
+            />
+            <span :hidden="fromBalanceLoading">{{ fromBalance }}</span>
+          </div>
         </div>
-      </div>
-      <div class="bottomItem">
-        <div class="left" @click="changeFromChain">
-          <svg-icon
-            :iconName="showChainIcon()"
-            style="width: 24px; height: 24px; margin-right: 4px"
-          ></svg-icon>
-          <span>{{ showChainName() }}</span>
-          <SvgIconThemed v-if="fromChainIdList.length > 1" />
-        </div>
-        <div
-          style="display: flex; justify-content: center; align-items: center;height: 30px"
-        >
-          <input style="min-width: 50px"
-            type="text"
-            v-model="transferValue"
-            class="right"
-            @input="inputTransferValue()"
-            :maxlength="18"
-            :placeholder="
+        <div class="bottomItem">
+          <div class="left" @click="changeFromChain">
+            <svg-icon
+                    :iconName="showChainIcon()"
+                    style="width: 24px; height: 24px; margin-right: 4px"
+            ></svg-icon>
+            <span>{{ showChainName() }}</span>
+            <SvgIconThemed v-if="fromChainIdList.length > 1" />
+          </div>
+          <div
+                  style="display: flex; justify-content: center; align-items: center;height: 30px"
+          >
+            <input style="min-width: 50px"
+                   type="text"
+                   v-model="transferValue"
+                   class="right"
+                   @input="inputTransferValue()"
+                   :maxlength="18"
+                   :placeholder="
               userMinPrice ? (
               userMinPrice > fromBalance || userMinPrice >= userMaxPrice
                 ? `at least ${userMinPrice}`
                 : `${userMinPrice}~${userMaxPrice}`
                 ) : '0'
             "
-          />
-          <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
-          <div style="margin-left: 4px">
-            <ObSelect :hidden="!isNewVersion"
-                    :datas="fromTokenList"
-                    v-model="selectFromToken"
-                    @input="selectFromTokenChange"
-                    @show="() => (isRaiseUpFromTokenListVisible = true)"
-            ></ObSelect>
+            />
+            <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
+            <div style="margin-left: 4px">
+              <ObSelect :hidden="!isNewVersion"
+                        :datas="fromTokenList"
+                        v-model="selectFromToken"
+                        @input="selectFromTokenChange"
+                        @show="() => (isRaiseUpFromTokenListVisible = true)"
+              ></ObSelect>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <svg-icon
-      v-if="isShowExchangeIcon"
-      class="exchange-icon"
-      iconName="exchange"
-      @click.native="transfer_mid"
-    ></svg-icon>
-    <div
-      class="to-area"
-      :style="{ marginTop: isShowExchangeIcon ? '4px' : '-2px' }"
-    >
-      <div class="topItem">
-        <o-tooltip
-          v-if="
+      <svg-icon
+              v-if="isShowExchangeIcon"
+              class="exchange-icon"
+              iconName="exchange"
+              @click.native="transfer_mid"
+      ></svg-icon>
+      <div
+              class="to-area"
+              :style="{ marginTop: isShowExchangeIcon ? '4px' : '-2px' }"
+      >
+        <div class="topItem">
+          <o-tooltip
+                  v-if="
             transferDataState.toChainID == CHAIN_ID.starknet ||
             transferDataState.toChainID == CHAIN_ID.starknet_test
           "
-        >
-          <template v-slot:titleDesc>
-            <span v-html="starkAddress"></span>
-          </template>
-          <div class="left">To</div>
-        </o-tooltip>
-        <div v-else class="left">To</div>
-        <div v-if="isLogin" class="right">
-          Balance:
-          <CommLoading
-            :hidden="!toBalanceLoading"
-            style="left: 0.3rem; top: 0.2rem"
-            width="1.2rem"
-            height="1.2rem"
-          />
-          <span :hidden="toBalanceLoading">{{ toBalance }}</span>
-        </div>
-      </div>
-      <div class="bottomItem">
-        <div class="left" @click="changeToChain">
-          <svg-icon
-            :iconName="showChainIcon(false)"
-            style="width: 24px; height: 24px; margin-right: 4px"
-          ></svg-icon>
-          <span>{{ showChainName(false) }}</span>
-          <SvgIconThemed v-if="toChainIdList.length > 1" />
-        </div>
-        <div style="display: flex; align-items: center;height: 30px" class="right">
-          <div v-if="toTokenList.length" style="margin-left: 4px">
-            <ObSelect v-if="isNewVersion"
-                    :datas="toTokenList"
-                    v-model="selectToToken"
-                    @input="selectToTokenChange"
-                    @show="() => (isRaiseUpToTokenListVisible = true)"
-            ></ObSelect>
-          </div>
-          <o-tooltip>
+          >
             <template v-slot:titleDesc>
-              <span v-html="toValueToolTip"></span>
+              <span v-html="starkAddress"></span>
             </template>
-            <HelpIcon style="margin-left: 0.5rem" size="sm" />
+            <div class="left">To</div>
           </o-tooltip>
-          <div class="right-value">{{ toValue }}</div>
+          <div v-else class="left">To</div>
+          <div v-if="isLogin" class="right">
+            Balance:
+            <CommLoading
+                    :hidden="!toBalanceLoading"
+                    style="left: 0.3rem; top: 0.2rem"
+                    width="1.2rem"
+                    height="1.2rem"
+            />
+            <span :hidden="toBalanceLoading">{{ toBalance }}</span>
+          </div>
+        </div>
+        <div class="bottomItem">
+          <div class="left" @click="changeToChain">
+            <svg-icon
+                    :iconName="showChainIcon(false)"
+                    style="width: 24px; height: 24px; margin-right: 4px"
+            ></svg-icon>
+            <span>{{ showChainName(false) }}</span>
+            <SvgIconThemed v-if="toChainIdList.length > 1" />
+          </div>
+          <div style="display: flex; align-items: center;height: 30px" class="right">
+            <div v-if="toTokenList.length" style="margin-left: 4px">
+              <ObSelect v-if="isNewVersion"
+                        :datas="toTokenList"
+                        v-model="selectToToken"
+                        @input="selectToTokenChange"
+                        @show="() => (isRaiseUpToTokenListVisible = true)"
+              ></ObSelect>
+            </div>
+            <o-tooltip>
+              <template v-slot:titleDesc>
+                <span v-html="toValueToolTip"></span>
+              </template>
+              <HelpIcon style="margin-left: 0.5rem" size="sm" />
+            </o-tooltip>
+            <div class="right-value">{{ toValue }}</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      v-if="isStarknet"
-      style="
+      <div
+              v-if="isStarknet"
+              style="
         font-size: 1.2rem;
         color: #78797d;
         margin-top: 1rem;
         text-align: left;
       "
-    >
-      <svg-icon
-        style="width: 1rem; height: 1rem; height: 1rem; margin-right: 0.2rem"
-        iconName="tips"
-      ></svg-icon>
-      Centralized transfer is provided currently and trustless transfer will be
-      launched soon.
-      <a
-        style="text-decoration: underline"
-        href="https://docs.orbiter.finance/"
-        target="__blank"
-        >More</a
       >
-    </div>
-    <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
-      <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
-        <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
-        <label for="checkbox"> Change Account </label>
+        <svg-icon
+                style="width: 1rem; height: 1rem; height: 1rem; margin-right: 0.2rem"
+                iconName="tips"
+        ></svg-icon>
+        Centralized transfer is provided currently and trustless transfer will be
+        launched soon.
+        <a
+                style="text-decoration: underline"
+                href="https://docs.orbiter.finance/"
+                target="__blank"
+        >More</a
+        >
       </div>
-      <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
-        <div data-v-59545920="" class="topItem">
-          <div class="left">Recipient's Address</div>
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
+        <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
+          <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+          <label for="checkbox"> Change Account </label>
         </div>
-        <input
-                @blur="updateSendBtnInfo"
-                type="text"
-                v-model="crossAddressReceipt"
-                :placeholder="`Recipient's ${chainName} Address`"
-        />
+        <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
+          <div data-v-59545920="" class="topItem">
+            <div class="left">Recipient's Address</div>
+          </div>
+          <input
+                  @blur="updateSendBtnInfo"
+                  type="text"
+                  v-model="crossAddressReceipt"
+                  :placeholder="`Recipient's ${chainName} Address`"
+          />
+        </div>
       </div>
-    </div>
-    <CommBtn
-      @click="sendTransfer"
-      :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
-      class="btn select-wallet-dialog"
-      :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
-    >
+      <CommBtn
+              @click="sendTransfer"
+              :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
+              class="btn select-wallet-dialog"
+              :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
+      >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
         {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
-    </CommBtn>
-    <div class="info-box">
-      <div v-if="isCurrentAddress" class="info-item">
-        <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
-        <span class="warn">
+      </CommBtn>
+      <div class="info-box">
+        <div v-if="isCurrentAddress" class="info-item">
+          <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
+          <span class="warn">
           This is your address.
         </span>
-      </div>
-      <div v-if="isErrorAddress" class="info-item">
-        <svg-icon class="info-icon" iconName="info"></svg-icon>
-        <span class="red">
+        </div>
+        <div v-if="isErrorAddress" class="info-item">
+          <svg-icon class="info-icon" iconName="info"></svg-icon>
+          <span class="red">
           Address format error.
         </span>
-      </div>
-      <div v-if="isShowUnreachMinInfo" class="info-item">
-        <svg-icon class="info-icon" iconName="info"></svg-icon>
-        <span class="red">
+        </div>
+        <div v-if="isShowUnreachMinInfo" class="info-item">
+          <svg-icon class="info-icon" iconName="info"></svg-icon>
+          <span class="red">
           Less than the minimum transfer amount.
         </span>
-      </div>
-      <div v-if="isShowMax" class="info-item">
-        <svg-icon class="info-icon" iconName="info"></svg-icon>
-        <span class="red">
+        </div>
+        <div v-if="isShowMax" class="info-item">
+          <svg-icon class="info-icon" iconName="info"></svg-icon>
+          <span class="red">
           Makers provide {{ maxPrice }}
           {{ selectFromToken }} for liquidity.
         </span>
-      </div>
-      <div v-if="showSaveGas" class="gas-save info-item">
-        <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
-        <span class="border">Gas Fee Saved </span>
-        <span class="red">
+        </div>
+        <div v-if="showSaveGas" class="gas-save info-item">
+          <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
+          <span class="border">Gas Fee Saved </span>
+          <span class="red">
           Save
           <CommLoading
-            :hidden="!saveGasLoading"
-            style="margin: 0 1rem"
-            width="1rem"
-            height="1rem"
+                  :hidden="!saveGasLoading"
+                  style="margin: 0 1rem"
+                  width="1rem"
+                  height="1rem"
           />
           <span :hidden="saveGasLoading" style="margin-left: 0.4rem"
-            >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
+          >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
           >
         </span>
-        <o-tooltip placement="bottom">
-          <template v-slot:titleDesc>
-            <span v-html="gasFeeToolTip"></span>
-          </template>
-          <HelpIcon style="margin-left: 0.5rem" size="sm" />
-        </o-tooltip>
-      </div>
-      <div class="time-save info-item">
-        <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
-        <span class="border">
+          <o-tooltip placement="bottom">
+            <template v-slot:titleDesc>
+              <span v-html="gasFeeToolTip"></span>
+            </template>
+            <HelpIcon style="margin-left: 0.5rem" size="sm" />
+          </o-tooltip>
+        </div>
+        <div class="time-save info-item">
+          <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
+          <span class="border">
           Time Spend
           <CommLoading :hidden="!timeSpenLoading" width="1.2rem" height="1.2rem" />
           <span :hidden="timeSpenLoading">{{ timeSpent }}</span>
         </span>
-        <span class="red">
+          <span class="red">
           Save
           <CommLoading
-            :hidden="!saveTimeLoading"
-            style="margin: 0 1rem"
-            width="1rem"
-            height="1rem"
+                  :hidden="!saveTimeLoading"
+                  style="margin: 0 1rem"
+                  width="1rem"
+                  height="1rem"
           />
           <span :hidden="saveTimeLoading" style="margin-left: 0.4rem">
             {{ transferSavingTime }}
           </span>
         </span>
-        <o-tooltip placement="bottom">
-          <template v-slot:titleDesc>
-            <span v-html="timeSpenToolTip"></span>
-          </template>
-          <HelpIcon style="margin-left: 0.5rem" size="sm" />
-        </o-tooltip>
+          <o-tooltip placement="bottom">
+            <template v-slot:titleDesc>
+              <span v-html="timeSpenToolTip"></span>
+            </template>
+            <HelpIcon style="margin-left: 0.5rem" size="sm" />
+          </o-tooltip>
+        </div>
       </div>
-    </div>
 
-    <CommDialog ref="SelectFromChainPopupRef">
-      <div slot="PoperContent" style="width: 100%">
-        <ObSelectChain
-          :ChainData="fromChainIdList"
-          v-on:getChainInfo="getFromChainInfo"
-          v-on:closeSelect="closeFromChainPopupClick()"
-        />
-      </div>
-    </CommDialog>
-    <CommDialog ref="SelectToChainPopupRef">
-      <div slot="PoperContent" style="width: 100%">
-        <ObSelectChain
-          :ChainData="toChainIdList"
-          v-on:getChainInfo="getToChainInfo"
-          v-on:closeSelect="closeToChainPopupClick()"
-        />
-      </div>
-    </CommDialog>
-    <RaiseUpSelect
-      :iconType="'img'"
-      :visible="isRaiseUpFromTokenListVisible"
-      @hiden="() => (isRaiseUpFromTokenListVisible = false)"
-      :datas="fromTokenList"
-      :value="selectFromToken"
-      @input="selectFromTokenChange"
-      :keyMaps="{ value: 'token', label: 'token' }"
-    />
-    <RaiseUpSelect
-            :iconType="'img'"
-            :visible="isRaiseUpToTokenListVisible"
-            @hiden="() => (isRaiseUpToTokenListVisible = false)"
-            :datas="toTokenList"
-            :value="selectToToken"
-            @input="selectToTokenChange"
-            :keyMaps="{ value: 'token', label: 'token' }"
-    />
+      <CommDialog ref="SelectFromChainPopupRef">
+        <div slot="PoperContent" style="width: 100%">
+          <ObSelectChain
+                  :ChainData="fromChainIdList"
+                  v-on:getChainInfo="getFromChainInfo"
+                  v-on:closeSelect="closeFromChainPopupClick()"
+          />
+        </div>
+      </CommDialog>
+      <CommDialog ref="SelectToChainPopupRef">
+        <div slot="PoperContent" style="width: 100%">
+          <ObSelectChain
+                  :ChainData="toChainIdList"
+                  v-on:getChainInfo="getToChainInfo"
+                  v-on:closeSelect="closeToChainPopupClick()"
+          />
+        </div>
+      </CommDialog>
+      <RaiseUpSelect
+              :iconType="'img'"
+              :visible="isRaiseUpFromTokenListVisible"
+              @hiden="() => (isRaiseUpFromTokenListVisible = false)"
+              :datas="fromTokenList"
+              :value="selectFromToken"
+              @input="selectFromTokenChange"
+              :keyMaps="{ value: 'token', label: 'token' }"
+      />
+      <RaiseUpSelect
+              :iconType="'img'"
+              :visible="isRaiseUpToTokenListVisible"
+              @hiden="() => (isRaiseUpToTokenListVisible = false)"
+              :datas="toTokenList"
+              :value="selectToToken"
+              @input="selectToTokenChange"
+              :keyMaps="{ value: 'token', label: 'token' }"
+      />
 
-    <CommTipDialog ref="TipPopupRef">
-      <div slot="PoperContent" class="dialog">
-        <div class="dialog-box">
-          <div @click="closeTipPopup" class="icon">
-            <i class="el-icon-close"></i>
-          </div>
-          <div class="title">
-            Unlock more Orbiter identities?
-          </div>
-          <div class="content">
-            Explore more transactions on Orbiter Finance Mainnet Have fun!
-          </div>
-          <div class="bottom">
+      <CommTipDialog ref="TipPopupRef">
+        <div slot="PoperContent" class="dialog">
+          <div class="dialog-box">
+            <div @click="closeTipPopup" class="icon">
+              <i class="el-icon-close"></i>
+            </div>
+            <div class="title">
+              Unlock more Orbiter identities?
+            </div>
+            <div class="content">
+              Explore more transactions on Orbiter Finance Mainnet Have fun!
+            </div>
+            <div class="bottom">
             <span class="btn" @click="openUrl">
               Let's Go
             </span>
+            </div>
           </div>
         </div>
+      </CommTipDialog>
+    </div>
+    <div v-if="isEmpty">
+      <img style="margin:25px" src="../../assets/data/empty.png" width="200" />
+      <div>
+        Sorry, we can't find the corresponding configuration for dealer.
       </div>
-    </CommTipDialog>
+    </div>
   </div>
 </template>
 
@@ -408,6 +416,7 @@ export default {
       isNewVersion: false,
       isLoopring: false,
       isV3: false,
+      isEmpty: false,
 
       isCrossAddress: false,
       isRaiseUpFromTokenListVisible: false,
@@ -808,14 +817,14 @@ export default {
         const self = this;
         const ruleCache = localStorage.getItem(`${ dealerId }_rule`);
         if (!ruleCache) {
-          const ruleList = await self.getNetWorkRule(dealerId);
-          if (!ruleList.length) return;
+          await self.getNetWorkRule(dealerId);
         } else {
           makerConfigs = JSON.parse(ruleCache);
           setTimeout(async () => {
             await self.getNetWorkRule(dealerId);
           }, 0);
         }
+        this.isEmpty = !makerConfigs.length;
         this.isV3 = true;
         this.cronList.push(setInterval(async () => {
           await self.getNetWorkRule(dealerId);
@@ -827,7 +836,7 @@ export default {
     },
     async getNetWorkRule(dealerId) {
       const ruleList = await getMdcRuleLatest(dealerId);
-      if (!ruleList || !ruleList.length) return [];
+      if (!ruleList) return [];
       makerConfigs = ruleList;
       localStorage.setItem(`${ dealerId }_rule`, JSON.stringify(ruleList));
       return ruleList;
