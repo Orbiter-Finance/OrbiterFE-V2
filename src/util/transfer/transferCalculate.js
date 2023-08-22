@@ -1251,7 +1251,7 @@ export default {
 
   safeCode() {
     const { selectMakerConfig, toChainID } = transferDataState;
-    const internalId = String(selectMakerConfig.fromChain.id).length < 2 ? ("0" + selectMakerConfig.fromChain.id) : selectMakerConfig.fromChain.id;
+    const internalId = String(selectMakerConfig.toChain.id).length < 2 ? ("0" + selectMakerConfig.toChain.id) : selectMakerConfig.toChain.id;
     const chainInfo = util.getV3ChainInfoByChainId(toChainID);
     return selectMakerConfig.ebcId ?
         selectMakerConfig.dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
