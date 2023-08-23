@@ -1084,7 +1084,7 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
-      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(2)) }% trading fee for each transfer.`;
+      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(3)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
