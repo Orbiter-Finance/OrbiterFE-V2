@@ -182,7 +182,7 @@ import {
     setHistoryInfo,
 } from '../composition/hooks';
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
-import openApiAx from "../common/openApiAx";
+import { RequestMethod, requestOpenApi } from "../common/openApiAx";
 import util from "../util/util";
 let timer = 0
 export default {
@@ -258,7 +258,7 @@ export default {
         this.options = [];
         const chainConfig = config.chainConfig;
         for (const data of chainConfig) {
-            this.options.push({ label: data.name, value: data.internalId });
+            this.options.push({ label: data.name, value: data.chainId });
         }
     },
     mounted() {
@@ -307,7 +307,7 @@ export default {
             }
 
             this.searchLoading = true;
-            const res = await openApiAx.get(`/v1/status?hash=${ txHash }`);
+            const res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash]);
             this.searchLoading = false;
             if (!res) {
                 util.showMessage("Request frequent", "error");
@@ -345,7 +345,7 @@ export default {
                 this.showError = false;
                 this.getHistoryInfo(data);
             } else {
-                await openApiAx.get(`/v1/collectUserTransactions?fromHash=${ txHash }&fromChain=${ selectChainId }`);
+                await requestOpenApi(RequestMethod.collectUserTransaction, [txHash, util.getInternalIdByChainId(selectChainId)]);
                 this.showError = true;
             }
         },

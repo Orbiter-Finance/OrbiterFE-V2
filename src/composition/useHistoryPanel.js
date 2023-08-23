@@ -3,7 +3,7 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from './walletsResponsiveData'
-import openApiAx from '../common/openApiAx'
+import { RequestMethod, requestOpenApi } from '../common/openApiAx';
 import util from "../util/util";
 // import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
@@ -68,13 +68,10 @@ export async function getTransactionsHistory(params = {}) {
     if (cache) {
       res = cache;
     } else {
-      res = await openApiAx.get(
-          `/v1/userHistory?address=${ walletAddress }&page=${ params.current || 1 }`
-      );
+      res = await requestOpenApi(RequestMethod.getTransactionByAddress, [walletAddress, 10, params.current || 1]);
       util.setCache(`history_${ walletAddress }_${ params.current || 1 }`, res, 10000);
     }
     const { rows, page, total } = res;
-    // const result = await openApiAx.get(`/userHistory?address=${walletAddress}`);
     historyPanelState.transactionList = rows.map((row) => {
       let decimal = 18
       if (row.fromToken === 'USDC' || row.fromToken === 'USDT') {

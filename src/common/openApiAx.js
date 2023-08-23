@@ -1,5 +1,4 @@
 import axios from 'axios'
-import util from "../util/util";
 
 const openApiAx = axios.create({
   baseURL: process.env.VUE_APP_OPEN_URL,
@@ -20,4 +19,18 @@ openApiAx.interceptors.response.use(
   }
 )
 
-export default openApiAx
+export const RequestMethod = {
+    getTransactionByHash: "orbiter_getTransactionByHash",
+    getTransactionByAddress: "orbiter_getTransactionByAddress",
+    offline: "orbiter_offline",
+    collectUserTransaction: "orbiter_collectUserTransaction"
+};
+
+export async function requestOpenApi(method, params, isV3 = true) {
+    return await openApiAx.post(`/${ isV3 ? 'v3' : 'v2' }/${ process.env.VUE_APP_APIKEY }`, {
+        "id": 1,
+        "jsonrpc": "2.0",
+        method,
+        params
+    });
+}

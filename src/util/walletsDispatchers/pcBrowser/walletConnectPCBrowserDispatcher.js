@@ -146,7 +146,7 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
   const networkId =
     globalSelectWalletConf.walletPayload.networkId ||
     config.chainConfig.find(
-      (chain) => +chain.internalId === +transferDataState.fromChainID
+      (chain) => +chain.chainId === +transferDataState.fromChainID
     )?.chainId
   const currentChain = chains.find((chain) => +chain.id === +networkId)
 

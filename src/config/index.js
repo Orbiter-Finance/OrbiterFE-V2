@@ -69,6 +69,7 @@ export const CHAIN_ID = {
   linea_test: "59140",
   pozkevm_test: "1442",
   bsc_test: "97",
+  opbnb_test: "5611",
 };
 
 const makerNum = parseInt(Math.random() * 2) + 1

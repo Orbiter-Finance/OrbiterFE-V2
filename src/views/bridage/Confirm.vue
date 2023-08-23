@@ -1420,7 +1420,8 @@ export default {
                 selectMakerConfig.recipient,
                 amount,
                 fromChainID,
-                transactionHash
+                transactionHash,
+                !!selectMakerConfig.ebcId
             )
 
             // Immutablex's identifier is not a hash

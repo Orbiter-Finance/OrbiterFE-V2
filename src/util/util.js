@@ -294,6 +294,11 @@ export default {
     return chainInfo
   },
 
+  getInternalIdByChainId(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    return chainInfo?.internalId ? Number(chainInfo.internalId) : null;
+  },
+
   getChainInfoByNetworkId(networkId) {
     const info = config.chainConfig.find(
       (item) => +item.networkId === +networkId

@@ -391,7 +391,7 @@ import {
   updateTransferExt, curPageStatus,
 } from '../../composition/hooks';
 import { isDev } from "../../util";
-import openApiAx from "../../common/openApiAx";
+import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
 import { getMdcRuleLatest } from "../../common/thegraph";
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -843,7 +843,7 @@ export default {
     },
     async openApiFilter() {
       try {
-        const banList = await openApiAx.get('/v1/frontend/net');
+        const banList = await requestOpenApi(RequestMethod.offline, []);
         if (Array.isArray(banList)) {
           this.banList = banList;
         }
@@ -854,11 +854,11 @@ export default {
       const self = this;
       const cron = setInterval(async () => {
         try {
-          const banList = await openApiAx.get('/v1/frontend/net');
+          const banList = await requestOpenApi(RequestMethod.offline, []);
           if (Array.isArray(banList)) {
             self.banList = banList;
           }
-        }catch(error) {
+        } catch (error) {
         }
       }, 30000);
       this.cronList.push(cron);
@@ -1540,7 +1540,7 @@ export default {
         if (this.banList) {
           for (const ban of this.banList) {
             if (ban.source && ban.dest) {
-              if (fromChainID === ban.source && toChainID === ban.dest) {
+              if (util.getInternalIdByChainId(fromChainID) === ban.source && util.getInternalIdByChainId(toChainID) === ban.dest) {
                 this.$notify.error({
                   title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                   duration: 3000,
@@ -1550,7 +1550,7 @@ export default {
               continue;
             }
             if (ban.source) {
-              if (fromChainID === ban.source) {
+              if (util.getInternalIdByChainId(fromChainID) === ban.source) {
                 this.$notify.error({
                   title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
                   duration: 3000,
@@ -1560,7 +1560,7 @@ export default {
               continue;
             }
             if (ban.dest) {
-              if (toChainID === ban.dest) {
+              if (util.getInternalIdByChainId(toChainID) === ban.dest) {
                 this.$notify.error({
                   title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                   duration: 3000,
@@ -1570,7 +1570,7 @@ export default {
             }
           }
         }
-      }catch(error) {
+      } catch (error) {
         console.error(error);
       }
     

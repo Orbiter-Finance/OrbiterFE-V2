@@ -1,6 +1,6 @@
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
-import openApiAx from '../../common/openApiAx'
+import { RequestMethod, requestOpenApi } from '../../common/openApiAx';
 import util from '../util'
 import { CHAIN_ID } from "../../config";
 
@@ -10,14 +10,14 @@ const storeUpdateProceedState = (state) => {
 
 let cron;
 
-function confirmUserTransaction(hash) {
+function confirmUserTransaction(hash, isV3) {
   let currentStatus = 1;
   if (cron) {
     clearInterval(cron);
   }
    cron = setInterval(async () => {
     try {
-      const { status, txList = [] } = await openApiAx.get(`/v1/status?hash=${hash}`) || {}
+      const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash], isV3) || {};
       util.log('txStatus', status, 'txList', txList)
       switch (status) {
         case 0: {
@@ -60,7 +60,7 @@ function confirmUserTransaction(hash) {
 }
 
 export default {
-  UserTransferReady(user, maker, amount, localChainID, txHash) {
+  UserTransferReady(user, maker, amount, localChainID, txHash, isV3) {
     if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       txHash = util.starknetHashFormat(txHash);
     }
@@ -82,6 +82,6 @@ export default {
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
     // console.log(txHash)
-    confirmUserTransaction(txHash)
+    confirmUserTransaction(txHash, isV3);
   },
 }
