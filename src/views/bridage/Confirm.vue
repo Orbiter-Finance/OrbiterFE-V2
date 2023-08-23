@@ -942,6 +942,18 @@ export default {
                         gasLimit,
                     })
                     .then((res) => {
+                        // event 
+                        try {
+                            this.$gtag.event('click', {
+                            'event_category': 'Transfer',
+                            'event_label': selectMakerConfig.recipient.toLocaleLowerCase(),
+                            'userAddress':from.toLocaleLowerCase(), 
+                            'hash': res.hash, 
+                            })
+                        }catch(error) {
+
+                        }
+     
                         this.transferLoading = false
                         this.onTransferSucceed(
                             from,
@@ -1016,6 +1028,17 @@ export default {
                     new BigNumber(value),
                     fromChainID
                 )
+                try {
+                    this.$gtag.event('click', {
+                    'event_category': 'Transfer',
+                    'event_label': selectMakerConfig.recipient.toLocaleLowerCase(),
+                    'userAddress':from.toLocaleLowerCase(), 
+                    'hash': hash 
+                    })
+                }catch(error) {
+
+                }
+     
                 if (hash) {
                     this.onTransferSucceed(from, value, fromChainID, hash)
                 }
@@ -1067,6 +1090,7 @@ export default {
                     quantity: ethers.BigNumber.from(value),
                     receiver: selectMakerConfig.recipient,
                 })
+
                 this.onTransferSucceed(
                     from,
                     value,
@@ -1218,6 +1242,17 @@ export default {
                     amount,
                     isCrossAddress ? crossAddressReceipt : account
                 )
+                try {
+                    this.$gtag.event('click', {
+                    'event_category': 'Transfer-XVM',
+                    'event_label': selectMakerConfig.recipient.toLocaleLowerCase(),
+                    'userAddress':account.toLocaleLowerCase(), 
+                    'hash': transactionHash
+                    })
+                }catch(error) {
+
+                }
+
                 if (transactionHash) {
                     this.onTransferSucceed(
                         account,
