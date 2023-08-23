@@ -246,7 +246,7 @@ export default {
       }
       let gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
       // EIP1559
-      if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test || fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
+      if ([CHAIN_ID.base, CHAIN_ID.zora, CHAIN_ID.opbnb].includes(fromChainID)) {
         const provider = new providers.JsonRpcProvider({
           url: util.stableRpc(fromChainID)
         });
@@ -338,7 +338,7 @@ export default {
       return gas.toFixed(6).toString()
     } else {
       let gas = gasPrice * (gasLimitMap[fromChainID.toString()] || 21000)
-      if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test || fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
+      if ([CHAIN_ID.op, CHAIN_ID.base, CHAIN_ID.opbnb].includes(fromChainID)) {
         const l1GasFee = await this.getOPFee(fromChainID)
         gas += l1GasFee
       }
@@ -359,6 +359,9 @@ export default {
       timeSpent = 15
     }
     if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
+      timeSpent = 15
+    }
+    if (fromChainID === CHAIN_ID.opbnb || fromChainID === CHAIN_ID.opbnb_test) {
       timeSpent = 15
     }
     if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
@@ -440,6 +443,9 @@ export default {
     if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
       timeSpent += 15
     }
+    if (toChainID === CHAIN_ID.opbnb || toChainID === CHAIN_ID.opbnb_test) {
+      timeSpent += 15
+    }
     if (toChainID === CHAIN_ID.zora || toChainID === CHAIN_ID.zora_test) {
       timeSpent += 15
     }
@@ -470,6 +476,9 @@ export default {
       return '~7 days'
     }
     if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
+      return '~7 days'
+    }
+    if (fromChainID === CHAIN_ID.opbnb || fromChainID === CHAIN_ID.opbnb_test) {
       return '~7 days'
     }
     if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
@@ -569,6 +578,9 @@ export default {
       if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
         return '~15min'
       }
+      if (toChainID === CHAIN_ID.opbnb || toChainID === CHAIN_ID.opbnb_test) {
+        return '~15min'
+      }
       if (toChainID === CHAIN_ID.zora || toChainID === CHAIN_ID.zora_test) {
         return '~15min'
       }
@@ -619,6 +631,9 @@ export default {
     if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
       return ' 7 days'
     }
+    if (fromChainID === CHAIN_ID.opbnb || fromChainID === CHAIN_ID.opbnb_test) {
+      return ' 7 days'
+    }
     if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
       return ' 7 days'
     }
@@ -634,6 +649,9 @@ export default {
         return '10min'
       }
       if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
+        return '10min'
+      }
+      if (toChainID === CHAIN_ID.opbnb || toChainID === CHAIN_ID.opbnb_test) {
         return '10min'
       }
       if (

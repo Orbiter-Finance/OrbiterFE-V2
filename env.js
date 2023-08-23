@@ -32,6 +32,7 @@ export default {
 
     "56": 'opbsclogo',
     "97": 'opbsclogo',
+    "204": 'opbsclogo',
     "42170": 'arnavologo',
     "1101": 'pglogo',
     "1442": 'pglogo',

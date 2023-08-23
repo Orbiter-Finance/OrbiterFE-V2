@@ -51,6 +51,7 @@ export const CHAIN_ID = {
   linea: "59144",
   pozkevm: "1101",
   bsc: "56",
+  opbnb: "204",
 
   zksync_test: 'zksync_test',
   starknet_test: 'SN_GOERLI',

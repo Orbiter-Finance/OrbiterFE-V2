@@ -638,7 +638,7 @@
         "name": "OpBNB",
         "debug": false,
         "features": [],
-        "contracts": [],
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "nativeCurrency": {
             "name": "BNB",
             "symbol": "BNB",
@@ -646,6 +646,9 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": ["https://opbnb-mainnet-rpc.bnbchain.org"],
+        "router": {
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
         "watch": ["rpc"],
         "tokens": [],
         "infoURL": "https://mainnet.opbnbscan.com"
