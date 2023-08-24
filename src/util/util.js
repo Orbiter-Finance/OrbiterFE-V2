@@ -387,6 +387,7 @@ export default {
   async ensureWalletNetwork(chainId) {
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     if (!maskNetworkId) {
+      console.error(maskNetworkId, "none of ", chainId);
       return
     }
     const switchParams = {

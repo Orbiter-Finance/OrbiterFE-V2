@@ -68,7 +68,7 @@
                                 isMobile ? item.fromTimeStampShowShort : item.fromTimeStampShow
                     }}</span>
                             <span class="col-val col-3">{{
-                        item.fromAmountValue + item.fromToken
+                        item.fromAmountValue + item.fromSymbol
                     }}</span>
                             <div
                                     class="col-val col-4"
@@ -79,7 +79,7 @@
                         "
                             >
                                 <svg-icon
-                                        :iconName="logoName(item.fromChain)"
+                                        :iconName="logoName(item.fromChainId)"
                                         style="width: 1.6rem; height: 1.6rem"
                                 ></svg-icon>
                             </div>
@@ -92,7 +92,7 @@
                         "
                             >
                                 <svg-icon
-                                        :iconName="logoName(item.toChain)"
+                                        :iconName="logoName(item.toChainId)"
                                         style="width: 1.6rem; height: 1.6rem"
                                 ></svg-icon>
                             </div>
@@ -283,7 +283,7 @@ export default {
             });
         },
         async submitTx() {
-            const selectChainId = +this.selectChainId;
+            const selectChainId = this.selectChainId;
             let txHash = this.txHash;
             if (!selectChainId) {
                 util.showMessage("Please enter From Chain", "error");
@@ -313,7 +313,16 @@ export default {
                 util.showMessage("Request frequent", "error");
                 return;
             }
-            const { status, txList } = res;
+            let { status, txList } = res;
+            if (status === -1) {
+                const v2Res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash], false);
+                if (!v2Res) {
+                    util.showMessage("Request frequent", "error");
+                    return;
+                }
+                status = v2Res.status;
+                txList = v2Res.txList;
+            }
             if (status === 99) {
                 const data = {};
                 for (const tx of txList) {

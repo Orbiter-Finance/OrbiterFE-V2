@@ -39,16 +39,16 @@ export function setHistoryInfo(info = {}, isShowHistory = true) {
   historyPanelState.isShowHistory = isShowHistory
   // historyPanelState.historyInfo = info
   historyPanelState.historyInfo = {
-        fromChainID: info.fromChain,
+        fromChainID: info.fromChainId,
         fromTimeStamp: info.fromTimeStampShow,
         fromTxHash: info.fromHash,
-        makerAddress: info.replySender,
+        // makerAddress: info.replySender,
         state: 0,
-        toChainID: info.toChain,
+        toChainID: info.toChainId,
         toTimeStamp: info.toTimeStampShow,
         toTxHash: info.toHash,
-        tokenName:info.toToken,
-        userAddress: info.replyAccount,
+        tokenName: info.fromSymbol,
+        // userAddress: info.replyAccount,
         userAmount: info.fromAmountValue,
   }
 
@@ -71,23 +71,23 @@ export async function getTransactionsHistory(params = {}) {
       res = await requestOpenApi(RequestMethod.getTransactionByAddress, [walletAddress, 10, params.current || 1]);
       util.setCache(`history_${ walletAddress }_${ params.current || 1 }`, res, 10000);
     }
-    const { rows, page, total } = res;
-    historyPanelState.transactionList = rows.map((row) => {
+    const { list, count } = res;
+    historyPanelState.transactionList = list.map((row) => {
       let decimal = 18
-      if (row.fromToken === 'USDC' || row.fromToken === 'USDT') {
+      if (row.fromSymbol === 'USDC' || row.fromSymbol === 'USDT') {
         decimal = 6
       }
-      const fromDate = new Date(row.fromTime);
-      const toDate = new Date(row.toTime);
+      const fromDate = new Date(row.fromTimestamp);
+      const toDate = new Date(row.toTimestamp);
       row.fromTimeStampShow = util.formatDate(fromDate);
       row.toTimeStampShow = util.formatDate(toDate);
       row.fromTimeStampShowShort = util.formatDate(fromDate, true);
       row.toTimeStampShowShort = util.formatDate(toDate, true);
-      row.fromAmountValue = (row.fromAmount / 10 ** decimal).toFixed(8);
+      row.fromAmountValue = (row.fromValue / 10 ** decimal).toFixed(8);
       return row;
     })
-    historyPanelState.transactionListInfo.current = Number(page || 1)
-    historyPanelState.transactionListInfo.total = total * 10
+    historyPanelState.transactionListInfo.current = Number(params.current || 1)
+    historyPanelState.transactionListInfo.total = count
     historyPanelState.isLoading = false
   } catch (error) {
     console.error(error)
