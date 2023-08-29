@@ -1084,7 +1084,7 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
-      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(2)) }% trading fee for each transfer.`;
+      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(3)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();
@@ -1429,7 +1429,18 @@ export default {
       this.$refs.SelectFromChainPopupRef.showCustom();
     },
     // close selectChain
-    closeFromChainPopupClick() {
+    closeFromChainPopupClick(data) {
+      try {
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        this.$gtag.event('SwitchChain', {
+          'event_category': 'SwitchFromChain',
+          'event_label': address.toLocaleLowerCase(),
+          'chainId':this.transferDataState.fromChainID
+        })
+      }catch(error) {
+
+      }
+     
       this.$refs.SelectFromChainPopupRef.maskClick();
     },
     // open selectChain
@@ -1438,6 +1449,17 @@ export default {
     },
     // close selectChain
     closeToChainPopupClick() {
+      try {
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        this.$gtag.event('SwitchChain', {
+          'event_category': 'SwitchToChain',
+          'event_label': address.toLocaleLowerCase(),
+          'chainId':this.transferDataState.toChainID
+        })
+      }catch(error){
+
+      }
+      
       this.$refs.SelectToChainPopupRef.maskClick();
     },
     showTipPopup() {
