@@ -134,7 +134,6 @@ import {
     walletIsLogin,
 } from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
-import check from '../../util/check/check.js'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
 import walletDispatchers, { BRAVE, METAMASK,TOKEN_POCKET_APP } from '../../util/walletsDispatchers';

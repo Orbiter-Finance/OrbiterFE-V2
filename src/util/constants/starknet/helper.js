@@ -57,16 +57,6 @@ const GAS_ADDRESS = {
   },
 }
 
-export function getStarkNetValidAddress(address) {
-  if (address.length == 65) {
-    return `0x0${address.substring(2)}`
-  }
-  if (address.length == 64) {
-    return `0x00${address.substring(2)}`
-  }
-  return address
-}
-
 function refererUpper() {
   // Don't use [$route.query.referer], because it will delay
   const { href } = window.location
@@ -161,7 +151,7 @@ export async function sendTransfer(
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
   const networkID = getNetworkIdByChainId(chainID)
-  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkID === 1 ? 'mainnet-alpha' : 'georli-alpha'
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
@@ -234,8 +224,7 @@ export async function getAllowance(contractErc20, contractAddress) {
 
 export async function getStarkNonce() {
   try {
-    const nonce = await getStarknet().account.getNonce()
-    return nonce
+    return await getStarknet().account.getNonce()
   } catch (error) {
     return 0
   }
@@ -282,59 +271,17 @@ export async function getStarkTransferFee(
   return 0
 }
 
-/**
- *
- * @param {string} tokenAddress 0x...
- * @param {ethers.BigNumber} amount
- */
-export async function approveERC20(tokenContract, contractAddress, amount) {
-  let n
-  try {
-    const calldata = stark.compileCalldata({
-      spender: contractAddress,
-      amount: getUint256CalldataFromBN(String(UINT_256_MAX)),
-    })
-
-    const approveTransaction = {
-      contractAddress: tokenContract.address,
-      entrypoint: 'approve',
-      calldata,
-    }
-
-    n = Notification({
-      duration: 0,
-      title: 'Approving...',
-      type: 'warning',
-    })
-
-    await getStarknet().account.execute(approveTransaction)
-
-    // Waitting approve succeed
-    for (let index = 0; index < 5000; index++) {
-      const allowance = await getAllowance(tokenContract, contractAddress)
-      if (amount.lte(allowance)) {
-        break
-      }
-      await util.sleep(2000)
-    }
-    n.close()
-  } catch (error) {
-    n.close()
-    throw error
-  }
-}
-
 function getUint256CalldataFromBN(bn) {
   return { type: 'struct', ...uint256.bnToUint256(bn) }
 }
 
 /**
  *
- * @param {number} chainId
+ * @param {string} chainId
  * @returns
  */
 export function getNetworkIdByChainId(chainId) {
-  return chainId == 4 ? 1 : 5
+  return chainId === CHAIN_ID.starknet ? 1 : 5
 }
 
 /**
@@ -352,7 +299,7 @@ export async function getErc20Balance(
   if (!starknetAddress || !contractAddress) {
     return 0
   }
-  const network = networkId == 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkId === 1 ? 'mainnet-alpha' : 'georli-alpha'
   const provider = new Provider({ network })
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
   const resp = await tokenContract.balanceOf(starknetAddress)
@@ -361,14 +308,4 @@ export async function getErc20Balance(
   }
 
   return new BigNumber(resp.balance.low).toNumber()
-}
-
-/**
- *
- * @param {number} chainId
- */
-export function getProviderByChainId(chainId) {
-  const networkId = getNetworkIdByChainId(chainId)
-  const network = networkId == 1 ? 'mainnet-alpha' : 'georli-alpha'
-  return new Provider({ network })
 }

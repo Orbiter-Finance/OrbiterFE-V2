@@ -138,39 +138,6 @@ export class IMXHelper {
   }
 
   /**
-   * IMX transfer => Eth transaction
-   * @param {any} transfer IMX transfer
-   * @returns
-   */
-  toTransaction(transfer) {
-    const timeStampMs = transfer.timestamp.getTime()
-    const nonce = this.timestampToNonce(timeStampMs)
-
-    // When it is ETH
-    let contractAddress = transfer.token.data.token_address
-    if (transfer.token.type == ETHTokenType.ETH) {
-      contractAddress = '0x0000000000000000000000000000000000000000'
-    }
-
-    const transaction = {
-      timeStamp: parseInt(timeStampMs / 1000),
-      hash: transfer.transaction_id,
-      nonce,
-      blockHash: '',
-      transactionIndex: 0,
-      from: transfer.user,
-      to: transfer.receiver,
-      value: transfer.token.data.quantity + '',
-      txreceipt_status: transfer.status,
-      contractAddress,
-      tokenDecimal: transfer.token.data.decimals,
-      confirmations: 0,
-    }
-
-    return transaction
-  }
-
-  /**
    * The api does not return the nonce value, timestamp(ms) last three number is the nonce
    *  (warnning: there is a possibility of conflict)
    * @param {number | string} timestamp ms
