@@ -813,6 +813,7 @@ export default {
       if (!dealerId) {
         return;
       }
+      this.sendBtnInfo.disabled = 'disabled';
       try {
         const self = this;
         const ruleCache = localStorage.getItem(`${ dealerId }_rule`);
