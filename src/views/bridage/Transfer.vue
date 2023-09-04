@@ -1530,6 +1530,9 @@ export default {
       //   });
       //   return;
       // }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return;
+      }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       if (selectMakerConfig.ebcId) {
         try {
@@ -1544,9 +1547,6 @@ export default {
           });
           return;
         }
-      }
-      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-        return;
       }
       if (!await util.isLegalAddress()) {
         this.$notify.error({

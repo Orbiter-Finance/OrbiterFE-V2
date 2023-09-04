@@ -501,7 +501,7 @@ export default {
       }
 
       if (!result) {
-        reject(`Request Web3 TokenBalance RPC error${chainId}`)
+        reject(`Request Web3 TokenBalance RPC error ${chainId} ${tokenAddress}`)
       }
     })
   },

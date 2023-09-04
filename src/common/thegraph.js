@@ -18,6 +18,9 @@ export async function getMdcRuleLatest(dealerAddress) {
             id
             tokens {
               tokenAddress
+              symbol
+              name
+              decimals
             }
             nativeToken
           }
@@ -88,16 +91,17 @@ export async function getMdcRuleLatest(dealerAddress) {
             }
             if (!ruleLatest.ruleValidation) continue;
             const dealerId = mdc.mapping.dealerMapping.find(item => item.dealerAddr === dealerAddress)?.dealerIndex;
+            const token0 = getTokenByTokenAddress(String(ruleLatest.chain0), ruleLatest.chain0Token);
+            const token1 = getTokenByTokenAddress(String(ruleLatest.chain1), ruleLatest.chain1Token);
+            const chainInfo0 = v3ChainList.find(item=>item.chainId === String(ruleLatest.chain0));
+            const chainInfo1 = v3ChainList.find(item=>item.chainId === String(ruleLatest.chain1));
+            if (!token0 || !token1 || !chainInfo0 || !chainInfo1) {
+                continue;
+            }
             if (ruleLatest.chain0Status) {
-                const token0 = getTokenByTokenAddress(String(ruleLatest.chain0), ruleLatest.chain0Token);
-                const token1 = getTokenByTokenAddress(String(ruleLatest.chain1), ruleLatest.chain1Token);
-                const chainInfo0 = v3ChainList.find(item=>item.chainId === String(ruleLatest.chain0));
-                const chainInfo1 = v3ChainList.find(item=>item.chainId === String(ruleLatest.chain1));
-                if (!token0 || !token0) {
-                    // util.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
-                    continue;
-                }
-                if (new BigNumber(ruleLatest.chain0maxPrice).gt(ruleLatest.chain0minPrice) &&
+                const maxPrice = floor(Number(new BigNumber(ruleLatest.chain0maxPrice).dividedBy(10 ** token0.decimals)));
+                const minPrice = ceil(Number(new BigNumber(ruleLatest.chain0minPrice).dividedBy(10 ** token0.decimals)));
+                if (new BigNumber(maxPrice).gte(minPrice) &&
                     ruleLatest.chain0WithholdingFee.substr(ruleLatest.chain0WithholdingFee.length - 4, 4) === '0000') {
                     marketList.push({
                         dealerId,
@@ -113,10 +117,10 @@ export async function getMdcRuleLatest(dealerAddress) {
                             chainId: ruleLatest.chain0,
                             name: chainInfo0.name,
                             symbol: token0.symbol,
-                            tokenAddress: ruleLatest.chain0Token,
+                            tokenAddress: token0.address,
                             decimals: token0.decimals,
-                            maxPrice: floor(Number(new BigNumber(ruleLatest.chain0maxPrice).dividedBy(10 ** token0.decimals))),
-                            minPrice: ceil(Number(new BigNumber(ruleLatest.chain0minPrice || 0).dividedBy(10 ** token0.decimals))),
+                            maxPrice,
+                            minPrice,
                             originMaxPrice: ruleLatest.chain0maxPrice,
                             originMinPrice: ruleLatest.chain0minPrice,
                         },
@@ -126,7 +130,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                             chainId: ruleLatest.chain1,
                             name: chainInfo1.name,
                             symbol: token1.symbol,
-                            tokenAddress: ruleLatest.chain1Token,
+                            tokenAddress: token1.address,
                             decimals: token1.decimals,
                         },
                         gasFee: new BigNumber(ruleLatest.chain0TradeFee).multipliedBy(10).toFixed(),
@@ -138,15 +142,9 @@ export async function getMdcRuleLatest(dealerAddress) {
                 }
             }
             if (ruleLatest.chain1Status) {
-                const token0 = getTokenByTokenAddress(Number(ruleLatest.chain0), ruleLatest.chain0Token);
-                const token1 = getTokenByTokenAddress(Number(ruleLatest.chain1), ruleLatest.chain1Token);
-                const chainInfo0 = v3ChainList.find(item=>item.chainId === String(ruleLatest.chain0));
-                const chainInfo1 = v3ChainList.find(item=>item.chainId === String(ruleLatest.chain1));
-                if (!token0 || !token0) {
-                    // util.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
-                    continue;
-                }
-                if (new BigNumber(ruleLatest.chain1maxPrice).gt(ruleLatest.chain1minPrice) &&
+                const maxPrice = floor(Number(new BigNumber(ruleLatest.chain1maxPrice).dividedBy(10 ** token1.decimals)));
+                const minPrice = ceil(Number(new BigNumber(ruleLatest.chain1minPrice).dividedBy(10 ** token1.decimals)));
+                if (new BigNumber(maxPrice).gte(minPrice) &&
                     ruleLatest.chain1WithholdingFee.substr(ruleLatest.chain1WithholdingFee.length - 4, 4) === '0000') {
                     marketList.push({
                         dealerId,
@@ -161,11 +159,11 @@ export async function getMdcRuleLatest(dealerAddress) {
                             networkId: ruleLatest.chain1,
                             chainId: ruleLatest.chain1,
                             name: chainInfo1.name,
-                            symbol: token1?.symbol,
-                            tokenAddress: ruleLatest.chain1Token,
-                            decimals: token1?.decimals,
-                            maxPrice: floor(Number(new BigNumber(ruleLatest.chain1maxPrice).dividedBy(10 ** token1.decimals))),
-                            minPrice: ceil(Number(new BigNumber(ruleLatest.chain1minPrice).dividedBy(10 ** token1.decimals))),
+                            symbol: token1.symbol,
+                            tokenAddress: token1.address,
+                            decimals: token1.decimals,
+                            maxPrice,
+                            minPrice,
                             originMaxPrice: ruleLatest.chain1maxPrice,
                             originMinPrice: ruleLatest.chain1minPrice,
                         },
@@ -174,9 +172,9 @@ export async function getMdcRuleLatest(dealerAddress) {
                             networkId: ruleLatest.chain0,
                             chainId: ruleLatest.chain0,
                             name: chainInfo0.name,
-                            symbol: token0?.symbol,
-                            tokenAddress: ruleLatest.chain0Token,
-                            decimals: token0?.decimals,
+                            symbol: token0.symbol,
+                            tokenAddress: token0.address,
+                            decimals: token0.decimals,
                         },
                         gasFee: new BigNumber(ruleLatest.chain1TradeFee).multipliedBy(10).toFixed(),
                         tradingFee: new BigNumber(ruleLatest.chain1WithholdingFee).dividedBy(10 ** token1.decimals).toFixed(),
@@ -202,13 +200,19 @@ function convertV3ChainList(chainRels) {
         if (chain.nativeToken.toLowerCase() !== util.starknetHashFormat(newV3ChainInfo.nativeCurrency.address)) {
             newV3ChainInfo.nativeCurrency = {};
         }
-        const newTokens = [];
-        for (const token of newV3ChainInfo.tokens) {
-            if (v3Tokens.find(item => item.tokenAddress.toLowerCase() === util.starknetHashFormat(token.address).toLowerCase())) {
-                newTokens.push(token);
+        for (const token of v3Tokens) {
+            token.address = token.tokenAddress = "0x" + token.tokenAddress.substr(26);
+            if (token.symbol.indexOf("USDC") !== -1) {
+                token.symbol = "USDC";
+            }
+            if (token.symbol.indexOf("USDT") !== -1) {
+                token.symbol = "USDT";
+            }
+            if (token.symbol.indexOf("DAI") !== -1) {
+                token.symbol = "DAI";
             }
         }
-        newV3ChainInfo.tokens = newTokens;
+        newV3ChainInfo.tokens = v3Tokens
         v3ChainList.push(newV3ChainInfo);
     }
     util.log('v3ChainList', v3ChainList);
