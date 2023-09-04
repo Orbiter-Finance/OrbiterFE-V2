@@ -54,6 +54,7 @@ export async function getMdcRuleLatest(dealerAddress) {
               chain0maxPrice
               chain0minPrice
               chain1
+              chain0CompensationRatio
               chain1CompensationRatio
               chain1ResponseTime
               chain1Status
@@ -96,36 +97,45 @@ export async function getMdcRuleLatest(dealerAddress) {
                     // util.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
                     continue;
                 }
-                marketList.push({
-                    dealerId,
-                    ebcId,
-                    recipient: mdc.owner,
-                    sender: mdc.owner,
-                    spentTime: ruleLatest.chain0ResponseTime,
-                    fromChain: {
-                        id: chainIdMap[ruleLatest.chain0],
-                        networkId: ruleLatest.chain0,
-                        chainId: ruleLatest.chain0,
-                        name: chainInfo0.name,
-                        symbol: token0.symbol,
-                        tokenAddress: ruleLatest.chain0Token,
-                        decimals: token0.decimals,
-                        maxPrice: floor(Number(new BigNumber(ruleLatest.chain0maxPrice).dividedBy(10 ** token0.decimals))),
-                        minPrice: ceil(Number(new BigNumber(ruleLatest.chain0minPrice || 0).dividedBy(10 ** token0.decimals))),
-                    },
-                    toChain: {
-                        id: chainIdMap[ruleLatest.chain1],
-                        networkId: ruleLatest.chain1,
-                        chainId: ruleLatest.chain1,
-                        name: chainInfo1.name,
-                        symbol: token1.symbol,
-                        tokenAddress: ruleLatest.chain1Token,
-                        decimals: token1.decimals,
-                    },
-                    gasFee: new BigNumber(ruleLatest.chain0TradeFee).multipliedBy(10).toFixed(),
-                    tradingFee: new BigNumber(ruleLatest.chain0WithholdingFee).dividedBy(10 ** token0.decimals).toFixed(),
-                    times: [0, 99999999999999],
-                });
+                if (new BigNumber(ruleLatest.chain0maxPrice).gt(ruleLatest.chain0minPrice) &&
+                    ruleLatest.chain0WithholdingFee.substr(ruleLatest.chain0WithholdingFee.length - 4, 4) === '0000') {
+                    marketList.push({
+                        dealerId,
+                        ebcId,
+                        recipient: mdc.owner,
+                        sender: mdc.owner,
+                        spentTime: ruleLatest.chain0ResponseTime,
+                        status: ruleLatest.chain0Status,
+                        compensationRatio: ruleLatest.chain0CompensationRatio,
+                        fromChain: {
+                            id: chainIdMap[ruleLatest.chain0],
+                            networkId: ruleLatest.chain0,
+                            chainId: ruleLatest.chain0,
+                            name: chainInfo0.name,
+                            symbol: token0.symbol,
+                            tokenAddress: ruleLatest.chain0Token,
+                            decimals: token0.decimals,
+                            maxPrice: floor(Number(new BigNumber(ruleLatest.chain0maxPrice).dividedBy(10 ** token0.decimals))),
+                            minPrice: ceil(Number(new BigNumber(ruleLatest.chain0minPrice || 0).dividedBy(10 ** token0.decimals))),
+                            originMaxPrice: ruleLatest.chain0maxPrice,
+                            originMinPrice: ruleLatest.chain0minPrice,
+                        },
+                        toChain: {
+                            id: chainIdMap[ruleLatest.chain1],
+                            networkId: ruleLatest.chain1,
+                            chainId: ruleLatest.chain1,
+                            name: chainInfo1.name,
+                            symbol: token1.symbol,
+                            tokenAddress: ruleLatest.chain1Token,
+                            decimals: token1.decimals,
+                        },
+                        gasFee: new BigNumber(ruleLatest.chain0TradeFee).multipliedBy(10).toFixed(),
+                        tradingFee: new BigNumber(ruleLatest.chain0WithholdingFee).dividedBy(10 ** token0.decimals).toFixed(),
+                        originTradeFee: ruleLatest.chain0TradeFee,
+                        originWithholdingFee: ruleLatest.chain0WithholdingFee,
+                        times: [0, 99999999999999],
+                    });
+                }
             }
             if (ruleLatest.chain1Status) {
                 const token0 = getTokenByTokenAddress(Number(ruleLatest.chain0), ruleLatest.chain0Token);
@@ -136,36 +146,45 @@ export async function getMdcRuleLatest(dealerAddress) {
                     // util.log("none of token", ruleLatest.chain0, ruleLatest.chain0Token, ruleLatest.chain1, ruleLatest.chain1Token);
                     continue;
                 }
-                marketList.push({
-                    dealerId,
-                    ebcId,
-                    recipient: mdc.owner,
-                    sender: mdc.owner,
-                    spentTime: ruleLatest.chain1ResponseTime,
-                    fromChain: {
-                        id: Number(chainIdMap[ruleLatest.chain1]),
-                        networkId: ruleLatest.chain1,
-                        chainId: ruleLatest.chain1,
-                        name: chainInfo1.name,
-                        symbol: token1?.symbol,
-                        tokenAddress: ruleLatest.chain1Token,
-                        decimals: token1?.decimals,
-                        maxPrice: floor(Number(new BigNumber(ruleLatest.chain1maxPrice).dividedBy(10 ** token1.decimals))),
-                        minPrice: ceil(Number(new BigNumber(ruleLatest.chain1minPrice || 0).dividedBy(10 ** token1.decimals))),
-                    },
-                    toChain: {
-                        id: Number(chainIdMap[ruleLatest.chain0]),
-                        networkId: ruleLatest.chain0,
-                        chainId: ruleLatest.chain0,
-                        name: chainInfo0.name,
-                        symbol: token0?.symbol,
-                        tokenAddress: ruleLatest.chain0Token,
-                        decimals: token0?.decimals,
-                    },
-                    gasFee: new BigNumber(ruleLatest.chain1TradeFee).multipliedBy(10).toFixed(),
-                    tradingFee: new BigNumber(ruleLatest.chain1WithholdingFee).dividedBy(10 ** token1.decimals).toFixed(),
-                    times: [0, 99999999999999],
-                });
+                if (new BigNumber(ruleLatest.chain1maxPrice).gt(ruleLatest.chain1minPrice) &&
+                    ruleLatest.chain1WithholdingFee.substr(ruleLatest.chain1WithholdingFee.length - 4, 4) === '0000') {
+                    marketList.push({
+                        dealerId,
+                        ebcId,
+                        recipient: mdc.owner,
+                        sender: mdc.owner,
+                        spentTime: ruleLatest.chain1ResponseTime,
+                        status: ruleLatest.chain1Status,
+                        compensationRatio: ruleLatest.chain1CompensationRatio,
+                        fromChain: {
+                            id: Number(chainIdMap[ruleLatest.chain1]),
+                            networkId: ruleLatest.chain1,
+                            chainId: ruleLatest.chain1,
+                            name: chainInfo1.name,
+                            symbol: token1?.symbol,
+                            tokenAddress: ruleLatest.chain1Token,
+                            decimals: token1?.decimals,
+                            maxPrice: floor(Number(new BigNumber(ruleLatest.chain1maxPrice).dividedBy(10 ** token1.decimals))),
+                            minPrice: ceil(Number(new BigNumber(ruleLatest.chain1minPrice).dividedBy(10 ** token1.decimals))),
+                            originMaxPrice: ruleLatest.chain1maxPrice,
+                            originMinPrice: ruleLatest.chain1minPrice,
+                        },
+                        toChain: {
+                            id: Number(chainIdMap[ruleLatest.chain0]),
+                            networkId: ruleLatest.chain0,
+                            chainId: ruleLatest.chain0,
+                            name: chainInfo0.name,
+                            symbol: token0?.symbol,
+                            tokenAddress: ruleLatest.chain0Token,
+                            decimals: token0?.decimals,
+                        },
+                        gasFee: new BigNumber(ruleLatest.chain1TradeFee).multipliedBy(10).toFixed(),
+                        tradingFee: new BigNumber(ruleLatest.chain1WithholdingFee).dividedBy(10 ** token1.decimals).toFixed(),
+                        originTradeFee: ruleLatest.chain1TradeFee,
+                        originWithholdingFee: ruleLatest.chain1WithholdingFee,
+                        times: [0, 99999999999999],
+                    });
+                }
             }
         }
     }

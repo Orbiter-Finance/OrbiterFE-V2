@@ -20,6 +20,8 @@ import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import { transferDataState, web3State } from '../../composition/hooks'
 import { CHAIN_ID } from "../../config";
+import { EBC_ABI } from "../constants/contract/contract";
+import { isDev } from "../env";
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -1168,6 +1170,32 @@ export default {
     const rAmountValue = rAmount.toFixed();
     const p_text = this.safeCode();
     return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text);
+  },
+  async calEBCValue() {
+    const { selectMakerConfig, fromChainID, toChainID } = transferDataState;
+    const web3 = util.stableWeb3(isDev() ? 5 : 1);
+    const provider = new ethers.providers.Web3Provider(web3.currentProvider);
+    const contractInstance = new ethers.Contract(
+        process.env.VUE_APP_EBC_CONTRACT,
+        EBC_ABI,
+        provider
+    );
+    const ro = [fromChainID, toChainID, selectMakerConfig.status,
+      web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
+      web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
+      selectMakerConfig.fromChain.originMinPrice, selectMakerConfig.fromChain.originMaxPrice,
+      selectMakerConfig.originWithholdingFee, selectMakerConfig.originTradeFee,
+      selectMakerConfig.spentTime,
+      selectMakerConfig.compensationRatio];
+    util.log("getResponseIntent params", "amount", this.getTransferTValue().tAmount, "sourceChainId", fromChainID, "destChainId", toChainID, "status", selectMakerConfig.status,
+        "sourceToken", web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
+        "destToken", web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
+        "minPrice", selectMakerConfig.fromChain.originMinPrice, "maxPrice", selectMakerConfig.fromChain.originMaxPrice,
+        "withholdingFee", selectMakerConfig.originWithholdingFee, "tradingFee", selectMakerConfig.originTradeFee,
+        "responseTime", selectMakerConfig.spentTime,
+        "compensationRatio", selectMakerConfig.compensationRatio);
+    return await contractInstance.getResponseIntent(
+        this.getTransferTValue().tAmount, ro);
   },
   realTransferAmount() {
     const { selectMakerConfig, transferValue, fromChainID } =

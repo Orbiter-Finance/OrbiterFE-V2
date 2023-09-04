@@ -838,7 +838,11 @@ export default {
     async getNetWorkRule(dealerId) {
       const ruleList = await getMdcRuleLatest(dealerId);
       if (!ruleList) return [];
-      makerConfigs = ruleList;
+      if (JSON.stringify(makerConfigs) !== JSON.stringify(ruleList)) {
+        makerConfigs = ruleList;
+        this.updateTransferInfo();
+      }
+
       localStorage.setItem(`${ dealerId }_rule`, JSON.stringify(ruleList));
       return ruleList;
     },
@@ -1526,6 +1530,21 @@ export default {
       //   });
       //   return;
       // }
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      if (selectMakerConfig.ebcId) {
+        try {
+          const receiveValue = await transferCalculate.calEBCValue();
+          util.log('ebc receive value', +receiveValue, 'toValue', +this.toValue);
+          transferDataState.ebcValue = new BigNumber(receiveValue).dividedBy(10 ** selectMakerConfig.toChain.decimals).toString();
+        } catch (e) {
+          console.error(e);
+          this.$notify.error({
+            title: `EBC validation failure`,
+            duration: 3000,
+          });
+          return;
+        }
+      }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
@@ -1536,7 +1555,6 @@ export default {
         });
         return;
       }
-      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       try {
         if (this.banList) {
           for (const ban of this.banList) {

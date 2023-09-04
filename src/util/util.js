@@ -203,7 +203,7 @@ export default {
   },
 
   stableWeb3(chainId) {
-    return new Web3(this.stableRpc(chainId))
+    return new Web3(this.stableRpc(String(chainId)))
   },
 
   stableRpc(chainId) {

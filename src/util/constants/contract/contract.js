@@ -451,4 +451,181 @@ const CROSS_ADDRESS_ABI = [
   },
 ]
 
-export { Coin_ABI, XVM_ABI, CROSS_ADDRESS_ABI }
+const EBC_ABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getAmountParams",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "dealerIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "ebcIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "chainIdIndex",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IOREventBinding.AmountParams",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "intent",
+        "type": "bytes"
+      }
+    ],
+    "name": "getResponseAmountFromIntent",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint64",
+            "name": "sourceChainId",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "destChainId",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint8",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "sourceToken",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "destToken",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint128",
+            "name": "minPrice",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "maxPrice",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "withholdingFee",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint32",
+            "name": "tradingFee",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "responseTime",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "compensationRatio",
+            "type": "uint32"
+          }
+        ],
+        "internalType": "struct RuleLib.RuleOneway",
+        "name": "ro",
+        "type": "tuple"
+      }
+    ],
+    "name": "getResponseIntent",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "getSecurityCode",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "securityCode",
+        "type": "uint256"
+      }
+    ],
+    "name": "splitSecurityCode",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]
+
+export { Coin_ABI, XVM_ABI, CROSS_ADDRESS_ABI, EBC_ABI };

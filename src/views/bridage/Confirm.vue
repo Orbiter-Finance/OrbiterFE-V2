@@ -394,7 +394,6 @@ export default {
                 }
                 return
             } catch (err) {
-                // console.log(err);
                 this.$notify.error({
                     title: err?.data?.message || err.message,
                     duration: 3000,
@@ -1442,6 +1441,10 @@ export default {
     async mounted() {
         const { selectMakerConfig, transferValue } = transferDataState
         const { fromChain, toChain } = selectMakerConfig
+        if (selectMakerConfig.ebcId) {
+            this.expectValue = `${ transferDataState.ebcValue } ${ selectMakerConfig.fromChain.symbol }`;
+            return;
+        }
         const amount = orbiterCore.getToAmountFromUserAmount(
             new BigNumber(transferValue).plus(
                 new BigNumber(selectMakerConfig.tradingFee)
