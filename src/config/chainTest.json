@@ -231,7 +231,7 @@
     ],
     "xvmList": ["0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"],
     "faucets": [],
-    "infoURL": "https://blockscout.com/optimism/goerli/"
+    "infoURL": "https://goerli-optimism.etherscan.io"
   },
   {
     "api": {

@@ -53,7 +53,7 @@
 
 <script>
 import { SvgIconThemed } from '../'
-import { isMobile, curPageTabState, setPageTab } from '../../composition/hooks'
+import { isMobile, curPageTabState, setPageTab, transferDataState } from '../../composition/hooks';
 
 export default {
     name: 'HeaderLinks',
@@ -103,8 +103,10 @@ export default {
     },
     methods: {
         route2(tar) {
-            const path = tar.href
-            this.$route.path !== path && this.$router.push({ path })
+            const dealerId = transferDataState.dealerId;
+            const path = tar.href;
+            const routeObj = dealerId ? { path, query: { dealerId } } : { path };
+            this.$route.path !== path && this.$router.push(routeObj)
             isMobile && this.$emit('closeDrawer')
         },
         subnavClick(nav, snav) {

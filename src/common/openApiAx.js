@@ -23,7 +23,8 @@ export const RequestMethod = {
     getTransactionByHash: "orbiter_getTransactionByHash",
     getTransactionByAddress: "orbiter_getTransactionByAddress",
     offline: "orbiter_offline",
-    collectUserTransaction: "orbiter_collectUserTransaction"
+    collectUserTransaction: "orbiter_collectUserTransaction",
+    chainList: "orbiter_chainList"
 };
 
 export async function requestOpenApi(method, params, isV3 = true) {

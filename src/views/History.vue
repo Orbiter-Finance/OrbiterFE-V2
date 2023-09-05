@@ -68,7 +68,7 @@
                                 isMobile ? item.fromTimeStampShowShort : item.fromTimeStampShow
                     }}</span>
                             <span class="col-val col-3">{{
-                        item.fromAmountValue + item.fromSymbol
+                        item.fromAmountValue + ' ' + item.fromSymbol
                     }}</span>
                             <div
                                     class="col-val col-4"
@@ -326,10 +326,6 @@ export default {
             if (status === 99) {
                 const data = {};
                 for (const tx of txList) {
-                    let decimal = 18;
-                    if (tx.symbol === 'USDC' || tx.symbol === 'USDT') {
-                        decimal = 6;
-                    }
                     if (tx.side === 0) {
                         const date = new Date(tx.timestamp);
                         data.fromHash = tx.hash;
@@ -338,7 +334,7 @@ export default {
                         data.fromAmount = tx.value;
                         data.fromToken = tx.symbol;
                         data.fromTimeStampShow = util.formatDate(date);
-                        data.fromAmountValue = (new BigNumber(tx.value).dividedBy(10 ** decimal)).toFixed(8);
+                        data.fromAmountValue = +(+tx.value).toFixed(8);
                     }
                     if (tx.side === 1) {
                         const date = new Date(tx.timestamp);
@@ -348,7 +344,7 @@ export default {
                         data.toAmount = tx.value;
                         data.toToken = tx.symbol;
                         data.toTimeStampShow = util.formatDate(date);
-                        data.toAmountValue = (new BigNumber(tx.value).dividedBy(10 ** decimal)).toFixed(8);
+                        data.toAmountValue = +(+tx.value).toFixed(8);
                     }
                 }
                 this.showError = false;

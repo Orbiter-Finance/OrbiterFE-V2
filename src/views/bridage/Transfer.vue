@@ -388,7 +388,7 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
-  updateTransferExt, curPageStatus,
+  updateTransferExt, curPageStatus, updateDealerId,
 } from '../../composition/hooks';
 import { isDev } from "../../util";
 import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
@@ -813,6 +813,7 @@ export default {
       if (!dealerId) {
         return;
       }
+      updateDealerId(dealerId);
       this.sendBtnInfo.disabled = 'disabled';
       try {
         const self = this;

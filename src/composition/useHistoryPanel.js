@@ -73,17 +73,13 @@ export async function getTransactionsHistory(params = {}) {
     }
     const { list, count } = res;
     historyPanelState.transactionList = list.map((row) => {
-      let decimal = 18
-      if (row.fromSymbol === 'USDC' || row.fromSymbol === 'USDT') {
-        decimal = 6
-      }
       const fromDate = new Date(row.fromTimestamp);
       const toDate = new Date(row.toTimestamp);
       row.fromTimeStampShow = util.formatDate(fromDate);
       row.toTimeStampShow = util.formatDate(toDate);
       row.fromTimeStampShowShort = util.formatDate(fromDate, true);
       row.toTimeStampShowShort = util.formatDate(toDate, true);
-      row.fromAmountValue = (row.fromValue / 10 ** decimal).toFixed(8);
+      row.fromAmountValue = (+row.fromValue).toFixed(8);
       return row;
     })
     historyPanelState.transactionListInfo.current = Number(params.current || 1)

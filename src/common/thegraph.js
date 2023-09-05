@@ -1,6 +1,7 @@
 import axios from 'axios';
 import util from "../util/util";
 import BigNumber from "bignumber.js";
+import { RequestMethod, requestOpenApi } from "./openApiAx";
 
 let v3ChainList = [];
 
@@ -74,7 +75,7 @@ export async function getMdcRuleLatest(dealerAddress) {
     });
     const responese = res.data?.data;
     if (!responese?.dealer || !responese?.chainRels) return null;
-    convertV3ChainList(responese.chainRels);
+    await convertV3ChainList(responese.chainRels);
     const mdcs = responese.dealer.mdcs || [];
     const marketList = [];
     for (const mdc of mdcs) {
@@ -99,8 +100,8 @@ export async function getMdcRuleLatest(dealerAddress) {
                 continue;
             }
             if (ruleLatest.chain0Status) {
-                const maxPrice = floor(Number(new BigNumber(ruleLatest.chain0maxPrice).dividedBy(10 ** token0.decimals)));
-                const minPrice = ceil(Number(new BigNumber(ruleLatest.chain0minPrice).dividedBy(10 ** token0.decimals)));
+                const maxPrice = floor(Number(new BigNumber(ruleLatest.chain0maxPrice).dividedBy(10 ** token0.decimals)), token0.decimals);
+                const minPrice = ceil(Number(new BigNumber(ruleLatest.chain0minPrice).dividedBy(10 ** token0.decimals)), token0.decimals);
                 if (new BigNumber(maxPrice).gte(minPrice) &&
                     ruleLatest.chain0WithholdingFee.substr(ruleLatest.chain0WithholdingFee.length - 4, 4) === '0000') {
                     marketList.push({
@@ -133,7 +134,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                             tokenAddress: token1.address,
                             decimals: token1.decimals,
                         },
-                        gasFee: new BigNumber(ruleLatest.chain0TradeFee).multipliedBy(10).toFixed(),
+                        gasFee: new BigNumber(ruleLatest.chain0TradeFee).dividedBy(10).toFixed(),
                         tradingFee: new BigNumber(ruleLatest.chain0WithholdingFee).dividedBy(10 ** token0.decimals).toFixed(),
                         originTradeFee: ruleLatest.chain0TradeFee,
                         originWithholdingFee: ruleLatest.chain0WithholdingFee,
@@ -142,8 +143,8 @@ export async function getMdcRuleLatest(dealerAddress) {
                 }
             }
             if (ruleLatest.chain1Status) {
-                const maxPrice = floor(Number(new BigNumber(ruleLatest.chain1maxPrice).dividedBy(10 ** token1.decimals)));
-                const minPrice = ceil(Number(new BigNumber(ruleLatest.chain1minPrice).dividedBy(10 ** token1.decimals)));
+                const maxPrice = floor(Number(new BigNumber(ruleLatest.chain1maxPrice).dividedBy(10 ** token1.decimals)), token1.decimals);
+                const minPrice = ceil(Number(new BigNumber(ruleLatest.chain1minPrice).dividedBy(10 ** token1.decimals)), token1.decimals);
                 if (new BigNumber(maxPrice).gte(minPrice) &&
                     ruleLatest.chain1WithholdingFee.substr(ruleLatest.chain1WithholdingFee.length - 4, 4) === '0000') {
                     marketList.push({
@@ -176,7 +177,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                             tokenAddress: token0.address,
                             decimals: token0.decimals,
                         },
-                        gasFee: new BigNumber(ruleLatest.chain1TradeFee).multipliedBy(10).toFixed(),
+                        gasFee: new BigNumber(ruleLatest.chain1TradeFee).dividedBy(10).toFixed(),
                         tradingFee: new BigNumber(ruleLatest.chain1WithholdingFee).dividedBy(10 ** token1.decimals).toFixed(),
                         originTradeFee: ruleLatest.chain1TradeFee,
                         originWithholdingFee: ruleLatest.chain1WithholdingFee,
@@ -189,12 +190,13 @@ export async function getMdcRuleLatest(dealerAddress) {
     return marketList;
 }
 
-function convertV3ChainList(chainRels) {
+async function convertV3ChainList(chainRels) {
+    const chainList = (await requestOpenApi(RequestMethod.chainList)) || [];
     v3ChainList = [];
     for (const chain of chainRels) {
         const v3Tokens = chain.tokens;
         if (!chain.id || !v3Tokens?.length) continue;
-        const v3ChainInfo = util.getV3ChainInfoByChainId(chain.id);
+        const v3ChainInfo = chainList.find(item=>item.chainId === chain.id);
         if (!v3ChainInfo) continue;
         const newV3ChainInfo = JSON.parse(JSON.stringify(v3ChainInfo));
         if (chain.nativeToken.toLowerCase() !== util.starknetHashFormat(newV3ChainInfo.nativeCurrency.address)) {
@@ -215,6 +217,8 @@ function convertV3ChainList(chainRels) {
         newV3ChainInfo.tokens = v3Tokens
         v3ChainList.push(newV3ChainInfo);
     }
+    util.log('orbiterChainList', chainList);
+    util.log('chainRels', chainRels);
     util.log('v3ChainList', v3ChainList);
 }
 
@@ -237,10 +241,12 @@ function getChainTokenList(chain) {
     return allTokenList;
 }
 
-function ceil(n) {
-    return Number(new BigNumber(Math.ceil(n * 10 ** 6)).dividedBy(10 ** 6));
+function ceil(n, decimals = 6) {
+    const fix = Math.min(decimals - 4, 6);
+    return Number(new BigNumber(Math.ceil(n * 10 ** fix)).dividedBy(10 ** fix));
 }
 
-function floor(n) {
-    return Number(new BigNumber(Math.floor(n * 10 ** 6)).dividedBy(10 ** 6));
+function floor(n, decimals = 6) {
+    const fix = Math.min(decimals - 4, 6);
+    return Number(new BigNumber(Math.floor(n * 10 ** fix)).dividedBy(10 ** fix));
 }
