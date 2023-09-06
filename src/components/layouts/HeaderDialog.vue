@@ -187,7 +187,7 @@ export default {
                 {
                     isConnect: false,
                     icon: 'bitkeep',
-                    title: 'Bitget',
+                    title: 'BitgetWallet',
                 },
                 {
                     isConnect: false,
