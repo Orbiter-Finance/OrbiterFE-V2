@@ -200,6 +200,12 @@
       </span>
       </CommBtn>
       <div class="info-box">
+        <div v-if="isWillUpdate" class="info-item">
+          <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
+          <span class="warn">
+          Configuration is updated after two minutes, there is a possibility of not being able to get back the money, it is recommended to trade after two minutes.
+          </span>
+        </div>
         <div v-if="isCurrentAddress" class="info-item">
           <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
           <span class="warn">
@@ -417,6 +423,7 @@ export default {
       isLoopring: false,
       isV3: false,
       isEmpty: false,
+      isWillUpdate: false,
 
       isCrossAddress: false,
       isRaiseUpFromTokenListVisible: false,
@@ -771,7 +778,7 @@ export default {
   },
   async mounted() {
     this.boxLoading = true;
-    await this.syncV3Data();
+    await this.syncV3Data(1);
     this.boxLoading = false;
 
     this.openApiFilter();
@@ -808,13 +815,13 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
-    async syncV3Data() {
+    async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
         return;
       }
       updateDealerId(dealerId);
-      this.sendBtnInfo.disabled = 'disabled';
+      if (first) this.sendBtnInfo.disabled = 'disabled';
       try {
         const self = this;
         const ruleCache = localStorage.getItem(`${ dealerId }_rule`);
@@ -824,27 +831,33 @@ export default {
           makerConfigs = JSON.parse(ruleCache);
           setTimeout(async () => {
             await self.getNetWorkRule(dealerId);
+            self.isEmpty = !makerConfigs.length;
+            self.isV3 = true;
           }, 0);
         }
         this.isEmpty = !makerConfigs.length;
         this.isV3 = true;
-        this.cronList.push(setInterval(async () => {
-          await self.getNetWorkRule(dealerId);
-        }, 30 * 1000));
       } catch (e) {
         console.error(e);
         makerConfigs = v1MakerConfigs;
       }
     },
     async getNetWorkRule(dealerId) {
-      const ruleList = await getMdcRuleLatest(dealerId);
-      if (!ruleList) return [];
+      const ruleRes = await getMdcRuleLatest(dealerId);
+      if (!ruleRes) return [];
+      const { ruleList, updateTime } = ruleRes;
       if (JSON.stringify(makerConfigs) !== JSON.stringify(ruleList)) {
         makerConfigs = ruleList;
         this.updateTransferInfo();
       }
-
       localStorage.setItem(`${ dealerId }_rule`, JSON.stringify(ruleList));
+
+      const self = this;
+      const lastUpdateDiff = Math.max(updateTime - new Date().valueOf() + 2000, 0);
+      util.log(`update after ${ Math.floor(lastUpdateDiff / 1000) }s`);
+      setTimeout(async () => {
+        await self.syncV3Data();
+      }, lastUpdateDiff);
       return ruleList;
     },
     async openApiFilter() {
@@ -1140,6 +1153,11 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       updateTransferMakerConfig(makerConfigInfo);
+      if (makerConfig.ebcId && makerConfig.nextUpdateTime) {
+        this.isWillUpdate = makerConfig.nextUpdateTime - new Date().valueOf() < 1000 * 60 * 2;
+      } else {
+        this.isWillUpdate = false;
+      }
       this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(3)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
