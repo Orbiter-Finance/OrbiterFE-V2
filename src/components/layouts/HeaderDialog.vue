@@ -196,6 +196,11 @@ export default {
                 },
                 {
                     isConnect: false,
+                    icon: 'zerion',
+                    title: 'Zerion',
+                },
+                {
+                    isConnect: false,
                     icon: 'tokenpocketapp',
                     title: TOKEN_POCKET_APP,
                 },

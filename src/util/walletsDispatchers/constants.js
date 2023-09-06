@@ -5,6 +5,7 @@ export const WALLETCONNECT = 'WalletConnect' // walletConnect wallet constant
 export const COINBASE = 'Coinbase' // coinbase wallet constant
 export const BRAVE = 'Brave' // brave wallet constant
 export const OKXWALLET = 'OKXWallet' // okx wallet constant
+export const ZERION = 'Zerion' // zerion wallet constant
 export const BIT_KEEP = 'Bitget' // bitKeep app name
 export const IM_TOKEN_APP = 'imTokenApp' // imToken app name
 export const BIT_KEEP_APP = 'Bitget' // bitKeep app name

@@ -13,8 +13,8 @@ import {
   OKXWALLET,
   BRAVE_APP,
   LOOPRING_APP,
-  BIT_KEEP,
-} from './constants'
+  BIT_KEEP, ZERION,
+} from './constants';
 import {
   updateGlobalSelectWalletConf,
   globalSelectWalletConf,
@@ -72,6 +72,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
   if (walletType === OKXWALLET) return typeof window.okxwallet !== 'undefined'
+  if (walletType === ZERION) return ethereum.isZerion;
   if (walletType === LOOPRING_APP) return ethereum.isLoopring
   if (walletType === BIT_KEEP) return typeof window.bitkeep !== 'undefined'
   // we never care wallet connect, because it's a protocol, not a wallet
