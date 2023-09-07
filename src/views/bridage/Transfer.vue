@@ -1497,9 +1497,9 @@ export default {
       //   });
       //   return;
       // }
-      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-        return;
-      }
+      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+      //   return;
+      // }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,
