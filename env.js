@@ -87,7 +87,9 @@ export default {
     23: 59144,
     523: 59140,
     24: 5000,
-    524: 5001
+    524: 5001,
+    534: 23011913,
+    535: 421614
   },
   networkUrl: {
     1: 'https://etherscan.io',
@@ -186,7 +188,9 @@ export default {
     529: "combologo",
     530: "zoralogo",
     531: "mantalogo",
-    532: "altlayerlogo"
+    532: "altlayerlogo",
+    534: "styluslogo",
+    535: "arblogo"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
