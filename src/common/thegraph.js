@@ -99,8 +99,8 @@ export async function getMdcRuleLatest(dealerAddress) {
             const rules = ruleSnapshot?.ruleLatest;
             if (!rules) continue;
             for (const rule of rules) {
-                const fromId = rule.chain0 + rule.chain0Token + rule.chain1 + rule.chain1Token;
-                const toId = rule.chain1 + rule.chain1Token + rule.chain0 + rule.chain0Token;
+                const fromId = rule.chain0 + rule.chain0Token + rule.chain1 + rule.chain1Token + mdc.owner;
+                const toId = rule.chain1 + rule.chain1Token + rule.chain0 + rule.chain0Token + mdc.owner;
                 const enableTimestamp = +rule.enableTimestamp * 1000;
                 if (enableTimestamp > new Date().valueOf()) {
                     updateTime = Math.min(updateTime, enableTimestamp);
@@ -213,7 +213,17 @@ export async function getMdcRuleLatest(dealerAddress) {
         }
     }
     updateTime = updateTime || (new Date().valueOf() + 60 * 1000);
-    return { ruleList: marketList, updateTime };
+    const symbolSortMap = { "ETH": 1, "USDC": 2, "USDT": 3, "DAI": 4 };
+    const ruleList = marketList.sort(function (a, b) {
+        if (a.fromChain.id !== b.fromChain.id) {
+            return a.fromChain.id - b.fromChain.id;
+        }
+        if (symbolSortMap[a.fromChain.symbol] !== symbolSortMap[b.fromChain.symbol]) {
+            return symbolSortMap[a.fromChain.symbol] - symbolSortMap[b.fromChain.symbol];
+        }
+        return 0.5 - Math.random();
+    });
+    return { ruleList, updateTime };
 }
 
 async function convertV3ChainList(chainRels) {

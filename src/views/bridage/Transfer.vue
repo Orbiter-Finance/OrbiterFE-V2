@@ -844,7 +844,7 @@ export default {
     },
     async getNetWorkRule(dealerId) {
       const ruleRes = await getMdcRuleLatest(dealerId);
-      if (!ruleRes) return [];
+      if (!ruleRes?.ruleList || !ruleRes.ruleList.length) return [];
       const { ruleList, updateTime } = ruleRes;
       if (JSON.stringify(makerConfigs) !== JSON.stringify(ruleList)) {
         makerConfigs = ruleList;
