@@ -1175,8 +1175,9 @@ export default {
     const { selectMakerConfig, fromChainID, toChainID } = transferDataState;
     const web3 = util.stableWeb3(isDev() ? 5 : 1);
     const provider = new ethers.providers.Web3Provider(web3.currentProvider);
+    util.log('ebcAddress', selectMakerConfig.ebcAddress);
     const contractInstance = new ethers.Contract(
-        process.env.VUE_APP_EBC_CONTRACT,
+        selectMakerConfig.ebcAddress,
         EBC_ABI,
         provider
     );
