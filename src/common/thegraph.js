@@ -41,7 +41,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                 ebcIndex
               }
             }
-            ruleSnapshot {
+            ruleSnapshot(orderBy: version, orderDirection: desc) {
               version
               ebc {
                 id
@@ -86,7 +86,6 @@ export async function getMdcRuleLatest(dealerAddress) {
         for (const chainIdData of mdc.mapping.chainIdMapping) {
             chainIdMap[chainIdData.chainId] = chainIdData.chainIdIndex;
         }
-        console.log("chainIdMap",chainIdMap)
         const ruleSnapshots = mdc.ruleSnapshot.sort(function (a, b) {
             return b.version - a.version;
         });
@@ -110,7 +109,9 @@ export async function getMdcRuleLatest(dealerAddress) {
                     nextUpdateTimeMap[toId] = Math.min(nextUpdateTimeMap[toId], enableTimestamp);
                     continue;
                 }
-                if (!rule.ruleValidation) continue;
+                if (!rule.ruleValidation) {
+                    continue;
+                }
                 const dealerId = mdc.mapping.dealerMapping.find(item => item.dealerAddr === dealerAddress)?.dealerIndex;
                 const token0 = getTokenByTokenAddress(v3ChainList, String(rule.chain0), rule.chain0Token);
                 const token1 = getTokenByTokenAddress(v3ChainList, String(rule.chain1), rule.chain1Token);
@@ -126,6 +127,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                         rule.chain0WithholdingFee.substr(rule.chain0WithholdingFee.length - 4, 4) === '0000' &&
                         !marketList.find(item => item.id === fromId)) {
                         marketList.push({
+                            ruleId: rule.id,
                             id: fromId,
                             dealerId,
                             ebcId,
@@ -172,6 +174,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                         rule.chain1WithholdingFee.substr(rule.chain1WithholdingFee.length - 4, 4) === '0000' &&
                         !marketList.find(item => item.id === toId)) {
                         marketList.push({
+                            ruleId: rule.id,
                             id: toId,
                             dealerId,
                             ebcId,
@@ -234,7 +237,7 @@ async function convertV3ChainList(chainRels) {
     for (const chain of chainRels) {
         const v3Tokens = chain.tokens;
         if (!chain.id || !v3Tokens?.length) continue;
-        const v3ChainInfo = chainList.find(item=>item.chainId === chain.id);
+        const v3ChainInfo = chainList.find(item => item.chainId === chain.id);
         if (!v3ChainInfo) continue;
         const newV3ChainInfo = JSON.parse(JSON.stringify(v3ChainInfo));
         if (chain.nativeToken.toLowerCase() !== util.starknetHashFormat(newV3ChainInfo.nativeCurrency.address)) {
@@ -252,10 +255,10 @@ async function convertV3ChainList(chainRels) {
                 token.symbol = "DAI";
             }
         }
-        newV3ChainInfo.tokens = v3Tokens
+        newV3ChainInfo.tokens = v3Tokens;
         v3ChainList.push(newV3ChainInfo);
     }
-    return v3ChainList
+    return v3ChainList;
 }
 
 function getTokenByTokenAddress(v3ChainList, chainId, tokenAddress) {

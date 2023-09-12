@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="transfer-box" v-loading="boxLoading" v-if="!isEmpty">
+      <div v-if="makerAddress" style="font-size: 15px;margin-bottom: 20px">{{ makerAddress }}</div>
       <div class="top-area" style="position: relative">
         <span class="title">Token</span>
         <div v-if="!isNewVersion" class="symbol">
@@ -52,12 +53,9 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeFromChain">
-            <svg-icon
-                    :iconName="showChainIcon()"
-                    style="width: 24px; height: 24px; margin-right: 4px"
-            ></svg-icon>
+            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon()">
             <span>{{ showChainName() }}</span>
-            <SvgIconThemed v-if="fromChainIdList.length > 1" />
+            <SvgIconThemed v-if="fromChainIdList.length" />
           </div>
           <div
                   style="display: flex; justify-content: center; align-items: center;height: 30px"
@@ -124,12 +122,9 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            <svg-icon
-                    :iconName="showChainIcon(false)"
-                    style="width: 24px; height: 24px; margin-right: 4px"
-            ></svg-icon>
+            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon(false)">
             <span>{{ showChainName(false) }}</span>
-            <SvgIconThemed v-if="toChainIdList.length > 1" />
+            <SvgIconThemed v-if="toChainIdList.length" />
           </div>
           <div style="display: flex; align-items: center;height: 30px" class="right">
             <div v-if="toTokenList.length" style="margin-left: 4px">
@@ -418,6 +413,8 @@ export default {
   },
   data() {
     return {
+      makerAddress: '',
+
       isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
@@ -1064,7 +1061,7 @@ export default {
         if (!fromTokenList.find(it => it.token === item.fromChain.symbol)) {
             if (item.fromChain.symbol) {
                 fromTokenList.push({
-                    icon: config.getTokenIcon(item.fromChain.symbol),
+                    icon: util.tokenLogo(item.fromChain.symbol),
                     token: item.fromChain.symbol,
                     amount: 0,
                 });
@@ -1073,7 +1070,7 @@ export default {
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
             if (item.toChain.symbol) {
                 toTokenList.push({
-                    icon: config.getTokenIcon(item.toChain.symbol),
+                    icon: util.tokenLogo(item.toChain.symbol),
                     token: item.toChain.symbol,
                     amount: 0,
                 });
@@ -1093,7 +1090,7 @@ export default {
       makerConfigList.forEach(item => {
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
           toTokenList.push({
-            icon: config.getTokenIcon(item.toChain.symbol),
+            icon: util.tokenLogo(item.toChain.symbol),
             token: item.toChain.symbol,
             amount: 0,
           });
@@ -1152,6 +1149,7 @@ export default {
         makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee;
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
+      this.makerAddress = makerConfigInfo.recipient;
       updateTransferMakerConfig(makerConfigInfo);
       if (makerConfig.ebcId && makerConfig.nextUpdateTime) {
         this.isWillUpdate = makerConfig.nextUpdateTime - new Date().valueOf() < 1000 * 60 * 2;
@@ -1452,7 +1450,7 @@ export default {
     },
     showChainIcon(isFrom = true) {
       const localChainID = transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`];
-      return this.$env.chainIcon[localChainID];
+      return util.netWorkLogo(localChainID);
     },
     selectFromTokenChange(val) {
       this.selectFromToken = val;
@@ -1481,13 +1479,13 @@ export default {
       this.selectToToken = fromCurrency;
     },
     changeFromChain() {
-      if (this.fromChainIdList.length <= 1) {
+      if (!this.fromChainIdList.length) {
         return;
       }
       this.showFromChainPopupClick();
     },
     changeToChain() {
-      if (this.toChainIdList.length <= 1) {
+      if (!this.toChainIdList.length) {
         return;
       }
       this.showToChainPopupClick();

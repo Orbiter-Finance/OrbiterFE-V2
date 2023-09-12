@@ -2,35 +2,6 @@ import chainMain from './chain.json'
 import chainTest from './chainTest.json'
 import { isProd } from '../util'
 
-const tokenIcons = {
-  ETH: require('../assets/ethlogo.svg'),
-  USDC: require('../assets/usdclogo.png'),
-  USDT: require('../assets/usdtlogo.png'),
-  TUSD: require('../assets/tusdlogo.png'),
-  MCO: require('../assets/mcologo.png'),
-  METIS: require('../assets/metislogo.png'),
-  ZKS: require('../assets/zkslogo.png'),
-  LRC: require('../assets/lrclogo.png'),
-  BNB: require('../assets/bnblogo.png'),
-  DAI: require('../assets/dailogo.png'),
-  MATIC: require('../assets/maticlogo.png'),
-}
-
-/**
- *
- * @param {string} token
- * @returns
- */
-const getTokenIcon = (token) => {
-  if (!token) {
-    return ''
-  }
-
-  token = token.toUpperCase()
-
-  return tokenIcons[token] || ''
-}
-
 export const CHAIN_ID = {
   zksync: 'zksync',
   starknet: 'SN_MAIN',
@@ -54,7 +25,7 @@ export const CHAIN_ID = {
   opbnb: "204",
 
   zksync_test: 'zksync_test',
-  starknet_test: 'SN_GOERLI',
+  starknet_test: 'goerli-alpha',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',
@@ -194,7 +165,6 @@ try {
 }
 
 export default {
-  getTokenIcon,
   chainConfig,
   makerConfigs,
   v1MakerConfigs,

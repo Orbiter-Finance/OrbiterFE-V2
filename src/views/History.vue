@@ -78,10 +78,7 @@
                             justify-content: center;
                         "
                             >
-                                <svg-icon
-                                        :iconName="logoName(item.fromChainId)"
-                                        style="width: 1.6rem; height: 1.6rem"
-                                ></svg-icon>
+                                <img style="width: 1.6rem; height: 1.6rem" :src="logoName(item.fromChainId)">
                             </div>
                             <div
                                     class="col-val col-5"
@@ -91,10 +88,7 @@
                             justify-content: center;
                         "
                             >
-                                <svg-icon
-                                        :iconName="logoName(item.toChainId)"
-                                        style="width: 1.6rem; height: 1.6rem"
-                                ></svg-icon>
+                                <img style="width: 1.6rem; height: 1.6rem" :src="logoName(item.toChainId)">
                             </div>
                         </div>
                     </div>
@@ -171,7 +165,6 @@
 </template>
 
 <script>
-import BigNumber from 'bignumber.js'
 import config, { CHAIN_ID } from '../config';
 import { NoData,CommBtn } from '../components'
 import {
@@ -385,7 +378,7 @@ export default {
             }
         },
         logoName(chainID) {
-            return this.$env.chainIcon[chainID]
+            return util.netWorkLogo(chainID)
         },
     },
 }

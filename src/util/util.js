@@ -53,6 +53,12 @@ export default {
   netWorkName(networkId) {
     return this.getChainInfoByNetworkId(networkId)?.name || 'unknown'
   },
+  netWorkLogo(networkId) {
+    return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/chain/${ networkId }.svg` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+  },
+  tokenLogo(token) {
+    return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/token/${ token }.png` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+  },
   chainName(chainId) {
     return this.getV3ChainInfoByChainId(chainId)?.name || 'unknown'
   },

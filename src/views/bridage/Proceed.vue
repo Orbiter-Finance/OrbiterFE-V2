@@ -56,10 +56,7 @@
                         <span>{{ FromChainName }}</span>
                     </div>
                     <div class="chain">
-                        <svg-icon
-                            :iconName="showChainIcon()"
-                            style="width: 56px; height: 56px"
-                        ></svg-icon>
+                        <img style="width: 56px; height: 56px" :src="showChainIcon()">
                     </div>
                     <div class="tx from-tx" @click="goToExplorFrom">
                         <template v-if="!detailData">
@@ -118,10 +115,7 @@
                         <span>{{ toChainName }}</span>
                     </div>
                     <div class="chain">
-                        <svg-icon
-                            :iconName="showChainIcon(false)"
-                            style="width: 56px; height: 56px"
-                        ></svg-icon>
+                        <img style="width: 56px; height: 56px" :src="showChainIcon(false)">
                     </div>
                     <div class="tx to-tx" @click="goToExplorTo">
                         <template v-if="!detailData">
@@ -326,13 +320,9 @@ export default {
     methods: {
         showChainIcon(isFrom = true) {
             if (this.detailData) {
-                return this.$env.chainIcon[
-                    this.detailData[`${isFrom ? 'from' : 'to'}ChainID`]
-                ]
+                return util.netWorkLogo(this.detailData[`${ isFrom ? 'from' : 'to' }ChainID`]);
             }
-            return this.$env.chainIcon[
-                transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
-            ]
+            return util.netWorkLogo(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]);
         },
         getChainId(isFrom = true) {
             let chainID

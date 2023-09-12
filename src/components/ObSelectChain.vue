@@ -21,7 +21,7 @@
                         <div class="contentItem title">{{ toCapitalize(key) }}</div>
                         <div v-for="(item, index) in getChainsInGroup(chainLocalIds)" :key="item.chain + index + i"
                             @click="getChainInfo(item, index)" class="contentItem">
-                            <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+                            <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
                             <span>{{ item.chain }}</span>
                             <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
                                 height="1.5rem" />
@@ -30,7 +30,7 @@
                     <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
                     <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
                         class="contentItem">
-                        <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+                        <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
                         <span>{{ item.chain }}</span>
                         <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
                             height="1.5rem" />
@@ -39,7 +39,7 @@
                 <template v-else>
                     <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
                         class="contentItem">
-                        <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
+                        <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
                         <span>{{ item.chain }}</span>
                         <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
                             height="1.5rem" />
@@ -85,8 +85,7 @@ export default {
             return !!Object.keys(this.chainsGroup).length
         },
         chainsGroup() {
-            const chainsGroup = config.chainsGroup || {}
-            return chainsGroup
+            return config.chainsGroup || {}
         },
         localIdsInGroup() {
             const localIdsInGroup = Object.values(this.chainsGroup).reduce((localIds, ids) => {
@@ -100,7 +99,7 @@ export default {
             for (let index = 0; index < this.ChainData.length; index++) {
                 const item = this.ChainData[index]
 
-                const iconName = this.$env.chainIcon[item]
+                const iconName = util.netWorkLogo(item)
                 const chainData = {
                     icon: iconName,
                     chain: util.chainName(item),
