@@ -1594,6 +1594,13 @@ export default {
           });
           return;
         }
+        if(fromCurrency != 'ETH' && toChainID == 4) {
+          this.$notify.error({
+              title: `The starkNet network transaction maintenance, please try again later`,
+              duration: 3000,
+          });
+          return;
+        }
         // if (toChainID === 23) {
         //   this.$notify.error({
         //     title: `The Linea network transaction maintenance, please try again later`,
