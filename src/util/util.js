@@ -54,9 +54,15 @@ export default {
     return this.getChainInfoByNetworkId(networkId)?.name || 'unknown'
   },
   netWorkLogo(networkId) {
+    if (!networkId) {
+      return 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+    }
     return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/chain/${ networkId }.svg` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
   },
   tokenLogo(token) {
+    if (!token) {
+      return 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+    }
     return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/token/${ token }.png` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
   },
   chainName(chainId) {

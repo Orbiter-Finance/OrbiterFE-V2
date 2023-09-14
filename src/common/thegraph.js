@@ -23,7 +23,7 @@ export async function getMdcRuleLatest(dealerAddress) {
             }
             nativeToken
           }
-        dealer(id: "${ dealerAddress }") {
+        dealer(id: "${ dealerAddress.toLowerCase() }") {
             mdcs {
             id
             owner
@@ -112,7 +112,7 @@ export async function getMdcRuleLatest(dealerAddress) {
                 if (!rule.ruleValidation) {
                     continue;
                 }
-                const dealerId = mdc.mapping.dealerMapping.find(item => item.dealerAddr === dealerAddress)?.dealerIndex;
+                const dealerId = mdc.mapping.dealerMapping.find(item => item.dealerAddr.toLowerCase() === dealerAddress.toLowerCase())?.dealerIndex;
                 const token0 = getTokenByTokenAddress(v3ChainList, String(rule.chain0), rule.chain0Token);
                 const token1 = getTokenByTokenAddress(v3ChainList, String(rule.chain1), rule.chain1Token);
                 const chainInfo0 = v3ChainList.find(item => item.chainId === String(rule.chain0));
@@ -228,6 +228,7 @@ export async function getMdcRuleLatest(dealerAddress) {
         }
         return 0.5 - Math.random();
     });
+    util.log('ruleList', ruleList);
     return { ruleList, updateTime };
 }
 

@@ -25,7 +25,7 @@ export const CHAIN_ID = {
   opbnb: "204",
 
   zksync_test: 'zksync_test',
-  starknet_test: 'goerli-alpha',
+  starknet_test: 'SN_GOERLI',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',
