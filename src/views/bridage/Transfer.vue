@@ -1594,6 +1594,13 @@ export default {
           });
           return;
         }
+        if (toChainID === 17) {
+          this.$notify.error({
+            title: `The Polygon ZKEVM network transaction maintenance, please try again later`,
+            duration: 6000,
+          });
+          return;
+        }
         // if (toChainID === 23) {
         //   this.$notify.error({
         //     title: `The Linea network transaction maintenance, please try again later`,
