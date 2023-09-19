@@ -10,17 +10,27 @@ const storeUpdateProceedState = (state) => {
 
 let cron;
 
-function confirmUserTransaction(hash, isV3) {
+function confirmUserTransaction(chainId, hash, isV3) {
   let currentStatus = 1;
   if (cron) {
     clearInterval(cron);
   }
    cron = setInterval(async () => {
+     if (isV3 && currentStatus === 1) {
+       const receipt = await util.requestWeb3(chainId, 'getTransactionReceipt', hash);
+       if (receipt?.status) {
+         util.log("rpc confirm fromTx ====", receipt);
+         currentStatus = 2;
+         storeUpdateProceedState(2);
+       }
+       return;
+     }
     try {
       const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash], isV3) || {};
       util.log('txStatus', status, 'txList', txList)
       switch (status) {
-        case 0: {
+        case 0:
+        case 1: {
           if (currentStatus === 2) {
             storeUpdateProceedState(3)
           } else {
@@ -32,7 +42,7 @@ function confirmUserTransaction(hash, isV3) {
           }
           break
         }
-        case 1: {
+        case 98: {
           storeUpdateProceedState(4)
           break
         }
@@ -40,6 +50,17 @@ function confirmUserTransaction(hash, isV3) {
           storeUpdateProceedState(5)
           clearInterval(cron)
           break
+        }
+      }
+      if (isV3 && status === 98) {
+        const toTx = txList.find(item => item.side === 1);
+        if (toTx?.hash) {
+          const receipt = await util.requestWeb3(toTx.chainId, 'getTransactionReceipt', toTx.hash);
+          if (receipt?.status) {
+            util.log("rpc confirm toTx ====", receipt);
+            storeUpdateProceedState(5);
+            clearInterval(cron);
+          }
         }
       }
       for (const tx of txList) {
@@ -82,6 +103,6 @@ export default {
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
     // console.log(txHash)
-    confirmUserTransaction(txHash, isV3);
+    confirmUserTransaction(localChainID, txHash, isV3);
   },
 }
