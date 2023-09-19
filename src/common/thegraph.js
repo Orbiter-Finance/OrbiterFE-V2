@@ -84,6 +84,12 @@ export async function getMdcRuleLatest(dealerAddress) {
     const marketList = [];
     const makerAddressList = [];
     for (const mdc of mdcs) {
+        if (process.env.VUE_APP_WHITE_LIST) {
+            const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
+            if (!whiteList.find(address => address.toLowerCase() === mdc.owner.toLowerCase())) {
+                continue;
+            }
+        }
         const chainIdMap = {};
         if (!mdc?.mapping?.chainIdMapping?.length) continue;
         for (const chainIdData of mdc.mapping.chainIdMapping) {
@@ -229,7 +235,7 @@ export async function getMdcRuleLatest(dealerAddress) {
             }
         }
     }
-    updateTime = Math.min(updateTime, new Date().valueOf() + 30 * 1000);
+    updateTime = updateTime ? Math.min(updateTime, new Date().valueOf() + 30 * 1000) : new Date().valueOf() + 30 * 1000;
     updateTime = Math.max(updateTime, 0);
     const symbolSortMap = { "ETH": 1, "USDC": 2, "USDT": 3, "DAI": 4 };
     if (!Object.keys(makerSortMap).length) {

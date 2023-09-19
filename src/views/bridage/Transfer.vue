@@ -1150,6 +1150,8 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       this.makerAddress = makerConfigInfo.recipient;
+      this.userMinPrice = makerConfigInfo.fromChain.minPrice || 0;
+      this.userMaxPrice = makerConfigInfo.fromChain.maxPrice || 0;
       updateTransferMakerConfig(makerConfigInfo);
       if (makerConfig.ebcId && makerConfig.nextUpdateTime) {
         this.isWillUpdate = makerConfig.nextUpdateTime - new Date().valueOf() < 1000 * 60 * 2;
@@ -1179,9 +1181,6 @@ export default {
         this.updateExchangeToUsdPrice();
       }
       await this.refreshUserBalance();
-      if (fromChainID !== oldFromChainID || fromCurrency !== oldFromCurrency) {
-        this.userMinPrice = makerConfigInfo?.fromChain?.minPrice || 0;
-      }
       this.updateRoutes(oldFromChainID, oldToChainID);
       await this.updateSendBtnInfo();
     },
