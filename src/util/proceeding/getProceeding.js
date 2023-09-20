@@ -10,7 +10,7 @@ const storeUpdateProceedState = (state) => {
 
 let cron;
 
-function confirmUserTransaction(chainId, hash, isV3) {
+function confirmUserTransaction(chainId, userAddress, hash, isV3) {
   let currentStatus = 1;
   if (cron) {
     clearInterval(cron);
@@ -47,8 +47,7 @@ function confirmUserTransaction(chainId, hash, isV3) {
           break
         }
         case 99: {
-          storeUpdateProceedState(5)
-          clearInterval(cron)
+          completeTx(userAddress);
           break
         }
       }
@@ -58,8 +57,7 @@ function confirmUserTransaction(chainId, hash, isV3) {
           const receipt = await util.requestWeb3(toTx.chainId, 'getTransactionReceipt', toTx.hash);
           if (receipt?.status) {
             util.log("rpc confirm toTx ====", receipt);
-            storeUpdateProceedState(5);
-            clearInterval(cron);
+            completeTx(userAddress);
           }
         }
       }
@@ -78,6 +76,12 @@ function confirmUserTransaction(chainId, hash, isV3) {
       console.error(e)
     }
   }, 10 * 1000);
+}
+
+function completeTx(userAddress) {
+  storeUpdateProceedState(5);
+  clearInterval(cron);
+  util.setCache(`history_${ userAddress.toLowerCase() }_1`, '', -1);
 }
 
 export default {
@@ -103,6 +107,6 @@ export default {
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
     // console.log(txHash)
-    confirmUserTransaction(localChainID, txHash, isV3);
+    confirmUserTransaction(localChainID, user, txHash, isV3);
   },
 }

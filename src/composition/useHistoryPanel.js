@@ -68,7 +68,7 @@ export async function getTransactionsHistory(params = {}) {
     if (cache) {
       res = cache;
     } else {
-      res = await requestOpenApi(RequestMethod.getTransactionByAddress, [walletAddress, 10, params.current || 1]);
+      res = await requestOpenApi(RequestMethod.getTransactionByAddress, [walletAddress.toLowerCase(), 10, params.current || 1]);
       util.setCache(`history_${ walletAddress }_${ params.current || 1 }`, res, 10000);
     }
     const { list, count } = res;

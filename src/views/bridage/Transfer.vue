@@ -320,10 +320,11 @@
               <i class="el-icon-close"></i>
             </div>
             <div class="title">
-              Unlock more Orbiter identities?
+              Interested in starting your voyage here?
             </div>
             <div class="content">
-              Explore more transactions on Orbiter Finance Mainnet Have fun!
+              Go experience more transactions on Orbiter Finance mainnet.
+              Have fun!
             </div>
             <div class="bottom">
             <span class="btn" @click="openUrl">
@@ -2084,14 +2085,14 @@ export default {
 }
 
 .dialog {
-  width: 100%;
+  width: 450px;
 
   .dialog-box {
     position: relative;
     background-color: #ffffff;
     color: #161616;
     border-radius: 40px;
-    width: 100%;
+    width: 450px;
     padding: 10px;
     font-family: 'Inter Regular';
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);
