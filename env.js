@@ -2,7 +2,6 @@ import { isL2DataDev } from "./src/util";
 export default {
   // l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
   l2BaseUrl: isL2DataDev() ? 'http://datastation.joeyzhou.xyz' : 'https://l2api.orbiter.finance',
-  "metaMaskNetworkId": {},
   "networkUrl": {
     "1": "https://etherscan.io",
     "5": "https://goerli.etherscan.io",
@@ -46,7 +45,7 @@ export default {
     "524": "https://explorer.testnet.mantle.xyz",
     "525": "https://opbnbscan.com"
   },
-  metaMaskNetworkId: {
+  "metaMaskNetworkId": {
     1: 1,
     2: 42161,
     3: 1,
@@ -89,53 +88,8 @@ export default {
     24: 5000,
     524: 5001,
     534: 23011913,
-    535: 421614
-  },
-  networkUrl: {
-    1: 'https://etherscan.io',
-    5: 'https://goerli.etherscan.io',
-    2: 'https://arbiscan.io',
-    22: 'https://testnet.arbiscan.io',
-    3: 'https://zkscan.io/explorer',
-    33: 'https://goerli.zkscan.io/explorer',
-    4: 'https://starkscan.co',
-    44: 'https://testnet.starkscan.co',
-    6: 'https://polygonscan.com',
-    66: 'https://mumbai.polygonscan.com',
-    7: 'https://optimistic.etherscan.io',
-    77: 'https://goerli-optimism.etherscan.io',
-    8: 'https://immutascan.io',
-    88: '', // ImmutableX don't have testnet browser
-    9: 'https://explorer.loopring.io',
-    99: 'https://explorer.loopring.io',
-    10: 'https://andromeda-explorer.metis.io',
-    510: 'https://stardust-explorer.metis.io',
-    11: 'https://trade.dydx.exchange',
-    511: 'https://trade.stage.dydx.exchange',
-    12: 'https://zkspace.info',
-    512: 'https://v3-rinkeby.zkswap.info',
-    13: 'https://blockexplorer.boba.network',
-    513: 'https://blockexplorer.goerli.boba.network',
-    15: 'https://bscscan.com',
-    515: 'https://testnet.bscscan.com',
-    14: 'https://explorer.zksync.io',
-    514: 'https://goerli.explorer.zksync.io',
-    16: 'https://nova.arbiscan.io',
-    516: 'https://goerli-rollup-explorer.arbitrum.io',
-    17: "https://zkevm.polygonscan.com",
-    517: 'https://testnet-zkevm.polygonscan.com',
-    518: 'https://l1scan.scroll.io',
-    519: 'https://l2scan.scroll.io',
-    520: 'https://l2explorer.a2.taiko.xyz',
-    521: 'https://goerli.basescan.org',
-
-    23: 'https://lineascan.build',
-    24: 'https://explorer.mantle.xyz',
-    523: 'https://goerli.lineascan.build',
-    524: 'https://explorer.testnet.mantle.xyz',
-    525: 'https://opbnbscan.com',
-    526: 'https://sepolia.etherscan.io',
-    527: 'https://www.okx.com/explorer/okbc-test'
+    535: 421614,
+    536: 2358
   },
   chainIcon: {
     1: 'tokenLogo',
@@ -190,7 +144,8 @@ export default {
     531: "mantalogo",
     532: "altlayerlogo",
     534: "styluslogo",
-    535: "arblogo"
+    535: "arblogo",
+    536: "kromalogo"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/

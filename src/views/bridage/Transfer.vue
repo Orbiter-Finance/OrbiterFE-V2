@@ -751,16 +751,23 @@ export default {
     },
   },
   async mounted() {
+    const { query } = this.$route;
+    const sourceName = query?.source?.toLowerCase();
+    const destName = query?.dest?.toLowerCase();
     const networkConfig = await config.pullNetworkConfig();
     config.chainConfig = networkConfig.chainConfig;
     makerConfigs = config.v1MakerConfigs = networkConfig.v1MakerConfigs;
     config.makerConfigs = networkConfig.makerConfigs;
+    const source = makerConfigs.find(item => item.fromChain.name.toLowerCase() === sourceName)?.fromChain?.id || 0;
+    const dest = makerConfigs.find(item => item.toChain.name.toLowerCase() === destName)?.toChain?.id || 0;
 
     this.openApiFilter();
 
     this.initWhiteList()
 
-    this.updateTransferInfo();
+    const initData = source && dest ? { fromChainID: source, toChainID: dest } : null;
+
+    this.updateTransferInfo(initData);
 
      if (isDev() && !isMobile.value) {
        this.showTipPopup();
