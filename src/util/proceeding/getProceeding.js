@@ -60,6 +60,7 @@ function confirmUserTransaction(hash) {
 
 export default {
   UserTransferReady(user, maker, amount, localChainID, txHash) {
+    util.setCache(`history_${ user }_1`, '', -1);
     if (localChainID === 4 || localChainID === 44) {
       txHash = util.starknetHashFormat(txHash);
     }
