@@ -81,11 +81,11 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
 function completeTx(userAddress) {
   storeUpdateProceedState(5);
   clearInterval(cron);
-  util.setCache(`history_${ userAddress.toLowerCase() }_1`, '', -1);
 }
 
 export default {
   UserTransferReady(user, maker, amount, localChainID, txHash, isV3) {
+    util.setCache(`history_${ user.toLowerCase() }_1`, '', -1);
     if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       txHash = util.starknetHashFormat(txHash);
     }

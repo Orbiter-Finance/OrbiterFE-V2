@@ -9,6 +9,19 @@ export async function getMdcRuleLatest(dealerAddress) {
     if (!new RegExp(/^0x[a-fA-F0-9]{40}$/).test(dealerAddress)) {
         return null;
     }
+    try {
+        const apiRes = await requestOpenApi(RequestMethod.getDealerRuleLatest, [dealerAddress.toLowerCase()]);
+        if (apiRes?.ruleList) {
+            util.log('request open api =====', apiRes.updateTime, util.formatDate(apiRes.updateTime));
+            let updateTime = apiRes.updateTime;
+            updateTime = updateTime ? Math.min(updateTime, new Date().valueOf() + 30 * 1000) : new Date().valueOf() + 30 * 1000;
+            updateTime = Math.max(updateTime, 0);
+            return { ruleList: sortRule(apiRes.ruleList), updateTime };
+        }
+    } catch (e) {
+        console.error('requestOpenApi error', e);
+    }
+    util.log('request thegraph api =====');
     const thegraphApi = process.env.VUE_APP_THEGRAPH_API;
     if (!thegraphApi) {
         return null;
@@ -237,7 +250,6 @@ export async function getMdcRuleLatest(dealerAddress) {
     }
     updateTime = updateTime ? Math.min(updateTime, new Date().valueOf() + 30 * 1000) : new Date().valueOf() + 30 * 1000;
     updateTime = Math.max(updateTime, 0);
-    const symbolSortMap = { "ETH": 1, "USDC": 2, "USDT": 3, "DAI": 4 };
     if (!Object.keys(makerSortMap).length) {
         Array.from(new Set(makerAddressList)).sort(function () {
             return 0.5 - Math.random();
@@ -245,7 +257,16 @@ export async function getMdcRuleLatest(dealerAddress) {
             makerSortMap[makerAddress] = index;
         });
     }
-    const ruleList = marketList.sort(function (a, b) {
+
+    const ruleList = sortRule(marketList);
+    util.log('makerOrder', makerSortMap);
+    util.log('ruleList', ruleList);
+    return { ruleList, updateTime };
+}
+
+function sortRule(ruleList) {
+    const symbolSortMap = { "ETH": 1, "USDC": 2, "USDT": 3, "DAI": 4 };
+    return ruleList.sort(function (a, b) {
         if (a.fromChain.id !== b.fromChain.id) {
             return a.fromChain.id - b.fromChain.id;
         }
@@ -257,9 +278,6 @@ export async function getMdcRuleLatest(dealerAddress) {
         }
         return a.recipient - b.recipient;
     });
-    util.log('makerOrder', makerSortMap);
-    util.log('ruleList', ruleList);
-    return { ruleList, updateTime };
 }
 
 async function convertV3ChainList(chainRels) {

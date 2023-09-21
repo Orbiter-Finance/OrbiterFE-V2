@@ -20,6 +20,7 @@ openApiAx.interceptors.response.use(
 )
 
 export const RequestMethod = {
+    getDealerRuleLatest: "orbiter_getDealerRuleLatest",
     getTransactionByHash: "orbiter_getTransactionByHash",
     getTransactionByAddress: "orbiter_getTransactionByAddress",
     offline: "orbiter_offline",
