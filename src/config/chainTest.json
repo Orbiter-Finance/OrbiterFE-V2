@@ -1,1 +1,645 @@
-[]
+[
+  {
+    "api": {
+      "url": "https://api-goerli.etherscan.io/api",
+      "key": ""
+    },
+    "chainId": "5",
+    "networkId": "5",
+    "internalId": "5",
+    "name": "Görli",
+    "bridge": 1,
+    "swapContract": "0xfd0f2825985d2d6c33d8c535c84df2dcb95e9c01",
+    "features": [],
+    "debug": false,
+    "contracts": [
+      "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"
+    ],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+      "https://eth-goerli.public.blastapi.io",
+      "https://rpc.ankr.com/eth_goerli",
+      "https://rpc.goerli.mudit.blog",
+      "https://eth-goerli.g.alchemy.com/v2/demo"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "xvmList": [
+      "0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"
+    ],
+    "faucets": [
+      "https://goerli-faucet.slock.it/?address=${ADDRESS}",
+      "https://faucet.goerli.mudit.blog"
+    ],
+    "infoURL": "https://goerli.etherscan.io"
+  },
+  {
+    "api": {
+      "url": "https://api-goerli.arbiscan.io/api",
+      "key": ""
+    },
+    "chainId": "421613",
+    "networkId": "421613",
+    "internalId": "22",
+    "name": "Arbitrum Görli",
+    "bridge": 1,
+    "swapContract": "0x02664cac48b4fd806a46c49cd0d166c83fe2f3fa",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://goerli-rollup.arbitrum.io/rpc",
+      "https://arb-goerli.g.alchemy.com/v2/demo",
+      "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "contracts": [
+      "0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a"
+    ],
+    "tokens": [],
+    "infoURL": "https://testnet.arbiscan.io"
+  },
+  {
+    "api": {
+      "url": "https://api-goerli-optimism.etherscan.io/api",
+      "key": ""
+    },
+    "chainId": "420",
+    "networkId": "420",
+    "internalId": "77",
+    "name": "Optimism Görli",
+    "bridge": 1,
+    "swapContract": "0x6f1289f43c8586c37c2b3a833f257557a7936ee4",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://endpoints.omniatech.io/v1/op/goerli/public",
+      "https://optimism-goerli.publicnode.com",
+      "https://goerli.optimism.io",
+      "https://opt-goerli.g.alchemy.com/v2/demo"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "infoURL": "https://goerli-optimism.etherscan.io"
+  },
+  {
+    "api": {
+      "url": "https://zksync2-testnet.zkscan.io/api",
+      "key": ""
+    },
+    "chainId": "280",
+    "networkId": "280",
+    "internalId": "514",
+    "debug": false,
+    "name": "zkEra Görli",
+    "swapContract": "",
+    "bridge": 1,
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://zksync2-testnet.zksync.dev",
+      "https://zksync-era-testnet.blockpi.network/v1/rpc/public",
+      "https://testnet.era.zksync.dev"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "infoURL": "https://goerli.explorer.zksync.io/"
+  },
+  {
+    "api": {
+      "url": "https://api-testnet.bscscan.com/api",
+      "key": ""
+    },
+    "chainId": "97",
+    "networkId": "97",
+    "internalId": "515",
+    "name": "BSC Görli",
+    "bridge": 3,
+    "swapContract": "0x2ec02e3db531f9c4ea04590a9a55c5791399538e",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "BNB",
+      "symbol": "BNB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://bsc-testnet.publicnode.com",
+      "https://api.zan.top/node/v1/bsc/testnet/public",
+      "https://endpoints.omniatech.io/v1/bsc/testnet/public",
+      "https://data-seed-prebsc-2-s2.bnbchain.org:8545"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "infoURL": "https://testnet.binance.org/"
+  },
+  {
+    "api": {
+      "url": "https://explorer.public.zkevm-test.net/api",
+      "key": "",
+      "intervalTime": 10000
+    },
+    "chainId": "1442",
+    "networkId": "1442",
+    "internalId": "517",
+    "name": "zkEVM Görli",
+    "bridge": 1,
+    "debug": false,
+    "contracts": [],
+    "swapContract": "0x438a84bcf5322d5dff5295b7e57ec083aadbc8d9",
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://rpc.public.zkevm-test.net"],
+    "xvmList": [],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://testnet-zkevm.polygonscan.com"
+  },
+  {
+    "api": {
+      "url": "https://l2scan.scroll.io/api",
+      "key": ""
+    },
+    "chainId": "534353",
+    "networkId": "534353",
+    "internalId": "519",
+    "name": "Scroll Görli",
+    "bridge": 1,
+    "swapContract": "0x49c8693E5E0263cE676eE6941CF67f6dc33BD107",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://alpha-rpc.scroll.io/l2"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "faucets": [],
+    "infoURL": "https://blockscout.scroll.io"
+  },
+  {
+    "api": {
+      "url": "https://l2explorer.a2.taiko.xyz/api",
+      "key": "",
+      "intervalTime": 60000
+    },
+    "chainId": "167005",
+    "networkId": "167005",
+    "internalId": "520",
+    "name": "Taiko Görli",
+    "bridge": 2,
+    "swapContract": "0x2ec02e3DB531F9c4eA04590a9A55C5791399538E",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://rpc.jolnir.taiko.xyz"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "infoURL": "https://explorer.jolnir.taiko.xyz"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "84531",
+    "networkId": "84531",
+    "internalId": "521",
+    "name": "Base Görli",
+    "bridge": 1,
+    "swapContract": "0x49c8693e5e0263ce676ee6941cf67f6dc33bd107",
+    "debug": false,
+    "contracts": [],
+    "features": [
+      "Etherscan"
+    ],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://goerli.base.org"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "infoURL": "https://goerli.basescan.org"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "59140",
+    "networkId": "59140",
+    "internalId": "523",
+    "name": "Linea Görli",
+    "bridge": 1,
+    "debug": false,
+    "swapContract": "0x29c68e50ef6fe7c3ec9708c0459d9d1e79839a6c",
+    "features": [
+      "EIP1559",
+      "Etherscan"
+    ],
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://rpc.goerli.linea.build/"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "infoURL": "https://goerli.lineascan.build"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "5001",
+    "networkId": "5001",
+    "internalId": "524",
+    "name": "Mantle Görli",
+    "bridge": 1,
+    "swapContract": "0xe2959CACA4aea742db6809f8Ea3233904d57439B",
+    "debug": false,
+    "contracts": [
+      "0xf1e276a6518dff455fdabfdc582591fda35797ea"
+    ],
+    "features": [
+      "Etherscan"
+    ],
+    "nativeCurrency": {
+      "name": "MNT",
+      "symbol": "MNT",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://rpc.testnet.mantle.xyz",
+      "https://rpc.ankr.com/mantle_testnet"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [
+      {
+        "name": "Ether (WETH)",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111"
+      }
+    ],
+    "infoURL": "https://explorer.testnet.mantle.xyz"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "5611",
+    "networkId": "5611",
+    "internalId": "525",
+    "name": "OpBSC Görli",
+    "bridge": 3,
+    "swapContract": "0x2ec02e3DB531F9c4eA04590a9A55C5791399538E",
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "tBNB",
+      "symbol": "BNB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": ["https://opbnb-testnet-rpc.bnbchain.org"],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://opbnbscan.com"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "11155111",
+    "networkId": "11155111",
+    "internalId": "526",
+    "name": "Sepolia",
+    "bridge": 2,
+    "swapContract": "0x6aca21c6c79066f41b4d0c32574ddb07fc2e7131",
+    "features": [
+      "Etherscan"
+    ],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://ethereum-sepolia.blockpi.network/v1/rpc/public",
+      "https://rpc.notadegen.com/sepolia",
+      "https://sepolia.gateway.tenderly.co",
+      "https://api.zan.top/node/v1/eth/sepolia/public",
+      "https://rpc.sepolia.org"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [],
+    "infoURL": "https://sepolia.etherscan.io"
+  },
+  {
+    "api": {
+      "url": "https://okbrpc.okbchain.org/v1",
+      "key": ""
+    },
+    "chainId": "195",
+    "networkId": "195",
+    "internalId": "527",
+    "name": "OKB Görli",
+    "bridge": 1,
+    "swapContract": "0x0a0307bc32E42Ba39776cD01C0919FbA167212BE",
+    "debug": false,
+    "contracts": [],
+    "features": [
+      "Etherscan"
+    ],
+    "nativeCurrency": {
+      "name": "OKB",
+      "symbol": "OKB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://okbtestrpc.okbchain.org"
+    ],
+    "watch": [
+      "rpc"
+    ],
+    "tokens": [
+      {
+        "name": "Ether (WETH)",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0xaf99998DCFaB1A506213B73Fe50E3f31166B7EB1"
+      }
+    ],
+    "infoURL": "https://www.okx.com/explorer/okbc-test"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "534351",
+    "networkId": "534351",
+    "internalId": "528",
+    "name": "Scroll Sepolia",
+    "bridge": 2,
+    "swapContract": "0xC9ed54B77c4929bCC773a6e0021dfBd1d0BcEb31",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://sepolia-rpc.scroll.io",
+      "http://scroll-testnet-public.unifra.io",
+      "https://rpc.ankr.com/scroll_sepolia_testnet",
+      "https://1rpc.io/scroll/sepolia",
+      "https://scroll-sepolia.blockpi.network/v1/rpc/public",
+      "https://rpc.ankr.com/scroll_sepolia_testnet"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://sepolia-blockscout.scroll.io"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "91715",
+    "networkId": "91715",
+    "internalId": "529",
+    "name": "Combo Görli",
+    "bridge": 3,
+    "swapContract": "0x2ec02e3DB531F9c4eA04590a9A55C5791399538E",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "BNB",
+      "symbol": "BNB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://test-rpc.combonetwork.io"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://combotrace-testnet.nodereal.io"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "999",
+    "networkId": "999",
+    "internalId": "530",
+    "name": "Zora Görli",
+    "bridge": 1,
+    "swapContract": "0x6aca21c6c79066F41B4D0c32574DDb07FC2e7131",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://testnet.rpc.zora.energy"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://testnet.explorer.zora.energy"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "3441005",
+    "networkId": "3441005",
+    "internalId": "531",
+    "name": "Manta Görli",
+    "bridge": 1,
+    "swapContract": "0x2ec02e3DB531F9c4eA04590a9A55C5791399538E",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://manta-testnet.calderachain.xyz/http"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://pacific-explorer.manta.network"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "23011913",
+    "networkId": "23011913",
+    "internalId": "534",
+    "name": "Stylus Sepolia",
+    "bridge": 2,
+    "swapContract": "0x2ec02e3DB531F9c4eA04590a9A55C5791399538E",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://stylus-testnet.arbitrum.io/rpc",
+      "https://stylus-testnet-sequencer.arbitrum.io/rpc"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://stylus-testnet-explorer.arbitrum.io"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "421614",
+    "networkId": "421614",
+    "internalId": "535",
+    "name": "Arbitrum Sepolia",
+    "bridge": 2,
+    "swapContract": "0x2ec02e3DB531F9c4eA04590a9A55C5791399538E",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://sepolia-rollup.arbitrum.io/rpc",
+      "https://sepolia-rollup-sequencer.arbitrum.io/rpc"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://sepolia-explorer.arbitrum.io"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "2358",
+    "networkId": "2358",
+    "internalId": "536",
+    "name": "Kroma Sepolia",
+    "bridge": 2,
+    "swapContract": "0x01F271dc6B2C30Fbe511daeC0c01bfD1c3eCC184",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://api.sepolia.kroma.network"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://blockscout.sepolia.kroma.network"
+  }
+]
