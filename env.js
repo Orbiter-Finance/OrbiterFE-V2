@@ -51,7 +51,9 @@ export default {
     524: 5001,
 
     30: 7777777,
-    530: 999
+    530: 999,
+
+    31: 169
   },
   networkUrl: {
     1: 'https://etherscan.io',
@@ -102,7 +104,9 @@ export default {
     527: 'https://www.okx.com/explorer/okbc-test',
 
     30: 'https://explorer.zora.energy',
-    530: 'https://testnet.explorer.zora.energy'
+    530: 'https://testnet.explorer.zora.energy',
+
+    31: 'https://manta-pacific.calderaexplorer.xyz'
   },
   chainIcon: {
     1: 'tokenLogo',
@@ -155,7 +159,9 @@ export default {
     527: 'okblogo',
 
     30: 'zoralogo',
-    530: 'zoralogo'
+    530: 'zoralogo',
+
+    31: 'mantalogo'
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
@@ -206,7 +212,9 @@ export default {
     527: 'https://www.okx.com/explorer/okbc-test/tx/',
 
     30: 'https://explorer.zora.energy/tx/',
-    530: 'https://testnet.explorer.zora.energy/tx/'
+    530: 'https://testnet.explorer.zora.energy/tx/',
+
+    31: 'https://manta-pacific.calderaexplorer.xyz/tx/'
   },
   accountExploreUrl: {
     1: 'https://etherscan.io/address/', // /tx/  /address/
@@ -257,7 +265,9 @@ export default {
     527: 'https://www.okx.com/explorer/okbc-test/address/',
 
     30: 'https://explorer.zora.energy/address/',
-    530: 'https://testnet.explorer.zora.energy/address/'
+    530: 'https://testnet.explorer.zora.energy/address/',
+
+    31: 'https://manta-pacific.calderaexplorer.xyz/address/'
   },
   gasPriceMap: {
     1: 100,
@@ -304,7 +314,8 @@ export default {
     526: 1,
     527: 1,
     30: 1,
-    530: 1
+    530: 1,
+    31: 0.10000005
   },
   gasLimitMap: {
     1: 35000,
@@ -351,6 +362,7 @@ export default {
     526: 21000,
     527: 21000,
     30: 21000,
-    530: 21000
+    530: 21000,
+    31: 55000
   }
 };
