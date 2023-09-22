@@ -28,6 +28,17 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
     try {
       const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash], isV3) || {};
       util.log('txStatus', status, 'txList', txList)
+      for (const tx of txList) {
+        if (tx.side === 0) {
+          store.commit(
+              'updateProceedingUserTransferTimeStamp',
+              new Date(tx.timestamp).valueOf() / 1000
+          )
+        }
+        if (tx.side === 1) {
+          store.commit('updateProceedingMakerTransferTxid', tx.hash)
+        }
+      }
       switch (status) {
         case 0:
         case 1: {
@@ -61,17 +72,6 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
           }
         }
       }
-      for (const tx of txList) {
-        if (tx.side === 0) {
-          store.commit(
-            'updateProceedingUserTransferTimeStamp',
-            new Date(tx.timestamp).valueOf() / 1000
-          )
-        }
-        if (tx.side === 1) {
-          store.commit('updateProceedingMakerTransferTxid', tx.hash)
-        }
-      }
     } catch (e) {
       console.error(e)
     }
@@ -79,8 +79,9 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
 }
 
 function completeTx(userAddress) {
-  storeUpdateProceedState(5);
+  util.setCache(`history_${ userAddress.toLowerCase() }_1`, '', -1);
   clearInterval(cron);
+  storeUpdateProceedState(5);
 }
 
 export default {

@@ -11,12 +11,19 @@ export async function getMdcRuleLatest(dealerAddress) {
     }
     try {
         const apiRes = await requestOpenApi(RequestMethod.getDealerRuleLatest, [dealerAddress.toLowerCase()]);
-        if (apiRes?.ruleList) {
-            util.log('request open api =====', apiRes.updateTime, util.formatDate(apiRes.updateTime));
+        if (apiRes?.ruleList && apiRes.ruleList.length) {
+            util.log('request open api =====', apiRes);
+            let ruleList = apiRes.ruleList;
+            if (process.env.VUE_APP_WHITE_LIST) {
+                const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
+                ruleList = ruleList.filter(rule => {
+                    return whiteList.find(address => address.toLowerCase() === rule?.recipient.toLowerCase());
+                });
+            }
             let updateTime = apiRes.updateTime;
             updateTime = updateTime ? Math.min(updateTime, new Date().valueOf() + 30 * 1000) : new Date().valueOf() + 30 * 1000;
             updateTime = Math.max(updateTime, 0);
-            return { ruleList: sortRule(apiRes.ruleList), updateTime };
+            return { ruleList: sortRule(ruleList), updateTime };
         }
     } catch (e) {
         console.error('requestOpenApi error', e);
@@ -95,7 +102,6 @@ export async function getMdcRuleLatest(dealerAddress) {
     const v3ChainList = await convertV3ChainList(response.chainRels);
     const mdcs = response.dealer.mdcs || [];
     const marketList = [];
-    const makerAddressList = [];
     for (const mdc of mdcs) {
         if (process.env.VUE_APP_WHITE_LIST) {
             const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
@@ -150,7 +156,6 @@ export async function getMdcRuleLatest(dealerAddress) {
                         rule.chain0WithholdingFee.substr(rule.chain0WithholdingFee.length - 4, 4) === '0000' &&
                         !marketList.find(item => item.id === fromId)) {
                         const makerAddress = mdc.owner.toLowerCase();
-                        makerAddressList.push(makerAddress);
                         marketList.push({
                             version: ruleSnapshot.version,
                             ruleId: rule.id,
@@ -201,7 +206,6 @@ export async function getMdcRuleLatest(dealerAddress) {
                         rule.chain1WithholdingFee.substr(rule.chain1WithholdingFee.length - 4, 4) === '0000' &&
                         !marketList.find(item => item.id === toId)) {
                         const makerAddress = mdc.owner.toLowerCase();
-                        makerAddressList.push(makerAddress);
                         marketList.push({
                             version: ruleSnapshot.version,
                             ruleId: rule.id,
@@ -250,13 +254,6 @@ export async function getMdcRuleLatest(dealerAddress) {
     }
     updateTime = updateTime ? Math.min(updateTime, new Date().valueOf() + 30 * 1000) : new Date().valueOf() + 30 * 1000;
     updateTime = Math.max(updateTime, 0);
-    if (!Object.keys(makerSortMap).length) {
-        Array.from(new Set(makerAddressList)).sort(function () {
-            return 0.5 - Math.random();
-        }).forEach((makerAddress, index) => {
-            makerSortMap[makerAddress] = index;
-        });
-    }
 
     const ruleList = sortRule(marketList);
     util.log('makerOrder', makerSortMap);
@@ -266,6 +263,13 @@ export async function getMdcRuleLatest(dealerAddress) {
 
 function sortRule(ruleList) {
     const symbolSortMap = { "ETH": 1, "USDC": 2, "USDT": 3, "DAI": 4 };
+    if (!Object.keys(makerSortMap).length) {
+        Array.from(new Set(ruleList)).sort(function () {
+            return 0.5 - Math.random();
+        }).forEach((makerAddress, index) => {
+            makerSortMap[makerAddress] = index;
+        });
+    }
     return ruleList.sort(function (a, b) {
         if (a.fromChain.id !== b.fromChain.id) {
             return a.fromChain.id - b.fromChain.id;

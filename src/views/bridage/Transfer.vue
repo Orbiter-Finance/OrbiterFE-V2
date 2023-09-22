@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="transfer-box" v-loading="boxLoading" v-if="!isEmpty">
-      <div v-if="makerAddress" style="font-size: 15px;margin-bottom: 20px">{{ makerAddress }}</div>
+<!--      <div v-if="makerAddress" style="font-size: 15px;margin-bottom: 20px">{{ makerAddress }}</div>-->
       <div class="top-area" style="position: relative">
         <span class="title">Token</span>
         <div v-if="!isNewVersion" class="symbol">
