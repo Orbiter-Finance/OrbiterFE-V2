@@ -107,7 +107,7 @@ export async function connectStarkNetWallet() {
 }
 
 export function getStarkNetCurrentChainId() {
-  const { baseUrl } = getStarknet().provider
+  const baseUrl = getStarknet().provider?.baseUrl ? getStarknet().provider?.baseUrl : getStarknet().provider?.provider?.baseUrl;
   if (baseUrl.includes('alpha-mainnet.starknet.io')) {
     return CHAIN_ID.starknet
   } else if (baseUrl.includes('alpha4.starknet.io')) {
