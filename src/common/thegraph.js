@@ -2,6 +2,7 @@ import axios from 'axios';
 import util from "../util/util";
 import BigNumber from "bignumber.js";
 import { RequestMethod, requestOpenApi } from "./openApiAx";
+import config from "../config";
 
 const makerSortMap = {};
 
@@ -285,7 +286,7 @@ function sortRule(ruleList) {
 }
 
 async function convertV3ChainList(chainRels) {
-    const chainList = (await requestOpenApi(RequestMethod.chainList)) || [];
+    const chainList = config.chainConfig || [];
     const v3ChainList = [];
     for (const chain of chainRels) {
         const v3Tokens = chain.tokens;
