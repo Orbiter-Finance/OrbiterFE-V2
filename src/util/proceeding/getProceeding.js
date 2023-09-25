@@ -3,6 +3,7 @@ import { store } from '../../store'
 import { RequestMethod, requestOpenApi } from '../../common/openApiAx';
 import util from '../util'
 import { CHAIN_ID } from "../../config";
+import { getTransactionsHistory } from "../../composition/useHistoryPanel";
 
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
@@ -78,8 +79,10 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
   }, 10 * 1000);
 }
 
-function completeTx(userAddress) {
+async function completeTx(userAddress) {
   util.setCache(`history_${ userAddress.toLowerCase() }_1`, '', -1);
+  await util.sleep(500);
+  getTransactionsHistory({ current: 1 });
   clearInterval(cron);
   storeUpdateProceedState(5);
 }
