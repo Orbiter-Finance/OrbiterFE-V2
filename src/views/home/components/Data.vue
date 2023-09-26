@@ -32,12 +32,12 @@ export default {
   },
   data () {
     return {
-      countToStartValue: 0,
-      countToDuration: 3000,
+      countToStartValue: 23423,
+      countToDuration: 2000,
       dataList: [
         {
           label: 'Media',
-          value: 480,
+          value: 700,
           unit: 'k',
         },
         {
@@ -47,17 +47,17 @@ export default {
         },
         {
           label: 'Transaction couns',
-          value: 16,
-          unit: 'M',
+          value: 9,
+          unit: '.5M',
         },
         {
           label: 'Transfer amounts',
-          value: 6.8,
-          unit: 'B',
+          value: 6,
+          unit: '.6B',
         },
         {
           label: 'Total Users',
-          value: 1.2,
+          value: 3,
           unit: 'M',
         },
       ],

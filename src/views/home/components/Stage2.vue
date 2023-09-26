@@ -78,7 +78,7 @@ export default {
 .info {
   margin-top: 16px;
   line-height: 1;
-  font-size: 70px;
+  font-size: 80px;
   font-family: 'Kodchasan-Regular';
   font-weight: 400;
   color: #ffffff;
@@ -86,7 +86,7 @@ export default {
 
 .desc {
   margin-top: 53px;
-  max-width: 65.42%;
+  max-width: 72%;
   font-size: 20px;
   font-family: OpenSans-Regular, OpenSans;
   font-weight: 400;
