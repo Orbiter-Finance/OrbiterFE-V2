@@ -4,15 +4,15 @@
       How it works
     </div>
     <div class="desc">
-      Be optimism for the obedient majority and take severe arbitration for
-      malicious minority.<br />
-      All protocols deploys on the main network, fully inheriting the security
-      of the main network, so as to ensure efficient and secure communication.
-      <br />Define the validity of the cross-rollup communication, that
-      zk-SNARKs play an important role in validity proofs.
+      Foster optimism principle among the compliant majority while enforcing
+      strict measures against the malicious minority.​<br />
+      All protocols operate on the main network, inheriting its security for
+      efficient and secure communication.<br />​ Establish the validity of
+      cross-rollup communication, with zk-SNARKs playing a crucial role in
+      validation proofs.
     </div>
     <div class="learn-more" @click="handlerClickJump">
-      Learn more in yellowpaper ➝
+      Go to Yellowpaper to learn more ➝
     </div>
     <div class="process">
       <img :src="processImage" />
@@ -66,8 +66,11 @@ export default {
   color: #222222;
 }
 .desc {
-  margin-top: 25px;
   font-size: 16px;
+  width: 1200px;
+  margin: 0 auto;
+  margin-top: 25px;
+  text-align: center;
   font-family: OpenSans-Regular, OpenSans;
   font-weight: 400;
   color: #666666;
@@ -101,6 +104,7 @@ export default {
     }
     .desc {
       font-size: 14px;
+      max-width: 350px;
     }
     .learn-more {
       margin-top: 32px;

@@ -10,13 +10,17 @@
         </div>
         <div
           class="info"
-          :style="isHomePageMobile && { 'background-image': `url(${stageBg}` }"
+          :style="
+            isHomePageMobile && {
+              'background-image': `url(${titleBgMobile}`,
+            }
+          "
         >
           zk Prover: <br />zK Aggregated Middle Layer
         </div>
         <div class="desc">
-          Advancing true interoperability and scabability of Ethereum by
-          utilizing ZK SNARKs Recursion technology
+          Advancing interoperability and scalability of Ethereum by utilising ZK
+          SNARKs recursion proof technology
         </div>
       </div>
     </div>
@@ -25,6 +29,7 @@
 
 <script>
 import { isHomePageMobile } from '../../../composition/hooks'
+import stage2_bg_mobile from '../../../assets/orbiter_home_under/stage2_bg_mobile.png'
 export default {
   props: {
     stageTitleImg: {
@@ -35,6 +40,11 @@ export default {
       type: String,
       default: '',
     },
+  },
+  data () {
+    return {
+      titleBgMobile: stage2_bg_mobile,
+    }
   },
   computed: {
     isHomePageMobile () {

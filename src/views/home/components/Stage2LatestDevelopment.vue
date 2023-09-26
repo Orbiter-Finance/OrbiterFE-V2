@@ -2,15 +2,15 @@
   <div class="development-wrap fade-content">
     <div class="info-wrap">
       <div class="title" :style="{ 'background-image': `url(${titleBg}` }">
-        Latest<br />
-        development .
+        Latest<br />Breakthrough
       </div>
       <div class="desc">
-        AA accounts are Ethereum’s future account . We Accelerate AA Mass
-        Adoption and Reduced users’ cost for AA adoption.
+        AA represent the future of Ethereum's account system. We are actively
+        promoting AA mass adoption while also minimising the expenses associated
+        with AA integration for users, resulting in gas savings of up to 30%.
       </div>
       <div class="learn-more" @click="handlerClickJump">
-        Learn more about AA zkprover SDK ➝
+        Learn more about the SDK of zkProver ➝
       </div>
     </div>
     <div class="sdk-image fade-content">
@@ -79,7 +79,7 @@ export default {
   color: #222222;
   background-repeat: no-repeat;
   background-position-y: bottom;
-  background-size: 367px;
+  background-size: 399px 20px;
 }
 .desc {
   max-width: 430px;

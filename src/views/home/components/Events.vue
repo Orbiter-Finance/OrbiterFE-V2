@@ -2,16 +2,23 @@
   <div class="events-wrap fade-content">
     <div class="event-header">
       <div class="title" :style="{ 'background-image': `url(${titleBg}` }">
-        Events .
+        Eco Events
       </div>
       <div class="view-more" @click="handlerClickJump">View More ➝</div>
     </div>
     <div class="event-list">
-      <div class="event-item" v-for="item in eventList" :key="item.label">
+      <div
+        class="event-item"
+        v-for="item in eventList"
+        :key="item.label"
+        @click="handlerClickJump({ target: { innerText: item.label } })"
+      >
         <div class="item-banner">
           <img v-if="item.banner" :src="item.banner" />
         </div>
-        <div class="item-label">{{ item.label }}</div>
+        <div class="item-label">
+          {{ item.label }}
+        </div>
         <div class="item-desc">{{ item.date }}</div>
       </div>
     </div>
@@ -44,18 +51,18 @@ export default {
       eventList: [
         {
           banner: this.eventImg1,
-          label: 'Real-time',
-          date: '19th - 23rd MAY 2023',
+          label: 'Deep Dive into zkSync',
+          date: '20th Feb 2023',
         },
         {
           banner: this.eventImg2,
-          label: 'Low-cost',
-          date: '19th - 23rd MAY 2023',
+          label: 'Immersion into StarkWare',
+          date: '1st Mar 2023',
         },
         {
           banner: this.eventImg3,
-          label: 'Scalability',
-          date: '19th - 23rd MAY 2023',
+          label: 'A Closer Look at Polygon',
+          date: '7th Mar 2023',
         },
       ],
     }
@@ -87,9 +94,9 @@ export default {
   font-weight: bold;
   color: #222222;
   background-repeat: no-repeat;
-  background-position-y: bottom;
+  background-position: right bottom;
   line-height: 1.1;
-  background-size: 196px 20px;
+  background-size: 197px 18px;
 }
 .view-more {
   font-size: 18px;
@@ -106,6 +113,7 @@ export default {
   display: flex;
   flex-direction: column;
   padding-bottom: 28px;
+  cursor: pointer;
   box-sizing: border-box;
   margin-bottom: 24px;
   margin-right: 24px;
@@ -121,10 +129,29 @@ export default {
   &:last-of-type {
     margin-right: 0;
   }
+  &:hover {
+    box-shadow: inset 8px -8px 0px 0px #df2e2d !important;
+    border: 2px solid #df2e2d !important;
+    .item-banner {
+      &::after {
+        background-color: #df2e2d;
+      }
+    }
+  }
 }
 .item-banner {
   max-width: 384.5px;
   max-height: 144px;
+  position: relative;
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #222;
+  }
   img {
     width: 100%;
     height: 100%;

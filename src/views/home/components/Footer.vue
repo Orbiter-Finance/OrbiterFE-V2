@@ -168,6 +168,9 @@ export default {
   font-weight: 400;
   cursor: pointer;
   color: #666666;
+  &:hover {
+    text-decoration: underline;
+  }
   &:last-of-type {
     margin-bottom: 0;
   }

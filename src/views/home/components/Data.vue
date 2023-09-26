@@ -1,7 +1,11 @@
 <template>
   <div v-if="showData" class="date-wrap fade-content">
     <div class="data-content">
-      <div class="data-item" v-for="item in dataList" :key="item.value">
+      <div
+        class="data-item"
+        v-for="(item, index) in dataList"
+        :key="item.value + index"
+      >
         <div class="value">
           <CountTo
             :startVal="countToStartValue"
@@ -32,31 +36,31 @@ export default {
   },
   data () {
     return {
-      countToStartValue: 23423,
+      countToStartValue: 999,
       countToDuration: 2000,
       dataList: [
         {
-          label: 'Media',
+          label: 'Community Members',
           value: 700,
           unit: 'k',
         },
         {
-          label: 'Chains supported',
+          label: 'Supported Chains',
           value: 17,
           unit: '+',
         },
         {
-          label: 'Transaction couns',
+          label: 'Transaction Volume',
           value: 9,
           unit: '.5M',
         },
         {
           label: 'Transfer amounts',
-          value: 6,
+          value: 9,
           unit: '.6B',
         },
         {
-          label: 'Total Users',
+          label: 'Active Users',
           value: 3,
           unit: 'M',
         },
@@ -71,7 +75,6 @@ export default {
   width: 100%;
   background-color: #fff;
   box-sizing: border-box;
-  opacity: 0;
 }
 .data-content {
   display: flex;

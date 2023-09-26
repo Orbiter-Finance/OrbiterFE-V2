@@ -4,16 +4,17 @@
       :swiper1="currentModePic.swiper_banner1"
       :swiper2="currentModePic.swiper_banner2"
       :topWrapBg="currentModePic.top_wrap_bg"
+      :topWrapBgMobile="currentModePic.top_wrap_bg_mobile"
     />
     <Stage1
-      :titleBg="currentModePic.development_adorn"
+      :titleBg="currentUnders.underRollup"
       :stageTitleImg="currentModePic.stage1_title"
       :stageImage="currentModePic.stage1_image"
     />
     <Data :showData="showData" />
     <div class="home-page-info">
       <HowItWorks
-        :titleBg="currentModePic.development_adorn"
+        :titleBg="currentUnders.underWorks"
         :processImage="currentModePic.process"
       />
       <Stage2
@@ -22,17 +23,17 @@
       />
       <Stage2Banner :zkProverBg="currentModePic.zk_prover_bg" />
       <Stage2OurTarget
-        :titleBg="currentModePic.development_adorn"
+        :titleBg="currentUnders.underTarget"
         :realTime="currentModePic.target_real_time"
         :lowCost="currentModePic.target_low_cost"
         :scalability="currentModePic.target_scalability"
       />
       <Stage2LatestDevelopment
-        :titleBg="currentModePic.development_adorn"
+        :titleBg="currentUnders.underLatest"
         :developmentImg="currentModePic.development"
       />
       <Events
-        :titleBg="currentModePic.development_adorn"
+        :titleBg="currentUnders.underEvent"
         :eventImg1="currentModePic.event1"
         :eventImg2="currentModePic.event2"
         :eventImg3="currentModePic.event3"
@@ -43,6 +44,7 @@
 </template>
 
 <script>
+import { isHomePageMobile } from '../../composition/hooks'
 import TopWrap from './components/TopWrap.vue'
 import Stage1 from './components/Stage1.vue'
 import Data from './components/Data.vue'
@@ -55,6 +57,7 @@ import Events from './components/Events.vue'
 import Footer from './components/Footer.vue'
 
 import top_wrap_bg_light from '../../assets/orbiter_home_light/top_wrap_bg_light.png'
+import top_wrap_bg_light_mobile from '../../assets/orbiter_home_light/top_wrap_bg_light_mobile.png'
 import development_adorn_light from '../../assets/orbiter_home_light/development_adorn_light.png'
 import development_light from '../../assets/orbiter_home_light/development_light.png'
 import event1_light from '../../assets/orbiter_home_light/event1_light.png'
@@ -73,6 +76,20 @@ import target_low_cost_light from '../../assets/orbiter_home_light/target_low_co
 import target_real_time_light from '../../assets/orbiter_home_light/target_real_time_light.png'
 import target_scalability_light from '../../assets/orbiter_home_light/target_scalability_light.png'
 
+import mobile_under_event from '../../assets/orbiter_home_under/mobile_under_event.png'
+import mobile_under_latest from '../../assets/orbiter_home_under/mobile_under_latest.png'
+import mobile_under_rollup from '../../assets/orbiter_home_under/mobile_under_rollup.png'
+import mobile_under_target from '../../assets/orbiter_home_under/mobile_under_target.png'
+import mobile_under_works from '../../assets/orbiter_home_under/mobile_under_works.png'
+
+import pc_under_event from '../../assets/orbiter_home_under/pc_under_event.png'
+import pc_under_latest from '../../assets/orbiter_home_under/pc_under_latest.png'
+import pc_under_rollup from '../../assets/orbiter_home_under/pc_under_rollup.png'
+import pc_under_target from '../../assets/orbiter_home_under/pc_under_target.png'
+import pc_under_works from '../../assets/orbiter_home_under/pc_under_works.png'
+
+import top_wrap_bg_dark from '../../assets/orbiter_home_dark/top_wrap_bg_dark.png'
+import top_wrap_bg_dark_mobile from '../../assets/orbiter_home_dark/top_wrap_bg_dark_mobile.png'
 import development_adorn_dark from '../../assets/orbiter_home_dark/development_adorn_dark.png'
 import development_dark from '../../assets/orbiter_home_dark/development_dark.png'
 import event1_dark from '../../assets/orbiter_home_dark/event1_dark.png'
@@ -90,7 +107,6 @@ import swiper_banner2_dark from '../../assets/orbiter_home_dark/swiper_banner2_d
 import target_low_cost_dark from '../../assets/orbiter_home_dark/target_low_cost_dark.png'
 import target_real_time_dark from '../../assets/orbiter_home_dark/target_real_time_dark.png'
 import target_scalability_dark from '../../assets/orbiter_home_dark/target_scalability_dark.png'
-import top_wrap_bg_dark from '../../assets/orbiter_home_dark/top_wrap_bg_dark.png'
 
 export default {
   components: {
@@ -109,6 +125,7 @@ export default {
     return {
       showData: false,
       lightPics: {
+        top_wrap_bg_mobile: top_wrap_bg_light_mobile,
         top_wrap_bg: top_wrap_bg_light,
         development_adorn: development_adorn_light,
         development: development_light,
@@ -130,6 +147,7 @@ export default {
       },
       darkPics: {
         top_wrap_bg: top_wrap_bg_dark,
+        top_wrap_bg_mobile: top_wrap_bg_dark_mobile,
         development_adorn: development_adorn_dark,
         development: development_dark,
         event1: event1_dark,
@@ -148,14 +166,34 @@ export default {
         target_scalability: target_scalability_dark,
         zk_prover_bg: zk_prover_dark,
       },
+      mobileUnder: {
+        underEvent: mobile_under_event,
+        underLatest: mobile_under_latest,
+        underRollup: mobile_under_rollup,
+        underTarget: mobile_under_target,
+        underWorks: mobile_under_works,
+      },
+      pcUnder: {
+        underEvent: pc_under_event,
+        underLatest: pc_under_latest,
+        underRollup: pc_under_rollup,
+        underTarget: pc_under_target,
+        underWorks: pc_under_works,
+      },
     }
   },
   computed: {
+    isHomePageMobile () {
+      return isHomePageMobile.value
+    },
     isLightMode () {
       return this.$store.state.themeMode === 'light'
     },
     currentModePic () {
       return this.isLightMode ? this.lightPics : this.darkPics
+    },
+    currentUnders () {
+      return this.isHomePageMobile ? this.mobileUnder : this.pcUnder
     },
   },
   mounted () {
@@ -182,18 +220,27 @@ export default {
         ) {
           if (index === 0) {
             this.showData = true
+            return
           }
           element?.classList.add('contain')
         }
       })
     },
     handlerClickJump (e) {
+      const eventJumpEnum = {
+        'Deep Dive into zkSync':
+          'https://orbiter-finance.medium.com/oclub-ama-recap-orbiter-x-zksync-16-02-2023-63f007a96fbd',
+        'Immersion into StarkWare':
+          'https://orbiter-finance.medium.com/oclub-ama-recap-orbiter-x-starkware-01-03-2023-f31a180acbea',
+        'A Closer Look at Polygon':
+          'https://orbiter-finance.medium.com/oclub-ama-recap-orbiter-x-polygon-06-03-2023-191702976927',
+      }
       const jumpUrlEnum = {
-        'Start the fastest bridging experience ➝':
+        'Start the seamless cross-rollup transaction ➝':
           'https://www.orbiter.finance/',
-        'Learn more in yellowpaper ➝':
+        'Go to Yellowpaper to learn more ➝':
           'https://github.com/Orbiter-Finance/papers/blob/main/yellowpaper/yellowpaper.pdf',
-        'Learn more about AA zkprover SDK ➝':
+        'Learn more about the SDK of zkProver ➝':
           'https://github.com/Orbiter-Finance/zkprover-dapp',
         'View More ➝': 'https://orbiter-finance.medium.com/',
         'Orbiter Data': 'https://www.orbiter.finance/data',
@@ -205,7 +252,9 @@ export default {
         'User Docs': 'https://docs.orbiter.finance/',
         Yellowpaper:
           'https://github.com/Orbiter-Finance/papers/blob/main/yellowpaper/yellowpaper.pdf',
+        ...eventJumpEnum,
       }
+      console.log(e)
       const jumpKey = e.target.innerText || ''
       const jumpUrl = jumpUrlEnum[jumpKey] || ''
       if (!jumpUrl) return

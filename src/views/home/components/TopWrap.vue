@@ -8,18 +8,20 @@
         <div
           class="info-title"
           :style="
-            isHomePageMobile && { 'background-image': `url(${topWrapBg}` }
+            isHomePageMobile && { 'background-image': `url(${topWrapBgMobile}` }
           "
         >
-          Building <span class="info-keynote"> Ultimate Scaling </span> Solution
+          <span class="info-keynote">ZK-tech Based</span><br />
+          Ethereum Acceleration Engine
         </div>
         <div class="desc">
-          Vitalik said<span class="desc-keynote"
-            >“everyone will move to rollups”</span
-          >, a rollup-centric ethereum scailing roadmap is on way. We're in the
-          end game, Whether proposing cross-chain communication protocol or a zk
-          aggregation middlelayer, we've bringing interoperability, truly-<br />sense
-          scalability for Ethereum.
+          <span class="desc-keynote"
+            >'Everyone is moving to rollups' - Vitalik.</span
+          >
+          We are now heading to the final stages of this journey, where we have
+          proposed a protocol for interchain messaging and developed an
+          aggregated middle layer for zk rollups, boosting L2s' Performance and
+          decreasing gas consumption.
         </div>
       </div>
     </div>
@@ -46,6 +48,10 @@ export default {
   },
   props: {
     topWrapBg: {
+      type: String,
+      default: '',
+    },
+    topWrapBgMobile: {
       type: String,
       default: '',
     },
@@ -112,11 +118,16 @@ export default {
 }
 
 .info-title {
+  font-size: 78px;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  .info-keynote {
+    font-size: 88px;
+  }
 }
 
 .desc {
+  padding: 0 54px;
   margin-top: 32px;
   color: #666;
   font-size: 18px;
@@ -160,9 +171,17 @@ export default {
       padding-top: 0;
       padding: 0 16px;
     }
+    .info-title {
+      font-size: 34px;
+      padding: 22px 0;
+      .info-keynote {
+        font-size: 42px;
+      }
+    }
     .desc {
       margin-top: 24px;
       font-size: 14px;
+      padding: 0;
     }
     .seamless-item-content {
       width: 100%;

@@ -4,19 +4,17 @@
       <div class="title">
         <img :src="stageTitleImg" />
       </div>
-      <div
-        class="info"
-        :style="isHomePageMobile && { 'background-image': `url(${titleBg}` }"
-      >
-        Cross-Rollup Bridge Protocol .
+      <div class="info" :style="{ 'background-image': `url(${titleBg}` }">
+        Cross-rollup<br />
+        Bridge Protocol
       </div>
       <div class="desc">
-        A Universal Cross Rollup Protocol, built on a decentralized solution,
-        achieving <span>secure, low-gas, and low-latency</span> transfer of
-        universal message or assets.
+        Leveraging a decentralised solution, we've constructed a Cross-rollup
+        protocol that accomplishes safe, cost-effective, and high-speed transfer
+        of messages or assets.
       </div>
       <div class="start-bridge" @click="handlerClickJump">
-        Start the fastest bridging experience ➝
+        Start the seamless cross-rollup transaction ➝
       </div>
     </div>
     <div class="img-content">
@@ -94,6 +92,8 @@ export default {
   color: #222222;
   background-repeat: no-repeat;
   line-height: 72px;
+  background-size: 461px 22px;
+  background-position: left bottom;
 }
 
 .desc {
@@ -104,10 +104,6 @@ export default {
   font-weight: 400;
   color: #666666;
   line-height: 22px;
-  span {
-    font-weight: bold;
-    color: #222222;
-  }
 }
 
 .start-bridge {
@@ -154,7 +150,6 @@ export default {
       padding: 0 4px;
       box-sizing: border-box;
       background-size: 291px 14px;
-      background-position: left bottom;
     }
     .desc {
       margin-top: 12px;

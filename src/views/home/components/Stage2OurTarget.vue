@@ -1,16 +1,16 @@
 <template>
   <div class="target-wrap fade-content">
     <div class="title" :style="{ 'background-image': `url(${titleBg}` }">
-      Our Target .
+      Our Target
     </div>
     <div class="desc">
-      We intend to be able to initiate cross-rollups transactions，enhancing
-      Ethereum inter-chain interoperability, and keep rollups synchronized with
-      the main network in real time. Also we devoted to minimize chain-related
-      gas consumption with advanced techonology.
+      Our goal is to enable cross-rollup transactions, improving Ethereum's
+      inter-chain compatibility and maintaining real-time synchronization
+      between rollups and the main network. We are committed to reducing gas
+      consumption through cutting-edge technology.
     </div>
     <div class="desc-keynote">
-      Our Future for Ethereum Layer 2 Infrastructure Awaits.
+      Our future for Ethereum Layer 2 infrastructure awaits.
     </div>
     <div class="target-list">
       <div class="target-item" v-for="item in targetList" :key="item.label">
@@ -52,17 +52,17 @@ export default {
         {
           icon: this.realTime,
           label: 'Real-time',
-          desc: 'inter-chain interoperability',
+          desc: 'Ethreum + rollup synchronising',
         },
         {
           icon: this.lowCost,
           label: 'Low-cost',
-          desc: 'Worthless Fees of universal service',
+          desc: 'The lowest basic network costs',
         },
         {
           icon: this.scalability,
           label: 'Scalability',
-          desc: 'Etheruem + rollups synchronously',
+          desc: 'Interchain interoperability',
         },
       ]
     },
@@ -150,12 +150,11 @@ export default {
 @media (max-width: 1240px) {
   .target-wrap {
     margin-top: 0;
-    padding: 0 16px;
     max-width: 350px;
     width: max-content;
     .title {
       font-size: 36px;
-      background-size: 200px 11px;
+      background-size: 201px 10px;
     }
     .desc {
       width: 100%;
