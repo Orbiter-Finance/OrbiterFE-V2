@@ -696,8 +696,12 @@ export default {
       } using Orbiter.`;
     },
     timeSpent() {
-      const { selectMakerConfig } = transferDataState;
-      return selectMakerConfig?.spentTime ? `${selectMakerConfig.spentTime}s` : transferCalculate.transferSpentTime(
+      // const { selectMakerConfig } = transferDataState;
+      // return selectMakerConfig?.spentTime ? `${selectMakerConfig.spentTime}s` : transferCalculate.transferSpentTime(
+      //         transferDataState.fromChainID,
+      //         transferDataState.toChainID
+      // );
+      return transferCalculate.transferSpentTime(
               transferDataState.fromChainID,
               transferDataState.toChainID
       );
