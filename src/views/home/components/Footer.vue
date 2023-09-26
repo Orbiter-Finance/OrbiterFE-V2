@@ -23,7 +23,7 @@
               :class="['item-nav-item', { disabled: navItem.disabled }]"
               @click="clickItem(navItem)"
             >
-              {{ navItem.label }}
+              {{ navItem.label + (navItem.disabled ? '-awaiting' : '') }}
             </div>
           </div>
         </div>
@@ -54,11 +54,11 @@ export default {
               label: 'Orbiter Data',
             },
             {
-              label: 'Orbiterscan',
-              disabled: true,
+              label: 'AAzkprover SDK',
             },
             {
-              label: 'AAzkprover SDK',
+              label: 'Orbiterscan',
+              disabled: true,
             },
           ],
         },

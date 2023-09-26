@@ -98,6 +98,8 @@ export default {
     .stage2-wrap {
       padding: 0;
       height: auto;
+      max-width: 350px;
+      width: max-content;
       .stage2-content {
         width: 100%;
         height: auto;
@@ -117,6 +119,7 @@ export default {
         }
         .desc {
           width: 86%;
+          max-width: 86%;
           font-size: 14px;
           margin-top: 12px;
         }

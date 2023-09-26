@@ -227,6 +227,7 @@ export default {
 }
 .home-page-info {
   background: #f5f5f5;
+  overflow: hidden;
 }
 
 .contain {

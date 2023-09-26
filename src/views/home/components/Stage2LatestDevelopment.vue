@@ -112,6 +112,8 @@ export default {
     margin-top: 80px;
     padding: 0 16px 0 16px;
     flex-direction: column;
+    max-width: 350px;
+    width: max-content;
     .info-wrap {
       padding-top: 0;
     }
@@ -131,7 +133,7 @@ export default {
     .sdk-image {
       margin-left: 0;
       margin-top: 24px;
-      width: 358px;
+      width: 100%;
       height: 256px;
     }
   }

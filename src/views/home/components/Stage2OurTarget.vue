@@ -151,6 +151,8 @@ export default {
   .target-wrap {
     margin-top: 0;
     padding: 0 16px;
+    max-width: 350px;
+    width: max-content;
     .title {
       font-size: 36px;
       background-size: 200px 11px;
