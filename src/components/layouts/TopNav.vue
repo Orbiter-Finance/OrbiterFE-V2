@@ -1,11 +1,16 @@
 <template>
   <div class="top-nav">
     <template v-if="!isMobile">
-      <div style="height: 100%; position: relative">
+      <div class="nav-wrap" style="height: 100%; position: relative">
         <img
           v-if="isStarknet"
-          src="../../assets/v2/starknet-logo.png"
-          style="width: 190px; height: 80px"
+          :src="currentStarknetLogo"
+          style="
+            width: 283px;
+            height: 40px;
+            margin-top: 16px;
+            margin-left: 21px;
+          "
         />
         <SvgIconThemed
           v-else
@@ -16,13 +21,7 @@
           :iconName="navIcons.logo"
         />
         <HeaderLinks
-          style="
-            margin-top: 24px;
-            position: absolute;
-            top: 0;
-            left: 241px;
-            min-width: 280px;
-          "
+          style="margin-top: 24px; margin-left: 134px; min-width: 280px"
         />
       </div>
       <HeaderOps />
@@ -92,6 +91,8 @@ import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
 import { walletIsLogin } from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
+import starknetLogoDark from '../../assets/v2/starknet-logo-dark.png'
+import starknetLogoLight from '../../assets/v2/starknet-logo-light.png'
 
 export default {
   name: 'TopNav',
@@ -104,6 +105,12 @@ export default {
   computed: {
     showAddress () {
       return showAddress()
+    },
+    isLightMode () {
+      return this.$store.state.themeMode === 'light'
+    },
+    currentStarknetLogo () {
+      return this.isLightMode ? starknetLogoLight : starknetLogoDark
     },
     isLogin () {
       return walletIsLogin.value
@@ -135,7 +142,7 @@ export default {
         logo: 'logo-mobile',
         logoStyle: { width: '41px', height: '40px' },
         logo_web: 'logo',
-        logo_webStyle: { width: '153px', height: '40px' },
+        logo_webStyle: { width: '207px', height: '40px' },
       }
       // TODO: when rinkeby logo is add, uncomment blow
       // if (this.isRinkeby) {
@@ -215,6 +222,10 @@ export default {
   align-items: center;
   .logo {
     cursor: pointer;
+  }
+  .nav-wrap {
+    display: flex;
+    align-items: center;
   }
 }
 .app {

@@ -23,7 +23,7 @@
               :class="['item-nav-item', { disabled: navItem.disabled }]"
               @click="clickItem(navItem)"
             >
-              {{ navItem.label + (navItem.disabled ? '-awaiting' : '') }}
+              {{ navItem.label + (navItem.disabled ? '-Coming soon' : '') }}
             </div>
           </div>
         </div>
