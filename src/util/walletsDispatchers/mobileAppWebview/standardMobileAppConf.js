@@ -5,8 +5,8 @@ import {
   BIT_KEEP_APP,
   COINBASE_APP,
   BRAVE_APP,
-  LOOPRING_APP,
-} from '../constants'
+  LOOPRING_APP, ZERION_APP,
+} from '../constants';
 import { isBraveWallet } from '../utils'
 
 // open ./pcBrowser/standardPCBrowserWalletConf to get the meaning of each prop member
@@ -21,6 +21,11 @@ const standardMobileAppConf = [
   {
     walletType: LOOPRING_APP,
     walletIsInstalledInvestigator: (provider) => provider.isLoopring,
+    chainIdTransfer: defaultChainIdTransfer,
+  },
+  {
+    walletType: ZERION_APP,
+    walletIsInstalledInvestigator: (provider) => provider.isZerion,
     chainIdTransfer: defaultChainIdTransfer,
   },
   {

@@ -187,12 +187,17 @@ export default {
                 {
                     isConnect: false,
                     icon: 'bitkeep',
-                    title: 'Bitget',
+                    title: 'BitgetWallet',
                 },
                 {
                     isConnect: false,
                     icon: 'okxwallet',
                     title: 'OKXWallet',
+                },
+                {
+                    isConnect: false,
+                    icon: 'zerion',
+                    title: 'Zerion',
                 },
                 {
                     isConnect: false,
