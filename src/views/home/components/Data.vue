@@ -38,6 +38,7 @@ export default {
     return {
       countToStartValue: 999,
       countToDuration: 2000,
+
       dataList: [
         {
           label: 'Community Members',
@@ -45,22 +46,22 @@ export default {
           unit: 'k',
         },
         {
-          label: 'Supported Chains',
+          label: 'Supported L2s',
           value: 17,
           unit: '+',
         },
         {
-          label: 'Transaction Volume',
+          label: 'Transaction Counts',
           value: 9,
           unit: '.5M',
         },
         {
-          label: 'Transfer Amount',
+          label: 'Transfer Amounts',
           value: 9,
           unit: '.6B',
         },
         {
-          label: 'Active Users',
+          label: 'Total Users',
           value: 3,
           unit: 'M',
         },

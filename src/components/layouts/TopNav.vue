@@ -36,14 +36,14 @@
       <!-- <ToggleBtn v-if="showToggleBtn()" @input="toggleTab" /> -->
       <div class="center">
         <div
-          v-if="!isLogin"
+          v-if="!isLogin && $route.path !== '/home'"
           @click="connectWallet"
           class="wallet-status connect-wallet-btn"
         >
           Connect Wallet
         </div>
         <div
-          v-else
+          v-else-if="$route.path !== '/home'"
           @click="connectAWallet"
           class="wallet-status wallet-address"
         >
