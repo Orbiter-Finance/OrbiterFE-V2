@@ -23,7 +23,7 @@
               :class="['item-nav-item', { disabled: navItem.disabled }]"
               @click="clickItem(navItem)"
             >
-              {{ navItem.label + (navItem.disabled ? '-awaiting' : '') }}
+              {{ navItem.label + (navItem.disabled ? '-Coming soon' : '') }}
             </div>
           </div>
         </div>
@@ -164,7 +164,9 @@ export default {
 .item-nav-item {
   margin-bottom: 16px;
   font-size: 14px;
-  font-family: OpenSans-Regular, OpenSans;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 400;
   cursor: pointer;
   color: #666666;

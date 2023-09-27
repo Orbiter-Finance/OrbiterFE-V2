@@ -6,8 +6,8 @@
     <div class="desc">
       Our goal is to enable cross-rollup transactions, improving Ethereum's
       inter-chain compatibility and maintaining real-time synchronization
-      between rollups and the main network. We are committed to reducing gas
-      consumption through cutting-edge technology.
+      between rollups and the mainnet. We are committed to reducing gas
+      consumption through zk technology.
     </div>
     <div class="desc-keynote">
       Our future for Ethereum Layer 2 infrastructure awaits.
@@ -97,7 +97,9 @@ export default {
   max-width: 75%;
   margin-top: 26px;
   font-size: 18px;
-  font-family: OpenSans-Regular, OpenSans;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 400;
   color: #666666;
 }
@@ -143,7 +145,9 @@ export default {
 }
 .item-desc {
   font-size: 18px;
-  font-family: OpenSans-Regular, OpenSans;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 400;
   color: #666666;
 }
