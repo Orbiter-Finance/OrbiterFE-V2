@@ -121,9 +121,9 @@ export default {
         .info {
           font-size: 40px;
           font-weight: bold;
-          background-size: 100% 100%;
+          background-size: 380px 195px;
           background-repeat: no-repeat;
-          padding-top: 12px;
+          padding: 12px 0;
           box-sizing: border-box;
           line-height: 52px;
         }

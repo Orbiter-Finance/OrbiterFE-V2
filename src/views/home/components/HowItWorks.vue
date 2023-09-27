@@ -96,9 +96,9 @@ export default {
   .works-wrap {
     padding: 32px 16px 36px 16px;
     .title {
-      width: 184px;
       height: 37px;
       margin: 0 auto;
+      text-align: center;
       background-size: 86px 9px;
       font-size: 28px;
     }
