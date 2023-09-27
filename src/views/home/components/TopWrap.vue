@@ -20,7 +20,7 @@
           >
           We are now heading to the final stages of this journey, where we have
           proposed a protocol for interchain messaging and developed an
-          aggregated middle layer for zk rollups, boosting L2s' Performance and
+          aggregated middle layer for ZK-rollups, boosting L2s' performance and
           decreasing gas consumption.
         </div>
       </div>
@@ -127,11 +127,12 @@ export default {
 }
 
 .desc {
-  padding: 0 54px;
   margin-top: 32px;
   color: #666;
   font-size: 18px;
-  font-family: OpenSans-Regular, OpenSans;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 400;
   &-keynote {
     font-weight: bold;
@@ -183,7 +184,6 @@ export default {
     .desc {
       margin-top: 24px;
       font-size: 14px;
-      padding: 0;
     }
     .seamless-item-content {
       width: 100%;

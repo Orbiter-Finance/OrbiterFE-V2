@@ -19,8 +19,8 @@
           zk Prover: <br />zK Aggregated Middle Layer
         </div>
         <div class="desc">
-          Advancing interoperability and scalability of Ethereum by utilising ZK
-          SNARKs recursion proof technology
+          Advancing interoperability and scalability of Ethereum by utilising
+          zk-SNARKs recursion proof technology
         </div>
       </div>
     </div>
@@ -98,7 +98,9 @@ export default {
   margin-top: 53px;
   max-width: 72%;
   font-size: 20px;
-  font-family: OpenSans-Regular, OpenSans;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 400;
   color: #ffffff;
 }

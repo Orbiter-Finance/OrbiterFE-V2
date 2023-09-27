@@ -55,7 +55,7 @@ export default {
           unit: '.5M',
         },
         {
-          label: 'Transfer amounts',
+          label: 'Transfer Amount',
           value: 9,
           unit: '.6B',
         },
@@ -101,7 +101,9 @@ export default {
 .label {
   margin-top: 17px;
   font-size: 18px;
-  font-family: OpenSans-Regular, OpenSans;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 400;
   color: #666666;
 }
