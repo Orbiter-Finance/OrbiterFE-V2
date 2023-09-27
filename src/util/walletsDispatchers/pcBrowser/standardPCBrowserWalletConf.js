@@ -6,8 +6,8 @@ import {
   TALLYHO,
   OKXWALLET,
   BIT_KEEP,
-  TOKEN_POCKET_APP,
-} from '../constants'
+  TOKEN_POCKET_APP, ZERION,
+} from '../constants';
 import { Notification } from 'element-ui'
 import { isBraveWallet } from '../utils'
 
@@ -97,6 +97,22 @@ export default [
         duration: 3000,
         message:
           '<div style="font-family:Inter Regular;text-align: left;">If you already have OKXWallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
+    },
+  },
+  {
+    walletType: ZERION,
+    icon: ZERION,
+    shouldAddChainCode: -32603,
+    walletNotInstallReducer: () => {
+      return Notification({
+        title: 'Error: Zerion has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+            '<div style="font-family:Inter Regular;text-align: left;">If you already have zerion installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },

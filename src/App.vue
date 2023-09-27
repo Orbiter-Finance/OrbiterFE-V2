@@ -19,7 +19,7 @@
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
       <keep-alive>
-        <BottomNav />
+        <BottomNav v-if="$route.path !== '/home'" />
       </keep-alive>
     </div>
     <HeaderDialog />
@@ -32,7 +32,7 @@ import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
   BRAVE_APP,
-  getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK,
+  getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK, ZERION_APP,
 } from './util/walletsDispatchers';
 import { isMobile, web3State } from './composition/hooks';
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
@@ -41,23 +41,27 @@ import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
-import { setIsBraveWallet, performInitMobileAppWallet, isBraveWallet } from './util/walletsDispatchers/utils';
-import { isMobileDevice } from './util';
-import { isBraveBrowser } from "./util/browserUtils";
-import { getWeb3 } from "./util/constants/web3/getWeb3";
+import {
+  setIsBraveWallet,
+  performInitMobileAppWallet,
+  isBraveWallet,
+} from './util/walletsDispatchers/utils'
+import { isMobileDevice } from './util'
+import { isBraveBrowser } from './util/browserUtils'
+import { getWeb3 } from './util/constants/web3/getWeb3'
 
 const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
   name: 'App',
   computed: {
-    isMobile() {
+    isMobile () {
       return isMobile.value
     },
-    isLightMode() {
+    isLightMode () {
       return this.$store.state.themeMode === 'light'
     },
-    styles() {
+    styles () {
       if (!this.isMobile) {
         if (this.isLightMode) {
           return {
@@ -90,11 +94,12 @@ export default {
         'background-repeat': 'no-repeat',
         // 'background-size': '100% 36%, 127% 100%',
         'background-size': '100% 36%, 100% 100%',
-        'background-image': `url(${lightbg}), url(${topbg})`,
+        'background-color':
+          'linear-gradient(180deg, #373951 0%, #28293D 100%);',
       }
     },
   },
-  data() {
+  data () {
     return {
       // lightbg,
       // darkbg,
@@ -108,11 +113,15 @@ export default {
   },
   async mounted() {
     if (isBraveBrowser()) {
-      setIsBraveWallet(await window.ethereum.request({
-        method: 'web3_clientVersion'
-      }).then((clientVersion) => {
-        return clientVersion.split('/')[0] === 'BraveWallet';
-      }))
+      setIsBraveWallet(
+        await window.ethereum
+          .request({
+            method: 'web3_clientVersion',
+          })
+          .then(clientVersion => {
+            return clientVersion.split('/')[0] === 'BraveWallet'
+          })
+      )
     }
     getZkToken.getSupportZKTokenList()
 
@@ -120,7 +129,7 @@ export default {
     this.performInitCurrentLoginWallet()
   },
   methods: {
-    performInitCurrentLoginWallet() {
+    performInitCurrentLoginWallet () {
       performInitMobileAppWallet()
 
       getZksToken.getSupportZksTokenList()
@@ -128,19 +137,26 @@ export default {
 
       const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()
       if (isOkxwalletApp) {
-        const matchInitDispatcher = walletDispatchersOnInit[METAMASK];
-        matchInitDispatcher && matchInitDispatcher();
-        return;
+        const matchInitDispatcher = walletDispatchersOnInit[METAMASK]
+        matchInitDispatcher && matchInitDispatcher()
+        return
       }
       const isBraveWalletApp = isBraveWallet && isMobileDevice()
       if (isBraveWalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[BRAVE_APP]
-        matchInitDispatcher && matchInitDispatcher();
-        return;
+        matchInitDispatcher && matchInitDispatcher()
+        return
       }
-      const isLoopringWalletApp = window.ethereum?.isLoopring && isMobileDevice()
+      const isLoopringWalletApp =
+        window.ethereum?.isLoopring && isMobileDevice()
       if (isLoopringWalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[LOOPRING_APP]
+        matchInitDispatcher && matchInitDispatcher()
+        return
+      }
+      const isZerionWalletApp = window.ethereum?.isZerion && isMobileDevice()
+      if (isZerionWalletApp) {
+        const matchInitDispatcher = walletDispatchersOnInit[ZERION_APP]
         matchInitDispatcher && matchInitDispatcher();
         return;
       }
@@ -158,7 +174,7 @@ export default {
       const matchInitDispatcher = walletDispatchersOnInit[walletType]
       matchInitDispatcher && matchInitDispatcher()
       if (!web3State.coinbase) {
-        getWeb3(walletType || METAMASK);
+        getWeb3(walletType || METAMASK)
       }
     },
   },

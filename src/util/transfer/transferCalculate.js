@@ -369,6 +369,9 @@ export default {
     if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
       timeSpent = 15
     }
+    if (fromChainID === 31 || fromChainID === 531) {
+      timeSpent = 15
+    }
     if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test ||
@@ -484,6 +487,9 @@ export default {
       return '~7 days'
     }
     if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
+      return '~7 days'
+    }
+    if (fromChainID === 31 || fromChainID === 531) {
       return '~7 days'
     }
     if (

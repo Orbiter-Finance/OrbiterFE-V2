@@ -680,5 +680,35 @@
         "watch": ["rpc"],
         "tokens": [],
         "infoURL": "https://explorer.zora.energy"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "169",
+        "networkId": "169",
+        "internalId": "31",
+        "name": "Manta",
+        "features": [],
+        "debug": false,
+        "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://manta-pacific.calderachain.xyz/http"
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "router": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
+        },
+        "tokens": [],
+        "infoURL": "https://manta-pacific.calderaexplorer.xyz"
     }
 ]

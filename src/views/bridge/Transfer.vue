@@ -1505,7 +1505,18 @@ export default {
       this.$refs.SelectFromChainPopupRef.showCustom();
     },
     // close selectChain
-    closeFromChainPopupClick() {
+    closeFromChainPopupClick(data) {
+      try {
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        this.$gtag.event('SwitchChain', {
+          'event_category': 'SwitchFromChain',
+          'event_label': address.toLocaleLowerCase(),
+          'chainId':this.transferDataState.fromChainID
+        })
+      }catch(error) {
+
+      }
+     
       this.$refs.SelectFromChainPopupRef.maskClick();
     },
     // open selectChain
@@ -1514,6 +1525,17 @@ export default {
     },
     // close selectChain
     closeToChainPopupClick() {
+      try {
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        this.$gtag.event('SwitchChain', {
+          'event_category': 'SwitchToChain',
+          'event_label': address.toLocaleLowerCase(),
+          'chainId':this.transferDataState.toChainID
+        })
+      }catch(error){
+
+      }
+      
       this.$refs.SelectToChainPopupRef.maskClick();
     },
     showTipPopup() {
@@ -1641,13 +1663,6 @@ export default {
                 fromChain.symbol,
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
-        if (fromChainID === CHAIN_ID.op && toChainID === CHAIN_ID.starknet) {
-          this.$notify.error({
-              title: `The optimism-starkNet network transaction maintenance, please try again later`,
-              duration: 3000,
-          });
-          return;
-        }
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
