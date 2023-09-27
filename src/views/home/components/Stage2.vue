@@ -98,7 +98,9 @@ export default {
   margin-top: 53px;
   max-width: 72%;
   font-size: 20px;
-  font-family: OpenSans-Regular, OpenSans;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   font-weight: 400;
   color: #ffffff;
 }
