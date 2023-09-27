@@ -5,13 +5,13 @@
   >
     <CommBtn
       ref="connectBtn"
-      v-if="!isLogin && !isMobile"
+      v-if="!isLogin && !isMobile && $route.path !== '/home'"
       @click="connectAWallet"
       class="ops-item not-mode"
       style="margin-right: 10px"
       >Connect a Wallet</CommBtn
     >
-    <template v-if="isLogin">
+    <template v-if="isLogin && $route.path !== '/home'">
       <span @click="showHistory" class="ops-item">History</span>
       <div
         v-if="isSelectedStarkNet"
