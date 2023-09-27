@@ -123,7 +123,7 @@ export default {
         .info {
           font-size: 40px;
           font-weight: bold;
-          background-size: 380px 195px;
+          background-size: 355px 180px;
           background-repeat: no-repeat;
           padding: 12px 0;
           box-sizing: border-box;
