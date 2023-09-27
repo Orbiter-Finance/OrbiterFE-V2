@@ -19,8 +19,8 @@
           zk Prover: <br />zK Aggregated Middle Layer
         </div>
         <div class="desc">
-          Advancing interoperability and scalability of Ethereum by utilising ZK
-          SNARKs recursion proof technology
+          Advancing interoperability and scalability of Ethereum by utilising
+          zk-SNARKs recursion proof technology
         </div>
       </div>
     </div>

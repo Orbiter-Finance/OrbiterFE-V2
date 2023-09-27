@@ -6,8 +6,8 @@
     <div class="desc">
       Our goal is to enable cross-rollup transactions, improving Ethereum's
       inter-chain compatibility and maintaining real-time synchronization
-      between rollups and the main network. We are committed to reducing gas
-      consumption through cutting-edge technology.
+      between rollups and the mainnet. We are committed to reducing gas
+      consumption through zk technology.
     </div>
     <div class="desc-keynote">
       Our future for Ethereum Layer 2 infrastructure awaits.

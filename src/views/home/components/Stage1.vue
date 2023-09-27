@@ -9,7 +9,7 @@
         Bridge Protocol
       </div>
       <div class="desc">
-        Leveraging a decentralised solution, we've constructed a Cross-rollup
+        Leveraging a decentralised solution, we've constructed a cross-rollup
         protocol that accomplishes safe, cost-effective, and high-speed transfer
         of messages or assets.
       </div>

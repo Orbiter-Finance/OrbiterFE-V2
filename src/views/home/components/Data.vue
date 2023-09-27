@@ -55,7 +55,7 @@ export default {
           unit: '.5M',
         },
         {
-          label: 'Transfer amounts',
+          label: 'Transfer Amount',
           value: 9,
           unit: '.6B',
         },

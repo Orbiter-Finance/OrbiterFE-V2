@@ -20,7 +20,7 @@
           >
           We are now heading to the final stages of this journey, where we have
           proposed a protocol for interchain messaging and developed an
-          aggregated middle layer for zk rollups, boosting L2s' Performance and
+          aggregated middle layer for ZK-rollups, boosting L2s' Performance and
           decreasing gas consumption.
         </div>
       </div>
