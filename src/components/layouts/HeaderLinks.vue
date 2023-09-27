@@ -122,6 +122,7 @@ export default {
   line-height: 24px;
   .nav-item {
     height: 60px;
+    padding-top: 12px;
     position: relative;
     display: inline-flex;
   }
@@ -146,6 +147,9 @@ export default {
     margin-bottom: 12px;
     padding-bottom: 16px;
   }
+  .nav-item {
+    padding-top: 0;
+  }
   .nav-item-sub.selected::after {
     content: '';
     position: absolute;
@@ -169,7 +173,7 @@ export default {
       margin-right: 0;
     }
     .nav-item.selected::after {
-      bottom: -10px;
+      bottom: -20px;
     }
   }
 }
