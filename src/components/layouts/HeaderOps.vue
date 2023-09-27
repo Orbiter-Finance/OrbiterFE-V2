@@ -139,7 +139,7 @@ export default {
             query: route.query,
           })
         )
-      if (route.path === '/bridge') {
+      if (route.path === '/') {
         saveSenderPageWorkingState()
       }
       route.path !== '/history' &&

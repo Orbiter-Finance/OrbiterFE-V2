@@ -19,7 +19,7 @@
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
       <keep-alive>
-        <BottomNav v-if="!$route.path === '/'" />
+        <BottomNav v-if="$route.path !== '/home'" />
       </keep-alive>
     </div>
     <HeaderDialog />

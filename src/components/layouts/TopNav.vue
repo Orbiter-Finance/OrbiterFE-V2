@@ -188,13 +188,13 @@ export default {
   methods: {
     toHome () {
       setPageSenderTab()
-      this.$route.path !== '/' && this.$router.push({ path: '/' })
+      this.$route.path !== '/home' && this.$router.push({ path: '/home' })
     },
     toggleTab (tab) {
       setPageTab(tab)
     },
     showToggleBtn () {
-      return this.$route.path === '/bridge' || this.$route.path === '/history'
+      return this.$route.path === '/' || this.$route.path === '/history'
     },
     connectWallet () {
       Middle.$emit('connectWallet', true)

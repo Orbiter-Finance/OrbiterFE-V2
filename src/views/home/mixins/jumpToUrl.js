@@ -23,7 +23,7 @@ export default {
           'https://github.com/Orbiter-Finance/zkprover-dapp',
         'View More ➝': 'https://orbiter-finance.medium.com/',
         'Orbiter Data': 'https://www.orbiter.finance/data',
-        'Orbiter bridge': 'https://www.orbiter.finance/bridge',
+        'Orbiter bridge': 'https://www.orbiter.finance/',
         'AAzkprover SDK': 'https://github.com/Orbiter-Finance/zkprover-dapp',
         Twitter: 'https://twitter.com/Orbiter_Finance',
         Discord: 'https://discord.gg/orbiter-finance',

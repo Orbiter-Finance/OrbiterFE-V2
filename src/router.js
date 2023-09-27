@@ -18,14 +18,6 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: Home,
-      meta: {
-        title: 'Orbiter',
-        keepAlive: false,
-      },
-    },
-    {
-      path: '/bridge',
       component: (resolve) => require(['./views/bridge/Bridge'], resolve),
       meta: {
         title: 'Orbiter',
@@ -51,6 +43,14 @@ export default new Router({
     {
       path: '/dataDetail',
       component: DataDetail,
+      meta: {
+        title: 'Orbiter',
+        keepAlive: false,
+      },
+    },
+    {
+      path: '/home',
+      component: Home,
       meta: {
         title: 'Orbiter',
         keepAlive: false,

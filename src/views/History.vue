@@ -392,7 +392,7 @@ export default {
           last.path !== this.$route.path && this.$router.push(last)
           recoverSenderPageWorkingState()
         } else {
-          this.$router.push({ path: '/bridge' })
+          this.$router.push({ path: '/' })
         }
       } catch (err) {
         console.error(err)

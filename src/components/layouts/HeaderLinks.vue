@@ -75,15 +75,15 @@ export default {
       navs: [
         {
           name: 'L2 Bridge',
-          href: '/bridge',
+          href: '/',
           children: [
             {
               name: 'Sender',
-              phref: '/bridge',
+              phref: '/',
             },
             {
               name: 'Maker',
-              phref: '/bridge',
+              phref: '/',
             },
           ],
         },
