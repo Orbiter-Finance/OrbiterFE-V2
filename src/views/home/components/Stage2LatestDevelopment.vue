@@ -101,7 +101,7 @@ export default {
 .sdk-image {
   width: 653px;
   height: 532px;
-  margin-left: 149px;
+  margin-left: 120px;
   img {
     width: 100%;
     height: 100%;
