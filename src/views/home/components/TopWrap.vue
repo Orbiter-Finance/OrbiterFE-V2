@@ -174,7 +174,7 @@ export default {
     .info-title {
       font-size: 34px;
       padding: 22px 0;
-      background-size: 350px 100%;
+      background-size: 360px 100%;
       background-position: center center;
       .info-keynote {
         font-size: 42px;

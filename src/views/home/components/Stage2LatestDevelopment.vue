@@ -110,7 +110,7 @@ export default {
 @media (max-width: 1240px) {
   .development-wrap {
     margin-top: 80px;
-    padding: 0 16px 0 16px;
+    padding: 0;
     flex-direction: column;
     max-width: 350px;
     width: max-content;
