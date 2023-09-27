@@ -1587,9 +1587,23 @@ export default {
           });
           return;
         }
+        if (fromChainID === 25 && toChainID === 15) {
+          this.$notify.error({
+              title: `The OpBNB-BNB network transaction maintenance, please try again later`,
+              duration: 3000,
+          });
+          return;
+        }
         // if (toChainID === 17) {
         //   this.$notify.error({
-        //     title: `The Polygon zkEVM network transaction maintenance, please try again later`,
+        //     title: `The Polygon ZKEVM network transaction maintenance, please try again later`,
+        //     duration: 6000,
+        //   });
+        //   return;
+        // }
+        // if (toChainID === 23) {
+        //   this.$notify.error({
+        //     title: `The Linea network transaction maintenance, please try again later`,
         //     duration: 6000,
         //   });
         //   return;
