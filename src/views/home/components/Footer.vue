@@ -22,6 +22,9 @@
               :key="navItem.label"
               :class="['item-nav-item', { disabled: navItem.disabled }]"
               @click="clickItem(navItem)"
+              :style="
+                navItem.disabled && { cursor: 'unset', textDecoration: 'none' }
+              "
             >
               {{ navItem.label + (navItem.disabled ? '-Coming soon' : '') }}
             </div>
