@@ -939,7 +939,8 @@ export default {
         this.isCrossAddress = false;
       }
 
-      const { tokens, source, dest } = this.queryParams;
+      const { tokens, token, source, dest } = this.queryParams;
+      fromCurrency = fromCurrency || token;
       const fromTokens = tokens;
       const fromChainIdList = Array.from(new Set(
               makerConfigs.map(item => item.fromChain.id)
@@ -1110,7 +1111,7 @@ export default {
       if (fromChainID !== oldFromChainID || fromCurrency !== oldFromCurrency) {
         this.userMinPrice = makerConfigInfo?.fromChain?.minPrice || 0;
       }
-      this.updateRoutes(oldFromChainID, oldToChainID);
+      this.updateRoutes(oldFromChainID, oldToChainID, oldFromCurrency);
       await this.updateSendBtnInfo();
     },
     async updateSendBtnInfo() {
@@ -1199,8 +1200,8 @@ export default {
       }
       this.sendBtnInfo = info;
     },
-    updateRoutes(oldFromChainID, oldToChainID) {
-      const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
+    updateRoutes(oldFromChainID, oldToChainID, oldFromCurrency) {
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       const { path, query } = this.$route;
       const changeQuery = {};
       if (fromChainID !== oldFromChainID && query?.source !== selectMakerConfig.fromChain.name) {
@@ -1208,6 +1209,9 @@ export default {
       }
       if (toChainID !== oldToChainID && query?.dest !== selectMakerConfig.toChain.name) {
         changeQuery.dest = selectMakerConfig.toChain.name;
+      }
+      if(fromCurrency !== oldFromCurrency && query?.token !== selectMakerConfig.fromChain.symbol) {
+        changeQuery.token = selectMakerConfig.fromChain.symbol;
       }
       if (Object.keys(changeQuery).length) {
         const newQuery = JSON.parse(JSON.stringify(query));
