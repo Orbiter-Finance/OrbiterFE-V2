@@ -91,6 +91,10 @@ export default {
           name: 'L2 Data',
           href: '/data',
         },
+        {
+          name: 'About us',
+          href: '/home',
+        },
         // {
         //   name: 'More',
         //   children: []
