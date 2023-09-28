@@ -1,3 +1,21 @@
+const initThemeMode = () => {
+  if (localStorage.getItem('themeMode')) {
+    return localStorage.getItem('themeMode')
+  } else {
+    if (window?.matchMedia) {
+      const currentThemeMode = window?.matchMedia(
+        '(prefers-color-scheme: dark)'
+      ).matches
+        ? 'dark'
+        : 'light'
+      localStorage.setItem('themeMode', currentThemeMode)
+      return currentThemeMode
+    } else {
+      return 'light'
+    }
+  }
+}
+
 const state = {
   innerWH: {
     innerWidth: window.innerWidth,
@@ -42,6 +60,6 @@ const state = {
     rinkeby: [],
     mainnet: [],
   },
-  themeMode: localStorage.getItem('themeMode') || 'light', // light dark
+  themeMode: initThemeMode(), // light dark
 }
 export default state
