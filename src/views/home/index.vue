@@ -11,7 +11,7 @@
       :stageTitleImg="currentModePic.stage1_title"
       :stageImage="currentModePic.stage1_image"
     />
-    <Data :showData="showData" />
+    <Data />
     <div class="home-page-info">
       <HowItWorks
         :titleBg="currentUnders.underWorks"
