@@ -1,5 +1,5 @@
 <template>
-  <div v-if="showData" class="date-wrap fade-content">
+  <div class="date-wrap fade-content">
     <div class="data-content">
       <div
         class="data-item"
@@ -7,11 +7,7 @@
         :key="item.value + index"
       >
         <div class="value">
-          <CountTo
-            :startVal="countToStartValue"
-            :endVal="item.value"
-            :duration="countToDuration"
-          />
+          {{ item.value }}
           {{ item.unit }}
         </div>
         <div class="label">
@@ -23,17 +19,7 @@
 </template>
 
 <script>
-import CountTo from 'vue-count-to'
 export default {
-  components: {
-    CountTo,
-  },
-  props: {
-    showData: {
-      type: Boolean,
-      default: false,
-    },
-  },
   data () {
     return {
       countToStartValue: 999,
@@ -52,13 +38,13 @@ export default {
         },
         {
           label: 'Transaction Counts',
-          value: 9,
-          unit: '.5M',
+          value: 9.5,
+          unit: 'M',
         },
         {
           label: 'Transfer Amounts',
-          value: 9,
-          unit: '.6B',
+          value: 9.6,
+          unit: 'B',
         },
         {
           label: 'Total Users',
@@ -76,6 +62,7 @@ export default {
   width: 100%;
   background-color: #fff;
   box-sizing: border-box;
+  opacity: 0;
 }
 .data-content {
   display: flex;
