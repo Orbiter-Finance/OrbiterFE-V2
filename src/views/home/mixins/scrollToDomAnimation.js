@@ -1,9 +1,4 @@
 export default {
-  data() {
-    return {
-      showData: false,
-    }
-  },
   mounted() {
     document
       .getElementById('app')
@@ -26,10 +21,6 @@ export default {
           element?.getBoundingClientRect()?.top < screenHeight - 100 &&
           element?.getBoundingClientRect()?.top > 0
         ) {
-          if (index === 0) {
-            this.showData = true
-            return
-          }
           element?.classList.add('contain')
         }
       })
