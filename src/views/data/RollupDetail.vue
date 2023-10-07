@@ -5,8 +5,9 @@
     :visible.sync="isShow"
     append-to-body
     :margin-top="isMobile ? '5%' : '15vh'"
+    @close="close"
     :show-close="false"
-    :destroy-on-close="true"
+    destroy-on-close
   >
     <div slot="title" class="rollup-detail-dialog-title">
       <dapp-logo class="logo" :chains="true" :name="rollupData.rollup_name" />
