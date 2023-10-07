@@ -1584,13 +1584,13 @@ export default {
         //   });
         //   return;
         // }
-        if (fromChainID === 7 && toChainID === 4) {
-          this.$notify.error({
-              title: `The optimism-starkNet network transaction maintenance, please try again later`,
-              duration: 3000,
-          });
-          return;
-        }
+        // if (fromChainID === 7 && toChainID === 4) {
+        //   this.$notify.error({
+        //       title: `The optimism-starkNet network transaction maintenance, please try again later`,
+        //       duration: 3000,
+        //   });
+        //   return;
+        // }
         if (fromChainID === 25 && toChainID === 15) {
           this.$notify.error({
               title: `The OpBNB-BNB network transaction maintenance, please try again later`,
