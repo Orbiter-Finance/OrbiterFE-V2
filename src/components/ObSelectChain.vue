@@ -17,9 +17,9 @@
 
             <div class="list-content">
                 <template v-if="isExistChainsGroup">
-                    <template v-for="([key, chainLocalIds], i) in Object.entries(chainsGroup)">
-                        <div class="contentItem title">{{ toCapitalize(key) }}</div>
-                        <div v-for="(item, index) in getChainsInGroup(chainLocalIds)" :key="item.chain + index + i"
+                    <template v-for="(chains, name) of groupChains" >
+                        <div class="contentItem title" :key="name">{{ toCapitalize(name) }}</div>
+                        <div v-for="(item, index) of chains" :key="name + index"
                             @click="getChainInfo(item, index)" class="contentItem">
                             <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
                             <span>{{ item.chain }}</span>
@@ -127,6 +127,21 @@ export default {
             ]
             return customSort(chainOrderIds,chains)
         },
+        groupChains:function() {
+            const data = {};
+            for (const groupName in this.chainsGroup) {
+                const chainsIds = this.chainsGroup[groupName]
+                console.log(groupName, '==', chainsIds)
+                let chains = this.transferChainData.filter(
+                    (item) => chainsIds.includes(+item.localID)
+                )
+                if (this.keyword || this.keyword !== '') {
+                    chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
+                }
+                data[groupName] = chains;
+            }
+            return data;
+        }
     },
     watch: {},
     mounted() { },
@@ -135,9 +150,13 @@ export default {
             if (!chainLocalIds) {
                 return []
             }
-            return chainLocalIds.map(id=> {
+            let chains =  chainLocalIds.map(id=> {
                 return this.transferChainData.find(c => id == c.localID);
-            }).filter(row => row && row.localID)
+            });
+            //     if (this.keyword || this.keyword !== '') {
+            //     chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
+            // }
+            return chains.filter(row => row && row.localID)
         },
         toCapitalize(str) {
             if (!str) return ''
