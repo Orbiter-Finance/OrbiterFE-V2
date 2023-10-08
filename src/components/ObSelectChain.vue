@@ -18,7 +18,7 @@
             <div class="list-content">
                 <template v-if="isExistChainsGroup">
                     <template v-for="(chains, name) of groupChains" >
-                        <div class="contentItem title" :key="name">{{ toCapitalize(name) }}</div>
+                        <div class="contentItem title" >{{ toCapitalize(name) }}</div>
                         <div v-for="(item, index) of chains" :key="name + index"
                             @click="getChainInfo(item, index)" class="contentItem">
                             <svg-icon class="logo" style="margin-right: 1.5rem" :iconName="item.icon"></svg-icon>
@@ -131,7 +131,6 @@ export default {
             const data = {};
             for (const groupName in this.chainsGroup) {
                 const chainsIds = this.chainsGroup[groupName]
-                console.log(groupName, '==', chainsIds)
                 let chains = this.transferChainData.filter(
                     (item) => chainsIds.includes(+item.localID)
                 )
