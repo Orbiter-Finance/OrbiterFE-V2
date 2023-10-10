@@ -346,6 +346,13 @@ export default {
           if (tx.symbol === 'USDC' || tx.symbol === 'USDT') {
             decimal = 6
           }
+          const chainInfo = util.getChainInfoByChainId(tx.chainId);
+          if (chainInfo) {
+            const token = [chainInfo.nativeCurrency, ...chainInfo.tokens].find(item => item.symbol === tx.symbol);
+            if (token) {
+                decimal = token.decimals;
+            }
+          }
           if (tx.side === 0) {
             const date = new Date(tx.timestamp)
             data.fromHash = tx.hash
