@@ -80,6 +80,13 @@ export async function getTransactionsHistory(params = {}) {
       if (row.fromToken === 'USDC' || row.fromToken === 'USDT') {
         decimal = 6
       }
+      const chainInfo = util.getChainInfoByChainId(row.fromChain);
+      if (chainInfo) {
+        const token = [chainInfo.nativeCurrency, ...chainInfo.tokens].find(item => item.symbol === row.fromToken);
+        if (token) {
+          decimal = token.decimals;
+        }
+      }
       const fromDate = new Date(row.fromTime);
       const toDate = new Date(row.toTime);
       row.fromTimeStampShow = util.formatDate(fromDate);
