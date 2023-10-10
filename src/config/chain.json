@@ -461,12 +461,24 @@
             "https://bsc-dataseed4.binance.org"
         ],
         "watch": ["api", "rpc"],
-        "tokens": [
+        "tokens":[
             {
-                "name": "Binance-Peg Ethereum",
-                "symbol": "ETH",
-                "decimals": 18,
-                "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+                "name":"Binance-Peg Ethereum",
+                "symbol":"ETH",
+                "decimals":18,
+                "address":"0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+            },
+          {
+                "name":"Binance-Peg USDT",
+                "symbol":"USDT",
+                "decimals":18,
+                "address":"0x55d398326f99059ff775485246999027b3197955"
+            },
+           {
+                "name":"Binance-Peg USDC",
+                "symbol":"USDC",
+                "decimals":18,
+                "address":"0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
             }
         ],
         "infoURL": "https://bscscan.com"
@@ -560,7 +572,14 @@
             "rpc",
             "api"
         ],
-        "tokens": [],
+        "tokens":[
+            {
+                        "name":"USDC",
+                        "symbol":"USDC",
+                        "decimals":6,
+                        "address":"0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
+                    }
+                    ],
         "infoURL": "https://basescan.org"
     },
     {
@@ -585,12 +604,18 @@
         "router": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
-        "tokens": [
+        "tokens":[
             {
-                "name": "USDC",
-                "symbol": "USDC",
-                "decimals": 6,
-                "address": "0x176211869ca2b568f2a7d4ee941e073a821ee1ff"
+                "name":"USDC",
+                "symbol":"USDC",
+                "decimals":6,
+                "address":"0x176211869ca2b568f2a7d4ee941e073a821ee1ff"
+            },
+           {
+                "name":"USDT",
+                "symbol":"USDT",
+                "decimals":6,
+                "address":"0xA219439258ca9da29E9Cc4cE5596924745e12B93"
             }
         ],
         "infoURL": "https://lineascan.build"
