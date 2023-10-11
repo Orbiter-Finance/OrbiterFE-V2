@@ -355,23 +355,8 @@ export default {
     if (fromChainID === 1 || fromChainID === 4 || fromChainID === 5) {
       timeSpent = 30
     }
-    if (fromChainID === 2 || fromChainID === 22) {
-      timeSpent = 15
-    }
-    if (fromChainID === 10 || fromChainID === 510) {
-      timeSpent = 15
-    }
-    if (fromChainID === 21 || fromChainID === 521) {
-      timeSpent = 15
-    }
-    if (fromChainID === 25 || fromChainID === 525) {
-      timeSpent = 15
-    }
-    if (fromChainID === 30 || fromChainID === 530) {
-      timeSpent = 15
-    }
-    if (fromChainID === 31 || fromChainID === 531) {
-      timeSpent = 15
+    if ([2, 22, 6, 66, 7, 77, 9, 99, 10, 510, 19, 519, 21, 521, 25, 525, 30, 530].includes(fromChainID)) {
+      timeSpent = 15;
     }
     if (
       fromChainID === 3 ||
@@ -381,17 +366,8 @@ export default {
     ) {
       timeSpent = 5
     }
-    if (fromChainID === 6 || fromChainID === 66) {
-      timeSpent = 15
-    }
-    if (fromChainID === 7 || fromChainID === 77) {
-      timeSpent = 15
-    }
     if (fromChainID === 8 || fromChainID === 88) {
       timeSpent = 5
-    }
-    if (fromChainID === 9 || fromChainID === 99) {
-      timeSpent = 15
     }
     if (fromChainID === 13 || fromChainID === 513) {
       timeSpent = 20
@@ -402,12 +378,6 @@ export default {
     if (fromChainID === 4 || fromChainID === 44) {
       timeSpent = 180
     }
-    if (fromChainID === 518) {
-      timeSpent = 15
-    }
-    if (fromChainID === 519) {
-      timeSpent = 6.828
-    }
     if (toChainID === 4 || toChainID === 44) {
       timeSpent = 180
     }
@@ -417,9 +387,6 @@ export default {
     if (toChainID === 16 || toChainID === 516) {
       timeSpent += 30
     }
-    if (toChainID === 2 || toChainID === 22) {
-      timeSpent += 15
-    }
     if (
       toChainID === 3 ||
       toChainID === 33 ||
@@ -428,47 +395,14 @@ export default {
     ) {
       timeSpent += 5
     }
-    if (toChainID === 6 || toChainID === 66) {
-      timeSpent += 15
-    }
-    if (toChainID === 7 || toChainID === 77) {
-      timeSpent += 15
-    }
-    if (toChainID === 8 || toChainID === 88) {
-      timeSpent += 5
-    }
-    if (toChainID === 9 || toChainID === 99) {
-      timeSpent += 15
-    }
-    if (toChainID === 10 || toChainID === 510) {
-      timeSpent += 15
+    if ([2, 22, 6, 66, 7, 77, 8, 88, 9, 99, 10, 510, 14, 514, 19, 519, 21, 521, 25, 525, 30, 530, 31, 531].includes(toChainID)) {
+      timeSpent += 15;
     }
     if (toChainID === 11 || toChainID === 511) {
       timeSpent += 5
     }
     if (toChainID === 13 || toChainID === 513) {
       timeSpent += 20
-    }
-    if (toChainID === 14 || toChainID === 514) {
-      timeSpent += 15
-    }
-    if (toChainID === 518) {
-      timeSpent += 15
-    }
-    if (toChainID === 519) {
-      timeSpent += 6.828
-    }
-    if (toChainID === 21 || toChainID === 521) {
-      timeSpent += 15
-    }
-    if (toChainID === 25 || toChainID === 525) {
-      timeSpent += 15
-    }
-    if (toChainID === 30 || toChainID === 530) {
-      timeSpent += 15
-    }
-    if (toChainID === 31 || toChainID === 531) {
-      timeSpent += 15
     }
     if (toChainID === 523 || toChainID === 23) {
       timeSpent += 30
@@ -482,49 +416,24 @@ export default {
   },
 
   transferOrginTime(fromChainID, toChainID) {
+    if ([2, 22, 7, 77, 10, 510, 13, 513].includes(fromChainID)) {
+      return '~7 days';
+    }
     if (fromChainID === 523 || fromChainID === 23) {
       return '~24 hours'
     }
     if (fromChainID === 517 || fromChainID === 17) {
       return '~6 hours'
     }
-    if (fromChainID === 2 || fromChainID === 22) {
-      return '~7 days'
-    }
     if (fromChainID === 4 || fromChainID === 44) {
       return '~24 hours'
     }
-    if (fromChainID === 16 || fromChainID === 516) {
-      return '~7 days'
-    }
-    if (fromChainID === 21 || fromChainID === 521) {
-      return '~7 days'
-    }
-    if (fromChainID === 25 || fromChainID === 525) {
-      return '~7 days'
-    }
-    if (fromChainID === 30 || fromChainID === 530) {
-      return '~7 days'
-    }
-    if (fromChainID === 31 || fromChainID === 531) {
-      return '~7 days'
-    }
-    if (
-      fromChainID === 3 ||
-      fromChainID === 33 ||
-      fromChainID === 12 ||
-      fromChainID === 512 ||
-      fromChainID === 14 ||
-      fromChainID === 514
-    ) {
-      return '~4 hours'
+    if ([3, 33, 12, 512, 14, 514].includes(fromChainID)) {
+      return '~4 hours';
     }
     // https://docs.polygon.technology/docs/develop/ethereum-polygon/getting-started/
     if (fromChainID === 6 || fromChainID === 66) {
       return '~3 hours'
-    }
-    if (fromChainID === 7 || fromChainID === 77) {
-      return '~7 days'
     }
     if (fromChainID === 8 || fromChainID === 88) {
       return '~5 hours'
@@ -532,20 +441,8 @@ export default {
     if (fromChainID === 9 || fromChainID === 99) {
       return '~4 hours'
     }
-    if (fromChainID === 10 || fromChainID === 510) {
-      return '~7 days'
-    }
-    if (fromChainID === 13 || fromChainID === 513) {
-      return '~7 days'
-    }
     if (fromChainID === 15 || fromChainID === 515) {
       return '~15min'
-    }
-    if (fromChainID === 518 && toChainID === 519) {
-      return '~2min'
-    }
-    if (fromChainID === 519 && toChainID === 518) {
-      return '~10min'
     }
 
     if (fromChainID === 1 || fromChainID === 5) {
@@ -600,23 +497,11 @@ export default {
       if (toChainID === 13 || toChainID === 513) {
         return '~10min'
       }
-      if (toChainID === 15 || toChainID === 515) {
-        return '~15min'
-      }
       if (toChainID === 16 || toChainID === 516) {
         return '~10min'
       }
-      if (toChainID === 21 || toChainID === 521) {
-        return '~15min'
-      }
-      if (toChainID === 25 || toChainID === 525) {
-        return '~15min'
-      }
-      if (toChainID === 30 || toChainID === 530) {
-        return '~15min'
-      }
-      if (toChainID === 31 || toChainID === 531) {
-        return '~15min'
+      if ([15, 515, 19, 519, 21, 521, 25, 525, 30, 530, 31, 531].includes(toChainID)) {
+        return '~15min';
       }
     }
   },
@@ -662,6 +547,9 @@ export default {
       return ' 7 days'
     }
 
+    if (fromChainID === 19 || fromChainID === 519) {
+      return ' 7 days'
+    }
     if (fromChainID === 21 || fromChainID === 521) {
       return ' 7 days'
     }
