@@ -978,9 +978,10 @@ export default {
   safeCode() {
     const { selectMakerConfig, toChainID } = transferDataState;
     const internalId = String(selectMakerConfig.toChain.id).length < 2 ? ("0" + selectMakerConfig.toChain.id) : selectMakerConfig.toChain.id;
+    const dealerId = String(selectMakerConfig.dealerId || 0).length < 2 ? ("0" + selectMakerConfig.dealerId) : selectMakerConfig.dealerId;
     const chainInfo = util.getV3ChainInfoByChainId(toChainID);
     return selectMakerConfig.ebcId ?
-      selectMakerConfig.dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
+      dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
   },
 
   getTransferTValue() {

@@ -1581,20 +1581,20 @@ export default {
         return;
       }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
-      if (selectMakerConfig.ebcId) {
-        try {
-          const receiveValue = await transferCalculate.calEBCValue();
-          util.log('ebc receive value', +receiveValue, 'toValue', +this.toValue);
-          transferDataState.ebcValue = new BigNumber(receiveValue).dividedBy(10 ** selectMakerConfig.toChain.decimals).toString();
-        } catch (e) {
-          console.error(e);
-          this.$notify.error({
-            title: `EBC validation failure`,
-            duration: 3000,
-          });
-          return;
-        }
-      }
+      // if (selectMakerConfig.ebcId) {
+      //   try {
+      //     const receiveValue = await transferCalculate.calEBCValue();
+      //     util.log('ebc receive value', +receiveValue, 'toValue', +this.toValue);
+      //     transferDataState.ebcValue = new BigNumber(receiveValue).dividedBy(10 ** selectMakerConfig.toChain.decimals).toString();
+      //   } catch (e) {
+      //     console.error(e);
+      //     this.$notify.error({
+      //       title: `EBC validation failure`,
+      //       duration: 3000,
+      //     });
+      //     return;
+      //   }
+      // }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,

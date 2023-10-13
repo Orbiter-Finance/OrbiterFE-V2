@@ -1480,7 +1480,7 @@ export default {
     async mounted() {
         const { selectMakerConfig, transferValue } = transferDataState
         const { fromChain, toChain } = selectMakerConfig
-        if (selectMakerConfig.ebcId) {
+        if (selectMakerConfig.ebcId && transferDataState.ebcValue) {
             this.expectValue = `${ transferDataState.ebcValue } ${ selectMakerConfig.fromChain.symbol }`;
             return;
         }
