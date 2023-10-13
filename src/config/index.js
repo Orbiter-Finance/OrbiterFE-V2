@@ -23,6 +23,8 @@ export const CHAIN_ID = {
   pozkevm: "1101",
   bsc: "56",
   opbnb: "204",
+  manta: "169",
+  scroll: "534352",
 
   zksync_test: 'zksync_test',
   starknet_test: 'SN_GOERLI',
@@ -41,6 +43,8 @@ export const CHAIN_ID = {
   pozkevm_test: "1442",
   bsc_test: "97",
   opbnb_test: "5611",
+  manta_test: "3441005",
+  scroll_test: "534353",
 };
 
 const makerNum = parseInt(Math.random() * 2) + 1

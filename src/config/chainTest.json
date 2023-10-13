@@ -645,5 +645,30 @@
     "watch": ["rpc"],
     "tokens": [],
     "infoURL": "https://testnet.explorer.zora.energy"
-  }
+  },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "3441005",
+        "networkId": "3441005",
+        "internalId": "531",
+        "name": "Manta Görli",
+        "features": [],
+        "debug": false,
+        "contracts": [],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://manta-testnet.calderachain.xyz/http"
+        ],
+        "watch": ["rpc"],
+        "tokens": [],
+        "infoURL": "https://pacific-explorer.manta.network"
+    }
 ]
