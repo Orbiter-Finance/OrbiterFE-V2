@@ -1164,15 +1164,15 @@ export default {
     const internalId = String(selectMakerConfig.toChain.id).length < 2 ? ("0" + selectMakerConfig.toChain.id) : selectMakerConfig.toChain.id;
     const chainInfo = util.getV3ChainInfoByChainId(toChainID);
     return selectMakerConfig.ebcId ?
-        selectMakerConfig.dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
+      selectMakerConfig.dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
   },
 
   getTransferTValue() {
     const { selectMakerConfig, transferValue, fromChainID } =
-        transferDataState;
+      transferDataState;
     const rAmount = new BigNumber(transferValue)
-        .plus(new BigNumber(selectMakerConfig.tradingFee))
-        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals));
+      .plus(new BigNumber(selectMakerConfig.tradingFee))
+      .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals));
     const rAmountValue = rAmount.toFixed();
     const p_text = this.safeCode();
     return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text);
@@ -1183,9 +1183,9 @@ export default {
     const provider = new ethers.providers.Web3Provider(web3.currentProvider);
     util.log('ebcAddress', selectMakerConfig.ebcAddress);
     const contractInstance = new ethers.Contract(
-        selectMakerConfig.ebcAddress,
-        EBC_ABI,
-        provider
+      selectMakerConfig.ebcAddress,
+      EBC_ABI,
+      provider
     );
     const ro = [fromChainID, toChainID, selectMakerConfig.status,
       web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
@@ -1195,14 +1195,14 @@ export default {
       selectMakerConfig.spentTime,
       selectMakerConfig.compensationRatio];
     util.log("getResponseIntent params", "amount", this.getTransferTValue().tAmount, "sourceChainId", fromChainID, "destChainId", toChainID, "status", selectMakerConfig.status,
-        "sourceToken", web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
-        "destToken", web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
-        "minPrice", selectMakerConfig.fromChain.originMinPrice, "maxPrice", selectMakerConfig.fromChain.originMaxPrice,
-        "withholdingFee", selectMakerConfig.originWithholdingFee, "tradingFee", selectMakerConfig.originTradeFee,
-        "responseTime", selectMakerConfig.spentTime,
-        "compensationRatio", selectMakerConfig.compensationRatio);
+      "sourceToken", web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
+      "destToken", web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
+      "minPrice", selectMakerConfig.fromChain.originMinPrice, "maxPrice", selectMakerConfig.fromChain.originMaxPrice,
+      "withholdingFee", selectMakerConfig.originWithholdingFee, "tradingFee", selectMakerConfig.originTradeFee,
+      "responseTime", selectMakerConfig.spentTime,
+      "compensationRatio", selectMakerConfig.compensationRatio);
     return await contractInstance.getResponseIntent(
-        this.getTransferTValue().tAmount, ro);
+      this.getTransferTValue().tAmount, ro);
   },
   realTransferAmount() {
     const { selectMakerConfig, transferValue, fromChainID } =

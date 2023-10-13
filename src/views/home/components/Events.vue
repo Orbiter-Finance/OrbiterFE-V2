@@ -191,7 +191,7 @@ export default {
     display: flex;
     margin-top: 22px;
     width: 100%;
-    overflow: scroll;
+    overflow: auto;
   }
   .event-item {
     min-width: 288px;
