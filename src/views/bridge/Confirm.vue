@@ -986,6 +986,10 @@ export default {
                 util.showMessage('please connect correct evm wallet address', 'error');
                 return;
             }
+            if (selectMakerConfig.recipient.length < 60) {
+                util.showMessage('The StarkNet network transaction maintenance, please try again later', 'error');
+                return;
+            }
             if (
                 fromChainID === CHAIN_ID.starknet ||
                 fromChainID === CHAIN_ID.starknet_test ||
@@ -1476,7 +1480,7 @@ export default {
     async mounted() {
         const { selectMakerConfig, transferValue } = transferDataState
         const { fromChain, toChain } = selectMakerConfig
-        if (selectMakerConfig.ebcId) {
+        if (selectMakerConfig.ebcId && transferDataState.ebcValue) {
             this.expectValue = `${ transferDataState.ebcValue } ${ selectMakerConfig.fromChain.symbol }`;
             return;
         }

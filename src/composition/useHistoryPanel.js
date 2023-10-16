@@ -39,17 +39,17 @@ export function setHistoryInfo(info = {}, isShowHistory = true) {
   historyPanelState.isShowHistory = isShowHistory
   // historyPanelState.historyInfo = info
   historyPanelState.historyInfo = {
-        fromChainID: info.fromChainId,
-        fromTimeStamp: info.fromTimeStampShow,
-        fromTxHash: info.fromHash,
-        // makerAddress: info.replySender,
-        state: 0,
-        toChainID: info.toChainId,
-        toTimeStamp: info.toTimeStampShow,
-        toTxHash: info.toHash,
-        tokenName: info.fromSymbol,
-        // userAddress: info.replyAccount,
-        userAmount: info.fromAmountValue,
+    fromChainID: info.fromChainId,
+    fromTimeStamp: info.fromTimeStampShow,
+    fromTxHash: info.fromHash,
+    // makerAddress: info.replySender,
+    state: 0,
+    toChainID: info.toChainId,
+    toTimeStamp: info.toTimeStampShow,
+    toTxHash: info.toHash,
+    tokenName: info.fromSymbol,
+    // userAddress: info.replyAccount,
+    userAmount: info.fromAmountValue,
   }
 
 }

@@ -350,248 +350,64 @@ export default {
   },
 
   transferSpentTime(fromChainID, toChainID) {
-    let timeSpent = 0
-    if (fromChainID === CHAIN_ID.mainnet || fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.goerli) {
-      timeSpent = 30
+    let timeSpent = 0;
+    if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(fromChainID)) {
+      timeSpent = 30;
+    } else if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test, CHAIN_ID.imx, CHAIN_ID.imx_test].includes(fromChainID)) {
+      timeSpent = 5;
+    } else if ([CHAIN_ID.zkspace, CHAIN_ID.zkspace_test].includes(fromChainID)) {
+      timeSpent = 20;
+    } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)) {
+      timeSpent = 180;
+    } else {
+      timeSpent = 15;
     }
-    if (fromChainID === CHAIN_ID.ar || fromChainID === CHAIN_ID.ar_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === CHAIN_ID.opbnb || fromChainID === CHAIN_ID.opbnb_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === 31 || fromChainID === 531) {
-      timeSpent = 15
-    }
-    if (
-      fromChainID === CHAIN_ID.zksync ||
-      fromChainID === CHAIN_ID.zksync_test ||
-      fromChainID === CHAIN_ID.zkspace ||
-      fromChainID === CHAIN_ID.zkspace_test
-    ) {
-      timeSpent = 5
-    }
-    if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
-      timeSpent = 5
-    }
-    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
-      timeSpent = 15
-    }
-    if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
-      timeSpent = 20
-    }
-    if (fromChainID === CHAIN_ID.nova) {
-      timeSpent = 30
-    }
-    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
-      timeSpent = 180
-    }
-    if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-      timeSpent = 180
-    }
-    if (toChainID === CHAIN_ID.mainnet || toChainID === CHAIN_ID.goerli) {
-      timeSpent += 30
-    }
-    if (toChainID === CHAIN_ID.nova) {
-      timeSpent += 30
-    }
-    if (toChainID === CHAIN_ID.ar || toChainID === CHAIN_ID.ar_test) {
-      timeSpent += 15
-    }
-    if (
-      toChainID === CHAIN_ID.zksync ||
-      toChainID === CHAIN_ID.zksync_test ||
-      toChainID === CHAIN_ID.zkspace ||
-      toChainID === CHAIN_ID.zksync_test
-    ) {
-      timeSpent += 5
-    }
-    if (toChainID === CHAIN_ID.po || toChainID === CHAIN_ID.po_test) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.op || toChainID === CHAIN_ID.op_test) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
-      timeSpent += 5
-    }
-    if (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.metis) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
-      timeSpent += 5
-    }
-    if (toChainID === CHAIN_ID.boba) {
-      timeSpent += 20
-    }
-    if (toChainID === CHAIN_ID.zksync2 || toChainID === CHAIN_ID.zksync2_test) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.opbnb || toChainID === CHAIN_ID.opbnb_test) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.zora || toChainID === CHAIN_ID.zora_test) {
-      timeSpent += 15
-    }
-    if (toChainID === CHAIN_ID.linea || toChainID === CHAIN_ID.linea_test) {
-      timeSpent += 30
-    }
-    if (toChainID === CHAIN_ID.pozkevm || toChainID === CHAIN_ID.pozkevm_test) {
-      timeSpent += 30
+
+    if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(toChainID)) {
+      timeSpent += 30;
+    } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(toChainID)) {
+      timeSpent += 180;
+    } else if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.zkspace,
+      CHAIN_ID.zksync_test, CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test].includes(toChainID)) {
+      timeSpent += 5;
+    } else if ([CHAIN_ID.linea, CHAIN_ID.linea_test, CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test].includes(toChainID)) {
+      timeSpent += 30;
+    } else {
+      timeSpent += 15;
     }
 
     return timeSpent + 's';
   },
 
   transferOrginTime(fromChainID, toChainID) {
-    if (fromChainID === CHAIN_ID.linea || fromChainID === CHAIN_ID.linea_test) {
-      return '~24 hours'
-    }
-    if (fromChainID === CHAIN_ID.pozkevm || fromChainID === CHAIN_ID.pozkevm_test) {
-      return '~6 hours'
-    }
-    if (fromChainID === CHAIN_ID.ar || fromChainID === CHAIN_ID.ar_test) {
-      return '~7 days'
-    }
-    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
-      return '~24 hours'
-    }
-    if (fromChainID === CHAIN_ID.nova) {
-      return '~7 days'
-    }
-    if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
-      return '~7 days'
-    }
-    if (fromChainID === CHAIN_ID.opbnb || fromChainID === CHAIN_ID.opbnb_test) {
-      return '~7 days'
-    }
-    if (fromChainID === CHAIN_ID.zora || fromChainID === CHAIN_ID.zora_test) {
-      return '~7 days'
-    }
-    if (fromChainID === 31 || fromChainID === 531) {
-      return '~7 days'
-    }
-    if (
-      fromChainID === CHAIN_ID.zksync ||
-      fromChainID === CHAIN_ID.zksync_test ||
-      fromChainID === CHAIN_ID.zkspace ||
-      fromChainID === CHAIN_ID.zkspace_test ||
-      fromChainID === CHAIN_ID.zksync2 ||
-      fromChainID === CHAIN_ID.zksync2_test
-    ) {
-      return '~4 hours'
-    }
-    // https://docs.polygon.technology/docs/develop/ethereum-polygon/getting-started/
-    if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
-      return '~3 hours'
-    }
-    if (fromChainID === CHAIN_ID.op || fromChainID === CHAIN_ID.op_test) {
-      return '~7 days'
-    }
-    if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
-      return '~5 hours'
-    }
-    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
-      return '~4 hours'
-    }
-    if (fromChainID === CHAIN_ID.metis) {
-      return '~7 days'
-    }
-    if (fromChainID === CHAIN_ID.boba) {
-      return '~7 days'
-    }
-    if (fromChainID === CHAIN_ID.bsc || fromChainID === CHAIN_ID.bsc_test) {
-      return '~15min'
+    if (fromChainID === CHAIN_ID.mainnet) {
+      if ([CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test].includes(toChainID)) {
+        return '~20min';
+      } else if ([CHAIN_ID.bsc, CHAIN_ID.bsc_test, CHAIN_ID.base, CHAIN_ID.base_test,
+        CHAIN_ID.opbnb, CHAIN_ID.opbnb_test, CHAIN_ID.zora, CHAIN_ID.zora_test].includes(toChainID)) {
+        return '~15min';
+      } else if ([CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.metis].includes(toChainID)) {
+        return '~5min';
+      } else {
+        return '~10min';
+      }
     }
 
-    if (fromChainID === CHAIN_ID.mainnet || fromChainID === CHAIN_ID.goerli) {
-      if (toChainID === CHAIN_ID.linea || toChainID === CHAIN_ID.linea_test) {
-        return '~10min'
-      }
-      if (toChainID === CHAIN_ID.pozkevm || toChainID === CHAIN_ID.pozkevm_test) {
-        return '~10min'
-      }
-
-      if (toChainID === CHAIN_ID.ar || toChainID === CHAIN_ID.ar_test) {
-        //  eth ->  ar
-        return '~10min'
-      }
-      if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-        //  eth ->  ar
-        return '~10min'
-      }
-      if (
-        toChainID === CHAIN_ID.zksync ||
-        toChainID === CHAIN_ID.zksync2 ||
-        toChainID === CHAIN_ID.zkspace ||
-        toChainID === CHAIN_ID.zkspace_test ||
-        toChainID === CHAIN_ID.zksync2 ||
-        toChainID === CHAIN_ID.zksync2_test
-      ) {
-        // eth -> zk
-        return '~10min'
-      }
-      if (toChainID === CHAIN_ID.po || toChainID === CHAIN_ID.po_test) {
-        // eth -> polygon
-        return '~5min'
-      }
-      if (toChainID === CHAIN_ID.op || toChainID === CHAIN_ID.op_test) {
-        // eth -> optimistic
-        return '~5min'
-      }
-      if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
-        // eth -> immutablex
-        return '~20min'
-      }
-      if (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
-        return '~10min'
-      }
-      if (toChainID === CHAIN_ID.metis) {
-        // eth -> metis
-        return '~5min'
-      }
-      if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
-        return '~20min'
-      }
-      if (toChainID === CHAIN_ID.boba) {
-        return '~10min'
-      }
-      if (toChainID === CHAIN_ID.bsc || toChainID === CHAIN_ID.bsc_test) {
-        return '~15min'
-      }
-      if (toChainID === CHAIN_ID.nova) {
-        return '~10min'
-      }
-      if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
-        return '~15min'
-      }
-      if (toChainID === CHAIN_ID.opbnb || toChainID === CHAIN_ID.opbnb_test) {
-        return '~15min'
-      }
-      if (toChainID === CHAIN_ID.zora || toChainID === CHAIN_ID.zora_test) {
-        return '~15min'
-      }
+    if ([CHAIN_ID.linea, CHAIN_ID.linea_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)) {
+      return '~24 hours';
+    } else if ([CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test].includes(fromChainID)) {
+      return '~6 hours';
+    } else if ([CHAIN_ID.imx, CHAIN_ID.imx_test].includes(fromChainID)) {
+      return '~5 hours';
+    } else if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
+      CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.loopring, CHAIN_ID.loopring_test].includes(fromChainID)) {
+      return '~4 hours';
+    } else if ([CHAIN_ID.po, CHAIN_ID.po_test].includes(fromChainID)) {
+      return '~3 hours';
+    } else if ([CHAIN_ID.bsc, CHAIN_ID.bsc_test].includes(fromChainID)) {
+      return '~3 hours';
+    } else {
+      return '~7 days';
     }
   },
 
@@ -1162,17 +978,18 @@ export default {
   safeCode() {
     const { selectMakerConfig, toChainID } = transferDataState;
     const internalId = String(selectMakerConfig.toChain.id).length < 2 ? ("0" + selectMakerConfig.toChain.id) : selectMakerConfig.toChain.id;
+    const dealerId = String(selectMakerConfig.dealerId || 0).length < 2 ? ("0" + selectMakerConfig.dealerId) : selectMakerConfig.dealerId;
     const chainInfo = util.getV3ChainInfoByChainId(toChainID);
     return selectMakerConfig.ebcId ?
-        selectMakerConfig.dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
+      dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
   },
 
   getTransferTValue() {
     const { selectMakerConfig, transferValue, fromChainID } =
-        transferDataState;
+      transferDataState;
     const rAmount = new BigNumber(transferValue)
-        .plus(new BigNumber(selectMakerConfig.tradingFee))
-        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals));
+      .plus(new BigNumber(selectMakerConfig.tradingFee))
+      .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals));
     const rAmountValue = rAmount.toFixed();
     const p_text = this.safeCode();
     return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text);
@@ -1183,9 +1000,9 @@ export default {
     const provider = new ethers.providers.Web3Provider(web3.currentProvider);
     util.log('ebcAddress', selectMakerConfig.ebcAddress);
     const contractInstance = new ethers.Contract(
-        selectMakerConfig.ebcAddress,
-        EBC_ABI,
-        provider
+      selectMakerConfig.ebcAddress,
+      EBC_ABI,
+      provider
     );
     const ro = [fromChainID, toChainID, selectMakerConfig.status,
       web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
@@ -1195,14 +1012,14 @@ export default {
       selectMakerConfig.spentTime,
       selectMakerConfig.compensationRatio];
     util.log("getResponseIntent params", "amount", this.getTransferTValue().tAmount, "sourceChainId", fromChainID, "destChainId", toChainID, "status", selectMakerConfig.status,
-        "sourceToken", web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
-        "destToken", web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
-        "minPrice", selectMakerConfig.fromChain.originMinPrice, "maxPrice", selectMakerConfig.fromChain.originMaxPrice,
-        "withholdingFee", selectMakerConfig.originWithholdingFee, "tradingFee", selectMakerConfig.originTradeFee,
-        "responseTime", selectMakerConfig.spentTime,
-        "compensationRatio", selectMakerConfig.compensationRatio);
+      "sourceToken", web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
+      "destToken", web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
+      "minPrice", selectMakerConfig.fromChain.originMinPrice, "maxPrice", selectMakerConfig.fromChain.originMaxPrice,
+      "withholdingFee", selectMakerConfig.originWithholdingFee, "tradingFee", selectMakerConfig.originTradeFee,
+      "responseTime", selectMakerConfig.spentTime,
+      "compensationRatio", selectMakerConfig.compensationRatio);
     return await contractInstance.getResponseIntent(
-        this.getTransferTValue().tAmount, ro);
+      this.getTransferTValue().tAmount, ro);
   },
   realTransferAmount() {
     const { selectMakerConfig, transferValue, fromChainID } =
