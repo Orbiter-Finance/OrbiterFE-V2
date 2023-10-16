@@ -306,6 +306,13 @@ export default {
     return chainInfo
   },
 
+  isEvmChain(chainId) {
+    return ![
+      CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.imx, CHAIN_ID.imx_test,
+      CHAIN_ID.loopring, CHAIN_ID.loopring_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test
+    ].includes(chainId);
+  },
+
   getInternalIdByChainId(chainId) {
     const chainInfo = this.getV3ChainInfoByChainId(chainId);
     return chainInfo?.internalId ? Number(chainInfo.internalId) : null;

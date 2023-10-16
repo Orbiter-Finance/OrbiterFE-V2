@@ -17,7 +17,7 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
     clearInterval(cron);
   }
    cron = setInterval(async () => {
-     if (isV3 && currentStatus === 1) {
+     if (util.isEvmChain(chainId) && currentStatus === 1) {
        const receipt = await util.requestWeb3(chainId, 'getTransactionReceipt', hash);
        if (receipt?.status) {
          util.log("rpc confirm fromTx ====", receipt);
@@ -63,7 +63,7 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
           break
         }
       }
-      if (isV3 && status === 98) {
+      if (util.isEvmChain(chainId) && status === 98) {
         const toTx = txList.find(item => item.side === 1);
         if (toTx?.hash) {
           const receipt = await util.requestWeb3(toTx.chainId, 'getTransactionReceipt', toTx.hash);
