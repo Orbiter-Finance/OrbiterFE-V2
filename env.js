@@ -10,12 +10,14 @@ export default {
     [CHAIN_ID.loopring]: 1,
     [CHAIN_ID.zkspace]: 1,
     [CHAIN_ID.imx]: 1,
+    [CHAIN_ID.zksync]: 1,
 
     [CHAIN_ID.starknet_test]: 5,
     [CHAIN_ID.dydx_test]: 5,
     [CHAIN_ID.loopring_test]: 5,
     [CHAIN_ID.zkspace_test]: 5,
-    [CHAIN_ID.imx_test]: 5
+    [CHAIN_ID.imx_test]: 5,
+    [CHAIN_ID.zksync_test]: 5,
   },
   txExploreUrl: {
     [CHAIN_ID.zksync]: 'https://zkscan.io/explorer/transactions/',
