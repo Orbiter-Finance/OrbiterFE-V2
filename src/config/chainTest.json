@@ -104,6 +104,31 @@
   },
   {
     "api": {
+      "url": "https://goerli-api.zksync.io/api/v0.2",
+      "key": ""
+    },
+    "chainId": "zksync_test",
+    "networkId": "zksync",
+    "internalId": "33",
+    "debug": false,
+    "bridge": 1,
+    "name": "zkSync Lite(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": [
+      "api"
+    ],
+    "contracts": [],
+    "tokens": [],
+    "infoURL": "https://goerli.zkscan.io/explorer/transasdactions"
+  },
+  {
+    "api": {
       "url": "https://alpha4.starknet.io",
       "key": ""
     },
@@ -232,6 +257,27 @@
     "xvmList": ["0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"],
     "faucets": [],
     "infoURL": "https://goerli-optimism.etherscan.io"
+  },
+  {
+    "api": {
+      "url": "https://uat2.loopring.io/api/v3",
+      "key": ""
+    },
+    "chainId": "loopring_test",
+    "networkId": "5",
+    "internalId": "99",
+    "name": "Loopring(R)",
+    "nativeCurrency": {
+      "name": "Ethereum",
+      "symbol": "ETH",
+      "decimals": 18,
+      "id": 0,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": ["api"],
+    "contracts": [],
+    "tokens": []
   },
   {
     "api": {
@@ -575,7 +621,6 @@
     "networkId": "534351",
     "internalId": "528",
     "name": "Scroll Sepolia",
-    "swapContract": "0xC9ed54B77c4929bCC773a6e0021dfBd1d0BcEb31",
     "features": [],
     "debug": false,
     "contracts": [],
@@ -646,29 +691,29 @@
     "tokens": [],
     "infoURL": "https://testnet.explorer.zora.energy"
   },
-    {
-        "api": {
-            "url": "",
-            "key": ""
-        },
-        "chainId": "3441005",
-        "networkId": "3441005",
-        "internalId": "531",
-        "name": "Manta Görli",
-        "features": [],
-        "debug": false,
-        "contracts": [],
-        "nativeCurrency": {
-            "name": "ETH",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x0000000000000000000000000000000000000000"
-        },
-        "rpc": [
-            "https://manta-testnet.calderachain.xyz/http"
-        ],
-        "watch": ["rpc"],
-        "tokens": [],
-        "infoURL": "https://pacific-explorer.manta.network"
-    }
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "3441005",
+    "networkId": "3441005",
+    "internalId": "531",
+    "name": "Manta Görli",
+    "features": [],
+    "debug": false,
+    "contracts": [],
+    "nativeCurrency": {
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://manta-testnet.calderachain.xyz/http"
+    ],
+    "watch": ["rpc"],
+    "tokens": [],
+    "infoURL": "https://pacific-explorer.manta.network"
+  }
 ]
