@@ -10,7 +10,11 @@ const MAX_BITS = {
   [CHAIN_ID.zksync]: 35,
   [CHAIN_ID.imx]: 28,
   [CHAIN_ID.dydx]: 28,
-  [CHAIN_ID.zkspace]: 35
+  [CHAIN_ID.zkspace]: 35,
+  [CHAIN_ID.zksync_test]: 35,
+  [CHAIN_ID.imx_test]: 28,
+  [CHAIN_ID.dydx_test]: 28,
+  [CHAIN_ID.zkspace_test]: 35
 };
 
 function isLPChain(chain) {
