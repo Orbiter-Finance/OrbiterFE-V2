@@ -5,6 +5,18 @@ import { RequestMethod, requestOpenApi } from "./openApiAx";
 import config from "../config";
 
 const makerSortMap = {};
+let version = 0;
+let v2TradingPairs = [];
+
+async function getV2TradingPair(v) {
+  if (version === v && v2TradingPairs.length) {
+    return v2TradingPairs;
+  }
+  const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, []);
+  const ruleList = apiRes.ruleList;
+  v2TradingPairs = sortRule(ruleList);
+  return v2TradingPairs;
+}
 
 export async function getMdcRuleLatest(dealerAddress) {
     if (!new RegExp(/^0x[a-fA-F0-9]{40}$/).test(dealerAddress)) {
@@ -24,7 +36,7 @@ export async function getMdcRuleLatest(dealerAddress) {
             let updateTime = apiRes.updateTime;
             updateTime = updateTime ? Math.min(updateTime, new Date().valueOf() + 30 * 1000) : new Date().valueOf() + 30 * 1000;
             updateTime = Math.max(updateTime, 0);
-            return { ruleList: sortRule(ruleList), updateTime };
+            return { ruleList: [...sortRule(ruleList), ...await getV2TradingPair(apiRes.version)], updateTime };
         }
     } catch (e) {
         console.error('requestOpenApi error', e);
