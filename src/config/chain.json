@@ -577,7 +577,20 @@
         "watch": [
             "rpc"
         ],
-        "tokens": [],
+        "tokens": [
+          {
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "address": "0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4"
+          },
+          {
+            "name": "USDT",
+            "symbol": "USDT",
+            "decimals": 6,
+            "address": "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df"
+          }
+        ],
         "infoURL": "https://scrollscan.com"
     },
     {
