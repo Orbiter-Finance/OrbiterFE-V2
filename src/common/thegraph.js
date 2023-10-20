@@ -107,6 +107,7 @@ export async function getMdcRuleLatest(dealerAddress) {
     const response = res.data?.data;
     if (!response?.dealer || !response?.chainRels) return [];
     let updateTime = 0;
+    let timestamp = new Date().valueOf();
     const v3ChainList = await convertV3ChainList(response.chainRels);
     const mdcs = response.dealer.mdcs || [];
     const marketList = [];
