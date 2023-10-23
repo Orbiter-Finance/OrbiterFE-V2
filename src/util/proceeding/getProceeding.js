@@ -11,7 +11,7 @@ const storeUpdateProceedState = (state) => {
 
 let cron;
 
-function confirmUserTransaction(chainId, userAddress, hash, isV3) {
+function confirmUserTransaction(chainId, userAddress, hash) {
   let currentStatus = 1;
   if (cron) {
     clearInterval(cron);
@@ -27,7 +27,7 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
        return;
      }
     try {
-      const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash], isV3) || {};
+      const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash]) || {};
       util.log('txStatus', status, 'txList', txList)
       for (const tx of txList) {
         if (tx.side === 0) {
@@ -88,7 +88,7 @@ async function completeTx(userAddress) {
 }
 
 export default {
-  UserTransferReady(user, maker, amount, localChainID, txHash, isV3) {
+  UserTransferReady(user, maker, amount, localChainID, txHash) {
     util.setCache(`history_${ user.toLowerCase() }_1`, '', -1);
     if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       txHash = util.starknetHashFormat(txHash);
@@ -111,6 +111,6 @@ export default {
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
     // console.log(txHash)
-    confirmUserTransaction(localChainID, user, txHash, isV3);
+    confirmUserTransaction(localChainID, user, txHash);
   },
 }
