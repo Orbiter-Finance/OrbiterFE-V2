@@ -8,13 +8,14 @@ const makerSortMap = {};
 let version = 0;
 let v2TradingPairs = [];
 
-async function getV2TradingPair(v) {
+export async function getV2TradingPair(v) {
   if (version === v && v2TradingPairs.length) {
     return v2TradingPairs;
   }
   const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, []);
   const ruleList = apiRes.ruleList;
   v2TradingPairs = sortRule(ruleList);
+  version = v;
   return v2TradingPairs;
 }
 
