@@ -31,9 +31,13 @@ function confirmUserTransaction(chainId, userAddress, hash) {
       util.log('txStatus', status, 'txList', txList)
       for (const tx of txList) {
         if (tx.side === 0) {
+          let timestamp = new Date(tx.timestamp).valueOf();
+          if (String(timestamp).length === 13) {
+            timestamp = Math.floor(timestamp / 1000);
+          }
           store.commit(
               'updateProceedingUserTransferTimeStamp',
-              new Date(tx.timestamp).valueOf() / 1000
+            timestamp
           )
         }
         if (tx.side === 1) {
@@ -63,9 +67,9 @@ function confirmUserTransaction(chainId, userAddress, hash) {
           break
         }
       }
-      if (util.isEvmChain(chainId) && status === 98) {
+      if (status === 98) {
         const toTx = txList.find(item => item.side === 1);
-        if (toTx?.hash) {
+        if (toTx?.hash && util.isEvmChain(toTx.chainId)) {
           const receipt = await util.requestWeb3(toTx.chainId, 'getTransactionReceipt', toTx.hash);
           if (receipt?.status) {
             util.log("rpc confirm toTx ====", receipt);
