@@ -394,7 +394,7 @@ import {
 } from '../../composition/hooks';
 import { isDev } from "../../util";
 import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
-import { getMdcRuleLatest } from "../../common/thegraph";
+import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
 
@@ -820,6 +820,7 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
+        makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
       updateDealerId(dealerId);

@@ -1007,17 +1007,17 @@ export default {
     const ro = [fromChainID, toChainID, selectMakerConfig.status,
       web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
       web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
-      selectMakerConfig.fromChain.originMinPrice, selectMakerConfig.fromChain.originMaxPrice,
-      selectMakerConfig.originWithholdingFee, selectMakerConfig.originTradeFee,
+      selectMakerConfig.fromChain._minPrice, selectMakerConfig.fromChain._maxPrice,
+      selectMakerConfig._withholdingFee, selectMakerConfig._tradeFee,
       selectMakerConfig.spentTime,
-      selectMakerConfig.compensationRatio];
+      selectMakerConfig._compensationRatio];
     util.log("getResponseIntent params", "amount", this.getTransferTValue().tAmount, "sourceChainId", fromChainID, "destChainId", toChainID, "status", selectMakerConfig.status,
       "sourceToken", web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
       "destToken", web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
-      "minPrice", selectMakerConfig.fromChain.originMinPrice, "maxPrice", selectMakerConfig.fromChain.originMaxPrice,
-      "withholdingFee", selectMakerConfig.originWithholdingFee, "tradingFee", selectMakerConfig.originTradeFee,
+      "minPrice", selectMakerConfig.fromChain._minPrice, "maxPrice", selectMakerConfig.fromChain._maxPrice,
+      "withholdingFee", selectMakerConfig._withholdingFee, "tradingFee", selectMakerConfig._tradeFee,
       "responseTime", selectMakerConfig.spentTime,
-      "compensationRatio", selectMakerConfig.compensationRatio);
+      "compensationRatio", selectMakerConfig._compensationRatio);
     return await contractInstance.getResponseIntent(
       this.getTransferTValue().tAmount, ro);
   },

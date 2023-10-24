@@ -11,7 +11,7 @@ const storeUpdateProceedState = (state) => {
 
 let cron;
 
-function confirmUserTransaction(chainId, userAddress, hash, isV3) {
+function confirmUserTransaction(chainId, userAddress, hash) {
   let currentStatus = 1;
   if (cron) {
     clearInterval(cron);
@@ -27,13 +27,17 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
        return;
      }
     try {
-      const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash], isV3) || {};
+      const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash]) || {};
       util.log('txStatus', status, 'txList', txList)
       for (const tx of txList) {
         if (tx.side === 0) {
+          let timestamp = new Date(tx.timestamp).valueOf();
+          if (String(timestamp).length === 13) {
+            timestamp = Math.floor(timestamp / 1000);
+          }
           store.commit(
               'updateProceedingUserTransferTimeStamp',
-              new Date(tx.timestamp).valueOf() / 1000
+            timestamp
           )
         }
         if (tx.side === 1) {
@@ -63,9 +67,9 @@ function confirmUserTransaction(chainId, userAddress, hash, isV3) {
           break
         }
       }
-      if (util.isEvmChain(chainId) && status === 98) {
+      if (status === 98) {
         const toTx = txList.find(item => item.side === 1);
-        if (toTx?.hash) {
+        if (toTx?.hash && util.isEvmChain(toTx.chainId)) {
           const receipt = await util.requestWeb3(toTx.chainId, 'getTransactionReceipt', toTx.hash);
           if (receipt?.status) {
             util.log("rpc confirm toTx ====", receipt);
@@ -88,7 +92,7 @@ async function completeTx(userAddress) {
 }
 
 export default {
-  UserTransferReady(user, maker, amount, localChainID, txHash, isV3) {
+  UserTransferReady(user, maker, amount, localChainID, txHash) {
     util.setCache(`history_${ user.toLowerCase() }_1`, '', -1);
     if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       txHash = util.starknetHashFormat(txHash);
@@ -111,6 +115,6 @@ export default {
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
     // console.log(txHash)
-    confirmUserTransaction(localChainID, user, txHash, isV3);
+    confirmUserTransaction(localChainID, user, txHash);
   },
 }
