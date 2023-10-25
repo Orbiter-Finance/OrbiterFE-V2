@@ -1140,63 +1140,63 @@ export default {
       };
       if (walletIsLogin.value) {
         info.text = 'SEND';
-        if (transferValue.comparedTo(0) < 0) {
-          info.disabled = 'disabled';
-          util.log('transferValue < 0', transferValue.toString());
-        } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
-          info.disabled = 'disabled';
-          util.log('transferValue > userMaxPrice', transferValue.toString(), this.userMaxPrice.toString());
-        }
-        if (transferValue.comparedTo(userMax) > 0) {
-          info.text = 'INSUFFICIENT FUNDS';
-          info.disabled = 'disabled';
-          util.log('transferValue > userMax', transferValue.toString(), userMax.toString());
-        } else if (transferValue.comparedTo(makerMax) > 0) {
-          info.text = 'INSUFFICIENT LIQUIDITY';
-          info.disabled = 'disabled';
-          util.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
-        } else if (transferValue.comparedTo(makerMin) < 0) {
-          info.text = 'INSUFFICIENT FUNDS';
-          info.disabled = 'disabled';
-          util.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
-        } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
-          info.text = 'INSUFFICIENT FUNDS';
-          info.disabled = 'disabled';
-          util.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
-        } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
-          info.text = 'INSUFFICIENT LIQUIDITY';
-          info.disabled = 'disabled';
-          util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
-        }
+      //   if (transferValue.comparedTo(0) < 0) {
+      //     info.disabled = 'disabled';
+      //     util.log('transferValue < 0', transferValue.toString());
+      //   } else if (transferValue.comparedTo(this.userMaxPrice) > 0) {
+      //     info.disabled = 'disabled';
+      //     util.log('transferValue > userMaxPrice', transferValue.toString(), this.userMaxPrice.toString());
+      //   }
+      //   if (transferValue.comparedTo(userMax) > 0) {
+      //     info.text = 'INSUFFICIENT FUNDS';
+      //     info.disabled = 'disabled';
+      //     util.log('transferValue > userMax', transferValue.toString(), userMax.toString());
+      //   } else if (transferValue.comparedTo(makerMax) > 0) {
+      //     info.text = 'INSUFFICIENT LIQUIDITY';
+      //     info.disabled = 'disabled';
+      //     util.log('transferValue > makerMax', transferValue.toString(), makerMax.toString());
+      //   } else if (transferValue.comparedTo(makerMin) < 0) {
+      //     info.text = 'INSUFFICIENT FUNDS';
+      //     info.disabled = 'disabled';
+      //     util.log('transferValue < makerMin', transferValue.toString(), makerMin.toString());
+      //   } else if (transferValue.comparedTo(0) > 0 && this.toValue <= 0) {
+      //     info.text = 'INSUFFICIENT FUNDS';
+      //     info.disabled = 'disabled';
+      //     util.log('transferValue > 0 && toValue <= 0', transferValue.toString(), this.toValue.toString());
+      //   } else if (this.toValue > 0 && this.toValue.comparedTo(new BigNumber(this.makerMaxBalance)) > 0) {
+      //     info.text = 'INSUFFICIENT LIQUIDITY';
+      //     info.disabled = 'disabled';
+      //     util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
+      //   }
 
-        if (this.isShowUnreachMinInfo || this.isShowMax) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
-        }
+      //   if (this.isShowUnreachMinInfo || this.isShowMax) {
+      //     info.text = 'SEND';
+      //     info.disabled = 'disabled';
+      //     util.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
+      //   }
 
-        if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
-                !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
-                  fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
-        }
+      //   if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
+      //           !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
+      //     info.text = 'SEND';
+      //     info.disabled = 'disabled';
+      //     util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
+      //             fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
+      //   }
 
-        if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
-                  this.crossAddressReceipt, this.isErrorAddress);
-        }
-        const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
-        const isCheck = !reg.test(this.crossAddressReceipt);
-        if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('this.isLoopring && !this.crossAddressReceipt',
-                  this.isLoopring, !this.crossAddressReceipt);
-        }
+      //   if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
+      //     info.text = 'SEND';
+      //     info.disabled = 'disabled';
+      //     util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
+      //             this.crossAddressReceipt, this.isErrorAddress);
+      //   }
+      //   const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+      //   const isCheck = !reg.test(this.crossAddressReceipt);
+      //   if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
+      //     info.text = 'SEND';
+      //     info.disabled = 'disabled';
+      //     util.log('this.isLoopring && !this.crossAddressReceipt',
+      //             this.isLoopring, !this.crossAddressReceipt);
+      //   }
       }
       this.sendBtnInfo = info;
     },
