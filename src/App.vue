@@ -49,6 +49,8 @@ import {
 import { isMobileDevice } from './util'
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
+import { connect, disconnect } from 'starknetkit';
+import { ArgentMobileConnector } from 'starknetkit/argentMobile';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -113,38 +115,19 @@ export default {
   },
   async mounted() {
     console.log("window", window);
-    console.log("window.ethereum", window.ethereum);
-    console.log("window.starknet", window.starknet);
-    console.log("window.argentStarknetMobile", window.argentStarknetMobile);
-    try {
-      if (window.argentStarknetMobile) await window.argentStarknetMobile.sendRequest({
-        type: "wallet_switchStarknetChain",
-        params: {
-          chainId: "SN_MAIN"
-        }
-      });
-    } catch (e) {
-      console.log('argentStarknetMobile error', e);
-    }
 
+    const connection = await connect({
+      connectors: [
+        new ArgentMobileConnector({
+          argentMobileOptions: {
+            projectId: process.env.VUE_APP_WALLET_CONNECT_PROJECTID,
+            description: 'orbiter dapp'
+          }
+        }),
+      ]
+    });
+    console.log("connection", connection);
 
-    if(window.argentStarknetBrowser){
-      try {
-        console.log('ArgentMobileAccount', await window.argentStarknetBrowser.ArgentMobileAccount());
-      } catch (e) {
-        console.log('ArgentMobileAccount error', e);
-      }
-      try {
-        console.log('getStarknetCleanup', await window.argentStarknetBrowser.getStarknetCleanup());
-      } catch (e) {
-        console.log('getStarknetCleanup error', e);
-      }
-      try {
-        console.log('StarknetMobileWindowObject', await window.argentStarknetBrowser.StarknetMobileWindowObject());
-      } catch (e) {
-        console.log('StarknetMobileWindowObject error', e);
-      }
-    }
     if (isBraveBrowser()) {
       setIsBraveWallet(
         await window.ethereum
