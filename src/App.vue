@@ -49,8 +49,8 @@ import {
 import { isMobileDevice } from './util'
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
-import { connect, disconnect } from 'starknetkit';
-import { ArgentMobileConnector } from 'starknetkit/argentMobile';
+// import { connect, disconnect } from 'starknetkit';
+// import { ArgentMobileConnector } from 'starknetkit/argentMobile';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -115,18 +115,19 @@ export default {
   },
   async mounted() {
     console.log("window", window);
-
-    const connection = await connect({
-      connectors: [
-        new ArgentMobileConnector({
-          argentMobileOptions: {
-            projectId: process.env.VUE_APP_WALLET_CONNECT_PROJECTID,
-            description: 'orbiter dapp'
-          }
-        }),
-      ]
-    });
-    console.log("connection", connection);
+    console.log("window.argentStarknetMobile", await window.argentStarknetMobile);
+    // console.log('connect', await connect());
+    // const connection = await connect({
+    //   connectors: [
+    //     new ArgentMobileConnector({
+    //       argentMobileOptions: {
+    //         projectId: process.env.VUE_APP_WALLET_CONNECT_PROJECTID,
+    //         description: 'orbiter dapp'
+    //       }
+    //     }),
+    //   ]
+    // });
+    // console.log("connection", connection);
 
     if (isBraveBrowser()) {
       setIsBraveWallet(
