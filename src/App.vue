@@ -115,6 +115,36 @@ export default {
     console.log("window", window);
     console.log("window.ethereum", window.ethereum);
     console.log("window.starknet", window.starknet);
+    console.log("window.argentStarknetMobile", window.argentStarknetMobile);
+    try {
+      if (window.argentStarknetMobile) await window.argentStarknetMobile.sendRequest({
+        type: "wallet_switchStarknetChain",
+        params: {
+          chainId: "SN_MAIN"
+        }
+      });
+    } catch (e) {
+      console.log('argentStarknetMobile error', e);
+    }
+
+
+    if(window.argentStarknetBrowser){
+      try {
+        console.log('ArgentMobileAccount', await window.argentStarknetBrowser.ArgentMobileAccount());
+      } catch (e) {
+        console.log('ArgentMobileAccount error', e);
+      }
+      try {
+        console.log('getStarknetCleanup', await window.argentStarknetBrowser.getStarknetCleanup());
+      } catch (e) {
+        console.log('getStarknetCleanup error', e);
+      }
+      try {
+        console.log('StarknetMobileWindowObject', await window.argentStarknetBrowser.StarknetMobileWindowObject());
+      } catch (e) {
+        console.log('StarknetMobileWindowObject error', e);
+      }
+    }
     if (isBraveBrowser()) {
       setIsBraveWallet(
         await window.ethereum
