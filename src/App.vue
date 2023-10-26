@@ -115,6 +115,7 @@ export default {
   },
   async mounted() {
     console.log("window", window);
+    console.log("window", Object.keys(window));
     console.log("window.argentStarknetMobile", await window.argentStarknetMobile);
     // console.log('connect', await connect());
     // const connection = await connect({
