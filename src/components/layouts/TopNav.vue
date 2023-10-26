@@ -85,7 +85,7 @@ import {
   setPageSenderTab,
   showAddress,
   setStarkNetDialog,
-  setSelectWalletDialogVisible, web3State,
+  setSelectWalletDialogVisible, starkAddress,
 } from '../../composition/hooks';
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -106,7 +106,7 @@ export default {
     showAddress () {
       const isAgentXApp = isMobile.value && !window.ethereum;
       if (isAgentXApp) {
-        return web3State.starkNet.starkNetAddress;
+        return starkAddress();
       }
       return showAddress()
     },

@@ -821,6 +821,9 @@ export default {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
         makerConfigs = await getV2TradingPair(new Date().valueOf());
+        if (isMobile.value && !window.ethereum) {
+          makerConfigs = makerConfigs.filter(item => +item.fromChain.id === 44 || +item.fromChain.id === 4);
+        }
         return;
       }
       updateDealerId(dealerId);
