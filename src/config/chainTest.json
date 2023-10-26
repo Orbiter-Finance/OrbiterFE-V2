@@ -165,7 +165,8 @@
         "decimals": 6,
         "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
       }
-    ]
+    ],
+    "infoURL": "https://goerli.voyager.online"
   },
   {
     "api": {
@@ -257,6 +258,27 @@
     "xvmList": ["0x2096d6dd537cf7a7ee1662bbbec8c2809fcf2647"],
     "faucets": [],
     "infoURL": "https://goerli-optimism.etherscan.io"
+  },
+  {
+    "api": { "url": "https://api.sandbox.x.immutable.com", "key": "" },
+    "chainId": "immutableX",
+    "networkId": 5,
+    "internalId": "88",
+    "name": "ImmutableX(S)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "service": {
+      "api": "ImmutableApiScanningService"
+    },
+    "rpc": [],
+    "watch": ["api"],
+    "contracts": [],
+    "tokens": [],
+    "infoURL": "https://immutascan.io"
   },
   {
     "api": {
