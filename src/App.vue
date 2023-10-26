@@ -49,13 +49,7 @@ import {
 import { isMobileDevice } from './util'
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
-// import { connect, disconnect } from 'starknetkit';
-// import { ArgentMobileConnector } from 'starknetkit/argentMobile';
-import {
-  getStarknet,
-  connect as getStarknetWallet,
-  disconnect as disStarknetWallet,
-} from 'get-starknet'
+import { connectStarkNetWallet } from "./util/constants/starknet/helper";
 const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
@@ -118,17 +112,6 @@ export default {
     HeaderDialog,
   },
   async mounted() {
-    console.log("window", window);
-
-    const wallet = await getStarknetWallet({});
-    if (wallet) {
-      const enabled = await wallet
-        .enable({ showModal: false })
-        .then((address) => !!address?.length);
-
-      console.log("getStarknet().selectedAddress", getStarknet().selectedAddress);
-    }
-
     if (isBraveBrowser()) {
       setIsBraveWallet(
         await window.ethereum
@@ -176,6 +159,10 @@ export default {
         const matchInitDispatcher = walletDispatchersOnInit[ZERION_APP]
         matchInitDispatcher && matchInitDispatcher();
         return;
+      }
+      const isAgentXApp = isMobile.value && !window.ethereum
+      if (isAgentXApp) {
+        connectStarkNetWallet();
       }
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help

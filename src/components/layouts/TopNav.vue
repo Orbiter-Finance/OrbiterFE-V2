@@ -85,8 +85,8 @@ import {
   setPageSenderTab,
   showAddress,
   setStarkNetDialog,
-  setSelectWalletDialogVisible,
-} from '../../composition/hooks'
+  setSelectWalletDialogVisible, web3State,
+} from '../../composition/hooks';
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
 import { walletIsLogin } from '../../composition/walletsResponsiveData'
@@ -104,6 +104,10 @@ export default {
   },
   computed: {
     showAddress () {
+      const isAgentXApp = isMobile.value && !window.ethereum;
+      if (isAgentXApp) {
+        return web3State.starkNet.starkNetAddress;
+      }
       return showAddress()
     },
     isLightMode () {
