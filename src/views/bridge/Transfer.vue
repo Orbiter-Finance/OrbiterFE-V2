@@ -170,12 +170,13 @@
       <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !isArgentApp">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isArgentApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
-          <label for="checkbox"> Change Account </label>
+          <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
+          <label v-else for="checkbox"> Recipient's Address </label>
         </div>
         <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
           <div data-v-59545920="" class="topItem">
-            <div class="left">Recipient's Address</div>
-            <div v-if="isArgentApp" @click="fillAddress">autofill from wallet</div>
+            <div class="left"></div>
+            <div v-if="isArgentApp" @click="fillAddress">Autofill from wallet</div>
           </div>
           <input
                   @blur="updateSendBtnInfo"
@@ -772,7 +773,13 @@ export default {
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
-        this.crossAddressReceipt = newValue;
+        if (isArgentApp()) {
+          if ([CHAIN_ID.starknet, CHAIN_ID.starknet].includes(transferDataState.toChainID)) {
+            this.crossAddressReceipt = newValue;
+          }
+        } else {
+          this.crossAddressReceipt = newValue;
+        }
         this.updateTransferInfo();
       }
     },
@@ -1594,10 +1601,14 @@ export default {
       //   });
       //   return;
       // }
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      const isArgentAppToSN = isArgentApp() && [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(toChainID);
+      if (isArgentAppToSN) {
+        console.log("go to xxx");
+      }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
-      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();
