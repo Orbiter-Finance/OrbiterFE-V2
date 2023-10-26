@@ -51,7 +51,11 @@ import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 // import { connect, disconnect } from 'starknetkit';
 // import { ArgentMobileConnector } from 'starknetkit/argentMobile';
-
+import {
+  getStarknet,
+  connect as getStarknetWallet,
+  disconnect as disStarknetWallet,
+} from 'get-starknet'
 const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
@@ -115,20 +119,15 @@ export default {
   },
   async mounted() {
     console.log("window", window);
-    console.log("window", Object.keys(window));
-    console.log("window.argentStarknetMobile", await window.argentStarknetMobile);
-    // console.log('connect', await connect());
-    // const connection = await connect({
-    //   connectors: [
-    //     new ArgentMobileConnector({
-    //       argentMobileOptions: {
-    //         projectId: process.env.VUE_APP_WALLET_CONNECT_PROJECTID,
-    //         description: 'orbiter dapp'
-    //       }
-    //     }),
-    //   ]
-    // });
-    // console.log("connection", connection);
+
+    const wallet = await getStarknetWallet({});
+    if (wallet) {
+      const enabled = await wallet
+        .enable({ showModal: false })
+        .then((address) => !!address?.length);
+
+      console.log("getStarknet().selectedAddress", getStarknet().selectedAddress);
+    }
 
     if (isBraveBrowser()) {
       setIsBraveWallet(
