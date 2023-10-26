@@ -93,6 +93,7 @@ import { walletIsLogin } from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
 import starknetLogoDark from '../../assets/v2/starknet-logo-dark.png'
 import starknetLogoLight from '../../assets/v2/starknet-logo-light.png'
+import { isArgentApp } from "../../util";
 
 export default {
   name: 'TopNav',
@@ -104,8 +105,7 @@ export default {
   },
   computed: {
     showAddress () {
-      const isAgentXApp = isMobile.value && !window.ethereum;
-      if (isAgentXApp) {
+      if (isArgentApp()) {
         return starkAddress();
       }
       return showAddress()

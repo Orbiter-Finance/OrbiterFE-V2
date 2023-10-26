@@ -392,7 +392,7 @@ import {
   updateTransferMakerConfig,
   updateTransferExt, curPageStatus, updateDealerId,
 } from '../../composition/hooks';
-import { isDev } from "../../util";
+import { isArgentApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 let makerConfigs = config.v1MakerConfigs;
@@ -821,7 +821,7 @@ export default {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
         makerConfigs = await getV2TradingPair(new Date().valueOf());
-        if (isMobile.value && !window.ethereum) {
+        if (isArgentApp()) {
           makerConfigs = makerConfigs.filter(item => +item.fromChain.id === 44 || +item.fromChain.id === 4);
         }
         return;

@@ -89,6 +89,7 @@ export async function connectStarkNetWallet() {
       .then((address) => !!address?.length)
 
     if (enabled) {
+      console.log("starknet address", getStarknet().selectedAddress);
       store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
       store.commit('updateStarkNetWalletName', wallet.name)
       store.commit('updateStarkNetWalletIcon', wallet.icon)

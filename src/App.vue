@@ -46,7 +46,7 @@ import {
   performInitMobileAppWallet,
   isBraveWallet,
 } from './util/walletsDispatchers/utils'
-import { isMobileDevice } from './util'
+import { isMobileDevice, isArgentApp } from './util'
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from "./util/constants/starknet/helper";
@@ -135,6 +135,12 @@ export default {
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
 
+      console.log("isArgentApp", isArgentApp());
+      if (isArgentApp()) {
+        connectStarkNetWallet();
+        return
+      }
+
       const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()
       if (isOkxwalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[METAMASK]
@@ -159,10 +165,6 @@ export default {
         const matchInitDispatcher = walletDispatchersOnInit[ZERION_APP]
         matchInitDispatcher && matchInitDispatcher();
         return;
-      }
-      const isAgentXApp = isMobile.value && !window.ethereum
-      if (isAgentXApp) {
-        connectStarkNetWallet();
       }
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
