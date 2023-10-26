@@ -167,14 +167,15 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !isArgentApp">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
-          <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+          <input v-if="!isArgentApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label for="checkbox"> Change Account </label>
         </div>
         <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
           <div data-v-59545920="" class="topItem">
             <div class="left">Recipient's Address</div>
+            <div v-if="isArgentApp" @click="fillAddress">autofill from wallet</div>
           </div>
           <input
                   @blur="updateSendBtnInfo"
@@ -395,6 +396,7 @@ import {
 import { isArgentApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
+import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
 
@@ -419,6 +421,7 @@ export default {
       isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
+      isArgentApp: false,
       isV3: false,
       isEmpty: false,
       isWillUpdate: false,
@@ -817,13 +820,20 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async fillAddress() {
+      if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.fromChainID)) {
+        await walletConnectDispatcherOnInit(WALLETCONNECT);
+      } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.toChainID)) {
+        this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+      }
+    },
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        makerConfigs = await getV2TradingPair(new Date().valueOf());
         if (isArgentApp()) {
-          makerConfigs = makerConfigs.filter(item => +item.fromChain.id === 44 || +item.fromChain.id === 4);
+          return;
         }
+        makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
       updateDealerId(dealerId);
@@ -994,8 +1004,9 @@ export default {
       }
 
       this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
+      this.isArgentApp = isArgentApp();
 
-      if (fromCurrency === toCurrency && !this.isLoopring) {
+      if (fromCurrency === toCurrency && !this.isLoopring && !this.isArgentApp) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
             title: `Not supported yet Change Account.`,
@@ -1363,7 +1374,9 @@ export default {
           this.inputTransferValue();
         }
       }
-      if (oldFromChainID !== fromChainID && (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test)) {
+      if (oldFromChainID !== fromChainID &&
+        (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) ||
+        (isArgentApp() && (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test))) {
         this.isCrossAddress = true;
       }
       if (toChainID !== oldToChainID && (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test)) {

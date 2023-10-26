@@ -135,12 +135,6 @@ export default {
       getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
 
-      console.log("isArgentApp", isArgentApp());
-      if (isArgentApp()) {
-        connectStarkNetWallet();
-        return
-      }
-
       const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()
       if (isOkxwalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[METAMASK]
@@ -165,6 +159,11 @@ export default {
         const matchInitDispatcher = walletDispatchersOnInit[ZERION_APP]
         matchInitDispatcher && matchInitDispatcher();
         return;
+      }
+
+      console.log("isArgentApp", isArgentApp());
+      if (isArgentApp()) {
+        connectStarkNetWallet();
       }
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
