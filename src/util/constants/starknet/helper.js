@@ -156,6 +156,8 @@ export async function sendTransfer(
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
+  console.log("getStarknet() ===", getStarknet())
+
   const tokenContract = new Contract(
     erc20Abi,
     tokenAddress,

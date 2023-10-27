@@ -1031,6 +1031,11 @@ export default {
             }
             try {
                 const contractAddress = selectMakerConfig.fromChain.tokenAddress
+                console.log("send params",from,
+                  contractAddress,
+                  selectMakerConfig.recipient,
+                  value,
+                  fromChainID)
                 const hash = await sendTransfer(
                     from,
                     contractAddress,
