@@ -1017,16 +1017,16 @@ export default {
                     )
                     return
                 }
-                if (
-                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
-                    (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
-                ) {
-                    util.showMessage(
-                        'please switch Starknet Wallet to testNet',
-                        'error'
-                    )
-                    return
-                }
+                // if (
+                //     (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
+                //     (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
+                // ) {
+                //     util.showMessage(
+                //         'please switch Starknet Wallet to testNet',
+                //         'error'
+                //     )
+                //     return
+                // }
             }
             try {
                 const contractAddress = selectMakerConfig.fromChain.tokenAddress
