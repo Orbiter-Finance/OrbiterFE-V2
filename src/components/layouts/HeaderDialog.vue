@@ -137,7 +137,7 @@ import Middle from '../../util/middle/middle'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
 import walletDispatchers, { BRAVE, METAMASK,TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
-import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
+import { onCopySuccess, onCopyError, isMobileDevice, isArgentApp } from '../../util';
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
 import { CHAIN_ID } from "../../config";
@@ -270,12 +270,12 @@ export default {
                     {
                         icon: 'wallet',
                         title: 'Wallet',
-                        value: isOkxwalletApp ? "okxwalletApp" : compatibleGlobalWalletConf.value.walletType,
+                        value: isArgentApp() ? "Wallet App" : (isOkxwalletApp ? "okxwalletApp" : compatibleGlobalWalletConf.value.walletType),
                     },
                     {
                         icon: 'address',
                         title: 'Address',
-                        value: showAddress(),
+                        value: isArgentApp() ? starkAddress() : showAddress(),
                     },
                 ]
             }

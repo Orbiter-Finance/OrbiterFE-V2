@@ -1606,9 +1606,9 @@ export default {
       if (isArgentAppToSN) {
         console.log("go to xxx");
       }
-      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-      //   return;
-      // }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return;
+      }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();
@@ -1740,13 +1740,13 @@ export default {
             );
             return;
           }
-          // if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
-          //   util.showMessage(
-          //           'please switch Starknet Wallet to testNet',
-          //           'error'
-          //   );
-          //   return;
-          // }
+          if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
+            util.showMessage(
+                    'please switch Starknet Wallet to testNet',
+                    'error'
+            );
+            return;
+          }
         } else {
           if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== util.getMetaMaskNetworkId(fromChainID)) {
             if ([METAMASK, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
