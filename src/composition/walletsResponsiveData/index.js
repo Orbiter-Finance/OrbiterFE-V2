@@ -5,7 +5,7 @@ import walletDispatchers, {
 } from '../../util/walletsDispatchers'
 import { findMatchWeb3ProviderByWalletType } from '../../util/walletsDispatchers/utils'
 import { web3State } from '../useCoinbase'
-import { isArgentApp } from "../../util";
+import { isBrowserApp } from "../../util";
 
 const { loginStatusCheckerOfWallets } = walletDispatchers
 
@@ -23,7 +23,7 @@ export const walletIsLogin = computed(() => {
     return matchProcessor ? matchProcessor() : false
   }
 
-  return (web3State.isInstallMeta && web3State.isInjected && web3State.localLogin) || isArgentApp()
+  return (web3State.isInstallMeta && web3State.isInjected && web3State.localLogin) || isBrowserApp()
 })
 
 /**

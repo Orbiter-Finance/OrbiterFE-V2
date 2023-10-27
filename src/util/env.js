@@ -1,5 +1,6 @@
 import { isMobile } from "../composition/useMobile";
-// TODO Argent Test
+import { getStarknet } from "get-starknet";
+
 export const isLocal = () => process.env.VUE_APP_ENV === 'local'
 export const isDev = () => process.env.VUE_APP_ENV === 'production'
 export const isProd = () => process.env.VUE_APP_ENV === 'development'
@@ -32,5 +33,11 @@ export const isMobileDevice = () => {
 }
 
 export const isArgentApp = () => {
+  // return isMobile.value && getStarknet().isConnected;
+  return isMobile.value && !window.ethereum && getStarknet().isConnected;
+};
+
+export const isBrowserApp = () => {
+  // return isMobile.value
   return isMobile.value && !window.ethereum;
 };

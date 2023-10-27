@@ -200,7 +200,7 @@ import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
-import { isArgentApp } from "../../util";
+import { isBrowserApp } from "../../util";
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -983,7 +983,7 @@ export default {
             }
             let from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
-            if (isArgentApp()) {
+            if (isBrowserApp()) {
                 from = transferDataState.crossAddressReceipt;
             }
             console.log("from", from);
@@ -1017,17 +1017,16 @@ export default {
                     )
                     return
                 }
-                // TODO Argent Test
-                // if (
-                //     (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
-                //     (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
-                // ) {
-                //     util.showMessage(
-                //         'please switch Starknet Wallet to testNet',
-                //         'error'
-                //     )
-                //     return
-                // }
+                if (
+                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
+                    (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
+                ) {
+                    util.showMessage(
+                        'please switch Starknet Wallet to testNet',
+                        'error'
+                    )
+                    return
+                }
             }
             try {
                 const contractAddress = selectMakerConfig.fromChain.tokenAddress

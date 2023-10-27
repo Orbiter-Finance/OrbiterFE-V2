@@ -70,6 +70,10 @@ function refererUpper() {
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
     const refer = refererUpper()
+    console.log("refer ===========", refer);
+    console.log("refer ===========", refer);
+    console.log("refer ===========", refer);
+
     const isArgentX = refer === 'argent'.toUpperCase()
     const isBraavos = refer === 'braavos'.toUpperCase()
 
@@ -165,8 +169,7 @@ export async function sendTransfer(
   )
   console.log('step 1', tokenContract, contractAddress);
 
-  // const allowance = await getAllowance(tokenContract, contractAddress)
-  const allowance = new BigNumber(10 ** 18);
+  const allowance = await getAllowance(tokenContract, contractAddress);
   console.log('step 2',allowance.toString())
   const crossContract = new Contract(
       starkNetCrossAbi,
@@ -232,7 +235,9 @@ function getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount
  */
 export async function getAllowance(contractErc20, contractAddress) {
   const ownerAddress = getStarknet().selectedAddress
+  console.log("allowance params", ownerAddress, contractAddress)
   const allowance = await contractErc20.allowance(ownerAddress, contractAddress)
+  console.log("allowance ===", allowance);
   return allowance.remaining.low
 }
 

@@ -167,16 +167,16 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !isArgentApp">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !isBrowserApp">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
-          <input v-if="!isArgentApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+          <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
           <label v-else for="checkbox"> Recipient's Address </label>
         </div>
         <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
           <div data-v-59545920="" class="topItem">
             <div class="left"></div>
-            <div v-if="isArgentApp" @click="fillAddress">Autofill from wallet</div>
+            <div v-if="isBrowserApp" @click="fillAddress">Autofill from wallet</div>
           </div>
           <input
                   @blur="updateSendBtnInfo"
@@ -394,7 +394,7 @@ import {
   updateTransferMakerConfig,
   updateTransferExt, curPageStatus, updateDealerId,
 } from '../../composition/hooks';
-import { isArgentApp, isDev } from "../../util";
+import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
@@ -422,7 +422,7 @@ export default {
       isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
-      isArgentApp: false,
+      isBrowserApp: false,
       isV3: false,
       isEmpty: false,
       isWillUpdate: false,
@@ -499,10 +499,10 @@ export default {
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
-      if (!isArgentApp() && (!this.isNewVersion || this.selectFromToken === this.selectToToken)) {
+      if (!isBrowserApp() && (!this.isNewVersion || this.selectFromToken === this.selectToToken)) {
         return false;
       }
-      if (!isArgentApp() && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
+      if (!isBrowserApp() && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
@@ -513,7 +513,7 @@ export default {
       if (isCheck) {
         this.sendBtnInfo.disabled = 'disabled';
       } else if(this.sendBtnInfo.disabled === 'disabled'){
-        this.updateTransferInfo()
+        // this.updateTransferInfo()
       }
       return isCheck;
     },
@@ -840,9 +840,6 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        if (isArgentApp()) {
-          return;
-        }
         makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
@@ -1014,9 +1011,9 @@ export default {
       }
 
       this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
-      this.isArgentApp = isArgentApp();
+      this.isBrowserApp = isBrowserApp();
 
-      if (fromCurrency === toCurrency && !this.isLoopring && !this.isArgentApp) {
+      if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
             title: `Not supported yet Change Account.`,
@@ -1386,7 +1383,7 @@ export default {
       }
       if (oldFromChainID !== fromChainID &&
         (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) ||
-        (isArgentApp() && (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test))) {
+        (isBrowserApp() && (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test))) {
         this.isCrossAddress = true;
       }
       if (toChainID !== oldToChainID && (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test)) {
@@ -1605,9 +1602,9 @@ export default {
       //   return;
       // }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
-      const isArgentAppToSN = isArgentApp() && [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(toChainID);
-      if (isArgentAppToSN) {
-        console.log("go to xxx");
+      const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
+      if (isNotWallet) {
+        window.location.href = 'https://metamask.io/download';
       }
       // TODO Argent Test
       // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
@@ -1744,14 +1741,13 @@ export default {
             );
             return;
           }
-          // TODO Argent Test
-          // if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
-          //   util.showMessage(
-          //           'please switch Starknet Wallet to testNet',
-          //           'error'
-          //   );
-          //   return;
-          // }
+          if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
+            util.showMessage(
+                    'please switch Starknet Wallet to testNet',
+                    'error'
+            );
+            return;
+          }
         } else {
           if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== util.getMetaMaskNetworkId(fromChainID)) {
             if ([METAMASK, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {

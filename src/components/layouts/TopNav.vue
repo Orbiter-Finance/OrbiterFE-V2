@@ -93,7 +93,7 @@ import { walletIsLogin } from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
 import starknetLogoDark from '../../assets/v2/starknet-logo-dark.png'
 import starknetLogoLight from '../../assets/v2/starknet-logo-light.png'
-import { isArgentApp } from "../../util";
+import { isBrowserApp } from "../../util";
 
 export default {
   name: 'TopNav',
@@ -105,7 +105,7 @@ export default {
   },
   computed: {
     showAddress () {
-      if (isArgentApp()) {
+      if (isBrowserApp()) {
         return starkAddress();
       }
       return showAddress()

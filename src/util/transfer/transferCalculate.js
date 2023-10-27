@@ -21,7 +21,7 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import { transferDataState, web3State } from '../../composition/hooks'
 import { CHAIN_ID } from "../../config";
 import { EBC_ABI } from "../constants/contract/contract";
-import { isArgentApp, isDev } from "../env";
+import { isArgentApp, isBrowserApp, isDev } from "../env";
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -815,6 +815,9 @@ export default {
     isMaker = false
   ) {
     if (isArgentApp() && !isMaker && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(localChainID)) {
+      return 0;
+    }
+    if (!isArgentApp() && isBrowserApp()) {
       return 0;
     }
     const { selectMakerConfig } = transferDataState
