@@ -1612,9 +1612,9 @@ export default {
         // compatibleGlobalWalletConf.value.walletPayload.walletAddress = account.address;
         return;
       }
-      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-        return;
-      }
+      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+      //   return;
+      // }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();

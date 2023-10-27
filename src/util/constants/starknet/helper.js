@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ec, Account, Contract, Provider, uint256, stark } from 'starknet';
+import { ec, Account, Provider, uint256, stark } from 'starknet';
 import util from '../../util'
 import erc20Abi from './erc20_abi.json'
 import starkNetCrossAbi from './ob_source_abi.json'
@@ -164,7 +164,7 @@ export async function sendTransfer(
     getStarknet().provider
   )
 
-  const allowance = isArgentApp() ? new BigNumber(0) : await getAllowance(tokenContract, contractAddress);
+  const allowance = await getAllowance(tokenContract, contractAddress);
   const crossContract = new Contract(
       starkNetCrossAbi,
       contractAddress,
@@ -216,12 +216,18 @@ function getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount
   };
 }
 
-/**
- * @param {Contract} contractErc20
- */
-export async function getAllowance(contractErc20, contractAddress) {
-  const ownerAddress = getStarknet().selectedAddress
-  const allowance = await contractErc20.allowance(ownerAddress, contractAddress)
+import { Contract } from 'starknet';
+export async function getAllowance() {
+  const contract = new Contract(
+    erc20Abi,
+    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+    getStarknet().provider
+  )
+  console.log("exec allowance before ====")
+  const allowance = await contract.allowance(
+    "0x052695db6fa89bdc08f5152369bf7e798d3ba9953d7f588edd4d5fee166a9e85",
+    "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b");
+  console.log("allowance.remaining.low ====", allowance.remaining.low.toString())
   return allowance.remaining.low
 }
 
