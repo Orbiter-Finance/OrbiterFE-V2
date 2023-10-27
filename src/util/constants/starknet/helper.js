@@ -164,7 +164,7 @@ export async function sendTransfer(
     getStarknet().provider
   )
 
-  const allowance = isArgentApp() ? new BigNumber(9999 * 10 ** 18) : await getAllowance(tokenContract, contractAddress);
+  const allowance = isArgentApp() ? new BigNumber(0) : await getAllowance(tokenContract, contractAddress);
   const crossContract = new Contract(
       starkNetCrossAbi,
       contractAddress,
