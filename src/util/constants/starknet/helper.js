@@ -218,6 +218,7 @@ function getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount
 
 import { Contract } from 'starknet';
 export async function getAllowance() {
+  console.log("erc20Abi ====", erc20Abi);
   const contract = new Contract(
     erc20Abi,
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
