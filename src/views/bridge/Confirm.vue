@@ -1017,16 +1017,17 @@ export default {
                     )
                     return
                 }
-                if (
-                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
-                    (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
-                ) {
-                    util.showMessage(
-                        'please switch Starknet Wallet to testNet',
-                        'error'
-                    )
-                    return
-                }
+                // TODO Argent Test
+                // if (
+                //     (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
+                //     (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
+                // ) {
+                //     util.showMessage(
+                //         'please switch Starknet Wallet to testNet',
+                //         'error'
+                //     )
+                //     return
+                // }
             }
             try {
                 const contractAddress = selectMakerConfig.fromChain.tokenAddress
@@ -1045,13 +1046,14 @@ export default {
                     'hash': hash 
                     })
                 }catch(error) {
-
+                  console.error('click error', error);
                 }
      
                 if (hash) {
                     this.onTransferSucceed(from, value, fromChainID, hash)
                 }
             } catch (error) {
+              console.error('transfer error', error);
                 this.$notify.error({
                     title: error.message,
                     duration: 3000,
