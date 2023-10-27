@@ -14,6 +14,7 @@ import {
 import { store } from '../../../store'
 import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
 import { CHAIN_ID } from "../../../config";
+import { isArgentApp } from "../../env";
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha':
@@ -70,9 +71,6 @@ function refererUpper() {
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
     const refer = refererUpper()
-    console.log("refer ===========", refer);
-    console.log("refer ===========", refer);
-    console.log("refer ===========", refer);
 
     const isArgentX = refer === 'argent'.toUpperCase()
     const isBraavos = refer === 'braavos'.toUpperCase()
@@ -160,41 +158,28 @@ export async function sendTransfer(
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
-  console.log("getStarknet() ===", getStarknet())
-
   const tokenContract = new Contract(
     erc20Abi,
     tokenAddress,
     getStarknet().provider
   )
-  console.log('step 1', tokenContract, contractAddress);
 
-  const allowance = await getAllowance(tokenContract, contractAddress);
-  console.log('step 2',allowance.toString())
+  const allowance = isArgentApp() ? new BigNumber(9999 * 10 ** 18) : await getAllowance(tokenContract, contractAddress);
   const crossContract = new Contract(
       starkNetCrossAbi,
       contractAddress,
       getStarknet().provider
   );
-  console.log('step 3',crossContract.address)
   const receiverAddress = makerAddress;
 
   try {
     let tx;
     if (amount.gt(allowance)) {
-      console.log('step 4-1',tokenAddress, receiverAddress, l1Address, amount, crossContract.address)
       const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
-      console.log('step 4-2',approveTxCall)
       const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
-      console.log('step 4-3',transferERC20TxCall)
       tx = await getStarknet().account.execute([approveTxCall, transferERC20TxCall]);
-      console.log('step 4-4',tx)
     } else {
-      console.log('step 5-1',tokenAddress, receiverAddress, l1Address, amount, crossContract.address)
-      const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
-      console.log('step 5-2',transferERC20TxCall)
       tx = await getStarknet().account.execute(transferERC20TxCall);
-      console.log('step 5-3',tx)
     }
     return tx?.transaction_hash;
   } catch (e) {
@@ -235,9 +220,7 @@ function getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount
  */
 export async function getAllowance(contractErc20, contractAddress) {
   const ownerAddress = getStarknet().selectedAddress
-  console.log("allowance params", ownerAddress, contractAddress)
   const allowance = await contractErc20.allowance(ownerAddress, contractAddress)
-  console.log("allowance ===", allowance);
   return allowance.remaining.low
 }
 
