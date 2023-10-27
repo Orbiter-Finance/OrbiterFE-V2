@@ -1604,7 +1604,8 @@ export default {
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
       if (isNotWallet) {
-        window.location.href = 'https://metamask.io/download';
+        await walletConnectDispatcherOnInit(WALLETCONNECT);
+        return;
       }
       // TODO Argent Test
       // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
