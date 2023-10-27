@@ -163,24 +163,34 @@ export async function sendTransfer(
     tokenAddress,
     getStarknet().provider
   )
+  console.log('step 1')
 
   const allowance = await getAllowance(tokenContract, contractAddress)
+  console.log('step 2',allowance.toString())
   const crossContract = new Contract(
       starkNetCrossAbi,
       contractAddress,
       getStarknet().provider
   );
+  console.log('step 3',crossContract.address)
   const receiverAddress = makerAddress;
 
   try {
     let tx;
     if (amount.gt(allowance)) {
+      console.log('step 4-1',tokenAddress, receiverAddress, l1Address, amount, crossContract.address)
       const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
+      console.log('step 4-2',approveTxCall)
       const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      console.log('step 4-3',transferERC20TxCall)
       tx = await getStarknet().account.execute([approveTxCall, transferERC20TxCall]);
+      console.log('step 4-4',tx)
     } else {
+      console.log('step 5-1',tokenAddress, receiverAddress, l1Address, amount, crossContract.address)
       const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      console.log('step 5-2',transferERC20TxCall)
       tx = await getStarknet().account.execute(transferERC20TxCall);
+      console.log('step 5-3',tx)
     }
     return tx?.transaction_hash;
   } catch (e) {
