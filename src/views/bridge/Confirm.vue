@@ -200,6 +200,7 @@ import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
+import { isArgentApp } from "../../util";
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -980,8 +981,12 @@ export default {
                 this.transferLoading = false
                 return
             }
-            const from =
+            let from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
+            if (isArgentApp()) {
+                from = transferDataState.crossAddressReceipt;
+            }
+            console.log("from", from);
             if (!from || !(new RegExp(/^0x[a-fA-F0-9]{40}$/)).test(from) || from === "0x0000000000000000000000000000000000000000") {
                 util.showMessage('please connect correct evm wallet address', 'error');
                 return;

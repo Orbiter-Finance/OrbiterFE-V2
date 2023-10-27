@@ -238,6 +238,7 @@ export async function getStarkTransferFee(
   amount,
   chainID
 ) {
+  if (!l1Address) return 0;
   l1Address = l1Address.toLowerCase()
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()

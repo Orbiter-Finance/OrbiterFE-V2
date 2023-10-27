@@ -1940,6 +1940,8 @@ export default {
         //   await self.updateUserMaxPrice();
         // }
           self.fromBalanceLoading = false;
+      } else {
+        self.fromBalanceLoading = false;
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
@@ -1961,6 +1963,8 @@ export default {
         //   self.toBalance = toChainBalanceMap[toChain.symbol];
         // }
           self.toBalanceLoading = false;
+      } else {
+        self.toBalanceLoading = false;
       }
     },
   },
