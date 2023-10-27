@@ -829,7 +829,10 @@ export default {
   methods: {
     async fillAddress() {
       if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.fromChainID)) {
-        await walletConnectDispatcherOnInit(WALLETCONNECT);
+        const account = await walletConnectDispatcherOnInit(WALLETCONNECT);
+        if (account?.address) {
+          this.crossAddressReceipt = account.address;
+        }
       } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.toChainID)) {
         this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
       }

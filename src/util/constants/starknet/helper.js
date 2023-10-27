@@ -163,9 +163,10 @@ export async function sendTransfer(
     tokenAddress,
     getStarknet().provider
   )
-  console.log('step 1')
+  console.log('step 1', tokenContract, contractAddress);
 
-  const allowance = await getAllowance(tokenContract, contractAddress)
+  // const allowance = await getAllowance(tokenContract, contractAddress)
+  const allowance = new BigNumber(10 ** 18);
   console.log('step 2',allowance.toString())
   const crossContract = new Contract(
       starkNetCrossAbi,

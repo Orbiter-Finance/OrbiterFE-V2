@@ -178,7 +178,7 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
     await web3Modal.openModal()
   }
-  console.log("ethereumClient.getAccount", ethereumClient.getAccount());
+  return ethereumClient.getAccount();
 }
 
 // disconnect the walletconnect manually
