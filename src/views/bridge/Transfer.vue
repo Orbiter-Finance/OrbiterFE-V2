@@ -167,7 +167,7 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !isBrowserApp">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet)">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
@@ -477,6 +477,9 @@ export default {
     };
   },
   computed: {
+    selectStarknet() {
+      return util.isStarkNet();
+    },
     CHAIN_ID() {
       return CHAIN_ID;
     },
@@ -499,10 +502,10 @@ export default {
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
-      if (!isBrowserApp() && (!this.isNewVersion || this.selectFromToken === this.selectToToken)) {
+      if (!(isArgentApp() && util.isStarkNet()) && (!this.isNewVersion || this.selectFromToken === this.selectToToken)) {
         return false;
       }
-      if (!isBrowserApp() && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
+      if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
@@ -1603,14 +1606,15 @@ export default {
       // }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
-      if (isNotWallet) {
+      if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
         await walletConnectDispatcherOnInit(WALLETCONNECT);
+        // compatibleGlobalWalletConf.value.walletPayload.provider = account.provider;
+        // compatibleGlobalWalletConf.value.walletPayload.walletAddress = account.address;
         return;
       }
-      // TODO Argent Test
-      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-      //   return;
-      // }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return;
+      }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();
