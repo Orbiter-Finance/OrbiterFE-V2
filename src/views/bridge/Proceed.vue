@@ -380,7 +380,7 @@ export default {
                 url = util.getAccountExploreUrl(fromChainID) + userAddress
 
                 // ImmutableX
-                if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
+                if (fromChainID === CHAIN_ID.imx) {
                     url = util.getAccountExploreUrl(fromChainID)
                 }
             } else {
@@ -389,11 +389,6 @@ export default {
                 url = util.getTxExploreUrl(fromChainID) +
                     txid +
                     (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test ? '-transfer' : '')
-
-                // ImmutableX don't have testnet browser
-                if (fromChainID === CHAIN_ID.imx_test) {
-                    url = util.getAccountExploreUrl(fromChainID)
-                }
             }
             window.open(url, '_blank')
         },
@@ -460,11 +455,6 @@ export default {
                     url = util.getTxExploreUrl(toChainID) +
                         txid +
                         (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test ? '-transfer' : '')
-
-                    // ImmutableX don't have testnet browser
-                    if (toChainID === CHAIN_ID.imx_test) {
-                        url = util.getAccountExploreUrl(toChainID)
-                    }
                 }
             }
             window.open(url, '_blank')

@@ -24,6 +24,7 @@ export default {
     [CHAIN_ID.zksync_test]: 'https://goerli.zkscan.io/explorer/transactions/',
     [CHAIN_ID.dydx]: 'https://trade.dydx.exchange/',
     [CHAIN_ID.dydx_test]: 'https://trade.stage.dydx.exchange/',
+    [CHAIN_ID.imx_test]: 'https://api.sandbox.x.immutable.com/v1/transfers/',
     [CHAIN_ID.zkspace]: 'https://zkspace.info/transaction/',
     [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/transaction/'
   },
@@ -33,7 +34,7 @@ export default {
     [CHAIN_ID.starknet]: 'https://voyager.online/contract/',
     [CHAIN_ID.starknet_test]: 'https://goerli.voyager.online/contract/',
     [CHAIN_ID.imx]: 'https://market.immutable.com/inventory/',
-    [CHAIN_ID.imx_test]: 'https://market.ropsten.immutable.com/inventory/',
+    [CHAIN_ID.imx_test]: 'https://api.sandbox.x.immutable.com/v1/transfers/',
     [CHAIN_ID.loopring]: 'https://explorer.loopring.io/account/',
     [CHAIN_ID.loopring_test]: 'https://explorer.loopring.io/account/',
     [CHAIN_ID.dydx]: 'https://trade.dydx.exchange/',

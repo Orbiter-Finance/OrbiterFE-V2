@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ec, Account, Provider, uint256, stark } from 'starknet';
+import { ec, Account, Contract, Provider, uint256, stark } from 'starknet';
 import util from '../../util'
 import erc20Abi from './erc20_abi.json'
 import starkNetCrossAbi from './ob_source_abi.json'
@@ -79,8 +79,8 @@ export async function connectStarkNetWallet() {
       order: isArgentX
         ? ['argentX']
         : isBraavos
-        ? ['braavos']
-        : ['argentX', 'braavos'],
+          ? ['braavos']
+          : ['argentX', 'braavos'],
     }
     const wallet = await getStarknetWallet(obj)
     if (!wallet) {
@@ -166,9 +166,9 @@ export async function sendTransfer(
 
   const allowance = await getAllowance(tokenContract, contractAddress);
   const crossContract = new Contract(
-      starkNetCrossAbi,
-      contractAddress,
-      getStarknet().provider
+    starkNetCrossAbi,
+    contractAddress,
+    getStarknet().provider
   );
   const receiverAddress = makerAddress;
 
@@ -187,6 +187,33 @@ export async function sendTransfer(
     util.showMessage(e.message, 'error');
   }
   return null;
+}
+
+// TODO Test
+export async function tokenAllowance(chainId) {
+  console.log('step 1 ====')
+  const networkID = getNetworkIdByChainId(chainId)
+  const network = networkID === 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network];
+
+  console.log('Contract Params ===',
+    erc20Abi,
+    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+    getStarknet().provider);
+
+  const tokenContract = new Contract(
+    erc20Abi,
+    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+    getStarknet().provider
+  );
+  console.log('step 2 ====', tokenContract);
+
+  const ownerAddress = getStarknet().selectedAddress;
+  console.log('step 3 ====', ownerAddress, contractAddress);
+
+  const allowance = await tokenContract.allowance(ownerAddress, contractAddress)
+
+  console.log('step 4 ====', allowance.remaining.low.toString());
 }
 
 function getApproveTxCall(spender, contractAddress) {
@@ -216,19 +243,12 @@ function getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount
   };
 }
 
-import { Contract } from 'starknet';
-export async function getAllowance() {
-  console.log("erc20Abi ====", erc20Abi);
-  const contract = new Contract(
-    erc20Abi,
-    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    getStarknet().provider
-  )
-  console.log("exec allowance before ====")
-  const allowance = await contract.allowance(
-    "0x052695db6fa89bdc08f5152369bf7e798d3ba9953d7f588edd4d5fee166a9e85",
-    "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b");
-  console.log("allowance.remaining.low ====", allowance.remaining.low.toString())
+/**
+ * @param {Contract} contractErc20
+ */
+export async function getAllowance(contractErc20, contractAddress) {
+  const ownerAddress = getStarknet().selectedAddress
+  const allowance = await contractErc20.allowance(ownerAddress, contractAddress)
   return allowance.remaining.low
 }
 

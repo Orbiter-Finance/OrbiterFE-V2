@@ -193,7 +193,9 @@
               :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
       >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
-        {{ sendBtnInfo && sendBtnInfo.text }}
+<!--          TODO Test-->
+<!--        {{ sendBtnInfo && sendBtnInfo.text }}-->
+          Allowance
       </span>
       </CommBtn>
       <div class="info-box">
@@ -368,8 +370,8 @@ import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 
 import {
-  connectStarkNetWallet
-} from '../../util/constants/starknet/helper'
+  connectStarkNetWallet, tokenAllowance
+} from '../../util/constants/starknet/helper';
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 import { RaiseUpSelect } from '../../components'
 import {
@@ -843,7 +845,8 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        makerConfigs = await getV2TradingPair(new Date().valueOf());
+        // TODO Test
+        // makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
       updateDealerId(dealerId);
@@ -1605,6 +1608,12 @@ export default {
       //   return;
       // }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      // TODO Test
+      if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)) {
+        tokenAllowance(fromChainID);
+        return;
+      }
+
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
       if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
         await walletConnectDispatcherOnInit(WALLETCONNECT);

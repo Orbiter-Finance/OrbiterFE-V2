@@ -261,7 +261,7 @@
   },
   {
     "api": { "url": "https://api.sandbox.x.immutable.com", "key": "" },
-    "chainId": "immutableX",
+    "chainId": "immutableX_test",
     "networkId": 5,
     "internalId": "88",
     "name": "ImmutableX(S)",
