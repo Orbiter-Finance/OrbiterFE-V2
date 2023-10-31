@@ -1170,7 +1170,7 @@ export default {
               item.toChain.symbol === toCurrency
       );
       if (!makerConfig) {
-        console.error(`can't find makerConfig`);
+        console.error(`can't find makerConfig`, fromChainID, toChainID, fromCurrency, toCurrency);
         return;
       }
       const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
@@ -1613,10 +1613,9 @@ export default {
         // compatibleGlobalWalletConf.value.walletPayload.walletAddress = account.address;
         return;
       }
-      // TODO test
-      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-      //   return;
-      // }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return;
+      }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();
