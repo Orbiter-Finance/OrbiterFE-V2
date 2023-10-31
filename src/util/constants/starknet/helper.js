@@ -164,9 +164,7 @@ export async function sendTransfer(
     tokenAddress,
     provider
   )
-  console.log('before allowance ====');
   const allowance = await getAllowance(tokenContract, contractAddress);
-  console.log('allowance ====', allowance.toString());
   const crossContract = new Contract(
     starkNetCrossAbi,
     contractAddress,
