@@ -195,16 +195,16 @@ export async function tokenAllowance(chainId) {
   const networkID = getNetworkIdByChainId(chainId)
   const network = networkID === 1 ? 'mainnet-alpha' : 'georli-alpha'
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network];
-
+  const provider = new Provider({ network })
   console.log('Contract Params ===',
     erc20Abi,
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    getStarknet().provider);
+    provider);
 
   const tokenContract = new Contract(
     erc20Abi,
     "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    getStarknet().provider
+    provider
   );
   console.log('step 2 ====', tokenContract);
 
