@@ -154,17 +154,19 @@ export async function sendTransfer(
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
   const networkID = getNetworkIdByChainId(chainID)
-  const network = networkID === 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkID === 1 ? 'mainnet-alpha' : 'goerli-alpha'
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
+  const provider = new Provider({ network })
   const tokenContract = new Contract(
     erc20Abi,
     tokenAddress,
-    getStarknet().provider
+    provider
   )
-
+  console.log('before allowance ====');
   const allowance = await getAllowance(tokenContract, contractAddress);
+  console.log('allowance ====', allowance.toString());
   const crossContract = new Contract(
     starkNetCrossAbi,
     contractAddress,
@@ -187,33 +189,6 @@ export async function sendTransfer(
     util.showMessage(e.message, 'error');
   }
   return null;
-}
-
-// TODO Test
-export async function tokenAllowance(chainId) {
-  console.log('step 1 ====')
-  const networkID = getNetworkIdByChainId(chainId)
-  const network = networkID === 1 ? 'mainnet-alpha' : 'georli-alpha'
-  const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network];
-  const provider = new Provider({ network })
-  console.log('tokenAllowance Params ===',
-    erc20Abi,
-    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    provider);
-
-  const tokenContract = new Contract(
-    erc20Abi,
-    "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    provider
-  );
-  console.log('step 2 ====', tokenContract);
-
-  const ownerAddress = getStarknet().selectedAddress;
-  console.log('step 3 ====', ownerAddress, contractAddress);
-
-  const allowance = await tokenContract.allowance(ownerAddress, contractAddress)
-
-  console.log('step 4 ====', allowance.remaining.low.toString());
 }
 
 function getApproveTxCall(spender, contractAddress) {
@@ -273,7 +248,7 @@ export async function getStarkTransferFee(
   makerAddress = makerAddress.toLowerCase()
 
   const networkID = getNetworkIdByChainId(chainID)
-  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkID == 1 ? 'mainnet-alpha' : 'goerli-alpha'
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
   const provider = new Provider({ network })

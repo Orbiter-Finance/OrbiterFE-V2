@@ -303,6 +303,28 @@
   },
   {
     "api": {
+      "url": "https://api.zks.app/v3/5",
+      "key": ""
+    },
+    "chainId": "ZKSpace_test",
+    "networkId": "5",
+    "internalId": "512",
+    "debug": false,
+    "name": "ZKSpace(G)",
+    "nativeCurrency": {
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": ["api"],
+    "contracts": [],
+    "tokens": [],
+    "infoURL": "https://goerli.zkspace.info"
+  },
+  {
+    "api": {
       "url": "https://zksync2-testnet.zkscan.io/api",
       "key": ""
     },
@@ -329,7 +351,7 @@
       }
     ],
     "faucets": [],
-    "infoURL": "https://goerli.explorer.zksync.io/"
+    "infoURL": "https://goerli.explorer.zksync.io"
   },
   {
     "api": {

@@ -193,9 +193,7 @@
               :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
       >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
-<!--          TODO Test-->
-<!--        {{ sendBtnInfo && sendBtnInfo.text }}-->
-          Allowance
+        {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
       </CommBtn>
       <div class="info-box">
@@ -845,8 +843,7 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        // TODO Test
-        // makerConfigs = await getV2TradingPair(new Date().valueOf());
+        makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
       updateDealerId(dealerId);
@@ -1608,11 +1605,6 @@ export default {
       //   return;
       // }
       const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
-      // TODO Test
-      if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)) {
-        tokenAllowance(fromChainID);
-        return;
-      }
 
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
       if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
@@ -1621,6 +1613,7 @@ export default {
         // compatibleGlobalWalletConf.value.walletPayload.walletAddress = account.address;
         return;
       }
+      // TODO test
       // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
       //   return;
       // }
