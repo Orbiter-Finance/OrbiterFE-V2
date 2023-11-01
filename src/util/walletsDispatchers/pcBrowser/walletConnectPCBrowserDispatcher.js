@@ -184,7 +184,6 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
     networkId: networkId,
     provider: null
   }, true);
-  console.log('ethereumClient.getAccount() ===', ethereumClient.getAccount());
   return ethereumClient.getAccount();
 }
 

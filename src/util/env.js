@@ -34,11 +34,9 @@ export const isMobileDevice = () => {
 }
 
 export const isArgentApp = () => {
-  // return isMobile.value && getStarknet().isConnected;
-  return isMobile.value && !window.ethereum && getStarknet().isConnected;
+  return isMobile.value && !window.ethereum && getStarknet && getStarknet()?.isConnected;
 };
 
 export const isBrowserApp = () => {
-  // return isMobile.value
   return isMobile.value && !window.ethereum && (!globalSelectWalletConf.walletPayload.walletAddress || globalSelectWalletConf.walletPayload.walletAddress === '0x');
 };
