@@ -284,6 +284,7 @@ export default {
     },
     methods: {
         async transferToStarkNet(value) {
+            console.log("transferToStarkNet step 1 ===")
             const { selectMakerConfig, fromChainID, transferExt } =
                 transferDataState
 
@@ -302,6 +303,7 @@ export default {
                 });
                 return;
             }
+            console.log("transferToStarkNet step 2 ===")
             const error = util.getAccountAddressError(ext.value, true);
             if (error) {
                 this.$notify.error({
@@ -361,21 +363,26 @@ export default {
                     }
                     return
                 }
-
+                console.log("transferToStarkNet step 3 ===")
                 const provider = new ethers.providers.Web3Provider(
                     compatibleGlobalWalletConf.value.walletPayload.provider
                 )
+                console.log("transferToStarkNet step 4 ===")
                 const crossAddress = new CrossAddress(
                     provider,
                     fromChainID,
                     provider.getSigner(fromAddress),
                     crossContractAddress
                 )
+                console.log("transferToStarkNet step 5 ===")
                 if (util.isEthTokenAddress(fromChainID, contractAddress)) {
+                    console.log("transferToStarkNet step 5 isEthTokenAddress ===")
                     transferHash = (
                         await crossAddress.transfer(recipient, amount, ext)
                     ).hash
+                    console.log("transferToStarkNet step 6 ===")
                 } else {
+                    console.log("transferToStarkNet step 5 transferERC20 ===")
                     transferHash = (
                         await crossAddress.transferERC20(
                             contractAddress,
@@ -384,6 +391,7 @@ export default {
                             ext
                         )
                     ).hash
+                    console.log("transferToStarkNet step 6 ===")
                 }
                 if (transferHash) {
                     this.onTransferSucceed(
@@ -395,6 +403,7 @@ export default {
                 }
                 return
             } catch (err) {
+                console.error('transferToStarkNet error', err);
                 this.$notify.error({
                     title: err?.data?.message || err.message,
                     duration: 3000,
@@ -1285,6 +1294,7 @@ export default {
             }
         },
         async RealTransfer() {
+            console.log('RealTransfer step 1 ====')
             if (!walletIsLogin.value) {
                 Middle.$emit('connectWallet', true)
                 return
