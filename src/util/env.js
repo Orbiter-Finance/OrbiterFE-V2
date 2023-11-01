@@ -1,5 +1,6 @@
 import { isMobile } from "../composition/useMobile";
 import { getStarknet } from "get-starknet";
+import { globalSelectWalletConf } from "./walletsDispatchers";
 
 export const isLocal = () => process.env.VUE_APP_ENV === 'local'
 export const isDev = () => process.env.VUE_APP_ENV === 'development'
@@ -39,5 +40,5 @@ export const isArgentApp = () => {
 
 export const isBrowserApp = () => {
   // return isMobile.value
-  return isMobile.value && !window.ethereum;
+  return isMobile.value && !window.ethereum && (!globalSelectWalletConf.walletPayload.walletAddress || globalSelectWalletConf.walletPayload.walletAddress === '0x');
 };

@@ -179,11 +179,11 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
     await web3Modal.openModal()
   }
-  // updateGlobalSelectWalletConf(WALLETCONNECT, {
-  //   walletAddress: ethereumClient.getAccount().address,
-  //   networkId: networkId,
-  //   provider: ethereumClient.getAccount().provider
-  // }, true);
+  updateGlobalSelectWalletConf(WALLETCONNECT, {
+    walletAddress: ethereumClient.getAccount().address,
+    networkId: networkId,
+    provider: null
+  }, true);
   console.log('ethereumClient.getAccount() ===', ethereumClient.getAccount());
   return ethereumClient.getAccount();
 }
