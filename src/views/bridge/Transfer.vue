@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="transfer-box" v-loading="boxLoading" v-if="!isEmpty">
+    <div class="transfer-box" v-loading="boxLoading" element-loading-background="rgba(0, 0, 0, 0)" v-if="!isEmpty">
 <!--      <div v-if="makerAddress" style="font-size: 15px;margin-bottom: 20px">{{ makerAddress }}</div>-->
       <div class="top-area" style="position: relative">
         <span class="title">Token</span>
@@ -793,7 +793,11 @@ export default {
   },
   async mounted() {
     this.boxLoading = true;
-    await this.syncV3Data(1);
+    try {
+      await this.syncV3Data(1);
+    } catch (e) {
+      console.error('syncV3Data error', e);
+    }
     this.boxLoading = false;
 
     this.openApiFilter();
