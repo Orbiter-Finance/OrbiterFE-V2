@@ -1613,13 +1613,12 @@ export default {
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
       if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
         await walletConnectDispatcherOnInit(WALLETCONNECT);
-        // compatibleGlobalWalletConf.value.walletPayload.provider = account.provider;
-        // compatibleGlobalWalletConf.value.walletPayload.walletAddress = account.address;
         return;
       }
-      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-        return;
-      }
+      // TODO Test
+      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+      //   return;
+      // }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();
