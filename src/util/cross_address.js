@@ -110,11 +110,14 @@ export class CrossAddress {
    * @return {Promise<{hash: string}>}
    */
   async transfer(to, amount, ext = undefined) {
+    console.log('transfer step 0')
     await this.checkNetworkId()
 
     if (ext && !CrossAddressTypes[ext.type]) {
       throw new Error(`Invalid crossAddressType : ${ext.type}`)
     }
+
+    console.log('transfer step 1')
 
     const contract = new ethers.Contract(
       this.contractAddress,
@@ -122,9 +125,13 @@ export class CrossAddress {
       this.signer
     )
 
+    console.log('transfer step 2')
+
     const extHex = CrossAddress.encodeExt(ext)
 
     const options = { value: amount.toHexString() }
+
+    console.log('transfer step 3', contract, to, extHex, options);
 
     return await contract.transfer(to, extHex, options)
   }

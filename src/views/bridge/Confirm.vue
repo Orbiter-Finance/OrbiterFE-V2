@@ -367,7 +367,7 @@ export default {
                 const provider = new ethers.providers.Web3Provider(
                     compatibleGlobalWalletConf.value.walletPayload.provider
                 )
-                console.log("transferToStarkNet step 4 ===")
+                console.log("transferToStarkNet step 4 ===", fromAddress, provider.getSigner(fromAddress))
                 const crossAddress = new CrossAddress(
                     provider,
                     fromChainID,
