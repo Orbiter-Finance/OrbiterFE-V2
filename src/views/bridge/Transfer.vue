@@ -368,7 +368,7 @@ import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 
 import {
-  connectStarkNetWallet, tokenAllowance
+  connectStarkNetWallet
 } from '../../util/constants/starknet/helper';
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 import { RaiseUpSelect } from '../../components'

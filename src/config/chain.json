@@ -434,6 +434,12 @@
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4"
+            },
+            {
+                "name": "USDT",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
             }
         ],
         "infoURL": "https://explorer.zksync.io"
