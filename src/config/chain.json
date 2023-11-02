@@ -619,14 +619,20 @@
             "rpc",
             "api"
         ],
-        "tokens":[
+        "tokens": [
             {
-                        "name":"USDC",
-                        "symbol":"USDC",
-                        "decimals":6,
-                        "address":"0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
-                    }
-                    ],
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
+            },
+            {
+                "name": "USDT",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
+            }
+        ],
         "infoURL": "https://basescan.org"
     },
     {
