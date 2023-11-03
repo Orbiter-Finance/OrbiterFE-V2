@@ -130,9 +130,9 @@ function convertMakerConfig(maker) {
           gasFee: makerData.crossAddress?.gasFee,
         },
       }
-      if (config.toChain.id==21 && config.toChain.symbol=='USDC') {
-        continue;
-      }
+      // if (config.toChain.id==21 && config.toChain.symbol=='USDC') {
+      //   continue;
+      // }
       // handle makerConfigs
       configs.push(config)
       // v1 maker configs
