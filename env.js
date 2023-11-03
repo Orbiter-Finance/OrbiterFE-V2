@@ -89,7 +89,8 @@ export default {
     524: 5001,
     534: 23011913,
     535: 421614,
-    536: 2358
+    536: 2358,
+    537: 47279324479
   },
   chainIcon: {
     1: 'tokenLogo',
@@ -145,7 +146,8 @@ export default {
     532: "altlayerlogo",
     534: "styluslogo",
     535: "arblogo",
-    536: "kromalogo"
+    536: "kromalogo",
+    537: "xailogo"
   },
   txExploreUrl: {
     1: 'https://etherscan.io/tx/', // /tx/  /address/
