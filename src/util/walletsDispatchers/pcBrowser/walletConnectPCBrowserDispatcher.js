@@ -18,6 +18,7 @@ import util from '../../util'
 import { updateCoinbase } from '../../../composition/useCoinbase'
 import { transferDataState } from '../../../composition/useTransferData'
 import config from '../../../config'
+import { WALLETCONNECT } from "../constants";
 
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
@@ -178,6 +179,12 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
     await web3Modal.openModal()
   }
+  updateGlobalSelectWalletConf(WALLETCONNECT, {
+    walletAddress: ethereumClient.getAccount().address,
+    networkId: networkId,
+    provider: null
+  }, true);
+  return ethereumClient.getAccount();
 }
 
 // disconnect the walletconnect manually

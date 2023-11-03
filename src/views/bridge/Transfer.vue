@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="transfer-box" v-loading="boxLoading" v-if="!isEmpty">
+    <div class="transfer-box" v-loading="boxLoading" element-loading-background="rgba(0, 0, 0, 0)" v-if="!isEmpty">
 <!--      <div v-if="makerAddress" style="font-size: 15px;margin-bottom: 20px">{{ makerAddress }}</div>-->
       <div class="top-area" style="position: relative">
         <span class="title">Token</span>
@@ -167,14 +167,16 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet)">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
-          <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
-          <label for="checkbox"> Change Account </label>
+          <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+          <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
+          <label v-else for="checkbox"> Recipient's Address </label>
         </div>
         <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
           <div data-v-59545920="" class="topItem">
-            <div class="left">Recipient's Address</div>
+            <div class="left"></div>
+            <div v-if="isBrowserApp" @click="fillAddress">Autofill from wallet</div>
           </div>
           <input
                   @blur="updateSendBtnInfo"
@@ -367,7 +369,7 @@ import getNonce from '../../core/utils/nonce'
 
 import {
   connectStarkNetWallet
-} from '../../util/constants/starknet/helper'
+} from '../../util/constants/starknet/helper';
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 import { RaiseUpSelect } from '../../components'
 import {
@@ -392,9 +394,10 @@ import {
   updateTransferMakerConfig,
   updateTransferExt, curPageStatus, updateDealerId,
 } from '../../composition/hooks';
-import { isDev } from "../../util";
+import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
+import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
 
@@ -419,6 +422,7 @@ export default {
       isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
+      isBrowserApp: false,
       isV3: false,
       isEmpty: false,
       isWillUpdate: false,
@@ -473,6 +477,9 @@ export default {
     };
   },
   computed: {
+    selectStarknet() {
+      return util.isStarkNet();
+    },
     CHAIN_ID() {
       return CHAIN_ID;
     },
@@ -495,10 +502,10 @@ export default {
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
-      if (!this.isNewVersion || this.selectFromToken === this.selectToToken) {
+      if (!(isArgentApp() && util.isStarkNet()) && (!this.isNewVersion || this.selectFromToken === this.selectToToken)) {
         return false;
       }
-      if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
+      if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
@@ -509,7 +516,7 @@ export default {
       if (isCheck) {
         this.sendBtnInfo.disabled = 'disabled';
       } else if(this.sendBtnInfo.disabled === 'disabled'){
-        this.updateTransferInfo()
+        // this.updateTransferInfo()
       }
       return isCheck;
     },
@@ -769,7 +776,13 @@ export default {
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
-        this.crossAddressReceipt = newValue;
+        if (isArgentApp()) {
+          if ([CHAIN_ID.starknet, CHAIN_ID.starknet].includes(transferDataState.toChainID)) {
+            this.crossAddressReceipt = newValue;
+          }
+        } else {
+          this.crossAddressReceipt = newValue;
+        }
         this.updateTransferInfo();
       }
     },
@@ -780,7 +793,11 @@ export default {
   },
   async mounted() {
     this.boxLoading = true;
-    await this.syncV3Data(1);
+    try {
+      await this.syncV3Data(1);
+    } catch (e) {
+      console.error('syncV3Data error', e);
+    }
     this.boxLoading = false;
 
     this.openApiFilter();
@@ -817,6 +834,16 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async fillAddress() {
+      if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.fromChainID)) {
+        const account = await walletConnectDispatcherOnInit(WALLETCONNECT);
+        if (account?.address) {
+          this.crossAddressReceipt = account.address;
+        }
+      } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.toChainID)) {
+        this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+      }
+    },
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
@@ -991,8 +1018,9 @@ export default {
       }
 
       this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
+      this.isBrowserApp = isBrowserApp();
 
-      if (fromCurrency === toCurrency && !this.isLoopring) {
+      if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
             title: `Not supported yet Change Account.`,
@@ -1146,7 +1174,7 @@ export default {
               item.toChain.symbol === toCurrency
       );
       if (!makerConfig) {
-        console.error(`can't find makerConfig`);
+        console.error(`can't find makerConfig`, fromChainID, toChainID, fromCurrency, toCurrency);
         return;
       }
       const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
@@ -1360,7 +1388,9 @@ export default {
           this.inputTransferValue();
         }
       }
-      if (oldFromChainID !== fromChainID && (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test)) {
+      if (oldFromChainID !== fromChainID &&
+        (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) ||
+        (isBrowserApp() && (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test))) {
         this.isCrossAddress = true;
       }
       if (toChainID !== oldToChainID && (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test)) {
@@ -1578,10 +1608,16 @@ export default {
       //   });
       //   return;
       // }
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+
+      const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
+      if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
+        await walletConnectDispatcherOnInit(WALLETCONNECT);
+        return;
+      }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
-      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();
@@ -1913,6 +1949,8 @@ export default {
         //   await self.updateUserMaxPrice();
         // }
           self.fromBalanceLoading = false;
+      } else {
+        self.fromBalanceLoading = false;
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
@@ -1934,6 +1972,8 @@ export default {
         //   self.toBalance = toChainBalanceMap[toChain.symbol];
         // }
           self.toBalanceLoading = false;
+      } else {
+        self.toBalanceLoading = false;
       }
     },
   },

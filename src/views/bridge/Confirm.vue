@@ -200,6 +200,7 @@ import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
+import { isBrowserApp } from "../../util";
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -360,7 +361,6 @@ export default {
                     }
                     return
                 }
-
                 const provider = new ethers.providers.Web3Provider(
                     compatibleGlobalWalletConf.value.walletPayload.provider
                 )
@@ -394,6 +394,7 @@ export default {
                 }
                 return
             } catch (err) {
+                console.error('transferToStarkNet error', err);
                 this.$notify.error({
                     title: err?.data?.message || err.message,
                     duration: 3000,
@@ -980,8 +981,11 @@ export default {
                 this.transferLoading = false
                 return
             }
-            const from =
+            let from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
+            if (isBrowserApp()) {
+                from = transferDataState.crossAddressReceipt;
+            }
             if (!from || !(new RegExp(/^0x[a-fA-F0-9]{40}$/)).test(from) || from === "0x0000000000000000000000000000000000000000") {
                 util.showMessage('please connect correct evm wallet address', 'error');
                 return;
@@ -1040,13 +1044,14 @@ export default {
                     'hash': hash 
                     })
                 }catch(error) {
-
+                  console.error('click error', error);
                 }
      
                 if (hash) {
                     this.onTransferSucceed(from, value, fromChainID, hash)
                 }
             } catch (error) {
+              console.error('transfer error', error);
                 this.$notify.error({
                     title: error.message,
                     duration: 3000,

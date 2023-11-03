@@ -136,11 +136,12 @@ import {
 import Middle from '../../util/middle/middle'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { BRAVE, METAMASK,TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
-import { onCopySuccess, onCopyError, isMobileDevice } from '../../util'
+import walletDispatchers, { BRAVE, METAMASK, TOKEN_POCKET_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
+import { onCopySuccess, onCopyError, isMobileDevice, isArgentApp, isBrowserApp } from '../../util';
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
 import { CHAIN_ID } from "../../config";
+import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
     walletDispatchers
@@ -257,6 +258,20 @@ export default {
                     },
                 ]
             } else {
+                if(isBrowserApp()) {
+                  return [
+                    {
+                      icon: 'wallet',
+                      title: 'Wallet',
+                      value: 'walletApp',
+                    },
+                    {
+                      icon: 'address',
+                      title: 'Address',
+                      value: starkAddress(),
+                    },
+                  ];
+                }
                 const isOkxwalletApp = window.ethereum?.isOkxWallet && this.checkIsMobileEnv();
                 return [
                     {
@@ -300,6 +315,10 @@ export default {
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()
+            if (walletConf === WALLETCONNECT && isBrowserApp()) {
+              walletConnectDispatcherOnInit(WALLETCONNECT);
+              return;
+            }
             if (walletConf.title === METAMASK && window.ethereum?.isOkxWallet && !this.checkIsMobileEnv()) {
                 Notification({
                     title: 'Error: MetaMask has not been installed.',
@@ -312,7 +331,6 @@ export default {
                 });
                 return;
             }
-            console.log(walletDispatchersOnInit, walletConf);
             walletDispatchersOnInit[walletConf.title]()
         },
         checkIsMobileEnv() {

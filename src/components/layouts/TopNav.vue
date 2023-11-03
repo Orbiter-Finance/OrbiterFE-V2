@@ -85,14 +85,17 @@ import {
   setPageSenderTab,
   showAddress,
   setStarkNetDialog,
-  setSelectWalletDialogVisible,
-} from '../../composition/hooks'
+  setSelectWalletDialogVisible, starkAddress,
+} from '../../composition/hooks';
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
 import { walletIsLogin } from '../../composition/walletsResponsiveData'
 import Middle from '../../util/middle/middle'
 import starknetLogoDark from '../../assets/v2/starknet-logo-dark.png'
 import starknetLogoLight from '../../assets/v2/starknet-logo-light.png'
+import { isBrowserApp } from "../../util";
+import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
+import { WALLETCONNECT } from "../../util/walletsDispatchers";
 
 export default {
   name: 'TopNav',
@@ -104,6 +107,9 @@ export default {
   },
   computed: {
     showAddress () {
+      if (isBrowserApp()) {
+        return starkAddress();
+      }
       return showAddress()
     },
     isLightMode () {
@@ -207,6 +213,10 @@ export default {
       Middle.$emit('connectWallet', true)
     },
     connectAWallet () {
+      if (isBrowserApp()) {
+        walletConnectDispatcherOnInit(WALLETCONNECT);
+        return
+      }
       setStarkNetDialog(false)
       setSelectWalletDialogVisible(true)
     },

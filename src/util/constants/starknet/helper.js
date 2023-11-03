@@ -14,6 +14,7 @@ import {
 import { store } from '../../../store'
 import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
 import { CHAIN_ID } from "../../../config";
+import { isArgentApp } from "../../env";
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha':
@@ -70,6 +71,7 @@ function refererUpper() {
 export async function connectStarkNetWallet() {
   if (!getStarknet().isConnected) {
     const refer = refererUpper()
+
     const isArgentX = refer === 'argent'.toUpperCase()
     const isBraavos = refer === 'braavos'.toUpperCase()
 
@@ -77,8 +79,8 @@ export async function connectStarkNetWallet() {
       order: isArgentX
         ? ['argentX']
         : isBraavos
-        ? ['braavos']
-        : ['argentX', 'braavos'],
+          ? ['braavos']
+          : ['argentX', 'braavos'],
     }
     const wallet = await getStarknetWallet(obj)
     if (!wallet) {
@@ -89,6 +91,7 @@ export async function connectStarkNetWallet() {
       .then((address) => !!address?.length)
 
     if (enabled) {
+      console.log("starknet address", getStarknet().selectedAddress);
       store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
       store.commit('updateStarkNetWalletName', wallet.name)
       store.commit('updateStarkNetWalletIcon', wallet.icon)
@@ -151,21 +154,21 @@ export async function sendTransfer(
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
   const networkID = getNetworkIdByChainId(chainID)
-  const network = networkID === 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkID === 1 ? 'mainnet-alpha' : 'goerli-alpha'
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
+  const provider = new Provider({ network })
   const tokenContract = new Contract(
     erc20Abi,
     tokenAddress,
-    getStarknet().provider
+    provider
   )
-
-  const allowance = await getAllowance(tokenContract, contractAddress)
+  const allowance = await getAllowance(tokenContract, contractAddress);
   const crossContract = new Contract(
-      starkNetCrossAbi,
-      contractAddress,
-      getStarknet().provider
+    starkNetCrossAbi,
+    contractAddress,
+    getStarknet().provider
   );
   const receiverAddress = makerAddress;
 
@@ -237,12 +240,13 @@ export async function getStarkTransferFee(
   amount,
   chainID
 ) {
+  if (!l1Address) return 0;
   l1Address = l1Address.toLowerCase()
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
 
   const networkID = getNetworkIdByChainId(chainID)
-  const network = networkID == 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkID == 1 ? 'mainnet-alpha' : 'goerli-alpha'
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
   const provider = new Provider({ network })

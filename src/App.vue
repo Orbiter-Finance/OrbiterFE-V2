@@ -46,10 +46,10 @@ import {
   performInitMobileAppWallet,
   isBraveWallet,
 } from './util/walletsDispatchers/utils'
-import { isMobileDevice } from './util'
+import { isMobileDevice, isBrowserApp } from './util';
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
-
+import { connectStarkNetWallet } from "./util/constants/starknet/helper";
 const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
@@ -112,6 +112,10 @@ export default {
     HeaderDialog,
   },
   async mounted() {
+    if (isBrowserApp()) {
+      await connectStarkNetWallet();
+    }
+
     if (isBraveBrowser()) {
       setIsBraveWallet(
         await window.ethereum
@@ -160,6 +164,7 @@ export default {
         matchInitDispatcher && matchInitDispatcher();
         return;
       }
+
       // When user connects a wallet, the information of this wallet will be added
       // to the localStorage, when user refreshes the page, the localStorage can help
       // us locate last wallet that user connected
