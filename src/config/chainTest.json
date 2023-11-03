@@ -325,6 +325,28 @@
   },
   {
     "api": {
+      "url": "https://api.zks.app/v3/5",
+      "key": ""
+    },
+    "chainId": "zkspace_test",
+    "networkId": "zkspace",
+    "internalId": "512",
+    "name": "ZKSpace(G)",
+    "nativeCurrency": {
+      "id": 0,
+      "name": "Ether",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [],
+    "watch": [
+      "api"
+    ],
+    "tokens": []
+  },
+  {
+    "api": {
       "url": "https://zksync2-testnet.zkscan.io/api",
       "key": ""
     },
