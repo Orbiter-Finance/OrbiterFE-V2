@@ -847,8 +847,7 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        // TODO Test
-        // makerConfigs = await getV2TradingPair(new Date().valueOf());
+        makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
       updateDealerId(dealerId);
@@ -1616,10 +1615,9 @@ export default {
         await walletConnectDispatcherOnInit(WALLETCONNECT);
         return;
       }
-      // TODO Test
-      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-      //   return;
-      // }
+      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        return;
+      }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();

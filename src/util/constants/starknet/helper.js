@@ -150,7 +150,6 @@ export async function sendTransfer(
   amount,
   chainID
 ) {
-  console.log('step 1')
   l1Address = l1Address.toLowerCase()
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
@@ -158,16 +157,13 @@ export async function sendTransfer(
   const network = networkID === 1 ? 'mainnet-alpha' : 'goerli-alpha'
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
-  console.log('step 2', 'l1Address', l1Address, 'tokenAddress', tokenAddress, 'makerAddress', makerAddress, 'contractAddress', contractAddress,'network',network);
   const provider = new Provider({ network })
   const tokenContract = new Contract(
     erc20Abi,
     tokenAddress,
     provider
   )
-  console.log('step 3');
   const allowance = await getAllowance(tokenContract, contractAddress);
-  console.log("allowance ====", allowance.toString());
   const crossContract = new Contract(
     starkNetCrossAbi,
     contractAddress,
@@ -196,7 +192,6 @@ export async function sendTransfer(
       );
       // const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
       // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
-      console.log("approve and transferERC20 Call ====", [approveTxCall, transferERC20TxCall]);
       tx = await getStarknet().account.execute([approveTxCall, transferERC20TxCall]);
     } else {
       const transferERC20TxCall = crossContract.populate(
@@ -209,7 +204,6 @@ export async function sendTransfer(
         ]
       );
       // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
-      console.log("getTransferERC20TxCall ====", transferERC20TxCall);
       tx = await getStarknet().account.execute(transferERC20TxCall);
     }
     return tx?.transaction_hash;
@@ -250,11 +244,8 @@ function getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount
  * @param {Contract} contractErc20
  */
 export async function getAllowance(contractErc20, contractAddress) {
-  console.log('step 4')
   const ownerAddress = getStarknet().selectedAddress
-  console.log('step 5', ownerAddress);
   const allowance = await contractErc20.allowance(ownerAddress, contractAddress)
-  console.log('step 6', allowance);
   return allowance.remaining.low
 }
 
