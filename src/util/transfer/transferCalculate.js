@@ -570,6 +570,7 @@ export default {
           zkspaceWithDrawFee * 10 ** selectMakerConfig.fromChain.decimals
         )
       } catch (error) {
+        console.error('zkspace withdraw error', error);
         throw new Error('zkspace withdraw error')
       }
     }

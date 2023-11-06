@@ -1764,6 +1764,7 @@ export default {
                   return;
                 }
               } catch (err) {
+                console.error(err);
                 util.showMessage(err.message, 'error');
                 return;
               }
@@ -1832,7 +1833,7 @@ export default {
         );
         this.refreshGas();
       } catch (error) {
-        console.warn('updateOriginGasCost error =', error.message);
+        console.error('updateOriginGasCost error =', error);
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,

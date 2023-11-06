@@ -210,6 +210,10 @@ export default {
       return this.$route.path === '/' || this.$route.path === '/history'
     },
     connectWallet () {
+      if (isBrowserApp()) {
+        walletConnectDispatcherOnInit(WALLETCONNECT);
+        return
+      }
       Middle.$emit('connectWallet', true)
     },
     connectAWallet () {

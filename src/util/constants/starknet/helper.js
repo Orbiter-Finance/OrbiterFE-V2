@@ -14,12 +14,12 @@ import {
 import { store } from '../../../store'
 import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
 import { CHAIN_ID } from "../../../config";
-import { isArgentApp } from "../../env";
+import { isArgentApp, isMobileDevice } from "../../env";
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha':
     '0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b',
-  'georli-alpha':
+  'goerli-alpha':
     '0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3',
 }
 
@@ -27,18 +27,18 @@ const L1_TO_L2_ADDRESSES = {
   '0x095d2918b03b2e86d68551dcf11302121fb626c9': {
     'mainnet-alpha':
       '0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940',
-    'georli-alpha':
+    'goerli-alpha':
       '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
   },
   '0x0043d60e87c5dd08c86c3123340705a1556c4719': {
     'mainnet-alpha': '',
-    'georli-alpha':
+    'goerli-alpha':
       '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
   },
   '0x80c67432656d59144ceff962e8faf8926599bcf8': {
     'mainnet-alpha':
       '0x07b393627bd514d2aa4c83e9f0c468939df15ea3c29980cd8e7be3ec847795f0',
-    'georli-alpha':
+    'goerli-alpha':
       '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
   },
 }
@@ -50,7 +50,7 @@ const GAS_ADDRESS = {
     privateKey:
       '0x53ea9a5da3c9c1232dddf771b4660d07ebea36bfba1ce3619f3e867cb1c49b0',
   },
-  'georli-alpha': {
+  'goerli-alpha': {
     address:
       '0x07a4ef69a3d7c647d8d99da0aa0f296c84a22148fa8665e9a52179418b8de54e',
     privateKey:
@@ -157,7 +157,6 @@ export async function sendTransfer(
   const network = networkID === 1 ? 'mainnet-alpha' : 'goerli-alpha'
 
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
-
   const provider = new Provider({ network })
   const tokenContract = new Contract(
     erc20Abi,
@@ -168,18 +167,43 @@ export async function sendTransfer(
   const crossContract = new Contract(
     starkNetCrossAbi,
     contractAddress,
-    getStarknet().provider
+    provider
   );
   const receiverAddress = makerAddress;
 
   try {
     let tx;
     if (amount.gt(allowance)) {
-      const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
-      const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      const approveTxCall = tokenContract.populate(
+        "approve",
+        [
+          contractAddress,
+          getUint256CalldataFromBN(String(UINT_256_MAX))
+        ]
+      );
+      const transferERC20TxCall = crossContract.populate(
+        "transferERC20",
+        [
+          tokenAddress,
+          receiverAddress,
+          getUint256CalldataFromBN(String(amount)),
+          l1Address
+        ]
+      );
+      // const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
+      // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       tx = await getStarknet().account.execute([approveTxCall, transferERC20TxCall]);
     } else {
-      const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      const transferERC20TxCall = crossContract.populate(
+        "transferERC20",
+        [
+          tokenAddress,
+          receiverAddress,
+          getUint256CalldataFromBN(String(amount)),
+          l1Address
+        ]
+      );
+      // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       tx = await getStarknet().account.execute(transferERC20TxCall);
     }
     return tx?.transaction_hash;
@@ -303,7 +327,7 @@ export async function getErc20Balance(
   if (!starknetAddress || !contractAddress) {
     return 0
   }
-  const network = networkId === 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkId === 1 ? 'mainnet-alpha' : 'goerli-alpha'
   const provider = new Provider({ network })
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
   const resp = await tokenContract.balanceOf(starknetAddress)

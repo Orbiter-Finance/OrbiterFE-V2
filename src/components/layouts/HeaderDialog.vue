@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <CommBtn
-                    :disabled="checkIsMobileEnv()"
+                    :disabled="checkIsMobileEnv() && !isWalletConnect()"
                     class="wallet-btn"
                     @click="disconnect"
                     >Disconnect</CommBtn
@@ -136,12 +136,15 @@ import {
 import Middle from '../../util/middle/middle'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { BRAVE, METAMASK, TOKEN_POCKET_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
-import { onCopySuccess, onCopyError, isMobileDevice, isArgentApp, isBrowserApp } from '../../util';
+import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
+import { onCopySuccess, onCopyError, isMobileDevice, isBrowserApp } from '../../util';
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
 import { CHAIN_ID } from "../../config";
-import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
+import {
+  ethereumClient,
+  walletConnectDispatcherOnInit
+} from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
     walletDispatchers
@@ -336,14 +339,21 @@ export default {
         checkIsMobileEnv() {
             return isMobileDevice();
         },
+        isWalletConnect() {
+            return compatibleGlobalWalletConf.value.walletType === WALLETCONNECT
+        },
         disconnect() {
-            if (this.checkIsMobileEnv()) return
+            if (this.checkIsMobileEnv() && !this.isWalletConnect()) return
             if (!this.isStarkNetDialog) {
                 this.closeSelectWalletDialog();
                 this.selectedWallet = {};
                 localStorage.setItem('selectedWallet', JSON.stringify({}));
                 this.$store.commit('updateLocalLogin', false);
                 localStorage.setItem('localLogin', false);
+                if (this.isWalletConnect()) {
+                    ethereumClient.disconnect()
+                    localStorage.setItem('wc@2:client:0.3//session', null);
+                 }
                 walletDispatchersOnDisconnect[
                     compatibleGlobalWalletConf.value.walletType
                     ]();

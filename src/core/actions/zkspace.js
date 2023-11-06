@@ -64,8 +64,8 @@ export default {
     }
   },
   getZKSpaceWithDrawGasFee: async function (localChainID, account) {
-    if (!account) {
-      return
+    if (!account || account === '0x') {
+      return 0
     }
     const ethPrice = transferDataState.ethPrice
       ? transferDataState.ethPrice
@@ -87,8 +87,10 @@ export default {
         const gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
         return Number(gasFee_fix)
       }
-      throw new Error('getZKSpaceWithDrawGasFee response.status not 200')
+      console.warn(account, 'getZKSpaceWithDrawGasFee response', response);
+      return 0;
     } catch (error) {
+      console.error('getZKSpaceWithDrawGasFee error', error);
       throw new Error(`getZKSpaceWithDrawGasFee error：${error.message}`)
     }
   },

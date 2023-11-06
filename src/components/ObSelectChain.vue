@@ -230,6 +230,7 @@ export default {
 
                     this.loadingIndex = -1
                 } catch (err) {
+                    console.log('obselect getChainInfo error', err)
                     this.$notify.error({
                         title: err.message,
                         duration: 3000,
