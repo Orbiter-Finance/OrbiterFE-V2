@@ -847,7 +847,8 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        makerConfigs = await getV2TradingPair(new Date().valueOf());
+        // TODO Test
+        // makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
       updateDealerId(dealerId);
@@ -1764,6 +1765,7 @@ export default {
                   return;
                 }
               } catch (err) {
+                console.error(err);
                 util.showMessage(err.message, 'error');
                 return;
               }
