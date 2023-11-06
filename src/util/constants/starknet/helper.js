@@ -50,7 +50,7 @@ const GAS_ADDRESS = {
     privateKey:
       '0x53ea9a5da3c9c1232dddf771b4660d07ebea36bfba1ce3619f3e867cb1c49b0',
   },
-  'georli-alpha': {
+  'goerli-alpha': {
     address:
       '0x07a4ef69a3d7c647d8d99da0aa0f296c84a22148fa8665e9a52179418b8de54e',
     privateKey:
@@ -311,7 +311,7 @@ export async function getErc20Balance(
   if (!starknetAddress || !contractAddress) {
     return 0
   }
-  const network = networkId === 1 ? 'mainnet-alpha' : 'georli-alpha'
+  const network = networkId === 1 ? 'mainnet-alpha' : 'goerli-alpha'
   const provider = new Provider({ network })
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
   const resp = await tokenContract.balanceOf(starknetAddress)
