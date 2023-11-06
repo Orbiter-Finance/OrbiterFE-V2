@@ -179,19 +179,43 @@ export async function sendTransfer(
   console.log('window.bitkeep', window.bitkeep);
   console.log('window.bitkeep.starknet', window.bitkeep.starknet);
   console.log('getStarknet().account', getStarknet().account)
-  const starknetAccount = window.ethereum.isBitKeep && window.bitkeep.starknet && isMobileDevice() ? window.bitkeep.starknet.account : getStarknet().account;
 
   try {
     let tx;
     if (amount.gt(allowance)) {
-      const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
-      const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      const approveTxCall = crossContract.populate(
+        "approve",
+        [
+          spender,
+          getUint256CalldataFromBN(String(UINT_256_MAX))
+        ]
+      );
+      const transferERC20TxCall = crossContract.populate(
+        "transferERC20",
+        [
+          tokenAddress,
+          receiverAddress,
+          getUint256CalldataFromBN(String(amount)),
+          l1Address
+        ]
+      );
+      // const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
+      // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       console.log("approve and transferERC20 Call ====", [approveTxCall, transferERC20TxCall]);
-      tx = await starknetAccount.execute([approveTxCall, transferERC20TxCall]);
+      tx = await getStarknet().account.execute([approveTxCall, transferERC20TxCall]);
     } else {
-      const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
+      const transferERC20TxCall = crossContract.populate(
+        "transferERC20",
+        [
+          tokenAddress,
+          receiverAddress,
+          getUint256CalldataFromBN(String(amount)),
+          l1Address
+        ]
+      );
+      // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       console.log("getTransferERC20TxCall ====", transferERC20TxCall);
-      tx = await starknetAccount.execute(transferERC20TxCall);
+      tx = await getStarknet().account.execute(transferERC20TxCall);
     }
     return tx?.transaction_hash;
   } catch (e) {
