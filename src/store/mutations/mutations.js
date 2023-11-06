@@ -4,38 +4,31 @@ import {
   updatelpAccountInfo,
   web3State,
 } from '../../composition/hooks'
+import { CHAIN_ID } from "../../config";
 
 export default {
   updateZKTokenList(state, obj) {
-    if (obj.chainID === 3) {
+    if (obj.chainID === CHAIN_ID.zksync) {
       state.zktokenList.mainnet = obj.tokenList
     }
-    if (obj.chainID === 33) {
+    if (obj.chainID === CHAIN_ID.zksync_test) {
       state.zktokenList.rinkeby = obj.tokenList
     }
   },
   updateZksTokenList(state, obj) {
-    if (obj.chainID === 12) {
+    if (obj.chainID === CHAIN_ID.zkspace) {
       state.zksTokenList.mainnet = obj.tokenList
     }
-    if (obj.chainID === 512) {
+    if (obj.chainID === CHAIN_ID.zkspace_test) {
       state.zksTokenList.rinkeby = obj.tokenList
     }
   },
   updateLpTokenList(state, obj) {
-    if (obj.chainID === 9) {
+    if (obj.chainID === CHAIN_ID.loopring) {
       state.lpTokenList.mainnet = obj.tokenList
     }
-    if (obj.chainID === 99) {
+    if (obj.chainID === CHAIN_ID.loopring_test) {
       state.lpTokenList.rinkeby = obj.tokenList
-    }
-  },
-  updateZk2TokenList(state, obj) {
-    if (obj.chainID === 14) {
-      state.zk2tokenList.mainnet = obj.tokenList
-    }
-    if (obj.chainID === 514) {
-      state.zk2tokenList.rinkeby = obj.tokenList
     }
   },
 
@@ -77,23 +70,8 @@ export default {
   updateProceedingUserTransferTimeStamp(state, obj) {
     state.proceeding.userTransfer.timeStamp = obj
   },
-  updateProceedingMakerTransferLocalChainID(state, obj) {
-    state.proceeding.makerTransfer.localChainID = obj
-  },
-  updateProceedingMakerTransferFrom(state, obj) {
-    state.proceeding.makerTransfer.from = obj
-  },
-  updateProceedingMakerTransferTo(state, obj) {
-    state.proceeding.makerTransfer.to = obj
-  },
-  updateProceedingMakerTransferAmount(state, obj) {
-    state.proceeding.makerTransfer.amount = obj
-  },
   updateProceedingMakerTransferTxid(state, obj) {
     state.proceeding.makerTransfer.txid = obj
-  },
-  updateProceedingMakerTransferTimeStamp(state, obj) {
-    state.proceeding.makerTransfer.timeStamp = obj
   },
   updateProceedState(state, proceedState) {
     state.proceedState = proceedState

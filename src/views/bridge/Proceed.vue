@@ -56,10 +56,7 @@
                         <span>{{ FromChainName }}</span>
                     </div>
                     <div class="chain">
-                        <svg-icon
-                            :iconName="showChainIcon()"
-                            style="width: 56px; height: 56px"
-                        ></svg-icon>
+                        <img style="width: 56px; height: 56px" :src="showChainIcon()">
                     </div>
                     <div class="tx from-tx" @click="goToExplorFrom">
                         <template v-if="!detailData">
@@ -118,10 +115,7 @@
                         <span>{{ toChainName }}</span>
                     </div>
                     <div class="chain">
-                        <svg-icon
-                            :iconName="showChainIcon(false)"
-                            style="width: 56px; height: 56px"
-                        ></svg-icon>
+                        <img style="width: 56px; height: 56px" :src="showChainIcon(false)">
                     </div>
                     <div class="tx to-tx" @click="goToExplorTo">
                         <template v-if="!detailData">
@@ -184,6 +178,7 @@ import {
     web3State,
     saveSenderPageWorkingState,
 } from '../../composition/hooks'
+import { CHAIN_ID } from "../../config";
 
 export default {
     name: 'Proceed',
@@ -240,7 +235,7 @@ export default {
             if (this.detailData) {
                 const { fromTxHash, fromChainID } = this.detailData
                 // immutablex
-                if (fromChainID == 8 || fromChainID == 88) {
+                if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
                     return `TransferId: ${fromTxHash}`
                 }
                 return `Tx:${util.shortAddress(fromTxHash)}`
@@ -252,8 +247,8 @@ export default {
             } else {
                 // immutablex
                 if (
-                    transferDataState.fromChainID == 8 ||
-                    transferDataState.fromChainID == 88
+                    transferDataState.fromChainID === CHAIN_ID.imx ||
+                    transferDataState.fromChainID === CHAIN_ID.imx_test
                 ) {
                     return `TransferId: ${proceeding.userTransfer.txid}`
                 }
@@ -267,7 +262,7 @@ export default {
                     return 'View on Explore'
                 } else {
                     // immutablex
-                    if (toChainID === 8 || toChainID === 88) {
+                    if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
                         return `TransferId: ${toTxHash}`
                     }
                     return `Tx:${util.shortAddress(toTxHash)}`
@@ -279,7 +274,7 @@ export default {
                 return 'View on Explore'
             } else {
                 // immutablex
-                if (toChainID === 8 || toChainID === 88) {
+                if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
                     return `TransferId: ${proceeding.makerTransfer.txid}`
                 }
                 return `Tx:${util.shortAddress(proceeding.makerTransfer.txid)}`
@@ -325,13 +320,9 @@ export default {
     methods: {
         showChainIcon(isFrom = true) {
             if (this.detailData) {
-                return this.$env.chainIcon[
-                    this.detailData[`${isFrom ? 'from' : 'to'}ChainID`]
-                ]
+                return util.netWorkLogo(this.detailData[`${ isFrom ? 'from' : 'to' }ChainID`]);
             }
-            return this.$env.chainIcon[
-                transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]
-            ]
+            return util.netWorkLogo(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]);
         },
         getChainId(isFrom = true) {
             let chainID
@@ -348,20 +339,19 @@ export default {
         async goToExplorFrom() {
             let url
             if (this.detailData) {
-                const { accountExploreUrl } = this.$env
                 const { fromChainID } = this.detailData
                 const txid = this.detailData.fromTxHash
-                url = this.$env.txExploreUrl[fromChainID] + txid
+                url = util.getTxExploreUrl(fromChainID) + txid
 
                 // ImmutableX don't have testnet browser
-                if (fromChainID == 88) {
-                    url = accountExploreUrl[fromChainID]
+                if (fromChainID === CHAIN_ID.imx) {
+                    url = util.getAccountExploreUrl(fromChainID)
                 }
 
                 // loopring
                 if (
-                    this.detailData.fromChainID == 9 ||
-                    this.detailData.fromChainID == 99
+                    this.detailData.fromChainID === CHAIN_ID.loopring ||
+                    this.detailData.fromChainID === CHAIN_ID.loopring_test
                 ) {
                     if (
                         this.detailData.blockNum != 0 &&
@@ -369,16 +359,10 @@ export default {
                         this.detailData.blockNum != undefined &&
                         this.detailData.indexInBlock != undefined
                     ) {
-                        url =
-                            this.$env.txExploreUrl[
-                                this.detailData.fromChainID
-                            ] +
+                        url = util.getTxExploreUrl(this.detailData.fromChainID) +
                             `${this.detailData.blockNum}-${this.detailData.indexInBlock}`
                     } else {
-                        url =
-                            this.$env.txExploreUrl[
-                                this.detailData.fromChainID
-                            ] +
+                        url = util.getTxExploreUrl(this.detailData.fromChainID) +
                             txid +
                             '-transfer'
                     }
@@ -388,29 +372,23 @@ export default {
             }
 
             const { fromChainID } = transferDataState
-            const { accountExploreUrl, txExploreUrl } = this.$env
             if (this.$store.state.proceedState === 1) {
                 let userAddress = web3State.coinbase
-                if (fromChainID == 4 || fromChainID == 44) {
+                if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
-                url = accountExploreUrl[fromChainID] + userAddress
+                url = util.getAccountExploreUrl(fromChainID) + userAddress
 
                 // ImmutableX
-                if (fromChainID == 8 || fromChainID == 88) {
-                    url = accountExploreUrl[fromChainID]
+                if (fromChainID === CHAIN_ID.imx) {
+                    url = util.getAccountExploreUrl(fromChainID)
                 }
             } else {
                 const txid = this.$store.state.proceeding.userTransfer.txid
-                url =
-                    txExploreUrl[fromChainID] +
-                    txid +
-                    (fromChainID == 9 || fromChainID == 99 ? '-transfer' : '')
 
-                // ImmutableX don't have testnet browser
-                if (fromChainID == 88) {
-                    url = accountExploreUrl[fromChainID]
-                }
+                url = util.getTxExploreUrl(fromChainID) +
+                    txid +
+                    (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test ? '-transfer' : '')
             }
             window.open(url, '_blank')
         },
@@ -422,19 +400,18 @@ export default {
                 data = transferDataState
             }
             const { toChainID, state } = data
-            const { accountExploreUrl, txExploreUrl } = this.$env
             let url = null
 
             const commHandler = () => {
                 let userAddress = web3State.coinbase
-                if (toChainID == 4 || toChainID == 44) {
+                if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
-                url = accountExploreUrl[toChainID] + userAddress
+                url = util.getAccountExploreUrl(toChainID) + userAddress
 
                 // ImmutableX
-                if (toChainID == 8 || toChainID == 88) {
-                    url = accountExploreUrl[toChainID]
+                if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
+                    url = util.getAccountExploreUrl(toChainID)
                 }
             }
 
@@ -443,17 +420,17 @@ export default {
                     commHandler()
                 } else {
                     const txid = this.detailData.toTxHash
-                    url = txExploreUrl[toChainID] + txid
+                    url = util.getTxExploreUrl(toChainID) + txid
 
                     // ImmutableX don't have testnet browser
-                    if (toChainID == 88) {
-                        url = accountExploreUrl[toChainID]
+                    if (toChainID === CHAIN_ID.imx) {
+                        url = util.getAccountExploreUrl(toChainID)
                     }
 
                     // loopring
                     if (
-                        this.detailData.toChainID == 9 ||
-                        this.detailData.toChainID == 99
+                        this.detailData.toChainID === CHAIN_ID.loopring ||
+                        this.detailData.toChainID === CHAIN_ID.loopring_test
                     ) {
                         if (
                             this.detailData.blockNum != 0 &&
@@ -461,16 +438,10 @@ export default {
                             this.detailData.blockNum != undefined &&
                             this.detailData.indexInBlock != undefined
                         ) {
-                            url =
-                                this.$env.txExploreUrl[
-                                    this.detailData.toChainID
-                                ] +
+                            url = util.getTxExploreUrl(this.detailData.toChainID) +
                                 `${this.detailData.blockNum}-${this.detailData.indexInBlock}`
                         } else {
-                            url =
-                                this.$env.txExploreUrl[
-                                    this.detailData.toChainID
-                                ] +
+                            url = util.getTxExploreUrl(this.detailData.toChainID) +
                                 txid +
                                 '-transfer'
                         }
@@ -481,15 +452,9 @@ export default {
                     commHandler()
                 } else {
                     const txid = this.$store.state.proceeding.makerTransfer.txid
-                    url =
-                        txExploreUrl[toChainID] +
+                    url = util.getTxExploreUrl(toChainID) +
                         txid +
-                        (toChainID == 9 || toChainID == 99 ? '-transfer' : '')
-
-                    // ImmutableX don't have testnet browser
-                    if (toChainID == 88) {
-                        url = accountExploreUrl[toChainID]
-                    }
+                        (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test ? '-transfer' : '')
                 }
             }
             window.open(url, '_blank')

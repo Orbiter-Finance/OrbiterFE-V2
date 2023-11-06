@@ -5,7 +5,7 @@ import {
   BIT_KEEP_APP,
   COINBASE_APP,
   BRAVE_APP,
-  LOOPRING_APP, ZERION_APP,
+  LOOPRING_APP, ZERION_APP, WALLETCONNECT,
 } from '../constants';
 import { isBraveWallet } from '../utils'
 
@@ -13,6 +13,11 @@ import { isBraveWallet } from '../utils'
 // chainIdTransfer maybe can be optimize
 const defaultChainIdTransfer = (chainId) => parseInt(chainId, 16)
 const standardMobileAppConf = [
+  {
+    walletType: WALLETCONNECT,
+    walletIsInstalledInvestigator: () => true,
+    chainIdTransfer: defaultChainIdTransfer,
+  },
   {
     walletType: IM_TOKEN_APP,
     walletIsInstalledInvestigator: (provider) => provider.isImToken,

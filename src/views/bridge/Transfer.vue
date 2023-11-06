@@ -1,336 +1,348 @@
 <template>
-  <div class="transfer-box">
-    <div class="top-area" style="position: relative">
-      <span class="title">Token</span>
-      <div v-if="!isNewVersion" class="symbol">
-        <ObSelect
-                :datas="fromTokenList"
-                v-model="selectFromToken"
-                @input="selectFromTokenChange"
-                @show="() => (isRaiseUpFromTokenListVisible = true)"
-        ></ObSelect>
+  <div>
+    <div class="transfer-box" v-loading="boxLoading" element-loading-background="rgba(0, 0, 0, 0)" v-if="!isEmpty">
+<!--      <div v-if="makerAddress" style="font-size: 15px;margin-bottom: 20px">{{ makerAddress }}</div>-->
+      <div class="top-area" style="position: relative">
+        <span class="title">Token</span>
+        <div v-if="!isNewVersion" class="symbol">
+          <ObSelect
+                  :datas="fromTokenList"
+                  v-model="selectFromToken"
+                  @input="selectFromTokenChange"
+                  @show="() => (isRaiseUpFromTokenListVisible = true)"
+          ></ObSelect>
+        </div>
+        <div v-if="!isV3" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+          <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
+          <el-switch :hidden="isLightMode"
+                     v-model="isNewVersion"
+                     active-color="#22DED7"
+                     inactive-color="#888888">
+          </el-switch>
+          <el-switch :hidden="!isLightMode"
+                     v-model="isNewVersion"
+                     active-color="#4890FE"
+                     inactive-color="#888888">
+          </el-switch>
+        </div>
       </div>
-      <div style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
-        <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
-        <el-switch :hidden="isLightMode"
-                v-model="isNewVersion"
-                active-color="#22DED7"
-                inactive-color="#888888">
-        </el-switch>
-        <el-switch :hidden="!isLightMode"
-                v-model="isNewVersion"
-                active-color="#4890FE"
-                inactive-color="#888888">
-        </el-switch>
-      </div>
-    </div>
-    <div class="from-area">
-      <div class="topItem">
-        <o-tooltip
-          v-if="
-            transferDataState.fromChainID === 4 ||
-            transferDataState.fromChainID === 44
+      <div class="from-area">
+        <div class="topItem">
+          <o-tooltip
+                  v-if="
+            transferDataState.fromChainID === CHAIN_ID.starknet ||
+            transferDataState.fromChainID === CHAIN_ID.starknet_test
           "
-        >
-          <template v-slot:titleDesc>
-            <span v-html="starkAddress"></span>
-          </template>
-          <div class="left">From</div>
-        </o-tooltip>
-        <div v-else class="left">From</div>
-        <div v-if="isLogin" class="right">
-          Balance:
-          <CommLoading
-            :hidden="!fromBalanceLoading"
-            style="left: 0.3rem; top: 0.2rem"
-            width="1.2rem"
-            height="1.2rem"
-          />
-          <span :hidden="fromBalanceLoading">{{ fromBalance }}</span>
+          >
+            <template v-slot:titleDesc>
+              <span v-html="starkAddress"></span>
+            </template>
+            <div class="left">From</div>
+          </o-tooltip>
+          <div v-else class="left">From</div>
+          <div v-if="isLogin" class="right">
+            Balance:
+            <CommLoading
+                    :hidden="!fromBalanceLoading"
+                    style="left: 0.3rem; top: 0.2rem"
+                    width="1.2rem"
+                    height="1.2rem"
+            />
+            <span :hidden="fromBalanceLoading">{{ fromBalance }}</span>
+          </div>
         </div>
-      </div>
-      <div class="bottomItem">
-        <div class="left" @click="changeFromChain">
-          <svg-icon
-            :iconName="showChainIcon()"
-            style="width: 24px; height: 24px; margin-right: 4px"
-          ></svg-icon>
-          <span>{{ showChainName() }}</span>
-          <SvgIconThemed v-if="fromChainIdList.length > 1" />
-        </div>
-        <div
-          style="display: flex; justify-content: center; align-items: center;height: 30px"
-        >
-          <input style="min-width: 50px"
-            type="text"
-            v-model="transferValue"
-            class="right"
-            @input="inputTransferValue()"
-            :maxlength="18"
-            :placeholder="
+        <div class="bottomItem">
+          <div class="left" @click="changeFromChain">
+            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon()">
+            <span>{{ showChainName() }}</span>
+            <SvgIconThemed v-if="fromChainIdList.length" />
+          </div>
+          <div
+                  style="display: flex; justify-content: center; align-items: center;height: 30px"
+          >
+            <input style="min-width: 50px"
+                   type="text"
+                   v-model="transferValue"
+                   class="right"
+                   @input="inputTransferValue()"
+                   :maxlength="18"
+                   :placeholder="
               userMinPrice ? (
               userMinPrice > fromBalance || userMinPrice >= userMaxPrice
                 ? `at least ${userMinPrice}`
                 : `${userMinPrice}~${userMaxPrice}`
                 ) : '0'
             "
-          />
-          <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
-          <div style="margin-left: 4px">
-            <ObSelect :hidden="!isNewVersion"
-                    :datas="fromTokenList"
-                    v-model="selectFromToken"
-                    @input="selectFromTokenChange"
-                    @show="() => (isRaiseUpFromTokenListVisible = true)"
-            ></ObSelect>
+            />
+            <el-button :disabled="fromBalanceLoading" @click="fromMax" class="maxBtn" style>Max</el-button>
+            <div style="margin-left: 4px">
+              <ObSelect :hidden="!isNewVersion"
+                        :datas="fromTokenList"
+                        v-model="selectFromToken"
+                        @input="selectFromTokenChange"
+                        @show="() => (isRaiseUpFromTokenListVisible = true)"
+              ></ObSelect>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <svg-icon
-      v-if="isShowExchangeIcon"
-      class="exchange-icon"
-      iconName="exchange"
-      @click.native="transfer_mid"
-    ></svg-icon>
-    <div
-      class="to-area"
-      :style="{ marginTop: isShowExchangeIcon ? '4px' : '-2px' }"
-    >
-      <div class="topItem">
-        <o-tooltip
-          v-if="
-            transferDataState.toChainID == 4 ||
-            transferDataState.toChainID == 44
+      <svg-icon
+              v-if="isShowExchangeIcon"
+              class="exchange-icon"
+              iconName="exchange"
+              @click.native="transfer_mid"
+      ></svg-icon>
+      <div
+              class="to-area"
+              :style="{ marginTop: isShowExchangeIcon ? '4px' : '-2px' }"
+      >
+        <div class="topItem">
+          <o-tooltip
+                  v-if="
+            transferDataState.toChainID == CHAIN_ID.starknet ||
+            transferDataState.toChainID == CHAIN_ID.starknet_test
           "
-        >
-          <template v-slot:titleDesc>
-            <span v-html="starkAddress"></span>
-          </template>
-          <div class="left">To</div>
-        </o-tooltip>
-        <div v-else class="left">To</div>
-        <div v-if="isLogin" class="right">
-          Balance:
-          <CommLoading
-            :hidden="!toBalanceLoading"
-            style="left: 0.3rem; top: 0.2rem"
-            width="1.2rem"
-            height="1.2rem"
-          />
-          <span :hidden="toBalanceLoading">{{ toBalance }}</span>
-        </div>
-      </div>
-      <div class="bottomItem">
-        <div class="left" @click="changeToChain">
-          <svg-icon
-            :iconName="showChainIcon(false)"
-            style="width: 24px; height: 24px; margin-right: 4px"
-          ></svg-icon>
-          <span>{{ showChainName(false) }}</span>
-          <SvgIconThemed v-if="toChainIdList.length > 1" />
-        </div>
-        <div style="display: flex; align-items: center;height: 30px" class="right">
-          <div v-if="toTokenList.length" style="margin-left: 4px">
-            <ObSelect v-if="isNewVersion"
-                    :datas="toTokenList"
-                    v-model="selectToToken"
-                    @input="selectToTokenChange"
-                    @show="() => (isRaiseUpToTokenListVisible = true)"
-            ></ObSelect>
-          </div>
-          <o-tooltip>
+          >
             <template v-slot:titleDesc>
-              <span v-html="toValueToolTip"></span>
+              <span v-html="starkAddress"></span>
             </template>
-            <HelpIcon style="margin-left: 0.5rem" size="sm" />
+            <div class="left">To</div>
           </o-tooltip>
-          <div class="right-value">{{ toValue }}</div>
+          <div v-else class="left">To</div>
+          <div v-if="isLogin" class="right">
+            Balance:
+            <CommLoading
+                    :hidden="!toBalanceLoading"
+                    style="left: 0.3rem; top: 0.2rem"
+                    width="1.2rem"
+                    height="1.2rem"
+            />
+            <span :hidden="toBalanceLoading">{{ toBalance }}</span>
+          </div>
+        </div>
+        <div class="bottomItem">
+          <div class="left" @click="changeToChain">
+            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon(false)">
+            <span>{{ showChainName(false) }}</span>
+            <SvgIconThemed v-if="toChainIdList.length" />
+          </div>
+          <div style="display: flex; align-items: center;height: 30px" class="right">
+            <div v-if="toTokenList.length" style="margin-left: 4px">
+              <ObSelect v-if="isNewVersion"
+                        :datas="toTokenList"
+                        v-model="selectToToken"
+                        @input="selectToTokenChange"
+                        @show="() => (isRaiseUpToTokenListVisible = true)"
+              ></ObSelect>
+            </div>
+            <o-tooltip>
+              <template v-slot:titleDesc>
+                <span v-html="toValueToolTip"></span>
+              </template>
+              <HelpIcon style="margin-left: 0.5rem" size="sm" />
+            </o-tooltip>
+            <div class="right-value">{{ toValue }}</div>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      v-if="isStarknet"
-      style="
+      <div
+              v-if="isStarknet"
+              style="
         font-size: 1.2rem;
         color: #78797d;
         margin-top: 1rem;
         text-align: left;
       "
-    >
-      <svg-icon
-        style="width: 1rem; height: 1rem; height: 1rem; margin-right: 0.2rem"
-        iconName="tips"
-      ></svg-icon>
-      Centralized transfer is provided currently and trustless transfer will be
-      launched soon.
-      <a
-        style="text-decoration: underline"
-        href="https://docs.orbiter.finance/"
-        target="__blank"
-        >More</a
       >
-    </div>
-    <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring">
-      <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
-        <input type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
-        <label for="checkbox"> Change Account </label>
+        <svg-icon
+                style="width: 1rem; height: 1rem; height: 1rem; margin-right: 0.2rem"
+                iconName="tips"
+        ></svg-icon>
+        Centralized transfer is provided currently and trustless transfer will be
+        launched soon.
+        <a
+                style="text-decoration: underline"
+                href="https://docs.orbiter.finance/"
+                target="__blank"
+        >More</a
+        >
       </div>
-      <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
-        <div data-v-59545920="" class="topItem">
-          <div class="left">Recipient's Address</div>
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet)">
+        <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
+          <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+          <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
+          <label v-else for="checkbox"> Recipient's Address </label>
         </div>
-        <input
-                @blur="updateSendBtnInfo"
-                type="text"
-                v-model="crossAddressReceipt"
-                :placeholder="`Recipient's ${chainName} Address`"
-        />
+        <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
+          <div data-v-59545920="" class="topItem">
+            <div class="left"></div>
+            <div v-if="isBrowserApp" @click="fillAddress">Autofill from wallet</div>
+          </div>
+          <input
+                  @blur="updateSendBtnInfo"
+                  type="text"
+                  v-model="crossAddressReceipt"
+                  :placeholder="`Recipient's ${chainName} Address`"
+          />
+        </div>
       </div>
-    </div>
-    <CommBtn
-      @click="sendTransfer"
-      :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
-      class="btn select-wallet-dialog"
-      :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
-    >
+      <CommBtn
+              @click="sendTransfer"
+              :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
+              class="btn select-wallet-dialog"
+              :style="`border-radius: 40px;${!isNewVersion || isCrossAddress ? '' : 'margin-top: 10px'}`"
+      >
       <span class="w700 s16" style="letter-spacing: 0.15rem">
         {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
-    </CommBtn>
-    <div class="info-box">
-      <div v-if="isCurrentAddress" class="info-item">
-        <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
-        <span class="warn">
+      </CommBtn>
+      <div class="info-box">
+        <div v-if="isWillUpdate" class="info-item">
+          <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
+          <span class="warn">
+          Configuration is updated after two minutes, there is a possibility of not being able to get back the money, it is recommended to trade after two minutes.
+          </span>
+        </div>
+        <div v-if="isCurrentAddress" class="info-item">
+          <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
+          <span class="warn">
           This is your address.
         </span>
-      </div>
-      <div v-if="isErrorAddress" class="info-item">
-        <svg-icon class="info-icon" iconName="info"></svg-icon>
-        <span class="red">
+        </div>
+        <div v-if="isErrorAddress" class="info-item">
+          <svg-icon class="info-icon" iconName="info"></svg-icon>
+          <span class="red">
           Address format error.
         </span>
-      </div>
-      <div v-if="isShowUnreachMinInfo" class="info-item">
-        <svg-icon class="info-icon" iconName="info"></svg-icon>
-        <span class="red">
+        </div>
+        <div v-if="isShowUnreachMinInfo" class="info-item">
+          <svg-icon class="info-icon" iconName="info"></svg-icon>
+          <span class="red">
           Less than the minimum transfer amount.
         </span>
-      </div>
-      <div v-if="isShowMax" class="info-item">
-        <svg-icon class="info-icon" iconName="info"></svg-icon>
-        <span class="red">
+        </div>
+        <div v-if="isShowMax" class="info-item">
+          <svg-icon class="info-icon" iconName="info"></svg-icon>
+          <span class="red">
           Makers provide {{ maxPrice }}
           {{ selectFromToken }} for liquidity.
         </span>
-      </div>
-      <div v-if="showSaveGas" class="gas-save info-item">
-        <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
-        <span class="border">Gas Fee Saved </span>
-        <span class="red">
+        </div>
+        <div v-if="showSaveGas" class="gas-save info-item">
+          <SvgIconThemed style="margin-right: 6px" icon="orbiter" size="sm" />
+          <span class="border">Gas Fee Saved </span>
+          <span class="red">
           Save
           <CommLoading
-            :hidden="!saveGasLoading"
-            style="margin: 0 1rem"
-            width="1rem"
-            height="1rem"
+                  :hidden="!saveGasLoading"
+                  style="margin: 0 1rem"
+                  width="1rem"
+                  height="1rem"
           />
           <span :hidden="saveGasLoading" style="margin-left: 0.4rem"
-            >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
+          >{{ gasSavingMin }} ~ {{ gasSavingMax }}</span
           >
         </span>
-        <o-tooltip placement="bottom">
-          <template v-slot:titleDesc>
-            <span v-html="gasFeeToolTip"></span>
-          </template>
-          <HelpIcon style="margin-left: 0.5rem" size="sm" />
-        </o-tooltip>
-      </div>
-      <div class="time-save info-item">
-        <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
-        <span class="border">
+          <o-tooltip placement="bottom">
+            <template v-slot:titleDesc>
+              <span v-html="gasFeeToolTip"></span>
+            </template>
+            <HelpIcon style="margin-left: 0.5rem" size="sm" />
+          </o-tooltip>
+        </div>
+        <div class="time-save info-item">
+          <SvgIconThemed style="margin-right: 6px" icon="clock" size="sm" />
+          <span class="border">
           Time Spend
           <CommLoading :hidden="!timeSpenLoading" width="1.2rem" height="1.2rem" />
           <span :hidden="timeSpenLoading">{{ timeSpent }}</span>
         </span>
-        <span class="red">
+          <span class="red">
           Save
           <CommLoading
-            :hidden="!saveTimeLoading"
-            style="margin: 0 1rem"
-            width="1rem"
-            height="1rem"
+                  :hidden="!saveTimeLoading"
+                  style="margin: 0 1rem"
+                  width="1rem"
+                  height="1rem"
           />
           <span :hidden="saveTimeLoading" style="margin-left: 0.4rem">
             {{ transferSavingTime }}
           </span>
         </span>
-        <o-tooltip placement="bottom">
-          <template v-slot:titleDesc>
-            <span v-html="timeSpenToolTip"></span>
-          </template>
-          <HelpIcon style="margin-left: 0.5rem" size="sm" />
-        </o-tooltip>
+          <o-tooltip placement="bottom">
+            <template v-slot:titleDesc>
+              <span v-html="timeSpenToolTip"></span>
+            </template>
+            <HelpIcon style="margin-left: 0.5rem" size="sm" />
+          </o-tooltip>
+        </div>
       </div>
-    </div>
 
-    <CommDialog ref="SelectFromChainPopupRef">
-      <div slot="PoperContent" style="width: 100%">
-        <ObSelectChain
-          :ChainData="fromChainIdList"
-          v-on:getChainInfo="getFromChainInfo"
-          v-on:closeSelect="closeFromChainPopupClick()"
-        />
-      </div>
-    </CommDialog>
-    <CommDialog ref="SelectToChainPopupRef">
-      <div slot="PoperContent" style="width: 100%">
-        <ObSelectChain
-          :ChainData="toChainIdList"
-          v-on:getChainInfo="getToChainInfo"
-          v-on:closeSelect="closeToChainPopupClick()"
-        />
-      </div>
-    </CommDialog>
-    <RaiseUpSelect
-      :iconType="'img'"
-      :visible="isRaiseUpFromTokenListVisible"
-      @hiden="() => (isRaiseUpFromTokenListVisible = false)"
-      :datas="fromTokenList"
-      :value="selectFromToken"
-      @input="selectFromTokenChange"
-      :keyMaps="{ value: 'token', label: 'token' }"
-    />
-    <RaiseUpSelect
-            :iconType="'img'"
-            :visible="isRaiseUpToTokenListVisible"
-            @hiden="() => (isRaiseUpToTokenListVisible = false)"
-            :datas="toTokenList"
-            :value="selectToToken"
-            @input="selectToTokenChange"
-            :keyMaps="{ value: 'token', label: 'token' }"
-    />
+      <CommDialog ref="SelectFromChainPopupRef">
+        <div slot="PoperContent" style="width: 100%">
+          <ObSelectChain
+                  :ChainData="fromChainIdList"
+                  v-on:getChainInfo="getFromChainInfo"
+                  v-on:closeSelect="closeFromChainPopupClick()"
+          />
+        </div>
+      </CommDialog>
+      <CommDialog ref="SelectToChainPopupRef">
+        <div slot="PoperContent" style="width: 100%">
+          <ObSelectChain
+                  :ChainData="toChainIdList"
+                  v-on:getChainInfo="getToChainInfo"
+                  v-on:closeSelect="closeToChainPopupClick()"
+          />
+        </div>
+      </CommDialog>
+      <RaiseUpSelect
+              :iconType="'img'"
+              :visible="isRaiseUpFromTokenListVisible"
+              @hiden="() => (isRaiseUpFromTokenListVisible = false)"
+              :datas="fromTokenList"
+              :value="selectFromToken"
+              @input="selectFromTokenChange"
+              :keyMaps="{ value: 'token', label: 'token' }"
+      />
+      <RaiseUpSelect
+              :iconType="'img'"
+              :visible="isRaiseUpToTokenListVisible"
+              @hiden="() => (isRaiseUpToTokenListVisible = false)"
+              :datas="toTokenList"
+              :value="selectToToken"
+              @input="selectToTokenChange"
+              :keyMaps="{ value: 'token', label: 'token' }"
+      />
 
-    <CommTipDialog ref="TipPopupRef">
-      <div slot="PoperContent" class="dialog">
-        <div class="dialog-box">
-          <div @click="closeTipPopup" class="icon">
-            <i class="el-icon-close"></i>
-          </div>
-          <div class="title">
-            Unlock more Orbiter identities?
-          </div>
-          <div class="content">
-            Explore more transactions on Orbiter Finance Mainnet Have fun!
-          </div>
-          <div class="bottom">
+      <CommTipDialog ref="TipPopupRef">
+        <div slot="PoperContent" class="dialog">
+          <div class="dialog-box">
+            <div @click="closeTipPopup" class="icon">
+              <i class="el-icon-close"></i>
+            </div>
+            <div class="title">
+              Interested in starting your voyage here?
+            </div>
+            <div class="content">
+              Go experience more transactions on Orbiter Finance mainnet.
+              Have fun!
+            </div>
+            <div class="bottom">
             <span class="btn" @click="openUrl">
               Let's Go
             </span>
+            </div>
           </div>
         </div>
+      </CommTipDialog>
+    </div>
+    <div v-if="isEmpty">
+      <img style="margin:25px" src="../../assets/data/empty.png" width="200" />
+      <div>
+        Sorry, we can't find the corresponding configuration for dealer.
       </div>
-    </CommTipDialog>
+    </div>
   </div>
 </template>
 
@@ -350,14 +362,14 @@ import transferCalculate from '../../util/transfer/transferCalculate'
 import Middle from '../../util/middle/middle'
 import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
-import config from '../../config'
+import config, { CHAIN_ID } from '../../config';
 import { exchangeToCoin, exchangeToUsd, getRates } from '../../util/coinbase';
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
 
 import {
   connectStarkNetWallet
-} from '../../util/constants/starknet/helper'
+} from '../../util/constants/starknet/helper';
 import { asyncGetExchangeToUsdRate } from '../../util/coinbase'
 import { RaiseUpSelect } from '../../components'
 import {
@@ -380,12 +392,14 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
-  updateTransferExt, curPageStatus,
+  updateTransferExt, curPageStatus, updateDealerId,
 } from '../../composition/hooks';
-import { isDev, isProd } from "../../util";
-import orbiterApiAx from "../../common/orbiterApiAx";
-import openApiAx from "../../common/openApiAx";
+import { isArgentApp, isBrowserApp, isDev } from "../../util";
+import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
+import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
+import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 let makerConfigs = config.v1MakerConfigs;
+let v1MakerConfigs = config.v1MakerConfigs;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
@@ -403,9 +417,15 @@ export default {
   },
   data() {
     return {
+      makerAddress: '',
+
       isWhiteWallet: '',
       isNewVersion: false,
       isLoopring: false,
+      isBrowserApp: false,
+      isV3: false,
+      isEmpty: false,
+      isWillUpdate: false,
 
       isCrossAddress: false,
       isRaiseUpFromTokenListVisible: false,
@@ -419,8 +439,9 @@ export default {
       originGasLoading: false,
       fromBalanceLoading: false,
       toBalanceLoading: false,
-
       saveTimeLoading: false,
+
+      boxLoading: false,
 
       // balanceMap: {},
       originGasCost: 0,
@@ -456,6 +477,12 @@ export default {
     };
   },
   computed: {
+    selectStarknet() {
+      return util.isStarkNet();
+    },
+    CHAIN_ID() {
+      return CHAIN_ID;
+    },
     isLightMode() {
       return this.$store.state.themeMode === 'light';
     },
@@ -469,19 +496,19 @@ export default {
       if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
         return false;
       }
-      if (transferDataState.toChainID === 4 || transferDataState.toChainID === 44) {
+      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
         return false;
       }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
-      if (!this.isNewVersion || this.selectFromToken === this.selectToToken) {
+      if (!(isArgentApp() && util.isStarkNet()) && (!this.isNewVersion || this.selectFromToken === this.selectToToken)) {
         return false;
       }
-      if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
+      if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
         return false;
       }
-      if (transferDataState.toChainID === 4 || transferDataState.toChainID === 44) {
+      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -489,7 +516,7 @@ export default {
       if (isCheck) {
         this.sendBtnInfo.disabled = 'disabled';
       } else if(this.sendBtnInfo.disabled === 'disabled'){
-        this.updateTransferInfo()
+        // this.updateTransferInfo()
       }
       return isCheck;
     },
@@ -526,7 +553,7 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === 4 || toChainID === 44 || toChainID === 11 || toChainID === 511;
+      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -550,8 +577,12 @@ export default {
       let { token, tokens, amount, fixed } = query;
       amount = new BigNumber(amount);
       tokens = !tokens ? [] : tokens.split(',');
-      let source = makerConfigs.find(item => item.fromChain.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.id || 0;
-      let dest = makerConfigs.find(item => item.toChain.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.id || 0;
+      // if (!makerConfigs || !makerConfigs.length) {
+      //   return;
+      // }
+
+      let source = makerConfigs.find(item => item?.fromChain?.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.chainId || 0;
+      let dest = makerConfigs.find(item => item?.toChain?.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.chainId || 0;
       const getMapChainIds = (chainNames, isDest) => {
         const chainIds = [];
         if (!chainNames) {
@@ -559,8 +590,8 @@ export default {
         }
         for (const chainName of chainNames.split(',')) {
           const chainId = isDest ?
-                  makerConfigs.find(item => item.toChain.name === chainName)?.toChain?.id || 0 :
-                  makerConfigs.find(item => item.fromChain.name === chainName)?.fromChain?.id || 0;
+                  makerConfigs.find(item => item.toChain.name === chainName)?.toChain?.chainId || 0 :
+                  makerConfigs.find(item => item.fromChain.name === chainName)?.fromChain?.chainId || 0;
           if (chainId) {
             chainIds.push(chainId);
           }
@@ -673,7 +704,10 @@ export default {
     },
     timeSpent() {
       // const { selectMakerConfig } = transferDataState;
-      // return selectMakerConfig.spendTime
+      // return selectMakerConfig?.spentTime ? `${selectMakerConfig.spentTime}s` : transferCalculate.transferSpentTime(
+      //         transferDataState.fromChainID,
+      //         transferDataState.toChainID
+      // );
       return transferCalculate.transferSpentTime(
               transferDataState.fromChainID,
               transferDataState.toChainID
@@ -701,7 +735,7 @@ export default {
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
     },
-    isWhiteWallet(){
+    isWhiteWallet() {
       this.refreshConfig();
     },
     isNewVersion() {
@@ -742,7 +776,13 @@ export default {
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
-        this.crossAddressReceipt = newValue;
+        if (isArgentApp()) {
+          if ([CHAIN_ID.starknet, CHAIN_ID.starknet].includes(transferDataState.toChainID)) {
+            this.crossAddressReceipt = newValue;
+          }
+        } else {
+          this.crossAddressReceipt = newValue;
+        }
         this.updateTransferInfo();
       }
     },
@@ -752,6 +792,14 @@ export default {
     },
   },
   async mounted() {
+    this.boxLoading = true;
+    try {
+      await this.syncV3Data(1);
+    } catch (e) {
+      console.error('syncV3Data error', e);
+    }
+    this.boxLoading = false;
+
     this.openApiFilter();
 
     this.initWhiteList()
@@ -776,11 +824,6 @@ export default {
     updateCrossAddressReceipt(this.crossAddressReceipt);
 
     this.rates = await getRates('ETH');
-
-    // const self = this;
-    // this.cronList.push(setInterval(() => {
-    //   self.updateTransferInfo();
-    // }, 30 * 1000));
   },
   onBeforeUnmount() {
     for (const cron of this.cronList) {
@@ -791,24 +834,80 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async fillAddress() {
+      if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.fromChainID)) {
+        const account = await walletConnectDispatcherOnInit(WALLETCONNECT);
+        if (account?.address) {
+          this.crossAddressReceipt = account.address;
+        }
+      } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.toChainID)) {
+        this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+      }
+    },
+    async syncV3Data(first) {
+      const dealerId = this.$route?.query?.dealerId;
+      if (!dealerId) {
+        makerConfigs = await getV2TradingPair(new Date().valueOf());
+        return;
+      }
+      updateDealerId(dealerId);
+      if (first) this.sendBtnInfo.disabled = 'disabled';
+      try {
+        const self = this;
+        const ruleCache = localStorage.getItem(`${ dealerId }_rule`);
+        if (!ruleCache) {
+          await self.getNetWorkRule(dealerId);
+        } else {
+          makerConfigs = JSON.parse(ruleCache);
+          setTimeout(async () => {
+            await self.getNetWorkRule(dealerId);
+            self.isEmpty = !makerConfigs.length;
+            self.isV3 = true;
+          }, 0);
+        }
+        this.isEmpty = !makerConfigs.length;
+        this.isV3 = true;
+      } catch (e) {
+        console.error(e);
+        makerConfigs = v1MakerConfigs;
+      }
+    },
+    async getNetWorkRule(dealerId) {
+      const ruleRes = await getMdcRuleLatest(dealerId);
+      if (!ruleRes?.ruleList || !ruleRes.ruleList.length) return [];
+      const { ruleList, updateTime } = ruleRes;
+      if (JSON.stringify(makerConfigs) !== JSON.stringify(ruleList)) {
+        makerConfigs = ruleList;
+        this.updateTransferInfo();
+      }
+      localStorage.setItem(`${ dealerId }_rule`, JSON.stringify(ruleList));
+
+      const self = this;
+      const lastUpdateDiff = Math.max(updateTime - new Date().valueOf() + 2000, 0);
+      util.log(`update after ${ Math.floor(lastUpdateDiff / 1000) }s`);
+      setTimeout(async () => {
+        await self.syncV3Data();
+      }, lastUpdateDiff);
+      return ruleList;
+    },
     async openApiFilter() {
       try {
-        const banList = await openApiAx.get('/frontend/net');
+        const banList = await requestOpenApi(RequestMethod.offline, []);
         if (Array.isArray(banList)) {
           this.banList = banList;
         }
-      }catch(error){
+      } catch (error) {
         console.error('openApiFilter error', error);
       }
 
       const self = this;
       const cron = setInterval(async () => {
         try {
-          const banList = await openApiAx.get('/frontend/net');
+          const banList = await requestOpenApi(RequestMethod.offline, []);
           if (Array.isArray(banList)) {
             self.banList = banList;
           }
-        }catch(error) {
+        } catch (error) {
         }
       }, 30000);
       this.cronList.push(cron);
@@ -881,24 +980,15 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
-    refreshConfig(){
+    refreshConfig() {
+      if (this.isV3) {
+        return;
+      }
       if (this.isNewVersion) {
         makerConfigs = config.makerConfigs;
       } else {
         makerConfigs = config.v1MakerConfigs;
       }
-      // if (!this.isWhiteWallet) {
-      //   makerConfigs = makerConfigs.filter(item => {
-      //     return item.fromChain.id !== 514 && item.fromChain.id !== 14 && item.toChain.id !== 514 && item.toChain.id !== 14;
-      //   });
-      //   const { fromChainID, toChainID } = transferDataState;
-      //   if (fromChainID === 514 || fromChainID === 14) {
-      //     this.updateTransferInfo({ fromChainID: this.fromChainIdList[0] });
-      //   }
-      //   if (toChainID === 514 || toChainID === 14) {
-      //     this.updateTransferInfo({ toChainID: this.toChainIdList[0] });
-      //   }
-      // }
       this.updateTransferInfo();
     },
     async initWhiteList() {
@@ -927,9 +1017,10 @@ export default {
         fromChainID = oldToChainID;
       }
 
-      this.isLoopring = fromChainID === 9 || fromChainID === 99;
+      this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
+      this.isBrowserApp = isBrowserApp();
 
-      if (fromCurrency === toCurrency && !this.isLoopring) {
+      if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
         if (isCrossAddress && util.isExecuteXVMContract()) {
           this.$notify.warning({
             title: `Not supported yet Change Account.`,
@@ -939,22 +1030,23 @@ export default {
         this.isCrossAddress = false;
       }
 
-      const { tokens, token, source, dest } = this.queryParams;
-      fromCurrency = fromCurrency || token;
-      const fromTokens = tokens;
+      const { query } = this.$route;
+      const source = makerConfigs.find(item => item?.fromChain?.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.chainId || 0;
+      const dest = makerConfigs.find(item => item?.toChain?.name.toLowerCase() === query?.dest?.toLowerCase())?.toChain?.chainId || 0;
+      fromCurrency = fromCurrency || query.token;
       const fromChainIdList = Array.from(new Set(
-              makerConfigs.map(item => item.fromChain.id)
+              makerConfigs.map(item => item.fromChain.chainId)
       )).sort(function (a, b) {
         return a - b;
       });
-      fromChainID = fromChainID || (source && fromChainIdList.find(item => item === +source) ?
-              +source :
+      fromChainID = fromChainID || (source && fromChainIdList.find(item => String(item) === String(source)) ?
+              source :
               fromChainIdList[0]);
       let toChainIdList = Array.from(new Set(
               makerConfigs
                       .map(item => {
-                        if (item.fromChain.id === fromChainID) {
-                          return item.toChain.id;
+                        if (item.fromChain.chainId === fromChainID) {
+                          return item.toChain.chainId;
                         }
                       })
                       .filter(item => item)
@@ -962,8 +1054,8 @@ export default {
         return a - b;
       });
 
-      toChainID = toChainID || (dest && toChainIdList.find(item => item === +dest) ?
-              +dest :
+      toChainID = toChainID || (dest && toChainIdList.find(item => item === dest) ?
+              dest :
               toChainIdList[0]);
       if (toChainIdList.indexOf(toChainID) === -1) {
         toChainID = toChainIdList.indexOf(dest) > -1 ?
@@ -972,7 +1064,7 @@ export default {
       }
 
       // Reverse path
-      if (makerConfigs.find(item => item.toChain.id === fromChainID) && makerConfigs.find(item => item.fromChain.id === toChainID)) {
+      if (makerConfigs.find(item => item.toChain.chainId === fromChainID) && makerConfigs.find(item => item.fromChain.chainId === toChainID)) {
         toChainIdList.push(fromChainID);
         toChainIdList = toChainIdList.sort(function (a, b) {
           return a - b;
@@ -996,31 +1088,35 @@ export default {
         toChainIdList.splice(selectedToChainIdIndex, 1);
       }
 
-      let makerConfigList = makerConfigs.filter(item => item.fromChain.id === fromChainID && item.toChain.id === toChainID);
-      if (fromTokens.length) {
-        makerConfigList = makerConfigList.filter(item =>
-                fromTokens.find((it) => util.equalsIgnoreCase(it, item.fromChain.symbol))
-        );
-      }
+      let makerConfigList = makerConfigs.filter(item => item.fromChain.chainId === fromChainID && item.toChain.chainId === toChainID);
 
-      const fromTokenList = [];
+      let fromTokenList = [];
       const toTokenList = [];
       makerConfigList.forEach(item => {
         if (!fromTokenList.find(it => it.token === item.fromChain.symbol)) {
-          fromTokenList.push({
-            icon: config.getTokenIcon(item.fromChain.symbol),
-            token: item.fromChain.symbol,
-            amount: 0,
-          });
+            if (item.fromChain.symbol) {
+                fromTokenList.push({
+                    icon: util.tokenLogo(item.fromChain.symbol),
+                    token: item.fromChain.symbol,
+                    amount: 0,
+                });
+            }
         }
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
-          toTokenList.push({
-            icon: config.getTokenIcon(item.toChain.symbol),
-            token: item.toChain.symbol,
-            amount: 0,
-          });
+            if (item.toChain.symbol) {
+                toTokenList.push({
+                    icon: util.tokenLogo(item.toChain.symbol),
+                    token: item.toChain.symbol,
+                    amount: 0,
+                });
+            }
         }
       });
+      if (fromTokenList.length) {
+        fromTokenList = fromTokenList.sort(function (a, b) {
+          return a.token !== 'ETH';
+        });
+      }
       if (fromTokenList.length && !fromTokenList.find((item) => item.token === fromCurrency)) {
         fromCurrency = fromTokenList[0].token;
         if (oldFromChainID !== fromChainID) this.selectFromToken = fromTokenList[0].token;
@@ -1029,7 +1125,7 @@ export default {
       makerConfigList.forEach(item => {
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
           toTokenList.push({
-            icon: config.getTokenIcon(item.toChain.symbol),
+            icon: util.tokenLogo(item.toChain.symbol),
             token: item.toChain.symbol,
             amount: 0,
           });
@@ -1066,17 +1162,21 @@ export default {
       updateTransferToCurrency(toCurrency);
 
       this.isShowExchangeIcon = !!makerConfigs.find(item =>
-              item.fromChain.id === toChainID &&
+              item.fromChain.chainId === toChainID &&
               item.fromChain.symbol === toCurrency &&
-              item.toChain.id === fromChainID &&
+              item.toChain.chainId === fromChainID &&
               item.toChain.symbol === fromCurrency);
 
       const makerConfig = makerConfigs.find(item =>
-              item.fromChain.id === fromChainID &&
-              item.toChain.id === toChainID &&
+              item.fromChain.chainId === fromChainID &&
+              item.toChain.chainId === toChainID &&
               item.fromChain.symbol === fromCurrency &&
               item.toChain.symbol === toCurrency
       );
+      if (!makerConfig) {
+        console.error(`can't find makerConfig`, fromChainID, toChainID, fromCurrency, toCurrency);
+        return;
+      }
       const makerConfigInfo = JSON.parse(JSON.stringify(makerConfig));
       if (fromCurrency === toCurrency && isCrossAddress && makerConfigInfo.crossAddress?.recipient) {
         makerConfigInfo.recipient = makerConfigInfo.crossAddress?.recipient;
@@ -1084,7 +1184,15 @@ export default {
         makerConfigInfo.tradingFee = makerConfigInfo.crossAddress?.tradingFee;
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
+      this.makerAddress = makerConfigInfo.recipient;
+      this.userMinPrice = makerConfigInfo.fromChain.minPrice || 0;
+      this.userMaxPrice = makerConfigInfo.fromChain.maxPrice || 0;
       updateTransferMakerConfig(makerConfigInfo);
+      if (makerConfig.ebcId && makerConfig.nextUpdateTime) {
+        this.isWillUpdate = makerConfig.nextUpdateTime - new Date().valueOf() < 1000 * 60 * 2;
+      } else {
+        this.isWillUpdate = false;
+      }
       this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(3)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
@@ -1108,9 +1216,6 @@ export default {
         this.updateExchangeToUsdPrice();
       }
       await this.refreshUserBalance();
-      if (fromChainID !== oldFromChainID || fromCurrency !== oldFromCurrency) {
-        this.userMinPrice = makerConfigInfo?.fromChain?.minPrice || 0;
-      }
       this.updateRoutes(oldFromChainID, oldToChainID, oldFromCurrency);
       await this.updateSendBtnInfo();
     },
@@ -1252,21 +1357,21 @@ export default {
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === 4 || oldToChainID === 44 || oldToChainID === 11 || oldToChainID === 511) {
+      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test) {
         if (this.isCrossAddress) this.isCrossAddress = false;
         if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
-      if (fromChainID === 4 || fromChainID === 44 || toChainID === 4 || toChainID === 44) {
+      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
         const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
         if (!starkNetIsConnect || !starkNetAddress) {
           await connectStarkNetWallet();
           if (!web3State.starkNet.starkIsConnected && !web3State.starkNet.starkNetAddress) {
             const makerConfig = makerConfigs[0];
-            this.updateTransferInfo({ fromChainID: makerConfig.fromChain.id });
+            this.updateTransferInfo({ fromChainID: makerConfig.fromChain.chainId });
             return;
           }
         }
-        if (toChainID === 4 || toChainID === 44) {
+        if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
           this.isCrossAddress = true;
           this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
           updateTransferExt({
@@ -1278,15 +1383,17 @@ export default {
           });
         }
       }
-      if (fromChainID === 9 || fromChainID === 99 || toChainID === 9 || toChainID === 99) {
+      if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test || toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
         if (walletIsLogin.value) {
           this.inputTransferValue();
         }
       }
-      if (oldFromChainID !== fromChainID && (fromChainID === 9 || fromChainID === 99)) {
+      if (oldFromChainID !== fromChainID &&
+        (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) ||
+        (isBrowserApp() && (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test))) {
         this.isCrossAddress = true;
       }
-      if (toChainID !== oldToChainID && (toChainID === 11 || toChainID === 511)) {
+      if (toChainID !== oldToChainID && (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test)) {
         if (!this.isCrossAddress) this.isCrossAddress = true;
         const self = this;
         if (self.crossAddressReceipt !== compatibleGlobalWalletConf.value.walletPayload.walletAddress){
@@ -1308,7 +1415,7 @@ export default {
         return '0';
       }
       let transferGasFee = (await transferCalculate.getTransferGasLimit(
-              fromChain.id,
+              fromChain.chainId,
               selectMakerConfig.recipient,
               fromChain.tokenAddress
       )) || 0;
@@ -1316,7 +1423,7 @@ export default {
       let opBalance = 10 ** -avalibleDigit;
       let preGasDigit = 3;
       let preGas = 0;
-      if ([3, 33, 1, 5, 2, 22, 7, 77, 16, 516].includes(fromChain.id)) {
+      if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
         preGas = 10 ** -preGasDigit;
       }
       let userBalance = new BigNumber(this.fromBalance)
@@ -1331,10 +1438,10 @@ export default {
               ? new BigNumber(fromChain.maxPrice)
               : userMax;
       if ((
-              fromChain.id === 9 ||
-              fromChain.id === 99 ||
-              toChain.id === 9 ||
-              toChain.id === 99) &&
+              fromChain.chainId === CHAIN_ID.loopring ||
+              fromChain.chainId === CHAIN_ID.loopring_test ||
+              toChain.chainId === CHAIN_ID.loopring ||
+              toChain.chainId === CHAIN_ID.loopring_test) &&
               fromChain.decimals === 18
       ) {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
@@ -1382,7 +1489,7 @@ export default {
     },
     showChainIcon(isFrom = true) {
       const localChainID = transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`];
-      return this.$env.chainIcon[localChainID];
+      return util.netWorkLogo(localChainID);
     },
     selectFromTokenChange(val) {
       this.selectFromToken = val;
@@ -1411,13 +1518,13 @@ export default {
       this.selectToToken = fromCurrency;
     },
     changeFromChain() {
-      if (this.fromChainIdList.length <= 1) {
+      if (!this.fromChainIdList.length) {
         return;
       }
       this.showFromChainPopupClick();
     },
     changeToChain() {
-      if (this.toChainIdList.length <= 1) {
+      if (!this.toChainIdList.length) {
         return;
       }
       this.showToChainPopupClick();
@@ -1479,7 +1586,7 @@ export default {
       const { selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
-      if (fromChain.id === 9 || fromChain.id === 99 || toChain.id === 9 || toChain.id === 99) {
+      if (fromChain.chainId === CHAIN_ID.loopring || fromChain.chainId === CHAIN_ID.loopring_test || toChain.chainId === CHAIN_ID.loopring || toChain.chainId === CHAIN_ID.loopring_test) {
         this.transferValue = fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
@@ -1501,9 +1608,30 @@ export default {
       //   });
       //   return;
       // }
+      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+
+      const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
+      if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
+        await walletConnectDispatcherOnInit(WALLETCONNECT);
+        return;
+      }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         return;
       }
+      // if (selectMakerConfig.ebcId) {
+      //   try {
+      //     const receiveValue = await transferCalculate.calEBCValue();
+      //     util.log('ebc receive value', +receiveValue, 'toValue', +this.toValue);
+      //     transferDataState.ebcValue = new BigNumber(receiveValue).dividedBy(10 ** selectMakerConfig.toChain.decimals).toString();
+      //   } catch (e) {
+      //     console.error(e);
+      //     this.$notify.error({
+      //       title: `EBC validation failure`,
+      //       duration: 3000,
+      //     });
+      //     return;
+      //   }
+      // }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,
@@ -1511,12 +1639,11 @@ export default {
         });
         return;
       }
-      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
       try {
         if (this.banList) {
           for (const ban of this.banList) {
             if (ban.source && ban.dest) {
-              if (fromChainID === ban.source && toChainID === ban.dest) {
+              if (util.getInternalIdByChainId(fromChainID) === ban.source && util.getInternalIdByChainId(toChainID) === ban.dest) {
                 this.$notify.error({
                   title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                   duration: 3000,
@@ -1526,7 +1653,7 @@ export default {
               continue;
             }
             if (ban.source) {
-              if (fromChainID === ban.source) {
+              if (util.getInternalIdByChainId(fromChainID) === ban.source) {
                 this.$notify.error({
                   title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
                   duration: 3000,
@@ -1536,7 +1663,7 @@ export default {
               continue;
             }
             if (ban.dest) {
-              if (toChainID === ban.dest) {
+              if (util.getInternalIdByChainId(toChainID) === ban.dest) {
                 this.$notify.error({
                   title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                   duration: 3000,
@@ -1546,7 +1673,7 @@ export default {
             }
           }
         }
-      }catch(error) {
+      } catch (error) {
         console.error(error);
       }
     
@@ -1572,46 +1699,11 @@ export default {
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
         let nonce = await getNonce.getNonce(
-                fromChain.id,
+                fromChain.chainId,
                 fromChain.tokenAddress,
                 fromChain.symbol,
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
         );
-        // if (toChainID === 4 || toChainID === 44) {
-        //   this.$notify.error({
-        //     title: `The StarkNet network transaction maintenance, please try again later`,
-        //     duration: 6000,
-        //   });
-        //   return;
-        // }
-        // if (fromChainID === 7 && toChainID === 4) {
-        //   this.$notify.error({
-        //       title: `The optimism-starkNet network transaction maintenance, please try again later`,
-        //       duration: 3000,
-        //   });
-        //   return;
-        // }
-        if (fromChainID === 25 && toChainID === 15) {
-          this.$notify.error({
-              title: `The OpBNB-BNB network transaction maintenance, please try again later`,
-              duration: 3000,
-          });
-          return;
-        }
-        // if (toChainID === 17) {
-        //   this.$notify.error({
-        //     title: `The Polygon ZKEVM network transaction maintenance, please try again later`,
-        //     duration: 6000,
-        //   });
-        //   return;
-        // }
-        // if (toChainID === 23) {
-        //   this.$notify.error({
-        //     title: `The Linea network transaction maintenance, please try again later`,
-        //     duration: 6000,
-        //   });
-        //   return;
-        // }
         if (nonce > 8999) {
           this.$notify.error({
             title: `Address with the nonce over 9000 are not supported by Orbiter`,
@@ -1629,23 +1721,17 @@ export default {
                         new BigNumber(this.userMinPrice)
                 ) < 0
         ) {
-          // TAG: prod test
-          // this.$notify.error({
-          //   title: `Orbiter can only support minimum of ${ this.userMinPrice } and maximum of ${ this.maxPrice } ${ fromCurrency } on transfers.`,
-          //   duration: 3000,
-          // });
-          // return;
         }
 
         // Ensure immutablex's registered
-        if (toChainID === 8 || toChainID === 88) {
+        if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
           const imxHelper = new IMXHelper(toChainID);
           const walletAddress =
                   compatibleGlobalWalletConf.value.walletPayload.walletAddress;
           walletAddress && (await imxHelper.ensureUser(walletAddress));
         }
 
-        if (fromChainID === 4 || fromChainID === 44 || toChainID === 4 || toChainID === 44) {
+        if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
           if (!starkChain || starkChain === 'unlogin') {
@@ -1656,14 +1742,14 @@ export default {
           //   await connectStarkNetWallet();
           //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
           // }
-          if ((fromChainID === 4 || toChainID === 4) && (starkChain === 44 || starkChain === 'localhost')) {
+          if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to mainnet',
                     'error'
             );
             return;
           }
-          if ((fromChainID === 44 || toChainID === 44) && (starkChain === 4 || starkChain === 'localhost')) {
+          if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to testNet',
                     'error'
@@ -1678,6 +1764,7 @@ export default {
                   return;
                 }
               } catch (err) {
+                console.error(err);
                 util.showMessage(err.message, 'error');
                 return;
               }
@@ -1696,7 +1783,7 @@ export default {
             }
           }
         }
-        const chainInfo = util.getChainInfoByChainId(fromChainID);
+        const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
         const toAddressAll = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
                 selectMakerConfig.recipient).toLowerCase();
@@ -1706,14 +1793,14 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = ((isCrossAddress || toChainID === 44 || toChainID === 4) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
+        const walletAddress = ((isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
             no: 1,
             from: new BigNumber(this.transferValue).plus(
                     new BigNumber(selectMakerConfig.tradingFee)
-            ) + fromCurrency,
+            ).toFixed(4) + fromCurrency,
             to: toAddress,
             fromTip: '',
             toTip: toAddressAll,
@@ -1746,7 +1833,7 @@ export default {
         );
         this.refreshGas();
       } catch (error) {
-        console.warn('updateOriginGasCost error =', error.message);
+        console.error('updateOriginGasCost error =', error);
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,
@@ -1797,20 +1884,13 @@ export default {
       if (!selectMakerConfig) return;
       const { toChain } = selectMakerConfig;
       // dYdX can't get maker's balance, don't check it
-      if (toChain.id === 11 || toChain.id === 511) {
+      if (toChain.chainId === CHAIN_ID.dydx || toChain.chainId === CHAIN_ID.dydx_test) {
         this.makerMaxBalance = Number.MAX_SAFE_INTEGER;
         return;
       }
-      const makerAddress = selectMakerConfig.sender;
-      // const addressBalanceMap = this.balanceMap[makerAddress] = this.balanceMap[makerAddress] || {};
-      // const chainBalanceMap = addressBalanceMap[toChain.id] = addressBalanceMap[toChain.id] || {};
-      // if (chainBalanceMap[toChain.symbol]) {
-      //   this.makerMaxBalance = chainBalanceMap[toChain.symbol];
-      //   return;
-      // }
 
       const _balance = await this.getBalance(
-              toChain.id,
+              toChain.chainId,
               toChain.tokenAddress,
               toChain.symbol,
               toChain.decimals
@@ -1818,16 +1898,15 @@ export default {
       if (_balance > 0) {
         // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
         this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
-        // this.addBalance(toChain.id, toChain.symbol, this.makerMaxBalance, makerAddress)
       }
     },
     gasCost() {
       const { fromChainID, selectMakerConfig } = transferDataState;
       if (
-              fromChainID === 3 ||
-              fromChainID === 33 ||
-              fromChainID === 9 ||
-              fromChainID === 99
+              fromChainID === CHAIN_ID.zksync ||
+              fromChainID === CHAIN_ID.zksync_test ||
+              fromChainID === CHAIN_ID.loopring ||
+              fromChainID === CHAIN_ID.loopring_test
       ) {
         let transferGasFee = transferDataState.gasFee;
         const selectTokenRate = asyncGetExchangeToUsdRate(selectMakerConfig.fromChain.symbol);
@@ -1850,17 +1929,13 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       let address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (fromChainID === 4 || fromChainID === 44) {
+      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
         address = web3State.starkNet.starkNetAddress;
       }
       if (address && address !== '0x') {
-        // const addressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
-        // const fromChainBalanceMap = addressBalanceMap[fromChain.id] = addressBalanceMap[fromChain.id] || {};
-        // if (typeof fromChainBalanceMap[fromChain.symbol] === 'undefined') {
-          await transferCalculate.getTransferBalance(fromChain.id, fromChain.tokenAddress, fromChain.symbol, address)
+          await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
                   .then(async (response) => {
                     const balance = (response / 10 ** fromChain.decimals).toFixed(6);
-                    // self.addBalance(fromChain.id, fromChain.symbol, balance, address);
                     self.fromBalance = balance;
                     await self.updateUserMaxPrice();
                   })
@@ -1875,20 +1950,18 @@ export default {
         //   await self.updateUserMaxPrice();
         // }
           self.fromBalanceLoading = false;
+      } else {
+        self.fromBalanceLoading = false;
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (toChainID === 4 || toChainID === 44) {
+      if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
         address = web3State.starkNet.starkNetAddress;
       }
       if (address && address !== '0x') {
-        // const toAddressBalanceMap = this.balanceMap[address] = this.balanceMap[address] || {};
-        // const toChainBalanceMap = toAddressBalanceMap[toChain.id] = toAddressBalanceMap[toChain.id] || {};
-        // if (typeof toChainBalanceMap[toChain.symbol] === 'undefined') {
-          await transferCalculate.getTransferBalance(toChain.id, toChain.tokenAddress, toChain.symbol, address)
+          await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
                   .then((response) => {
                     const balance = (response / 10 ** toChain.decimals).toFixed(6);
-                    // self.addBalance(toChain.id, toChain.symbol, balance, address);
                     self.toBalance = balance;
                   })
                   .catch((error) => {
@@ -1900,6 +1973,8 @@ export default {
         //   self.toBalance = toChainBalanceMap[toChain.symbol];
         // }
           self.toBalanceLoading = false;
+      } else {
+        self.toBalanceLoading = false;
       }
     },
   },
@@ -2075,14 +2150,14 @@ export default {
 }
 
 .dialog {
-  width: 100%;
+  width: 450px;
 
   .dialog-box {
     position: relative;
     background-color: #ffffff;
     color: #161616;
     border-radius: 40px;
-    width: 100%;
+    width: 450px;
     padding: 10px;
     font-family: 'Inter Regular';
     box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2);

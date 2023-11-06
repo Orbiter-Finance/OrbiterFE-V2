@@ -1,7 +1,9 @@
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
-import openApiAx from '../../common/openApiAx'
+import { RequestMethod, requestOpenApi } from '../../common/openApiAx';
 import util from '../util'
+import { CHAIN_ID } from "../../config";
+import { getTransactionsHistory } from "../../composition/useHistoryPanel";
 
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
@@ -9,17 +11,42 @@ const storeUpdateProceedState = (state) => {
 
 let cron;
 
-function confirmUserTransaction(hash) {
+function confirmUserTransaction(chainId, userAddress, hash) {
   let currentStatus = 1;
   if (cron) {
     clearInterval(cron);
   }
    cron = setInterval(async () => {
+     if (util.isEvmChain(chainId) && currentStatus === 1) {
+       const receipt = await util.requestWeb3(chainId, 'getTransactionReceipt', hash);
+       if (receipt?.status) {
+         util.log("rpc confirm fromTx ====", receipt);
+         currentStatus = 2;
+         storeUpdateProceedState(2);
+       }
+       return;
+     }
     try {
-      const { status, txList = [] } = await openApiAx.get(`/status?hash=${hash}`) || {}
+      const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash]) || {};
       util.log('txStatus', status, 'txList', txList)
+      for (const tx of txList) {
+        if (tx.side === 0) {
+          let timestamp = new Date(tx.timestamp).valueOf();
+          if (String(timestamp).length === 13) {
+            timestamp = Math.floor(timestamp / 1000);
+          }
+          store.commit(
+              'updateProceedingUserTransferTimeStamp',
+            timestamp
+          )
+        }
+        if (tx.side === 1) {
+          store.commit('updateProceedingMakerTransferTxid', tx.hash)
+        }
+      }
       switch (status) {
-        case 0: {
+        case 0:
+        case 1: {
           if (currentStatus === 2) {
             storeUpdateProceedState(3)
           } else {
@@ -31,25 +58,23 @@ function confirmUserTransaction(hash) {
           }
           break
         }
-        case 1: {
+        case 98: {
           storeUpdateProceedState(4)
           break
         }
         case 99: {
-          storeUpdateProceedState(5)
-          clearInterval(cron)
+          completeTx(userAddress);
           break
         }
       }
-      for (const tx of txList) {
-        if (tx.side === 0) {
-          store.commit(
-            'updateProceedingUserTransferTimeStamp',
-            new Date(tx.timestamp).valueOf() / 1000
-          )
-        }
-        if (tx.side === 1) {
-          store.commit('updateProceedingMakerTransferTxid', tx.hash)
+      if (status === 98) {
+        const toTx = txList.find(item => item.side === 1);
+        if (toTx?.hash && util.isEvmChain(toTx.chainId)) {
+          const receipt = await util.requestWeb3(toTx.chainId, 'getTransactionReceipt', toTx.hash);
+          if (receipt?.status) {
+            util.log("rpc confirm toTx ====", receipt);
+            completeTx(userAddress);
+          }
         }
       }
     } catch (e) {
@@ -58,14 +83,24 @@ function confirmUserTransaction(hash) {
   }, 10 * 1000);
 }
 
+async function completeTx(userAddress) {
+  util.setCache(`history_${ userAddress.toLowerCase() }_1`, '', -1);
+  await util.sleep(500);
+  getTransactionsHistory({ current: 1 });
+  clearInterval(cron);
+  storeUpdateProceedState(5);
+}
+
 export default {
   UserTransferReady(user, maker, amount, localChainID, txHash) {
-    if (localChainID === 4 || localChainID === 44) {
+    util.setCache(`history_${ user.toLowerCase() }_1`, '', -1);
+    if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       txHash = util.starknetHashFormat(txHash);
     }
-    if (localChainID === 3 || localChainID === 33) {
+    if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
       txHash = txHash.replace('sync-tx:', '0x');
     }
+    console.log(txHash);
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)
@@ -80,6 +115,6 @@ export default {
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
     // console.log(txHash)
-    confirmUserTransaction(txHash)
+    confirmUserTransaction(localChainID, user, txHash);
   },
 }

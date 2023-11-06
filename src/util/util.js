@@ -9,6 +9,7 @@ import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
+import { CHAIN_ID } from "../config";
 
 export default {
   getAccountAddressError(address, isStarknet) {
@@ -52,14 +53,34 @@ export default {
   netWorkName(networkId) {
     return this.getChainInfoByNetworkId(networkId)?.name || 'unknown'
   },
+  netWorkLogo(networkId) {
+    if (!networkId) {
+      return 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+    }
+    return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/chain/${ networkId }.svg` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+  },
+  tokenLogo(token) {
+    if (!token) {
+      return 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+    }
+    return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/token/${ token }.png` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+  },
   chainName(chainId) {
-    return this.getChainInfoByChainId(chainId)?.name || 'unknown'
+    return this.getV3ChainInfoByChainId(chainId)?.name || 'unknown'
   },
   chainNetWorkId(chainId) {
-    return this.getChainInfoByChainId(chainId)?.chainId
+    return this.getV3ChainInfoByChainId(chainId)?.chainId
   },
   getMetaMaskNetworkId(chainId) {
-    return env.metaMaskNetworkId[chainId]
+    return env.metaMaskNetworkId[chainId] || chainId
+  },
+  getTxExploreUrl(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    return env.txExploreUrl[chainId] || `${ chainInfo?.infoURL }/tx/`;
+  },
+  getAccountExploreUrl(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    return env.accountExploreUrl[chainId] || `${ chainInfo?.infoURL }/address/`;
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -102,12 +123,8 @@ export default {
     return value1.toUpperCase() === value2.toUpperCase()
   },
 
-  /**
-   * @param {string} tokenAddress when tokenAddress=/^0x0+$/i,
-   * @returns {boolean}
-   */
   isEthTokenAddress(chainId, tokenAddress) {
-    const chainInfo = this.getChainInfoByChainId(chainId)
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
     if (chainInfo) {
       // main coin
       if (
@@ -178,8 +195,10 @@ export default {
 
   async isLegalAddress() {
     const { fromChainID } = transferDataState
-    const supportContractWallet = [1, 2, 6, 7, 10, 13, 14, 15, 16, 17]
-    if (!supportContractWallet.find((item) => item === Number(fromChainID))) {
+    const supportContractWallet = [CHAIN_ID.mainnet, CHAIN_ID.ar, CHAIN_ID.po, CHAIN_ID.op, CHAIN_ID.metis,
+      CHAIN_ID.boba, CHAIN_ID.zksync2, CHAIN_ID.bsc, CHAIN_ID.nova, CHAIN_ID.pozkevm, CHAIN_ID.base, CHAIN_ID.linea,
+      CHAIN_ID.zora];
+    if (!supportContractWallet.find((item) => item === fromChainID)) {
       return true
     }
     const rpc = this.stableRpc(fromChainID)
@@ -196,7 +215,7 @@ export default {
   },
 
   stableWeb3(chainId) {
-    return new Web3(this.stableRpc(chainId))
+    return new Web3(this.stableRpc(String(chainId)))
   },
 
   stableRpc(chainId) {
@@ -217,7 +236,7 @@ export default {
   },
 
   getRpcList(chainId) {
-    const chainInfo = this.getChainInfoByChainId(chainId)
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
     const rpcList = (chainInfo?.rpc || []).sort(function () {
       return 0.5 - Math.random()
     })
@@ -268,9 +287,9 @@ export default {
     }
   },
 
-  getChainInfoByChainId(chainId) {
+  getV3ChainInfoByChainId(chainId) {
     const info = config.chainConfig.find(
-      (item) => +item.internalId === +chainId
+        (item) => item.chainId === chainId
     )
     if (!info) return null
     const chainInfo = JSON.parse(JSON.stringify(info))
@@ -287,12 +306,43 @@ export default {
     return chainInfo
   },
 
+  isEvmChain(chainId) {
+    return ![
+      CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.imx, CHAIN_ID.imx_test,
+      CHAIN_ID.loopring, CHAIN_ID.loopring_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test
+    ].includes(chainId);
+  },
+
+  getInternalIdByChainId(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    return chainInfo?.internalId ? Number(chainInfo.internalId) : null;
+  },
+
   getChainInfoByNetworkId(networkId) {
     const info = config.chainConfig.find(
       (item) => +item.networkId === +networkId
     )
     if (!info) return null
     return JSON.parse(JSON.stringify(info))
+  },
+
+  getTokenByTokenAddress(chainId, tokenAddress) {
+    const chainInfo = this.getV3ChainInfoByChainId(String(chainId));
+    if (!chainInfo) return null;
+    const tokenList = this.getChainTokenList(chainInfo);
+    return tokenList.find(item => item.address.toLowerCase() === tokenAddress.toLowerCase());
+  },
+
+  getChainTokenList(chain) {
+    const allTokenList = [];
+    if (!chain) return [];
+    if (chain.tokens && chain.tokens.length) {
+      allTokenList.push(...chain.tokens);
+    }
+    if (chain.nativeCurrency) {
+      allTokenList.push(chain.nativeCurrency);
+    }
+    return allTokenList;
   },
 
   log(...msg) {
@@ -320,22 +370,25 @@ export default {
   isStarkNet() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === 4 ||
-      fromChainID === 44 ||
-      toChainID === 4 ||
-      toChainID === 44
+      fromChainID === CHAIN_ID.starknet ||
+      fromChainID === CHAIN_ID.starknet_test ||
+      toChainID === CHAIN_ID.starknet ||
+      toChainID === CHAIN_ID.starknet_test
     )
   },
 
   isSupportXVMContract() {
-    const { fromChainID } = transferDataState
+    const { fromChainID, selectMakerConfig,fromCurrency, toCurrency } = transferDataState
     if (!this.isWhite()) {
       return false
     }
     if (this.isStarkNet()) {
       return false
     }
-    const chainInfo = this.getChainInfoByChainId(fromChainID)
+    if (selectMakerConfig.ebcId) {
+      return false;
+    }
+    const chainInfo = this.getV3ChainInfoByChainId(fromChainID)
     return chainInfo?.xvmList && chainInfo.xvmList.length
   },
 
@@ -348,11 +401,12 @@ export default {
   },
 
   /**
-   * @param {number} chainId
+   * @param {string} chainId
    */
   async ensureWalletNetwork(chainId) {
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     if (!maskNetworkId) {
+      console.error(maskNetworkId, "none of ", chainId);
       return
     }
     const switchParams = {
@@ -376,7 +430,7 @@ export default {
   },
 
   async addEthereumChain(chainId) {
-    const chainInfo = this.getChainInfoByChainId(chainId)
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     const params = {
       chainId: this.toHex(maskNetworkId), // A 0x-prefixed hexadecimal string
@@ -387,8 +441,8 @@ export default {
         decimals: chainInfo.nativeCurrency.decimals,
       },
       rpcUrls: chainInfo.rpc,
-      blockExplorerUrls: env.networkUrl[chainId]
-        ? [env.networkUrl[chainId]]
+      blockExplorerUrls: chainInfo?.infoURL
+        ? [chainInfo.infoURL]
         : null,
     }
     try {
@@ -466,7 +520,7 @@ export default {
       }
 
       if (!result) {
-        reject(`Request Web3 TokenBalance RPC error${chainId}`)
+        reject(`Request Web3 TokenBalance RPC error ${chainId} ${tokenAddress}`)
       }
     })
   },

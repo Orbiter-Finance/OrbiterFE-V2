@@ -11,8 +11,8 @@ import {
 } from '../../../composition/hooks';
 import util from '../../util'
 import { Notification } from 'element-ui'
-import config from '../../../config'
 import { universalWalletSwitchChainHandler } from '../../walletsDispatchers/standardWalletReducer/standardWalletAPI'
+import { isMobileDevice } from "../../env";
 const showMessage = util.showMessage
 
 async function installWeb3(walletType) {
@@ -58,6 +58,7 @@ async function installWeb3(walletType) {
           '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     }
+    if (isMobileDevice()) return;
     return showMessage('not install metamask', 'error')
   }
   return new Web3(web3Provider)

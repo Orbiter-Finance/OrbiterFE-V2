@@ -21,21 +21,22 @@ import {
   updatelpApiKey,
 } from '../../composition/hooks'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import { CHAIN_ID } from "../../config";
 let configNet = config.loopring.Mainnet
 
 export default {
   getUserAPI: function (localChainID) {
-    const netWorkID = localChainID == 9 ? 1 : 5
+    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 5
     return new UserAPI({ chainId: netWorkID })
   },
 
   getExchangeAPI: function (localChainID) {
-    const netWorkID = localChainID == 9 ? 1 : 5
+    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 5
     return new ExchangeAPI({ chainId: netWorkID })
   },
   getLpTokenInfoOnce(fromChainID, tokenAddress) {
     const lpTokenInfos =
-      fromChainID === 9
+      fromChainID === CHAIN_ID.loopring
         ? store.state.lpTokenList.mainnet
         : store.state.lpTokenList.rinkeby
     return lpTokenInfos.find((item) => item.address == tokenAddress)
@@ -84,7 +85,7 @@ export default {
         }
         accountInfo = accountResult.accountInfo
       }
-      if (localChainID === 99) {
+      if (localChainID === CHAIN_ID.loopring_test) {
         configNet = config.loopring.Rinkeby
       }
       const resp = await axios.get(
@@ -199,7 +200,7 @@ export default {
               exchangeInfo.exchangeAddress
             ).replace('${nonce}', (accInfo.nonce - 1).toString()),
       walletType: ConnectorNames.MetaMask,
-      chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
+      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
     }
     if (isCounterFactual) {
       Object.assign(options, { accountId });
@@ -251,7 +252,7 @@ export default {
     const response = isCounterFactual ? await userApi.submitInternalTransfer({
       request: OriginTransferRequestV3,
       web3,
-      chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
+      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
       walletType: ConnectorNames.MetaMask,
       eddsaKey: eddsaKey.sk,
       apiKey,
@@ -259,7 +260,7 @@ export default {
     }, { accountId, counterFactualInfo: info.counterFactualInfo }) : await userApi.submitInternalTransfer({
       request: OriginTransferRequestV3,
       web3,
-      chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
+      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
       walletType: ConnectorNames.MetaMask,
       eddsaKey: eddsaKey.sk,
       apiKey,
@@ -325,42 +326,6 @@ export default {
       : 0
   },
 
-  getLoopringTxList: async function (
-    address,
-    tokenName,
-    localChainID,
-    startTime,
-    endTime,
-    limit,
-    offset
-  ) {
-    const userApi = this.getUserAPI(localChainID)
-    const accountResult = await this.accountInfo(address, localChainID)
-    let accountInfo
-    if (!accountResult || accountResult.code) {
-      return
-    } else {
-      accountInfo = accountResult.accountInfo
-    }
-    const GetUserTransferListRequest = {
-      accountId: accountInfo.accountId,
-      start: startTime,
-      end: endTime,
-      status: 'processed,processing,received',
-      limit,
-      offset,
-      tokenSymbol: tokenName,
-      transferTypes: 'transfer',
-    }
-    const LPTransferResult = await userApi.getUserTransferList(
-      GetUserTransferListRequest,
-      localChainID == 9
-        ? process.env.VUE_APP_LP_MK_KEY
-        : process.env.VUE_APP_LP_MKTEST_KEY
-    )
-    return LPTransferResult
-  },
-
   getAccountStorageID: async function (address, localChainID, tokenID) {
     try {
       const accountResult = await this.accountInfo(address, localChainID)
@@ -382,7 +347,7 @@ export default {
       }
       const storageId = await userApi.getNextStorageId(
         GetNextStorageIdRequest,
-        localChainID == 9
+        localChainID === CHAIN_ID.loopring
           ? process.env.VUE_APP_LP_MK_KEY
           : process.env.VUE_APP_LP_MKTEST_KEY
       )
