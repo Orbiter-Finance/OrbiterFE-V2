@@ -108,6 +108,7 @@
                     </div>
                 </div>
                 <CommBtn
+                    :disabled="checkIsMobileEnv() && !isBrowserApp()"
                     class="wallet-btn"
                     @click="disconnect"
                     >Disconnect</CommBtn
@@ -135,8 +136,8 @@ import {
 import Middle from '../../util/middle/middle'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { BRAVE, METAMASK, TOKEN_POCKET_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
-import { onCopySuccess, onCopyError, isMobileDevice, isArgentApp, isBrowserApp } from '../../util';
+import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
+import { onCopySuccess, onCopyError, isMobileDevice, isBrowserApp } from '../../util';
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
 import { CHAIN_ID } from "../../config";
@@ -335,8 +336,11 @@ export default {
         checkIsMobileEnv() {
             return isMobileDevice();
         },
+        isBrowserApp() {
+            return isBrowserApp();
+        },
         disconnect() {
-            if (this.checkIsMobileEnv()) return
+            if (this.checkIsMobileEnv() && !isBrowserApp()) return
             if (!this.isStarkNetDialog) {
                 this.closeSelectWalletDialog();
                 this.selectedWallet = {};
