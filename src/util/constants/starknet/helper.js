@@ -183,10 +183,10 @@ export async function sendTransfer(
   try {
     let tx;
     if (amount.gt(allowance)) {
-      const approveTxCall = crossContract.populate(
+      const approveTxCall = tokenContract.populate(
         "approve",
         [
-          spender,
+          contractAddress,
           getUint256CalldataFromBN(String(UINT_256_MAX))
         ]
       );
