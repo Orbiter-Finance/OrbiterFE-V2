@@ -112,6 +112,7 @@ export default {
     HeaderDialog,
   },
   async mounted() {
+    console.log('ethereum', window.ethereum);
     if (isBrowserApp()) {
       await connectStarkNetWallet();
     }

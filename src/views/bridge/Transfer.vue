@@ -1835,7 +1835,7 @@ export default {
         );
         this.refreshGas();
       } catch (error) {
-        console.warn('updateOriginGasCost error =', error.message);
+        console.error('updateOriginGasCost error =', error);
         this.$notify.error({
           title: `GetOrginGasFeeError`,
           desc: error,

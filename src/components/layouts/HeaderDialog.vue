@@ -141,7 +141,10 @@ import { onCopySuccess, onCopyError, isMobileDevice, isBrowserApp } from '../../
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
 import { CHAIN_ID } from "../../config";
-import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
+import {
+  ethereumClient,
+  walletConnectDispatcherOnInit
+} from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
     walletDispatchers
@@ -347,6 +350,9 @@ export default {
                 localStorage.setItem('selectedWallet', JSON.stringify({}));
                 this.$store.commit('updateLocalLogin', false);
                 localStorage.setItem('localLogin', false);
+                if (this.isWalletConnect()) {
+                    ethereumClient.disconnect();
+                 }
                 walletDispatchersOnDisconnect[
                     compatibleGlobalWalletConf.value.walletType
                     ]();

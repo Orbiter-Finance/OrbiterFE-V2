@@ -23,7 +23,7 @@ import { WALLETCONNECT } from "../constants";
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code
-let ethereumClient = null
+export let ethereumClient = null
 let ethProvider = null
 export function switchNetwork(chainId) {
   return switchChain({ chainId })
@@ -154,7 +154,7 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
   currentChain && web3Modal.setDefaultChain(currentChain)
   ethereumClient.watchAccount((e) => {
     if (e.isDisconnected) {
-      onDisconnectCallback(e)
+      ethereumClient.disconnect()
     }
 
     if (e.isConnected) {
