@@ -112,7 +112,9 @@ export default {
     HeaderDialog,
   },
   async mounted() {
+    console.log('window', window)
     console.log('ethereum', window.ethereum);
+    if(window.ethereum.isBitKeep) console.log('BitKeepInvoke', BitKeepInvoke);
     if (isBrowserApp()) {
       await connectStarkNetWallet();
     }
