@@ -154,7 +154,8 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
   currentChain && web3Modal.setDefaultChain(currentChain)
   ethereumClient.watchAccount((e) => {
     if (e.isDisconnected) {
-      ethereumClient.disconnect()
+      ethereumClient.disconnect();
+      localStorage.setItem('wc@2:client:0.3//session', null);
     }
 
     if (e.isConnected) {

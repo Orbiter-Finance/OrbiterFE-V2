@@ -351,7 +351,8 @@ export default {
                 this.$store.commit('updateLocalLogin', false);
                 localStorage.setItem('localLogin', false);
                 if (this.isWalletConnect()) {
-                    ethereumClient.disconnect();
+                    ethereumClient.disconnect()
+                    localStorage.setItem('wc@2:client:0.3//session', null);
                  }
                 walletDispatchersOnDisconnect[
                     compatibleGlobalWalletConf.value.walletType

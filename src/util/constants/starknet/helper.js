@@ -14,7 +14,7 @@ import {
 import { store } from '../../../store'
 import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
 import { CHAIN_ID } from "../../../config";
-import { isArgentApp } from "../../env";
+import { isArgentApp, isMobileDevice } from "../../env";
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha':
@@ -171,9 +171,12 @@ export async function sendTransfer(
   const crossContract = new Contract(
     starkNetCrossAbi,
     contractAddress,
-    getStarknet().provider
+    provider
   );
   const receiverAddress = makerAddress;
+
+  console.log('isBitKeep', window.ethereum.isBitKeep && isMobileDevice());
+  const starknetAccount = window.ethereum.isBitKeep && window.bitkeep.starknet && isMobileDevice() ? window.bitkeep.starknet.account : getStarknet().account;
 
   try {
     let tx;
@@ -181,11 +184,11 @@ export async function sendTransfer(
       const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
       const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       console.log("approve and transferERC20 Call ====", [approveTxCall, transferERC20TxCall]);
-      tx = await getStarknet().account.execute([approveTxCall, transferERC20TxCall]);
+      tx = await starknetAccount.execute([approveTxCall, transferERC20TxCall]);
     } else {
       const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       console.log("getTransferERC20TxCall ====", transferERC20TxCall);
-      tx = await getStarknet().account.execute(transferERC20TxCall);
+      tx = await starknetAccount.execute(transferERC20TxCall);
     }
     return tx?.transaction_hash;
   } catch (e) {
