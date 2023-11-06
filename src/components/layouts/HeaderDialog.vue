@@ -108,7 +108,7 @@
                     </div>
                 </div>
                 <CommBtn
-                    :disabled="checkIsMobileEnv() && !isBrowserApp()"
+                    :disabled="checkIsMobileEnv() && !isWalletConnect()"
                     class="wallet-btn"
                     @click="disconnect"
                     >Disconnect</CommBtn
@@ -336,11 +336,11 @@ export default {
         checkIsMobileEnv() {
             return isMobileDevice();
         },
-        isBrowserApp() {
-            return isBrowserApp();
+        isWalletConnect() {
+            return compatibleGlobalWalletConf.value.walletType === WALLETCONNECT
         },
         disconnect() {
-            if (this.checkIsMobileEnv() && !isBrowserApp()) return
+            if (this.checkIsMobileEnv() && !this.isWalletConnect()) return
             if (!this.isStarkNetDialog) {
                 this.closeSelectWalletDialog();
                 this.selectedWallet = {};

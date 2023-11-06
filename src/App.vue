@@ -112,7 +112,6 @@ export default {
     HeaderDialog,
   },
   async mounted() {
-    console.log("version 1")
     if (isBrowserApp()) {
       await connectStarkNetWallet();
     }
