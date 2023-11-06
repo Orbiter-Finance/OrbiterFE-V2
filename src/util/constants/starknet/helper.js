@@ -176,6 +176,9 @@ export async function sendTransfer(
   const receiverAddress = makerAddress;
 
   console.log('isBitKeep', window.ethereum.isBitKeep && isMobileDevice());
+  console.log('window.bitkeep', window.bitkeep);
+  console.log('window.bitkeep.starknet', window.bitkeep.starknet);
+  console.log('getStarknet().account', getStarknet().account)
   const starknetAccount = window.ethereum.isBitKeep && window.bitkeep.starknet && isMobileDevice() ? window.bitkeep.starknet.account : getStarknet().account;
 
   try {
