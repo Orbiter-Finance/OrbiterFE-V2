@@ -23,7 +23,7 @@ export const walletIsLogin = computed(() => {
     return matchProcessor ? matchProcessor() : false
   }
 
-  return (web3State.isInstallMeta && web3State.isInjected && web3State.localLogin) || isBrowserApp()
+  return web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
 })
 
 /**
