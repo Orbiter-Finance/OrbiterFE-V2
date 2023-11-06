@@ -108,7 +108,6 @@
                     </div>
                 </div>
                 <CommBtn
-                    :disabled="checkIsMobileEnv()"
                     class="wallet-btn"
                     @click="disconnect"
                     >Disconnect</CommBtn
