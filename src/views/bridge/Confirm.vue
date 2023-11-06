@@ -361,15 +361,18 @@ export default {
                     }
                     return
                 }
+                console.log('step 1', compatibleGlobalWalletConf.value.walletPayload.provider);
                 const provider = new ethers.providers.Web3Provider(
                     compatibleGlobalWalletConf.value.walletPayload.provider
                 )
+                console.log('step 2', { fromChainID, fromAddress, crossContractAddress, provider });
                 const crossAddress = new CrossAddress(
                     provider,
                     fromChainID,
                     provider.getSigner(fromAddress),
                     crossContractAddress
                 )
+                console.log('step 3', provider);
                 if (util.isEthTokenAddress(fromChainID, contractAddress)) {
                     transferHash = (
                         await crossAddress.transfer(recipient, amount, ext)
