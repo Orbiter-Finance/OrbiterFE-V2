@@ -3,6 +3,7 @@ import { ethers, providers } from 'ethers'
 import Web3 from 'web3'
 import config from '../../core/utils/config'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import { CHAIN_ID } from "../../config";
 
 const CONTRACTS = {
   ropsten: {
@@ -26,13 +27,13 @@ export class IMXHelper {
    * @param {number} chainId
    */
   constructor(chainId) {
-    if (chainId == 8) {
+    if (String(chainId) === CHAIN_ID.imx) {
       this.publicApiUrl = config.immutableX.Mainnet
       this.starkContractAddress = CONTRACTS.mainnet.starkContractAddress
       this.registrationContractAddress =
         CONTRACTS.mainnet.registrationContractAddress
     }
-    if (chainId == 88) {
+    if (String(chainId) === CHAIN_ID.imx_test) {
       this.publicApiUrl = config.immutableX.Rinkeby
       this.starkContractAddress = CONTRACTS.ropsten.starkContractAddress
       this.registrationContractAddress =
@@ -134,39 +135,6 @@ export class IMXHelper {
         starkPublicKey: userClient.starkPublicKey,
       })
     }
-  }
-
-  /**
-   * IMX transfer => Eth transaction
-   * @param {any} transfer IMX transfer
-   * @returns
-   */
-  toTransaction(transfer) {
-    const timeStampMs = transfer.timestamp.getTime()
-    const nonce = this.timestampToNonce(timeStampMs)
-
-    // When it is ETH
-    let contractAddress = transfer.token.data.token_address
-    if (transfer.token.type == ETHTokenType.ETH) {
-      contractAddress = '0x0000000000000000000000000000000000000000'
-    }
-
-    const transaction = {
-      timeStamp: parseInt(timeStampMs / 1000),
-      hash: transfer.transaction_id,
-      nonce,
-      blockHash: '',
-      transactionIndex: 0,
-      from: transfer.user,
-      to: transfer.receiver,
-      value: transfer.token.data.quantity + '',
-      txreceipt_status: transfer.status,
-      contractAddress,
-      tokenDecimal: transfer.token.data.decimals,
-      confirmations: 0,
-    }
-
-    return transaction
   }
 
   /**

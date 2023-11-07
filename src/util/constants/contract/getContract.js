@@ -6,32 +6,14 @@ import {
   walletIsLogin,
 } from '../../../composition/walletsResponsiveData'
 import { web3State } from '../../../composition/hooks'
-// Get a token contract on the L2 network
-function getLocalCoinContract(localChainID, tokenAddress, state, web3) {
-  // 0 : http   1: ws
-  // localChainID => rpcurl => web3Provider
-  if (web3) {
-    const ecourseContractInstance = new web3.eth.Contract(
-      Coin_ABI,
-      tokenAddress
-    )
-    if (!ecourseContractInstance) {
-      console.warn('getLocalCoinContract_ecourseContractInstance')
-      return null
-    }
-    return ecourseContractInstance
-  } else {
-    console.warn('getLocalCoinContract_noWeb3')
-    return null
-  }
-}
+import { CHAIN_ID } from "../../../config";
+
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, contractAddress) {
-  // if localChain = 3 || 33
-  if (localChainID === 3 || localChainID === 33) {
+  if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
     return
   }
-  if (localChainID === 4 || localChainID === 44) {
+  if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
     return
   }
   if (walletIsLogin.value) {
@@ -94,4 +76,4 @@ async function getTransferGasLimit(
   }
 }
 
-export { getTransferContract, getLocalCoinContract, getTransferGasLimit }
+export { getTransferContract, getTransferGasLimit }

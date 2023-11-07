@@ -6,16 +6,17 @@ import * as zksync from 'zksync'
 import config from '../utils/config'
 import { private_key_to_pubkey_hash, sign_musig } from 'zksync-crypto'
 import { transferDataState } from '../../composition/hooks'
+import { CHAIN_ID } from "../../config";
 
 const BigNumber = require('bignumber.js')
 Axios.axios()
 export default {
   getZKspaceBalance: async function (req) {
-    if (req.localChainID !== 12 && req.localChainID !== 512) {
+    if (req.localChainID !== CHAIN_ID.zkspace && req.localChainID !== CHAIN_ID.zkspace_test) {
       throw new Error('getZKSpaceBalance Error: wrongChainID')
     }
     const url = `${
-      req.localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+      req.localChainID === CHAIN_ID.zkspace_test ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
     }/account/${req.account}/balances`
     try {
       const response = await axios.get(url)
@@ -36,11 +37,11 @@ export default {
       ? transferDataState.ethPrice
       : 2000
 
-    if (localChainID !== 12 && localChainID !== 512) {
+    if (localChainID !== CHAIN_ID.zkspace && localChainID !== CHAIN_ID.zkspace_test) {
       throw new Error('getZKSpaceTransferGasFee：wrongChainID')
     }
     const url = `${
-      localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+      localChainID === CHAIN_ID.zkspace_test ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
     }/account/${account}/fee`
     try {
       const response = await axios.get(url)
@@ -63,18 +64,18 @@ export default {
     }
   },
   getZKSpaceWithDrawGasFee: async function (localChainID, account) {
-    if (!account) {
-      return
+    if (!account || account === '0x') {
+      return 0
     }
     const ethPrice = transferDataState.ethPrice
       ? transferDataState.ethPrice
       : 2000
 
-    if (localChainID !== 12 && localChainID !== 512) {
+    if (localChainID !== CHAIN_ID.zkspace && localChainID !== CHAIN_ID.zkspace_test) {
       throw new Error('getZKSpaceGasFeeError：wrongChainID')
     }
     const url = `${
-      localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+      localChainID === CHAIN_ID.zkspace_test ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
     }/account/${account}/fee`
     try {
       const response = await axios.get(url)
@@ -86,8 +87,10 @@ export default {
         const gasFee_fix = gasFee.decimalPlaces(6, BigNumber.ROUND_UP)
         return Number(gasFee_fix)
       }
-      throw new Error('getZKSpaceWithDrawGasFee response.status not 200')
+      console.warn(account, 'getZKSpaceWithDrawGasFee response', response);
+      return 0;
     } catch (error) {
+      console.error('getZKSpaceWithDrawGasFee error', error);
       throw new Error(`getZKSpaceWithDrawGasFee error：${error.message}`)
     }
   },
@@ -98,14 +101,14 @@ export default {
    */
   getZKAccountInfo: function (localChainID, account) {
     return new Promise((resolve, reject) => {
-      if (localChainID !== 12 && localChainID !== 512) {
+      if (localChainID !== CHAIN_ID.zkspace && localChainID !== CHAIN_ID.zkspace_test) {
         reject({
           errorCode: 1,
           errMsg: 'getZKSpaceAccountInfoError_wrongChainID',
         })
       }
       const url =
-        (localChainID === 512
+        (localChainID === CHAIN_ID.zkspace_test
           ? config.ZKSpace.Rinkeby
           : config.ZKSpace.Mainnet) +
         '/account/' +
@@ -138,14 +141,14 @@ export default {
     })
   },
   sendTransfer: async function (localChainID, req) {
-    if (localChainID !== 12 && localChainID !== 512) {
+    if (localChainID !== CHAIN_ID.zkspace && localChainID !== CHAIN_ID.zkspace_test) {
       return {
         code: '1',
         error: 'sendZKSpaceTransferError_wrongChainID',
       }
     }
     const response = await axios.post(
-      (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
+      (localChainID === CHAIN_ID.zkspace_test ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
         '/tx',
       {
         signature: req.signature,
@@ -156,11 +159,11 @@ export default {
     return response
   },
   getZKSpaceTransactionData: async function (localChainID, txHash) {
-    if (localChainID !== 12 && localChainID !== 512) {
+    if (localChainID !== CHAIN_ID.zkspace && localChainID !== CHAIN_ID.zkspace_test) {
       throw new Error('getZKTransactionDataError_wrongChainID')
     }
     const url =
-      (localChainID === 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
+      (localChainID === CHAIN_ID.zkspace_test ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet) +
       '/tx/' +
       txHash
     const response = await axios.get(url)
@@ -307,7 +310,7 @@ Only sign this message for a trusted client!`
 
       const registerSignature = await signer.signMessage(resgiterMsg)
       const url = `${
-        fromChainID == 512 ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
+        fromChainID == CHAIN_ID.zkspace_test ? config.ZKSpace.Rinkeby : config.ZKSpace.Mainnet
       }/tx`
       const transferResult = await axios.post(
         url,

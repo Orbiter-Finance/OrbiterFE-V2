@@ -2,34 +2,50 @@ import chainMain from './chain.json'
 import chainTest from './chainTest.json'
 import { isProd } from '../util'
 
-const tokenIcons = {
-  ETH: require('../assets/ethlogo.svg'),
-  USDC: require('../assets/usdclogo.png'),
-  USDT: require('../assets/usdtlogo.png'),
-  TUSD: require('../assets/tusdlogo.png'),
-  MCO: require('../assets/mcologo.png'),
-  METIS: require('../assets/metislogo.png'),
-  ZKS: require('../assets/zkslogo.png'),
-  LRC: require('../assets/lrclogo.png'),
-  BNB: require('../assets/bnblogo.png'),
-  DAI: require('../assets/dailogo.png'),
-  MATIC: require('../assets/maticlogo.png'),
-}
+export const CHAIN_ID = {
+  zksync: 'zksync',
+  starknet: 'SN_MAIN',
+  loopring: 'loopring',
+  zkspace: 'ZKSpace',
+  dydx: 'dydx',
+  imx: 'immutableX',
+  mainnet: "1",
+  ar: "42161",
+  po: "137",
+  op: "10",
+  zksync2: "324",
+  nova: "42170",
+  base: "8453",
+  zora: "7777777",
+  metis: "1088",
+  boba: "288",
+  linea: "59144",
+  pozkevm: "1101",
+  bsc: "56",
+  opbnb: "204",
+  manta: "169",
+  scroll: "534352",
 
-/**
- *
- * @param {string} token
- * @returns
- */
-const getTokenIcon = (token) => {
-  if (!token) {
-    return ''
-  }
-
-  token = token.toUpperCase()
-
-  return tokenIcons[token] || ''
-}
+  zksync_test: 'zksync_test',
+  starknet_test: 'SN_GOERLI',
+  loopring_test: 'loopring_test',
+  zkspace_test: 'ZKSpace_test',
+  dydx_test: 'dydx_test',
+  imx_test: 'immutableX_test',
+  goerli: "5",
+  ar_test: "421613",
+  po_test: "80001",
+  op_test: "420",
+  zksync2_test: "280",
+  base_test: "84531",
+  zora_test: "999",
+  linea_test: "59140",
+  pozkevm_test: "1442",
+  bsc_test: "97",
+  opbnb_test: "5611",
+  manta_test: "3441005",
+  scroll_test: "534353",
+};
 
 const makerNum = parseInt(Math.random() * 2) + 1
 const maker = require(`./${
@@ -102,12 +118,14 @@ function convertMakerConfig(maker) {
         makerId: '',
         ebcId: '',
         slippage: makerData.slippage || 0,
-        recipient: makerData.makerAddress,
+        recipient: makerData.makerAddress || makerData.sender,
         sender: makerData.sender,
         tradingFee: makerData.tradingFee,
         gasFee: makerData.gasFee,
         fromChain: {
           id: +fromChainId,
+          networkId: c1Chain.networkId,
+          chainId: c1Chain.chainId,
           name: c1Chain.name,
           tokenAddress: fromToken.address,
           symbol: fromChainSymbol,
@@ -117,6 +135,8 @@ function convertMakerConfig(maker) {
         },
         toChain: {
           id: +toChainId,
+          networkId: c2Chain.networkId,
+          chainId: c2Chain.chainId,
           name: c2Chain.name,
           tokenAddress: toToken.address,
           symbol: toChainSymbol,
@@ -152,7 +172,6 @@ try {
 }
 
 export default {
-  getTokenIcon,
   chainConfig,
   makerConfigs,
   v1MakerConfigs,

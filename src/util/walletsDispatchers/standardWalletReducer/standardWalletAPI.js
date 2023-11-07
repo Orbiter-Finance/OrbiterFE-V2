@@ -281,8 +281,8 @@ export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
       decimals: nativeCurrency.decimals,
     },
     rpcUrls: rpc,
-    blockExplorerUrls: env.networkUrl[chainId]
-      ? [env.networkUrl[chainId]]
+    blockExplorerUrls: matchChainConf?.infoURL
+      ? [matchChainConf.infoURL]
       : null,
   }
   walletProvider

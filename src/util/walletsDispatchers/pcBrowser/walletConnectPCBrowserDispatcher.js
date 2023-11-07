@@ -18,11 +18,12 @@ import util from '../../util'
 import { updateCoinbase } from '../../../composition/useCoinbase'
 import { transferDataState } from '../../../composition/useTransferData'
 import config from '../../../config'
+import { WALLETCONNECT } from "../constants";
 
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
 // avoid duplicate code
-let ethereumClient = null
+export let ethereumClient = null
 let ethProvider = null
 export function switchNetwork(chainId) {
   return switchChain({ chainId })
@@ -146,14 +147,15 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
   const networkId =
     globalSelectWalletConf.walletPayload.networkId ||
     config.chainConfig.find(
-      (chain) => +chain.internalId === +transferDataState.fromChainID
+      (chain) => +chain.chainId === +transferDataState.fromChainID
     )?.chainId
   const currentChain = chains.find((chain) => +chain.id === +networkId)
 
   currentChain && web3Modal.setDefaultChain(currentChain)
   ethereumClient.watchAccount((e) => {
     if (e.isDisconnected) {
-      onDisconnectCallback(e)
+      ethereumClient.disconnect();
+      localStorage.setItem('wc@2:client:0.3//session', null);
     }
 
     if (e.isConnected) {
@@ -178,6 +180,12 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
     await web3Modal.openModal()
   }
+  updateGlobalSelectWalletConf(WALLETCONNECT, {
+    walletAddress: ethereumClient.getAccount().address,
+    networkId: networkId,
+    provider: null
+  }, true);
+  return ethereumClient.getAccount();
 }
 
 // disconnect the walletconnect manually
