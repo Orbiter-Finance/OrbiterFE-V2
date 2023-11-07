@@ -13,7 +13,13 @@ export async function getV2TradingPair(v) {
     return v2TradingPairs;
   }
   const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, []);
-  const ruleList = apiRes.ruleList;
+  let ruleList = apiRes.ruleList;
+  if (process.env.VUE_APP_WHITE_LIST) {
+    const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
+    ruleList = ruleList.filter(rule => {
+      return whiteList.find(address => address.toLowerCase() === rule?.recipient.toLowerCase());
+    });
+  }
   v2TradingPairs = sortRule(ruleList);
   version = v;
   return v2TradingPairs;
