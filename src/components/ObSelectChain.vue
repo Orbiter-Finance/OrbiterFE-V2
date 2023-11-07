@@ -119,7 +119,7 @@ export default {
         },
         newChainData: function () {
             let chains = this.transferChainData.filter(
-                    (item) => !this.localIdsInGroup.includes(item.localID)
+                    (item) => !this.localIdsInGroup.find(id=>String(id) === String(item.localID))
                 )
             if (this.keyword || this.keyword !== '') {
                 chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
@@ -139,7 +139,7 @@ export default {
             for (const groupName in this.chainsGroup) {
                 const chainsIds = this.chainsGroup[groupName]
                 let chains = this.transferChainData.filter(
-                    (item) => chainsIds.includes(+item.localID)
+                    (item) => chainsIds.find(chainId=>String(chainId) === String(item.localID))
                 )
                 if (this.keyword || this.keyword !== '') {
                     chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
