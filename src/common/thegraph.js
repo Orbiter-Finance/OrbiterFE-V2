@@ -343,8 +343,10 @@ function sortRule(ruleList) {
     if (!Object.keys(makerSortMap).length) {
         Array.from(new Set(ruleList)).sort(function () {
             return 0.5 - Math.random();
-        }).forEach((makerAddress, index) => {
-            makerSortMap[makerAddress] = index;
+        }).forEach((rule, index) => {
+          if (rule?.recipient) {
+            makerSortMap[rule.recipient] = index;
+          }
         });
     }
     return ruleList.sort(function (a, b) {
