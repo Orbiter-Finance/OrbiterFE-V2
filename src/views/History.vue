@@ -177,6 +177,7 @@
   import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
   import { RequestMethod, requestOpenApi } from "../common/openApiAx";
   import util from "../util/util";
+  import BigNumber from 'bignumber.js'
   let timer = 0
   export default {
     name: 'History',
@@ -319,25 +320,27 @@
         if (status === 99) {
           const data = {};
           for (const tx of txList) {
+            const tokenList = util.getChainTokenList(util.getChainInfoByNetworkId(tx.chainId));
+            const token = tokenList.find(item => item.symbol === tx.symbol);
             if (tx.side === 0) {
               const date = new Date(tx.timestamp);
               data.fromHash = tx.hash;
-              data.fromChain = tx.chainId;
+              data.fromChainId = tx.chainId;
               data.fromTime = tx.timestamp;
               data.fromAmount = tx.value;
-              data.fromToken = tx.symbol;
+              data.fromSymbol = tx.symbol;
               data.fromTimeStampShow = util.formatDate(date);
-              data.fromAmountValue = +(+tx.value).toFixed(8);
+              data.fromAmountValue = new BigNumber(tx.value).dividedBy(10 ** token?.decimals).toFixed(8);
             }
             if (tx.side === 1) {
               const date = new Date(tx.timestamp);
               data.toHash = tx.hash;
-              data.toChain = tx.chainId;
+              data.toChainId = tx.chainId;
               data.toTime = tx.timestamp;
               data.toAmount = tx.value;
-              data.toToken = tx.symbol;
+              data.toSymbol = tx.symbol;
               data.toTimeStampShow = util.formatDate(date);
-              data.toAmountValue = +(+tx.value).toFixed(8);
+              data.toAmountValue = new BigNumber(tx.value).dividedBy(10 ** token?.decimals).toFixed(8);
             }
           }
           this.showError = false;

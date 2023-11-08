@@ -66,7 +66,7 @@ export default {
     return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/token/${ token }.png` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
   },
   chainName(chainId) {
-    return this.getV3ChainInfoByChainId(chainId)?.name || 'unknown'
+    return this.getV3ChainInfoByChainId(chainId)?.name || chainId
   },
   chainNetWorkId(chainId) {
     return this.getV3ChainInfoByChainId(chainId)?.chainId
@@ -320,7 +320,7 @@ export default {
 
   getChainInfoByNetworkId(networkId) {
     const info = config.chainConfig.find(
-      (item) => +item.networkId === +networkId
+      (item) => String(item.chainId) === String(networkId)
     )
     if (!info) return null
     return JSON.parse(JSON.stringify(info))
