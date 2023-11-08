@@ -815,7 +815,11 @@ export default {
                     this.transferLoading = false
                     return
                 }
-                const p_text = 9000 + Number(toChainID) + ''
+                const chainInfo = util.getChainInfoByNetworkId(toChainID);
+                if (!chainInfo) {
+                    return;
+                }
+                const p_text = 9000 + Number(chainInfo.internalId) + '';
                 const amount = tValue.tAmount
                 const memo = isCrossAddress
                     ? `${p_text}_${crossAddressReceipt}`
