@@ -17,15 +17,15 @@ function confirmUserTransaction(chainId, userAddress, hash) {
     clearInterval(cron);
   }
    cron = setInterval(async () => {
-     if (util.isEvmChain(chainId) && currentStatus === 1) {
-       const receipt = await util.requestWeb3(chainId, 'getTransactionReceipt', hash);
-       if (receipt?.status) {
-         util.log("rpc confirm fromTx ====", receipt);
-         currentStatus = 2;
-         storeUpdateProceedState(2);
-       }
-       return;
-     }
+     // if (util.isEvmChain(chainId) && currentStatus === 1) {
+     //   const receipt = await util.requestWeb3(chainId, 'getTransactionReceipt', hash);
+     //   if (receipt?.status) {
+     //     util.log("rpc confirm fromTx ====", receipt);
+     //     currentStatus = 2;
+     //     storeUpdateProceedState(2);
+     //   }
+     //   return;
+     // }
     try {
       const { status, txList = [] } = await requestOpenApi(RequestMethod.getTransactionByHash, [hash]) || {};
       util.log('txStatus', status, 'txList', txList)
