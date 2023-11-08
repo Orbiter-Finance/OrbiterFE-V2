@@ -346,8 +346,6 @@ function sortRule(ruleList) {
         }).forEach((rule, index) => {
           if (rule?.recipient) {
             makerSortMap[rule.recipient] = index;
-          } else {
-            makerSortMap[rule] = index;
           }
         });
     }
