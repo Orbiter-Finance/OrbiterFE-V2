@@ -1,5 +1,5 @@
 import { store } from '../../store'
-import { setMobileOrNot } from '../../composition/hooks'
+import { setMobileOrNot, setIsHomePageMobile } from '../../composition/hooks'
 import { toggleBodyCls } from '../'
 
 // set init function
@@ -11,6 +11,7 @@ export function init() {
   store.commit('setInnerWH', innerWH)
   let ww = innerWH.innerWidth
   setMobileOrNot(ww < 820)
+  setIsHomePageMobile(ww < 1240)
   if (ww > 375) {
     ww = 375
   }

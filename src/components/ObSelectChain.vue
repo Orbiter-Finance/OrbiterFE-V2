@@ -3,52 +3,48 @@
         <div @click.stop="stopPenetrate" class="selectChainContent">
             <div class="topItem">
                 <span>Select a Chain</span>
-                <div
-                    @click="closerButton"
-                    style="position: absolute; top: 0; right: 0"
-                >
-                    <SvgIconThemed
-                        style="width: 20px; height: 20px; cursor: pointer"
-                        iconName="close"
-                    />
+                <div @click="closerButton" style="position: absolute; top: 0; right: 0">
+                    <SvgIconThemed style="width: 20px; height: 20px; cursor: pointer" iconName="close" />
                 </div>
             </div>
             <div style="width: 100%; position: relative">
-                <input
-                    type="text"
-                    v-model="keyword"
-                    class="input"
-                    @input="checkKeyWord()"
-                    :placeholder="`input search text`"
-                />
-                <SvgIconThemed
-                    @click="search"
-                    class="searchIcon"
-                    icon="search"
-                />
+                <input type="text" v-model="keyword" class="input" @input="checkKeyWord()"
+                    :placeholder="`input search text`" />
+                <SvgIconThemed @click="search" class="searchIcon" icon="search" />
             </div>
         </div>
         <div class="list-content-box ob-scrollbar">
+
             <div class="list-content">
-                <div
-                    v-for="(item, index) in newChainData"
-                    :key="item.chain"
-                    @click="getChainInfo(item, index)"
-                    class="contentItem"
-                >
-                    <svg-icon
-                        class="logo"
-                        style="margin-right: 1.5rem"
-                        :iconName="item.icon"
-                    ></svg-icon>
-                    <span>{{ item.chain }}</span>
-                    <CommLoading
-                        v-if="loadingIndex == index"
-                        style="left: 1rem; top: 0rem"
-                        width="1.5rem"
-                        height="1.5rem"
-                    />
-                </div>
+                <template v-if="isExistChainsGroup">
+                    <template v-for="(chains, name) of groupChains" >
+                        <div class="contentItem title" >{{ toCapitalize(name) }}</div>
+                        <div v-for="(item, index) of chains" :key="name + index"
+                            @click="getChainInfo(item, index)" class="contentItem">
+                            <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
+                            <span>{{ item.chain }}</span>
+                            <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                                height="1.5rem" />
+                        </div>
+                    </template>
+                    <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
+                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
+                        class="contentItem">
+                        <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
+                        <span>{{ item.chain }}</span>
+                        <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                    </div>
+                </template>
+                <template v-else>
+                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
+                        class="contentItem">
+                        <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
+                        <span>{{ item.chain }}</span>
+                        <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                    </div>
+                </template>
             </div>
         </div>
     </div>
@@ -59,10 +55,13 @@ import Web3 from 'web3'
 import { DydxHelper } from '../util/dydx/dydx_helper'
 import { IMXHelper } from '../util/immutablex/imx_helper'
 import util from '../util/util.js'
+import {customSort} from '../util/index'
+
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 import { web3State } from '../composition/hooks'
+import config, { CHAIN_ID } from '../config';
 
 export default {
     name: 'ObSelectChain',
@@ -82,12 +81,25 @@ export default {
         }
     },
     computed: {
+        isExistChainsGroup() {
+            return !!Object.keys(this.chainsGroup).length
+        },
+        chainsGroup() {
+            return config.chainsGroup || {}
+        },
+        localIdsInGroup() {
+            const localIdsInGroup = Object.values(this.chainsGroup).reduce((localIds, ids) => {
+                localIds.push(...ids)
+                return localIds
+            }, [])
+            return localIdsInGroup || []
+        },
         transferChainData: function () {
             const newArray = []
             for (let index = 0; index < this.ChainData.length; index++) {
                 const item = this.ChainData[index]
 
-                const iconName = this.$env.chainIcon[item]
+                const iconName = util.netWorkLogo(item)
                 const chainData = {
                     icon: iconName,
                     chain: util.chainName(item),
@@ -96,26 +108,66 @@ export default {
                 newArray.push(chainData)
             }
             const chainOrderIds = [
-                14, 514, 3, 33, 17, 517, 6, 66, 1, 5, 2, 22, 16, 516, 9, 99, 7, 77, 12, 512, 8,
-                88, 10, 510, 11, 511, 13, 513, 4, 44, 15, 515, 518, 519, 520,
+                CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.zksync, CHAIN_ID.zksync_test,
+                CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test, CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.mainnet,
+                CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
+                CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
+                CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
+                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test
             ]
             return this.orderChainIds(chainOrderIds, newArray)
         },
         newChainData: function () {
-            if (!this.keyword || this.keyword === '') {
-                return this.transferChainData
+            let chains = this.transferChainData.filter(
+                    (item) => !this.localIdsInGroup.find(id=>String(id) === String(item.localID))
+                )
+            if (this.keyword || this.keyword !== '') {
+                chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
             }
-            return this.transferChainData.filter(
-                (item) =>
-                    item.chain
-                        .toLowerCase()
-                        .indexOf(this.keyword.toLowerCase()) !== -1
-            )
+            const chainOrderIds = [
+                CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.zksync, CHAIN_ID.zksync_test,
+                CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test, CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.mainnet,
+                CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
+                CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
+                CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
+                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test
+            ]
+            return customSort(chainOrderIds,chains)
         },
+        groupChains:function() {
+            const data = {};
+            for (const groupName in this.chainsGroup) {
+                const chainsIds = this.chainsGroup[groupName]
+                let chains = this.transferChainData.filter(
+                    (item) => chainsIds.find(chainId=>String(chainId) === String(item.localID))
+                )
+                if (this.keyword || this.keyword !== '') {
+                    chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
+                }
+                data[groupName] = chains;
+            }
+            return data;
+        }
     },
     watch: {},
-    mounted() {},
+    mounted() { },
     methods: {
+        getChainsInGroup(chainLocalIds) {
+            if (!chainLocalIds) {
+                return []
+            }
+            let chains =  chainLocalIds.map(id=> {
+                return this.transferChainData.find(c => id == c.localID);
+            });
+            //     if (this.keyword || this.keyword !== '') {
+            //     chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
+            // }
+            return chains.filter(row => row && row.localID)
+        },
+        toCapitalize(str) {
+            if (!str) return ''
+            return str.charAt(0).toUpperCase() + str.slice(1)
+        },
         orderChainIds: function (chainOrderIds, theArray) {
             theArray.sort((chainInfo, nextChainInfo) => {
                 return (
@@ -133,7 +185,7 @@ export default {
             if (this.isStarkSystem(e.localID)) {
                 try {
                     // starknet
-                    if (e.localID == 4 || e.localID == 44) {
+                    if (e.localID === CHAIN_ID.starknet || e.localID === CHAIN_ID.starknet_test) {
                         const { starkIsConnected, starkNetAddress } =
                             web3State.starkNet
                         if (!starkIsConnected && !starkNetAddress) {
@@ -147,7 +199,7 @@ export default {
                         }
                     }
                     // immutableX
-                    if (e.localID == 8 || e.localID == 88) {
+                    if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
                         this.loadingIndex = index
                         const coinbase =
                             compatibleGlobalWalletConf.value.walletPayload
@@ -157,7 +209,7 @@ export default {
                     }
 
                     // dydx
-                    if (e.localID == 11 || e.localID == 511) {
+                    if (e.localID === CHAIN_ID.dydx || e.localID === CHAIN_ID.dydx_test) {
                         try {
                             this.loadingIndex = index
                             const coinbase =
@@ -178,6 +230,7 @@ export default {
 
                     this.loadingIndex = -1
                 } catch (err) {
+                    console.log('obselect getChainInfo error', err)
                     this.$notify.error({
                         title: err.message,
                         duration: 3000,
@@ -192,12 +245,12 @@ export default {
         stopPenetrate(e) {
             e.stopPropagation
         },
-        search() {},
-        checkKeyWord() {},
+        search() { },
+        checkKeyWord() { },
         isStarkSystem(chainId) {
-            return [4, 44, 8, 88, 11, 511].indexOf(chainId) > -1
+            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
         },
-    },
+    }
 }
 </script>
 
@@ -209,6 +262,7 @@ export default {
         height: 372px;
     }
 }
+
 .app-mobile {
     .obSelectChainBody {
         width: calc(100% - 30px);
@@ -216,15 +270,14 @@ export default {
         height: 372px;
     }
 }
+
 .obSelectChainBody {
     position: relative;
     margin: 4.2rem auto;
     // height: calc(
     //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
     // );
-    height: calc(
-        100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
-    );
+    height: calc(100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
     border-radius: 20px;
     padding: 20px 0;
 
@@ -275,6 +328,14 @@ export default {
     .list-content-box {
         overflow-y: scroll;
         height: calc(100% - 90px);
+
+        .title {
+            font-size: 13px;
+            text-align: start;
+            font-family: inherit;
+            font-weight: 600;
+            color: #696969;
+        }
     }
 
     .contentItem {

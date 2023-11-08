@@ -4,6 +4,7 @@ import { Coin_ABI, CROSS_ADDRESS_ABI } from './constants/contract/contract'
 import util from './util'
 import walletDispatchers, { WALLETCONNECT } from './walletsDispatchers'
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
+import { padStart } from "lodash";
 
 export const CrossAddressTypes = {
   '0x01': 'Cross Ethereum Address',
@@ -23,7 +24,7 @@ export class CrossAddress {
     signer = undefined,
     contractAddress
   ) {
-    const chainInfo = util.getChainInfoByChainId(orbiterChainId)
+    const chainInfo = util.getV3ChainInfoByChainId(orbiterChainId)
     this.contractAddress =
       contractAddress ||
       (chainInfo?.xvmList && chainInfo.xvmList.length
@@ -298,14 +299,26 @@ export class CrossAddress {
     }
 
     if (
-      ext.type == '0x03' &&
-      utils.isHexString(ext.value) &&
-      ext.value.length % 2 == 1
+        ext.type == '0x03' &&
+        utils.isHexString(ext.value)
     ) {
-      const starkAddress = ext.value.substring(2)
-      ext.value = '0x0' + starkAddress
+      return utils.hexConcat([ext.type, CrossAddress.fix0xPadStartAddress(ext.value, 66)]);
     }
     return utils.hexConcat([ext.type, ext.value])
+  }
+
+  static fix0xPadStartAddress(address, length) {
+    if (!address) {
+      return "";
+    }
+    if (String(address).indexOf("0x") !== 0) {
+      return "";
+    }
+    address = address.replace("0x", "");
+    if (address.length < length) {
+      return `0x${padStart(address, length - 2, "0")}`;
+    }
+    return address;
   }
 
   /**

@@ -21,21 +21,22 @@ import {
   updatelpApiKey,
 } from '../../composition/hooks'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import { CHAIN_ID } from "../../config";
 let configNet = config.loopring.Mainnet
 
 export default {
   getUserAPI: function (localChainID) {
-    const netWorkID = localChainID == 9 ? 1 : 5
+    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 5
     return new UserAPI({ chainId: netWorkID })
   },
 
   getExchangeAPI: function (localChainID) {
-    const netWorkID = localChainID == 9 ? 1 : 5
+    const netWorkID = localChainID === CHAIN_ID.loopring ? 1 : 5
     return new ExchangeAPI({ chainId: netWorkID })
   },
   getLpTokenInfoOnce(fromChainID, tokenAddress) {
     const lpTokenInfos =
-      fromChainID === 9
+      fromChainID === CHAIN_ID.loopring
         ? store.state.lpTokenList.mainnet
         : store.state.lpTokenList.rinkeby
     return lpTokenInfos.find((item) => item.address == tokenAddress)
@@ -84,7 +85,7 @@ export default {
         }
         accountInfo = accountResult.accountInfo
       }
-      if (localChainID === 99) {
+      if (localChainID === CHAIN_ID.loopring_test) {
         configNet = config.loopring.Rinkeby
       }
       const resp = await axios.get(
@@ -168,6 +169,10 @@ export default {
     } else {
       accInfo = accountResult?.accountInfo
     }
+    const accountId = accInfo?.accountId;
+    const info = await userApi?.getCounterFactualInfo({ accountId });
+    const isCounterFactual = !!info?.counterFactualInfo?.walletOwner;
+
     if (
       accInfo.nonce == 0 &&
       accInfo.keyNonce == 0 &&
@@ -195,13 +200,16 @@ export default {
               exchangeInfo.exchangeAddress
             ).replace('${nonce}', (accInfo.nonce - 1).toString()),
       walletType: ConnectorNames.MetaMask,
-      chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
+      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
+    }
+    if (isCounterFactual) {
+      Object.assign(options, { accountId });
     }
 
     const eddsaKey = await generateKeyPair(options)
 
     const GetUserApiKeyRequest = {
-      accountId: accInfo.accountId,
+      accountId
     }
     const { apiKey } = await userApi.getUserApiKey(
       GetUserApiKeyRequest,
@@ -214,7 +222,7 @@ export default {
     // step 3 get storageId
     const lpTokenInfo = await this.getLpTokenInfo(localChainID, tokenAddress)
     const GetNextStorageIdRequest = {
-      accountId: accInfo.accountId,
+      accountId,
       sellTokenId: lpTokenInfo.tokenId,
     }
     const storageId = await userApi.getNextStorageId(
@@ -226,7 +234,7 @@ export default {
     const OriginTransferRequestV3 = {
       exchange: exchangeInfo.exchangeAddress,
       payerAddr: address,
-      payerId: accInfo.accountId,
+      payerId: accountId,
       payeeAddr: toAddress,
       payeeId: toAddressID,
       storageId: storageId.offchainId,
@@ -241,10 +249,18 @@ export default {
       validUntil: ts,
       memo,
     }
-    const response = await userApi.submitInternalTransfer({
+    const response = isCounterFactual ? await userApi.submitInternalTransfer({
       request: OriginTransferRequestV3,
       web3,
-      chainId: localChainID == 99 ? ChainId.GOERLI : ChainId.MAINNET,
+      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
+      walletType: ConnectorNames.MetaMask,
+      eddsaKey: eddsaKey.sk,
+      apiKey,
+      isHWAddr: false,
+    }, { accountId, counterFactualInfo: info.counterFactualInfo }) : await userApi.submitInternalTransfer({
+      request: OriginTransferRequestV3,
+      web3,
+      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
       walletType: ConnectorNames.MetaMask,
       eddsaKey: eddsaKey.sk,
       apiKey,
@@ -310,42 +326,6 @@ export default {
       : 0
   },
 
-  getLoopringTxList: async function (
-    address,
-    tokenName,
-    localChainID,
-    startTime,
-    endTime,
-    limit,
-    offset
-  ) {
-    const userApi = this.getUserAPI(localChainID)
-    const accountResult = await this.accountInfo(address, localChainID)
-    let accountInfo
-    if (!accountResult || accountResult.code) {
-      return
-    } else {
-      accountInfo = accountResult.accountInfo
-    }
-    const GetUserTransferListRequest = {
-      accountId: accountInfo.accountId,
-      start: startTime,
-      end: endTime,
-      status: 'processed,processing,received',
-      limit,
-      offset,
-      tokenSymbol: tokenName,
-      transferTypes: 'transfer',
-    }
-    const LPTransferResult = await userApi.getUserTransferList(
-      GetUserTransferListRequest,
-      localChainID == 9
-        ? process.env.VUE_APP_LP_MK_KEY
-        : process.env.VUE_APP_LP_MKTEST_KEY
-    )
-    return LPTransferResult
-  },
-
   getAccountStorageID: async function (address, localChainID, tokenID) {
     try {
       const accountResult = await this.accountInfo(address, localChainID)
@@ -367,7 +347,7 @@ export default {
       }
       const storageId = await userApi.getNextStorageId(
         GetNextStorageIdRequest,
-        localChainID == 9
+        localChainID === CHAIN_ID.loopring
           ? process.env.VUE_APP_LP_MK_KEY
           : process.env.VUE_APP_LP_MKTEST_KEY
       )

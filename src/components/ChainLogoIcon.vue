@@ -1,11 +1,9 @@
 <template>
-    <svg-icon
-        :iconName="logoName(id)"
-        style="width: 1.6rem; height: 1.6rem"
-    ></svg-icon>
+    <img style="width: 1.6rem; height: 1.6rem" :src="logoName(id)">
 </template>
 
 <script>
+import util from "../util/util";
 export default {
     name: 'ChainLogoIcon',
     props: {
@@ -13,10 +11,7 @@ export default {
     },
     methods: {
         logoName(chainID) {
-            if (this.$env.chainIcon[chainID]) {
-                return this.$env.chainIcon[chainID]
-            }
-            return 'ethlogo'
+            return util.netWorkLogo(chainID);
         },
     },
 }

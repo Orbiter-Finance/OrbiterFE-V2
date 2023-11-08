@@ -214,7 +214,7 @@ export default {
       return isMobile.value
     },
     indexTableData() {
-      return this.tableData.map((item, i) => ({ index: i + 1, ...item }))
+      return this.tableData.filter(item => item.launch_time).map((item, i) => ({ index: i + 1, ...item }))
     },
   },
   watch: {
