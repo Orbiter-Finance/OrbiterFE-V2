@@ -320,7 +320,7 @@
         if (status === 99) {
           const data = {};
           for (const tx of txList) {
-            const tokenList = util.getChainTokenList(util.getChainInfoByNetworkId(tx.chainId));
+            const tokenList = util.getChainTokenList(util.getV3ChainInfoByChainId(tx.chainId));
             const token = tokenList.find(item => item.symbol === tx.symbol);
             if (tx.side === 0) {
               const date = new Date(tx.timestamp);

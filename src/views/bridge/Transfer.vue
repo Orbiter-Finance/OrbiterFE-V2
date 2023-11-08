@@ -1616,6 +1616,7 @@ export default {
         return;
       }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        util.log('sendBtnInfo disabled');
         return;
       }
       // if (selectMakerConfig.ebcId) {
