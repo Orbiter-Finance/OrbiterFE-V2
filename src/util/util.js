@@ -306,6 +306,17 @@ export default {
     return chainInfo
   },
 
+  getOrbiterRouterV3Address(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    if (!chainInfo?.contract) return null;
+    for (const address of chainInfo.contract) {
+      if (chainInfo.contract[address] === 'OrbiterRouterV3') {
+        return address;
+      }
+    }
+    return null;
+  },
+
   isEvmChain(chainId) {
     return ![
       CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.imx, CHAIN_ID.imx_test,

@@ -8,9 +8,14 @@
     "networkId": "5",
     "internalId": "5",
     "name": "Görli",
-    "features": ["EIP1559"],
     "debug": false,
-    "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "contract": {
+      "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc": "OBSource",
+      "0xc7a54a6ec85344fabb645bf9ff9b2e88066fe601": "OrbiterRouterV3"
+    },
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
@@ -24,26 +29,7 @@
       "https://rpc.goerli.mudit.blog",
       "https://eth-goerli.g.alchemy.com/v2/demo"
     ],
-    "watch": ["rpc"],
-    "tokens": [
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0xa0321efEb50c46C17A7D72A52024eeA7221b215A"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0xA3a8A6b323E3d38f5284db9337e7c6d74Af3366a"
-      }
-    ],
-    "router": {
-      "0xc7a54a6ec85344fabb645bf9ff9b2e88066fe601": "OrbiterRouterV3"
-    },
-    "xvmList": ["0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"],
-    "faucets": ["https://goerli-faucet.slock.it/?address=${ADDRESS}", "https://faucet.goerli.mudit.blog"],
+    "tokens": [],
     "infoURL": "https://goerli.etherscan.io"
   },
   {

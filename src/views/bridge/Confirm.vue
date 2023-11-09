@@ -197,7 +197,7 @@ import {
 import { isMobile, transferDataState, web3State } from '../../composition/hooks'
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
-import { XVMSwap } from '../../util/constants/contract/xvm'
+import { orbiterRouterTransfer, OrbiterRouterType } from '../../util/constants/contract/orbiterRouter';
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp } from "../../util";
@@ -1208,8 +1208,7 @@ export default {
                 return
             }
 
-            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
-            const contractAddress = chainInfo.xvmList[0]
+            const contractAddress = util.getOrbiterRouterV3Address(fromChainID);
             const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             // approve
             if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
@@ -1245,11 +1244,8 @@ export default {
             }
 
             try {
-                const provider =
-                    compatibleGlobalWalletConf.value.walletPayload.provider
-                const { transactionHash } = await XVMSwap(
-                    provider,
-                    contractAddress,
+                const { transactionHash } = await orbiterRouterTransfer(
+                    OrbiterRouterType.CrossAddressCurrency,
                     account,
                     selectMakerConfig.recipient,
                     amount,
