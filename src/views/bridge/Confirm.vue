@@ -815,7 +815,7 @@ export default {
                     this.transferLoading = false
                     return
                 }
-                const chainInfo = util.getChainInfoByNetworkId(toChainID);
+                const chainInfo = util.getV3ChainInfoByChainId(toChainID);
                 if (!chainInfo) {
                     return;
                 }

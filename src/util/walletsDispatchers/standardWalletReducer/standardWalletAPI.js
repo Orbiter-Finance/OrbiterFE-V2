@@ -269,7 +269,7 @@ export const universalWalletSwitchChainHandler = (
 // extensions and directs the user to change the chain
 export const universalWalletAddChainHandler = (walletConf, walletProvider) => {
   const presentNetWorkId = getNetworkIdByChainId()
-  const matchChainConf = util.getChainInfoByNetworkId(presentNetWorkId)
+  const matchChainConf = util.getV3ChainInfoByChainId(presentNetWorkId)
   const { name, nativeCurrency, chainId, rpc } = matchChainConf
 
   const addParams = {
