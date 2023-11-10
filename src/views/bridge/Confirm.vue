@@ -291,7 +291,7 @@ export default {
                 return
             }
             const { fromAddress, ext } = transferExt
-            const contractAddress = selectMakerConfig.fromChain.tokenAddress
+            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             const recipient = selectMakerConfig.recipient
             const amount = ethers.BigNumber.from(value)
 
@@ -310,8 +310,8 @@ export default {
                 });
                 return;
             }
-            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
-            if (!chainInfo.contracts || !chainInfo.contracts.length) {
+            const contractAddress = util.getOrbiterRouterV3Address(fromChainID)
+            if (!contractAddress) {
                 this.$notify.error({
                     title: 'Contract not supported temporarily',
                     duration: 3000,
@@ -319,7 +319,6 @@ export default {
                 return
             }
 
-            const crossContractAddress = chainInfo.contracts[0]
             try {
                 let transferHash = ''
                 if (
@@ -333,9 +332,9 @@ export default {
                         provider,
                         fromChainID,
                         provider.getSigner(fromAddress),
-                        crossContractAddress
+                        contractAddress
                     )
-                    if (util.isEthTokenAddress(fromChainID, contractAddress)) {
+                    if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
                         transferHash =
                             await await crossAddress.wallConnTransfer(
                                 recipient,
@@ -345,7 +344,7 @@ export default {
                     } else {
                         transferHash =
                             await crossAddress.walletConnTransferERC20(
-                                contractAddress,
+                                tokenAddress,
                                 recipient,
                                 amount,
                                 ext
@@ -368,16 +367,16 @@ export default {
                     provider,
                     fromChainID,
                     provider.getSigner(fromAddress),
-                    crossContractAddress
+                    contractAddress
                 )
-                if (util.isEthTokenAddress(fromChainID, contractAddress)) {
+                if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
                     transferHash = (
                         await crossAddress.transfer(recipient, amount, ext)
                     ).hash
                 } else {
                     transferHash = (
                         await crossAddress.transferERC20(
-                            contractAddress,
+                            tokenAddress,
                             recipient,
                             amount,
                             ext
