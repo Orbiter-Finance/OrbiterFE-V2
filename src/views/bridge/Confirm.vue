@@ -327,46 +327,6 @@ export default {
             }
 
             try {
-                let transferHash = ''
-                if (
-                    compatibleGlobalWalletConf.value.walletType == WALLETCONNECT
-                ) {
-                    const web3 = util.stableWeb3(fromChainID)
-                    const provider = new ethers.providers.Web3Provider(
-                        web3.currentProvider
-                    )
-                    const crossAddress = new CrossAddress(
-                        provider,
-                        fromChainID,
-                        provider.getSigner(fromAddress),
-                        contractAddress
-                    )
-                    if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
-                        transferHash =
-                            await await crossAddress.wallConnTransfer(
-                                recipient,
-                                amount,
-                                ext
-                            )
-                    } else {
-                        transferHash =
-                            await crossAddress.walletConnTransferERC20(
-                                tokenAddress,
-                                recipient,
-                                amount,
-                                ext
-                            )
-                    }
-                    if (transferHash) {
-                        this.onTransferSucceed(
-                            fromAddress,
-                            amount,
-                            fromChainID,
-                            transferHash
-                        )
-                    }
-                    return
-                }
                 const res = await orbiterRouterTransfer(
                     OrbiterRouterType.CrossAddress,
                     fromAddress,
@@ -374,36 +334,12 @@ export default {
                     amount,
                     crossAddressReceipt
                 )
-                transferHash = res.hash
-                // const provider = new ethers.providers.Web3Provider(
-                //     compatibleGlobalWalletConf.value.walletPayload.provider
-                // )
-                // const crossAddress = new CrossAddress(
-                //     provider,
-                //     fromChainID,
-                //     provider.getSigner(fromAddress),
-                //     contractAddress
-                // )
-                // if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
-                //     transferHash = (
-                //         await crossAddress.transfer(recipient, amount, ext)
-                //     ).hash
-                // } else {
-                //     transferHash = (
-                //         await crossAddress.transferERC20(
-                //             tokenAddress,
-                //             recipient,
-                //             amount,
-                //             ext
-                //         )
-                //     ).hash
-                // }
-                if (transferHash) {
+                if (res?.hash) {
                     this.onTransferSucceed(
                         fromAddress,
                         amount,
                         fromChainID,
-                        transferHash
+                        res.hash
                     )
                 }
             } catch (err) {

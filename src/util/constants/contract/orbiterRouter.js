@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import { Coin_ABI, CROSS_ADDRESS_ABI, OrbiterRouterV3_ABI } from './contract';
+import { Coin_ABI, OrbiterRouterV3_ABI } from './contract';
 import util from '../../util';
 import RLP from 'rlp';
 import { transferDataState } from '../../../composition/useTransferData';
@@ -7,7 +7,7 @@ import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsi
 import { ethers } from "ethers";
 import BigNumber from "bignumber.js";
 import { Notification } from "element-ui";
-import walletDispatchers, { WALLETCONNECT } from "../../walletsDispatchers";
+import { WALLETCONNECT } from "../../walletsDispatchers";
 import { walletConnectSendTransaction } from "../../walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 
 // 0x01: cross address 0x02: cross address and cross currency
