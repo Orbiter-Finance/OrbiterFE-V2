@@ -284,7 +284,7 @@ export default {
     },
     methods: {
         async transferToStarkNet(value) {
-            const { selectMakerConfig, fromChainID, transferExt } =
+            const { selectMakerConfig, fromChainID, transferExt, crossAddressReceipt } =
                 transferDataState
 
             if (!walletIsLogin.value) {
@@ -296,6 +296,13 @@ export default {
             const amount = ethers.BigNumber.from(value)
 
             if (!ext?.value || util.starknetHashFormat(ext.value).length !== 66 || util.starknetHashFormat(ext.value) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
+                this.$notify.error({
+                    title: 'please connect correct starknet wallet address',
+                    duration: 3000,
+                });
+                return;
+            }
+            if (!crossAddressReceipt || util.starknetHashFormat(crossAddressReceipt).length !== 66 || util.starknetHashFormat(crossAddressReceipt) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
                 this.$notify.error({
                     title: 'please connect correct starknet wallet address',
                     duration: 3000,
@@ -360,29 +367,37 @@ export default {
                     }
                     return
                 }
-                const provider = new ethers.providers.Web3Provider(
-                    compatibleGlobalWalletConf.value.walletPayload.provider
+                const res = await orbiterRouterTransfer(
+                    OrbiterRouterType.CrossAddress,
+                    fromAddress,
+                    selectMakerConfig.recipient,
+                    amount,
+                    crossAddressReceipt
                 )
-                const crossAddress = new CrossAddress(
-                    provider,
-                    fromChainID,
-                    provider.getSigner(fromAddress),
-                    contractAddress
-                )
-                if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
-                    transferHash = (
-                        await crossAddress.transfer(recipient, amount, ext)
-                    ).hash
-                } else {
-                    transferHash = (
-                        await crossAddress.transferERC20(
-                            tokenAddress,
-                            recipient,
-                            amount,
-                            ext
-                        )
-                    ).hash
-                }
+                transferHash = res.hash
+                // const provider = new ethers.providers.Web3Provider(
+                //     compatibleGlobalWalletConf.value.walletPayload.provider
+                // )
+                // const crossAddress = new CrossAddress(
+                //     provider,
+                //     fromChainID,
+                //     provider.getSigner(fromAddress),
+                //     contractAddress
+                // )
+                // if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
+                //     transferHash = (
+                //         await crossAddress.transfer(recipient, amount, ext)
+                //     ).hash
+                // } else {
+                //     transferHash = (
+                //         await crossAddress.transferERC20(
+                //             tokenAddress,
+                //             recipient,
+                //             amount,
+                //             ext
+                //         )
+                //     ).hash
+                // }
                 if (transferHash) {
                     this.onTransferSucceed(
                         fromAddress,
@@ -391,7 +406,6 @@ export default {
                         transferHash
                     )
                 }
-                return
             } catch (err) {
                 console.error('transferToStarkNet error', err);
                 this.$notify.error({

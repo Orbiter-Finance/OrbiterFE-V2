@@ -1,9 +1,14 @@
 import Web3 from 'web3';
-import { OrbiterRouterV3_ABI } from './contract';
+import { Coin_ABI, CROSS_ADDRESS_ABI, OrbiterRouterV3_ABI } from './contract';
 import util from '../../util';
 import RLP from 'rlp';
 import { transferDataState } from '../../../composition/useTransferData';
 import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";
+import { ethers } from "ethers";
+import BigNumber from "bignumber.js";
+import { Notification } from "element-ui";
+import walletDispatchers, { WALLETCONNECT } from "../../walletsDispatchers";
+import { walletConnectSendTransaction } from "../../walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 
 // 0x01: cross address 0x02: cross address and cross currency
 export const OrbiterRouterType = {
@@ -57,6 +62,9 @@ async function orbiterRouterSend(chainId, fromAddress, toAddress, tokenAddress, 
   }
   const contractInstance = new web3.eth.Contract(OrbiterRouterV3_ABI, contractAddress);
   if (util.isEthTokenAddress(chainId, tokenAddress)) {
+    if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+
+    }
     return contractInstance.methods
       .transfer(toAddress, value, data)
       .send({
@@ -64,6 +72,63 @@ async function orbiterRouterSend(chainId, fromAddress, toAddress, tokenAddress, 
         value,
       });
   } else {
+    const { walletAddress, provider } = OrbiterConnector.walletInfo;
+    const tokenContractInstance = new ethers.Contract(
+      tokenAddress,
+      Coin_ABI,
+      provider
+    );
+
+    const allowance = await tokenContractInstance.allowance(walletAddress, contractAddress);
+    const amount = new BigNumber(value);
+
+    const checkAllowance = async () => {
+      const n = Notification({
+        duration: 0,
+        title: 'Approving...',
+        type: 'warning',
+      });
+      for (let index = 0; index < 5000; index++) {
+        const newAllowance = await tokenContractInstance.allowance(walletAddress, contractAddress);
+        if (!allowance.eq(newAllowance)) {
+          n.close();
+          if (amount.gt(newAllowance)) {
+            throw new Error(`Approval amount is insufficient`);
+          }
+          break;
+        }
+        await util.sleep(2000);
+      }
+      n.close();
+    };
+
+    if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+      if (amount.gt(allowance)) {
+        const iface = new ethers.utils.Interface(Coin_ABI);
+        const approveEncodeData = iface.encodeFunctionData('approve', [contractAddress, amount]);
+        const approveHash = await walletConnectSendTransaction(
+          chainId,
+          fromAddress,
+          tokenAddress,
+          0,
+          approveEncodeData
+        );
+        console.log('approve hash', approveHash);
+        await checkAllowance();
+      }
+      const iface = new ethers.utils.Interface(OrbiterRouterV3_ABI);
+      const encodeData = iface.encodeFunctionData('transferToken', [
+        toAddress, tokenAddress, value, data
+      ]);
+      return walletConnectSendTransaction(chainId, fromAddress, tokenAddress, value, encodeData);
+    }
+
+    if (amount.gt(allowance)) {
+      const approveHash = await tokenContractInstance.approve(contractAddress, amount);
+      console.log('approve hash', approveHash);
+      await checkAllowance();
+    }
+
     const gasLimit = await contractInstance.methods
       .transferToken(tokenAddress, toAddress, value, data)
       .estimateGas({
