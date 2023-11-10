@@ -1608,7 +1608,7 @@ export default {
       //   });
       //   return;
       // }
-      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      const { fromChainID, toChainID, fromCurrency, toCurrency, selectMakerConfig } = transferDataState;
 
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
       if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
@@ -1645,31 +1645,68 @@ export default {
           for (const ban of this.banList) {
             if (ban.source && ban.dest) {
               if (util.getInternalIdByChainId(fromChainID) === ban.source && util.getInternalIdByChainId(toChainID) === ban.dest) {
-                this.$notify.error({
-                  title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
-                  duration: 3000,
-                });
-                return;
+                if (ban.sourceToken && ban.sourceToken === fromCurrency) {
+                  if (ban.destToken && ban.destToken === toCurrency) {
+                    this.$notify.error({
+                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                      duration: 3000,
+                    });
+                    return;
+                  }
+                  if (!ban.destToken) {
+                    this.$notify.error({
+                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                      duration: 3000,
+                    });
+                    return;
+                  }
+                }
+
+                if (!ban.sourceToken) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
               }
               continue;
             }
             if (ban.source) {
               if (util.getInternalIdByChainId(fromChainID) === ban.source) {
-                this.$notify.error({
-                  title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
-                  duration: 3000,
-                });
-                return;
+                if (ban.sourceToken && ban.sourceToken === fromCurrency) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.fromChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return
+                }
+                if (!ban.sourceToken) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
               }
               continue;
             }
             if (ban.dest) {
               if (util.getInternalIdByChainId(toChainID) === ban.dest) {
-                this.$notify.error({
-                  title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
-                  duration: 3000,
-                });
-                return;
+                if (ban.destToken && ban.destToken === toCurrency) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
+                if (!ban.destToken) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
               }
             }
           }
