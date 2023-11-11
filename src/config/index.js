@@ -52,7 +52,7 @@ const maker = require(`./${
   isProd() ? `maker-${makerNum}.json` : `makerTest-${makerNum}.json`
 }`)
 
-const otherNum = parseInt(Math.random() * 3) + 1
+const otherNum = parseInt(Math.random() * 2) + 1
 if (otherNum > 2) {
   const makerOther = require(`./${
     isProd() ? `maker-${otherNum}.json` : `makerTest-${otherNum}.json`
