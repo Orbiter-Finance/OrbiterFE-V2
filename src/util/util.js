@@ -297,7 +297,7 @@ export default {
   getOrbiterRouterV3Address(chainId) {
     const chainInfo = this.getV3ChainInfoByChainId(chainId);
     if (!chainInfo?.contract) return null;
-    for (const address of chainInfo.contract) {
+    for (const address in chainInfo.contract) {
       if (chainInfo.contract[address] === 'OrbiterRouterV3') {
         return address;
       }

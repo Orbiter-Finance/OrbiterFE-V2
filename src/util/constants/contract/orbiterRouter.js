@@ -66,9 +66,9 @@ async function orbiterRouterSend(chainId, fromAddress, toAddress, tokenAddress, 
 
     }
     return contractInstance.methods
-      .transfer(toAddress, value, data)
+      .transfer(toAddress, data)
       .send({
-        from: account,
+        from: fromAddress,
         value,
       });
   } else {
