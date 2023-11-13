@@ -9,22 +9,22 @@ export const CHAIN_ID = {
   zkspace: 'ZKSpace',
   dydx: 'dydx',
   imx: 'immutableX',
-  mainnet: "1",
-  ar: "42161",
-  po: "137",
-  op: "10",
-  zksync2: "324",
-  nova: "42170",
-  base: "8453",
-  zora: "7777777",
-  metis: "1088",
-  boba: "288",
-  linea: "59144",
-  pozkevm: "1101",
-  bsc: "56",
-  opbnb: "204",
-  manta: "169",
-  scroll: "534352",
+  mainnet: '1',
+  ar: '42161',
+  po: '137',
+  op: '10',
+  zksync2: '324',
+  nova: '42170',
+  base: '8453',
+  zora: '7777777',
+  metis: '1088',
+  boba: '288',
+  linea: '59144',
+  pozkevm: '1101',
+  bsc: '56',
+  opbnb: '204',
+  manta: '169',
+  scroll: '534352',
 
   zksync_test: 'zksync_test',
   starknet_test: 'SN_GOERLI',
@@ -32,27 +32,27 @@ export const CHAIN_ID = {
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',
   imx_test: 'immutableX_test',
-  goerli: "5",
-  ar_test: "421613",
-  po_test: "80001",
-  op_test: "420",
-  zksync2_test: "280",
-  base_test: "84531",
-  zora_test: "999",
-  linea_test: "59140",
-  pozkevm_test: "1442",
-  bsc_test: "97",
-  opbnb_test: "5611",
-  manta_test: "3441005",
-  scroll_test: "534353",
-};
+  goerli: '5',
+  ar_test: '421613',
+  po_test: '80001',
+  op_test: '420',
+  zksync2_test: '280',
+  base_test: '84531',
+  zora_test: '999',
+  linea_test: '59140',
+  pozkevm_test: '1442',
+  bsc_test: '97',
+  opbnb_test: '5611',
+  manta_test: '3441005',
+  scroll_test: '534353',
+}
 
 const makerNum = parseInt(Math.random() * 2) + 1
 const maker = require(`./${
   isProd() ? `maker-${makerNum}.json` : `makerTest-${makerNum}.json`
 }`)
 
-const otherNum = parseInt(Math.random() * 3) + 1
+const otherNum = parseInt(Math.random() * 2) + 1
 if (otherNum > 2) {
   const makerOther = require(`./${
     isProd() ? `maker-${otherNum}.json` : `makerTest-${otherNum}.json`
@@ -150,6 +150,12 @@ function convertMakerConfig(maker) {
           gasFee: makerData.crossAddress?.gasFee,
         },
       }
+      if (
+        config.toChain.id == 1 &&
+        (config.toChain.symbol == 'USDC' || config.toChain.symbol == 'USDT')
+      ) {
+        continue
+      }
       // handle makerConfigs
       configs.push(config)
       // v1 maker configs
@@ -165,8 +171,7 @@ const whiteList = []
 let chainsGroup = {}
 try {
   chainsGroup = JSON.parse(process.env.VUE_APP_CHAINS_GROUP || '{}')
-} catch (err) {
-}
+} catch (err) {}
 
 export default {
   chainConfig,
