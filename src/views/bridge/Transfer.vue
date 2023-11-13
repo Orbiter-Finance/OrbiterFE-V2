@@ -40,7 +40,7 @@
             <div class="left">From</div>
           </o-tooltip>
           <div v-else class="left">From</div>
-          <div v-if="isLogin" class="right">
+          <div v-if="isLogin && fromBalance !== '-1'" class="right">
             Balance:
             <CommLoading
                     :hidden="!fromBalanceLoading"
@@ -1236,7 +1236,7 @@ export default {
       // }
       const availableDigit = fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
-      let useBalance = new BigNumber(this.fromBalance)
+      let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
               .minus(new BigNumber(opBalance));
       let userMax = useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN) > 0
@@ -1983,11 +1983,12 @@ export default {
                     await self.updateUserMaxPrice();
                   })
                   .catch((error) => {
+                    self.fromBalance = "-1"
                     console.warn(error);
                   }).finally(() => {
                   self.fromBalanceLoading = false;
           });
-          await self.updateUserMaxPrice();
+          // await self.updateUserMaxPrice();
         // } else {
         //   self.fromBalance = fromChainBalanceMap[fromChain.symbol];
         //   await self.updateUserMaxPrice();
