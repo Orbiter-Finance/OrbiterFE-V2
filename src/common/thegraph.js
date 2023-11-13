@@ -5,11 +5,10 @@ import { RequestMethod, requestOpenApi } from "./openApiAx";
 import config from "../config";
 
 const makerSortMap = {};
-let version = 0;
 let v2TradingPairs = [];
 
-export async function getV2TradingPair(v) {
-  if (version === v && v2TradingPairs.length) {
+export async function getV2TradingPair() {
+  if (v2TradingPairs.length) {
     return v2TradingPairs;
   }
   const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, []);
@@ -25,7 +24,6 @@ export async function getV2TradingPair(v) {
   }
 
   v2TradingPairs = sortRule(ruleList);
-  version = v;
   return v2TradingPairs;
 }
 

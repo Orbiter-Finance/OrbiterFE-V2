@@ -853,7 +853,7 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        makerConfigs = JSON.parse(JSON.stringify(await getV2TradingPair(new Date().valueOf()))).filter(item => item.fromChain.symbol === item.toChain.symbol);
+        makerConfigs = JSON.parse(JSON.stringify(await getV2TradingPair())).filter(item => item.fromChain.symbol === item.toChain.symbol);
         return;
       }
       updateDealerId(dealerId);
@@ -990,7 +990,7 @@ export default {
       if (this.isV3) {
         return;
       }
-      const allMakerConfigs = await getV2TradingPair(new Date().valueOf());
+      const allMakerConfigs = await getV2TradingPair();
       if (this.isNewVersion) {
         makerConfigs = JSON.parse(JSON.stringify(allMakerConfigs));
       } else {
