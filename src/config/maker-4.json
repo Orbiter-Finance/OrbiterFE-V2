@@ -6,7 +6,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -18,7 +18,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -30,7 +30,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -42,7 +42,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -54,7 +54,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -66,7 +66,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -78,7 +78,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -90,7 +90,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -102,7 +102,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 10,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -114,7 +114,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 5,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -127,7 +127,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 3,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -139,7 +139,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 3,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -152,7 +152,7 @@
             "makerAddress": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "sender": "0x0a88BC5c32b684D467b43C06D9e0899EfEAF59Df",
             "maxPrice": 3,
-            "minPrice": 0.005,
+            "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
         }

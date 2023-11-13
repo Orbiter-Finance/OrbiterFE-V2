@@ -40,7 +40,7 @@
             <div class="left">From</div>
           </o-tooltip>
           <div v-else class="left">From</div>
-          <div v-if="isLogin" class="right">
+          <div v-if="isLogin && fromBalance !== '-1'" class="right">
             Balance:
             <CommLoading
                     :hidden="!fromBalanceLoading"
@@ -53,7 +53,10 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeFromChain">
-            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon()">
+            <svg-icon
+              :iconName="showChainIcon()"
+              style="width: 24px; height: 24px; margin-right: 4px"
+            ></svg-icon>
             <span>{{ showChainName() }}</span>
             <SvgIconThemed v-if="fromChainIdList.length" />
           </div>
@@ -122,7 +125,10 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon(false)">
+              <svg-icon
+                  :iconName="showChainIcon(false)"
+                  style="width: 24px; height: 24px; margin-right: 4px"
+              ></svg-icon>
             <span>{{ showChainName(false) }}</span>
             <SvgIconThemed v-if="toChainIdList.length" />
           </div>
@@ -354,7 +360,7 @@ import {
   CommDialog,
   CommTipDialog,
   SvgIconThemed,
-  HelpIcon,
+  HelpIcon
 } from '../../components'
 import util from '../../util/util'
 import check from '../../util/check/check'
@@ -847,7 +853,7 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        // makerConfigs = await getV2TradingPair(new Date().valueOf());
+        makerConfigs = JSON.parse(JSON.stringify(await getV2TradingPair())).filter(item => item.fromChain.symbol === item.toChain.symbol);
         return;
       }
       updateDealerId(dealerId);
@@ -980,14 +986,18 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
-    refreshConfig() {
+    async refreshConfig() {
       if (this.isV3) {
         return;
       }
+      const allMakerConfigs = await getV2TradingPair();
       if (this.isNewVersion) {
-        makerConfigs = config.makerConfigs;
+        makerConfigs = JSON.parse(JSON.stringify(allMakerConfigs));
       } else {
-        makerConfigs = config.v1MakerConfigs;
+        const dealerId = this.$route?.query?.dealerId;
+        if (!dealerId) {
+          makerConfigs = JSON.parse(JSON.stringify(allMakerConfigs)).filter(item => item.fromChain.symbol === item.toChain.symbol);
+        }
       }
       this.updateTransferInfo();
     },
@@ -1096,7 +1106,7 @@ export default {
         if (!fromTokenList.find(it => it.token === item.fromChain.symbol)) {
             if (item.fromChain.symbol) {
                 fromTokenList.push({
-                    icon: util.tokenLogo(item.fromChain.symbol),
+                    icon: item.fromChain.symbol,
                     token: item.fromChain.symbol,
                     amount: 0,
                 });
@@ -1105,7 +1115,7 @@ export default {
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
             if (item.toChain.symbol) {
                 toTokenList.push({
-                    icon: util.tokenLogo(item.toChain.symbol),
+                    icon: item.toChain.symbol,
                     token: item.toChain.symbol,
                     amount: 0,
                 });
@@ -1125,7 +1135,7 @@ export default {
       makerConfigList.forEach(item => {
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
           toTokenList.push({
-            icon: util.tokenLogo(item.toChain.symbol),
+            icon: item.toChain.symbol,
             token: item.toChain.symbol,
             amount: 0,
           });
@@ -1230,7 +1240,7 @@ export default {
       // }
       const availableDigit = fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
-      let useBalance = new BigNumber(this.fromBalance)
+      let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
               .minus(new BigNumber(opBalance));
       let userMax = useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN) > 0
@@ -1488,8 +1498,7 @@ export default {
       return util.chainName(localChainID);
     },
     showChainIcon(isFrom = true) {
-      const localChainID = transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`];
-      return util.netWorkLogo(localChainID);
+      return transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`] || 1;
     },
     selectFromTokenChange(val) {
       this.selectFromToken = val;
@@ -1608,7 +1617,7 @@ export default {
       //   });
       //   return;
       // }
-      const { fromChainID, toChainID, fromCurrency, selectMakerConfig } = transferDataState;
+      const { fromChainID, toChainID, fromCurrency, toCurrency, selectMakerConfig } = transferDataState;
 
       const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
       if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
@@ -1616,6 +1625,7 @@ export default {
         return;
       }
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+        util.log('sendBtnInfo disabled');
         return;
       }
       // if (selectMakerConfig.ebcId) {
@@ -1644,31 +1654,68 @@ export default {
           for (const ban of this.banList) {
             if (ban.source && ban.dest) {
               if (util.getInternalIdByChainId(fromChainID) === ban.source && util.getInternalIdByChainId(toChainID) === ban.dest) {
-                this.$notify.error({
-                  title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
-                  duration: 3000,
-                });
-                return;
+                if (ban.sourceToken && ban.sourceToken === fromCurrency) {
+                  if (ban.destToken && ban.destToken === toCurrency) {
+                    this.$notify.error({
+                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                      duration: 3000,
+                    });
+                    return;
+                  }
+                  if (!ban.destToken) {
+                    this.$notify.error({
+                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                      duration: 3000,
+                    });
+                    return;
+                  }
+                }
+
+                if (!ban.sourceToken) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
               }
               continue;
             }
             if (ban.source) {
               if (util.getInternalIdByChainId(fromChainID) === ban.source) {
-                this.$notify.error({
-                  title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
-                  duration: 3000,
-                });
-                return;
+                if (ban.sourceToken && ban.sourceToken === fromCurrency) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.fromChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return
+                }
+                if (!ban.sourceToken) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
               }
               continue;
             }
             if (ban.dest) {
               if (util.getInternalIdByChainId(toChainID) === ban.dest) {
-                this.$notify.error({
-                  title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
-                  duration: 3000,
-                });
-                return;
+                if (ban.destToken && ban.destToken === toCurrency) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
+                if (!ban.destToken) {
+                  this.$notify.error({
+                    title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    duration: 3000,
+                  });
+                  return;
+                }
               }
             }
           }
@@ -1940,11 +1987,12 @@ export default {
                     await self.updateUserMaxPrice();
                   })
                   .catch((error) => {
+                    self.fromBalance = "-1"
                     console.warn(error);
                   }).finally(() => {
                   self.fromBalanceLoading = false;
           });
-          await self.updateUserMaxPrice();
+          // await self.updateUserMaxPrice();
         // } else {
         //   self.fromBalance = fromChainBalanceMap[fromChain.symbol];
         //   await self.updateUserMaxPrice();

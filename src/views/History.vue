@@ -78,7 +78,10 @@
                             justify-content: center;
                         "
               >
-                <img style="width: 1.6rem; height: 1.6rem" :src="logoName(item.fromChainId)">
+                  <svg-icon
+                      :iconName="item.fromChainId || 1"
+                      style="width: 1.6rem; height: 1.6rem"
+                  ></svg-icon>
               </div>
               <div
                 class="col-val col-5"
@@ -88,7 +91,10 @@
                             justify-content: center;
                         "
               >
-                <img style="width: 1.6rem; height: 1.6rem" :src="logoName(item.toChainId)">
+                  <svg-icon
+                      :iconName="item.toChainId || 1"
+                      style="width: 1.6rem; height: 1.6rem"
+                  ></svg-icon>
               </div>
             </div>
           </div>
@@ -166,7 +172,7 @@
 
 <script>
   import config, { CHAIN_ID } from '../config';
-  import { NoData,CommBtn } from '../components'
+  import { NoData, CommBtn, SvgIconThemed } from '../components';
   import {
     isMobile,
     historyPanelState,
@@ -183,7 +189,8 @@
     name: 'History',
     components: {
       NoData,
-      CommBtn
+      CommBtn,
+      SvgIconThemed
     },
     data() {
       return {
@@ -320,7 +327,7 @@
         if (status === 99) {
           const data = {};
           for (const tx of txList) {
-            const tokenList = util.getChainTokenList(util.getChainInfoByNetworkId(tx.chainId));
+            const tokenList = util.getChainTokenList(util.getV3ChainInfoByChainId(tx.chainId));
             const token = tokenList.find(item => item.symbol === tx.symbol);
             if (tx.side === 0) {
               const date = new Date(tx.timestamp);
@@ -379,9 +386,6 @@
         if (item.fromHash && item.toHash) {
           return 'history_success'
         }
-      },
-      logoName(chainID) {
-        return util.netWorkLogo(chainID)
       },
     },
   }

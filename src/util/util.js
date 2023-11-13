@@ -51,22 +51,10 @@ export default {
     })
   },
   netWorkName(networkId) {
-    return this.getChainInfoByNetworkId(networkId)?.name || 'unknown'
-  },
-  netWorkLogo(networkId) {
-    if (!networkId) {
-      return 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
-    }
-    return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/chain/${ networkId }.svg` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
-  },
-  tokenLogo(token) {
-    if (!token) {
-      return 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
-    }
-    return process.env.VUE_APP_IMG_BASE_URL ? `${ process.env.VUE_APP_IMG_BASE_URL }/token/${ token }.png` : 'https://etherscan.io/images/svg/brands/ethereum-original.svg';
+    return this.getV3ChainInfoByChainId(networkId)?.name || networkId || ''
   },
   chainName(chainId) {
-    return this.getV3ChainInfoByChainId(chainId)?.name || chainId
+    return this.getV3ChainInfoByChainId(chainId)?.name || chainId || ''
   },
   chainNetWorkId(chainId) {
     return this.getV3ChainInfoByChainId(chainId)?.chainId
@@ -318,21 +306,6 @@ export default {
     return chainInfo?.internalId ? Number(chainInfo.internalId) : null;
   },
 
-  getChainInfoByNetworkId(networkId) {
-    const info = config.chainConfig.find(
-      (item) => String(item.chainId) === String(networkId)
-    )
-    if (!info) return null
-    return JSON.parse(JSON.stringify(info))
-  },
-
-  getTokenByTokenAddress(chainId, tokenAddress) {
-    const chainInfo = this.getV3ChainInfoByChainId(String(chainId));
-    if (!chainInfo) return null;
-    const tokenList = this.getChainTokenList(chainInfo);
-    return tokenList.find(item => item.address.toLowerCase() === tokenAddress.toLowerCase());
-  },
-
   getChainTokenList(chain) {
     const allTokenList = [];
     if (!chain) return [];
@@ -349,7 +322,7 @@ export default {
     if (isProd()) {
       return
     }
-    console.log(...msg)
+    console.log('======', ...msg);
   },
 
   isWhite() {
