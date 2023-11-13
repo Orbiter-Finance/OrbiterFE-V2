@@ -853,7 +853,7 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        // makerConfigs = await getV2TradingPair(new Date().valueOf());
+        makerConfigs = await getV2TradingPair(new Date().valueOf());
         return;
       }
       updateDealerId(dealerId);
