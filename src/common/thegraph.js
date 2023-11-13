@@ -20,9 +20,9 @@ export async function getV2TradingPair(v) {
       return whiteList.find(address => address.toLowerCase() === rule?.recipient.toLowerCase());
     });
   }
-  // if (apiRes?.chainList && apiRes.chainList.length) {
-  //   config.chainConfig = apiRes.chainList;
-  // }
+  if (apiRes?.chainList && apiRes.chainList.length) {
+    config.chainConfig = apiRes.chainList;
+  }
 
   v2TradingPairs = sortRule(ruleList);
   version = v;

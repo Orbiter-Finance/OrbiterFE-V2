@@ -853,7 +853,7 @@ export default {
     async syncV3Data(first) {
       const dealerId = this.$route?.query?.dealerId;
       if (!dealerId) {
-        makerConfigs = await getV2TradingPair(new Date().valueOf());
+        makerConfigs = JSON.parse(JSON.stringify(await getV2TradingPair(new Date().valueOf()))).filter(item => item.fromChain.symbol === item.toChain.symbol);
         return;
       }
       updateDealerId(dealerId);
@@ -986,14 +986,18 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
-    refreshConfig() {
+    async refreshConfig() {
       if (this.isV3) {
         return;
       }
+      const allMakerConfigs = await getV2TradingPair(new Date().valueOf());
       if (this.isNewVersion) {
-        makerConfigs = config.makerConfigs;
+        makerConfigs = JSON.parse(JSON.stringify(allMakerConfigs));
       } else {
-        makerConfigs = config.v1MakerConfigs;
+        const dealerId = this.$route?.query?.dealerId;
+        if (!dealerId) {
+          makerConfigs = JSON.parse(JSON.stringify(allMakerConfigs)).filter(item => item.fromChain.symbol === item.toChain.symbol);
+        }
       }
       this.updateTransferInfo();
     },
