@@ -53,7 +53,10 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeFromChain">
-            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon()">
+            <svg-icon
+              :iconName="showChainIcon()"
+              style="width: 24px; height: 24px; margin-right: 4px"
+            ></svg-icon>
             <span>{{ showChainName() }}</span>
             <SvgIconThemed v-if="fromChainIdList.length" />
           </div>
@@ -122,7 +125,10 @@
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
-            <img style="width: 24px; height: 24px; margin-right: 4px" :src="showChainIcon(false)">
+              <svg-icon
+                  :iconName="showChainIcon(false)"
+                  style="width: 24px; height: 24px; margin-right: 4px"
+              ></svg-icon>
             <span>{{ showChainName(false) }}</span>
             <SvgIconThemed v-if="toChainIdList.length" />
           </div>
@@ -354,7 +360,7 @@ import {
   CommDialog,
   CommTipDialog,
   SvgIconThemed,
-  HelpIcon,
+  HelpIcon
 } from '../../components'
 import util from '../../util/util'
 import check from '../../util/check/check'
@@ -1096,7 +1102,7 @@ export default {
         if (!fromTokenList.find(it => it.token === item.fromChain.symbol)) {
             if (item.fromChain.symbol) {
                 fromTokenList.push({
-                    icon: util.tokenLogo(item.fromChain.symbol),
+                    icon: item.fromChain.symbol,
                     token: item.fromChain.symbol,
                     amount: 0,
                 });
@@ -1105,7 +1111,7 @@ export default {
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
             if (item.toChain.symbol) {
                 toTokenList.push({
-                    icon: util.tokenLogo(item.toChain.symbol),
+                    icon: item.toChain.symbol,
                     token: item.toChain.symbol,
                     amount: 0,
                 });
@@ -1125,7 +1131,7 @@ export default {
       makerConfigList.forEach(item => {
         if (fromCurrency === item.fromChain.symbol && !toTokenList.find(it => it.token === item.toChain.symbol)) {
           toTokenList.push({
-            icon: util.tokenLogo(item.toChain.symbol),
+            icon: item.toChain.symbol,
             token: item.toChain.symbol,
             amount: 0,
           });
@@ -1488,8 +1494,7 @@ export default {
       return util.chainName(localChainID);
     },
     showChainIcon(isFrom = true) {
-      const localChainID = transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`];
-      return util.netWorkLogo(localChainID);
+      return transferDataState[`${ isFrom ? 'from' : 'to' }ChainID`] || 1;
     },
     selectFromTokenChange(val) {
       this.selectFromToken = val;

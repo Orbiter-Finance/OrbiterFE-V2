@@ -2,14 +2,7 @@
     <div ref="ctx" class="ob-select-box" @click="showSelectDialog">
         <slot class="prfix" name="prefix">
             <template v-if="selectedItem.icon">
-                <img
-                    v-if="selectedItem.iconType === 'img'"
-                    :src="selectedItem.icon"
-                    class="select-item-icon"
-                    alt=""
-                />
                 <svg-icon
-                    v-else
                     class="select-item-icon"
                     :iconName="selectedItem.icon"
                 ></svg-icon>
@@ -32,14 +25,7 @@
                 :class="['select-item', { selected: item.value == value }]"
             >
                 <template v-if="item.icon">
-                    <img
-                        v-if="item.iconType === 'img'"
-                        :src="item.icon"
-                        class="select-item-icon"
-                        alt=""
-                    />
                     <svg-icon
-                        v-else
                         class="select-item-icon"
                         :iconName="item.icon"
                     ></svg-icon>
