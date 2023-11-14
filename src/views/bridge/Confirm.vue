@@ -1194,7 +1194,7 @@ export default {
 
             try {
                 const { transactionHash } = await orbiterRouterTransfer(
-                    OrbiterRouterType.CrossAddressCurrency,
+                    selectMakerConfig.fromChain.symbol === selectMakerConfig.toChain.symbol ? OrbiterRouterType.CrossAddress : OrbiterRouterType.CrossAddressCurrency,
                     account,
                     selectMakerConfig.recipient,
                     amount,
