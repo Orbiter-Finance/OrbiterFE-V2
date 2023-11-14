@@ -505,7 +505,7 @@
     },
     "19-23": {
         "ETH-ETH": {
-            "gasFee": 0.5,
+            "gasFee": 0,
             "tradingFee": 0.0005,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
@@ -1082,7 +1082,7 @@
             "maxPrice": 3,
             "minPrice": 0.001,
             "tradingFee": 0.0005,
-            "gasFee": 1,
+            "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -1354,7 +1354,7 @@
             "maxPrice": 2,
             "minPrice": 0.001,
             "tradingFee": 0.0005,
-            "gasFee": 10,
+            "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
         }
