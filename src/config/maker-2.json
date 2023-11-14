@@ -506,7 +506,7 @@
     "19-23": {
         "ETH-ETH": {
             "gasFee": 0.5,
-            "tradingFee": 0.0013,
+            "tradingFee": 0.0005,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
@@ -1081,7 +1081,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 3,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
+            "tradingFee": 0.0005,
             "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
@@ -1353,7 +1353,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 10,
             "startTime": 0,
             "endTime": 99999999999999
@@ -1959,7 +1959,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2245,7 +2245,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2301,7 +2301,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2365,7 +2365,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0011,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2429,7 +2429,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0013,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2493,7 +2493,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2557,7 +2557,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2611,7 +2611,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2665,7 +2665,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2729,7 +2729,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
