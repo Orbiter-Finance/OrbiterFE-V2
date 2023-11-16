@@ -3,28 +3,30 @@ import util from "../util/util";
 import BigNumber from "bignumber.js";
 import { RequestMethod, requestOpenApi } from "./openApiAx";
 import config from "../config";
+import { isProd } from "../util";
 
 const makerSortMap = {};
 let v2TradingPairs = [];
 
 export async function getV2TradingPair() {
-  if (v2TradingPairs.length) {
-    return v2TradingPairs;
-  }
-  const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, []);
-  let ruleList = apiRes.ruleList;
-  if (process.env.VUE_APP_WHITE_LIST) {
-    const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
-    ruleList = ruleList.filter(rule => {
-      return whiteList.find(address => address.toLowerCase() === rule?.recipient.toLowerCase());
-    });
-  }
-  if (apiRes?.chainList && apiRes.chainList.length) {
-    config.chainConfig = apiRes.chainList;
-  }
-
-  v2TradingPairs = sortRule(ruleList);
-  return v2TradingPairs;
+  return config.v1MakerConfigs
+  // if (v2TradingPairs.length) {
+  //   return v2TradingPairs;
+  // }
+  // const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, []);
+  // let ruleList = apiRes.ruleList;
+  // if (isProd() && process.env.VUE_APP_WHITE_LIST) {
+  //   const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
+  //   ruleList = ruleList.filter(rule => {
+  //     return whiteList.find(address => address.toLowerCase() === rule?.recipient.toLowerCase());
+  //   });
+  // }
+  // if (apiRes?.chainList && apiRes.chainList.length) {
+  //   config.chainConfig = apiRes.chainList;
+  // }
+  //
+  // v2TradingPairs = sortRule(ruleList);
+  // return v2TradingPairs;
 }
 
 export async function getMdcRuleLatest(dealerAddress) {
