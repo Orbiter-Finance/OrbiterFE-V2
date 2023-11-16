@@ -16,6 +16,9 @@ export function updateTransferDataState(obj) {
     transferDataState[key] = obj[key] || defaultTransferDateState[key]
   })
 }
+export function updateDealerId(dealerId) {
+  transferDataState.dealerId = dealerId
+}
 export function updateTransferValue(value) {
   transferDataState.transferValue = value
 }

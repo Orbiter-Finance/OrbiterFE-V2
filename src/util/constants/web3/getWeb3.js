@@ -7,21 +7,21 @@ import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsi
 import {
   updateCoinbase,
   updateIsInstallMeta,
-  transferDataState,
-} from '../../../composition/hooks'
+  transferDataState, web3State,
+} from '../../../composition/hooks';
 import util from '../../util'
 import { Notification } from 'element-ui'
-import config from '../../../config'
 import { universalWalletSwitchChainHandler } from '../../walletsDispatchers/standardWalletReducer/standardWalletAPI'
+import { isMobileDevice } from "../../env";
 const showMessage = util.showMessage
 
 async function installWeb3(walletType) {
   const web3Provider = findMatchWeb3ProviderByWalletType(walletType || METAMASK)
   if (web3Provider) {
     try {
-      if (walletType === METAMASK && web3Provider.isTokenPocket) {
-        throw Error('plugin-mutual-exclusion')
-      }
+      // if (walletType === METAMASK && web3Provider.isTokenPocket) {
+      //   throw Error('plugin-mutual-exclusion')
+      // }
       await web3Provider.enable()
     } catch (error) {
       updateIsInstallMeta(true)
@@ -58,6 +58,7 @@ async function installWeb3(walletType) {
           '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     }
+    if (isMobileDevice()) return;
     return showMessage('not install metamask', 'error')
   }
   return new Web3(web3Provider)
@@ -74,10 +75,8 @@ async function getWeb3(walletType) {
       showMessage('get netWorkID failed, refresh and try again', 'error')
       updateCoinbase('')
     } else {
-      let chainId = config.chainConfig.find(
-        (chain) => +chain.internalId === +transferDataState.fromChainID
-      )?.chainId
-      if (chainId && netWorkId.toString() !== chainId.toString()) {
+      const chainId = util.getMetaMaskNetworkId(+transferDataState.fromChainID);
+      if (chainId && Number(netWorkId) !== Number(chainId) && Number(netWorkId) !== Number(web3State.networkId)) {
         const walletConf = compatibleGlobalWalletConf.value
         universalWalletSwitchChainHandler(
           walletConf.walletPayload,

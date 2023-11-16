@@ -3,8 +3,9 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from './walletsResponsiveData'
-import openApiAx from '../common/openApiAx'
-import util from '../util/util'
+import { RequestMethod, requestOpenApi } from '../common/openApiAx';
+import util from "../util/util";
+// import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
   isLoading: false,
@@ -38,17 +39,17 @@ export function setHistoryInfo(info = {}, isShowHistory = true) {
   historyPanelState.isShowHistory = isShowHistory
   // historyPanelState.historyInfo = info
   historyPanelState.historyInfo = {
-        fromChainID: info.fromChain,
-        fromTimeStamp: info.fromTimeStampShow,
-        fromTxHash: info.fromHash,
-        makerAddress: info.replySender,
-        state: 0,
-        toChainID: info.toChain,
-        toTimeStamp: info.toTimeStampShow,
-        toTxHash: info.toHash,
-        tokenName:info.toToken,
-        userAddress: info.replyAccount,
-        userAmount: info.fromAmountValue,
+    fromChainID: info.fromChainId,
+    fromTimeStamp: info.fromTimeStampShow,
+    fromTxHash: info.fromHash,
+    // makerAddress: info.replySender,
+    state: 0,
+    toChainID: info.toChainId,
+    toTimeStamp: info.toTimeStampShow,
+    toTxHash: info.toHash,
+    tokenName: info.fromSymbol,
+    // userAddress: info.replyAccount,
+    userAmount: info.fromAmountValue,
   }
 
 }
@@ -67,29 +68,22 @@ export async function getTransactionsHistory(params = {}) {
     if (cache) {
       res = cache;
     } else {
-      res = await openApiAx.get(
-          `/userHistory?address=${ walletAddress }&page=${ params.current || 1 }`
-      );
+      res = await requestOpenApi(RequestMethod.getTransactionByAddress, [walletAddress.toLowerCase(), 10, params.current || 1]);
       util.setCache(`history_${ walletAddress }_${ params.current || 1 }`, res, 10000);
     }
-    const { rows, page, total } = res;
-    // const result = await openApiAx.get(`/userHistory?address=${walletAddress}`);
-    historyPanelState.transactionList = rows.map((row) => {
-      let decimal = 18
-      if (row.fromToken === 'USDC' || row.fromToken === 'USDT') {
-        decimal = 6
-      }
-      const fromDate = new Date(row.fromTime);
-      const toDate = new Date(row.toTime);
+    const { list, count } = res;
+    historyPanelState.transactionList = list.map((row) => {
+      const fromDate = new Date(row.fromTimestamp);
+      const toDate = new Date(row.toTimestamp);
       row.fromTimeStampShow = util.formatDate(fromDate);
       row.toTimeStampShow = util.formatDate(toDate);
       row.fromTimeStampShowShort = util.formatDate(fromDate, true);
       row.toTimeStampShowShort = util.formatDate(toDate, true);
-      row.fromAmountValue = (row.fromAmount / 10 ** decimal).toFixed(8);
+      row.fromAmountValue = (+row.fromValue).toFixed(8);
       return row;
     })
-    historyPanelState.transactionListInfo.current = Number(page || 1)
-    historyPanelState.transactionListInfo.total = total * 10
+    historyPanelState.transactionListInfo.current = Number(params.current || 1)
+    historyPanelState.transactionListInfo.total = count
     historyPanelState.isLoading = false
   } catch (error) {
     console.error(error)

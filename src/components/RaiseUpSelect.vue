@@ -13,14 +13,7 @@
                     :class="['item', { selected: isSelected(item) }]"
                 >
                     <template v-if="item.icon">
-                        <img
-                            v-if="item.iconType === 'img'"
-                            :src="item.icon"
-                            class="item-icon"
-                            alt=""
-                        />
                         <svg-icon
-                            v-else
                             class="item-icon"
                             :iconName="item.icon"
                         ></svg-icon>

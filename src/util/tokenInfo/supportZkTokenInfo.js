@@ -1,5 +1,6 @@
 import thirdapi from '../../core/actions/thirdapi'
 import { store } from '../../store'
+import { CHAIN_ID } from "../../config";
 
 let isWaitingMainnetZKTokenApiResponse = false
 let isWaitingRinkebyZKTokenApiResponse = false
@@ -20,13 +21,10 @@ async function getAllZKTokenList() {
   !isWaitingRinkebyZKTokenApiResponse && getRinkebyZKTokenList()
 }
 async function getMainnetZKTokenList() {
-  getTokenList(3)
+  getTokenList(CHAIN_ID.zksync)
 }
 async function getRinkebyZKTokenList() {
-  getTokenList(33)
-}
-function isMainnetZKToken(id) {
-  return id == 3
+  getTokenList(CHAIN_ID.zksync_test)
 }
 function setWaitingFlag(isMainnet, isWaiting = false) {
   isMainnet
@@ -34,12 +32,9 @@ function setWaitingFlag(isMainnet, isWaiting = false) {
     : (isWaitingRinkebyZKTokenApiResponse = isWaiting)
 }
 async function getTokenList(localChainID) {
-  if (localChainID !== 3 && localChainID !== 33) {
-    return
-  }
   let isContiue = true
   // var startID = 0
-  const isMainnet = isMainnetZKToken(localChainID)
+  const isMainnet = localChainID === CHAIN_ID.zksync
   const zktokenList = store.state.zktokenList || {}
   const list = (isMainnet ? zktokenList.mainnet : zktokenList.rinkeby) || []
   let startID = (list[list.length - 1] || {}).id || 0

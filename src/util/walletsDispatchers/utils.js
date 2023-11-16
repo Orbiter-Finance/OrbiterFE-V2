@@ -13,8 +13,8 @@ import {
   OKXWALLET,
   BRAVE_APP,
   LOOPRING_APP,
-  BIT_KEEP,
-} from './constants'
+  BIT_KEEP, ZERION, ZERION_APP,
+} from './constants';
 import {
   updateGlobalSelectWalletConf,
   globalSelectWalletConf,
@@ -72,6 +72,8 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
   if (walletType === OKXWALLET) return typeof window.okxwallet !== 'undefined'
+  if (walletType === ZERION) return ethereum.isZerion;
+  if (walletType === ZERION_APP) return ethereum.isZerion;
   if (walletType === LOOPRING_APP) return ethereum.isLoopring
   if (walletType === BIT_KEEP) return typeof window.bitkeep !== 'undefined'
   // we never care wallet connect, because it's a protocol, not a wallet
@@ -134,7 +136,8 @@ export const fetchTargetWalletLoginStatus = ({ walletType }) => {
  * mobile app webview only!!!!!!! don't use in other place!!!!
  */
 export const getMobileAppTypeByProvider = () => {
-  const provider = window.ethereum
+  const provider = window?.ethereum
+  if (!provider) return undefined;
   if (provider.isImToken) return IM_TOKEN_APP
   if (provider.isTokenPocket) return TOKEN_POCKET_APP
   if (provider.isMetaMask && !provider.isTokenPocket) return METAMASK_APP
@@ -143,6 +146,7 @@ export const getMobileAppTypeByProvider = () => {
     return COINBASE_APP
   if (isBraveWallet) return BRAVE_APP
   if (provider.isLoopring) return LOOPRING_APP
+  if (provider.isZerion) return ZERION_APP
 }
 
 /**

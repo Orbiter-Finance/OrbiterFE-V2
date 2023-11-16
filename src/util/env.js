@@ -1,3 +1,7 @@
+import { isMobile } from "../composition/useMobile";
+import { getStarknet } from "get-starknet";
+import { globalSelectWalletConf } from "./walletsDispatchers";
+
 export const isLocal = () => process.env.VUE_APP_ENV === 'local'
 export const isDev = () => process.env.VUE_APP_ENV === 'development'
 export const isProd = () => process.env.VUE_APP_ENV === 'production'
@@ -28,3 +32,11 @@ export const isMobileDevice = () => {
   const regex = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
   return regex.test(navigator.userAgent)
 }
+
+export const isArgentApp = () => {
+  return isMobile.value && !window.ethereum && getStarknet && getStarknet()?.isConnected;
+};
+
+export const isBrowserApp = () => {
+  return isMobile.value && !window.ethereum && (!globalSelectWalletConf.walletPayload.walletAddress || globalSelectWalletConf.walletPayload.walletAddress === '0x');
+};

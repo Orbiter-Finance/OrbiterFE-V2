@@ -162,7 +162,7 @@
                 "address": "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://starkscan.co"
     },
     {
         "api": { "url": "https://api.polygonscan.com/api", "key": "" },
@@ -280,7 +280,7 @@
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
         ],
-        "infoURL": ""
+        "infoURL": "https://immutascan.io"
     },
     {
         "api": {
@@ -302,7 +302,7 @@
         "watch": ["api"],
         "contracts": [],
         "tokens": [],
-        "infoURL": ""
+        "infoURL": "https://explorer.loopring.io"
     },
     {
         "api": { "url": "https://andromeda-explorer.metis.io/api", "key": "" },
@@ -434,6 +434,12 @@
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4"
+            },
+            {
+                "name": "USDT",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
             }
         ],
         "infoURL": "https://explorer.zksync.io"
@@ -445,7 +451,10 @@
         "internalId": "15",
         "name": "BNB Chain",
         "debug": false,
-        "contracts": [],
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "router": {
+          "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
         "nativeCurrency": {
             "name": "BNB",
             "symbol": "BNB",
@@ -461,12 +470,24 @@
             "https://bsc-dataseed4.binance.org"
         ],
         "watch": ["api", "rpc"],
-        "tokens": [
+        "tokens":[
             {
-                "name": "Binance-Peg Ethereum",
-                "symbol": "ETH",
-                "decimals": 18,
-                "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+                "name":"Binance-Peg Ethereum",
+                "symbol":"ETH",
+                "decimals":18,
+                "address":"0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+            },
+          {
+                "name":"Binance-Peg USDT",
+                "symbol":"USDT",
+                "decimals":18,
+                "address":"0x55d398326f99059ff775485246999027b3197955"
+            },
+           {
+                "name":"Binance-Peg USDC",
+                "symbol":"USDC",
+                "decimals":18,
+                "address":"0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
             }
         ],
         "infoURL": "https://bscscan.com"
@@ -536,6 +557,86 @@
     },
     {
         "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "534352",
+        "networkId": "534352",
+        "internalId": "19",
+        "name": "Scroll",
+        "debug": false,
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
+        "router": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
+        },
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://rpc.scroll.io"
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "tokens": [
+          {
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "address": "0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4"
+          },
+          {
+            "name": "USDT",
+            "symbol": "USDT",
+            "decimals": 6,
+            "address": "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df"
+          }
+        ],
+        "infoURL": "https://scrollscan.com"
+    },
+    {
+        "api": {
+            "url": "https://api.basescan.org/api",
+            "key": ""
+        },
+        "chainId": "8453",
+        "networkId": "8453",
+        "internalId": "21",
+        "name": "Base",
+        "debug": false,
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "features": [],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://developer-access-mainnet.base.org",
+            "https://base.blockpi.network/v1/rpc/public"
+        ],
+        "watch": [
+            "rpc",
+            "api"
+        ],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
+            }
+        ],
+        "infoURL": "https://basescan.org"
+    },
+    {
+        "api": {
             "url": "http://explorer.linea.build/api",
             "key": ""
         },
@@ -556,7 +657,20 @@
         "router": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
-        "tokens": [],
+        "tokens":[
+            {
+                "name":"USDC",
+                "symbol":"USDC",
+                "decimals":6,
+                "address":"0x176211869ca2b568f2a7d4ee941e073a821ee1ff"
+            },
+           {
+                "name":"USDT",
+                "symbol":"USDT",
+                "decimals":6,
+                "address":"0xA219439258ca9da29E9Cc4cE5596924745e12B93"
+            }
+        ],
         "infoURL": "https://lineascan.build"
     },
     {
@@ -567,7 +681,7 @@
         "chainId": "5000",
         "networkId": "5000",
         "internalId": "24",
-        "name": "mantle",
+        "name": "Mantle",
         "debug": false,
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
         "nativeCurrency": {
@@ -590,5 +704,96 @@
             }
         ],
         "infoURL": "https://explorer.mantle.xyz"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "204",
+        "networkId": "204",
+        "internalId": "25",
+        "name": "opBNB",
+        "debug": false,
+        "features": [],
+        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "nativeCurrency": {
+            "name": "BNB",
+            "symbol": "BNB",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": ["https://opbnb-mainnet-rpc.bnbchain.org"],
+        "router": {
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
+        "watch": ["rpc"],
+        "tokens": [
+            {
+                "name": "ETH",
+                "symbol": "ETH",
+                "decimals": 18,
+                "address": "0xe7798f023fc62146e8aa1b36da45fb70855a77ea"
+            }
+        ],
+        "infoURL": "https://mainnet.opbnbscan.com"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "7777777",
+        "networkId": "7777777",
+        "internalId": "30",
+        "name": "Zora",
+        "features": [],
+        "debug": false,
+        "contracts": ["0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172"],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://rpc.zora.energy"
+        ],
+        "router": {
+            "0x2598d7bc9d3b4b6124f3282e49eee68db270f516": "OrbiterRouterV3"
+        },
+        "watch": ["rpc"],
+        "tokens": [],
+        "infoURL": "https://explorer.zora.energy"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "169",
+        "networkId": "169",
+        "internalId": "31",
+        "name": "Manta",
+        "features": [],
+        "debug": false,
+        "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://manta-pacific.calderachain.xyz/http"
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "router": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
+        },
+        "tokens": [],
+        "infoURL": "https://manta-pacific.calderaexplorer.xyz"
     }
 ]

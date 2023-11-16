@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 const Data = () => import('./views/data/Index/Index.vue')
 const DataDetail = () => import('./views/data/DataDetail/DataDetail.vue')
+const Home = () => import('./views/home/index.vue')
 
 Vue.use(Router)
 
@@ -17,7 +18,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: (resolve) => require(['./views/bridage/Bridage'], resolve),
+      component: (resolve) => require(['./views/bridge/Bridge'], resolve),
       meta: {
         title: 'Orbiter',
         keepAlive: true,
@@ -42,6 +43,14 @@ export default new Router({
     {
       path: '/dataDetail',
       component: DataDetail,
+      meta: {
+        title: 'Orbiter',
+        keepAlive: false,
+      },
+    },
+    {
+      path: '/home',
+      component: Home,
       meta: {
         title: 'Orbiter',
         keepAlive: false,

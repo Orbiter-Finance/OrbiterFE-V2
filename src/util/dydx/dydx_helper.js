@@ -1,9 +1,9 @@
 import { DydxClient } from '@dydxprotocol/v3-client'
 import { getAccountId } from '@dydxprotocol/v3-client/build/src/lib/db'
-import BigNumber from 'bignumber.js'
-import { ethers, utils } from 'ethers'
+import { ethers } from 'ethers'
 import config from '../../core/utils/config'
 import util from '../util'
+import { CHAIN_ID } from "../../config";
 const DYDX_MAKERS = {
   '0x694434EC84b7A8Ad8eFc57327ddD0A428e23f8D5': {
     starkKey:
@@ -23,16 +23,16 @@ export class DydxHelper {
   signingMethod = ''
 
   /**
-   * @param {number} chainId
+   * @param {string} chainId
    * @param {Web3 | undefined} web3
    * @param {string} signingMethod TypedData | MetaMask
    */
   constructor(chainId, web3, signingMethod = 'TypedData') {
-    if (chainId == 11) {
+    if (String(chainId) === CHAIN_ID.dydx) {
       this.networkId = 1
       this.host = config.dydx.Mainnet
     }
-    if (chainId == 511) {
+    if (String(chainId) === CHAIN_ID.dydx_test) {
       this.networkId = 3
       this.host = config.dydx.Rinkeby
     }
@@ -194,29 +194,6 @@ export class DydxHelper {
   }
 
   /**
-   * @param {string} starkKey ex: 0x0367e161e41f692fc96ee22a8ab313d71bbd310617df4a02675bcfc87a3b708f
-   * @param {string} positionId ex: 58011
-   * @returns 0x...
-   */
-  conactStarkKeyPositionId(starkKey, positionId) {
-    let positionIdStr = Number(positionId).toString(16)
-    if (positionIdStr.length % 2 !== 0) {
-      positionIdStr = `0${positionIdStr}`
-    }
-    return `${starkKey}${positionIdStr}`
-  }
-
-  /**
-   * @param {string} data 0x...
-   * @returns {{starkKey: string, positionId:string}}
-   */
-  splitStarkKeyPositionId(data) {
-    const starkKey = utils.hexDataSlice(data, 0, 32)
-    const positionId = parseInt(utils.hexDataSlice(data, 32), 16)
-    return { starkKey, positionId: String(positionId) }
-  }
-
-  /**
    * @param {string} ethereumAddress 0x...
    * @returns {string}
    */
@@ -230,79 +207,5 @@ export class DydxHelper {
     sourceStr = sourceStr.replace(/^0x/i, '')
 
     return Buffer.from(sourceStr, 'hex').toString('base64')
-  }
-
-  /**
-   * @param {string} clientId base64 string
-   * @returns {string} 0x...
-   */
-  getEthereumAddressFromClientId(clientId) {
-    const sourceStr = Buffer.from(clientId, 'base64').toString('hex')
-    return utils.hexDataSlice('0x' + sourceStr, 0, 20)
-  }
-
-  /**
-   * DYDX transfer => Eth transaction
-   * @param {any} transfer dYdX transfer
-   * @param {string} ethereumAddress 0x...
-   * @returns
-   */
-  static toTransaction(transfer, ethereumAddress) {
-    const timeStampMs = new Date(transfer.createdAt).getTime()
-    const nonce = DydxHelper.timestampToNonce(timeStampMs)
-
-    const isTransferIn = util.equalsIgnoreCase('TRANSFER_IN', transfer.type)
-    const isTransferOut = util.equalsIgnoreCase('TRANSFER_OUT', transfer.type)
-
-    const transaction = {
-      timeStamp: parseInt(timeStampMs / 1000 + ''),
-      hash: transfer.id,
-      nonce,
-      blockHash: '',
-      transactionIndex: 0,
-      from: '',
-      to: '',
-      value: new BigNumber(
-        isTransferIn ? transfer.creditAmount : transfer.debitAmount
-      )
-        .multipliedBy(10 ** 6)
-        .toString(), // Only usdc
-      txreceipt_status: transfer.status,
-      contractAddress: '', // Only usdc
-      confirmations: 0,
-    }
-
-    if (isTransferIn) {
-      transaction.to = ethereumAddress
-    }
-    if (isTransferOut) {
-      transaction.from = ethereumAddress
-    }
-
-    return transaction
-  }
-
-  /**
-   * The api does not return the nonce value, timestamp(ms) last three number is the nonce
-   *  (warnning: there is a possibility of conflict)
-   * @param {number | string} timestamp ms
-   * @returns {string}
-   */
-  static timestampToNonce(timestamp) {
-    let nonce = 0
-
-    if (timestamp) {
-      timestamp = String(timestamp)
-      const match = timestamp.match(/(\d{3})$/i)
-      if (match && match.length > 1) {
-        nonce = Number(match[1]) || 0
-      }
-
-      if (nonce > 900) {
-        nonce = nonce - 100
-      }
-    }
-
-    return nonce + ''
   }
 }

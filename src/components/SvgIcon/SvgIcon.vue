@@ -1,6 +1,6 @@
 <template>
     <svg class="svg">
-        <use :xlink:href="`#icon-${iconName || 'tokenLogo'}`" />
+        <use :xlink:href="`#icon-${iconName || '1'}`" />
     </svg>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
     props: {
         iconName: {
-            type: String,
+            type: String | Number,
             require: true,
         },
     },
