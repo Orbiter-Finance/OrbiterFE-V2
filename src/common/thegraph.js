@@ -37,7 +37,7 @@ export async function getMdcRuleLatest(dealerAddress) {
         if (apiRes?.ruleList && apiRes.ruleList.length) {
             util.log('request open api =====', apiRes);
             let ruleList = apiRes.ruleList;
-            if (process.env.VUE_APP_WHITE_LIST) {
+            if (isProd() && process.env.VUE_APP_WHITE_LIST) {
                 const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
                 ruleList = ruleList.filter(rule => {
                     return whiteList.find(address => address.toLowerCase() === rule?.recipient.toLowerCase());
@@ -134,7 +134,7 @@ export async function getMdcRuleLatest(dealerAddress) {
     const mdcs = response.dealer.mdcs || [];
     const marketList = [];
     for (const mdc of mdcs) {
-        if (process.env.VUE_APP_WHITE_LIST) {
+        if (isProd() && process.env.VUE_APP_WHITE_LIST) {
             const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
             if (!whiteList.find(address => address.toLowerCase() === mdc.owner.toLowerCase())) {
                 continue;
