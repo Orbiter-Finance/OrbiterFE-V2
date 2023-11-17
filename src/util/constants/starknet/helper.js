@@ -110,15 +110,26 @@ export async function connectStarkNetWallet() {
 }
 
 export function getStarkNetCurrentChainId() {
-  const baseUrl = getStarknet().provider?.baseUrl ? getStarknet().provider?.baseUrl : getStarknet().provider?.provider?.baseUrl;
+  const baseUrl = (getStarknet().provider?.baseUrl ? getStarknet().provider?.baseUrl : getStarknet().provider?.provider?.baseUrl) || "";
   if (baseUrl.includes('alpha-mainnet.starknet.io')) {
-    return CHAIN_ID.starknet
+    return CHAIN_ID.starknet;
   } else if (baseUrl.includes('alpha4.starknet.io')) {
-    return CHAIN_ID.starknet_test
+    return CHAIN_ID.starknet_test;
   } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
-    return 'localhost'
+    return 'localhost';
   } else {
-    return 'unlogin'
+    if (getStarknet && getStarknet()?.provider?.provider) {
+      if (getStarknet().provider?.provider.nodeUrl) {
+        return CHAIN_ID.starknet_test;
+      }
+      // if (await getStarknet().provider.provider.getChainId() === "0x534e5f4d41494e") {
+      //   return CHAIN_ID.starknet_test;
+      // }
+      // if (await getStarknet().provider.provider.getChainId() === '0x534e5f474f45524c49') {
+      //   return CHAIN_ID.starknet_test;
+      // }
+    }
+    return 'unlogin';
   }
 }
 
