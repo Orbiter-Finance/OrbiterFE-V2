@@ -211,7 +211,7 @@
         setActDialogVisible(false);
       },
       formatTime(time) {
-        const arr = String(new Date(time.replace(/-/g,`/`))).split(' ');
+        const arr = String(new Date(time)).split(' ');
         if (arr.length > 3) {
           if (+arr[3] !== new Date().getFullYear()) {
             return `${ arr[1] } ${ arr[2] }st ${ arr[3] }`;
