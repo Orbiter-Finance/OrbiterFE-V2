@@ -123,7 +123,8 @@
         scrollLastTime: new Date().valueOf(),
         addItemLoading: false,
         listLoading: false,
-        isHover: false
+        isHover: false,
+        twitter: null
       };
     },
     computed: {
@@ -184,6 +185,7 @@
         const list = res.data.list;
         const dataList = [];
         for (const data of list) {
+          this.twitter = data.twitter;
           dataList.push(...data.taskList);
         }
         return dataList;
@@ -202,7 +204,7 @@
         // return list;
       },
       openDetail() {
-        window.open('https://x.com/Orbiter_Finance/status/1724488670802239544?s=20', '_blank');
+        if (this.twitter) window.open(this.twitter, '_blank');
       },
       mobileCloseAct() {
         if (isMobile.value) {
@@ -256,6 +258,14 @@
 <style lang="scss" scoped>
     .dark-theme {
         .act {
+            .border-dashed {
+                border-top: 1px dashed #FFFFFF;
+            }
+
+            .border-dashed_2 {
+                border-top: 1px dashed #EEEEEE;
+            }
+
             .block_1 {
                 top: 50px;
                 right: 20px;

@@ -14,9 +14,16 @@
     <template v-if="isLogin && $route.path !== '/home'">
       <span @mouseover="openAct" @click="openAct" class="ops-item" style="position: relative">
           <img
+              :hidden="!isLightMode"
               style="margin: -3px 0 0 0;width: 24px;"
               referrerpolicy="no-referrer"
               :src="require('../../assets/activity/point.png')"
+          />
+          <img
+              :hidden="isLightMode"
+              style="margin: -3px 0 0 0;width: 24px;"
+              referrerpolicy="no-referrer"
+              :src="require('../../assets/activity/point_dark.png')"
           />
           {{ totalPoint }} O-Points
           <div class="shake-top" v-if="addPointVisible" :style="`display: flex;position: absolute;top: 45px;left:-3px;`">
@@ -122,6 +129,9 @@
       },
       isMobile() {
         return isMobile.value
+      },
+      isLightMode () {
+        return this.$store.state.themeMode === 'light'
       },
       globalSelectWalletConf() {
         return compatibleGlobalWalletConf.value
