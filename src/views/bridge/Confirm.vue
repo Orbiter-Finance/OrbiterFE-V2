@@ -334,12 +334,12 @@ export default {
                     amount,
                     crossAddressReceipt
                 )
-                if (res?.hash) {
+                if (res?.transactionHash) {
                     this.onTransferSucceed(
                         fromAddress,
                         amount,
                         fromChainID,
-                        res.hash
+                        res.transactionHash
                     )
                 }
             } catch (err) {
