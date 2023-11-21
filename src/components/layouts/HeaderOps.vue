@@ -12,6 +12,39 @@
     >Connect a Wallet</CommBtn
     >
     <template v-if="isLogin && $route.path !== '/home'">
+      <span @mouseover="openAct" @click="openAct" class="ops-item" style="position: relative">
+          <img
+              style="margin: -3px 0 0 0"
+              referrerpolicy="no-referrer"
+              src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng0cc1f6b26ddabde26ec611a3e96aadb433be1f40912184f564e8fe876aa295a1"
+          />
+          {{ totalPoint }} O-Points
+          <div :style="`display: flex;position: absolute;top: 45px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
+              <img
+                  class="label_2"
+                  referrerpolicy="no-referrer"
+                  src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng0bf248ec680e55dc2f5c3ab1d6ec6b859f9610977169eecef115561ed9cf0714"
+              />
+              <span class="text_2">
+                +{{ addPoint }} O-Points
+              </span>
+              <img
+                  class="thumbnail_1"
+                  referrerpolicy="no-referrer"
+                  src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng14489cd6e7183a88bd493bd04ba9c0d64ac5648ac6e1e46a83c8ffbab1d68f7e"
+              />
+          </div>
+<!--          <div :style="`position: absolute;top: 45px;left: 5px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">-->
+<!--              <img-->
+<!--                  class="image_1"-->
+<!--                  referrerpolicy="no-referrer"-->
+<!--                  src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng8af34a7c5a97eec2d0a05016c25c9d0c9b76e03ade2967e2dab489946016f34a"-->
+<!--              />-->
+<!--              <span class="text_2">-->
+<!--                +{{ addPoint }} O-Points-->
+<!--              </span>-->
+<!--          </div>-->
+      </span>
       <span @click="showHistory" class="ops-item">History</span>
       <div
               v-if="isSelectedStarkNet"
@@ -62,15 +95,16 @@
     setSelectWalletDialogVisible,
     starkAddress,
     showAddress,
-    saveSenderPageWorkingState,
-  } from '../../composition/hooks'
+    saveSenderPageWorkingState, setActDialogVisible, updateActDataList,
+  } from '../../composition/hooks';
   import {
     compatibleGlobalWalletConf,
     walletIsLogin,
   } from '../../composition/walletsResponsiveData'
   import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
   import { CHAIN_ID } from "../../config";
-
+  import { requestPointSystem } from "../../common/openApiAx";
+  const addressPointMap = {};
   export default {
     name: 'HeaderOps',
     components: { CommBtn, SvgIconThemed },
@@ -82,6 +116,9 @@
       },
     },
     computed: {
+      currentWalletAddress() {
+        return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      },
       isMobile() {
         return isMobile.value
       },
@@ -111,11 +148,18 @@
               localStorage.getItem('selectedWallet') || '{}'
       )
       return {
+        addPoint: 0,
+        addPointVisible: false,
+        totalPoint: 0,
         selectedWallet,
       }
     },
     methods: {
       ...mapMutations(['toggleThemeMode']),
+      openAct() {
+        setActDialogVisible(true)
+        this.$emit('closeDrawer')
+      },
       async connectStarkNetWallet() {
         if (this.starkAddress === 'not connected') {
           await connectStarkNetWallet()
@@ -150,11 +194,90 @@
           path: '/history',
         })
       },
+      async getWalletAddressPoint(address) {
+        const pointRes = await requestPointSystem('user/points', {
+          address
+        });
+        this.totalPoint = pointRes.data.points;
+      }
     },
+    watch: {
+      currentWalletAddress: function (newValue, oldValue) {
+        if (oldValue !== newValue && newValue !== '0x') {
+          this.getWalletAddressPoint(newValue);
+        }
+      },
+    },
+    async mounted() {
+      const _this = this;
+      this.getWalletAddressPoint(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
+      if (!isMobile.value) {
+        setInterval(async () => {
+          const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+          if (address && address !== '0x') {
+            const pointRes = await requestPointSystem('user/points', {
+              address
+            });
+            const point = pointRes.data.points;
+            addressPointMap[address.toLowerCase()] = addressPointMap[address.toLowerCase()] || point;
+            if (point > addressPointMap[address.toLowerCase()]) {
+              _this.addPoint = point - addressPointMap[address.toLowerCase()];
+              const res = await requestPointSystem('activity/list', {
+                address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+                pageSize: 10,
+                page: 1
+              });
+              const list = res.data.list;
+              const dataList = [];
+              for (const data of list) {
+                dataList.push(...data.taskList);
+              }
+              updateActDataList(dataList);
+              _this.addPointVisible = true;
+              setTimeout(() => {
+                _this.addPointVisible = false;
+              }, 2000);
+            }
+            this.totalPoint = point;
+          }
+        }, 5000);
+      }
+    }
   }
 </script>
 
 <style scoped lang="scss">
+    .text_2 {
+        width: 105px;
+        height: 24px;
+        overflow-wrap: break-word;
+        color: rgba(30, 180, 171, 1);
+        font-size: 18px;
+        font-family: OpenSansRoman-ExtraBold;
+        text-align: right;
+        white-space: nowrap;
+        line-height: 24px;
+        margin: 5px 0 0 3px;
+    }
+
+    .group_6 {
+        width: 161px;
+        height: 29px;
+        margin: 136px 0 0 1403px;
+    }
+
+    .label_2 {
+        width: 21px;
+        height: 24px;
+    }
+
+    .thumbnail_1 {
+        width: 12px;
+        height: 13px;
+        margin-left: 11px;
+        margin-top: 5px;
+    }
+
   .header-ops {
     margin-right: 16px;
     display: flex;

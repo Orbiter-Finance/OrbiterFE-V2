@@ -249,7 +249,7 @@ export default {
 
             const { proceedState, proceeding } = this.$store.state
             if (proceedState === 1) {
-                return 'View on Explore'
+                return 'View on Explorer'
             } else {
                 // immutablex
                 if (
@@ -265,7 +265,7 @@ export default {
             if (this.detailData) {
                 const { state, toTxHash, toChainID } = this.detailData
                 if (state !== 0) {
-                    return 'View on Explore'
+                    return 'View on Explorer'
                 } else {
                     // immutablex
                     if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
@@ -277,7 +277,7 @@ export default {
             const { toChainID } = transferDataState
             const { proceedState, proceeding } = this.$store.state
             if (proceedState < 4) {
-                return 'View on Explore'
+                return 'View on Explorer'
             } else {
                 // immutablex
                 if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
