@@ -33,7 +33,7 @@
                   :src="require('../../assets/activity/add_flower.png')"
               />
               <span class="text_2">
-                +{{ addPoint }} O-Points
+                {{ addPoint }} O-Points
               </span>
               <img
                   class="thumbnail_1"
