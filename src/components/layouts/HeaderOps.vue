@@ -104,6 +104,7 @@
   import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
   import { CHAIN_ID } from "../../config";
   import { requestPointSystem } from "../../common/openApiAx";
+  import util from "../../util/util";
   const addressPointMap = {};
   export default {
     name: 'HeaderOps',
@@ -195,12 +196,18 @@
         })
       },
       async getWalletAddressPoint(address) {
+        if (util.getAccountAddressError(address)) {
+          return;
+        }
         const pointRes = await requestPointSystem('user/points', {
           address
         });
         this.totalPoint = pointRes.data.points;
       },
       async getWalletAddressActList(address) {
+        if (util.getAccountAddressError(address)) {
+          return;
+        }
         const res = await requestPointSystem('activity/list', {
           address,
           pageSize: 10,
@@ -238,9 +245,10 @@
               _this.addPoint = point - addressPointMap[address.toLowerCase()];
               _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
               _this.addPointVisible = true;
+              addressPointMap[address.toLowerCase()] = point;
               setTimeout(() => {
                 _this.addPointVisible = false;
-              }, 2000);
+              }, 3000);
             }
             this.totalPoint = point;
           }
