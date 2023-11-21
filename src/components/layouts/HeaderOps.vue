@@ -14,16 +14,16 @@
     <template v-if="isLogin && $route.path !== '/home'">
       <span @mouseover="openAct" @click="openAct" class="ops-item" style="position: relative">
           <img
-              style="margin: -3px 0 0 0"
+              style="margin: -3px 0 0 0;width: 24px;"
               referrerpolicy="no-referrer"
-              src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng0cc1f6b26ddabde26ec611a3e96aadb433be1f40912184f564e8fe876aa295a1"
+              :src="require('../../assets/activity/point.png')"
           />
           {{ totalPoint }} O-Points
-          <div :style="`display: flex;position: absolute;top: 45px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
+          <div class="shake-top" v-if="addPointVisible" :style="`display: flex;position: absolute;top: 45px;left:-3px;`">
               <img
                   class="label_2"
                   referrerpolicy="no-referrer"
-                  src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng0bf248ec680e55dc2f5c3ab1d6ec6b859f9610977169eecef115561ed9cf0714"
+                  :src="require('../../assets/activity/add_flower.png')"
               />
               <span class="text_2">
                 +{{ addPoint }} O-Points
@@ -31,7 +31,7 @@
               <img
                   class="thumbnail_1"
                   referrerpolicy="no-referrer"
-                  src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng14489cd6e7183a88bd493bd04ba9c0d64ac5648ac6e1e46a83c8ffbab1d68f7e"
+                  :src="require('../../assets/activity/add_flower_2.png')"
               />
           </div>
 <!--          <div :style="`position: absolute;top: 45px;left: 5px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">-->
@@ -259,6 +259,77 @@
 </script>
 
 <style scoped lang="scss">
+    .shake-top {
+        -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+        animation: shake-top 0.8s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+    }
+    @-webkit-keyframes shake-top {
+        0%,
+        100% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            -webkit-transform-origin: 50% 0;
+            transform-origin: 50% 0;
+        }
+        10% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+        }
+        20%,
+        40%,
+        60% {
+            -webkit-transform: rotate(-4deg);
+            transform: rotate(-4deg);
+        }
+        30%,
+        50%,
+        70% {
+            -webkit-transform: rotate(4deg);
+            transform: rotate(4deg);
+        }
+        80% {
+            -webkit-transform: rotate(-2deg);
+            transform: rotate(-2deg);
+        }
+        90% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+        }
+    }
+    @keyframes shake-top {
+        0%,
+        100% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            -webkit-transform-origin: 50% 0;
+            transform-origin: 50% 0;
+        }
+        10% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+        }
+        20%,
+        40%,
+        60% {
+            -webkit-transform: rotate(-4deg);
+            transform: rotate(-4deg);
+        }
+        30%,
+        50%,
+        70% {
+            -webkit-transform: rotate(4deg);
+            transform: rotate(4deg);
+        }
+        80% {
+            -webkit-transform: rotate(-2deg);
+            transform: rotate(-2deg);
+        }
+        90% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+        }
+    }
+
     .text_2 {
         width: 105px;
         height: 24px;

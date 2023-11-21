@@ -5,101 +5,103 @@
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
         <div v-if="isMobile" @click="mobileCloseAct" style="width: 100%;height:100%"></div>
-        <div @mouseover="mouseoverDialog" class="block_1 flex-col" @scroll="itemScroll" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)">
-            <div style="width: 100%;display: flex">
+        <div @mouseover="mouseoverDialog" class="block_1">
+            <div style="width: 100%;display: flex;height:45px;">
                 <span class="text_21">incentives</span>
                 <div style="flex: 1;text-align: right;padding-top: 6px;padding-right:3px">
                     <span class="text_22" @click="openDetail">Details</span>
                 </div>
             </div>
-            <template v-for="item in actDataList">
-                <div v-if="item.status === 0" class="box_1">
-                    <div class="text-wrapper_1 flex-row">
-                        <span class="text_1">{{ item.points }}</span> <span class="text_2">XPs</span>
-                    </div>
-                    <div class="border-dashed"></div>
-                    <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
-                        <div class="text_3">
-                            {{ item.description }}
+            <div :style="`overflow-y: scroll;height:85%;padding-bottom: ${isMobile ? '80px' : '5px'}`" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+                <template v-for="item in actDataList">
+                    <div v-if="item.status === 0" class="box_1">
+                        <div class="text-wrapper_1 flex-row">
+                            <span class="text_1">{{ item.points }}</span> <span class="text_2">O-Points</span>
                         </div>
-                        <div style="margin-top: 10px;display: flex;flex-direction: row">
-                            <div class="text-wrapper_2">
-                                Undo
+                        <div class="border-dashed"></div>
+                        <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
+                            <div class="text_3">
+                                {{ item.description }}
                             </div>
-                            <div class="text_5">
-                                Until&nbsp;{{ formatTime(item.endTime) }}
-                            </div>
-                        </div>
-                    </div>
-                    <img
-                        :hidden="!isLightMode"
-                        class="thumbnail_1"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_up.png')"
-                    />
-                    <img
-                        :hidden="!isLightMode"
-                        class="thumbnail_2"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_down.png')"
-                    />
-                    <img
-                        :hidden="isLightMode"
-                        class="thumbnail_5"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_up_dark.png')"
-                    />
-                    <img
-                        :hidden="isLightMode"
-                        class="thumbnail_6"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_down_dark.png')"
-                    />
-                </div>
-                <div v-else class="box_2">
-                    <div class="text-wrapper_3 flex-col">
-                        <span class="text_6">{{ item.points }}</span> <span class="text_7">XPs</span>
-                    </div>
-                    <div class="border-dashed_2"></div>
-                    <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
-                        <div class="text_8">
-                            {{ item.description }}
-                        </div>
-                        <div style="margin-top: 10px;display: flex;flex-direction: row">
-                            <div class="text-wrapper_4">
-                                Done
-                            </div>
-                            <div class="text_9">
-                                Until&nbsp;{{ formatTime(item.endTime) }}
+                            <div style="margin-top: 10px;display: flex;flex-direction: row">
+                                <div class="text-wrapper_2">
+                                    Undo
+                                </div>
+                                <div class="text_5">
+                                    Until&nbsp;{{ formatTime(item.endTime) }}
+                                </div>
                             </div>
                         </div>
+                        <img
+                            :hidden="!isLightMode"
+                            class="thumbnail_1"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_up.png')"
+                        />
+                        <img
+                            :hidden="!isLightMode"
+                            class="thumbnail_2"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_down.png')"
+                        />
+                        <img
+                            :hidden="isLightMode"
+                            class="thumbnail_5"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_up_dark.png')"
+                        />
+                        <img
+                            :hidden="isLightMode"
+                            class="thumbnail_6"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_down_dark.png')"
+                        />
                     </div>
-                    <img
-                        :hidden="!isLightMode"
-                        class="thumbnail_3"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_up_gray.png')"
-                    />
-                    <img
-                        :hidden="!isLightMode"
-                        class="thumbnail_4"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_down_gray.png')"
-                    />
-                    <img
-                        :hidden="isLightMode"
-                        class="thumbnail_5"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_up_dark.png')"
-                    />
-                    <img
-                        :hidden="isLightMode"
-                        class="thumbnail_6"
-                        referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/curve_down_dark.png')"
-                    />
-                </div>
-            </template>
+                    <div v-else class="box_2">
+                        <div class="text-wrapper_3 flex-col">
+                            <span class="text_6">{{ item.points }}</span> <span class="text_7">O-Points</span>
+                        </div>
+                        <div class="border-dashed_2"></div>
+                        <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
+                            <div class="text_8">
+                                {{ item.description }}
+                            </div>
+                            <div style="margin-top: 10px;display: flex;flex-direction: row">
+                                <div class="text-wrapper_4">
+                                    Done
+                                </div>
+                                <div class="text_9">
+                                    Until&nbsp;{{ formatTime(item.endTime) }}
+                                </div>
+                            </div>
+                        </div>
+                        <img
+                            :hidden="!isLightMode"
+                            class="thumbnail_3"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_up_gray.png')"
+                        />
+                        <img
+                            :hidden="!isLightMode"
+                            class="thumbnail_4"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_down_gray.png')"
+                        />
+                        <img
+                            :hidden="isLightMode"
+                            class="thumbnail_5"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_up_dark.png')"
+                        />
+                        <img
+                            :hidden="isLightMode"
+                            class="thumbnail_6"
+                            referrerpolicy="no-referrer"
+                            :src="require('../../assets/activity/curve_down_dark.png')"
+                        />
+                    </div>
+                </template>
+            </div>
         </div>
     </div>
 </template>
@@ -214,11 +216,11 @@
         const arr = String(new Date(time)).split(' ');
         if (arr.length > 3) {
           if (+arr[3] !== new Date().getFullYear()) {
-            return `${ arr[1] } ${ arr[2] }st ${ arr[3] }`;
+            return `${ arr[1] } ${ arr[2] }th ${ arr[3] }`;
           }
-          return `${ arr[1] } ${ arr[2] }st`;
+          return `${ arr[1] } ${ arr[2] }th`;
         }
-        return `${ new Date(time).getMonth() } ${ new Date(time).getDate() }st`;
+        return `${ new Date(time).getMonth() } ${ new Date(time).getDate() }th`;
       },
       mouseoverDialog() {
         this.isHover = true;
@@ -227,7 +229,12 @@
     async mounted() {
       setTimeout(() => {
         if (!isMobile.value) {
-          setActDialogVisible(true);
+          let times = localStorage.getItem('act_show_times') || 0;
+          if (times < 3) {
+            setActDialogVisible(true);
+            times++;
+            localStorage.setItem('act_show_times', times);
+          }
         }
         setTimeout(() => {
           actDialogVisible.value && !this.isHover && setActDialogVisible(false);
@@ -259,7 +266,6 @@
                 width: 380px;
                 height: 394px;
                 margin-top: 24px;
-                overflow-y: scroll;
             }
 
             .text_3 {
@@ -371,7 +377,6 @@
             width: 380px;
             height: 394px;
             margin-top: 24px;
-            overflow-y: scroll;
         }
 
         .box_1 {
@@ -393,6 +398,10 @@
             background-size: 60px 66px;
             margin: 12px 0 0 12px;
             padding-top: 5px;
+            background: linear-gradient(316deg, #DA9013 0%, #FFADAD 100%);
+            box-shadow: -2px 2px 0px 0px #000000;
+            border-radius: 8px;
+            border: 1px solid #222222;
         }
 
         .text_1 {
@@ -409,7 +418,7 @@
 
         .text_2 {
             position: absolute;
-            left: 19px;
+            left: 4px;
             top: 36px;
             width: 21px;
             height: 17px;
@@ -511,17 +520,17 @@
         .thumbnail_1 {
             position: absolute;
             left: 76px;
-            top: 82px;
+            top: 81px;
             width: 12px;
-            height: 12px;
+            height: 6px;
         }
 
         .thumbnail_2 {
             position: absolute;
             left: 76px;
-            top: -6px;
+            top: -1px;
             width: 12px;
-            height: 12px;
+            height: 6px;
         }
 
         .box_2 {
@@ -558,7 +567,7 @@
 
         .text_7 {
             position: absolute;
-            left: 19px;
+            left: 4px;
             top: 36px;
             width: 21px;
             height: 17px;
@@ -637,17 +646,17 @@
         .thumbnail_3 {
             position: absolute;
             left: 76px;
-            top: 82px;
+            top: 81px;
             width: 12px;
-            height: 12px;
+            height: 6px;
         }
 
         .thumbnail_4 {
             position: absolute;
             left: 76px;
-            top: -6px;
+            top: -1px;
             width: 12px;
-            height: 12px;
+            height: 6px;
         }
 
         .box_4 {
@@ -765,17 +774,17 @@
         .thumbnail_5 {
             position: absolute;
             left: 76px;
-            top: 82px;
+            top: 81px;
             width: 12px;
-            height: 12px;
+            height: 6px;
         }
 
         .thumbnail_6 {
             position: absolute;
             left: 76px;
-            top: -6px;
+            top: -1px;
             width: 12px;
-            height: 12px;
+            height: 6px;
         }
 
         .box_5 {
@@ -943,7 +952,6 @@
                     color: rgba(255, 255, 255, 1);
                     position: absolute;
                     width: 100%;
-                    overflow-y: scroll;
                 }
 
                 .text_3 {
@@ -1003,10 +1011,10 @@
                     background-color: rgba(71, 74, 111, 1);
                     border-radius: 8px;
                     position: relative;
-                    width: 348px;
                     height: 88px;
                     border: 1px solid rgba(255, 255, 255, 0.2);
-                    margin: 16px 0 0 16px;
+                    width: 90%;
+                    margin: 16px;
                 }
 
                 .box_2 {
@@ -1061,7 +1069,23 @@
                 background-color: #ffffff;
                 position: absolute;
                 width: 100%;
-                overflow-y: scroll;
+            }
+
+            .box_1 {
+                width: 90%;
+                margin: 16px;
+            }
+
+            .thumbnail_1 {
+                top: 82px;
+            }
+
+            .thumbnail_3 {
+                top: 82px;
+            }
+
+            .thumbnail_5 {
+                top: 82px;
             }
         }
     }
