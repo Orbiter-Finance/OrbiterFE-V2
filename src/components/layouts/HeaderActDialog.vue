@@ -184,16 +184,6 @@
         for (const data of list) {
           dataList.push(...data.taskList);
         }
-        // TODO
-        dataList.push({
-          id: 1,
-          name: `{ i + 1 }`,
-          desc: '1111111111111111',
-          status: 1,
-          points: 20,
-          conditions: {},
-          endTime: new Date().valueOf() + 1000 * 60 * 60 * 24 * 180
-        });
         return dataList;
         // const list = [];
         // for (let i = pageSize * page; i < pageSize * (page + 1); i++) {
