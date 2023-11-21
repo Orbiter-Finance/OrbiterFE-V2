@@ -25,7 +25,7 @@
                             </div>
                             <div style="margin-top: 10px;display: flex;flex-direction: row">
                                 <div class="text-wrapper_2">
-                                    Undo
+                                    Undone
                                 </div>
                                 <div class="text_5">
                                     Until&nbsp;{{ formatTime(item.endTime) }}
@@ -262,10 +262,12 @@
         .act {
             .border-dashed {
                 border-top: 1px dashed #FFFFFF;
+                opacity: 20%;
             }
 
             .border-dashed_2 {
                 border-top: 1px dashed #EEEEEE;
+                opacity: 10%;
             }
 
             .block_1 {
