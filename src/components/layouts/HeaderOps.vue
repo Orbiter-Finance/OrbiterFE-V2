@@ -199,12 +199,26 @@
           address
         });
         this.totalPoint = pointRes.data.points;
+      },
+      async getWalletAddressActList(address) {
+        const res = await requestPointSystem('activity/list', {
+          address,
+          pageSize: 10,
+          page: 1
+        });
+        const list = res.data.list;
+        const dataList = [];
+        for (const data of list) {
+          dataList.push(...data.taskList);
+        }
+        updateActDataList(dataList);
       }
     },
     watch: {
       currentWalletAddress: function (newValue, oldValue) {
         if (oldValue !== newValue && newValue !== '0x') {
           this.getWalletAddressPoint(newValue);
+          this.getWalletAddressActList(newValue);
         }
       },
     },
@@ -222,17 +236,7 @@
             addressPointMap[address.toLowerCase()] = addressPointMap[address.toLowerCase()] || point;
             if (point > addressPointMap[address.toLowerCase()]) {
               _this.addPoint = point - addressPointMap[address.toLowerCase()];
-              const res = await requestPointSystem('activity/list', {
-                address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
-                pageSize: 10,
-                page: 1
-              });
-              const list = res.data.list;
-              const dataList = [];
-              for (const data of list) {
-                dataList.push(...data.taskList);
-              }
-              updateActDataList(dataList);
+              _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
               _this.addPointVisible = true;
               setTimeout(() => {
                 _this.addPointVisible = false;
