@@ -26,7 +26,7 @@
               :src="require('../../assets/activity/point_dark.png')"
           />
           {{ totalPoint }} O-Points
-          <div class="shake-top" v-if="addPointVisible" :style="`display: flex;position: absolute;top: 45px;left:-3px;`">
+          <div :class="addPointVisible ? 'shake-top' : ''" :style="`display: flex;position: absolute;top: 45px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
               <img
                   class="label_2"
                   referrerpolicy="no-referrer"
@@ -205,7 +205,7 @@
           path: '/history',
         })
       },
-      async getWalletAddressPoint(address) {
+      async getWalletAddressPoint(address, callback) {
         if (util.getAccountAddressError(address)) {
           return;
         }
@@ -213,6 +213,7 @@
           address
         });
         this.totalPoint = pointRes.data.points;
+        callback(pointRes.data.points);
       },
       async getWalletAddressActList(address) {
         if (util.getAccountAddressError(address)) {
@@ -234,7 +235,16 @@
     watch: {
       currentWalletAddress: function (newValue, oldValue) {
         if (oldValue !== newValue && newValue !== '0x') {
-          this.getWalletAddressPoint(newValue);
+          const _this = this;
+          this.getWalletAddressPoint(newValue, function (point) {
+            if (point) {
+              _this.addPointVisible = true;
+              _this.addPoint = point;
+              setTimeout(() => {
+                _this.addPointVisible = false;
+              }, 3000);
+            }
+          });
           this.getWalletAddressActList(newValue);
         }
       },
@@ -252,7 +262,7 @@
             const point = pointRes.data.points;
             addressPointMap[address.toLowerCase()] = addressPointMap[address.toLowerCase()] || point;
             if (point > addressPointMap[address.toLowerCase()]) {
-              _this.addPoint = point - addressPointMap[address.toLowerCase()];
+              _this.addPoint = `+${point - addressPointMap[address.toLowerCase()]}`;
               _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
               _this.addPointVisible = true;
               addressPointMap[address.toLowerCase()] = point;

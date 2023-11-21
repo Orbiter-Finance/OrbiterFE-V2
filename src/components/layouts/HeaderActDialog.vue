@@ -7,7 +7,7 @@
         <div v-if="isMobile" @click="mobileCloseAct" style="width: 100%;height:100%"></div>
         <div @mouseover="mouseoverDialog" class="block_1">
             <div style="width: 100%;display: flex;height:45px;">
-                <span class="text_21">incentives</span>
+                <span class="text_21">🛸 Quests</span>
                 <div style="flex: 1;text-align: right;padding-top: 6px;padding-right:3px">
                     <span class="text_22" @click="openDetail">Details</span>
                 </div>
