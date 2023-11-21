@@ -35,25 +35,25 @@
                         :hidden="!isLightMode"
                         class="thumbnail_1"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng7f9c86090b8a95116f9cec779690d529457e0c63cdad374e86d82524e26df681"
+                        :src="require('../../assets/activity/curve_up.png')"
                     />
                     <img
                         :hidden="!isLightMode"
                         class="thumbnail_2"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPngb155b61ec3016ea7932a9141d98b6bdb581718b8c6eb766259811b28541dc428"
+                        :src="require('../../assets/activity/curve_down.png')"
                     />
                     <img
                         :hidden="isLightMode"
                         class="thumbnail_5"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng465ac4cc3a957246bbab0bbc0c8a00038b99d58b765b5c613750f0d96341aac8"
+                        :src="require('../../assets/activity/curve_up_dark.png')"
                     />
                     <img
                         :hidden="isLightMode"
                         class="thumbnail_6"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng06e41cd8a027d1eb1a448e263aa4b591c2e62616bc437a84090964b6ac1e234a"
+                        :src="require('../../assets/activity/curve_down_dark.png')"
                     />
                 </div>
                 <div v-else class="box_2">
@@ -78,25 +78,25 @@
                         :hidden="!isLightMode"
                         class="thumbnail_3"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPngb04ca3ef67a41a6c2dbb33667fc420fc3b5bc79c8cc9087eb3353d8febab6d51"
+                        :src="require('../../assets/activity/curve_up_gray.png')"
                     />
                     <img
                         :hidden="!isLightMode"
                         class="thumbnail_4"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPnge26aac3592424172109f42bdc7870ef94462df3a3a03cff44cc5550ba13c5e2f"
+                        :src="require('../../assets/activity/curve_down_gray.png')"
                     />
                     <img
                         :hidden="isLightMode"
                         class="thumbnail_5"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng465ac4cc3a957246bbab0bbc0c8a00038b99d58b765b5c613750f0d96341aac8"
+                        :src="require('../../assets/activity/curve_up_dark.png')"
                     />
                     <img
                         :hidden="isLightMode"
                         class="thumbnail_6"
                         referrerpolicy="no-referrer"
-                        src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng06e41cd8a027d1eb1a448e263aa4b591c2e62616bc437a84090964b6ac1e234a"
+                        :src="require('../../assets/activity/curve_down_dark.png')"
                     />
                 </div>
             </template>
@@ -184,6 +184,16 @@
         for (const data of list) {
           dataList.push(...data.taskList);
         }
+        // TODO
+        dataList.push({
+          id: 1,
+          name: `{ i + 1 }`,
+          desc: '1111111111111111',
+          status: 1,
+          points: 20,
+          conditions: {},
+          endTime: new Date().valueOf() + 1000 * 60 * 60 * 24 * 180
+        });
         return dataList;
         // const list = [];
         // for (let i = pageSize * page; i < pageSize * (page + 1); i++) {
@@ -389,7 +399,7 @@
             position: relative;
             width: 58px;
             height: 64px;
-            background: url(https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng093aca53e1cae8cb9e1f954e37c03cc26103f74e8a865d6d00f167193decfda9) -2px 0px no-repeat;
+            background: url('../../assets/activity/wrapper_1.png') -2px 0px no-repeat;
             background-size: 60px 66px;
             margin: 12px 0 0 12px;
             padding-top: 5px;
@@ -474,7 +484,7 @@
 
         .text-wrapper_2 {
             height: 20px;
-            background: url(https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng53ee98f847d97ced36ab3a9c320cd5ef458dc71f1e8c520b08ae6cfb777d790d) 100% no-repeat;
+            background: url('../../assets/activity/wrapper_2.png') 100% no-repeat;
             background-size: 100% 100%;
             width: 55px;
             margin-right: 20px;
@@ -535,7 +545,7 @@
         }
 
         .text-wrapper_3 {
-            background: url(https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPngea547cd0d1cda6326cc37d4fc58803c36168c83ea16e4b30fccd82791d512d23) 100% no-repeat;
+            background: url('../../assets/activity/wrapper_3.png') 100% no-repeat;
             position: relative;
             width: 58px;
             height: 64px;
@@ -602,7 +612,7 @@
 
         .text-wrapper_4 {
             height: 20px;
-            background: url(https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng53ee98f847d97ced36ab3a9c320cd5ef458dc71f1e8c520b08ae6cfb777d790d) 100% no-repeat;
+            background: url('../../assets/activity/wrapper_4.png') 100% no-repeat;
             background-size: 100% 100%;
             width: 55px;
             color: rgba(153, 153, 153, 1);
@@ -663,7 +673,7 @@
         .block_2 {
             width: 58px;
             height: 64px;
-            background: url(https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPngea547cd0d1cda6326cc37d4fc58803c36168c83ea16e4b30fccd82791d512d23) 100% no-repeat;
+            background: url('../../assets/activity/block_2.png') 100% no-repeat;
             background-size: 100% 100%;
             margin: 12px 0 0 12px;
         }
@@ -731,7 +741,7 @@
 
         .text-wrapper_5 {
             height: 20px;
-            background: url(https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng53ee98f847d97ced36ab3a9c320cd5ef458dc71f1e8c520b08ae6cfb777d790d) 100% no-repeat;
+            background: url('../../assets/activity/wrapper_5.png') 100% no-repeat;
             background-size: 100% 100%;
             width: 55px;
         }
