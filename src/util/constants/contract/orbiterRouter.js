@@ -36,14 +36,9 @@ export async function orbiterRouterTransfer(type, fromAddress, makerAddress, val
       break;
     }
     case OrbiterRouterType.CrossAddressCurrency: {
-      sourceData = [
-        type,
-        toChainId,
-        toWalletAddress,
-        t2Address,
-        web3.utils.toHex(expectValue),
-        slippage,
-      ];
+      sourceData = fromAddress.toLowerCase() === toWalletAddress.toLowerCase() ?
+        [type, toChainId, t2Address, web3.utils.toHex(expectValue), slippage] :
+        [type, toChainId, t2Address, web3.utils.toHex(expectValue), slippage, toWalletAddress];
       break;
     }
   }
