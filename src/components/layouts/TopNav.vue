@@ -1,5 +1,5 @@
 <template>
-  <div class="top-nav">
+  <div class="top-nav" @mouseleave="mouseleaveDialog">
     <template v-if="!isMobile">
       <div class="nav-wrap" style="height: 100%; position: relative">
         <img
@@ -80,12 +80,13 @@
 <script>
 import { SvgIconThemed } from '../'
 import {
+  actDialogHover,
   isMobile,
   setPageTab,
   setPageSenderTab,
   showAddress,
   setStarkNetDialog,
-  setSelectWalletDialogVisible, starkAddress,
+  setSelectWalletDialogVisible, starkAddress, setActDialogVisible,
 } from '../../composition/hooks';
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -199,6 +200,11 @@ export default {
     },
   },
   methods: {
+    mouseleaveDialog() {
+      setTimeout(() => {
+        !actDialogHover.value && setActDialogVisible(false);
+      }, 100);
+    },
     toHome () {
       setPageSenderTab()
       this.$route.path !== '/home' && this.$router.push({ path: '/home' })

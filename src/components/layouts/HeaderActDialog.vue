@@ -108,7 +108,8 @@
 
 <script>
   import {
-    actDialogVisible, isMobile, setActDialogVisible, transferDataState, updateActDataList,
+    actDialogHover,
+    actDialogVisible, isMobile, setActDialogVisible, setActDialogHover, transferDataState, updateActDataList,
   } from '../../composition/hooks';
   import { requestPointSystem } from "../../common/openApiAx";
   import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
@@ -212,6 +213,7 @@
         }
       },
       closeAct() {
+        setActDialogHover(false);
         setActDialogVisible(false);
       },
       formatTime(time) {
@@ -225,7 +227,7 @@
         return `${ new Date(time).getMonth() } ${ new Date(time).getDate() }th`;
       },
       mouseoverDialog() {
-        this.isHover = true;
+        setActDialogHover(true);
       },
     },
     async mounted() {
@@ -239,7 +241,7 @@
           }
         }
         setTimeout(() => {
-          actDialogVisible.value && !this.isHover && setActDialogVisible(false);
+          actDialogVisible.value && !actDialogHover.value && setActDialogVisible(false);
         }, 3000);
       }, 500);
 
@@ -453,7 +455,7 @@
 
         .border-dashed_2 {
             position: absolute;
-            border-top: 1px dashed rgba(153, 153, 153, 1);
+            border-top: 1px dashed #EEEEEE;
             transform: rotate(90deg);
             width: 76px;
             left: 44px;
