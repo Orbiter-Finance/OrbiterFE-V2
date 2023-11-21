@@ -23,6 +23,7 @@
       </keep-alive>
     </div>
     <HeaderDialog />
+    <HeaderActDialog />
   </div>
 </template>
 
@@ -34,13 +35,14 @@ import walletDispatchers, {
   BRAVE_APP,
   getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK, ZERION_APP,
 } from './util/walletsDispatchers';
-import { isMobile, web3State } from './composition/hooks';
+import { actDialogVisible, isMobile, setActDialogVisible, web3State } from './composition/hooks';
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
+import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
 import {
   setIsBraveWallet,
   performInitMobileAppWallet,
@@ -110,9 +112,9 @@ export default {
     TopNav,
     BottomNav,
     HeaderDialog,
+    HeaderActDialog
   },
   async mounted() {
-    console.log('window', window)
     if (isBrowserApp()) {
       await connectStarkNetWallet();
     }

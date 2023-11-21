@@ -56,7 +56,10 @@
                         <span>{{ FromChainName }}</span>
                     </div>
                     <div class="chain">
-                        <img style="width: 56px; height: 56px" :src="showChainIcon()">
+                        <svg-icon
+                            :iconName="showChainIcon()"
+                            style="width: 56px; height: 56px"
+                        ></svg-icon>
                     </div>
                     <div class="tx from-tx" @click="goToExplorFrom">
                         <template v-if="!detailData">
@@ -115,7 +118,10 @@
                         <span>{{ toChainName }}</span>
                     </div>
                     <div class="chain">
-                        <img style="width: 56px; height: 56px" :src="showChainIcon(false)">
+                        <svg-icon
+                            :iconName="showChainIcon(false)"
+                            style="width: 56px; height: 56px"
+                        ></svg-icon>
                     </div>
                     <div class="tx to-tx" @click="goToExplorTo">
                         <template v-if="!detailData">
@@ -243,7 +249,7 @@ export default {
 
             const { proceedState, proceeding } = this.$store.state
             if (proceedState === 1) {
-                return 'View on Explore'
+                return 'View on Explorer'
             } else {
                 // immutablex
                 if (
@@ -259,7 +265,7 @@ export default {
             if (this.detailData) {
                 const { state, toTxHash, toChainID } = this.detailData
                 if (state !== 0) {
-                    return 'View on Explore'
+                    return 'View on Explorer'
                 } else {
                     // immutablex
                     if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
@@ -271,7 +277,7 @@ export default {
             const { toChainID } = transferDataState
             const { proceedState, proceeding } = this.$store.state
             if (proceedState < 4) {
-                return 'View on Explore'
+                return 'View on Explorer'
             } else {
                 // immutablex
                 if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
@@ -320,9 +326,9 @@ export default {
     methods: {
         showChainIcon(isFrom = true) {
             if (this.detailData) {
-                return util.netWorkLogo(this.detailData[`${ isFrom ? 'from' : 'to' }ChainID`]);
+                return this.detailData[`${ isFrom ? 'from' : 'to' }ChainID`] || 1
             }
-            return util.netWorkLogo(transferDataState[`${isFrom ? 'from' : 'to'}ChainID`]);
+            return transferDataState[`${isFrom ? 'from' : 'to'}ChainID`] || 1
         },
         getChainId(isFrom = true) {
             let chainID

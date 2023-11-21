@@ -21,7 +21,11 @@
                         <div class="contentItem title" >{{ toCapitalize(name) }}</div>
                         <div v-for="(item, index) of chains" :key="name + index"
                             @click="getChainInfo(item, index)" class="contentItem">
-                            <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
+                            <svg-icon
+                                class="logo"
+                                :iconName="item.localID"
+                                style="margin-right: 1.5rem;"
+                            ></svg-icon>
                             <span>{{ item.chain }}</span>
                             <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
                                 height="1.5rem" />
@@ -30,7 +34,11 @@
                     <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
                     <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
                         class="contentItem">
-                        <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
+                        <svg-icon
+                            class="logo"
+                            :iconName="item.localID"
+                            style="margin-right: 1.5rem;"
+                        ></svg-icon>
                         <span>{{ item.chain }}</span>
                         <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
                             height="1.5rem" />
@@ -39,7 +47,11 @@
                 <template v-else>
                     <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
                         class="contentItem">
-                        <img class="logo" style="margin-right: 1.5rem;" :src="item.icon">
+                        <svg-icon
+                            class="logo"
+                            :iconName="item.localID"
+                            style="margin-right: 1.5rem;"
+                        ></svg-icon>
                         <span>{{ item.chain }}</span>
                         <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
                             height="1.5rem" />
@@ -99,11 +111,9 @@ export default {
             for (let index = 0; index < this.ChainData.length; index++) {
                 const item = this.ChainData[index]
 
-                const iconName = util.netWorkLogo(item)
                 const chainData = {
-                    icon: iconName,
                     chain: util.chainName(item),
-                    localID: item,
+                    localID: item || 1,
                 }
                 newArray.push(chainData)
             }
