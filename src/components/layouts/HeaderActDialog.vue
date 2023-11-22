@@ -57,7 +57,7 @@
                             :src="require('../../assets/activity/curve_down_dark.png')"
                         />
                     </div>
-                    <div v-else class="box_2">
+                    <div class="box_2">
                         <div class="text-wrapper_3 flex-col">
                             <span class="text_6">{{ item.points }}</span> <span class="text_7">O-Points</span>
                         </div>
@@ -91,13 +91,13 @@
                             :hidden="isLightMode"
                             class="thumbnail_5"
                             referrerpolicy="no-referrer"
-                            :src="require('../../assets/activity/curve_up_dark.png')"
+                            :src="require('../../assets/activity/curve_up_dark_done.png')"
                         />
                         <img
                             :hidden="isLightMode"
                             class="thumbnail_6"
                             referrerpolicy="no-referrer"
-                            :src="require('../../assets/activity/curve_down_dark.png')"
+                            :src="require('../../assets/activity/curve_down_dark_done.png')"
                         />
                     </div>
                 </template>
@@ -382,6 +382,7 @@
         }
     }
     .act {
+        z-index: 999;
         .block_1 {
             top: 50px;
             right: 20px;
@@ -559,6 +560,7 @@
 
         .text-wrapper_3 {
             background: url('../../assets/activity/wrapper_3.png') 100% no-repeat;
+            border-radius: 8px;
             position: relative;
             width: 58px;
             height: 64px;
@@ -1036,10 +1038,10 @@
                     background-color: rgba(54, 57, 81, 1);
                     border-radius: 8px;
                     position: relative;
-                    width: 348px;
+                    width: 90%;
                     height: 88px;
                     border: 1px solid rgba(238, 238, 238, 0.1);
-                    margin: 16px 0 0 16px;
+                    margin: 16px;
                 }
 
                 .text-wrapper_2 {
@@ -1086,6 +1088,11 @@
             }
 
             .box_1 {
+                width: 90%;
+                margin: 16px;
+            }
+
+            .box_2 {
                 width: 90%;
                 margin: 16px;
             }
