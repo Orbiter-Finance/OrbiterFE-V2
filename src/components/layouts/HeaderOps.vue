@@ -252,30 +252,28 @@
     async mounted() {
       const _this = this;
       this.getWalletAddressPoint(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
-      if (!isMobile.value) {
-        setInterval(async () => {
-          const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-          if (address && address !== '0x') {
-            const pointRes = await requestPointSystem('user/points', {
-              address
-            });
-            const point = pointRes.data.points;
-            if(addressPointMap[address.toLowerCase()] === undefined){
-              addressPointMap[address.toLowerCase()] = point;
-            }
-            if (point > addressPointMap[address.toLowerCase()]) {
-              _this.addPoint = `+${point - addressPointMap[address.toLowerCase()]}`;
-              _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
-              _this.addPointVisible = true;
-              addressPointMap[address.toLowerCase()] = point;
-              setTimeout(() => {
-                _this.addPointVisible = false;
-              }, 3000);
-            }
-            this.totalPoint = point;
+      setInterval(async () => {
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        if (address && address !== '0x') {
+          const pointRes = await requestPointSystem('user/points', {
+            address
+          });
+          const point = pointRes.data.points;
+          if (addressPointMap[address.toLowerCase()] === undefined) {
+            addressPointMap[address.toLowerCase()] = point;
           }
-        }, 5000);
-      }
+          if (point > addressPointMap[address.toLowerCase()]) {
+            _this.addPoint = `+${point - addressPointMap[address.toLowerCase()]}`;
+            _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
+            _this.addPointVisible = true;
+            addressPointMap[address.toLowerCase()] = point;
+            setTimeout(() => {
+              _this.addPointVisible = false;
+            }, 3000);
+          }
+          this.totalPoint = point;
+        }
+      }, 5000);
     }
   }
 </script>
