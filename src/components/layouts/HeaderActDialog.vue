@@ -57,7 +57,7 @@
                             :src="require('../../assets/activity/curve_down_dark.png')"
                         />
                     </div>
-                    <div class="box_2">
+                    <div v-else class="box_2">
                         <div class="text-wrapper_3 flex-col">
                             <span class="text_6">{{ item.points }}</span> <span class="text_7">O-Points</span>
                         </div>
@@ -382,7 +382,6 @@
         }
     }
     .act {
-        z-index: 999;
         .block_1 {
             top: 50px;
             right: 20px;

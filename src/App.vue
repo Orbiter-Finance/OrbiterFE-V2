@@ -23,7 +23,7 @@
       </keep-alive>
     </div>
     <HeaderDialog />
-    <HeaderActDialog />
+    <HeaderActDialog style="z-index:999" />
   </div>
 </template>
 
