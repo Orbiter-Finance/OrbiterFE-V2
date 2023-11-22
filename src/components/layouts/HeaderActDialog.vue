@@ -12,14 +12,14 @@
                 </div>
                 <img
                     @click="closeAct"
-                    :hidden="!isLightMode"
+                    :hidden="!isLightMode || isMobile"
                     class="label_9"
                     referrerpolicy="no-referrer"
                     :src="require('../../assets/activity/close.png')"
                 />
                 <img
                     @click="closeAct"
-                    :hidden="isLightMode"
+                    :hidden="isLightMode || isMobile"
                     class="label_9"
                     referrerpolicy="no-referrer"
                     :src="require('../../assets/activity/close_dark.png')"
@@ -457,7 +457,7 @@
             margin: 1px 8px;
         }
 
-        .text_29{
+        .text_29 {
             width: 76px;
             height: 17px;
             overflow-wrap: break-word;
@@ -1058,7 +1058,7 @@
             text-align: center;
             white-space: nowrap;
             line-height: 17px;
-            margin: 17px 0 0 12px;
+            margin: 10px 12px;
         }
     }
 

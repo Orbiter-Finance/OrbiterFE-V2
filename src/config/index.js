@@ -143,6 +143,7 @@ function convertMakerConfig(maker) {
           decimals: toToken.decimals,
         },
         times: [makerData.startTime, makerData.endTime],
+        originWithholdingFee: makerData.originWithholdingFee,
         crossAddress: {
           recipient: makerData.crossAddress?.makerAddress,
           sender: makerData.crossAddress?.sender,
