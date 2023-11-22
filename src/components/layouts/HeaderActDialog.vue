@@ -60,7 +60,7 @@
                             :src="require('../../assets/activity/curve_down_dark.png')"
                         />
                     </div>
-                    <div class="box_2">
+                    <div v-else class="box_2">
                         <div class="text-wrapper_3 flex-col">
                             <span class="text_6">{{ item.points }}</span> <span class="text_7">O-Points</span>
                         </div>
@@ -71,7 +71,7 @@
                             </div>
                             <div style="margin-top: 10px;display: flex;flex-direction: row">
                                 <div v-for="tag in item.tags" class="text-wrapper_14 flex-col">
-                                    <span class="text_27">{{ tag.description }}</span>
+                                    <span class="text_29">{{ tag.description }}</span>
                                 </div>
                                 <div class="text-wrapper_4 flex-col">
                                     <span class="text_9">Done</span>
@@ -418,7 +418,21 @@
         .text_27 {
             height: 17px;
             overflow-wrap: break-word;
-            color: rgba(182, 182, 182, 1);
+            color: rgba(255, 255, 255, 1);
+            font-size: 12px;
+            font-family: OpenSansRoman-Bold;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+            margin: 1px 8px;
+        }
+
+        .text_29{
+            width: 76px;
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(134, 136, 150, 1);
             font-size: 12px;
             font-family: OpenSansRoman-Bold;
             font-weight: 700;
