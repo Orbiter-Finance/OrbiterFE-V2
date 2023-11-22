@@ -265,7 +265,7 @@
           if (point > addressPointMap[address.toLowerCase()]) {
             _this.addPoint = `+${point - addressPointMap[address.toLowerCase()]}`;
             _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
-            _this.addPointVisible = true;
+            if (!isMobile.value) _this.addPointVisible = true;
             addressPointMap[address.toLowerCase()] = point;
             setTimeout(() => {
               _this.addPointVisible = false;
