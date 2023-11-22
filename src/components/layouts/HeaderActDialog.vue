@@ -406,6 +406,10 @@
                 background: url('../../assets/activity/fee_dark_tag_done.png') 100% no-repeat;
                 background-size: 100% 100%;
             }
+
+            .text_29 {
+                color: rgba(134, 136, 150, 1);
+            }
         }
     }
     .act {
@@ -428,7 +432,7 @@
             margin: 1px 8px;
         }
 
-        .text_29{
+        .text_29 {
             width: 76px;
             height: 17px;
             overflow-wrap: break-word;
