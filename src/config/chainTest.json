@@ -9,12 +9,12 @@
         "internalId": "5",
         "name": "Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
         "contract": {
-            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc": "OBSource",
-            "0xc7a54a6ec85344fabb645bf9ff9b2e88066fe601": "OrbiterRouterV3"
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -34,38 +34,6 @@
     },
     {
         "api": {
-            "url": "https://api-goerli.arbiscan.io/api",
-            "key": ""
-        },
-        "chainId": "421613",
-        "networkId": "421613",
-        "internalId": "22",
-        "name": "Arbitrum Görli",
-        "debug": false,
-        "service": {
-            "rpc": "ArbitrumRpcScanningService"
-        },
-        "contract": {
-            "0x1AC6a2965Bd55376ec27338F45cfBa55d8Ba380a": "OBSource",
-            "0x02f29f9b1c0c8121992eeb85d690c0d11130ecf7": "OrbiterRouterV3"
-        },
-        "nativeCurrency": {
-            "name": "Ether",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x0000000000000000000000000000000000000000"
-        },
-        "rpc": [
-            "https://endpoints.omniatech.io/v1/arbitrum/goerli/public",
-            "https://goerli-rollup.arbitrum.io/rpc",
-            "https://arb-goerli.g.alchemy.com/v2/demo",
-            "https://endpoints.omniatech.io/v1/arbitrum/goerli/public"
-        ],
-        "tokens": [],
-        "infoURL": "https://testnet.arbiscan.io"
-    },
-    {
-        "api": {
             "url": "https://goerli-api.zksync.io/api/v0.2",
             "key": ""
         },
@@ -74,6 +42,7 @@
         "internalId": "33",
         "name": "zkSync Lite Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "api": "ZKLiteApiScanningService"
         },
@@ -99,9 +68,11 @@
         "name": "Starknet Görli",
         "debug": false,
         "targetConfirmation": 1,
+        "bridge": 1,
         "service": {
             "rpc": "StarknetRpcScanningService"
         },
+        "contracts": ["0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"],
         "contract": {
             "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3": "OBSource"
         },
@@ -147,12 +118,12 @@
         "internalId": "77",
         "name": "Optimism Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "OptimisticRpcScanningService"
         },
         "contract": {
-            "0x89EBCf7253f5E27b45E82cd228c977Fd03E47f54": "OBSource",
-            "0x088ad5719be512c54b2254f405477511d4d57614": "OrbiterRouterV3"
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "Ether",
@@ -179,6 +150,7 @@
         "internalId": "88",
         "name": "ImmutableX Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "api": "ImmutableApiScanningService"
         },
@@ -195,13 +167,14 @@
     {
         "api": {
             "url": "https://uat2.loopring.io/api/v3",
-            "key": "7qhkQYovwuDWriDSdn5dzDALt9PdlYxqFa2bBJMDCOA1gM5NdKfjT0LMygDooTyh"
+            "key": "tG0cm11rYjnBhzJVjy4BH45vxGDFpaqjB5P4nEGpEgUKWjK9CQzYK1nwB6cveavI"
         },
         "chainId": "loopring_test",
         "networkId": "5",
         "internalId": "99",
         "name": "Loopring Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "api": "LoopringApiScanningService"
         },
@@ -212,7 +185,7 @@
             "id": 0,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
+        "rpc": ["https://goerli.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"],
         "tokens": [],
         "infoURL": "https://loopring.io"
     },
@@ -226,8 +199,10 @@
         "internalId": "514",
         "name": "zkEra Görli",
         "debug": false,
+        "batchLimit": 5,
+        "bridge": 1,
         "service": {
-            "rpc": "EVMRpcScanningV6Service"
+            "rpc": "EVMRpcScanningV5Service"
         },
         "contract": {
             "0x9147eE8678C27a2E677A84aB14F7303E451E99Fb": "OBSource",
@@ -240,9 +215,9 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://zksync2-testnet.zksync.dev",
+            "https://testnet.era.zksync.dev",
             "https://zksync-era-testnet.blockpi.network/v1/rpc/public",
-            "https://testnet.era.zksync.dev"
+            "https://zksync2-testnet.zksync.dev"
         ],
         "tokens": [],
         "infoURL": "https://goerli.explorer.zksync.io"
@@ -257,12 +232,12 @@
         "internalId": "515",
         "name": "BSC Görli",
         "debug": false,
+        "bridge": 3,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
         "contract": {
-            "": "OBSource",
-            "": "OrbiterRouterV3"
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "BNB",
@@ -289,8 +264,12 @@
         "internalId": "517",
         "name": "zkEVM Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -318,8 +297,12 @@
         "internalId": "519",
         "name": "Scroll Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -329,9 +312,6 @@
         },
         "rpc": [
             "https://alpha-rpc.scroll.io/l2"
-        ],
-        "watch": [
-            "rpc"
         ],
         "tokens": [],
         "infoURL": "https://blockscout.scroll.io"
@@ -347,8 +327,12 @@
         "internalId": "520",
         "name": "Taiko Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -375,8 +359,12 @@
         "internalId": "521",
         "name": "Base Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -403,8 +391,12 @@
         "internalId": "523",
         "name": "Linea Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -431,8 +423,12 @@
         "internalId": "524",
         "name": "Mantle Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "MNT",
@@ -464,8 +460,12 @@
         "internalId": "525",
         "name": "OpBSC Görli",
         "debug": false,
+        "bridge": 3,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "tBNB",
@@ -489,8 +489,12 @@
         "internalId": "526",
         "name": "Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -499,6 +503,9 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
+            "https://ethereum-sepolia.publicnode.com",
+            "https://1rpc.io/sepolia",
+            "https://rpc.notadegen.com/eth/sepolia",
             "https://ethereum-sepolia.blockpi.network/v1/rpc/public",
             "https://rpc.notadegen.com/sepolia",
             "https://sepolia.gateway.tenderly.co",
@@ -510,16 +517,20 @@
     },
     {
         "api": {
-            "url": "https://okbrpc.okbchain.org/v1",
+            "url": "",
             "key": ""
         },
         "chainId": "195",
         "networkId": "195",
         "internalId": "527",
-        "name": "OKB Görli",
+        "name": "X1 Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "OKB",
@@ -528,17 +539,17 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://okbtestrpc.okbchain.org"
+            "https://testrpc.x1.tech"
         ],
         "tokens": [
             {
                 "name": "Ether (WETH)",
                 "symbol": "ETH",
                 "decimals": 18,
-                "address": "0xaf99998DCFaB1A506213B73Fe50E3f31166B7EB1"
+                "address": "0xbec7859bc3d0603bec454f7194173e36bf2aa5c8"
             }
         ],
-        "infoURL": "https://www.okx.com/explorer/okbc-test"
+        "infoURL": "https://www.oklink.com/x1-test"
     },
     {
         "api": {
@@ -550,8 +561,12 @@
         "internalId": "528",
         "name": "Scroll Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -580,8 +595,12 @@
         "internalId": "529",
         "name": "Combo Görli",
         "debug": false,
+        "bridge": 3,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "BNB",
@@ -605,8 +624,12 @@
         "internalId": "530",
         "name": "Zora Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -630,8 +653,12 @@
         "internalId": "531",
         "name": "Manta Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -655,8 +682,12 @@
         "internalId": "534",
         "name": "Stylus Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -681,8 +712,12 @@
         "internalId": "535",
         "name": "Arbitrum Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -707,8 +742,12 @@
         "internalId": "536",
         "name": "Kroma Sepolia",
         "debug": false,
+        "bridge": 2,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -732,10 +771,13 @@
         "internalId": "537",
         "name": "Xai Görli",
         "debug": false,
+        "bridge": 1,
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "contracts": [],
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
+        },
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
