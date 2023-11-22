@@ -1099,7 +1099,7 @@
                     position: relative;
                     height: 88px;
                     border: 1px solid rgba(255, 255, 255, 0.2);
-                    width: 90%;
+                    width: 91.5%;
                     margin: 16px;
                 }
 
@@ -1108,7 +1108,7 @@
                     background-color: rgba(54, 57, 81, 1);
                     border-radius: 8px;
                     position: relative;
-                    width: 90%;
+                    width: 91.5%;
                     height: 88px;
                     border: 1px solid rgba(238, 238, 238, 0.1);
                     margin: 16px;
@@ -1158,12 +1158,12 @@
             }
 
             .box_1 {
-                width: 90%;
+                width: 91.5%;
                 margin: 16px;
             }
 
             .box_2 {
-                width: 90%;
+                width: 91.5%;
                 margin: 16px;
             }
 
