@@ -432,7 +432,7 @@
             width: 76px;
             height: 17px;
             overflow-wrap: break-word;
-            color: rgba(134, 136, 150, 1);
+            color: #b6b6b6;
             font-size: 12px;
             font-family: OpenSansRoman-Bold;
             font-weight: 700;
