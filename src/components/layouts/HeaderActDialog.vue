@@ -24,8 +24,11 @@
                                 {{ item.description }}
                             </div>
                             <div style="margin-top: 10px;display: flex;flex-direction: row">
-                                <div class="text-wrapper_2">
-                                    Undone
+                                <div v-for="tag in item.tags" class="text-wrapper_17 flex-col">
+                                    <span class="text_27">{{ tag.description }}</span>
+                                </div>
+                                <div class="text-wrapper_18 flex-col">
+                                    <span class="text_28">Undone</span>
                                 </div>
                                 <div class="text_5">
                                     Until&nbsp;{{ formatTime(item.endTime) }}
@@ -57,7 +60,7 @@
                             :src="require('../../assets/activity/curve_down_dark.png')"
                         />
                     </div>
-                    <div v-else class="box_2">
+                    <div class="box_2">
                         <div class="text-wrapper_3 flex-col">
                             <span class="text_6">{{ item.points }}</span> <span class="text_7">O-Points</span>
                         </div>
@@ -67,10 +70,13 @@
                                 {{ item.description }}
                             </div>
                             <div style="margin-top: 10px;display: flex;flex-direction: row">
-                                <div class="text-wrapper_4">
-                                    Done
+                                <div v-for="tag in item.tags" class="text-wrapper_14 flex-col">
+                                    <span class="text_27">{{ tag.description }}</span>
                                 </div>
-                                <div class="text_9">
+                                <div class="text-wrapper_4 flex-col">
+                                    <span class="text_9">Done</span>
+                                </div>
+                                <div class="text_10">
                                     Until&nbsp;{{ formatTime(item.endTime) }}
                                 </div>
                             </div>
@@ -277,13 +283,13 @@
                 background-color: rgba(64, 65, 91, 1);
                 color: rgba(255, 255, 255, 1);
                 position: absolute;
-                width: 380px;
+                width: 420px;
                 height: 394px;
                 margin-top: 24px;
             }
 
             .text_3 {
-                width: 232px;
+                width: 272px;
                 height: 34px;
                 overflow-wrap: break-word;
                 color: rgba(255, 255, 255, 0.8);
@@ -295,16 +301,7 @@
             }
 
             .text_5 {
-                width: 31px;
-                height: 17px;
-                overflow-wrap: break-word;
                 color: rgba(255, 255, 255, 0.8);
-                font-size: 12px;
-                font-family: OpenSansRoman-SemiBold;
-                text-align: left;
-                white-space: nowrap;
-                line-height: 17px;
-                margin: 1px 0 0 12px;
             }
 
             .text_10 {
@@ -339,7 +336,7 @@
                 background-color: rgba(71, 74, 111, 1);
                 border-radius: 8px;
                 position: relative;
-                width: 348px;
+                width: 388px;
                 height: 88px;
                 border: 1px solid rgba(255, 255, 255, 0.2);
                 margin: 16px 0 0 16px;
@@ -350,7 +347,7 @@
                 background-color: rgba(54, 57, 81, 1);
                 border-radius: 8px;
                 position: relative;
-                width: 348px;
+                width: 388px;
                 height: 88px;
                 border: 1px solid rgba(238, 238, 238, 0.1);
                 margin: 16px 0 0 16px;
@@ -373,22 +370,97 @@
             }
 
             .text-wrapper_4 {
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 12px;
                 height: 20px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                width: 55px;
+                background: url('../../assets/activity/dark_tag_done.png') 100% no-repeat;
+                background-size: 100% 100%;
+                margin-left: 2px;
+                width: 47px;
+            }
+
+            .text-wrapper_18 {
+                height: 20px;
+                background: url('../../assets/activity/dark_tag_undone.png') 100% no-repeat;
+                background-size: 100% 100%;
+                margin-left: 2px;
+                width: 62px;
+            }
+
+            .text_28 {
+                width: 46px;
+                height: 17px;
+                overflow-wrap: break-word;
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 12px;
+                font-family: OpenSansRoman-SemiBold;
+                text-align: left;
+                white-space: nowrap;
+                line-height: 17px;
+            }
+
+            .text_27 {
+                color: rgba(255, 255, 255, 1);
+            }
+
+            .text-wrapper_14 {
+                height: 20px;
+                background: url('../../assets/activity/fee_dark_tag_done.png') 100% no-repeat;
+                background-size: 100% 100%;
             }
         }
     }
     .act {
+        .text-wrapper_14 {
+            height: 20px;
+            background: url('../../assets/activity/fee_light_tag_done.png') 100% no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .text_27 {
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(182, 182, 182, 1);
+            font-size: 12px;
+            font-family: OpenSansRoman-Bold;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+            margin: 1px 8px;
+        }
+
+        .text-wrapper_18 {
+            height: 20px;
+            background: url('../../assets/activity/light_tag_undone.png') 100% no-repeat;
+            background-size: 100% 100%;
+            margin-left: 2px;
+            width: 62px;
+        }
+
+        .text_28 {
+            width: 46px;
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(34, 34, 34, 1);
+            font-size: 12px;
+            font-family: OpenSansRoman-SemiBold;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+        }
+
+        .text-wrapper_17 {
+            height: 20px;
+            background: url('../../assets/activity/fee_dark_tag_undone.png') 100% no-repeat;
+            background-size: 100% 100%;
+        }
+
         .block_1 {
             top: 50px;
             right: 20px;
             border-radius: 12px;
             background-color: #ffffff;
             position: absolute;
-            width: 380px;
+            width: 420px;
             height: 394px;
             margin-top: 24px;
         }
@@ -398,7 +470,7 @@
             background-color: rgba(255, 255, 255, 1);
             border-radius: 8px;
             position: relative;
-            width: 348px;
+            width: 388px;
             height: 88px;
             border: 1px solid rgba(34, 34, 34, 1);
             margin: 16px 0 0 16px;
@@ -472,13 +544,13 @@
         }
 
         .group_2 {
-            width: 232px;
+            width: 272px;
             height: 62px;
             margin: 14px 22px 0 11px;
         }
 
         .text_3 {
-            width: 232px;
+            width: 272px;
             height: 34px;
             overflow-wrap: break-word;
             color: rgba(34, 34, 34, 1);
@@ -524,11 +596,10 @@
             color: rgba(153, 153, 153, 1);
             font-size: 12px;
             font-family: OpenSans-Regular;
-            /*font-weight: NaN;*/
             text-align: left;
             white-space: nowrap;
             line-height: 17px;
-            margin-top: 2px;
+            margin: 2px 0 0 4px;
         }
 
         .thumbnail_1 {
@@ -551,7 +622,7 @@
             background-color: rgba(255, 255, 255, 1);
             border-radius: 8px;
             position: relative;
-            width: 348px;
+            width: 388px;
             height: 88px;
             border: 1px solid rgba(238, 238, 238, 1);
             margin: 16px 0 0 16px;
@@ -602,13 +673,13 @@
         }
 
         .group_4 {
-            width: 232px;
+            width: 272px;
             height: 62px;
             margin: 14px 22px 0 11px;
         }
 
         .text_8 {
-            width: 232px;
+            width: 272px;
             height: 34px;
             overflow-wrap: break-word;
             color: rgba(153, 153, 153, 1);
@@ -626,10 +697,10 @@
 
         .text-wrapper_4 {
             height: 20px;
-            background: url('../../assets/activity/wrapper_4.png') 100% no-repeat;
+            background: url('../../assets/activity/light_tag_done.png') 100% no-repeat;
             background-size: 100% 100%;
-            width: 55px;
-            color: rgba(153, 153, 153, 1);
+            margin-left: 2px;
+            width: 47px;
         }
 
         .text_9 {
@@ -642,7 +713,6 @@
             text-align: left;
             white-space: nowrap;
             line-height: 17px;
-            margin: 1px 0 0 12px;
         }
 
         .text_10 {
@@ -655,7 +725,7 @@
             text-align: left;
             white-space: nowrap;
             line-height: 17px;
-            margin-top: 2px;
+            margin: 2px 0 0 4px;
         }
 
         .thumbnail_3 {
@@ -731,13 +801,13 @@
         }
 
         .block_3 {
-            width: 232px;
+            width: 272px;
             height: 62px;
             margin: 14px 22px 0 11px;
         }
 
         .text_13 {
-            width: 232px;
+            width: 272px;
             height: 34px;
             overflow-wrap: break-word;
             color: rgba(153, 153, 153, 1);
@@ -846,7 +916,7 @@
         }
 
         .text_18 {
-            width: 232px;
+            width: 272px;
             height: 38px;
             overflow-wrap: break-word;
             color: rgba(34, 34, 34, 1);
@@ -970,7 +1040,7 @@
                 }
 
                 .text_3 {
-                    width: 232px;
+                    width: 272px;
                     height: 34px;
                     overflow-wrap: break-word;
                     color: rgba(255, 255, 255, 0.8);
@@ -988,19 +1058,6 @@
                     color: rgba(255, 255, 255, 0.8);
                     font-size: 12px;
                     font-family: OpenSansRoman-SemiBold;
-                    text-align: left;
-                    white-space: nowrap;
-                    line-height: 17px;
-                    margin: 1px 0 0 12px;
-                }
-
-                .text_10 {
-                    width: 31px;
-                    height: 17px;
-                    overflow-wrap: break-word;
-                    color: rgba(255, 255, 255, 0.4);
-                    font-size: 12px;
-                    font-family: OpenSans-Regular;
                     text-align: left;
                     white-space: nowrap;
                     line-height: 17px;
