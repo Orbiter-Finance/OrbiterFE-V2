@@ -289,7 +289,7 @@
             }
 
             .text_3 {
-                width: 272px;
+                width: 90%;
                 height: 34px;
                 overflow-wrap: break-word;
                 color: rgba(255, 255, 255, 0.8);
@@ -464,7 +464,7 @@
 
         .text-wrapper_17 {
             height: 20px;
-            background: url('../../assets/activity/fee_dark_tag_undone.png') 100% no-repeat;
+            background: url('../../assets/activity/fee_tag_undone.png') 100% no-repeat;
             background-size: 100% 100%;
         }
 
@@ -564,7 +564,7 @@
         }
 
         .text_3 {
-            width: 272px;
+            width: 90%;
             height: 34px;
             overflow-wrap: break-word;
             color: rgba(34, 34, 34, 1);
@@ -1054,7 +1054,7 @@
                 }
 
                 .text_3 {
-                    width: 272px;
+                    width: 90%;
                     height: 34px;
                     overflow-wrap: break-word;
                     color: rgba(255, 255, 255, 0.8);
