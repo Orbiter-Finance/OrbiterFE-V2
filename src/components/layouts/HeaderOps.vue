@@ -260,7 +260,9 @@
               address
             });
             const point = pointRes.data.points;
-            addressPointMap[address.toLowerCase()] = addressPointMap[address.toLowerCase()] || point;
+            if(addressPointMap[address.toLowerCase()] === undefined){
+              addressPointMap[address.toLowerCase()] = point;
+            }
             if (point > addressPointMap[address.toLowerCase()]) {
               _this.addPoint = `+${point - addressPointMap[address.toLowerCase()]}`;
               _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
