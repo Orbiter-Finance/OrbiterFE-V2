@@ -1,5 +1,5 @@
 <template>
-  <div class="top-nav" @mouseleave="mouseleaveDialog">
+  <div class="top-nav">
     <template v-if="!isMobile">
       <div class="nav-wrap" style="height: 100%; position: relative">
         <img
@@ -200,11 +200,6 @@ export default {
     },
   },
   methods: {
-    mouseleaveDialog() {
-      setTimeout(() => {
-        !actDialogHover.value && setActDialogVisible(false);
-      }, 100);
-    },
     toHome () {
       setPageSenderTab()
       this.$route.path !== '/home' && this.$router.push({ path: '/home' })

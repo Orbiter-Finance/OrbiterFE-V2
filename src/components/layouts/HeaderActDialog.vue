@@ -1,6 +1,5 @@
 <template>
     <div
-        @mouseleave="closeAct"
         class="act header-dialog-box"
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
@@ -9,8 +8,22 @@
             <div style="width: 100%;display: flex;height:45px;">
                 <span class="text_21">🛸 Quests</span>
                 <div style="flex: 1;text-align: right;padding-top: 6px;padding-right:3px">
-                    <span class="text_22" @click="openDetail">Details</span>
+                    <span class="text_65" @click="openDetail">Details</span>
                 </div>
+                <img
+                    @click="closeAct"
+                    :hidden="!isLightMode"
+                    class="label_9"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/close.png')"
+                />
+                <img
+                    @click="closeAct"
+                    :hidden="isLightMode"
+                    class="label_9"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/close_dark.png')"
+                />
             </div>
             <div :style="`overflow-y: scroll;height:85%;padding-bottom: ${isMobile ? '80px' : '5px'}`" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
                 <template v-for="item in actDataList">
@@ -237,28 +250,37 @@
       },
     },
     async mounted() {
-      setTimeout(() => {
-        if (!isMobile.value) {
-          let times = localStorage.getItem('act_show_times') || 0;
-          if (times < 3) {
-            setActDialogVisible(true);
-            times++;
-            localStorage.setItem('act_show_times', times);
-          }
-        }
-        setTimeout(() => {
-          actDialogVisible.value && !actDialogHover.value && setActDialogVisible(false);
-        }, 3000);
-      }, 500);
-
+      let dataList = [];
       this.listLoading = true;
       try {
-        updateActDataList(await this.getActDataList(this.pageSize, this.page));
+        dataList = await this.getActDataList(this.pageSize, this.page)
+        updateActDataList(dataList);
       } catch (e) {
         console.error('getActDataList error', e);
       } finally {
         this.listLoading = false;
       }
+
+      setTimeout(async () => {
+        if (!isMobile.value) {
+          const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
+          for (const data of dataList) {
+            if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+              localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
+            }
+          }
+          localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+          let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
+          if (times < 3) {
+            setActDialogVisible(true);
+            times++;
+            localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
+          }
+        }
+        setTimeout(() => {
+          actDialogVisible.value && !actDialogHover.value && setActDialogVisible(false);
+        }, 3000);
+      }, 2000);
     }
   };
 </script>
@@ -409,6 +431,13 @@
         }
     }
     .act {
+        .label_9 {
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            margin: 8px 8px 0 205px;
+        }
+
         .text-wrapper_14 {
             height: 20px;
             background: url('../../assets/activity/fee_light_tag_done.png') 100% no-repeat;
@@ -1018,18 +1047,18 @@
             margin: 12px 0 0 16px;
         }
 
-        .text_22 {
+        .text_65 {
             cursor: pointer;
             width: 39px;
             height: 17px;
             overflow-wrap: break-word;
-            color: rgba(153, 153, 153, 1);
+            color: rgba(93, 147, 247, 1);
             font-size: 12px;
             font-family: OpenSans-Regular;
             text-align: center;
             white-space: nowrap;
             line-height: 17px;
-            margin: 15px 16px 0 0;
+            margin: 17px 0 0 12px;
         }
     }
 
