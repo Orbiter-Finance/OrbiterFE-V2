@@ -1064,6 +1064,7 @@
                     color: rgba(255, 255, 255, 1);
                     position: absolute;
                     width: 100%;
+                    height: 260px;
                 }
 
                 .text_3 {
@@ -1160,7 +1161,7 @@
             .block_1 {
                 bottom: 0px;
                 right: 0px;
-                height: 440px;
+                height: 260px;
                 border-radius: 12px;
                 background-color: #ffffff;
                 position: absolute;

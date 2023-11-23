@@ -202,7 +202,7 @@
           path: '/history',
         })
       },
-      async getWalletAddressPoint(address, callback) {
+      async getWalletAddressPoint(address) {
         if (util.getAccountAddressError(address)) {
           return;
         }
@@ -210,7 +210,14 @@
           address
         });
         this.totalPoint = pointRes.data.points;
-        callback(pointRes.data.points);
+        const point = pointRes.data.points;
+        if (point) {
+          setActAddPoint(String(point));
+          setActAddPointVisible(true);
+          setTimeout(() => {
+            setActAddPointVisible(false);
+          }, 3000);
+        }
       },
       async getWalletAddressActList(address) {
         if (util.getAccountAddressError(address)) {
@@ -233,15 +240,7 @@
     watch: {
       currentWalletAddress: function (newValue, oldValue) {
         if (oldValue !== newValue && newValue !== '0x') {
-          this.getWalletAddressPoint(newValue, function (point) {
-            if (point) {
-              setActAddPoint(String(point));
-              setActAddPointVisible(true);
-              setTimeout(() => {
-                setActAddPointVisible(false);
-              }, 3000);
-            }
-          });
+          this.getWalletAddressPoint(newValue);
 
           setTimeout(async () => {
             const dataList = await this.getWalletAddressActList(newValue);
@@ -269,7 +268,9 @@
     },
     async mounted() {
       const _this = this;
-      this.getWalletAddressPoint(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
+      setTimeout(() => {
+        _this.getWalletAddressPoint(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
+      }, 2000);
       setInterval(async () => {
         const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (address && address !== '0x') {
