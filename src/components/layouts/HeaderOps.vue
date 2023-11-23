@@ -95,7 +95,7 @@
     starkAddress,
     showAddress,
     saveSenderPageWorkingState,
-    setActDialogVisible, setActAddPointVisible, setActAddPoint, updateActDataList,
+    setActDialogVisible, setActAddPointVisible, setActAddPoint, updateActDataList, actDialogVisible,
   } from '../../composition/hooks';
   import {
     compatibleGlobalWalletConf,
@@ -227,6 +227,7 @@
           dataList.push(...data.taskList);
         }
         updateActDataList(dataList);
+        return dataList;
       }
     },
     watch: {
@@ -241,7 +242,28 @@
               }, 3000);
             }
           });
-          this.getWalletAddressActList(newValue);
+
+          setTimeout(async () => {
+            const dataList = await this.getWalletAddressActList(newValue);
+            if (!isMobile.value) {
+              const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
+              for (const data of dataList) {
+                if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+                  localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
+                }
+              }
+              localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+              let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
+              if (times < 3) {
+                setActDialogVisible(true);
+                times++;
+                localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
+              }
+            }
+            setTimeout(() => {
+              actDialogVisible.value && setActDialogVisible(false);
+            }, 3000);
+          }, 1000);
         }
       },
     },
@@ -260,10 +282,10 @@
           }
           if (point > addressPointMap[address.toLowerCase()]) {
             setActAddPoint(`+${point - addressPointMap[address.toLowerCase()]}`);
-            _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
             setActAddPointVisible(true);
             addressPointMap[address.toLowerCase()] = point;
             setTimeout(() => {
+              _this.getWalletAddressActList(address);
               setActAddPointVisible(false);
             }, 3000);
           }

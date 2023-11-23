@@ -33,20 +33,22 @@
                 :style="navIcons.style"
                 :icon="navIcons.logo"
             />
-            <div @click="openActDialog" class="icon_1 flex-col"
-                 :style="`background-color: ${isLightMode ? 'rgba(255, 255, 255, 1)' : '#3F415B'};`">
-                <img
-                    :hidden="!isLightMode"
-                    class="label_1"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/point.png')"
-                />
-                <img
-                    :hidden="isLightMode"
-                    class="label_1"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/point_dark.png')"
-                />
+            <div style="flex: 1;display: flex;justify-content: flex-end;margin-right: 12px">
+                <div @click="openActDialog" class="icon_1"
+                     :style="`background-color: ${isLightMode ? 'rgba(255, 255, 255, 1)' : '#3F415B'};`">
+                    <img
+                        :hidden="!isLightMode"
+                        class="label_1"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/point.png')"
+                    />
+                    <img
+                        :hidden="isLightMode"
+                        class="label_1"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/point_dark.png')"
+                    />
+                </div>
             </div>
             <div v-if="isMobile" :class="addPointVisible ? 'shake-top' : ''"
                  :style="`z-index:999;width: 200px;display: flex;position: absolute;top: 60px;right:40px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
@@ -390,9 +392,13 @@
         }
 
         .icon_1 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 46px;
+            width: 46px;
             cursor: pointer;
-            border-radius: 12px;
-            padding: 10px 10px 10px 10px;
+            border-radius: 23px;
         }
 
         .label_1 {
@@ -405,11 +411,11 @@
 
             .wallet-status {
                 cursor: pointer;
-                margin-right: 15px;
+                margin-right: 12px;
             }
 
             .wallet-address {
-                padding: 8px 24px;
+                padding: 8px 16px;
                 // background: #FFFFFF;
                 border-radius: 20px;
                 // color: rgba(51, 51, 51, 0.8);

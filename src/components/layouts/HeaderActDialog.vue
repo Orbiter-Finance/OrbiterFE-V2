@@ -4,7 +4,7 @@
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
         <div v-if="isMobile" @click="mobileCloseAct" style="width: 100%;height:100%"></div>
-        <div @mouseover="mouseoverDialog" class="block_1">
+        <div @mouseover="mouseoverDialog" class="block_1" :style="`${!isMobile ? 'top: 50px;' : ''}`">
             <div style="width: 100%;display: flex;height:45px;">
                 <span class="text_21">🛸 Quests</span>
                 <div style="flex: 1;text-align: right;padding-top: 6px;padding-right:3px">
@@ -25,7 +25,7 @@
                     :src="require('../../assets/activity/close_dark.png')"
                 />
             </div>
-            <div :style="`overflow-y: scroll;height:85%;padding-bottom: ${isMobile ? '80px' : '5px'}`" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+            <div :style="`overflow-y: scroll;height:85%;`" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
                 <template v-for="item in actDataList">
                     <div v-if="item.status === 0" class="box_1">
                         <div class="text-wrapper_1 flex-row">
@@ -299,15 +299,8 @@
             }
 
             .block_1 {
-                top: 50px;
-                right: 20px;
-                border-radius: 12px;
                 background-color: rgba(64, 65, 91, 1);
                 color: rgba(255, 255, 255, 1);
-                position: absolute;
-                width: 420px;
-                height: 394px;
-                margin-top: 24px;
             }
 
             .text_3 {
@@ -498,13 +491,13 @@
         }
 
         .block_1 {
-            top: 50px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
             right: 20px;
             border-radius: 12px;
             background-color: #ffffff;
             position: absolute;
             width: 420px;
-            height: 394px;
+            height: 440px;
             margin-top: 24px;
         }
 
@@ -1069,12 +1062,8 @@
                 width: 100%;
                 height: 100%;
                 .block_1 {
-                    margin-top: 0px;
-                    padding-bottom: 150px;
-                    top: 250px;
                     bottom: 0px;
                     right: 0px;
-                    height: 100%;
                     border-radius: 12px;
                     background-color: rgba(64, 65, 91, 1);
                     color: rgba(255, 255, 255, 1);
@@ -1174,12 +1163,9 @@
             width: 100%;
             height: 100%;
             .block_1 {
-                margin-top: 0px;
-                padding-bottom: 150px;
-                top: 250px;
                 bottom: 0px;
                 right: 0px;
-                height: 100%;
+                height: 440px;
                 border-radius: 12px;
                 background-color: #ffffff;
                 position: absolute;
