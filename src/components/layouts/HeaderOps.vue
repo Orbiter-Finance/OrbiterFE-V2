@@ -23,7 +23,7 @@
               :hidden="isLightMode"
               style="margin: -3px 0 0 0;width: 24px;"
               referrerpolicy="no-referrer"
-              :src="require('../../assets/activity/point_dark.png')"
+              :src="require('../../assets/activity/point.png')"
           />
           {{ totalPoint }} O-Points
           <div v-if="!isMobile" :class="addPointVisible ? 'shake-top' : ''" :style="`display: flex;position: absolute;top: 45px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">

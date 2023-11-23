@@ -25,7 +25,10 @@
                     :src="require('../../assets/activity/close_dark.png')"
                 />
             </div>
-            <div :style="`overflow-y: scroll;height:85%;`" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+            <div>
+                <img :style="`${!isMobile ? 'width: 420px' : 'width: 100%'}`" :src="require('../../assets/activity/tip.png')" />
+            </div>
+            <div class="card" style="height:80%;" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
                 <template v-for="item in actDataList">
                     <div v-if="item.status === 0" class="box_1">
                         <div class="text-wrapper_1 flex-row">
@@ -283,6 +286,10 @@
 <style lang="scss" scoped>
     .dark-theme {
         .act {
+            .card::-webkit-scrollbar-track {
+                background: rgba(64, 65, 91, 1);
+            }
+
             .border-dashed {
                 border-top: 1px dashed #FFFFFF;
                 opacity: 20%;
@@ -419,6 +426,22 @@
         }
     }
     .act {
+        .card {
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        .card::-webkit-scrollbar {
+            width: 4px;
+        }
+        .card::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+        }
+        .card::-webkit-scrollbar-track {
+            border-radius: 0;
+            background: #ffffff;
+        }
+
         .label_9 {
             cursor: pointer;
             width: 32px;
@@ -492,7 +515,7 @@
             background-color: #ffffff;
             position: absolute;
             width: 420px;
-            height: 440px;
+            height: 470px;
             margin-top: 24px;
         }
 
@@ -1064,7 +1087,6 @@
                     color: rgba(255, 255, 255, 1);
                     position: absolute;
                     width: 100%;
-                    height: 260px;
                 }
 
                 .text_3 {
@@ -1161,7 +1183,7 @@
             .block_1 {
                 bottom: 0px;
                 right: 0px;
-                height: 260px;
+                height: 290px;
                 border-radius: 12px;
                 background-color: #ffffff;
                 position: absolute;
