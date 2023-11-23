@@ -123,6 +123,12 @@
                         />
                     </div>
                 </template>
+                <div :style="`${isMobile ? 'padding-bottom:32px' : ''}`">
+                    <div class="text_48">
+                        More: Partners' Incentives
+                    </div>
+                    <div @click="openUrl('https://galxe.com/izumi/campaign/GCRKjtUW3A')" class="box_75"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -228,6 +234,9 @@
       },
       openDetail() {
         if (this.twitter) window.open(this.twitter, '_blank');
+      },
+      openUrl(url) {
+        window.open(url, '_blank');
       },
       mobileCloseAct() {
         if (isMobile.value) {
@@ -423,9 +432,38 @@
                 background: url('../../assets/activity/fee_dark_tag_done.png') 100% no-repeat;
                 background-size: 100% 100%;
             }
+
+            .text_48 {
+                color: rgba(255, 255, 255, 1);
+            }
         }
     }
     .act {
+        .text_48 {
+            width: 187px;
+            height: 18px;
+            overflow-wrap: break-word;
+            color: #222222;
+            font-size: 14px;
+            font-family: Kodchasan-Bold;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 18px;
+            margin: 20px 0 0 16px;
+        }
+
+        .box_75 {
+            cursor: pointer;
+            border-radius: 8px;
+            background: url('../../assets/activity/linea_voyage.png');
+            background-size: 100% 100%;
+            width: 388px;
+            height: 104px;
+            margin-left: 16px;
+            margin-top: 8px;
+        }
+
         .card {
             overflow-y: scroll;
             overflow-x: hidden;
@@ -1188,6 +1226,10 @@
                 background-color: #ffffff;
                 position: absolute;
                 width: 100%;
+            }
+
+            .box_75 {
+                width: 91.5%;
             }
 
             .box_1 {
