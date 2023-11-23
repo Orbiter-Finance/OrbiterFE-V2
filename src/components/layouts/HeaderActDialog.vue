@@ -262,24 +262,19 @@
       }
 
       setTimeout(async () => {
-        if (!isMobile.value) {
-          const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
-          for (const data of dataList) {
-            if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
-              localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
-            }
-          }
-          localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
-          let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
-          if (times < 3) {
-            setActDialogVisible(true);
-            times++;
-            localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
+        const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
+        for (const data of dataList) {
+          if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+            localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
           }
         }
-        // setTimeout(() => {
-        //   actDialogVisible.value && !actDialogHover.value && setActDialogVisible(false);
-        // }, 3000);
+        localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+        let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
+        if (times < 3) {
+          setActDialogVisible(true);
+          times++;
+          localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
+        }
       }, 2000);
     }
   };
