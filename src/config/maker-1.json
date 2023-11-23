@@ -480,7 +480,8 @@
             "maxPrice": 2,
             "minPrice": 0.001,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         },
         "USDT-USDT": {
             "gasFee": 1,
@@ -512,7 +513,8 @@
             "maxPrice": 5,
             "minPrice": 0.001,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         },
         "USDT-USDT": {
             "gasFee": 1,
@@ -1072,7 +1074,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         }
     },
     "31-23": {
@@ -1084,7 +1087,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0007
         }
     },
     "24-31": {
@@ -1356,7 +1360,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "23-30": {
@@ -1368,7 +1373,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         }
     },
     "30-15": {
@@ -1940,7 +1946,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "gasFee": 1,
@@ -1962,7 +1969,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "gasFee": 1.5,
@@ -2248,7 +2256,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "23-24": {
@@ -2260,7 +2269,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "23-1": {
@@ -2304,7 +2314,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2336,7 +2347,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0011
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2368,7 +2380,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0011
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2400,7 +2413,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2432,7 +2446,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         },
         "USDC-USDC": {
             "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
@@ -2464,7 +2479,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2496,7 +2512,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2528,7 +2545,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2560,7 +2578,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2592,7 +2611,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2614,7 +2634,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2636,7 +2657,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0009
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2668,7 +2690,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2700,7 +2723,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2732,7 +2756,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2764,7 +2789,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0009
         },
         "USDC-USDC": {
             "gasFee": 1,
@@ -2796,7 +2822,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         },
         "USDC-USDC": {
             "gasFee": 0.5,
@@ -2828,7 +2855,8 @@
             "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0011
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -2860,7 +2888,8 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0011
         },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -7736,7 +7765,8 @@
             "maxPrice": 2,
             "minPrice": 0.001,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0011
         }
     },
     "25-23": {
@@ -7748,7 +7778,8 @@
             "maxPrice": 2,
             "minPrice": 0.001,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         }
     },
     "19-25": {

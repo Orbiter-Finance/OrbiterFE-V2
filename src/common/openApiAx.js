@@ -7,12 +7,11 @@ const openApiAx = axios.create({
 
 openApiAx.interceptors.response.use(
   function (response) {
-    const respData = response.data
+    return response.data
     // if (respData.code !== 0) {
     //     // util.showMessage(respData.msg, 'error');
     //     return null;
     // }
-    return respData?.result
   },
   function (error) {
     return Promise.reject(error)
@@ -30,10 +29,16 @@ export const RequestMethod = {
 };
 
 export async function requestOpenApi(method, params, isV3 = true) {
-    return await openApiAx.post(`/${ isV3 ? 'v3' : 'v2' }/${ process.env.VUE_APP_APIKEY }`, {
-        "id": 1,
-        "jsonrpc": "2.0",
-        method,
-        params
-    });
+    return (await openApiAx.post(`/explore/${ isV3 ? 'v3' : 'v2' }/${ process.env.VUE_APP_APIKEY }`, {
+      "id": 1,
+      "jsonrpc": "2.0",
+      method,
+      params
+    }))?.result;
+}
+
+export async function requestPointSystem(path, params) {
+  return await openApiAx.get(`/points_system/${ path }`, {
+    params
+  });
 }

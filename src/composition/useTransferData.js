@@ -7,6 +7,7 @@ const defaultTransferDateState = {
   transferValue: 0,
   gasFee: 0,
   ethPrice: 0,
+  actDataList: []
 }
 export const transferDataState = reactive({
   ...defaultTransferDateState,
@@ -56,4 +57,7 @@ export function updateCrossAddressReceipt(crossAddressReceipt) {
 }
 export function updateTransferExt(transferExt) {
   transferDataState.transferExt = transferExt
+}
+export function updateActDataList(actDataList) {
+  transferDataState.actDataList = actDataList
 }

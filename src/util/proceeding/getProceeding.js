@@ -1,6 +1,6 @@
 import orbiterCore from '../../orbiterCore'
 import { store } from '../../store'
-import { RequestMethod, requestOpenApi } from '../../common/openApiAx';
+import { RequestMethod, requestOpenApi, requestPointSystem } from '../../common/openApiAx';
 import util from '../util'
 import { CHAIN_ID } from "../../config";
 import { getTransactionsHistory } from "../../composition/useHistoryPanel";
@@ -63,7 +63,7 @@ function confirmUserTransaction(chainId, userAddress, hash) {
           break
         }
         case 99: {
-          completeTx(userAddress);
+          completeTx(userAddress, txList.find(item => item.side === 0)?.hash, txList.find(item => item.side === 1).hash);
           break
         }
       }
@@ -73,7 +73,7 @@ function confirmUserTransaction(chainId, userAddress, hash) {
           const receipt = await util.requestWeb3(toTx.chainId, 'getTransactionReceipt', toTx.hash);
           if (receipt?.status) {
             util.log("rpc confirm toTx ====", receipt);
-            completeTx(userAddress);
+            completeTx(userAddress, txList.find(item => item.side === 0)?.hash, toTx.hash);
           }
         }
       }
@@ -83,12 +83,20 @@ function confirmUserTransaction(chainId, userAddress, hash) {
   }, 10 * 1000);
 }
 
-async function completeTx(userAddress) {
+async function completeTx(userAddress,fromHash,toHash) {
   util.setCache(`history_${ userAddress.toLowerCase() }_1`, '', -1);
   await util.sleep(500);
   getTransactionsHistory({ current: 1 });
   clearInterval(cron);
   storeUpdateProceedState(5);
+  try {
+    requestPointSystem('activity/check', {
+      sourceId: fromHash.toLowerCase(),
+      targetId: toHash.toLowerCase()
+    });
+  } catch (e) {
+    console.error('requestPointSystem activity check', e);
+  }
 }
 
 export default {
