@@ -127,11 +127,11 @@
 
 <script>
   import {
-    actDialogHover,
     actDialogVisible, isMobile, setActDialogVisible, setActDialogHover, transferDataState, updateActDataList,
   } from '../../composition/hooks';
   import { requestPointSystem } from "../../common/openApiAx";
   import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+  import util from '../../util/util';
 
   export default {
     name: 'HeaderActDialog',
@@ -261,21 +261,20 @@
         this.listLoading = false;
       }
 
-      setTimeout(async () => {
-        const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
-        for (const data of dataList) {
-          if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
-            localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
-          }
+      const walletAddress = await util.getAsyncWalletAddress();
+      const actList = JSON.parse(localStorage.getItem(`act_list_${ walletAddress }`) || '[]');
+      for (const data of dataList) {
+        if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+          localStorage.setItem(`act_show_times_${ walletAddress }`, '0');
         }
-        localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
-        let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
-        if (times < 3) {
-          setActDialogVisible(true);
-          times++;
-          localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
-        }
-      }, 2000);
+      }
+      localStorage.setItem(`act_list_${ walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+      let times = +(localStorage.getItem(`act_show_times_${ walletAddress }`) || 0);
+      if (times < 3) {
+        setActDialogVisible(true);
+        times++;
+        localStorage.setItem(`act_show_times_${ walletAddress }`, String(times));
+      }
     }
   };
 </script>

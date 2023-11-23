@@ -268,9 +268,6 @@
     },
     async mounted() {
       const _this = this;
-      setTimeout(() => {
-        _this.getWalletAddressPoint(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
-      }, 2000);
       setInterval(async () => {
         const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (address && address !== '0x') {
@@ -293,6 +290,9 @@
           this.totalPoint = point;
         }
       }, 5000);
+
+      const walletAddress = await util.getAsyncWalletAddress();
+      this.getWalletAddressPoint(walletAddress);
     }
   }
 </script>
