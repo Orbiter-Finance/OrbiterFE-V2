@@ -260,9 +260,9 @@
                 localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
               }
             }
-            setTimeout(() => {
-              actDialogVisible.value && setActDialogVisible(false);
-            }, 3000);
+            // setTimeout(() => {
+            //   actDialogVisible.value && setActDialogVisible(false);
+            // }, 3000);
           }, 1000);
         }
       },
