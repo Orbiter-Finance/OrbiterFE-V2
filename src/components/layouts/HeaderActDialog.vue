@@ -250,10 +250,12 @@
       },
     },
     async mounted() {
+      const walletAddress = await util.getAsyncWalletAddress();
+
       let dataList = [];
       this.listLoading = true;
       try {
-        dataList = await this.getActDataList(this.pageSize, this.page)
+        dataList = await this.getActDataList(this.pageSize, this.page);
         updateActDataList(dataList);
       } catch (e) {
         console.error('getActDataList error', e);
@@ -261,7 +263,6 @@
         this.listLoading = false;
       }
 
-      const walletAddress = await util.getAsyncWalletAddress();
       const actList = JSON.parse(localStorage.getItem(`act_list_${ walletAddress }`) || '[]');
       for (const data of dataList) {
         if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {

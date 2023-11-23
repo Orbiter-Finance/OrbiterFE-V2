@@ -798,13 +798,13 @@ export default {
     },
   },
   async mounted() {
-    this.boxLoading = true;
+    // this.boxLoading = true;
     try {
       await this.syncV3Data(1);
     } catch (e) {
       console.error('syncV3Data error', e);
     }
-    this.boxLoading = false;
+    // this.boxLoading = false;
 
     this.openApiFilter();
 
