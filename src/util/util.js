@@ -140,6 +140,17 @@ export default {
     })
   },
 
+  async getAsyncWalletAddress(retryCount = 6) {
+    if (!compatibleGlobalWalletConf.value.walletPayload.walletAddress || compatibleGlobalWalletConf.value.walletPayload.walletAddress === '0x') {
+      if (retryCount === 0) {
+        return compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x';
+      }
+      await this.sleep(500);
+      return await this.getAsyncWalletAddress(retryCount - 1);
+    }
+    return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+  },
+
   formatDate(date, isShort) {
     date = new Date(date)
     const year = date.getFullYear()

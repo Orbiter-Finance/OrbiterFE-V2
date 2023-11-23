@@ -398,10 +398,16 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
-  updateTransferExt, curPageStatus, updateDealerId,
+  updateTransferExt,
+  curPageStatus,
+  updateDealerId,
+  setActAddPoint,
+  setActAddPointVisible,
+  updateActDataList,
+  setActDialogVisible,
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
-import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
+import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 let makerConfigs = config.v1MakerConfigs;
@@ -779,6 +785,25 @@ export default {
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
       if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
+
+      this.getWalletAddressPoint(newValue);
+
+      setTimeout(async () => {
+        const dataList = await this.getWalletAddressActList(newValue);
+        const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
+        for (const data of dataList) {
+          if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+            localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
+          }
+        }
+        localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+        let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
+        if (times < 3) {
+          setActDialogVisible(true);
+          times++;
+          localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
+        }
+      }, 0);
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
@@ -798,13 +823,13 @@ export default {
     },
   },
   async mounted() {
-    this.boxLoading = true;
+    // this.boxLoading = true;
     try {
       await this.syncV3Data(1);
     } catch (e) {
       console.error('syncV3Data error', e);
     }
-    this.boxLoading = false;
+    // this.boxLoading = false;
 
     this.openApiFilter();
 
@@ -840,6 +865,40 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async getWalletAddressPoint(address) {
+      if (util.getAccountAddressError(address)) {
+        return;
+      }
+      const pointRes = await requestPointSystem('user/points', {
+        address
+      });
+      this.totalPoint = pointRes.data.points;
+      const point = pointRes.data.points;
+      if (point) {
+        setActAddPoint(String(point));
+        setActAddPointVisible(true);
+        setTimeout(() => {
+          setActAddPointVisible(false);
+        }, 3000);
+      }
+    },
+    async getWalletAddressActList(address) {
+      if (util.getAccountAddressError(address)) {
+        return;
+      }
+      const res = await requestPointSystem('activity/list', {
+        address,
+        pageSize: 10,
+        page: 1
+      });
+      const list = res.data.list;
+      const dataList = [];
+      for (const data of list) {
+        dataList.push(...data.taskList);
+      }
+      updateActDataList(dataList);
+      return dataList;
+    },
     async fillAddress() {
       if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.fromChainID)) {
         const account = await walletConnectDispatcherOnInit(WALLETCONNECT);

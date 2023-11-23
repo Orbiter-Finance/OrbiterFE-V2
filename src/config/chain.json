@@ -716,7 +716,7 @@
         "chainId": "204",
         "networkId": "204",
         "internalId": "25",
-        "name": "OpBNB",
+        "name": "opBNB",
         "debug": false,
         "features": [],
         "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],

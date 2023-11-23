@@ -22,7 +22,11 @@
                 </o-tooltip>
             </div>
             <div class="item-right">
-                <span v-if="item.desc">{{ item.desc }}</span>
+                <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''}`">{{ item.desc }}</span>
+                <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
+                    <span v-if="isMobile"><br /></span>
+                    {{ item.lineThrough }}
+                </span>
             </div>
             <div
                 v-if="item.descInfo && item.descInfo.length > 0"
@@ -248,6 +252,8 @@ export default {
                         selectMakerConfig.tradingFee +
                         ' ' +
                         selectMakerConfig.fromChain.symbol,
+                    lineThrough: selectMakerConfig.originWithholdingFee ?
+                      selectMakerConfig.originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
                 },
                 {
                     icon: 'security',
@@ -1479,6 +1485,15 @@ export default {
     }
     .select-wallet-dialog {
         width: 420px;
+    }
+}
+.fee {
+    font-weight: 700;
+    color: #df2e2d;
+}
+.dark-theme {
+    .fee {
+        color: #eeeeee;
     }
 }
 .app-mobile {
