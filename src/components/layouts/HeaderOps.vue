@@ -123,9 +123,6 @@
       addPointVisible() {
         return actAddPointVisible.value
       },
-      currentWalletAddress() {
-        return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      },
       isMobile() {
         return isMobile.value
       },
@@ -236,30 +233,6 @@
         updateActDataList(dataList);
         return dataList;
       }
-    },
-    watch: {
-      currentWalletAddress: function (newValue, oldValue) {
-        if (oldValue !== newValue && newValue !== '0x') {
-          this.getWalletAddressPoint(newValue);
-
-          setTimeout(async () => {
-            const dataList = await this.getWalletAddressActList(newValue);
-            const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
-            for (const data of dataList) {
-              if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
-                localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
-              }
-            }
-            localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
-            let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
-            if (times < 3) {
-              setActDialogVisible(true);
-              times++;
-              localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
-            }
-          }, 1000);
-        }
-      },
     },
     async mounted() {
       const _this = this;
