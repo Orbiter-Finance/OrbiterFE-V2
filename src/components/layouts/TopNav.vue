@@ -46,7 +46,7 @@
                         :hidden="isLightMode"
                         class="label_1"
                         referrerpolicy="no-referrer"
-                        :src="require('../../assets/activity/point_dark.png')"
+                        :src="require('../../assets/activity/point.png')"
                     />
                 </div>
             </div>
