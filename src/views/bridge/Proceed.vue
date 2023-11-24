@@ -345,12 +345,17 @@ export default {
     },
     methods: {
         openIconUrl(isFrom, explorerInfo) {
+          let hash = '';
           if (this.detailData) {
-            const hash = isFrom ? this.detailData.fromTxHash : this.detailData.toTxHash;
+            hash = isFrom ? this.detailData.fromTxHash : this.detailData.toTxHash;
+          }
+          if (!hash) hash = isFrom ? this.$store.state.proceeding.userTransfer.txid : this.$store.state.proceeding.makerTransfer.txid;
+          if (hash) {
             const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx';
             window.open(txUrl + '/' + hash, '_blank');
             return;
           }
+
           const { fromChainID, toChainID } = transferDataState;
           const chainId = isFrom ? fromChainID : toChainID;
           let userAddress = web3State.coinbase;
