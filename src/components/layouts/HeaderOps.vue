@@ -23,10 +23,10 @@
               :hidden="isLightMode"
               style="margin: -3px 0 0 0;width: 24px;"
               referrerpolicy="no-referrer"
-              :src="require('../../assets/activity/point_dark.png')"
+              :src="require('../../assets/activity/point.png')"
           />
           {{ totalPoint }} O-Points
-          <div :class="addPointVisible ? 'shake-top' : ''" :style="`display: flex;position: absolute;top: 45px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
+          <div v-if="!isMobile" :class="addPointVisible ? 'shake-top' : ''" :style="`display: flex;position: absolute;top: 45px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
               <img
                   class="label_2"
                   referrerpolicy="no-referrer"
@@ -41,16 +41,6 @@
                   :src="require('../../assets/activity/add_flower_2.png')"
               />
           </div>
-<!--          <div :style="`position: absolute;top: 45px;left: 5px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">-->
-<!--              <img-->
-<!--                  class="image_1"-->
-<!--                  referrerpolicy="no-referrer"-->
-<!--                  src="https://lanhu.oss-cn-beijing.aliyuncs.com/SketchPng8af34a7c5a97eec2d0a05016c25c9d0c9b76e03ade2967e2dab489946016f34a"-->
-<!--              />-->
-<!--              <span class="text_2">-->
-<!--                +{{ addPoint }} O-Points-->
-<!--              </span>-->
-<!--          </div>-->
       </span>
       <span @click="showHistory" class="ops-item">History</span>
       <div
@@ -96,13 +86,16 @@
   import { mapMutations } from 'vuex'
   import { CommBtn, SvgIconThemed } from '../'
   import {
+    actAddPointVisible,
+    actAddPoint,
     transferDataState,
     isMobile,
     setStarkNetDialog,
     setSelectWalletDialogVisible,
     starkAddress,
     showAddress,
-    saveSenderPageWorkingState, setActDialogVisible, updateActDataList,
+    saveSenderPageWorkingState,
+    setActDialogVisible, setActAddPointVisible, setActAddPoint, updateActDataList, actDialogVisible,
   } from '../../composition/hooks';
   import {
     compatibleGlobalWalletConf,
@@ -124,8 +117,11 @@
       },
     },
     computed: {
-      currentWalletAddress() {
-        return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      addPoint() {
+        return actAddPoint.value
+      },
+      addPointVisible() {
+        return actAddPointVisible.value
       },
       isMobile() {
         return isMobile.value
@@ -159,8 +155,6 @@
               localStorage.getItem('selectedWallet') || '{}'
       )
       return {
-        addPoint: 0,
-        addPointVisible: false,
         totalPoint: 0,
         selectedWallet,
       }
@@ -205,7 +199,7 @@
           path: '/history',
         })
       },
-      async getWalletAddressPoint(address, callback) {
+      async getWalletAddressPoint(address) {
         if (util.getAccountAddressError(address)) {
           return;
         }
@@ -213,7 +207,14 @@
           address
         });
         this.totalPoint = pointRes.data.points;
-        callback(pointRes.data.points);
+        const point = pointRes.data.points;
+        if (point) {
+          setActAddPoint(String(point));
+          setActAddPointVisible(true);
+          setTimeout(() => {
+            setActAddPointVisible(false);
+          }, 3000);
+        }
       },
       async getWalletAddressActList(address) {
         if (util.getAccountAddressError(address)) {
@@ -230,28 +231,11 @@
           dataList.push(...data.taskList);
         }
         updateActDataList(dataList);
+        return dataList;
       }
-    },
-    watch: {
-      currentWalletAddress: function (newValue, oldValue) {
-        if (oldValue !== newValue && newValue !== '0x') {
-          const _this = this;
-          this.getWalletAddressPoint(newValue, function (point) {
-            if (point) {
-              _this.addPointVisible = true;
-              _this.addPoint = point;
-              setTimeout(() => {
-                _this.addPointVisible = false;
-              }, 3000);
-            }
-          });
-          this.getWalletAddressActList(newValue);
-        }
-      },
     },
     async mounted() {
       const _this = this;
-      this.getWalletAddressPoint(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
       setInterval(async () => {
         const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (address && address !== '0x') {
@@ -263,17 +247,20 @@
             addressPointMap[address.toLowerCase()] = point;
           }
           if (point > addressPointMap[address.toLowerCase()]) {
-            _this.addPoint = `+${point - addressPointMap[address.toLowerCase()]}`;
-            _this.getWalletAddressActList(compatibleGlobalWalletConf.value.walletPayload.walletAddress);
-            if (!isMobile.value) _this.addPointVisible = true;
+            setActAddPoint(`+${point - addressPointMap[address.toLowerCase()]}`);
+            setActAddPointVisible(true);
             addressPointMap[address.toLowerCase()] = point;
             setTimeout(() => {
-              _this.addPointVisible = false;
+              _this.getWalletAddressActList(address);
+              setActAddPointVisible(false);
             }, 3000);
           }
           this.totalPoint = point;
         }
       }, 5000);
+
+      const walletAddress = await util.getAsyncWalletAddress();
+      this.getWalletAddressPoint(walletAddress);
     }
   }
 </script>

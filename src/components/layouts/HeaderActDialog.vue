@@ -1,18 +1,34 @@
 <template>
     <div
-        @mouseleave="closeAct"
         class="act header-dialog-box"
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
         <div v-if="isMobile" @click="mobileCloseAct" style="width: 100%;height:100%"></div>
-        <div @mouseover="mouseoverDialog" class="block_1">
+        <div @mouseover="mouseoverDialog" class="block_1" :style="`${!isMobile ? 'top: 50px;' : ''}`">
             <div style="width: 100%;display: flex;height:45px;">
                 <span class="text_21">🛸 Quests</span>
                 <div style="flex: 1;text-align: right;padding-top: 6px;padding-right:3px">
-                    <span class="text_22" @click="openDetail">Details</span>
+                    <span class="text_65" @click="openDetail">Details</span>
                 </div>
+                <img
+                    @click="closeAct"
+                    :hidden="!isLightMode || isMobile"
+                    class="label_9"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/close.png')"
+                />
+                <img
+                    @click="closeAct"
+                    :hidden="isLightMode || isMobile"
+                    class="label_9"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/close_dark.png')"
+                />
             </div>
-            <div :style="`overflow-y: scroll;height:85%;padding-bottom: ${isMobile ? '80px' : '5px'}`" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+            <div>
+                <img :style="`${!isMobile ? 'width: 420px' : 'width: 100%'}`" :src="require('../../assets/activity/tip.png')" />
+            </div>
+            <div class="card" style="height:80%;" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
                 <template v-for="item in actDataList">
                     <div v-if="item.status === 0" class="box_1">
                         <div class="text-wrapper_1 flex-row">
@@ -107,6 +123,12 @@
                         />
                     </div>
                 </template>
+                <div :style="`${isMobile ? 'padding-bottom:32px' : ''}`">
+                    <div class="text_48">
+                        More: Partners' Incentives
+                    </div>
+                    <div @click="openUrl('https://galxe.com/izumi/campaign/GCRKjtUW3A')" class="box_75"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -114,11 +136,11 @@
 
 <script>
   import {
-    actDialogHover,
     actDialogVisible, isMobile, setActDialogVisible, setActDialogHover, transferDataState, updateActDataList,
   } from '../../composition/hooks';
   import { requestPointSystem } from "../../common/openApiAx";
   import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+  import util from '../../util/util';
 
   export default {
     name: 'HeaderActDialog',
@@ -213,6 +235,9 @@
       openDetail() {
         if (this.twitter) window.open(this.twitter, '_blank');
       },
+      openUrl(url) {
+        window.open(url, '_blank');
+      },
       mobileCloseAct() {
         if (isMobile.value) {
           setActDialogVisible(false);
@@ -237,27 +262,31 @@
       },
     },
     async mounted() {
-      setTimeout(() => {
-        if (!isMobile.value) {
-          let times = localStorage.getItem('act_show_times') || 0;
-          if (times < 3) {
-            setActDialogVisible(true);
-            times++;
-            localStorage.setItem('act_show_times', times);
-          }
-        }
-        setTimeout(() => {
-          actDialogVisible.value && !actDialogHover.value && setActDialogVisible(false);
-        }, 3000);
-      }, 500);
+      const walletAddress = await util.getAsyncWalletAddress();
 
+      let dataList = [];
       this.listLoading = true;
       try {
-        updateActDataList(await this.getActDataList(this.pageSize, this.page));
+        dataList = await this.getActDataList(this.pageSize, this.page);
+        updateActDataList(dataList);
       } catch (e) {
         console.error('getActDataList error', e);
       } finally {
         this.listLoading = false;
+      }
+
+      const actList = JSON.parse(localStorage.getItem(`act_list_${ walletAddress }`) || '[]');
+      for (const data of dataList) {
+        if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+          localStorage.setItem(`act_show_times_${ walletAddress }`, '0');
+        }
+      }
+      localStorage.setItem(`act_list_${ walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+      let times = +(localStorage.getItem(`act_show_times_${ walletAddress }`) || 0);
+      if (times < 3) {
+        setActDialogVisible(true);
+        times++;
+        localStorage.setItem(`act_show_times_${ walletAddress }`, String(times));
       }
     }
   };
@@ -266,6 +295,10 @@
 <style lang="scss" scoped>
     .dark-theme {
         .act {
+            .card::-webkit-scrollbar-track {
+                background: rgba(64, 65, 91, 1);
+            }
+
             .border-dashed {
                 border-top: 1px dashed #FFFFFF;
                 opacity: 20%;
@@ -277,15 +310,8 @@
             }
 
             .block_1 {
-                top: 50px;
-                right: 20px;
-                border-radius: 12px;
                 background-color: rgba(64, 65, 91, 1);
                 color: rgba(255, 255, 255, 1);
-                position: absolute;
-                width: 420px;
-                height: 394px;
-                margin-top: 24px;
             }
 
             .text_3 {
@@ -407,12 +433,60 @@
                 background-size: 100% 100%;
             }
 
-            .text_29 {
-                color: rgba(134, 136, 150, 1);
+            .text_48 {
+                color: rgba(255, 255, 255, 1);
             }
         }
     }
     .act {
+        .text_48 {
+            width: 187px;
+            height: 18px;
+            overflow-wrap: break-word;
+            color: #222222;
+            font-size: 14px;
+            font-family: Kodchasan-Bold;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 18px;
+            margin: 20px 0 0 16px;
+        }
+
+        .box_75 {
+            cursor: pointer;
+            border-radius: 8px;
+            background: url('../../assets/activity/linea_voyage.png');
+            background-size: 100% 100%;
+            width: 388px;
+            height: 104px;
+            margin-left: 16px;
+            margin-top: 8px;
+        }
+
+        .card {
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+        .card::-webkit-scrollbar {
+            width: 4px;
+        }
+        .card::-webkit-scrollbar-thumb {
+            border-radius: 10px;
+            background: rgba(0,0,0,0.2);
+        }
+        .card::-webkit-scrollbar-track {
+            border-radius: 0;
+            background: #ffffff;
+        }
+
+        .label_9 {
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            margin: 8px 8px 0 205px;
+        }
+
         .text-wrapper_14 {
             height: 20px;
             background: url('../../assets/activity/fee_light_tag_done.png') 100% no-repeat;
@@ -436,7 +510,7 @@
             width: 76px;
             height: 17px;
             overflow-wrap: break-word;
-            color: #b6b6b6;
+            color: rgba(134, 136, 150, 1);
             font-size: 12px;
             font-family: OpenSansRoman-Bold;
             font-weight: 700;
@@ -473,13 +547,13 @@
         }
 
         .block_1 {
-            top: 50px;
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
             right: 20px;
             border-radius: 12px;
             background-color: #ffffff;
             position: absolute;
             width: 420px;
-            height: 394px;
+            height: 470px;
             margin-top: 24px;
         }
 
@@ -1022,18 +1096,18 @@
             margin: 12px 0 0 16px;
         }
 
-        .text_22 {
+        .text_65 {
             cursor: pointer;
             width: 39px;
             height: 17px;
             overflow-wrap: break-word;
-            color: rgba(153, 153, 153, 1);
+            color: rgba(93, 147, 247, 1);
             font-size: 12px;
             font-family: OpenSans-Regular;
             text-align: center;
             white-space: nowrap;
             line-height: 17px;
-            margin: 15px 16px 0 0;
+            margin: 10px 12px;
         }
     }
 
@@ -1044,12 +1118,8 @@
                 width: 100%;
                 height: 100%;
                 .block_1 {
-                    margin-top: 0px;
-                    padding-bottom: 150px;
-                    top: 250px;
                     bottom: 0px;
                     right: 0px;
-                    height: 100%;
                     border-radius: 12px;
                     background-color: rgba(64, 65, 91, 1);
                     color: rgba(255, 255, 255, 1);
@@ -1149,16 +1219,17 @@
             width: 100%;
             height: 100%;
             .block_1 {
-                margin-top: 0px;
-                padding-bottom: 150px;
-                top: 250px;
                 bottom: 0px;
                 right: 0px;
-                height: 100%;
+                height: 290px;
                 border-radius: 12px;
                 background-color: #ffffff;
                 position: absolute;
                 width: 100%;
+            }
+
+            .box_75 {
+                width: 91.5%;
             }
 
             .box_1 {

@@ -29,7 +29,7 @@ export const RequestMethod = {
 };
 
 export async function requestOpenApi(method, params, isV3 = true) {
-    return (await openApiAx.post(`/${ isV3 ? 'v3' : 'v2' }/${ process.env.VUE_APP_APIKEY }`, {
+    return (await openApiAx.post(`/explore/${ isV3 ? 'v3' : 'v2' }/${ process.env.VUE_APP_APIKEY }`, {
       "id": 1,
       "jsonrpc": "2.0",
       method,
