@@ -237,6 +237,7 @@
     async mounted() {
       const _this = this;
       setInterval(async () => {
+        if (!this.$store.state.proceeding.makerTransfer.txid) return;
         const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (address && address !== '0x') {
           const pointRes = await requestPointSystem('user/points', {
