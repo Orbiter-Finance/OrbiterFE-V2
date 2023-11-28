@@ -140,7 +140,7 @@
             "decimals": 18,
             "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
         },
-        "rpc": [],
+        "rpc": ["https://starknet-mainnet.public.blastapi.io"],
         "watch": ["rpc"],
         "tokens": [
             {
@@ -162,7 +162,23 @@
                 "address": "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"
             }
         ],
-        "infoURL": "https://starkscan.co"
+        "infoURL": "https://starkscan.co",
+        "explorers": [
+            {
+                "id": 1,
+                "name": "Starkscan",
+                "url": "https://starkscan.co",
+                "accountUrl": "https://starkscan.co/contract",
+                "icon": "SN_MAIN"
+            },
+            {
+                "id": 2,
+                "name": "Voyager",
+                "url": "https://voyager.online",
+                "accountUrl": "https://voyager.online/contract",
+                "icon": "voyager"
+            }
+        ]
     },
     {
         "api": { "url": "https://api.polygonscan.com/api", "key": "" },
@@ -442,7 +458,21 @@
                 "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
             }
         ],
-        "infoURL": "https://explorer.zksync.io"
+        "infoURL": "https://explorer.zksync.io",
+        "explorers": [
+            {
+                "id": 1,
+                "name": "erascan",
+                "url": "https://explorer.zksync.io",
+                "icon": "324"
+            },
+            {
+                "id": 2,
+                "name": "l2scan",
+                "url": "https://zksync-era.l2scan.co",
+                "icon": "l2scan"
+            }
+        ]
     },
     {
         "api": { "url": "https://api.bscscan.com/api", "key": "" },
