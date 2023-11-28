@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { ec, Account, Contract, Provider, uint256, stark } from 'starknet';
+import { ec, Account, Contract, RpcProvider, uint256, stark } from 'starknet';
 import util from '../../util'
 import erc20Abi from './erc20_abi.json'
 import starkNetCrossAbi from './ob_source_abi.json'
@@ -12,9 +12,10 @@ import {
 } from 'get-starknet'
 
 import { store } from '../../../store'
-import { UINT_256_MAX } from 'starknet/dist/utils/uint256'
 import { CHAIN_ID } from "../../../config";
 import { isArgentApp, isMobileDevice } from "../../env";
+
+const UINT_256_MAX = (1n << 256n) - 1n;
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
   'mainnet-alpha':
@@ -110,11 +111,7 @@ export async function connectStarkNetWallet() {
 }
 
 export function getStarkNetCurrentChainId() {
-  console.log('getStarknet()', getStarknet());
-  console.log('getStarknet().provider', getStarknet().provider);
-  console.log('getStarknet().provider?.provider', getStarknet().provider?.provider);
-  console.log('getStarknet().provider?.provider.nodeUrl', getStarknet().provider?.provider.nodeUrl);
-  const baseUrl = getStarknet().provider?.baseUrl ? getStarknet().provider?.baseUrl : getStarknet().provider?.provider?.baseUrl;
+  const baseUrl = (getStarknet().provider?.baseUrl ? getStarknet().provider?.baseUrl : getStarknet().provider?.provider?.baseUrl) || "";
   if (baseUrl.includes('alpha-mainnet.starknet.io')) {
     return CHAIN_ID.starknet
   } else if (baseUrl.includes('alpha4.starknet.io')) {
@@ -122,7 +119,15 @@ export function getStarkNetCurrentChainId() {
   } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
     return 'localhost'
   } else {
-    return 'unlogin'
+    if (getStarknet && getStarknet()?.provider?.provider) {
+      if (getStarknet().provider?.provider.nodeUrl.indexOf('testnet') !== -1) {
+        return CHAIN_ID.starknet_test;
+      }
+      if (getStarknet().provider?.provider.nodeUrl.indexOf('mainnet') !== -1) {
+        return CHAIN_ID.starknet;
+      }
+    }
+    return 'unlogin';
   }
 }
 
@@ -159,9 +164,14 @@ export async function sendTransfer(
   makerAddress = makerAddress.toLowerCase()
   const networkID = getNetworkIdByChainId(chainID)
   const network = networkID === 1 ? 'mainnet-alpha' : 'goerli-alpha'
-
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
-  const provider = new Provider({ network })
+
+  const chainId = networkID === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test;
+  const chainInfo = util.getV3ChainInfoByChainId(chainId);
+  if (!chainInfo?.rpc || !chainInfo.rpc.length) {
+    throw new Error('starknet rpc not configured');
+  }
+  const provider = new RpcProvider({ nodeUrl: chainInfo.rpc[0] });
   const tokenContract = new Contract(
     erc20Abi,
     tokenAddress,
@@ -277,7 +287,13 @@ export async function getStarkTransferFee(
   const network = networkID == 1 ? 'mainnet-alpha' : 'goerli-alpha'
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
-  const provider = new Provider({ network })
+  const chainId = networkID === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test;
+  const chainInfo = util.getV3ChainInfoByChainId(chainId);
+  if (!chainInfo?.rpc || !chainInfo.rpc.length) {
+    console.error('starknet rpc not configured');
+    return 0;
+  }
+  const provider = new RpcProvider({ nodeUrl: chainInfo.rpc[0] });
   const userSender = new Account(
     provider,
     GAS_ADDRESS[network].address,
@@ -331,8 +347,13 @@ export async function getErc20Balance(
   if (!starknetAddress || !contractAddress) {
     return 0
   }
-  const network = networkId === 1 ? 'mainnet-alpha' : 'goerli-alpha'
-  const provider = new Provider({ network })
+  const chainId = networkId === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test
+  const chainInfo = util.getV3ChainInfoByChainId(chainId);
+  if (!chainInfo?.rpc || !chainInfo.rpc.length) {
+    console.error('starknet rpc not configured');
+    return 0;
+  }
+  const provider = new RpcProvider({ nodeUrl: chainInfo.rpc[0] });
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
   const resp = await tokenContract.balanceOf(starknetAddress)
   if (!resp || !resp.balance || !resp.balance.low) {
