@@ -22,7 +22,11 @@
                 </o-tooltip>
             </div>
             <div class="item-right">
-                <span v-if="item.desc">{{ item.desc }}</span>
+                <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''}`">{{ item.desc }}</span>
+                <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
+                    <span v-if="isMobile"><br /></span>
+                    {{ item.lineThrough }}
+                </span>
             </div>
             <div
                 v-if="item.descInfo && item.descInfo.length > 0"
@@ -197,7 +201,7 @@ import {
 import { isMobile, transferDataState, web3State } from '../../composition/hooks'
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
-import { XVMSwap } from '../../util/constants/contract/xvm'
+import { orbiterRouterTransfer, OrbiterRouterType } from '../../util/constants/contract/orbiterRouter';
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp } from "../../util";
@@ -248,6 +252,8 @@ export default {
                         selectMakerConfig.tradingFee +
                         ' ' +
                         selectMakerConfig.fromChain.symbol,
+                    lineThrough: selectMakerConfig.originWithholdingFee ?
+                      selectMakerConfig.originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
                 },
                 {
                     icon: 'security',
@@ -284,18 +290,25 @@ export default {
     },
     methods: {
         async transferToStarkNet(value) {
-            const { selectMakerConfig, fromChainID, transferExt } =
+            const { selectMakerConfig, fromChainID, transferExt, crossAddressReceipt } =
                 transferDataState
 
             if (!walletIsLogin.value) {
                 return
             }
             const { fromAddress, ext } = transferExt
-            const contractAddress = selectMakerConfig.fromChain.tokenAddress
+            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             const recipient = selectMakerConfig.recipient
             const amount = ethers.BigNumber.from(value)
 
             if (!ext?.value || util.starknetHashFormat(ext.value).length !== 66 || util.starknetHashFormat(ext.value) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
+                this.$notify.error({
+                    title: 'please connect correct starknet wallet address',
+                    duration: 3000,
+                });
+                return;
+            }
+            if (!crossAddressReceipt || util.starknetHashFormat(crossAddressReceipt).length !== 66 || util.starknetHashFormat(crossAddressReceipt) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
                 this.$notify.error({
                     title: 'please connect correct starknet wallet address',
                     duration: 3000,
@@ -310,8 +323,8 @@ export default {
                 });
                 return;
             }
-            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
-            if (!chainInfo.contracts || !chainInfo.contracts.length) {
+            const contractAddress = util.getOrbiterRouterV3Address(fromChainID)
+            if (!contractAddress) {
                 this.$notify.error({
                     title: 'Contract not supported temporarily',
                     duration: 3000,
@@ -319,80 +332,22 @@ export default {
                 return
             }
 
-            const crossContractAddress = chainInfo.contracts[0]
             try {
-                let transferHash = ''
-                if (
-                    compatibleGlobalWalletConf.value.walletType == WALLETCONNECT
-                ) {
-                    const web3 = util.stableWeb3(fromChainID)
-                    const provider = new ethers.providers.Web3Provider(
-                        web3.currentProvider
-                    )
-                    const crossAddress = new CrossAddress(
-                        provider,
-                        fromChainID,
-                        provider.getSigner(fromAddress),
-                        crossContractAddress
-                    )
-                    if (util.isEthTokenAddress(fromChainID, contractAddress)) {
-                        transferHash =
-                            await await crossAddress.wallConnTransfer(
-                                recipient,
-                                amount,
-                                ext
-                            )
-                    } else {
-                        transferHash =
-                            await crossAddress.walletConnTransferERC20(
-                                contractAddress,
-                                recipient,
-                                amount,
-                                ext
-                            )
-                    }
-                    if (transferHash) {
-                        this.onTransferSucceed(
-                            fromAddress,
-                            amount,
-                            fromChainID,
-                            transferHash
-                        )
-                    }
-                    return
-                }
-                const provider = new ethers.providers.Web3Provider(
-                    compatibleGlobalWalletConf.value.walletPayload.provider
+                const res = await orbiterRouterTransfer(
+                    OrbiterRouterType.CrossAddress,
+                    fromAddress,
+                    selectMakerConfig.recipient,
+                    amount,
+                    crossAddressReceipt
                 )
-                const crossAddress = new CrossAddress(
-                    provider,
-                    fromChainID,
-                    provider.getSigner(fromAddress),
-                    crossContractAddress
-                )
-                if (util.isEthTokenAddress(fromChainID, contractAddress)) {
-                    transferHash = (
-                        await crossAddress.transfer(recipient, amount, ext)
-                    ).hash
-                } else {
-                    transferHash = (
-                        await crossAddress.transferERC20(
-                            contractAddress,
-                            recipient,
-                            amount,
-                            ext
-                        )
-                    ).hash
-                }
-                if (transferHash) {
+                if (res?.transactionHash) {
                     this.onTransferSucceed(
                         fromAddress,
                         amount,
                         fromChainID,
-                        transferHash
+                        res.transactionHash
                     )
                 }
-                return
             } catch (err) {
                 console.error('transferToStarkNet error', err);
                 this.$notify.error({
@@ -1208,8 +1163,7 @@ export default {
                 return
             }
 
-            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
-            const contractAddress = chainInfo.xvmList[0]
+            const contractAddress = util.getOrbiterRouterV3Address(fromChainID);
             const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             // approve
             if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
@@ -1245,11 +1199,8 @@ export default {
             }
 
             try {
-                const provider =
-                    compatibleGlobalWalletConf.value.walletPayload.provider
-                const { transactionHash } = await XVMSwap(
-                    provider,
-                    contractAddress,
+                const { transactionHash } = await orbiterRouterTransfer(
+                    selectMakerConfig.fromChain.symbol === selectMakerConfig.toChain.symbol ? OrbiterRouterType.CrossAddress : OrbiterRouterType.CrossAddressCurrency,
                     account,
                     selectMakerConfig.recipient,
                     amount,
@@ -1336,7 +1287,7 @@ export default {
             }
 
             // EVM contract
-            if (util.isExecuteXVMContract()) {
+            if (util.isExecuteOrbiterRouterV3()) {
                 this.transferLoading = true
                 await this.handleXVMContract()
                 this.transferLoading = false
@@ -1500,7 +1451,7 @@ export default {
             selectMakerConfig,
             false
         )
-        if (util.isExecuteXVMContract()) {
+        if (util.isExecuteOrbiterRouterV3()) {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol
             const slippage = selectMakerConfig.slippage
@@ -1534,6 +1485,15 @@ export default {
     }
     .select-wallet-dialog {
         width: 420px;
+    }
+}
+.fee {
+    font-weight: 700;
+    color: #df2e2d;
+}
+.dark-theme {
+    .fee {
+        color: #eeeeee;
     }
 }
 .app-mobile {

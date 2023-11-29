@@ -140,6 +140,17 @@ export default {
     })
   },
 
+  async getAsyncWalletAddress(retryCount = 6) {
+    if (!compatibleGlobalWalletConf.value.walletPayload.walletAddress || compatibleGlobalWalletConf.value.walletPayload.walletAddress === '0x') {
+      if (retryCount === 0) {
+        return compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x';
+      }
+      await this.sleep(500);
+      return await this.getAsyncWalletAddress(retryCount - 1);
+    }
+    return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+  },
+
   formatDate(date, isShort) {
     date = new Date(date)
     const year = date.getFullYear()
@@ -294,6 +305,17 @@ export default {
     return chainInfo
   },
 
+  getOrbiterRouterV3Address(chainId) {
+    const chainInfo = this.getV3ChainInfoByChainId(chainId);
+    if (!chainInfo?.contract) return null;
+    for (const address in chainInfo.contract) {
+      if (chainInfo.contract[address] === 'OrbiterRouterV3') {
+        return address;
+      }
+    }
+    return null;
+  },
+
   isEvmChain(chainId) {
     return ![
       CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.imx, CHAIN_ID.imx_test,
@@ -350,8 +372,8 @@ export default {
     )
   },
 
-  isSupportXVMContract() {
-    const { fromChainID, selectMakerConfig,fromCurrency, toCurrency } = transferDataState
+  isSupportOrbiterRouterV3() {
+    const { fromChainID, selectMakerConfig } = transferDataState
     if (!this.isWhite()) {
       return false
     }
@@ -362,13 +384,13 @@ export default {
       return false;
     }
     const chainInfo = this.getV3ChainInfoByChainId(fromChainID)
-    return chainInfo?.xvmList && chainInfo.xvmList.length
+    return !!Object.values(chainInfo?.contract || {}).find(item => item === 'OrbiterRouterV3');
   },
 
-  isExecuteXVMContract() {
+  isExecuteOrbiterRouterV3() {
     const { fromCurrency, toCurrency, isCrossAddress } = transferDataState
     return !!(
-      this.isSupportXVMContract() &&
+      this.isSupportOrbiterRouterV3() &&
       (fromCurrency !== toCurrency || isCrossAddress)
     )
   },

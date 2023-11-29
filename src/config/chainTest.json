@@ -72,6 +72,7 @@
         "service": {
             "rpc": "StarknetRpcScanningService"
         },
+        "contracts": ["0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"],
         "contract": {
             "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3": "OBSource"
         },
@@ -166,7 +167,7 @@
     {
         "api": {
             "url": "https://uat2.loopring.io/api/v3",
-            "key": ""
+            "key": "tG0cm11rYjnBhzJVjy4BH45vxGDFpaqjB5P4nEGpEgUKWjK9CQzYK1nwB6cveavI"
         },
         "chainId": "loopring_test",
         "networkId": "5",

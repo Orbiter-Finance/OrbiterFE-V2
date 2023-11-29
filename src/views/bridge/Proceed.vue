@@ -90,8 +90,18 @@
                         ></svg-icon>
                         <span>{{ FromTx }}</span>
                     </div>
-                    <div class="switch-btn" @click="() => switchNetWork()">
-                        Switch Network
+<!--                    <div v-if="!getExplorer()" class="switch-btn" @click="() => switchNetWork()">-->
+<!--                        Switch Network-->
+<!--                    </div>-->
+                    <div v-if="getExplorer()" style="display:flex;align-items: center;justify-content: center;height:28px">
+                        <span @click="openIconUrl(true, item)" id="switch-btn-id" class="switch-btn-2" v-for="(item,index) in getExplorer()" :style="`${index !== 0 ? 'margin-left:4px' : ''}`">
+                            <svg-icon
+                                v-if="item.icon"
+                                :iconName="item.icon"
+                                style="width: 18px; height: 18px;margin-right: 4px"
+                            ></svg-icon>
+                            <span style="height: 20px;line-height: 20px;">{{ item.name }}</span>
+                        </span>
                     </div>
                 </div>
                 <div class="middle-icon">
@@ -166,8 +176,18 @@
                         </template>
                         <span>{{ ToTx }}</span>
                     </div>
-                    <div class="switch-btn" @click="() => switchNetWork(false)">
-                        Switch Network
+<!--                    <div class="switch-btn" @click="() => switchNetWork(false)">-->
+<!--                        Switch Network-->
+<!--                    </div>-->
+                    <div v-if="getExplorer(false)" style="display:flex;align-items: center;justify-content: center;height:28px">
+                        <span @click="openIconUrl(false, item)" id="switch-btn-id-2" class="switch-btn-2" v-for="(item,index) in getExplorer(false)" :style="`${index !== 0 ? 'margin-left:4px' : ''}`">
+                            <svg-icon
+                                v-if="item.icon"
+                                :iconName="item.icon"
+                                style="width: 18px; height: 18px;margin-right: 4px"
+                            ></svg-icon>
+                            <span style="height: 20px;line-height: 20px;">{{ item.name }}</span>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -249,7 +269,7 @@ export default {
 
             const { proceedState, proceeding } = this.$store.state
             if (proceedState === 1) {
-                return 'View on Explore'
+                return 'View on Explorer'
             } else {
                 // immutablex
                 if (
@@ -265,7 +285,7 @@ export default {
             if (this.detailData) {
                 const { state, toTxHash, toChainID } = this.detailData
                 if (state !== 0) {
-                    return 'View on Explore'
+                    return 'View on Explorer'
                 } else {
                     // immutablex
                     if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
@@ -277,7 +297,7 @@ export default {
             const { toChainID } = transferDataState
             const { proceedState, proceeding } = this.$store.state
             if (proceedState < 4) {
-                return 'View on Explore'
+                return 'View on Explorer'
             } else {
                 // immutablex
                 if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
@@ -324,6 +344,33 @@ export default {
         },
     },
     methods: {
+        openIconUrl(isFrom, explorerInfo) {
+          let hash = '';
+          if (this.detailData) {
+            hash = isFrom ? this.detailData.fromTxHash : this.detailData.toTxHash;
+          }
+          if (!hash) hash = isFrom ? this.$store.state.proceeding.userTransfer.txid : this.$store.state.proceeding.makerTransfer.txid;
+          if (hash) {
+            const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx';
+            window.open(txUrl + '/' + hash, '_blank');
+            return;
+          }
+
+          const { fromChainID, toChainID } = transferDataState;
+          const chainId = isFrom ? fromChainID : toChainID;
+          let userAddress = web3State.coinbase;
+          if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
+            userAddress = web3State.starkNet.starkNetAddress;
+          }
+          const accountUrl = explorerInfo.accountUrl || explorerInfo.url + '/address';
+          const url = accountUrl + '/' + userAddress;
+          window.open(url, '_blank');
+        },
+        getExplorer(isFrom = true) {
+            const chainId = this.getChainId(isFrom);
+            const chainInfo = util.getV3ChainInfoByChainId(chainId);
+            return chainInfo.explorers;
+        },
         showChainIcon(isFrom = true) {
             if (this.detailData) {
                 return this.detailData[`${ isFrom ? 'from' : 'to' }ChainID`] || 1
@@ -649,6 +696,27 @@ export default {
                     line-height: 28px;
                     cursor: pointer;
                 }
+                .switch-btn-2 {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding-left: 2px;
+                    padding-right: 4px;
+                    border: rgba(51, 51, 51, 0) 1px solid;
+                    height: 20px;
+                    border-radius: 20px;
+                    font-weight: 400;
+                    font-size: 12px;
+                    line-height: 20px;
+                    cursor: pointer;
+                    background-color: rgba(255, 255, 255, 1);
+                }
+                #switch-btn-id:hover {
+                    border: rgba(34, 34, 34, 1) 1px solid;
+                }
+                #switch-btn-id-2:hover {
+                    border: rgba(34, 34, 34, 1) 1px solid;
+                }
             }
             .middle-icon {
                 flex: 1;
@@ -658,6 +726,27 @@ export default {
                     align-items: flex-end;
                     justify-content: center;
                     background-repeat: no-repeat;
+                }
+            }
+        }
+    }
+}
+.dark-theme {
+    .proceed-box{
+        .ProceedContent{
+            .chainDataContent{
+                .item{
+                    .switch-btn-2 {
+                        background-color: #282938;
+                        color: #ffffff;
+                    }
+
+                    #switch-btn-id:hover {
+                        border: #ffffff 1px solid;
+                    }
+                    #switch-btn-id-2:hover {
+                        border: #ffffff 1px solid;
+                    }
                 }
             }
         }

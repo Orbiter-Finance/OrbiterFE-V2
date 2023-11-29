@@ -18,37 +18,34 @@ module.exports = {
             return args
         })
         config.module
-            .rule('walletconnect')
-            .test(/\.js$/)
-            .include
-            .add(resolve('node_modules/@walletconnect/ethereum-provider/dist'))
-            .add(resolve('node_modules/@walletconnect/ethereum-provider/node_modules/@walletconnect/utils/dist'))
-            .add(resolve('node_modules/@walletconnect/modal/node_modules/@walletconnect/modal-core/dist'))
-            .add(resolve('node_modules/@walletconnect/universal-provider/dist'))
-            .add(resolve('node_modules/@walletconnect/universal-provider/node_modules/@walletconnect/utils/dist/index.es.js'))
-            .add(resolve('node_modules/@walletconnect/sign-client/dist'))
-            .add(resolve('node_modules/@walletconnect/modal-ui/dist'))
-            .add(resolve('node_modules/@walletconnect/modal-ui/node_modules/@walletconnect/modal-core/dist'))
-            .add(resolve('node_modules/@walletconnect/core/dist'))
-            .add(resolve('node_modules/@walletconnect/sign-client/node_modules/@walletconnect/utils/dist/index.es.js'))
-            .add(resolve('node_modules/@walletconnect/core/node_modules/@walletconnect/utils/dist/index.es.js'))
-            .add(resolve('node_modules/viem/dist/esm'))
-            .add(resolve('node_modules/viem/node_modules/abitype/dist/esm'))
-            .add(resolve('node_modules/@wagmi/core/dist'))
-            .add(resolve('node_modules/@wagmi/connectors/dist'))
-            .add(resolve('node_modules/@wagmi/connectors/node_modules/@walletconnect/utils/dist'))
-            .add(resolve('node_modules/@web3modal/ui/dist'))
-            .add(resolve('node_modules/@web3modal/html/dist'))
-            .add(resolve('node_modules/@web3modal/ethereum/dist'))
-            .add(resolve('node_modules/@web3modal/core/dist'))
-            .add(resolve('node_modules/@noble/curves/abstract'))
-            .end()
-            .use('babel-loader')
-            .loader('babel-loader')
-            .options({
-                plugins: [NullishCoalescingOperatorPlugin],
-            })
-            .end()
+        .rule('starknet')
+        .test(/(\.mjs$)|(\.js$)/)
+        .include
+        .add(resolve('node_modules/starknet'))
+        .add(resolve('node_modules/@scure'))
+        .end()
+        .use('babel-loader')
+        .loader('babel-loader')
+        .options({
+            plugins: [NullishCoalescingOperatorPlugin],
+        })
+        .end();
+        config.module
+        .rule('walletconnect')
+        .test(/\.js$/)
+        .include
+        .add(resolve('node_modules/@walletconnect'))
+        .add(resolve('node_modules/viem'))
+        .add(resolve('node_modules/@wagmi'))
+        .add(resolve('node_modules/@web3modal'))
+        .add(resolve('node_modules/@noble'))
+        .end()
+        .use('babel-loader')
+        .loader('babel-loader')
+        .options({
+            plugins: [NullishCoalescingOperatorPlugin],
+        })
+        .end()
         config.externals({
             web3: 'Web3',
         })

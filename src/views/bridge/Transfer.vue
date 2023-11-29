@@ -173,16 +173,16 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet)">
+      <div :hidden="(!isNewVersion || !isSupportV3) && !isLoopring && !(isBrowserApp && selectStarknet)">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
           <label v-else for="checkbox"> Recipient's Address </label>
         </div>
         <div class="cross-addr-box to-area" style="margin-top: 10px" v-if="isCrossAddress">
-          <div data-v-59545920="" class="topItem">
+          <div v-if="isBrowserApp" data-v-59545920="" class="topItem">
             <div class="left"></div>
-            <div v-if="isBrowserApp" @click="fillAddress">Autofill from wallet</div>
+            <div @click="fillAddress">Autofill from wallet</div>
           </div>
           <input
                   @blur="updateSendBtnInfo"
@@ -398,10 +398,16 @@ import {
   updateIsCrossAddress,
   updateTransferFromCurrency,
   updateTransferMakerConfig,
-  updateTransferExt, curPageStatus, updateDealerId,
+  updateTransferExt,
+  curPageStatus,
+  updateDealerId,
+  setActAddPoint,
+  setActAddPointVisible,
+  updateActDataList,
+  setActDialogVisible,
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
-import { RequestMethod, requestOpenApi } from "../../common/openApiAx";
+import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 let makerConfigs = config.v1MakerConfigs;
@@ -499,7 +505,7 @@ export default {
       if (!this.isNewVersion || this.selectFromToken === this.selectToToken) {
         return false;
       }
-      if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
+      if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportOrbiterRouterV3()) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
@@ -511,7 +517,7 @@ export default {
       if (!(isArgentApp() && util.isStarkNet()) && (!this.isNewVersion || this.selectFromToken === this.selectToToken)) {
         return false;
       }
-      if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
+      if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportOrbiterRouterV3())) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
@@ -526,8 +532,8 @@ export default {
       }
       return isCheck;
     },
-    isSupportXVM() {
-      return util.isSupportXVMContract();
+    isSupportV3() {
+      return util.isSupportOrbiterRouterV3();
     },
     transferDataState() {
       return transferDataState;
@@ -779,6 +785,25 @@ export default {
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
       if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
+
+      this.getWalletAddressPoint(newValue);
+
+      setTimeout(async () => {
+        const dataList = await this.getWalletAddressActList(newValue);
+        const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
+        for (const data of dataList) {
+          if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+            localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
+          }
+        }
+        localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+        let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
+        if (times < 3) {
+          setActDialogVisible(true);
+          times++;
+          localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
+        }
+      }, 0);
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
@@ -798,13 +823,13 @@ export default {
     },
   },
   async mounted() {
-    this.boxLoading = true;
+    // this.boxLoading = true;
     try {
       await this.syncV3Data(1);
     } catch (e) {
       console.error('syncV3Data error', e);
     }
-    this.boxLoading = false;
+    // this.boxLoading = false;
 
     this.openApiFilter();
 
@@ -840,6 +865,40 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    async getWalletAddressPoint(address) {
+      if (util.getAccountAddressError(address)) {
+        return;
+      }
+      const pointRes = await requestPointSystem('user/points', {
+        address
+      });
+      this.totalPoint = pointRes.data.points;
+      const point = pointRes.data.points;
+      if (point) {
+        setActAddPoint(String(point));
+        setActAddPointVisible(true);
+        setTimeout(() => {
+          setActAddPointVisible(false);
+        }, 3000);
+      }
+    },
+    async getWalletAddressActList(address) {
+      if (util.getAccountAddressError(address)) {
+        return;
+      }
+      const res = await requestPointSystem('activity/list', {
+        address,
+        pageSize: 10,
+        page: 1
+      });
+      const list = res.data.list;
+      const dataList = [];
+      for (const data of list) {
+        dataList.push(...data.taskList);
+      }
+      updateActDataList(dataList);
+      return dataList;
+    },
     async fillAddress() {
       if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.fromChainID)) {
         const account = await walletConnectDispatcherOnInit(WALLETCONNECT);
@@ -1030,15 +1089,15 @@ export default {
       this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
       this.isBrowserApp = isBrowserApp();
 
-      if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
-        if (isCrossAddress && util.isExecuteXVMContract()) {
-          this.$notify.warning({
-            title: `Not supported yet Change Account.`,
-            duration: 3000,
-          });
-        }
-        this.isCrossAddress = false;
-      }
+      // if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
+      //   if (isCrossAddress && util.isExecuteOrbiterRouterV3()) {
+      //     this.$notify.warning({
+      //       title: `Not supported yet Change Account.`,
+      //       duration: 3000,
+      //     });
+      //   }
+      //   this.isCrossAddress = false;
+      // }
 
       const { query } = this.$route;
       const source = makerConfigs.find(item => item?.fromChain?.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.chainId || 0;
@@ -1291,17 +1350,17 @@ export default {
         }
 
         if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
-                !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
+                !util.isSupportOrbiterRouterV3() && !this.isLoopring && !util.isStarkNet()) {
           info.text = 'SEND';
           info.disabled = 'disabled';
-          util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
-                  fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
+          util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportOrbiterRouterV3 && !this.isLoopring && !util.isStarkNet',
+                  fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportOrbiterRouterV3(), !this.isLoopring, !util.isStarkNet());
         }
 
-        if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
+        if (util.isSupportOrbiterRouterV3() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
           info.text = 'SEND';
           info.disabled = 'disabled';
-          util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
+          util.log('isSupportV3 && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
                   this.crossAddressReceipt, this.isErrorAddress);
         }
         const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -1830,12 +1889,12 @@ export default {
             }
           }
         }
-        const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
-        const toAddressAll = (util.isExecuteXVMContract() ?
-                chainInfo.xvmList[0] :
+        const v3ContractAddress = util.getOrbiterRouterV3Address(fromChainID);
+        const toAddressAll = (util.isExecuteOrbiterRouterV3() ?
+                v3ContractAddress :
                 selectMakerConfig.recipient).toLowerCase();
-        const senderAddress = (util.isExecuteXVMContract() ?
-                chainInfo.xvmList[0] :
+        const senderAddress = (util.isExecuteOrbiterRouterV3() ?
+                v3ContractAddress :
                 selectMakerConfig.sender).toLowerCase();
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
@@ -1851,7 +1910,7 @@ export default {
             to: toAddress,
             fromTip: '',
             toTip: toAddressAll,
-            icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
+            icon: util.isExecuteOrbiterRouterV3() ? 'contract' : 'wallet'
           },
           {
             no: 2,
