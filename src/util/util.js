@@ -372,8 +372,8 @@ export default {
     )
   },
 
-  isSupportXVMContract() {
-    const { fromChainID, selectMakerConfig,fromCurrency, toCurrency } = transferDataState
+  isSupportOrbiterRouterV3() {
+    const { fromChainID, selectMakerConfig } = transferDataState
     if (!this.isWhite()) {
       return false
     }
@@ -384,13 +384,13 @@ export default {
       return false;
     }
     const chainInfo = this.getV3ChainInfoByChainId(fromChainID)
-    return chainInfo?.xvmList && chainInfo.xvmList.length
+    return !!Object.values(chainInfo?.contract || {}).find(item => item === 'OrbiterRouterV3');
   },
 
-  isExecuteXVMContract() {
+  isExecuteOrbiterRouterV3() {
     const { fromCurrency, toCurrency, isCrossAddress } = transferDataState
     return !!(
-      this.isSupportXVMContract() &&
+      this.isSupportOrbiterRouterV3() &&
       (fromCurrency !== toCurrency || isCrossAddress)
     )
   },

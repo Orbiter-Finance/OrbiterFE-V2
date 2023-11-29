@@ -126,7 +126,6 @@ async function orbiterRouterSend(chainId, fromAddress, toAddress, tokenAddress, 
         from: fromAddress,
         gas: 5000000,
       });
-    util.log('gasLimit', gasLimit);
     return contractInstance.methods
       .transferToken(toAddress, tokenAddress, value, data)
       .send({

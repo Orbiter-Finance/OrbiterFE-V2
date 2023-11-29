@@ -1287,7 +1287,7 @@ export default {
             }
 
             // EVM contract
-            if (util.isExecuteXVMContract()) {
+            if (util.isExecuteOrbiterRouterV3()) {
                 this.transferLoading = true
                 await this.handleXVMContract()
                 this.transferLoading = false
@@ -1451,7 +1451,7 @@ export default {
             selectMakerConfig,
             false
         )
-        if (util.isExecuteXVMContract()) {
+        if (util.isExecuteOrbiterRouterV3()) {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol
             const slippage = selectMakerConfig.slippage
