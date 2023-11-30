@@ -160,17 +160,17 @@
         twitter: null,
         bannerList: [
           {
-            url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
+            url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
             img: 'linea_voyage.png',
-          },
-          {
-            url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
-            img: 'zksync_voyage.png',
-          },
-          {
-            url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
-            img: 'bridge_voyage.png',
           }
+          // {
+          //   url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
+          //   img: 'zksync_voyage.png',
+          // },
+          // {
+          //   url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
+          //   img: 'bridge_voyage.png',
+          // }
         ]
       };
     },
