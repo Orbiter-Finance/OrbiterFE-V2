@@ -119,11 +119,11 @@ export function getStarkNetCurrentChainId() {
   } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
     return 'localhost'
   } else {
-    if (getStarknet && getStarknet()?.provider?.provider) {
-      if (getStarknet().provider?.provider.nodeUrl.indexOf('testnet') !== -1) {
+    if (getStarknet && getStarknet()?.provider?.provider?.nodeUrl) {
+      if (getStarknet().provider.provider.nodeUrl.indexOf('testnet') !== -1) {
         return CHAIN_ID.starknet_test;
       }
-      if (getStarknet().provider?.provider.nodeUrl.indexOf('mainnet') !== -1) {
+      if (getStarknet().provider.provider.nodeUrl.indexOf('mainnet') !== -1) {
         return CHAIN_ID.starknet;
       }
     }
