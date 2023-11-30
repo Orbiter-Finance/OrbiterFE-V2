@@ -823,18 +823,13 @@ export default {
     },
   },
   async mounted() {
-    // this.boxLoading = true;
+    this.updateTransferInfo();
+    this.openApiFilter();
     try {
       await this.syncV3Data(1);
     } catch (e) {
       console.error('syncV3Data error', e);
     }
-    // this.boxLoading = false;
-
-    this.openApiFilter();
-
-    this.initWhiteList()
-
     this.updateTransferInfo();
 
      if (isDev() && !isMobile.value) {
@@ -1059,12 +1054,6 @@ export default {
         }
       }
       this.updateTransferInfo();
-    },
-    async initWhiteList() {
-      // if (isProd()) {
-      //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      // }
-      // this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
