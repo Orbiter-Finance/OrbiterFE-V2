@@ -127,7 +127,11 @@
                     <div class="text_48">
                         More: Partners' Incentives
                     </div>
-                    <div @click="openUrl('https://galxe.com/izumi/campaign/GCRKjtUW3A')" class="box_75"></div>
+                    <el-carousel :interval="2000" trigger="click" height="110px">
+                        <el-carousel-item v-for="item in bannerList" :key="item">
+                            <div @click="openUrl(item.url)" class="box_75" :style="`background: url(${require('../../assets/activity/' + item.img)});background-size: 100% 100%;`"></div>
+                        </el-carousel-item>
+                    </el-carousel>
                 </div>
             </div>
         </div>
@@ -153,7 +157,21 @@
         addItemLoading: false,
         listLoading: false,
         isHover: false,
-        twitter: null
+        twitter: null,
+        bannerList: [
+          {
+            url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
+            img: 'linea_voyage.png',
+          },
+          {
+            url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
+            img: 'zksync_voyage.png',
+          },
+          {
+            url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
+            img: 'bridge_voyage.png',
+          }
+        ]
       };
     },
     computed: {
@@ -293,6 +311,28 @@
 </script>
 
 <style lang="scss" scoped>
+    ::v-deep .el-carousel__indicators--horizontal {
+        /*position: absolute;*/
+        /*bottom: 5px;*/
+        /*text-align: right;*/
+
+        .el-carousel__indicator--horizontal button {
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .el-carousel__indicator--horizontal.is-active button {
+            width: 14px;
+            height: 6px;
+            background: #ffffff;
+            opacity: 1;
+            border-radius: 10px;
+        }
+    }
+
     .dark-theme {
         .act {
             .card::-webkit-scrollbar-track {
@@ -456,8 +496,6 @@
         .box_75 {
             cursor: pointer;
             border-radius: 8px;
-            background: url('../../assets/activity/linea_voyage.png');
-            background-size: 100% 100%;
             width: 388px;
             height: 104px;
             margin-left: 16px;
