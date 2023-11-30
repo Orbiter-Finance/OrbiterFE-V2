@@ -297,11 +297,12 @@ export async function getStarkTransferFee(
   const userSender = new Account(
     provider,
     GAS_ADDRESS[network].address,
-    ec.getKeyPair(GAS_ADDRESS[network].privateKey)
+    GAS_ADDRESS[network].privateKey
   )
+  const token = [...chainInfo.tokens,chainInfo.nativeCurrency].find(item=>item.address.toLowerCase() === tokenAddress.toLowerCase());
 
   const receiverAddress = makerAddress
-  const ethContract = new Contract(erc20Abi, tokenAddress, userSender)
+  const tokenContract = new Contract(erc20Abi, tokenAddress, userSender)
   const crossContract = new Contract(
     starkNetCrossAbi,
     contractAddress,
@@ -309,12 +310,26 @@ export async function getStarkTransferFee(
   )
 
   try {
-    const approveTxCall = getApproveTxCall(contractAddress, ethContract.address);
-    const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, 0, crossContract.address);
-    const { overall_fee } = await userSender.estimateFee([approveTxCall, transferERC20TxCall]);
-    return Number(overall_fee);
+    const approveTxCall = tokenContract.populate(
+      "approve",
+      [
+        contractAddress,
+        getUint256CalldataFromBN(String(UINT_256_MAX))
+      ]
+    );
+    const transferERC20TxCall = crossContract.populate(
+      "transferERC20",
+      [
+        tokenAddress,
+        receiverAddress,
+        getUint256CalldataFromBN(new BigNumber(amount).multipliedBy(10 ** token.decimals).toFixed(0)),
+        l1Address
+      ]
+    );
+    const res = await userSender.estimateFee([approveTxCall, transferERC20TxCall]);
+    return Number(res.overall_fee);
   } catch (e) {
-    console.warn('estError: ', e)
+    // console.warn('estError: ', e)
   }
   return 0
 }
