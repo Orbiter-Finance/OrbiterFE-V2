@@ -127,7 +127,7 @@
                     <div class="text_48">
                         More: Partners' Incentives
                     </div>
-                    <el-carousel :interval="2000" trigger="click" height="110px">
+                    <el-carousel :interval="4000" trigger="click" height="110px">
                         <el-carousel-item v-for="(item, index) in bannerList" :key="index">
                             <div @click="openUrl(item.url)" class="box_75" :style="`background: url(${require('../../assets/activity/banner/' + item.img)});background-size: 100% 100%;`"></div>
                         </el-carousel-item>
