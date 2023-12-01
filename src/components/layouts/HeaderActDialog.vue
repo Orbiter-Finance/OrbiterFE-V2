@@ -129,7 +129,7 @@
                     </div>
                     <el-carousel :interval="2000" trigger="click" height="110px">
                         <el-carousel-item v-for="(item, index) in bannerList" :key="index">
-                            <div @click="openUrl(item.url)" class="box_75" :style="`background: url(${require('../../assets/activity/' + item.img)});background-size: 100% 100%;`"></div>
+                            <div @click="openUrl(item.url)" class="box_75" :style="`background: url(${require('../../assets/activity/banner/' + item.img)});background-size: 100% 100%;`"></div>
                         </el-carousel-item>
                     </el-carousel>
                 </div>
@@ -161,16 +161,20 @@
         bannerList: [
           {
             url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
-            img: 'linea_voyage.png',
+            img: '0.png',
+          },
+          {
+            url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
+            img: '1.png',
+          },
+          {
+            url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
+            img: '2.png',
+          },
+          {
+            url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
+            img: '3.png',
           }
-          // {
-          //   url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
-          //   img: 'zksync_voyage.png',
-          // },
-          // {
-          //   url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
-          //   img: 'bridge_voyage.png',
-          // }
         ]
       };
     },
