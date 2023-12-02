@@ -823,13 +823,12 @@ export default {
     },
   },
   async mounted() {
-    this.updateTransferInfo();
-    this.openApiFilter();
     try {
       await this.syncV3Data(1);
     } catch (e) {
       console.error('syncV3Data error', e);
     }
+    this.openApiFilter();
     this.updateTransferInfo();
 
      if (isDev() && !isMobile.value) {
