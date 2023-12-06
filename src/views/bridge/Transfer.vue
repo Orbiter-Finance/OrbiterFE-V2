@@ -404,7 +404,6 @@ import {
   setActAddPoint,
   setActAddPointVisible,
   updateActDataList,
-  setActDialogVisible,
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
@@ -787,10 +786,7 @@ export default {
       if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
 
       this.getWalletAddressPoint(newValue);
-
-      setTimeout(async () => {
-        await this.getWalletAddressActList(newValue);
-      }, 0);
+      this.getWalletAddressActList(newValue);
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
@@ -873,9 +869,19 @@ export default {
       });
       const list = res.data.list;
       const dataList = [];
+      const undoneList = [];
+      const doneList = [];
       for (const data of list) {
-        dataList.push(...data.taskList);
+        for (const task of data.taskList) {
+          if (task.status) {
+            doneList.push(task);
+          } else {
+            undoneList.push(task);
+          }
+        }
       }
+      dataList.push(...undoneList);
+      dataList.push(...doneList);
       updateActDataList(dataList);
       return dataList;
     },

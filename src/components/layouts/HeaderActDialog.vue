@@ -327,7 +327,7 @@
     name: 'HeaderActDialog',
     data() {
       return {
-        endTime: new Date().valueOf() + 1000 * 60 * 60 * 24 * 7 + 5000,
+        endTime: 1702483200000,
         countDownSecond: "00",
         countDownMin: "00",
         countDownHour: "00",
@@ -540,9 +540,9 @@
         for (const data of list) {
           for (const task of data.taskList) {
             if (task.status) {
-              doneList.push({ ...task, twitter: data.twitter });
+              doneList.push(task);
             } else {
-              undoneList.push({ ...task, twitter: data.twitter });
+              undoneList.push(task);
             }
           }
         }
