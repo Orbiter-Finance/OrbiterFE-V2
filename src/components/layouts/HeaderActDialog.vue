@@ -3,18 +3,31 @@
         class="act header-dialog-box"
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
-        <div v-if="isMobile" @click="mobileCloseAct" style="width: 100%;height:100%"></div>
+        <div
+            v-if="isMobile"
+            @click="mobileCloseAct"
+            style="width: 100%; height: 100%"
+        ></div>
 
-        <div v-if="!isMobile" style="position: absolute;width: 100%;height: 100%">
-            <div @click="closeAct" @mouseover="mouseoverCloseDrawer" @mouseout="mouseoutCloseDrawer" class="close-drawer" :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`">
-                <img class="img"
-                    :src="require('../../assets/activity/right.png')"
-                />
+        <div v-if="!isMobile" style="position: absolute; width: 100%; height: 100%">
+            <div
+                @click="closeAct"
+                @mouseover="mouseoverCloseDrawer"
+                @mouseout="mouseoutCloseDrawer"
+                class="close-drawer"
+                :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`"
+            >
+                <img class="img" :src="require('../../assets/activity/right.png')"/>
             </div>
         </div>
         <div @mouseover="mouseoverDialog" class="block_1">
             <div class="section_54">
-                <div class="box_114" :style="`background-image: url(${require('../../assets/wallet/' + walletType + '.png')});background-size: 100% auto;`">
+                <div
+                    class="box_114"
+                    :style="`background-image: url(${require('../../assets/wallet/' +
+            walletType +
+            '.png')});background-size: 100% auto;`"
+                >
                     <svg-icon
                         class="image-wrapper_74"
                         :iconName="networkId"
@@ -31,34 +44,52 @@
                     class="label_17"
                     :src="require('../../assets/activity/copy.png')"
                 />
-                <div style="flex: 1;display: flex;justify-content: flex-end">
+                <div style="flex: 1; display: flex; justify-content: flex-end">
                     <div @click="disconnect" class="label_19">
-                        <img :hidden="!isLightMode" class="img" :src="require('../../assets/activity/exit.png')" />
-                        <img :hidden="isLightMode" class="img" :src="require('../../assets/activity/exit_dark.png')" />
+                        <img
+                            :hidden="!isLightMode"
+                            class="img"
+                            :src="require('../../assets/activity/exit.png')"
+                        />
+                        <img
+                            :hidden="isLightMode"
+                            class="img"
+                            :src="require('../../assets/activity/exit_dark.png')"
+                        />
                     </div>
                 </div>
             </div>
 
-            <div class="card_2" :style="showDetail ? 'height: 176px;' : 'height: 120px;'">
+            <div
+                class="card_2"
+                :style="showDetail ? 'height: 176px;' : 'height: 120px;'"
+            >
                 <div class="text-wrapper_45">
                     <div class="text_98">O-Points Summary</div>
                     <div class="text_99">{{ totalPoint }}</div>
                 </div>
-                <div class="card_bottom" :style="showDetail ? 'opacity: 1;transition: opacity 0.5s ease;' : 'opacity: 0'">
+                <div
+                    class="card_bottom"
+                    :style="
+            showDetail
+              ? 'opacity: 1;transition: opacity 0.5s ease;'
+              : 'opacity: 0'
+          "
+                >
                     <div class="line_1"></div>
-                    <div style="display:flex;justify-content: center;height:73px;">
+                    <div style="display: flex; justify-content: center; height: 73px">
                         <div class="group_1_12">
                             <div class="box_1_48">
                                 <span class="text_1_8">Basic points</span>
-<!--                                <o-tooltip>-->
-<!--                                    <template v-slot:titleDesc>-->
-<!--                                        <span>ttt tt</span>-->
-<!--                                    </template>-->
-<!--                                    <img-->
-<!--                                        class="thumbnail_1_3"-->
-<!--                                        :src="require('../../assets/activity/tip_ico.png')"-->
-<!--                                    />-->
-<!--                                </o-tooltip>-->
+                                <!--                                <o-tooltip>-->
+                                <!--                                    <template v-slot:titleDesc>-->
+                                <!--                                        <span>ttt tt</span>-->
+                                <!--                                    </template>-->
+                                <!--                                    <img-->
+                                <!--                                        class="thumbnail_1_3"-->
+                                <!--                                        :src="require('../../assets/activity/tip_ico.png')"-->
+                                <!--                                    />-->
+                                <!--                                </o-tooltip>-->
                             </div>
                             <div class="text-wrapper_1_35">
                                 <span class="text_1_9">{{ actBasePoint }}</span>
@@ -67,15 +98,15 @@
                         <div class="group_1_12">
                             <div class="box_1_48">
                                 <span class="text_1_8">Activity points</span>
-<!--                                <o-tooltip>-->
-<!--                                    <template v-slot:titleDesc>-->
-<!--                                        <span>ttt tt</span>-->
-<!--                                    </template>-->
-<!--                                    <img-->
-<!--                                        class="thumbnail_1_3"-->
-<!--                                        :src="require('../../assets/activity/tip_ico.png')"-->
-<!--                                    />-->
-<!--                                </o-tooltip>-->
+                                <!--                                <o-tooltip>-->
+                                <!--                                    <template v-slot:titleDesc>-->
+                                <!--                                        <span>ttt tt</span>-->
+                                <!--                                    </template>-->
+                                <!--                                    <img-->
+                                <!--                                        class="thumbnail_1_3"-->
+                                <!--                                        :src="require('../../assets/activity/tip_ico.png')"-->
+                                <!--                                    />-->
+                                <!--                                </o-tooltip>-->
                             </div>
                             <div class="text-wrapper_1_35">
                                 <span class="text_1_9">{{ actTotalActivityPoint }}</span>
@@ -84,18 +115,30 @@
                     </div>
                 </div>
                 <div @click="expand" class="down">
-                    <img :hidden="showDetail" class="img" :src="require('../../assets/activity/down.png')" />
-                    <img :hidden="!showDetail" class="img" :src="require('../../assets/activity/up.png')" />
+                    <img
+                        :hidden="showDetail"
+                        class="img"
+                        :src="require('../../assets/activity/down.png')"
+                    />
+                    <img
+                        :hidden="!showDetail"
+                        class="img"
+                        :src="require('../../assets/activity/up.png')"
+                    />
                 </div>
 
-                <div v-if="!isMobile" :class="addPointVisible ? 'shake-top' : ''" :style="`display: flex;position: absolute;bottom: 5px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
+                <div
+                    v-if="!isMobile"
+                    :class="addPointVisible ? 'shake-top' : ''"
+                    :style="`display: flex;position: absolute;bottom: 5px;left:-3px;opacity: ${
+            addPointVisible ? 1 : 0
+          };transition: opacity 0.5s ease-in-out;`"
+                >
                     <img
                         class="label_2"
                         :src="require('../../assets/activity/add_flower.png')"
                     />
-                    <span class="text_1_2">
-                        {{ addPoint }} O-Points
-                    </span>
+                    <span class="text_1_2"> {{ addPoint }} O-Points </span>
                     <img
                         class="thumbnail_1_1"
                         :src="require('../../assets/activity/add_flower_2.png')"
@@ -109,40 +152,90 @@
                     <span class="text_55">No Orbiter Series NFTs were obtained</span>
                 </div>
                 <div class="nft_box" v-else>
-                    <div class="box_div" :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`">
-                        <div v-for="(item, index) in nftList" :key="index" class="section_70" :style="`background: url(${require('../../assets/activity/nft/' + item.img)});background-size: 100% 100%;`"></div>
+                    <div
+                        class="box_div"
+                        :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`"
+                    >
+                        <div
+                            v-for="(item, index) in nftList"
+                            :key="index"
+                            class="section_70"
+                            :style="`background: url(${require('../../assets/activity/nft/' +
+                item.img)});background-size: 100% 100%;`"
+                        ></div>
                     </div>
-                    <div :hidden="!turnLeft" class="btn" >
-                        <img @click="scrollDiv(1)" class="img" :src="require('../../assets/activity/turn_right.png')"/>
+                    <div :hidden="!turnLeft" class="btn">
+                        <img
+                            @click="scrollDiv(1)"
+                            class="img"
+                            :src="require('../../assets/activity/turn_right.png')"
+                        />
                     </div>
                     <div :hidden="!turnRight" class="btn_2">
-                        <img @click="scrollDiv(0)" class="img_2" :src="require('../../assets/activity/turn_right.png')"/>
+                        <img
+                            @click="scrollDiv(0)"
+                            class="img_2"
+                            :src="require('../../assets/activity/turn_right.png')"
+                        />
                     </div>
                     <div class="card_cover"></div>
                 </div>
             </div>
 
-            <div style="width: 100%;display: flex;height:45px;">
+            <div style="width: 100%; display: flex; height: 45px">
                 <span class="text_21">🛸 Quests</span>
             </div>
-            <div class="card" :style="isStarknet ? 'height:60%;' : 'height:45%;'" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
-                <div class="box_1" style="margin-top: 0;cursor: pointer" @click="openUrl('https://galxe.com/OrbiterFinance/campaign/GCbnmUNe9g')">
-                    <div style="width:82px;border-radius: 8px;margin-top: 18px;display: flex;justify-content: center;">
-                        <el-carousel :interval="4000" type="card" height="64px" style="width:80px;">
+            <div
+                class="card"
+                :style="isStarknet ? 'max-height:60%;' : 'max-height:45%;'"
+                v-loading="listLoading"
+                element-loading-background="rgba(0, 0, 0, 0)"
+                @scroll="itemScroll"
+            >
+                <div class="box_1 box_1_top" style="margin-top: 0;cursor: pointer" @click="openUrl('https://galxe.com/OrbiterFinance/campaign/GCbnmUNe9g')">
+                    <div class="box_1_hot">🔥</div>
+                    <div
+                        style="
+              width: 82px;
+              border-radius: 8px;
+              margin-top: 12px;
+              display: flex;
+              justify-content: center;
+            "
+                    >
+                        <el-carousel
+                            :interval="4000"
+                            indicator-position="none"
+                            type="card"
+                            height="64px"
+                            style="width: 72px"
+                        >
                             <el-carousel-item v-for="(item, index) in nftSeries" :key="index">
-                                <img style="max-width: 100%;height: auto;" :src="require('../../assets/activity/nft/' + item.img)" />
+                                <img
+                                    style="max-width: 100%; height: auto"
+                                    :src="require('../../assets/activity/nft/' + item.img)"
+                                />
                             </el-carousel-item>
                         </el-carousel>
                     </div>
                     <div class="border-dashed"></div>
-                    <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
+                    <div
+                        style="
+              font-size: 12px;
+              font-family: OpenSansRoman-SemiBold;
+              position: absolute;
+              left: 100px;
+              top: 13px;
+            "
+                    >
                         <div class="text_1_3">
-                            Orbiter's ONLY official Pilot NFT Series 🔥
+                            Orbiter's ONLY official Pilot NFT Series
+                            <SvgIconThemed v-if="true" size="lg" style="rotate: -90deg;"/>
                         </div>
                         <div class="text_2_3">
                             Early Loyalty Identification for TOP Users
                         </div>
-                        <div style="margin-top: 10px;display: flex;flex-direction: row">
+                        <div style="margin-top: 10px; display: flex; flex-direction: row">
                             <div class="text-wrapper_1_17">
                                 <span class="text_27">Deadline Countdown</span>
                             </div>
@@ -189,21 +282,37 @@
                     />
                 </div>
                 <template v-for="item in actDataList">
-                    <div v-if="item.status === 0" class="box_1">
+                    <div
+                        v-if="item.status === 0"
+                        class="box_1"
+                    >
                         <div class="text-wrapper_1 flex-row">
-                            <span class="text_1">{{ item.points }}</span> <span class="text_2">O-Points</span>
+                            <span class="text_1">{{ item.points }}</span>
+                            <span class="text_2">O-Points</span>
                         </div>
                         <div class="border-dashed"></div>
-                        <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
+                        <div
+                            style="
+                font-size: 12px;
+                font-family: OpenSansRoman-SemiBold;
+                position: absolute;
+                left: 100px;
+                top: 13px;
+              "
+                        >
                             <div class="text_3">
                                 {{ item.description }}
                             </div>
-                            <div style="margin-top: 10px;display: flex;flex-direction: row">
+                            <div style="margin-top: 10px; display: flex; flex-direction: row">
                                 <div v-for="tag in item.tags" class="text-wrapper_17 flex-col">
                                     <span class="text_27">{{ tag.description }}</span>
                                 </div>
                                 <div class="text-wrapper_18">
-                                    <span class="text_28">{{ item.progress ? `${item.progress.current}/${item.progress.total}` : '0/0' }}</span>
+                  <span class="text_28">{{
+                    item.progress
+                      ? `${item.progress.current}/${item.progress.total}`
+                      : '0/0'
+                  }}</span>
                                 </div>
                                 <div class="text_5">
                                     Until&nbsp;{{ formatTime(item.endTime) }}
@@ -237,14 +346,23 @@
                     </div>
                     <div v-else class="box_2">
                         <div class="text-wrapper_3">
-                            <span class="text_6">{{ item.points }}</span> <span class="text_7">O-Points</span>
+                            <span class="text_6">{{ item.points }}</span>
+                            <span class="text_7">O-Points</span>
                         </div>
                         <div class="border-dashed_2"></div>
-                        <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
+                        <div
+                            style="
+                font-size: 12px;
+                font-family: OpenSansRoman-SemiBold;
+                position: absolute;
+                left: 100px;
+                top: 13px;
+              "
+                        >
                             <div class="text_8">
                                 {{ item.description }}
                             </div>
-                            <div style="margin-top: 10px;display: flex;flex-direction: row">
+                            <div style="margin-top: 10px; display: flex; flex-direction: row">
                                 <div v-for="tag in item.tags" class="text-wrapper_14 flex-col">
                                     <span class="text_29">{{ tag.description }}</span>
                                 </div>
@@ -283,12 +401,15 @@
                     </div>
                 </template>
                 <div style="padding-bottom: 36px">
-                    <div class="text_48">
-                        More: Partners' Incentives
-                    </div>
+                    <div class="text_48">More: Partners' Incentives</div>
                     <el-carousel :interval="4000" trigger="click" height="110px">
                         <el-carousel-item v-for="(item, index) in bannerList" :key="index">
-                            <div @click="openUrl(item.url)" class="box_75" :style="`background: url(${require('../../assets/activity/banner/' + item.img)});background-size: 100% 100%;`"></div>
+                            <div
+                                @click="openUrl(item.url)"
+                                class="box_75"
+                                :style="`background: url(${require('../../assets/activity/banner/' +
+                  item.img)});background-size: 100% 100%;`"
+                            ></div>
                         </el-carousel-item>
                     </el-carousel>
                 </div>
@@ -298,6 +419,7 @@
 </template>
 
 <script>
+  import { SvgIconThemed } from "../../components";
   import {
     actDialogVisible,
     isMobile,
@@ -311,35 +433,42 @@
     isStarkNetDialog,
     web3State,
     actAddPointVisible,
-    actAddPoint, actTotalPoint, actBasePoint, actTotalActivityPoint
+    actAddPoint,
+    actTotalPoint,
+    actBasePoint,
+    actTotalActivityPoint,
   } from '../../composition/hooks';
-  import { requestPointSystem } from "../../common/openApiAx";
-  import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
+  import { requestPointSystem } from '../../common/openApiAx';
+  import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData';
   import util from '../../util/util';
-  import { onCopySuccess } from "../../util";
-  import walletDispatchers,{ WALLETCONNECT } from "../../util/walletsDispatchers";
-  import { ethereumClient } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
-  import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
-  import { getStarknet } from 'get-starknet'
+  import { onCopySuccess } from '../../util';
+  import walletDispatchers, { WALLETCONNECT } from '../../util/walletsDispatchers';
+  import { ethereumClient } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher';
+  import { disConnectStarkNetWallet } from '../../util/constants/starknet/helper';
+  import { getStarknet } from 'get-starknet';
+
   const { walletDispatchersOnDisconnect } = walletDispatchers;
 
   export default {
     name: 'HeaderActDialog',
+    components: {
+      SvgIconThemed,
+    },
     data() {
       return {
-        endTime: 1702483200000,
-        countDownSecond: "00",
-        countDownMin: "00",
-        countDownHour: "00",
-        countDownDate: "00",
+        endTime: 1703088000000,
+        countDownSecond: '00',
+        countDownMin: '00',
+        countDownHour: '00',
+        countDownDate: '00',
         left: 0,
         nftList: [],
-        nftSeries:[
-          { img: "0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png" },
-          { img: "0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png" },
-          { img: "0x83Ed3B8a9DCA0A3d40A9be9F7aeE0E58F7918c4C.png" },
-          { img: "0xBC2B5d07E8658D74176E3044Fd60B38d08f926A4.png" },
-          { img: "0xe20847F3C593296613Df763afE7eA039D8398E78.png" }
+        nftSeries: [
+          { img: '0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png' },
+          { img: '0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png' },
+          { img: '0x83Ed3B8a9DCA0A3d40A9be9F7aeE0E58F7918c4C.png' },
+          { img: '0xBC2B5d07E8658D74176E3044Fd60B38d08f926A4.png' },
+          { img: '0xe20847F3C593296613Df763afE7eA039D8398E78.png' },
         ],
         showDetail: false,
         closeDrawerOpacity: 0.5,
@@ -367,13 +496,17 @@
           {
             url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
             img: '3.png',
-          }
-        ]
+          },
+        ],
       };
     },
     computed: {
       turnLeft() {
-        return Math.floor(((this.nftList.length - 1) / 6)) - Math.floor(this.left  / 348) > 0;
+        return (
+          Math.floor((this.nftList.length - 1) / 6) -
+          Math.floor(this.left / 348) >
+          0
+        );
       },
       turnRight() {
         return this.left > 0;
@@ -381,20 +514,20 @@
       isMobile() {
         return isMobile.value;
       },
-      isLightMode () {
-        return this.$store.state.themeMode === 'light'
+      isLightMode() {
+        return this.$store.state.themeMode === 'light';
       },
       selectWalletDialogVisible() {
         return actDialogVisible.value;
       },
       addPointVisible() {
-        return actAddPointVisible.value && actDialogVisible.value
+        return actAddPointVisible.value && actDialogVisible.value;
       },
       addPoint() {
-        return actAddPoint.value
+        return actAddPoint.value;
       },
       totalPoint() {
-        return actTotalPoint.value
+        return actTotalPoint.value;
       },
       actBasePoint() {
         return actBasePoint.value;
@@ -423,7 +556,9 @@
       },
       networkName() {
         if (!isStarkNetDialog.value) {
-          return util.netWorkName(compatibleGlobalWalletConf.value.walletPayload.networkId);
+          return util.netWorkName(
+            compatibleGlobalWalletConf.value.walletPayload.networkId
+          );
         } else {
           return util.netWorkName(web3State.starkNet?.starkChain);
         }
@@ -433,24 +568,36 @@
       },
       walletType() {
         if (!isStarkNetDialog.value) {
-          return (String(compatibleGlobalWalletConf.value.walletType).toLowerCase()).replace('app', '');
+          return String(compatibleGlobalWalletConf.value.walletType)
+            .toLowerCase()
+            .replace('app', '');
         } else {
-          return getStarknet && getStarknet()?.id === "braavos" ? 'braavos' : 'argent';
+          return getStarknet && getStarknet()?.id === 'braavos'
+            ? 'braavos'
+            : 'argent';
         }
       },
     },
     methods: {
       onCopySuccess,
       countDown() {
-        const diffSecond = Math.floor((this.endTime - new Date().valueOf()) / 1000);
+        const diffSecond = Math.floor(
+          (this.endTime - new Date().valueOf()) / 1000
+        );
         this.countDownSecond = this.fillDouble(diffSecond % 60);
-        this.countDownMin = this.fillDouble(Math.floor((diffSecond % (60 * 60)) / 60));
-        this.countDownHour = this.fillDouble(Math.floor(diffSecond % (60 * 60 * 24) / (60 * 60)));
-        this.countDownDate = this.fillDouble(Math.floor(diffSecond % (60 * 60 * 24 * 365) / (60 * 60 * 24)));
+        this.countDownMin = this.fillDouble(
+          Math.floor((diffSecond % (60 * 60)) / 60)
+        );
+        this.countDownHour = this.fillDouble(
+          Math.floor((diffSecond % (60 * 60 * 24)) / (60 * 60))
+        );
+        this.countDownDate = this.fillDouble(
+          Math.floor((diffSecond % (60 * 60 * 24 * 365)) / (60 * 60 * 24))
+        );
       },
       fillDouble(num) {
         if (String(num).length === 1) {
-          return "0" + String(num);
+          return '0' + String(num);
         }
         return String(num);
       },
@@ -483,7 +630,9 @@
               ethereumClient.disconnect();
               localStorage.setItem('wc@2:client:0.3//session', null);
             }
-            walletDispatchersOnDisconnect[compatibleGlobalWalletConf.value.walletType]();
+            walletDispatchersOnDisconnect[
+              compatibleGlobalWalletConf.value.walletType
+              ]();
           } else {
             disConnectStarkNetWallet();
           }
@@ -500,7 +649,10 @@
           this.scrollHei = e.target.scrollTop;
           const scrollNum = this.scrollHei - (this.scrollHei % itemH);
           const len = Math.floor(scrollNum / itemH);
-          if (len >= transferDataState.actDataList.length - touchNum && transferDataState.actDataList.length < this.total) {
+          if (
+            len >= transferDataState.actDataList.length - touchNum &&
+            transferDataState.actDataList.length < this.total
+          ) {
             this.addItem();
           }
           this.scrollLastTime = new Date().valueOf();
@@ -530,7 +682,7 @@
         const res = await requestPointSystem('v2/activity/list', {
           address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
           pageSize,
-          page
+          page,
         });
         this.total = res.data.total;
         const list = res.data.list;
@@ -540,9 +692,9 @@
         for (const data of list) {
           for (const task of data.taskList) {
             if (task.status) {
-              doneList.push(task);
+              doneList.push({ ...task, twitter: data.twitter });
             } else {
-              undoneList.push(task);
+              undoneList.push({ ...task, twitter: data.twitter });
             }
           }
         }
@@ -590,8 +742,8 @@
         const res = await requestPointSystem('user/nfts', {
           address,
         });
-        this.nftList = res?.data?.nfts.map(item => {
-          return { img: `${item}.png` };
+        this.nftList = res?.data?.nfts.map((item) => {
+          return { img: `${ item }.png` };
         });
         updateActDataList(dataList);
       } catch (e) {
@@ -613,7 +765,7 @@
       //   times++;
       //   localStorage.setItem(`act_show_times_${ walletAddress }`, String(times));
       // }
-    }
+    },
   };
 </script>
 
@@ -641,9 +793,10 @@
     }
 
     .shake-top {
-        -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
-        animation: shake-top 0.8s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+        -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+        animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
     }
+
     @-webkit-keyframes shake-top {
         0%,
         100% {
@@ -677,6 +830,7 @@
             transform: rotate(2deg);
         }
     }
+
     @keyframes shake-top {
         0%,
         100% {
@@ -929,7 +1083,7 @@
             line-height: 36px;
             text-align: center;
             margin: 5px 0 0 0;
-            background: #F5F5F5;
+            background: #f5f5f5;
             border-radius: 11px;
             display: flex;
             align-items: center;
@@ -970,13 +1124,16 @@
             overflow-y: scroll;
             overflow-x: hidden;
         }
+
         .card::-webkit-scrollbar {
             width: 4px;
         }
+
         .card::-webkit-scrollbar-thumb {
             border-radius: 10px;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
         }
+
         .card::-webkit-scrollbar-track {
             border-radius: 0;
             background: #ffffff;
@@ -1082,9 +1239,9 @@
             width: 40px;
             height: 100%;
             z-index: 100;
-            background: #F5F5F5;
+            background: #f5f5f5;
             border-radius: 16px 0px 0px 16px;
-            border: 1px solid #E6E6E6;
+            border: 1px solid #e6e6e6;
 
             .img {
                 margin: 16px 8px;
@@ -1103,7 +1260,7 @@
         }
 
         .box_1 {
-            display:flex;
+            display: flex;
             background-color: rgba(255, 255, 255, 1);
             border-radius: 8px;
             position: relative;
@@ -1111,6 +1268,42 @@
             height: 88px;
             border: 1px solid rgba(34, 34, 34, 1);
             margin: 16px 0 0 16px;
+        }
+
+        .box_1_top {
+            position: relative;
+            top: 0;
+            left: 0;
+        }
+
+        .box_1_top .box_1_hot {
+            position: absolute !important;
+            top: -6px;
+            left: -2px;
+            z-index: 10;
+        }
+
+        .box_1_top .el-carousel__item {
+            width: 80%;
+            opacity: 0.6;
+        }
+
+        .box_1_top .el-carousel__item img {
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        .box_1_top .is-active {
+            opacity: 1;
+            transform: translateX(12.5%) scale(1) !important;
+        }
+
+        .box_1_top .el-carousel__mask {
+            background-color: transparent;
+        }
+
+        .box_1_top .el-carousel__arrow {
+            display: none !important;
         }
 
         .text-wrapper_1 {
@@ -1165,7 +1358,7 @@
 
         .border-dashed_2 {
             position: absolute;
-            border-top: 1px dashed #EEEEEE;
+            border-top: 1px dashed #eeeeee;
             transform: rotate(90deg);
             width: 76px;
             left: 44px;
@@ -1186,7 +1379,8 @@
         }
 
         .text_1_3 {
-            width: 210px;
+            display: flex;
+            // width: 210px;
             height: 19px;
             font-size: 14px;
             font-family: OpenSansRoman, OpenSansRoman;
@@ -1782,6 +1976,7 @@
                 .text_14 {
                     color: rgba(255, 255, 255, 1);
                 }
+
                 .nft_box {
                     .card_cover {
                         background-color: rgba(64, 65, 91, 1);
@@ -1803,6 +1998,7 @@
 
             .text-wrapper_1_46 {
                 background-color: rgba(255, 255, 255, 0.1);
+
                 .text_1_69 {
                     color: rgba(255, 255, 255, 1);
                 }
@@ -1826,12 +2022,12 @@
             }
 
             .border-dashed {
-                border-top: 1px dashed #FFFFFF;
+                border-top: 1px dashed #ffffff;
                 opacity: 20%;
             }
 
             .border-dashed_2 {
-                border-top: 1px dashed #EEEEEE;
+                border-top: 1px dashed #eeeeee;
                 opacity: 10%;
             }
 
@@ -1883,7 +2079,7 @@
             }
 
             .box_1 {
-                display:flex;
+                display: flex;
                 background-color: rgba(71, 74, 111, 1);
                 border-radius: 8px;
                 position: relative;
@@ -1894,7 +2090,7 @@
             }
 
             .box_2 {
-                display:flex;
+                display: flex;
                 background-color: rgba(54, 57, 81, 1);
                 border-radius: 8px;
                 position: relative;
@@ -1966,6 +2162,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
+
             .block_1 {
                 bottom: 0px;
                 right: 0px;
@@ -2032,6 +2229,7 @@
                 position: absolute;
                 width: 100%;
                 height: 100%;
+
                 .block_1 {
                     bottom: 0px;
                     right: 0px;
@@ -2082,7 +2280,7 @@
                 }
 
                 .box_1 {
-                    display:flex;
+                    display: flex;
                     background-color: rgba(71, 74, 111, 1);
                     border-radius: 8px;
                     position: relative;
@@ -2093,7 +2291,7 @@
                 }
 
                 .box_2 {
-                    display:flex;
+                    display: flex;
                     background-color: rgba(54, 57, 81, 1);
                     border-radius: 8px;
                     position: relative;
