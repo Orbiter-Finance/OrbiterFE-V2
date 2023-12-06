@@ -29,23 +29,50 @@
                 <img :style="`${!isMobile ? 'width: 420px' : 'width: 100%'}`" :src="require('../../assets/activity/tip.png')" />
             </div>
             <div class="card" style="height:80%;" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
-                <div class="box_1" style="margin-top: 0;cursor: pointer" @click="openUrl('https://galxe.com/OrbiterFinance/campaign/GCbnmUNe9g')">
-                    <div style="width:82px;border-radius: 8px;margin-top: 18px;display: flex;justify-content: center;">
-                        <el-carousel :interval="4000" type="card" height="64px" style="width:80px;">
+                <div class="box_1 box_1_top" style="cursor: pointer" @click="openUrl('https://galxe.com/OrbiterFinance/campaign/GCbnmUNe9g')">
+                    <div class="box_1_hot">🔥</div>
+                    <div
+                        style="
+              width: 82px;
+              border-radius: 8px;
+              margin-top: 12px;
+              display: flex;
+              justify-content: center;
+            "
+                    >
+                        <el-carousel
+                            :interval="4000"
+                            indicator-position="none"
+                            type="card"
+                            height="64px"
+                            style="width: 72px"
+                        >
                             <el-carousel-item v-for="(item, index) in nftSeries" :key="index">
-                                <img style="max-width: 100%;height: auto;" :src="require('../../assets/activity/nft/' + item.img)" />
+                                <img
+                                    style="max-width: 100%; height: auto"
+                                    :src="require('../../assets/activity/nft/' + item.img)"
+                                />
                             </el-carousel-item>
                         </el-carousel>
                     </div>
                     <div class="border-dashed"></div>
-                    <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
+                    <div
+                        style="
+              font-size: 12px;
+              font-family: OpenSansRoman-SemiBold;
+              position: absolute;
+              left: 100px;
+              top: 8px;
+            "
+                    >
                         <div class="text_1_3">
-                            Orbiter's ONLY official Pilot NFT Series 🔥
+                            Orbiter's ONLY official Pilot NFT Series
+                            <SvgIconThemed v-if="true" size="lg" style="rotate: -90deg;"/>
                         </div>
                         <div class="text_2_3">
                             Early Loyalty Identification for TOP Users
                         </div>
-                        <div style="margin-top: 10px;display: flex;flex-direction: row">
+                        <div style="margin-top: 10px; display: flex; flex-direction: row">
                             <div class="text-wrapper_1_17">
                                 <span class="text_27">Deadline Countdown</span>
                             </div>
@@ -201,6 +228,7 @@
 </template>
 
 <script>
+  import { SvgIconThemed } from "../../components";
   import {
     actDialogVisible, isMobile, setActDialogVisible, setActDialogHover, transferDataState, updateActDataList,
   } from '../../composition/hooks';
@@ -210,9 +238,12 @@
 
   export default {
     name: 'HeaderActDialog',
+    components: {
+      SvgIconThemed,
+    },
     data() {
       return {
-        endTime: 1702483200000,
+        endTime: 1703071800000,
         countDownSecond: "00",
         countDownMin: "00",
         countDownHour: "00",
@@ -434,6 +465,14 @@
 
     .dark-theme {
         .act {
+            .text_1_3 {
+                color: #ffffff;
+            }
+
+            .text_2_3 {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
             .text_27 {
                 color: rgba(255, 255, 255, 1);
             }
@@ -718,6 +757,7 @@
             text-align: center;
             white-space: nowrap;
             line-height: 15px;
+            font-weight: 800;
         }
 
         .close-drawer {
@@ -758,6 +798,42 @@
             height: 88px;
             border: 1px solid rgba(34, 34, 34, 1);
             margin: 16px 0 0 16px;
+        }
+
+        .box_1_top {
+            position: relative;
+            top: 0;
+            left: 0;
+        }
+
+        .box_1_top .box_1_hot {
+            position: absolute !important;
+            top: 50px;
+            left: 50px;
+            z-index: 10;
+        }
+
+        .box_1_top .el-carousel__item {
+            width: 80%;
+            opacity: 0.6;
+        }
+
+        .box_1_top .el-carousel__item img {
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        .box_1_top .is-active {
+            opacity: 1;
+            transform: translateX(12.5%) scale(1) !important;
+        }
+
+        .box_1_top .el-carousel__mask {
+            background-color: transparent;
+        }
+
+        .box_1_top .el-carousel__arrow {
+            display: none !important;
         }
 
         .text-wrapper_1 {
@@ -831,6 +907,31 @@
             width: 272px;
             height: 62px;
             margin: 14px 22px 0 11px;
+        }
+
+        .text_1_3 {
+            display: flex;
+            // width: 210px;
+            height: 19px;
+            font-size: 14px;
+            font-family: OpenSansRoman, OpenSansRoman;
+            font-weight: bold;
+            color: rgba(34, 34, 34, 1);
+            line-height: 19px;
+            white-space: nowrap;
+        }
+
+        .text_2_3 {
+            width: 227px;
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(102, 102, 102, 1);
+            font-size: 12px;
+            font-family: OpenSans-Regular;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+            margin-top: 2px;
         }
 
         .text_3 {
@@ -1410,6 +1511,15 @@
             position: absolute;
             width: 100%;
             height: 100%;
+
+            .text_1_3 {
+                font-size: 11px;
+            }
+
+            .text_2_3 {
+                font-size: 10px;
+            }
+
             .block_1 {
                 bottom: 0px;
                 right: 0px;
