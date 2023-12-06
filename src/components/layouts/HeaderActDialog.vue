@@ -5,7 +5,7 @@
     >
         <div v-if="isMobile" @click="mobileCloseAct" style="width: 100%;height:100%"></div>
 
-        <div style="position: absolute;width: 100%;height: 100%">
+        <div v-if="!isMobile" style="position: absolute;width: 100%;height: 100%">
             <div @click="closeAct" @mouseover="mouseoverCloseDrawer" @mouseout="mouseoutCloseDrawer" class="close-drawer" :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`">
                 <img class="img"
                     :src="require('../../assets/activity/right.png')"
@@ -103,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="card_3">
+            <div v-if="!isStarknet" class="card_3">
                 <div class="text_14">Held Orbiter NFT</div>
                 <div v-if="!nftList.length" class="text-wrapper_38">
                     <span class="text_55">No Orbiter Series NFTs were obtained</span>
@@ -125,7 +125,7 @@
             <div style="width: 100%;display: flex;height:45px;">
                 <span class="text_21">🛸 Quests</span>
             </div>
-            <div class="card" style="height:45%;" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+            <div class="card" :style="isStarknet ? 'height:60%;' : 'height:45%;'" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
                 <div class="box_1" style="margin-top: 0">
                     <div style="width:82px;border-radius: 8px;margin-top: 18px;display: flex;justify-content: center;">
                         <el-carousel :interval="4000" type="card" height="64px" style="width:80px;">
@@ -404,6 +404,9 @@
       },
       actDataList() {
         return transferDataState.actDataList;
+      },
+      isStarknet() {
+        return isStarkNetDialog.value;
       },
       showWalletAddress() {
         if (!isStarkNetDialog.value) {
@@ -862,7 +865,7 @@
             display: flex;
             width: 388px;
             height: 45px;
-            margin: 19px 0 0 20px;
+            margin: 20px 0 0 20px;
         }
 
         .box_114 {
@@ -1048,7 +1051,7 @@
 
         .text-wrapper_1_17 {
             height: 20px;
-            background: url('../../assets/activity/fee_tag_undone.png') 100% no-repeat;
+            background: url('../../assets/activity/act_tag.png') 100% no-repeat;
             background-size: 100% 100%;
         }
 
@@ -1336,7 +1339,7 @@
         }
 
         .text_8 {
-            width: 272px;
+            width: 90%;
             height: 34px;
             overflow-wrap: break-word;
             color: rgba(153, 153, 153, 1);
@@ -1382,7 +1385,7 @@
             text-align: left;
             white-space: nowrap;
             line-height: 17px;
-            margin: 2px 0 0 4px;
+            margin: 2px 0 0 2px;
         }
 
         .thumbnail_3 {
@@ -1488,18 +1491,19 @@
         }
 
         .card_3 {
+            width: 90%;
             margin-top: 13px;
 
             .nft_box {
                 display: flex;
-                width: 398px;
+                width: 100%;
                 height: 60px;
                 margin: 8px 0 0 20px;
                 overflow: hidden;
 
                 .box_div {
                     display: flex;
-                    width: 398px;
+                    width: 100%;
                     height: 60px;
                 }
 
@@ -1565,7 +1569,7 @@
                 background-color: rgba(245, 245, 245, 1);
                 border-radius: 8px;
                 height: 60px;
-                width: 388px;
+                width: 100%;
                 margin: 8px 0 0 20px;
             }
 
@@ -1785,6 +1789,10 @@
                 }
             }
 
+            .text-wrapper_38 {
+                background: #363951;
+            }
+
             .text_1_3 {
                 color: #ffffff;
             }
@@ -1858,7 +1866,6 @@
                 text-align: left;
                 white-space: nowrap;
                 line-height: 17px;
-                margin: 1px 0 0 12px;
             }
 
             .text_21 {
@@ -1955,6 +1962,71 @@
     }
 
     @media (max-width: 820px) {
+        .act {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            .block_1 {
+                bottom: 0px;
+                right: 0px;
+                height: 90vh;
+                border-radius: 12px;
+                background-color: #ffffff;
+                position: absolute;
+                width: 100%;
+            }
+
+            .card_2 {
+                width: 90%;
+            }
+
+            .text_1_3 {
+                font-size: 12px;
+            }
+
+            .text_2_3 {
+                font-size: 10px;
+            }
+
+            .group_1_12 {
+                width: 45vw;
+            }
+
+            .line_1 {
+                width: 90vw;
+            }
+
+            /*.section_54 {*/
+            /*    width: 100vw;*/
+            /*}*/
+
+            .box_75 {
+                width: 91.5%;
+            }
+
+            .box_1 {
+                width: 91.5%;
+                margin: 16px;
+            }
+
+            .box_2 {
+                width: 91.5%;
+                margin: 16px;
+            }
+
+            .thumbnail_1 {
+                top: 82px;
+            }
+
+            .thumbnail_3 {
+                top: 82px;
+            }
+
+            .thumbnail_5 {
+                top: 82px;
+            }
+        }
+
         .dark-theme {
             .act {
                 position: absolute;
@@ -2054,47 +2126,6 @@
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     width: 55px;
                 }
-            }
-        }
-
-        .act {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            .block_1 {
-                bottom: 0px;
-                right: 0px;
-                height: 290px;
-                border-radius: 12px;
-                background-color: #ffffff;
-                position: absolute;
-                width: 100%;
-            }
-
-            .box_75 {
-                width: 91.5%;
-            }
-
-            .box_1 {
-                width: 91.5%;
-                margin: 16px;
-            }
-
-            .box_2 {
-                width: 91.5%;
-                margin: 16px;
-            }
-
-            .thumbnail_1 {
-                top: 82px;
-            }
-
-            .thumbnail_3 {
-                top: 82px;
-            }
-
-            .thumbnail_5 {
-                top: 82px;
             }
         }
     }
