@@ -46,6 +46,7 @@
                             type="card"
                             height="64px"
                             style="width: 72px"
+                            arrow="never"
                         >
                             <el-carousel-item v-for="(item, index) in nftSeries" :key="index">
                                 <img
