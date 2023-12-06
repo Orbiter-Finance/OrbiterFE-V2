@@ -209,6 +209,7 @@
                             type="card"
                             height="64px"
                             style="width: 72px"
+                            arrow="never"
                         >
                             <el-carousel-item v-for="(item, index) in nftSeries" :key="index">
                                 <img
@@ -235,7 +236,7 @@
                         <div class="text_2_3">
                             Early Loyalty Identification for TOP Users
                         </div>
-                        <div style="margin-top: 10px; display: flex; flex-direction: row">
+                        <div style="margin-top: 7px; display: flex; flex-direction: row">
                             <div class="text-wrapper_1_17">
                                 <span class="text_27">Deadline Countdown</span>
                             </div>
@@ -456,7 +457,7 @@
     },
     data() {
       return {
-        endTime: 1703088000000,
+        endTime: 1703071800000,
         countDownSecond: '00',
         countDownMin: '00',
         countDownHour: '00',
@@ -1230,6 +1231,7 @@
             text-align: center;
             white-space: nowrap;
             line-height: 15px;
+            font-weight: 800;
         }
 
         .close-drawer {
@@ -1278,8 +1280,8 @@
 
         .box_1_top .box_1_hot {
             position: absolute !important;
-            top: -6px;
-            left: -2px;
+            top: 50px;
+            left: 50px;
             z-index: 10;
         }
 
@@ -1761,15 +1763,13 @@
 
             .text-wrapper_38 {
                 background-color: rgba(245, 245, 245, 1);
-                border-radius: 8px;
-                height: 60px;
+                height: 20px;
                 width: 100%;
-                margin: 8px 0 0 20px;
+                margin: 8px 16px 0 0;
             }
 
             .text_55 {
                 width: 255px;
-                height: 60px;
                 overflow-wrap: break-word;
                 color: rgba(153, 153, 153, 1);
                 font-size: 14px;
@@ -2178,7 +2178,7 @@
             }
 
             .text_1_3 {
-                font-size: 12px;
+                font-size: 11px;
             }
 
             .text_2_3 {
