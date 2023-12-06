@@ -126,7 +126,7 @@
                 <span class="text_21">🛸 Quests</span>
             </div>
             <div class="card" :style="isStarknet ? 'height:60%;' : 'height:45%;'" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
-                <div class="box_1" style="margin-top: 0">
+                <div class="box_1" style="margin-top: 0;cursor: pointer" @click="openUrl('https://galxe.com/OrbiterFinance/campaign/GCbnmUNe9g')">
                     <div style="width:82px;border-radius: 8px;margin-top: 18px;display: flex;justify-content: center;">
                         <el-carousel :interval="4000" type="card" height="64px" style="width:80px;">
                             <el-carousel-item v-for="(item, index) in nftSeries" :key="index">
@@ -189,7 +189,7 @@
                     />
                 </div>
                 <template v-for="item in actDataList">
-                    <div v-if="item.status === 0" class="box_1" style="cursor: pointer" @click="openUrl(item.twitter)">
+                    <div v-if="item.status === 0" class="box_1">
                         <div class="text-wrapper_1 flex-row">
                             <span class="text_1">{{ item.points }}</span> <span class="text_2">O-Points</span>
                         </div>

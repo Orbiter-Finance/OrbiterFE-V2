@@ -21,9 +21,8 @@ export const setActAddPointVisible = (flag) =>
   (actAddPointVisible.value = flag)
 export const setActAddPoint = (flag) =>
   (actAddPoint.value = flag)
-export const setActTotalPoint = (flag) =>
-  (actTotalPoint.value = flag)
-export const setActBasePoint = (flag) =>
-  (actBasePoint.value = flag)
-export const setActTotalActivityPoint = (flag) =>
-  (actTotalActivityPoint.value = flag)
+export const setActPoint = (pointData) => {
+  actTotalPoint.value = pointData.total;
+  actBasePoint.value = pointData.basePoints;
+  actTotalActivityPoint.value = pointData.totalActivityPoints;
+};
