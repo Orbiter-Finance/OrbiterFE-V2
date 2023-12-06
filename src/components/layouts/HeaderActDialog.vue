@@ -4,33 +4,192 @@
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
         <div v-if="isMobile" @click="mobileCloseAct" style="width: 100%;height:100%"></div>
-        <div @mouseover="mouseoverDialog" class="block_1" :style="`${!isMobile ? 'top: 50px;' : ''}`">
-            <div style="width: 100%;display: flex;height:45px;">
-                <span class="text_21">🛸 Quests</span>
-                <div style="flex: 1;text-align: right;padding-top: 6px;padding-right:3px">
-                    <span class="text_65" @click="openDetail">Details</span>
+
+        <div style="position: absolute;width: 100%;height: 100%">
+            <div @click="closeAct" @mouseover="mouseoverCloseDrawer" @mouseout="mouseoutCloseDrawer" class="close-drawer" :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`">
+                <img class="img"
+                    :src="require('../../assets/activity/right.png')"
+                />
+            </div>
+        </div>
+        <div @mouseover="mouseoverDialog" class="block_1">
+            <div class="section_54">
+                <div class="box_114" :style="`background-image: url(${require('../../assets/wallet/' + walletType + '.png')});background-size: 100% auto;`">
+                    <svg-icon
+                        class="image-wrapper_74"
+                        :iconName="networkId"
+                        style="width: 1.6rem; height: 1.6rem"
+                    ></svg-icon>
+                </div>
+                <div class="text-wrapper_63 flex-col justify-between">
+                    <div class="text_96">{{ showWalletAddress }}</div>
+                    <div class="text_97">{{ networkName }}</div>
                 </div>
                 <img
-                    @click="closeAct"
-                    :hidden="!isLightMode || isMobile"
-                    class="label_9"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/close.png')"
+                    v-clipboard:copy="walletAddress"
+                    v-clipboard:success="onCopySuccess"
+                    class="label_17"
+                    :src="require('../../assets/activity/copy.png')"
                 />
-                <img
-                    @click="closeAct"
-                    :hidden="isLightMode || isMobile"
-                    class="label_9"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/close_dark.png')"
-                />
+                <div style="flex: 1;display: flex;justify-content: flex-end">
+                    <div @click="disconnect" class="label_19">
+                        <img :hidden="!isLightMode" class="img" :src="require('../../assets/activity/exit.png')" />
+                        <img :hidden="isLightMode" class="img" :src="require('../../assets/activity/exit_dark.png')" />
+                    </div>
+                </div>
             </div>
-            <div>
-                <img :style="`${!isMobile ? 'width: 420px' : 'width: 100%'}`" :src="require('../../assets/activity/tip.png')" />
+
+            <div class="card_2" :style="showDetail ? 'height: 176px;' : 'height: 120px;'">
+                <div class="text-wrapper_45">
+                    <div class="text_98">O-Points Summary</div>
+                    <div class="text_99">{{ totalPoint }}</div>
+                </div>
+                <div class="card_bottom" :style="showDetail ? 'opacity: 1;transition: opacity 0.5s ease;' : 'opacity: 0'">
+                    <div class="line_1"></div>
+                    <div style="display:flex;justify-content: center;height:73px;">
+                        <div class="group_1_12">
+                            <div class="box_1_48">
+                                <span class="text_1_8">Basic points</span>
+<!--                                <o-tooltip>-->
+<!--                                    <template v-slot:titleDesc>-->
+<!--                                        <span>ttt tt</span>-->
+<!--                                    </template>-->
+<!--                                    <img-->
+<!--                                        class="thumbnail_1_3"-->
+<!--                                        :src="require('../../assets/activity/tip_ico.png')"-->
+<!--                                    />-->
+<!--                                </o-tooltip>-->
+                            </div>
+                            <div class="text-wrapper_1_35">
+                                <span class="text_1_9">{{ actBasePoint }}</span>
+                            </div>
+                        </div>
+                        <div class="group_1_12">
+                            <div class="box_1_48">
+                                <span class="text_1_8">Activity points</span>
+<!--                                <o-tooltip>-->
+<!--                                    <template v-slot:titleDesc>-->
+<!--                                        <span>ttt tt</span>-->
+<!--                                    </template>-->
+<!--                                    <img-->
+<!--                                        class="thumbnail_1_3"-->
+<!--                                        :src="require('../../assets/activity/tip_ico.png')"-->
+<!--                                    />-->
+<!--                                </o-tooltip>-->
+                            </div>
+                            <div class="text-wrapper_1_35">
+                                <span class="text_1_9">{{ actTotalActivityPoint }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div @click="expand" class="down">
+                    <img :hidden="showDetail" class="img" :src="require('../../assets/activity/down.png')" />
+                    <img :hidden="!showDetail" class="img" :src="require('../../assets/activity/up.png')" />
+                </div>
+
+                <div v-if="!isMobile" :class="addPointVisible ? 'shake-top' : ''" :style="`display: flex;position: absolute;bottom: 5px;left:-3px;opacity: ${addPointVisible ? 1 : 0};transition: opacity 0.5s ease-in-out;`">
+                    <img
+                        class="label_2"
+                        :src="require('../../assets/activity/add_flower.png')"
+                    />
+                    <span class="text_1_2">
+                        {{ addPoint }} O-Points
+                    </span>
+                    <img
+                        class="thumbnail_1_1"
+                        :src="require('../../assets/activity/add_flower_2.png')"
+                    />
+                </div>
             </div>
-            <div class="card" style="height:80%;" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+
+            <div class="card_3">
+                <div class="text_14">Held Orbiter NFT</div>
+                <div v-if="!nftList.length" class="text-wrapper_38">
+                    <span class="text_55">No Orbiter Series NFTs were obtained</span>
+                </div>
+                <div class="nft_box" v-else>
+                    <div class="box_div" :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`">
+                        <div v-for="(item, index) in nftList" :key="index" class="section_70" :style="`background: url(${require('../../assets/activity/nft/' + item.img)});background-size: 100% 100%;`"></div>
+                    </div>
+                    <div :hidden="!turnLeft" class="btn" >
+                        <img @click="scrollDiv(1)" class="img" :src="require('../../assets/activity/turn_right.png')"/>
+                    </div>
+                    <div :hidden="!turnRight" class="btn_2">
+                        <img @click="scrollDiv(0)" class="img_2" :src="require('../../assets/activity/turn_right.png')"/>
+                    </div>
+                    <div class="card_cover"></div>
+                </div>
+            </div>
+
+            <div style="width: 100%;display: flex;height:45px;">
+                <span class="text_21">🛸 Quests</span>
+            </div>
+            <div class="card" style="height:45%;" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+                <div class="box_1" style="margin-top: 0">
+                    <div style="width:82px;border-radius: 8px;margin-top: 18px;display: flex;justify-content: center;">
+                        <el-carousel :interval="4000" type="card" height="64px" style="width:80px;">
+                            <el-carousel-item v-for="(item, index) in nftSeries" :key="index">
+                                <img style="max-width: 100%;height: auto;" :src="require('../../assets/activity/nft/' + item.img)" />
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+                    <div class="border-dashed"></div>
+                    <div style="font-size: 12px;font-family: OpenSansRoman-SemiBold;position: absolute;left:100px;top:13px">
+                        <div class="text_1_3">
+                            Orbiter's ONLY official Pilot NFT Series 🔥
+                        </div>
+                        <div class="text_2_3">
+                            Early Loyalty Identification for TOP Users
+                        </div>
+                        <div style="margin-top: 10px;display: flex;flex-direction: row">
+                            <div class="text-wrapper_1_17">
+                                <span class="text_27">Deadline Countdown</span>
+                            </div>
+                            <div class="text-wrapper_1_46" style="margin-left: 5px">
+                                <span class="text_1_69">{{ countDownDate }}</span>
+                            </div>
+                            :
+                            <div class="text-wrapper_1_46">
+                                <span class="text_1_69">{{ countDownHour }}</span>
+                            </div>
+                            :
+                            <div class="text-wrapper_1_46">
+                                <span class="text_1_69">{{ countDownMin }}</span>
+                            </div>
+                            :
+                            <div class="text-wrapper_1_46">
+                                <span class="text_1_69">{{ countDownSecond }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <img
+                        :hidden="!isLightMode"
+                        class="thumbnail_1"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_up.png')"
+                    />
+                    <img
+                        :hidden="!isLightMode"
+                        class="thumbnail_2"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_down.png')"
+                    />
+                    <img
+                        :hidden="isLightMode"
+                        class="thumbnail_5"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_up_dark.png')"
+                    />
+                    <img
+                        :hidden="isLightMode"
+                        class="thumbnail_6"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_down_dark.png')"
+                    />
+                </div>
                 <template v-for="item in actDataList">
-                    <div v-if="item.status === 0" class="box_1">
+                    <div v-if="item.status === 0" class="box_1" style="cursor: pointer" @click="openUrl(item.twitter)">
                         <div class="text-wrapper_1 flex-row">
                             <span class="text_1">{{ item.points }}</span> <span class="text_2">O-Points</span>
                         </div>
@@ -43,8 +202,8 @@
                                 <div v-for="tag in item.tags" class="text-wrapper_17 flex-col">
                                     <span class="text_27">{{ tag.description }}</span>
                                 </div>
-                                <div class="text-wrapper_18 flex-col">
-                                    <span class="text_28">Undone</span>
+                                <div class="text-wrapper_18">
+                                    <span class="text_28">{{ item.progress ? `${item.progress.current}/${item.progress.total}` : '0/0' }}</span>
                                 </div>
                                 <div class="text_5">
                                     Until&nbsp;{{ formatTime(item.endTime) }}
@@ -77,7 +236,7 @@
                         />
                     </div>
                     <div v-else class="box_2">
-                        <div class="text-wrapper_3 flex-col">
+                        <div class="text-wrapper_3">
                             <span class="text_6">{{ item.points }}</span> <span class="text_7">O-Points</span>
                         </div>
                         <div class="border-dashed_2"></div>
@@ -123,7 +282,7 @@
                         />
                     </div>
                 </template>
-                <div :style="`${isMobile ? 'padding-bottom:32px' : ''}`">
+                <div style="padding-bottom: 36px">
                     <div class="text_48">
                         More: Partners' Incentives
                     </div>
@@ -140,16 +299,51 @@
 
 <script>
   import {
-    actDialogVisible, isMobile, setActDialogVisible, setActDialogHover, transferDataState, updateActDataList,
+    actDialogVisible,
+    isMobile,
+    setActDialogVisible,
+    setActDialogHover,
+    transferDataState,
+    updateActDataList,
+    showAddress,
+    starkAddress,
+    setSelectWalletDialogVisible,
+    isStarkNetDialog,
+    web3State,
+    actAddPointVisible,
+    actAddPoint, actTotalPoint, actBasePoint, actTotalActivityPoint
   } from '../../composition/hooks';
   import { requestPointSystem } from "../../common/openApiAx";
   import { compatibleGlobalWalletConf } from "../../composition/walletsResponsiveData";
   import util from '../../util/util';
+  import { onCopySuccess } from "../../util";
+  import walletDispatchers,{ WALLETCONNECT } from "../../util/walletsDispatchers";
+  import { ethereumClient } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
+  import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
+  import { getStarknet } from 'get-starknet'
+  const { walletDispatchersOnDisconnect } = walletDispatchers;
 
   export default {
     name: 'HeaderActDialog',
     data() {
       return {
+        endTime: new Date().valueOf() + 1000 * 60 * 60 * 24 * 7 + 5000,
+        countDownSecond: "00",
+        countDownMin: "00",
+        countDownHour: "00",
+        countDownDate: "00",
+        left: 0,
+        nftList: [],
+        nftSeries:[
+          { img: "0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png" },
+          { img: "0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png" },
+          { img: "0x83Ed3B8a9DCA0A3d40A9be9F7aeE0E58F7918c4C.png" },
+          { img: "0xBC2B5d07E8658D74176E3044Fd60B38d08f926A4.png" },
+          { img: "0xe20847F3C593296613Df763afE7eA039D8398E78.png" }
+        ],
+        showDetail: false,
+        closeDrawerOpacity: 0.5,
+        closeDrawerPaddingLeft: 0,
         page: 1,
         pageSize: 10,
         total: 0,
@@ -157,11 +351,10 @@
         addItemLoading: false,
         listLoading: false,
         isHover: false,
-        twitter: null,
         bannerList: [
           {
             url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
-            img: '0.png',
+            img: '4.png',
           },
           {
             url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
@@ -179,6 +372,12 @@
       };
     },
     computed: {
+      turnLeft() {
+        return Math.floor(((this.nftList.length - 1) / 6)) - Math.floor(this.left  / 348) > 0;
+      },
+      turnRight() {
+        return this.left > 0;
+      },
       isMobile() {
         return isMobile.value;
       },
@@ -188,11 +387,109 @@
       selectWalletDialogVisible() {
         return actDialogVisible.value;
       },
+      addPointVisible() {
+        return actAddPointVisible.value && actDialogVisible.value
+      },
+      addPoint() {
+        return actAddPoint.value
+      },
+      totalPoint() {
+        return actTotalPoint.value
+      },
+      actBasePoint() {
+        return actBasePoint.value;
+      },
+      actTotalActivityPoint() {
+        return actTotalActivityPoint.value;
+      },
       actDataList() {
         return transferDataState.actDataList;
       },
+      showWalletAddress() {
+        if (!isStarkNetDialog.value) {
+          return showAddress();
+        }
+        return starkAddress();
+      },
+      networkId() {
+        if (!isStarkNetDialog.value) {
+          return compatibleGlobalWalletConf.value.walletPayload.networkId;
+        } else {
+          return web3State.starkNet?.starkChain;
+        }
+      },
+      networkName() {
+        if (!isStarkNetDialog.value) {
+          return util.netWorkName(compatibleGlobalWalletConf.value.walletPayload.networkId);
+        } else {
+          return util.netWorkName(web3State.starkNet?.starkChain);
+        }
+      },
+      walletAddress() {
+        return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+      },
+      walletType() {
+        if (!isStarkNetDialog.value) {
+          return (String(compatibleGlobalWalletConf.value.walletType).toLowerCase()).replace('app', '');
+        } else {
+          return getStarknet && getStarknet()?.id === "braavos" ? 'braavos' : 'argent';
+        }
+      },
     },
     methods: {
+      onCopySuccess,
+      countDown() {
+        const diffSecond = Math.floor((this.endTime - new Date().valueOf()) / 1000);
+        this.countDownSecond = this.fillDouble(diffSecond % 60);
+        this.countDownMin = this.fillDouble(Math.floor((diffSecond % (60 * 60)) / 60));
+        this.countDownHour = this.fillDouble(Math.floor(diffSecond % (60 * 60 * 24) / (60 * 60)));
+        this.countDownDate = this.fillDouble(Math.floor(diffSecond % (60 * 60 * 24 * 365) / (60 * 60 * 24)));
+      },
+      fillDouble(num) {
+        if (String(num).length === 1) {
+          return "0" + String(num);
+        }
+        return String(num);
+      },
+      scrollDiv(isRight) {
+        if (isRight) {
+          this.left = this.left + 348;
+        } else {
+          this.left = this.left - 348;
+        }
+      },
+      expand() {
+        this.showDetail = !this.showDetail;
+      },
+      mouseoverCloseDrawer() {
+        this.closeDrawerOpacity = 1;
+        this.closeDrawerPaddingLeft = 1;
+      },
+      mouseoutCloseDrawer() {
+        this.closeDrawerOpacity = 0.5;
+        this.closeDrawerPaddingLeft = 0;
+      },
+      disconnect() {
+        try {
+          if (!isStarkNetDialog.value) {
+            this.selectedWallet = {};
+            localStorage.setItem('selectedWallet', JSON.stringify({}));
+            this.$store.commit('updateLocalLogin', false);
+            localStorage.setItem('localLogin', false);
+            if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+              ethereumClient.disconnect();
+              localStorage.setItem('wc@2:client:0.3//session', null);
+            }
+            walletDispatchersOnDisconnect[compatibleGlobalWalletConf.value.walletType]();
+          } else {
+            disConnectStarkNetWallet();
+          }
+        } catch (e) {
+          console.error(e);
+        }
+        setActDialogVisible(false);
+        setSelectWalletDialogVisible(true);
+      },
       itemScroll(e) {
         if (new Date().valueOf() - this.scrollLastTime > 40) {
           const itemH = 88;
@@ -227,7 +524,7 @@
         }
       },
       async getActDataList(pageSize, page) {
-        const res = await requestPointSystem('activity/list', {
+        const res = await requestPointSystem('v2/activity/list', {
           address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
           pageSize,
           page
@@ -235,27 +532,20 @@
         this.total = res.data.total;
         const list = res.data.list;
         const dataList = [];
+        const undoneList = [];
+        const doneList = [];
         for (const data of list) {
-          this.twitter = data.twitter;
-          dataList.push(...data.taskList);
+          for (const task of data.taskList) {
+            if (task.status) {
+              doneList.push({ ...task, twitter: data.twitter });
+            } else {
+              undoneList.push({ ...task, twitter: data.twitter });
+            }
+          }
         }
+        dataList.push(...undoneList);
+        dataList.push(...doneList);
         return dataList;
-        // const list = [];
-        // for (let i = pageSize * page; i < pageSize * (page + 1); i++) {
-        //   list.push({
-        //     id: i,
-        //     name: `{ i + 1 }`,
-        //     desc: '1111111111111111',
-        //     status: 1,
-        //     points: i + 1,
-        //     conditions: {},
-        //     time: new Date().valueOf() + 1000 * 60 * 60 * 24 * 180
-        //   });
-        // }
-        // return list;
-      },
-      openDetail() {
-        if (this.twitter) window.open(this.twitter, '_blank');
       },
       openUrl(url) {
         window.open(url, '_blank');
@@ -284,12 +574,22 @@
       },
     },
     async mounted() {
-      const walletAddress = await util.getAsyncWalletAddress();
+      setInterval(() => {
+        this.countDown();
+      }, 1000);
+
+      const address = await util.getAsyncWalletAddress();
 
       let dataList = [];
       this.listLoading = true;
       try {
         dataList = await this.getActDataList(this.pageSize, this.page);
+        const res = await requestPointSystem('user/nfts', {
+          address,
+        });
+        this.nftList = res?.data?.nfts.map(item => {
+          return { img: `${item}.png` };
+        });
         updateActDataList(dataList);
       } catch (e) {
         console.error('getActDataList error', e);
@@ -297,19 +597,19 @@
         this.listLoading = false;
       }
 
-      const actList = JSON.parse(localStorage.getItem(`act_list_${ walletAddress }`) || '[]');
-      for (const data of dataList) {
-        if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
-          localStorage.setItem(`act_show_times_${ walletAddress }`, '0');
-        }
-      }
-      localStorage.setItem(`act_list_${ walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
-      let times = +(localStorage.getItem(`act_show_times_${ walletAddress }`) || 0);
-      if (times < 3) {
-        setActDialogVisible(true);
-        times++;
-        localStorage.setItem(`act_show_times_${ walletAddress }`, String(times));
-      }
+      // const actList = JSON.parse(localStorage.getItem(`act_list_${ walletAddress }`) || '[]');
+      // for (const data of dataList) {
+      //   if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
+      //     localStorage.setItem(`act_show_times_${ walletAddress }`, '0');
+      //   }
+      // }
+      // localStorage.setItem(`act_list_${ walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
+      // let times = +(localStorage.getItem(`act_show_times_${ walletAddress }`) || 0);
+      // if (times < 3) {
+      //   setActDialogVisible(true);
+      //   times++;
+      //   localStorage.setItem(`act_show_times_${ walletAddress }`, String(times));
+      // }
     }
   };
 </script>
@@ -337,152 +637,309 @@
         }
     }
 
-    .dark-theme {
-        .act {
-            .card::-webkit-scrollbar-track {
-                background: rgba(64, 65, 91, 1);
-            }
-
-            .border-dashed {
-                border-top: 1px dashed #FFFFFF;
-                opacity: 20%;
-            }
-
-            .border-dashed_2 {
-                border-top: 1px dashed #EEEEEE;
-                opacity: 10%;
-            }
-
-            .block_1 {
-                background-color: rgba(64, 65, 91, 1);
-                color: rgba(255, 255, 255, 1);
-            }
-
-            .text_3 {
-                width: 90%;
-                height: 34px;
-                overflow-wrap: break-word;
-                color: rgba(255, 255, 255, 0.8);
-                font-size: 12px;
-                font-family: OpenSansRoman-SemiBold;
-                /*font-weight: NaN;*/
-                text-align: left;
-                line-height: 17px;
-            }
-
-            .text_5 {
-                color: rgba(255, 255, 255, 0.8);
-            }
-
-            .text_10 {
-                width: 31px;
-                height: 17px;
-                overflow-wrap: break-word;
-                color: rgba(255, 255, 255, 0.4);
-                font-size: 12px;
-                font-family: OpenSans-Regular;
-                text-align: left;
-                white-space: nowrap;
-                line-height: 17px;
-                margin: 1px 0 0 12px;
-            }
-
-            .text_21 {
-                width: 94px;
-                height: 23px;
-                overflow-wrap: break-word;
-                color: #f5f5f5;
-                font-size: 18px;
-                font-family: Kodchasan-Bold;
-                font-weight: 700;
-                text-align: left;
-                white-space: nowrap;
-                line-height: 23px;
-                margin: 12px 0 0 16px;
-            }
-
-            .box_1 {
-                display:flex;
-                background-color: rgba(71, 74, 111, 1);
-                border-radius: 8px;
-                position: relative;
-                width: 388px;
-                height: 88px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                margin: 16px 0 0 16px;
-            }
-
-            .box_2 {
-                display:flex;
-                background-color: rgba(54, 57, 81, 1);
-                border-radius: 8px;
-                position: relative;
-                width: 388px;
-                height: 88px;
-                border: 1px solid rgba(238, 238, 238, 0.1);
-                margin: 16px 0 0 16px;
-            }
-
-            .text-wrapper_2 {
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 12px;
-                height: 20px;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                width: 55px;
-            }
-
-            .text-wrapper_3 {
-                background: rgba(63, 65, 91, 1);
-                border-radius: 8px;
-                width: 58px;
-                height: 64px;
-                margin: 12px 0 0 12px;
-            }
-
-            .text-wrapper_4 {
-                height: 20px;
-                background: url('../../assets/activity/dark_tag_done.png') 100% no-repeat;
-                background-size: 100% 100%;
-                margin-left: 2px;
-                width: 47px;
-            }
-
-            .text-wrapper_18 {
-                height: 20px;
-                background: url('../../assets/activity/dark_tag_undone.png') 100% no-repeat;
-                background-size: 100% 100%;
-                margin-left: 2px;
-                width: 62px;
-            }
-
-            .text_28 {
-                width: 46px;
-                height: 17px;
-                overflow-wrap: break-word;
-                color: rgba(255, 255, 255, 0.8);
-                font-size: 12px;
-                font-family: OpenSansRoman-SemiBold;
-                text-align: left;
-                white-space: nowrap;
-                line-height: 17px;
-            }
-
-            .text_27 {
-                color: rgba(255, 255, 255, 1);
-            }
-
-            .text-wrapper_14 {
-                height: 20px;
-                background: url('../../assets/activity/fee_dark_tag_done.png') 100% no-repeat;
-                background-size: 100% 100%;
-            }
-
-            .text_48 {
-                color: rgba(255, 255, 255, 1);
-            }
+    .shake-top {
+        -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+        animation: shake-top 0.8s cubic-bezier(0.455, 0.030, 0.515, 0.955) both;
+    }
+    @-webkit-keyframes shake-top {
+        0%,
+        100% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            -webkit-transform-origin: 50% 0;
+            transform-origin: 50% 0;
+        }
+        10% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+        }
+        20%,
+        40%,
+        60% {
+            -webkit-transform: rotate(-4deg);
+            transform: rotate(-4deg);
+        }
+        30%,
+        50%,
+        70% {
+            -webkit-transform: rotate(4deg);
+            transform: rotate(4deg);
+        }
+        80% {
+            -webkit-transform: rotate(-2deg);
+            transform: rotate(-2deg);
+        }
+        90% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
         }
     }
+    @keyframes shake-top {
+        0%,
+        100% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+            -webkit-transform-origin: 50% 0;
+            transform-origin: 50% 0;
+        }
+        10% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+        }
+        20%,
+        40%,
+        60% {
+            -webkit-transform: rotate(-4deg);
+            transform: rotate(-4deg);
+        }
+        30%,
+        50%,
+        70% {
+            -webkit-transform: rotate(4deg);
+            transform: rotate(4deg);
+        }
+        80% {
+            -webkit-transform: rotate(-2deg);
+            transform: rotate(-2deg);
+        }
+        90% {
+            -webkit-transform: rotate(2deg);
+            transform: rotate(2deg);
+        }
+    }
+
     .act {
+        height: 100%;
+
+        .label_2 {
+            width: 21px;
+            height: 24px;
+        }
+
+        .text_1_2 {
+            width: 105px;
+            height: 24px;
+            overflow-wrap: break-word;
+            color: rgba(30, 180, 171, 1);
+            font-size: 18px;
+            font-family: OpenSansRoman-ExtraBold;
+            text-align: right;
+            white-space: nowrap;
+            line-height: 24px;
+            margin: 5px 0 0 3px;
+        }
+
+        .thumbnail_1_1 {
+            width: 12px;
+            height: 13px;
+            margin-left: 11px;
+            margin-top: 5px;
+        }
+
+        .group_1_12 {
+            background-color: rgba(0, 0, 0, 1);
+            height: 72px;
+            width: 194px;
+        }
+
+        .box_1_48 {
+            height: 17px;
+            margin: 4px 0 0 24px;
+            text-align: left;
+        }
+
+        .text_1_8 {
+            width: 67px;
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(255, 255, 255, 1);
+            font-size: 12px;
+            font-family: OpenSans-Regular;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+            margin-right: 1px;
+        }
+
+        .thumbnail_1_3 {
+            width: 16px;
+            height: 16px;
+            margin-top: 1px;
+        }
+
+        .text-wrapper_1_35 {
+            width: 28px;
+            height: 22px;
+            margin: 8px 0 20px 24px;
+            text-align: left;
+        }
+
+        .text_1_9 {
+            width: 28px;
+            height: 22px;
+            overflow-wrap: break-word;
+            color: rgba(255, 255, 255, 1);
+            font-size: 16px;
+            font-family: OpenSansRoman-Bold;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 22px;
+        }
+
+        .line_1 {
+            background-color: rgba(102, 102, 102, 0.8);
+            width: 388px;
+            height: 1px;
+            margin-top: 7px;
+        }
+
+        .card_2 {
+            transition: height 0.28s;
+            position: relative;
+            border-radius: 12px;
+            width: 388px;
+            margin: 20px 0 0 20px;
+            background-color: #000000;
+            height: 190px;
+
+            .down {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                position: absolute;
+                bottom: 3px;
+
+                .img {
+                    cursor: pointer;
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+
+            .card_bottom {
+                position: absolute;
+                bottom: 10px;
+            }
+        }
+
+        .text-wrapper_45 {
+            border-radius: 12px;
+            background-image: url('../../assets/activity/point_bg.png');
+            /*background-repeat: repeat-x;*/
+            background-size: 100% auto;
+            height: 120px;
+            padding-top: 2px;
+        }
+
+        .text_98 {
+            width: 127px;
+            height: 19px;
+            overflow-wrap: break-word;
+            color: rgba(255, 255, 255, 1);
+            font-size: 14px;
+            font-family: OpenSansRoman-SemiBold;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 19px;
+            margin: 16px 0 0 20px;
+        }
+
+        .text_99 {
+            width: 60px;
+            height: 46px;
+            overflow-wrap: break-word;
+            color: rgba(255, 255, 255, 1);
+            font-size: 34px;
+            font-family: OpenSansRoman-ExtraBold;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 46px;
+            margin: 8px 0 10px 20px;
+        }
+
+        .section_54 {
+            display: flex;
+            width: 388px;
+            height: 45px;
+            margin: 19px 0 0 20px;
+        }
+
+        .box_114 {
+            border-radius: 50%;
+            height: 44px;
+            margin-top: 1px;
+            width: 44px;
+        }
+
+        .image-wrapper_74 {
+            background-color: rgba(255, 255, 255, 1);
+            border-radius: 50%;
+            height: 20px;
+            width: 20px;
+            margin: 28px 0 0 26px;
+        }
+
+        .text-wrapper_63 {
+            width: 109px;
+            height: 44px;
+            margin: 1px 0 0 12px;
+        }
+
+        .text_96 {
+            width: 109px;
+            height: 22px;
+            overflow-wrap: break-word;
+            color: rgba(34, 34, 34, 1);
+            font-size: 16px;
+            font-family: OpenSansRoman-Bold;
+            font-weight: 700;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 22px;
+        }
+
+        .text_97 {
+            width: 68px;
+            height: 19px;
+            overflow-wrap: break-word;
+            color: rgba(153, 153, 153, 1);
+            font-size: 14px;
+            font-family: OpenSans-Regular;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 19px;
+            margin-top: 3px;
+        }
+
+        .label_17 {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            margin-left: 2px;
+        }
+
+        .label_19 {
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            margin: 5px 0 0 0;
+            background: #F5F5F5;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            .img {
+                margin-left: 3px;
+                width: 20px;
+                height: 20px;
+                line-height: 36px;
+            }
+        }
+
         .text_48 {
             width: 187px;
             height: 18px;
@@ -563,15 +1020,16 @@
         }
 
         .text-wrapper_18 {
+            padding: 0 8px;
             height: 20px;
             background: url('../../assets/activity/light_tag_undone.png') 100% no-repeat;
             background-size: 100% 100%;
             margin-left: 2px;
-            width: 62px;
+            /*width: 35px;*/
         }
 
         .text_28 {
-            width: 46px;
+            width: 35px;
             height: 17px;
             overflow-wrap: break-word;
             color: rgba(34, 34, 34, 1);
@@ -588,15 +1046,57 @@
             background-size: 100% 100%;
         }
 
+        .text-wrapper_1_17 {
+            height: 20px;
+            background: url('../../assets/activity/fee_tag_undone.png') 100% no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .text-wrapper_1_46 {
+            background-color: rgba(238, 238, 238, 1);
+            border-radius: 5px;
+            height: 20px;
+            margin-left: 1px;
+            width: 20px;
+        }
+
+        .text_1_69 {
+            width: 13px;
+            height: 15px;
+            overflow-wrap: break-word;
+            color: rgba(34, 34, 34, 1);
+            font-size: 11px;
+            font-family: OpenSansRoman-ExtraBold;
+            text-align: center;
+            white-space: nowrap;
+            line-height: 15px;
+        }
+
+        .close-drawer {
+            cursor: pointer;
+            position: absolute;
+            left: -460px;
+            width: 40px;
+            height: 100%;
+            z-index: 100;
+            background: #F5F5F5;
+            border-radius: 16px 0px 0px 16px;
+            border: 1px solid #E6E6E6;
+
+            .img {
+                margin: 16px 8px;
+                width: 24px;
+                height: 24px;
+            }
+        }
+
         .block_1 {
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
-            right: 20px;
-            border-radius: 12px;
+            right: 0px;
             background-color: #ffffff;
             position: absolute;
             width: 420px;
-            height: 470px;
-            margin-top: 24px;
+            height: 100%;
         }
 
         .box_1 {
@@ -618,7 +1118,6 @@
             background-size: 60px 66px;
             margin: 12px 0 0 12px;
             padding-top: 5px;
-            background: linear-gradient(316deg, #DA9013 0%, #FFADAD 100%);
             box-shadow: -2px 2px 0px 0px #000000;
             border-radius: 8px;
             border: 1px solid #222222;
@@ -627,7 +1126,7 @@
         .text_1 {
             width: 14px;
             height: 33px;
-            color: rgba(34, 34, 34, 1);
+            color: #ffffff;
             font-size: 24px;
             font-family: OpenSansRoman-Bold;
             font-weight: 700;
@@ -643,7 +1142,7 @@
             width: 21px;
             height: 17px;
             overflow-wrap: break-word;
-            color: rgba(34, 34, 34, 1);
+            color: #ffffff;
             font-size: 12px;
             font-family: OpenSansRoman-SemiBold;
             text-align: center;
@@ -681,6 +1180,30 @@
             width: 272px;
             height: 62px;
             margin: 14px 22px 0 11px;
+        }
+
+        .text_1_3 {
+            width: 210px;
+            height: 19px;
+            font-size: 14px;
+            font-family: OpenSansRoman, OpenSansRoman;
+            font-weight: bold;
+            color: rgba(34, 34, 34, 1);
+            line-height: 19px;
+            white-space: nowrap;
+        }
+
+        .text_2_3 {
+            width: 227px;
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(102, 102, 102, 1);
+            font-size: 12px;
+            font-family: OpenSans-Regular;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+            margin-top: 2px;
         }
 
         .text_3 {
@@ -964,17 +1487,113 @@
             width: 55px;
         }
 
-        .text_14 {
-            width: 31px;
-            height: 17px;
-            overflow-wrap: break-word;
-            color: rgba(153, 153, 153, 1);
-            font-size: 12px;
-            font-family: OpenSans-Regular;
-            text-align: left;
-            white-space: nowrap;
-            line-height: 17px;
-            margin: 1px 0 0 12px;
+        .card_3 {
+            margin-top: 13px;
+
+            .nft_box {
+                display: flex;
+                width: 398px;
+                height: 60px;
+                margin: 8px 0 0 20px;
+                overflow: hidden;
+
+                .box_div {
+                    display: flex;
+                    width: 398px;
+                    height: 60px;
+                }
+
+                .section_70 {
+                    margin-right: 8px;
+                    border-radius: 5px;
+                    min-width: 50px;
+                    height: 60px;
+                    border: 2.5px solid rgba(0, 0, 0, 1);
+                }
+
+                .btn {
+                    position: absolute;
+                    right: 20px;
+                    display: flex;
+                    align-items: center;
+                    height: 60px;
+                    line-height: 60px;
+
+                    .img {
+                        opacity: 0.5;
+                        cursor: pointer;
+                        height: 24px;
+                        width: 24px;
+                    }
+
+                    .img:hover {
+                        opacity: 1;
+                    }
+                }
+
+                .btn_2 {
+                    position: absolute;
+                    left: 20px;
+                    display: flex;
+                    align-items: center;
+                    height: 60px;
+                    line-height: 60px;
+
+                    .img_2 {
+                        transform: rotate(180deg);
+                        opacity: 0.5;
+                        cursor: pointer;
+                        height: 24px;
+                        width: 24px;
+                    }
+
+                    .img_2:hover {
+                        opacity: 1;
+                    }
+                }
+
+                .card_cover {
+                    background: #ffffff;
+                    position: absolute;
+                    right: 0;
+                    height: 60px;
+                    width: 20px;
+                }
+            }
+
+            .text-wrapper_38 {
+                background-color: rgba(245, 245, 245, 1);
+                border-radius: 8px;
+                height: 60px;
+                width: 388px;
+                margin: 8px 0 0 20px;
+            }
+
+            .text_55 {
+                width: 255px;
+                height: 60px;
+                overflow-wrap: break-word;
+                color: rgba(153, 153, 153, 1);
+                font-size: 14px;
+                font-family: OpenSansRoman-SemiBold;
+                text-align: right;
+                white-space: nowrap;
+                line-height: 60px;
+            }
+
+            .text_14 {
+                width: 100%;
+                height: 20px;
+                overflow-wrap: break-word;
+                color: rgba(34, 34, 34, 1);
+                font-size: 16px;
+                font-family: Kodchasan-Bold;
+                font-weight: 700;
+                text-align: left;
+                white-space: nowrap;
+                line-height: 20px;
+                margin: 3px 0 0 20px;
+            }
         }
 
         .text_15 {
@@ -1150,6 +1769,188 @@
             white-space: nowrap;
             line-height: 17px;
             margin: 10px 12px;
+        }
+    }
+
+    .dark-theme {
+        .act {
+            .card_3 {
+                .text_14 {
+                    color: rgba(255, 255, 255, 1);
+                }
+                .nft_box {
+                    .card_cover {
+                        background-color: rgba(64, 65, 91, 1);
+                    }
+                }
+            }
+
+            .text_1_3 {
+                color: #ffffff;
+            }
+
+            .text_2_3 {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            .text-wrapper_1_46 {
+                background-color: rgba(255, 255, 255, 0.1);
+                .text_1_69 {
+                    color: rgba(255, 255, 255, 1);
+                }
+            }
+
+            .label_19 {
+                background: #363951;
+            }
+
+            .close-drawer {
+                background: #363951;
+                border: 1px solid #363951;
+            }
+
+            .text_96 {
+                color: #ffffff;
+            }
+
+            .card::-webkit-scrollbar-track {
+                background: rgba(64, 65, 91, 1);
+            }
+
+            .border-dashed {
+                border-top: 1px dashed #FFFFFF;
+                opacity: 20%;
+            }
+
+            .border-dashed_2 {
+                border-top: 1px dashed #EEEEEE;
+                opacity: 10%;
+            }
+
+            .block_1 {
+                background-color: rgba(64, 65, 91, 1);
+                color: rgba(255, 255, 255, 1);
+            }
+
+            .text_3 {
+                width: 90%;
+                height: 34px;
+                overflow-wrap: break-word;
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 12px;
+                font-family: OpenSansRoman-SemiBold;
+                /*font-weight: NaN;*/
+                text-align: left;
+                line-height: 17px;
+            }
+
+            .text_5 {
+                color: rgba(255, 255, 255, 0.8);
+            }
+
+            .text_10 {
+                width: 31px;
+                height: 17px;
+                overflow-wrap: break-word;
+                color: rgba(255, 255, 255, 0.4);
+                font-size: 12px;
+                font-family: OpenSans-Regular;
+                text-align: left;
+                white-space: nowrap;
+                line-height: 17px;
+                margin: 1px 0 0 12px;
+            }
+
+            .text_21 {
+                width: 94px;
+                height: 23px;
+                overflow-wrap: break-word;
+                color: #f5f5f5;
+                font-size: 18px;
+                font-family: Kodchasan-Bold;
+                font-weight: 700;
+                text-align: left;
+                white-space: nowrap;
+                line-height: 23px;
+                margin: 12px 0 0 16px;
+            }
+
+            .box_1 {
+                display:flex;
+                background-color: rgba(71, 74, 111, 1);
+                border-radius: 8px;
+                position: relative;
+                width: 388px;
+                height: 88px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                margin: 16px 0 0 16px;
+            }
+
+            .box_2 {
+                display:flex;
+                background-color: rgba(54, 57, 81, 1);
+                border-radius: 8px;
+                position: relative;
+                width: 388px;
+                height: 88px;
+                border: 1px solid rgba(238, 238, 238, 0.1);
+                margin: 16px 0 0 16px;
+            }
+
+            .text-wrapper_2 {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                height: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                width: 55px;
+            }
+
+            .text-wrapper_3 {
+                background: rgba(63, 65, 91, 1);
+                border-radius: 8px;
+                width: 58px;
+                height: 64px;
+                margin: 12px 0 0 12px;
+            }
+
+            .text-wrapper_4 {
+                height: 20px;
+                background: url('../../assets/activity/dark_tag_done.png') 100% no-repeat;
+                background-size: 100% 100%;
+                margin-left: 2px;
+                width: 47px;
+            }
+
+            .text-wrapper_18 {
+                height: 20px;
+                background: url('../../assets/activity/dark_tag_undone.png') 100% no-repeat;
+                background-size: 100% 100%;
+                margin-left: 2px;
+            }
+
+            .text_28 {
+                overflow-wrap: break-word;
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 12px;
+                font-family: OpenSansRoman-SemiBold;
+                text-align: left;
+                white-space: nowrap;
+                line-height: 17px;
+            }
+
+            .text_27 {
+                color: rgba(255, 255, 255, 1);
+            }
+
+            .text-wrapper_14 {
+                height: 20px;
+                background: url('../../assets/activity/fee_dark_tag_done.png') 100% no-repeat;
+                background-size: 100% 100%;
+            }
+
+            .text_48 {
+                color: rgba(255, 255, 255, 1);
+            }
         }
     }
 

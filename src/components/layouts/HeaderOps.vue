@@ -12,7 +12,7 @@
     >Connect a Wallet</CommBtn
     >
     <template v-if="isLogin && $route.path !== '/home'">
-      <span @mouseover="openAct" @click="openAct" class="ops-item" style="position: relative">
+      <span @click="openAct" class="ops-item" style="position: relative">
           <img
               :hidden="!isLightMode"
               style="margin: -3px 0 0 0;width: 24px;"
@@ -95,7 +95,13 @@
     starkAddress,
     showAddress,
     saveSenderPageWorkingState,
-    setActDialogVisible, setActAddPointVisible, setActAddPoint, updateActDataList, actDialogVisible,
+    setActDialogVisible,
+    setActAddPointVisible,
+    setActAddPoint,
+    updateActDataList,
+    actDialogVisible,
+    actTotalPoint,
+    setActTotalPoint, setActBasePoint, setActTotalActivityPoint,
   } from '../../composition/hooks';
   import {
     compatibleGlobalWalletConf,
@@ -120,8 +126,11 @@
       addPoint() {
         return actAddPoint.value
       },
+      totalPoint() {
+        return actTotalPoint.value
+      },
       addPointVisible() {
-        return actAddPointVisible.value
+        return actAddPointVisible.value && !actDialogVisible.value
       },
       isMobile() {
         return isMobile.value
@@ -155,7 +164,6 @@
               localStorage.getItem('selectedWallet') || '{}'
       )
       return {
-        totalPoint: 0,
         selectedWallet,
       }
     },
@@ -171,11 +179,13 @@
           return
         }
         setStarkNetDialog(true)
-        setSelectWalletDialogVisible(true)
+        // setSelectWalletDialogVisible(true)
+        setActDialogVisible(true);
       },
       connectAWallet() {
         setStarkNetDialog(false)
-        setSelectWalletDialogVisible(true)
+        // setSelectWalletDialogVisible(true)
+        setActDialogVisible(true);
         this.$emit('closeDrawer')
       },
       showHistory() {
@@ -203,11 +213,13 @@
         if (util.getAccountAddressError(address)) {
           return;
         }
-        const pointRes = await requestPointSystem('user/points', {
+        const pointRes = await requestPointSystem('v2/user/points', {
           address
         });
-        this.totalPoint = pointRes.data.points;
-        const point = pointRes.data.points;
+        const point = pointRes.data.total;
+        setActTotalPoint(point);
+        setActBasePoint(pointRes.data.basePoints || 0);
+        setActTotalActivityPoint(pointRes.data.totalActivityPoints || 0);
         if (point) {
           setActAddPoint(String(point));
           setActAddPointVisible(true);
@@ -256,7 +268,7 @@
               setActAddPointVisible(false);
             }, 3000);
           }
-          this.totalPoint = point;
+          setActTotalPoint(point);
         }
       }, 5000);
 
