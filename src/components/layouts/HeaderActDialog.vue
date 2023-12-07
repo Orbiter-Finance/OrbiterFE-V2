@@ -309,11 +309,12 @@
                                     <span class="text_27">{{ tag.description }}</span>
                                 </div>
                                 <div class="text-wrapper_18">
-                  <span class="text_28">{{
-                    item.progress
-                      ? `${item.progress.current}/${item.progress.total}`
-                      : '0/0'
-                  }}</span>
+                                    <span class="text_28" v-if="!!item.progress">{{
+                                        item.progress
+                                          ? `${item.progress.current}/${item.progress.total}`
+                                          : '0/0'
+                                      }}</span>
+                                      <span v-else class="text_28">Undone</span>
                                 </div>
                                 <div class="text_5">
                                     Until&nbsp;{{ formatTime(item.endTime) }}
