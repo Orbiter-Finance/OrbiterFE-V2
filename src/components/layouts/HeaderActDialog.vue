@@ -1762,22 +1762,24 @@
             }
 
             .text-wrapper_38 {
-                background-color: rgba(245, 245, 245, 1);
-                border-radius: 8px;
-                height: 60px;
+               // background-color: rgba(245, 245, 245, 1);
+               // border-radius: 8px;
+                // height: 60px;
                 width: 100%;
-                margin: 8px 0 0 20px;
+                margin: 8px 0 8px 20px;
+                display: flex;
+                
             }
 
             .text_55 {
                 width: 255px;
                 overflow-wrap: break-word;
-                color: rgba(153, 153, 153, 1);
+                color: #999999;
                 font-size: 14px;
-                font-family: OpenSansRoman-SemiBold;
-                text-align: right;
+                font-family: OpenSansRoman;
+                text-align: left;
                 white-space: nowrap;
-                line-height: 60px;
+                font-weight: 600;
             }
 
             .text_14 {
