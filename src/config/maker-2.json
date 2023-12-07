@@ -1145,7 +1145,7 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0035,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
