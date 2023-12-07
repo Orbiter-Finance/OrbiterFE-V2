@@ -1063,7 +1063,8 @@ export default {
     height: 20px;
     width: 20px;
     margin: 28px 0 0 26px;
-  }
+    border: 2px solid #FFF;
+}
 
   .text-wrapper_63 {
     width: 109px;
@@ -2064,6 +2065,10 @@ export default {
     .block_1 {
       background-color: rgba(64, 65, 91, 1);
       color: rgba(255, 255, 255, 1);
+
+      .image-wrapper_74 {
+        border: 2px solid #40415F;
+      }
     }
 
     .text_3 {
