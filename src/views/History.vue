@@ -365,7 +365,7 @@
           localStorage.getItem('last_page_before_history') || '{}'
         )
         try {
-          if (last.path) {
+          if (last.path && last.path !== '/data') {
             last.path !== this.$route.path && this.$router.push(last)
             recoverSenderPageWorkingState()
           } else {

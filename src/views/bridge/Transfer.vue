@@ -382,7 +382,7 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
-import walletDispatchers, { TOKEN_POCKET_APP } from '../../util/walletsDispatchers'
+import walletDispatchers, { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
 import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
 import {
   isMobile,
@@ -823,18 +823,12 @@ export default {
     },
   },
   async mounted() {
-    // this.boxLoading = true;
     try {
       await this.syncV3Data(1);
     } catch (e) {
       console.error('syncV3Data error', e);
     }
-    // this.boxLoading = false;
-
     this.openApiFilter();
-
-    this.initWhiteList()
-
     this.updateTransferInfo();
 
      if (isDev() && !isMobile.value) {
@@ -1059,12 +1053,6 @@ export default {
         }
       }
       this.updateTransferInfo();
-    },
-    async initWhiteList() {
-      // if (isProd()) {
-      //   config.whiteList = await orbiterApiAx.get('/orbiterXWhiteList/');
-      // }
-      // this.isWhiteWallet = !!util.isWhite();
     },
     async updateTransferInfo({ fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState) {
       if (!this.isNewVersion) {
@@ -1863,8 +1851,8 @@ export default {
             return;
           }
         } else {
-          if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== util.getMetaMaskNetworkId(fromChainID)) {
-            if ([METAMASK, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
+          if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
+            if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
                   return;

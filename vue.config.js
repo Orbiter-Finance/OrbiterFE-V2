@@ -18,6 +18,19 @@ module.exports = {
             return args
         })
         config.module
+        .rule('starknet')
+        .test(/(\.mjs$)|(\.js$)/)
+        .include
+        .add(resolve('node_modules/starknet'))
+        .add(resolve('node_modules/@scure'))
+        .end()
+        .use('babel-loader')
+        .loader('babel-loader')
+        .options({
+            plugins: [NullishCoalescingOperatorPlugin],
+        })
+        .end();
+        config.module
         .rule('walletconnect')
         .test(/\.js$/)
         .include

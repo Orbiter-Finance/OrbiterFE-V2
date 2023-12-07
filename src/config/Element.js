@@ -19,7 +19,9 @@ import {
   Col,
   Form,
   FormItem,
-  Input
+  Input,
+  Carousel,
+  CarouselItem
 } from 'element-ui'
 const element = {
   install: function (Vue) {
@@ -42,6 +44,8 @@ const element = {
     Vue.use(Option)
     Vue.use(Row)
     Vue.use(Col)
+    Vue.use(Carousel)
+    Vue.use(CarouselItem)
     // Vue.prototype.$message = Message
     Vue.prototype.$notify = Notification
     // Vue.prototype.$msgbox = MessageBox

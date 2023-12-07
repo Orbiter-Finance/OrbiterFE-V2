@@ -403,7 +403,7 @@ export default {
       })
       return true
     } catch (error) {
-      if (error.code === 4902) {
+      if (error.code === 4902 || error.data?.originalError?.code === 4902) {
         await this.addEthereumChain(chainId)
       } else {
         console.error(error)

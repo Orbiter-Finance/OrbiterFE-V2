@@ -140,7 +140,7 @@
             "decimals": 18,
             "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
         },
-        "rpc": [],
+        "rpc": ["https://starknet-mainnet.public.blastapi.io"],
         "watch": ["rpc"],
         "tokens": [
             {
@@ -627,7 +627,21 @@
             "address": "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df"
           }
         ],
-        "infoURL": "https://scrollscan.com"
+        "infoURL": "https://scrollscan.com",
+        "explorers": [
+            {
+                "id": 1,
+                "name": "scrollscan",
+                "url": "https://scrollscan.com",
+                "icon": "534352"
+            },
+            {
+                "id": 2,
+                "name": "l2scan",
+                "url": "https://scroll.l2scan.co",
+                "icon": "l2scan"
+            }
+        ]
     },
     {
         "api": {

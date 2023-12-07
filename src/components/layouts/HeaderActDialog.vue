@@ -29,6 +29,96 @@
                 <img :style="`${!isMobile ? 'width: 420px' : 'width: 100%'}`" :src="require('../../assets/activity/tip.png')" />
             </div>
             <div class="card" style="height:80%;" v-loading="listLoading" element-loading-background="rgba(0, 0, 0, 0)" @scroll="itemScroll">
+                <div class="box_1 box_1_top" style="cursor: pointer" @click="openUrl('https://galxe.com/OrbiterFinance/campaign/GCbnmUNe9g')">
+                    <div class="box_1_hot">🔥</div>
+                    <div
+                        style="
+              width: 82px;
+              border-radius: 8px;
+              margin-top: 12px;
+              display: flex;
+              justify-content: center;
+            "
+                    >
+                        <el-carousel
+                            :interval="4000"
+                            indicator-position="none"
+                            type="card"
+                            height="64px"
+                            style="width: 72px"
+                            arrow="never"
+                        >
+                            <el-carousel-item v-for="(item, index) in nftSeries" :key="index">
+                                <img
+                                    style="max-width: 100%; height: auto"
+                                    :src="require('../../assets/activity/nft/' + item.img)"
+                                />
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+                    <div class="border-dashed"></div>
+                    <div
+                        style="
+              font-size: 12px;
+              font-family: OpenSansRoman-SemiBold;
+              position: absolute;
+              left: 100px;
+              top: 8px;
+            "
+                    >
+                        <div class="text_1_3">
+                            Orbiter's ONLY official Pilot NFT Series
+                            <SvgIconThemed v-if="true" size="lg" style="rotate: -90deg;"/>
+                        </div>
+                        <div class="text_2_3">
+                            Early Loyalty Identification for TOP Users
+                        </div>
+                        <div style="margin-top: 10px; display: flex; flex-direction: row">
+                            <div class="text-wrapper_1_17">
+                                <span class="text_27">Deadline Countdown</span>
+                            </div>
+                            <div class="text-wrapper_1_46" style="margin-left: 5px">
+                                <span class="text_1_69">{{ countDownDate }}</span>
+                            </div>
+                            :
+                            <div class="text-wrapper_1_46">
+                                <span class="text_1_69">{{ countDownHour }}</span>
+                            </div>
+                            :
+                            <div class="text-wrapper_1_46">
+                                <span class="text_1_69">{{ countDownMin }}</span>
+                            </div>
+                            :
+                            <div class="text-wrapper_1_46">
+                                <span class="text_1_69">{{ countDownSecond }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <img
+                        :hidden="!isLightMode"
+                        class="thumbnail_1"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_up.png')"
+                    />
+                    <img
+                        :hidden="!isLightMode"
+                        class="thumbnail_2"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_down.png')"
+                    />
+                    <img
+                        :hidden="isLightMode"
+                        class="thumbnail_5"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_up_dark.png')"
+                    />
+                    <img
+                        :hidden="isLightMode"
+                        class="thumbnail_6"
+                        referrerpolicy="no-referrer"
+                        :src="require('../../assets/activity/curve_down_dark.png')"
+                    />
+                </div>
                 <template v-for="item in actDataList">
                     <div v-if="item.status === 0" class="box_1">
                         <div class="text-wrapper_1 flex-row">
@@ -127,7 +217,11 @@
                     <div class="text_48">
                         More: Partners' Incentives
                     </div>
-                    <div @click="openUrl('https://galxe.com/izumi/campaign/GCRKjtUW3A')" class="box_75"></div>
+                    <el-carousel :interval="4000" trigger="click" height="110px">
+                        <el-carousel-item v-for="(item, index) in bannerList" :key="index">
+                            <div @click="openUrl(item.url)" class="box_75" :style="`background: url(${require('../../assets/activity/banner/' + item.img)});background-size: 100% 100%;`"></div>
+                        </el-carousel-item>
+                    </el-carousel>
                 </div>
             </div>
         </div>
@@ -135,6 +229,7 @@
 </template>
 
 <script>
+  import { SvgIconThemed } from "../../components";
   import {
     actDialogVisible, isMobile, setActDialogVisible, setActDialogHover, transferDataState, updateActDataList,
   } from '../../composition/hooks';
@@ -144,8 +239,28 @@
 
   export default {
     name: 'HeaderActDialog',
+    components: {
+      SvgIconThemed,
+    },
     data() {
       return {
+        endTime: 1703071800000,
+        countDownSecond: "00",
+        countDownMin: "00",
+        countDownHour: "00",
+        countDownDate: "00",
+        left: 0,
+        nftList: [],
+        nftSeries:[
+          { img: "0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png" },
+          { img: "0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png" },
+          { img: "0x83Ed3B8a9DCA0A3d40A9be9F7aeE0E58F7918c4C.png" },
+          { img: "0xBC2B5d07E8658D74176E3044Fd60B38d08f926A4.png" },
+          { img: "0xe20847F3C593296613Df763afE7eA039D8398E78.png" }
+        ],
+        showDetail: false,
+        closeDrawerOpacity: 0.5,
+        closeDrawerPaddingLeft: 0,
         page: 1,
         pageSize: 10,
         total: 0,
@@ -153,7 +268,25 @@
         addItemLoading: false,
         listLoading: false,
         isHover: false,
-        twitter: null
+        twitter: null,
+        bannerList: [
+          {
+            url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
+            img: '4.png',
+          },
+          {
+            url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
+            img: '1.png',
+          },
+          {
+            url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
+            img: '2.png',
+          },
+          {
+            url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
+            img: '3.png',
+          }
+        ]
       };
     },
     computed: {
@@ -171,6 +304,19 @@
       },
     },
     methods: {
+      countDown() {
+        const diffSecond = Math.floor((this.endTime - new Date().valueOf()) / 1000);
+        this.countDownSecond = this.fillDouble(diffSecond % 60);
+        this.countDownMin = this.fillDouble(Math.floor((diffSecond % (60 * 60)) / 60));
+        this.countDownHour = this.fillDouble(Math.floor(diffSecond % (60 * 60 * 24) / (60 * 60)));
+        this.countDownDate = this.fillDouble(Math.floor(diffSecond % (60 * 60 * 24 * 365) / (60 * 60 * 24)));
+      },
+      fillDouble(num) {
+        if (String(num).length === 1) {
+          return "0" + String(num);
+        }
+        return String(num);
+      },
       itemScroll(e) {
         if (new Date().valueOf() - this.scrollLastTime > 40) {
           const itemH = 88;
@@ -262,6 +408,9 @@
       },
     },
     async mounted() {
+      setInterval(() => {
+        this.countDown();
+      }, 1000);
       const walletAddress = await util.getAsyncWalletAddress();
 
       let dataList = [];
@@ -293,8 +442,49 @@
 </script>
 
 <style lang="scss" scoped>
+    ::v-deep .el-carousel__indicators--horizontal {
+        /*position: absolute;*/
+        /*bottom: 5px;*/
+        /*text-align: right;*/
+
+        .el-carousel__indicator--horizontal button {
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+
+        .el-carousel__indicator--horizontal.is-active button {
+            width: 14px;
+            height: 6px;
+            background: #ffffff;
+            opacity: 1;
+            border-radius: 10px;
+        }
+    }
+
     .dark-theme {
         .act {
+            .text_1_3 {
+                color: #ffffff;
+            }
+
+            .text_2_3 {
+                color: rgba(255, 255, 255, 0.6);
+            }
+
+            .text_27 {
+                color: rgba(255, 255, 255, 1);
+            }
+
+            .text-wrapper_1_46 {
+                background-color: rgba(255, 255, 255, 0.1);
+                .text_1_69 {
+                    color: rgba(255, 255, 255, 1);
+                }
+            }
+
             .card::-webkit-scrollbar-track {
                 background: rgba(64, 65, 91, 1);
             }
@@ -456,8 +646,6 @@
         .box_75 {
             cursor: pointer;
             border-radius: 8px;
-            background: url('../../assets/activity/linea_voyage.png');
-            background-size: 100% 100%;
             width: 388px;
             height: 104px;
             margin-left: 16px;
@@ -546,6 +734,51 @@
             background-size: 100% 100%;
         }
 
+        .text-wrapper_1_17 {
+            height: 20px;
+            background: url('../../assets/activity/act_tag.png') 100% no-repeat;
+            background-size: 100% 100%;
+        }
+
+        .text-wrapper_1_46 {
+            background-color: rgba(238, 238, 238, 1);
+            border-radius: 5px;
+            height: 20px;
+            margin-left: 1px;
+            width: 20px;
+        }
+
+        .text_1_69 {
+            width: 13px;
+            height: 15px;
+            overflow-wrap: break-word;
+            color: rgba(34, 34, 34, 1);
+            font-size: 11px;
+            font-family: OpenSansRoman-ExtraBold;
+            text-align: center;
+            white-space: nowrap;
+            line-height: 15px;
+            font-weight: 800;
+        }
+
+        .close-drawer {
+            cursor: pointer;
+            position: absolute;
+            left: -460px;
+            width: 40px;
+            height: 100%;
+            z-index: 100;
+            background: #F5F5F5;
+            border-radius: 16px 0px 0px 16px;
+            border: 1px solid #E6E6E6;
+
+            .img {
+                margin: 16px 8px;
+                width: 24px;
+                height: 24px;
+            }
+        }
+
         .block_1 {
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
             right: 20px;
@@ -566,6 +799,42 @@
             height: 88px;
             border: 1px solid rgba(34, 34, 34, 1);
             margin: 16px 0 0 16px;
+        }
+
+        .box_1_top {
+            position: relative;
+            top: 0;
+            left: 0;
+        }
+
+        .box_1_top .box_1_hot {
+            position: absolute !important;
+            top: 50px;
+            left: 50px;
+            z-index: 10;
+        }
+
+        .box_1_top .el-carousel__item {
+            width: 80%;
+            opacity: 0.6;
+        }
+
+        .box_1_top .el-carousel__item img {
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        .box_1_top .is-active {
+            opacity: 1;
+            transform: translateX(12.5%) scale(1) !important;
+        }
+
+        .box_1_top .el-carousel__mask {
+            background-color: transparent;
+        }
+
+        .box_1_top .el-carousel__arrow {
+            display: none !important;
         }
 
         .text-wrapper_1 {
@@ -639,6 +908,31 @@
             width: 272px;
             height: 62px;
             margin: 14px 22px 0 11px;
+        }
+
+        .text_1_3 {
+            display: flex;
+            // width: 210px;
+            height: 19px;
+            font-size: 14px;
+            font-family: OpenSansRoman, OpenSansRoman;
+            font-weight: bold;
+            color: rgba(34, 34, 34, 1);
+            line-height: 19px;
+            white-space: nowrap;
+        }
+
+        .text_2_3 {
+            width: 227px;
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(102, 102, 102, 1);
+            font-size: 12px;
+            font-family: OpenSans-Regular;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+            margin-top: 2px;
         }
 
         .text_3 {
@@ -1218,6 +1512,15 @@
             position: absolute;
             width: 100%;
             height: 100%;
+
+            .text_1_3 {
+                font-size: 11px;
+            }
+
+            .text_2_3 {
+                font-size: 10px;
+            }
+
             .block_1 {
                 bottom: 0px;
                 right: 0px;
