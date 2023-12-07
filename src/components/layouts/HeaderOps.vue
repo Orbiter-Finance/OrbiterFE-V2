@@ -240,9 +240,19 @@
         });
         const list = res.data.list;
         const dataList = [];
+        const undoneList = [];
+        const doneList = [];
         for (const data of list) {
-          dataList.push(...data.taskList);
+          for (const task of data.taskList) {
+            if (task.status) {
+              doneList.push(task);
+            } else {
+              undoneList.push(task);
+            }
+          }
         }
+        dataList.push(...undoneList);
+        dataList.push(...doneList);
         updateActDataList(dataList);
         return dataList;
       }
