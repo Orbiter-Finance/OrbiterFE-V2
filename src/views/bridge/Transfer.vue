@@ -403,7 +403,7 @@ import {
   updateDealerId,
   setActAddPoint,
   setActAddPointVisible,
-  updateActDataList,
+  updateActDataList, setActPoint,
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
@@ -849,6 +849,7 @@ export default {
       const pointRes = await requestPointSystem('v2/user/points', {
         address
       });
+      setActPoint(pointRes.data);
       const point = pointRes.data.total;
       if (point) {
         setActAddPoint(String(point));
