@@ -331,7 +331,7 @@ export async function getStarkTransferFee(
   } catch (e) {
     // console.warn('estError: ', e)
   }
-  return 0.00025;
+  return 0.00025 * 10 ** 18;
 }
 
 function getUint256CalldataFromBN(bn) {
