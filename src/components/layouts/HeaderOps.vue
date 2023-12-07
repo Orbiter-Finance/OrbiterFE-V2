@@ -184,8 +184,11 @@
       },
       connectAWallet() {
         setStarkNetDialog(false)
-        // setSelectWalletDialogVisible(true)
-        setActDialogVisible(true);
+        if (this.isLogin) {
+          setActDialogVisible(true);
+        } else {
+          setSelectWalletDialogVisible(true);
+        }
         this.$emit('closeDrawer')
       },
       showHistory() {

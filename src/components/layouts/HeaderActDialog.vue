@@ -1763,9 +1763,10 @@
 
             .text-wrapper_38 {
                 background-color: rgba(245, 245, 245, 1);
-                height: 20px;
+                border-radius: 8px;
+                height: 60px;
                 width: 100%;
-                margin: 8px 16px 0 0;
+                margin: 8px 0 0 20px;
             }
 
             .text_55 {
