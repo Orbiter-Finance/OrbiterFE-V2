@@ -266,6 +266,7 @@
         }
         setStarkNetDialog(false);
         setSelectWalletDialogVisible(true);
+        setActDialogVisible(true)
       },
     },
   };

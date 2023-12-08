@@ -36,6 +36,7 @@ import walletDispatchers, {
   getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK, ZERION_APP,
 } from './util/walletsDispatchers';
 import { actDialogVisible, isMobile, setActDialogVisible, web3State } from './composition/hooks';
+import { walletIsLogin } from './composition/walletsResponsiveData';
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import * as lightbg from './assets/v2/light-bg.png'
@@ -59,6 +60,9 @@ export default {
   computed: {
     isMobile () {
       return isMobile.value
+    },
+    isLogin() {
+      return walletIsLogin.value
     },
     isLightMode () {
       return this.$store.state.themeMode === 'light'
@@ -111,7 +115,7 @@ export default {
   components: {
     TopNav,
     BottomNav,
-    HeaderDialog,
+    // HeaderDialog,
     HeaderActDialog
   },
   async mounted() {
@@ -134,6 +138,13 @@ export default {
 
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
+  },
+  watch: {
+    isLogin(item1, item2) {
+      if (item1 !== item2) {
+        setActDialogVisible(true)
+      }
+    }
   },
   methods: {
     performInitCurrentLoginWallet () {
