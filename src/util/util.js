@@ -3,13 +3,12 @@ import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData
 import { transferDataState } from '../composition/useTransferData'
 import { exchangeToCoin } from './coinbase'
 import BigNumber from 'bignumber.js'
-import config from '../config/index'
+import config, { CHAIN_ID } from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
-import { CHAIN_ID } from "../config";
 
 export default {
   getAccountAddressError(address, isStarknet) {
@@ -63,12 +62,12 @@ export default {
     return env.metaMaskNetworkId[chainId] || chainId
   },
   getTxExploreUrl(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId);
-    return env.txExploreUrl[chainId] || `${ chainInfo?.infoURL }/tx/`;
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
+    return env.txExploreUrl[chainId] || `${chainInfo?.infoURL}/tx/`
   },
   getAccountExploreUrl(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId);
-    return env.accountExploreUrl[chainId] || `${ chainInfo?.infoURL }/address/`;
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
+    return env.accountExploreUrl[chainId] || `${chainInfo?.infoURL}/address/`
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -141,14 +140,19 @@ export default {
   },
 
   async getAsyncWalletAddress(retryCount = 6) {
-    if (!compatibleGlobalWalletConf.value.walletPayload.walletAddress || compatibleGlobalWalletConf.value.walletPayload.walletAddress === '0x') {
+    if (
+      !compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
+      compatibleGlobalWalletConf.value.walletPayload.walletAddress === '0x'
+    ) {
       if (retryCount === 0) {
-        return compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x';
+        return (
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x'
+        )
       }
-      await this.sleep(500);
-      return await this.getAsyncWalletAddress(retryCount - 1);
+      await this.sleep(500)
+      return await this.getAsyncWalletAddress(retryCount - 1)
     }
-    return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+    return compatibleGlobalWalletConf.value.walletPayload.walletAddress
   },
 
   formatDate(date, isShort) {
@@ -194,9 +198,21 @@ export default {
 
   async isLegalAddress() {
     const { fromChainID } = transferDataState
-    const supportContractWallet = [CHAIN_ID.mainnet, CHAIN_ID.ar, CHAIN_ID.po, CHAIN_ID.op, CHAIN_ID.metis,
-      CHAIN_ID.boba, CHAIN_ID.zksync2, CHAIN_ID.bsc, CHAIN_ID.nova, CHAIN_ID.pozkevm, CHAIN_ID.base, CHAIN_ID.linea,
-      CHAIN_ID.zora];
+    const supportContractWallet = [
+      CHAIN_ID.mainnet,
+      CHAIN_ID.ar,
+      CHAIN_ID.po,
+      CHAIN_ID.op,
+      CHAIN_ID.metis,
+      CHAIN_ID.boba,
+      CHAIN_ID.zksync2,
+      CHAIN_ID.bsc,
+      CHAIN_ID.nova,
+      CHAIN_ID.pozkevm,
+      CHAIN_ID.base,
+      CHAIN_ID.linea,
+      CHAIN_ID.zora,
+    ]
     if (!supportContractWallet.find((item) => item === fromChainID)) {
       return true
     }
@@ -288,7 +304,7 @@ export default {
 
   getV3ChainInfoByChainId(chainId) {
     const info = config.chainConfig.find(
-        (item) => item.chainId === chainId
+      (item) => Number(item.chainId) === Number(chainId)
     )
     if (!info) return null
     const chainInfo = JSON.parse(JSON.stringify(info))
@@ -307,33 +323,43 @@ export default {
 
   isEvmChain(chainId) {
     return ![
-      CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.imx, CHAIN_ID.imx_test,
-      CHAIN_ID.loopring, CHAIN_ID.loopring_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test
-    ].includes(chainId);
+      CHAIN_ID.zksync,
+      CHAIN_ID.zksync_test,
+      CHAIN_ID.starknet,
+      CHAIN_ID.starknet_test,
+      CHAIN_ID.imx,
+      CHAIN_ID.imx_test,
+      CHAIN_ID.loopring,
+      CHAIN_ID.loopring_test,
+      CHAIN_ID.dydx,
+      CHAIN_ID.dydx_test,
+      CHAIN_ID.zkspace,
+      CHAIN_ID.zkspace_test,
+    ].includes(chainId)
   },
 
   getInternalIdByChainId(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId);
-    return chainInfo?.internalId ? Number(chainInfo.internalId) : null;
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
+    return chainInfo?.internalId ? Number(chainInfo.internalId) : null
   },
 
   getChainTokenList(chain) {
-    const allTokenList = [];
-    if (!chain) return [];
+    const allTokenList = []
+    if (!chain) return []
     if (chain.tokens && chain.tokens.length) {
-      allTokenList.push(...chain.tokens);
+      allTokenList.push(...chain.tokens)
     }
     if (chain.nativeCurrency) {
-      allTokenList.push(chain.nativeCurrency);
+      allTokenList.push(chain.nativeCurrency)
     }
-    return allTokenList;
+    return allTokenList
   },
 
   log(...msg) {
     if (isProd()) {
       return
     }
-    console.log('======', ...msg);
+    console.log('======', ...msg)
   },
 
   isWhite() {
@@ -362,7 +388,8 @@ export default {
   },
 
   isSupportXVMContract() {
-    const { fromChainID, selectMakerConfig,fromCurrency, toCurrency } = transferDataState
+    const { fromChainID, selectMakerConfig, fromCurrency, toCurrency } =
+      transferDataState
     if (!this.isWhite()) {
       return false
     }
@@ -370,7 +397,7 @@ export default {
       return false
     }
     if (selectMakerConfig.ebcId) {
-      return false;
+      return false
     }
     const chainInfo = this.getV3ChainInfoByChainId(fromChainID)
     return chainInfo?.xvmList && chainInfo.xvmList.length
@@ -390,7 +417,7 @@ export default {
   async ensureWalletNetwork(chainId) {
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     if (!maskNetworkId) {
-      console.error(maskNetworkId, "none of ", chainId);
+      console.error(maskNetworkId, 'none of ', chainId)
       return
     }
     const switchParams = {
@@ -425,9 +452,7 @@ export default {
         decimals: chainInfo.nativeCurrency.decimals,
       },
       rpcUrls: chainInfo.rpc,
-      blockExplorerUrls: chainInfo?.infoURL
-        ? [chainInfo.infoURL]
-        : null,
+      blockExplorerUrls: chainInfo?.infoURL ? [chainInfo.infoURL] : null,
     }
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({

@@ -34,7 +34,7 @@
                 :icon="navIcons.logo"
             />
             <div style="flex: 1;display: flex;justify-content: flex-end;margin-right: 12px">
-                <div @click="openActDialog" class="icon_1"
+                <div @click="openActDialog" v-show="!!isLogin" class="icon_1"
                      :style="`background-color: ${isLightMode ? 'rgba(255, 255, 255, 1)' : '#3F415B'};`">
                     <img
                         :hidden="!isLightMode"
@@ -240,7 +240,9 @@
     },
     methods: {
       openActDialog() {
-        setActDialogVisible(true);
+        if(this.isLogin) {
+          setActDialogVisible(true);
+        }
       },
       toHome() {
         setPageSenderTab();
