@@ -447,6 +447,7 @@
     actTotalPoint,
     actBasePoint,
     actTotalActivityPoint,
+    actNftList, setActNftList
   } from '../../composition/hooks';
   import { requestPointSystem } from '../../common/openApiAx';
   import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData';
@@ -472,7 +473,6 @@
         countDownHour: '00',
         countDownDate: '00',
         left: 0,
-        nftList: [],
         nftSeries: [
           { img: '0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png' },
           { img: '0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png' },
@@ -512,6 +512,9 @@
       };
     },
     computed: {
+      nftList() {
+        return actNftList.value;
+      },
       turnLeft() {
         return (
           Math.floor((this.nftList.length - 1) / 6) -
@@ -768,39 +771,6 @@
       setInterval(() => {
         this.countDown();
       }, 1000);
-  
-      const address = await util.getAsyncWalletAddress();
-  
-      let dataList = [];
-      this.listLoading = true;
-      try {
-          dataList = await this.getActDataList(this.pageSize, this.page);
-          const res = await requestPointSystem('user/nfts', {
-            address,
-          });
-          this.nftList = res?.data?.nfts.map((item) => {
-            return { img: `${ item }.png` };
-          });
-          updateActDataList(dataList);
-        } catch (e) {
-          console.error('getActDataList error', e);
-        } finally {
-          this.listLoading = false;
-        }
-  
-      // const actList = JSON.parse(localStorage.getItem(`act_list_${ walletAddress }`) || '[]');
-      // for (const data of dataList) {
-      //   if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
-      //     localStorage.setItem(`act_show_times_${ walletAddress }`, '0');
-      //   }
-      // }
-      // localStorage.setItem(`act_list_${ walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
-      // let times = +(localStorage.getItem(`act_show_times_${ walletAddress }`) || 0);
-      // if (times < 3) {
-      //   setActDialogVisible(true);
-      //   times++;
-      //   localStorage.setItem(`act_show_times_${ walletAddress }`, String(times));
-      // }
     },
   };
   </script>
@@ -2377,4 +2347,3 @@
     right: 0;
   }
   </style>
-  

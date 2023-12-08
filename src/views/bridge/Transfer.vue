@@ -783,10 +783,19 @@ export default {
       util.log('Current wallet address', newValue);
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
-      if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
-
-      this.getWalletAddressPoint(newValue);
-      this.getWalletAddressActList(newValue);
+      if (oldValue !== newValue && newValue !== '0x') {
+        this.updateTransferInfo();
+        this.getWalletAddressPoint(newValue);
+        this.getWalletAddressActList(newValue);
+        setTimeout(async () => {
+          const res = await requestPointSystem('user/nfts', {
+            newValue,
+          });
+          setActNftList(res?.data?.nfts.map((item) => {
+            return { img: `${ item }.png` };
+          }));
+        }, 0);
+      }
       if (newValue === '0x') {
         setActDialogVisible(false);
       }
