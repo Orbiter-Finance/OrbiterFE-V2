@@ -764,6 +764,7 @@ export default {
             undoneList.push({ ...task, twitter: data.twitter })
           }
         }
+      }
         dataList.push(...undoneList);
         dataList.push(...doneList);
         return dataList;
