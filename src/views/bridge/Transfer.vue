@@ -403,7 +403,7 @@ import {
   updateDealerId,
   setActAddPoint,
   setActAddPointVisible,
-  updateActDataList, setActPoint, setActDialogVisible,
+  updateActDataList, setActPoint, setActDialogVisible, setActNftList,
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
@@ -789,7 +789,7 @@ export default {
         this.getWalletAddressActList(newValue);
         setTimeout(async () => {
           const res = await requestPointSystem('user/nfts', {
-            newValue,
+            address: newValue,
           });
           setActNftList(res?.data?.nfts.map((item) => {
             return { img: `${ item }.png` };
