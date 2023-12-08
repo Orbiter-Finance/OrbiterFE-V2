@@ -771,6 +771,24 @@
       setInterval(() => {
         this.countDown();
       }, 1000);
+
+      const address = await util.getAsyncWalletAddress();
+      let dataList = [];
+      this.listLoading = true;
+      try {
+        dataList = await this.getActDataList(this.pageSize, this.page);
+        const res = await requestPointSystem('user/nfts', {
+          address,
+        });
+        setActNftList(res?.data?.nfts.map((item) => {
+          return { img: `${ item }.png` };
+        }));
+        updateActDataList(dataList);
+      } catch (e) {
+        console.error('getActDataList error', e);
+      } finally {
+        this.listLoading = false;
+      }
     },
   };
   </script>
