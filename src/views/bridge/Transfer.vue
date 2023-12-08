@@ -403,7 +403,7 @@ import {
   updateDealerId,
   setActAddPoint,
   setActAddPointVisible,
-  updateActDataList, setActPoint,
+  updateActDataList, setActPoint, setActDialogVisible,
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
@@ -787,6 +787,9 @@ export default {
 
       this.getWalletAddressPoint(newValue);
       this.getWalletAddressActList(newValue);
+      if (newValue === '0x') {
+        setActDialogVisible(false);
+      }
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
