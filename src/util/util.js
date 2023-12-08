@@ -304,7 +304,7 @@ export default {
 
   getV3ChainInfoByChainId(chainId) {
     const info = config.chainConfig.find(
-      (item) => Number(item.chainId) === Number(chainId)
+      (item) => item.chainId.toString() === chainId.toString()
     )
     if (!info) return null
     const chainInfo = JSON.parse(JSON.stringify(info))
