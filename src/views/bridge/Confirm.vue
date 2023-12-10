@@ -1470,14 +1470,16 @@ export default {
         onTransferSucceed(from, amount, fromChainID, transactionHash) {
             const { selectMakerConfig } = transferDataState
             const { path, query } = this.$route;
-            try {
-                axios.post(`${process.env['VUE_APP_SDK_URL']}/dealer/report/tx`, {
-                    chainId:fromChainID,
-                    hash: transactionHash,
-                    channel: query.dealerId || ''
-                })
-            }catch(error) {
+            if (process.env['VUE_APP_SDK_URL']) {
+                try {
+                    axios.post(`${process.env['VUE_APP_SDK_URL']}/dealer/report/tx`, {
+                        chainId:fromChainID,
+                        hash: transactionHash,
+                        channel: query.dealerId || ''
+                    })
+                }catch(error) {
 
+                }
             }
            
             getProceeding.UserTransferReady(
