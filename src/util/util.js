@@ -50,7 +50,7 @@ export default {
     })
   },
   netWorkName(networkId) {
-    return this.getV3ChainInfoByChainId(networkId)?.name || networkId || ''
+    return this.getV3ChainInfoByChainId(networkId)?.name || 'Unknown Network'
   },
   chainName(chainId) {
     return this.getV3ChainInfoByChainId(chainId)?.name || chainId || ''
@@ -304,7 +304,7 @@ export default {
 
   getV3ChainInfoByChainId(chainId) {
     const info = config.chainConfig.find(
-      (item) => item.chainId.toString() === chainId.toString()
+      (item) => item.chainId.toString() === chainId?.toString()
     )
     if (!info) return null
     const chainInfo = JSON.parse(JSON.stringify(info))
