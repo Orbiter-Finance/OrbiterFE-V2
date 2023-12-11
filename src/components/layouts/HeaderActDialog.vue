@@ -17,7 +17,7 @@
         class="close-drawer"
         :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`"
       >
-        <img class="img" :src="require('../../assets/activity/right.png')"/>
+        <img class="img" :src="require('../../assets/activity/right.png')" />
       </div>
     </div>
     <div @mouseover="mouseoverDialog" ref="block_1" class="block_1">
@@ -43,28 +43,49 @@
             v-clipboard:copy="walletAddress"
             v-clipboard:success="onCopySuccess"
           >
-          <svg
-          class="label_17"
-          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-            <title>ic/copy-1</title>
-            
-            <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                <g id="To-linea-积分备份" transform="translate(-1715.000000, -104.000000)">
-                    <g id="编组-8" transform="translate(1452.000000, 85.000000)">
-                        <g id="编组-63" transform="translate(40.000000, 0.000000)">
-                            <g id="编组-7" transform="translate(20.000000, 19.000000)">
-                                <g id="ic/copy-1" transform="translate(203.000000, 0.000000)">
-                                    <rect id="rectangles备份" fill-rule="nonzero" x="0" y="0" width="24" height="24" rx="6"/>
-                                    <path class="copy_icon" d="M14.6666667,12.6 L14.6666667,15.4 C14.6666667,17.7333333 13.7333333,18.6666667 11.4,18.6666667 L8.6,18.6666667 C6.26666667,18.6666667 5.33333333,17.7333333 5.33333333,15.4 L5.33333333,12.6 C5.33333333,10.2666667 6.26666667,9.33333333 8.6,9.33333333 L11.4,9.33333333 C13.7333333,9.33333333 14.6666667,10.2666667 14.6666667,12.6 Z" id="trails"  stroke-linecap="round" stroke-linejoin="round"/>
-                                    <path class="copy_icon" d="M18.6666667,8.6 L18.6666667,11.4 C18.6666667,13.7333333 17.7333333,14.6666667 15.4,14.6666667 L14.6666667,14.6666667 L14.6666667,12.6 C14.6666667,10.2666667 13.7333333,9.33333333 11.4,9.33333333 L9.33333333,9.33333333 L9.33333333,8.6 C9.33333333,6.26666667 10.2666667,5.33333333 12.6,5.33333333 L15.4,5.33333333 C17.7333333,5.33333333 18.6666667,6.26666667 18.6666667,8.6 Z" id="trails" stroke-linecap="round" stroke-linejoin="round"/>
-                                </g>
-                            </g>
-                        </g>
-                    </g>
+            <svg
+              class="label_17"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              version="1.1"
+            >
+              <title>Copy Address</title>
+
+              <g
+                id="page-1"
+                stroke="none"
+                stroke-width="1"
+                fill="none"
+                fill-rule="evenodd"
+              >
+                <g id="ic/copy">
+                  <rect
+                    id="rectangles"
+                    fill-rule="nonzero"
+                    x="0"
+                    y="0"
+                    width="24"
+                    height="24"
+                  />
+                  <path
+                    d="M14.6666667,12.6 L14.6666667,15.4 C14.6666667,17.7333333 13.7333333,18.6666667 11.4,18.6666667 L8.6,18.6666667 C6.26666667,18.6666667 5.33333333,17.7333333 5.33333333,15.4 L5.33333333,12.6 C5.33333333,10.2666667 6.26666667,9.33333333 8.6,9.33333333 L11.4,9.33333333 C13.7333333,9.33333333 14.6666667,10.2666667 14.6666667,12.6 Z"
+                    id="trails"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M18.6666667,8.6 L18.6666667,11.4 C18.6666667,13.7333333 17.7333333,14.6666667 15.4,14.6666667 L14.6666667,14.6666667 L14.6666667,12.6 C14.6666667,10.2666667 13.7333333,9.33333333 11.4,9.33333333 L9.33333333,9.33333333 L9.33333333,8.6 C9.33333333,6.26666667 10.2666667,5.33333333 12.6,5.33333333 L15.4,5.33333333 C17.7333333,5.33333333 18.6666667,6.26666667 18.6666667,8.6 Z"
+                    id="trails"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </g>
-            </g>
-        </svg>
-        </div>
+              </g>
+            </svg>
+          </div>
 
           <div style="flex: 1; display: flex; justify-content: flex-end">
             <div @click="disconnect" class="label_19">
@@ -167,7 +188,7 @@
             <div
               v-if="!isMobile"
               :class="addPointVisible ? 'shake-top' : ''"
-              :style="`display: flex;position: absolute;bottom: 5px;left:-3px;opacity: ${
+              :style="`display: flex;position: absolute;top: 80px;left:-3px;opacity: ${
                 addPointVisible ? 1 : 0
               };transition: opacity 0.5s ease-in-out;`"
             >
@@ -225,10 +246,7 @@
         </div>
         <div
           class="card"
-          :style="isMobile
-              ? 'overflow:none;'
-              : `height:${taskHeight}px;`
-          "
+          :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
           v-loading="listLoading"
           element-loading-background="rgba(0, 0, 0, 0)"
           @scroll="itemScroll"
@@ -649,6 +667,12 @@ export default {
       }
     },
   },
+  created: () => {
+    const getTaskHeight = this.getTaskHeight
+    window.addEventListener('resize', () => {
+      getTaskHeight()
+    })
+  },
   watch: {
     selectWalletDialogVisible(item1, item2) {
       if (item1 !== item2) {
@@ -673,6 +697,7 @@ export default {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
+      console.log("total", total)
       this.taskHeight = total - eleHeight - walletGroupEle - 20
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle - 20
@@ -1152,12 +1177,12 @@ export default {
     margin-left: 2px;
     border-radius: 4px;
     & path {
-      stroke: #B6B6B6;
-      -webkit-stroke: #B6B6B6;
+      stroke: #b6b6b6;
+      -webkit-stroke: #b6b6b6;
     }
 
     &:hover {
-      background-color: #F5F5F5;
+      background-color: #f5f5f5;
 
       path {
         stroke: #222222;
