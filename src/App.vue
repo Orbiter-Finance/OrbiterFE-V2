@@ -71,8 +71,6 @@ export default {
       return this.$store.state.themeMode === 'light'
     },
     currentWalletAddress() {
-      console.log("web3State.coinbase,web3State.starkNet.starkNetAddress", web3State.coinbase,
-        web3State.starkNet.starkNetAddress)
       return [
         web3State.coinbase,
         web3State.starkNet.starkNetAddress
@@ -160,13 +158,11 @@ export default {
     currentWalletAddress:function (newAddress){
       
       const [web3Address, starkNetAddress] = newAddress
-      console.log("11111111web3Address, starkNetAddress", web3Address, starkNetAddress)
       if(web3Address || starkNetAddress) {
         this.getWalletAddressActList()
       }
     },
     $route: function(newPath, oldPath) {
-      console.log("2222222")
       if(newPath.path !== oldPath.path) {
         this.getWalletAddressActList()
       }
@@ -178,8 +174,6 @@ export default {
 
       const address = starkNetAddress || web3Address
       const isStarknet = !!starkNetAddress
-
-      console.log("address33333", address)
 
       if (util.getAccountAddressError(address, isStarknet)) {
         return;
@@ -204,7 +198,6 @@ export default {
         }
       }
       this.actDataList = [...dataList, ...undoneList, ...doneList]
-      console.log("this.actDataList", this.actDataList)
     },
     performInitCurrentLoginWallet () {
       performInitMobileAppWallet()

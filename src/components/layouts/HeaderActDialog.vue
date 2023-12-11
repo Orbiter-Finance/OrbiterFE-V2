@@ -667,12 +667,6 @@ export default {
       }
     },
   },
-  created: () => {
-    const getTaskHeight = this.getTaskHeight
-    window.addEventListener('resize', () => {
-      getTaskHeight()
-    })
-  },
   watch: {
     selectWalletDialogVisible(item1, item2) {
       if (item1 !== item2) {
@@ -697,7 +691,6 @@ export default {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
-      console.log("total", total)
       this.taskHeight = total - eleHeight - walletGroupEle - 20
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle - 20
@@ -863,6 +856,17 @@ export default {
     },
   },
   async mounted() {
+    const getTaskHeight = this.getTaskHeight
+    let timer = false
+    window.addEventListener('resize', () => {
+      if (!timer) {
+        timer = true
+        setTimeout(() => {
+          timer = false
+          getTaskHeight()
+        }, 200)
+      }
+    })
     setInterval(() => {
       this.countDown()
     }, 1000)
