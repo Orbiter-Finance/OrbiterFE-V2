@@ -63,7 +63,8 @@ async function orbiterRouterSend(chainId, fromAddress, toAddress, tokenAddress, 
         value,
       });
   } else {
-    const { walletAddress, provider } = OrbiterConnector.walletInfo;
+    const provider = compatibleGlobalWalletConf.value.walletPayload.provider || window.web3.currentProvider;
+    const walletAddress = fromAddress;
     const tokenContractInstance = new ethers.Contract(
       tokenAddress,
       Coin_ABI,
