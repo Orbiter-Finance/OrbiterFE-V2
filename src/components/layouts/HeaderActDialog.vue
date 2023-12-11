@@ -271,11 +271,7 @@
         twitter: null,
         bannerList: [
           {
-            url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
-            img: '4.png',
-          },
-          {
-            url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
+            url: 'https://taskon.xyz/campaign/detail/25937',
             img: '1.png',
           },
           {
