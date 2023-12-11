@@ -23,7 +23,7 @@
       </keep-alive>
     </div>
     <HeaderDialog />
-    <HeaderActDialog style="z-index:999" />
+    <HeaderActDialog :dataList="actDataList" style="z-index:999" />
   </div>
 </template>
 
@@ -35,8 +35,10 @@ import walletDispatchers, {
   BRAVE_APP,
   getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK, ZERION_APP,
 } from './util/walletsDispatchers';
-import { actDialogVisible, isMobile, setActDialogVisible, web3State } from './composition/hooks';
-import { walletIsLogin } from './composition/walletsResponsiveData';
+import { requestPointSystem } from "./common/openApiAx";
+
+import { actDialogVisible, isMobile, setActDialogVisible, web3State, updateActDataList } from './composition/hooks';
+import { walletIsLogin, compatibleGlobalWalletConf } from './composition/walletsResponsiveData';
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import * as lightbg from './assets/v2/light-bg.png'
@@ -50,6 +52,7 @@ import {
   isBraveWallet,
 } from './util/walletsDispatchers/utils'
 import { isMobileDevice, isBrowserApp } from './util';
+import util from './util/util';
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from "./util/constants/starknet/helper";
@@ -66,6 +69,14 @@ export default {
     },
     isLightMode () {
       return this.$store.state.themeMode === 'light'
+    },
+    currentWalletAddress() {
+      console.log("web3State.coinbase,web3State.starkNet.starkNetAddress", web3State.coinbase,
+        web3State.starkNet.starkNetAddress)
+      return [
+        web3State.coinbase,
+        web3State.starkNet.starkNetAddress
+      ].concat([])
     },
     styles () {
       if (!this.isMobile) {
@@ -107,6 +118,7 @@ export default {
   },
   data () {
     return {
+      actDataList: []
       // lightbg,
       // darkbg,
       // topbg,
@@ -115,7 +127,7 @@ export default {
   components: {
     TopNav,
     BottomNav,
-    // HeaderDialog,
+    HeaderDialog,
     HeaderActDialog
   },
   async mounted() {
@@ -144,9 +156,56 @@ export default {
       if (item1 !== item2) {
         setActDialogVisible(true)
       }
+    },
+    currentWalletAddress:function (newAddress){
+      
+      const [web3Address, starkNetAddress] = newAddress
+      console.log("11111111web3Address, starkNetAddress", web3Address, starkNetAddress)
+      if(web3Address || starkNetAddress) {
+        this.getWalletAddressActList()
+      }
+    },
+    $route: function(newPath, oldPath) {
+      console.log("2222222")
+      if(newPath.path !== oldPath.path) {
+        this.getWalletAddressActList()
+      }
     }
   },
   methods: {
+    async getWalletAddressActList() {
+      const [web3Address, starkNetAddress] = this.currentWalletAddress
+
+      const address = starkNetAddress || web3Address
+      const isStarknet = !!starkNetAddress
+
+      console.log("address33333", address)
+
+      if (util.getAccountAddressError(address, isStarknet)) {
+        return;
+      }
+
+      const res = await requestPointSystem('v2/activity/list', {
+        address,
+        pageSize: 10,
+        page: 1
+      });
+      const list = res.data.list;
+      const dataList = [];
+      const undoneList = [];
+      const doneList = [];
+      for (const data of list) {
+        for (const task of data.taskList) {
+          if (task.status) {
+            doneList.push(task);
+          } else {
+            undoneList.push(task);
+          }
+        }
+      }
+      this.actDataList = [...dataList, ...undoneList, ...doneList]
+      console.log("this.actDataList", this.actDataList)
+    },
     performInitCurrentLoginWallet () {
       performInitMobileAppWallet()
 

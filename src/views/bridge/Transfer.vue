@@ -785,7 +785,7 @@ export default {
       this.isWhiteWallet = !!util.isWhite();
       if (oldValue !== newValue && newValue !== '0x') {
         this.updateTransferInfo();
-        this.getWalletAddressPoint(newValue);
+        // this.getWalletAddressPoint(newValue);
         this.getWalletAddressActList(newValue);
         setTimeout(async () => {
           const res = await requestPointSystem('user/nfts', {
@@ -895,7 +895,7 @@ export default {
       }
       dataList.push(...undoneList);
       dataList.push(...doneList);
-      updateActDataList(dataList);
+      // updateActDataList(dataList);
       return dataList;
     },
     async fillAddress() {
