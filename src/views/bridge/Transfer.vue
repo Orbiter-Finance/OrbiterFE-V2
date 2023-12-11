@@ -403,8 +403,7 @@ import {
   updateDealerId,
   setActAddPoint,
   setActAddPointVisible,
-  updateActDataList,
-  setActDialogVisible,
+  updateActDataList, setActPoint, setActDialogVisible, setActNftList,
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
@@ -784,26 +783,22 @@ export default {
       util.log('Current wallet address', newValue);
       this.isNewVersion = false;
       this.isWhiteWallet = !!util.isWhite();
-      if (oldValue !== newValue && newValue !== '0x') this.updateTransferInfo();
-
-      this.getWalletAddressPoint(newValue);
-
-      setTimeout(async () => {
-        const dataList = await this.getWalletAddressActList(newValue);
-        const actList = JSON.parse(localStorage.getItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || '[]');
-        for (const data of dataList) {
-          if (!actList.find(item => item === `${ data.activity_id }_${ data.id }`)) {
-            localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, '0');
-          }
-        }
-        localStorage.setItem(`act_list_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, JSON.stringify(dataList.map(item => `${ item.activity_id }_${ item.id }`)));
-        let times = +(localStorage.getItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`) || 0);
-        if (times < 3) {
-          setActDialogVisible(true);
-          times++;
-          localStorage.setItem(`act_show_times_${ compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x' }`, String(times));
-        }
-      }, 0);
+      if (oldValue !== newValue && newValue !== '0x') {
+        this.updateTransferInfo();
+        this.getWalletAddressPoint(newValue);
+        this.getWalletAddressActList(newValue);
+        setTimeout(async () => {
+          const res = await requestPointSystem('user/nfts', {
+            address: newValue,
+          });
+          setActNftList(res?.data?.nfts.map((item) => {
+            return { img: `${ item }.png` };
+          }));
+        }, 0);
+      }
+      if (newValue === '0x') {
+        setActDialogVisible(false);
+      }
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
@@ -863,11 +858,11 @@ export default {
       if (util.getAccountAddressError(address)) {
         return;
       }
-      const pointRes = await requestPointSystem('user/points', {
+      const pointRes = await requestPointSystem('v2/user/points', {
         address
       });
-      this.totalPoint = pointRes.data.points;
-      const point = pointRes.data.points;
+      setActPoint(pointRes.data);
+      const point = pointRes.data.total;
       if (point) {
         setActAddPoint(String(point));
         setActAddPointVisible(true);
@@ -880,16 +875,26 @@ export default {
       if (util.getAccountAddressError(address)) {
         return;
       }
-      const res = await requestPointSystem('activity/list', {
+      const res = await requestPointSystem('v2/activity/list', {
         address,
         pageSize: 10,
         page: 1
       });
       const list = res.data.list;
       const dataList = [];
+      const undoneList = [];
+      const doneList = [];
       for (const data of list) {
-        dataList.push(...data.taskList);
+        for (const task of data.taskList) {
+          if (task.status) {
+            doneList.push(task);
+          } else {
+            undoneList.push(task);
+          }
+        }
       }
+      dataList.push(...undoneList);
+      dataList.push(...doneList);
       updateActDataList(dataList);
       return dataList;
     },

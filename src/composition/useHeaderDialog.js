@@ -9,6 +9,7 @@ export const actAddPoint = ref('0')
 export const actTotalPoint = ref('0')
 export const actBasePoint = ref('0');
 export const actTotalActivityPoint = ref('0');
+export const actNftList = ref([]);
 
 export const setStarkNetDialog = (flag) => (isStarkNetDialog.value = flag)
 export const setSelectWalletDialogVisible = (flag) =>
@@ -21,9 +22,11 @@ export const setActAddPointVisible = (flag) =>
   (actAddPointVisible.value = flag)
 export const setActAddPoint = (flag) =>
   (actAddPoint.value = flag)
-export const setActTotalPoint = (flag) =>
-  (actTotalPoint.value = flag)
-export const setActBasePoint = (flag) =>
-  (actBasePoint.value = flag)
-export const setActTotalActivityPoint = (flag) =>
-  (actTotalActivityPoint.value = flag)
+export const setActPoint = (pointData) => {
+  actTotalPoint.value = pointData.total;
+  actBasePoint.value = pointData.basePoints;
+  actTotalActivityPoint.value = pointData.totalActivityPoints;
+};
+export const setActNftList = (nftList) => {
+  actNftList.value = nftList;
+};

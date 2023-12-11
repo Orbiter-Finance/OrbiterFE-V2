@@ -101,7 +101,7 @@
     updateActDataList,
     actDialogVisible,
     actTotalPoint,
-    setActTotalPoint, setActBasePoint, setActTotalActivityPoint,
+    setActPoint,
   } from '../../composition/hooks';
   import {
     compatibleGlobalWalletConf,
@@ -184,8 +184,11 @@
       },
       connectAWallet() {
         setStarkNetDialog(false)
-        // setSelectWalletDialogVisible(true)
-        setActDialogVisible(true);
+        if (this.isLogin) {
+          setActDialogVisible(true);
+        } else {
+          setSelectWalletDialogVisible(true);
+        }
         this.$emit('closeDrawer')
       },
       showHistory() {
@@ -217,9 +220,7 @@
           address
         });
         const point = pointRes.data.total;
-        setActTotalPoint(point);
-        setActBasePoint(pointRes.data.basePoints || 0);
-        setActTotalActivityPoint(pointRes.data.totalActivityPoints || 0);
+        setActPoint(pointRes.data);
         if (point) {
           setActAddPoint(String(point));
           setActAddPointVisible(true);
@@ -232,16 +233,26 @@
         if (util.getAccountAddressError(address)) {
           return;
         }
-        const res = await requestPointSystem('activity/list', {
+        const res = await requestPointSystem('v2/activity/list', {
           address,
           pageSize: 10,
           page: 1
         });
         const list = res.data.list;
         const dataList = [];
+        const undoneList = [];
+        const doneList = [];
         for (const data of list) {
-          dataList.push(...data.taskList);
+          for (const task of data.taskList) {
+            if (task.status) {
+              doneList.push(task);
+            } else {
+              undoneList.push(task);
+            }
+          }
         }
+        dataList.push(...undoneList);
+        dataList.push(...doneList);
         updateActDataList(dataList);
         return dataList;
       }
@@ -252,10 +263,10 @@
         if (!this.$store.state.proceeding.makerTransfer.txid) return;
         const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
         if (address && address !== '0x') {
-          const pointRes = await requestPointSystem('user/points', {
+          const pointRes = await requestPointSystem('v2/user/points', {
             address
           });
-          const point = pointRes.data.points;
+          const point = pointRes.data.total;
           if (addressPointMap[address.toLowerCase()] === undefined) {
             addressPointMap[address.toLowerCase()] = point;
           }
@@ -268,7 +279,7 @@
               setActAddPointVisible(false);
             }, 3000);
           }
-          setActTotalPoint(point);
+          setActPoint(pointRes.data);
         }
       }, 5000);
 
