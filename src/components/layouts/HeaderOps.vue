@@ -98,10 +98,11 @@
     setActDialogVisible,
     setActAddPointVisible,
     setActAddPoint,
-    updateActDataList,
+    isStarkNetDialog,
     actDialogVisible,
     actTotalPoint,
     setActPoint,
+    web3State,
   } from '../../composition/hooks';
   import {
     compatibleGlobalWalletConf,
@@ -135,6 +136,9 @@
       isMobile() {
         return isMobile.value
       },
+      selectWalletDialogVisible() {
+        return actDialogVisible.value
+      },
       isLightMode () {
         return this.$store.state.themeMode === 'light'
       },
@@ -158,6 +162,13 @@
       showAddress() {
         return showAddress()
       },
+      currentWalletAddress() {
+      return [
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        web3State.starkNet.starkNetAddress,
+        ...[]
+      ]
+    },
     },
     data() {
       const selectedWallet = JSON.parse(
@@ -165,6 +176,13 @@
       )
       return {
         selectedWallet,
+      }
+    },
+    watch: {
+      selectWalletDialogVisible: function(newVisible) {
+        if(!!newVisible) {
+          this.getWalletAddressPoint()
+        }
       }
     },
     methods: {
@@ -212,8 +230,11 @@
           path: '/history',
         })
       },
-      async getWalletAddressPoint(address) {
-        if (util.getAccountAddressError(address)) {
+      async getWalletAddressPoint() {
+        const [web3Address, starkNetAddress] = this.currentWalletAddress
+        const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+        const isStarknet = !!isStarkNetDialog.value
+        if (!address || util.getAccountAddressError(address || "", isStarknet)) {
           return;
         }
         const pointRes = await requestPointSystem('v2/user/points', {
@@ -261,7 +282,7 @@
       const _this = this;
       setInterval(async () => {
         if (!this.$store.state.proceeding.makerTransfer.txid) return;
-        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        const address = this.currentWalletAddress;
         if (address && address !== '0x') {
           const pointRes = await requestPointSystem('v2/user/points', {
             address
@@ -283,8 +304,8 @@
         }
       }, 5000);
 
-      const walletAddress = await util.getAsyncWalletAddress();
-      this.getWalletAddressPoint(walletAddress);
+      // const walletAddress = await util.getAsyncWalletAddress();
+      this.getWalletAddressPoint();
     }
   }
 </script>
