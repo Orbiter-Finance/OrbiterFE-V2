@@ -40,7 +40,7 @@
             <div class="text_97">{{ networkName }}</div>
           </div>
           <div
-            v-clipboard:copy="walletAddress"
+            v-clipboard:copy="currentWalletAddress"
             v-clipboard:success="onCopySuccess"
           >
             <svg
@@ -644,7 +644,7 @@ export default {
       return starkAddress()
     },
     currentWalletAddress() {
-      if (!isStarkNetDialog.value) {
+      if (!!isStarkNetDialog.value) {
         return web3State.starkNet.starkNetAddress
       }
       return web3State.coinbase
