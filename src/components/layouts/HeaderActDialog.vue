@@ -281,6 +281,10 @@
           {
             url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
             img: '3.png',
+          },
+          {
+            url: 'https://galxe.com/izumi/campaign/GCcKhttqS4',
+            img: '4.png',
           }
         ]
       };
