@@ -181,6 +181,14 @@ export default {
         this.getNftList()
       }
     },
+    currentWalletAddress: function(newAddress){
+      if (!!newVisible) {
+        this.dataList = []
+        this.getWalletAddressActList()
+        this.getWalletAddressPoint()
+        this.getNftList()
+      }
+    }
   },
   methods: {
     getAddress() {
