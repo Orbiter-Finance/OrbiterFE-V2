@@ -47,7 +47,8 @@ import {
   web3State,
   isStarkNetDialog,
   setActAddPoint,
-  setActAddPointVisible
+  setActAddPointVisible,
+  setActPoint
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -255,6 +256,7 @@ export default {
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
+        console.log("point", point)
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
