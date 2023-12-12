@@ -17,7 +17,7 @@
         class="close-drawer"
         :style="`opacity: ${closeDrawerOpacity};padding-left: ${closeDrawerPaddingLeft}px`"
       >
-        <img class="img" :src="require('../../assets/activity/right.png')"/>
+        <img class="img" :src="require('../../assets/activity/right.png')" />
       </div>
     </div>
     <div @mouseover="mouseoverDialog" ref="block_1" class="block_1">
@@ -39,12 +39,54 @@
             <div class="text_96">{{ showWalletAddress }}</div>
             <div class="text_97">{{ networkName }}</div>
           </div>
-          <img
+          <div
             v-clipboard:copy="walletAddress"
             v-clipboard:success="onCopySuccess"
-            class="label_17"
-            :src="require('../../assets/activity/copy.png')"
-          />
+          >
+            <svg
+              class="label_17"
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              width="24px"
+              height="24px"
+              viewBox="0 0 24 24"
+              version="1.1"
+            >
+              <title>Copy Address</title>
+
+              <g
+                id="page-1"
+                stroke="none"
+                stroke-width="1"
+                fill="none"
+                fill-rule="evenodd"
+              >
+                <g id="ic/copy">
+                  <rect
+                    id="rectangles"
+                    fill-rule="nonzero"
+                    x="0"
+                    y="0"
+                    width="24"
+                    height="24"
+                  />
+                  <path
+                    d="M14.6666667,12.6 L14.6666667,15.4 C14.6666667,17.7333333 13.7333333,18.6666667 11.4,18.6666667 L8.6,18.6666667 C6.26666667,18.6666667 5.33333333,17.7333333 5.33333333,15.4 L5.33333333,12.6 C5.33333333,10.2666667 6.26666667,9.33333333 8.6,9.33333333 L11.4,9.33333333 C13.7333333,9.33333333 14.6666667,10.2666667 14.6666667,12.6 Z"
+                    id="trails"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M18.6666667,8.6 L18.6666667,11.4 C18.6666667,13.7333333 17.7333333,14.6666667 15.4,14.6666667 L14.6666667,14.6666667 L14.6666667,12.6 C14.6666667,10.2666667 13.7333333,9.33333333 11.4,9.33333333 L9.33333333,9.33333333 L9.33333333,8.6 C9.33333333,6.26666667 10.2666667,5.33333333 12.6,5.33333333 L15.4,5.33333333 C17.7333333,5.33333333 18.6666667,6.26666667 18.6666667,8.6 Z"
+                    id="trails"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </g>
+              </g>
+            </svg>
+          </div>
+
           <div style="flex: 1; display: flex; justify-content: flex-end">
             <div @click="disconnect" class="label_19">
               <img
@@ -61,9 +103,13 @@
           </div>
         </div>
       </div>
-      <div 
-      ref="block_mobile_scroll_group"
-      :style="isMobile ? `height:${taskMobileHeight}px;overflow-y: scroll; overflow-x: hidden;` : ''"
+      <div
+        ref="block_mobile_scroll_group"
+        :style="
+          isMobile
+            ? `height:${taskMobileHeight}px;overflow-y: scroll; overflow-x: hidden;`
+            : ''
+        "
       >
         <div ref="block_top_group">
           <div
@@ -93,6 +139,7 @@
                           >Basic contribution rewards for using Orbiter Finance
                           for bridge transactions.</span
                         >
+                        <a class="points_more" href="https://docs.orbiter.finance/roadmaptoultimatetrustless#example-of-dealer-profit-calculation" target="_blank">More</a>
                       </template>
                       <img
                         class="thumbnail_1_3"
@@ -113,6 +160,7 @@
                           >Task rewards for participating in Orbiter
                           Finance-related activities.</span
                         >
+                        <a class="points_more" href="https://docs.orbiter.finance/zkpapplicationsinorbiterfinance#use-case-2-zkprover" target="_blank">More</a>
                       </template>
                       <img
                         class="thumbnail_1_3"
@@ -142,7 +190,7 @@
             <div
               v-if="!isMobile"
               :class="addPointVisible ? 'shake-top' : ''"
-              :style="`display: flex;position: absolute;bottom: 5px;left:-3px;opacity: ${
+              :style="`display: flex;position: absolute;top: 80px;left:-3px;opacity: ${
                 addPointVisible ? 1 : 0
               };transition: opacity 0.5s ease-in-out;`"
             >
@@ -200,7 +248,7 @@
         </div>
         <div
           class="card"
-          :style="isStarknet ? 'height:60%;' : (isMobile ? 'overflow:none;' : `height:${taskHeight}px;`)"
+          :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
           v-loading="listLoading"
           element-loading-background="rgba(0, 0, 0, 0)"
           @scroll="itemScroll"
@@ -462,7 +510,6 @@ import {
   setActDialogVisible,
   setActDialogHover,
   transferDataState,
-  updateActDataList,
   showAddress,
   starkAddress,
   setSelectWalletDialogVisible,
@@ -479,8 +526,9 @@ import {
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
+import getUTCTime from '../../util/time'
 import { onCopySuccess } from '../../util'
-import walletDispatchers, { WALLETCONNECT } from '../../util/walletsDispatchers'
+import walletDispatchers, { WALLETCONNECT, CURRENT_SUPPORT_WALLET, METAMASK } from '../../util/walletsDispatchers'
 import { ethereumClient } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 import { disConnectStarkNetWallet } from '../../util/constants/starknet/helper'
 import { getStarknet } from 'get-starknet'
@@ -489,6 +537,7 @@ const { walletDispatchersOnDisconnect } = walletDispatchers
 
 export default {
   name: 'HeaderActDialog',
+  props: ['dataList'],
   components: {
     SvgIconThemed,
   },
@@ -519,24 +568,29 @@ export default {
       isHover: false,
       taskHeight: 0,
       taskMobileHeight: 0,
+      actDataList: [],
       bannerList: [
         {
           url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
           img: '4.png',
+          timeStamp: "2023-12-14 12:00:00"
         },
         {
           url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
           img: '1.png',
+          timeStamp: "2023-12-15 12:00:00"
         },
         {
           url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
           img: '2.png',
+          timeStamp: "2023-12-16 12:00:00"
         },
         {
           url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
           img: '3.png',
+          timeStamp: "2023-12-17 12:00:00"
         },
-      ],
+      ].filter((item)=> +new Date(item.timeStamp) >= getUTCTime()),
     }
   },
   computed: {
@@ -577,9 +631,9 @@ export default {
     actTotalActivityPoint() {
       return actTotalActivityPoint.value
     },
-    actDataList() {
-      return transferDataState.actDataList
-    },
+    // actDataList() {
+    //   return transferDataState.actDataList
+    // },
     isStarknet() {
       return isStarkNetDialog.value
     },
@@ -588,6 +642,12 @@ export default {
         return showAddress()
       }
       return starkAddress()
+    },
+    currentWalletAddress() {
+      if (!isStarkNetDialog.value) {
+        return web3State.starkNet.starkNetAddress
+      }
+      return web3State.coinbase
     },
     networkId() {
       if (!isStarkNetDialog.value) {
@@ -610,9 +670,11 @@ export default {
     },
     walletType() {
       if (!isStarkNetDialog.value) {
-        return String(compatibleGlobalWalletConf.value.walletType)
+        const walletName = String(compatibleGlobalWalletConf.value.walletType)
           .toLowerCase()
           .replace('app', '')
+
+        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase()) ? walletName : METAMASK.toLocaleLowerCase()
       } else {
         return getStarknet && getStarknet()?.id === 'braavos'
           ? 'braavos'
@@ -635,6 +697,9 @@ export default {
         }, 200)
       }
     },
+    dataList(newValue) {
+      this.actDataList = newValue
+    },
   },
   methods: {
     getTaskHeight() {
@@ -642,8 +707,8 @@ export default {
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
       this.taskHeight = total - eleHeight - walletGroupEle - 20
-      if(isMobile) {
-        this.taskMobileHeight = total - walletGroupEle - 20        
+      if (isMobile) {
+        this.taskMobileHeight = total - walletGroupEle - 20
       }
     },
     onCopySuccess,
@@ -717,8 +782,8 @@ export default {
         const scrollNum = this.scrollHei - (this.scrollHei % itemH)
         const len = Math.floor(scrollNum / itemH)
         if (
-          len >= transferDataState.actDataList.length - touchNum &&
-          transferDataState.actDataList.length < this.total
+          len >= this.actDataList.length - touchNum &&
+          this.actDataList.length < this.total
         ) {
           this.addItem()
         }
@@ -730,7 +795,7 @@ export default {
         this.addItemLoading = true
         const nextPage = this.page + 1
         const actDataList = await this.getActDataList(this.pageSize, nextPage)
-        const list = [...transferDataState.actDataList, ...actDataList]
+        const list = [...this.actDataList, ...actDataList]
         const obj = {}
         const dataList = list.filter((a) => {
           if (!obj[a.id]) {
@@ -740,14 +805,14 @@ export default {
             return false
           }
         })
-        updateActDataList(dataList)
+        this.actDataList = dataList
         this.page = Math.floor(dataList.length / this.pageSize)
         this.addItemLoading = false
       }
     },
     async getActDataList(pageSize, page) {
       const res = await requestPointSystem('v2/activity/list', {
-        address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        address: this.currentWalletAddress,
         pageSize,
         page,
       })
@@ -765,320 +830,340 @@ export default {
           }
         }
       }
-        dataList.push(...undoneList);
-        dataList.push(...doneList);
-        return dataList;
-      },
-      openUrl(url) {
-        window.open(url, '_blank');
-      },
-      mobileCloseAct() {
-        if (isMobile.value) {
-          setActDialogVisible(false);
-        }
-      },
-      closeAct() {
-        setActDialogHover(false);
-        setActDialogVisible(false);
-      },
-      formatTime(time) {
-        const arr = String(new Date(time)).split(' ');
-        if (arr.length > 3) {
-          if (+arr[3] !== new Date().getFullYear()) {
-            return `${ arr[1] } ${ arr[2] }th ${ arr[3] }`;
-          }
-          return `${ arr[1] } ${ arr[2] }th`;
-        }
-        return `${ new Date(time).getMonth() } ${ new Date(time).getDate() }th`;
-      },
-      formatTime2(time) {
-        const arr = String(new Date(time)).split(' ');
-        if (arr.length > 3) {
-          if (+arr[3] !== new Date().getFullYear()) {
-            return `${ arr[1] } ${ arr[2] }. ${ arr[3] }`;
-          }
-          return `${ arr[1] }. ${ arr[2] }`;
-        }
-        return `${ new Date(time).getMonth() }. ${ new Date(time).getDate() }`;
-      },
-      mouseoverDialog() {
-        setActDialogHover(true);
-      },
+      dataList.push(...undoneList)
+      dataList.push(...doneList)
+      this.actDataList = [...dataList]
     },
-    async mounted() {
-      setInterval(() => {
-        this.countDown();
-      }, 1000);
+    openUrl(url) {
+      window.open(url, '_blank')
     },
-  };
-  </script>
-  
-  <style lang="scss" scoped>
-  ::v-deep .el-carousel__indicators--horizontal {
-    /*position: absolute;*/
-    /*bottom: 5px;*/
-    /*text-align: right;*/
-  
-    .el-carousel__indicator--horizontal button {
-      width: 6px;
-      height: 6px;
-      background: #ffffff;
-      border-radius: 50%;
-      opacity: 0.5;
-    }
-  
-    .el-carousel__indicator--horizontal.is-active button {
-      width: 14px;
-      height: 6px;
-      background: #ffffff;
-      opacity: 1;
-      border-radius: 10px;
-    }
-  }
-  
-  .shake-top {
-    -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
-    animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
-  }
-  
-  @-webkit-keyframes shake-top {
-    0%,
-    100% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-      -webkit-transform-origin: 50% 0;
-      transform-origin: 50% 0;
-    }
-    10% {
-      -webkit-transform: rotate(2deg);
-      transform: rotate(2deg);
-    }
-    20%,
-    40%,
-    60% {
-      -webkit-transform: rotate(-4deg);
-      transform: rotate(-4deg);
-    }
-    30%,
-    50%,
-    70% {
-      -webkit-transform: rotate(4deg);
-      transform: rotate(4deg);
-    }
-    80% {
-      -webkit-transform: rotate(-2deg);
-      transform: rotate(-2deg);
-    }
-    90% {
-      -webkit-transform: rotate(2deg);
-      transform: rotate(2deg);
-    }
-  }
-  
-  @keyframes shake-top {
-    0%,
-    100% {
-      -webkit-transform: rotate(0deg);
-      transform: rotate(0deg);
-      -webkit-transform-origin: 50% 0;
-      transform-origin: 50% 0;
-    }
-    10% {
-      -webkit-transform: rotate(2deg);
-      transform: rotate(2deg);
-    }
-    20%,
-    40%,
-    60% {
-      -webkit-transform: rotate(-4deg);
-      transform: rotate(-4deg);
-    }
-    30%,
-    50%,
-    70% {
-      -webkit-transform: rotate(4deg);
-      transform: rotate(4deg);
-    }
-    80% {
-      -webkit-transform: rotate(-2deg);
-      transform: rotate(-2deg);
-    }
-    90% {
-      -webkit-transform: rotate(2deg);
-      transform: rotate(2deg);
-    }
-  }
-  
-  .act {
-    height: 100%;
-  
-    .label_2 {
-      width: 21px;
-      height: 24px;
-    }
-  
-    .text_1_2 {
-      width: 105px;
-      height: 24px;
-      overflow-wrap: break-word;
-      color: rgba(30, 180, 171, 1);
-      font-size: 18px;
-      font-family: OpenSansRoman-ExtraBold;
-      text-align: right;
-      white-space: nowrap;
-      line-height: 24px;
-      margin: 5px 0 0 3px;
-    }
-  
-    .thumbnail_1_1 {
-      width: 12px;
-      height: 13px;
-      margin-left: 11px;
-      margin-top: 5px;
-    }
-  
-    .group_1_12 {
-      background-color: rgba(0, 0, 0, 1);
-      height: 72px;
-      width: 194px;
-    }
-  
-    .box_1_48 {
-      margin: 12px 0 0 24px;
-      text-align: left;
-      display: flex;
-    }
-  
-    .text_1_8 {
-      height: 17px;
-      overflow-wrap: break-word;
-      color: rgba(255, 255, 255, 1);
-      font-size: 12px;
-      font-family: OpenSans-Regular;
-      text-align: left;
-      white-space: nowrap;
-      line-height: 17px;
-      margin-right: 4px;
-    }
-  
-    .thumbnail_1_3 {
-      width: 16px;
-      height: 16px;
-      margin-top: 1px;
-    }
-  
-    .text-wrapper_1_35 {
-      width: 28px;
-      height: 22px;
-      margin: 8px 0 20px 24px;
-      text-align: left;
-    }
-  
-    .text_1_9 {
-      width: 28px;
-      height: 22px;
-      overflow-wrap: break-word;
-      color: rgba(255, 255, 255, 1);
-      font-size: 16px;
-      font-family: OpenSansRoman-Bold;
-      font-weight: 700;
-      text-align: left;
-      white-space: nowrap;
-      line-height: 22px;
-    }
-  
-    .line_1 {
-      background-color: rgba(102, 102, 102, 0.8);
-      width: 388px;
-      height: 1px;
-      margin-top: 7px;
-    }
-  
-    .card_2 {
-      transition: height 0.28s;
-      position: relative;
-      border-radius: 12px;
-      width: 388px;
-      margin: 20px 0 0 20px;
-      background-color: #000000;
-      height: 190px;
-  
-      .down {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        position: absolute;
-        bottom: 3px;
-  
-        .img {
-          cursor: pointer;
-          width: 16px;
-          height: 16px;
+    mobileCloseAct() {
+      if (isMobile.value) {
+        setActDialogVisible(false)
+      }
+    },
+    closeAct() {
+      setActDialogHover(false)
+      setActDialogVisible(false)
+    },
+    formatTime(time) {
+      const arr = String(new Date(time)).split(' ')
+      if (arr.length > 3) {
+        if (+arr[3] !== new Date().getFullYear()) {
+          return `${arr[1]} ${arr[2]}th ${arr[3]}`
         }
+        return `${arr[1]} ${arr[2]}th`
       }
-  
-      .card_bottom {
-        position: absolute;
-        bottom: 10px;
+      return `${new Date(time).getMonth()} ${new Date(time).getDate()}th`
+    },
+    formatTime2(time) {
+      const arr = String(new Date(time)).split(' ')
+      if (arr.length > 3) {
+        if (+arr[3] !== new Date().getFullYear()) {
+          return `${arr[1]} ${arr[2]}. ${arr[3]}`
+        }
+        return `${arr[1]}. ${arr[2]}`
       }
-    }
-  
-    .text-wrapper_45 {
-      border-radius: 12px;
-      background-image: url('../../assets/activity/point_bg.png');
-      /*background-repeat: repeat-x;*/
-      background-size: 100% auto;
-      height: 120px;
-      padding-top: 2px;
-    }
-  
-    .text_98 {
-      width: 127px;
-      height: 19px;
-      overflow-wrap: break-word;
-      color: rgba(255, 255, 255, 1);
-      font-size: 14px;
-      font-family: OpenSansRoman-SemiBold;
-      text-align: left;
-      white-space: nowrap;
-      line-height: 19px;
-      margin: 16px 0 0 20px;
-    }
-  
-    .text_99 {
-      width: 60px;
-      height: 46px;
-      overflow-wrap: break-word;
-      color: rgba(255, 255, 255, 1);
-      font-size: 34px;
-      font-family: OpenSansRoman-ExtraBold;
-      text-align: left;
-      white-space: nowrap;
-      line-height: 46px;
-      margin: 8px 0 10px 20px;
-    }
-  
-    .section_54 {
+      return `${new Date(time).getMonth()}. ${new Date(time).getDate()}`
+    },
+    mouseoverDialog() {
+      setActDialogHover(true)
+    },
+  },
+  async mounted() {
+    const getTaskHeight = this.getTaskHeight
+    let timer = false
+    window.addEventListener('resize', () => {
+      if (!timer) {
+        timer = true
+        setTimeout(() => {
+          timer = false
+          getTaskHeight()
+        }, 200)
+      }
+    })
+    setInterval(() => {
+      this.countDown()
+    }, 1000)
+  },
+}
+</script>
+
+<style lang="scss" scoped>
+::v-deep .el-carousel__indicators--horizontal {
+  /*position: absolute;*/
+  /*bottom: 5px;*/
+  /*text-align: right;*/
+
+  .el-carousel__indicator--horizontal button {
+    width: 6px;
+    height: 6px;
+    background: #ffffff;
+    border-radius: 50%;
+    opacity: 0.5;
+  }
+
+  .el-carousel__indicator--horizontal.is-active button {
+    width: 14px;
+    height: 6px;
+    background: #ffffff;
+    opacity: 1;
+    border-radius: 10px;
+  }
+}
+
+.shake-top {
+  -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+  animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
+}
+
+@-webkit-keyframes shake-top {
+  0%,
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transform-origin: 50% 0;
+    transform-origin: 50% 0;
+  }
+  10% {
+    -webkit-transform: rotate(2deg);
+    transform: rotate(2deg);
+  }
+  20%,
+  40%,
+  60% {
+    -webkit-transform: rotate(-4deg);
+    transform: rotate(-4deg);
+  }
+  30%,
+  50%,
+  70% {
+    -webkit-transform: rotate(4deg);
+    transform: rotate(4deg);
+  }
+  80% {
+    -webkit-transform: rotate(-2deg);
+    transform: rotate(-2deg);
+  }
+  90% {
+    -webkit-transform: rotate(2deg);
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes shake-top {
+  0%,
+  100% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -webkit-transform-origin: 50% 0;
+    transform-origin: 50% 0;
+  }
+  10% {
+    -webkit-transform: rotate(2deg);
+    transform: rotate(2deg);
+  }
+  20%,
+  40%,
+  60% {
+    -webkit-transform: rotate(-4deg);
+    transform: rotate(-4deg);
+  }
+  30%,
+  50%,
+  70% {
+    -webkit-transform: rotate(4deg);
+    transform: rotate(4deg);
+  }
+  80% {
+    -webkit-transform: rotate(-2deg);
+    transform: rotate(-2deg);
+  }
+  90% {
+    -webkit-transform: rotate(2deg);
+    transform: rotate(2deg);
+  }
+}
+
+
+.tooltip-title  .points_more {
+  font-size: 12px;
+  color: #3478F5;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: OpenSansRoman-SemiBold;
+  padding: 0 2px;
+}
+.act {
+  height: 100%;
+
+  .label_2 {
+    width: 21px;
+    height: 24px;
+  }
+
+  .text_1_2 {
+    width: 105px;
+    height: 24px;
+    overflow-wrap: break-word;
+    color: rgba(30, 180, 171, 1);
+    font-size: 18px;
+    font-family: OpenSansRoman-ExtraBold;
+    text-align: right;
+    white-space: nowrap;
+    line-height: 24px;
+    margin: 5px 0 0 3px;
+  }
+
+  .thumbnail_1_1 {
+    width: 12px;
+    height: 13px;
+    margin-left: 11px;
+    margin-top: 5px;
+  }
+
+  .group_1_12 {
+    background-color: rgba(0, 0, 0, 1);
+    height: 72px;
+    width: 194px;
+  }
+
+  .box_1_48 {
+    margin: 12px 0 0 24px;
+    text-align: left;
+    display: flex;
+  }
+
+  .text_1_8 {
+    height: 17px;
+    overflow-wrap: break-word;
+    color: rgba(255, 255, 255, 1);
+    font-size: 12px;
+    font-family: OpenSans-Regular;
+    text-align: left;
+    white-space: nowrap;
+    line-height: 17px;
+    margin-right: 4px;
+  }
+
+  .thumbnail_1_3 {
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+  }
+
+  .text-wrapper_1_35 {
+    width: 28px;
+    height: 22px;
+    margin: 8px 0 20px 24px;
+    text-align: left;
+  }
+
+  .text_1_9 {
+    width: 28px;
+    height: 22px;
+    overflow-wrap: break-word;
+    color: rgba(255, 255, 255, 1);
+    font-size: 16px;
+    font-family: OpenSansRoman-Bold;
+    font-weight: 700;
+    text-align: left;
+    white-space: nowrap;
+    line-height: 22px;
+  }
+
+  .line_1 {
+    background-color: rgba(102, 102, 102, 0.8);
+    width: 388px;
+    height: 1px;
+    margin-top: 7px;
+  }
+
+  .card_2 {
+    transition: height 0.28s;
+    position: relative;
+    border-radius: 12px;
+    width: 388px;
+    margin: 20px 0 0 20px;
+    background-color: #000000;
+    height: 190px;
+
+    .down {
+      width: 100%;
       display: flex;
-      width: 388px;
-      height: 45px;
-      margin: 20px 0 0 20px;
+      justify-content: center;
+      position: absolute;
+      bottom: 3px;
+
+      .img {
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+      }
     }
-  
-    .box_114 {
-      border-radius: 50%;
-      height: 44px;
-      margin-top: 1px;
-      width: 44px;
+
+    .card_bottom {
+      position: absolute;
+      bottom: 10px;
     }
-  
-    .image-wrapper_74 {
-      background-color: rgba(255, 255, 255, 1);
-      border-radius: 50%;
-      height: 20px;
-      width: 20px;
-      margin: 28px 0 0 26px;
-      border: 2px solid #FFF;
+  }
+
+  .text-wrapper_45 {
+    border-radius: 12px;
+    background-image: url('../../assets/activity/point_bg.png');
+    /*background-repeat: repeat-x;*/
+    background-size: 100% auto;
+    height: 120px;
+    padding-top: 2px;
+  }
+
+  .text_98 {
+    width: 127px;
+    height: 19px;
+    overflow-wrap: break-word;
+    color: rgba(255, 255, 255, 1);
+    font-size: 14px;
+    font-family: OpenSansRoman-SemiBold;
+    text-align: left;
+    white-space: nowrap;
+    line-height: 19px;
+    margin: 16px 0 0 20px;
+  }
+
+  .text_99 {
+    width: 60px;
+    height: 46px;
+    overflow-wrap: break-word;
+    color: rgba(255, 255, 255, 1);
+    font-size: 34px;
+    font-family: OpenSansRoman-ExtraBold;
+    text-align: left;
+    white-space: nowrap;
+    line-height: 46px;
+    margin: 8px 0 10px 20px;
+  }
+
+  .section_54 {
+    display: flex;
+    width: 388px;
+    height: 45px;
+    margin: 20px 0 0 20px;
+  }
+
+  .box_114 {
+    border-radius: 50%;
+    height: 44px;
+    margin-top: 1px;
+    width: 44px;
+  }
+
+  .image-wrapper_74 {
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    margin: 28px 0 0 26px;
+    border: 2px solid #fff;
   }
 
   .text-wrapper_63 {
@@ -1118,6 +1203,20 @@ export default {
     width: 24px;
     height: 24px;
     margin-left: 2px;
+    border-radius: 4px;
+    & path {
+      stroke: #b6b6b6;
+      -webkit-stroke: #b6b6b6;
+    }
+
+    &:hover {
+      background-color: #f5f5f5;
+
+      path {
+        stroke: #222222;
+        -webkit-stroke: #222222;
+      }
+    }
   }
 
   .label_19 {
@@ -1132,6 +1231,11 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    &:hover {
+      border: 1px solid #222222;
+      background-color: transparent !important;
+    }
 
     .img {
       margin-left: 3px;
@@ -1812,7 +1916,6 @@ export default {
       width: 100%;
       margin: 8px 0 8px 20px;
       display: flex;
-
     }
 
     .text_55 {
@@ -2053,6 +2156,11 @@ export default {
 
     .label_19 {
       background: #363951;
+
+      &:hover {
+        border: 1px solid #dddddd;
+        background-color: transparent !important;
+      }
     }
 
     .close-drawer {
@@ -2083,7 +2191,7 @@ export default {
       color: rgba(255, 255, 255, 1);
 
       .image-wrapper_74 {
-        border: 2px solid #40415F;
+        border: 2px solid #40415f;
       }
     }
 
@@ -2199,7 +2307,8 @@ export default {
 
     .text-wrapper_14 {
       height: 20px;
-      background: url('../../assets/activity/fee_dark_tag_done.png') 100% no-repeat;
+      background: url('../../assets/activity/fee_dark_tag_done.png') 100%
+        no-repeat;
       background-size: 100% 100%;
     }
 
@@ -2223,6 +2332,7 @@ export default {
       background-color: #ffffff;
       position: absolute;
       width: 100%;
+      max-height: 324px;
     }
 
     .card_2 {
