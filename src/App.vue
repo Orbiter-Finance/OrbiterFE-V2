@@ -182,7 +182,8 @@ export default {
       }
     },
     currentWalletAddress: function(newAddress){
-      if (!!newVisible) {
+      const [web3Address, starkNetAddress ] = newAddress
+      if (!!web3Address || !!starkNetAddress) {
         this.dataList = []
         this.getWalletAddressActList()
         this.getWalletAddressPoint()
