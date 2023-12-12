@@ -571,24 +571,24 @@ export default {
       actDataList: [],
       bannerList: [
         {
-          url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
+          url: 'https://galxe.com/izumi/campaign/GCcKhttqS4',
           img: '4.png',
-          timeStamp: "2023-12-14 12:00:00"
+          timeStamp: "2023-12-20 12:00:00"
         },
         {
-          url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
+          url: 'https://taskon.xyz/campaign/detail/25937',
           img: '1.png',
-          timeStamp: "2023-12-15 12:00:00"
-        },
-        {
-          url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
-          img: '2.png',
-          timeStamp: "2023-12-16 12:00:00"
+          timeStamp: "2023-12-25 10:00:00"
         },
         {
           url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
+          img: '2.png',
+          timeStamp: "2023-12-14 17:00:00"
+        },
+        {
+          url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
           img: '3.png',
-          timeStamp: "2023-12-17 12:00:00"
+          timeStamp: "2023-12-20 06:00:00"
         },
       ].filter((item)=> +new Date(item.timeStamp) >= getUTCTime()),
     }
