@@ -526,6 +526,7 @@ import {
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
+import getUTCTime from '../../util/time'
 import { onCopySuccess } from '../../util'
 import walletDispatchers, { WALLETCONNECT, CURRENT_SUPPORT_WALLET, METAMASK } from '../../util/walletsDispatchers'
 import { ethereumClient } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
@@ -572,20 +573,24 @@ export default {
         {
           url: 'https://galxe.com/izumi/campaign/GCRKjtUW3A',
           img: '4.png',
+          timeStamp: "2023-12-14 12:00:00"
         },
         {
           url: 'https://galxe.com/E9KmriypoFic9hBNPghNgB/campaign/GCWagtUGGk',
           img: '1.png',
+          timeStamp: "2023-12-15 12:00:00"
         },
         {
           url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
           img: '2.png',
+          timeStamp: "2023-12-16 12:00:00"
         },
         {
           url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
           img: '3.png',
+          timeStamp: "2023-12-17 12:00:00"
         },
-      ],
+      ].filter((item)=> +new Date(item.timeStamp) >= getUTCTime()),
     }
   },
   computed: {
