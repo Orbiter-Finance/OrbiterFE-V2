@@ -797,7 +797,7 @@ export default {
     },
     async getActDataList(pageSize, page) {
       const res = await requestPointSystem('v2/activity/list', {
-        address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        address: showWalletAddress,
         pageSize,
         page,
       })

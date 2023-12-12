@@ -37,7 +37,7 @@ import walletDispatchers, {
 } from './util/walletsDispatchers';
 import { requestPointSystem } from "./common/openApiAx";
 
-import { actDialogVisible, isMobile, setActDialogVisible, web3State, updateActDataList } from './composition/hooks';
+import { actDialogVisible, isMobile, setActDialogVisible, web3State, isStarkNetDialog} from './composition/hooks';
 import { walletIsLogin, compatibleGlobalWalletConf } from './composition/walletsResponsiveData';
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
@@ -75,6 +75,9 @@ export default {
         web3State.coinbase,
         web3State.starkNet.starkNetAddress
       ].concat([])
+    },
+    selectWalletDialogVisible() {
+      return actDialogVisible.value
     },
     styles () {
       if (!this.isMobile) {
@@ -155,16 +158,11 @@ export default {
         setActDialogVisible(true)
       }
     },
-    currentWalletAddress:function (newAddress){
+    selectWalletDialogVisible:function (newVisible){
       
-      const [web3Address, starkNetAddress] = newAddress
-      if(web3Address || starkNetAddress) {
+      if(!!newVisible) {
         this.getWalletAddressActList()
-      }
-    },
-    $route: function(newPath, oldPath) {
-      if(newPath.path !== oldPath.path) {
-        this.getWalletAddressActList()
+        this.dataList = []
       }
     }
   },
@@ -172,8 +170,8 @@ export default {
     async getWalletAddressActList() {
       const [web3Address, starkNetAddress] = this.currentWalletAddress
 
-      const address = starkNetAddress || web3Address
-      const isStarknet = !!starkNetAddress
+      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const isStarknet = !!isStarkNetDialog.value
 
       if (util.getAccountAddressError(address, isStarknet)) {
         return;
