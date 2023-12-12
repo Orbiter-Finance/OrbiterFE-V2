@@ -521,7 +521,6 @@ import {
   actBasePoint,
   actTotalActivityPoint,
   actNftList,
-  setActNftList,
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -537,7 +536,6 @@ const { walletDispatchersOnDisconnect } = walletDispatchers
 
 export default {
   name: 'HeaderActDialog',
-  props: ['dataList'],
   components: {
     SvgIconThemed,
   },
@@ -568,7 +566,6 @@ export default {
       isHover: false,
       taskHeight: 0,
       taskMobileHeight: 0,
-      actDataList: [],
       bannerList: [
         {
           url: 'https://galxe.com/izumi/campaign/GCcKhttqS4',
@@ -631,9 +628,9 @@ export default {
     actTotalActivityPoint() {
       return actTotalActivityPoint.value
     },
-    // actDataList() {
-    //   return transferDataState.actDataList
-    // },
+    actDataList() {
+      return transferDataState.actDataList
+    },
     isStarknet() {
       return isStarkNetDialog.value
     },
@@ -696,9 +693,6 @@ export default {
           this.getTaskHeight()
         }, 200)
       }
-    },
-    dataList(newValue) {
-      this.actDataList = newValue
     },
   },
   methods: {
@@ -805,7 +799,7 @@ export default {
             return false
           }
         })
-        this.actDataList = dataList
+        updateActDataList(dataList)
         this.page = Math.floor(dataList.length / this.pageSize)
         this.addItemLoading = false
       }
@@ -832,7 +826,7 @@ export default {
       }
       dataList.push(...undoneList)
       dataList.push(...doneList)
-      this.actDataList = [...dataList]
+      updateActDataList([...dataList])
     },
     openUrl(url) {
       window.open(url, '_blank')

@@ -23,7 +23,7 @@
       </keep-alive>
     </div>
     <HeaderDialog />
-    <HeaderActDialog :dataList="actDataList" style="z-index: 999" />
+    <HeaderActDialog style="z-index: 999" />
   </div>
 </template>
 
@@ -49,7 +49,8 @@ import {
   setActAddPoint,
   setActAddPointVisible,
   setActPoint,
-  setActNftList
+  setActNftList,
+  updateActDataList
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -136,7 +137,6 @@ export default {
   },
   data() {
     return {
-      actDataList: [],
       // lightbg,
       // darkbg,
       // topbg,
@@ -247,7 +247,7 @@ export default {
             }
           }
         }
-        this.actDataList = [...dataList, ...undoneList, ...doneList]
+        updateActDataList([...dataList, ...undoneList, ...doneList])
       }
     },
     async getWalletAddressPoint() {
