@@ -139,6 +139,7 @@
                           >Basic contribution rewards for using Orbiter Finance
                           for bridge transactions.</span
                         >
+                        <a class="points_more" href="https://docs.orbiter.finance/roadmaptoultimatetrustless#example-of-dealer-profit-calculation" target="_blank">More</a>
                       </template>
                       <img
                         class="thumbnail_1_3"
@@ -159,6 +160,7 @@
                           >Task rewards for participating in Orbiter
                           Finance-related activities.</span
                         >
+                        <a class="points_more" href="https://docs.orbiter.finance/zkpapplicationsinorbiterfinance#use-case-2-zkprover" target="_blank">More</a>
                       </template>
                       <img
                         class="thumbnail_1_3"
@@ -525,7 +527,7 @@ import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
 import { onCopySuccess } from '../../util'
-import walletDispatchers, { WALLETCONNECT } from '../../util/walletsDispatchers'
+import walletDispatchers, { WALLETCONNECT, CURRENT_SUPPORT_WALLET, METAMASK } from '../../util/walletsDispatchers'
 import { ethereumClient } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 import { disConnectStarkNetWallet } from '../../util/constants/starknet/helper'
 import { getStarknet } from 'get-starknet'
@@ -636,6 +638,12 @@ export default {
       }
       return starkAddress()
     },
+    currentWalletAddress() {
+      if (!isStarkNetDialog.value) {
+        return web3State.starkNet.starkNetAddress
+      }
+      return web3State.coinbase
+    },
     networkId() {
       if (!isStarkNetDialog.value) {
         return compatibleGlobalWalletConf.value.walletPayload.networkId
@@ -657,9 +665,11 @@ export default {
     },
     walletType() {
       if (!isStarkNetDialog.value) {
-        return String(compatibleGlobalWalletConf.value.walletType)
+        const walletName = String(compatibleGlobalWalletConf.value.walletType)
           .toLowerCase()
           .replace('app', '')
+
+        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase()) ? walletName : METAMASK.toLocaleLowerCase()
       } else {
         return getStarknet && getStarknet()?.id === 'braavos'
           ? 'braavos'
@@ -797,7 +807,7 @@ export default {
     },
     async getActDataList(pageSize, page) {
       const res = await requestPointSystem('v2/activity/list', {
-        address: showWalletAddress,
+        address: this.currentWalletAddress,
         pageSize,
         page,
       })
@@ -817,7 +827,7 @@ export default {
       }
       dataList.push(...undoneList)
       dataList.push(...doneList)
-      return dataList
+      this.actDataList = [...dataList]
     },
     openUrl(url) {
       window.open(url, '_blank')
@@ -970,6 +980,15 @@ export default {
   }
 }
 
+
+.tooltip-title  .points_more {
+  font-size: 12px;
+  color: #3478F5;
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: OpenSansRoman-SemiBold;
+  padding: 0 2px;
+}
 .act {
   height: 100%;
 
@@ -2308,7 +2327,7 @@ export default {
       background-color: #ffffff;
       position: absolute;
       width: 100%;
-      min-height: 324px;
+      max-height: 324px;
     }
 
     .card_2 {

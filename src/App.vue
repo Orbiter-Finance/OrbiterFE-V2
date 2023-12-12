@@ -72,9 +72,10 @@ export default {
     },
     currentWalletAddress() {
       return [
-        web3State.coinbase,
-        web3State.starkNet.starkNetAddress
-      ].concat([])
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        web3State.starkNet.starkNetAddress,
+        ...[]
+      ]
     },
     selectWalletDialogVisible() {
       return actDialogVisible.value
@@ -159,10 +160,9 @@ export default {
       }
     },
     selectWalletDialogVisible:function (newVisible){
-      
       if(!!newVisible) {
-        this.getWalletAddressActList()
         this.dataList = []
+        this.getWalletAddressActList()
       }
     }
   },
