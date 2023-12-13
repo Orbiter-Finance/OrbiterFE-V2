@@ -266,7 +266,7 @@
 
             </span>
           </div>
-          <div class="nft_vice_title">While claiming activity rewards, you can also gain Basic Points.</div>
+          <div class="nft_vice_title">Claim Activity Rewards & Basic Points by completing tasks.</div>
         </div>
         <div
           class="card"
