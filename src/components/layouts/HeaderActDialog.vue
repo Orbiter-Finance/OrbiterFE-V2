@@ -135,11 +135,13 @@
                     <span class="text_1_8">Basic points</span>
                     <o-tooltip>
                       <template v-slot:titleDesc>
-                        <span
-                          >Basic contribution rewards for using Orbiter Finance
-                          for bridge transactions.</span
-                        >
-                        <a class="points_more" href="https://docs.orbiter.finance/roadmaptoultimatetrustless#example-of-dealer-profit-calculation" target="_blank">More</a>
+                        <div style="margin-left: -20px;">
+                          <span>
+                            Basic contribution rewards for using Orbiter Finance
+                          for bridge transactions.
+                          </span>
+                          <a class="points_more" href="https://docs.orbiter.finance/roadmaptoultimatetrustless#example-of-dealer-profit-calculation" target="_blank">More</a>
+                        </div>
                       </template>
                       <img
                         class="thumbnail_1_3"
@@ -156,11 +158,13 @@
                     <span class="text_1_8">Activity points</span>
                     <o-tooltip>
                       <template v-slot:titleDesc>
-                        <span
-                          >Task rewards for participating in Orbiter
-                          Finance-related activities.</span
-                        >
-                        <a class="points_more" href="https://docs.orbiter.finance/zkpapplicationsinorbiterfinance#use-case-2-zkprover" target="_blank">More</a>
+                        <div style="margin-left: -20px;">
+                          <span
+                            >Task rewards for participating in Orbiter
+                            Finance-related activities.</span
+                          >
+                          <a class="points_more" href="https://docs.orbiter.finance/zkpapplicationsinorbiterfinance#use-case-2-zkprover" target="_blank">More</a>
+                        </div>
                       </template>
                       <img
                         class="thumbnail_1_3"
@@ -207,7 +211,21 @@
           </div>
 
           <div v-if="!isStarknet" class="card_3">
-            <div class="text_14">Held Orbiter NFT</div>
+            <div class="text_14">Held Orbiter NFT
+               <o-tooltip >
+                  <template v-slot:titleDesc>
+                    <div style="margin-left: -20px;">
+                      <span>
+                        Currently, only the official Pilot NFT series held by the address is displayed, showing only one of multiple NFTs of the same rank.
+                      </span>
+                    </div>
+                  </template>
+                  <img
+                    class="thumbnail_1_3"
+                    :src="require('../../assets/activity/tooltip.png')"
+                    />
+                </o-tooltip>
+            </div>
             <div v-if="!nftList.length" class="text-wrapper_38">
               <span class="text_55">No Orbiter Series NFTs were obtained</span>
             </div>
@@ -243,7 +261,22 @@
           </div>
 
           <div style="width: 100%; display: flex; height: 45px">
-            <span class="text_21">🛸 Quests</span>
+            <span class="text_21">🛸 Quests
+              <o-tooltip >
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px;">
+                    <span>
+                      Upon completing bridging tasks and claiming Activity Points, you will also receive Basic Points.
+                    </span>
+                  </div>
+                </template>
+                <img
+                  class="thumbnail_1_3"
+                  :src="require('../../assets/activity/tooltip.png')"
+                />
+              </o-tooltip>
+
+            </span>
           </div>
         </div>
         <div
@@ -979,6 +1012,10 @@ export default {
   }
 }
 
+.ant-tooltip-inner .tooltip-title {
+
+  padding-left: 0 !important;
+}
 
 .tooltip-title  .points_more {
   font-size: 12px;
@@ -987,6 +1024,7 @@ export default {
   cursor: pointer;
   font-family: OpenSansRoman-SemiBold;
   padding: 0 2px;
+  line-height: 17px;
 }
 .act {
   height: 100%;
