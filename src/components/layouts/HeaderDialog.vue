@@ -1,7 +1,7 @@
 <template>
     <div
         class="header-dialog-box"
-        :style="{ display: this.selectWalletDialogVisible ? 'none' : 'none' }"
+        :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
         <div
             ref="navDialog"
