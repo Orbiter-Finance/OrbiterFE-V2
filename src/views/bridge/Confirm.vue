@@ -1475,7 +1475,8 @@ export default {
                     axios.post(`${process.env['VUE_APP_SDK_URL']}/dealer/report/tx`, {
                         chainId:fromChainID,
                         hash: transactionHash,
-                        channel: query.dealerId || ''
+                        channel: (query.dealerId || '').toLocaleLowerCase(),
+                        description: JSON.stringify({value: amount, from})
                     })
                 }catch(error) {
 
