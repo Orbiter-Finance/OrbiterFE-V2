@@ -39,7 +39,8 @@ export async function requestOpenApi(method, params, isV3 = true) {
 }
 
 export async function requestPointSystem(path, params) {
-  return await openApiAx.get(`/points_system/${ path }`, {
+  const url = process.env.VUE_APP_ISMAINTEST ? `/point_system_maintest/${ path }` : `/points_system/${ path }`;
+  return await openApiAx.get(url, {
     params
   });
 }

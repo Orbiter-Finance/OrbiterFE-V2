@@ -167,6 +167,7 @@ import {
 } from '../../components'
 import BigNumber from 'bignumber.js'
 import getProceeding from '../../util/proceeding/getProceeding'
+import axios from 'axios';
 import {
     getTransferContract,
     getTransferGasLimit,
@@ -1468,6 +1469,20 @@ export default {
         },
         onTransferSucceed(from, amount, fromChainID, transactionHash) {
             const { selectMakerConfig } = transferDataState
+            const { path, query } = this.$route;
+            if (process.env['VUE_APP_SDK_URL']) {
+                try {
+                    axios.post(`${process.env['VUE_APP_SDK_URL']}/dealer/report/tx`, {
+                        chainId:fromChainID,
+                        hash: transactionHash,
+                        channel: (query.dealerId || '').toLocaleLowerCase(),
+                        description: JSON.stringify({value: amount, from})
+                    })
+                }catch(error) {
+
+                }
+            }
+           
             getProceeding.UserTransferReady(
                 from,
                 selectMakerConfig.recipient,

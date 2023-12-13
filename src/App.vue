@@ -23,7 +23,7 @@
       </keep-alive>
     </div>
     <HeaderDialog />
-    <HeaderActDialog style="z-index:999" />
+    <HeaderActDialog style="z-index: 999" />
   </div>
 </template>
 
@@ -33,9 +33,29 @@ import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
   BRAVE_APP,
-  getCurrentLoginInfoFromLocalStorage, LOOPRING_APP, METAMASK, ZERION_APP,
-} from './util/walletsDispatchers';
-import { actDialogVisible, isMobile, setActDialogVisible, web3State } from './composition/hooks';
+  getCurrentLoginInfoFromLocalStorage,
+  LOOPRING_APP,
+  METAMASK,
+  ZERION_APP,
+} from './util/walletsDispatchers'
+import { requestPointSystem } from './common/openApiAx'
+
+import {
+  actDialogVisible,
+  isMobile,
+  setActDialogVisible,
+  web3State,
+  isStarkNetDialog,
+  setActAddPoint,
+  setActAddPointVisible,
+  setActPoint,
+  setActNftList,
+  updateActDataList
+} from './composition/hooks'
+import {
+  walletIsLogin,
+  compatibleGlobalWalletConf,
+} from './composition/walletsResponsiveData'
 import getZksToken from './util/tokenInfo/supportZksTokenInfo'
 import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import * as lightbg from './assets/v2/light-bg.png'
@@ -48,22 +68,36 @@ import {
   performInitMobileAppWallet,
   isBraveWallet,
 } from './util/walletsDispatchers/utils'
-import { isMobileDevice, isBrowserApp } from './util';
+import { isMobileDevice, isBrowserApp } from './util'
+import util from './util/util'
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
-import { connectStarkNetWallet } from "./util/constants/starknet/helper";
+import { connectStarkNetWallet } from './util/constants/starknet/helper'
 const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
   name: 'App',
   computed: {
-    isMobile () {
+    isMobile() {
       return isMobile.value
     },
-    isLightMode () {
+    isLogin() {
+      return walletIsLogin.value
+    },
+    isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
-    styles () {
+    currentWalletAddress() {
+      return [
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        web3State.starkNet.starkNetAddress,
+        ...[],
+      ]
+    },
+    selectWalletDialogVisible() {
+      return actDialogVisible.value
+    },
+    styles() {
       if (!this.isMobile) {
         if (this.isLightMode) {
           return {
@@ -101,7 +135,7 @@ export default {
       }
     },
   },
-  data () {
+  data() {
     return {
       // lightbg,
       // darkbg,
@@ -112,11 +146,11 @@ export default {
     TopNav,
     BottomNav,
     HeaderDialog,
-    HeaderActDialog
+    HeaderActDialog,
   },
   async mounted() {
     if (isBrowserApp()) {
-      await connectStarkNetWallet();
+      await connectStarkNetWallet()
     }
 
     if (isBraveBrowser()) {
@@ -125,7 +159,7 @@ export default {
           .request({
             method: 'web3_clientVersion',
           })
-          .then(clientVersion => {
+          .then((clientVersion) => {
             return clientVersion.split('/')[0] === 'BraveWallet'
           })
       )
@@ -135,8 +169,106 @@ export default {
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
   },
+  watch: {
+    isLogin(item1, item2) {
+      if (item1 !== item2) {
+        setActDialogVisible(true)
+      }
+    },
+    selectWalletDialogVisible: function (newVisible) {
+      if (!!newVisible) {
+        this.dataList = []
+        this.getWalletAddressActList()
+        this.getWalletAddressPoint()
+        this.getNftList()
+      }
+    },
+    currentWalletAddress: function(newAddress){
+      const [web3Address, starkNetAddress ] = newAddress
+      if (!!web3Address || !!starkNetAddress) {
+        this.dataList = []
+        this.getWalletAddressActList()
+        this.getWalletAddressPoint()
+        this.getNftList()
+      }
+    }
+  },
   methods: {
-    performInitCurrentLoginWallet () {
+    getAddress() {
+      let addressGroup = {
+        isAddress: false,
+        address: '',
+      }
+      const [web3Address, starkNetAddress] = this.currentWalletAddress
+      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const isStarknet = !!isStarkNetDialog.value
+      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+        return addressGroup
+      }
+      return {
+        ...addressGroup,
+        isAddress: true,
+        address,
+      }
+    },
+    async getNftList() {
+      const { isAddress, address } = this.getAddress()
+
+      if (isAddress) {
+        const res = await requestPointSystem('user/nfts', {
+          address,
+        })
+        setActNftList(
+          res?.data?.nfts.map((item) => {
+            return { img: `${item}.png` }
+          })
+        )
+      }
+    },
+    async getWalletAddressActList() {
+      const { isAddress, address } = this.getAddress()
+
+      if (isAddress) {
+        const res = await requestPointSystem('v2/activity/list', {
+          address,
+          pageSize: 10,
+          page: 1,
+        })
+        const list = res.data.list
+        const dataList = []
+        const undoneList = []
+        const doneList = []
+        for (const data of list) {
+          for (const task of data.taskList) {
+            if (task.status) {
+              doneList.push(task)
+            } else {
+              undoneList.push(task)
+            }
+          }
+        }
+        updateActDataList([...dataList, ...undoneList, ...doneList])
+      }
+    },
+    async getWalletAddressPoint() {
+      const { isAddress, address } = this.getAddress()
+
+      if (isAddress) {
+        const pointRes = await requestPointSystem('v2/user/points', {
+          address,
+        })
+        const point = pointRes.data.total
+        setActPoint(pointRes.data)
+        if (point) {
+          setActAddPoint(String(point))
+          setActAddPointVisible(true)
+          setTimeout(() => {
+            setActAddPointVisible(false)
+          }, 3000)
+        }
+      }
+    },
+    performInitCurrentLoginWallet() {
       performInitMobileAppWallet()
 
       getZksToken.getSupportZksTokenList()
@@ -164,8 +296,8 @@ export default {
       const isZerionWalletApp = window.ethereum?.isZerion && isMobileDevice()
       if (isZerionWalletApp) {
         const matchInitDispatcher = walletDispatchersOnInit[ZERION_APP]
-        matchInitDispatcher && matchInitDispatcher();
-        return;
+        matchInitDispatcher && matchInitDispatcher()
+        return
       }
 
       // When user connects a wallet, the information of this wallet will be added
