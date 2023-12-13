@@ -171,7 +171,7 @@ export default {
   },
   watch: {
     isLogin(item1, item2) {
-      if (item1 !== item2) {
+      if ((item1 !== item2) && !!item1) {
         setActDialogVisible(true)
       }
     },
