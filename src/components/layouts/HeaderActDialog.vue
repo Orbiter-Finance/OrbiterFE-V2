@@ -1033,7 +1033,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(255, 255, 255, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1185,7 +1185,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 14px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 19px;
@@ -1540,7 +1540,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(102, 102, 102, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1593,7 +1593,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1707,7 +1707,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1719,7 +1719,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1944,7 +1944,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -2033,7 +2033,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -2045,7 +2045,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -2106,7 +2106,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(93, 147, 247, 1);
     font-size: 12px;
-    font-family: OpenSans-Regular;
+    font-family: OpenSansRoman-Regular;
     text-align: center;
     white-space: nowrap;
     line-height: 17px;
@@ -2211,7 +2211,7 @@ export default {
       overflow-wrap: break-word;
       color: rgba(255, 255, 255, 0.4);
       font-size: 12px;
-      font-family: OpenSans-Regular;
+      font-family: OpenSansRoman-Regular;
       text-align: left;
       white-space: nowrap;
       line-height: 17px;
