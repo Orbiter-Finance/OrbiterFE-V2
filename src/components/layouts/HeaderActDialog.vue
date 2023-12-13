@@ -262,22 +262,10 @@
 
           <div style="width: 100%; display: flex; height: 45px">
             <span class="text_21">🛸 Quests
-              <o-tooltip >
-                <template v-slot:titleDesc>
-                  <div style="margin-left: -20px;">
-                    <span>
-                      Upon completing bridging tasks and claiming Activity Points, you will also receive Basic Points.
-                    </span>
-                  </div>
-                </template>
-                <img
-                  class="thumbnail_1_3"
-                  :src="require('../../assets/activity/tooltip.png')"
-                />
-              </o-tooltip>
 
             </span>
           </div>
+          <div class="nft_vice_title">While claiming activity rewards, you can also gain Basic Points.</div>
         </div>
         <div
           class="card"
@@ -564,6 +552,7 @@ import walletDispatchers, { WALLETCONNECT, CURRENT_SUPPORT_WALLET, METAMASK } fr
 import { ethereumClient } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 import { disConnectStarkNetWallet } from '../../util/constants/starknet/helper'
 import { getStarknet } from 'get-starknet'
+import { PONITS_EXPAND_COUNT } from "../../const"
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -714,10 +703,24 @@ export default {
   },
   watch: {
     selectWalletDialogVisible(item1, item2) {
+      
+      if(item1) {
+        console.log("selectWalletDialogVisible", item1)
+
+        this.showPointsCall()
+      } else {
+        this.showDetail = false
+      }
+      
       if (item1 !== item2) {
         setTimeout(() => {
           this.getTaskHeight()
         }, 200)
+      }
+    },
+    currentWalletAddress(item1, item2) {
+      if(!!item1 && !!item2) {
+        this.showPointsCall()
       }
     },
     isMobile(item1, item2) {
@@ -729,6 +732,23 @@ export default {
     },
   },
   methods: {
+    showPointsCall() {
+      const group = JSON.parse(localStorage.getItem(PONITS_EXPAND_COUNT) || JSON.stringify({}))
+      if(this.currentWalletAddress) {
+          let count = group[this.currentWalletAddress.toLocaleLowerCase()] 
+          count = count ?? 2
+          if((count !== undefined) && (count > 0)) {
+            this.showDetail = true
+            const newGroup = {
+              ...group,
+              [this.currentWalletAddress.toLocaleLowerCase()]: --count
+            }
+            localStorage.setItem(PONITS_EXPAND_COUNT, JSON.stringify(newGroup))
+          } else {
+            this.showDetail = false
+          }
+      }
+    },
     getTaskHeight() {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
@@ -1586,12 +1606,13 @@ export default {
   }
 
   .text_3 {
-    width: 90%;
+    width: 96%;
     height: 34px;
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: OpenSansRoman;
+    font-weight: 600;
     /*font-weight: NaN;*/
     text-align: left;
     line-height: 17px;
@@ -2137,6 +2158,17 @@ export default {
     margin: 12px 0 0 16px;
   }
 
+  .nft_vice_title {
+      width: 100%;
+      overflow-wrap: break-word;
+      color: #999999;
+      font-size: 14px;
+      font-family: OpenSansRoman;
+      text-align: left;
+      font-weight: 600;
+      padding: 0 0 16px 16px;
+  }
+
   .text_65 {
     cursor: pointer;
     width: 39px;
@@ -2166,8 +2198,8 @@ export default {
       }
     }
 
-    .text-wrapper_38 {
-      background: #363951;
+    .text_55, .nft_vice_title {
+      color: rgba(255, 255, 255, 0.6);
     }
 
     .text_1_3 {
@@ -2233,7 +2265,6 @@ export default {
       overflow-wrap: break-word;
       color: rgba(255, 255, 255, 0.8);
       font-size: 12px;
-      font-family: OpenSansRoman-SemiBold;
       /*font-weight: NaN;*/
       text-align: left;
       line-height: 17px;
@@ -2440,7 +2471,6 @@ export default {
         overflow-wrap: break-word;
         color: rgba(255, 255, 255, 0.8);
         font-size: 12px;
-        font-family: OpenSansRoman-SemiBold;
         /*font-weight: NaN;*/
         text-align: left;
         line-height: 17px;
