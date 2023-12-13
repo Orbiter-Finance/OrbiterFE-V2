@@ -141,7 +141,7 @@
                             Basic contribution rewards for using Orbiter Finance
                           for bridge transactions.
                           </span>
-                          <a class="points_more" href="https://docs.orbiter.finance/roadmaptoultimatetrustless#example-of-dealer-profit-calculation" target="_blank">More</a>
+                          <a class="points_more" href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards" target="_blank">More</a>
                         </div>
                       </template>
                       <img
@@ -164,7 +164,7 @@
                             >Task rewards for participating in Orbiter
                             Finance-related activities.</span
                           >
-                          <a class="points_more" href="https://docs.orbiter.finance/zkpapplicationsinorbiterfinance#use-case-2-zkprover" target="_blank">More</a>
+                          <a class="points_more" href="https://docs.orbiter.finance/o-points#activity-points-and-exchange-standards" target="_blank">More</a>
                         </div>
                       </template>
                       <img
