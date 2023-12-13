@@ -42,6 +42,7 @@
           <div
             v-clipboard:copy="currentWalletAddress"
             v-clipboard:success="onCopySuccess"
+            class="label_17"
           >
             <svg
               class="label_17"
@@ -144,7 +145,7 @@
                         </div>
                       </template>
                       <img
-                        class="thumbnail_1_3"
+                        style="width:20px;height:20px;"
                         :src="require('../../assets/activity/tip_ico.png')"
                       />
                     </o-tooltip>
@@ -221,7 +222,7 @@
                     </div>
                   </template>
                   <img
-                    class="thumbnail_1_3"
+                    style="width: 20px;height:20px;vertical-align:top;margin-left:4px;"
                     :src="require('../../assets/activity/tooltip.png')"
                     />
                 </o-tooltip>
@@ -705,8 +706,6 @@ export default {
     selectWalletDialogVisible(item1, item2) {
       
       if(item1) {
-        console.log("selectWalletDialogVisible", item1)
-
         this.showPointsCall()
       } else {
         this.showDetail = false
@@ -1225,13 +1224,11 @@ export default {
   }
 
   .text_96 {
-    width: 109px;
     height: 22px;
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 16px;
     font-family: OpenSansRoman-Bold;
-    font-weight: 700;
     text-align: left;
     white-space: nowrap;
     line-height: 22px;
@@ -1254,7 +1251,6 @@ export default {
     cursor: pointer;
     width: 24px;
     height: 24px;
-    margin-left: 2px;
     border-radius: 4px;
     & path {
       stroke: #b6b6b6;
@@ -1359,7 +1355,6 @@ export default {
     color: rgba(255, 255, 255, 1);
     font-size: 12px;
     font-family: OpenSansRoman-Bold;
-    font-weight: 700;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1431,7 +1426,6 @@ export default {
     text-align: center;
     white-space: nowrap;
     line-height: 15px;
-    font-weight: 800;
   }
 
   .close-drawer {
@@ -1585,8 +1579,7 @@ export default {
     // width: 210px;
     height: 19px;
     font-size: 14px;
-    font-family: OpenSansRoman, OpenSansRoman;
-    font-weight: bold;
+    font-family: OpenSansRoman-Bold;
     color: rgba(34, 34, 34, 1);
     line-height: 19px;
     white-space: nowrap;
@@ -1611,9 +1604,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 12px;
-    font-family: OpenSansRoman;
-    font-weight: 600;
-    /*font-weight: NaN;*/
+    font-family: OpenSansRoman-Bold;
     text-align: left;
     line-height: 17px;
   }
@@ -1976,15 +1967,13 @@ export default {
       overflow-wrap: break-word;
       color: #999999;
       font-size: 14px;
-      font-family: OpenSansRoman;
+      font-family: OpenSansRoman-Regular;
       text-align: left;
       white-space: nowrap;
-      font-weight: 600;
     }
 
     .text_14 {
       width: 100%;
-      height: 20px;
       overflow-wrap: break-word;
       color: rgba(34, 34, 34, 1);
       font-size: 16px;
@@ -1994,6 +1983,8 @@ export default {
       white-space: nowrap;
       line-height: 20px;
       margin: 3px 0 0 20px;
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -2163,9 +2154,8 @@ export default {
       overflow-wrap: break-word;
       color: #999999;
       font-size: 14px;
-      font-family: OpenSansRoman;
+      font-family: OpenSansRoman-Regular;
       text-align: left;
-      font-weight: 600;
       padding: 0 0 16px 16px;
   }
 
