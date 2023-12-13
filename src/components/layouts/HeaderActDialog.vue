@@ -1603,10 +1603,10 @@ export default {
     height: 34px;
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
-    font-size: 12px;
+    font-size: 13px;
     font-family: OpenSansRoman-Bold;
     text-align: left;
-    line-height: 17px;
+    line-height: 18px;
   }
 
   .group_3 {
@@ -2254,10 +2254,10 @@ export default {
       height: 34px;
       overflow-wrap: break-word;
       color: rgba(255, 255, 255, 0.8);
-      font-size: 12px;
+      font-size: 13px;
       /*font-weight: NaN;*/
       text-align: left;
-      line-height: 17px;
+      line-height: 18px;
     }
 
     .text_5 {
@@ -2460,10 +2460,10 @@ export default {
         height: 34px;
         overflow-wrap: break-word;
         color: rgba(255, 255, 255, 0.8);
-        font-size: 12px;
+        font-size: 13px;
         /*font-weight: NaN;*/
         text-align: left;
-        line-height: 17px;
+        line-height: 18px;
       }
 
       .text_5 {
