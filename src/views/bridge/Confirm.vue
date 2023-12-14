@@ -1308,9 +1308,9 @@ export default {
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
                 ) {
-                    if (
-                        [METAMASK, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)
-                    ) {
+                    // if (
+                    //     [METAMASK, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)
+                    // ) {
                         try {
                             if (
                                 !(await util.ensureWalletNetwork(fromChainID))
@@ -1318,22 +1318,26 @@ export default {
                                 return
                             }
                         } catch (err) {
-                            util.showMessage(err.message, 'error')
-                            return
+                            try {
+                                const matchAddChainDispatcher =
+                                    walletDispatchersOnSwitchChain[
+                                        compatibleGlobalWalletConf.value.walletType
+                                    ]
+                                if (matchAddChainDispatcher) {
+                                    matchAddChainDispatcher(
+                                        compatibleGlobalWalletConf.value.walletPayload
+                                        .provider
+                                    )
+                                    return
+                                }
+                            } catch (error) {
+                                util.showMessage(err.message, 'error')
+                                return
+                            }
                         }
-                    } else {
-                        const matchAddChainDispatcher =
-                            walletDispatchersOnSwitchChain[
-                                compatibleGlobalWalletConf.value.walletType
-                            ]
-                        if (matchAddChainDispatcher) {
-                            matchAddChainDispatcher(
-                                compatibleGlobalWalletConf.value.walletPayload
-                                    .provider
-                            )
-                            return
-                        }
-                    }
+                    // } else {
+                        
+                    // }
                 }
             }
 
