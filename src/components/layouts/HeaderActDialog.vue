@@ -133,7 +133,7 @@
               <div style="display: flex; justify-content: center; height: 73px">
                 <div class="group_1_12">
                   <div class="box_1_48">
-                    <span class="text_1_8">Basic points</span>
+                    <span class="text_1_8">Basic Points</span>
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px;">
@@ -156,7 +156,7 @@
                 </div>
                 <div class="group_1_12">
                   <div class="box_1_48">
-                    <span class="text_1_8">Activity points</span>
+                    <span class="text_1_8">Activity Points</span>
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px;">
