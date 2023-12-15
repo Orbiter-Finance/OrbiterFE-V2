@@ -180,6 +180,11 @@ export default {
                 },
                 {
                     isConnect: false,
+                    icon: 'walletconnect',
+                    title: 'WalletConnect',
+                },
+                {
+                    isConnect: false,
                     icon: 'coinbase',
                     title: 'Coinbase',
                 },
