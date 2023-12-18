@@ -610,6 +610,12 @@ export default {
           img: '3.png',
           timeStamp: "2023-12-20 06:00:00"
         },
+        {
+          url: 'https://galxe.com/aboardexchange/campaign/GCq31ttk2i',
+          img: '5.png',
+          timeStamp: "2023-12-25 07:00:00"
+        },
+        
       ].filter((item)=> +new Date(item.timeStamp) >= getUTCTime()),
     }
   },
