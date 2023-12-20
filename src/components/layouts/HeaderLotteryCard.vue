@@ -194,7 +194,7 @@ export default {
       )
 
   setActPoint({
-    total: Number(total) + Number(data.points || 0),
+    total: Number(actAddPoint) + Number(data.points || 0),
     basePoints: actBasePoint,
     totalActivityPoints: actTotalActivityPoint
   })
