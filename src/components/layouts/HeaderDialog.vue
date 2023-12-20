@@ -10,7 +10,7 @@
             "
             class="header-dialog-box-wrapper"
         >
-            <div class="toolbox-header">
+            <!-- <div class="toolbox-header">
                 <span class="toolbox-title">{{
                     isLogin ? 'Connect information' : 'Connect a Wallet'
                 }}</span>
@@ -19,7 +19,7 @@
                     class="toolbox-close"
                     iconName="close"
                 />
-            </div>
+            </div> -->
             <template v-if="!isLogin">
                 <div
                     v-for="item in loginData"
@@ -38,7 +38,7 @@
                     >
                 </div>
             </template>
-            <template v-else>
+            <!-- <template v-else>
                 <div
                     v-for="item in loginInfoData"
                     :key="item.title"
@@ -113,7 +113,7 @@
                     @click="disconnect"
                     >Disconnect</CommBtn
                 >
-            </template>
+            </template> -->
         </div>
     </div>
 </template>

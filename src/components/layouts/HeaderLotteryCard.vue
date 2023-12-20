@@ -38,13 +38,14 @@
 
             <div class="lottery-dialog-card-group">
               <div
-                :key="key"
                 class="lottery-dialog-card"
                 :class="`${
                   isShow
                     ? !isConfirm
                       ? 'lottery-dialog-card-animation'
-                      : 'lottery-dialog-card-confirm-animation'
+                      : !!(key % 2)
+                      ? 'lottery-dialog-card-confirm-animation'
+                      : 'lottery-dialog-card-confirm-animation-copy'
                     : ''
                 }`"
               >
@@ -87,16 +88,20 @@ import {
   actDialogVisible,
   isStarkNetDialog,
   web3State,
+  actTotalPoint,
   setActPoint,
-  actAddPoint,
-  actBasePoint,
-  actTotalActivityPoint,
+  setActAddPoint,
+  setActAddPointVisible,
 } from '../../composition/hooks'
+import util from '../../util/util'
 
 import {
   requestLotteryCard,
   requestLotteryCardDraw,
+  requestPointSystem,
 } from '../../common/openApiAx'
+
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
 export default {
   name: 'HeaderLotteryCard',
@@ -125,11 +130,21 @@ export default {
     selectWalletDialogVisible() {
       return actDialogVisible.value
     },
+    walletAddress() {
+      return [
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+        web3State.starkNet.starkNetAddress,
+        ...[],
+      ]
+    },
     mergeStatus() {
       return {
         address: this.currentWalletAddress,
         dialog: this.selectWalletDialogVisible,
       }
+    },
+    actTotalPointValue() {
+      return actTotalPoint.value
     },
   },
   watch: {
@@ -139,6 +154,16 @@ export default {
         (item1.address !== item2.address || item1.dialog !== item2.dialog)
       ) {
         this.getLotteryCardData()
+      }
+    },
+    selectWalletDialogVisible(status) {
+      if (!status) {
+        this.handleHidden()
+        this.total = 0
+        this.progress = {
+          currentProgress: 0,
+          max: 3,
+        }
       }
     },
   },
@@ -154,19 +179,37 @@ export default {
       this.isShow = false
       this.isConfirm = false
       this.key = 0
-      this.count += 0
+      this.count = 0
     },
-    addKey() {
+    handleRefresh() {
       this.key += 1
     },
+    getAddress() {
+      let addressGroup = {
+        isAddress: false,
+        address: '',
+      }
+      const [web3Address, starkNetAddress] = this.walletAddress
+      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const isStarknet = !!isStarkNetDialog.value
+      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+        return addressGroup
+      }
+      return {
+        ...addressGroup,
+        isAddress: true,
+        address,
+      }
+    },
     async handleConfirm() {
-      if (this.total) {
-        this.isConfirm = true
+      if (Number(this.total) > 0) {
+        if (!this.isConfirm) {
+          this.isConfirm = true
+        }
         await this.getLotteryCardDataDraw()
 
-        if (!!this.count > 1) {
-          this.addKey()
-        }
+        this.handleRefresh()
+
         await this.getLotteryCardData()
       } else {
         this.handleHidden()
@@ -176,7 +219,6 @@ export default {
       const {
         data: { cardsCount = 0, progress },
         code,
-        msg,
       } = await requestLotteryCard('/points_system/user/cards', {
         address: this.currentWalletAddress.toLocaleLowerCase(),
       })
@@ -196,15 +238,33 @@ export default {
           address: this.currentWalletAddress.toLocaleLowerCase(),
         }
       )
-
-      setActPoint({
-        total: Number(actAddPoint) + Number(data.points || 0),
-        basePoints: actBasePoint,
-        totalActivityPoints: actTotalActivityPoint,
-      })
-
-      this.pointsNum = data.points || 0
+      this.pointsNum = data?.points || 0
       this.count += 1
+
+      if(Number(pointsNum)) {
+        setTimeout(async () => {
+        await this.getWalletAddressPoint()
+      }, 200)
+      }
+    },
+
+    async getWalletAddressPoint() {
+      const { isAddress, address } = this.getAddress()
+
+      if (isAddress) {
+        const pointRes = await requestPointSystem('v2/user/points', {
+          address,
+        })
+        const point = pointRes.data.total
+        setActPoint(pointRes.data)
+        if (point) {
+          setActAddPoint(String(point))
+          setActAddPointVisible(true)
+          setTimeout(() => {
+            setActAddPointVisible(false)
+          }, 3000)
+        }
+      }
     },
   },
 }
@@ -254,6 +314,37 @@ export default {
 }
 
 @keyframes card-hidden {
+  0% {
+    display: flex;
+    transform: rotateY(180deg) scale(1);
+  }
+  12% {
+    transform: rotateY(0deg) scale(0.2);
+  }
+  15% {
+    display: none;
+    transform: rotateY(0deg) scale(0);
+  }
+  27.74% {
+    transform: rotateY(0deg) scale(0.2);
+    display: none;
+  }
+  27.75% {
+    display: flex;
+    transform: rotateY(0deg) scale(0.2);
+  }
+  57.5% {
+    transform: rotateY(180deg) scale(1.2);
+  }
+  66% {
+    transform: rotateY(180deg) scale(1);
+  }
+  100% {
+    transform: rotateY(180deg) scale(1);
+  }
+}
+
+@keyframes card-hidden-copy {
   0% {
     display: flex;
     transform: rotateY(180deg) scale(1);
@@ -607,6 +698,11 @@ export default {
   .lottery-dialog-card-confirm-animation {
     animation: card-hidden 3.5s forwards;
     -webkit-animation: card-hidden 3.5s forwards;
+  }
+
+  .lottery-dialog-card-confirm-animation-copy {
+    animation: card-hidden-copy 3.5s forwards;
+    -webkit-animation: card-hidden-copy 3.5s forwards;
   }
 
   .lottery-bg-1-animation {
