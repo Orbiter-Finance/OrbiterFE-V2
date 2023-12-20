@@ -34,7 +34,7 @@
     "19-1": {
         "ETH-ETH": {
             "gasFee": 0.5,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0058,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -44,7 +44,7 @@
         },
         "USDT-USDT": {
             "gasFee": 1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 20000,
@@ -54,7 +54,7 @@
         },
         "USDC-USDC": {
             "gasFee": 1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 20000,
@@ -819,7 +819,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
             "minPrice": 0.001,
-            "tradingFee": 0.0025,
+            "tradingFee": 0.0058,
             "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
@@ -1145,7 +1145,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0035,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -1189,7 +1189,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0058,
             "gasFee": 10,
             "startTime": 0,
             "endTime": 99999999999999
@@ -1503,14 +1503,14 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0058,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
         },
         "USDC-USDC": {
             "gasFee": 1.5,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 20000,
@@ -2013,7 +2013,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0058,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2279,7 +2279,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.005,
+            "tradingFee": 0.0058,
             "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
@@ -2289,14 +2289,14 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 20000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
         },
         "USDT-USDT": {
             "gasFee": 1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 20000,
@@ -2918,7 +2918,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 6,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -2928,7 +2928,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 3000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 2,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3062,7 +3062,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 6,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3150,7 +3150,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 6,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3315,16 +3315,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 2,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -3332,17 +3322,6 @@
             "minPrice": 0.1,
             "tradingFee": 1.2,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.5,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3357,39 +3336,6 @@
             "slippage": 50,
             "startTime": 0,
             "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "2-1": {
@@ -3398,7 +3344,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3408,7 +3354,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 0,
             "startTime": 1651842601,
             "endTime": 99999999999999
@@ -3423,16 +3369,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 20.8,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -3444,17 +3380,6 @@
             "startTime": 1651842601,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -3462,39 +3387,6 @@
             "minPrice": 0.1,
             "tradingFee": 10,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1651842601,
             "endTime": 99999999999999
@@ -3530,16 +3422,6 @@
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.5,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "3-1": {
@@ -3548,7 +3430,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3558,7 +3440,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 0.5,
             "startTime": 1651842601,
             "endTime": 99999999999999
@@ -3572,16 +3454,6 @@
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 20.8,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "4-1": {
@@ -3590,19 +3462,9 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
             "minPrice": 0.001,
-            "tradingFee": 0.0055,
+            "tradingFee": 0.0058,
             "gasFee": 0,
             "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 20.8,
-            "gasFee": 0,
-            "startTime": 0,
             "endTime": 99999999999999
         },
         "USDC-USDC": {
@@ -3610,7 +3472,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 1,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -3635,16 +3497,6 @@
             "tradingFee": 0.0014,
             "gasFee": 0,
             "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 2,
-            "gasFee": 5,
-            "startTime": 0,
             "endTime": 99999999999999
         },
         "USDC-USDC": {
@@ -3674,7 +3526,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 0.15,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3699,16 +3551,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.5,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -3716,17 +3558,6 @@
             "minPrice": 0.1,
             "tradingFee": 1.2,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.5,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3741,39 +3572,6 @@
             "slippage": 50,
             "startTime": 0,
             "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "6-1": {
@@ -3782,7 +3580,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3792,7 +3590,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 0,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3807,16 +3605,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 20.8,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -3828,17 +3616,6 @@
             "startTime": 1663297201,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.002,
-            "slippage": 50,
-            "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -3846,39 +3623,6 @@
             "minPrice": 0.1,
             "tradingFee": 10,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -3915,16 +3659,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -3932,17 +3666,6 @@
             "minPrice": 0.1,
             "tradingFee": 1.8,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 2.1,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 0,
             "endTime": 99999999999999
@@ -3957,39 +3680,6 @@
             "slippage": 50,
             "startTime": 0,
             "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "7-1": {
@@ -3998,7 +3688,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -4008,7 +3698,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 0,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -4023,16 +3713,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 20.8,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4040,17 +3720,6 @@
             "minPrice": 0.1,
             "tradingFee": 10,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -4065,39 +3734,6 @@
             "slippage": 50,
             "startTime": 1636019587,
             "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 10,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
         }
     },
     "8-1": {
@@ -4106,7 +3742,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -4142,7 +3778,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -4154,7 +3790,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -4178,7 +3814,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -4202,14 +3838,14 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0074,
+            "tradingFee": 0.0058,
             "gasFee": 0.3,
             "startTime": 1663297201,
             "endTime": 99999999999999
         },
         "USDC-USDC": {
             "gasFee": 0.5,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 20000,
@@ -4219,7 +3855,7 @@
         },
         "USDT-USDT": {
             "gasFee": 0.5,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 20000,
@@ -4234,7 +3870,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -4290,16 +3926,6 @@
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "3-2": {
@@ -4332,16 +3958,6 @@
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "4-2": {
@@ -4353,16 +3969,6 @@
             "tradingFee": 0.0013,
             "gasFee": 0,
             "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0,
-            "startTime": 0,
             "endTime": 99999999999999
         },
         "USDC-USDC": {
@@ -4397,16 +4003,6 @@
             "startTime": 1663297201,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.5,
-            "gasFee": 5,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
@@ -4434,7 +4030,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0006,
+            "tradingFee": 0.0007,
             "gasFee": 0.1,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -4459,16 +4055,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4480,17 +4066,6 @@
             "startTime": 1651842601,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4498,39 +4073,6 @@
             "minPrice": 0.1,
             "tradingFee": 0.8,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1651842601,
             "endTime": 99999999999999
@@ -4567,16 +4109,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4588,17 +4120,6 @@
             "startTime": 1636019587,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4606,39 +4127,6 @@
             "minPrice": 0.1,
             "tradingFee": 0.8,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -4675,16 +4163,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 2.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4696,17 +4174,6 @@
             "startTime": 1651842601,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4714,39 +4181,6 @@
             "minPrice": 0.1,
             "tradingFee": 1.4,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1651842601,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1651842601,
             "endTime": 99999999999999
@@ -4783,16 +4217,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4804,17 +4228,6 @@
             "startTime": 1636019587,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -4822,39 +4235,6 @@
             "minPrice": 0.1,
             "tradingFee": 0.8,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -4994,7 +4374,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0003,
+            "tradingFee": 0.0007,
             "gasFee": 0.1,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -5074,16 +4454,6 @@
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 2.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "7-3": {
@@ -5116,16 +4486,6 @@
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "7-6": {
@@ -5134,7 +4494,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 0.1,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -5159,16 +4519,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -5180,17 +4530,6 @@
             "startTime": 1636019587,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -5198,39 +4537,6 @@
             "minPrice": 0.1,
             "tradingFee": 0.8,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 0.5,
             "slippage": 50,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -5267,16 +4573,6 @@
             "startTime": 1655967601,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 2.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDT-USDC": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -5288,17 +4584,6 @@
             "startTime": 1636019587,
             "endTime": 99999999999999
         },
-        "USDT-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
         "USDC-USDT": {
             "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
             "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
@@ -5306,39 +4591,6 @@
             "minPrice": 0.1,
             "tradingFee": 1.4,
             "gasFee": 0.35,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "USDC-DAI": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.8,
-            "gasFee": 0.5,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDC": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 1.8,
-            "slippage": 50,
-            "startTime": 1636019587,
-            "endTime": 99999999999999
-        },
-        "DAI-USDT": {
-            "makerAddress": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "sender": "0x1C84DAA159cf68667A54bEb412CDB8B2c193fb32",
-            "maxPrice": 100,
-            "minPrice": 0.1,
-            "tradingFee": 1.2,
-            "gasFee": 1.8,
             "slippage": 50,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -5427,16 +4679,6 @@
             "startTime": 1663297201,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 2.3,
-            "gasFee": 0,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDC-USDC": {
             "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -5467,16 +4709,6 @@
             "tradingFee": 0.0013,
             "gasFee": 0,
             "startTime": 1663297201,
-            "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.5,
-            "gasFee": 5,
-            "startTime": 0,
             "endTime": 99999999999999
         },
         "USDC-USDC": {
@@ -5538,7 +4770,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0003,
+            "tradingFee": 0.0007,
             "gasFee": 0.1,
             "startTime": 1663297201,
             "endTime": 99999999999999
@@ -5594,16 +4826,6 @@
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
-            "endTime": 99999999999999
         }
     },
     "6-3": {
@@ -5635,16 +4857,6 @@
             "tradingFee": 1.8,
             "gasFee": 0.2,
             "startTime": 1655967601,
-            "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0.2,
-            "startTime": 0,
             "endTime": 99999999999999
         }
     },
@@ -5678,7 +4890,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0006,
+            "tradingFee": 0.0007,
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
@@ -5750,7 +4962,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0006,
+            "tradingFee": 0.0007,
             "gasFee": 0.2,
             "startTime": 1655967601,
             "endTime": 99999999999999
@@ -5846,7 +5058,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0006,
+            "tradingFee": 0.0007,
             "gasFee": 1,
             "startTime": 1655967601,
             "endTime": 99999999999999
@@ -5947,16 +5159,6 @@
             "startTime": 1646064001,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDC-USDC": {
             "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -5989,16 +5191,6 @@
             "startTime": 1646064001,
             "endTime": 99999999999999
         },
-        "DAI-DAI": {
-            "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "sender": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.3,
-            "gasFee": 0,
-            "startTime": 0,
-            "endTime": 99999999999999
-        },
         "USDC-USDC": {
             "makerAddress": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
@@ -6029,16 +5221,6 @@
             "tradingFee": 0.0013,
             "gasFee": 0,
             "startTime": 1646064001,
-            "endTime": 99999999999999
-        },
-        "DAI-DAI": {
-            "makerAddress": "0x095D2918B03b2e86D68551DCF11302121fb626c9",
-            "sender": "0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940",
-            "maxPrice": 3000,
-            "minPrice": 0.1,
-            "tradingFee": 1.5,
-            "gasFee": 5,
-            "startTime": 0,
             "endTime": 99999999999999
         },
         "USDC-USDC": {
@@ -6196,7 +5378,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -6260,7 +5442,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0003,
+            "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -6292,7 +5474,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 10,
             "minPrice": 0.001,
-            "tradingFee": 0.0003,
+            "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -6336,7 +5518,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999
@@ -6360,7 +5542,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 0.2,
             "startTime": 0,
             "endTime": 99999999999999
@@ -6384,7 +5566,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
@@ -6408,7 +5590,7 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.0007,
             "gasFee": 1,
             "startTime": 0,
             "endTime": 99999999999999
@@ -6473,7 +5655,7 @@
     "14-1": {
         "ETH-ETH": {
             "gasFee": 1,
-            "tradingFee": 0.006,
+            "tradingFee": 0.0058,
             "slippage": 280,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
@@ -6487,14 +5669,14 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 1,
             "startTime": 1636019587,
             "endTime": 99999999999999
         },
         "USDT-USDT": {
             "gasFee": 1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
             "maxPrice": 20000,
@@ -6938,7 +6120,7 @@
     "17-1": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0062,
+            "tradingFee": 0.0058,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -6952,7 +6134,7 @@
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "maxPrice": 10000,
             "minPrice": 0.1,
-            "tradingFee": 10,
+            "tradingFee": 15,
             "gasFee": 0.5,
             "startTime": 1636019587,
             "endTime": 99999999999999
@@ -7227,7 +6409,7 @@
     "17-6": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0006,
+            "tradingFee": 0.0007,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -7579,7 +6761,7 @@
     "25-1": {
         "ETH-ETH": {
             "gasFee": 2,
-            "tradingFee": 0.0055,
+            "tradingFee": 0.0058,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "maxPrice": 2,
