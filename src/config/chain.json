@@ -839,5 +839,43 @@
         },
         "tokens": [],
         "infoURL": "https://manta-pacific.calderaexplorer.xyz"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "42766",
+        "networkId": "42766",
+        "internalId": "38",
+        "name": "zkfair",
+        "debug": false,
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
+        "router": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
+        },
+        "nativeCurrency": {
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://rpc.zkfair.io"
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "tokens": [
+            {
+                "name": "ETH",
+                "symbol": "ETH",
+                "decimals": 18,
+                "address": "0x4b21b980d0Dc7D3C0C6175b0A412694F3A1c7c6b"
+            }
+        ],
+        "infoURL": "https://scan.zkfair.io"
     }
 ]
