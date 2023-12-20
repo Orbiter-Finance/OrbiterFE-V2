@@ -277,7 +277,7 @@
           element-loading-background="rgba(0, 0, 0, 0)"
           @scroll="itemScroll"
         >
-          <div
+          <!-- <div
             class="box_1 box_1_top"
             style="margin-top: 0; cursor: pointer"
             @click="
@@ -375,7 +375,7 @@
               referrerpolicy="no-referrer"
               :src="require('../../assets/activity/curve_down_dark.png')"
             />
-          </div>
+          </div> -->
           <template v-for="item in actDataList">
             <div v-if="item.status === 0" class="box_1">
               <div class="text-wrapper_1 flex-row">
@@ -939,9 +939,9 @@ export default {
         }, 200)
       }
     })
-    setInterval(() => {
-      this.countDown()
-    }, 1000)
+    // setInterval(() => {
+    //   this.countDown()
+    // }, 1000)
   },
 }
 </script>
@@ -2167,7 +2167,7 @@ export default {
       font-size: 14px;
       font-family: OpenSansRoman-Regular;
       text-align: left;
-      padding: 0 0 16px 16px;
+      padding: 0 0 0 16px;
   }
 
   .text_65 {

@@ -432,7 +432,7 @@ export default {
     left: 0;
     .header-dialog-box-wrapper {
         z-index: 10000;
-        padding-bottom: 10px;
+        padding: 26px 0 10px;
         box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
         border-radius: 20px;
         .toolbox-header {

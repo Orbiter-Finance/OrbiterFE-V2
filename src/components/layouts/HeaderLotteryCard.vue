@@ -111,8 +111,8 @@ export default {
       isShow: false,
       isConfirm: false,
       isPending: false,
+      disabled: false,
       pointsNum: 0,
-      count: 0,
       key: 0,
       progress: {
         currentProgress: 0,
@@ -179,7 +179,6 @@ export default {
       this.isShow = false
       this.isConfirm = false
       this.key = 0
-      this.count = 0
     },
     handleRefresh() {
       this.key += 1
@@ -202,17 +201,15 @@ export default {
       }
     },
     async handleConfirm() {
-      if (Number(this.total) > 0) {
-        if (!this.isConfirm) {
-          this.isConfirm = true
+      if (!this.disabled) {
+        if (Number(this.total) > 0) {
+          this.disabled = true
+          await this.getLotteryCardDataDraw(true)
+
+          await this.getLotteryCardData()
+        } else {
+          this.handleHidden()
         }
-        await this.getLotteryCardDataDraw()
-
-        this.handleRefresh()
-
-        await this.getLotteryCardData()
-      } else {
-        this.handleHidden()
       }
     },
     async getLotteryCardData() {
@@ -231,20 +228,27 @@ export default {
         }
       }
     },
-    async getLotteryCardDataDraw() {
+    async getLotteryCardDataDraw(isRefresh) {
       const { data } = await requestLotteryCardDraw(
         '/points_system/user/card/draw',
         {
           address: this.currentWalletAddress.toLocaleLowerCase(),
         }
       )
-      this.pointsNum = data?.points || 0
-      this.count += 1
 
-      if(Number(pointsNum)) {
+      if (!!isRefresh) {
+        this.handleRefresh()
+        if (!this.isConfirm) {
+          this.isConfirm = true
+        }
+      }
+      const points = data?.points || 0
+      this.disabled = false
+      if (Number(points)) {
         setTimeout(async () => {
-        await this.getWalletAddressPoint()
-      }, 200)
+          this.pointsNum = points
+          await this.getWalletAddressPoint()
+        }, 200)
       }
     },
 
