@@ -51,8 +51,8 @@
                 <div class="lottery-dialog-card-face">
                   <div class="lottery-card-points">+{{ pointsNum }}</div>
                   <div class="lottery-card-points-rule">
-                    Revealing cards to unlock <br /> <span>O-Points(1-20)</span> is
-                    achievable by
+                    Revealing cards to unlock <br />
+                    <span>O-Points(1-20)</span> is achievable by
                     <span>bridging 3 TXs.</span>
                   </div>
                 </div>
@@ -90,7 +90,7 @@ import {
   setActPoint,
   actAddPoint,
   actBasePoint,
-  actTotalActivityPoint
+  actTotalActivityPoint,
 } from '../../composition/hooks'
 
 import {
@@ -107,6 +107,7 @@ export default {
       isConfirm: false,
       isPending: false,
       pointsNum: 0,
+      count: 0,
       key: 0,
       progress: {
         currentProgress: 0,
@@ -125,19 +126,21 @@ export default {
       return actDialogVisible.value
     },
     mergeStatus() {
-      return ({
+      return {
         address: this.currentWalletAddress,
-        dialog: this.selectWalletDialogVisible
-      })
-    }
+        dialog: this.selectWalletDialogVisible,
+      }
+    },
   },
   watch: {
     mergeStatus(item1, item2) {
-
-      if (item1.dialog && ((item1.address !== item2.address) || (item1.dialog !== item2.dialog))) {
+      if (
+        item1.dialog &&
+        (item1.address !== item2.address || item1.dialog !== item2.dialog)
+      ) {
         this.getLotteryCardData()
       }
-    }
+    },
   },
   methods: {
     async handleShow() {
@@ -150,7 +153,8 @@ export default {
     handleHidden() {
       this.isShow = false
       this.isConfirm = false
-      this.key=0
+      this.key = 0
+      this.count += 0
     },
     addKey() {
       this.key += 1
@@ -160,7 +164,7 @@ export default {
         this.isConfirm = true
         await this.getLotteryCardDataDraw()
 
-        if(!!this.key) {
+        if (!!this.count > 1) {
           this.addKey()
         }
         await this.getLotteryCardData()
@@ -193,14 +197,14 @@ export default {
         }
       )
 
-  setActPoint({
-    total: Number(actAddPoint) + Number(data.points || 0),
-    basePoints: actBasePoint,
-    totalActivityPoints: actTotalActivityPoint
-  })
+      setActPoint({
+        total: Number(actAddPoint) + Number(data.points || 0),
+        basePoints: actBasePoint,
+        totalActivityPoints: actTotalActivityPoint,
+      })
 
-  
       this.pointsNum = data.points || 0
+      this.count += 1
     },
   },
 }
