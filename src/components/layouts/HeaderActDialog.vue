@@ -911,9 +911,6 @@ export default {
     formatTime2(time) {
       const arr = String(new Date(time)).split(' ')
       if (arr.length > 3) {
-        if (+arr[3] !== new Date().getFullYear()) {
-          return `${arr[1]} ${arr[2]}. ${arr[3]}`
-        }
         return `${arr[1]}. ${arr[2]}`
       }
       return `${new Date(time).getMonth()}. ${new Date(time).getDate()}`
