@@ -472,7 +472,8 @@
                     <span class="text_9">Done</span>
                   </div>
                   <div class="text_10">
-                    Until&nbsp;{{ formatTime(item.endTime) }}
+                    {{ formatTime2(item.conditions.startTime) }} -
+                    {{ formatTime2(item.conditions.endTime) }}
                   </div>
                 </div>
               </div>
@@ -900,20 +901,15 @@ export default {
     },
     formatTime(time) {
       const arr = String(new Date(time)).split(' ')
+
       if (arr.length > 3) {
-        if (+arr[3] !== new Date().getFullYear()) {
-          return `${arr[1]} ${arr[2]}th ${arr[3]}`
-        }
         return `${arr[1]} ${arr[2]}th`
       }
-      return `${new Date(time).getMonth()} ${new Date(time).getDate()}th`
+      return `${new Date(time).getMonth()}. ${new Date(time).getDate()}th`
     },
     formatTime2(time) {
       const arr = String(new Date(time)).split(' ')
       if (arr.length > 3) {
-        if (+arr[3] !== new Date().getFullYear()) {
-          return `${arr[1]} ${arr[2]}. ${arr[3]}`
-        }
         return `${arr[1]}. ${arr[2]}`
       }
       return `${new Date(time).getMonth()}. ${new Date(time).getDate()}`
