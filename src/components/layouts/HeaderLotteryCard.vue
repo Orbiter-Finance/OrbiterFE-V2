@@ -1,7 +1,11 @@
 <template>
   <div class="lottery-card-group">
     <div class="lottery-card-content">
-      <o-tooltip placement="top">
+      <CommCardTooltip
+        :visible="visible"
+        :trigger="isMobile ? 'click' : 'hover'"
+        placement="top"
+      >
         <template v-slot:titleDesc>
           <div class="lottery-tooltip">
             <div>Your chances of flopping: {{ total }}</div>
@@ -20,7 +24,7 @@
               '.png')
           "
         />
-      </o-tooltip>
+      </CommCardTooltip>
       <div v-if="total > 1" class="lottery-badge">
         <span>{{ total > 99 ? '99+' : total }}</span>
       </div>
@@ -127,6 +131,7 @@ import {
   setActPoint,
   setActAddPoint,
   setActAddPointVisible,
+  isMobile,
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -137,9 +142,13 @@ import {
 } from '../../common/openApiAx'
 
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import CommCardTooltip from '../CommCardTooltip.vue'
 
 export default {
   name: 'HeaderLotteryCard',
+  components: {
+    CommCardTooltip,
+  },
   data() {
     return {
       total: 0,
@@ -149,6 +158,7 @@ export default {
       disabled: false,
       pointsNum: 0,
       key: 0,
+      visible: false,
       progress: {
         currentProgress: 0,
         max: 3,
@@ -156,6 +166,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     currentWalletAddress() {
       if (!!isStarkNetDialog.value) {
         return web3State.starkNet.starkNetAddress
@@ -204,16 +217,23 @@ export default {
   },
   methods: {
     async handleShow() {
-      if (!!this.total) {
-        await this.getLotteryCardDataDraw()
-        this.isShow = true
-        await this.getLotteryCardData()
+        if (!this.visible && this.isMobile) {
+          this.visible = true;
+        } else {
+          this.visible = false
+          if (!!this.total) {
+            await this.getLotteryCardDataDraw()
+            this.isShow = true
+            await this.getLotteryCardData()
+          }
+
       }
     },
     handleHidden() {
       this.isShow = false
       this.isConfirm = false
       this.key = 0
+      this.visible = false
     },
     handleRefresh() {
       this.key += 1
@@ -252,7 +272,7 @@ export default {
       const { data } = await requestLotteryCardDraw(
         '/points_system/user/card/draw',
         {
-          address: this.currentWalletAddress.toLocaleLowerCase(),
+          address: this.currentWalletAddress?.toLocaleLowerCase(),
         }
       )
 
@@ -285,7 +305,7 @@ export default {
         data: { cardsCount = 0, progress },
         code,
       } = await requestLotteryCard('/points_system/user/cards', {
-        address: this.currentWalletAddress.toLocaleLowerCase(),
+        address: this.currentWalletAddress?.toLocaleLowerCase(),
       })
 
       if (Number(code) === 0) {
@@ -595,7 +615,7 @@ export default {
   height: 100vh;
   transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 9999;
+  z-index: 1999;
 
   .lottery-dialog-card-container {
     .lottery-dialog-card-centent {
