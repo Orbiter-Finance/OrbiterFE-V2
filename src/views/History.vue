@@ -68,7 +68,7 @@
                                 isMobile ? item.fromTimeStampShowShort : item.fromTimeStampShow
                     }}</span>
               <span class="col-val col-3">{{
-                        item.fromAmountValue + ' ' + item.fromSymbol
+                decimalNumC(item.fromAmountValue) + ' ' + item.fromSymbol
                     }}</span>
               <div
                 class="col-val col-4"
@@ -183,6 +183,7 @@
   import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
   import { RequestMethod, requestOpenApi } from "../common/openApiAx";
   import util from "../util/util";
+  import { decimalNum} from "../util/decimalNum"
   import BigNumber from 'bignumber.js'
   let timer = 0
   export default {
@@ -272,6 +273,9 @@
       getTransactionsHistory();
     },
     methods: {
+      decimalNumC(num) {
+        return decimalNum(num, 8)
+      },
       openUrl(url) {
         window.open(url, '_blank');
       },

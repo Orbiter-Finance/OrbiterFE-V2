@@ -848,7 +848,7 @@
         "chainId": "42766",
         "networkId": "42766",
         "internalId": "38",
-        "name": "zkfair",
+        "name": "ZKFair",
         "debug": false,
         "contracts": [
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
