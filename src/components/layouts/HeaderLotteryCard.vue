@@ -247,22 +247,7 @@ export default {
         }
       }
     },
-    async getLotteryCardData() {
-      const {
-        data: { cardsCount = 0, progress },
-        code,
-      } = await requestLotteryCard('/points_system/user/cards', {
-        address: this.currentWalletAddress.toLocaleLowerCase(),
-      })
-
-      if (Number(code) === 0) {
-        this.total = cardsCount
-        this.progress = {
-          ...this.progress,
-          ...progress,
-        }
-      }
-    },
+    
     async getLotteryCardDataDraw(isRefresh) {
       const { data } = await requestLotteryCardDraw(
         '/points_system/user/card/draw',
@@ -281,10 +266,10 @@ export default {
       this.disabled = false
 
       if (Number(point)) {
-        this.pointsNum = point
         setActAddPoint(String(point))
 
         setTimeout(() => {
+          this.pointsNum = point
           setActAddPointVisible(true)
           setTimeout(() => {
             setActAddPointVisible(false)
@@ -295,7 +280,22 @@ export default {
         }, 0)
       }
     },
+    async getLotteryCardData() {
+      const {
+        data: { cardsCount = 0, progress },
+        code,
+      } = await requestLotteryCard('/points_system/user/cards', {
+        address: this.currentWalletAddress.toLocaleLowerCase(),
+      })
 
+      if (Number(code) === 0) {
+        this.total = cardsCount
+        this.progress = {
+          ...this.progress,
+          ...progress,
+        }
+      }
+    },
     async getWalletAddressPoint() {
       const { isAddress, address } = this.getAddress()
 
