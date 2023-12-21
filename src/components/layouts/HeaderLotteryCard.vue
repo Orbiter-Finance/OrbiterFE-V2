@@ -45,7 +45,7 @@
                       ? 'lottery-dialog-card-animation'
                       : !!(key % 2)
                       ? 'lottery-dialog-card-confirm-animation'
-                      : 'lottery-dialog-card-confirm-animation-copy'
+                      : 'lottery-dialog-card-confirm-animation-next'
                     : ''
                 }`"
               >
@@ -63,6 +63,7 @@
 
             <div class="lottery-dialog-confirm-group">
               <div
+                v-if="!disabled"
                 @click.self="handleConfirm"
                 class="lottery-dialog-confirm-count"
               >
@@ -70,12 +71,46 @@
               </div>
             </div>
 
-            <div class="lottery-bg-1-animation"></div>
-            <div class="lottery-bg-2-animation"></div>
-            <div class="lottery-bg-3-animation"></div>
+            <div
+              :key="'bg-1' + key"
+              class="lottery-bg-1-animation"
+              :class="
+                isShow
+                  ? key > 0 && !!isConfirm
+                    ? 'lottery-bg-animation-next'
+                    : ''
+                  : ''
+              "
+            ></div>
+            <div
+              :key="'bg-2' + key"
+              class="lottery-bg-2-animation"
+              :class="
+                isShow
+                  ? key > 0 && !!isConfirm
+                    ? 'lottery-bg-animation-next'
+                    : ''
+                  : ''
+              "
+            ></div>
+            <div
+              :key="'bg-3' + key"
+              class="lottery-bg-3-animation"
+              :class="
+                isShow
+                  ? key > 0 && !!isConfirm
+                    ? 'lottery-bg-animation-next'
+                    : ''
+                  : ''
+              "
+            ></div>
           </div>
           <div class="lottery-dialog-close-group">
-            <div @click.self="handleHidden" class="lottery-dialog-close"></div>
+            <div
+              @click.self="handleHidden"
+              v-if="!disabled"
+              class="lottery-dialog-close"
+            ></div>
           </div>
         </div>
       </div>
@@ -242,13 +277,22 @@ export default {
           this.isConfirm = true
         }
       }
-      const points = data?.points || 0
+      const point = data?.points || 0
       this.disabled = false
-      if (Number(points)) {
+
+      if (Number(point)) {
+        this.pointsNum = point
+        setActAddPoint(String(point))
+
+        setTimeout(() => {
+          setActAddPointVisible(true)
+          setTimeout(() => {
+            setActAddPointVisible(false)
+          }, 3000)
+        }, 1000)
         setTimeout(async () => {
-          this.pointsNum = points
           await this.getWalletAddressPoint()
-        }, 200)
+        }, 0)
       }
     },
 
@@ -259,15 +303,7 @@ export default {
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
-        const point = pointRes.data.total
         setActPoint(pointRes.data)
-        if (point) {
-          setActAddPoint(String(point))
-          setActAddPointVisible(true)
-          setTimeout(() => {
-            setActAddPointVisible(false)
-          }, 3000)
-        }
       }
     },
   },
@@ -275,6 +311,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@keyframes lottery-bg-empty {
+  0% {
+    display: none;
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0;
+    display: none;
+    transform: scale(0);
+  }
+}
+
 @keyframes card-rotate {
   0%,
   84%,
@@ -348,7 +397,7 @@ export default {
   }
 }
 
-@keyframes card-hidden-copy {
+@keyframes card-hidden-next {
   0% {
     display: flex;
     transform: rotateY(180deg) scale(1);
@@ -381,8 +430,11 @@ export default {
 
 @keyframes lottery-bg-1-animation {
   0% {
-    display: block;
-    opacity: 1;
+    display: none;
+  }
+  9.99% {
+    display: none;
+    opacity: 0;
     transform: scale(0.2);
   }
   10% {
@@ -396,19 +448,22 @@ export default {
   }
   90% {
     opacity: 1;
+    transform: scale(1);
   }
   100% {
     opacity: 0;
+    transform: scale(0);
   }
 }
 
 @keyframes lottery-bg-2-animation {
   0% {
-    scale: 0;
+    transform: scale(0);
+    opacity: 1;
     display: none;
   }
   66.6% {
-    scale: 0;
+    transform: scale(0);
     display: none;
   }
   66.7% {
@@ -430,7 +485,8 @@ export default {
 
 @keyframes lottery-bg-3-animation {
   0% {
-    transform: scale(0);
+    transform: scale(0) rotate(0);
+    opacity: 1;
     display: none;
   }
   66.6% {
@@ -652,8 +708,6 @@ export default {
         display: flex;
         justify-content: center;
         align-content: center;
-        animation: fade-in 4s forwards;
-        -webkit-animation: fade-in 4s forwards;
 
         .lottery-dialog-confirm-count {
           display: flex;
@@ -670,19 +724,22 @@ export default {
           background-size: contain;
           font-weight: 800;
           cursor: pointer;
+          animation: fade-in 4s forwards;
+          -webkit-animation: fade-in 4s forwards;
         }
       }
     }
 
     .lottery-dialog-close-group {
       width: 100%;
+      height: 32px;
       display: flex;
       justify-content: center;
       align-content: center;
       margin-top: 42px;
       .lottery-dialog-close {
         width: 32px;
-        height: 32px;
+        height: 100%;
         background-image: url('../../assets/activity/header_lottery_card/close.png');
         background-repeat: no-repeat;
         background-position: center;
@@ -704,9 +761,9 @@ export default {
     -webkit-animation: card-hidden 3.5s forwards;
   }
 
-  .lottery-dialog-card-confirm-animation-copy {
-    animation: card-hidden-copy 3.5s forwards;
-    -webkit-animation: card-hidden-copy 3.5s forwards;
+  .lottery-dialog-card-confirm-animation-next {
+    animation: card-hidden-next 3.5s forwards;
+    -webkit-animation: card-hidden-next 3.5s forwards;
   }
 
   .lottery-bg-1-animation {
@@ -720,8 +777,13 @@ export default {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    animation: lottery-bg-1-animation 3s forwards;
-    -webkit-animation: lottery-bg-1-animation 3s forwards;
+    animation: lottery-bg-empty 0.525s forwards,
+      lottery-bg-1-animation 3s forwards;
+    -webkit-animation: lottery-bg-empty 0.525s forwards,
+      lottery-bg-1-animation 3s forwards;
+  }
+
+  .lottery-bg-animation-next {
   }
   .lottery-bg-2-animation {
     position: absolute;
@@ -734,9 +796,12 @@ export default {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    animation: lottery-bg-2-animation 3s forwards;
-    -webkit-animation: lottery-bg-2-animation 3s forwards;
+    animation: lottery-bg-empty 0.525s forwards,
+      lottery-bg-2-animation 3s forwards;
+    -webkit-animation: lottery-bg-empty 0.525s forwards,
+      lottery-bg-2-animation 3s forwards;
   }
+
   .lottery-bg-3-animation {
     position: absolute;
     top: 0;
@@ -748,8 +813,10 @@ export default {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    animation: lottery-bg-3-animation 3s forwards;
-    -webkit-animation: lottery-bg-3-animation 3s forwards;
+    animation: lottery-bg-empty 0.525s forwards,
+      lottery-bg-3-animation 3s forwards;
+    -webkit-animation: lottery-bg-empty 0.525s forwards,
+      lottery-bg-3-animation 3s forwards;
   }
 }
 </style>
