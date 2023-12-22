@@ -109,7 +109,7 @@ import {
   setLotteryCardTotal,
   setLotteryCardModalShow,
   setLotteryPointsNum,
-  setLotteryCardProgress
+  setLotteryCardProgress,
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -121,9 +121,8 @@ import {
 
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
-
 export default {
-  name: 'CardDialog',
+  name: 'HeaderLotteryCardDialog',
   data() {
     return {
       isConfirm: false,
@@ -469,7 +468,7 @@ export default {
 }
 
 .lottery-card-group-dialog {
-  color: #FFFFFF;
+  color: #ffffff;
   justify-content: center;
   align-items: center;
   position: fixed;
@@ -477,9 +476,12 @@ export default {
   left: 50%;
   width: 100vw;
   height: 100vh;
-  transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1999;
+  z-index: 1200;
+  -webkit-transform: translate3d(-50%, -50%, 1px);
+  -moz-transform: translate3d(-50%, -50%, 1px);
+  -o-transform: translate3d(-50%, -50%, 1px);
+  transform: translate3d(-50%, -50%, 1px);
 
   .lottery-dialog-card-container {
     .lottery-dialog-card-centent {
@@ -523,9 +525,9 @@ export default {
           width: 52%;
           height: 100%;
           position: relative;
+          z-index: 4;
           justify-content: center;
           transform-origin: 50% 50% 0;
-          transform-style: preserve-3d;
           .lottery-dialog-card-face {
             width: 100%;
             height: 100%;
@@ -656,7 +658,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1;
+    z-index: 3;
     background-image: url('../../assets/activity/header_lottery_card/lottery-bg-1.png');
     background-repeat: no-repeat;
     background-position: center;
@@ -675,7 +677,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -2;
+    z-index: 2;
     background-image: url('../../assets/activity/header_lottery_card/lottery-bg-2.png');
     background-repeat: no-repeat;
     background-position: center;
@@ -692,7 +694,7 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -3;
+    z-index: 1;
     background-image: url('../../assets/activity/header_lottery_card/lottery-bg-3.png');
     background-repeat: no-repeat;
     background-position: center;

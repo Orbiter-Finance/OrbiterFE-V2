@@ -3,14 +3,12 @@
         class="header-dialog-box"
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
-        <div
+        <!-- <div
             ref="navDialog"
-            :style="
-                !isMobile ? { right: isStarkNetDialog ? '160px' : '20px' } : {}
-            "
+            
             class="header-dialog-box-wrapper"
-        >
-            <!-- <div class="toolbox-header">
+        > 
+            <div class="toolbox-header">
                 <span class="toolbox-title">{{
                     isLogin ? 'Connect information' : 'Connect a Wallet'
                 }}</span>
@@ -113,8 +111,8 @@
                     @click="disconnect"
                     >Disconnect</CommBtn
                 >
-            </template> -->
-        </div>
+            </template>
+        </div> -->
     </div>
 </template>
 
