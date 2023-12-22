@@ -133,7 +133,7 @@
               <div style="display: flex; justify-content: center; height: 73px">
                 <div class="group_1_12">
                   <div class="box_1_48">
-                    <span class="text_1_8">Basic points</span>
+                    <span class="text_1_8">Basic Points</span>
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px;">
@@ -156,7 +156,7 @@
                 </div>
                 <div class="group_1_12">
                   <div class="box_1_48">
-                    <span class="text_1_8">Activity points</span>
+                    <span class="text_1_8">Activity Points</span>
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px;">
@@ -275,7 +275,7 @@
           element-loading-background="rgba(0, 0, 0, 0)"
           @scroll="itemScroll"
         >
-          <div
+          <!-- <div
             class="box_1 box_1_top"
             style="margin-top: 0; cursor: pointer"
             @click="
@@ -373,7 +373,7 @@
               referrerpolicy="no-referrer"
               :src="require('../../assets/activity/curve_down_dark.png')"
             />
-          </div>
+          </div> -->
           <template v-for="item in actDataList">
             <div v-if="item.status === 0" class="box_1">
               <div class="text-wrapper_1 flex-row">
@@ -472,7 +472,8 @@
                     <span class="text_9">Done</span>
                   </div>
                   <div class="text_10">
-                    Until&nbsp;{{ formatTime(item.endTime) }}
+                    {{ formatTime2(item.conditions.startTime) }} -
+                    {{ formatTime2(item.conditions.endTime) }}
                   </div>
                 </div>
               </div>
@@ -610,6 +611,12 @@ export default {
           img: '3.png',
           timeStamp: "2023-12-20 06:00:00"
         },
+        {
+          url: 'https://galxe.com/aboardexchange/campaign/GCq31ttk2i',
+          img: '5.png',
+          timeStamp: "2023-12-25 07:00:00"
+        },
+        
       ].filter((item)=> +new Date(item.timeStamp) >= getUTCTime()),
     }
   },
@@ -894,20 +901,15 @@ export default {
     },
     formatTime(time) {
       const arr = String(new Date(time)).split(' ')
+
       if (arr.length > 3) {
-        if (+arr[3] !== new Date().getFullYear()) {
-          return `${arr[1]} ${arr[2]}th ${arr[3]}`
-        }
         return `${arr[1]} ${arr[2]}th`
       }
-      return `${new Date(time).getMonth()} ${new Date(time).getDate()}th`
+      return `${new Date(time).getMonth()}. ${new Date(time).getDate()}th`
     },
     formatTime2(time) {
       const arr = String(new Date(time)).split(' ')
       if (arr.length > 3) {
-        if (+arr[3] !== new Date().getFullYear()) {
-          return `${arr[1]} ${arr[2]}. ${arr[3]}`
-        }
         return `${arr[1]}. ${arr[2]}`
       }
       return `${new Date(time).getMonth()}. ${new Date(time).getDate()}`
@@ -928,9 +930,9 @@ export default {
         }, 200)
       }
     })
-    setInterval(() => {
-      this.countDown()
-    }, 1000)
+    // setInterval(() => {
+    //   this.countDown()
+    // }, 1000)
   },
 }
 </script>
@@ -2156,7 +2158,7 @@ export default {
       font-size: 14px;
       font-family: OpenSansRoman-Regular;
       text-align: left;
-      padding: 0 0 16px 16px;
+      padding: 0 0 0 16px;
   }
 
   .text_65 {
