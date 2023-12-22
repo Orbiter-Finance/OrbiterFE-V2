@@ -24,6 +24,7 @@
     </div>
     <HeaderDialog />
     <HeaderActDialog style="z-index: 999" />
+    <CardDialog />
   </div>
 </template>
 
@@ -63,6 +64,7 @@ import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
+import CardDialog from './components/layouts/CardDialog.vue'
 import {
   setIsBraveWallet,
   performInitMobileAppWallet,
@@ -147,6 +149,7 @@ export default {
     BottomNav,
     HeaderDialog,
     HeaderActDialog,
+    CardDialog
   },
   async mounted() {
     if (isBrowserApp()) {

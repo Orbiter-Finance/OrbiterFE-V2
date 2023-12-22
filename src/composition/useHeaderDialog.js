@@ -11,6 +11,12 @@ export const actBasePoint = ref('0')
 export const actTotalActivityPoint = ref('0')
 export const actNftList = ref([])
 
+export const lotteryCardTotal = ref('0')
+export const lotteryCardModalShow = ref(false)
+export const lotteryPointsNum = ref('0')
+export const lotteryCardCurrentProgress = ref('0')
+export const lotteryCardProgressMax = ref('0')
+
 export const setStarkNetDialog = (flag) => (isStarkNetDialog.value = flag)
 export const setSelectWalletDialogVisible = (flag) =>
   (selectWalletDialogVisible.value = flag)
@@ -26,4 +32,19 @@ export const setActPoint = (pointData) => {
 }
 export const setActNftList = (nftList) => {
   actNftList.value = nftList
+}
+
+export const setLotteryCardTotal = (flag) => (lotteryCardTotal.value = flag)
+export const setLotteryCardModalShow = (flag) =>
+  (lotteryCardModalShow.value = flag)
+export const setLotteryPointsNum = (flag) => (lotteryPointsNum.value = flag)
+export const setLotteryCardDataGroup = (dataGroup) => {
+  lotteryCardTotal.value = dataGroup.lotteryCardTotal
+  lotteryCardModalShow.value = dataGroup.lotteryCardModalShow
+  lotteryPointsNum.value = dataGroup.lotteryPointsNum
+}
+
+export const setLotteryCardProgress = (dataGroup) => {
+  lotteryCardCurrentProgress.value = dataGroup.lotteryCardCurrentProgress
+  lotteryCardProgressMax.value = dataGroup.lotteryCardProgressMax
 }
