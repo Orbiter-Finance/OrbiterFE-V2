@@ -130,7 +130,6 @@ export default {
     },
     selectWalletDialogVisible(status) {
       if (!status) {
-        this.handleHidden()
         setLotteryCardTotal(0)
         setLotteryCardProgress({
           lotteryCardCurrentProgress: 0,

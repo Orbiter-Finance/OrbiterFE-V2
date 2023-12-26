@@ -3,7 +3,7 @@
         class="header-dialog-box"
         :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
     >
-        <!-- <div
+        <div
             ref="navDialog"
             
             class="header-dialog-box-wrapper"
@@ -17,7 +17,7 @@
                     class="toolbox-close"
                     iconName="close"
                 />
-            </div> -->
+            </div>
             <template v-if="!isLogin">
                 <div
                     v-for="item in loginData"
@@ -111,8 +111,8 @@
                     @click="disconnect"
                     >Disconnect</CommBtn
                 >
-            </template>
-        </div> -->
+            </template> -->
+        </div>
     </div>
 </template>
 
@@ -407,6 +407,7 @@ export default {
         .header-dialog-box-wrapper {
             position: absolute;
             top: 75px;
+            right: 0;
             width: 320px;
         }
     }
