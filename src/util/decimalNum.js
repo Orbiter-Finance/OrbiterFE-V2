@@ -8,8 +8,6 @@ export const decimalNum = (
 
   const big = num ? num.toString() : '0'
 
-  console.log(big, '1111')
-
   const negativeNChar = Number(big) < 0 ? '-' : ''
 
   const bigArr = (Number(big) < 0 ? big.slice(1) : big).toString().split('.')
@@ -35,11 +33,6 @@ export const decimalNum = (
       intStr += '.' + decStr
     }
   }
-
-  console.log(
-    'currencySymbol + negativeNChar + intStr',
-    currencySymbol + negativeNChar + intStr
-  )
 
   return currencySymbol + negativeNChar + intStr
 }
