@@ -115,7 +115,8 @@ export function getStarkNetCurrentChainId() {
       : getStarknet().provider?.provider?.baseUrl) ||
     getStarknet().provider?.nodeUrl ||
     ''
-  if (baseUrl.includes('alpha-mainnet.starknet.io')) {
+
+  if (baseUrl.includes('mainnet')) {
     return CHAIN_ID.starknet
   } else if (baseUrl.includes('alpha4.starknet.io')) {
     return CHAIN_ID.starknet_test
@@ -125,9 +126,6 @@ export function getStarkNetCurrentChainId() {
     if (getStarknet && getStarknet()?.provider?.provider?.nodeUrl) {
       if (getStarknet().provider.provider.nodeUrl.indexOf('testnet') !== -1) {
         return CHAIN_ID.starknet_test
-      }
-      if (getStarknet().provider.provider.nodeUrl.indexOf('mainnet') !== -1) {
-        return CHAIN_ID.starknet
       }
     }
     return 'unlogin'
