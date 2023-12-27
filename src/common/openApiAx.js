@@ -54,14 +54,13 @@ export async function requestPointSystem(path, params) {
   })
 }
 
-export async function requestLotteryCard(path, params) {
-  return await openApiAx.get(path, {
-    params,
-  })
-}
+export const requestLotteryCard = requestPointSystem
 
 export async function requestLotteryCardDraw(path, params) {
-  return await openApiAx.post(path, {
+  const url = process.env.VUE_APP_ISMAINTEST
+    ? `/point_system_maintest/${path}`
+    : `/points_system/${path}`
+  return await openApiAx.post(url, {
     ...params,
   })
 }

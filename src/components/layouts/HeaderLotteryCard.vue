@@ -172,7 +172,7 @@ export default {
     
     async getLotteryCardDataDraw(isRefresh) {
       const { data } = await requestLotteryCardDraw(
-        '/points_system/user/card/draw',
+        'user/card/draw',
         {
           address: this.currentWalletAddress?.toLocaleLowerCase(),
         }
@@ -205,7 +205,7 @@ export default {
       const {
         data: { cardsCount = 0, progress },
         code,
-      } = await requestLotteryCard('/points_system/user/cards', {
+      } = await requestLotteryCard('user/cards', {
         address: this.currentWalletAddress?.toLocaleLowerCase(),
       })
 
