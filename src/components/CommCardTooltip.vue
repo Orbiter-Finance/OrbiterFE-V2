@@ -67,7 +67,7 @@ export default {
 }
 .light-comm_tooltip {
     .ant-tooltip-inner {
-        color: rgba(51, 51, 51, 0.8);
+        color: #222222;
         background: #fff !important;
     }
     .ant-tooltip-arrow::before {

@@ -257,7 +257,6 @@ export default {
   line-height: 17px;
   margin-left: -20px;
   font-family: OpenSansRoman-Bold;
-  color: #222222;
   .lottery-tooltip-bottom {
     margin-top: 8px;
     font-family: OpenSansRoman-Regular;
