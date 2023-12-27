@@ -268,7 +268,30 @@
 
             </span>
           </div>
-          <div class="nft_vice_title">Claim Activity Rewards & Basic Points by completing tasks.</div>
+          <div v-if="questsShow" class="nft_vice_title" >
+            <img 
+            :src="require('../../assets/activity/banner/quests.png')" alt="">
+            <div
+            class="nft_vice_title_link"
+            @click="openUrl('https://www.layer220.io/')"
+            ></div>
+            <div class="nft_vice_title_tooltip">
+              <o-tooltip>
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px;">
+                    <span
+                      >Transactions via the Inscription Cross-Rollup Protocol will receive 5 O-Points/TX during the limited time(1 month)!  After this period, the reward will be adjusted to 3 O-Points/TX.</span
+                    >
+                    <!-- <a class="points_more" href="https://www.layer220.io/" target="_blank">More</a> -->
+                  </div>
+                </template>
+                <img
+                  class="thumbnail_1_3"
+                  :src="require('../../assets/activity/tip_ico.png')"
+                />
+              </o-tooltip>
+            </div>
+          </div>
         </div>
         <div
           class="card"
@@ -505,9 +528,9 @@
               />
             </div>
           </template>
-          <div style="padding-bottom: 36px">
+          <div style="padding-bottom: 36px" v-if="!!bannerList.length">
             <div class="text_48">More: Partners' Incentives</div>
-            <el-carousel :interval="4000" trigger="click" height="110px">
+            <el-carousel  :interval="4000" trigger="click" height="110px">
               <el-carousel-item
                 v-for="(item, index) in bannerList"
                 :key="index"
@@ -576,6 +599,7 @@ export default {
       countDownHour: '00',
       countDownDate: '00',
       left: 0,
+      questsShow:  +new Date("2024 1-26 07:00:00") >= getUTCTime(),
       nftSeries: [
         { img: '0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png' },
         { img: '0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png' },
@@ -621,7 +645,6 @@ export default {
           img: '5.png',
           timeStamp: "2023-12-25 07:00:00"
         },
-        
       ].filter((item)=> +new Date(item.timeStamp) >= getUTCTime()),
     }
   },
@@ -2163,7 +2186,35 @@ export default {
       font-size: 14px;
       font-family: OpenSansRoman-Regular;
       text-align: left;
-      padding: 0 0 0 16px;
+      padding: 0 16px;
+      position: relative;
+      top: 0;
+      left: 0;
+
+      & > img {
+        width: 100%;
+      }
+
+      .nft_vice_title_link {
+        width: 35%;
+        height: 50%;
+        position: absolute;
+        top: 50%;
+        right: 16px;
+        z-index: 2;
+        cursor: pointer;
+      }
+
+      .nft_vice_title_tooltip {
+        position: absolute;
+        top: 0;
+        right: 16px;
+        & img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
   }
 
   .text_65 {

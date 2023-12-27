@@ -110,10 +110,10 @@ export async function connectStarkNetWallet() {
 
 export function getStarkNetCurrentChainId() {
   const baseUrl =
-    (getStarknet().provider?.baseUrl
-      ? getStarknet().provider?.baseUrl
-      : getStarknet().provider?.provider?.baseUrl) ||
+    getStarknet().provider?.baseUrl ||
+    getStarknet().provider?.provider?.baseUrl ||
     getStarknet().provider?.nodeUrl ||
+    getStarknet().provider?.provider?.nodeUrl ||
     ''
 
   if (baseUrl.includes('mainnet')) {
