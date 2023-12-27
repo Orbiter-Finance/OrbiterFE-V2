@@ -328,11 +328,12 @@ export default {
       const { address } = this.getAddress()
 
       if (address && address !== '0x') {
-        this.getLotteryCardData()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
         const point = pointRes.data.total
+        console.log("point", point)
+        console.log("addressPointMap", addressPointMap)
         if (addressPointMap[address.toLowerCase()] === undefined) {
           addressPointMap[address.toLowerCase()] = point
         }
@@ -346,6 +347,7 @@ export default {
           }, 3000)
         }
         setActPoint(pointRes.data)
+        this.getLotteryCardData()
       }
     }, 5000)
 
