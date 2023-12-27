@@ -2488,7 +2488,7 @@ export default {
 
     .group_1_12 {
       .box_1_48 {
-        margin: 12px 0 0 4px;
+        margin: 12px 0 0 0;
       }
     }
 
