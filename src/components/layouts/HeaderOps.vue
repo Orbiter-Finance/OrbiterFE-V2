@@ -332,8 +332,6 @@ export default {
           address,
         })
         const point = pointRes.data.total
-        console.log("point", point)
-        console.log("addressPointMap", addressPointMap)
         if (addressPointMap[address.toLowerCase()] === undefined) {
           addressPointMap[address.toLowerCase()] = point
         }

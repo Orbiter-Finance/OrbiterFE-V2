@@ -132,7 +132,7 @@
               "
             >
               <div class="line_1"></div>
-              <div style="display: flex; justify-content: center; height: 73px">
+              <div style="display: flex; justify-content: space-between; height: 73px;padding: 0 20px;width: 100%;">
                 <div class="group_1_12">
                   <div class="box_1_48">
                     <span class="text_1_8">Basic Points</span>
@@ -1138,7 +1138,7 @@ export default {
   }
 
   .box_1_48 {
-    margin: 12px 0 0 16px;
+    margin: 12px 0 0 0;
     text-align: left;
     display: flex;
   }
@@ -1164,7 +1164,7 @@ export default {
   .text-wrapper_1_35 {
     width: 28px;
     height: 22px;
-    margin: 8px 0 20px 24px;
+    margin: 8px 0 20px;
     text-align: left;
   }
 
