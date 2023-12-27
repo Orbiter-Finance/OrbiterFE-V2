@@ -9,6 +9,8 @@ export const actAddPoint = ref('0')
 export const actTotalPoint = ref('0')
 export const actBasePoint = ref('0')
 export const actTotalActivityPoint = ref('0')
+export const actEcosystemPoints = ref('0')
+
 export const actNftList = ref([])
 
 export const lotteryCardTotal = ref('0')
@@ -29,6 +31,7 @@ export const setActPoint = (pointData) => {
   actTotalPoint.value = pointData.total
   actBasePoint.value = pointData.basePoints
   actTotalActivityPoint.value = pointData.totalActivityPoints
+  actEcosystemPoints.value = pointData.ecosystemPoints || '0'
 }
 export const setActNftList = (nftList) => {
   actNftList.value = nftList

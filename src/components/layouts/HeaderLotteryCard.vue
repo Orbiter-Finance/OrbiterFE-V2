@@ -85,7 +85,7 @@ export default {
       return lotteryPointsNum.value
     },
     total() {
-      return lotteryCardTotal.value
+      return Number(lotteryCardTotal.value)
     },
     isShow() {
       return lotteryCardModalShow.value
@@ -275,7 +275,7 @@ export default {
   width: 20px;
   height: 100%;
   margin-left: 12px;
-  line-height: normal;
+  line-height: 38px;
 
   .lottery-card-content {
     height: 30px;

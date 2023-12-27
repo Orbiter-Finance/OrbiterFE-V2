@@ -147,6 +147,7 @@
                         </div>
                       </template>
                       <img
+                        class="thumbnail_1_3"
                         style="width:20px;height:20px;"
                         :src="require('../../assets/activity/tip_ico.png')"
                       />
@@ -171,12 +172,36 @@
                       </template>
                       <img
                         class="thumbnail_1_3"
+                        style="width:20px;height:20px;"
                         :src="require('../../assets/activity/tip_ico.png')"
                       />
                     </o-tooltip>
                   </div>
                   <div class="text-wrapper_1_35">
                     <span class="text_1_9">{{ actTotalActivityPoint }}</span>
+                  </div>
+                </div>
+                <div class="group_1_12">
+                  <div class="box_1_48">
+                    <span class="text_1_8">Ecosystem Points</span>
+                    <o-tooltip>
+                      <template v-slot:titleDesc>
+                        <div style="margin-left: -20px;">
+                          <span>
+                            Basic contribution rewards for using Orbiter Finance
+                          for bridge transactions.
+                          </span>
+                          <a class="points_more" href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards" target="_blank">More</a>
+                        </div>
+                      </template>
+                      <img
+                        style="width:20px;height:20px;"
+                        :src="require('../../assets/activity/tip_ico.png')"
+                      />
+                    </o-tooltip>
+                  </div>
+                  <div class="text-wrapper_1_35">
+                    <span class="text_1_9">{{ actEcosystemPoints }}</span>
                   </div>
                 </div>
               </div>
@@ -567,6 +592,7 @@ import {
   actAddPoint,
   actTotalPoint,
   actBasePoint,
+  actEcosystemPoints,
   actTotalActivityPoint,
   actNftList,
 } from '../../composition/hooks'
@@ -682,6 +708,9 @@ export default {
     },
     actBasePoint() {
       return actBasePoint.value
+    },
+    actEcosystemPoints() {
+      return actEcosystemPoints.value
     },
     actTotalActivityPoint() {
       return actTotalActivityPoint.value
@@ -1106,11 +1135,10 @@ export default {
   .group_1_12 {
     background-color: rgba(0, 0, 0, 1);
     height: 72px;
-    width: 194px;
   }
 
   .box_1_48 {
-    margin: 12px 0 0 24px;
+    margin: 12px 0 0 16px;
     text-align: left;
     display: flex;
   }
@@ -2459,7 +2487,9 @@ export default {
     }
 
     .group_1_12 {
-      width: 45vw;
+      .box_1_48 {
+        margin: 12px 0 0 4px;
+      }
     }
 
     .line_1 {
