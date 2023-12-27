@@ -528,6 +528,8 @@ export default {
           z-index: 4;
           justify-content: center;
           transform-origin: 50% 50% 0;
+          transform-style:preserve-3d;
+
           .lottery-dialog-card-face {
             width: 100%;
             height: 100%;
