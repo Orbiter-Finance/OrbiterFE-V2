@@ -132,7 +132,7 @@
               "
             >
               <div class="line_1"></div>
-              <div style="display: flex; justify-content: space-between; height: 73px;padding: 0 20px;width: 100%;">
+              <div style="display: flex; justify-content: space-between; height: 73px;padding: 0 0 0 20px;width: 100%;">
                 <div class="group_1_12">
                   <div class="box_1_48">
                     <span class="text_1_8">Basic Points</span>
