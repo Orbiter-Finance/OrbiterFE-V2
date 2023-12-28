@@ -132,7 +132,7 @@
               "
             >
               <div class="line_1"></div>
-              <div style="display: flex; justify-content: space-between; height: 73px;padding: 0 0 0 20px;width: 100%;">
+              <div class="points_group">
                 <div class="group_1_12">
                   <div class="box_1_48">
                     <span class="text_1_8">Basic Points</span>
@@ -148,7 +148,7 @@
                       </template>
                       <img
                         class="thumbnail_1_3"
-                        style="width:20px;height:20px;"
+                        
                         :src="require('../../assets/activity/tip_ico.png')"
                       />
                     </o-tooltip>
@@ -172,7 +172,7 @@
                       </template>
                       <img
                         class="thumbnail_1_3"
-                        style="width:20px;height:20px;"
+                        
                         :src="require('../../assets/activity/tip_ico.png')"
                       />
                     </o-tooltip>
@@ -195,7 +195,7 @@
                         </div>
                       </template>
                       <img
-                        style="width:20px;height:20px;"
+                        class="thumbnail_1_3"
                         :src="require('../../assets/activity/tip_ico.png')"
                       />
                     </o-tooltip>
@@ -1137,12 +1137,26 @@ export default {
     height: 72px;
   }
 
+  .points_group {
+    display: flex;
+    justify-content: space-between;
+    height: 73px;
+    padding: 0 20px;
+    width: 100%;
+    background: #000000;
+  }
+  .group_1_12 {
+    background-color: rgba(0, 0, 0, 1);
+    height: 72px;
+  }
+
   .box_1_48 {
     margin: 12px 0 0 0;
     text-align: left;
     display: flex;
+    justify-content: start;
+    align-items: center;
   }
-
   .text_1_8 {
     height: 17px;
     overflow-wrap: break-word;
@@ -2486,9 +2500,20 @@ export default {
       font-size: 10px;
     }
 
-    .group_1_12 {
-      .box_1_48 {
-        margin: 12px 0 0 0;
+    .points_group {
+
+      .group_1_12 {
+        .box_1_48 {
+          margin: 12px 0 0 0;
+          .text_1_8 {
+            zoom: 0.87;
+          }
+        }
+      }
+     
+      .thumbnail_1_3 {
+        width: 16px;
+        height: 16px;
       }
     }
 
