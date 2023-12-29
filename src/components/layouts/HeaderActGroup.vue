@@ -131,7 +131,6 @@ export default {
 
   methods: {
     countDown() {
-      console.log('dataList', this.dataList)
       const endTime = this.dataList[0].endTime || 0
 
       const diffSecond = Math.floor((+new Date(endTime) - getUTCTime()) / 1000)
