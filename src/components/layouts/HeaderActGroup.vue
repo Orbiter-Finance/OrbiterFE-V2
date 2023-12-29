@@ -688,6 +688,11 @@ export default {
       .box_1 {
         background-color: rgba(71, 74, 111, 1);
         border: 1px solid rgba(255, 255, 255, 0.2);
+
+        .text_3 {
+          color: rgba(255, 255, 255, 0.8)
+        }
+
       }
     }
   }
