@@ -120,7 +120,7 @@
             <div class="text-wrapper_45">
               <div class="text_98">O-Points Summary</div>
               <div class="text_99">{{ totalPoint }}
-                <!-- <HeaderLotteryCard /> -->
+                <HeaderLotteryCard />
               </div>
             </div>
             <div
@@ -639,7 +639,7 @@ import { getStarknet } from 'get-starknet'
 import { PONITS_EXPAND_COUNT } from '../../const'
 
 import HeaderActGroup from './HeaderActGroup.vue'
-// import HeaderLotteryCard from "./HeaderLotteryCard.vue"
+import HeaderLotteryCard from "./HeaderLotteryCard.vue"
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -648,7 +648,7 @@ export default {
   components: {
     SvgIconThemed,
     HeaderActGroup,
-    // HeaderLotteryCard
+    HeaderLotteryCard
   },
   data() {
     return {

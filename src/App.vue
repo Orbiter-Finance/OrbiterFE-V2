@@ -25,7 +25,7 @@
     <HeaderDialog />
     <HeaderActDialog style="z-index: 999" />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
-    <!-- <HeaderLotteryCardDialog /> -->
+    <HeaderLotteryCardDialog />
   </div>
 </template>
 
@@ -65,7 +65,7 @@ import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
-// import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
+import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
 import {
   setIsBraveWallet,
   performInitMobileAppWallet,
@@ -150,7 +150,7 @@ export default {
     BottomNav,
     HeaderDialog,
     HeaderActDialog,
-    // HeaderLotteryCardDialog
+    HeaderLotteryCardDialog
   },
   async mounted() {
     if (isBrowserApp()) {
