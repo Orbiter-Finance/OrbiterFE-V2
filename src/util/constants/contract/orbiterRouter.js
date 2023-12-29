@@ -63,16 +63,19 @@ async function orbiterRouterSend(chainId, fromAddress, toAddress, tokenAddress, 
         value,
       });
   } else {
-    const provider = compatibleGlobalWalletConf.value.walletPayload.provider || window.web3.currentProvider;
+    const provider = new ethers.providers.Web3Provider(
+      compatibleGlobalWalletConf.value.walletPayload.provider
+    );
     const walletAddress = fromAddress;
     const tokenContractInstance = new ethers.Contract(
       tokenAddress,
       Coin_ABI,
-      provider
+      provider.getSigner()
     );
 
     const allowance = await tokenContractInstance.allowance(walletAddress, contractAddress);
     const amount = new BigNumber(value);
+    console.log("allowance",String(allowance))
 
     const checkAllowance = async () => {
       const n = Notification({
@@ -121,17 +124,11 @@ async function orbiterRouterSend(chainId, fromAddress, toAddress, tokenAddress, 
       await checkAllowance();
     }
 
-    const gasLimit = await contractInstance.methods
-      .transferToken(tokenAddress, toAddress, value, data)
-      .estimateGas({
-        from: fromAddress,
-        gas: 5000000,
-      });
     return contractInstance.methods
-      .transferToken(toAddress, tokenAddress, value, data)
+      .transferToken(tokenAddress, toAddress, value, data)
       .send({
         from: fromAddress,
-        gas: gasLimit,
+        // gas: gasLimit,
       });
   }
 }

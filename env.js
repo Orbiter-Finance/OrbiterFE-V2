@@ -13,6 +13,7 @@ export default {
     [CHAIN_ID.zksync]: 1,
 
     [CHAIN_ID.starknet_test]: 5,
+    [CHAIN_ID.starknet_sepolia]: 5,
     [CHAIN_ID.dydx_test]: 5,
     [CHAIN_ID.loopring_test]: 5,
     [CHAIN_ID.zkspace_test]: 5,
@@ -35,6 +36,7 @@ export default {
     [CHAIN_ID.zksync_test]: 'https://goerli.zkscan.io/explorer/accounts/',
     [CHAIN_ID.starknet]: 'https://voyager.online/contract/',
     [CHAIN_ID.starknet_test]: 'https://goerli.voyager.online/contract/',
+    [CHAIN_ID.starknet_sepolia]: 'https://sepolia.voyager.online/contract/',
     [CHAIN_ID.imx]: 'https://market.immutable.com/inventory/',
     [CHAIN_ID.imx_test]: 'https://api.sandbox.x.immutable.com/v1/transfers/',
     [CHAIN_ID.loopring]: 'https://loopring.io/#/l2assets/history/Transactions/',

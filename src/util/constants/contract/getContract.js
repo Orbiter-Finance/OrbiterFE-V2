@@ -13,7 +13,7 @@ function getTransferContract(localChainID, contractAddress) {
   if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
     return
   }
-  if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
+  if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test || localChainID === CHAIN_ID.starknet_sepolia) {
     return
   }
   if (walletIsLogin.value) {

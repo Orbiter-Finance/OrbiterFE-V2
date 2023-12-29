@@ -136,12 +136,7 @@
         return walletIsLogin.value
       },
       isSelectedStarkNet() {
-        return (
-                transferDataState.fromChainID === CHAIN_ID.starknet ||
-                transferDataState.fromChainID === CHAIN_ID.starknet_test ||
-                transferDataState.toChainID === CHAIN_ID.starknet ||
-                transferDataState.toChainID === CHAIN_ID.starknet_test
-        )
+        return util.isStarkNet()
       },
       starkAddress() {
         return starkAddress()

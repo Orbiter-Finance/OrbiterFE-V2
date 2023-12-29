@@ -359,7 +359,7 @@ export default {
           const { fromChainID, toChainID } = transferDataState;
           const chainId = isFrom ? fromChainID : toChainID;
           let userAddress = web3State.coinbase;
-          if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
+          if (util.isStarkNetChain(chainId)) {
             userAddress = web3State.starkNet.starkNetAddress;
           }
           const accountUrl = explorerInfo.accountUrl || explorerInfo.url + '/address';
@@ -427,7 +427,7 @@ export default {
             const { fromChainID } = transferDataState
             if (this.$store.state.proceedState === 1) {
                 let userAddress = web3State.coinbase
-                if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+                if (util.isStarkNetChain(fromChainID)) {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
                 url = util.getAccountExploreUrl(fromChainID) + userAddress
@@ -457,7 +457,7 @@ export default {
 
             const commHandler = () => {
                 let userAddress = web3State.coinbase
-                if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+                if ([CHAIN_ID.starknet,CHAIN_ID.starknet_test,CHAIN_ID.starknet_sepolia].includes(toChainID)) {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
                 url = util.getAccountExploreUrl(toChainID) + userAddress

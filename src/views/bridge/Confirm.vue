@@ -225,13 +225,7 @@ export default {
             return isMobile.value
         },
         isStarkNetChain() {
-            const { fromChainID, toChainID } = transferDataState
-            return (
-                fromChainID === CHAIN_ID.starknet ||
-                fromChainID === CHAIN_ID.starknet_test ||
-                toChainID === CHAIN_ID.starknet ||
-                toChainID === CHAIN_ID.starknet_test
-            )
+            return util.isStarkNet()
         },
         confirmData() {
             const { selectMakerConfig } = transferDataState
@@ -967,7 +961,7 @@ export default {
                 }
                 if (
                     (fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) &&
-                    (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
+                    (starkChain === CHAIN_ID.starknet_test || starkChain === CHAIN_ID.starknet_sepolia || starkChain === 'localhost')
                 ) {
                     util.showMessage(
                         'please switch Starknet Wallet to mainnet',
@@ -976,7 +970,9 @@ export default {
                     return
                 }
                 if (
-                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
+                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test ||
+                      fromChainID === CHAIN_ID.starknet_sepolia || toChainID === CHAIN_ID.starknet_sepolia
+                    ) &&
                     (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
                 ) {
                     util.showMessage(
@@ -1247,7 +1243,7 @@ export default {
             }
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
-            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test) {
+            if (!util.isStarkNetChain(fromChainID)) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
@@ -1314,13 +1310,13 @@ export default {
                     this.transferLoading = false
                     return
                 }
-                if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+              if (util.isStarkNetChain(toChainID)) {
                     this.transferToStarkNet(tValue.tAmount)
                     return
                 }
                 const account =
                     compatibleGlobalWalletConf.value.walletPayload.walletAddress
-                if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+                if (util.isStarkNetChain(fromChainID)) {
                     this.starknetTransfer(tValue.tAmount)
                     return
                 }

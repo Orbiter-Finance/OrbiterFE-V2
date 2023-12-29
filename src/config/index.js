@@ -28,6 +28,7 @@ export const CHAIN_ID = {
 
   zksync_test: 'zksync_test',
   starknet_test: 'SN_GOERLI',
+  starknet_sepolia: 'SN_SEPOLIA',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',

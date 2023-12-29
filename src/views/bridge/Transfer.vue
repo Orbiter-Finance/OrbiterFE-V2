@@ -31,7 +31,8 @@
           <o-tooltip
                   v-if="
             transferDataState.fromChainID === CHAIN_ID.starknet ||
-            transferDataState.fromChainID === CHAIN_ID.starknet_test
+            transferDataState.fromChainID === CHAIN_ID.starknet_test ||
+            transferDataState.fromChainID === CHAIN_ID.starknet_sepolia
           "
           >
             <template v-slot:titleDesc>
@@ -103,7 +104,8 @@
           <o-tooltip
                   v-if="
             transferDataState.toChainID == CHAIN_ID.starknet ||
-            transferDataState.toChainID == CHAIN_ID.starknet_test
+            transferDataState.toChainID == CHAIN_ID.starknet_test ||
+            transferDataState.toChainID == CHAIN_ID.starknet_sepolia
           "
           >
             <template v-slot:titleDesc>
@@ -508,7 +510,7 @@ export default {
       if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportOrbiterRouterV3()) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
+      if (util.isStarkNetChain(transferDataState.toChainID)) {
         return false;
       }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
@@ -520,7 +522,7 @@ export default {
       if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportOrbiterRouterV3())) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
+      if (util.isStarkNetChain(transferDataState.toChainID)) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -565,7 +567,7 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
+      return util.isStarkNetChain(toChainID) || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -900,12 +902,12 @@ export default {
       return dataList;
     },
     async fillAddress() {
-      if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.fromChainID)) {
+      if (util.isStarkNetChain(transferDataState.fromChainID)) {
         const account = await walletConnectDispatcherOnInit(WALLETCONNECT);
         if (account?.address) {
           this.crossAddressReceipt = account.address;
         }
-      } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.toChainID)) {
+      } else if (util.isStarkNetChain(transferDataState.toChainID)) {
         this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
       }
     },
@@ -1426,11 +1428,11 @@ export default {
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test) {
+      if (toChainID !== oldToChainID && (util.isStarkNetChain(oldToChainID) || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test)) {
         if (this.isCrossAddress) this.isCrossAddress = false;
         if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
-      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+      if (util.isStarkNetChain(fromChainID) || util.isStarkNetChain(toChainID)) {
         const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
         if (!starkNetIsConnect || !starkNetAddress) {
           await connectStarkNetWallet();
@@ -1440,7 +1442,7 @@ export default {
             return;
           }
         }
-        if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+        if (util.isStarkNetChain(toChainID)) {
           this.isCrossAddress = true;
           this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
           updateTransferExt({
@@ -1459,7 +1461,7 @@ export default {
       }
       if (oldFromChainID !== fromChainID &&
         (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) ||
-        (isBrowserApp() && (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test))) {
+        (isBrowserApp() && (util.isStarkNetChain(fromChainID)))) {
         this.isCrossAddress = true;
       }
       if (toChainID !== oldToChainID && (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test)) {
@@ -1678,7 +1680,7 @@ export default {
       // }
       const { fromChainID, toChainID, fromCurrency, toCurrency, selectMakerConfig } = transferDataState;
 
-      const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID));
+      const isNotWallet = !isArgentApp() ? isBrowserApp() : (isArgentApp() && !util.isStarkNetChain(fromChainID));
       if (isNotWallet && (!compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress || String(compatibleGlobalWalletConf.value.walletPayload.walletAddress) === '0x')) {
         await walletConnectDispatcherOnInit(WALLETCONNECT);
         return;
@@ -1837,7 +1839,7 @@ export default {
           walletAddress && (await imxHelper.ensureUser(walletAddress));
         }
 
-        if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+        if (util.isStarkNetChain(fromChainID) || util.isStarkNetChain(toChainID)) {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
           if (!starkChain || starkChain === 'unlogin') {
@@ -1848,14 +1850,31 @@ export default {
           //   await connectStarkNetWallet();
           //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
           // }
-          if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')) {
+          if ([fromChainID, toChainID].includes(CHAIN_ID.starknet_test) && starkChain !== CHAIN_ID.starknet_test) {
+            util.showMessage(
+              'please switch Starknet Wallet to SN_GOERLI',
+              'error'
+            );
+            return;
+          }
+          if ([fromChainID, toChainID].includes(CHAIN_ID.starknet_sepolia) && starkChain !== CHAIN_ID.starknet_sepolia) {
+            util.showMessage(
+              'please switch Starknet Wallet to SN_SEPOLIA',
+              'error'
+            );
+            return;
+          }
+
+          if ((fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) && (starkChain === CHAIN_ID.starknet_test || starkChain === CHAIN_ID.starknet_sepolia || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to mainnet',
                     'error'
             );
             return;
           }
-          if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
+          if ((fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test ||
+            fromChainID === CHAIN_ID.starknet_sepolia || toChainID === CHAIN_ID.starknet_sepolia
+          ) && (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')) {
             util.showMessage(
                     'please switch Starknet Wallet to testNet',
                     'error'
@@ -1899,7 +1918,7 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = ((isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
+        const walletAddress = ((isCrossAddress || util.isStarkNetChain(toChainID)) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -2035,7 +2054,7 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       let address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+      if (util.isStarkNetChain(fromChainID)) {
         address = web3State.starkNet.starkNetAddress;
       }
       if (address && address !== '0x') {
@@ -2062,7 +2081,7 @@ export default {
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+      if (util.isStarkNetChain(toChainID)) {
         address = web3State.starkNet.starkNetAddress;
       }
       if (address && address !== '0x') {

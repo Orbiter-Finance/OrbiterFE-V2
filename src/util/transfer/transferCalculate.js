@@ -171,7 +171,7 @@ export default {
         console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+    } else if (util.isStarkNetChain(fromChainID)) {
       const realTransferAmount = this.realTransferAmount().toString()
       const starkFee = await getStarkTransferFee(
         web3State.coinbase,
@@ -318,7 +318,7 @@ export default {
       }
       return transferFee.toFixed(6)
     }
-    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+    if (util.isStarkNetChain(fromChainID)) {
       const realTransferAmount = this.realTransferAmount().toString()
       const fromTokenAddress = selectMakerConfig.fromChain.tokenAddress
       const starkFee = await getStarkTransferFee(
@@ -357,7 +357,7 @@ export default {
       timeSpent = 5;
     } else if ([CHAIN_ID.zkspace, CHAIN_ID.zkspace_test].includes(fromChainID)) {
       timeSpent = 20;
-    } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)) {
+    } else if (util.isStarkNetChain(fromChainID)) {
       timeSpent = 180;
     } else {
       timeSpent = 15;
@@ -365,7 +365,7 @@ export default {
 
     if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(toChainID)) {
       timeSpent += 30;
-    } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(toChainID)) {
+    } else if (util.isStarkNetChain(toChainID)) {
       timeSpent += 180;
     } else if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.zkspace,
       CHAIN_ID.zksync_test, CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test].includes(toChainID)) {
@@ -393,7 +393,7 @@ export default {
       }
     }
 
-    if ([CHAIN_ID.linea, CHAIN_ID.linea_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)) {
+    if ([CHAIN_ID.linea, CHAIN_ID.linea_test].includes(fromChainID) || util.isStarkNetChain(fromChainID)) {
       return '~24 hours';
     } else if ([CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test].includes(fromChainID)) {
       return '~6 hours';
@@ -465,7 +465,7 @@ export default {
         throw new Error('zksync withdraw error')
       }
     }
-    if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+    if (util.isStarkNetChain(fromChainID)) {
       // stark cost
       ethGas = 200000000000000
       // mainnet cost
@@ -654,7 +654,7 @@ export default {
         throw new Error('zksync deposit error')
       }
     }
-    if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+    if (util.isStarkNetChain(toChainID)) {
       const L1ChainID = toChainID === CHAIN_ID.starknet ? m : g
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const SNDepositL1Gas = L1GasPrice * STARKNET_ETH_DEPOSIT_ONL1
@@ -815,7 +815,7 @@ export default {
     userAddress,
     isMaker = false
   ) {
-    if (isArgentApp() && !isMaker && ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(localChainID)) {
+    if (isArgentApp() && !isMaker && !util.isStarkNetChain(localChainID)) {
       return 0;
     }
     if (!isArgentApp() && isBrowserApp()) {
@@ -843,8 +843,7 @@ export default {
         console.warn('error =', error)
         throw 'getZKBalanceError'
       }
-    } else if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
-      const networkId = localChainID === CHAIN_ID.starknet ? 1 : 5
+    } else if (util.isStarkNetChain(localChainID)) {
       let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
         if (!starknetAddress) {
@@ -853,7 +852,7 @@ export default {
       } else {
         starknetAddress = userAddress
       }
-      return await getErc20Balance(starknetAddress, tokenAddress, networkId)
+      return await getErc20Balance(starknetAddress, tokenAddress, localChainID)
     } else if (localChainID === CHAIN_ID.imx || localChainID === CHAIN_ID.imx_test) {
       const imxHelper = new IMXHelper(localChainID)
       const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)

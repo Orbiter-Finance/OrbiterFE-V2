@@ -294,7 +294,7 @@
           util.showMessage("Hash error", "error");
           return;
         }
-        if (selectChainId === CHAIN_ID.starknet || selectChainId === CHAIN_ID.starknet_test) {
+        if (util.isStarkNetChain(selectChainId)) {
           // starknet
           txHash = util.starknetHashFormat(txHash);
         } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
