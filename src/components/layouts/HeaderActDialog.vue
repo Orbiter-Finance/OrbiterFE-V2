@@ -755,7 +755,7 @@ export default {
     actOtherDataList() {
       const list = transferDataState.actDataList || []
       return list.filter(
-        (item) => item.type !== 1 && +new Date(item.endTime) >= +new Date()
+        (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
       )
     },
     isStarknet() {
