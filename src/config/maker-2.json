@@ -779,11 +779,11 @@
     },
     "31-19": {
         "ETH-ETH": {
-            "gasFee": 1,
-            "tradingFee": 0.0013,
+            "gasFee": 1.5,
+            "tradingFee": 0.001,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 5,
+            "maxPrice": 2,
             "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
@@ -817,7 +817,7 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
             "tradingFee": 0.0058,
             "gasFee": 1.5,
@@ -841,10 +841,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -865,10 +865,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -889,10 +889,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -913,10 +913,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0x064A24243F2Aabae8D2148FA878276e6E6E452E3941b417f3c33b1649EA83e11",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0013,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -937,10 +937,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -961,10 +961,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -985,10 +985,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -1009,10 +1009,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -1033,10 +1033,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -1057,10 +1057,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -1082,10 +1082,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0005,
-            "gasFee": 0,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999,
             "originWithholdingFee": 0.0007
@@ -1107,10 +1107,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -1131,10 +1131,10 @@
         "ETH-ETH": {
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
-            "tradingFee": 0.0007,
-            "gasFee": 1,
+            "tradingFee": 0.001,
+            "gasFee": 1.5,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -7086,11 +7086,11 @@
     },
     "31-25": {
         "ETH-ETH": {
-            "gasFee": 1,
-            "tradingFee": 0.0011,
+            "gasFee": 1.5,
+            "tradingFee": 0.001,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
-            "maxPrice": 5,
+            "maxPrice": 2,
             "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
@@ -7730,11 +7730,11 @@
     },
     "31-38": {
         "ETH-ETH": {
-            "gasFee": 1,
-            "tradingFee": 0.0005,
+            "gasFee": 1.5,
+            "tradingFee": 0.001,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
-            "maxPrice": 3,
+            "maxPrice": 2,
             "minPrice": 0.001,
             "startTime": 0,
             "endTime": 99999999999999
