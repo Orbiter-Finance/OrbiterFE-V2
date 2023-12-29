@@ -103,6 +103,8 @@
 </template>
 
 <script>
+import getUTCTime from '../../util/time'
+
 export default {
   name: 'HeaderActGroup',
   props: {
@@ -132,7 +134,7 @@ export default {
       console.log('dataList', this.dataList)
       const endTime = this.dataList[0].endTime || 0
 
-      const diffSecond = Math.floor((+new Date(endTime) - +new Date()) / 1000)
+      const diffSecond = Math.floor((+new Date(endTime) - getUTCTime()) / 1000)
 
       if (diffSecond < 0 || !endTime) {
         this.countTime = []
