@@ -73,7 +73,6 @@ async function getWeb3(walletType) {
   updateIsInstallMeta(true)
   await Promise.any([web3.eth.net.getId(), web3.eth.getChainId()]).then(
     (netWorkId) => {
-      console.log('error, netWorkId', netWorkId)
       if (!netWorkId) {
         showMessage('get netWorkID failed, refresh and try again', 'error')
         updateCoinbase('')
