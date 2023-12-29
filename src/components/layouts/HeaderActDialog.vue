@@ -188,10 +188,9 @@
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px;">
                           <span>
-                            Basic contribution rewards for using Orbiter Finance
-                          for bridge transactions.
+                            Rewards for interacting with orbiter's ecosystem dapp based on orbiter cross-rollup protocols.
                           </span>
-                          <a class="points_more" href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards" target="_blank">More</a>
+                          <!-- <a class="points_more" href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards" target="_blank">More</a> -->
                         </div>
                       </template>
                       <img
@@ -293,7 +292,7 @@
 
             </span>
           </div>
-          <div v-if="questsShow" class="nft_vice_title" >
+          <div v-if="questsShow" ref="nft_vice_title" class="nft_vice_title" >
             <img 
             :src="require('../../assets/activity/banner/quests.png')" alt="">
             <div
@@ -440,8 +439,7 @@
                   top: 13px;
                 "
               >
-                <div class="text_3">
-                  {{ item.description }}
+                <div class="text_3" v-html="item.description" >
                 </div>
                 <div
                   style="margin-top: 10px; display: flex; flex-direction: row"
@@ -716,6 +714,7 @@ export default {
       return actTotalActivityPoint.value
     },
     actDataList() {
+    console.log("transferDataState.actDataList", transferDataState.actDataList)
       return transferDataState.actDataList
     },
     isStarknet() {
@@ -815,8 +814,10 @@ export default {
     getTaskHeight() {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
+      let nftViceHeight = this.$refs.nft_vice_title?.clientHeight || 0
+      
       const total = this.$refs.block_1?.clientHeight || 50
-      this.taskHeight = total - eleHeight - walletGroupEle - 20
+      this.taskHeight = total - eleHeight - walletGroupEle - nftViceHeight
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle - 20
       }
