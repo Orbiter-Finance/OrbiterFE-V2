@@ -120,7 +120,7 @@
             <div class="text-wrapper_45">
               <div class="text_98">O-Points Summary</div>
               <div class="text_99">{{ totalPoint }} 
-                <HeaderLotteryCard />
+                <!-- <HeaderLotteryCard /> -->
               </div>
             </div>
             <div
@@ -605,7 +605,7 @@ import { disConnectStarkNetWallet } from '../../util/constants/starknet/helper'
 import { getStarknet } from 'get-starknet'
 import { PONITS_EXPAND_COUNT } from "../../const"
 
-import HeaderLotteryCard from "./HeaderLotteryCard"
+// import HeaderLotteryCard from "./HeaderLotteryCard"
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -613,7 +613,7 @@ export default {
   name: 'HeaderActDialog',
   components: {
     SvgIconThemed,
-    HeaderLotteryCard
+    // HeaderLotteryCard
   },
   data() {
     return {
