@@ -7,12 +7,13 @@ import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsi
 import {
   updateCoinbase,
   updateIsInstallMeta,
-  transferDataState, web3State,
-} from '../../../composition/hooks';
+  transferDataState,
+  web3State,
+} from '../../../composition/hooks'
 import util from '../../util'
 import { Notification } from 'element-ui'
 import { universalWalletSwitchChainHandler } from '../../walletsDispatchers/standardWalletReducer/standardWalletAPI'
-import { isMobileDevice } from "../../env";
+import { isMobileDevice } from '../../env'
 const showMessage = util.showMessage
 
 async function installWeb3(walletType) {
@@ -58,7 +59,7 @@ async function installWeb3(walletType) {
           '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     }
-    if (isMobileDevice()) return;
+    if (isMobileDevice()) return
     return showMessage('not install metamask', 'error')
   }
   return new Web3(web3Provider)
@@ -70,22 +71,46 @@ async function getWeb3(walletType) {
     return
   }
   updateIsInstallMeta(true)
-  await web3.eth.net.getId((error, netWorkId) => {
-    if (error || !netWorkId) {
-      showMessage('get netWorkID failed, refresh and try again', 'error')
-      updateCoinbase('')
-    } else {
-      const chainId = util.getMetaMaskNetworkId(+transferDataState.fromChainID);
-      if (chainId && Number(netWorkId) !== Number(chainId) && Number(netWorkId) !== Number(web3State.networkId)) {
-        const walletConf = compatibleGlobalWalletConf.value
-        universalWalletSwitchChainHandler(
-          walletConf.walletPayload,
-          window.ethereum
+  await Promise.any([web3.eth.net.getId(), web3.eth.getChainId()]).then(
+    (netWorkId) => {
+      if (!netWorkId) {
+        showMessage('get netWorkID failed, refresh and try again', 'error')
+        updateCoinbase('')
+      } else {
+        const chainId = util.getMetaMaskNetworkId(
+          +transferDataState.fromChainID
         )
+        if (
+          chainId &&
+          Number(netWorkId) !== Number(chainId) &&
+          Number(netWorkId) !== Number(web3State.networkId)
+        ) {
+          const walletConf = compatibleGlobalWalletConf.value
+          universalWalletSwitchChainHandler(
+            walletConf.walletPayload,
+            window.ethereum
+          )
+        }
+        store.commit('updateNetWorkId', netWorkId.toString())
       }
-      store.commit('updateNetWorkId', netWorkId.toString())
     }
-  })
+  )
+  // await web3.eth.net.getId((error, netWorkId) => {
+  //   if (error || !netWorkId) {
+  //     showMessage('get netWorkID failed, refresh and try again', 'error')
+  //     updateCoinbase('')
+  //   } else {
+  //     const chainId = util.getMetaMaskNetworkId(+transferDataState.fromChainID);
+  //     if (chainId && Number(netWorkId) !== Number(chainId) && Number(netWorkId) !== Number(web3State.networkId)) {
+  //       const walletConf = compatibleGlobalWalletConf.value
+  //       universalWalletSwitchChainHandler(
+  //         walletConf.walletPayload,
+  //         window.ethereum
+  //       )
+  //     }
+  //     store.commit('updateNetWorkId', netWorkId.toString())
+  //   }
+  // })
   await web3.eth.getCoinbase((error, coinbase) => {
     if (error || !coinbase) {
       showMessage(

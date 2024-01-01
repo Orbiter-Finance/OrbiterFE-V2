@@ -5,11 +5,9 @@
     >
         <div
             ref="navDialog"
-            :style="
-                !isMobile ? { right: isStarkNetDialog ? '160px' : '20px' } : {}
-            "
+            
             class="header-dialog-box-wrapper"
-        >
+        > 
             <div class="toolbox-header">
                 <span class="toolbox-title">{{
                     isLogin ? 'Connect information' : 'Connect a Wallet'
@@ -38,7 +36,7 @@
                     >
                 </div>
             </template>
-            <template v-else>
+            <!-- <template v-else>
                 <div
                     v-for="item in loginInfoData"
                     :key="item.title"
@@ -113,7 +111,7 @@
                     @click="disconnect"
                     >Disconnect</CommBtn
                 >
-            </template>
+            </template> -->
         </div>
     </div>
 </template>
@@ -409,6 +407,7 @@ export default {
         .header-dialog-box-wrapper {
             position: absolute;
             top: 75px;
+            right: 0;
             width: 320px;
         }
     }
@@ -432,7 +431,7 @@ export default {
     left: 0;
     .header-dialog-box-wrapper {
         z-index: 10000;
-        padding-bottom: 10px;
+        padding: 26px 0 10px;
         box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
         border-radius: 20px;
         .toolbox-header {

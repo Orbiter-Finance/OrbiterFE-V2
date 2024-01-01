@@ -106,6 +106,8 @@ import {
   setActPoint,
   web3State,
   updateActDataList,
+  setLotteryCardTotal,
+  setLotteryCardProgress
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -113,7 +115,7 @@ import {
 } from '../../composition/walletsResponsiveData'
 import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { CHAIN_ID } from '../../config'
-import { requestPointSystem } from '../../common/openApiAx'
+import { requestPointSystem, requestLotteryCard } from '../../common/openApiAx'
 import util from '../../util/util'
 const addressPointMap = {}
 export default {
@@ -295,6 +297,28 @@ export default {
         updateActDataList(dataList)
       }
     },
+
+    async getLotteryCardData() {
+
+      const { isAddress, address } = this.getAddress()
+
+      if(isAddress) {
+        const {
+        data: { cardsCount = 0, progress },
+        code,
+      } = await requestLotteryCard('user/cards', {
+        address: address.toLocaleLowerCase(),
+      })
+
+      if (Number(code) === 0) {
+        setLotteryCardTotal(cardsCount)
+        setLotteryCardProgress({
+          lotteryCardCurrentProgress: progress.currentProgress || 0,
+          lotteryCardProgressMax: progress.max || 0,
+        })
+      }
+      }
+    },
   },
 
   async mounted() {
@@ -321,6 +345,7 @@ export default {
           }, 3000)
         }
         setActPoint(pointRes.data)
+        this.getLotteryCardData()
       }
     }, 5000)
 

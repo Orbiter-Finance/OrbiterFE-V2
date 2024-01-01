@@ -257,3 +257,8 @@ p {
     width: 100%;
   }
 }
+
+/* global tips style */
+.orbiter_global_o_points_title {
+  color: #DF2E2E;
+}
