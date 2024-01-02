@@ -369,7 +369,7 @@ export default {
         getExplorer(isFrom = true) {
             const chainId = this.getChainId(isFrom);
             const chainInfo = util.getV3ChainInfoByChainId(chainId);
-            return chainInfo.explorers;
+            return chainInfo?.explorers;
         },
         showChainIcon(isFrom = true) {
             if (this.detailData) {
