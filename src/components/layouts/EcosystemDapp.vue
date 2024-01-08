@@ -33,7 +33,7 @@
         <div class="progress-group">
           <div class="holders">
             <div class="total">Holders: {{ decimalNumC(holders, 0, ',') }}</div>
-            <div class="ratio">{{ decimalNumC(ratio, 4) }}%</div>
+            <div class="ratio">{{ decimalNumC(ratio, 3) }}%</div>
           </div>
           <div class="progress-box">
             <div class="progress"></div>
@@ -121,8 +121,10 @@ export default {
       .top-right {
         flex: 1;
         text-align: left;
+        width: calc( 100% - 56px);
 
         .label {
+          width: 100%;
           font-size: 14px;
           font-weight: bold;
           color: #222222;
@@ -131,7 +133,7 @@ export default {
         }
 
         .text {
-          width: 306px;
+          width: 100%;
           font-size: 12px;
           font-weight: 400;
           color: #999999;

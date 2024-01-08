@@ -306,14 +306,14 @@
             </div>
           </div>
         </div>
+        <div style="width: 100%; display: flex;">
+          <span class="text_21">🛸 Quests </span>
+        </div>
         <div 
         class="card"
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <div style="width: 100%; display: flex;">
-          <span class="text_21">🛸 Quests </span>
-        </div>
           <div v-if="questsShow" class="nft_vice_title">
             <img
               :src="require('../../assets/activity/banner/quests.png')"
@@ -597,8 +597,12 @@
             </div>
           </div>
 
-          <EcosystemDapp></EcosystemDapp>
         </div>
+
+        <div ref="ecosystem_dapp">
+        <EcosystemDapp></EcosystemDapp>
+        </div>
+
       </div>
     </div>
   </div>
@@ -864,7 +868,9 @@ export default {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
-      this.taskHeight = total - eleHeight - walletGroupEle - 60
+      const ecosystem_dapp = this.$refs.ecosystem_dapp?.clientHeight || 50
+      
+      this.taskHeight = total - eleHeight - walletGroupEle - ecosystem_dapp - 72
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle -20
       }
@@ -2077,7 +2083,7 @@ export default {
       // border-radius: 8px;
       // height: 60px;
       width: 100%;
-      margin: 8px 0 16px 20px;
+      margin: 8px 0 8px 20px;
       display: flex;
     }
 
@@ -2265,7 +2271,7 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 23px;
-    margin: 0 0 0 16px;
+    margin: 0 0 4px 16px;
   }
 
   .nft_vice_title {
@@ -2434,7 +2440,7 @@ export default {
       text-align: left;
       white-space: nowrap;
       line-height: 23px;
-      margin: 0 0 0 16px;
+      margin: 0 0 4px 16px;
     }
 
     .box_1 {
@@ -2650,7 +2656,7 @@ export default {
         text-align: left;
         white-space: nowrap;
         line-height: 23px;
-        margin: 0 0 0 16px;
+        margin: 0 0 4px 16px;
       }
 
       .box_1 {
