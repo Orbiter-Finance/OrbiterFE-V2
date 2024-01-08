@@ -305,16 +305,15 @@
               <div class="card_cover"></div>
             </div>
           </div>
-
-          <div style="width: 100%; display: flex; height: 45px">
-            <span class="text_21">🛸 Quests </span>
-          </div>
         </div>
         <div 
         class="card"
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
+        <div style="width: 100%; display: flex;">
+          <span class="text_21">🛸 Quests </span>
+        </div>
           <div v-if="questsShow" class="nft_vice_title">
             <img
               :src="require('../../assets/activity/banner/quests.png')"
@@ -344,6 +343,7 @@
               </o-tooltip>
             </div>
           </div>
+          
           <div
             v-loading="listLoading"
             element-loading-background="rgba(0, 0, 0, 0)"
@@ -596,6 +596,8 @@
               </el-carousel>
             </div>
           </div>
+
+          <EcosystemDapp></EcosystemDapp>
         </div>
       </div>
     </div>
@@ -640,6 +642,7 @@ import { PONITS_EXPAND_COUNT } from '../../const'
 
 import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
+import EcosystemDapp from './EcosystemDapp.vue'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -648,7 +651,8 @@ export default {
   components: {
     SvgIconThemed,
     HeaderActGroup,
-    HeaderLotteryCard
+    HeaderLotteryCard,
+    EcosystemDapp
   },
   data() {
     return {
@@ -658,7 +662,7 @@ export default {
       countDownHour: '00',
       countDownDate: '00',
       left: 0,
-      questsShow: +new Date('2024 1-26 07:00:00') >= getUTCTime(),
+      questsShow: false,
       nftSeries: [
         { img: '0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png' },
         { img: '0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png' },
