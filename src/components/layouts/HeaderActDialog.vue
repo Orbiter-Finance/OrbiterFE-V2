@@ -2005,7 +2005,7 @@ export default {
       display: flex;
       width: 100%;
       height: 60px;
-      margin: 8px 0 0 20px;
+      margin: 8px 0 12px 20px;
       overflow: hidden;
 
       .box_div {
@@ -2077,7 +2077,7 @@ export default {
       // border-radius: 8px;
       // height: 60px;
       width: 100%;
-      margin: 8px 0 8px 20px;
+      margin: 8px 0 16px 20px;
       display: flex;
     }
 
@@ -2265,7 +2265,7 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 23px;
-    margin: 12px 0 0 16px;
+    margin: 0 0 0 16px;
   }
 
   .nft_vice_title {
@@ -2434,7 +2434,7 @@ export default {
       text-align: left;
       white-space: nowrap;
       line-height: 23px;
-      margin: 12px 0 0 16px;
+      margin: 0 0 0 16px;
     }
 
     .box_1 {
@@ -2650,7 +2650,7 @@ export default {
         text-align: left;
         white-space: nowrap;
         line-height: 23px;
-        margin: 12px 0 0 16px;
+        margin: 0 0 0 16px;
       }
 
       .box_1 {

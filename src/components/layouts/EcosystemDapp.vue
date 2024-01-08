@@ -12,7 +12,20 @@
         <div class="top-right">
           <div class="label">Layer2-20 🔥</div>
           <div class="text">
-            $L2, the First Omni-Inscription for ETH Community…
+            <o-tooltip>
+              <template v-slot:titleDesc>
+                <div style="margin-left: -20px">
+                  <span>
+                    $L2 The First Omni-Inscription for ETH Community, powered by
+                    Orbiter Finance. Fair mint is starting!
+                  </span>
+                </div>
+              </template>
+              <div class="text">
+                $L2 The First Omni-Inscription for ETH Community, powered by
+                Orbiter Finance. Fair mint is starting!
+              </div>
+            </o-tooltip>
           </div>
         </div>
       </div>
@@ -26,17 +39,15 @@
             <div class="progress"></div>
           </div>
         </div>
-        <div class="mint"
-        @click="openUrl('https://www.layer220.io/')"
-        >Mint</div>
+        <div class="mint" @click="openUrl('https://www.layer220.io/')">
+          Mint
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import Web3 from 'web3';
 import { decimalNum } from '../../util/decimalNum'
-import BigNumber from 'bignumber.js';
 
 export default {
   name: 'EcosystemDapp',
@@ -58,15 +69,16 @@ export default {
         'https://api.layer220.io/statistic?protocol=layer2-20&tick=%24L2',
         {}
       )
-      const {data: {totalHolders, max, totalAmount}} = await res.json()
+      const {
+        data: { totalHolders, max, totalAmount },
+      } = await res.json()
 
       this.holders = totalHolders || 0
 
-
-      if(Number(max) && Number(totalAmount)) {
-        this.ratio = totalAmount * 100 / max
+      if (Number(max) && Number(totalAmount)) {
+        this.ratio = (totalAmount * 100) / max
       }
-    }
+    },
   },
   created() {
     this.getData()
@@ -76,10 +88,10 @@ export default {
 <style lang="scss" scoped>
 .ecosystem-dapp-com {
   width: 100%;
-  padding: 16px 20px 0;
+  padding: 16px 12px 16px 16px;
   box-sizing: border-box;
   .title {
-    font-family: OpenSansRoman-Regular;
+    font-family: Kodchasan-Bold;
     font-size: 16px;
     font-weight: bold;
     color: #222222;
@@ -119,12 +131,16 @@ export default {
         }
 
         .text {
+          width: 306px;
           font-size: 12px;
           font-weight: 400;
           color: #999999;
           line-height: 18px;
           font-family: OpenSansRoman-Regular;
           margin-top: 4px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
       }
     }
