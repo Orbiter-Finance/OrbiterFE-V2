@@ -16,13 +16,13 @@
               <template v-slot:titleDesc>
                 <div style="margin-left: -20px">
                   <span>
-                    $L2 The First Omni-Inscription for ETH Community, powered by
+                    $L2, The First Omni-Inscription for ETH Community, powered by
                     Orbiter Finance. Fair mint is starting!
                   </span>
                 </div>
               </template>
               <div class="text">
-                $L2 The First Omni-Inscription for ETH Community, powered by
+                $L2, The First Omni-Inscription for ETH Community, powered by
                 Orbiter Finance. Fair mint is starting!
               </div>
             </o-tooltip>
