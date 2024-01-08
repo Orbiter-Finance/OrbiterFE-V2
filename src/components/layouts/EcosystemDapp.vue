@@ -1,7 +1,7 @@
 <template>
   <div class="ecosystem-dapp-com">
     <div style="width: 100%; display: flex">
-      <span class="title">Ecosystem Dapp </span>
+      <span class="title">Ecosystem DApp </span>
     </div>
     <div class="content">
       <div class="top">
