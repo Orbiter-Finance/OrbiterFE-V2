@@ -99,12 +99,12 @@ function convertMakerConfig(maker) {
     ) {
       continue
     }
-    if(+fromChainId==38 || +toChainId==38) {
-      if(!(+fromChainId==38 && +toChainId==1)) {
-          continue
+    if (+fromChainId == 38 || +toChainId == 38) {
+      if (!(+fromChainId == 38 && +toChainId == 1)) {
+        continue
       }
     }
-    
+
     const c1Chain = chainList.find((item) => +item.internalId === +fromChainId)
     const c2Chain = chainList.find((item) => +item.internalId === +toChainId)
     if (!c1Chain || !c2Chain) continue
@@ -186,4 +186,5 @@ export default {
   v1MakerConfigs,
   whiteList,
   chainsGroup,
+  chain,
 }

@@ -202,6 +202,17 @@
         {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
       </CommBtn>
+      <div v-if="selectFromToken === 'USDC' && !!isTipFromTokenAddress" class="transfer-coin-tip">
+        <div class="transfer-coin-tip-card">
+          <div class="transfer-coin-tip-icon">
+            <img src="../../assets/tip.png" alt="">
+          </div>
+          <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only USDC.e (<span
+            :title="fromTokenAddress"
+            @click="linkFromTokenAddress"
+            >{{ fromTokenAddress.slice(0,6) }}***</span>) will be accepted for bridging.</div>
+        </div>
+      </div>
       <div class="info-box">
         <div v-if="isWillUpdate" class="info-item">
           <svg-icon class="info-icon" iconName="info-warn"></svg-icon>
@@ -368,7 +379,7 @@ import transferCalculate from '../../util/transfer/transferCalculate'
 import Middle from '../../util/middle/middle'
 import orbiterCore from '../../orbiterCore'
 import BigNumber from 'bignumber.js'
-import config, { CHAIN_ID } from '../../config';
+import config, { CHAIN_ID, chainsGroup } from '../../config';
 import { exchangeToCoin, exchangeToUsd, getRates } from '../../util/coinbase';
 import { IMXHelper } from '../../util/immutablex/imx_helper'
 import getNonce from '../../core/utils/nonce'
@@ -409,8 +420,10 @@ import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
+
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
+let chain = config.chain;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
@@ -429,6 +442,12 @@ export default {
   data() {
     return {
       makerAddress: '',
+
+      // tip
+      fromTokenAddress: "",
+      fromChainId: "",
+      isTipFromTokenAddress:"",
+      tipsUrl: "",
 
       isWhiteWallet: '',
       isNewVersion: false,
@@ -743,6 +762,13 @@ export default {
     },
   },
   watch: {
+    'transferDataState.fromChainID': function (value) {
+      const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
+      this.fromChainId = value
+      this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
+      this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && value && linkChain.includes(value)
+      this.tipsUrl = chain.filter((item)=> item.chainId === value)[0].infoURL
+    },
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
     },
@@ -854,6 +880,11 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    linkFromTokenAddress() {
+      if(this.tipsUrl && this.fromTokenAddress ) {
+        window.open(this.tipsUrl + "/token/" + this.fromTokenAddress, "_blank")
+      }
+    },
     async getWalletAddressPoint(address) {
       if (util.getAccountAddressError(address)) {
         return;
@@ -2204,6 +2235,54 @@ export default {
     line-height: 34px;
     margin-bottom: 20px;
     background: linear-gradient(90.46deg, #eb382d 4.07%, #bc3035 98.55%);
+  }
+
+  .transfer-coin-tip {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    .transfer-coin-tip-card {
+      width: 100%;
+      display: flex;
+      justify-content: start;
+      align-items: start;
+      max-width: 440px;
+      background: rgba(255,187,36,0.1);
+      border-radius: 12px;
+      padding: 12px;
+
+      .transfer-coin-tip-icon {
+        width: 12px;
+        height: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 4px;
+        img {
+          width: 12px;
+          height: 12px;
+          line-height: 1.5;
+        }
+
+      }
+
+      .transfer-coin-tip-text {
+        flex: 1;
+        font-size: 12px;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 400;
+        color: #222222;
+        text-align: left;
+
+        span {
+          text-decoration: underline;
+          padding: 0 2px;
+          cursor: pointer;
+        }
+      }
+    }
   }
   .info-box {
     font-family: 'Inter Regular';
