@@ -792,6 +792,23 @@ export default {
         this.updateTransferInfo({ fromCurrency: newValue });
         this.clearTransferValue();
       }
+
+      const isUSDC = newValue.toLocaleLowerCase() === "usdc"
+
+      if(isUSDC) {
+        const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
+
+        const chainId = this.transferDataState.fromChainID
+        this.fromChainId = chainId
+        this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && newValue && chainId && linkChain.includes(chainId)
+
+        this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
+        this.tipsUrl = chain.filter((item)=> item.chainId === chainId)[0].infoURL
+      } else {
+        this.isTipFromTokenAddress = false
+      }
+
+
     },
     selectToToken: function (newValue) {
       if (transferDataState.toCurrency !== newValue) {
