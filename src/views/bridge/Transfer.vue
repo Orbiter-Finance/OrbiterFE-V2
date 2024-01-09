@@ -210,7 +210,7 @@
           <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only USDC.e (<span
             :title="fromTokenAddress"
             @click="linkFromTokenAddress"
-            >{{ fromTokenAddress.slice((fromTokenAddress.length||0)-6) }}***</span>) will be accepted for bridging.</div>
+            >***{{ fromTokenAddress.slice((fromTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
         </div>
       </div>
       <div class="info-box">
