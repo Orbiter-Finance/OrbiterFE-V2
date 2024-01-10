@@ -36,7 +36,7 @@
             <div class="ratio">{{ decimalNumC(ratio, 3) }}%</div>
           </div>
           <div class="progress-box">
-            <div class="progress"></div>
+            <div class="progress" :style="{width: decimalNumC(ratio, 3)+'%'}"></div>
           </div>
         </div>
         <div class="mint" @click="openUrl('https://www.layer220.io/')">
@@ -76,7 +76,8 @@ export default {
       this.holders = totalHolders || 0
 
       if (Number(max) && Number(totalAmount)) {
-        this.ratio = (totalAmount * 100) / max
+        const total = (totalAmount * 100) / max
+        this.ratio = Number(total) <= 100 ? Number(total) : 100
       }
     },
   },
@@ -187,7 +188,6 @@ export default {
           margin-top: 4px;
 
           .progress {
-            width: 44px;
             height: 8px;
             background: #222222;
             border-radius: 6px;
@@ -212,5 +212,57 @@ export default {
       }
     }
   }
+}
+
+
+.dark-theme { 
+
+  .ecosystem-dapp-com{
+    .title {
+      color: #f5f5f5;
+    }
+
+    .content {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background-color: rgb(71, 74, 111);
+
+      .top{
+        .top-right {
+          .label {
+            color: rgba(255, 255, 255, 0.8);
+          }
+          .text {
+            color: rgba(255, 255, 255, 0.6);
+          }
+        }
+      } 
+
+      .bottom {
+        .progress-group {
+          .holders{
+            .total {
+              color: rgba(255, 255, 255, 0.6);
+            }
+            .ratio{
+              color: rgba(255, 255, 255, 0.8);
+            }
+          }
+
+          .progress-box {
+            .progress {
+              background-color: #DF2E2E;
+            }
+          }
+
+      
+        }
+        .mint {
+          background-color: #DF2E2E;
+        }
+      }
+    }
+
+  }
+
 }
 </style>
