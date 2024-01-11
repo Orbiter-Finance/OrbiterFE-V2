@@ -202,16 +202,28 @@
         {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
       </CommBtn>
-      <div v-if="selectFromToken === 'USDC' && !!isTipFromTokenAddress" class="transfer-coin-tip">
-        <div class="transfer-coin-tip-card">
-          <div class="transfer-coin-tip-icon">
-            <img src="../../assets/tip.png" alt="">
+      <div v-if="selectFromToken === 'USDC' && (!!isTipFromTokenAddress || !!isTiptargetTokenAddress)" class="transfer-coin-tip">
+        <div class="transfer-coin-tip-group">
+          <div v-if="isTipFromTokenAddress" class="transfer-coin-tip-card">
+            <div class="transfer-coin-tip-icon">
+              <img src="../../assets/tip.png" alt="">
+            </div>
+            <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only USDC.e (<span
+              :title="fromTokenAddress"
+              @click="linkFromTokenAddress"
+              >***{{ fromTokenAddress.slice((fromTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
           </div>
-          <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only USDC.e (<span
-            :title="fromTokenAddress"
-            @click="linkFromTokenAddress"
-            >***{{ fromTokenAddress.slice((fromTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
+          <div v-if="isTiptargetTokenAddress" class="transfer-coin-tip-card">
+            <div class="transfer-coin-tip-icon">
+              <img src="../../assets/tip.png" alt="">
+            </div>
+            <div class="transfer-coin-tip-text">On {{ showChainName(false) }}: Only USDC.e (<span
+              :title="targetTokenAddress"
+              @click="linkTargetTokenAddress"
+              >***{{ targetTokenAddress.slice((targetTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
+          </div>
         </div>
+        
       </div>
       <div class="info-box">
         <div v-if="isWillUpdate" class="info-item">
@@ -445,9 +457,13 @@ export default {
 
       // tip
       fromTokenAddress: "",
+      targetTokenAddress: "",
       fromChainId: "",
-      isTipFromTokenAddress:"",
-      tipsUrl: "",
+      targetChainId: "",
+      isTipFromTokenAddress: false,
+      isTiptargetTokenAddress: false,
+      tipsFromUrl: "",
+      tipstargetUrl: "",
 
       isWhiteWallet: '',
       isNewVersion: false,
@@ -764,10 +780,29 @@ export default {
   watch: {
     'transferDataState.fromChainID': function (value) {
       const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
-      this.fromChainId = value
+      const fromChain = value
+      const targetChain = this.transferDataState.toChainID
+      this.fromChainId = fromChain
+      this.targetChainId = targetChain
       this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
-      this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && value && linkChain.includes(value)
-      this.tipsUrl = chain.filter((item)=> item.chainId === value)[0].infoURL
+      this.targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
+      this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChain && linkChain.includes(fromChain)
+      this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChain && linkChain.includes(targetChain)
+      this.tipsFromUrl = chain.filter((item)=> item.chainId === fromChain)[0].infoURL || ""
+      this.tipstargetUrl = chain.filter((item)=> item.chainId === targetChain)[0].infoURL || ""
+    },
+    'transferDataState.toChainID': function (value) {
+      const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
+      const fromChain = this.transferDataState.fromChainID
+      const targetChain = value
+      this.fromChainId = fromChain
+      this.targetChainId = targetChain
+      this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
+      this.targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
+      this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChain && linkChain.includes(fromChain)
+      this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChain && linkChain.includes(targetChain)
+      this.tipsFromUrl = chain.filter((item)=> item.chainId === fromChain)[0].infoURL || ""
+      this.tipstargetUrl = chain.filter((item)=> item.chainId === targetChain)[0].infoURL || ""
     },
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
@@ -799,13 +834,19 @@ export default {
         const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
 
         const chainId = this.transferDataState.fromChainID
+        const targetChainId = this.transferDataState.toChainID
         this.fromChainId = chainId
-        this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && newValue && chainId && linkChain.includes(chainId)
-
+        this.targetChainId = targetChainId
         this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
-        this.tipsUrl = chain.filter((item)=> item.chainId === chainId)[0].infoURL
+        this.targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
+        this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && newValue && chainId && linkChain.includes(chainId)
+        this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && newValue && targetChainId && linkChain.includes(targetChainId)
+
+        this.tipsFromUrl = chain.filter((item)=> item.chainId === chainId)[0].infoURL
+        this.tipstargetUrl = chain.filter((item)=> item.chainId === targetChainId)[0].infoURL
       } else {
         this.isTipFromTokenAddress = false
+        this.isTiptargetTokenAddress = false
       }
 
 
@@ -898,8 +939,13 @@ export default {
   },
   methods: {
     linkFromTokenAddress() {
-      if(this.tipsUrl && this.fromTokenAddress ) {
-        window.open(this.tipsUrl + "/token/" + this.fromTokenAddress, "_blank")
+      if(this.tipsFromUrl && this.fromTokenAddress ) {
+        window.open(this.tipsFromUrl + "/token/" + this.fromTokenAddress, "_blank")
+      }
+    },
+    linkTargetTokenAddress() {
+      if(this.tipstargetUrl && this.targetTokenAddress ) {
+        window.open(this.tipstargetUrl + "/token/" + this.targetTokenAddress, "_blank")
       }
     },
     async getWalletAddressPoint(address) {
@@ -2260,43 +2306,48 @@ export default {
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
-    .transfer-coin-tip-card {
+    .transfer-coin-tip-group {
       width: 100%;
-      display: flex;
-      justify-content: start;
-      align-items: start;
       max-width: 440px;
       background: rgba(255,187,36,0.1);
       border-radius: 12px;
-      padding: 12px;
+      padding: 0 12px 12px;
 
-      .transfer-coin-tip-icon {
-        width: 12px;
-        height: 18px;
+      .transfer-coin-tip-card {
+        width: 100%;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-right: 4px;
-        img {
+        justify-content: start;
+        align-items: start;
+        padding-top: 12px;
+  
+        .transfer-coin-tip-icon {
           width: 12px;
-          height: 12px;
-          line-height: 1.5;
+          height: 18px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 4px;
+          img {
+            width: 12px;
+            height: 12px;
+            line-height: 1.5;
+          }
+  
         }
-
-      }
-
-      .transfer-coin-tip-text {
-        flex: 1;
-        font-size: 12px;
-        font-family: PingFangSC, PingFang SC;
-        font-weight: 400;
-        color: #222222;
-        text-align: left;
-
-        span {
-          text-decoration: underline;
-          padding: 0 2px;
-          cursor: pointer;
+  
+        .transfer-coin-tip-text {
+          flex: 1;
+          font-size: 12px;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          color: #222222;
+          text-align: left;
+  
+          span {
+            text-decoration: underline;
+            padding: 0 2px;
+            cursor: pointer;
+          }
         }
       }
     }
@@ -2458,5 +2509,16 @@ export default {
       }
     }
   }
+
+  .transfer-coin-tip {
+    .transfer-coin-tip-group {
+      .transfer-coin-tip-card {
+        .transfer-coin-tip-text {
+          color: #FFF;
+        }
+      }
+    }
+  }
+  
 }
 </style>
