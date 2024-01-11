@@ -208,7 +208,7 @@
             <div class="transfer-coin-tip-icon">
               <img src="../../assets/tip.png" alt="">
             </div>
-            <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only USDC.e (<span
+            <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only {{ fromTokenName }} (<span
               :title="fromTokenAddress"
               @click="linkFromTokenAddress"
               >***{{ fromTokenAddress.slice((fromTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
@@ -217,7 +217,7 @@
             <div class="transfer-coin-tip-icon">
               <img src="../../assets/tip.png" alt="">
             </div>
-            <div class="transfer-coin-tip-text">On {{ showChainName(false) }}: Only USDC.e (<span
+            <div class="transfer-coin-tip-text">On {{ showChainName(false) }}: Only {{ targetTokenName }} (<span
               :title="targetTokenAddress"
               @click="linkTargetTokenAddress"
               >***{{ targetTokenAddress.slice((targetTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
@@ -432,6 +432,7 @@ import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
+import { ethers } from 'ethers'
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -458,6 +459,8 @@ export default {
       // tip
       fromTokenAddress: "",
       targetTokenAddress: "",
+      fromTokenName: "",
+      targetTokenName: "",
       fromChainId: "",
       targetChainId: "",
       isTipFromTokenAddress: false,
@@ -779,30 +782,10 @@ export default {
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
-      const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
-      const fromChain = value
-      const targetChain = this.transferDataState.toChainID
-      this.fromChainId = fromChain
-      this.targetChainId = targetChain
-      this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
-      this.targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
-      this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChain && linkChain.includes(fromChain)
-      this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChain && linkChain.includes(targetChain)
-      this.tipsFromUrl = chain.filter((item)=> item.chainId === fromChain)[0].infoURL || ""
-      this.tipstargetUrl = chain.filter((item)=> item.chainId === targetChain)[0].infoURL || ""
+      this.handleTipsCall()
     },
-    'transferDataState.toChainID': function (value) {
-      const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
-      const fromChain = this.transferDataState.fromChainID
-      const targetChain = value
-      this.fromChainId = fromChain
-      this.targetChainId = targetChain
-      this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
-      this.targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
-      this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChain && linkChain.includes(fromChain)
-      this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChain && linkChain.includes(targetChain)
-      this.tipsFromUrl = chain.filter((item)=> item.chainId === fromChain)[0].infoURL || ""
-      this.tipstargetUrl = chain.filter((item)=> item.chainId === targetChain)[0].infoURL || ""
+    'transferDataState.toChainID': function () {
+      this.handleTipsCall()
     },
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
@@ -831,19 +814,7 @@ export default {
       const isUSDC = newValue.toLocaleLowerCase() === "usdc"
 
       if(isUSDC) {
-        const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
-
-        const chainId = this.transferDataState.fromChainID
-        const targetChainId = this.transferDataState.toChainID
-        this.fromChainId = chainId
-        this.targetChainId = targetChainId
-        this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
-        this.targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
-        this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && newValue && chainId && linkChain.includes(chainId)
-        this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && newValue && targetChainId && linkChain.includes(targetChainId)
-
-        this.tipsFromUrl = chain.filter((item)=> item.chainId === chainId)[0].infoURL
-        this.tipstargetUrl = chain.filter((item)=> item.chainId === targetChainId)[0].infoURL
+        this.handleTipsCall()
       } else {
         this.isTipFromTokenAddress = false
         this.isTiptargetTokenAddress = false
@@ -938,6 +909,31 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    handleTipsCall() {
+        const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
+
+        const fromChainId = this.transferDataState.fromChainID
+        const targetChainId = this.transferDataState.toChainID
+        const fromChainGroup = chain.filter((item)=> item.chainId === fromChainId)[0]
+        const targetChainGroup = chain.filter((item)=> item.chainId === targetChainId)[0]
+        this.fromChainId = fromChainId
+        this.targetChainId = targetChainId
+        const fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
+        const targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
+        this.fromTokenName = fromChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  fromTokenAddress.toLocaleLowerCase())[0]?.name || ""
+        this.targetTokenName = targetChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  targetTokenAddress.toLocaleLowerCase())[0]?.name ||""
+        if (fromTokenAddress) {
+          this.fromTokenAddress = ethers.utils.getAddress(fromTokenAddress)
+        }
+        if (targetTokenAddress) {
+          this.targetTokenAddress = ethers.utils.getAddress(targetTokenAddress)
+        }
+        this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChainId && linkChain.includes(fromChainId)
+        this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChainId && linkChain.includes(targetChainId)
+
+        this.tipsFromUrl = fromChainGroup.infoURL
+        this.tipstargetUrl = targetChainGroup.infoURL
+    },
     linkFromTokenAddress() {
       if(this.tipsFromUrl && this.fromTokenAddress ) {
         window.open(this.tipsFromUrl + "/token/" + this.fromTokenAddress, "_blank")

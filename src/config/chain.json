@@ -68,7 +68,7 @@
                 "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
             },
             {
-                "name": "USD Coin",
+                "name": "USDC.e",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8"
@@ -215,7 +215,7 @@
                 "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
             },
             {
-                "name": "USD Coin",
+                "name": "USDC.e",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
@@ -258,7 +258,7 @@
                 "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
             },
             {
-                "name": "USD Coin",
+                "name": "USDC.e",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
@@ -671,7 +671,7 @@
         ],
         "tokens": [
             {
-                "name": "USDC",
+                "name": "USDbC",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
