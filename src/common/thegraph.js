@@ -67,30 +67,30 @@ export async function getMdcRuleLatest(dealerAddress) {
             }
             nativeToken
           }
-        dealer(id: "${ dealerAddress.toLowerCase() }") {
+        dealer(id: "${dealerAddress.toLowerCase()}") {
             mdcs {
             id
             owner
-            chainIdSnapshot {
-              chainIdMappingSnapshot{
-                  chainId
-                  chainIdIndex
-                  enableTimestamp
+            columnArraySnapshot(
+              where: {enableTimestamp_lt: "${Math.floor(new Date().valueOf() / 1000)}"}
+              orderBy: enableTimestamp
+              orderDirection: desc
+              first: 1
+            ) {
+              enableTimestamp
+              chainIdMappingSnapshot {
+                    chainId
+                    chainIdIndex
+                
               }
-            }
-            ebcSnapshot {
-              ebcMappingSnapshot{
-                ebcAddr
-                ebcIndex
-                enableTimestamp
+              ebcMappingSnapshot {
+                  ebcAddr
+                  ebcIndex
               }
-            }
-            dealerSnapshot {
               dealerMappingSnapshot {
-                 dealerAddr
-                 dealerIndex
-                 enableTimestamp
-              }
+                   dealerAddr
+                   dealerIndex
+              }             
             }
             ruleSnapshot(orderBy: version, orderDirection: desc) {
               version
@@ -128,75 +128,54 @@ export async function getMdcRuleLatest(dealerAddress) {
     const response = res.data?.data;
     if (!response?.dealer || !response?.chainRels) return [];
     let updateTime = 0;
-    let timestamp = new Date().valueOf();
     const v3ChainList = await convertV3ChainList(response.chainRels);
     const mdcs = response.dealer.mdcs || [];
     const marketList = [];
     for (const mdc of mdcs) {
-        if (process.env.VUE_APP_WHITE_LIST) {
-            const whiteList = process.env.VUE_APP_WHITE_LIST.split(',');
+        if (!mdc?.columnArraySnapshot) {
+            continue;
+        }
+        const columnArraySnapshot = mdc?.columnArraySnapshot[0];
+        const chainIdMappingSnapshots = columnArraySnapshot.chainIdMappingSnapshot;
+        const ebcMappingSnapshot = columnArraySnapshot.ebcMappingSnapshot;
+        const dealerMappingSnapshot = columnArraySnapshot.dealerMappingSnapshot;
+        if (!chainIdMappingSnapshots || !chainIdMappingSnapshots.length) {
+            continue;
+        }
+        if (!ebcMappingSnapshot || !ebcMappingSnapshot.length) {
+            continue;
+        }
+        if (!dealerMappingSnapshot || !dealerMappingSnapshot.length) {
+            continue;
+        }
+        const whiteListConfig = process.env.VUE_APP_WHITE_LIST;
+        if (whiteListConfig) {
+            const whiteList = whiteListConfig.split(',');
             if (!whiteList.find(address => address.toLowerCase() === mdc.owner.toLowerCase())) {
                 continue;
             }
         }
-        if(!mdc?.chainIdSnapshot.length) continue;
-        if(!mdc?.ebcSnapshot.length) continue;
-        if(!mdc?.dealerSnapshot.length) continue;
         const chainIdMap = {};
         const ebcIdMap = {};
         const dealerIdMap = {};
 
-        mdc.chainIdSnapshot.sort(function (a, b) {
-            return a.chainIdMappingSnapshot[0].enableTimestamp - b.chainIdMappingSnapshot[0].enableTimestamp;
-        }).forEach((item) => {
-            if (item.chainIdMappingSnapshot.length) {
-                const enableTimestamp = +item.chainIdMappingSnapshot[0].enableTimestamp * 1000;
-                if (enableTimestamp > timestamp) {
-                    if (!updateTime) updateTime = enableTimestamp;
-                    updateTime = Math.min(updateTime, enableTimestamp);
-                } else {
-                    for (const snapshot of item.chainIdMappingSnapshot) {
-                        chainIdMap[snapshot.chainId] = snapshot.chainIdIndex;
-                    }
-                }
-            }
-        });
+        for (const snapshot of chainIdMappingSnapshots) {
+            chainIdMap[snapshot.chainId] = snapshot.chainIdIndex;
+        }
 
-        mdc.ebcSnapshot.sort(function (a, b) {
-            return a.ebcMappingSnapshot[0].enableTimestamp - b.ebcMappingSnapshot[0].enableTimestamp;
-        }).forEach((item) => {
-            if (item.ebcMappingSnapshot.length) {
-                const enableTimestamp = +item.ebcMappingSnapshot[0].enableTimestamp * 1000;
-                if (enableTimestamp > timestamp) {
-                    if (!updateTime) updateTime = enableTimestamp;
-                    updateTime = Math.min(updateTime, enableTimestamp);
-                } else {
-                    for (const snapshot of item.ebcMappingSnapshot) {
-                        ebcIdMap[snapshot.ebcAddr.toLowerCase()] = snapshot.ebcIndex;
-                    }
-                }
-            }
-        });
+        for (const snapshot of ebcMappingSnapshot) {
+            ebcIdMap[snapshot.ebcAddr.toLowerCase()] = snapshot.ebcIndex;
+        }
 
-        mdc.dealerSnapshot.sort(function (a, b) {
-            return a.dealerMappingSnapshot[0].enableTimestamp - b.dealerMappingSnapshot[0].enableTimestamp;
-        }).forEach((item) => {
-            if (item.dealerMappingSnapshot.length) {
-                const enableTimestamp = +item.dealerMappingSnapshot[0].enableTimestamp * 1000;
-                if (enableTimestamp > timestamp) {
-                    if (!updateTime) updateTime = enableTimestamp;
-                    updateTime = Math.min(updateTime, enableTimestamp);
-                } else {
-                    for (const snapshot of item.dealerMappingSnapshot) {
-                        dealerIdMap[snapshot.dealerAddr.toLowerCase()] = snapshot.dealerIndex;
-                    }
-                }
-            }
-        });
-        const ruleSnapshots = mdc.ruleSnapshot.sort(function (a, b) {
+        for (const snapshot of dealerMappingSnapshot) {
+            dealerIdMap[snapshot.dealerAddr.toLowerCase()] = snapshot.dealerIndex;
+        }
+
+        const ruleSnapshots = mdc.ruleSnapshot.sort(function(a, b) {
             return b.version - a.version;
         });
         const nextUpdateTimeMap = {};
+
         for (const ruleSnapshot of ruleSnapshots) {
             const ebcId = ebcIdMap[ruleSnapshot.ebc.id.toLowerCase()];
             if (!ebcId) {

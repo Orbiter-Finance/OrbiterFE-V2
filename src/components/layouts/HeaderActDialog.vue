@@ -305,10 +305,9 @@
               <div class="card_cover"></div>
             </div>
           </div>
-
-          <div style="width: 100%; display: flex; height: 45px">
-            <span class="text_21">🛸 Quests </span>
-          </div>
+        </div>
+        <div style="width: 100%; display: flex;">
+          <span class="text_21">🛸 Quests </span>
         </div>
         <div 
         class="card"
@@ -344,6 +343,7 @@
               </o-tooltip>
             </div>
           </div>
+          
           <div
             v-loading="listLoading"
             element-loading-background="rgba(0, 0, 0, 0)"
@@ -596,7 +596,13 @@
               </el-carousel>
             </div>
           </div>
+
         </div>
+
+        <div ref="ecosystem_dapp">
+        <EcosystemDapp></EcosystemDapp>
+        </div>
+
       </div>
     </div>
   </div>
@@ -640,6 +646,7 @@ import { PONITS_EXPAND_COUNT } from '../../const'
 
 import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
+import EcosystemDapp from './EcosystemDapp.vue'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -648,7 +655,8 @@ export default {
   components: {
     SvgIconThemed,
     HeaderActGroup,
-    HeaderLotteryCard
+    HeaderLotteryCard,
+    EcosystemDapp
   },
   data() {
     return {
@@ -658,7 +666,7 @@ export default {
       countDownHour: '00',
       countDownDate: '00',
       left: 0,
-      questsShow: +new Date('2024 1-26 07:00:00') >= getUTCTime(),
+      questsShow: false,
       nftSeries: [
         { img: '0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png' },
         { img: '0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png' },
@@ -860,7 +868,9 @@ export default {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
-      this.taskHeight = total - eleHeight - walletGroupEle - 60
+      const ecosystem_dapp = this.$refs.ecosystem_dapp?.clientHeight || 50
+      
+      this.taskHeight = total - eleHeight - walletGroupEle - ecosystem_dapp - 72
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle -20
       }
@@ -2001,7 +2011,7 @@ export default {
       display: flex;
       width: 100%;
       height: 60px;
-      margin: 8px 0 0 20px;
+      margin: 8px 0 12px 20px;
       overflow: hidden;
 
       .box_div {
@@ -2261,7 +2271,7 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 23px;
-    margin: 12px 0 0 16px;
+    margin: 0 0 4px 16px;
   }
 
   .nft_vice_title {
@@ -2430,7 +2440,7 @@ export default {
       text-align: left;
       white-space: nowrap;
       line-height: 23px;
-      margin: 12px 0 0 16px;
+      margin: 0 0 4px 16px;
     }
 
     .box_1 {
@@ -2646,7 +2656,7 @@ export default {
         text-align: left;
         white-space: nowrap;
         line-height: 23px;
-        margin: 12px 0 0 16px;
+        margin: 0 0 4px 16px;
       }
 
       .box_1 {
