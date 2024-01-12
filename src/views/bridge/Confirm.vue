@@ -253,7 +253,7 @@ export default {
                         selectMakerConfig.tradingFee +
                         ' ' +
                         selectMakerConfig.fromChain.symbol,
-                    lineThrough: selectMakerConfig.originWithholdingFee ?
+                    lineThrough: selectMakerConfig.originWithholdingFee && +selectMakerConfig.originWithholdingFee > +selectMakerConfig.tradingFee ?
                       selectMakerConfig.originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
                 },
                 {
