@@ -427,6 +427,7 @@ import {
   setActAddPoint,
   setActAddPointVisible,
   updateActDataList, setActPoint, setActDialogVisible, setActNftList,
+  updateTradingPairsData
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
@@ -1028,6 +1029,7 @@ export default {
     },
     async getNetWorkRule(dealerId) {
       const ruleRes = await getMdcRuleLatest(dealerId);
+      updateTradingPairsData(ruleRes?.ruleList || [])
       if (!ruleRes?.ruleList || !ruleRes.ruleList.length) return [];
       const { ruleList, updateTime } = ruleRes;
       if (JSON.stringify(makerConfigs) !== JSON.stringify(ruleList)) {
