@@ -244,6 +244,8 @@ export default {
                 /(.*?0)0{4,}(0.*?)/,
                 '$1...$2'
             )
+            const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
+            const withholdingFee = +(selectMakerConfig.tradingFee || 0);
             const comm = [
                 {
                     icon: 'withholding',
@@ -253,8 +255,7 @@ export default {
                         selectMakerConfig.tradingFee +
                         ' ' +
                         selectMakerConfig.fromChain.symbol,
-                    lineThrough: selectMakerConfig.originWithholdingFee ?
-                      selectMakerConfig.originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
+                    lineThrough: withholdingFee<originWithholdingFee?originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
                 },
                 {
                     icon: 'security',
