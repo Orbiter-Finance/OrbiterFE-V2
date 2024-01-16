@@ -845,6 +845,36 @@
             "url": "",
             "key": ""
         },
+        "chainId": "255",
+        "networkId": "255",
+        "internalId": "36",
+        "name": "Kroma",
+        "features": [],
+        "debug": false,
+        "contracts": ["0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172"],
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://api.kroma.network"
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "router": {
+            "0x2598d7bC9D3b4B6124f3282E49Eee68db270F516": "OrbiterRouterV3"
+        },
+        "tokens": [],
+        "infoURL": "https://kromascan.com"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
         "chainId": "42766",
         "networkId": "42766",
         "internalId": "38",
