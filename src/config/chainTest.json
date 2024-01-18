@@ -789,5 +789,30 @@
         ],
         "tokens": [],
         "infoURL": "https://testnet-explorer.xai-chain.net"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "168587773",
+        "networkId": "168587773",
+        "internalId": "540",
+        "name": "Blast Sepolia",
+        "debug": false,
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://sepolia.blast.io"
+        ],
+        "tokens": [],
+        "infoURL": "https://testnet.blastscan.io"
     }
 ]
