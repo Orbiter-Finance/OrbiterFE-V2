@@ -2023,6 +2023,9 @@ export default {
       if (_balance > 0) {
         // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
         this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
+        if (!+this.makerMaxBalance && isDev()) {
+            this.makerMaxBalance = new BigNumber(100).multipliedBy(10 ** 18).toString();
+        }
       }
     },
     gasCost() {
