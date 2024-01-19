@@ -39,6 +39,7 @@ export async function requestOpenApi(method, params, isV3 = true) {
 }
 
 export async function requestPointSystem(path, params) {
+  if (isDev()) return null;
   return await openApiAx.get(`/points_system/${ path }`, {
     params
   });
