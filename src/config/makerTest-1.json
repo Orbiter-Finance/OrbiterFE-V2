@@ -2523,23 +2523,10 @@
     },
     "5-526": {
         "ETH-ETH": {
-            "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-            "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-            "gasFee": 100,
-            "tradingFee": 0.01,
-            "maxPrice": 5,
-            "minPrice": 0.01,
-            "slippage": 200,
-            "startTime": 0,
-            "endTime": 99999999999999
-        }
-    },
-    "526-5": {
-        "ETH-ETH": {
-            "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-            "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-            "gasFee": 600,
-            "tradingFee": 0.01,
+            "makerAddress": "0x1ed29c10e661e5721dfe162845f72548f090d8e7",
+            "sender": "0x1ed29c10e661e5721dfe162845f72548f090d8e7",
+            "gasFee": 0,
+            "tradingFee": 0,
             "maxPrice": 5,
             "minPrice": 0.01,
             "slippage": 200,
