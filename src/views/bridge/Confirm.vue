@@ -11,22 +11,27 @@
             class="confirm-item"
             :style="{ marginBottom: '22px' }"
         >
-            <div class="item-left">
-                <SvgIconThemed :icon="item.icon" />
-                <span class="left-txt">{{ item.title }}</span>
-                <o-tooltip placement="topLeft">
-                    <template v-slot:titleDesc>
-                        <span class="o-tip">{{ item.notice }}</span>
-                    </template>
-                    <HelpIcon v-if="item.notice" size="sm" />
-                </o-tooltip>
-            </div>
-            <div class="item-right">
-                <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''}`">{{ item.desc }}</span>
-                <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
-                    <span v-if="isMobile"><br /></span>
-                    {{ item.lineThrough }}
-                </span>
+            <div class="confirm-item-top-group">
+                <div class="item-left">
+                    <SvgIconThemed :icon="item.icon" />
+                    <span class="left-txt">{{ item.title }}</span>
+                    <o-tooltip placement="topLeft">
+                        <template v-slot:titleDesc>
+                            <span class="o-tip">{{ item.notice }}</span>
+                        </template>
+                        <HelpIcon v-if="item.notice" size="sm" />
+                    </o-tooltip>
+                </div>
+                <div class="item-right">
+                    <div v-if="item.isCom" >
+                        <GasObSelect></GasObSelect>
+                    </div>
+                    <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''}`">{{ item.desc }}</span>
+                    <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
+                        <span v-if="isMobile"><br /></span>
+                        {{ item.lineThrough }}
+                    </span>
+                </div>
             </div>
             <div
                 v-if="item.descInfo && item.descInfo.length > 0"
@@ -164,6 +169,7 @@ import {
     CommBoxHeader,
     CommBtn,
     HelpIcon,
+    GasObSelect
 } from '../../components'
 import BigNumber from 'bignumber.js'
 import getProceeding from '../../util/proceeding/getProceeding'
@@ -199,13 +205,15 @@ import {
     walletIsLogin,
     compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
-import { isMobile, transferDataState, web3State } from '../../composition/hooks'
+import { isMobile, transferDataState, web3State, gasTokenInfo } from '../../composition/hooks'
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp } from "../../util";
+import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, PAYMASTER_ADDRESS } from "../../util/zksyncEraGasToken";
+
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -214,7 +222,7 @@ const {
 
 export default {
     name: 'Confirm',
-    components: { SvgIconThemed, CommBoxHeader, CommBtn, HelpIcon },
+    components: { SvgIconThemed, CommBoxHeader, CommBtn, HelpIcon, GasObSelect },
     data() {
         return {
             transferLoading: false,
@@ -234,6 +242,13 @@ export default {
                 toChainID === CHAIN_ID.starknet_test
             )
         },
+        currentFromChainID() {
+            const { fromChainID } = transferDataState
+            return fromChainID
+        },
+        gasTokenInfoValue()  { 
+            return gasTokenInfo.info
+        },
         confirmData() {
             const { selectMakerConfig } = transferDataState
             // 0.000120000000009022 to 0.000120...09022
@@ -246,6 +261,9 @@ export default {
             )
             const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
+            
+            const isGasTokenChain = this.currentFromChainID === CHAIN_ID.zksync2
+
             const comm = [
                 {
                     icon: 'withholding',
@@ -280,6 +298,14 @@ export default {
                     desc: this.expectValue,
                     textBold: true,
                 },
+                ...(isGasTokenChain ? [{
+                    icon: 'gas',
+                    title: 'Select Gas Token',
+                    notice: 'Select Gas Token',
+                    desc: "",
+                    isCom: true,
+                    textBold: true,
+                }] : []),
                 {
                     icon: 'exchange',
                     title: 'Maker Routes',
@@ -1290,6 +1316,30 @@ export default {
                 })
             }
         },
+        async zksync2GasToken () {
+            const account =
+                    compatibleGlobalWalletConf.value.walletPayload.walletAddress
+            const { fromChainID, selectMakerConfig } = transferDataState
+            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+            const to = selectMakerConfig.recipient
+            const tValue = transferCalculate.getTransferTValue()           
+
+            try {
+                if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
+                // When tokenAddress is eth
+                    await zksyncEraGasTokenETH({account, fromChainID, to, amount: tValue.tAmount,onTransferSucceed: this.onTransferSucceed})
+                } else {
+                    await zksyncEraGasTokenERC20({account, fromChainID, to, amount: tValue.tAmount, tokenAddress, onTransferSucceed: this.onTransferSucceed})
+                }
+            } catch (error) {
+                
+                this.$notify.error({
+                    title: error?.data?.message || error?.message || "ERROR",
+                    duration: 3000,
+                })
+            }
+            this.transferLoading = false
+        },
         async RealTransfer() {
             if (!walletIsLogin.value) {
                 Middle.$emit('connectWallet', true)
@@ -1393,6 +1443,11 @@ export default {
 
                 if (fromChainID === CHAIN_ID.dydx || fromChainID === CHAIN_ID.dydx_test) {
                     this.dydxTransfer(tValue.tAmount)
+                    return
+                }
+
+                if ((fromChainID === CHAIN_ID.zksync2) &&  this.gasTokenInfoValue.value && (this.gasTokenInfoValue.value !== "ETH")) {
+                    this.zksync2GasToken()
                     return
                 }
 
@@ -1555,7 +1610,7 @@ export default {
         width: 480px;
         padding-bottom: 20px;
         .confirm-item {
-            margin: 22px 0;
+            margin: 22px 0 0;
         }
     }
     .select-wallet-dialog {
@@ -1578,7 +1633,7 @@ export default {
         height: 100%;
         padding: 0 20px;
         .confirm-item {
-            margin: 12px 0;
+            margin: 12px 0 0;
         }
     }
     .select-wallet-dialog {
@@ -1592,10 +1647,13 @@ export default {
     font-size: 14px;
     line-height: 20px;
     .confirm-item {
-        overflow: hidden;
         padding: 0 30px;
+        .confirm-item-top-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .item-left {
-            float: left;
             display: flex;
             align-items: center;
             .left-txt {
@@ -1603,7 +1661,10 @@ export default {
             }
         }
         .item-right {
-            float: right;
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-content: center;
             font-weight: 400;
             font-size: 14px;
             line-height: 24px;
