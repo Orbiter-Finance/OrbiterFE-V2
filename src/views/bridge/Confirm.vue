@@ -205,14 +205,14 @@ import {
     walletIsLogin,
     compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
-import { isMobile, transferDataState, web3State, gasTokenInfo } from '../../composition/hooks'
+import { isMobile, transferDataState, web3State, gasTokenInfo, updateGasTokenInfo } from '../../composition/hooks'
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp } from "../../util";
-import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, PAYMASTER_ADDRESS } from "../../util/zksyncEraGasToken";
+import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20 } from "../../util/zksyncEraGasToken";
 
 const {
     walletDispatchersOnSignature,
@@ -1330,6 +1330,7 @@ export default {
                 } else {
                     await zksyncEraGasTokenERC20({account, fromChainID, to, amount: tValue.tAmount, tokenAddress, onTransferSucceed: this.onTransferSucceed})
                 }
+                updateGasTokenInfo({})
             } catch (error) {
                 
                 this.$notify.error({
