@@ -39,7 +39,7 @@
             <div class="progress" :style="{width: decimalNumC(ratio, 3)+'%'}"></div>
           </div>
         </div>
-        <div class="mint" @click="openUrl('https://www.layer220.io/')">
+        <div :class="['mint', {'mint-end': isEnd}]" @click="openUrl('https://www.layer220.io/')">
           Mint
         </div>
       </div>
@@ -55,6 +55,7 @@ export default {
     return {
       holders: 0,
       ratio: 0,
+      isEnd: false
     }
   },
   methods: {
@@ -78,6 +79,7 @@ export default {
       if (Number(max) && Number(totalAmount)) {
         const total = (totalAmount * 100) / max
         this.ratio = Number(total) <= 100 ? Number(total) : 100
+        this.isEnd = this.ratio === 100
       }
     },
   },
@@ -209,6 +211,10 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
+      }
+
+      .mint-end {
+        opacity: 0.5;
       }
     }
   }
