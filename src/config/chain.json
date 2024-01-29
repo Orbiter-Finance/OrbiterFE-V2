@@ -907,5 +907,37 @@
             }
         ],
         "infoURL": "https://scan.zkfair.io"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "7000",
+        "networkId": "7000",
+        "internalId": "41",
+        "name": "ZETA",
+        "debug": false,
+        "service": {
+            "rpc": "EVMRpcScanningV5Service"
+        },
+        "nativeCurrency": {
+            "name": "ZETA",
+            "symbol": "ZETA",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://zetachain-evm.blockpi.network/v1/rpc/public"
+        ],
+        "tokens": [
+            {
+                "name": "ETH",
+                "symbol": "ETH",
+                "decimals": 18,
+                "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+            }
+        ],
+        "infoURL": "https://zetachain-athens-3.blockscout.com"
     }
 ]
