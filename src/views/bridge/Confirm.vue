@@ -262,8 +262,7 @@ export default {
             const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
             
-            const isGasTokenChain = (this.currentFromChainID === CHAIN_ID.zksync2) && false
-
+            const isGasTokenChain = (this.currentFromChainID === CHAIN_ID.zksync2)
             const comm = [
                 {
                     icon: 'withholding',
