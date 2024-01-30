@@ -851,7 +851,7 @@
         "name": "Kroma",
         "features": [],
         "debug": false,
-        "contracts": ["0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172"],
+        "contracts": ["0x2598d7bC9D3b4B6124f3282E49Eee68db270F516"],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -865,7 +865,7 @@
             "rpc"
         ],
         "router": {
-            "0x2598d7bC9D3b4B6124f3282E49Eee68db270F516": "OrbiterRouterV3"
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
         },
         "tokens": [],
         "infoURL": "https://kromascan.com"
