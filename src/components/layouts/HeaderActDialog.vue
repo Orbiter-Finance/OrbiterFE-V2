@@ -688,29 +688,14 @@ export default {
       taskMobileHeight: 0,
       bannerList: [
         {
-          url: 'https://galxe.com/izumi/campaign/GCcKhttqS4',
-          img: '4.png',
-          timeStamp: '2023-12-20 12:00:00',
+          url: 'https://galxe.com/Holdstation/campaign/GCguDtwUZM',
+          img: 'hold.png',
+          timeStamp: '2024-02-19 17:00:00',
         },
         {
-          url: 'https://taskon.xyz/campaign/detail/25937',
-          img: '1.png',
-          timeStamp: '2023-12-25 10:00:00',
-        },
-        {
-          url: 'https://galxe.com/OrbiterFinance/campaign/GCYQPtU1R5',
-          img: '2.png',
-          timeStamp: '2023-12-14 17:00:00',
-        },
-        {
-          url: 'https://www.clique.social/joint-campaign/op-red-wars/op-red-wars-event1',
-          img: '3.png',
-          timeStamp: '2023-12-20 06:00:00',
-        },
-        {
-          url: 'https://galxe.com/aboardexchange/campaign/GCq31ttk2i',
-          img: '5.png',
-          timeStamp: '2023-12-25 07:00:00',
+          url: 'https://galxe.com/izumi/campaign/GCxPjtwC1U',
+          img: 'zeta.png',
+          timeStamp: '2024-02-08 00:00:00',
         },
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
     }
