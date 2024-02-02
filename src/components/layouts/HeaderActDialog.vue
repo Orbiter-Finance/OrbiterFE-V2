@@ -600,7 +600,7 @@
         </div>
 
         <div ref="ecosystem_dapp">
-        <EcosystemDapp></EcosystemDapp>
+        <!-- <EcosystemDapp></EcosystemDapp> -->
         </div>
 
       </div>
@@ -853,9 +853,9 @@ export default {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
-      const ecosystem_dapp = this.$refs.ecosystem_dapp?.clientHeight || 50
+      // const ecosystem_dapp = this.$refs.ecosystem_dapp?.clientHeight || 50
       
-      this.taskHeight = total - eleHeight - walletGroupEle - ecosystem_dapp - 72
+      this.taskHeight = total - eleHeight - walletGroupEle - 72
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle -20
       }
