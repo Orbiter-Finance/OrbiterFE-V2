@@ -202,16 +202,28 @@
         {{ sendBtnInfo && sendBtnInfo.text }}
       </span>
       </CommBtn>
-      <div v-if="selectFromToken === 'USDC' && !!isTipFromTokenAddress" class="transfer-coin-tip">
-        <div class="transfer-coin-tip-card">
-          <div class="transfer-coin-tip-icon">
-            <img src="../../assets/tip.png" alt="">
+      <div v-if="selectFromToken === 'USDC' && (!!isTipFromTokenAddress || !!isTiptargetTokenAddress)" class="transfer-coin-tip">
+        <div class="transfer-coin-tip-group">
+          <div v-if="isTipFromTokenAddress" class="transfer-coin-tip-card">
+            <div class="transfer-coin-tip-icon">
+              <img src="../../assets/tip.png" alt="">
+            </div>
+            <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only {{ fromTokenName }} (<span
+              :title="fromTokenAddress"
+              @click="linkFromTokenAddress"
+              >***{{ fromTokenAddress.slice((fromTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
           </div>
-          <div class="transfer-coin-tip-text">On {{ showChainName() }}: Only USDC.e (<span
-            :title="fromTokenAddress"
-            @click="linkFromTokenAddress"
-            >***{{ fromTokenAddress.slice((fromTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
+          <div v-if="isTiptargetTokenAddress" class="transfer-coin-tip-card">
+            <div class="transfer-coin-tip-icon">
+              <img src="../../assets/tip.png" alt="">
+            </div>
+            <div class="transfer-coin-tip-text">On {{ showChainName(false) }}: Only {{ targetTokenName }} (<span
+              :title="targetTokenAddress"
+              @click="linkTargetTokenAddress"
+              >***{{ targetTokenAddress.slice((targetTokenAddress.length||0)-6) }}</span>) will be accepted for bridging.</div>
+          </div>
         </div>
+        
       </div>
       <div class="info-box">
         <div v-if="isWillUpdate" class="info-item">
@@ -415,11 +427,13 @@ import {
   setActAddPoint,
   setActAddPointVisible,
   updateActDataList, setActPoint, setActDialogVisible, setActNftList,
+  updateTradingPairsData
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
+import { ethers } from 'ethers'
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -445,9 +459,15 @@ export default {
 
       // tip
       fromTokenAddress: "",
+      targetTokenAddress: "",
+      fromTokenName: "",
+      targetTokenName: "",
       fromChainId: "",
-      isTipFromTokenAddress:"",
-      tipsUrl: "",
+      targetChainId: "",
+      isTipFromTokenAddress: false,
+      isTiptargetTokenAddress: false,
+      tipsFromUrl: "",
+      tipstargetUrl: "",
 
       isWhiteWallet: '',
       isNewVersion: false,
@@ -763,11 +783,10 @@ export default {
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
-      const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
-      this.fromChainId = value
-      this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
-      this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && value && linkChain.includes(value)
-      this.tipsUrl = chain.filter((item)=> item.chainId === value)[0].infoURL
+      this.handleTipsCall()
+    },
+    'transferDataState.toChainID': function () {
+      this.handleTipsCall()
     },
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
@@ -796,16 +815,10 @@ export default {
       const isUSDC = newValue.toLocaleLowerCase() === "usdc"
 
       if(isUSDC) {
-        const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
-
-        const chainId = this.transferDataState.fromChainID
-        this.fromChainId = chainId
-        this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && newValue && chainId && linkChain.includes(chainId)
-
-        this.fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
-        this.tipsUrl = chain.filter((item)=> item.chainId === chainId)[0].infoURL
+        this.handleTipsCall()
       } else {
         this.isTipFromTokenAddress = false
+        this.isTiptargetTokenAddress = false
       }
 
 
@@ -897,9 +910,39 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    handleTipsCall() {
+        const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
+
+        const fromChainId = this.transferDataState.fromChainID
+        const targetChainId = this.transferDataState.toChainID
+        const fromChainGroup = chain.filter((item)=> item.chainId === fromChainId)[0]
+        const targetChainGroup = chain.filter((item)=> item.chainId === targetChainId)[0]
+        this.fromChainId = fromChainId
+        this.targetChainId = targetChainId
+        const fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
+        const targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
+        this.fromTokenName = fromChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  fromTokenAddress.toLocaleLowerCase())[0]?.name || ""
+        this.targetTokenName = targetChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  targetTokenAddress.toLocaleLowerCase())[0]?.name ||""
+        if (fromTokenAddress) {
+          this.fromTokenAddress = ethers.utils.getAddress(fromTokenAddress)
+        }
+        if (targetTokenAddress) {
+          this.targetTokenAddress = ethers.utils.getAddress(targetTokenAddress)
+        }
+        this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChainId && linkChain.includes(fromChainId)
+        this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChainId && linkChain.includes(targetChainId)
+
+        this.tipsFromUrl = fromChainGroup.infoURL
+        this.tipstargetUrl = targetChainGroup.infoURL
+    },
     linkFromTokenAddress() {
-      if(this.tipsUrl && this.fromTokenAddress ) {
-        window.open(this.tipsUrl + "/token/" + this.fromTokenAddress, "_blank")
+      if(this.tipsFromUrl && this.fromTokenAddress ) {
+        window.open(this.tipsFromUrl + "/token/" + this.fromTokenAddress, "_blank")
+      }
+    },
+    linkTargetTokenAddress() {
+      if(this.tipstargetUrl && this.targetTokenAddress ) {
+        window.open(this.tipstargetUrl + "/token/" + this.targetTokenAddress, "_blank")
       }
     },
     async getWalletAddressPoint(address) {
@@ -986,6 +1029,7 @@ export default {
     },
     async getNetWorkRule(dealerId) {
       const ruleRes = await getMdcRuleLatest(dealerId);
+      updateTradingPairsData(ruleRes?.ruleList || [])
       if (!ruleRes?.ruleList || !ruleRes.ruleList.length) return [];
       const { ruleList, updateTime } = ruleRes;
       if (JSON.stringify(makerConfigs) !== JSON.stringify(ruleList)) {
@@ -2260,43 +2304,48 @@ export default {
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
-    .transfer-coin-tip-card {
+    .transfer-coin-tip-group {
       width: 100%;
-      display: flex;
-      justify-content: start;
-      align-items: start;
       max-width: 440px;
       background: rgba(255,187,36,0.1);
       border-radius: 12px;
-      padding: 12px;
+      padding: 0 12px 12px;
 
-      .transfer-coin-tip-icon {
-        width: 12px;
-        height: 18px;
+      .transfer-coin-tip-card {
+        width: 100%;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-right: 4px;
-        img {
+        justify-content: start;
+        align-items: start;
+        padding-top: 12px;
+  
+        .transfer-coin-tip-icon {
           width: 12px;
-          height: 12px;
-          line-height: 1.5;
+          height: 18px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 4px;
+          img {
+            width: 12px;
+            height: 12px;
+            line-height: 1.5;
+          }
+  
         }
-
-      }
-
-      .transfer-coin-tip-text {
-        flex: 1;
-        font-size: 12px;
-        font-family: PingFangSC, PingFang SC;
-        font-weight: 400;
-        color: #222222;
-        text-align: left;
-
-        span {
-          text-decoration: underline;
-          padding: 0 2px;
-          cursor: pointer;
+  
+        .transfer-coin-tip-text {
+          flex: 1;
+          font-size: 12px;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          color: #222222;
+          text-align: left;
+  
+          span {
+            text-decoration: underline;
+            padding: 0 2px;
+            cursor: pointer;
+          }
         }
       }
     }
@@ -2458,5 +2507,16 @@ export default {
       }
     }
   }
+
+  .transfer-coin-tip {
+    .transfer-coin-tip-group {
+      .transfer-coin-tip-card {
+        .transfer-coin-tip-text {
+          color: #FFF;
+        }
+      }
+    }
+  }
+  
 }
 </style>

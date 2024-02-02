@@ -187,7 +187,7 @@ export async function sendTransfer(
     if (amount.gt(allowance)) {
       const approveTxCall = tokenContract.populate('approve', [
         contractAddress,
-        getUint256CalldataFromBN(String(UINT_256_MAX)),
+        getUint256CalldataFromBN(String(amount)),
       ])
       const transferERC20TxCall = crossContract.populate('transferERC20', [
         tokenAddress,
@@ -311,7 +311,9 @@ export async function getStarkTransferFee(
   try {
     const approveTxCall = tokenContract.populate('approve', [
       contractAddress,
-      getUint256CalldataFromBN(String(UINT_256_MAX)),
+      getUint256CalldataFromBN(
+        new BigNumber(amount).multipliedBy(10 ** token.decimals).toFixed(0)
+      ),
     ])
     const transferERC20TxCall = crossContract.populate('transferERC20', [
       tokenAddress,
