@@ -1339,12 +1339,8 @@ export default {
         makerConfigInfo.gasFee = makerConfigInfo.crossAddress?.gasFee;
       }
       this.makerAddress = makerConfigInfo.recipient;
-      this.userMinPrice = makerConfigInfo.fromChain.symbol.toLocaleLowerCase() === "eth"?  0.00005 : (
-        makerConfigInfo.fromChain.symbol.toLocaleLowerCase() === "usdc" || 
-        makerConfigInfo.fromChain.symbol.toLocaleLowerCase() === "usdt" ?
-         0.1 : makerConfigInfo.fromChain.minPrice
-      )
-      //  makerConfigInfo.fromChain.minPrice || 0;
+      this.userMinPrice = makerConfigInfo.fromChain.minPrice || 0;
+      
       this.userMaxPrice = makerConfigInfo.fromChain.maxPrice || 0;
       updateTransferMakerConfig(makerConfigInfo);
       if (makerConfig.ebcId && makerConfig.nextUpdateTime) {
