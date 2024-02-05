@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js'
+
 export const decimalNum = (
   num = 0,
   decimal,
@@ -6,7 +8,7 @@ export const decimalNum = (
 ) => {
   decimal = Number(decimal) || 2
 
-  const big = num ? num.toString() : '0'
+  const big = num ? new BigNumber(num).toFixed() : '0'
 
   const negativeNChar = Number(big) < 0 ? '-' : ''
 

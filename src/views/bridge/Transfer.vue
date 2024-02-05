@@ -1340,6 +1340,7 @@ export default {
       }
       this.makerAddress = makerConfigInfo.recipient;
       this.userMinPrice = makerConfigInfo.fromChain.minPrice || 0;
+      
       this.userMaxPrice = makerConfigInfo.fromChain.maxPrice || 0;
       updateTransferMakerConfig(makerConfigInfo);
       if (makerConfig.ebcId && makerConfig.nextUpdateTime) {
