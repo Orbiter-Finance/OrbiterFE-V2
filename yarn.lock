@@ -2264,10 +2264,10 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
-"@holdstation/paymaster-helper@2.0.8":
-  version "2.0.8"
-  resolved "https://mirrors.cloud.tencent.com/npm/@holdstation/paymaster-helper/-/paymaster-helper-2.0.8.tgz#36c06ed5e0bfa51bbfa357279e8d23a290c701a1"
-  integrity sha512-ua5ziubzph5tmHMRt7k/EWXVWuZG8avA158vByXG1y/U+rxGa8pZSxSpKQredherB6Io2ZIKBttexi+M9DwwXw==
+"@holdstation/paymaster-helper@^2.0.13":
+  version "2.0.13"
+  resolved "https://mirrors.cloud.tencent.com/npm/@holdstation/paymaster-helper/-/paymaster-helper-2.0.13.tgz#7c23d96b5b23f7780dc3100b9461705ccec8e066"
+  integrity sha512-JDdbmAdGCqInpmWTfO3FaNrsCfn2aW7CMtTnrdNh5wjTLwVteZLdez4S0O6jaNpJjviZbt6Je4WkW7ZCFFHPHQ==
   dependencies:
     "@types/estree" "^1.0.5"
     ethers "^5.7.2"

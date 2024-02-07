@@ -178,7 +178,6 @@ export default {
         gasTokenAddress,
         ethFee
       )
-      console.log(+new Date(), minAmount)
       return ethers.utils.parseUnits("2", "wei").mul(minAmount)
     },
     showSelectDialog() {
