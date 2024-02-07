@@ -1796,7 +1796,11 @@ export default {
       }
       try {
         if (this.banList) {
+        
           for (const ban of this.banList) {
+            if (process.env.VUE_APP_TurnOffOfflineChecking == true) {
+              continue;
+            }
             if (ban.source && ban.dest) {
               if (util.getInternalIdByChainId(fromChainID) === ban.source && util.getInternalIdByChainId(toChainID) === ban.dest) {
                 if (ban.sourceToken && ban.sourceToken === fromCurrency) {
