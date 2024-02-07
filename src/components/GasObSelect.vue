@@ -65,7 +65,6 @@ import { PAYMASTER_ADDRESS } from '../util/zksyncEraGasToken'
 import { Coin_ABI } from '../util/constants/contract/contract'
 import util from '../util/util'
 
-
 const chain = config.chain
 
 export default {
@@ -148,7 +147,7 @@ export default {
       )
       const gasPrice = await provider.getGasPrice()
       const nonce = await provider.getTransactionCount(address, 'latest')
-      
+
       const tokenContract = new Contract(coinAddress, Coin_ABI, provider)
       const { data } = await tokenContract.populateTransaction.transfer(
         toAddress,
@@ -178,7 +177,7 @@ export default {
         gasTokenAddress,
         ethFee
       )
-      return ethers.utils.parseUnits("2", "wei").mul(minAmount)
+      return ethers.utils.parseUnits('2', 'wei').mul(minAmount)
     },
     showSelectDialog() {
       Promise.all(
@@ -202,33 +201,21 @@ export default {
         this.amount = obj
       })
 
-      const eth = new Promise((res) => {
-        return res(0)
+      let obj = {}
+      this.dataList.forEach((item) => {
+        const value = item.value === 'ETH' ? "0" : '0.3'
+
+        obj = {
+          ...obj,
+          [item.value]: value,
+        }
       })
 
-      Promise.all(
-        this.dataList.map((item) => {
-          return item.value === 'ETH' ? eth : this.getMinAmount(item.address)
-        })
-      ).then((res) => {
-        let obj = {}
-        this.dataList.forEach((item, index) => {
-          obj = {
-            ...obj,
-            [item.value]: decimalNum(
-              ethers.utils.formatUnits(res[index] || '0', item.decimals),
-              8
-            ),
-          }
-        })
-
-        this.minAmountFee = obj
-      })
+      this.minAmountFee = obj
 
       this.dialogVisible = !this.dialogVisible
     },
     selectItem(item) {
-
       if (
         ethers.utils.parseEther(item.amount || '0').gt('0') &&
         (item.value === 'ETH' ||
@@ -262,11 +249,11 @@ export default {
   },
   watch: {
     currentWalletAddress() {
-      this.dialogVisible = false;
-      this.amount = {}; 
-      this.minAmountFee = {};
+      this.dialogVisible = false
+      this.amount = {}
+      this.minAmountFee = {}
       updateGasTokenInfo({})
-    }
+    },
   },
   mounted() {
     document.addEventListener('click', this.handlerDialogOutsideClick)
