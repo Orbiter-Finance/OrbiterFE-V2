@@ -62,6 +62,8 @@ import { Web3Provider, Contract } from 'zksync-web3'
 import { PAYMASTER_ABI } from '../util/constants/contract/contract'
 import { ethers } from 'ethers'
 import { PAYMASTER_ADDRESS } from '../util/zksyncEraGasToken'
+import { Coin_ABI } from '../util/constants/contract/contract'
+import util from '../util/util'
 
 
 const chain = config.chain
@@ -85,24 +87,15 @@ export default {
       const zksync2Token = chain.filter(
         (item) => item.chainId === CHAIN_ID.zksync2
       )[0]
-      const zksync2TestToken = chain.filter(
-        (item) => item.chainId === CHAIN_ID.zksync2_test
-      )[0]
 
       const zksync2TokenList = zksync2Token
         ? [zksync2Token.nativeCurrency, ...zksync2Token.tokens]
-        : []
-      const zksync2TestTokenList = zksync2TestToken
-        ? [zksync2TestToken.nativeCurrency, ...zksync2TestToken.tokens]
         : []
 
       let list = []
 
       if (transferDataState.fromChainID === CHAIN_ID.zksync2) {
         list = zksync2TokenList
-      }
-      if (transferDataState.fromChainID === CHAIN_ID.zksync2_test) {
-        list = zksync2TestTokenList
       }
 
       list = list.map((item) => ({
@@ -115,11 +108,16 @@ export default {
         address: item.address,
         amount: this.amount[item.symbol],
         minAmountFee: this.minAmountFee[item.symbol],
-        isSelect: 
-        (ethers.utils.parseEther(this.minAmountFee[item.symbol] || '0').gt("0") || item.symbol === "ETH") &&
-        ethers.utils
-          .parseEther(this.amount[item.symbol] || '0')
-          .gte(ethers.utils.parseEther(this.minAmountFee[item.symbol] || '0')),
+        isSelect:
+          (ethers.utils
+            .parseEther(this.minAmountFee[item.symbol] || '0')
+            .gt('0') ||
+            item.symbol === 'ETH') &&
+          ethers.utils
+            .parseEther(this.amount[item.symbol] || '0')
+            .gte(
+              ethers.utils.parseEther(this.minAmountFee[item.symbol] || '0')
+            ),
       }))
       return list
     },
@@ -129,10 +127,8 @@ export default {
     selectedItem() {
       const value = this.gasTokenInfoValue?.value || ''
       return (
-        this.dataList.filter(
-          (item) =>
-            item.value === (value ||'ETH')
-        )[0] || this.dataList[0]
+        this.dataList.filter((item) => item.value === (value || 'ETH'))[0] ||
+        this.dataList[0]
       )
     },
     isMobile() {
@@ -140,10 +136,11 @@ export default {
     },
   },
   methods: {
-    async getMinAmount(tokenAddress) {
+    async getMinAmount(gasTokenAddress) {
       const address = this.currentWalletAddress
       const { selectMakerConfig } = transferDataState
       const tValue = transferCalculate.getTransferTValue()
+      const coinAddress = selectMakerConfig.fromChain.tokenAddress
 
       const toAddress = selectMakerConfig.recipient
       const provider = new Web3Provider(
@@ -151,17 +148,26 @@ export default {
       )
       const gasPrice = await provider.getGasPrice()
       const nonce = await provider.getTransactionCount(address, 'latest')
+      
+      const tokenContract = new Contract(coinAddress, Coin_ABI, provider)
+      const { data } = await tokenContract.populateTransaction.transfer(
+        toAddress,
+        tValue.tAmount
+      )
+
       const populateTransaction = {
         from: address,
-        to: toAddress,
-        value: tValue.tAmount,
         nonce,
+        data,
+        value: ethers.utils.parseEther('0'),
+        to: coinAddress,
       }
+
       const gasLimit = await provider.estimateGas({
         ...populateTransaction,
         from: address,
       })
-      const ethFee = gasLimit.mul(gasPrice).mul(150).div(100)
+      const ethFee = gasLimit.mul(gasPrice)
 
       const paymasterContract = new Contract(
         PAYMASTER_ADDRESS,
@@ -169,10 +175,10 @@ export default {
         provider
       )
       const [, minAmount] = await paymasterContract.getTokenFee(
-        tokenAddress,
+        gasTokenAddress,
         ethFee
       )
-      return minAmount
+      return ethers.utils.parseUnits("2", "wei").mul(minAmount)
     },
     showSelectDialog() {
       Promise.all(
@@ -201,7 +207,7 @@ export default {
       })
 
       Promise.all(
-        this.dataList.map(async (item) => {
+        this.dataList.map((item) => {
           return item.value === 'ETH' ? eth : this.getMinAmount(item.address)
         })
       ).then((res) => {
@@ -210,7 +216,7 @@ export default {
           obj = {
             ...obj,
             [item.value]: decimalNum(
-              ethers.utils.formatUnits(res[index] || "0", item.decimals),
+              ethers.utils.formatUnits(res[index] || '0', item.decimals),
               8
             ),
           }
@@ -224,12 +230,11 @@ export default {
     selectItem(item) {
 
       if (
+        ethers.utils.parseEther(item.amount || '0').gt('0') &&
+        (item.value === 'ETH' ||
+          ethers.utils.parseEther(item.minAmountFee || '0').gt('0')) &&
         ethers.utils
-          .parseEther(item.amount || "0").gt("0") && (
-            item.value === "ETH" ||  ethers.utils.parseEther(item.minAmountFee || "0").gt("0")
-          ) &&
-        ethers.utils
-          .parseEther(item.amount || "0")
+          .parseEther(item.amount || '0')
           .gte(ethers.utils.parseEther(item.minAmountFee))
       ) {
         updateGasTokenInfo(item)
@@ -257,9 +262,9 @@ export default {
   },
   watch: {
     currentWalletAddress() {
-      this.dialogVisible =  false;
-      this.amount =  {},
-      this.minAmountFee =  {}
+      this.dialogVisible = false;
+      this.amount = {}; 
+      this.minAmountFee = {};
       updateGasTokenInfo({})
     }
   },
