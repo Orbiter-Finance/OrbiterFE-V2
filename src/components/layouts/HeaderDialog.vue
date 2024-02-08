@@ -198,6 +198,11 @@ export default {
                 },
                 {
                     isConnect: false,
+                    icon: 'imtokenapp',
+                    title: 'imTokenApp',
+                },
+                {
+                    isConnect: false,
                     icon: 'zerion',
                     title: 'Zerion',
                 },
