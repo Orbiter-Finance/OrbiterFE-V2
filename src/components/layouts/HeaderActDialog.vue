@@ -285,7 +285,7 @@
                   :key="index"
                   class="section_70"
                   :style="`background: url(${require('../../assets/activity/nft/' +
-                    item.img)});background-size: 100% 100%;`"
+                    item.img)});background-size: 100% 100%;border:${item.border};`"
                 ></div>
               </div>
               <div :hidden="!turnLeft" class="btn">
@@ -702,7 +702,14 @@ export default {
   },
   computed: {
     nftList() {
-      return actNftList.value
+      const dragon = "0x98f2bf4408fae2b6acb7f875efd7c587b593615c".toLocaleLowerCase()
+      const list = actNftList.value
+      
+      return list.map((item)=>({
+        ...item,
+        img: item.img.toLocaleLowerCase(),
+        border: item.img.includes(dragon) ? "0 none" : "2.5px solid rgba(0, 0, 0, 1)"
+      }))
     },
     turnLeft() {
       return (
