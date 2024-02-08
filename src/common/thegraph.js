@@ -23,9 +23,9 @@ export async function getV2TradingPair() {
   if (apiRes?.chainList && apiRes.chainList.length) {
     config.chainConfig = apiRes.chainList;
   }
-  if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
-    return [];
-}
+//   if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
+//     return [];
+// } 
   v2TradingPairs = sortRule(ruleList);
 
   return v2TradingPairs;
