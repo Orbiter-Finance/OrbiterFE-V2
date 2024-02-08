@@ -395,7 +395,7 @@ export default {
     mounted() {
         Middle.$on('connectWallet', () => {
             // this.selectWalletDialogVisible = true
-            setSelectWalletDialogVisible(true)
+            // setSelectWalletDialogVisible(true)
         })
         // document.addEventListener('click', this.handlerDialogOutsideClick)
     },

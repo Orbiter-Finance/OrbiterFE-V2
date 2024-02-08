@@ -85,7 +85,7 @@ export default {
       return isMobile.value
     },
     isLogin() {
-      return walletIsLogin.value
+      return web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
     },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
@@ -174,10 +174,17 @@ export default {
     this.performInitCurrentLoginWallet()
   },
   watch: {
-    isLogin(item1, item2) {
-      if ((item1 !== item2) && !!item1) {
-        setActDialogVisible(true)
+    isLogin: function (item1, item2) {
+      if (item1 !== item2) {
+        if(!!item1) {
+          setActDialogVisible(true)
+        } else {
+          setActDialogVisible(false)
+        }
+      } else {
+        setActDialogVisible(!!item1)
       }
+
     },
     selectWalletDialogVisible: function (newVisible) {
       if (!!newVisible) {
