@@ -198,6 +198,11 @@ export default {
                 },
                 {
                     isConnect: false,
+                    icon: 'imtokenapp',
+                    title: 'imTokenApp',
+                },
+                {
+                    isConnect: false,
                     icon: 'zerion',
                     title: 'Zerion',
                 },
@@ -390,7 +395,7 @@ export default {
     mounted() {
         Middle.$on('connectWallet', () => {
             // this.selectWalletDialogVisible = true
-            setSelectWalletDialogVisible(true)
+            // setSelectWalletDialogVisible(true)
         })
         // document.addEventListener('click', this.handlerDialogOutsideClick)
     },
