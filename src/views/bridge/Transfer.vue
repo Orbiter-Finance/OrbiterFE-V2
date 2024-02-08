@@ -1796,9 +1796,8 @@ export default {
       }
       try {
         if (this.banList) {
-        
           for (const ban of this.banList) {
-            if (process.env.VUE_APP_TurnOffOfflineChecking == true) {
+            if (process.env.VUE_APP_TurnOffOfflineChecking) {
               continue;
             }
             if (ban.source && ban.dest) {
