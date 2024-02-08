@@ -708,7 +708,7 @@ export default {
       return list.map((item)=>({
         ...item,
         img: item.img.toLocaleLowerCase(),
-        border: item.img.includes(dragon) ? "0 none" : "2.5px solid rgba(0, 0, 0, 1)"
+        border: item.img.toLocaleLowerCase().includes(dragon) ? "0 none" : "2.5px solid rgba(0, 0, 0, 1)"
       }))
     },
     turnLeft() {
