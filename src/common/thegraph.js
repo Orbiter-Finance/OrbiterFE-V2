@@ -9,6 +9,9 @@ let v2TradingPairs = [];
 
 export async function getV2TradingPair() {
 
+      if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
+        throw new Error('USE LOCAL Config');
+} 
   if (v2TradingPairs.length) {
     return v2TradingPairs;
   }
@@ -23,9 +26,7 @@ export async function getV2TradingPair() {
   if (apiRes?.chainList && apiRes.chainList.length) {
     config.chainConfig = apiRes.chainList;
   }
-//   if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
-//     return [];
-// } 
+
   v2TradingPairs = sortRule(ruleList);
 
   return v2TradingPairs;
