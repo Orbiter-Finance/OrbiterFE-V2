@@ -213,6 +213,9 @@
       },
       historyData() {
         const { transactionList } = historyPanelState
+
+        console.log("transactionList", transactionList)
+
         if (!transactionList) {
           return transactionList
         }
