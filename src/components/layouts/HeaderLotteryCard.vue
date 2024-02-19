@@ -170,20 +170,13 @@ export default {
       }
     },
     
-    async getLotteryCardDataDraw(isRefresh) {
+    async getLotteryCardDataDraw() {
       const { data } = await requestLotteryCardDraw(
         'user/card/draw',
         {
           address: this.currentWalletAddress?.toLocaleLowerCase(),
         }
       )
-
-      if (!!isRefresh) {
-        this.handleRefresh()
-        if (!this.isConfirm) {
-          this.isConfirm = true
-        }
-      }
       const point = data?.points || 0
 
       if (Number(point)) {

@@ -90,7 +90,6 @@ import { CommBtn, SvgIconThemed } from '../'
 import {
   actAddPointVisible,
   actAddPoint,
-  transferDataState,
   isMobile,
   setStarkNetDialog,
   setSelectWalletDialogVisible,
@@ -107,7 +106,8 @@ import {
   web3State,
   updateActDataList,
   setLotteryCardTotal,
-  setLotteryCardProgress
+  setLotteryCardProgress,
+  transferDataState
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -264,6 +264,16 @@ export default {
         if (point) {
           setActAddPoint(String(point))
           setActAddPointVisible(true)
+
+          const { fromChainID} = transferDataState
+
+          if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+            if (this.starkAddress === 'not connected') {
+              return
+            }
+            setStarkNetDialog(true)
+            setActDialogVisible(true)
+          }
           setTimeout(() => {
             setActAddPointVisible(false)
           }, 3000)

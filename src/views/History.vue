@@ -60,6 +60,7 @@
               class="contentItem"
             >
               <svg-icon
+                :style="`visibility: ${iconName(item) === '' ? 'hidden' : 'visable'}`"
                 class="logo col-val col-1"
                 color="#df2e2d"
                 :iconName="iconName(item)"
@@ -185,13 +186,15 @@
   import util from "../util/util";
   import { decimalNum} from "../util/decimalNum"
   import BigNumber from 'bignumber.js'
+import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
   let timer = 0
   export default {
     name: 'History',
     components: {
       NoData,
       CommBtn,
-      SvgIconThemed
+      SvgIconThemed,
+        SvgIcon
     },
     data() {
       return {
