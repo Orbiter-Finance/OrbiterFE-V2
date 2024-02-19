@@ -254,6 +254,7 @@ export default {
     },
     async getWalletAddressPoint() {
       const { isAddress, address } = this.getAddress()
+      const [_web3Address, starkNetAddress] = this.currentWalletAddress
 
       if (isAddress) {
         const pointRes = await requestPointSystem('v2/user/points', {
@@ -262,21 +263,18 @@ export default {
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
-          setActAddPoint(String(point))
-          setActAddPointVisible(true)
-
-          const { fromChainID} = transferDataState
-
-          if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
-            if (this.starkAddress === 'not connected') {
-              return
-            }
+          if (starkNetAddress) {
             setStarkNetDialog(true)
             setActDialogVisible(true)
           }
           setTimeout(() => {
-            setActAddPointVisible(false)
-          }, 3000)
+            setActAddPoint(String(point))
+            setActAddPointVisible(true)
+            setTimeout(() => {
+              setActAddPointVisible(false)
+            }, 3000)
+          }, 100)
+
         }
       }
     },

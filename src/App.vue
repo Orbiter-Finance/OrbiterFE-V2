@@ -46,13 +46,14 @@ import {
   actDialogVisible,
   isMobile,
   setActDialogVisible,
+  setStarkNetDialog,
   web3State,
   isStarkNetDialog,
   setActAddPoint,
   setActAddPointVisible,
   setActPoint,
   setActNftList,
-  updateActDataList
+  updateActDataList,
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -85,7 +86,9 @@ export default {
       return isMobile.value
     },
     isLogin() {
-      return web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
+      return (
+        web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
+      )
     },
     isLightMode() {
       return this.$store.state.themeMode === 'light'
@@ -150,7 +153,7 @@ export default {
     BottomNav,
     HeaderDialog,
     HeaderActDialog,
-    HeaderLotteryCardDialog
+    HeaderLotteryCardDialog,
   },
   async mounted() {
     if (isBrowserApp()) {
@@ -176,7 +179,7 @@ export default {
   watch: {
     isLogin: function (item1, item2) {
       if (item1 !== item2) {
-        if(!!item1) {
+        if (!!item1) {
           setActDialogVisible(true)
         } else {
           setActDialogVisible(false)
@@ -184,7 +187,6 @@ export default {
       } else {
         setActDialogVisible(!!item1)
       }
-
     },
     selectWalletDialogVisible: function (newVisible) {
       if (!!newVisible) {
@@ -194,15 +196,19 @@ export default {
         this.getNftList()
       }
     },
-    currentWalletAddress: function(newAddress){
-      const [web3Address, starkNetAddress ] = newAddress
+    currentWalletAddress: function (newAddress) {
+      const [web3Address, starkNetAddress] = newAddress
+      if (starkNetAddress) {
+        setStarkNetDialog(true)
+        setActDialogVisible(true)
+      }
       if (!!web3Address || !!starkNetAddress) {
         this.dataList = []
         this.getWalletAddressActList()
         this.getWalletAddressPoint()
         this.getNftList()
       }
-    }
+    },
   },
   methods: {
     getAddress() {
