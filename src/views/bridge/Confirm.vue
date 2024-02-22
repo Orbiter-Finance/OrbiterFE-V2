@@ -984,7 +984,10 @@ export default {
                         }
                     }
                 } catch (error) {
-                    
+                    this.$notify.warning({
+                        title: error?.message ? String(error?.message) : String(error),
+                        duration: 3000,
+                    })
                 }
                 signer
                     .sendTransaction({
@@ -1532,7 +1535,10 @@ export default {
                             }
                         }
                     } catch (error) {
-
+                        this.$notify.warning({
+                            title: error?.message ? String(error?.message) : String(error),
+                            duration: 3000,
+                        })
                     }
                     transferContract.methods
                         .transfer(to, tValue.tAmount)
