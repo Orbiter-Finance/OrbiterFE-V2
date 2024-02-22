@@ -930,6 +930,7 @@ export default {
         },
         async ethTransfer(value) {
             const { selectMakerConfig, fromChainID } = transferDataState
+            const selectChainID = selectMakerConfig?.fromChain?.chainId
             const from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
             const matchSignatureDispatcher =
@@ -972,6 +973,19 @@ export default {
                     web3.currentProvider
                 )
                 const signer = eprovider.getSigner()
+                try {
+                    const windowChain = +(window?.ethereum?.chainId)
+                    if(windowChain) {
+                        if(Number(selectChainID) !== windowChain) {
+                            this.$notify.warning({
+                                title: "The current wallet connection network is inconsistent with the sending transaction network",
+                                duration: 3000,
+                            })
+                        }
+                    }
+                } catch (error) {
+                    
+                }
                 signer
                     .sendTransaction({
                         from,
@@ -1506,6 +1520,20 @@ export default {
                         gasLimit = 21000
                     }
                     const objOption = { from: account, gas: gasLimit }
+                    const selectChainID = selectMakerConfig?.fromChain?.chainId
+                    try {
+                        const windowChain = +(window?.ethereum?.chainId)
+                        if(windowChain) {
+                            if(Number(selectChainID) !== windowChain) {
+                                this.$notify.warning({
+                                    title: "The current wallet connection network is inconsistent with the sending transaction network",
+                                    duration: 3000,
+                                })
+                            }
+                        }
+                    } catch (error) {
+
+                    }
                     transferContract.methods
                         .transfer(to, tValue.tAmount)
                         .send(objOption, (error, transactionHash) => {
