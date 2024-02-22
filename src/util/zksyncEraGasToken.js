@@ -5,7 +5,12 @@ import { ethers } from 'ethers'
 import { Coin_ABI } from './constants/contract/contract'
 import { SignerPaymaster } from '@holdstation/paymaster-helper'
 
-export const PAYMASTER_ADDRESS = '0x4081e092F948Cffd946a75e1F556c13c372304bc'
+export const PAYMASTER_ADDRESS = '0x069246dFEcb95A6409180b52C071003537B23c27'
+
+// const DEFAULT_GAS_LIMIT = 2000000
+
+const projectName = 'ORBITER'
+const parentCode = ethers.utils.formatBytes32String(projectName)
 
 export const zksyncEraGasTokenETH = async ({
   account,
@@ -26,13 +31,11 @@ export const zksyncEraGasTokenETH = async ({
 
   const nonce = await provider.getTransactionCount(account, 'latest')
 
-  const chainId = (await provider.getNetwork()).chainId
   const populateContract = {
     from: signer._address,
     to,
     data: '0x',
     value: amount,
-    chainId,
     nonce,
   }
 
@@ -41,6 +44,9 @@ export const zksyncEraGasTokenETH = async ({
     paymentToken: gasTokenAddress,
     populateTransaction: populateContract,
     signer,
+    innerInput: parentCode,
+    paymasterAddress: PAYMASTER_ADDRESS,
+    // defaultGasLimit: DEFAULT_GAS_LIMIT,
   })
 
   const receipt = await tx.wait()
@@ -69,7 +75,6 @@ export const zksyncEraGasTokenERC20 = async ({
   const signer = provider.getSigner()
 
   const nonce = await provider.getTransactionCount(account, 'latest')
-  const chainId = (await provider.getNetwork()).chainId
 
   const tokenContract = new Contract(tokenAddress, Coin_ABI, provider)
 
@@ -79,7 +84,6 @@ export const zksyncEraGasTokenERC20 = async ({
     from: account,
     to: tokenAddress,
     data,
-    chainId,
     value: TOTAL_SEND,
     nonce,
   }
@@ -89,6 +93,9 @@ export const zksyncEraGasTokenERC20 = async ({
     paymentToken: gasTokenAddress,
     populateTransaction,
     signer,
+    innerInput: parentCode,
+    paymasterAddress: PAYMASTER_ADDRESS,
+    // defaultGasLimit: DEFAULT_GAS_LIMIT,
   })
 
   const res = await tx.wait()

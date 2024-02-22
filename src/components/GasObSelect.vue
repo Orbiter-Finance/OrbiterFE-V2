@@ -203,7 +203,7 @@ export default {
 
       let obj = {}
       this.dataList.forEach((item) => {
-        const value = item.value === 'ETH' ? "0" : '0.3'
+        const value = item.value === 'ETH' ? "0" : '0.4'
 
         obj = {
           ...obj,
