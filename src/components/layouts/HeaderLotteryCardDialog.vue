@@ -610,6 +610,7 @@ export default {
           line-height: 24px;
           background-position: center;
           background-size: contain;
+          z-index: 2;
           font-weight: 800;
           cursor: pointer;
           animation: fade-in 4s forwards;
