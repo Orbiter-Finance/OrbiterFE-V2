@@ -54,7 +54,7 @@ export const CHAIN_ID = {
   scroll_test: '534353',
 }
 const maker = {}
-const makerFiles = shuffleArray(isProd() ? ['maker-1.json', 'maker-2.json'] : ['makerTest-1.json', 'makerTest-2.json']);
+const makerFiles = shuffleArray(isProd() ? ['80c-prod.json', 'e4e-prod.json', "1c8.json", "1c8-prod.json"] : ['makerTest-1.json', 'makerTest-2.json']);
 for (const file of makerFiles) {
   const importConfigs = require(`./${file}`);
   for (const key1 in importConfigs) {
