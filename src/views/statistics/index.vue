@@ -510,6 +510,7 @@ export default {
   width: 100%;
   background: #ffffff;
   border-radius: 24px;
+  height: 670px;
   display: flex;
   flex-direction: column;
 }
