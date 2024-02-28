@@ -41,7 +41,12 @@
         </div>
         <div class="line"></div>
       </div>
-      <CommLoading :hidden="hideTxLoading" width="6rem" height="6rem" />
+      <CommLoading
+        class="chart-loading"
+        :hidden="hideTxLoading"
+        width="6rem"
+        height="6rem"
+      />
       <div
         v-if="hideTxLoading"
         class="tx-source-chart"
@@ -67,7 +72,12 @@
         </div>
         <div class="line"></div>
       </div>
-      <CommLoading :hidden="hideTxLoading" width="6rem" height="6rem" />
+      <CommLoading
+        class="chart-loading"
+        :hidden="hideTxLoading"
+        width="6rem"
+        height="6rem"
+      />
       <div v-if="hideTxLoading" class="tx-dest-chart" id="tx-dest-chart"></div>
     </div>
     <div class="amount-content">
