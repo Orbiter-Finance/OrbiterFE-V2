@@ -4,6 +4,7 @@ import Router from 'vue-router'
 const Data = () => import('./views/data/Index/Index.vue')
 const DataDetail = () => import('./views/data/DataDetail/DataDetail.vue')
 const Home = () => import('./views/home/index.vue')
+const Statistics = () => import('./views/statistics/index.vue')
 
 Vue.use(Router)
 
@@ -53,6 +54,14 @@ export default new Router({
       component: Home,
       meta: {
         title: 'Orbiter',
+        keepAlive: false,
+      },
+    },
+    {
+      path: '/statistics',
+      component: Statistics,
+      meta: {
+        title: 'Statistics',
         keepAlive: false,
       },
     },
