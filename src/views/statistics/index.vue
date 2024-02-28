@@ -25,7 +25,7 @@
     <div v-if="showSource" class="tx-content">
       <div class="tx-head">
         <span class="tx-title">Tx Statistics</span>
-        <div class="tx-select">
+        <div v-if="txStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
             @click="clickChange()"
@@ -56,7 +56,7 @@
     <div v-else class="tx-content">
       <div class="tx-head">
         <span class="tx-title">Tx Statistics</span>
-        <div class="tx-select">
+        <div v-if="txStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
             @click="clickChange()"
@@ -126,7 +126,7 @@ export default {
       txCount: 0,
       showSource: true,
       destChart: undefined,
-      txStatisticsData: {},
+      txStatisticsData: undefined,
       hideDataLoading: false,
       hideTxLoading: false,
       hideUserLoading: false,
@@ -237,11 +237,15 @@ export default {
       }
     },
     clickChange () {
+      this.$loader.show()
       this.showSource = !this.showSource
       this.$nextTick(_ => {
         const chartDom = document.getElementById(
           this.showSource ? 'tx-source-chart' : 'tx-dest-chart'
         )
+        setTimeout(() => {
+          this.$loader.hide()
+        }, 500)
         this.initTxStatisticsData(
           this.txStatisticsData,
           chartDom,
@@ -533,7 +537,6 @@ export default {
   font-weight: 400;
   font-size: 14px;
   color: #666;
-  width: 254px;
   background: #f5f5f5;
   border-radius: 8px;
   padding: 4px 4px;
@@ -542,6 +545,7 @@ export default {
   font-family: 'PingFangSC, PingFang SC';
   font-size: 14px;
   padding: 6px 8px;
+  cursor: pointer;
   margin-right: 4px;
   font-weight: 400;
 }
