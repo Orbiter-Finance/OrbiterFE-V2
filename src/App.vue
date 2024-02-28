@@ -23,7 +23,10 @@
       </keep-alive>
     </div>
     <HeaderDialog />
-    <HeaderActDialog style="z-index: 999" />
+    <HeaderActDialog
+      v-if="$route.path !== '/statistics' && $route.path !== '/home'"
+      style="z-index: 999"
+    />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
   </div>
@@ -82,28 +85,28 @@ const { walletDispatchersOnInit } = walletDispatchers
 export default {
   name: 'App',
   computed: {
-    isMobile() {
+    isMobile () {
       return isMobile.value
     },
-    isLogin() {
+    isLogin () {
       return (
         web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
       )
     },
-    isLightMode() {
+    isLightMode () {
       return this.$store.state.themeMode === 'light'
     },
-    currentWalletAddress() {
+    currentWalletAddress () {
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
         ...[],
       ]
     },
-    selectWalletDialogVisible() {
+    selectWalletDialogVisible () {
       return actDialogVisible.value
     },
-    styles() {
+    styles () {
       if (!this.isMobile) {
         if (this.isLightMode) {
           return {
@@ -141,7 +144,7 @@ export default {
       }
     },
   },
-  data() {
+  data () {
     return {
       // lightbg,
       // darkbg,
@@ -155,7 +158,7 @@ export default {
     HeaderActDialog,
     HeaderLotteryCardDialog,
   },
-  async mounted() {
+  async mounted () {
     if (isBrowserApp()) {
       await connectStarkNetWallet()
     }
@@ -166,7 +169,7 @@ export default {
           .request({
             method: 'web3_clientVersion',
           })
-          .then((clientVersion) => {
+          .then(clientVersion => {
             return clientVersion.split('/')[0] === 'BraveWallet'
           })
       )
@@ -211,7 +214,7 @@ export default {
     },
   },
   methods: {
-    getAddress() {
+    getAddress () {
       let addressGroup = {
         isAddress: false,
         address: '',
@@ -228,7 +231,7 @@ export default {
         address,
       }
     },
-    async getNftList() {
+    async getNftList () {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
@@ -236,13 +239,13 @@ export default {
           address,
         })
         setActNftList(
-          res?.data?.nfts.map((item) => {
+          res?.data?.nfts.map(item => {
             return { img: `${item}.png` }
           })
         )
       }
     },
-    async getWalletAddressActList() {
+    async getWalletAddressActList () {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
@@ -267,7 +270,7 @@ export default {
         updateActDataList([...dataList, ...undoneList, ...doneList])
       }
     },
-    async getWalletAddressPoint() {
+    async getWalletAddressPoint () {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
@@ -285,7 +288,7 @@ export default {
         }
       }
     },
-    performInitCurrentLoginWallet() {
+    performInitCurrentLoginWallet () {
       performInitMobileAppWallet()
 
       getZksToken.getSupportZksTokenList()
