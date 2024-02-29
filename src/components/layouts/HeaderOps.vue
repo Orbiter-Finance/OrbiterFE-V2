@@ -5,13 +5,20 @@
   >
     <CommBtn
       ref="connectBtn"
-      v-if="!isLogin && !isMobile && $route.path !== '/home'"
+      v-if="
+        !isLogin &&
+        !isMobile &&
+        $route.path !== '/home' &&
+        $route.path !== '/statistics'
+      "
       @click="connectAWallet"
       class="ops-item not-mode"
       style="margin-right: 10px"
       >Connect a Wallet</CommBtn
     >
-    <template v-if="isLogin && $route.path !== '/home'">
+    <template
+      v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
+    >
       <span @click="openAct" class="ops-item" style="position: relative">
         <img
           :hidden="!isLightMode"
@@ -107,7 +114,7 @@ import {
   updateActDataList,
   setLotteryCardTotal,
   setLotteryCardProgress,
-  transferDataState
+  transferDataState,
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -129,31 +136,31 @@ export default {
     },
   },
   computed: {
-    addPoint() {
+    addPoint () {
       return actAddPoint.value
     },
-    totalPoint() {
+    totalPoint () {
       return actTotalPoint.value
     },
-    addPointVisible() {
+    addPointVisible () {
       return actAddPointVisible.value && !actDialogVisible.value
     },
-    isMobile() {
+    isMobile () {
       return isMobile.value
     },
-    selectWalletDialogVisible() {
+    selectWalletDialogVisible () {
       return actDialogVisible.value
     },
-    isLightMode() {
+    isLightMode () {
       return this.$store.state.themeMode === 'light'
     },
-    globalSelectWalletConf() {
+    globalSelectWalletConf () {
       return compatibleGlobalWalletConf.value
     },
-    isLogin() {
+    isLogin () {
       return walletIsLogin.value
     },
-    isSelectedStarkNet() {
+    isSelectedStarkNet () {
       return (
         transferDataState.fromChainID === CHAIN_ID.starknet ||
         transferDataState.fromChainID === CHAIN_ID.starknet_test ||
@@ -161,13 +168,13 @@ export default {
         transferDataState.toChainID === CHAIN_ID.starknet_test
       )
     },
-    starkAddress() {
+    starkAddress () {
       return starkAddress()
     },
-    showAddress() {
+    showAddress () {
       return showAddress()
     },
-    currentWalletAddress() {
+    currentWalletAddress () {
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
@@ -175,7 +182,7 @@ export default {
       ]
     },
   },
-  data() {
+  data () {
     const selectedWallet = JSON.parse(
       localStorage.getItem('selectedWallet') || '{}'
     )
@@ -192,11 +199,11 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    openAct() {
+    openAct () {
       setActDialogVisible(true)
       this.$emit('closeDrawer')
     },
-    async connectStarkNetWallet() {
+    async connectStarkNetWallet () {
       if (this.starkAddress === 'not connected') {
         await connectStarkNetWallet()
         return
@@ -205,7 +212,7 @@ export default {
       // setSelectWalletDialogVisible(true)
       setActDialogVisible(true)
     },
-    connectAWallet() {
+    connectAWallet () {
       setStarkNetDialog(false)
       if (this.isLogin) {
         setActDialogVisible(true)
@@ -214,7 +221,7 @@ export default {
       }
       this.$emit('closeDrawer')
     },
-    showHistory() {
+    showHistory () {
       this.$emit('closeDrawer')
 
       const route = this.$route
@@ -235,7 +242,7 @@ export default {
           path: '/history',
         })
     },
-    getAddress() {
+    getAddress () {
       let addressGroup = {
         isAddress: false,
         address: '',
@@ -252,7 +259,7 @@ export default {
         address,
       }
     },
-    async getWalletAddressPoint() {
+    async getWalletAddressPoint () {
       const { isAddress, address } = this.getAddress()
       const [_web3Address, starkNetAddress] = this.currentWalletAddress
 
@@ -274,11 +281,10 @@ export default {
               setActAddPointVisible(false)
             }, 3000)
           }, 100)
-
         }
       }
     },
-    async getWalletAddressActList() {
+    async getWalletAddressActList () {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
@@ -306,30 +312,29 @@ export default {
       }
     },
 
-    async getLotteryCardData() {
-
+    async getLotteryCardData () {
       const { isAddress, address } = this.getAddress()
 
-      if(isAddress) {
+      if (isAddress) {
         const {
-        data: { cardsCount = 0, progress },
-        code,
-      } = await requestLotteryCard('user/cards', {
-        address: address.toLocaleLowerCase(),
-      })
-
-      if (Number(code) === 0) {
-        setLotteryCardTotal(cardsCount)
-        setLotteryCardProgress({
-          lotteryCardCurrentProgress: progress.currentProgress || 0,
-          lotteryCardProgressMax: progress.max || 0,
+          data: { cardsCount = 0, progress },
+          code,
+        } = await requestLotteryCard('user/cards', {
+          address: address.toLocaleLowerCase(),
         })
-      }
+
+        if (Number(code) === 0) {
+          setLotteryCardTotal(cardsCount)
+          setLotteryCardProgress({
+            lotteryCardCurrentProgress: progress.currentProgress || 0,
+            lotteryCardProgressMax: progress.max || 0,
+          })
+        }
       }
     },
   },
 
-  async mounted() {
+  async mounted () {
     const _this = this
     setInterval(async () => {
       if (!this.$store.state.proceeding.makerTransfer.txid) return
