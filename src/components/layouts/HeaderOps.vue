@@ -268,7 +268,7 @@ export default {
             setActDialogVisible(true)
           }
           setTimeout(() => {
-            setActAddPoint(String(point))
+            setActAddPoint(String(point || ""))
             setActAddPointVisible(true)
             setTimeout(() => {
               setActAddPointVisible(false)

@@ -229,7 +229,7 @@ export default {
           this.isConfirm = true
         }
       }
-      const point = data?.points || 0
+      const point = data?.points || ""
       this.disabled = false
 
       if (Number(point)) {

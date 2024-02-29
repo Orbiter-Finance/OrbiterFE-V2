@@ -177,7 +177,7 @@ export default {
           address: this.currentWalletAddress?.toLocaleLowerCase(),
         }
       )
-      const point = data?.points || 0
+      const point = data?.points || ""
 
       if (Number(point)) {
         setActAddPoint(String(point))

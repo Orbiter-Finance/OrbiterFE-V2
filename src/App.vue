@@ -274,7 +274,7 @@ export default {
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
-        const point = pointRes.data.total
+        const point = pointRes.data.total || ""
         setActPoint(pointRes.data)
         if (point) {
           setActAddPoint(String(point))
