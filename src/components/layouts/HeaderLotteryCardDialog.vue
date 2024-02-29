@@ -216,23 +216,21 @@ export default {
     },
 
     async getLotteryCardDataDraw(isRefresh) {
-      const { data } = await requestLotteryCardDraw(
-        'user/card/draw',
-        {
-          address: this.currentWalletAddress?.toLocaleLowerCase(),
-        }
-      )
+      const { data } = await requestLotteryCardDraw('user/card/draw', {
+        address: this.currentWalletAddress?.toLocaleLowerCase(),
+      })
 
-      if (!!isRefresh) {
-        this.handleRefresh()
-        if (!this.isConfirm) {
-          this.isConfirm = true
-        }
-      }
       const point = data?.points || 0
-      this.disabled = false
 
       if (Number(point)) {
+        if (!!isRefresh) {
+          this.handleRefresh()
+          if (!this.isConfirm) {
+            this.isConfirm = true
+          }
+        }
+        this.disabled = false
+
         setActAddPoint(String(point))
 
         setTimeout(() => {
@@ -245,6 +243,11 @@ export default {
         setTimeout(async () => {
           await this.getWalletAddressPoint()
         }, 0)
+      } else {
+        this.$notify.error({
+          title: 'Failed to draw card O-Points',
+          duration: 3000,
+        })
       }
     },
     async getLotteryCardData() {
@@ -528,7 +531,7 @@ export default {
           z-index: 4;
           justify-content: center;
           transform-origin: 50% 50% 0;
-          transform-style:preserve-3d;
+          transform-style: preserve-3d;
 
           .lottery-dialog-card-face {
             width: 100%;

@@ -534,3 +534,8 @@ export default {
     })
   },
 }
+
+export function formatCurrency(number, defaultCurrency) {
+  if (!number) return defaultCurrency
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}

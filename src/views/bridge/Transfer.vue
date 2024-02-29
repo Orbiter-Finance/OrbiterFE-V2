@@ -955,7 +955,7 @@ export default {
       setActPoint(pointRes.data);
       const point = pointRes.data.total;
       if (point) {
-        setActAddPoint(String(point));
+        setActAddPoint(String(point || ""));
         setActAddPointVisible(true);
         setTimeout(() => {
           setActAddPointVisible(false);

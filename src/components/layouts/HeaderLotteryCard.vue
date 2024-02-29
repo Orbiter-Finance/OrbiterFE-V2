@@ -177,7 +177,7 @@ export default {
           address: this.currentWalletAddress?.toLocaleLowerCase(),
         }
       )
-      const point = data?.points || 0
+      const point = data?.points || ""
 
       if (Number(point)) {
         setActAddPoint(String(point))
@@ -192,6 +192,11 @@ export default {
         setTimeout(async () => {
           await this.getWalletAddressPoint()
         }, 0)
+      } else {
+        this.$notify.error({
+          title: 'Failed to draw card O-Points',
+          duration: 3000,
+        })
       }
     },
     async getLotteryCardData() {
