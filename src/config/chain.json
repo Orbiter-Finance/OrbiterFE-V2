@@ -913,6 +913,44 @@
             "url": "",
             "key": ""
         },
+        "chainId": "81457",
+        "networkId": "81457",
+        "internalId": "40",
+        "name": "Blast",
+        "debug": false,
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "contracts": [],
+        "contract": {
+            "": "OrbiterRouterV3"
+        },
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "features": [
+            "Etherscan",
+            {
+                "name": "evm-rpc"
+            }
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "rpc": [
+            "http://mainnet.blast.io"
+        ],
+        "tokens": [],
+        "infoURL": "https://blastscan.io"
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
         "chainId": "7000",
         "networkId": "7000",
         "internalId": "41",
