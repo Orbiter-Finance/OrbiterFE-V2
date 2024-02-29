@@ -921,9 +921,11 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "contracts": [],
-        "contract": {
-            "": "OrbiterRouterV3"
+        "contracts": [
+            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"
+        ],
+        "router": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "ETH",
@@ -941,10 +943,10 @@
             "rpc"
         ],
         "rpc": [
-            "http://mainnet.blast.io"
+            "https://blast.blockpi.network/v1/rpc/public"
         ],
         "tokens": [],
-        "infoURL": "https://blastscan.io"
+        "infoURL": "https://81457.routescan.io"
     },
     {
         "api": {
