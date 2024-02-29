@@ -192,6 +192,11 @@ export default {
         setTimeout(async () => {
           await this.getWalletAddressPoint()
         }, 0)
+      } else {
+        this.$notify.error({
+          title: 'Failed to draw card O-Points',
+          duration: 3000,
+        })
       }
     },
     async getLotteryCardData() {
