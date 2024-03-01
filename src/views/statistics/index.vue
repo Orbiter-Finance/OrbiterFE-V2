@@ -25,7 +25,7 @@
     <div v-if="showSource" class="tx-content">
       <div class="tx-head">
         <span class="tx-title">Tx Statistics</span>
-        <div v-if="txStatisticsData" class="tx-select">
+        <div v-if="ethStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
             @click="clickChange()"
@@ -56,7 +56,7 @@
     <div v-else class="tx-content">
       <div class="tx-head">
         <span class="tx-title">Tx Statistics</span>
-        <div v-if="txStatisticsData" class="tx-select">
+        <div v-if="ethStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
             @click="clickChange()"
@@ -85,7 +85,18 @@
         <span class="tx-title">Amount（USD）Statistic</span>
         <div class="line"></div>
       </div>
-      <div class="amount-chart" id="amount-chart"></div>
+
+      <CommLoading
+        class="chart-loading"
+        :hidden="hideAmountLoading"
+        width="6rem"
+        height="6rem"
+      />
+      <div
+        v-if="hideAmountLoading"
+        class="amount-chart"
+        id="amount-chart"
+      ></div>
     </div>
     <div class="user-content">
       <div class="tx-head">
@@ -117,6 +128,8 @@ import {
 } from './contants/index'
 import { exchangeToCoin } from '../../util/coinbase'
 import { formatCurrency } from '../../util/util'
+import { mapMutations } from 'vuex'
+import { BigNumber } from 'bignumber.js'
 
 export default {
   data () {
@@ -126,9 +139,12 @@ export default {
       txCount: 0,
       showSource: true,
       destChart: undefined,
-      txStatisticsData: undefined,
+      ethStatisticsData: undefined,
+      usdcStatisticsData: undefined,
+      usdtStatisticsData: undefined,
       hideDataLoading: false,
       hideTxLoading: false,
+      hideAmountLoading: false,
       hideUserLoading: false,
     }
   },
@@ -146,9 +162,11 @@ export default {
     },
   },
   mounted () {
+    this.toggleThemeMode('light')
     this.init()
   },
   methods: {
+    ...mapMutations(['toggleThemeMode']),
     init () {
       queryUSDAmountStatisticsData().then(USDAmountData => {
         this.hideDataLoading = true
@@ -158,23 +176,26 @@ export default {
         }
         this.initUSDAmountData(USDAmountData)
       })
-      queryTxStatisticsData().then(txStatisticsData => {
+      Promise.all([
+        queryTxStatisticsData(),
+        queryTxStatisticsData('USDC'),
+        queryTxStatisticsData('USDT'),
+      ]).then(res => {
+        this.hideAmountLoading = true
         this.hideTxLoading = true
-        if (!txStatisticsData) {
+        if (!res[0] || !res[1] || !res[2]) {
           this.showError()
           return
         }
         this.$nextTick(() => {
-          this.txStatisticsData = txStatisticsData
+          console.log(res)
+          this.ethStatisticsData = res[0]
+          this.usdcStatisticsData = res[1]
+          this.usdtStatisticsData = res[2]
           const txChartDom = document.getElementById('tx-source-chart')
+          this.initTxStatisticsData(txChartDom, true)
           const amountChartDom = document.getElementById('amount-chart')
-          this.initTxStatisticsData(txStatisticsData, txChartDom, true)
-          this.initTxStatisticsData(
-            txStatisticsData,
-            amountChartDom,
-            true,
-            true
-          )
+          this.initTxStatisticsData(amountChartDom, true, true)
         })
       })
       queryUsersStatisticsData().then(userStatisticsData => {
@@ -199,13 +220,8 @@ export default {
       this.totalUsd = USDAmountData.totalUsd || 0
       this.txCount = USDAmountData.txCount || 0
     },
-    initTxStatisticsData (
-      txStatisticsData,
-      chartDom,
-      bySource = true,
-      isAmount = false
-    ) {
-      this.initTxStatisticsChart(txStatisticsData, chartDom, bySource, isAmount)
+    initTxStatisticsData (chartDom, bySource = true, isAmount = false) {
+      this.initTxStatisticsChart(chartDom, bySource, isAmount)
     },
     initUserStatisticsData (userStatisticsData) {
       this.initUserStatisticsChart(userStatisticsData)
@@ -246,26 +262,42 @@ export default {
         setTimeout(() => {
           this.$loader.hide()
         }, 500)
-        this.initTxStatisticsData(
-          this.txStatisticsData,
-          chartDom,
-          this.showSource
-        )
+        this.initTxStatisticsData(chartDom, this.showSource)
       })
     },
-    async initTxStatisticsChart (
-      txStatisticsData,
-      chartDom,
-      bySource,
-      isAmount
-    ) {
+    async initTxStatisticsChart (chartDom, bySource, isAmount) {
       const currentChart = echarts.init(chartDom)
-      const { dateList = [], seriesData = {} } = await this.getChartData(
-        txStatisticsData,
-        bySource,
-        isAmount
-      )
-      const currentSeriesData = Object.keys(seriesData).map(item => {
+      const { dateList = [], seriesData: seriesETHData = {} } =
+        await this.getChartData(this.ethStatisticsData, bySource, isAmount)
+      let seriesUSDCData = {}
+      let seriesUSDTData = {}
+      let concatAmountSeriesData = {}
+      if (isAmount) {
+        seriesUSDCData = (
+          await this.getChartData(
+            this.usdcStatisticsData,
+            bySource,
+            isAmount,
+            'USDC'
+          )
+        ).seriesData
+
+        seriesUSDTData = (
+          await this.getChartData(
+            this.usdtStatisticsData,
+            bySource,
+            isAmount,
+            'USDT'
+          )
+        ).seriesData
+        concatAmountSeriesData = this.concatAmountSeriesData(
+          seriesETHData,
+          seriesUSDCData,
+          seriesUSDTData
+        )
+      }
+
+      const currentSeriesData = Object.keys(seriesETHData).map(item => {
         return {
           name: CHAIN_LIST?.[item] || 'Others',
           type: 'bar',
@@ -273,23 +305,41 @@ export default {
           emphasis: {
             focus: 'series',
           },
-          data: seriesData[item],
+          data: isAmount ? concatAmountSeriesData[item] : seriesETHData[item],
         }
       })
       this.renderChart(currentChart, dateList, currentSeriesData)
     },
-    async getChartData (txStatisticsData, bySource = true, isAmount = false) {
+    concatAmountSeriesData (seriesETHData, seriesUSDCData, seriesUSDTData) {
+      let mergedSeriesData = {}
+      let keys = Object.keys(seriesETHData)
+      keys.forEach(key => {
+        mergedSeriesData[key] = seriesETHData[key].map((num, idx) => {
+          return new BigNumber(num)
+            .plus(seriesUSDCData?.[key]?.[idx] || 0)
+            .plus(seriesUSDTData?.[key]?.[idx] || 0)
+            .toString()
+        })
+      })
+      return mergedSeriesData
+    },
+    async getChartData (
+      statisticsData,
+      bySource = true,
+      isAmount = false,
+      sourceCurrency = 'ETH'
+    ) {
       let exchangeRes
       if (isAmount) {
-        exchangeRes = await exchangeToCoin(1, 'ETH', 'USD')
+        exchangeRes = await exchangeToCoin(1, sourceCurrency, 'USD')
       }
-      const dateList = Object.keys(txStatisticsData)
+      const dateList = Object.keys(statisticsData)
       const dataBySourceChain = {
         others: [],
       }
       dateList.forEach(item => {
         const dateValue = {}
-        txStatisticsData[item].forEach(v => {
+        statisticsData[item].forEach(v => {
           const byKey = bySource ? v[0] : v[1]
           const isOthersKey = !CHAIN_LIST[byKey]
           const currentKey = isOthersKey ? 'others' : byKey
@@ -577,6 +627,7 @@ export default {
   background: #ffffff;
   margin-top: 20px;
   border-radius: 24px;
+  height: 670px;
   display: flex;
   flex-direction: column;
 }
@@ -615,6 +666,9 @@ export default {
   font-weight: bold;
   font-size: 18px;
   color: #222222;
+}
+.amount-chart {
+  height: 610px;
 }
 .user-chart {
   height: 610px;
