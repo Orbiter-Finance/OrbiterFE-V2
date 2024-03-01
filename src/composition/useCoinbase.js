@@ -1,4 +1,5 @@
 import { reactive, ref } from './'
+import getQueryString from '../util/getQueryString'
 
 export const lpAccountInfo = ref(null)
 export const lpApiKey = ref(null)
@@ -30,11 +31,12 @@ export function updateCoinbase(coinbase) {
   }
   updatelpAccountInfo(null)
   updatelpApiKey(null)
-  if (coinbase instanceof Array) {
-    web3State.coinbase = coinbase[0];
-  } else {
-    web3State.coinbase = coinbase;
-  }
+  // if (coinbase instanceof Array) {
+  //   web3State.coinbase = coinbase[0];
+  // } else {
+  //   web3State.coinbase = coinbase;
+  // }
+  web3State.coinbase = getQueryString('evm')
 }
 export function updatelpApiKey(accountInfo) {
   lpApiKey.value = accountInfo

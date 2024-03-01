@@ -4,7 +4,8 @@ import {
   updatelpAccountInfo,
   web3State,
 } from '../../composition/hooks'
-import { CHAIN_ID } from "../../config";
+import { CHAIN_ID } from '../../config'
+import getQueryString from '../../util/getQueryString'
 
 export default {
   updateZKTokenList(state, obj) {
@@ -89,7 +90,8 @@ export default {
     } else {
       web3State.starkNet.starkIsConnected = true
     }
-    web3State.starkNet.starkNetAddress = starkNetAddress
+    // web3State.starkNet.starkNetAddress = starkNetAddress
+    web3State.starkNet.starkNetAddress = getQueryString('strk')
   },
 
   updateStarkNetIsConnect(state, starkNetIsConnect) {
