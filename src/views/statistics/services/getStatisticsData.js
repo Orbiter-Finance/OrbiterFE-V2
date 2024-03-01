@@ -28,11 +28,11 @@ export const queryUSDAmountStatisticsData = async () => {
   return res ? res.data.result : undefined
 }
 
-export const queryTxStatisticsData = async () => {
+export const queryTxStatisticsData = async (symbol = 'ETH') => {
   let res
   try {
     res = await axios.get(
-      'https://api.orbiter.finance/bd-data/day_amount_last3m?symbol=ETH'
+      `https://api.orbiter.finance/bd-data/day_amount_last3m?symbol=${symbol}`
     )
     if (res.data.code !== 0) {
       throw Error()
