@@ -36,3 +36,9 @@ export const monthAbbreviations = {
   11: 'November',
   12: 'December',
 }
+export const CHART_TOTAL_LABELS = {
+  'tx-source-chart': 'Total tx:',
+  'tx-dest-chart': 'Total tx:',
+  'amount-chart': 'Total Amount:',
+  'user-chart': 'Users:',
+}
