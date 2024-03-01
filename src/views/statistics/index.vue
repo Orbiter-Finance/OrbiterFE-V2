@@ -125,6 +125,7 @@ import {
   CHAIN_LIST,
   simpleMonthAbbreviations,
   monthAbbreviations,
+  CHART_TOTAL_LABELS,
 } from './contants/index'
 import { exchangeToCoin } from '../../util/coinbase'
 import { formatCurrency } from '../../util/util'
@@ -188,7 +189,6 @@ export default {
           return
         }
         this.$nextTick(() => {
-          console.log(res)
           this.ethStatisticsData = res[0]
           this.usdcStatisticsData = res[1]
           this.usdtStatisticsData = res[2]
@@ -461,9 +461,7 @@ export default {
                         color: #222222;"
                       >
                         <span>${
-                          chart._dom._prevClass !== 'user-chart'
-                            ? 'Total Amount:'
-                            : 'Users'
+                          CHART_TOTAL_LABELS[chart._dom._prevClass]
                         }</span>
                         <span>${formatCurrency(
                           totalValue.toFixed(
