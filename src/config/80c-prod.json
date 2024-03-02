@@ -3976,30 +3976,6 @@
             "endTime": 99999999999999
         }
     },
-    "41-40": {
-        "ETH-ETH": {
-            "gasFee": 0,
-            "tradingFee": 0.0004,
-            "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
-            "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
-            "maxPrice": 3,
-            "minPrice": 0.00005,
-            "startTime": 0,
-            "endTime": 99999999999999
-        }
-    },
-    "40-41": {
-        "ETH-ETH": {
-            "gasFee": 23,
-            "tradingFee": 0.0005,
-            "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
-            "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
-            "maxPrice": 3,
-            "minPrice": 0.00005,
-            "startTime": 0,
-            "endTime": 99999999999999
-        }
-    },
     "16-40": {
         "ETH-ETH": {
             "gasFee": 0,
