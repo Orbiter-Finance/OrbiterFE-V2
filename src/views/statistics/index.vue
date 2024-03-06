@@ -125,6 +125,7 @@ import {
   CHAIN_LIST,
   simpleMonthAbbreviations,
   monthAbbreviations,
+  CHART_TOTAL_LABELS,
 } from './contants/index'
 import { exchangeToCoin } from '../../util/coinbase'
 import { formatCurrency } from '../../util/util'
@@ -188,7 +189,6 @@ export default {
           return
         }
         this.$nextTick(() => {
-          console.log(res)
           this.ethStatisticsData = res[0]
           this.usdcStatisticsData = res[1]
           this.usdtStatisticsData = res[2]
@@ -269,33 +269,24 @@ export default {
       const currentChart = echarts.init(chartDom)
       const { dateList = [], seriesData: seriesETHData = {} } =
         await this.getChartData(this.ethStatisticsData, bySource, isAmount)
-      let seriesUSDCData = {}
-      let seriesUSDTData = {}
-      let concatAmountSeriesData = {}
-      if (isAmount) {
-        seriesUSDCData = (
-          await this.getChartData(
-            this.usdcStatisticsData,
-            bySource,
-            isAmount,
-            'USDC'
-          )
-        ).seriesData
-
-        seriesUSDTData = (
-          await this.getChartData(
-            this.usdtStatisticsData,
-            bySource,
-            isAmount,
-            'USDT'
-          )
-        ).seriesData
-        concatAmountSeriesData = this.concatAmountSeriesData(
-          seriesETHData,
-          seriesUSDCData,
-          seriesUSDTData
-        )
-      }
+      const { seriesData: seriesUSDCData } = await this.getChartData(
+        this.usdcStatisticsData,
+        bySource,
+        isAmount,
+        'USDC'
+      )
+      const { seriesData: seriesUSDTData } = await this.getChartData(
+        this.usdcStatisticsData,
+        bySource,
+        isAmount,
+        'USDT'
+      )
+      let concatSeriesData = {}
+      concatSeriesData = this.concatSeriesData(
+        seriesETHData,
+        seriesUSDCData,
+        seriesUSDTData
+      )
 
       const currentSeriesData = Object.keys(seriesETHData).map(item => {
         return {
@@ -305,12 +296,12 @@ export default {
           emphasis: {
             focus: 'series',
           },
-          data: isAmount ? concatAmountSeriesData[item] : seriesETHData[item],
+          data: concatSeriesData[item],
         }
       })
       this.renderChart(currentChart, dateList, currentSeriesData)
     },
-    concatAmountSeriesData (seriesETHData, seriesUSDCData, seriesUSDTData) {
+    concatSeriesData (seriesETHData, seriesUSDCData, seriesUSDTData) {
       let mergedSeriesData = {}
       let keys = Object.keys(seriesETHData)
       keys.forEach(key => {
@@ -461,9 +452,7 @@ export default {
                         color: #222222;"
                       >
                         <span>${
-                          chart._dom._prevClass !== 'user-chart'
-                            ? 'Total Amount:'
-                            : 'Users'
+                          CHART_TOTAL_LABELS[chart._dom._prevClass]
                         }</span>
                         <span>${formatCurrency(
                           totalValue.toFixed(
