@@ -94,7 +94,11 @@ export default {
       let list = []
 
       if (transferDataState.fromChainID === CHAIN_ID.zksync2) {
-        list = zksync2TokenList
+        list = zksync2TokenList.concat([{
+          symbol: "HOLD",
+          address: "0xed4040fD47629e7c8FBB7DA76bb50B3e7695F0f2",
+          decimals: 18
+        }])
       }
 
       list = list.map((item) => ({
@@ -203,7 +207,7 @@ export default {
 
       let obj = {}
       this.dataList.forEach((item) => {
-        const value = item.value === 'ETH' ? "0" : '0.4'
+        const value = item.value === 'ETH' ? "0" : "0.01"
 
         obj = {
           ...obj,
