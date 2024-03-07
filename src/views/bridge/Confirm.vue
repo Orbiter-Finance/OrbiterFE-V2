@@ -352,7 +352,8 @@ export default {
                 return
             }
 
-            const crossContractAddress = chainInfo.contracts[0]
+            let crossContractAddress = chainInfo.contracts[0]
+            crossContractAddress = crossContractAddress?.address || crossContractAddress
             try {
                 let transferHash = ''
                 if (
@@ -370,7 +371,7 @@ export default {
                     )
                     if (util.isEthTokenAddress(fromChainID, contractAddress)) {
                         transferHash =
-                            await await crossAddress.wallConnTransfer(
+                             await crossAddress.wallConnTransfer(
                                 recipient,
                                 amount,
                                 ext
