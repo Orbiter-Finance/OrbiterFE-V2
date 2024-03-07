@@ -923,11 +923,15 @@ export default {
         const targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
         this.fromTokenName = fromChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  fromTokenAddress.toLocaleLowerCase())[0]?.name || ""
         this.targetTokenName = targetChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  targetTokenAddress.toLocaleLowerCase())[0]?.name ||""
-        if (fromTokenAddress) {
+        if (fromTokenAddress.length === 42) {
           this.fromTokenAddress = ethers.utils.getAddress(fromTokenAddress)
+        } else {
+          this.fromTokenAddress = fromTokenAddress
         }
-        if (targetTokenAddress) {
+        if (targetTokenAddress.length===42) {
           this.targetTokenAddress = ethers.utils.getAddress(targetTokenAddress)
+        } else {
+          this.targetTokenAddress = targetTokenAddress
         }
         this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChainId && linkChain.includes(fromChainId)
         this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChainId && linkChain.includes(targetChainId)
