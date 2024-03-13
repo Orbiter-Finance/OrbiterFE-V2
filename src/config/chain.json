@@ -1,6 +1,9 @@
 [
     {
-        "api": { "url": "https://api.etherscan.io/api", "key": "" },
+        "api": {
+            "url": "https://api.etherscan.io/api",
+            "key": ""
+        },
         "chainId": "1",
         "networkId": "1",
         "internalId": "1",
@@ -12,12 +15,21 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://rpc.ankr.com/eth",
+            "https://ethereum-rpc.publicnode.com",
+            "https://eth-mainnet.public.blastapi.io",
             "https://ethereum.blockpi.network/v1/rpc/public",
-            "https://eth.rpc.blxrbdn.com"
+            "https://rpc.ankr.com/eth",
+            "https://eth.drpc.org",
+            "https://eth.llamarpc.com",
+            "https://gateway.tenderly.co/public/mainnet"
         ],
-        "watch": ["rpc", "api"],
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "watch": [
+            "rpc",
+            "api"
+        ],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "tokens": [
             {
                 "name": "Dai Stablecoin",
@@ -38,11 +50,17 @@
                 "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
             }
         ],
-        "xvmList": ["0x3be8b60ddf9feff6b2426e47a7619d7cbc786d97", "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x3be8b60ddf9feff6b2426e47a7619d7cbc786d97",
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://etherscan.io"
     },
     {
-        "api": { "url": "http://api.arbiscan.io/api", "key": "" },
+        "api": {
+            "url": "http://api.arbiscan.io/api",
+            "key": ""
+        },
         "chainId": "42161",
         "networkId": "42161",
         "internalId": "2",
@@ -55,11 +73,19 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://endpoints.omniatech.io/v1/arbitrum/one/public",
-            "https://arbitrum.blockpi.network/v1/rpc/public"
+            "https://arb1.arbitrum.io/rpc",
+            "https://arbitrum-one-rpc.publicnode.com",
+            "https://arbitrum-one.public.blastapi.io",
+            "https://arbitrum.blockpi.network/v1/rpc/public",
+            "https://arbitrum.drpc.org"
         ],
-        "watch": ["rpc", "api"],
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "watch": [
+            "rpc",
+            "api"
+        ],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "tokens": [
             {
                 "name": "Dai Stablecoin",
@@ -68,7 +94,7 @@
                 "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
             },
             {
-                "name": "USDC.e",
+                "name": "USD Coin",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8"
@@ -80,11 +106,16 @@
                 "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://explorer.arbitrum.io"
     },
     {
-        "api": { "url": "https://api.zksync.io/api/v0.2", "key": "" },
+        "api": {
+            "url": "https://api.zksync.io/api/v0.2",
+            "key": ""
+        },
         "chainId": "zksync",
         "networkId": "zksync",
         "internalId": "3",
@@ -97,9 +128,15 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
-        "watch": ["api"],
-        "contracts": [],
+        "rpc": [
+
+        ],
+        "watch": [
+            "api"
+        ],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "id": 1,
@@ -126,13 +163,18 @@
         "infoURL": ""
     },
     {
-        "api": { "url": "", "key": "" },
+        "api": {
+            "url": "",
+            "key": ""
+        },
         "chainId": "SN_MAIN",
         "networkId": "mainnet-alpha",
         "internalId": "4",
         "name": "Starknet",
         "debug": false,
-        "contracts": ["0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"],
+        "contracts": [
+            "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b"
+        ],
         "nativeCurrency": {
             "id": 0,
             "name": "Ether",
@@ -140,8 +182,28 @@
             "decimals": 18,
             "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
         },
-        "rpc": ["https://starknet-mainnet.public.blastapi.io"],
-        "watch": ["rpc"],
+        "rpc": [
+            "https://starknet-mainnet.public.blastapi.io"
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "explorers": [
+            {
+                "id": 1,
+                "name": "Starkscan",
+                "url": "https://starkscan.co",
+                "accountUrl": "https://starkscan.co/contract",
+                "icon": "SN_MAIN"
+            },
+            {
+                "id": 2,
+                "name": "Voyager",
+                "url": "https://voyager.online",
+                "accountUrl": "https://voyager.online/contract",
+                "icon": "voyager"
+            }
+        ],
         "tokens": [
             {
                 "name": "DAI",
@@ -162,36 +224,23 @@
                 "address": "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"
             }
         ],
-        "infoURL": "https://starkscan.co",
-        "explorers": [
-            {
-                "id": 1,
-                "name": "Starkscan",
-                "url": "https://starkscan.co",
-                "accountUrl": "https://starkscan.co/contract",
-                "icon": "SN_MAIN"
-            },
-            {
-                "id": 2,
-                "name": "Voyager",
-                "url": "https://voyager.online",
-                "accountUrl": "https://voyager.online/contract",
-                "icon": "voyager"
-            }
-        ]
+        "infoURL": "https://starkscan.co"
     },
     {
-        "api": { "url": "https://api.polygonscan.com/api", "key": "" },
+        "api": {
+            "url": "https://api.polygonscan.com/api",
+            "key": ""
+        },
         "chainId": "137",
         "networkId": "137",
         "internalId": "6",
         "name": "Polygon",
         "rpc": [
-            "https://polygon.llamarpc.com",
-            "https://polygon-bor.publicnode.com",
-            "https://poly-rpc.gateway.pokt.network",
-            "https://matic-mainnet.chainstacklabs.com",
-            "https://matic-mainnet-full-rpc.bwarelabs.com"
+            "https://polygon-rpc.com/",
+            "https://polygon-mainnet.public.blastapi.io",
+            "https://polygon.blockpi.network/v1/rpc/public",
+            "https://1rpc.io/matic",
+            "https://rpc.ankr.com/polygon"
         ],
         "nativeCurrency": {
             "name": "MATIC",
@@ -199,8 +248,13 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "watch": ["api", "rpc"],
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "watch": [
+            "api",
+            "rpc"
+        ],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "tokens": [
             {
                 "name": "Dai Stablecoin",
@@ -215,7 +269,7 @@
                 "address": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"
             },
             {
-                "name": "USDC.e",
+                "name": "USD Coin",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
@@ -227,11 +281,16 @@
                 "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://polygonscan.com"
     },
     {
-        "api": { "url": "https://api-optimistic.etherscan.io/api", "key": "" },
+        "api": {
+            "url": "https://api-optimistic.etherscan.io/api",
+            "key": ""
+        },
         "chainId": "10",
         "networkId": "10",
         "internalId": "7",
@@ -243,12 +302,25 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://opt-mainnet.g.alchemy.com/v2/demo",
+            "https://mainnet.optimism.io",
             "https://optimism-mainnet.public.blastapi.io",
-            "https://optimism.blockpi.network/v1/rpc/public"
+            "https://optimism.blockpi.network/v1/rpc/public",
+            "https://optimism.llamarpc.com",
+            "https://optimism.meowrpc.com",
+            "https://op-pokt.nodies.app",
+            "https://optimism.drpc.org",
+            "https://optimism-rpc.publicnode.com",
+            "https://rpc.optimism.gateway.fm",
+            "https://rpc.ankr.com/optimism",
+            "https://1rpc.io/op"
         ],
-        "watch": ["api", "rpc"],
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "watch": [
+            "api",
+            "rpc"
+        ],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "debug": false,
         "tokens": [
             {
@@ -258,7 +330,7 @@
                 "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"
             },
             {
-                "name": "USDC.e",
+                "name": "USD Coin",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"
@@ -270,11 +342,16 @@
                 "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
             }
         ],
-        "xvmList": ["0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"],
+        "xvmList": [
+            "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
+        ],
         "infoURL": "https://optimistic.etherscan.io"
     },
     {
-        "api": { "url": "https://api.x.immutable.com/v1", "key": "" },
+        "api": {
+            "url": "https://api.x.immutable.com/v1",
+            "key": ""
+        },
         "chainId": "immutableX",
         "networkId": "immutableX",
         "internalId": "8",
@@ -285,9 +362,15 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
-        "watch": ["api"],
-        "contracts": [],
+        "rpc": [
+
+        ],
+        "watch": [
+            "api"
+        ],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -314,14 +397,25 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": ["wss://ws.api3.loopring.io/v3/ws"],
-        "watch": ["api"],
-        "contracts": [],
-        "tokens": [],
+        "rpc": [
+            "wss://ws.api3.loopring.io/v3/ws"
+        ],
+        "watch": [
+            "api"
+        ],
+        "contracts": [
+
+        ],
+        "tokens": [
+
+        ],
         "infoURL": "https://explorer.loopring.io"
     },
     {
-        "api": { "url": "https://andromeda-explorer.metis.io/api", "key": "" },
+        "api": {
+            "url": "https://andromeda-explorer.metis.io/api",
+            "key": ""
+        },
         "chain": "ETH",
         "chainId": "1088",
         "networkId": "1088",
@@ -333,9 +427,16 @@
             "decimals": 18,
             "address": "0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000"
         },
-        "rpc": ["https://andromeda.metis.io/?owner=1088"],
-        "watch": ["api", "rpc"],
-        "contracts": [],
+        "rpc": [
+            "https://andromeda.metis.io/?owner=1088"
+        ],
+        "watch": [
+            "api",
+            "rpc"
+        ],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "name": "Ether (WETH)",
@@ -353,7 +454,10 @@
         "infoURL": "https://andromeda-explorer.metis.io"
     },
     {
-        "api": { "url": "https://api.dydx.exchange", "key": "" },
+        "api": {
+            "url": "https://api.dydx.exchange",
+            "key": ""
+        },
         "chainId": "dydx",
         "networkId": "dydx",
         "internalId": "11",
@@ -364,9 +468,15 @@
             "decimals": 0,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
-        "watch": ["api"],
-        "contracts": [],
+        "rpc": [
+
+        ],
+        "watch": [
+            "api"
+        ],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -378,7 +488,10 @@
         "infoURL": ""
     },
     {
-        "api": { "url": "https://api.zks.app/v3/1", "key": "" },
+        "api": {
+            "url": "https://api.zks.app/v3/1",
+            "key": ""
+        },
         "chainId": "ZKSpace",
         "networkId": "13",
         "internalId": "12",
@@ -390,9 +503,15 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
-        "watch": ["api"],
-        "contracts": [],
+        "rpc": [
+
+        ],
+        "watch": [
+            "api"
+        ],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "id": 4,
@@ -405,7 +524,10 @@
         "infoURL": "https://zkspace.info"
     },
     {
-        "api": { "url": "https://api.bobascan.com/api", "key": "" },
+        "api": {
+            "url": "https://api.bobascan.com/api",
+            "key": ""
+        },
         "chainId": "288",
         "networkId": "288",
         "internalId": "13",
@@ -421,9 +543,16 @@
             "https://lightning-replica.boba.network",
             "https://boba-mainnet.gateway.pokt.network/v1/lb/623ad21b20354900396fed7f"
         ],
-        "watch": ["rpc", "api"],
-        "contracts": [],
-        "tokens": [],
+        "watch": [
+            "rpc",
+            "api"
+        ],
+        "contracts": [
+
+        ],
+        "tokens": [
+
+        ],
         "infoURL": "https://bobascan.com"
     },
     {
@@ -441,9 +570,32 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": ["https://zksync2-mainnet.zksync.io"],
-        "watch": ["rpc"],
-        "contracts": ["0xbf3922a0cebbcd718e715e83d9187cc4bba23f11"],
+        "explorers": [
+            {
+                "id": 1,
+                "name": "erascan",
+                "url": "https://explorer.zksync.io",
+                "icon": "324"
+            },
+            {
+                "id": 2,
+                "name": "l2scan",
+                "url": "https://zksync-era.l2scan.co",
+                "icon": "l2scan"
+            }
+        ],
+        "rpc": [
+            "https://mainnet.era.zksync.io",
+            "https://zksync-era.blockpi.network/v1/rpc/public",
+            "https://1rpc.io/zksync2-era",
+            "https://zksync2-mainnet.zksync.io"
+        ],
+        "watch": [
+            "rpc"
+        ],
+        "contracts": [
+            "0xbf3922a0cebbcd718e715e83d9187cc4bba23f11"
+        ],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -458,32 +610,23 @@
                 "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
             }
         ],
-        "infoURL": "https://explorer.zksync.io",
-        "explorers": [
-            {
-                "id": 1,
-                "name": "erascan",
-                "url": "https://explorer.zksync.io",
-                "icon": "324"
-            },
-            {
-                "id": 2,
-                "name": "l2scan",
-                "url": "https://zksync-era.l2scan.co",
-                "icon": "l2scan"
-            }
-        ]
+        "infoURL": "https://explorer.zksync.io"
     },
     {
-        "api": { "url": "https://api.bscscan.com/api", "key": "" },
+        "api": {
+            "url": "https://api.bscscan.com/api",
+            "key": ""
+        },
         "chainId": "56",
         "networkId": "56",
         "internalId": "15",
         "name": "BNB Chain",
         "debug": false,
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "router": {
-          "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
         "nativeCurrency": {
             "name": "BNB",
@@ -499,45 +642,60 @@
             "https://rpc-bsc.bnb48.club",
             "https://bsc-dataseed4.binance.org"
         ],
-        "watch": ["api", "rpc"],
-        "tokens":[
+        "watch": [
+            "api",
+            "rpc"
+        ],
+        "tokens": [
             {
-                "name":"Binance-Peg Ethereum",
-                "symbol":"ETH",
-                "decimals":18,
-                "address":"0x2170ed0880ac9a755fd29b2688956bd959f933f8"
+                "name": "Binance-Peg Ethereum",
+                "symbol": "ETH",
+                "decimals": 18,
+                "address": "0x2170ed0880ac9a755fd29b2688956bd959f933f8"
             },
-          {
-                "name":"Binance-Peg USDT",
-                "symbol":"USDT",
-                "decimals":18,
-                "address":"0x55d398326f99059ff775485246999027b3197955"
+            {
+                "name": "Binance-Peg USDT",
+                "symbol": "USDT",
+                "decimals": 18,
+                "address": "0x55d398326f99059ff775485246999027b3197955"
             },
-           {
-                "name":"Binance-Peg USDC",
-                "symbol":"USDC",
-                "decimals":18,
-                "address":"0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+            {
+                "name": "Binance-Peg USDC",
+                "symbol": "USDC",
+                "decimals": 18,
+                "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
             }
         ],
         "infoURL": "https://bscscan.com"
     },
     {
-        "api": { "url": "https://api-nova.arbiscan.io/api", "key": "" },
+        "api": {
+            "url": "https://api-nova.arbiscan.io/api",
+            "key": ""
+        },
         "chainId": "42170",
         "networkId": "42170",
         "internalId": "16",
         "name": "Arbitrum Nova",
         "debug": false,
-        "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
+        "contracts": [
+            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": ["https://nova.arbitrum.io/rpc"],
-        "watch": ["api", "rpc"],
+        "rpc": [
+            "https://nova.arbitrum.io/rpc",
+            "https://arbitrum-nova.publicnode.com",
+            "https://arbitrum-nova.public.blastapi.io"
+        ],
+        "watch": [
+            "api",
+            "rpc"
+        ],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -559,16 +717,27 @@
         "internalId": "17",
         "name": "Polygon zkEVM",
         "debug": false,
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": ["https://zkevm-rpc.com"],
-        "xvmList": [],
-        "watch": ["rpc"],
+        "rpc": [
+            "https://zkevm-rpc.com",
+            "https://1rpc.io/polygon/zkevm",
+            "https://polygon-zkevm-mainnet.public.blastapi.io",
+            "https://polygon-zkevm.blockpi.network/v1/rpc/public"
+        ],
+        "xvmList": [
+
+        ],
+        "watch": [
+            "rpc"
+        ],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -608,26 +777,14 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://rpc.scroll.io"
+            "https://rpc.scroll.io",
+            "https://scroll.blockpi.network/v1/rpc/public",
+            "https://scroll-mainnet.public.blastapi.io",
+            "https://scroll-mainnet-public.unifra.io"
         ],
         "watch": [
             "rpc"
         ],
-        "tokens": [
-          {
-            "name": "USDC",
-            "symbol": "USDC",
-            "decimals": 6,
-            "address": "0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4"
-          },
-          {
-            "name": "USDT",
-            "symbol": "USDT",
-            "decimals": 6,
-            "address": "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df"
-          }
-        ],
-        "infoURL": "https://scrollscan.com",
         "explorers": [
             {
                 "id": 1,
@@ -641,7 +798,22 @@
                 "url": "https://scroll.l2scan.co",
                 "icon": "l2scan"
             }
-        ]
+        ],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0x06eFdBFf2a14a7c8E15944D1F4A48F9F95F663A4"
+            },
+            {
+                "name": "USDT",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df"
+            }
+        ],
+        "infoURL": "https://scrollscan.com"
     },
     {
         "api": {
@@ -653,8 +825,12 @@
         "internalId": "21",
         "name": "Base",
         "debug": false,
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
-        "features": [],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
+        "features": [
+
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -662,16 +838,33 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://developer-access-mainnet.base.org",
-            "https://base.blockpi.network/v1/rpc/public"
+            "https://base-rpc.publicnode.com",
+            "https://base-mainnet.public.blastapi.io",
+            "https://base.blockpi.network/v1/rpc/public",
+            "https://base.drpc.org",
+            "https://base-pokt.nodies.app"
         ],
         "watch": [
             "rpc",
             "api"
         ],
+        "explorers": [
+            {
+                "id": 1,
+                "name": "basescan",
+                "url": "https://basescan.org",
+                "icon": "8453"
+            },
+            {
+                "id": 2,
+                "name": "l2scan",
+                "url": "https://base.l2scan.co",
+                "icon": "l2scan"
+            }
+        ],
         "tokens": [
             {
-                "name": "USDbC",
+                "name": "USDC",
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
@@ -689,30 +882,54 @@
         "internalId": "23",
         "name": "Linea",
         "debug": false,
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": ["https://rpc.linea.build"],
-        "watch": ["rpc"],
+        "rpc": [
+            "https://rpc.linea.build",
+            "https://linea.blockpi.network/v1/rpc/public",
+            "https://1rpc.io/linea",
+            "https://linea.drpc.org",
+            "https://linea.decubate.com"
+        ],
+        "watch": [
+            "rpc"
+        ],
         "router": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
-        "tokens":[
+        "explorers": [
             {
-                "name":"USDC",
-                "symbol":"USDC",
-                "decimals":6,
-                "address":"0x176211869ca2b568f2a7d4ee941e073a821ee1ff"
+                "id": 1,
+                "name": "lineascan",
+                "url": "https://lineascan.build",
+                "icon": "59144"
             },
-           {
-                "name":"USDT",
-                "symbol":"USDT",
-                "decimals":6,
-                "address":"0xA219439258ca9da29E9Cc4cE5596924745e12B93"
+            {
+                "id": 2,
+                "name": "l2scan",
+                "url": "https://linea.l2scan.co",
+                "icon": "l2scan"
+            }
+        ],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0x176211869ca2b568f2a7d4ee941e073a821ee1ff"
+            },
+            {
+                "name": "USDT",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0xA219439258ca9da29E9Cc4cE5596924745e12B93"
             }
         ],
         "infoURL": "https://lineascan.build"
@@ -727,15 +944,24 @@
         "internalId": "24",
         "name": "Mantle",
         "debug": false,
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "nativeCurrency": {
             "name": "MNT",
             "symbol": "MNT",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": ["https://rpc.mantle.xyz"],
-        "watch": ["rpc"],
+        "rpc": [
+            "https://rpc.mantle.xyz",
+            "https://mantle-rpc.publicnode.com",
+            "https://mantle-mainnet.public.blastapi.io",
+            "https://1rpc.io/mantle"
+        ],
+        "watch": [
+            "rpc"
+        ],
         "router": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
@@ -757,21 +983,31 @@
         "chainId": "204",
         "networkId": "204",
         "internalId": "25",
-        "name": "opBNB",
+        "name": "OpBNB",
         "debug": false,
-        "features": [],
-        "contracts": ["0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"],
+        "features": [
+
+        ],
+        "contracts": [
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+        ],
         "nativeCurrency": {
             "name": "BNB",
             "symbol": "BNB",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": ["https://opbnb-mainnet-rpc.bnbchain.org"],
+        "rpc": [
+            "https://opbnb-mainnet-rpc.bnbchain.org",
+            "https://opbnb-rpc.publicnode.com",
+            "https://1rpc.io/opbnb"
+        ],
         "router": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
-        "watch": ["rpc"],
+        "watch": [
+            "rpc"
+        ],
         "tokens": [
             {
                 "name": "ETH",
@@ -791,9 +1027,13 @@
         "networkId": "7777777",
         "internalId": "30",
         "name": "Zora",
-        "features": [],
+        "features": [
+
+        ],
         "debug": false,
-        "contracts": ["0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172"],
+        "contracts": [
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172"
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -806,8 +1046,12 @@
         "router": {
             "0x2598d7bc9d3b4b6124f3282e49eee68db270f516": "OrbiterRouterV3"
         },
-        "watch": ["rpc"],
-        "tokens": [],
+        "watch": [
+            "rpc"
+        ],
+        "tokens": [
+
+        ],
         "infoURL": "https://explorer.zora.energy"
     },
     {
@@ -819,9 +1063,13 @@
         "networkId": "169",
         "internalId": "31",
         "name": "Manta",
-        "features": [],
+        "features": [
+
+        ],
         "debug": false,
-        "contracts": ["0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"],
+        "contracts": [
+            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -829,46 +1077,34 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://manta-pacific.calderachain.xyz/http"
+            "https://pacific-rpc.manta.network/http",
+            "https://manta-pacific.calderachain.xyz/http",
+            "https://1rpc.io/manta"
         ],
         "watch": [
             "rpc"
         ],
+        "explorers": [
+            {
+                "id": 1,
+                "name": "manta-pacific",
+                "url": "https://manta-pacific.calderaexplorer.xyz/",
+                "icon": "169"
+            },
+            {
+                "id": 2,
+                "name": "l2scan",
+                "url": "https://manta-pacific.l2scan.co",
+                "icon": "l2scan"
+            }
+        ],
         "router": {
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "infoURL": "https://manta-pacific.calderaexplorer.xyz"
-    },
-    {
-        "api": {
-            "url": "",
-            "key": ""
-        },
-        "chainId": "255",
-        "networkId": "255",
-        "internalId": "36",
-        "name": "Kroma",
-        "features": [],
-        "debug": false,
-        "contracts": ["0x2598d7bC9D3b4B6124f3282E49Eee68db270F516"],
-        "nativeCurrency": {
-            "name": "ETH",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x0000000000000000000000000000000000000000"
-        },
-        "rpc": [
-            "https://api.kroma.network"
-        ],
-        "watch": [
-            "rpc"
-        ],
-        "router": {
-            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
-        },
-        "tokens": [],
-        "infoURL": "https://kromascan.com"
     },
     {
         "api": {
@@ -878,7 +1114,7 @@
         "chainId": "42766",
         "networkId": "42766",
         "internalId": "38",
-        "name": "ZKFair",
+        "name": "zkfair",
         "debug": false,
         "contracts": [
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
@@ -893,7 +1129,8 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "rpc": [
-            "https://rpc.zkfair.io"
+            "https://rpc.zkfair.io",
+            "https://dev-rpc.zkfair.io"
         ],
         "watch": [
             "rpc"
@@ -910,112 +1147,226 @@
     },
     {
         "api": {
-            "url": "",
+            "url": "https://api.kromascan.com/api",
             "key": ""
         },
-        "chainId": "81457",
-        "networkId": "81457",
-        "internalId": "40",
-        "name": "Blast",
-        "debug": false,
-        "service": {
-            "rpc": "EVMRpcScanningV6Service"
-        },
-        "contracts": [
-            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"
+        "chainId": "255",
+        "networkId": "255",
+        "internalId": "36",
+        "name": "Kroma",
+        "features": [
+
         ],
-        "router": {
-            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
-        },
+        "debug": false,
+        "contracts": [
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172",
+            "0x2598d7bC9D3b4B6124f3282E49Eee68db270F516"
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "features": [
-            "Etherscan",
-            {
-                "name": "evm-rpc"
-            }
+        "rpc": [
+            "https://api.kroma.network",
+            "https://1rpc.io/kroma"
         ],
         "watch": [
             "rpc"
         ],
-        "rpc": [
-            "https://blast.blockpi.network/v1/rpc/public"
+        "router": {
+            "0x2598d7bC9D3b4B6124f3282E49Eee68db270F516": "OrbiterRouterV3",
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OBSource"
+        },
+        "tokens": [
+
         ],
-        "tokens": [],
-        "infoURL": "https://81457.routescan.io"
+        "infoURL": "https://kromascan.com"
     },
     {
-        "api": {
-            "url": "",
-            "key": ""
-        },
-        "chainId": "7000",
-        "networkId": "7000",
-        "internalId": "41",
-        "name": "ZETA",
-        "debug": false,
-        "service": {
-            "rpc": "EVMRpcScanningV5Service"
-        },
+        "name": "ZetaChain",
+        "chain": "ETH",
+        "faucets": [
+
+        ],
         "nativeCurrency": {
-            "name": "ZETA",
+            "name": "Zeta",
             "symbol": "ZETA",
             "decimals": 18,
+            "coinKey": "ZETA",
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "contracts": [
-            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
-        ],
-        "router": {
-            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
+        "contract": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource"
+        },
+        "service": {
+            "rpc": "EVMRpcScanningV5Service"
         },
         "rpc": [
             "https://zetachain-evm.blockpi.network/v1/rpc/public"
         ],
+        "infoURL": "http://zetachain.blockscout.com",
+        "icon": "zetachain",
+        "shortName": "zetachain-mainnet",
+        "chainId": "7000",
+        "internalId": "41",
+        "networkId": "7000",
         "tokens": [
             {
-                "name": "ETH",
+                "name": "Ether",
                 "symbol": "ETH",
                 "decimals": 18,
+                "coinKey": "ETH",
                 "address": "0xd97B1de3619ed2c6BEb3860147E30cA8A7dC9891"
             }
         ],
-        "infoURL": "https://explorer.zetachain.com"
+        "explorers": [
+            {
+                "icon": "zetachain",
+                "name": "Explorer",
+                "url": "https://zetachain.blockscout.com",
+                "standard": "none"
+            }
+        ],
+        "contracts": [
+            {
+                "name": "OBSource",
+                "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferERC20(address,address,uint256,bytes)"
+                ]
+            },
+            {
+                "name": "OrbiterRouterV3",
+                "address": "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transferTokens(address,address[],uint256[])"
+                ]
+            }
+        ]
     },
     {
-        "api": {
-            "url": "",
-            "key": ""
-        },
-        "chainId": "34443",
-        "networkId": "34443",
-        "internalId": "47",
         "name": "Mode",
-        "debug": false,
+        "chain": "ETH",
+        "rpc": [
+            "https://mainnet.mode.network"
+        ],
+        "batchLimit": 10,
+        "features": [
+            {
+                "name": "evm-rpc"
+            }
+        ],
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "coinKey": "ETH",
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "tokens": [
+
+        ],
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "nativeCurrency": {
-            "name": "ETH",
-            "symbol": "ETH",
-            "decimals": 18,
-            "address": "0x0000000000000000000000000000000000000000"
+        "infoURL": "https://explorer.mode.network",
+        "shortName": "mode",
+        "chainId": "34443",
+        "internalId": "47",
+        "networkId": "34443",
+        "icon": "mode",
+        "contract": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource"
         },
         "contracts": [
-            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
+            {
+                "name": "OBSource",
+                "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferERC20(address,address,uint256,bytes)"
+                ]
+            },
+            {
+                "name": "OrbiterRouterV3",
+                "address": "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transferTokens(address,address[],uint256[])"
+                ]
+            }
         ],
-        "router": {
-            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
-        },
+        "explorers": [
+
+        ]
+    },
+    {
+        "name": "Blast",
+        "chain": "ETH",
         "rpc": [
-            "https://mainnet.mode.network",
-            "https://1rpc.io/mode"
+            "https://rpc.blast.io",
+            "https://blastl2-mainnet.public.blastapi.io",
+            "https://blast.blockpi.network/v1/rpc/public",
+            "https://rpc.ankr.com/blast"
         ],
-        "tokens": [],
-        "infoURL": "https://explorer.mode.network"
+        "batchLimit": 10,
+        "features": [
+            {
+                "name": "evm-rpc"
+            }
+        ],
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "coinKey": "ETH",
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "tokens": [
+
+        ],
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "infoURL": "https://blastscan.io/",
+        "shortName": "blast",
+        "chainId": "81457",
+        "internalId": "40",
+        "networkId": "81457",
+        "icon": "blast",
+        "contract": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource"
+        },
+        "contracts": [
+            {
+                "name": "OBSource",
+                "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferERC20(address,address,uint256,bytes)"
+                ]
+            },
+            {
+                "name": "OrbiterRouterV3",
+                "address": "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transferTokens(address,address[],uint256[])"
+                ]
+            }
+        ]
     }
 ]
