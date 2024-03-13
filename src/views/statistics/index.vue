@@ -276,7 +276,7 @@ export default {
         'USDC'
       )
       const { seriesData: seriesUSDTData } = await this.getChartData(
-        this.usdcStatisticsData,
+        this.usdtStatisticsData,
         bySource,
         isAmount,
         'USDT'
