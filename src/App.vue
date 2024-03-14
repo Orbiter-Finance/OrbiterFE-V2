@@ -291,7 +291,8 @@ export default {
     performInitCurrentLoginWallet () {
       performInitMobileAppWallet()
 
-      getZksToken.getSupportZksTokenList()
+      // TAG:close zkspace
+      // getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
 
       const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()
