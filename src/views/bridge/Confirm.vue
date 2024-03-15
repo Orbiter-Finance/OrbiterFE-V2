@@ -359,7 +359,7 @@ export default {
                 if (
                     compatibleGlobalWalletConf.value.walletType == WALLETCONNECT
                 ) {
-                    const web3 = util.stableWeb3(fromChainID)
+                    const web3 = await util.stableWeb3(fromChainID)
                     const provider = new ethers.providers.Web3Provider(
                         web3.currentProvider
                     )
@@ -1268,7 +1268,7 @@ export default {
                     compatibleGlobalWalletConf.value.walletType ===
                     WALLETCONNECT
                 ) {
-                    const web3 = util.stableWeb3(fromChainID)
+                    const web3 = await util.stableWeb3(fromChainID)
                     const provider = new ethers.providers.Web3Provider(
                         web3.currentProvider
                     )

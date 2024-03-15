@@ -13,8 +13,11 @@ import {
   OKXWALLET,
   BRAVE_APP,
   LOOPRING_APP,
-  BIT_KEEP, ZERION, ZERION_APP,
-} from './constants';
+  BIT_KEEP,
+  ZERION,
+  ZERION_APP,
+  COIN98_APP,
+} from './constants'
 import {
   updateGlobalSelectWalletConf,
   globalSelectWalletConf,
@@ -59,6 +62,7 @@ export const withPerformInterruptWallet = (fn) => {
 // wallet type & ethereum fit checker
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
+  if (walletType === COIN98_APP) return ethereum.isCoin98
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
@@ -72,8 +76,8 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
   if (walletType === BLOCKWALLET) return ethereum.isBlockWallet
   if (walletType === OKXWALLET) return typeof window.okxwallet !== 'undefined'
-  if (walletType === ZERION) return ethereum.isZerion;
-  if (walletType === ZERION_APP) return ethereum.isZerion;
+  if (walletType === ZERION) return ethereum.isZerion
+  if (walletType === ZERION_APP) return ethereum.isZerion
   if (walletType === LOOPRING_APP) return ethereum.isLoopring
   if (walletType === BIT_KEEP) return typeof window.bitkeep !== 'undefined'
   // we never care wallet connect, because it's a protocol, not a wallet
@@ -137,8 +141,9 @@ export const fetchTargetWalletLoginStatus = ({ walletType }) => {
  */
 export const getMobileAppTypeByProvider = () => {
   const provider = window?.ethereum
-  if (!provider) return undefined;
+  if (!provider) return undefined
   if (provider.isImToken) return IM_TOKEN_APP
+  if (provider.isCoin98) return COIN98_APP
   if (provider.isTokenPocket) return TOKEN_POCKET_APP
   if (provider.isMetaMask && !provider.isTokenPocket) return METAMASK_APP
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP

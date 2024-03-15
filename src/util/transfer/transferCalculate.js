@@ -260,7 +260,7 @@ export default {
           console.warn('lp getTransferFeeerror:')
         }
       }
-      const rpcList = util.getRpcList(fromChainID)
+      const rpcList = await util.getRpcList(fromChainID)
       if (!rpcList.length) {
         return 0
       }
@@ -1116,7 +1116,7 @@ export default {
     ) {
       return null
     }
-    const rpcList = util.getRpcList(fromChainId)
+    const rpcList = await util.getRpcList(fromChainId)
     for (const rpc of rpcList) {
       try {
         const response = await axios.post(rpc, {
@@ -1214,7 +1214,7 @@ export default {
   },
   async calEBCValue() {
     const { selectMakerConfig, fromChainID, toChainID } = transferDataState
-    const web3 = util.stableWeb3(isDev() ? 5 : 1)
+    const web3 = await util.stableWeb3(isDev() ? 5 : 1)
     const provider = new ethers.providers.Web3Provider(web3.currentProvider)
     util.log('ebcAddress', selectMakerConfig.ebcAddress)
     const contractInstance = new ethers.Contract(

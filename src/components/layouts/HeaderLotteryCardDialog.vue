@@ -216,7 +216,8 @@ export default {
     },
 
     async getLotteryCardDataDraw(isRefresh) {
-      const { data } = await requestLotteryCardDraw('user/card/draw', {
+      try {
+        const { data } = await requestLotteryCardDraw('user/card/draw', {
         address: this.currentWalletAddress?.toLocaleLowerCase(),
       })
 
@@ -244,6 +245,13 @@ export default {
           await this.getWalletAddressPoint()
         }, 0)
       } else {
+        this.$notify.error({
+          title: 'Failed to draw card O-Points',
+          duration: 3000,
+        })
+      }
+      } catch (error) {
+        this.handleHidden()
         this.$notify.error({
           title: 'Failed to draw card O-Points',
           duration: 3000,

@@ -405,7 +405,7 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
-import walletDispatchers, { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
+import walletDispatchers, { COINBASE, TOKEN_POCKET_APP, COIN98_APP } from '../../util/walletsDispatchers';
 import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
 import {
   isMobile,
@@ -921,8 +921,8 @@ export default {
         this.targetChainId = targetChainId
         const fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
         const targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
-        this.fromTokenName = fromChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  fromTokenAddress.toLocaleLowerCase())[0]?.name || ""
-        this.targetTokenName = targetChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  targetTokenAddress.toLocaleLowerCase())[0]?.name ||""
+        this.fromTokenName = fromChainGroup?.tokens?.filter((item)=> item.address.toLocaleLowerCase() ===  fromTokenAddress.toLocaleLowerCase())[0]?.name || ""
+        this.targetTokenName = targetChainGroup?.tokens?.filter((item)=> item.address.toLocaleLowerCase() ===  targetTokenAddress.toLocaleLowerCase())[0]?.name ||""
         if (fromTokenAddress.length === 42) {
           this.fromTokenAddress = ethers.utils.getAddress(fromTokenAddress)
         } else {
@@ -936,8 +936,8 @@ export default {
         this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChainId && linkChain.includes(fromChainId)
         this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChainId && linkChain.includes(targetChainId)
 
-        this.tipsFromUrl = fromChainGroup.infoURL
-        this.tipstargetUrl = targetChainGroup.infoURL
+        this.tipsFromUrl = fromChainGroup?.infoURL
+        this.tipstargetUrl = targetChainGroup?.infoURL
     },
     linkFromTokenAddress() {
       if(this.tipsFromUrl && this.fromTokenAddress ) {
@@ -1957,7 +1957,7 @@ export default {
           }
         } else {
           if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
-            if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
+            if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP, COIN98_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
                   return;
