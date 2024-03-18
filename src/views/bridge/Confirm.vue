@@ -867,12 +867,13 @@ export default {
                     return
                 }
                 try {
+                    const {tokenId} = await loopring.getLpTokenInfoOnce(fromChainID, tokenAddress)
                     const response = await loopring.sendTransfer(
                         compatibleGlobalWalletConf.value.walletPayload
                             .walletAddress,
                         fromChainID,
                         selectMakerConfig.recipient,
-                        0,
+                        tokenId,
                         tokenAddress,
                         amount,
                         memo
@@ -991,7 +992,7 @@ export default {
                     })
                 }
                 signer
-                    .sendTransaction({
+                  .sendTransaction({
                         from,
                         to: selectMakerConfig.recipient,
                         value,
@@ -1523,7 +1524,6 @@ export default {
                     if (String(fromChainID) === "42161" && gasLimit < 21000) {
                         gasLimit = 21000
                     }
-                    const objOption = { from: account, gas: gasLimit }
                     const selectChainID = selectMakerConfig?.fromChain?.chainId
                     try {
                         const windowChain = +(window?.ethereum?.chainId)
@@ -1541,23 +1541,22 @@ export default {
                             duration: 3000,
                         })
                     }
-                    transferContract.methods
-                        .transfer(to, tValue.tAmount)
-                        .send(objOption, (error, transactionHash) => {
-                            this.transferLoading = false
-                            if (!error) {
-                                this.onTransferSucceed(
+                    transferContract
+                        .transfer(to, tValue.tAmount).then((res)=>{
+                            this.onTransferSucceed(
                                     account,
                                     tValue.tAmount,
                                     fromChainID,
-                                    transactionHash
+                                    res.hash
                                 )
-                            } else {
-                                this.$notify.error({
-                                    title: error.message,
-                                    duration: 3000,
-                                })
-                            }
+                            this.transferLoading = false
+
+                        }).catch((error)=>{
+                            this.$notify.error({
+                                title: error.message,
+                                duration: 3000,
+                            })
+                            this.transferLoading = false
                         })
                 }
             }

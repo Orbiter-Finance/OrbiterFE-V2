@@ -132,7 +132,6 @@ async function getWeb3(walletType) {
   // })
   await web3.eth.getCoinbase((error, coinbase) => {
     if (error || !coinbase) {
-      console.log('error', error)
       showMessage(
         'get coinbase failed，please unlock metamask or generate a new address',
         'error'
@@ -140,7 +139,7 @@ async function getWeb3(walletType) {
       compatibleGlobalWalletConf.value.walletPayload.provider
         .send('eth_requestAccounts')
         .then((coin) => {
-          updateCoinbase(coin.result[0])
+          updateCoinbase(coin?.result?.[0] || coin[0])
         })
         .catch((err) => {
           showMessage(err.message, 'error')

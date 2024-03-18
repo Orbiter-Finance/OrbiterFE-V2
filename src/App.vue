@@ -27,6 +27,7 @@
       v-if="$route.path !== '/statistics' && $route.path !== '/home'"
       style="z-index: 999"
     />
+    <!-- <HeaderWalletGroup /> -->
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
   </div>
@@ -70,6 +71,7 @@ import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
 import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
+import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import {
   setIsBraveWallet,
   performInitMobileAppWallet,
@@ -157,6 +159,7 @@ export default {
     HeaderDialog,
     HeaderActDialog,
     HeaderLotteryCardDialog,
+    HeaderWalletGroup
   },
   async mounted () {
     if (isBrowserApp()) {
