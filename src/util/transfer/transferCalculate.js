@@ -759,7 +759,7 @@ export default {
       try {
         // Ar deposit
         const toGasPrice = await this.getGasPrice(
-          (toChainID === toChainID) === CHAIN_ID.ar ? m : g
+          toChainID === CHAIN_ID.ar ? m : g
         )
         const arDepositGas =
           toGasPrice *
@@ -773,7 +773,7 @@ export default {
     }
     if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
       const toGasPrice = await this.getGasPrice(
-        (toChainID === toChainID) === CHAIN_ID.base ? m : g
+        toChainID === CHAIN_ID.base ? m : g
       )
       const arDepositGas =
         toGasPrice *

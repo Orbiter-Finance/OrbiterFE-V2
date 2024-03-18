@@ -68,7 +68,7 @@ const standardMobileAppConf = [
   {
     walletType: COIN98_APP,
     walletIsInstalledInvestigator: (provider) => provider.isCoin98,
-    chainIdTransfer: defaultChainIdTransfer,
+    chainIdTransfer: (chainId) => Number(chainId),
   },
 ]
 

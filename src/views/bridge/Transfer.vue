@@ -1570,7 +1570,7 @@ export default {
         return fromChain.maxPrice;
       }
       // check fromBalance
-      if (!this.fromBalance) {
+      if (!ethers.utils.parseEther(this.fromBalance || "0").gt("0")) {
         return '0';
       }
       let transferGasFee = (await transferCalculate.getTransferGasLimit(
@@ -1957,7 +1957,7 @@ export default {
           }
         } else {
           if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
-            if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP, COIN98_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
+            if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
               try {
                 if (!await util.ensureWalletNetwork(fromChainID)) {
                   return;

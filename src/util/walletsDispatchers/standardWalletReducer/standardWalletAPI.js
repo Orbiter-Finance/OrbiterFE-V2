@@ -18,7 +18,6 @@ import {
 import { showMessage } from '../../constants/web3/getWeb3'
 import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
-import env from '../../../../env'
 import { BRAVE, BRAVE_APP } from '../constants'
 
 // install wallet checks if target wallet extension is installed

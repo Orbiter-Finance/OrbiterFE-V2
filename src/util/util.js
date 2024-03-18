@@ -268,10 +268,19 @@ export default {
   getChainIdNetworkRpclist(networkList, chainId) {
     const group =
       networkList.filter((item) => {
-        return String(item?.chainId) === chainId
+        return String(item?.chainId) === String(chainId)
       })?.[0]?.rpc || []
 
-    return group?.filter((option) => !option.includes('${')) || []
+    return (
+      group?.filter(
+        (option) =>
+          !(
+            option.includes('${') ||
+            option.includes('ws://') ||
+            option.includes('wss://')
+          )
+      ) || []
+    )
   },
 
   cleanRpcList(networkList, rpcList) {
@@ -505,7 +514,7 @@ export default {
     }
   },
   async requestWeb3(chainId, method, ...args) {
-    const rpcList = this.getRpcList(chainId)
+    const rpcList = await this.getRpcList(chainId)
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {
