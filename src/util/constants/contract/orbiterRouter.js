@@ -1,7 +1,6 @@
 import Web3 from 'web3';
 import { Coin_ABI, OrbiterRouterV3_ABI } from './contract';
 import util from '../../util';
-import RLP from 'rlp';
 import { transferDataState } from '../../../composition/useTransferData';
 import { compatibleGlobalWalletConf } from "../../../composition/walletsResponsiveData";
 import { ethers } from "ethers";
@@ -21,27 +20,26 @@ export async function orbiterRouterTransfer(type, fromAddress, makerAddress, val
   const { fromChain, toChain } = selectMakerConfig;
 
   const t1Address = fromChain.tokenAddress;
-  const toChainId = toChain.id;
-  const t2Address = toChain.tokenAddress;
+  const toChainId = +toChain.id + 9000;
+  const toSymbol = toChain.symbol;
   const slippage = selectMakerConfig.slippage;
   const expectValue = await util.getExpectValue();
   const web3 = new Web3();
-  let sourceData;
-
+  let str = '';
   switch (type) {
     case OrbiterRouterType.CrossAddress: {
-      sourceData = [type, toChainId, toWalletAddress];
+      str = `c=${ toChainId }&t=${ toWalletAddress }`;
       break;
     }
     case OrbiterRouterType.CrossAddressCurrency: {
-      sourceData = fromAddress.toLowerCase() === toWalletAddress.toLowerCase() ?
-        [type, toChainId, t2Address, web3.utils.toHex(expectValue), slippage] :
-        [type, toChainId, t2Address, web3.utils.toHex(expectValue), slippage, toWalletAddress];
+      str = fromAddress.toLowerCase() === toWalletAddress.toLowerCase() ?
+        `c=${ toChainId }&e=${ web3.utils.toHex(expectValue) }&o=${ toSymbol }&s=${ slippage }` :
+        `c=${ toChainId }&e=${ web3.utils.toHex(expectValue) }&o=${ toSymbol }&s=${ slippage }&t=${ toWalletAddress }`;
       break;
     }
   }
-
-  const data = RLP.encode(sourceData);
+  console.log('data ====', str);
+  const data = web3.utils.toHex(str);
   return await orbiterRouterSend(fromChainID, fromAddress, makerAddress, t1Address, data, value);
 }
 
