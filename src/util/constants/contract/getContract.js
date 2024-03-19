@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import { Coin_ABI } from './contract.js'
 import util from '../../util'
 import {
@@ -57,7 +56,11 @@ async function getTransferGasLimit(
 ) {
   // !walletIsLogin.value
   if (web3State.isInstallMeta || provider) {
-    const web3 = new Web3(provider || window.ethereum)
+    const web3 = new ethers.providers.Web3Provider(
+      provider ||
+        compatibleGlobalWalletConf.value.walletPayload.provider ||
+        window.ethereum
+    )
     const tokenAddress = selectMakerConfig.fromChain.tokenAddress
     let gasLimit = 55000
     try {

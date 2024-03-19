@@ -282,7 +282,9 @@ export default {
         walletConnectDispatcherOnInit(WALLETCONNECT)
         return
       }
-      Middle.$emit('connectWallet', true)
+      // Middle.$emit('connectWallet', true)
+      setSelectWalletDialogVisible(true)
+
     },
     connectAWallet () {
       if (isBrowserApp()) {

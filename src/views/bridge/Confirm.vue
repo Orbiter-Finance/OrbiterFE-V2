@@ -956,9 +956,10 @@ export default {
             }
 
             try {
-                const provider =
-                    compatibleGlobalWalletConf.value.walletPayload.provider
-                const web3 = new Web3(provider)
+
+                const provider = new ethers.providers.Web3Provider(
+                    compatibleGlobalWalletConf.value.walletPayload.provider || window.ethereum || window.coin98?.provider
+                )
 
                 let gasLimit = await getTransferGasLimit(
                     fromChainID,
@@ -971,10 +972,7 @@ export default {
                 if (fromChainID === 2 && gasLimit < 21000) {
                     gasLimit = 21000
                 }
-                const eprovider = new providers.Web3Provider(
-                    web3.currentProvider
-                )
-                const signer = eprovider.getSigner()
+                const signer = provider.getSigner()
                 try {
                     const windowChain = +(window?.ethereum?.chainId)
                     if(windowChain) {

@@ -22,8 +22,9 @@
         <div class="wallet-group-list">
           <div
             v-for="item in starknetWallet"
-            :key="item.title"
+            :key="item.key"
             class="wallet-item"
+            @click.stop="connectStarkNetWallet(item)"
           >
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
             <span class="wallet-title">{{ item.title }}</span>
@@ -35,7 +36,7 @@
             v-for="item in solanaWallet"
             :key="item.title"
             class="wallet-item"
-            @click="connectSolanaWallet()"
+            @click="connectSolanaWallet(item)"
           >
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
             <span class="wallet-title">{{ item.title }}</span>
@@ -62,7 +63,7 @@ import walletDispatchers, {
   TOKEN_POCKET_APP,
   COIN98_APP,
   WALLETCONNECT,
-  CURRENT_SUPPORT_WALLET
+  CURRENT_SUPPORT_WALLET,
 } from '../../util/walletsDispatchers'
 
 import {
@@ -72,7 +73,7 @@ import {
   isBrowserApp,
 } from '../../util'
 
-import { getStarknet } from 'get-starknet'
+import { getStarknet, connect, disconnect } from 'get-starknet'
 
 import { walletIsLogin } from '../../composition/walletsResponsiveData'
 
@@ -85,10 +86,10 @@ import {
   walletConnectDispatcherOnInit,
 } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 
+import { Connection, Transaction } from '@solana/web3.js'
+
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
-
-// import { PublicKey } from "@solana/web3.js"
 
 export default {
   name: 'HeaderWalletGroup',
@@ -187,11 +188,13 @@ export default {
         {
           isConnect: false,
           icon: 'argent',
+          key: 'argentX',
           title: 'Argent X',
         },
         {
           isConnect: false,
           icon: 'braavos',
+          key: 'braavos',
           title: 'Braavos',
         },
       ]
@@ -220,11 +223,26 @@ export default {
       return isMobileDevice()
     },
     async connectSolanaWallet() {
-      const res = await window.okxwallet.solana.connect()
-      console.log('1111', res)
+      const provider =  window.solflare
+      const res = await provider.connect()
+      const publicKey = provider.publicKey
+      console.log('1111', res, publicKey.toString())
 
-      // const publicKey = new PublicKey(res);
-      // console.log("publicKey", publicKey)
+      const networks = "https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85"
+
+      const wallet =  new Connection(networks)
+      console.log("wallet", wallet)
+
+      const block = await wallet.getBlockHeight()
+      console.log("block", block)
+      const balance = await wallet.getBalance(publicKey)
+      console.log("balance", balance)
+
+      const accountInfo = await wallet.getAccountInfoAndContext(publicKey)
+      console.log("accountInfo", accountInfo)
+      const BalanceAndContext = await wallet.getBalanceAndContext(publicKey)
+      console.log("BalanceAndContext", BalanceAndContext)
+      
     },
     async connectEvmWallet(walletConf) {
       if (walletConf === WALLETCONNECT && isBrowserApp()) {
@@ -249,7 +267,41 @@ export default {
       }
       walletDispatchersOnInit[walletConf.title]()
       this.closeSelectWalletDialog()
+    },
 
+    async connectStarkNetWallet(walletConf) {
+      console.log('walletConf', walletConf)
+
+      const wallet = await connect({
+        order: [walletConf.key],
+        include: [walletConf.key],
+      })
+      console.log('wallet', wallet)
+      if (!wallet) {
+        return
+      }
+      const enabled = await wallet
+        .enable({ showModal: false })
+        .then((address) => !!address?.length)
+
+      console.log('enabled', enabled)
+
+      if (enabled) {
+        console.log('starknet address', getStarknet().selectedAddress)
+        // store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
+        // store.commit('updateStarkNetWalletName', wallet.name)
+        // store.commit('updateStarkNetWalletIcon', wallet.icon)
+        // store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
+        // store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
+        // getStarknet().on('accountsChanged', (e) => {
+        //   store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
+        //   store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
+        //   store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
+        //   if (e.length == 0) {
+        //     util.showMessage('disconnect starkNetWallet', 'error')
+        //   }
+        // })
+      }
     },
   },
 }
@@ -344,4 +396,3 @@ export default {
   }
 }
 </style>
-import { connect } from 'get-starknet';

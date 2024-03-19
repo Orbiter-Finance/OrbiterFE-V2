@@ -72,7 +72,7 @@ import {customSort} from '../util/index'
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
-import { web3State } from '../composition/hooks'
+import { web3State, setSelectWalletDialogVisible } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
 
 export default {
@@ -199,6 +199,7 @@ export default {
                         const { starkIsConnected, starkNetAddress } =
                             web3State.starkNet
                         if (!starkIsConnected && !starkNetAddress) {
+                            // setSelectWalletDialogVisible(true)
                             await connectStarkNetWallet()
                             if (
                                 !web3State.starkNet.starkIsConnected &&
