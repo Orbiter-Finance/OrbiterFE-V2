@@ -237,8 +237,19 @@ export default {
 
   async stableRpc(chainId) {
     const rpcList = await this.getRpcList(chainId)
-    if (rpcList.length) {
-      return rpcList[0]
+
+    const res = await Promise.any(
+      rpcList.map((item) => {
+        return new Promise(async (resolve) => {
+          const web3 = new Web3(item)
+          await web3.eth.getBlockNumber()
+          resolve(item)
+        })
+      })
+    )
+
+    if (res) {
+      return res
     }
     console.error(`${chainId} Unable to find stable rpc node`)
     return null

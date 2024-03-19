@@ -1,52 +1,116 @@
 <template>
-  <div class="header-wallet-group">
+  <div
+    class="header-wallet-group"
+    :style="{ display: this.selectWalletDialogVisible ? 'flex' : 'none' }"
+  >
     <div class="header-wallet-content">
       <div class="title">Connect a Wallet</div>
-    <div class="wallet-list">
-      <div class="wallet-group-title">EVM Wallet</div>
-      <div class="wallet-group-list">
-        <div v-for="item in evmWallet" :key="item.title" class="wallet-item">
-          <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-          <span class="wallet-title">{{ item.title }}</span>
+      <div class="wallet-list">
+        <div class="wallet-group-title">EVM Wallet</div>
+        <div class="wallet-group-list">
+          <div
+            v-for="item in evmWallet"
+            :key="item.title"
+            class="wallet-item"
+            @click.stop="connectEvmWallet(item)"
+          >
+            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+            <span class="wallet-title">{{ item.title }}</span>
+          </div>
         </div>
-      </div>
-      <div class="wallet-group-title">StarkNet Wallet</div>
-      <div class="wallet-group-list">
-        <div v-for="item in starknetWallet" :key="item.title" class="wallet-item">
-          <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-          <span class="wallet-title">{{ item.title }}</span>
+        <div class="wallet-group-title">StarkNet Wallet</div>
+        <div class="wallet-group-list">
+          <div
+            v-for="item in starknetWallet"
+            :key="item.title"
+            class="wallet-item"
+          >
+            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+            <span class="wallet-title">{{ item.title }}</span>
+          </div>
         </div>
-      </div>
-      <div class="wallet-group-title">Solana Wallet</div>
-      <div class="wallet-group-list">
-        <div v-for="item in solanaWallet" :key="item.title" class="wallet-item" @click="connectSolanaWallet()">
-          <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-          <span class="wallet-title">{{ item.title }}</span>
+        <div class="wallet-group-title">Solana Wallet</div>
+        <div class="wallet-group-list">
+          <div
+            v-for="item in solanaWallet"
+            :key="item.title"
+            class="wallet-item"
+            @click="connectSolanaWallet()"
+          >
+            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+            <span class="wallet-title">{{ item.title }}</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  </div>
 </template>
 
 <script>
+import {
+  isMobile,
+  starkAddress,
+  showAddress,
+  isStarkNetDialog,
+  selectWalletDialogVisible,
+  setSelectWalletDialogVisible,
+  web3State,
+} from '../../composition/hooks'
+
 import walletDispatchers, {
   METAMASK,
   TOKEN_POCKET_APP,
   COIN98_APP,
   WALLETCONNECT,
+  CURRENT_SUPPORT_WALLET
 } from '../../util/walletsDispatchers'
+
+import {
+  onCopySuccess,
+  onCopyError,
+  isMobileDevice,
+  isBrowserApp,
+} from '../../util'
+
+import { getStarknet } from 'get-starknet'
 
 import { walletIsLogin } from '../../composition/walletsResponsiveData'
 
 import { isBraveBrowser } from '../../util/browserUtils'
+
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+
+import {
+  ethereumClient,
+  walletConnectDispatcherOnInit,
+} from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
+
+const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
+  walletDispatchers
 
 // import { PublicKey } from "@solana/web3.js"
 
 export default {
   name: 'HeaderWalletGroup',
   computed: {
+    selectWalletDialogVisible() {
+      return selectWalletDialogVisible.value
+    },
+    walletType() {
+      if (!isStarkNetDialog.value) {
+        const walletName = String(compatibleGlobalWalletConf.value.walletType)
+          .toLowerCase()
+          .replace('app', '')
+
+        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase())
+          ? walletName
+          : METAMASK.toLocaleLowerCase()
+      } else {
+        return getStarknet && getStarknet()?.id === 'braavos'
+          ? 'braavos'
+          : 'argent'
+      }
+    },
     evmWallet() {
       const wallets = [
         {
@@ -129,7 +193,7 @@ export default {
           isConnect: false,
           icon: 'braavos',
           title: 'Braavos',
-        }
+        },
       ]
       return wallets
     },
@@ -140,7 +204,7 @@ export default {
           isConnect: false,
           icon: 'okxwallet',
           title: 'OKXWallet',
-        }
+        },
       ]
       return wallets
     },
@@ -149,14 +213,45 @@ export default {
     },
   },
   methods: {
-    async connectSolanaWallet(){
+    closeSelectWalletDialog() {
+      setSelectWalletDialogVisible(false)
+    },
+    checkIsMobileEnv() {
+      return isMobileDevice()
+    },
+    async connectSolanaWallet() {
       const res = await window.okxwallet.solana.connect()
-      console.log("1111", res)
+      console.log('1111', res)
 
       // const publicKey = new PublicKey(res);
       // console.log("publicKey", publicKey)
-    }
-  }
+    },
+    async connectEvmWallet(walletConf) {
+      if (walletConf === WALLETCONNECT && isBrowserApp()) {
+        walletConnectDispatcherOnInit(WALLETCONNECT)
+        return
+      }
+      if (
+        walletConf.title === METAMASK &&
+        window.ethereum?.isOkxWallet &&
+        !this.checkIsMobileEnv()
+      ) {
+        Notification({
+          title: 'Error: MetaMask has not been installed.',
+          dangerouslyUseHTMLString: true,
+          type: 'warning',
+          customClass: 'installWalletTips',
+          duration: 3000,
+          message:
+            '<div style="font-family:Inter Regular;text-align: left;">If you already have MetaMask installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+        })
+        return
+      }
+      walletDispatchersOnInit[walletConf.title]()
+      this.closeSelectWalletDialog()
+
+    },
+  },
 }
 </script>
 <style scoped lang="scss">
@@ -174,7 +269,7 @@ export default {
   align-items: center;
 
   .header-wallet-content {
-    width: 100%;
+    width: 90%;
     text-align: left;
     width: 100%;
     height: 100%;
@@ -210,13 +305,13 @@ export default {
         font-style: normal;
         margin-top: 18px;
       }
-  
+
       .wallet-group-list {
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-  
+
         .wallet-item {
           width: calc(50% - 8px);
           padding: 14px;
@@ -227,7 +322,7 @@ export default {
           margin-top: 12px;
           border-radius: 8px;
           cursor: pointer;
-  
+
           .wallet-icon {
             width: 28px;
             height: 28px;
@@ -246,9 +341,7 @@ export default {
         }
       }
     }
-
-    
   }
 }
-</style>import { connect } from 'get-starknet';
-
+</style>
+import { connect } from 'get-starknet';
