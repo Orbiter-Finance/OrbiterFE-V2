@@ -248,8 +248,6 @@ export default {
                         networkName = 'Starknet Mainnet'
                     } else if (starkChain === CHAIN_ID.starknet_test) {
                         networkName = 'Goerli Testnet'
-                    } else if (starkChain === CHAIN_ID.starknet_sepolia) {
-                        networkName = 'Sepolia Testnet'
                     }
                 }
 

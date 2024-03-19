@@ -29,7 +29,7 @@ export default {
         console.warn('error =', error)
         return 0
       }
-    } else if (util.isStarkNetChain(localChainID)) {
+    } else if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       try {
         const nonce = Number(await getStarkNonce())
         return nonce

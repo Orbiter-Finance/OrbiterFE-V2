@@ -302,7 +302,7 @@ import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
           util.showMessage("Hash error", "error");
           return;
         }
-        if (util.isStarkNetChain(selectChainId)) {
+        if (selectChainId === CHAIN_ID.starknet || selectChainId === CHAIN_ID.starknet_test) {
           // starknet
           txHash = util.starknetHashFormat(txHash);
         } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {

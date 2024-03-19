@@ -980,7 +980,7 @@ export default {
                     if(windowChain) {
                         if(Number(selectChainID) !== windowChain) {
                             this.$notify.warning({
-                                title: `The current selection of sending NteworkID ${selectChainID} does not match the wallet Networkid ${windowChain}`,
+                                title: "The current wallet connection network is inconsistent with the sending transaction network",
                                 duration: 3000,
                             })
                         }

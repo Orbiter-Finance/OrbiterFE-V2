@@ -102,7 +102,7 @@ async function completeTx(userAddress,fromHash,toHash) {
 export default {
   UserTransferReady(user, maker, amount, localChainID, txHash) {
     util.setCache(`history_${ user.toLowerCase() }_1`, '', -1);
-    if (util.isStarkNetChain(localChainID)) {
+    if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
       txHash = util.starknetHashFormat(txHash);
     }
     if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
