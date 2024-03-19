@@ -11,22 +11,27 @@
             class="confirm-item"
             :style="{ marginBottom: '22px' }"
         >
-            <div class="item-left">
-                <SvgIconThemed :icon="item.icon" />
-                <span class="left-txt">{{ item.title }}</span>
-                <o-tooltip placement="topLeft">
-                    <template v-slot:titleDesc>
-                        <span class="o-tip">{{ item.notice }}</span>
-                    </template>
-                    <HelpIcon v-if="item.notice" size="sm" />
-                </o-tooltip>
-            </div>
-            <div class="item-right">
-                <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''}`">{{ item.desc }}</span>
-                <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
-                    <span v-if="isMobile"><br /></span>
-                    {{ item.lineThrough }}
-                </span>
+            <div class="confirm-item-top-group">
+                <div class="item-left">
+                    <SvgIconThemed :icon="item.icon" />
+                    <span class="left-txt">{{ item.title }}</span>
+                    <o-tooltip placement="topLeft">
+                        <template v-slot:titleDesc>
+                            <span class="o-tip">{{ item.notice }}</span>
+                        </template>
+                        <HelpIcon v-if="item.notice" size="sm" />
+                    </o-tooltip>
+                </div>
+                <div class="item-right">
+                    <div v-if="item.isCom" >
+                        <GasObSelect></GasObSelect>
+                    </div>
+                    <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''}`">{{ item.desc }}</span>
+                    <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
+                        <span v-if="isMobile"><br /></span>
+                        {{ item.lineThrough }}
+                    </span>
+                </div>
             </div>
             <div
                 v-if="item.descInfo && item.descInfo.length > 0"
@@ -164,9 +169,11 @@ import {
     CommBoxHeader,
     CommBtn,
     HelpIcon,
+    GasObSelect
 } from '../../components'
 import BigNumber from 'bignumber.js'
 import getProceeding from '../../util/proceeding/getProceeding'
+import axios from 'axios';
 import {
     getTransferContract,
     getTransferGasLimit,
@@ -198,13 +205,15 @@ import {
     walletIsLogin,
     compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
-import { isMobile, transferDataState, web3State } from '../../composition/hooks'
+import { isMobile, transferDataState, web3State, gasTokenInfo, updateGasTokenInfo } from '../../composition/hooks'
 import { Coin_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
-import { orbiterRouterTransfer, OrbiterRouterType } from '../../util/constants/contract/orbiterRouter';
+import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp } from "../../util";
+import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20 } from "../../util/zksyncEraGasToken";
+
 const {
     walletDispatchersOnSignature,
     walletDispatchersOnSwitchChain,
@@ -213,7 +222,7 @@ const {
 
 export default {
     name: 'Confirm',
-    components: { SvgIconThemed, CommBoxHeader, CommBtn, HelpIcon },
+    components: { SvgIconThemed, CommBoxHeader, CommBtn, HelpIcon, GasObSelect },
     data() {
         return {
             transferLoading: false,
@@ -225,7 +234,20 @@ export default {
             return isMobile.value
         },
         isStarkNetChain() {
-            return util.isStarkNet()
+            const { fromChainID, toChainID } = transferDataState
+            return (
+                fromChainID === CHAIN_ID.starknet ||
+                fromChainID === CHAIN_ID.starknet_test ||
+                toChainID === CHAIN_ID.starknet ||
+                toChainID === CHAIN_ID.starknet_test
+            )
+        },
+        currentFromChainID() {
+            const { fromChainID } = transferDataState
+            return fromChainID
+        },
+        gasTokenInfoValue()  { 
+            return gasTokenInfo.info
         },
         confirmData() {
             const { selectMakerConfig } = transferDataState
@@ -237,6 +259,10 @@ export default {
                 /(.*?0)0{4,}(0.*?)/,
                 '$1...$2'
             )
+            const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
+            const withholdingFee = +(selectMakerConfig.tradingFee || 0);
+            
+            const isGasTokenChain = (this.currentFromChainID === CHAIN_ID.zksync2)
             const comm = [
                 {
                     icon: 'withholding',
@@ -246,8 +272,7 @@ export default {
                         selectMakerConfig.tradingFee +
                         ' ' +
                         selectMakerConfig.fromChain.symbol,
-                    lineThrough: selectMakerConfig.originWithholdingFee ?
-                      selectMakerConfig.originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
+                    lineThrough: withholdingFee<originWithholdingFee?originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
                 },
                 {
                     icon: 'security',
@@ -272,6 +297,14 @@ export default {
                     desc: this.expectValue,
                     textBold: true,
                 },
+                ...(isGasTokenChain ? [{
+                    icon: 'gas',
+                    title: 'Select Gas Token',
+                    notice: 'Select Gas Token',
+                    desc: "",
+                    isCom: true,
+                    textBold: true,
+                }] : []),
                 {
                     icon: 'exchange',
                     title: 'Maker Routes',
@@ -284,25 +317,18 @@ export default {
     },
     methods: {
         async transferToStarkNet(value) {
-            const { selectMakerConfig, fromChainID, transferExt, crossAddressReceipt } =
+            const { selectMakerConfig, fromChainID, transferExt } =
                 transferDataState
 
             if (!walletIsLogin.value) {
                 return
             }
             const { fromAddress, ext } = transferExt
-            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+            const contractAddress = selectMakerConfig.fromChain.tokenAddress
             const recipient = selectMakerConfig.recipient
             const amount = ethers.BigNumber.from(value)
 
             if (!ext?.value || util.starknetHashFormat(ext.value).length !== 66 || util.starknetHashFormat(ext.value) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
-                this.$notify.error({
-                    title: 'please connect correct starknet wallet address',
-                    duration: 3000,
-                });
-                return;
-            }
-            if (!crossAddressReceipt || util.starknetHashFormat(crossAddressReceipt).length !== 66 || util.starknetHashFormat(crossAddressReceipt) === "0x0000000000000000000000000000000000000000000000000000000000000000") {
                 this.$notify.error({
                     title: 'please connect correct starknet wallet address',
                     duration: 3000,
@@ -317,8 +343,8 @@ export default {
                 });
                 return;
             }
-            const contractAddress = util.getOrbiterRouterV3Address(fromChainID)
-            if (!contractAddress) {
+            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+            if (!chainInfo.contracts || !chainInfo.contracts.length) {
                 this.$notify.error({
                     title: 'Contract not supported temporarily',
                     duration: 3000,
@@ -326,22 +352,81 @@ export default {
                 return
             }
 
+            let crossContractAddress = chainInfo.contracts[0]
+            crossContractAddress = crossContractAddress?.address || crossContractAddress
             try {
-                const res = await orbiterRouterTransfer(
-                    OrbiterRouterType.CrossAddress,
-                    fromAddress,
-                    selectMakerConfig.recipient,
-                    amount,
-                    crossAddressReceipt
+                let transferHash = ''
+                if (
+                    compatibleGlobalWalletConf.value.walletType == WALLETCONNECT
+                ) {
+                    const web3 = await util.stableWeb3(fromChainID)
+                    const provider = new ethers.providers.Web3Provider(
+                        web3.currentProvider
+                    )
+                    const crossAddress = new CrossAddress(
+                        provider,
+                        fromChainID,
+                        provider.getSigner(fromAddress),
+                        crossContractAddress
+                    )
+                    if (util.isEthTokenAddress(fromChainID, contractAddress)) {
+                        transferHash =
+                             await crossAddress.wallConnTransfer(
+                                recipient,
+                                amount,
+                                ext
+                            )
+                    } else {
+                        transferHash =
+                            await crossAddress.walletConnTransferERC20(
+                                contractAddress,
+                                recipient,
+                                amount,
+                                ext
+                            )
+                    }
+                    if (transferHash) {
+                        this.onTransferSucceed(
+                            fromAddress,
+                            amount,
+                            fromChainID,
+                            transferHash
+                        )
+                    }
+                    return
+                }
+                const provider = new ethers.providers.Web3Provider(
+                    compatibleGlobalWalletConf.value.walletPayload.provider
                 )
-                if (res?.transactionHash) {
+                const crossAddress = new CrossAddress(
+                    provider,
+                    fromChainID,
+                    provider.getSigner(fromAddress),
+                    crossContractAddress
+                )
+                if (util.isEthTokenAddress(fromChainID, contractAddress)) {
+                    transferHash = (
+                        await crossAddress.transfer(recipient, amount, ext)
+                    ).hash
+                } else {
+                    transferHash = (
+                        await crossAddress.transferERC20(
+                            contractAddress,
+                            recipient,
+                            amount,
+                            ext
+                        )
+                    ).hash
+                }
+                if (transferHash) {
                     this.onTransferSucceed(
                         fromAddress,
                         amount,
                         fromChainID,
-                        res.transactionHash
+                        transferHash
                     )
                 }
+                return
             } catch (err) {
                 console.error('transferToStarkNet error', err);
                 this.$notify.error({
@@ -782,12 +867,13 @@ export default {
                     return
                 }
                 try {
+                    const {tokenId} = await loopring.getLpTokenInfoOnce(fromChainID, tokenAddress)
                     const response = await loopring.sendTransfer(
                         compatibleGlobalWalletConf.value.walletPayload
                             .walletAddress,
                         fromChainID,
                         selectMakerConfig.recipient,
-                        0,
+                        tokenId,
                         tokenAddress,
                         amount,
                         memo
@@ -846,6 +932,7 @@ export default {
         },
         async ethTransfer(value) {
             const { selectMakerConfig, fromChainID } = transferDataState
+            const selectChainID = selectMakerConfig?.fromChain?.chainId
             const from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
             const matchSignatureDispatcher =
@@ -888,8 +975,24 @@ export default {
                     web3.currentProvider
                 )
                 const signer = eprovider.getSigner()
+                try {
+                    const windowChain = +(window?.ethereum?.chainId)
+                    if(windowChain) {
+                        if(Number(selectChainID) !== windowChain) {
+                            this.$notify.warning({
+                                title: "The current wallet connection network is inconsistent with the sending transaction network",
+                                duration: 3000,
+                            })
+                        }
+                    }
+                } catch (error) {
+                    this.$notify.warning({
+                        title: error?.message ? String(error?.message) : String(error),
+                        duration: 3000,
+                    })
+                }
                 signer
-                    .sendTransaction({
+                  .sendTransaction({
                         from,
                         to: selectMakerConfig.recipient,
                         value,
@@ -961,7 +1064,7 @@ export default {
                 }
                 if (
                     (fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) &&
-                    (starkChain === CHAIN_ID.starknet_test || starkChain === CHAIN_ID.starknet_sepolia || starkChain === 'localhost')
+                    (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
                 ) {
                     util.showMessage(
                         'please switch Starknet Wallet to mainnet',
@@ -970,9 +1073,7 @@ export default {
                     return
                 }
                 if (
-                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test ||
-                      fromChainID === CHAIN_ID.starknet_sepolia || toChainID === CHAIN_ID.starknet_sepolia
-                    ) &&
+                    (fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet_test) &&
                     (starkChain === CHAIN_ID.starknet || starkChain === 'localhost')
                 ) {
                     util.showMessage(
@@ -1159,7 +1260,8 @@ export default {
                 return
             }
 
-            const contractAddress = util.getOrbiterRouterV3Address(fromChainID);
+            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+            const contractAddress = chainInfo.xvmList[0]
             const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             // approve
             if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
@@ -1167,7 +1269,7 @@ export default {
                     compatibleGlobalWalletConf.value.walletType ===
                     WALLETCONNECT
                 ) {
-                    const web3 = util.stableWeb3(fromChainID)
+                    const web3 = await util.stableWeb3(fromChainID)
                     const provider = new ethers.providers.Web3Provider(
                         web3.currentProvider
                     )
@@ -1195,8 +1297,11 @@ export default {
             }
 
             try {
-                const { transactionHash } = await orbiterRouterTransfer(
-                    selectMakerConfig.fromChain.symbol === selectMakerConfig.toChain.symbol ? OrbiterRouterType.CrossAddress : OrbiterRouterType.CrossAddressCurrency,
+                const provider =
+                    compatibleGlobalWalletConf.value.walletPayload.provider
+                const { transactionHash } = await XVMSwap(
+                    provider,
+                    contractAddress,
                     account,
                     selectMakerConfig.recipient,
                     amount,
@@ -1229,6 +1334,31 @@ export default {
                 })
             }
         },
+        async zksync2GasToken () {
+            const account =
+                    compatibleGlobalWalletConf.value.walletPayload.walletAddress
+            const { fromChainID, selectMakerConfig } = transferDataState
+            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+            const to = selectMakerConfig.recipient
+            const tValue = transferCalculate.getTransferTValue()           
+
+            try {
+                if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
+                // When tokenAddress is eth
+                    await zksyncEraGasTokenETH({account, fromChainID, to, amount: tValue.tAmount,onTransferSucceed: this.onTransferSucceed})
+                } else {
+                    await zksyncEraGasTokenERC20({account, fromChainID, to, amount: tValue.tAmount, tokenAddress, onTransferSucceed: this.onTransferSucceed})
+                }
+                updateGasTokenInfo({})
+            } catch (error) {
+                
+                this.$notify.error({
+                    title: error?.data?.message || error?.message || "ERROR",
+                    duration: 3000,
+                })
+            }
+            this.transferLoading = false
+        },
         async RealTransfer() {
             if (!walletIsLogin.value) {
                 Middle.$emit('connectWallet', true)
@@ -1243,14 +1373,14 @@ export default {
             }
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
-            if (!util.isStarkNetChain(fromChainID)) {
+            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
                 ) {
-                    if (
-                        [METAMASK, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)
-                    ) {
+                    // if (
+                    //     [METAMASK, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)
+                    // ) {
                         try {
                             if (
                                 !(await util.ensureWalletNetwork(fromChainID))
@@ -1258,22 +1388,26 @@ export default {
                                 return
                             }
                         } catch (err) {
-                            util.showMessage(err.message, 'error')
-                            return
+                            try {
+                                const matchAddChainDispatcher =
+                                    walletDispatchersOnSwitchChain[
+                                        compatibleGlobalWalletConf.value.walletType
+                                    ]
+                                if (matchAddChainDispatcher) {
+                                    matchAddChainDispatcher(
+                                        compatibleGlobalWalletConf.value.walletPayload
+                                        .provider
+                                    )
+                                    return
+                                }
+                            } catch (error) {
+                                util.showMessage(err.message, 'error')
+                                return
+                            }
                         }
-                    } else {
-                        const matchAddChainDispatcher =
-                            walletDispatchersOnSwitchChain[
-                                compatibleGlobalWalletConf.value.walletType
-                            ]
-                        if (matchAddChainDispatcher) {
-                            matchAddChainDispatcher(
-                                compatibleGlobalWalletConf.value.walletPayload
-                                    .provider
-                            )
-                            return
-                        }
-                    }
+                    // } else {
+                        
+                    // }
                 }
             }
 
@@ -1283,7 +1417,7 @@ export default {
             }
 
             // EVM contract
-            if (util.isExecuteOrbiterRouterV3()) {
+            if (util.isExecuteXVMContract()) {
                 this.transferLoading = true
                 await this.handleXVMContract()
                 this.transferLoading = false
@@ -1310,13 +1444,13 @@ export default {
                     this.transferLoading = false
                     return
                 }
-              if (util.isStarkNetChain(toChainID)) {
+                if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
                     this.transferToStarkNet(tValue.tAmount)
                     return
                 }
                 const account =
                     compatibleGlobalWalletConf.value.walletPayload.walletAddress
-                if (util.isStarkNetChain(fromChainID)) {
+                if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
                     this.starknetTransfer(tValue.tAmount)
                     return
                 }
@@ -1328,6 +1462,11 @@ export default {
 
                 if (fromChainID === CHAIN_ID.dydx || fromChainID === CHAIN_ID.dydx_test) {
                     this.dydxTransfer(tValue.tAmount)
+                    return
+                }
+
+                if ((fromChainID === CHAIN_ID.zksync2) &&  this.gasTokenInfoValue.value && (this.gasTokenInfoValue.value !== "ETH")) {
+                    this.zksync2GasToken()
                     return
                 }
 
@@ -1385,30 +1524,59 @@ export default {
                     if (String(fromChainID) === "42161" && gasLimit < 21000) {
                         gasLimit = 21000
                     }
-                    const objOption = { from: account, gas: gasLimit }
-                    transferContract.methods
-                        .transfer(to, tValue.tAmount)
-                        .send(objOption, (error, transactionHash) => {
-                            this.transferLoading = false
-                            if (!error) {
-                                this.onTransferSucceed(
-                                    account,
-                                    tValue.tAmount,
-                                    fromChainID,
-                                    transactionHash
-                                )
-                            } else {
-                                this.$notify.error({
-                                    title: error.message,
+                    const selectChainID = selectMakerConfig?.fromChain?.chainId
+                    try {
+                        const windowChain = +(window?.ethereum?.chainId)
+                        if(windowChain) {
+                            if(Number(selectChainID) !== windowChain) {
+                                this.$notify.warning({
+                                    title: "The current wallet connection network is inconsistent with the sending transaction network",
                                     duration: 3000,
                                 })
                             }
+                        }
+                    } catch (error) {
+                        this.$notify.warning({
+                            title: error?.message ? String(error?.message) : String(error),
+                            duration: 3000,
+                        })
+                    }
+                    transferContract
+                        .transfer(to, tValue.tAmount).then((res)=>{
+                            this.onTransferSucceed(
+                                    account,
+                                    tValue.tAmount,
+                                    fromChainID,
+                                    res.hash
+                                )
+                            this.transferLoading = false
+
+                        }).catch((error)=>{
+                            this.$notify.error({
+                                title: error.message,
+                                duration: 3000,
+                            })
+                            this.transferLoading = false
                         })
                 }
             }
         },
         onTransferSucceed(from, amount, fromChainID, transactionHash) {
             const { selectMakerConfig } = transferDataState
+            const { path, query } = this.$route;
+            if (process.env['VUE_APP_SDK_URL']) {
+                try {
+                    axios.post(`${process.env['VUE_APP_SDK_URL']}/dealer/report/tx`, {
+                        chainId:fromChainID,
+                        hash: transactionHash,
+                        channel: (query.dealerId || '').toLocaleLowerCase(),
+                        description: JSON.stringify({value: amount, from})
+                    })
+                }catch(error) {
+
+                }
+            }
+           
             getProceeding.UserTransferReady(
                 from,
                 selectMakerConfig.recipient,
@@ -1447,7 +1615,7 @@ export default {
             selectMakerConfig,
             false
         )
-        if (util.isExecuteOrbiterRouterV3()) {
+        if (util.isExecuteXVMContract()) {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol
             const slippage = selectMakerConfig.slippage
@@ -1476,7 +1644,7 @@ export default {
         width: 480px;
         padding-bottom: 20px;
         .confirm-item {
-            margin: 22px 0;
+            margin: 22px 0 0;
         }
     }
     .select-wallet-dialog {
@@ -1499,7 +1667,7 @@ export default {
         height: 100%;
         padding: 0 20px;
         .confirm-item {
-            margin: 12px 0;
+            margin: 12px 0 0;
         }
     }
     .select-wallet-dialog {
@@ -1513,10 +1681,13 @@ export default {
     font-size: 14px;
     line-height: 20px;
     .confirm-item {
-        overflow: hidden;
         padding: 0 30px;
+        .confirm-item-top-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
         .item-left {
-            float: left;
             display: flex;
             align-items: center;
             .left-txt {
@@ -1524,7 +1695,10 @@ export default {
             }
         }
         .item-right {
-            float: right;
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            align-content: center;
             font-weight: 400;
             font-size: 14px;
             line-height: 24px;

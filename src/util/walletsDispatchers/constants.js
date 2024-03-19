@@ -16,3 +16,18 @@ export const LOCALLOGINDATA = 'localLoginData' // mainly used in localStorage fo
 export const BRAVE_APP = 'braveApp' // brave wallet constant
 export const LOOPRING_APP = 'loopringApp' // brave wallet constant
 export const ZERION_APP = 'ZerionApp' // zerion wallet constant
+export const COIN98_APP = 'Coin98' // zerion wallet constant
+
+export const CURRENT_SUPPORT_WALLET = [
+  METAMASK,
+  WALLETCONNECT,
+  COINBASE,
+  BIT_KEEP,
+  OKXWALLET,
+  IM_TOKEN_APP,
+  ZERION,
+  TOKEN_POCKET_APP,
+  BLOCKWALLET,
+  TALLYHO,
+  COIN98_APP,
+].map((item) => item.toLocaleLowerCase())

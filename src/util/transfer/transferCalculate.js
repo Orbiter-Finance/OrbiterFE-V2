@@ -18,10 +18,14 @@ import loopring from '../../core/actions/loopring'
 import { DydxHelper } from '../dydx/dydx_helper'
 import Web3 from 'web3'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
-import { transferDataState, web3State } from '../../composition/hooks'
-import { CHAIN_ID } from "../../config";
-import { EBC_ABI } from "../constants/contract/contract";
-import { isArgentApp, isBrowserApp, isDev } from "../env";
+import {
+  transferDataState,
+  web3State,
+  tradingPairsData,
+} from '../../composition/hooks'
+import { CHAIN_ID } from '../../config'
+import { EBC_ABI } from '../constants/contract/contract'
+import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -113,7 +117,6 @@ const BASE_ETH_WITHDRAW_ONL1 = 161063
 const BASE_ERC20_DEPOSIT_DEPOSIT_ONL1 = 48485
 const BASE_ETH_DEPOSIT_DEPOSIT_ONL1 = 48485
 
-
 // scroll
 const SCROLL_ETH_DEPOSIT = 21000
 const SCROLL_ETH_WITHDRAW = 21000
@@ -122,7 +125,10 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
-    if (fromChainID === CHAIN_ID.zksync || fromChainID === CHAIN_ID.zksync_test) {
+    if (
+      fromChainID === CHAIN_ID.zksync ||
+      fromChainID === CHAIN_ID.zksync_test
+    ) {
       const syncHttpProvider = await getZkSyncProvider(fromChainID)
       if (!makerAddress) {
         return null
@@ -160,7 +166,10 @@ export default {
         console.error('Get ChangePubKey fee failed: ', err.message)
       }
       return totalFee / 10 ** resultToken.decimals
-    } else if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
+    } else if (
+      fromChainID === CHAIN_ID.zkspace ||
+      fromChainID === CHAIN_ID.zkspace_test
+    ) {
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
@@ -171,7 +180,10 @@ export default {
         console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (util.isStarkNetChain(fromChainID)) {
+    } else if (
+      fromChainID === CHAIN_ID.starknet ||
+      fromChainID === CHAIN_ID.starknet_test
+    ) {
       const realTransferAmount = this.realTransferAmount().toString()
       const starkFee = await getStarkTransferFee(
         web3State.coinbase,
@@ -181,7 +193,10 @@ export default {
         fromChainID
       )
       return starkFee / 10 ** 18
-    } else if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
+    } else if (
+      fromChainID === CHAIN_ID.loopring ||
+      fromChainID === CHAIN_ID.loopring_test
+    ) {
       // loopring fee can only use eth。other erc20 fee will be error
       try {
         const lpTokenInfo = await loopring.getLpTokenInfo(
@@ -198,14 +213,21 @@ export default {
       } catch (error) {
         console.warn('lp getTransferFeeerror:')
       }
-    } else if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {
+    } else if (
+      fromChainID === CHAIN_ID.imx ||
+      fromChainID === CHAIN_ID.imx_test
+    ) {
       return 0
     } else if (
       util.isEthTokenAddress(fromChainID, fromTokenAddress) ||
-      ((fromChainID === CHAIN_ID.zksync2 || fromChainID === CHAIN_ID.zksync2_test) &&
+      ((fromChainID === CHAIN_ID.zksync2 ||
+        fromChainID === CHAIN_ID.zksync2_test) &&
         fromTokenAddress.toUpperCase() === `0X${'E'.repeat(40)}`)
     ) {
-      if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
+      if (
+        fromChainID === CHAIN_ID.zkspace ||
+        fromChainID === CHAIN_ID.zkspace_test
+      ) {
         // zkspace can only use eth as fee
         let transferFee = 0
         try {
@@ -217,7 +239,10 @@ export default {
           console.warn('getZKSpaceTransferGasFeeError =', error)
         }
         return transferFee
-      } else if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
+      } else if (
+        fromChainID === CHAIN_ID.loopring ||
+        fromChainID === CHAIN_ID.loopring_test
+      ) {
         // loopring fee can only use eth。other erc20 fee will be error
         try {
           const lpTokenInfo = await loopring.getLpTokenInfo(
@@ -235,7 +260,7 @@ export default {
           console.warn('lp getTransferFeeerror:')
         }
       }
-      const rpcList = util.getRpcList(fromChainID)
+      const rpcList = await util.getRpcList(fromChainID)
       if (!rpcList.length) {
         return 0
       }
@@ -243,18 +268,23 @@ export default {
         from: web3State.coinbase,
         to: makerAddress,
       })
-      if (fromChainID === CHAIN_ID.zksync2 || fromChainID === CHAIN_ID.zksync2_test) {
+      if (
+        fromChainID === CHAIN_ID.zksync2 ||
+        fromChainID === CHAIN_ID.zksync2_test
+      ) {
         estimateGas = estimateGas * 1.5
       }
       let gasPrice = await util.requestWeb3(fromChainID, 'getGasPrice')
       // EIP1559
-      if ([CHAIN_ID.base, CHAIN_ID.zora, CHAIN_ID.opbnb].includes(fromChainID)) {
+      if (
+        [CHAIN_ID.base, CHAIN_ID.zora, CHAIN_ID.opbnb].includes(fromChainID)
+      ) {
         const provider = new providers.JsonRpcProvider({
-          url: util.stableRpc(fromChainID)
-        });
-        const fee = await provider.getFeeData();
-        gasPrice = fee.maxPriorityFeePerGas.toString();
-        estimateGas = 55000;
+          url: util.stableRpc(fromChainID),
+        })
+        const fee = await provider.getFeeData()
+        gasPrice = fee.maxPriorityFeePerGas.toString()
+        estimateGas = 55000
       }
 
       let gas = new BigNumber(gasPrice).multipliedBy(estimateGas)
@@ -270,7 +300,10 @@ export default {
   // gasCost-> savingValue
   async transferSpentGas(fromChainID, gasPriceMap, gasLimitMap) {
     const { selectMakerConfig } = transferDataState
-    if (fromChainID === CHAIN_ID.zksync || fromChainID === CHAIN_ID.zksync_test) {
+    if (
+      fromChainID === CHAIN_ID.zksync ||
+      fromChainID === CHAIN_ID.zksync_test
+    ) {
       const syncHttpProvider = await getZkSyncProvider(fromChainID)
       const zkTokenList =
         fromChainID === CHAIN_ID.zksync
@@ -291,7 +324,10 @@ export default {
       )
       return (fee.totalFee / 10 ** resultToken.decimals).toFixed(6)
     }
-    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
+    if (
+      fromChainID === CHAIN_ID.loopring ||
+      fromChainID === CHAIN_ID.loopring_test
+    ) {
       const tokenAddress = selectMakerConfig.fromChain.tokenAddress
       const lpTokenInfo = await loopring.getLpTokenInfo(
         fromChainID,
@@ -305,7 +341,10 @@ export default {
       // lpGasFee must use eth
       return (Number(loopringFee) / 10 ** 18).toFixed(6)
     }
-    if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
+    if (
+      fromChainID === CHAIN_ID.zkspace ||
+      fromChainID === CHAIN_ID.zkspace_test
+    ) {
       let transferFee = 0
       try {
         transferFee = await zkspace.getZKSpaceTransferGasFee(
@@ -318,7 +357,10 @@ export default {
       }
       return transferFee.toFixed(6)
     }
-    if (util.isStarkNetChain(fromChainID)) {
+    if (
+      fromChainID === CHAIN_ID.starknet ||
+      fromChainID === CHAIN_ID.starknet_test
+    ) {
       const realTransferAmount = this.realTransferAmount().toString()
       const fromTokenAddress = selectMakerConfig.fromChain.tokenAddress
       const starkFee = await getStarkTransferFee(
@@ -350,64 +392,140 @@ export default {
   },
 
   transferSpentTime(fromChainID, toChainID) {
-    let timeSpent = 0;
+    let timeSpent = 0
     if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(fromChainID)) {
-      timeSpent = 30;
-    } else if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test, CHAIN_ID.imx, CHAIN_ID.imx_test].includes(fromChainID)) {
-      timeSpent = 5;
-    } else if ([CHAIN_ID.zkspace, CHAIN_ID.zkspace_test].includes(fromChainID)) {
-      timeSpent = 20;
-    } else if (util.isStarkNetChain(fromChainID)) {
-      timeSpent = 180;
+      timeSpent = 30
+    } else if (
+      [
+        CHAIN_ID.zksync,
+        CHAIN_ID.zksync_test,
+        CHAIN_ID.zkspace,
+        CHAIN_ID.zkspace_test,
+        CHAIN_ID.imx,
+        CHAIN_ID.imx_test,
+      ].includes(fromChainID)
+    ) {
+      timeSpent = 5
+    } else if (
+      [CHAIN_ID.zkspace, CHAIN_ID.zkspace_test].includes(fromChainID)
+    ) {
+      timeSpent = 20
+    } else if (
+      [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(fromChainID)
+    ) {
+      timeSpent = 180
     } else {
-      timeSpent = 15;
+      timeSpent = 15
     }
 
     if ([CHAIN_ID.mainnet, CHAIN_ID.nova].includes(toChainID)) {
-      timeSpent += 30;
-    } else if (util.isStarkNetChain(toChainID)) {
-      timeSpent += 180;
-    } else if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.zkspace,
-      CHAIN_ID.zksync_test, CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test].includes(toChainID)) {
-      timeSpent += 5;
-    } else if ([CHAIN_ID.linea, CHAIN_ID.linea_test, CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test].includes(toChainID)) {
-      timeSpent += 30;
+      timeSpent += 30
+    } else if (
+      [CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(toChainID)
+    ) {
+      timeSpent += 180
+    } else if (
+      [
+        CHAIN_ID.zksync,
+        CHAIN_ID.zksync_test,
+        CHAIN_ID.zkspace,
+        CHAIN_ID.zksync_test,
+        CHAIN_ID.imx,
+        CHAIN_ID.imx_test,
+        CHAIN_ID.dydx,
+        CHAIN_ID.dydx_test,
+      ].includes(toChainID)
+    ) {
+      timeSpent += 5
+    } else if (
+      [
+        CHAIN_ID.linea,
+        CHAIN_ID.linea_test,
+        CHAIN_ID.pozkevm,
+        CHAIN_ID.pozkevm_test,
+      ].includes(toChainID)
+    ) {
+      timeSpent += 30
     } else {
-      timeSpent += 15;
+      timeSpent += 15
     }
 
-    return timeSpent + 's';
+    return timeSpent + 's'
   },
 
   transferOrginTime(fromChainID, toChainID) {
     if (fromChainID === CHAIN_ID.mainnet) {
-      if ([CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test].includes(toChainID)) {
-        return '~20min';
-      } else if ([CHAIN_ID.bsc, CHAIN_ID.bsc_test, CHAIN_ID.base, CHAIN_ID.base_test,
-        CHAIN_ID.opbnb, CHAIN_ID.opbnb_test, CHAIN_ID.zora, CHAIN_ID.zora_test].includes(toChainID)) {
-        return '~15min';
-      } else if ([CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.metis].includes(toChainID)) {
-        return '~5min';
+      if (
+        [
+          CHAIN_ID.imx,
+          CHAIN_ID.imx_test,
+          CHAIN_ID.dydx,
+          CHAIN_ID.dydx_test,
+        ].includes(toChainID)
+      ) {
+        return '~20min'
+      } else if (
+        [
+          CHAIN_ID.bsc,
+          CHAIN_ID.bsc_test,
+          CHAIN_ID.base,
+          CHAIN_ID.base_test,
+          CHAIN_ID.opbnb,
+          CHAIN_ID.opbnb_test,
+          CHAIN_ID.zora,
+          CHAIN_ID.zora_test,
+        ].includes(toChainID)
+      ) {
+        return '~15min'
+      } else if (
+        [
+          CHAIN_ID.po,
+          CHAIN_ID.po_test,
+          CHAIN_ID.op,
+          CHAIN_ID.op_test,
+          CHAIN_ID.metis,
+        ].includes(toChainID)
+      ) {
+        return '~5min'
       } else {
-        return '~10min';
+        return '~10min'
       }
     }
 
-    if ([CHAIN_ID.linea, CHAIN_ID.linea_test].includes(fromChainID) || util.isStarkNetChain(fromChainID)) {
-      return '~24 hours';
-    } else if ([CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test].includes(fromChainID)) {
-      return '~6 hours';
+    if (
+      [
+        CHAIN_ID.linea,
+        CHAIN_ID.linea_test,
+        CHAIN_ID.starknet,
+        CHAIN_ID.starknet_test,
+      ].includes(fromChainID)
+    ) {
+      return '~24 hours'
+    } else if (
+      [CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test].includes(fromChainID)
+    ) {
+      return '~6 hours'
     } else if ([CHAIN_ID.imx, CHAIN_ID.imx_test].includes(fromChainID)) {
-      return '~5 hours';
-    } else if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
-      CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.loopring, CHAIN_ID.loopring_test].includes(fromChainID)) {
-      return '~4 hours';
+      return '~5 hours'
+    } else if (
+      [
+        CHAIN_ID.zksync,
+        CHAIN_ID.zksync_test,
+        CHAIN_ID.zkspace,
+        CHAIN_ID.zkspace_test,
+        CHAIN_ID.zksync2,
+        CHAIN_ID.zksync2_test,
+        CHAIN_ID.loopring,
+        CHAIN_ID.loopring_test,
+      ].includes(fromChainID)
+    ) {
+      return '~4 hours'
     } else if ([CHAIN_ID.po, CHAIN_ID.po_test].includes(fromChainID)) {
-      return '~3 hours';
+      return '~3 hours'
     } else if ([CHAIN_ID.bsc, CHAIN_ID.bsc_test].includes(fromChainID)) {
-      return '~3 hours';
+      return '~3 hours'
     } else {
-      return '~7 days';
+      return '~7 days'
     }
   },
 
@@ -418,8 +536,8 @@ export default {
     let bscGas = 0
     const { selectMakerConfig } = transferDataState
 
-    const m = CHAIN_ID.mainnet;
-    const g = CHAIN_ID.goerli;
+    const m = CHAIN_ID.mainnet
+    const g = CHAIN_ID.goerli
     // withdraw
     if (fromChainID === CHAIN_ID.ar || fromChainID === CHAIN_ID.ar_test) {
       try {
@@ -442,16 +560,22 @@ export default {
     if (fromChainID === CHAIN_ID.base || fromChainID === CHAIN_ID.base_test) {
       // base w
       const fromGasPrice = await this.getGasPrice(fromChainID)
-      const l2Fee = fromGasPrice * (isErc20  ? BASE_ERC20_WITHDRAW_ONAR : BASE_ETH_WITHDRAW_ONAR);
+      const l2Fee =
+        fromGasPrice *
+        (isErc20 ? BASE_ERC20_WITHDRAW_ONAR : BASE_ETH_WITHDRAW_ONAR)
       // l1 w
       const L1ChainID = fromChainID === CHAIN_ID.base ? m : g
       const L1GasPrice = await this.getGasPrice(L1ChainID)
-      const l1Fee = L1GasPrice * (isErc20  ? BASE_ERC20_WITHDRAW_ONL1 : BASE_ETH_WITHDRAW_ONL1);
+      const l1Fee =
+        L1GasPrice *
+        (isErc20 ? BASE_ERC20_WITHDRAW_ONL1 : BASE_ETH_WITHDRAW_ONL1)
       ethGas = l2Fee + l1Fee
-
     }
 
-    if (fromChainID === CHAIN_ID.zksync || fromChainID === CHAIN_ID.zksync_test) {
+    if (
+      fromChainID === CHAIN_ID.zksync ||
+      fromChainID === CHAIN_ID.zksync_test
+    ) {
       try {
         // zk withdraw
         const syncHttpProvider = await getZkSyncProvider(fromChainID)
@@ -465,7 +589,10 @@ export default {
         throw new Error('zksync withdraw error')
       }
     }
-    if (util.isStarkNetChain(fromChainID)) {
+    if (
+      fromChainID === CHAIN_ID.starknet ||
+      fromChainID === CHAIN_ID.starknet_test
+    ) {
       // stark cost
       ethGas = 200000000000000
       // mainnet cost
@@ -533,7 +660,10 @@ export default {
         throw new Error('imx withdraw error')
       }
     }
-    if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test) {
+    if (
+      fromChainID === CHAIN_ID.loopring ||
+      fromChainID === CHAIN_ID.loopring_test
+    ) {
       try {
         const loopringWithDrawFee = await loopring.getWithDrawFee(
           web3State.coinbase,
@@ -560,7 +690,10 @@ export default {
         throw new Error('metis withdraw error')
       }
     }
-    if (fromChainID === CHAIN_ID.zkspace || fromChainID === CHAIN_ID.zkspace_test) {
+    if (
+      fromChainID === CHAIN_ID.zkspace ||
+      fromChainID === CHAIN_ID.zkspace_test
+    ) {
       try {
         const zkspaceWithDrawFee = await zkspace.getZKSpaceWithDrawGasFee(
           fromChainID,
@@ -570,7 +703,7 @@ export default {
           zkspaceWithDrawFee * 10 ** selectMakerConfig.fromChain.decimals
         )
       } catch (error) {
-        console.error('zkspace withdraw error', error);
+        console.error('zkspace withdraw error', error)
         throw new Error('zkspace withdraw error')
       }
     }
@@ -589,7 +722,10 @@ export default {
         throw new Error('bsc withdraw error')
       }
     }
-    if (fromChainID === CHAIN_ID.zksync2 || fromChainID === CHAIN_ID.zksync2_test) {
+    if (
+      fromChainID === CHAIN_ID.zksync2 ||
+      fromChainID === CHAIN_ID.zksync2_test
+    ) {
       // zk2 widthdraw
       const fromGasPrice = await this.getGasPrice(fromChainID)
       ethGas =
@@ -610,7 +746,10 @@ export default {
         throw new Error('ar withdraw error')
       }
     }
-    if (fromChainID === CHAIN_ID.pozkevm || fromChainID === CHAIN_ID.pozkevm_test) {
+    if (
+      fromChainID === CHAIN_ID.pozkevm ||
+      fromChainID === CHAIN_ID.pozkevm_test
+    ) {
       const fromGasPrice = await this.getGasPrice(fromChainID)
       ethGas = fromGasPrice * PG_EVM_ETH_WITHDRAW_ONPG
     }
@@ -619,7 +758,9 @@ export default {
     if (toChainID === CHAIN_ID.ar || toChainID === CHAIN_ID.ar_test) {
       try {
         // Ar deposit
-        const toGasPrice = await this.getGasPrice(toChainID === toChainID === CHAIN_ID.ar ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.ar ? m : g
+        )
         const arDepositGas =
           toGasPrice *
           (isErc20
@@ -631,19 +772,22 @@ export default {
       }
     }
     if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
-      const toGasPrice = await this.getGasPrice(toChainID === toChainID === CHAIN_ID.base ? m : g)
+      const toGasPrice = await this.getGasPrice(
+        toChainID === CHAIN_ID.base ? m : g
+      )
       const arDepositGas =
         toGasPrice *
         (isErc20
           ? BASE_ERC20_DEPOSIT_DEPOSIT_ONL1
           : BASE_ETH_DEPOSIT_DEPOSIT_ONL1)
       ethGas += arDepositGas
-
     }
     if (toChainID === CHAIN_ID.zksync || toChainID === CHAIN_ID.zksync_test) {
       try {
         // zk deposit
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.zksync ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.zksync ? m : g
+        )
         const zkDepositGas =
           toGasPrice *
           (isErc20
@@ -654,7 +798,10 @@ export default {
         throw new Error('zksync deposit error')
       }
     }
-    if (util.isStarkNetChain(toChainID)) {
+    if (
+      toChainID === CHAIN_ID.starknet ||
+      toChainID === CHAIN_ID.starknet_test
+    ) {
       const L1ChainID = toChainID === CHAIN_ID.starknet ? m : g
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const SNDepositL1Gas = L1GasPrice * STARKNET_ETH_DEPOSIT_ONL1
@@ -663,7 +810,9 @@ export default {
     if (toChainID === CHAIN_ID.po || toChainID === CHAIN_ID.po_test) {
       try {
         // Polygon deposit
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.po ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.po ? m : g
+        )
         const pgDepositGas = toGasPrice * PG_ERC20_DEPOSIT_DEPOSIT_ONL1
         ethGas += pgDepositGas
       } catch (error) {
@@ -673,7 +822,9 @@ export default {
     if (toChainID === CHAIN_ID.op || toChainID === CHAIN_ID.op_test) {
       try {
         // op deposit
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.op ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.op ? m : g
+        )
         const opDepositGas =
           toGasPrice *
           (isErc20
@@ -687,7 +838,9 @@ export default {
     if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
       try {
         // imx deposit
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.imx ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.imx ? m : g
+        )
         const imxDepositGas =
           toGasPrice *
           (isErc20
@@ -698,10 +851,15 @@ export default {
         throw new Error('imx deposit error')
       }
     }
-    if (toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
+    if (
+      toChainID === CHAIN_ID.loopring ||
+      toChainID === CHAIN_ID.loopring_test
+    ) {
       try {
         // loopring deposit
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.loopring ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.loopring ? m : g
+        )
         const lpDepositGas =
           toGasPrice *
           (isErc20
@@ -715,7 +873,9 @@ export default {
     if (toChainID === CHAIN_ID.metis) {
       try {
         // MT deposit
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.metis ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.metis ? m : g
+        )
         // MT deposit
         const mtDepositGas = toGasPrice * MT_ERC20_DEPOSIT_DEPOSIT_ONL1
         ethGas += mtDepositGas
@@ -726,7 +886,9 @@ export default {
     if (toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test) {
       try {
         // dydx deposit
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.dydx ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.dydx ? m : g
+        )
         const dydxDepositGas = toGasPrice * DYDX_ETH_DEPOSIT_DEPOSIT_ONL1
         ethGas += dydxDepositGas
       } catch (error) {
@@ -735,7 +897,9 @@ export default {
     }
     if (toChainID === CHAIN_ID.zkspace || toChainID === CHAIN_ID.zkspace_test) {
       try {
-        const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.zkspace ? m : g)
+        const toGasPrice = await this.getGasPrice(
+          toChainID === CHAIN_ID.zkspace ? m : g
+        )
         const zkspaceDepositGas =
           toGasPrice *
           (isErc20
@@ -766,7 +930,9 @@ export default {
     }
     if (toChainID === CHAIN_ID.zksync2 || toChainID === CHAIN_ID.zksync2_test) {
       // zk2 get
-      const toGasPrice = await this.getGasPrice(toChainID === CHAIN_ID.zksync2 ? m : g)
+      const toGasPrice = await this.getGasPrice(
+        toChainID === CHAIN_ID.zksync2 ? m : g
+      )
       ethGas =
         toGasPrice *
         (isErc20
@@ -815,14 +981,21 @@ export default {
     userAddress,
     isMaker = false
   ) {
-    if (isArgentApp() && !isMaker && !util.isStarkNetChain(localChainID)) {
-      return 0;
+    if (
+      isArgentApp() &&
+      !isMaker &&
+      ![CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(localChainID)
+    ) {
+      return 0
     }
     if (!isArgentApp() && isBrowserApp()) {
-      return 0;
+      return 0
     }
     const { selectMakerConfig } = transferDataState
-    if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
+    if (
+      localChainID === CHAIN_ID.zksync ||
+      localChainID === CHAIN_ID.zksync_test
+    ) {
       const req = {
         account: userAddress,
         localChainID,
@@ -843,7 +1016,11 @@ export default {
         console.warn('error =', error)
         throw 'getZKBalanceError'
       }
-    } else if (util.isStarkNetChain(localChainID)) {
+    } else if (
+      localChainID === CHAIN_ID.starknet ||
+      localChainID === CHAIN_ID.starknet_test
+    ) {
+      const networkId = localChainID === CHAIN_ID.starknet ? 1 : 5
       let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
         if (!starknetAddress) {
@@ -852,12 +1029,18 @@ export default {
       } else {
         starknetAddress = userAddress
       }
-      return await getErc20Balance(starknetAddress, tokenAddress, localChainID)
-    } else if (localChainID === CHAIN_ID.imx || localChainID === CHAIN_ID.imx_test) {
+      return await getErc20Balance(starknetAddress, tokenAddress, networkId)
+    } else if (
+      localChainID === CHAIN_ID.imx ||
+      localChainID === CHAIN_ID.imx_test
+    ) {
       const imxHelper = new IMXHelper(localChainID)
       const balance = await imxHelper.getBalanceBySymbol(userAddress, tokenName)
       return Number(balance + '')
-    } else if (localChainID === CHAIN_ID.loopring || localChainID === CHAIN_ID.loopring_test) {
+    } else if (
+      localChainID === CHAIN_ID.loopring ||
+      localChainID === CHAIN_ID.loopring_test
+    ) {
       const lpTokenInfo = await loopring.getLpTokenInfo(
         localChainID,
         tokenAddress
@@ -868,14 +1051,20 @@ export default {
         isMaker,
         lpTokenInfo
       )
-    } else if (localChainID === CHAIN_ID.dydx || localChainID === CHAIN_ID.dydx_test) {
+    } else if (
+      localChainID === CHAIN_ID.dydx ||
+      localChainID === CHAIN_ID.dydx_test
+    ) {
       const dydxHelper = new DydxHelper(
         localChainID,
         new Web3(compatibleGlobalWalletConf.value.walletPayload.provider),
         'MetaMask'
       )
       return await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
-    } else if (localChainID === CHAIN_ID.zkspace || localChainID === CHAIN_ID.zkspace_test) {
+    } else if (
+      localChainID === CHAIN_ID.zkspace ||
+      localChainID === CHAIN_ID.zkspace_test
+    ) {
       const zkReq = {
         account: userAddress,
         localChainID,
@@ -921,10 +1110,13 @@ export default {
     }
   },
   async getGasPrice(fromChainId) {
-    if (fromChainId === CHAIN_ID.zksync || fromChainId === CHAIN_ID.zksync_test) {
+    if (
+      fromChainId === CHAIN_ID.zksync ||
+      fromChainId === CHAIN_ID.zksync_test
+    ) {
       return null
     }
-    const rpcList = util.getRpcList(fromChainId)
+    const rpcList = await util.getRpcList(fromChainId)
     for (const rpc of rpcList) {
       try {
         const response = await axios.post(rpc, {
@@ -982,54 +1174,101 @@ export default {
   },
 
   safeCode() {
-    const { selectMakerConfig, toChainID } = transferDataState;
-    const internalId = String(selectMakerConfig.toChain.id).length < 2 ? ("0" + selectMakerConfig.toChain.id) : selectMakerConfig.toChain.id;
-    const dealerId = String(selectMakerConfig.dealerId || 0).length < 2 ? ("0" + selectMakerConfig.dealerId) : selectMakerConfig.dealerId;
-    const chainInfo = util.getV3ChainInfoByChainId(toChainID);
-    return selectMakerConfig.ebcId ?
-      dealerId + selectMakerConfig.ebcId + internalId : (9000 + Number(chainInfo.internalId) + '');
+    const { selectMakerConfig, toChainID } = transferDataState
+
+    let makerConfig = selectMakerConfig
+    const isCheck = String(toChainID) === String(makerConfig.toChain.chainId)
+    if (!isCheck) {
+      makerConfig =
+        tradingPairsData.data.filter(
+          (item) =>
+            String(item.pairId).toLocaleLowerCase() ===
+              String(makerConfig.pairId).toLocaleLowerCase() &&
+            String(item.recipient).toLocaleLowerCase() ===
+              String(makerConfig.recipient).toLocaleLowerCase()
+        )[0] || selectMakerConfig
+    }
+
+    const internalId =
+      String(makerConfig.toChain.id).length < 2
+        ? '0' + makerConfig.toChain.id
+        : makerConfig.toChain.id
+    const dealerId =
+      String(makerConfig.dealerId || 0).length < 2
+        ? '0' + makerConfig.dealerId
+        : makerConfig.dealerId
+    const chainInfo = util.getV3ChainInfoByChainId(toChainID)
+    return makerConfig.ebcId
+      ? dealerId + makerConfig.ebcId + internalId
+      : 9000 + Number(chainInfo.internalId) + ''
   },
 
   getTransferTValue() {
-    const { selectMakerConfig, transferValue, fromChainID } =
-      transferDataState;
+    const { selectMakerConfig, transferValue, fromChainID } = transferDataState
     const rAmount = new BigNumber(transferValue)
       .plus(new BigNumber(selectMakerConfig.tradingFee))
-      .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals));
-    const rAmountValue = rAmount.toFixed();
-    const p_text = this.safeCode();
-    return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text);
+      .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+    const rAmountValue = rAmount.toFixed()
+    const p_text = this.safeCode()
+    return orbiterCore.getTAmountFromRAmount(fromChainID, rAmountValue, p_text)
   },
   async calEBCValue() {
-    const { selectMakerConfig, fromChainID, toChainID } = transferDataState;
-    const web3 = util.stableWeb3(isDev() ? 5 : 1);
-    const provider = new ethers.providers.Web3Provider(web3.currentProvider);
-    util.log('ebcAddress', selectMakerConfig.ebcAddress);
+    const { selectMakerConfig, fromChainID, toChainID } = transferDataState
+    const web3 = await util.stableWeb3(isDev() ? 5 : 1)
+    const provider = new ethers.providers.Web3Provider(web3.currentProvider)
+    util.log('ebcAddress', selectMakerConfig.ebcAddress)
     const contractInstance = new ethers.Contract(
       selectMakerConfig.ebcAddress,
       EBC_ABI,
       provider
-    );
-    const ro = [fromChainID, toChainID, selectMakerConfig.status,
+    )
+    const ro = [
+      fromChainID,
+      toChainID,
+      selectMakerConfig.status,
       web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
       web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
-      selectMakerConfig.fromChain._minPrice, selectMakerConfig.fromChain._maxPrice,
-      selectMakerConfig._withholdingFee, selectMakerConfig._tradeFee,
+      selectMakerConfig.fromChain._minPrice,
+      selectMakerConfig.fromChain._maxPrice,
+      selectMakerConfig._withholdingFee,
+      selectMakerConfig._tradeFee,
       selectMakerConfig.spentTime,
-      selectMakerConfig._compensationRatio];
-    util.log("getResponseIntent params", "amount", this.getTransferTValue().tAmount, "sourceChainId", fromChainID, "destChainId", toChainID, "status", selectMakerConfig.status,
-      "sourceToken", web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
-      "destToken", web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
-      "minPrice", selectMakerConfig.fromChain._minPrice, "maxPrice", selectMakerConfig.fromChain._maxPrice,
-      "withholdingFee", selectMakerConfig._withholdingFee, "tradingFee", selectMakerConfig._tradeFee,
-      "responseTime", selectMakerConfig.spentTime,
-      "compensationRatio", selectMakerConfig._compensationRatio);
+      selectMakerConfig._compensationRatio,
+    ]
+    util.log(
+      'getResponseIntent params',
+      'amount',
+      this.getTransferTValue().tAmount,
+      'sourceChainId',
+      fromChainID,
+      'destChainId',
+      toChainID,
+      'status',
+      selectMakerConfig.status,
+      'sourceToken',
+      web3.utils.hexToNumberString(selectMakerConfig.fromChain.tokenAddress),
+      'destToken',
+      web3.utils.hexToNumberString(selectMakerConfig.toChain.tokenAddress),
+      'minPrice',
+      selectMakerConfig.fromChain._minPrice,
+      'maxPrice',
+      selectMakerConfig.fromChain._maxPrice,
+      'withholdingFee',
+      selectMakerConfig._withholdingFee,
+      'tradingFee',
+      selectMakerConfig._tradeFee,
+      'responseTime',
+      selectMakerConfig.spentTime,
+      'compensationRatio',
+      selectMakerConfig._compensationRatio
+    )
     return await contractInstance.getResponseIntent(
-      this.getTransferTValue().tAmount, ro);
+      this.getTransferTValue().tAmount,
+      ro
+    )
   },
   realTransferAmount() {
-    const { selectMakerConfig, transferValue, fromChainID } =
-      transferDataState
+    const { selectMakerConfig, transferValue, fromChainID } = transferDataState
     const userValue = new BigNumber(transferValue).plus(
       new BigNumber(selectMakerConfig.tradingFee)
     )
@@ -1040,7 +1279,7 @@ export default {
       new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
     )
     const rAmountValue = rAmount.toFixed()
-    const p_text = this.safeCode();
+    const p_text = this.safeCode()
     const tValue = orbiterCore.getTAmountFromRAmount(
       fromChainID,
       rAmountValue,

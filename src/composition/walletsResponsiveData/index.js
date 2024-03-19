@@ -5,7 +5,6 @@ import walletDispatchers, {
 } from '../../util/walletsDispatchers'
 import { findMatchWeb3ProviderByWalletType } from '../../util/walletsDispatchers/utils'
 import { web3State } from '../useCoinbase'
-import { isBrowserApp } from "../../util";
 
 const { loginStatusCheckerOfWallets } = walletDispatchers
 

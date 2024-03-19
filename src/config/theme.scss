@@ -156,6 +156,9 @@
       .select-item:hover {
         background: #28293d;
       }
+      .select-item.disabled:hover {
+        background: transparent;
+      }
     }
   }
   .ob-select-box:hover {
@@ -554,6 +557,9 @@
       }
       .select-item:hover {
         background: var(--light-page-box-bg);
+      }
+      .select-item.disabled:hover {
+        background: transparent;
       }
     }
   }

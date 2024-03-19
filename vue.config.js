@@ -132,23 +132,21 @@ module.exports = {
             config.optimization = {
                 splitChunks: {
                     cacheGroups: {
+                        default: false,
+                        vendors: false,
                         vendor: {
                             chunks: 'all',
-                            test: /node_modules/,
+                            test: /[\\/]node_modules[\\/]/,
                             name: 'vendor',
-                            minChunks: Infinity,
-                            maxInitialRequests: 5,
-                            minSize: 0,
-                            priority: 100,
+                            minSize:1000000,
+                            maxSize: 3000000
+                   
                         },
                         common: {
                             chunks: 'all',
                             test: /[\\/]src[\\/]js[\\/]/,
                             name: 'common',
-                            minChunks: 2,
-                            maxInitialRequests: 5,
-                            minSize: 0,
-                            priority: 60,
+                   
                         },
                         styles: {
                             name: 'styles',

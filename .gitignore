@@ -2,6 +2,7 @@
 node_modules
 /dist
 .env
+.vscode
 package-lock.json
 
 # local env files

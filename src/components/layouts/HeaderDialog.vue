@@ -5,11 +5,9 @@
     >
         <div
             ref="navDialog"
-            :style="
-                !isMobile ? { right: isStarkNetDialog ? '160px' : '20px' } : {}
-            "
+            
             class="header-dialog-box-wrapper"
-        >
+        > 
             <div class="toolbox-header">
                 <span class="toolbox-title">{{
                     isLogin ? 'Connect information' : 'Connect a Wallet'
@@ -38,7 +36,7 @@
                     >
                 </div>
             </template>
-            <template v-else>
+            <!-- <template v-else>
                 <div
                     v-for="item in loginInfoData"
                     :key="item.title"
@@ -113,7 +111,7 @@
                     @click="disconnect"
                     >Disconnect</CommBtn
                 >
-            </template>
+            </template> -->
         </div>
     </div>
 </template>
@@ -136,7 +134,7 @@ import {
 import Middle from '../../util/middle/middle'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
+import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, COIN98_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
 import { onCopySuccess, onCopyError, isMobileDevice, isBrowserApp } from '../../util';
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
@@ -200,6 +198,11 @@ export default {
                 },
                 {
                     isConnect: false,
+                    icon: 'imtokenapp',
+                    title: 'imTokenApp',
+                },
+                {
+                    isConnect: false,
                     icon: 'zerion',
                     title: 'Zerion',
                 },
@@ -223,6 +226,11 @@ export default {
                     icon: 'tallyho',
                     title: 'Taho',
                 },
+                {
+                    isConnect: false,
+                    icon: 'coin98',
+                    title: COIN98_APP,
+                }
             ]
             // the brave wallet is exclusive to the brave browser
             // so if in other browsers, we should hide brave wallet connect option to users
@@ -394,7 +402,7 @@ export default {
     mounted() {
         Middle.$on('connectWallet', () => {
             // this.selectWalletDialogVisible = true
-            setSelectWalletDialogVisible(true)
+            // setSelectWalletDialogVisible(true)
         })
         // document.addEventListener('click', this.handlerDialogOutsideClick)
     },
@@ -411,6 +419,7 @@ export default {
         .header-dialog-box-wrapper {
             position: absolute;
             top: 75px;
+            right: 0;
             width: 320px;
         }
     }
@@ -434,7 +443,7 @@ export default {
     left: 0;
     .header-dialog-box-wrapper {
         z-index: 10000;
-        padding-bottom: 10px;
+        padding: 26px 0 10px;
         box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.12);
         border-radius: 20px;
         .toolbox-header {

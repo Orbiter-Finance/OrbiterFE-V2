@@ -16,32 +16,44 @@ import { CHAIN_ID } from '../../../config'
 const UINT_256_MAX = (1n << 256n) - 1n
 
 const STARKNET_CROSS_CONTRACT_ADDRESS = {
-  [CHAIN_ID.starknet]:
+  'mainnet-alpha':
     '0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b',
-  [CHAIN_ID.starknet_test]:
+  'goerli-alpha':
     '0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3',
-  [CHAIN_ID.starknet_sepolia]:
-    "0x03a375038b9957f47a457dd828189d233d086d0b5d7bef14aef365beefb3fc0d"
+}
+
+const L1_TO_L2_ADDRESSES = {
+  '0x095d2918b03b2e86d68551dcf11302121fb626c9': {
+    'mainnet-alpha':
+      '0x0411c2a2a4dc7b4d3a33424af3ede7e2e3b66691e22632803e37e2e0de450940',
+    'goerli-alpha':
+      '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
+  },
+  '0x0043d60e87c5dd08c86c3123340705a1556c4719': {
+    'mainnet-alpha': '',
+    'goerli-alpha':
+      '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
+  },
+  '0x80c67432656d59144ceff962e8faf8926599bcf8': {
+    'mainnet-alpha':
+      '0x07b393627bd514d2aa4c83e9f0c468939df15ea3c29980cd8e7be3ec847795f0',
+    'goerli-alpha':
+      '0x050e5ba067562e87b47d87542159e16a627e85b00de331a53b471cee1a4e5a4f',
+  },
 }
 
 const GAS_ADDRESS = {
-  [CHAIN_ID.starknet]: {
+  'mainnet-alpha': {
     address:
       '0x07a4ef69a3d7c647d8d99da0aa0f296c84a22148fa8665e9a52179418b8de54e',
     privateKey:
       '0x53ea9a5da3c9c1232dddf771b4660d07ebea36bfba1ce3619f3e867cb1c49b0',
   },
-  [CHAIN_ID.starknet_test]: {
+  'goerli-alpha': {
     address:
       '0x07a4ef69a3d7c647d8d99da0aa0f296c84a22148fa8665e9a52179418b8de54e',
     privateKey:
       '0x53ea9a5da3c9c1232dddf771b4660d07ebea36bfba1ce3619f3e867cb1c49b0',
-  },
-  [CHAIN_ID.starknet_sepolia]: {
-    address:
-      '',
-    privateKey:
-      '',
   },
 }
 
@@ -66,8 +78,8 @@ export async function connectStarkNetWallet() {
       order: isArgentX
         ? ['argentX']
         : isBraavos
-          ? ['braavos']
-          : ['argentX', 'braavos'],
+        ? ['braavos']
+        : ['argentX', 'braavos'],
     }
     const wallet = await getStarknetWallet(obj)
     if (!wallet) {
@@ -98,17 +110,16 @@ export async function connectStarkNetWallet() {
 
 export function getStarkNetCurrentChainId() {
   const baseUrl =
-    (getStarknet().provider?.baseUrl
-      ? getStarknet().provider?.baseUrl
-      : getStarknet().provider?.provider?.baseUrl) ||
+    getStarknet().provider?.baseUrl ||
+    getStarknet().provider?.provider?.baseUrl ||
     getStarknet().provider?.nodeUrl ||
+    getStarknet().provider?.provider?.nodeUrl ||
     ''
+
   if (baseUrl.includes('mainnet')) {
     return CHAIN_ID.starknet
   } else if (baseUrl.includes('alpha4.starknet.io')) {
     return CHAIN_ID.starknet_test
-  }  else if (baseUrl.includes('sepolia')) {
-    return CHAIN_ID.starknet_sepolia
   } else if (baseUrl.match(/^https?:\/\/localhost.*/)) {
     return 'localhost'
   } else {
@@ -147,13 +158,16 @@ export async function sendTransfer(
   tokenAddress,
   makerAddress,
   amount,
-  chainId
+  chainID
 ) {
   l1Address = l1Address.toLowerCase()
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
-  const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[chainId]
+  const networkID = getNetworkIdByChainId(chainID)
+  const network = networkID === 1 ? 'mainnet-alpha' : 'goerli-alpha'
+  const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
 
+  const chainId = networkID === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   if (!chainInfo?.rpc || !chainInfo.rpc.length) {
     throw new Error('starknet rpc not configured')
@@ -173,7 +187,7 @@ export async function sendTransfer(
     if (amount.gt(allowance)) {
       const approveTxCall = tokenContract.populate('approve', [
         contractAddress,
-        getUint256CalldataFromBN(String(UINT_256_MAX)),
+        getUint256CalldataFromBN(String(amount)),
       ])
       const transferERC20TxCall = crossContract.populate('transferERC20', [
         tokenAddress,
@@ -259,60 +273,65 @@ export async function getStarkTransferFee(
   tokenAddress,
   makerAddress,
   amount,
-  chainId
+  chainID
 ) {
+  if (!l1Address) return 0
+  l1Address = l1Address.toLowerCase()
+  tokenAddress = tokenAddress.toLowerCase()
+  makerAddress = makerAddress.toLowerCase()
+
+  const networkID = getNetworkIdByChainId(chainID)
+  const network = networkID == 1 ? 'mainnet-alpha' : 'goerli-alpha'
+  const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[network]
+
+  const chainId = networkID === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  if (!chainInfo?.rpc || !chainInfo.rpc.length) {
+    console.error('starknet rpc not configured')
+    return 0
+  }
+  const provider = new RpcProvider({ nodeUrl: chainInfo.rpc[0] })
+  const userSender = new Account(
+    provider,
+    GAS_ADDRESS[network].address,
+    GAS_ADDRESS[network].privateKey
+  )
+  const token = [...chainInfo.tokens, chainInfo.nativeCurrency].find(
+    (item) => item.address.toLowerCase() === tokenAddress.toLowerCase()
+  )
+
+  const receiverAddress = makerAddress
+  const tokenContract = new Contract(erc20Abi, tokenAddress, userSender)
+  const crossContract = new Contract(
+    starkNetCrossAbi,
+    contractAddress,
+    userSender
+  )
+
+  try {
+    const approveTxCall = tokenContract.populate('approve', [
+      contractAddress,
+      getUint256CalldataFromBN(
+        new BigNumber(amount).multipliedBy(10 ** token.decimals).toFixed(0)
+      ),
+    ])
+    const transferERC20TxCall = crossContract.populate('transferERC20', [
+      tokenAddress,
+      receiverAddress,
+      getUint256CalldataFromBN(
+        new BigNumber(amount).multipliedBy(10 ** token.decimals).toFixed(0)
+      ),
+      l1Address,
+    ])
+    const res = await userSender.estimateFee([
+      approveTxCall,
+      transferERC20TxCall,
+    ])
+    return Number(res.overall_fee)
+  } catch (e) {
+    // console.warn('estError: ', e)
+  }
   return 0.00025 * 10 ** 18
-  // if (!l1Address) return 0
-  // l1Address = l1Address.toLowerCase()
-  // tokenAddress = tokenAddress.toLowerCase()
-  // makerAddress = makerAddress.toLowerCase()
-  //
-  // const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS[chainId]
-  // const chainInfo = util.getV3ChainInfoByChainId(chainId)
-  // if (!chainInfo?.rpc || !chainInfo.rpc.length) {
-  //   console.error('starknet rpc not configured')
-  //   return 0
-  // }
-  // const provider = new RpcProvider({ nodeUrl: chainInfo.rpc[0] })
-  // const userSender = new Account(
-  //   provider,
-  //   GAS_ADDRESS[chainId].address,
-  //   GAS_ADDRESS[chainId].privateKey
-  // )
-  // const token = [...chainInfo.tokens, chainInfo.nativeCurrency].find(
-  //   (item) => item.address.toLowerCase() === tokenAddress.toLowerCase()
-  // )
-  //
-  // const receiverAddress = makerAddress
-  // const tokenContract = new Contract(erc20Abi, tokenAddress, userSender)
-  // const crossContract = new Contract(
-  //   starkNetCrossAbi,
-  //   contractAddress,
-  //   userSender
-  // )
-  //
-  // try {
-  //   const approveTxCall = tokenContract.populate('approve', [
-  //     contractAddress,
-  //     getUint256CalldataFromBN(String(UINT_256_MAX)),
-  //   ])
-  //   const transferERC20TxCall = crossContract.populate('transferERC20', [
-  //     tokenAddress,
-  //     receiverAddress,
-  //     getUint256CalldataFromBN(
-  //       new BigNumber(amount).multipliedBy(10 ** token.decimals).toFixed(0)
-  //     ),
-  //     l1Address,
-  //   ])
-  //   const res = await userSender.estimateFee([
-  //     approveTxCall,
-  //     transferERC20TxCall,
-  //   ])
-  //   return Number(res.overall_fee)
-  // } catch (e) {
-  //   // console.warn('estError: ', e)
-  // }
-  // return 0.00025 * 10 ** 18
 }
 
 function getUint256CalldataFromBN(bn) {
@@ -338,19 +357,25 @@ export function getNetworkIdByChainId(chainId) {
 export async function getErc20Balance(
   starknetAddress,
   contractAddress,
-  chainId = 1
+  networkId = 1
 ) {
   if (!starknetAddress || !contractAddress) {
     return 0
   }
+  const chainId = networkId === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   if (!chainInfo?.rpc || !chainInfo.rpc.length) {
     console.error('starknet rpc not configured')
     return 0
   }
-  const provider = new RpcProvider({ nodeUrl: chainInfo.rpc[0] })
+  const provider = await Promise.any(
+    (chainInfo.rpc || [])?.map((item) => {
+      return new RpcProvider({ nodeUrl: item })
+    })
+  )
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
   const resp = await tokenContract.balanceOf(starknetAddress)
+
   if (!resp || !resp.balance || !resp.balance.low) {
     return 0
   }

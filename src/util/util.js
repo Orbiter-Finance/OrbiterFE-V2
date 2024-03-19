@@ -3,13 +3,14 @@ import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData
 import { transferDataState } from '../composition/useTransferData'
 import { exchangeToCoin } from './coinbase'
 import BigNumber from 'bignumber.js'
-import config from '../config/index'
+import config, { CHAIN_ID } from '../config/index'
 import Web3 from 'web3'
 import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
-import { CHAIN_ID } from "../config";
+
+let chainsList = []
 
 export default {
   getAccountAddressError(address, isStarknet) {
@@ -51,7 +52,7 @@ export default {
     })
   },
   netWorkName(networkId) {
-    return this.getV3ChainInfoByChainId(networkId)?.name || networkId || ''
+    return this.getV3ChainInfoByChainId(networkId)?.name || 'Unknown Network'
   },
   chainName(chainId) {
     return this.getV3ChainInfoByChainId(chainId)?.name || chainId || ''
@@ -63,12 +64,12 @@ export default {
     return env.metaMaskNetworkId[chainId] || chainId
   },
   getTxExploreUrl(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId);
-    return env.txExploreUrl[chainId] || `${ chainInfo?.infoURL }/tx/`;
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
+    return env.txExploreUrl[chainId] || `${chainInfo?.infoURL}/tx/`
   },
   getAccountExploreUrl(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId);
-    return env.accountExploreUrl[chainId] || `${ chainInfo?.infoURL }/address/`;
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
+    return env.accountExploreUrl[chainId] || `${chainInfo?.infoURL}/address/`
   },
   toHex(num) {
     return '0x' + Number(num).toString(16)
@@ -141,14 +142,19 @@ export default {
   },
 
   async getAsyncWalletAddress(retryCount = 6) {
-    if (!compatibleGlobalWalletConf.value.walletPayload.walletAddress || compatibleGlobalWalletConf.value.walletPayload.walletAddress === '0x') {
+    if (
+      !compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
+      compatibleGlobalWalletConf.value.walletPayload.walletAddress === '0x'
+    ) {
       if (retryCount === 0) {
-        return compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x';
+        return (
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress || '0x'
+        )
       }
-      await this.sleep(500);
-      return await this.getAsyncWalletAddress(retryCount - 1);
+      await this.sleep(500)
+      return await this.getAsyncWalletAddress(retryCount - 1)
     }
-    return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+    return compatibleGlobalWalletConf.value.walletPayload.walletAddress
   },
 
   formatDate(date, isShort) {
@@ -194,13 +200,25 @@ export default {
 
   async isLegalAddress() {
     const { fromChainID } = transferDataState
-    const supportContractWallet = [CHAIN_ID.mainnet, CHAIN_ID.ar, CHAIN_ID.po, CHAIN_ID.op, CHAIN_ID.metis,
-      CHAIN_ID.boba, CHAIN_ID.zksync2, CHAIN_ID.bsc, CHAIN_ID.nova, CHAIN_ID.pozkevm, CHAIN_ID.base, CHAIN_ID.linea,
-      CHAIN_ID.zora];
+    const supportContractWallet = [
+      CHAIN_ID.mainnet,
+      CHAIN_ID.ar,
+      CHAIN_ID.po,
+      CHAIN_ID.op,
+      CHAIN_ID.metis,
+      CHAIN_ID.boba,
+      CHAIN_ID.zksync2,
+      CHAIN_ID.bsc,
+      CHAIN_ID.nova,
+      CHAIN_ID.pozkevm,
+      CHAIN_ID.base,
+      CHAIN_ID.linea,
+      CHAIN_ID.zora,
+    ]
     if (!supportContractWallet.find((item) => item === fromChainID)) {
       return true
     }
-    const rpc = this.stableRpc(fromChainID)
+    const rpc = await this.stableRpc(fromChainID)
     if (rpc) {
       const web3 = new Web3(rpc)
       const walletAddress =
@@ -213,12 +231,12 @@ export default {
     return true
   },
 
-  stableWeb3(chainId) {
-    return new Web3(this.stableRpc(String(chainId)))
+  async stableWeb3(chainId) {
+    return new Web3(await this.stableRpc(String(chainId)))
   },
 
-  stableRpc(chainId) {
-    const rpcList = this.getRpcList(chainId)
+  async stableRpc(chainId) {
+    const rpcList = await this.getRpcList(chainId)
     if (rpcList.length) {
       return rpcList[0]
     }
@@ -234,18 +252,65 @@ export default {
     )
   },
 
-  getRpcList(chainId) {
+  async getNetworkRpc() {
+    let list = chainsList
+    if (!list?.length) {
+      try {
+        const res = await fetch('https://chainid.network/chains.json')
+        const data = await res.json()
+        chainsList = data || []
+        list = data || []
+      } catch (error) {}
+    }
+    return list?.map((item) => item) || []
+  },
+
+  getChainIdNetworkRpclist(networkList, chainId) {
+    const group =
+      networkList.filter((item) => {
+        return String(item?.chainId) === String(chainId)
+      })?.[0]?.rpc || []
+
+    return (
+      group?.filter(
+        (option) =>
+          !(
+            option.includes('${') ||
+            option.includes('ws://') ||
+            option.includes('wss://')
+          )
+      ) || []
+    )
+  },
+
+  cleanRpcList(networkList, rpcList) {
+    const rpcGroup = networkList.concat(rpcList)
+    let list = []
+    rpcGroup.forEach((item) => {
+      const flag = list.some((option) => option.trim() === item.trim())
+      if (!flag) {
+        list = list.concat([item.trim()])
+      }
+    })
+
+    return list
+  },
+
+  async getRpcList(chainId) {
+    const res = await this.getNetworkRpc()
+    const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
-    const rpcList = (chainInfo?.rpc || []).sort(function () {
+    let rpcList = (chainInfo?.rpc || []).sort(function () {
       return 0.5 - Math.random()
     })
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
       if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
-        return [stableRpc.rpc, ...rpcList]
+        rpcList = [stableRpc.rpc, ...rpcList]
       }
     } catch (e) {}
+    rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
     return rpcList
   },
 
@@ -288,7 +353,7 @@ export default {
 
   getV3ChainInfoByChainId(chainId) {
     const info = config.chainConfig.find(
-        (item) => item.chainId === chainId
+      (item) => item.chainId.toString() === chainId?.toString()
     )
     if (!info) return null
     const chainInfo = JSON.parse(JSON.stringify(info))
@@ -305,50 +370,45 @@ export default {
     return chainInfo
   },
 
-  getOrbiterRouterV3Address(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId);
-    if (!chainInfo?.contract) return null;
-    for (const address in chainInfo.contract) {
-      if (chainInfo.contract[address] === 'OrbiterRouterV3') {
-        return address;
-      }
-    }
-    return null;
-  },
-
-  isStarkNetChain(chainId) {
-    return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.starknet_sepolia].includes(chainId);
-  },
-
   isEvmChain(chainId) {
     return ![
-      CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.starknet_sepolia, CHAIN_ID.imx, CHAIN_ID.imx_test,
-      CHAIN_ID.loopring, CHAIN_ID.loopring_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test
-    ].includes(chainId);
+      CHAIN_ID.zksync,
+      CHAIN_ID.zksync_test,
+      CHAIN_ID.starknet,
+      CHAIN_ID.starknet_test,
+      CHAIN_ID.imx,
+      CHAIN_ID.imx_test,
+      CHAIN_ID.loopring,
+      CHAIN_ID.loopring_test,
+      CHAIN_ID.dydx,
+      CHAIN_ID.dydx_test,
+      CHAIN_ID.zkspace,
+      CHAIN_ID.zkspace_test,
+    ].includes(chainId)
   },
 
   getInternalIdByChainId(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId);
-    return chainInfo?.internalId ? Number(chainInfo.internalId) : null;
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
+    return chainInfo?.internalId ? Number(chainInfo.internalId) : null
   },
 
   getChainTokenList(chain) {
-    const allTokenList = [];
-    if (!chain) return [];
+    const allTokenList = []
+    if (!chain) return []
     if (chain.tokens && chain.tokens.length) {
-      allTokenList.push(...chain.tokens);
+      allTokenList.push(...chain.tokens)
     }
     if (chain.nativeCurrency) {
-      allTokenList.push(chain.nativeCurrency);
+      allTokenList.push(chain.nativeCurrency)
     }
-    return allTokenList;
+    return allTokenList
   },
 
   log(...msg) {
     if (isProd()) {
       return
     }
-    console.log('======', ...msg);
+    console.log('======', ...msg)
   },
 
   isWhite() {
@@ -369,13 +429,16 @@ export default {
   isStarkNet() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      this.isStarkNetChain(fromChainID) ||
-      this.isStarkNetChain(toChainID)
+      fromChainID === CHAIN_ID.starknet ||
+      fromChainID === CHAIN_ID.starknet_test ||
+      toChainID === CHAIN_ID.starknet ||
+      toChainID === CHAIN_ID.starknet_test
     )
   },
 
-  isSupportOrbiterRouterV3() {
-    const { fromChainID, selectMakerConfig } = transferDataState
+  isSupportXVMContract() {
+    const { fromChainID, selectMakerConfig, fromCurrency, toCurrency } =
+      transferDataState
     if (!this.isWhite()) {
       return false
     }
@@ -383,16 +446,16 @@ export default {
       return false
     }
     if (selectMakerConfig.ebcId) {
-      return false;
+      return false
     }
     const chainInfo = this.getV3ChainInfoByChainId(fromChainID)
-    return !!Object.values(chainInfo?.contract || {}).find(item => item === 'OrbiterRouterV3');
+    return chainInfo?.xvmList && chainInfo.xvmList.length
   },
 
-  isExecuteOrbiterRouterV3() {
+  isExecuteXVMContract() {
     const { fromCurrency, toCurrency, isCrossAddress } = transferDataState
     return !!(
-      this.isSupportOrbiterRouterV3() &&
+      this.isSupportXVMContract() &&
       (fromCurrency !== toCurrency || isCrossAddress)
     )
   },
@@ -403,7 +466,7 @@ export default {
   async ensureWalletNetwork(chainId) {
     const maskNetworkId = this.getMetaMaskNetworkId(chainId)
     if (!maskNetworkId) {
-      console.error(maskNetworkId, "none of ", chainId);
+      console.error(maskNetworkId, 'none of ', chainId)
       return
     }
     const switchParams = {
@@ -416,7 +479,7 @@ export default {
       })
       return true
     } catch (error) {
-      if (error.code === 4902) {
+      if (error.code === 4902 || error.data?.originalError?.code === 4902) {
         await this.addEthereumChain(chainId)
       } else {
         console.error(error)
@@ -438,9 +501,7 @@ export default {
         decimals: chainInfo.nativeCurrency.decimals,
       },
       rpcUrls: chainInfo.rpc,
-      blockExplorerUrls: chainInfo?.infoURL
-        ? [chainInfo.infoURL]
-        : null,
+      blockExplorerUrls: chainInfo?.infoURL ? [chainInfo.infoURL] : null,
     }
     try {
       await compatibleGlobalWalletConf.value.walletPayload.provider.request({
@@ -452,8 +513,8 @@ export default {
       this.showMessage(error.message, 'error')
     }
   },
-  requestWeb3(chainId, method, ...args) {
-    const rpcList = this.getRpcList(chainId)
+  async requestWeb3(chainId, method, ...args) {
+    const rpcList = await this.getRpcList(chainId)
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {
@@ -485,8 +546,8 @@ export default {
       }
     })
   },
-  getWeb3TokenBalance(chainId, userAddress, tokenAddress) {
-    const rpcList = this.getRpcList(chainId)
+  async getWeb3TokenBalance(chainId, userAddress, tokenAddress) {
+    const rpcList = await this.getRpcList(chainId)
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {
@@ -521,4 +582,9 @@ export default {
       }
     })
   },
+}
+
+export function formatCurrency(number, defaultCurrency) {
+  if (!number) return defaultCurrency
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 }

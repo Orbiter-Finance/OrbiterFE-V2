@@ -1,6 +1,13 @@
 import chainMain from './chain.json'
 import chainTest from './chainTest.json'
 import { isProd } from '../util'
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 
 export const CHAIN_ID = {
   zksync: 'zksync',
@@ -47,22 +54,16 @@ export const CHAIN_ID = {
   manta_test: '3441005',
   scroll_test: '534353',
 }
-
-const makerNum = parseInt(Math.random() * 2) + 1
-const maker = require(`./${
-  isProd() ? `maker-${makerNum}.json` : `makerTest-${makerNum}.json`
-}`)
-
-const otherNum = parseInt(Math.random() * 2) + 1
-if (otherNum > 2) {
-  const makerOther = require(`./${
-    isProd() ? `maker-${otherNum}.json` : `makerTest-${otherNum}.json`
-  }`)
-  for (const key1 in maker) {
-    for (const key2 in maker[key1]) {
-      if (makerOther[key1]?.[key2]) {
-        maker[key1][key2] = makerOther[key1][key2]
-      }
+const maker = {}
+const makerFiles = shuffleArray(isProd() ? ['80c-prod.json', 'e4e-prod.json', "1c8-prod.json", "usdt-prod.json",  "usdc-prod.json"] : ['makerTest-1.json', 'makerTest-2.json']);
+for (const file of makerFiles) {
+  const importConfigs = require(`./${file}`);
+  for (const key1 in importConfigs) {
+    for (const key2 in importConfigs[key1]) {
+        if (!maker[key1]) {
+          maker[key1] = {} 
+        }
+        maker[key1][key2] = importConfigs[key1][key2];
     }
   }
 }
@@ -100,6 +101,12 @@ function convertMakerConfig(maker) {
     ) {
       continue
     }
+    if (+fromChainId == 38 || +toChainId == 38) {
+      if (!(+fromChainId == 38 && +toChainId == 1)) {
+        continue
+      }
+    }
+
     const c1Chain = chainList.find((item) => +item.internalId === +fromChainId)
     const c2Chain = chainList.find((item) => +item.internalId === +toChainId)
     if (!c1Chain || !c2Chain) continue
@@ -181,4 +188,5 @@ export default {
   v1MakerConfigs,
   whiteList,
   chainsGroup,
+  chain,
 }

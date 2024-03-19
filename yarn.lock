@@ -2264,6 +2264,16 @@
   dependencies:
     "@hapi/hoek" "^8.3.0"
 
+"@holdstation/paymaster-helper@2.0.19":
+  version "2.0.19"
+  resolved "https://mirrors.cloud.tencent.com/npm/@holdstation/paymaster-helper/-/paymaster-helper-2.0.19.tgz#cdaaea8d70ccb8ef34574c89c431834d3bc0cb01"
+  integrity sha512-qt//uHs2GV2M3MbcOh2Y7Bm65KubUee6rwHAcr0b5tbXh3whqf+ucC+wLlf6t0/qkb/ju4IbleeTXxxTPwIGoA==
+  dependencies:
+    "@types/estree" "^1.0.5"
+    ethers "^5.7.2"
+    typescript "^4.7.4"
+    zksync-web3 "^0.14.3"
+
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz#03595ac2075a4dc0f191cc2131de14fbd7d410b9"
@@ -3071,6 +3081,11 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.0.tgz#5fb2e536c1ae9bf35366eed879e827fa59ca41c2"
   integrity sha512-WulqXMDUTYAXCjZnk6JtIHPigp55cVtDgDrO2gHRwhyJto21+1zbVCtOYB2L1F9w4qCQ0rOGWBnBe0FNTiEJIQ==
+
+"@types/estree@^1.0.5":
+  version "1.0.5"
+  resolved "https://mirrors.cloud.tencent.com/npm/@types/estree/-/estree-1.0.5.tgz#a6ce3e556e00fd9895dd872dd172ad0d4bd687f4"
+  integrity sha512-/kYRxGDLWzHOB7q+wtSUQlFrtcdUccpfy+X+9iMBpHK8QLLhx2wIPYuS5DYtR9Wa/YlZAbIovy7qVdB1Aq6Lyw==
 
 "@types/express-serve-static-core@*", "@types/express-serve-static-core@^4.17.18":
   version "4.17.29"
@@ -7127,12 +7142,13 @@ ecc-jsbn@~0.1.1:
     jsbn "~0.1.0"
     safer-buffer "^2.1.0"
 
-echarts@^4.9.0:
-  version "4.9.0"
-  resolved "https://registry.npmmirror.com/echarts/-/echarts-4.9.0.tgz#a9b9baa03f03a2a731e6340c55befb57a9e1347d"
-  integrity sha512-+ugizgtJ+KmsJyyDPxaw2Br5FqzuBnyOWwcxPKO6y0gc5caYcfnEUIlNStx02necw8jmKmTafmpHhGo4XDtEIA==
+echarts@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/echarts/-/echarts-5.5.0.tgz#c13945a7f3acdd67c134d8a9ac67e917830113ac"
+  integrity sha512-rNYnNCzqDAPCr4m/fqyUFv7fD9qIsd50S6GDFgO1DxZhncCsNsG7IfUlAlvZe5oSEQxtsjnHiUuppzccry93Xw==
   dependencies:
-    zrender "4.3.2"
+    tslib "2.3.0"
+    zrender "5.5.0"
 
 ee-first@1.1.1:
   version "1.1.1"
@@ -14960,6 +14976,11 @@ tslib@1.14.1, tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
   resolved "https://registry.npmmirror.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
+tslib@2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
+  integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
+
 tslib@^2.0.0:
   version "2.4.0"
   resolved "https://registry.npmmirror.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
@@ -15070,7 +15091,7 @@ typedarray@^0.0.6:
   resolved "https://registry.npmmirror.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@^4.5.4, typescript@^4.9.5:
+typescript@^4.5.4, typescript@^4.7.4, typescript@^4.9.5:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
@@ -17086,10 +17107,10 @@ zksync-crypto@^0.6.1:
   resolved "https://registry.npmmirror.com/zksync-crypto/-/zksync-crypto-0.6.2.tgz#319dc9b1a274c1c8feaa40f81636ef326eb2c28b"
   integrity sha512-Ry8c9kixDu3rlGCZDOg1UhzKDYe93iOZ7/Z6N1bkkrVKhmZJTIc7h+1kOjOyyhaSaHwBt8quMeBAaZKjtUeB2Q==
 
-zksync-web3@^0.7.9:
-  version "0.7.9"
-  resolved "https://registry.npmmirror.com/zksync-web3/-/zksync-web3-0.7.9.tgz#fbb9a17f4b297c0fb9361de2a0d85ff2aac5becc"
-  integrity sha512-B0pitKvEQGJuWkY2UWjXrL1YgHghXEoDaq6acVZnB62TRF099GV58Fzi7Fnqt+Nw14A7Wc9iJ2AHD4GBTLFgkg==
+zksync-web3@0.14.4, zksync-web3@^0.14.3:
+  version "0.14.4"
+  resolved "https://mirrors.cloud.tencent.com/npm/zksync-web3/-/zksync-web3-0.14.4.tgz#0b70a7e1a9d45cc57c0971736079185746d46b1f"
+  integrity sha512-kYehMD/S6Uhe1g434UnaMN+sBr9nQm23Ywn0EUP5BfQCsbjcr3ORuS68PosZw8xUTu3pac7G6YMSnNHk+fwzvg==
 
 zksync@^0.11.3:
   version "0.11.6"
@@ -17101,10 +17122,12 @@ zksync@^0.11.3:
     websocket-as-promised "^1.1.0"
     zksync-crypto "^0.6.1"
 
-zrender@4.3.2:
-  version "4.3.2"
-  resolved "https://registry.npmmirror.com/zrender/-/zrender-4.3.2.tgz#ec7432f9415c82c73584b6b7b8c47e1b016209c6"
-  integrity sha512-bIusJLS8c4DkIcdiK+s13HiQ/zjQQVgpNohtd8d94Y2DnJqgM1yjh/jpDb8DoL6hd7r8Awagw8e3qK/oLaWr3g==
+zrender@5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/zrender/-/zrender-5.5.0.tgz#54d0d6c4eda81a96d9f60a9cd74dc48ea026bc1e"
+  integrity sha512-O3MilSi/9mwoovx77m6ROZM7sXShR/O/JIanvzTwjN3FORfLSr81PsUGd7jlaYOeds9d8tw82oP44+3YucVo+w==
+  dependencies:
+    tslib "2.3.0"
 
 zustand@^4.3.1:
   version "4.3.9"

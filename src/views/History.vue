@@ -60,6 +60,7 @@
               class="contentItem"
             >
               <svg-icon
+                :style="`visibility: ${iconName(item) === '' ? 'hidden' : 'visable'}`"
                 class="logo col-val col-1"
                 color="#df2e2d"
                 :iconName="iconName(item)"
@@ -68,7 +69,7 @@
                                 isMobile ? item.fromTimeStampShowShort : item.fromTimeStampShow
                     }}</span>
               <span class="col-val col-3">{{
-                        item.fromAmountValue + ' ' + item.fromSymbol
+                decimalNumC(item.fromAmountValue) + ' ' + item.fromSymbol
                     }}</span>
               <div
                 class="col-val col-4"
@@ -183,14 +184,17 @@
   import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
   import { RequestMethod, requestOpenApi } from "../common/openApiAx";
   import util from "../util/util";
+  import { decimalNum} from "../util/decimalNum"
   import BigNumber from 'bignumber.js'
+import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
   let timer = 0
   export default {
     name: 'History',
     components: {
       NoData,
       CommBtn,
-      SvgIconThemed
+      SvgIconThemed,
+        SvgIcon
     },
     data() {
       return {
@@ -212,6 +216,7 @@
       },
       historyData() {
         const { transactionList } = historyPanelState
+
         if (!transactionList) {
           return transactionList
         }
@@ -272,6 +277,9 @@
       getTransactionsHistory();
     },
     methods: {
+      decimalNumC(num) {
+        return decimalNum(num, 8)
+      },
       openUrl(url) {
         window.open(url, '_blank');
       },
@@ -365,7 +373,7 @@
           localStorage.getItem('last_page_before_history') || '{}'
         )
         try {
-          if (last.path) {
+          if (last.path && last.path !== '/data') {
             last.path !== this.$route.path && this.$router.push(last)
             recoverSenderPageWorkingState()
           } else {
