@@ -783,6 +783,16 @@ export default {
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
+      const { selectMakerConfig } = transferDataState
+      const { fromChain, toChain} = selectMakerConfig
+
+      if((value === CHAIN_ID.loopring || value === CHAIN_ID.loopring_test ) && (
+        toChain.chainId !== CHAIN_ID.starknet && 
+        toChain.chainId !== CHAIN_ID.starknet_test
+      )) {
+        this.crossAddressReceipt = web3State.coinbase
+      }
+
       this.handleTipsCall()
     },
     'transferDataState.toChainID': function () {
@@ -2527,4 +2537,4 @@ export default {
   }
   
 }
-</style>
+</style>CHAIN_ID, CHAIN_ID, 
