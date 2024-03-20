@@ -2098,5 +2098,65 @@
             "startTime": 0,
             "endTime": 99999999999999
         }
+    },
+    "1-9": {
+        "USDC-USDC": {
+            "gasFee": 1.5,
+            "tradingFee": 2,
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 10000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "6-9": {
+        "USDC-USDC": {
+            "gasFee": 1.5,
+            "tradingFee": 2,
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 10000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+     "7-9": {
+        "USDC-USDC": {
+            "gasFee": 1.5,
+            "tradingFee": 2,
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 10000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "9-6": {
+        "USDC-USDC": {
+            "gasFee": 1.5,
+            "tradingFee": 2,
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 10000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+     "9-97":{
+        "USDC-USDC": {
+            "gasFee": 1.5,
+            "tradingFee": 2,
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 10000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
     }
 }
