@@ -21,7 +21,7 @@ import {
   updatelpApiKey,
 } from '../../composition/hooks'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
-import { CHAIN_ID } from "../../config";
+import { CHAIN_ID } from '../../config'
 let configNet = config.loopring.Mainnet
 
 export default {
@@ -114,7 +114,8 @@ export default {
   },
 
   accountInfo: async function (address, localChainID) {
-    const accountInfo = lpAccountInfo.value
+    const accountInfoGroup = lpAccountInfo.value
+    const accountInfo = accountInfoGroup?.[address?.toLocaleLowerCase() || '']
     if (accountInfo) {
       return {
         accountInfo,
@@ -132,7 +133,10 @@ export default {
           accountInfo: response.accInfo,
           code: 0,
         }
-        updatelpAccountInfo(response.accInfo)
+        updatelpAccountInfo({
+          ...(accountInfoGroup || {}),
+          [address.toLocaleLowerCase()]: response.accInfo,
+        })
         return info
       } else {
         const info = {
@@ -147,12 +151,11 @@ export default {
       return null
     }
   },
-
   sendTransfer: async function (
     address,
     localChainID,
     toAddress,
-    toAddressID,
+    _toAddressID,
     tokenAddress,
     amount,
     memo
@@ -160,18 +163,28 @@ export default {
     const exchangeApi = this.getExchangeAPI(localChainID)
     const userApi = this.getUserAPI(localChainID)
     const accountResult = await this.accountInfo(address, localChainID)
+    const toAccountResult = await this.accountInfo(toAddress, localChainID)
     if (!accountResult) {
       throw Error('get account error')
     }
-    let accInfo
+    let accInfo, toaccInfo
     if (accountResult.code) {
       throw Error('Get account error')
     } else {
       accInfo = accountResult?.accountInfo
     }
-    const accountId = accInfo?.accountId;
-    const info = await userApi?.getCounterFactualInfo({ accountId });
-    const isCounterFactual = !!info?.counterFactualInfo?.walletOwner;
+    if (!toAccountResult) {
+      throw Error('get account error')
+    }
+    if (toAccountResult.code) {
+      throw Error('Get account error')
+    } else {
+      toaccInfo = toAccountResult?.accountInfo
+    }
+    const accountId = accInfo?.accountId
+    const toAccountId = toaccInfo?.accountId
+    const info = await userApi?.getCounterFactualInfo({ accountId })
+    const isCounterFactual = !!info?.counterFactualInfo?.walletOwner
 
     if (
       accInfo.nonce == 0 &&
@@ -200,16 +213,19 @@ export default {
               exchangeInfo.exchangeAddress
             ).replace('${nonce}', (accInfo.nonce - 1).toString()),
       walletType: ConnectorNames.MetaMask,
-      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
+      chainId:
+        localChainID === CHAIN_ID.loopring_test
+          ? ChainId.GOERLI
+          : ChainId.MAINNET,
     }
     if (isCounterFactual) {
-      Object.assign(options, { accountId });
+      Object.assign(options, { accountId })
     }
 
     const eddsaKey = await generateKeyPair(options)
 
     const GetUserApiKeyRequest = {
-      accountId
+      accountId,
     }
     const { apiKey } = await userApi.getUserApiKey(
       GetUserApiKeyRequest,
@@ -221,6 +237,9 @@ export default {
     updatelpApiKey(apiKey)
     // step 3 get storageId
     const lpTokenInfo = await this.getLpTokenInfo(localChainID, tokenAddress)
+    if (Number(lpTokenInfo.tokenId) !== 0 && !lpTokenInfo?.tokenId) {
+      throw new Error(`TokenId not found: ${lpTokenInfo.tokenId} `)
+    }
     const GetNextStorageIdRequest = {
       accountId,
       sellTokenId: lpTokenInfo.tokenId,
@@ -236,36 +255,47 @@ export default {
       payerAddr: address,
       payerId: accountId,
       payeeAddr: toAddress,
-      payeeId: toAddressID,
+      payeeId: toAccountId,
       storageId: storageId.offchainId,
       token: {
         tokenId: lpTokenInfo.tokenId,
         volume: amount + '',
       },
       maxFee: {
-        tokenId: 0,
+        tokenId: lpTokenInfo.tokenId,
         volume: '94000000000000000',
       },
       validUntil: ts,
       memo,
     }
-    const response = isCounterFactual ? await userApi.submitInternalTransfer({
-      request: OriginTransferRequestV3,
-      web3,
-      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
-      walletType: ConnectorNames.MetaMask,
-      eddsaKey: eddsaKey.sk,
-      apiKey,
-      isHWAddr: false,
-    }, { accountId, counterFactualInfo: info.counterFactualInfo }) : await userApi.submitInternalTransfer({
-      request: OriginTransferRequestV3,
-      web3,
-      chainId: localChainID === CHAIN_ID.loopring_test ? ChainId.GOERLI : ChainId.MAINNET,
-      walletType: ConnectorNames.MetaMask,
-      eddsaKey: eddsaKey.sk,
-      apiKey,
-      isHWAddr: false,
-    })
+    const response = isCounterFactual
+      ? await userApi.submitInternalTransfer(
+          {
+            request: OriginTransferRequestV3,
+            web3,
+            chainId:
+              localChainID === CHAIN_ID.loopring_test
+                ? ChainId.GOERLI
+                : ChainId.MAINNET,
+            walletType: ConnectorNames.MetaMask,
+            eddsaKey: eddsaKey.sk,
+            apiKey,
+            isHWAddr: false,
+          },
+          { accountId, counterFactualInfo: info.counterFactualInfo }
+        )
+      : await userApi.submitInternalTransfer({
+          request: OriginTransferRequestV3,
+          web3,
+          chainId:
+            localChainID === CHAIN_ID.loopring_test
+              ? ChainId.GOERLI
+              : ChainId.MAINNET,
+          walletType: ConnectorNames.MetaMask,
+          eddsaKey: eddsaKey.sk,
+          apiKey,
+          isHWAddr: false,
+        })
     return response
   },
 
@@ -292,8 +322,9 @@ export default {
       GetOffchainFeeAmtRequest,
       ''
     )
-    if (response?.fees?.ETH?.fee) {
-      return response.fees.ETH.fee
+    const fee = response?.fees?.[tokenName]?.fee
+    if (fee) {
+      return fee
     }
     return 0
   },
