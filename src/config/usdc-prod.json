@@ -2099,7 +2099,7 @@
             "endTime": 99999999999999
         }
     },
-    "2-9": {
+ "2-9": {
         "USDC-USDC": {
             "gasFee": 0,
             "tradingFee": 0.01,
@@ -2136,6 +2136,30 @@
         }
     },
      "9-7":{
+        "USDC-USDC": {
+            "gasFee": 0,
+            "tradingFee": 0.01,
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 10000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+      "14-9":{
+        "USDC-USDC": {
+            "gasFee": 0,
+            "tradingFee": 0.01,
+            "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
+            "maxPrice": 10000,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "9-14":{
         "USDC-USDC": {
             "gasFee": 0,
             "tradingFee": 0.01,
