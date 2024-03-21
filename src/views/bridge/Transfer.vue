@@ -783,16 +783,7 @@ export default {
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
-      const { selectMakerConfig } = transferDataState
-      const { fromChain, toChain} = selectMakerConfig
-
-      if((value === CHAIN_ID.loopring || value === CHAIN_ID.loopring_test ) && (
-        toChain.chainId !== CHAIN_ID.starknet && 
-        toChain.chainId !== CHAIN_ID.starknet_test
-      )) {
-        this.crossAddressReceipt = web3State.coinbase
-      }
-
+      this.loopringFromFillAddress(value)
       this.handleTipsCall()
     },
     'transferDataState.toChainID': function () {
@@ -848,6 +839,7 @@ export default {
     currentWalletAddress: function (newValue, oldValue) {
       util.log('Current wallet address', newValue);
       this.isNewVersion = false;
+      this.loopringFromFillAddress()
       this.isWhiteWallet = !!util.isWhite();
       if (oldValue !== newValue && newValue !== '0x') {
         this.updateTransferInfo();
@@ -920,6 +912,21 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    loopringFromFillAddress(value) {
+
+      const { selectMakerConfig } = transferDataState
+      const { fromChain,toChain } = selectMakerConfig
+
+      const fromChainId = value || fromChain.chainId
+
+      if((fromChainId === CHAIN_ID.loopring || fromChainId === CHAIN_ID.loopring_test ) && (
+        toChain.chainId !== CHAIN_ID.starknet && 
+        toChain.chainId !== CHAIN_ID.starknet_test
+      )) {
+        this.crossAddressReceipt = web3State.coinbase
+      }
+
+    },
     handleTipsCall() {
         const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
 

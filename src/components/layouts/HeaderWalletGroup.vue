@@ -92,13 +92,10 @@ import {
   Keypair,
   PublicKey,
   SystemProgram,
-  LAMPORTS_PER_SOL,
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { utils } from "ethers"
-
-
+import { utils } from 'ethers'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -264,8 +261,6 @@ export default {
 
       console.log('keypair', keypair)
 
-      
-
       const transaction = new Transaction({
         recentBlockhash: recentBlockhash.blockhash,
         feePayer: fromPublicKey,
@@ -273,16 +268,19 @@ export default {
       console.log('transaction', transaction)
 
       const tokenTransaction = transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: fromPublicKey,
-          toPubkey: toPublicKey,
-          lamports: 0,
-        }),
+        createTransferInstruction(
+          fromPublicKey,
+          toPublicKey,
+          fromPublicKey,
+          1 * 10 ** 9,
+          [],
+          new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+        ),
         new TransactionInstruction({
-          keys: [
-            { pubkey: fromPublicKey, isSigner: true, isWritable: true },
-          ],
-          data: utils.toUtf8Bytes('c=9001&t=0x606478d75fCC5DB62e80620e541e58bE6a5AFaDf'),
+          keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+          data: utils.toUtf8Bytes(
+            'c=9001&t=0x606478d75fCC5DB62e80620e541e58bE6a5AFaDf'
+          ),
           programId: new PublicKey(
             'GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE'
           ),
@@ -460,4 +458,3 @@ export default {
 }
 </style>
 , sendAndConfirmTransactionimport { toHex } from '@loopring-web/loopring-sdk';
-
