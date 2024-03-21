@@ -913,8 +913,8 @@ export default {
   },
   methods: {
     loopringFromFillAddress(value) {
-
-      const { selectMakerConfig } = transferDataState
+      try {
+        const { selectMakerConfig } = transferDataState
       const { fromChain,toChain } = selectMakerConfig
 
       const fromChainId = value || fromChain.chainId
@@ -925,6 +925,10 @@ export default {
       )) {
         this.crossAddressReceipt = web3State.coinbase
       }
+      }catch(error) {
+        console.error('loopringFromFillAddress error', error);
+      }
+     
 
     },
     handleTipsCall() {
