@@ -10,6 +10,8 @@ import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
 
+let chainsList = []
+
 export default {
   getAccountAddressError(address, isStarknet) {
     if (isStarknet) {
@@ -216,7 +218,7 @@ export default {
     if (!supportContractWallet.find((item) => item === fromChainID)) {
       return true
     }
-    const rpc = this.stableRpc(fromChainID)
+    const rpc = await this.stableRpc(fromChainID)
     if (rpc) {
       const web3 = new Web3(rpc)
       const walletAddress =
@@ -229,14 +231,25 @@ export default {
     return true
   },
 
-  stableWeb3(chainId) {
-    return new Web3(this.stableRpc(String(chainId)))
+  async stableWeb3(chainId) {
+    return new Web3(await this.stableRpc(String(chainId)))
   },
 
-  stableRpc(chainId) {
-    const rpcList = this.getRpcList(chainId)
-    if (rpcList.length) {
-      return rpcList[0]
+  async stableRpc(chainId) {
+    const rpcList = await this.getRpcList(chainId)
+
+    const res = await Promise.any(
+      rpcList.map((item) => {
+        return new Promise(async (resolve) => {
+          const web3 = new Web3(item)
+          await web3.eth.getBlockNumber()
+          resolve(item)
+        })
+      })
+    )
+
+    if (res) {
+      return res
     }
     console.error(`${chainId} Unable to find stable rpc node`)
     return null
@@ -250,18 +263,65 @@ export default {
     )
   },
 
-  getRpcList(chainId) {
+  async getNetworkRpc() {
+    let list = chainsList
+    if (!list?.length) {
+      try {
+        const res = await fetch('https://chainid.network/chains.json')
+        const data = await res.json()
+        chainsList = data || []
+        list = data || []
+      } catch (error) {}
+    }
+    return list?.map((item) => item) || []
+  },
+
+  getChainIdNetworkRpclist(networkList, chainId) {
+    const group =
+      networkList.filter((item) => {
+        return String(item?.chainId) === String(chainId)
+      })?.[0]?.rpc || []
+
+    return (
+      group?.filter(
+        (option) =>
+          !(
+            option.includes('${') ||
+            option.includes('ws://') ||
+            option.includes('wss://')
+          )
+      ) || []
+    )
+  },
+
+  cleanRpcList(networkList, rpcList) {
+    const rpcGroup = networkList.concat(rpcList)
+    let list = []
+    rpcGroup.forEach((item) => {
+      const flag = list.some((option) => option.trim() === item.trim())
+      if (!flag) {
+        list = list.concat([item.trim()])
+      }
+    })
+
+    return list
+  },
+
+  async getRpcList(chainId) {
+    const res = await this.getNetworkRpc()
+    const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
-    const rpcList = (chainInfo?.rpc || []).sort(function () {
+    let rpcList = (chainInfo?.rpc || []).sort(function () {
       return 0.5 - Math.random()
     })
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
       if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
-        return [stableRpc.rpc, ...rpcList]
+        rpcList = [stableRpc.rpc, ...rpcList]
       }
     } catch (e) {}
+    rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
     return rpcList
   },
 
@@ -464,8 +524,8 @@ export default {
       this.showMessage(error.message, 'error')
     }
   },
-  requestWeb3(chainId, method, ...args) {
-    const rpcList = this.getRpcList(chainId)
+  async requestWeb3(chainId, method, ...args) {
+    const rpcList = await this.getRpcList(chainId)
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {
@@ -497,8 +557,8 @@ export default {
       }
     })
   },
-  getWeb3TokenBalance(chainId, userAddress, tokenAddress) {
-    const rpcList = this.getRpcList(chainId)
+  async getWeb3TokenBalance(chainId, userAddress, tokenAddress) {
+    const rpcList = await this.getRpcList(chainId)
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {

@@ -1,4 +1,3 @@
-import Web3 from 'web3'
 import { Coin_ABI } from './contract.js'
 import util from '../../util'
 import {
@@ -6,24 +5,38 @@ import {
   walletIsLogin,
 } from '../../../composition/walletsResponsiveData'
 import { web3State } from '../../../composition/hooks'
-import { CHAIN_ID } from "../../../config";
+import { CHAIN_ID } from '../../../config'
+import * as ethers from 'ethers'
 
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, contractAddress) {
-  if (localChainID === CHAIN_ID.zksync || localChainID === CHAIN_ID.zksync_test) {
+  if (
+    localChainID === CHAIN_ID.zksync ||
+    localChainID === CHAIN_ID.zksync_test
+  ) {
     return
   }
-  if (localChainID === CHAIN_ID.starknet || localChainID === CHAIN_ID.starknet_test) {
+  if (
+    localChainID === CHAIN_ID.starknet ||
+    localChainID === CHAIN_ID.starknet_test
+  ) {
     return
   }
   if (walletIsLogin.value) {
-    const web3 = new Web3(
+    const provider = new ethers.providers.Web3Provider(
       compatibleGlobalWalletConf.value.walletPayload.provider
     )
-    const ecourseContractInstance = new web3.eth.Contract(
+    const signer = provider.getSigner()
+    // const ecourseContractInstance = new web3.eth.Contract(
+    //   Coin_ABI,
+    //   contractAddress
+    // )
+    const ecourseContractInstance = new ethers.Contract(
+      contractAddress,
       Coin_ABI,
-      contractAddress
+      signer
     )
+
     if (!ecourseContractInstance) {
       return null
     }
@@ -43,7 +56,11 @@ async function getTransferGasLimit(
 ) {
   // !walletIsLogin.value
   if (web3State.isInstallMeta || provider) {
-    const web3 = new Web3(provider || window.ethereum)
+    const web3 = new ethers.providers.Web3Provider(
+      provider ||
+        compatibleGlobalWalletConf.value.walletPayload.provider ||
+        window.ethereum
+    )
     const tokenAddress = selectMakerConfig.fromChain.tokenAddress
     let gasLimit = 55000
     try {

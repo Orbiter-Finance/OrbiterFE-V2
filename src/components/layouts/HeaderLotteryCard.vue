@@ -10,8 +10,7 @@
           <div class="lottery-tooltip">
             <div>Your chances of flopping: {{ total }}</div>
             <div class="lottery-tooltip-bottom">
-              Bridging ({{ currentProgress }}/{{ max }}) TX
-              Get Flip
+              Bridging ({{ currentProgress }}/{{ max }}) TX Get Flip
             </div>
           </div>
         </template>
@@ -50,7 +49,7 @@ import {
   setLotteryCardTotal,
   setLotteryCardModalShow,
   setLotteryPointsNum,
-  setLotteryCardProgress
+  setLotteryCardProgress,
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -74,7 +73,6 @@ export default {
     }
   },
   computed: {
-    
     currentProgress() {
       return lotteryCardCurrentProgress.value
     },
@@ -140,16 +138,14 @@ export default {
   },
   methods: {
     async handleShow() {
-        if (!this.visible && this.isMobile) {
-          this.visible = true;
-        } else {
-          this.visible = false
-          if (!!this.total) {
-            await this.getLotteryCardDataDraw()
-            setLotteryCardModalShow(true)
-            await this.getLotteryCardData()
-          }
-
+      if (!this.visible && this.isMobile) {
+        this.visible = true
+      } else {
+        this.visible = false
+        if (!!this.total) {
+          await this.getLotteryCardDataDraw()
+          await this.getLotteryCardData()
+        }
       }
     },
     getAddress() {
@@ -169,30 +165,35 @@ export default {
         address,
       }
     },
-    
+
     async getLotteryCardDataDraw() {
-      const { data } = await requestLotteryCardDraw(
-        'user/card/draw',
-        {
+      try {
+        const { data } = await requestLotteryCardDraw('user/card/draw', {
           address: this.currentWalletAddress?.toLocaleLowerCase(),
-        }
-      )
-      const point = data?.points || ""
+        })
+        const point = data?.points || ''
 
-      if (Number(point)) {
-        setActAddPoint(String(point))
+        if (Number(point)) {
+          setActAddPoint(String(point))
+          setLotteryCardModalShow(true)
 
-        setTimeout(() => {
-          setLotteryPointsNum(point)
-          setActAddPointVisible(true)
           setTimeout(() => {
-            setActAddPointVisible(false)
-          }, 3000)
-        }, 1000)
-        setTimeout(async () => {
-          await this.getWalletAddressPoint()
-        }, 0)
-      } else {
+            setLotteryPointsNum(point)
+            setActAddPointVisible(true)
+            setTimeout(() => {
+              setActAddPointVisible(false)
+            }, 3000)
+          }, 1000)
+          setTimeout(async () => {
+            await this.getWalletAddressPoint()
+          }, 0)
+        } else {
+          this.$notify.error({
+            title: 'Failed to draw card O-Points',
+            duration: 3000,
+          })
+        }
+      } catch (error) {
         this.$notify.error({
           title: 'Failed to draw card O-Points',
           duration: 3000,
@@ -230,7 +231,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 @keyframes card-rotate {
   0%,
   84%,
@@ -315,5 +315,4 @@ export default {
     }
   }
 }
-
 </style>

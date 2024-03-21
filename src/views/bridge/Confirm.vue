@@ -359,7 +359,7 @@ export default {
                 if (
                     compatibleGlobalWalletConf.value.walletType == WALLETCONNECT
                 ) {
-                    const web3 = util.stableWeb3(fromChainID)
+                    const web3 = await util.stableWeb3(fromChainID)
                     const provider = new ethers.providers.Web3Provider(
                         web3.currentProvider
                     )
@@ -867,6 +867,7 @@ export default {
                     return
                 }
                 try {
+                    const {tokenId} = await loopring.getLpTokenInfoOnce(fromChainID, tokenAddress)
                     const response = await loopring.sendTransfer(
                         compatibleGlobalWalletConf.value.walletPayload
                             .walletAddress,
@@ -955,9 +956,10 @@ export default {
             }
 
             try {
-                const provider =
-                    compatibleGlobalWalletConf.value.walletPayload.provider
-                const web3 = new Web3(provider)
+
+                const provider = new ethers.providers.Web3Provider(
+                    compatibleGlobalWalletConf.value.walletPayload.provider || window.ethereum || window.coin98?.provider
+                )
 
                 let gasLimit = await getTransferGasLimit(
                     fromChainID,
@@ -970,10 +972,7 @@ export default {
                 if (fromChainID === 2 && gasLimit < 21000) {
                     gasLimit = 21000
                 }
-                const eprovider = new providers.Web3Provider(
-                    web3.currentProvider
-                )
-                const signer = eprovider.getSigner()
+                const signer = provider.getSigner()
                 try {
                     const windowChain = +(window?.ethereum?.chainId)
                     if(windowChain) {
@@ -991,7 +990,7 @@ export default {
                     })
                 }
                 signer
-                    .sendTransaction({
+                  .sendTransaction({
                         from,
                         to: selectMakerConfig.recipient,
                         value,
@@ -1268,7 +1267,7 @@ export default {
                     compatibleGlobalWalletConf.value.walletType ===
                     WALLETCONNECT
                 ) {
-                    const web3 = util.stableWeb3(fromChainID)
+                    const web3 = await util.stableWeb3(fromChainID)
                     const provider = new ethers.providers.Web3Provider(
                         web3.currentProvider
                     )
@@ -1523,7 +1522,6 @@ export default {
                     if (String(fromChainID) === "42161" && gasLimit < 21000) {
                         gasLimit = 21000
                     }
-                    const objOption = { from: account, gas: gasLimit }
                     const selectChainID = selectMakerConfig?.fromChain?.chainId
                     try {
                         const windowChain = +(window?.ethereum?.chainId)
@@ -1541,23 +1539,22 @@ export default {
                             duration: 3000,
                         })
                     }
-                    transferContract.methods
-                        .transfer(to, tValue.tAmount)
-                        .send(objOption, (error, transactionHash) => {
-                            this.transferLoading = false
-                            if (!error) {
-                                this.onTransferSucceed(
+                    transferContract
+                        .transfer(to, tValue.tAmount).then((res)=>{
+                            this.onTransferSucceed(
                                     account,
                                     tValue.tAmount,
                                     fromChainID,
-                                    transactionHash
+                                    res.hash
                                 )
-                            } else {
-                                this.$notify.error({
-                                    title: error.message,
-                                    duration: 3000,
-                                })
-                            }
+                            this.transferLoading = false
+
+                        }).catch((error)=>{
+                            this.$notify.error({
+                                title: error.message,
+                                duration: 3000,
+                            })
+                            this.transferLoading = false
                         })
                 }
             }

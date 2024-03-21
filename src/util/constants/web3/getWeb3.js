@@ -71,30 +71,49 @@ async function getWeb3(walletType) {
     return
   }
   updateIsInstallMeta(true)
-  await Promise.any([web3.eth.net.getId(), web3.eth.getChainId()]).then(
-    (netWorkId) => {
-      if (!netWorkId) {
-        showMessage('get netWorkID failed, refresh and try again', 'error')
-        updateCoinbase('')
-      } else {
-        const chainId = util.getMetaMaskNetworkId(
-          +transferDataState.fromChainID
-        )
-        if (
-          chainId &&
-          Number(netWorkId) !== Number(chainId) &&
-          Number(netWorkId) !== Number(web3State.networkId)
-        ) {
-          const walletConf = compatibleGlobalWalletConf.value
-          universalWalletSwitchChainHandler(
-            walletConf.walletPayload,
-            window.ethereum
-          )
-        }
-        store.commit('updateNetWorkId', netWorkId.toString())
-      }
+
+  if (web3.currentProvider.chainId) {
+    const netWorkId = web3.currentProvider.chainId
+    const chainId = util.getMetaMaskNetworkId(+transferDataState.fromChainID)
+    if (
+      chainId &&
+      Number(netWorkId) !== Number(chainId) &&
+      Number(netWorkId) !== Number(web3State.networkId)
+    ) {
+      const walletConf = compatibleGlobalWalletConf.value
+      universalWalletSwitchChainHandler(
+        walletConf.walletPayload,
+        window.ethereum
+      )
     }
-  )
+    store.commit('updateNetWorkId', netWorkId.toString())
+  } else {
+    await Promise.any([web3.eth.net.getId(), web3.eth.getChainId()]).then(
+      (netWorkId) => {
+        if (!netWorkId) {
+          showMessage('get netWorkID failed, refresh and try again', 'error')
+          updateCoinbase('')
+        } else {
+          const chainId = util.getMetaMaskNetworkId(
+            +transferDataState.fromChainID
+          )
+          if (
+            chainId &&
+            Number(netWorkId) !== Number(chainId) &&
+            Number(netWorkId) !== Number(web3State.networkId)
+          ) {
+            const walletConf = compatibleGlobalWalletConf.value
+            universalWalletSwitchChainHandler(
+              walletConf.walletPayload,
+              window.ethereum
+            )
+          }
+          store.commit('updateNetWorkId', netWorkId.toString())
+        }
+      }
+    )
+  }
+
   // await web3.eth.net.getId((error, netWorkId) => {
   //   if (error || !netWorkId) {
   //     showMessage('get netWorkID failed, refresh and try again', 'error')
@@ -120,7 +139,7 @@ async function getWeb3(walletType) {
       compatibleGlobalWalletConf.value.walletPayload.provider
         .send('eth_requestAccounts')
         .then((coin) => {
-          updateCoinbase(coin.result[0])
+          updateCoinbase(coin?.result?.[0] || coin[0])
         })
         .catch((err) => {
           showMessage(err.message, 'error')

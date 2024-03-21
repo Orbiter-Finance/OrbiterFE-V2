@@ -368,9 +368,14 @@ export async function getErc20Balance(
     console.error('starknet rpc not configured')
     return 0
   }
-  const provider = new RpcProvider({ nodeUrl: chainInfo.rpc[0] })
+  const provider = await Promise.any(
+    (chainInfo.rpc || [])?.map((item) => {
+      return new RpcProvider({ nodeUrl: item })
+    })
+  )
   const tokenContract = new Contract(erc20Abi, contractAddress, provider)
   const resp = await tokenContract.balanceOf(starknetAddress)
+
   if (!resp || !resp.balance || !resp.balance.low) {
     return 0
   }

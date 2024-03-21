@@ -405,7 +405,7 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
-import walletDispatchers, { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
+import walletDispatchers, { COINBASE, TOKEN_POCKET_APP, COIN98_APP } from '../../util/walletsDispatchers';
 import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
 import {
   isMobile,
@@ -783,6 +783,7 @@ export default {
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
+      this.loopringFromFillAddress(value)
       this.handleTipsCall()
     },
     'transferDataState.toChainID': function () {
@@ -838,6 +839,7 @@ export default {
     currentWalletAddress: function (newValue, oldValue) {
       util.log('Current wallet address', newValue);
       this.isNewVersion = false;
+      this.loopringFromFillAddress()
       this.isWhiteWallet = !!util.isWhite();
       if (oldValue !== newValue && newValue !== '0x') {
         this.updateTransferInfo();
@@ -910,6 +912,21 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    loopringFromFillAddress(value) {
+
+      const { selectMakerConfig } = transferDataState
+      const { fromChain,toChain } = selectMakerConfig
+
+      const fromChainId = value || fromChain.chainId
+
+      if((fromChainId === CHAIN_ID.loopring || fromChainId === CHAIN_ID.loopring_test ) && (
+        toChain.chainId !== CHAIN_ID.starknet && 
+        toChain.chainId !== CHAIN_ID.starknet_test
+      )) {
+        this.crossAddressReceipt = web3State.coinbase
+      }
+
+    },
     handleTipsCall() {
         const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
 
@@ -921,8 +938,8 @@ export default {
         this.targetChainId = targetChainId
         const fromTokenAddress =  this.transferDataState?.selectMakerConfig?.fromChain?.tokenAddress || ""
         const targetTokenAddress =  this.transferDataState?.selectMakerConfig?.toChain?.tokenAddress || ""
-        this.fromTokenName = fromChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  fromTokenAddress.toLocaleLowerCase())[0]?.name || ""
-        this.targetTokenName = targetChainGroup.tokens.filter((item)=> item.address.toLocaleLowerCase() ===  targetTokenAddress.toLocaleLowerCase())[0]?.name ||""
+        this.fromTokenName = fromChainGroup?.tokens?.filter((item)=> item.address.toLocaleLowerCase() ===  fromTokenAddress.toLocaleLowerCase())[0]?.name || ""
+        this.targetTokenName = targetChainGroup?.tokens?.filter((item)=> item.address.toLocaleLowerCase() ===  targetTokenAddress.toLocaleLowerCase())[0]?.name ||""
         if (fromTokenAddress.length === 42) {
           this.fromTokenAddress = ethers.utils.getAddress(fromTokenAddress)
         } else {
@@ -936,8 +953,8 @@ export default {
         this.isTipFromTokenAddress = linkChain.length && this.fromTokenAddress && fromChainId && linkChain.includes(fromChainId)
         this.isTiptargetTokenAddress = linkChain.length && this.targetTokenAddress && targetChainId && linkChain.includes(targetChainId)
 
-        this.tipsFromUrl = fromChainGroup.infoURL
-        this.tipstargetUrl = targetChainGroup.infoURL
+        this.tipsFromUrl = fromChainGroup?.infoURL
+        this.tipstargetUrl = targetChainGroup?.infoURL
     },
     linkFromTokenAddress() {
       if(this.tipsFromUrl && this.fromTokenAddress ) {
@@ -1570,7 +1587,7 @@ export default {
         return fromChain.maxPrice;
       }
       // check fromBalance
-      if (!this.fromBalance) {
+      if (!ethers.utils.parseEther(this.fromBalance || "0").gt("0")) {
         return '0';
       }
       let transferGasFee = (await transferCalculate.getTransferGasLimit(
@@ -2527,4 +2544,4 @@ export default {
   }
   
 }
-</style>
+</style>CHAIN_ID, CHAIN_ID, 
