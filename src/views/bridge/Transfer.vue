@@ -913,11 +913,11 @@ export default {
   },
   methods: {
     loopringFromFillAddress(value) {
+      if (transferDataState && selectMakerConfig && selectMakerConfig?.fromChain && selectMakerConfig?.toChain) {
+        const { selectMakerConfig } = transferDataState
+        const { fromChain,toChain } = selectMakerConfig
 
-      const { selectMakerConfig } = transferDataState
-      const { fromChain,toChain } = selectMakerConfig
-
-      const fromChainId = value || fromChain.chainId
+        const fromChainId = value || fromChain.chainId
 
       if((fromChainId === CHAIN_ID.loopring || fromChainId === CHAIN_ID.loopring_test ) && (
         toChain.chainId !== CHAIN_ID.starknet && 
@@ -925,7 +925,7 @@ export default {
       )) {
         this.crossAddressReceipt = web3State.coinbase
       }
-
+      }
     },
     handleTipsCall() {
         const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
