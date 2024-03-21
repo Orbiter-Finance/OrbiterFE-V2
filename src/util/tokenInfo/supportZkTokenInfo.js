@@ -1,6 +1,7 @@
 import thirdapi from '../../core/actions/thirdapi'
 import { store } from '../../store'
-import { CHAIN_ID } from "../../config";
+import { CHAIN_ID } from '../../config'
+import { isDev, isProd } from '../env'
 
 let isWaitingMainnetZKTokenApiResponse = false
 let isWaitingRinkebyZKTokenApiResponse = false
@@ -17,8 +18,8 @@ export default {
 }
 
 async function getAllZKTokenList() {
-  !isWaitingMainnetZKTokenApiResponse && getMainnetZKTokenList()
-  !isWaitingRinkebyZKTokenApiResponse && getRinkebyZKTokenList()
+  !!isProd() && !isWaitingMainnetZKTokenApiResponse && getMainnetZKTokenList()
+  !!isDev() && !isWaitingRinkebyZKTokenApiResponse && getRinkebyZKTokenList()
 }
 async function getMainnetZKTokenList() {
   getTokenList(CHAIN_ID.zksync)

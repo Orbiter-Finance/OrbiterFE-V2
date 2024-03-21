@@ -9,7 +9,8 @@ import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
-import {shuffle,uniq } from 'lodash';
+import { shuffle, uniq } from 'lodash'
+
 let chainsList = []
 
 export default {
@@ -218,16 +219,28 @@ export default {
     if (!supportContractWallet.find((item) => item === fromChainID)) {
       return true
     }
-    const rpc = await this.stableRpc(fromChainID)
-    if (rpc) {
-      const web3 = new Web3(rpc)
-      const walletAddress =
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      const code = await web3.eth.getCode(walletAddress)
-      if (code && code !== '0x') {
-        return false
-      }
+
+    const res = await this.requestWeb3(
+      fromChainID,
+      'getCode',
+      compatibleGlobalWalletConf.value.walletPayload.walletAddress
+    )
+
+    if (res && res !== '0x') {
+      return false
     }
+
+    // const rpc = await this.stableRpc(fromChainID)
+
+    // if (rpc) {
+    //   const web3 = new Web3(rpc)
+    //   const walletAddress =
+    //     compatibleGlobalWalletConf.value.walletPayload.walletAddress
+    //   const code = await web3.eth.getCode(walletAddress)
+    //   if (code && code !== '0x') {
+    //     return false
+    //   }
+    // }
     return true
   },
 
@@ -237,16 +250,18 @@ export default {
 
   async stableRpc(chainId) {
     const rpcList = await this.getRpcList(chainId)
-
     const res = await Promise.any(
       rpcList.map((item) => {
         return new Promise(async (resolve) => {
           const web3 = new Web3(item)
-          await web3.eth.getBlockNumber()
+          const res = await web3.eth.getBlockNumber()
+          console.log('res', res, item)
           resolve(item)
         })
       })
     )
+
+    await this.sleep(1000)
 
     if (res) {
       return res
@@ -312,7 +327,7 @@ export default {
     const res = [];
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
-    let rpcList = shuffle(uniq(chainInfo?.rpc || []));
+    let rpcList = shuffle(uniq(chainInfo?.rpc || []))
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
@@ -321,7 +336,7 @@ export default {
       }
     } catch (e) {}
     rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
-    return rpcList;
+    return rpcList
   },
 
   // the actual transfer amount
