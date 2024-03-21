@@ -308,7 +308,8 @@ export default {
   },
 
   async getRpcList(chainId) {
-    const res = await this.getNetworkRpc()
+    // const res = await this.getNetworkRpc()
+    const res = [];
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
     let rpcList = shuffle(uniq(chainInfo?.rpc || []));
