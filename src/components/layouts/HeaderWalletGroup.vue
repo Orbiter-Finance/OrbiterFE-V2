@@ -86,7 +86,16 @@ import {
   walletConnectDispatcherOnInit,
 } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 
-import { Connection, Transaction } from '@solana/web3.js'
+import {
+  Connection,
+  Transaction,
+  Keypair,
+  PublicKey,
+  SystemProgram,
+  TransactionInstruction,
+} from '@solana/web3.js'
+
+import { utils } from 'ethers'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -223,26 +232,78 @@ export default {
       return isMobileDevice()
     },
     async connectSolanaWallet() {
-      const provider =  window.solflare
+      const provider = window.solflare
       const res = await provider.connect()
-      const publicKey = provider.publicKey
-      console.log('1111', res, publicKey.toString())
+      const fromPublicKey = provider.publicKey
+      console.log('1111', provider, res, fromPublicKey.toString())
 
-      const networks = "https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85"
+      const networks =
+        'https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85'
 
-      const wallet =  new Connection(networks)
-      console.log("wallet", wallet)
+      const wallet = new Connection(networks)
+      console.log('wallet', wallet)
 
       const block = await wallet.getBlockHeight()
-      console.log("block", block)
-      const balance = await wallet.getBalance(publicKey)
-      console.log("balance", balance)
+      console.log('block', block)
 
-      const accountInfo = await wallet.getAccountInfoAndContext(publicKey)
-      console.log("accountInfo", accountInfo)
-      const BalanceAndContext = await wallet.getBalanceAndContext(publicKey)
-      console.log("BalanceAndContext", BalanceAndContext)
-      
+      const balance = await wallet.getBalance(fromPublicKey)
+      console.log('balance', balance)
+
+      const recentBlockhash = await wallet.getLatestBlockhash()
+      console.log('recentBlockhash', recentBlockhash)
+
+      const to = 'Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g'
+
+      const toPublicKey = new PublicKey(to)
+      console.log('toPublicKey', toPublicKey.toString())
+
+      const keypair = new Keypair()
+
+      console.log('keypair', keypair)
+
+      const transaction = new Transaction({
+        recentBlockhash: recentBlockhash.blockhash,
+        feePayer: fromPublicKey,
+      })
+      console.log('transaction', transaction)
+
+      const tokenTransaction = transaction.add(
+        createTransferInstruction(
+          fromPublicKey,
+          toPublicKey,
+          fromPublicKey,
+          1 * 10 ** 9,
+          [],
+          new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+        ),
+        new TransactionInstruction({
+          keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+          data: utils.toUtf8Bytes(
+            'c=9001&t=0x606478d75fCC5DB62e80620e541e58bE6a5AFaDf'
+          ),
+          programId: new PublicKey(
+            'GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE'
+          ),
+        })
+      )
+
+      // const solTransaction = transaction.add(
+      //   SystemProgram.transfer({
+      //     fromPubkey: fromPublicKey,
+      //     toPubkey: toPublicKey,
+      //     lamports: LAMPORTS_PER_SOL / 10000000,
+      //   })
+      // )
+
+      console.log('tokenTransaction', tokenTransaction)
+      const signature = await provider.signAndSendTransaction(tokenTransaction)
+
+      console.log('signature', signature)
+
+      const accountInfo = await wallet.getAccountInfoAndContext(fromPublicKey)
+      console.log('accountInfo', accountInfo)
+      const BalanceAndContext = await wallet.getBalanceAndContext(fromPublicKey)
+      console.log('BalanceAndContext', BalanceAndContext)
     },
     async connectEvmWallet(walletConf) {
       if (walletConf === WALLETCONNECT && isBrowserApp()) {
@@ -396,3 +457,4 @@ export default {
   }
 }
 </style>
+, sendAndConfirmTransactionimport { toHex } from '@loopring-web/loopring-sdk';

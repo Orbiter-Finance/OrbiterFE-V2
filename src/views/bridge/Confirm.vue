@@ -873,7 +873,7 @@ export default {
                             .walletAddress,
                         fromChainID,
                         selectMakerConfig.recipient,
-                        tokenId,
+                        0,
                         tokenAddress,
                         amount,
                         memo

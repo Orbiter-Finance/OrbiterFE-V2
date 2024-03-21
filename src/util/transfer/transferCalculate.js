@@ -208,7 +208,7 @@ export default {
           fromChainID,
           lpTokenInfo
         )
-        const decimals = 18 // loopringFee must be use eth
+        const decimals = lpTokenInfo ? lpTokenInfo.decimals : 18
         return Number(loopringFee) / 10 ** decimals
       } catch (error) {
         console.warn('lp getTransferFeeerror:')
@@ -339,7 +339,8 @@ export default {
         lpTokenInfo
       )
       // lpGasFee must use eth
-      return (Number(loopringFee) / 10 ** 18).toFixed(6)
+      const decimals = lpTokenInfo ? lpTokenInfo.decimals : 18
+      return Number(loopringFee) / 10 ** decimals
     }
     if (
       fromChainID === CHAIN_ID.zkspace ||
