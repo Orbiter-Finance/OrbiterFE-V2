@@ -12,7 +12,6 @@
             v-for="item in evmWallet"
             :key="item.title"
             class="wallet-item"
-            @click.stop="connectEvmWallet(item)"
           >
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
             <span class="wallet-title">{{ item.title }}</span>
@@ -24,7 +23,6 @@
             v-for="item in starknetWallet"
             :key="item.key"
             class="wallet-item"
-            @click.stop="connectStarkNetWallet(item)"
           >
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
             <span class="wallet-title">{{ item.title }}</span>
@@ -36,7 +34,6 @@
             v-for="item in solanaWallet"
             :key="item.title"
             class="wallet-item"
-            @click="connectSolanaWallet(item)"
           >
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
             <span class="wallet-title">{{ item.title }}</span>
@@ -66,7 +63,7 @@ import walletDispatchers, {
   CURRENT_SUPPORT_WALLET,
 } from '../../util/walletsDispatchers'
 
-import {
+import util, {
   onCopySuccess,
   onCopyError,
   isMobileDevice,
@@ -97,6 +94,9 @@ import {
 
 import { createTransferInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { utils } from 'ethers'
+
+import { store } from '../../store'
+
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -291,23 +291,22 @@ export default {
           createTransferInstruction(
             fromPublicKey,
             toPublicKey,
-            tokenPublicKey,
+            new PublicKey("DSfuRdqeRDuGtaX9LVjyREE8CsuEU2HnMg9BgbTPZ4zx"),
             1 * 10 ** 9,
-            [fromPublicKey],
-            TOKEN_PROGRAM_ID
+            [],
+            // TOKEN_PROGRAM_ID
+            new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr")
           )
         )
         .add(
           new TransactionInstruction({
             keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-            data: utils.toUtf8Bytes(
-              'c=9001&t=0x606478d75fCC5DB62e80620e541e58bE6a5AFaDf'
-            ),
-            programId: tokenPublicKey,
+            data: [],
+            programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
           })
         )
 
-      console.log('transaction', transaction)
+      console.log('tokenTransaction', tokenTransaction)
 
       // const signer = await provider.signTransaction(tokenTransaction)
       // console.log('signer', signer)
@@ -363,19 +362,19 @@ export default {
 
       if (enabled) {
         console.log('starknet address', getStarknet().selectedAddress)
-        // store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
-        // store.commit('updateStarkNetWalletName', wallet.name)
-        // store.commit('updateStarkNetWalletIcon', wallet.icon)
-        // store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
-        // store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
-        // getStarknet().on('accountsChanged', (e) => {
-        //   store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
-        //   store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
-        //   store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
-        //   if (e.length == 0) {
-        //     util.showMessage('disconnect starkNetWallet', 'error')
-        //   }
-        // })
+        store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
+        store.commit('updateStarkNetWalletName', wallet.name)
+        store.commit('updateStarkNetWalletIcon', wallet.icon)
+        store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
+        store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
+        getStarknet().on('accountsChanged', (e) => {
+          store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
+          store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
+          store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
+          if (e.length == 0) {
+            util.showMessage('disconnect starkNetWallet', 'error')
+          }
+        })
       }
     },
   },
