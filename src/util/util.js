@@ -9,7 +9,7 @@ import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
-
+import {shuffle,uniq } from 'lodash';
 let chainsList = []
 
 export default {
@@ -311,9 +311,7 @@ export default {
     const res = await this.getNetworkRpc()
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
-    let rpcList = (chainInfo?.rpc || []).sort(function () {
-      return 0.5 - Math.random()
-    })
+    let rpcList = shuffle(uniq(chainInfo?.rpc || []));
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
@@ -322,7 +320,7 @@ export default {
       }
     } catch (e) {}
     rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
-    return rpcList
+    return rpcList;
   },
 
   // the actual transfer amount
