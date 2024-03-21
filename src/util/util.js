@@ -261,8 +261,6 @@ export default {
       })
     )
 
-    await this.sleep(1000)
-
     if (res) {
       return res
     }
