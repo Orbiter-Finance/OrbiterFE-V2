@@ -95,6 +95,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
+import { createTransferInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { utils } from 'ethers'
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
@@ -240,7 +241,7 @@ export default {
       const networks =
         'https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85'
 
-      const wallet = new Connection(networks)
+      const wallet = new Connection(networks, 'confirmed')
       console.log('wallet', wallet)
 
       const block = await wallet.getBlockHeight()
@@ -257,6 +258,11 @@ export default {
       const toPublicKey = new PublicKey(to)
       console.log('toPublicKey', toPublicKey.toString())
 
+      const tokenStr = 'GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE'
+      const tokenPublicKey = new PublicKey(tokenStr)
+
+      const amount = 1000000
+
       const keypair = new Keypair()
 
       console.log('keypair', keypair)
@@ -265,45 +271,53 @@ export default {
         recentBlockhash: recentBlockhash.blockhash,
         feePayer: fromPublicKey,
       })
+
       console.log('transaction', transaction)
 
-      const tokenTransaction = transaction.add(
-        createTransferInstruction(
-          fromPublicKey,
-          toPublicKey,
-          fromPublicKey,
-          1 * 10 ** 9,
-          [],
-          new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
-        ),
-        new TransactionInstruction({
-          keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-          data: utils.toUtf8Bytes(
-            'c=9001&t=0x606478d75fCC5DB62e80620e541e58bE6a5AFaDf'
-          ),
-          programId: new PublicKey(
-            'GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE'
-          ),
+      const solTransaction = transaction.add(
+        SystemProgram.transfer({
+          fromPubkey: fromPublicKey,
+          toPubkey: toPublicKey,
+          lamports: 0,
         })
       )
+      console.log('solTransaction', solTransaction)
 
-      // const solTransaction = transaction.add(
-      //   SystemProgram.transfer({
-      //     fromPubkey: fromPublicKey,
-      //     toPubkey: toPublicKey,
-      //     lamports: LAMPORTS_PER_SOL / 10000000,
-      //   })
-      // )
+      const tokenTransaction = new Transaction({
+        recentBlockhash: recentBlockhash.blockhash,
+        feePayer: fromPublicKey,
+      })
+        .add(
+          createTransferInstruction(
+            fromPublicKey,
+            toPublicKey,
+            tokenPublicKey,
+            1 * 10 ** 9,
+            [fromPublicKey],
+            TOKEN_PROGRAM_ID
+          )
+        )
+        .add(
+          new TransactionInstruction({
+            keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+            data: utils.toUtf8Bytes(
+              'c=9001&t=0x606478d75fCC5DB62e80620e541e58bE6a5AFaDf'
+            ),
+            programId: tokenPublicKey,
+          })
+        )
 
-      console.log('tokenTransaction', tokenTransaction)
+      console.log('transaction', transaction)
+
+      // const signer = await provider.signTransaction(tokenTransaction)
+      // console.log('signer', signer)
+
+      // const signatureSol = await provider.signAndSendTransaction(solTransaction)
+      // console.log('signatureSol', signatureSol)
+
       const signature = await provider.signAndSendTransaction(tokenTransaction)
 
       console.log('signature', signature)
-
-      const accountInfo = await wallet.getAccountInfoAndContext(fromPublicKey)
-      console.log('accountInfo', accountInfo)
-      const BalanceAndContext = await wallet.getBalanceAndContext(fromPublicKey)
-      console.log('BalanceAndContext', BalanceAndContext)
     },
     async connectEvmWallet(walletConf) {
       if (walletConf === WALLETCONNECT && isBrowserApp()) {

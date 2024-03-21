@@ -280,7 +280,7 @@ export default {
         [CHAIN_ID.base, CHAIN_ID.zora, CHAIN_ID.opbnb].includes(fromChainID)
       ) {
         const provider = new providers.JsonRpcProvider({
-          url: util.stableRpc(fromChainID),
+          url: await util.stableRpc(fromChainID),
         })
         const fee = await provider.getFeeData()
         gasPrice = fee.maxPriorityFeePerGas.toString()
@@ -1141,7 +1141,7 @@ export default {
   async getOPFee(fromChainID) {
     // Create an ethers provider connected to the public mainnet endpoint.
     const provider = new ethers.providers.JsonRpcProvider(
-      util.stableRpc(fromChainID)
+      await util.stableRpc(fromChainID)
     )
     // Create contract instances connected to the GPO and WETH contracts.
     const GasPriceOracle = getContractFactory('OVM_GasPriceOracle')
