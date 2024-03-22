@@ -7,6 +7,7 @@ import {
 import { web3State } from '../../../composition/hooks'
 import { CHAIN_ID } from '../../../config'
 import * as ethers from 'ethers'
+import Web3 from 'web3'
 
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, contractAddress) {
@@ -56,11 +57,7 @@ async function getTransferGasLimit(
 ) {
   // !walletIsLogin.value
   if (web3State.isInstallMeta || provider) {
-    const web3 = new ethers.providers.Web3Provider(
-      provider ||
-        compatibleGlobalWalletConf.value.walletPayload.provider ||
-        window.ethereum
-    )
+    const web3 = new Web3(provider || window.ethereum)
     const tokenAddress = selectMakerConfig.fromChain.tokenAddress
     let gasLimit = 55000
     try {

@@ -8,11 +8,7 @@
       <div class="wallet-list">
         <div class="wallet-group-title">EVM Wallet</div>
         <div class="wallet-group-list">
-          <div
-            v-for="item in evmWallet"
-            :key="item.title"
-            class="wallet-item"
-          >
+          <div v-for="item in evmWallet" :key="item.title" class="wallet-item">
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
             <span class="wallet-title">{{ item.title }}</span>
           </div>
@@ -34,6 +30,7 @@
             v-for="item in solanaWallet"
             :key="item.title"
             class="wallet-item"
+            @click="connectSolanaWallet"
           >
             <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
             <span class="wallet-title">{{ item.title }}</span>
@@ -92,11 +89,10 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js'
 
-import { createTransferInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { utils } from 'ethers'
 
 import { store } from '../../store'
-
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -272,7 +268,24 @@ export default {
         feePayer: fromPublicKey,
       })
 
-      console.log('transaction', transaction)
+      const token = new Token(wallet, tokenPublicKey, TOKEN_PROGRAM_ID, null)
+
+      console.log('token', token)
+
+      const senderTokenAccount = await token.getOrCreateAssociatedAccountInfo(
+        fromPublicKey
+      )
+
+      console.log('senderTokenAccount', senderTokenAccount)
+
+      const instruction = Token.createTransferInstruction(
+        TOKEN_PROGRAM_ID,
+        senderTokenAccount.address,
+        toPublicKey,
+        senderTokenAccount.publicKey,
+        [],
+        1000000
+      )
 
       const solTransaction = transaction.add(
         SystemProgram.transfer({
@@ -283,28 +296,19 @@ export default {
       )
       console.log('solTransaction', solTransaction)
 
-      const tokenTransaction = new Transaction({
-        recentBlockhash: recentBlockhash.blockhash,
-        feePayer: fromPublicKey,
-      })
+      const tokenTransaction = new Transaction()
         .add(
-          createTransferInstruction(
-            fromPublicKey,
-            toPublicKey,
-            new PublicKey("DSfuRdqeRDuGtaX9LVjyREE8CsuEU2HnMg9BgbTPZ4zx"),
-            1 * 10 ** 9,
-            [],
-            // TOKEN_PROGRAM_ID
-            new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr")
-          )
+          instruction
         )
-        .add(
-          new TransactionInstruction({
-            keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-            data: [],
-            programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
-          })
-        )
+        // .add(
+        //   new TransactionInstruction({
+        //     keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+        //     data: [],
+        //     programId: new PublicKey(
+        //       'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'
+        //     ),
+        //   })
+        // )
 
       console.log('tokenTransaction', tokenTransaction)
 
@@ -314,7 +318,7 @@ export default {
       // const signatureSol = await provider.signAndSendTransaction(solTransaction)
       // console.log('signatureSol', signatureSol)
 
-      const signature = await provider.signAndSendTransaction(tokenTransaction)
+      const signature = await provider.signTransaction(tokenTransaction)
 
       console.log('signature', signature)
     },
