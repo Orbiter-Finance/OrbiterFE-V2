@@ -1777,19 +1777,19 @@
   resolved "https://mirrors.cloud.tencent.com/npm/@babel/regjsgen/-/regjsgen-0.8.0.tgz#f0ba69b075e1f05fb2825b7fad991e7adbb18310"
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
+"@babel/runtime@^7.10.5", "@babel/runtime@^7.12.5", "@babel/runtime@^7.23.4":
+  version "7.24.1"
+  resolved "https://mirrors.cloud.tencent.com/npm/@babel/runtime/-/runtime-7.24.1.tgz#431f9a794d173b53720e69a6464abc6f0e2a5c57"
+  integrity sha512-+BIznRzyqBf+2wCTxcKE3wDjfGeCoVE61KSHGpkzqrLi8qxqFwBeUFyId2cxkTmm55fzDGnm0+yCxaxygrLUnQ==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@babel/runtime@^7.11.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.8.4":
   version "7.18.3"
   resolved "https://registry.npmmirror.com/@babel/runtime/-/runtime-7.18.3.tgz#c7b654b57f6f63cf7f8b418ac9ca04408c4579f4"
   integrity sha512-38Y8f7YUhce/K7RMwTp7m0uCumpv9hZkitCbBClqQIow1qSbCvGkcegKOXpEWCQLfWmevgRiWokZ1GkpfhbZug==
   dependencies:
     regenerator-runtime "^0.13.4"
-
-"@babel/runtime@^7.12.5", "@babel/runtime@^7.23.4":
-  version "7.24.1"
-  resolved "https://mirrors.cloud.tencent.com/npm/@babel/runtime/-/runtime-7.24.1.tgz#431f9a794d173b53720e69a6464abc6f0e2a5c57"
-  integrity sha512-+BIznRzyqBf+2wCTxcKE3wDjfGeCoVE61KSHGpkzqrLi8qxqFwBeUFyId2cxkTmm55fzDGnm0+yCxaxygrLUnQ==
-  dependencies:
-    regenerator-runtime "^0.14.0"
 
 "@babel/runtime@^7.15.4", "@babel/runtime@^7.17.2", "@babel/runtime@^7.22.3":
   version "7.22.6"
@@ -3728,16 +3728,6 @@
   resolved "https://registry.npmmirror.com/@soda/get-current-script/-/get-current-script-1.0.2.tgz#a53515db25d8038374381b73af20bb4f2e508d87"
   integrity sha512-T7VNNlYVM1SgQ+VsMYhnDkcGmWhQdL0bDyGm5TlQ3GBXnJscEClUUOKduWTmm2zCnvNLC1hc3JpuXjs/nFOc5w==
 
-"@solana/buffer-layout-utils@^0.2.0":
-  version "0.2.0"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/buffer-layout-utils/-/buffer-layout-utils-0.2.0.tgz#b45a6cab3293a2eb7597cceb474f229889d875ca"
-  integrity sha512-szG4sxgJGktbuZYDg2FfNmkMi0DYQoVjN2h7ta1W1hPrwzarcFLBq9UpX1UjNXsNpT9dn+chgprtWGioUAr4/g==
-  dependencies:
-    "@solana/buffer-layout" "^4.0.0"
-    "@solana/web3.js" "^1.32.0"
-    bigint-buffer "^1.1.5"
-    bignumber.js "^9.0.1"
-
 "@solana/buffer-layout@^4.0.0", "@solana/buffer-layout@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@solana/buffer-layout/-/buffer-layout-4.0.1.tgz#b996235eaec15b1e0b5092a8ed6028df77fa6c15"
@@ -3745,70 +3735,17 @@
   dependencies:
     buffer "~6.0.3"
 
-"@solana/codecs-core@2.0.0-experimental.8618508":
-  version "2.0.0-experimental.8618508"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-core/-/codecs-core-2.0.0-experimental.8618508.tgz#4f6709dd50e671267f3bea7d09209bc6471b7ad0"
-  integrity sha512-JCz7mKjVKtfZxkuDtwMAUgA7YvJcA2BwpZaA1NOLcted4OMC4Prwa3DUe3f3181ixPYaRyptbF0Ikq2MbDkYEA==
-
-"@solana/codecs-data-structures@2.0.0-experimental.8618508":
-  version "2.0.0-experimental.8618508"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-data-structures/-/codecs-data-structures-2.0.0-experimental.8618508.tgz#c16a704ac0f743a2e0bf73ada42d830b3402d848"
-  integrity sha512-sLpjL9sqzaDdkloBPV61Rht1tgaKq98BCtIKRuyscIrmVPu3wu0Bavk2n/QekmUzaTsj7K1pVSniM0YqCdnEBw==
+"@solana/spl-token@^0.1.8":
+  version "0.1.8"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-token/-/spl-token-0.1.8.tgz#f06e746341ef8d04165e21fc7f555492a2a0faa6"
+  integrity sha512-LZmYCKcPQDtJgecvWOgT/cnoIQPWjdH+QVyzPcFvyDUiT0DiRjZaam4aqNUyvchLFhzgunv3d9xOoyE34ofdoQ==
   dependencies:
-    "@solana/codecs-core" "2.0.0-experimental.8618508"
-    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
-
-"@solana/codecs-numbers@2.0.0-experimental.8618508":
-  version "2.0.0-experimental.8618508"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-numbers/-/codecs-numbers-2.0.0-experimental.8618508.tgz#d84f9ed0521b22e19125eefc7d51e217fcaeb3e4"
-  integrity sha512-EXQKfzFr3CkKKNzKSZPOOOzchXsFe90TVONWsSnVkonO9z+nGKALE0/L9uBmIFGgdzhhU9QQVFvxBMclIDJo2Q==
-  dependencies:
-    "@solana/codecs-core" "2.0.0-experimental.8618508"
-
-"@solana/codecs-strings@2.0.0-experimental.8618508":
-  version "2.0.0-experimental.8618508"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-strings/-/codecs-strings-2.0.0-experimental.8618508.tgz#72457b884d9be80b59b263bcce73892b081e9402"
-  integrity sha512-b2yhinr1+oe+JDmnnsV0641KQqqDG8AQ16Z/x7GVWO+AWHMpRlHWVXOq8U1yhPMA4VXxl7i+D+C6ql0VGFp0GA==
-  dependencies:
-    "@solana/codecs-core" "2.0.0-experimental.8618508"
-    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
-
-"@solana/options@2.0.0-experimental.8618508":
-  version "2.0.0-experimental.8618508"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/options/-/options-2.0.0-experimental.8618508.tgz#95385340e85f9e8a81b2bfba089404a61c8e9520"
-  integrity sha512-fy/nIRAMC3QHvnKi63KEd86Xr/zFBVxNW4nEpVEU2OT0gCEKwHY4Z55YHf7XujhyuM3PNpiBKg/YYw5QlRU4vg==
-  dependencies:
-    "@solana/codecs-core" "2.0.0-experimental.8618508"
-    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
-
-"@solana/spl-token-metadata@^0.1.2":
-  version "0.1.2"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-token-metadata/-/spl-token-metadata-0.1.2.tgz#876e13432bd2960bd3cac16b9b0af63e69e37719"
-  integrity sha512-hJYnAJNkDrtkE2Q41YZhCpeOGU/0JgRFXbtrtOuGGeKc3pkEUHB9DDoxZAxx+XRno13GozUleyBi0qypz4c3bw==
-  dependencies:
-    "@solana/codecs-core" "2.0.0-experimental.8618508"
-    "@solana/codecs-data-structures" "2.0.0-experimental.8618508"
-    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
-    "@solana/codecs-strings" "2.0.0-experimental.8618508"
-    "@solana/options" "2.0.0-experimental.8618508"
-    "@solana/spl-type-length-value" "0.1.0"
-
-"@solana/spl-token@^0.4.1":
-  version "0.4.1"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-token/-/spl-token-0.4.1.tgz#7302c8052803f63012bd8189d42ca7d74d7917a5"
-  integrity sha512-DEe15GI0l+XLHwtau/3GUwGQJ9YY/VWNE0k/QuXaaGKo4adMZLEAIQUktRc/S2sRqPjvUdR5anZGxQ9p5khWZw==
-  dependencies:
-    "@solana/buffer-layout" "^4.0.0"
-    "@solana/buffer-layout-utils" "^0.2.0"
-    "@solana/spl-token-metadata" "^0.1.2"
-    buffer "^6.0.3"
-
-"@solana/spl-type-length-value@0.1.0":
-  version "0.1.0"
-  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-type-length-value/-/spl-type-length-value-0.1.0.tgz#b5930cf6c6d8f50c7ff2a70463728a4637a2f26b"
-  integrity sha512-JBMGB0oR4lPttOZ5XiUGyvylwLQjt1CPJa6qQ5oM+MBCndfjz2TKKkw0eATlLLcYmq1jBVsNlJ2cD6ns2GR7lA==
-  dependencies:
-    buffer "^6.0.3"
+    "@babel/runtime" "^7.10.5"
+    "@solana/web3.js" "^1.21.0"
+    bn.js "^5.1.0"
+    buffer "6.0.3"
+    buffer-layout "^1.2.0"
+    dotenv "10.0.0"
 
 "@solana/web3.js@1.63.0":
   version "1.63.0"
@@ -3831,7 +3768,7 @@
     rpc-websockets "^7.5.0"
     superstruct "^0.14.2"
 
-"@solana/web3.js@^1.32.0":
+"@solana/web3.js@^1.21.0":
   version "1.91.1"
   resolved "https://mirrors.cloud.tencent.com/npm/@solana/web3.js/-/web3.js-1.91.1.tgz#d49d2f982b52070be3b987fd8d892fcbddd064b5"
   integrity sha512-cPgjZXm688oM9cULvJ8u2VH6Qp5rvptE1N1VODVxn2mAbpZsWrvWNPjmASkMYT/HzyrtqFkPvFdSHg8Xjt7aQA==
@@ -6390,7 +6327,7 @@ bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.10.0, bn.js@^4.11.0, bn.js@^4.11.6, bn.js@^
   resolved "https://registry.npmmirror.com/bn.js/-/bn.js-4.12.0.tgz#775b3f278efbb9718eec7361f483fb36fbbfea88"
   integrity sha512-c98Bf3tPniI+scsdk237ku1Dc3ujXQTSgyiPUDEOe7tRkhrqridvh8klBv0HCEso1OLOYcHuCv/cS6DNxKH+ZA==
 
-bn.js@^5.0.0, bn.js@^5.1.1, bn.js@^5.1.2, bn.js@^5.2.0, bn.js@^5.2.1:
+bn.js@^5.0.0, bn.js@^5.1.0, bn.js@^5.1.1, bn.js@^5.1.2, bn.js@^5.2.0, bn.js@^5.2.1:
   version "5.2.1"
   resolved "https://registry.npmmirror.com/bn.js/-/bn.js-5.2.1.tgz#0bc527a6a0d18d0aa8d5b0538ce4a77dccfa7b70"
   integrity sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==
@@ -6614,6 +6551,11 @@ buffer-json@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmmirror.com/buffer-json/-/buffer-json-2.0.0.tgz#f73e13b1e42f196fe2fd67d001c7d7107edd7c23"
   integrity sha512-+jjPFVqyfF1esi9fvfUs3NqM0pH1ziZ36VP4hmA/y/Ssfo/5w5xHKfTw9BwQjoJ1w/oVtpLomqwUHKdefGyuHw==
+
+buffer-layout@^1.2.0:
+  version "1.2.2"
+  resolved "https://mirrors.cloud.tencent.com/npm/buffer-layout/-/buffer-layout-1.2.2.tgz#b9814e7c7235783085f9ca4966a0cfff112259d5"
+  integrity sha512-kWSuLN694+KTk8SrYvCqwP2WcgQjoRCiF5b4QDvkkz8EmgD+aWAIceGFKMIAdmF/pH+vpgNV3d3kAKorcdAmWA==
 
 buffer-to-arraybuffer@^0.0.5:
   version "0.0.5"
@@ -8180,6 +8122,11 @@ dotenv-expand@^5.1.0:
   version "5.1.0"
   resolved "https://registry.npmmirror.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
   integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
+
+dotenv@10.0.0:
+  version "10.0.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
+  integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
 
 dotenv@^8.2.0:
   version "8.6.0"

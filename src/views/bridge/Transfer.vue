@@ -914,10 +914,10 @@ export default {
   methods: {
     loopringFromFillAddress(value) {
       try {
-        const { selectMakerConfig } = transferDataState
+        const { selectMakerConfig = {} } = transferDataState
       const { fromChain,toChain } = selectMakerConfig
 
-      const fromChainId = value || fromChain.chainId
+      const fromChainId = value || fromChain?.chainId
 
       if((fromChainId === CHAIN_ID.loopring || fromChainId === CHAIN_ID.loopring_test ) && (
         toChain.chainId !== CHAIN_ID.starknet && 

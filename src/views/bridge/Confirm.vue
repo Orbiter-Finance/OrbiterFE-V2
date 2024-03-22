@@ -957,9 +957,9 @@ export default {
 
             try {
 
-                const provider = new ethers.providers.Web3Provider(
-                    compatibleGlobalWalletConf.value.walletPayload.provider || window.ethereum || window.coin98?.provider
-                )
+                const provider =
+                    compatibleGlobalWalletConf.value.walletPayload.provider
+                const web3 = new Web3(provider || window.ethereum ||  window.coin98?.provider)
 
                 let gasLimit = await getTransferGasLimit(
                     fromChainID,
@@ -972,7 +972,10 @@ export default {
                 if (fromChainID === 2 && gasLimit < 21000) {
                     gasLimit = 21000
                 }
-                const signer = provider.getSigner()
+                const eprovider = new providers.Web3Provider(
+                    web3.currentProvider
+                )
+                const signer = eprovider.getSigner()
                 try {
                     const windowChain = +(window?.ethereum?.chainId)
                     if(windowChain) {
@@ -1522,6 +1525,8 @@ export default {
                     if (String(fromChainID) === "42161" && gasLimit < 21000) {
                         gasLimit = 21000
                     }
+                    const objOption = { from: account, gas: gasLimit }
+
                     const selectChainID = selectMakerConfig?.fromChain?.chainId
                     try {
                         const windowChain = +(window?.ethereum?.chainId)
@@ -1539,22 +1544,25 @@ export default {
                             duration: 3000,
                         })
                     }
-                    transferContract
-                        .transfer(to, tValue.tAmount).then((res)=>{
-                            this.onTransferSucceed(
+                    transferContract.methods
+                        .transfer(to, tValue.tAmount)
+                        .send(objOption, (error, transactionHash) => {
+                            this.transferLoading = false
+                            if (!error) {
+                                this.onTransferSucceed(
                                     account,
                                     tValue.tAmount,
                                     fromChainID,
-                                    res.hash
+                                    transactionHash
                                 )
                             this.transferLoading = false
 
-                        }).catch((error)=>{
-                            this.$notify.error({
-                                title: error.message,
-                                duration: 3000,
-                            })
-                            this.transferLoading = false
+                        } else {
+                                this.$notify.error({
+                                    title: error.message,
+                                    duration: 3000,
+                                })
+                            }
                         })
                 }
             }
