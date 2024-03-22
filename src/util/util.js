@@ -10,7 +10,6 @@ import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
-
 let chainsList = []
 
 export default {
@@ -321,7 +320,8 @@ export default {
   },
 
   async getRpcList(chainId) {
-    const res = await this.getNetworkRpc()
+    // const res = await this.getNetworkRpc()
+    const res = [];
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
     let rpcList = shuffle(uniq(chainInfo?.rpc || []))
@@ -331,8 +331,11 @@ export default {
       if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
         rpcList = [stableRpc.rpc, ...rpcList]
       }
-    } catch (e) {}
-    rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
+      rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
+
+    } catch (e) {
+      console.error('parse stableRpc  error', e);
+    }
     return rpcList
   },
 
