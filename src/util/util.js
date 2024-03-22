@@ -9,7 +9,6 @@ import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
-import { shuffle, uniq } from 'lodash'
 
 let chainsList = []
 
@@ -334,8 +333,10 @@ export default {
       if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
         rpcList = [stableRpc.rpc, ...rpcList]
       }
-    } catch (e) {}
-    rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
+      rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
+    } catch (e) {
+      console.error('parse stableRpc  error', e);
+    }
     return rpcList
   },
 
