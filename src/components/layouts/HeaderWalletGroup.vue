@@ -67,7 +67,7 @@ import util, {
   isBrowserApp,
 } from '../../util'
 
-import { getStarknet, connect, disconnect } from 'get-starknet'
+import { getStarknet, connect } from 'get-starknet'
 
 import { walletIsLogin } from '../../composition/walletsResponsiveData'
 
@@ -87,9 +87,14 @@ import {
   PublicKey,
   SystemProgram,
   TransactionInstruction,
+  sendAndConfirmTransaction,
 } from '@solana/web3.js'
 
-import { Token, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import {
+  TOKEN_PROGRAM_ID,
+  getOrCreateAssociatedTokenAccount,
+  createTransferInstruction,
+} from '@solana/spl-token'
 import { utils } from 'ethers'
 
 import { store } from '../../store'
@@ -229,13 +234,20 @@ export default {
       return isMobileDevice()
     },
     async connectSolanaWallet() {
+
+
       const provider = window.solflare
-      const res = await provider.connect()
-      const fromPublicKey = provider.publicKey
-      console.log('1111', provider, res, fromPublicKey.toString())
+      console.log('provider', provider)
+
+      const status = await provider.connect()
+      console.log('status', status)
+
+      const fromPublicKey = provider.publicKey || window.solflare.publicKey
+      console.log('1111', provider, fromPublicKey.toString())
+      console.log('1111', provider.publicKey.toBase58())
 
       const networks =
-        'https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85'
+        ''
 
       const wallet = new Connection(networks, 'confirmed')
       console.log('wallet', wallet)
@@ -257,68 +269,93 @@ export default {
       const tokenStr = 'GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE'
       const tokenPublicKey = new PublicKey(tokenStr)
 
-      const amount = 1000000
+      const amount = '100000000'
+
+      const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+        wallet,
+        fromPublicKey,
+        tokenPublicKey, // 发送token
+        fromPublicKey
+      )
+
+      console.log('fromTokenAccount', fromTokenAccount)
+      console.log(
+        'fromTokenAccount.address',
+        fromTokenAccount.address.toString()
+      )
+      console.log('fromTokenAccount.mint', fromTokenAccount.mint.toString())
+      console.log('fromTokenAccount.owner', fromTokenAccount.owner.toString())
+
+      const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+        wallet,
+        fromPublicKey,
+        tokenPublicKey,
+        toPublicKey,
+      )
+
+      console.log('toTokenAccount', toTokenAccount)
+      console.log('toTokenAccount.address', toTokenAccount.address.toString())
+      console.log('toTokenAccount.mint', toTokenAccount.mint.toString())
+      console.log('toTokenAccount.owner', toTokenAccount.owner.toString())
 
       const keypair = new Keypair()
 
       console.log('keypair', keypair)
 
-      const transaction = new Transaction({
+      // const transaction = new Transaction({
+      //   recentBlockhash: recentBlockhash.blockhash,
+      //   feePayer: fromPublicKey,
+      // })
+
+      // const solTransaction = transaction.add(
+      //   SystemProgram.transfer({
+      //     fromPubkey: fromPublicKey,
+      //     toPubkey: toPublicKey,
+      //     lamports: 0,
+      //   })
+      // )
+      // console.log('solTransaction', solTransaction)
+
+      const tokenTransaction = new Transaction({
         recentBlockhash: recentBlockhash.blockhash,
-        feePayer: fromPublicKey,
+        feePayer: fromPublicKey
       })
-
-      const token = new Token(wallet, tokenPublicKey, TOKEN_PROGRAM_ID, null)
-
-      console.log('token', token)
-
-      const senderTokenAccount = await token.getOrCreateAssociatedAccountInfo(
-        fromPublicKey
-      )
-
-      console.log('senderTokenAccount', senderTokenAccount)
-
-      const instruction = Token.createTransferInstruction(
-        TOKEN_PROGRAM_ID,
-        senderTokenAccount.address,
-        toPublicKey,
-        senderTokenAccount.publicKey,
-        [],
-        1000000
-      )
-
-      const solTransaction = transaction.add(
-        SystemProgram.transfer({
-          fromPubkey: fromPublicKey,
-          toPubkey: toPublicKey,
-          lamports: 0,
-        })
-      )
-      console.log('solTransaction', solTransaction)
-
-      const tokenTransaction = new Transaction()
         .add(
-          instruction
+          createTransferInstruction(
+            fromTokenAccount.address,
+            toTokenAccount.address,
+            fromPublicKey,
+            amount,
+            [],
+            TOKEN_PROGRAM_ID
+          )
         )
-        // .add(
-        //   new TransactionInstruction({
-        //     keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-        //     data: [],
-        //     programId: new PublicKey(
-        //       'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'
-        //     ),
-        //   })
-        // )
-
-      console.log('tokenTransaction', tokenTransaction)
-
+        .add(
+          new TransactionInstruction({
+            keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+            data: utils.toUtf8Bytes(
+              'c=9535&t=0xa100af6959977c919db26d5ef8dd4289e888f927'
+            ),
+            programId: new PublicKey(
+              'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'
+            ),
+          })
+        )
       // const signer = await provider.signTransaction(tokenTransaction)
       // console.log('signer', signer)
 
       // const signatureSol = await provider.signAndSendTransaction(solTransaction)
       // console.log('signatureSol', signatureSol)
 
-      const signature = await provider.signTransaction(tokenTransaction)
+      console.log('tokenTransaction', tokenTransaction)
+      console.log(' provider.signAndSendTransaction',  provider.signAndSendTransaction)
+
+      const signature = await provider.signAndSendTransaction(
+        tokenTransaction,
+        // {
+        //   commitment: 'confirmed',
+        // }
+      )
 
       console.log('signature', signature)
     },
@@ -384,6 +421,7 @@ export default {
   },
 }
 </script>
+
 <style scoped lang="scss">
 .header-wallet-group {
   position: fixed;
@@ -474,4 +512,3 @@ export default {
   }
 }
 </style>
-, sendAndConfirmTransactionimport { toHex } from '@loopring-web/loopring-sdk';

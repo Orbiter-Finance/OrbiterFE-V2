@@ -781,5 +781,94 @@
     "watch": ["rpc"],
     "tokens": [],
     "infoURL": "https://pacific-explorer.manta.network"
-  }
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "SOLANA_DEV",
+    "icon": "SOLANA_MAIN",
+    "networkId": "SOLANA_DEV",
+    "internalId": "551",
+    "name": "Solana",
+    "batchLimit": 20,
+    "debug": false,
+    "service": {
+      "rpc": "SolanaRpcScanningService"
+    },
+    "features": [
+      {
+        "name": "evm-rpc"
+      }
+    ],
+    "nativeCurrency": {
+      "name": "SOL",
+      "symbol": "SOL",
+      "decimals": 9,
+      "address": "So11111111111111111111111111111111111111112"
+    },
+    "rpc": [
+      "https://solana-devnet.g.alchemy.com/v2/"
+    ],
+    "contracts": [
+      {
+        "name": "SolanaProgramId",
+        "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+        "methods": []
+      }
+    ],
+    "tokens": [
+      {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 9,
+        "address": "GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE"
+      }
+    ],
+    "infoURL": "https://solscan.io/"
+  },
+  {
+    "api": {
+        "url": "",
+        "key": ""
+    },
+    "chainId": "421614",
+    "networkId": "421614",
+    "internalId": "535",
+    "name": "Arbitrum Sepolia",
+    "debug": false,
+    "bridge": 2,
+    "service": {
+        "rpc": "EVMRpcScanningV6Service"
+    },
+    "contract": {
+        "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
+    },
+    "nativeCurrency": {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+        "https://sepolia-rollup.arbitrum.io/rpc",
+        "https://sepolia-rollup-sequencer.arbitrum.io/rpc"
+    ],
+    "tokens": [
+        {
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "address": "0x5da066443180476e8f113546a0d112517d0d4915"
+        },
+        {
+            "name": "USDT",
+            "symbol": "USDT",
+            "decimals": 6,
+            "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
+        }
+    ],
+    "infoURL": "https://sepolia.arbiscan.io"
+}
 ]

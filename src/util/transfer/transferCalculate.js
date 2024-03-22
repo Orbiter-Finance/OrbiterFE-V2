@@ -2,6 +2,17 @@ import { getContractFactory, predeploys } from '@eth-optimism/contracts'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { ethers, providers } from 'ethers'
+
+import {
+  Connection,
+  PublicKey,
+  ComputeBudgetProgram
+} from '@solana/web3.js'
+
+import {
+  getOrCreateAssociatedTokenAccount
+} from '@solana/spl-token'
+
 import thirdapi from '../../core/actions/thirdapi'
 import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
@@ -1062,6 +1073,51 @@ export default {
         'MetaMask'
       )
       return await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
+    } else if (
+      localChainID === CHAIN_ID.solana ||
+      localChainID === CHAIN_ID.solana_test
+    ) {
+
+      try {
+        const networks = ''
+
+    const connection = new Connection(networks, 'confirmed')
+
+      console.log('Solana Balance', localChainID,
+      tokenAddress,
+      tokenName,
+      userAddress,
+      isMaker)
+
+      console.log("connection", connection)
+
+
+      const fromPublicKey = new PublicKey("DSfuRdqeRDuGtaX9LVjyREE8CsuEU2HnMg9BgbTPZ4zx")
+
+      const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+        connection,
+        fromPublicKey,
+        new PublicKey(tokenAddress),
+        fromPublicKey
+      )
+
+      const instruction = await connection.getRecentPrioritizationFees({
+        lockedWritableAccounts: [fromTokenAccount.address]
+      });
+
+      console.log("instruction", instruction)
+
+      let tokenAccountBalance = await connection.getTokenAccountBalance(fromTokenAccount.address, 'confirmed');
+
+      console.log('tokenAccountBalance', tokenAccountBalance)
+
+      return tokenAccountBalance.value.amount
+      } catch (error) {
+        console.log('error', error)
+        
+      }
+
+      
     } else if (
       localChainID === CHAIN_ID.zkspace ||
       localChainID === CHAIN_ID.zkspace_test

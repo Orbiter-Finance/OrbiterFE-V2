@@ -22,18 +22,19 @@
         <BottomNav v-if="$route.path !== '/home'" />
       </keep-alive>
     </div>
-    <HeaderDialog />
+    <!-- <HeaderDialog /> -->
     <HeaderActDialog
       v-if="$route.path !== '/statistics' && $route.path !== '/home'"
       style="z-index: 999"
     />
-    <!-- <HeaderWalletGroup /> -->
+    <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
   </div>
 </template>
 
 <script>
+import 'solana-wallets-vue-2/styles.css'
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
