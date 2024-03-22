@@ -9,7 +9,7 @@ import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
-
+import { shuffle, uniq } from 'lodash'
 let chainsList = []
 
 export default {
@@ -334,6 +334,7 @@ export default {
         rpcList = [stableRpc.rpc, ...rpcList]
       }
       rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
+
     } catch (e) {
       console.error('parse stableRpc  error', e);
     }
