@@ -23,6 +23,13 @@ function getTransferContract(localChainID, contractAddress) {
   ) {
     return
   }
+  if (
+    localChainID === CHAIN_ID.solana ||
+    localChainID === CHAIN_ID.solana_test
+  ) {
+    console.log('solana 30')
+    return
+  }
   if (walletIsLogin.value) {
     const provider = new ethers.providers.Web3Provider(
       compatibleGlobalWalletConf.value.walletPayload.provider

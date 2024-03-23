@@ -168,6 +168,15 @@ export default {
         transferDataState.toChainID === CHAIN_ID.starknet_test
       )
     },
+    isSelectedSolana () {
+      console.log("solana 172")
+      return (
+        transferDataState.fromChainID === CHAIN_ID.solana ||
+        transferDataState.fromChainID === CHAIN_ID.solana_test ||
+        transferDataState.toChainID === CHAIN_ID.solana ||
+        transferDataState.toChainID === CHAIN_ID.solana_test
+      )
+    },
     starkAddress () {
       return starkAddress()
     },

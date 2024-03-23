@@ -321,7 +321,7 @@ export default {
 
   async getRpcList(chainId) {
     // const res = await this.getNetworkRpc()
-    const res = [];
+    const res = []
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
     let rpcList = shuffle(uniq(chainInfo?.rpc || []))
@@ -332,9 +332,8 @@ export default {
         rpcList = [stableRpc.rpc, ...rpcList]
       }
       rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
-
     } catch (e) {
-      console.error('parse stableRpc  error', e);
+      console.error('parse stableRpc  error', e)
     }
     return rpcList
   },
@@ -396,11 +395,14 @@ export default {
   },
 
   isEvmChain(chainId) {
+    console.log('solana 398')
     return ![
       CHAIN_ID.zksync,
       CHAIN_ID.zksync_test,
       CHAIN_ID.starknet,
       CHAIN_ID.starknet_test,
+      CHAIN_ID.solana,
+      CHAIN_ID.solana_test,
       CHAIN_ID.imx,
       CHAIN_ID.imx_test,
       CHAIN_ID.loopring,
@@ -458,6 +460,17 @@ export default {
       fromChainID === CHAIN_ID.starknet_test ||
       toChainID === CHAIN_ID.starknet ||
       toChainID === CHAIN_ID.starknet_test
+    )
+  },
+
+  isSolana() {
+    const { fromChainID, toChainID } = transferDataState
+    console.log('solana 468')
+    return (
+      fromChainID === CHAIN_ID.solana ||
+      fromChainID === CHAIN_ID.solana_test ||
+      toChainID === CHAIN_ID.solana ||
+      toChainID === CHAIN_ID.solana_test
     )
   },
 

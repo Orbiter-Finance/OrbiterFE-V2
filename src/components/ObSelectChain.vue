@@ -123,8 +123,10 @@ export default {
                 CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
                 CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
-                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test
+                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
+                CHAIN_ID.solana, CHAIN_ID.solana_test
             ]
+            console.log("solana 129")
             return this.orderChainIds(chainOrderIds, newArray)
         },
         newChainData: function () {
@@ -140,8 +142,10 @@ export default {
                 CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
                 CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
-                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test
+                CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
+                CHAIN_ID.solana, CHAIN_ID.solana_test
             ]
+            console.log("solana 148")
             return customSort(chainOrderIds,chains)
         },
         groupChains:function() {
@@ -209,6 +213,10 @@ export default {
                             }
                         }
                     }
+                    // solana
+                    if (e.localID === CHAIN_ID.solana || e.localID === CHAIN_ID.solana_test) {
+                        console.log("SOLANA OBSELECTCHAIN 216")
+                    }
                     // immutableX
                     if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
                         this.loadingIndex = index
@@ -259,7 +267,8 @@ export default {
         search() { },
         checkKeyWord() { },
         isStarkSystem(chainId) {
-            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
+            console.log("solana 270")
+            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
         },
     }
 }

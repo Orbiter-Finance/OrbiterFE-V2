@@ -241,13 +241,24 @@ export default {
         },
         loginInfoData() {
             if (this.isStarkNetDialog) {
-                const starkChain = web3State.starkNet?.starkChain
+                const starkChain = web3State.starkNet?.starkChainc
+                const solanaChain = web3State.solana?.solanaChain
                 let networkName = ''
                 if (starkChain) {
                     if (starkChain === CHAIN_ID.starknet) {
                         networkName = 'Starknet Mainnet'
                     } else if (starkChain === CHAIN_ID.starknet_test) {
                         networkName = 'Goerli Testnet'
+                    }
+                }
+
+                if (solanaChain) {
+                    if (solanaChain === CHAIN_ID.solana) {
+                        console.log("solana 257")
+                        networkName = 'Solana Mainnet'
+                    } else if (solanaChain === CHAIN_ID.solana_test) {
+                        console.log("solana 260")
+                        networkName = 'Solana Dev'
                     }
                 }
 

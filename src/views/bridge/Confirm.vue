@@ -242,6 +242,16 @@ export default {
                 toChainID === CHAIN_ID.starknet_test
             )
         },
+        isSolanaChain() {
+            const { fromChainID, toChainID } = transferDataState
+            console.log('solana 247')
+            return (
+                fromChainID === CHAIN_ID.solana ||
+                fromChainID === CHAIN_ID.solana_test ||
+                toChainID === CHAIN_ID.solana ||
+                toChainID === CHAIN_ID.solana_test
+            )
+        },
         currentFromChainID() {
             const { fromChainID } = transferDataState
             return fromChainID
@@ -1454,6 +1464,18 @@ export default {
                 if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
                     this.starknetTransfer(tValue.tAmount)
                     return
+                }
+
+                if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+                    console.log("solana transfer from")
+                    console.log('solana 1471')
+                    return 
+                }
+
+                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+                    console.log("solana transfer toChain")
+                    console.log('solana 1477')
+                    return 
                 }
 
                 if (fromChainID === CHAIN_ID.imx || fromChainID === CHAIN_ID.imx_test) {

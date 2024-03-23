@@ -17,6 +17,13 @@ export const web3State = reactive({
     starkIsConnected: false,
     starkChain: '',
   },
+  solana: {
+    solanaAddress: '',
+    solanaWalletName: '',
+    solanaWalletIcon: '',
+    solanaIsConnected: false,
+    solanaChain: '',
+  },
 })
 
 export function updateCoinbase(coinbase) {

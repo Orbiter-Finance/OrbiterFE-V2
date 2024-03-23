@@ -362,6 +362,10 @@ export default {
           if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
             userAddress = web3State.starkNet.starkNetAddress;
           }
+          if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
+            console.log('solana 366')
+            console.log("solana proceed")
+          }
           const accountUrl = explorerInfo.accountUrl || explorerInfo.url + '/address';
           const url = accountUrl + '/' + userAddress;
           window.open(url, '_blank');
@@ -430,6 +434,9 @@ export default {
                 if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
+                if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+                    console.log("solana proceed 437")
+                }
                 url = util.getAccountExploreUrl(fromChainID) + userAddress
 
                 // ImmutableX
@@ -459,6 +466,9 @@ export default {
                 let userAddress = web3State.coinbase
                 if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
                     userAddress = web3State.starkNet.starkNetAddress
+                }
+                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+                    console.log("solana proceed 469")
                 }
                 url = util.getAccountExploreUrl(toChainID) + userAddress
 

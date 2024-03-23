@@ -3,16 +3,6 @@ import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { ethers, providers } from 'ethers'
 
-import {
-  Connection,
-  PublicKey,
-  ComputeBudgetProgram
-} from '@solana/web3.js'
-
-import {
-  getOrCreateAssociatedTokenAccount
-} from '@solana/spl-token'
-
 import thirdapi from '../../core/actions/thirdapi'
 import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
@@ -37,6 +27,8 @@ import {
 import { CHAIN_ID } from '../../config'
 import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
+
+import solanaHelper from '../solana/solana_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -613,6 +605,14 @@ export default {
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
       ethGas += SNWithDrawL1Gas
     }
+    if (
+      fromChainID === CHAIN_ID.solana ||
+      fromChainID === CHAIN_ID.solana_test
+    ) {
+      // solana cost
+      console.log('solana 613')
+      ethGas = 5 * 10 ** 3
+    }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
@@ -1043,6 +1043,44 @@ export default {
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
     } else if (
+      localChainID === CHAIN_ID.solana ||
+      localChainID === CHAIN_ID.solana_test
+    ) {
+      try {
+        const connection = solanaHelper.getConnection()
+        console.log('solana 1051')
+        console.log(
+          'Solana Balance',
+          localChainID,
+          tokenAddress,
+          tokenName,
+          userAddress,
+          isMaker
+        )
+
+        const fromPublicKey = solanaHelper.getPublicKey(
+          'DSfuRdqeRDuGtaX9LVjyREE8CsuEU2HnMg9BgbTPZ4zx'
+        )
+
+        const fromTokenAccount = await solanaHelper.getTokenAccount({
+          fromPublicKey,
+          tokenPublickey: solanaHelper.getPublicKey(tokenAddress),
+          toPublickey: fromPublicKey,
+        })
+
+        let tokenAccountBalance = await connection.getTokenAccountBalance(
+          fromTokenAccount.address,
+          'confirmed'
+        )
+
+        console.log('tokenAccountBalance', tokenAccountBalance)
+
+        return tokenAccountBalance.value.amount
+      } catch (error) {
+        console.log('error', error)
+        return '0'
+      }
+    } else if (
       localChainID === CHAIN_ID.imx ||
       localChainID === CHAIN_ID.imx_test
     ) {
@@ -1073,51 +1111,6 @@ export default {
         'MetaMask'
       )
       return await dydxHelper.getBalanceUsdc(userAddress, false) // Dydx only usdc
-    } else if (
-      localChainID === CHAIN_ID.solana ||
-      localChainID === CHAIN_ID.solana_test
-    ) {
-
-      try {
-        const networks = ''
-
-    const connection = new Connection(networks, 'confirmed')
-
-      console.log('Solana Balance', localChainID,
-      tokenAddress,
-      tokenName,
-      userAddress,
-      isMaker)
-
-      console.log("connection", connection)
-
-
-      const fromPublicKey = new PublicKey("DSfuRdqeRDuGtaX9LVjyREE8CsuEU2HnMg9BgbTPZ4zx")
-
-      const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
-        connection,
-        fromPublicKey,
-        new PublicKey(tokenAddress),
-        fromPublicKey
-      )
-
-      const instruction = await connection.getRecentPrioritizationFees({
-        lockedWritableAccounts: [fromTokenAccount.address]
-      });
-
-      console.log("instruction", instruction)
-
-      let tokenAccountBalance = await connection.getTokenAccountBalance(fromTokenAccount.address, 'confirmed');
-
-      console.log('tokenAccountBalance', tokenAccountBalance)
-
-      return tokenAccountBalance.value.amount
-      } catch (error) {
-        console.log('error', error)
-        
-      }
-
-      
     } else if (
       localChainID === CHAIN_ID.zkspace ||
       localChainID === CHAIN_ID.zkspace_test

@@ -274,7 +274,7 @@ export default {
       const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
         wallet,
         fromPublicKey,
-        tokenPublicKey, // 发送token
+        tokenPublicKey,
         fromPublicKey
       )
 
