@@ -27,13 +27,13 @@
       v-if="$route.path !== '/statistics' && $route.path !== '/home'"
       style="z-index: 999"
     />
-    <!-- <HeaderWalletGroup /> -->
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
   </div>
 </template>
 
 <script>
+import 'solana-wallets-vue-2/styles.css'
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
@@ -71,7 +71,6 @@ import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
 import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
-import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import {
   setIsBraveWallet,
   performInitMobileAppWallet,
@@ -158,8 +157,7 @@ export default {
     BottomNav,
     HeaderDialog,
     HeaderActDialog,
-    HeaderLotteryCardDialog,
-    HeaderWalletGroup
+    HeaderLotteryCardDialog
   },
   async mounted () {
     if (isBrowserApp()) {
