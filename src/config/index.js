@@ -1,18 +1,17 @@
-import chainMain from './chain.json';
-import chainTest from './chainTest.json';
-import { isProd } from '../util';
+import chainMain from './chain.json'
+import chainTest from './chainTest.json'
+import { isProd } from '../util'
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-      ;[array[i], array[j]] = [array[j], array[i]];
+    ;[array[i], array[j]] = [array[j], array[i]]
   }
-  return array;
+  return array
 }
 
 export const CHAIN_ID = {
   zksync: 'zksync',
   starknet: 'SN_MAIN',
-  solana: 'SOLANA_MAIN',
   loopring: 'loopring',
   zkspace: 'ZKSpace',
   dydx: 'dydx',
@@ -36,7 +35,6 @@ export const CHAIN_ID = {
 
   zksync_test: 'zksync_test',
   starknet_test: 'SN_GOERLI',
-  solana_test: 'SOLANA_DEV',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',
@@ -54,85 +52,85 @@ export const CHAIN_ID = {
   opbnb_test: '5611',
   manta_test: '3441005',
   scroll_test: '534353',
-};
-const maker = {};
+}
+const maker = {}
 const makerFiles = shuffleArray(
   isProd()
     ? [
-      '80c-prod.json',
-      'e4e-prod.json',
-      '1c8-prod.json',
-      'usdt-prod.json',
-      'usdc-prod.json',
-    ]
+        '80c-prod.json',
+        'e4e-prod.json',
+        '1c8-prod.json',
+        'usdt-prod.json',
+        'usdc-prod.json',
+      ]
     : ['makerTest-1.json', 'makerTest-2.json']
-);
+)
 for (const file of makerFiles) {
-  const importConfigs = require(`./${file}`);
+  const importConfigs = require(`./${file}`)
   for (const key1 in importConfigs) {
     for (const key2 in importConfigs[key1]) {
       if (!maker[key1]) {
-        maker[key1] = {};
+        maker[key1] = {}
       }
-      maker[key1][key2] = importConfigs[key1][key2];
+      maker[key1][key2] = importConfigs[key1][key2]
     }
   }
 }
 
-const v1MakerConfigs = [];
-const chain = isProd() ? chainMain : chainTest;
+const v1MakerConfigs = []
+const chain = isProd() ? chainMain : chainTest
 const chainConfig = [...chain].map((item) => {
   if (process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`]) {
-    item.api = item.api || {};
-    item.api.key = process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`];
+    item.api = item.api || {}
+    item.api.key = process.env[`VUE_APP_CHAIN_API_KEY_${item.internalId}`]
   }
-  return item;
-});
+  return item
+})
 
-const makerConfigs = convertMakerConfig(maker);
+const makerConfigs = convertMakerConfig(maker)
 
 function convertMakerConfig(maker) {
-  const makerMap = maker;
-  const chainList = chainConfig;
-  const configs = [];
+  const makerMap = maker
+  const chainList = chainConfig
+  const configs = []
   const getChainTokenList = (chain) => {
     return chain.nativeCurrency
       ? [chain.nativeCurrency, ...chain.tokens]
-      : [...chain.tokens];
-  };
+      : [...chain.tokens]
+  }
   for (const chainIdPair in makerMap) {
-    if (!makerMap.hasOwnProperty(chainIdPair)) continue;
-    const symbolPairMap = makerMap[chainIdPair];
-    const [fromChainId, toChainId] = chainIdPair.split('-');
+    if (!makerMap.hasOwnProperty(chainIdPair)) continue
+    const symbolPairMap = makerMap[chainIdPair]
+    const [fromChainId, toChainId] = chainIdPair.split('-')
     // Temporary offline configuration
-    const offlineList = [12, 13];
+    const offlineList = [12, 13]
     if (
       offlineList.find((item) => +item === +fromChainId) ||
       offlineList.find((item) => +item === +toChainId)
     ) {
-      continue;
+      continue
     }
     if (+fromChainId == 38 || +toChainId == 38) {
       if (!(+fromChainId == 38 && +toChainId == 1)) {
-        continue;
+        continue
       }
     }
 
-    const c1Chain = chainList.find((item) => +item.internalId === +fromChainId);
-    const c2Chain = chainList.find((item) => +item.internalId === +toChainId);
+    const c1Chain = chainList.find((item) => +item.internalId === +fromChainId)
+    const c2Chain = chainList.find((item) => +item.internalId === +toChainId)
 
-    if (!c1Chain || !c2Chain) continue;
+    if (!c1Chain || !c2Chain) continue
     for (const symbolPair in symbolPairMap) {
-      if (!symbolPairMap.hasOwnProperty(symbolPair)) continue;
-      const makerData = symbolPairMap[symbolPair];
-      const [fromChainSymbol, toChainSymbol] = symbolPair.split('-');
-      const fromTokenList = getChainTokenList(c1Chain);
-      const toTokenList = getChainTokenList(c2Chain);
+      if (!symbolPairMap.hasOwnProperty(symbolPair)) continue
+      const makerData = symbolPairMap[symbolPair]
+      const [fromChainSymbol, toChainSymbol] = symbolPair.split('-')
+      const fromTokenList = getChainTokenList(c1Chain)
+      const toTokenList = getChainTokenList(c2Chain)
       const fromToken = fromTokenList.find(
         (item) => item.symbol === fromChainSymbol
-      );
-      const toToken = toTokenList.find((item) => item.symbol === toChainSymbol);
-      if (!fromToken || !toToken) continue;
+      )
+      const toToken = toTokenList.find((item) => item.symbol === toChainSymbol)
+      if (!fromToken || !toToken) continue
       const config = {
         id: '',
         makerId: '',
@@ -170,30 +168,30 @@ function convertMakerConfig(maker) {
           tradingFee: makerData.crossAddress?.tradingFee,
           gasFee: makerData.crossAddress?.gasFee,
         },
-      };
+      }
 
       if (
         config.toChain.id == 1 &&
         (config.toChain.symbol == 'USDC' || config.toChain.symbol == 'USDT')
       ) {
-        continue;
+        continue
       }
       // handle makerConfigs
-      configs.push(config);
+      configs.push(config)
       // v1 maker configs
       if (fromChainSymbol === toChainSymbol) {
-        v1MakerConfigs.push(config);
+        v1MakerConfigs.push(config)
       }
     }
   }
-  return configs;
+  return configs
 }
 
-const whiteList = [];
-let chainsGroup = {};
+const whiteList = []
+let chainsGroup = {}
 try {
-  chainsGroup = JSON.parse(process.env.VUE_APP_CHAINS_GROUP || '{}');
-} catch (err) { }
+  chainsGroup = JSON.parse(process.env.VUE_APP_CHAINS_GROUP || '{}')
+} catch (err) {}
 
 export default {
   chainConfig,
@@ -202,4 +200,4 @@ export default {
   whiteList,
   chainsGroup,
   chain,
-};
+}

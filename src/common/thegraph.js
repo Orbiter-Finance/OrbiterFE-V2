@@ -30,41 +30,7 @@ export async function getV2TradingPair() {
 
   v2TradingPairs = sortRule(ruleList)
 
-  return [
-    ...v2TradingPairs,
-    [
-      {
-        '535-551': {
-          'ETH-ETH': {
-            makerAddress: '0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3',
-            sender: 'Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g',
-            gasFee: 0,
-            tradingFee: 0.0001,
-            maxPrice: 1,
-            minPrice: 0.0001,
-            slippage: 200,
-            startTime: 0,
-            endTime: 99999999999999,
-          },
-        },
-      },
-      {
-        '551-535': {
-          'ETH-ETH': {
-            makerAddress: 'Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g',
-            sender: '0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3',
-            gasFee: 0,
-            tradingFee: 0.0001,
-            maxPrice: 1,
-            minPrice: 0.0001,
-            slippage: 200,
-            startTime: 0,
-            endTime: 99999999999999,
-          },
-        },
-      },
-    ],
-  ]
+  return v2TradingPairs
 }
 
 export async function getMdcRuleLatest(dealerAddress) {
