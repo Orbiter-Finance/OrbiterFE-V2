@@ -6,7 +6,6 @@ import {
 } from '../../../composition/walletsResponsiveData'
 import { web3State } from '../../../composition/hooks'
 import { CHAIN_ID } from '../../../config'
-import * as ethers from 'ethers'
 import Web3 from 'web3'
 
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
@@ -24,18 +23,12 @@ function getTransferContract(localChainID, contractAddress) {
     return
   }
   if (walletIsLogin.value) {
-    const provider = new ethers.providers.Web3Provider(
+    const web3 = new Web3(
       compatibleGlobalWalletConf.value.walletPayload.provider
     )
-    const signer = provider.getSigner()
-    // const ecourseContractInstance = new web3.eth.Contract(
-    //   Coin_ABI,
-    //   contractAddress
-    // )
-    const ecourseContractInstance = new ethers.Contract(
-      contractAddress,
+    const ecourseContractInstance = new web3.eth.Contract(
       Coin_ABI,
-      signer
+      contractAddress
     )
 
     if (!ecourseContractInstance) {

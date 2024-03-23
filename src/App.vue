@@ -22,12 +22,12 @@
         <BottomNav v-if="$route.path !== '/home'" />
       </keep-alive>
     </div>
-    <!-- <HeaderDialog /> -->
+    <HeaderDialog />
     <HeaderActDialog
       v-if="$route.path !== '/statistics' && $route.path !== '/home'"
       style="z-index: 999"
     />
-    <HeaderWalletGroup />
+    <!-- <HeaderWalletGroup /> -->
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
   </div>
