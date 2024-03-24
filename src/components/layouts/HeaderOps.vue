@@ -55,7 +55,7 @@
       </span>
       <span @click="showHistory" class="ops-item">History</span>
       <div
-        v-if="isSelectedStarkNet"
+        v-if="isSelectedStarkNet || isSelectedSolana"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -63,10 +63,10 @@
       >
         <svg-icon
           style="width: 2rem; height: 2rem"
-          iconName="sknlogo"
+          :iconName="connectWalletIcon"
         ></svg-icon>
         <span class="address">{{
-          starkAddress === 'not connected' ? 'connect starknet' : starkAddress
+          connectAddress
         }}</span>
       </div>
       <div
@@ -77,12 +77,9 @@
       >
         <svg-icon
           style="width: 2rem; height: 2rem"
-          :iconName="
-            globalSelectWalletConf.walletType &&
-            globalSelectWalletConf.walletType.toLowerCase()
-          "
+          :iconName="connectFirstWalletIcon"
         ></svg-icon>
-        <span class="address">{{ showAddress }}</span>
+        <span class="address">{{ connectFirstAddress }}</span>
       </div>
     </template>
     <div @click="toggleThemeMode" class="ops-mode">
@@ -101,12 +98,14 @@ import {
   setStarkNetDialog,
   setSelectWalletDialogVisible,
   starkAddress,
+  solAddress,
   showAddress,
   saveSenderPageWorkingState,
   setActDialogVisible,
   setActAddPointVisible,
   setActAddPoint,
   isStarkNetDialog,
+  isSolanaDialog,
   actDialogVisible,
   actTotalPoint,
   setActPoint,
@@ -115,6 +114,8 @@ import {
   setLotteryCardTotal,
   setLotteryCardProgress,
   transferDataState,
+  setConnectWalletGroupKey,
+  setSolanaDialog
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -124,6 +125,7 @@ import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { CHAIN_ID } from '../../config'
 import { requestPointSystem, requestLotteryCard } from '../../common/openApiAx'
 import util from '../../util/util'
+import solanaHelper from '../../util/solana/solana_helper'
 const addressPointMap = {}
 export default {
   name: 'HeaderOps',
@@ -161,32 +163,51 @@ export default {
       return walletIsLogin.value
     },
     isSelectedStarkNet () {
+      const { toChainID, fromChainID } = transferDataState
       return (
-        transferDataState.fromChainID === CHAIN_ID.starknet ||
-        transferDataState.fromChainID === CHAIN_ID.starknet_test ||
-        transferDataState.toChainID === CHAIN_ID.starknet ||
-        transferDataState.toChainID === CHAIN_ID.starknet_test
+        fromChainID === CHAIN_ID.starknet ||
+        fromChainID === CHAIN_ID.starknet_test ||
+        toChainID === CHAIN_ID.starknet ||
+        toChainID === CHAIN_ID.starknet_test
       )
     },
     isSelectedSolana () {
-      console.log("solana 172")
+      const { fromChainID, toChainID } = transferDataState
       return (
-        transferDataState.fromChainID === CHAIN_ID.solana ||
-        transferDataState.fromChainID === CHAIN_ID.solana_test ||
-        transferDataState.toChainID === CHAIN_ID.solana ||
-        transferDataState.toChainID === CHAIN_ID.solana_test
+        fromChainID === CHAIN_ID.solana ||
+        fromChainID === CHAIN_ID.solana_test ||
+        toChainID === CHAIN_ID.solana ||
+        toChainID === CHAIN_ID.solana_test
       )
+    },
+    connectWalletIcon(){
+      return this.isSelectedSolana ? CHAIN_ID.solana : CHAIN_ID.starknet
+    },
+    connectFirstWalletIcon(){
+      return this.isSelectedSolana && this.isSelectedStarkNet ?  CHAIN_ID.starknet  : (this.globalSelectWalletConf.walletType ?
+            this.globalSelectWalletConf.walletType.toLowerCase() : "")
     },
     starkAddress () {
       return starkAddress()
     },
+    solanaAddress () {
+      return solAddress()
+    },
     showAddress () {
       return showAddress()
+    },
+    connectFirstAddress () {
+      return this.isSelectedSolana && this.isSelectedStarkNet ?  this.starkAddress : this.showAddress
+    },
+    connectAddress () {
+      const address = this.isSelectedSolana && this.solanaAddress && (this.solanaAddress !== 'not connected') ? this.solanaAddress : (this.starkAddress === 'not connected' || this,this.connectFirstAddress === this.starkAddress ? 'Connect Wallet' : this.starkAddress)
+      return address
     },
     currentWalletAddress () {
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
+        web3State.solana.solanaAddress,
         ...[],
       ]
     },
@@ -213,22 +234,44 @@ export default {
       this.$emit('closeDrawer')
     },
     async connectStarkNetWallet () {
-      if (this.starkAddress === 'not connected') {
-        await connectStarkNetWallet()
-        return
+
+      if(this.isSelectedSolana) {
+        if(this.solanaAddress === 'not connected') {
+          setConnectWalletGroupKey("SOLANA")
+          setSelectWalletDialogVisible(true)
+        } else {
+          setSolanaDialog(true)
+          setActDialogVisible(true)
+        }
+      } else {
+        if(this.starkAddress === 'not connected') {
+          setConnectWalletGroupKey("STARKNET")
+          setSelectWalletDialogVisible(true)
+        } else {
+          setStarkNetDialog(true)
+          setActDialogVisible(true)
+        }
       }
-      setStarkNetDialog(true)
-      // setSelectWalletDialogVisible(true)
-      setActDialogVisible(true)
     },
     connectAWallet () {
-      setStarkNetDialog(false)
-      if (this.isLogin) {
-        setActDialogVisible(true)
+      setSolanaDialog(false)
+      if(this.isSelectedStarkNet && !!this.isLogin) {
+        if(this.starkAddress === 'not connected') {
+          setConnectWalletGroupKey("STARKNET")
+          setSelectWalletDialogVisible(true)
+        } else {
+          setStarkNetDialog(true)
+          setActDialogVisible(true)
+        }
       } else {
-        setSelectWalletDialogVisible(true)
+        if(this.showAddress === 'not connected' || !this.isLogin) {
+          setConnectWalletGroupKey("EVM")
+          setSelectWalletDialogVisible(true)
+        } else {
+          setStarkNetDialog(false)
+          setActDialogVisible(true)
+        }
       }
-      this.$emit('closeDrawer')
     },
     showHistory () {
       this.$emit('closeDrawer')
@@ -256,10 +299,10 @@ export default {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const [web3Address, starkNetAddress, solanaAddress] = this.currentWalletAddress
+      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup
       }
       return {
@@ -270,7 +313,7 @@ export default {
     },
     async getWalletAddressPoint () {
       const { isAddress, address } = this.getAddress()
-      const [_web3Address, starkNetAddress] = this.currentWalletAddress
+      const [_web3Address, starkNetAddress, solanaAddress] = this.currentWalletAddress
 
       if (isAddress) {
         const pointRes = await requestPointSystem('v2/user/points', {
@@ -279,7 +322,10 @@ export default {
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
-          if (starkNetAddress) {
+          if(solanaAddress) {
+            setSolanaDialog(true)
+            setActDialogVisible(true)
+          } else if (starkNetAddress) {
             setStarkNetDialog(true)
             setActDialogVisible(true)
           }

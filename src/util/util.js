@@ -254,7 +254,6 @@ export default {
         return new Promise(async (resolve) => {
           const web3 = new Web3(item)
           const res = await web3.eth.getBlockNumber()
-          console.log('res', res, item)
           resolve(item)
         })
       })
@@ -395,7 +394,6 @@ export default {
   },
 
   isEvmChain(chainId) {
-    console.log('solana 398')
     return ![
       CHAIN_ID.zksync,
       CHAIN_ID.zksync_test,
@@ -465,7 +463,6 @@ export default {
 
   isSolana() {
     const { fromChainID, toChainID } = transferDataState
-    console.log('solana 468')
     return (
       fromChainID === CHAIN_ID.solana ||
       fromChainID === CHAIN_ID.solana_test ||

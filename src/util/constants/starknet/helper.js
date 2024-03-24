@@ -1,5 +1,12 @@
 import BigNumber from 'bignumber.js'
-import { Account, Contract, RpcProvider, uint256, stark } from 'starknet'
+import {
+  Account,
+  Contract,
+  RpcProvider,
+  uint256,
+  stark,
+  shortString,
+} from 'starknet'
 import util from '../../util'
 import erc20Abi from './erc20_abi.json'
 import starkNetCrossAbi from './ob_source_abi.json'
@@ -160,7 +167,6 @@ export async function sendTransfer(
   amount,
   chainID
 ) {
-  l1Address = l1Address.toLowerCase()
   tokenAddress = tokenAddress.toLowerCase()
   makerAddress = makerAddress.toLowerCase()
   const networkID = getNetworkIdByChainId(chainID)
@@ -182,6 +188,14 @@ export async function sendTransfer(
   )
   const receiverAddress = makerAddress
 
+  console.log(
+    '11111',
+    contractAddress,
+    shortString
+      .splitLongString(l1Address)
+      .map((item) => shortString.encodeShortString(item))
+  )
+
   try {
     let tx
     if (amount.gt(allowance)) {
@@ -194,6 +208,9 @@ export async function sendTransfer(
         receiverAddress,
         getUint256CalldataFromBN(String(amount)),
         l1Address,
+        shortString
+          .splitLongString(l1Address)
+          .map((item) => shortString.encodeShortString(item)),
       ])
       // const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
       // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
@@ -206,7 +223,9 @@ export async function sendTransfer(
         tokenAddress,
         receiverAddress,
         getUint256CalldataFromBN(String(amount)),
-        l1Address,
+        shortString
+          .splitLongString(l1Address)
+          .map((item) => shortString.encodeShortString(item)),
       ])
       // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       tx = await getStarknet().account.execute(transferERC20TxCall)

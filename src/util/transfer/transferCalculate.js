@@ -23,6 +23,8 @@ import {
   transferDataState,
   web3State,
   tradingPairsData,
+  setSelectWalletDialogVisible,
+  setConnectWalletGroupKey,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 import { EBC_ABI } from '../constants/contract/contract'
@@ -610,7 +612,7 @@ export default {
       fromChainID === CHAIN_ID.solana_test
     ) {
       // solana cost
-      console.log('solana 613')
+      console.log('solana gas')
       ethGas = 5 * 10 ** 3
     }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
@@ -1048,15 +1050,15 @@ export default {
     ) {
       try {
         const connection = solanaHelper.getConnection()
-        console.log('solana 1051')
-        console.log(
-          'Solana Balance',
-          localChainID,
-          tokenAddress,
-          tokenName,
-          userAddress,
-          isMaker
-        )
+
+        const isConnected = await solanaHelper.isConnect()
+        const solanaAddress = await solanaHelper.solanaAddress()
+
+        if (!solanaAddress || !isConnected) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+          return '0'
+        }
 
         const fromPublicKey = solanaHelper.getPublicKey(
           'DSfuRdqeRDuGtaX9LVjyREE8CsuEU2HnMg9BgbTPZ4zx'

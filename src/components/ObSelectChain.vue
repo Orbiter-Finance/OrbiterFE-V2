@@ -72,8 +72,10 @@ import {customSort} from '../util/index'
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
-import { web3State, setSelectWalletDialogVisible } from '../composition/hooks'
+import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
+import  solanaHelper from '../util/solana/solana_helper';
+import { getStarknet } from 'get-starknet'
 
 export default {
     name: 'ObSelectChain',
@@ -126,7 +128,6 @@ export default {
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
                 CHAIN_ID.solana, CHAIN_ID.solana_test
             ]
-            console.log("solana 129")
             return this.orderChainIds(chainOrderIds, newArray)
         },
         newChainData: function () {
@@ -145,7 +146,6 @@ export default {
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
                 CHAIN_ID.solana, CHAIN_ID.solana_test
             ]
-            console.log("solana 148")
             return customSort(chainOrderIds,chains)
         },
         groupChains:function() {
@@ -203,19 +203,26 @@ export default {
                         const { starkIsConnected, starkNetAddress } =
                             web3State.starkNet
                         if (!starkIsConnected && !starkNetAddress) {
-                            // setSelectWalletDialogVisible(true)
-                            await connectStarkNetWallet()
-                            if (
-                                !web3State.starkNet.starkIsConnected &&
-                                !web3State.starkNet.starkNetAddress
-                            ) {
-                                return
-                            }
+                            setConnectWalletGroupKey("STARKNET")
+                            setSelectWalletDialogVisible(true)
+                            return
+                            // await connectStarkNetWallet()
+                            // if (
+                            //     !web3State.starkNet.starkIsConnected &&
+                            //     !web3State.starkNet.starkNetAddress
+                            // ) {
+                            //     return
+                            // }
                         }
                     }
                     // solana
                     if (e.localID === CHAIN_ID.solana || e.localID === CHAIN_ID.solana_test) {
-                        console.log("SOLANA OBSELECTCHAIN 216")
+                        const isConnected = await solanaHelper.isConnect()
+                        if(!isConnected) {
+                            setSelectWalletDialogVisible(true)
+                            setConnectWalletGroupKey("SOLANA")
+                            return 
+                        }
                     }
                     // immutableX
                     if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
@@ -249,7 +256,6 @@ export default {
 
                     this.loadingIndex = -1
                 } catch (err) {
-                    console.log('obselect getChainInfo error', err)
                     this.$notify.error({
                         title: err.message,
                         duration: 3000,
@@ -267,7 +273,6 @@ export default {
         search() { },
         checkKeyWord() { },
         isStarkSystem(chainId) {
-            console.log("solana 270")
             return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
         },
     }

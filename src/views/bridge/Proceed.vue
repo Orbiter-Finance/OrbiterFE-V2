@@ -435,6 +435,7 @@ export default {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
                 if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+                    userAddress = web3State.solana.solanaAddress
                     console.log("solana proceed 437")
                 }
                 url = util.getAccountExploreUrl(fromChainID) + userAddress

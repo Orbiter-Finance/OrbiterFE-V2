@@ -46,7 +46,6 @@ export default {
       localChainID === CHAIN_ID.solana ||
       localChainID === CHAIN_ID.solana_test
     ) {
-      console.log('solana 49')
       return 0
     } else if (
       localChainID === CHAIN_ID.imx ||

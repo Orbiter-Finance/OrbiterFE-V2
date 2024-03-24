@@ -19,3 +19,12 @@ export function starkAddress() {
   }
   return 'not connected'
 }
+export function solAddress() {
+  const solanaAddress = web3State.solana.solanaAddress || ''
+  if (solanaAddress && solanaAddress.length > 5) {
+    const subStr1 = solanaAddress.slice(0, 4)
+    const subStr2 = solanaAddress.slice(solanaAddress.length - 4)
+    return subStr1 + '...' + subStr2
+  }
+  return 'not connected'
+}

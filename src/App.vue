@@ -52,13 +52,17 @@ import {
   isMobile,
   setActDialogVisible,
   setStarkNetDialog,
+  setSolanaDialog,
   web3State,
   isStarkNetDialog,
+  isSolanaDialog,
   setActAddPoint,
   setActAddPointVisible,
   setActPoint,
   setActNftList,
   updateActDataList,
+  setSelectWalletDialogVisible,
+  setConnectWalletGroupKey
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -103,6 +107,7 @@ export default {
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
+        web3State.solana.solanaAddress,
         ...[],
       ]
     },
@@ -164,7 +169,10 @@ export default {
   },
   async mounted () {
     if (isBrowserApp()) {
-      await connectStarkNetWallet()
+      // await connectStarkNetWallet()
+
+      setSelectWalletDialogVisible(true)
+      setConnectWalletGroupKey("STARKNET")
     }
 
     if (isBraveBrowser()) {
@@ -204,11 +212,15 @@ export default {
       }
     },
     currentWalletAddress: function (newAddress) {
-      const [web3Address, starkNetAddress] = newAddress
-      if (starkNetAddress) {
+      const [web3Address, starkNetAddress, solanaAddress] = newAddress
+      if(solanaAddress) {
+        setSolanaDialog(true)
+        setActDialogVisible(true)
+      } else  if (starkNetAddress) {
         setStarkNetDialog(true)
         setActDialogVisible(true)
       }
+      
       if (!!web3Address || !!starkNetAddress) {
         this.dataList = []
         this.getWalletAddressActList()
@@ -223,10 +235,10 @@ export default {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const [web3Address, starkNetAddress, solanaAddress] = this.currentWalletAddress
+      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup
       }
       return {

@@ -1,11 +1,34 @@
-import { Connection, PublicKey } from '@solana/web3.js'
-import { getOrCreateAssociatedTokenAccount } from '@solana/spl-token'
+import {
+  Connection,
+  Transaction,
+  PublicKey,
+  TransactionInstruction,
+} from '@solana/web3.js'
+
+import {
+  TOKEN_PROGRAM_ID,
+  getOrCreateAssociatedTokenAccount,
+  createTransferInstruction,
+} from '@solana/spl-token'
+
+import { utils } from 'ethers'
 
 const rpc =
   'https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85'
 
 const getConnection = () => {
   return new Connection(rpc, 'confirmed')
+}
+
+const getProvider = () => {
+  const provider = window.solflare
+
+  return provider
+}
+
+const disConnect = async () => {
+  console.log('getProvider', getProvider())
+  await getProvider().disconnect()
 }
 
 const getPublicKey = (address) => {
@@ -26,10 +49,87 @@ const getTokenAccount = async ({
   )
 }
 
+const isConnect = async () => {
+  const isConnected = window?.solflare?.isConnected
+  return isConnected
+}
+
+const solanaAddress = async () => {
+  const publickey = window?.solflare?.publicKey
+  return publickey?.toString()
+}
+
+const transfer = async ({
+  from,
+  to,
+  tokenAddress,
+  targetAddress,
+  amount,
+  safeCode,
+}) => {
+  const provider = getProvider()
+
+  const fromPublicKey = getPublicKey(from)
+
+  const wallet = getConnection()
+
+  const recentBlockhash = await wallet.getLatestBlockhash()
+
+  const toPublicKey = new PublicKey(to)
+
+  const tokenPublicKey = new PublicKey(tokenAddress)
+
+  const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
+    wallet,
+    fromPublicKey,
+    tokenPublicKey,
+    fromPublicKey
+  )
+  const toTokenAccount = await getOrCreateAssociatedTokenAccount(
+    wallet,
+    fromPublicKey,
+    tokenPublicKey,
+    toPublicKey
+  )
+
+  const tokenTransaction = new Transaction({
+    recentBlockhash: recentBlockhash.blockhash,
+    feePayer: fromPublicKey,
+  })
+    .add(
+      createTransferInstruction(
+        fromTokenAccount.address,
+        toTokenAccount.address,
+        fromPublicKey,
+        amount,
+        [],
+        TOKEN_PROGRAM_ID
+      )
+    )
+    .add(
+      new TransactionInstruction({
+        keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
+        data: utils.toUtf8Bytes(
+          utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
+        ),
+        programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+      })
+    )
+
+  const signature = await provider.signAndSendTransaction(tokenTransaction)
+  console.log('signature', signature)
+
+  return signature.signature
+}
+
 const solanaHelper = {
   getConnection,
   getPublicKey,
   getTokenAccount,
+  isConnect,
+  solanaAddress,
+  transfer,
+  disConnect,
 }
 
 export default solanaHelper

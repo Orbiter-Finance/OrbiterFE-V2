@@ -4,36 +4,51 @@
     :style="{ display: this.selectWalletDialogVisible ? 'flex' : 'none' }"
   >
     <div class="header-wallet-content">
+      <div class="close" @click.stop="closeSelectWalletDialog">
+        <img :src="require('../../assets/data/close.png')" />
+      </div>
       <div class="title">Connect a Wallet</div>
       <div class="wallet-list">
-        <div class="wallet-group-title">EVM Wallet</div>
-        <div class="wallet-group-list">
-          <div v-for="item in evmWallet" :key="item.title" class="wallet-item">
-            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-            <span class="wallet-title">{{ item.title }}</span>
+        <div v-if="connectWalletGroupKey === 'EVM'" class="wallet-group">
+          <div class="wallet-group-title">EVM Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in evmWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectEvmWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
           </div>
         </div>
-        <div class="wallet-group-title">StarkNet Wallet</div>
-        <div class="wallet-group-list">
-          <div
-            v-for="item in starknetWallet"
-            :key="item.key"
-            class="wallet-item"
-          >
-            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-            <span class="wallet-title">{{ item.title }}</span>
+        <div v-else-if="connectWalletGroupKey === 'STARKNET'" class="wallet-group">
+          <div class="wallet-group-title">StarkNet Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in starknetWallet"
+              :key="item.key"
+              class="wallet-item"
+              @click="connectStarkNetWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
           </div>
         </div>
-        <div class="wallet-group-title">Solana Wallet</div>
-        <div class="wallet-group-list">
-          <div
-            v-for="item in solanaWallet"
-            :key="item.title"
-            class="wallet-item"
-            @click="connectSolanaWallet"
-          >
-            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
-            <span class="wallet-title">{{ item.title }}</span>
+        <div v-else-if="connectWalletGroupKey === 'SOLANA'" class="wallet-group">
+          <div class="wallet-group-title">Solana Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in solanaWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectSolanaWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -50,6 +65,8 @@ import {
   selectWalletDialogVisible,
   setSelectWalletDialogVisible,
   web3State,
+  connectWalletGroupKey,
+  setConnectWalletGroupKey
 } from '../../composition/hooks'
 
 import walletDispatchers, {
@@ -60,12 +77,9 @@ import walletDispatchers, {
   CURRENT_SUPPORT_WALLET,
 } from '../../util/walletsDispatchers'
 
-import util, {
-  onCopySuccess,
-  onCopyError,
-  isMobileDevice,
-  isBrowserApp,
-} from '../../util'
+import util, { isMobileDevice, isBrowserApp } from '../../util'
+
+import { getStarkNetCurrentChainId } from '../../util/constants/starknet/helper'
 
 import { getStarknet, connect } from 'get-starknet'
 
@@ -75,27 +89,7 @@ import { isBraveBrowser } from '../../util/browserUtils'
 
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
-import {
-  ethereumClient,
-  walletConnectDispatcherOnInit,
-} from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
-
-import {
-  Connection,
-  Transaction,
-  Keypair,
-  PublicKey,
-  SystemProgram,
-  TransactionInstruction,
-  sendAndConfirmTransaction,
-} from '@solana/web3.js'
-
-import {
-  TOKEN_PROGRAM_ID,
-  getOrCreateAssociatedTokenAccount,
-  createTransferInstruction,
-} from '@solana/spl-token'
-import { utils } from 'ethers'
+import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 
 import { store } from '../../store'
 
@@ -105,6 +99,9 @@ const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
 export default {
   name: 'HeaderWalletGroup',
   computed: {
+    connectWalletGroupKey() {
+      return connectWalletGroupKey.value
+    },
     selectWalletDialogVisible() {
       return selectWalletDialogVisible.value
     },
@@ -229,135 +226,28 @@ export default {
   methods: {
     closeSelectWalletDialog() {
       setSelectWalletDialogVisible(false)
+      setConnectWalletGroupKey("EVM")
     },
     checkIsMobileEnv() {
       return isMobileDevice()
     },
-    async connectSolanaWallet() {
-
-
+    async connectSolanaWallet(item) {
       const provider = window.solflare
-      console.log('provider', provider)
 
       const status = await provider.connect()
-      console.log('status', status)
 
       const fromPublicKey = provider.publicKey || window.solflare.publicKey
-      console.log('1111', provider, fromPublicKey.toString())
-      console.log('1111', provider.publicKey.toBase58())
 
-      const networks =
-        ''
+      store.commit('updateSolanaAddress', fromPublicKey.toString())
+      store.commit('updateSolanaWalletName', item.title.toLocaleLowerCase())
+      store.commit('updateSolanaWalletIcon', item.icon)
+      store.commit('updateSolanaIsConnect', status)
 
-      const wallet = new Connection(networks, 'confirmed')
-      console.log('wallet', wallet)
+      if (status) {
+        this.closeSelectWalletDialog()
+      }
 
-      const block = await wallet.getBlockHeight()
-      console.log('block', block)
-
-      const balance = await wallet.getBalance(fromPublicKey)
-      console.log('balance', balance)
-
-      const recentBlockhash = await wallet.getLatestBlockhash()
-      console.log('recentBlockhash', recentBlockhash)
-
-      const to = 'Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g'
-
-      const toPublicKey = new PublicKey(to)
-      console.log('toPublicKey', toPublicKey.toString())
-
-      const tokenStr = 'GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE'
-      const tokenPublicKey = new PublicKey(tokenStr)
-
-      const amount = '100000000'
-
-      const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
-        wallet,
-        fromPublicKey,
-        tokenPublicKey,
-        fromPublicKey
-      )
-
-      console.log('fromTokenAccount', fromTokenAccount)
-      console.log(
-        'fromTokenAccount.address',
-        fromTokenAccount.address.toString()
-      )
-      console.log('fromTokenAccount.mint', fromTokenAccount.mint.toString())
-      console.log('fromTokenAccount.owner', fromTokenAccount.owner.toString())
-
-      const toTokenAccount = await getOrCreateAssociatedTokenAccount(
-        wallet,
-        fromPublicKey,
-        tokenPublicKey,
-        toPublicKey,
-      )
-
-      console.log('toTokenAccount', toTokenAccount)
-      console.log('toTokenAccount.address', toTokenAccount.address.toString())
-      console.log('toTokenAccount.mint', toTokenAccount.mint.toString())
-      console.log('toTokenAccount.owner', toTokenAccount.owner.toString())
-
-      const keypair = new Keypair()
-
-      console.log('keypair', keypair)
-
-      // const transaction = new Transaction({
-      //   recentBlockhash: recentBlockhash.blockhash,
-      //   feePayer: fromPublicKey,
-      // })
-
-      // const solTransaction = transaction.add(
-      //   SystemProgram.transfer({
-      //     fromPubkey: fromPublicKey,
-      //     toPubkey: toPublicKey,
-      //     lamports: 0,
-      //   })
-      // )
-      // console.log('solTransaction', solTransaction)
-
-      const tokenTransaction = new Transaction({
-        recentBlockhash: recentBlockhash.blockhash,
-        feePayer: fromPublicKey
-      })
-        .add(
-          createTransferInstruction(
-            fromTokenAccount.address,
-            toTokenAccount.address,
-            fromPublicKey,
-            amount,
-            [],
-            TOKEN_PROGRAM_ID
-          )
-        )
-        .add(
-          new TransactionInstruction({
-            keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-            data: utils.toUtf8Bytes(
-              'c=9535&t=0xa100af6959977c919db26d5ef8dd4289e888f927'
-            ),
-            programId: new PublicKey(
-              'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'
-            ),
-          })
-        )
-      // const signer = await provider.signTransaction(tokenTransaction)
-      // console.log('signer', signer)
-
-      // const signatureSol = await provider.signAndSendTransaction(solTransaction)
-      // console.log('signatureSol', signatureSol)
-
-      console.log('tokenTransaction', tokenTransaction)
-      console.log(' provider.signAndSendTransaction',  provider.signAndSendTransaction)
-
-      const signature = await provider.signAndSendTransaction(
-        tokenTransaction,
-        // {
-        //   commitment: 'confirmed',
-        // }
-      )
-
-      console.log('signature', signature)
+      return
     },
     async connectEvmWallet(walletConf) {
       if (walletConf === WALLETCONNECT && isBrowserApp()) {
@@ -385,13 +275,11 @@ export default {
     },
 
     async connectStarkNetWallet(walletConf) {
-      console.log('walletConf', walletConf)
 
       const wallet = await connect({
         order: [walletConf.key],
         include: [walletConf.key],
       })
-      console.log('wallet', wallet)
       if (!wallet) {
         return
       }
@@ -399,15 +287,13 @@ export default {
         .enable({ showModal: false })
         .then((address) => !!address?.length)
 
-      console.log('enabled', enabled)
-
       if (enabled) {
-        console.log('starknet address', getStarknet().selectedAddress)
         store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
         store.commit('updateStarkNetWalletName', wallet.name)
         store.commit('updateStarkNetWalletIcon', wallet.icon)
         store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
         store.commit('updateStarkNetIsConnect', getStarknet().isConnected)
+        this.closeSelectWalletDialog()
         getStarknet().on('accountsChanged', (e) => {
           store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
           store.commit('updateStarkNetChain', getStarkNetCurrentChainId())
@@ -446,6 +332,21 @@ export default {
     background: #ffffff;
     border-radius: 16px;
     padding: 16px 16px 24px 24px;
+    position: relative;
+    top: 0;
+    left: 0;
+
+    .close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      cursor: pointer;
+
+      img {
+        width: 32px;
+        height: 32px;
+      }
+    }
 
     .title {
       font-family: Kodchasan, Kodchasan;
@@ -463,48 +364,51 @@ export default {
 
       overflow: auto;
 
-      .wallet-group-title {
-        font-family: OpenSans, OpenSans;
-        font-weight: 400;
-        font-size: 14px;
-        color: #999999;
-        line-height: 19px;
-        text-align: left;
-        font-style: normal;
-        margin-top: 18px;
-      }
+      .wallet-group {
+        width: 100%;
+        .wallet-group-title {
+          font-family: OpenSans, OpenSans;
+          font-weight: 400;
+          font-size: 14px;
+          color: #999999;
+          line-height: 19px;
+          text-align: left;
+          font-style: normal;
+          margin-top: 18px;
+        }
 
-      .wallet-group-list {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-
-        .wallet-item {
-          width: calc(50% - 8px);
-          padding: 14px;
+        .wallet-group-list {
           display: flex;
-          justify-content: start;
+          justify-content: space-between;
           align-items: center;
-          border: 1px solid #eeeeee;
-          margin-top: 12px;
-          border-radius: 8px;
-          cursor: pointer;
+          flex-wrap: wrap;
 
-          .wallet-icon {
-            width: 28px;
-            height: 28px;
-            margin-right: 14px;
-          }
+          .wallet-item {
+            width: calc(50% - 8px);
+            padding: 14px;
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            border: 1px solid #eeeeee;
+            margin-top: 12px;
+            border-radius: 8px;
+            cursor: pointer;
 
-          .wallet-title {
-            font-family: OpenSansRoman, OpenSansRoman;
-            font-weight: 600;
-            font-size: 16px;
-            color: #222222;
-            line-height: 22px;
-            text-align: left;
-            font-style: normal;
+            .wallet-icon {
+              width: 28px;
+              height: 28px;
+              margin-right: 14px;
+            }
+
+            .wallet-title {
+              font-family: OpenSansRoman, OpenSansRoman;
+              font-weight: 600;
+              font-size: 16px;
+              color: #222222;
+              line-height: 22px;
+              text-align: left;
+              font-style: normal;
+            }
           }
         }
       }

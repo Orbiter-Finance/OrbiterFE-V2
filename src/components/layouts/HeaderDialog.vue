@@ -126,6 +126,7 @@ import {
     selectWalletDialogVisible,
     setSelectWalletDialogVisible,
     web3State,
+    setConnectWalletGroupKey
 } from '../../composition/hooks'
 import {
     compatibleGlobalWalletConf,
@@ -254,10 +255,8 @@ export default {
 
                 if (solanaChain) {
                     if (solanaChain === CHAIN_ID.solana) {
-                        console.log("solana 257")
                         networkName = 'Solana Mainnet'
                     } else if (solanaChain === CHAIN_ID.solana_test) {
-                        console.log("solana 260")
                         networkName = 'Solana Dev'
                     }
                 }
@@ -334,6 +333,7 @@ export default {
         onCopyError,
         closeSelectWalletDialog() {
             setSelectWalletDialogVisible(false)
+            setConnectWalletGroupKey("EVM")
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()

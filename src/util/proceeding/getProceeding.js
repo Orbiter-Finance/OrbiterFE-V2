@@ -128,7 +128,6 @@ export default {
     ) {
       txHash = txHash.replace('sync-tx:', '0x')
     }
-    console.log('txHash', txHash)
     store.commit('updateProceedTxID', txHash)
     store.commit('updateProceedingUserTransferFrom', user)
     store.commit('updateProceedingUserTransferTo', maker)

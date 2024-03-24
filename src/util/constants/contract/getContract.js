@@ -27,7 +27,6 @@ function getTransferContract(localChainID, contractAddress) {
     localChainID === CHAIN_ID.solana ||
     localChainID === CHAIN_ID.solana_test
   ) {
-    console.log('solana 30')
     return
   }
   if (walletIsLogin.value) {

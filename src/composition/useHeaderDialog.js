@@ -1,6 +1,7 @@
 import { ref } from './'
 
 export const isStarkNetDialog = ref(false)
+export const isSolanaDialog = ref(false)
 export const selectWalletDialogVisible = ref(false)
 export const actDialogVisible = ref(false)
 export const actDialogHover = ref(false)
@@ -10,6 +11,7 @@ export const actTotalPoint = ref('0')
 export const actBasePoint = ref('0')
 export const actTotalActivityPoint = ref('0')
 export const actEcosystemPoints = ref('0')
+export const connectWalletGroupKey = ref('EVM')
 
 export const actNftList = ref([])
 
@@ -20,8 +22,11 @@ export const lotteryCardCurrentProgress = ref('0')
 export const lotteryCardProgressMax = ref('0')
 
 export const setStarkNetDialog = (flag) => (isStarkNetDialog.value = flag)
+export const setSolanaDialog = (flag) => (isSolanaDialog.value = flag)
 export const setSelectWalletDialogVisible = (flag) =>
   (selectWalletDialogVisible.value = flag)
+export const setConnectWalletGroupKey = (value) =>
+  (connectWalletGroupKey.value = value)
 export const setActDialogVisible = (flag) => (actDialogVisible.value = flag)
 export const setActDialogHover = (flag) => (actDialogHover.value = flag)
 export const setActAddPointVisible = (flag) => (actAddPointVisible.value = flag)
