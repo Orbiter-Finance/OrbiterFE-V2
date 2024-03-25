@@ -54,7 +54,12 @@
             "0x3be8b60ddf9feff6b2426e47a7619d7cbc786d97",
             "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
         ],
-        "infoURL": "https://etherscan.io"
+        "infoURL": "https://etherscan.io",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x3be8b60ddf9feff6b2426e47a7619d7cbc786d97": "OrbiterRouterV1",
+            "0xc741900276cd598060b0fe6594fbe977392928f4": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -109,7 +114,12 @@
         "xvmList": [
             "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
         ],
-        "infoURL": "https://explorer.arbitrum.io"
+        "infoURL": "https://explorer.arbitrum.io",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x752bc92211d1ecbb31f84e57c9dfc39a15df9cfa": "OrbiterRouterV1",
+            "0x6a065083886ec63d274b8e1fe19ae2ddf498bfdd": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -160,7 +170,10 @@
                 "address": "0xdac17f958d2ee523a2206206994597c13d831ec7"
             }
         ],
-        "infoURL": ""
+        "infoURL": "",
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -184,6 +197,7 @@
         },
         "rpc": [
             "https://starknet.blockpi.network/v1/rpc/public",
+            "https://starknet.drpc.org",
             "https://starknet-mainnet.public.blastapi.io"
         ],
         "watch": [
@@ -225,7 +239,10 @@
                 "address": "0x068f5c6a61780768455de69077e07e89787839bf8166decfbf92b645209c0fb8"
             }
         ],
-        "infoURL": "https://starkscan.co"
+        "infoURL": "https://starkscan.co",
+        "contract": {
+            "0x0173f81c529191726c6e7287e24626fe24760ac44dae2a1f7e02080230f8458b": "OBSource"
+        }
     },
     {
         "api": {
@@ -285,7 +302,12 @@
         "xvmList": [
             "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
         ],
-        "infoURL": "https://polygonscan.com"
+        "infoURL": "https://polygonscan.com",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x752bc92211d1ecbb31f84e57c9dfc39a15df9cfa": "OrbiterRouterV1",
+            "0x653f25dc641544675338cb47057f8ea530c69b78": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -346,7 +368,12 @@
         "xvmList": [
             "0x752bC92211d1ecbb31f84e57c9dFc39A15DF9CFA"
         ],
-        "infoURL": "https://optimistic.etherscan.io"
+        "infoURL": "https://optimistic.etherscan.io",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x752bc92211d1ecbb31f84e57c9dfc39a15df9cfa": "OrbiterRouterV1",
+            "0x3191f40de6991b1bb1f61b7cec43d62bb337786b": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -380,7 +407,10 @@
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
         ],
-        "infoURL": "https://immutascan.io"
+        "infoURL": "https://immutascan.io",
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -416,7 +446,10 @@
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
         ],
-        "infoURL": "https://explorer.loopring.io"
+        "infoURL": "https://explorer.loopring.io",
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -458,7 +491,10 @@
                 "address": "0xEA32A96608495e54156Ae48931A7c20f0dcc1a21"
             }
         ],
-        "infoURL": "https://andromeda-explorer.metis.io"
+        "infoURL": "https://andromeda-explorer.metis.io",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource"
+        }
     },
     {
         "api": {
@@ -528,7 +564,10 @@
                 "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
             }
         ],
-        "infoURL": "https://zkspace.info"
+        "infoURL": "https://zkspace.info",
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -617,7 +656,11 @@
                 "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
             }
         ],
-        "infoURL": "https://explorer.zksync.io"
+        "infoURL": "https://explorer.zksync.io",
+        "contract": {
+            "0xbf3922a0cebbcd718e715e83d9187cc4bba23f11": "OBSource",
+            "0xb4ab2ff34fadc774aff45f1c4566cb5e16bd4867": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -673,7 +716,11 @@
                 "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
             }
         ],
-        "infoURL": "https://bscscan.com"
+        "infoURL": "https://bscscan.com",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -711,7 +758,11 @@
                 "address": "0x750ba8b76187092b0d1e87e28daaf484d1b5273b"
             }
         ],
-        "infoURL": "https://nova.arbiscan.io"
+        "infoURL": "https://nova.arbiscan.io",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0xbea3c3c4f00799b9b053f7ad25024d85e1ad049a": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -759,7 +810,11 @@
                 "address": "0x1e4a5963abfd975d8c9021ce480b42188849d41d"
             }
         ],
-        "infoURL": "https://zkevm.polygonscan.com/"
+        "infoURL": "https://zkevm.polygonscan.com/",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -820,7 +875,11 @@
                 "address": "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df"
             }
         ],
-        "infoURL": "https://scrollscan.com"
+        "infoURL": "https://scrollscan.com",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -877,7 +936,11 @@
                 "address": "0xd9aAEc86B65D86f6A7B5B1b0c42FFA531710b6CA"
             }
         ],
-        "infoURL": "https://basescan.org"
+        "infoURL": "https://basescan.org",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -939,7 +1002,11 @@
                 "address": "0xA219439258ca9da29E9Cc4cE5596924745e12B93"
             }
         ],
-        "infoURL": "https://lineascan.build"
+        "infoURL": "https://lineascan.build",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -980,7 +1047,11 @@
                 "address": "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111"
             }
         ],
-        "infoURL": "https://explorer.mantle.xyz"
+        "infoURL": "https://explorer.mantle.xyz",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -1023,7 +1094,11 @@
                 "address": "0xe7798f023fc62146e8aa1b36da45fb70855a77ea"
             }
         ],
-        "infoURL": "https://mainnet.opbnbscan.com"
+        "infoURL": "https://mainnet.opbnbscan.com",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -1059,7 +1134,11 @@
         "tokens": [
 
         ],
-        "infoURL": "https://explorer.zora.energy"
+        "infoURL": "https://explorer.zora.energy",
+        "contract": {
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OBSource",
+            "0x2598d7bc9d3b4b6124f3282e49eee68db270f516": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -1111,7 +1190,11 @@
         "tokens": [
 
         ],
-        "infoURL": "https://manta-pacific.calderaexplorer.xyz"
+        "infoURL": "https://manta-pacific.calderaexplorer.xyz",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -1150,7 +1233,11 @@
                 "address": "0x4b21b980d0Dc7D3C0C6175b0A412694F3A1c7c6b"
             }
         ],
-        "infoURL": "https://scan.zkfair.io"
+        "infoURL": "https://scan.zkfair.io",
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        }
     },
     {
         "api": {
@@ -1189,7 +1276,11 @@
         "tokens": [
 
         ],
-        "infoURL": "https://kromascan.com"
+        "infoURL": "https://kromascan.com",
+        "contract": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
+            "0x2598d7bC9D3b4B6124f3282E49Eee68db270F516": "OBSource"
+        }
     },
     {
         "name": "ZetaChain",
@@ -1377,43 +1468,56 @@
         ]
     },
     {
-        "api": {
-            "url": "",
-            "key": ""
-        },
-        "chainId": "SOLANA_MAIN",
-        "networkId": "SOLANA_MAIN",
-        "internalId": "51",
         "name": "Solana",
-        "batchLimit": 20,
-        "debug": true,
-        "service": {
-            "api": "SolanaApiScanningService"
-        },
-        "icon": "SOLANA_MAIN",
-        "features": [],
-        "nativeCurrency": {
-            "name": "SOL",
-            "symbol": "SOL",
-            "decimals": 9,
-            "address": "11111111111111111111111111111111"
-        },
-        "rpc": [],
-        "contracts": [
-            {
-                "name": "SolanaProgramId",
-                "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
-                "methods": []
-            }
+        "rpc": [
+            "https://solana-mainnet.g.alchemy.com/v2/J3tWMROCkv-w67cWYdz2AMYLjeOjjmkA"
         ],
+        "faucets": [
+
+        ],
+        "service": {
+            "rpc": "SolanaRpcScanningService"
+        },
         "tokens": [
             {
                 "name": "USDC Coin",
                 "symbol": "USDC",
                 "decimals": 6,
+                "coinKey": "USDC",
                 "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
             }
         ],
-        "infoURL": "https://solscan.io"
+        "batchLimit": 100,
+        "internalId": "51",
+        "nativeCurrency": {
+            "name": "Wrapped SOL",
+            "symbol": "SOL",
+            "decimals": 9,
+            "coinKey": "SOL",
+            "address": "So11111111111111111111111111111111111111112"
+        },
+        "infoURL": "https://solscan.io/",
+        "shortName": "Solana",
+        "chainId": "SOLANA_MAIN",
+        "networkId": "SOLANA_MAIN",
+        "explorers": [
+            {
+                "name": "Block Explorer",
+                "url": "https://solscan.io/",
+                "icon": "solana"
+            }
+        ],
+        "contract": {
+
+        },
+        "contracts": [
+            {
+                "name": "SolanaProgramId",
+                "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+                "methods": [
+
+                ]
+            }
+        ]
     }
 ]
