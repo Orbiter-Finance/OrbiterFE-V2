@@ -334,7 +334,7 @@ export default {
     },
     methods: {
         async transferToSolana() {
-            const { selectMakerConfig, fromChainID, transferValue } =
+            const { selectMakerConfig, fromChainID, transferValue, toChainID, fromCurrency } =
                 transferDataState
 
             if (!walletIsLogin.value) {
@@ -347,6 +347,16 @@ export default {
             if(!toAddress || !isConnected) {
                 setSelectWalletDialogVisible(true)
                 setConnectWalletGroupKey("SOLANA")
+                return
+            }
+
+            try {
+                const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+                if(res === "signature") {
+                    return
+                }
+            } catch (error) {
+                util.showMessage(error?.message || error?.data?.message || String(error), 'error');
                 return
             }
 
@@ -393,7 +403,7 @@ export default {
                 const rAmountValue = rAmount.toFixed()
 
 
-                const contract = new ethers.Contract(
+                const transferContract = new ethers.Contract(
                     contractAddress,
                     Orbiter_V3_ABI_EVM,
                     signer
@@ -401,7 +411,7 @@ export default {
 
                 if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
                     // When tokenAddress is eth
-                    const res = await contract.transfer(
+                    const res = await transferContract.transfer(
                         recipient,
                         ethers.utils.hexlify(ethers.utils.toUtf8Bytes(str)),
                         {
@@ -410,7 +420,15 @@ export default {
                     transferHash = res?.hash
 
                 } else {
-                    const res = await contract.transferToken(
+                    const tokenContact = new ethers.Contract(tokenAddress, Coin_ABI, signer)
+
+                    const allowance = await tokenContact.allowance(from, contractAddress)
+                    if(!allowance.gte(rAmount.toString())) {
+                        const approveRes = await tokenContact.approve(contractAddress, rAmount.toString())
+                        const result = await approveRes.wait()
+                    }
+
+                    const res = await transferContract.transferToken(
                         tokenAddress,
                         recipient,
                         rAmountValue,
@@ -953,6 +971,7 @@ export default {
                 crossAddressReceipt,
                 fromChainID,
                 toChainID,
+                fromCurrency
             } = transferDataState
             const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             try {
@@ -981,6 +1000,15 @@ export default {
                         setSelectWalletDialogVisible(true)
                         setConnectWalletGroupKey("SOLANA")
                         return 
+                    }
+                    try {
+                        const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+                        if(res === "signature") {
+                            return
+                        }
+                    } catch (error) {
+                        util.showMessage(error?.message || error?.data?.message || String(error), 'error');
+                        return
                     }
                     memo = `${p_text}_${solanaAddress}`
                 }
@@ -1226,7 +1254,7 @@ export default {
             } catch (error) {
               console.error('transfer error', error);
                 this.$notify.error({
-                    title: error.message,
+                    title: error.message || String(error),
                     duration: 3000,
                 })
             } finally {
@@ -1234,7 +1262,7 @@ export default {
             }
         },
         async starknetTransfer(value) {
-            const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+            const { selectMakerConfig, fromChainID, toChainID, fromCurrency, transferValue } =
                 transferDataState
             let from = ""
             let tokenAddress = selectMakerConfig.fromChain.tokenAddress
@@ -1293,7 +1321,15 @@ export default {
                     return
                 }
 
-                console.log("value", value)
+                try {
+                    const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+                    if(res === "signature") {
+                        return
+                    }
+                } catch (error) {
+                    util.showMessage(error?.message || error?.data?.message || String(error), 'error');
+                    return
+                }
 
                 const hash = await sendTransferV3({
                     targetAddress: from,
