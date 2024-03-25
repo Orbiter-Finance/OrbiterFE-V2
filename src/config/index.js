@@ -35,6 +35,7 @@ export const CHAIN_ID = {
 
   zksync_test: 'zksync_test',
   starknet_test: 'SN_SEPOLIA',
+  solana: 'SOLANA_MAIN',
   solana_test: 'SOLANA_DEV',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',

@@ -1230,6 +1230,8 @@ export default {
             let from = ""
             let tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
+            console.log("toChainID", toChainID)
+
             if (
                 fromChainID === CHAIN_ID.starknet ||
                 fromChainID === CHAIN_ID.starknet_test ||
