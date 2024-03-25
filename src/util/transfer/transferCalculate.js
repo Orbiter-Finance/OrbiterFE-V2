@@ -1060,7 +1060,7 @@ export default {
 
         const tokenAccountBalance = await util.getSolanaBalance(
           localChainID,
-          solanaAddress,
+          userAddress,
           tokenAddress
         )
 

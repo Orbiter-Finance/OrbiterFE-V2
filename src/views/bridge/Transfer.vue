@@ -2185,8 +2185,7 @@ export default {
         address = web3State.starkNet.starkNetAddress;
       }
       if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
-        address = web3State.solana.solanaAddress;
-        console.log("solana refreshUserBalance")
+        address = await solanaHelper.solanaAddress();
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
@@ -2215,8 +2214,8 @@ export default {
       if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
         address = web3State.starkNet.starkNetAddress;
       }
-      if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
-        address = web3State.solana.solanaAddress;
+      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+        address = await solanaHelper.solanaAddress();
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
