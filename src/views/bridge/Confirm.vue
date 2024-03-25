@@ -214,6 +214,7 @@ import { CHAIN_ID } from "../../config";
 import { isBrowserApp, isProd } from "../../util";
 import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20 } from "../../util/zksyncEraGasToken";
 import solanaHelper from '../../util/solana/solana_helper';
+import { shortString } from 'starknet';
 
 const {
     walletDispatchersOnSignature,
@@ -260,7 +261,7 @@ export default {
             return gasTokenInfo.info
         },
         confirmData() {
-            const { selectMakerConfig } = transferDataState
+            const { selectMakerConfig, transferValue, fromChainID } = transferDataState
             // 0.000120000000009022 to 0.000120...09022
             let realTransferAmount = transferCalculate
                 .realTransferAmount()
@@ -271,6 +272,12 @@ export default {
             )
             const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
+
+            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+                realTransferAmount = ethers.utils.formatEther(
+                    ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
+                    )
+            }
             
             const isGasTokenChain = (this.currentFromChainID === CHAIN_ID.zksync2)
             const comm = [
@@ -1275,26 +1282,18 @@ export default {
                     return
                 }
 
-                const safeCode = transferCalculate.safeCode()
-
-                const rAmount = new BigNumber(transferValue)
-                    .plus(new BigNumber(selectMakerConfig.tradingFee))
-                    .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
-                const rAmountValue = rAmount.toFixed()
-
                 const hash = await sendTransferV3({
                     targetAddress: from,
                     tokenAddress,
                     makerAddress: selectMakerConfig.recipient,
-                    amount: new BigNumber(rAmountValue),
-                    fromChainID,
-                    safeCode
+                    amount: value,
+                    chainID: fromChainID,
                 })
                 try {
                     this.$gtag.event('click', {
                     'event_category': 'Transfer',
                     'event_label': selectMakerConfig.recipient.toLocaleLowerCase(),
-                    'userAddress':from.toLocaleLowerCase(), 
+                    'userAddress':from, 
                     'hash': hash 
                     })
                 }catch(error) {

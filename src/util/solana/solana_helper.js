@@ -12,11 +12,14 @@ import {
 } from '@solana/spl-token'
 
 import { utils } from 'ethers'
-
-const rpc =
-  'https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85'
+import util from '../util'
+import { isProd } from '../env'
+import { CHAIN_ID } from '../../config'
 
 const getConnection = () => {
+  const chainId = isProd() ? CHAIN_ID.solana : CHAIN_ID.solana_test
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  const rpc = chainInfo?.rpc?.[0]
   return new Connection(rpc, 'confirmed')
 }
 
@@ -73,8 +76,6 @@ const transfer = async ({
   amount,
   safeCode,
 }) => {
-  console.log('11111', from, to, tokenAddress, targetAddress, amount, safeCode)
-
   const provider = getProvider()
 
   const fromPublicKey = getPublicKey(from)

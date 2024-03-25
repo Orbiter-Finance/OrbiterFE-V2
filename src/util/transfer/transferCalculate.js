@@ -613,7 +613,7 @@ export default {
     ) {
       // solana cost
       console.log('solana gas')
-      ethGas = 5 * 10 ** 3
+      ethGas = 15 * 10 ** 3
     }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
@@ -1049,8 +1049,6 @@ export default {
       localChainID === CHAIN_ID.solana_test
     ) {
       try {
-        const connection = solanaHelper.getConnection()
-
         const isConnected = await solanaHelper.isConnect()
         const solanaAddress = await solanaHelper.solanaAddress()
 
@@ -1060,26 +1058,14 @@ export default {
           return '0'
         }
 
-        const fromPublicKey = solanaHelper.getPublicKey(
-          'DSfuRdqeRDuGtaX9LVjyREE8CsuEU2HnMg9BgbTPZ4zx'
+        const tokenAccountBalance = await util.getSolanaBalance(
+          localChainID,
+          solanaAddress,
+          tokenAddress
         )
 
-        const fromTokenAccount = await solanaHelper.getTokenAccount({
-          fromPublicKey,
-          tokenPublickey: solanaHelper.getPublicKey(tokenAddress),
-          toPublickey: fromPublicKey,
-        })
-
-        let tokenAccountBalance = await connection.getTokenAccountBalance(
-          fromTokenAccount.address,
-          'confirmed'
-        )
-
-        console.log('tokenAccountBalance', tokenAccountBalance)
-
-        return tokenAccountBalance.value.amount
+        return String(tokenAccountBalance || '0')
       } catch (error) {
-        console.log('error', error)
         return '0'
       }
     } else if (

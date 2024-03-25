@@ -31,10 +31,8 @@ const STARKNET_CROSS_CONTRACT_ADDRESS = {
 }
 
 const STARKNET_CROSS_CONTRACT_ADDRESS_V3 = {
-  'mainnet-alpha':
-    '0x058680be0cf3f29c7a33474a218e5fed1ad213051cb2e9eac501a26852d64ca2',
-  'goerli-alpha':
-    '0x07a937ddb092aac5a91735d1949ae997a0e8abb4057254b33f5c95eb2f0d51ce',
+  mainnet: '0x058680be0cf3f29c7a33474a218e5fed1ad213051cb2e9eac501a26852d64ca2',
+  test: '0x07a937ddb092aac5a91735d1949ae997a0e8abb4057254b33f5c95eb2f0d51ce',
 }
 
 const L1_TO_L2_ADDRESSES = {
@@ -243,16 +241,13 @@ export async function sendTransferV3({
   makerAddress,
   amount,
   chainID,
-  safeCode,
 }) {
   console.log('tokenAddress', tokenAddress)
   console.log('makerAddress', makerAddress)
-  tokenAddress = tokenAddress.toLowerCase()
-  makerAddress = makerAddress.toLowerCase()
   const networkID = getNetworkIdByChainId(chainID)
 
   const chainId = networkID === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test
-  const network = networkID === 1 ? 'mainnet-alpha' : 'goerli-alpha'
+  const network = networkID === 1 ? 'mainnet' : 'test'
   const contractAddress = STARKNET_CROSS_CONTRACT_ADDRESS_V3[network]
   console.log('contractAddress', contractAddress)
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
@@ -263,9 +258,15 @@ export async function sendTransferV3({
   const tokenContract = new Contract(erc20Abi, tokenAddress, provider)
   const allowance = await getAllowance(tokenContract, contractAddress)
 
-  const contract = new Contract(v3StarknetAbi, contractAddress, provider)
+  const starknetTransferContractV3 = new Contract(
+    v3StarknetAbi,
+    contractAddress,
+    provider
+  )
 
-  const str = `c=${safeCode}&t=${targetAddress}`
+  console.log('starknetTransferContractV3', starknetTransferContractV3)
+
+  const str = `t=${targetAddress}`
 
   console.log('chainInfo.rpc[0]', chainInfo.rpc[0])
 
@@ -275,10 +276,12 @@ export async function sendTransferV3({
     String(amount),
     amount.toString(),
     str,
-    shortString
-      .splitLongString(str)
-      .map((item) => shortString.encodeShortString(item))
+    uint256.bnToUint256(String(amount))
   )
+
+  const shortData = shortString
+    .splitLongString(str)
+    .map((item) => shortString.encodeShortString(item))
 
   try {
     let tx
@@ -286,14 +289,15 @@ export async function sendTransferV3({
       contractAddress,
       uint256.bnToUint256(String(amount)),
     ])
-    const transferERC20TxCall = contract.populate('transferERC20', [
-      tokenAddress,
-      makerAddress,
-      uint256.bnToUint256(String(amount)),
-      shortString
-        .splitLongString(str)
-        .map((item) => shortString.encodeShortString(item)),
-    ])
+    const transferERC20TxCall = starknetTransferContractV3.populate(
+      'transferERC20',
+      [
+        tokenAddress,
+        makerAddress,
+        uint256.bnToUint256(String(amount)),
+        shortData,
+      ]
+    )
     if (amount.gt(allowance)) {
       // const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
       // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
