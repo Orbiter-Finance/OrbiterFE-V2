@@ -24,7 +24,7 @@ const getConnection = () => {
 }
 
 const getProvider = () => {
-  const provider = window.okxwallet.solana
+  const provider = window?.okxwallet?.solana
   // const provider = window.solflare
 
   if (!provider) {
