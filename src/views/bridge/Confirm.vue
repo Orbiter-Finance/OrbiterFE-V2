@@ -352,7 +352,16 @@ export default {
 
             const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-            const contractAddress = chainInfo?.contracts?.filter((item)=> item?.name?.toLocaleLowerCase() === "OrbiterRouterV3"?.toLocaleLowerCase())[0]?.address
+            const contractGroup = chainInfo?.contract || {}
+
+            const contractList = Object.keys(contractGroup).map((key)=> {
+                return ({
+                    name: contractGroup[key],
+                    address: key 
+                })
+            })
+
+            const contractAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OrbiterRouterV3"?.toLocaleLowerCase())[0]?.address
 
             if(!contractAddress) {
                 this.$notify.error({
