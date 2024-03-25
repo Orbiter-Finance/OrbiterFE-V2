@@ -31,7 +31,9 @@
           <o-tooltip
                   v-if="
             transferDataState.fromChainID === CHAIN_ID.starknet ||
-            transferDataState.fromChainID === CHAIN_ID.starknet_test
+            transferDataState.fromChainID === CHAIN_ID.starknet_test ||
+            transferDataState.fromChainID === CHAIN_ID.solana ||
+            transferDataState.fromChainID === CHAIN_ID.solana_test 
           "
           >
             <template v-slot:titleDesc>
@@ -103,7 +105,9 @@
           <o-tooltip
                   v-if="
             transferDataState.toChainID == CHAIN_ID.starknet ||
-            transferDataState.toChainID == CHAIN_ID.starknet_test
+            transferDataState.toChainID == CHAIN_ID.starknet_test ||
+            transferDataState.fromChainID === CHAIN_ID.solana ||
+            transferDataState.fromChainID === CHAIN_ID.solana_test 
           "
           >
             <template v-slot:titleDesc>
@@ -173,7 +177,7 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet)">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
@@ -427,13 +431,17 @@ import {
   setActAddPoint,
   setActAddPointVisible,
   updateActDataList, setActPoint, setActDialogVisible, setActNftList,
-  updateTradingPairsData
+  updateTradingPairsData,
+  setSelectWalletDialogVisible,
+  setConnectWalletGroupKey
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 import { ethers } from 'ethers'
+
+import solanaHelper from "../../util/solana/solana_helper"
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -549,6 +557,9 @@ export default {
       if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
         return false;
       }
+      if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
+        return false;
+      }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
@@ -559,6 +570,9 @@ export default {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
+        return false;
+      }
+      if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -603,7 +617,7 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
+      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -870,6 +884,9 @@ export default {
         this.updateTransferInfo();
       }
     },
+    'web3State.solana.solanaAddress': function (newValue) {
+      console.log("solana web3State.solana.solanaAddress", newValue)
+    },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
@@ -1022,6 +1039,12 @@ export default {
         }
       } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.toChainID)) {
         this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+      }
+      if ([CHAIN_ID.solana, CHAIN_ID.solana].includes(transferDataState.fromChainID)) {
+        console.log("solana transfer fillAddress")
+      } else if ([CHAIN_ID.solana, CHAIN_ID.solana].includes(transferDataState.toChainID)) {
+        // this.crossAddressReceipt = web3State.solana.solanaAddress;
+        console.log("solana transfer fillAddress")
       }
     },
     async syncV3Data(first) {
@@ -1537,7 +1560,8 @@ export default {
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test) {
+      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test) {
+        console.log("solana specialProcessing")
         if (this.isCrossAddress) this.isCrossAddress = false;
         if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
@@ -1954,10 +1978,10 @@ export default {
         if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
-          if (!starkChain || starkChain === 'unlogin') {
-            util.showMessage('please connect Starknet Wallet', 'error');
-            return;
-          }
+          // if (!starkChain || starkChain === 'unlogin') {
+          //   util.showMessage('please connect Starknet Wallet', 'error');
+          //   return;
+          // }
           // if (!getStarknet().selectedAddress) {
           //   await connectStarkNetWallet();
           //   util.log(`can't find starknet selectedAddress,reconnect starknet wallet ${ getStarknet().selectedAddress }`);
@@ -1976,6 +2000,14 @@ export default {
             );
             return;
           }
+        } else if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+          const isConnect = await solanaHelper.isConnect()
+          if(!isConnect) {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey("SOLANA")
+            return
+          }
+          
         } else {
           if (+compatibleGlobalWalletConf.value.walletPayload.networkId !== +util.getMetaMaskNetworkId(fromChainID)) {
             if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
@@ -2013,7 +2045,8 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = ((isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
+        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? await solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase());
+        console.log("compatibleGlobalWalletConf.value.walletPayload.walletAddress", crossAddressReceipt + "11213131", compatibleGlobalWalletConf.value.walletPayload.walletAddress)
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -2152,6 +2185,10 @@ export default {
       if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
         address = web3State.starkNet.starkNetAddress;
       }
+      if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+        address = web3State.solana.solanaAddress;
+        console.log("solana refreshUserBalance")
+      }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
                   .then(async (response) => {
@@ -2178,6 +2215,9 @@ export default {
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
       if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
         address = web3State.starkNet.starkNetAddress;
+      }
+      if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+        address = web3State.solana.solanaAddress;
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)

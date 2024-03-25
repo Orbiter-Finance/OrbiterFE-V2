@@ -305,6 +305,8 @@ import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
         if (selectChainId === CHAIN_ID.starknet || selectChainId === CHAIN_ID.starknet_test) {
           // starknet
           txHash = util.starknetHashFormat(txHash);
+        } else if (selectChainId === CHAIN_ID.solana || selectChainId === CHAIN_ID.solana_test) {
+          // solana
         } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
           if (!Number(txHash)) {
             util.showMessage("Hash error", "error");

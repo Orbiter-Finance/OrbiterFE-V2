@@ -10,9 +10,28 @@ import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
+import { RequestMethod, requestOpenApi } from "../common/openApiAx";
+import axios from 'axios';
 let chainsList = []
 
 export default {
+  async getSolanaBalance(chainId, address, tokenAddress) {
+    if (['SOLANA_DEV', 'SOLANA_TEST', 'SOLANA_MAIN'].includes(chainId)) {
+      const networkParams = chainId === 'SOLANA_DEV' ? '?network=devnet' : '';
+      // solflare
+      try {
+        const res = await axios.get(`https://wallet-api.solflare.com/v3/portfolio/tokens/${address}${networkParams}`, { timeout: 2000 });
+        const tokens = res.data.tokens;
+        const token = tokens.find(item => String(item.mint) === String(tokenAddress));
+        if (!token) return "0";
+        return new BigNumber(token.totalUiAmount).multipliedBy(10 ** token.decimals);
+      } catch (e) {
+        console.error('solflare api error', e);
+        return await requestOpenApi(RequestMethod.getBalance, [chainId, address, tokenAddress]);
+      }
+    }
+  },
+
   getAccountAddressError(address, isStarknet) {
     if (isStarknet) {
       try {
@@ -254,7 +273,6 @@ export default {
         return new Promise(async (resolve) => {
           const web3 = new Web3(item)
           const res = await web3.eth.getBlockNumber()
-          console.log('res', res, item)
           resolve(item)
         })
       })
@@ -321,7 +339,7 @@ export default {
 
   async getRpcList(chainId) {
     // const res = await this.getNetworkRpc()
-    const res = [];
+    const res = []
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
     let rpcList = shuffle(uniq(chainInfo?.rpc || []))
@@ -332,9 +350,8 @@ export default {
         rpcList = [stableRpc.rpc, ...rpcList]
       }
       rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
-
     } catch (e) {
-      console.error('parse stableRpc  error', e);
+      console.error('parse stableRpc  error', e)
     }
     return rpcList
   },
@@ -401,6 +418,8 @@ export default {
       CHAIN_ID.zksync_test,
       CHAIN_ID.starknet,
       CHAIN_ID.starknet_test,
+      CHAIN_ID.solana,
+      CHAIN_ID.solana_test,
       CHAIN_ID.imx,
       CHAIN_ID.imx_test,
       CHAIN_ID.loopring,
@@ -458,6 +477,16 @@ export default {
       fromChainID === CHAIN_ID.starknet_test ||
       toChainID === CHAIN_ID.starknet ||
       toChainID === CHAIN_ID.starknet_test
+    )
+  },
+
+  isSolana() {
+    const { fromChainID, toChainID } = transferDataState
+    return (
+      fromChainID === CHAIN_ID.solana ||
+      fromChainID === CHAIN_ID.solana_test ||
+      toChainID === CHAIN_ID.solana ||
+      toChainID === CHAIN_ID.solana_test
     )
   },
 

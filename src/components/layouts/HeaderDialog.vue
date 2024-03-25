@@ -126,6 +126,7 @@ import {
     selectWalletDialogVisible,
     setSelectWalletDialogVisible,
     web3State,
+    setConnectWalletGroupKey
 } from '../../composition/hooks'
 import {
     compatibleGlobalWalletConf,
@@ -241,13 +242,22 @@ export default {
         },
         loginInfoData() {
             if (this.isStarkNetDialog) {
-                const starkChain = web3State.starkNet?.starkChain
+                const starkChain = web3State.starkNet?.starkChainc
+                const solanaChain = web3State.solana?.solanaChain
                 let networkName = ''
                 if (starkChain) {
                     if (starkChain === CHAIN_ID.starknet) {
                         networkName = 'Starknet Mainnet'
                     } else if (starkChain === CHAIN_ID.starknet_test) {
                         networkName = 'Goerli Testnet'
+                    }
+                }
+
+                if (solanaChain) {
+                    if (solanaChain === CHAIN_ID.solana) {
+                        networkName = 'Solana Mainnet'
+                    } else if (solanaChain === CHAIN_ID.solana_test) {
+                        networkName = 'Solana Dev'
                     }
                 }
 
@@ -323,6 +333,7 @@ export default {
         onCopyError,
         closeSelectWalletDialog() {
             setSelectWalletDialogVisible(false)
+            setConnectWalletGroupKey("EVM")
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()

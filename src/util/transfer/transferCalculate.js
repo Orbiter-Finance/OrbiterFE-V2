@@ -23,10 +23,14 @@ import {
   transferDataState,
   web3State,
   tradingPairsData,
+  setSelectWalletDialogVisible,
+  setConnectWalletGroupKey,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
+
+import solanaHelper from '../solana/solana_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -603,6 +607,14 @@ export default {
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
       ethGas += SNWithDrawL1Gas
     }
+    if (
+      fromChainID === CHAIN_ID.solana ||
+      fromChainID === CHAIN_ID.solana_test
+    ) {
+      // solana cost
+      console.log('solana gas')
+      ethGas = 15 * 10 ** 3
+    }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
@@ -1032,6 +1044,30 @@ export default {
         starknetAddress = userAddress
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
+    } else if (
+      localChainID === CHAIN_ID.solana ||
+      localChainID === CHAIN_ID.solana_test
+    ) {
+      try {
+        const isConnected = await solanaHelper.isConnect()
+        const solanaAddress = await solanaHelper.solanaAddress()
+
+        if (!solanaAddress || !isConnected) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+          return '0'
+        }
+
+        const tokenAccountBalance = await util.getSolanaBalance(
+          localChainID,
+          solanaAddress,
+          tokenAddress
+        )
+
+        return String(tokenAccountBalance || '0')
+      } catch (error) {
+        return '0'
+      }
     } else if (
       localChainID === CHAIN_ID.imx ||
       localChainID === CHAIN_ID.imx_test

@@ -22,6 +22,12 @@ function getTransferContract(localChainID, contractAddress) {
   ) {
     return
   }
+  if (
+    localChainID === CHAIN_ID.solana ||
+    localChainID === CHAIN_ID.solana_test
+  ) {
+    return
+  }
   if (walletIsLogin.value) {
     const web3 = new Web3(
       compatibleGlobalWalletConf.value.walletPayload.provider

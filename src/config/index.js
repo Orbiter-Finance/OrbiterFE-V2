@@ -34,7 +34,8 @@ export const CHAIN_ID = {
   scroll: '534352',
 
   zksync_test: 'zksync_test',
-  starknet_test: 'SN_GOERLI',
+  starknet_test: 'SN_SEPOLIA',
+  solana_test: 'SOLANA_DEV',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',

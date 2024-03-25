@@ -4,7 +4,7 @@ import {
   updatelpAccountInfo,
   web3State,
 } from '../../composition/hooks'
-import { CHAIN_ID } from "../../config";
+import { CHAIN_ID } from '../../config'
 
 export default {
   updateZKTokenList(state, obj) {
@@ -119,6 +119,43 @@ export default {
     }
     web3State.starkNet.starkChain = starkChain
   },
+
+  updateSolanaAddress(state, solanaAddress) {
+    if (!solanaAddress || solanaAddress.length === 0) {
+      solanaAddress = ''
+      web3State.solana.starkIsConnected = false
+      web3State.solana.solanaWalletName = ''
+      web3State.solana.solanaWalletIcon = ''
+    } else {
+      web3State.solana.starkIsConnected = true
+    }
+    web3State.solana.solanaAddress = solanaAddress
+  },
+  updateSolanaWalletName(state, solanaWalletName) {
+    if (!solanaWalletName || solanaWalletName.length === 0) {
+      solanaWalletName = ''
+    }
+    web3State.solana.solanaWalletName = solanaWalletName
+  },
+  updateSolanaWalletIcon(state, solanaWalletIcon) {
+    if (!solanaWalletIcon || solanaWalletIcon.length === 0) {
+      solanaWalletIcon = ''
+    }
+    web3State.solana.solanaWalletIcon = solanaWalletIcon
+  },
+  updateSolanaIsConnect(state, solanaIsConnect) {
+    if (!solanaIsConnect) {
+      web3State.solana.solanaWalletName = ''
+      web3State.solana.starkWalletIcon = ''
+      web3State.solana.starkChain = ''
+      web3State.solana.solanaAddress = ''
+    }
+    web3State.solana.solanaIsConnect = solanaIsConnect
+  },
+  updateSolanaChain(state, starkChain) {
+    web3State.solana.solanaChain = starkChain
+  },
+
   updateNetWorkId(state, netWorkId) {
     web3State.networkId = netWorkId
     updatelpAccountInfo(null)

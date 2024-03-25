@@ -4036,6 +4036,119 @@
   dependencies:
     buffer "~6.0.3"
 
+"@solana/codecs-core@2.0.0-experimental.8618508":
+  version "2.0.0-experimental.8618508"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-core/-/codecs-core-2.0.0-experimental.8618508.tgz#4f6709dd50e671267f3bea7d09209bc6471b7ad0"
+  integrity sha512-JCz7mKjVKtfZxkuDtwMAUgA7YvJcA2BwpZaA1NOLcted4OMC4Prwa3DUe3f3181ixPYaRyptbF0Ikq2MbDkYEA==
+
+"@solana/codecs-core@2.0.0-experimental.9741939":
+  version "2.0.0-experimental.9741939"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-core/-/codecs-core-2.0.0-experimental.9741939.tgz#1fa7f1f3b10ff924bd02c274615b2df1f5bda64d"
+  integrity sha512-7E51aEwLW+1ta6VWbEq0CbvwSUOcIwmaQCLpkOKsF6cwSNqE5GDv/jw9zKuiYOynlBFQO1Ws59a/hlb2wwwWKg==
+
+"@solana/codecs-data-structures@2.0.0-experimental.8618508":
+  version "2.0.0-experimental.8618508"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-data-structures/-/codecs-data-structures-2.0.0-experimental.8618508.tgz#c16a704ac0f743a2e0bf73ada42d830b3402d848"
+  integrity sha512-sLpjL9sqzaDdkloBPV61Rht1tgaKq98BCtIKRuyscIrmVPu3wu0Bavk2n/QekmUzaTsj7K1pVSniM0YqCdnEBw==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.8618508"
+    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
+
+"@solana/codecs-data-structures@2.0.0-experimental.9741939":
+  version "2.0.0-experimental.9741939"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-data-structures/-/codecs-data-structures-2.0.0-experimental.9741939.tgz#0d38aecd4b15471b16c947643069f5d13a2b27e5"
+  integrity sha512-Ghjx0pFEA22T/cpqg3zXHYlnxqKytjTr1QjgfhWvBrlVFkqr3ZQL4av9/V6sHKvpoi+JNkEwM1wE+tlpt/54CA==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.9741939"
+    "@solana/codecs-numbers" "2.0.0-experimental.9741939"
+
+"@solana/codecs-numbers@2.0.0-experimental.8618508":
+  version "2.0.0-experimental.8618508"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-numbers/-/codecs-numbers-2.0.0-experimental.8618508.tgz#d84f9ed0521b22e19125eefc7d51e217fcaeb3e4"
+  integrity sha512-EXQKfzFr3CkKKNzKSZPOOOzchXsFe90TVONWsSnVkonO9z+nGKALE0/L9uBmIFGgdzhhU9QQVFvxBMclIDJo2Q==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.8618508"
+
+"@solana/codecs-numbers@2.0.0-experimental.9741939":
+  version "2.0.0-experimental.9741939"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-numbers/-/codecs-numbers-2.0.0-experimental.9741939.tgz#5e5be75187779ee43a7f515cd14abc809e5ba588"
+  integrity sha512-VXBvw8LZdGUJGuC33EFzvaUxCvgNtr9y9Td8zjK9wJDqKSzR0+G53CJv5K4AF25LUu8du8XHBK3VEz3YHl44nQ==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.9741939"
+
+"@solana/codecs-strings@2.0.0-experimental.8618508":
+  version "2.0.0-experimental.8618508"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-strings/-/codecs-strings-2.0.0-experimental.8618508.tgz#72457b884d9be80b59b263bcce73892b081e9402"
+  integrity sha512-b2yhinr1+oe+JDmnnsV0641KQqqDG8AQ16Z/x7GVWO+AWHMpRlHWVXOq8U1yhPMA4VXxl7i+D+C6ql0VGFp0GA==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.8618508"
+    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
+
+"@solana/codecs-strings@2.0.0-experimental.9741939":
+  version "2.0.0-experimental.9741939"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/codecs-strings/-/codecs-strings-2.0.0-experimental.9741939.tgz#1253c55149c410327f499336e702ab311e3f3571"
+  integrity sha512-J1DCTJsAMhFcIIvys/yNWM2Vr4HEWi+LzFB9xxdH+FHTynApjTMd4vI7frgnckuWH7ynp8EZFPnBTje1BphQrw==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.9741939"
+    "@solana/codecs-numbers" "2.0.0-experimental.9741939"
+
+"@solana/options@2.0.0-experimental.8618508":
+  version "2.0.0-experimental.8618508"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/options/-/options-2.0.0-experimental.8618508.tgz#95385340e85f9e8a81b2bfba089404a61c8e9520"
+  integrity sha512-fy/nIRAMC3QHvnKi63KEd86Xr/zFBVxNW4nEpVEU2OT0gCEKwHY4Z55YHf7XujhyuM3PNpiBKg/YYw5QlRU4vg==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.8618508"
+    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
+
+"@solana/options@2.0.0-experimental.9741939":
+  version "2.0.0-experimental.9741939"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/options/-/options-2.0.0-experimental.9741939.tgz#f9ee7f6cb41a3c23d85333e9e6d891d7f12c9b84"
+  integrity sha512-Fj76WDb+SWEEN3i0gEVQHGPHR2v54ECHILluQ5r18deLHjtZpD48a0dZepf0YcyAG7OHofkRdPxInZ3YYDuZeQ==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.9741939"
+    "@solana/codecs-numbers" "2.0.0-experimental.9741939"
+
+"@solana/spl-token-group@^0.0.1":
+  version "0.0.1"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-token-group/-/spl-token-group-0.0.1.tgz#c892f7cc19ad1ed28b05713ddb95d3b1fe3c493d"
+  integrity sha512-dnBpjFhAskL+LzLfZhgeZVpDoO5ialtwear3vcHy3f+WNzJn/HITCmf341kekMHcLEeVaJts+4i/daVsfjqq7A==
+  dependencies:
+    "@solana/codecs-data-structures" "2.0.0-experimental.9741939"
+    "@solana/codecs-numbers" "2.0.0-experimental.9741939"
+    "@solana/codecs-strings" "2.0.0-experimental.9741939"
+    "@solana/options" "2.0.0-experimental.9741939"
+    "@solana/spl-type-length-value" "0.1.0"
+
+"@solana/spl-token-metadata@^0.1.2":
+  version "0.1.2"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-token-metadata/-/spl-token-metadata-0.1.2.tgz#876e13432bd2960bd3cac16b9b0af63e69e37719"
+  integrity sha512-hJYnAJNkDrtkE2Q41YZhCpeOGU/0JgRFXbtrtOuGGeKc3pkEUHB9DDoxZAxx+XRno13GozUleyBi0qypz4c3bw==
+  dependencies:
+    "@solana/codecs-core" "2.0.0-experimental.8618508"
+    "@solana/codecs-data-structures" "2.0.0-experimental.8618508"
+    "@solana/codecs-numbers" "2.0.0-experimental.8618508"
+    "@solana/codecs-strings" "2.0.0-experimental.8618508"
+    "@solana/options" "2.0.0-experimental.8618508"
+    "@solana/spl-type-length-value" "0.1.0"
+
+"@solana/spl-token@^0.4.2":
+  version "0.4.2"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-token/-/spl-token-0.4.2.tgz#741cf2bbfacc7fb459caa4d9d430d5455d43c3fe"
+  integrity sha512-JIQs7pc9wLal4W8Go8tJGyBIquOicoNA3XI5d1cGQN7iAxBltr/xudSNm9UpnTbNUGAxh3HrzKbt77QIUIzWcA==
+  dependencies:
+    "@solana/buffer-layout" "^4.0.0"
+    "@solana/buffer-layout-utils" "^0.2.0"
+    "@solana/spl-token-group" "^0.0.1"
+    "@solana/spl-token-metadata" "^0.1.2"
+    buffer "^6.0.3"
+
+"@solana/spl-type-length-value@0.1.0":
+  version "0.1.0"
+  resolved "https://mirrors.cloud.tencent.com/npm/@solana/spl-type-length-value/-/spl-type-length-value-0.1.0.tgz#b5930cf6c6d8f50c7ff2a70463728a4637a2f26b"
+  integrity sha512-JBMGB0oR4lPttOZ5XiUGyvylwLQjt1CPJa6qQ5oM+MBCndfjz2TKKkw0eATlLLcYmq1jBVsNlJ2cD6ns2GR7lA==
+  dependencies:
+    buffer "^6.0.3"
+
 "@solana/wallet-adapter-backpack@^0.1.0":
   version "0.1.14"
   resolved "https://mirrors.cloud.tencent.com/npm/@solana/wallet-adapter-backpack/-/wallet-adapter-backpack-0.1.14.tgz#153d819e27b9457705d41e74306c30b64a565f5c"
