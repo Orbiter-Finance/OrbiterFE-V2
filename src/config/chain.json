@@ -1375,5 +1375,45 @@
                 ]
             }
         ]
+    },
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "SOLANA_MAIN",
+        "networkId": "SOLANA_MAIN",
+        "internalId": "51",
+        "name": "Solana",
+        "batchLimit": 20,
+        "debug": true,
+        "service": {
+            "api": "SolanaApiScanningService"
+        },
+        "icon": "SOLANA_MAIN",
+        "features": [],
+        "nativeCurrency": {
+            "name": "SOL",
+            "symbol": "SOL",
+            "decimals": 9,
+            "address": "11111111111111111111111111111111"
+        },
+        "rpc": [],
+        "contracts": [
+            {
+                "name": "SolanaProgramId",
+                "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+                "methods": []
+            }
+        ],
+        "tokens": [
+            {
+                "name": "USDC Coin",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+            }
+        ],
+        "infoURL": "https://solscan.io"
     }
 ]
