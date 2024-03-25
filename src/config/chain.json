@@ -1227,6 +1227,12 @@
         ],
         "tokens": [
             {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 18,
+                "address": "0x0000000000000000000000000000000000000000"
+            },
+            {
                 "name": "ETH",
                 "symbol": "ETH",
                 "decimals": 18,
@@ -1496,14 +1502,14 @@
             "coinKey": "SOL",
             "address": "So11111111111111111111111111111111111111112"
         },
-        "infoURL": "https://solscan.io/",
+        "infoURL": "https://solscan.io",
         "shortName": "Solana",
         "chainId": "SOLANA_MAIN",
         "networkId": "SOLANA_MAIN",
         "explorers": [
             {
                 "name": "Block Explorer",
-                "url": "https://solscan.io/",
+                "url": "https://solscan.io",
                 "icon": "solana"
             }
         ],

@@ -363,8 +363,7 @@ export default {
             userAddress = web3State.starkNet.starkNetAddress;
           }
           if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
-            console.log('solana 366')
-            console.log("solana proceed")
+            userAddress = web3State.solana.solanaAddress;
           }
           const accountUrl = explorerInfo.accountUrl || explorerInfo.url + '/address';
           const url = accountUrl + '/' + userAddress;
@@ -373,7 +372,7 @@ export default {
         getExplorer(isFrom = true) {
             const chainId = this.getChainId(isFrom);
             const chainInfo = util.getV3ChainInfoByChainId(chainId);
-            return chainInfo.explorers;
+            return chainInfo.explorers?.length > 1 ? chainInfo.explorers : null;
         },
         showChainIcon(isFrom = true) {
             if (this.detailData) {
@@ -436,7 +435,6 @@ export default {
                 }
                 if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
                     userAddress = web3State.solana.solanaAddress
-                    console.log("solana proceed 437")
                 }
                 url = util.getAccountExploreUrl(fromChainID) + userAddress
 
@@ -469,7 +467,7 @@ export default {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
                 if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-                    console.log("solana proceed 469")
+                    userAddress = web3State.solana.solanaAddress
                 }
                 url = util.getAccountExploreUrl(toChainID) + userAddress
 
