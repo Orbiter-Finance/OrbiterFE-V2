@@ -24,8 +24,12 @@ const getConnection = () => {
 }
 
 const getProvider = () => {
-  // const provider = window.okxwallet.solana
-  const provider = window.solflare
+  const provider = window.okxwallet.solana
+  // const provider = window.solflare
+
+  if (!provider) {
+    util.showMessage('Install OkxWallet', 'error')
+  }
 
   return provider
 }
