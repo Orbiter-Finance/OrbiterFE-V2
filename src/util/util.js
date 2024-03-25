@@ -10,9 +10,28 @@ import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
+import { RequestMethod, requestOpenApi } from "../common/openApiAx";
+import axios from 'axios';
 let chainsList = []
 
 export default {
+  async getSolanaBalance(chainId, address, tokenAddress) {
+    if (['SOLANA_DEV', 'SOLANA_TEST', 'SOLANA_MAIN'].includes(chainId)) {
+      const networkParams = chainId === 'SOLANA_DEV' ? '?network=devnet' : '';
+      // solflare
+      try {
+        const res = await axios.get(`https://wallet-api.solflare.com/v3/portfolio/tokens/${address}${networkParams}`, { timeout: 2000 });
+        const tokens = res.data.tokens;
+        const token = tokens.find(item => String(item.mint) === String(tokenAddress));
+        if (!token) return "0";
+        return new BigNumber(token.totalUiAmount).multipliedBy(10 ** token.decimals);
+      } catch (e) {
+        console.error('solflare api error', e);
+        return await requestOpenApi(RequestMethod.getBalance, [chainId, address, tokenAddress]);
+      }
+    }
+  },
+
   getAccountAddressError(address, isStarknet) {
     if (isStarknet) {
       try {
