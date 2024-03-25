@@ -79,7 +79,7 @@
   },
   "44-22": {
     "ETH-ETH": {
-      "makerAddress": "0x00e88cfe577661da14db31d05cd8fdc09f189700525161c817b7d5711d3484f5",
+      "makerAddress": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
       "sender": "0x80cead4b66a87d1f728eba116b94592b57eb0695",
       "gasFee": 10,
       "tradingFee": 0.0001,
@@ -93,7 +93,7 @@
   "22-44": {
     "ETH-ETH": {
       "makerAddress": "0x80cead4b66a87d1f728eba116b94592b57eb0695",
-      "sender": "0x00e88cfe577661da14db31d05cd8fdc09f189700525161c817b7d5711d3484f5",
+      "sender": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
       "gasFee": 10,
       "tradingFee": 0.0001,
       "maxPrice": 0.1,
@@ -257,7 +257,7 @@
   },
   "44-551": {
     "ETH-ETH": {
-      "makerAddress": "0x00e88cfe577661da14db31d05cd8fdc09f189700525161c817b7d5711d3484f5",
+      "makerAddress": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
       "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
       "gasFee": 1,
       "tradingFee": 0.0001,
@@ -271,11 +271,37 @@
   "551-44": {
     "ETH-ETH": {
       "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-      "sender": "0x00e88cfe577661da14db31d05cd8fdc09f189700525161c817b7d5711d3484f5",
+      "sender": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
       "gasFee": 1,
       "tradingFee": 0.0001,
       "maxPrice": 1,
       "minPrice": 0.0001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "44-535": {
+    "ETH-ETH": {
+      "makerAddress": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
+      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "gasFee": 50,
+      "tradingFee": 0.005,
+      "maxPrice": 5,
+      "minPrice": 0.001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "535-44": {
+    "ETH-ETH": {
+      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
+      "gasFee": 50,
+      "tradingFee": 0.005,
+      "maxPrice": 5,
+      "minPrice": 0.001,
       "slippage": 200,
       "startTime": 0,
       "endTime": 99999999999999

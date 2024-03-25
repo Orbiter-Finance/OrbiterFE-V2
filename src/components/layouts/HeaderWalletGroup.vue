@@ -92,6 +92,7 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 
 import { store } from '../../store'
+import solanaHelper from '../../util/solana/solana_helper';
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -232,13 +233,12 @@ export default {
       return isMobileDevice()
     },
     async connectSolanaWallet(item) {
-      const provider = window.solflare
 
-      const status = await provider.connect()
+      const status = await solanaHelper.connect()
+      const fromPublicKey = await solanaHelper.solanaAddress()
 
-      const fromPublicKey = provider.publicKey || window.solflare.publicKey
-
-      store.commit('updateSolanaAddress', fromPublicKey.toString())
+      console.log("fromPublicKey", fromPublicKey)
+      store.commit('updateSolanaAddress', fromPublicKey)
       store.commit('updateSolanaWalletName', item.title.toLocaleLowerCase())
       store.commit('updateSolanaWalletIcon', item.icon)
       store.commit('updateSolanaIsConnect', status)

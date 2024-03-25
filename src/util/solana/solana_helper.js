@@ -21,6 +21,7 @@ const getConnection = () => {
 }
 
 const getProvider = () => {
+  // const provider = window.okxwallet.solana
   const provider = window.solflare
 
   return provider
@@ -29,6 +30,11 @@ const getProvider = () => {
 const disConnect = async () => {
   console.log('getProvider', getProvider())
   await getProvider().disconnect()
+}
+
+const connect = async () => {
+  const res = await getProvider().connect()
+  return !!res?.toString()
 }
 
 const getPublicKey = (address) => {
@@ -50,12 +56,12 @@ const getTokenAccount = async ({
 }
 
 const isConnect = async () => {
-  const isConnected = window?.solflare?.isConnected
+  const isConnected = await getProvider().isConnected
   return isConnected
 }
 
 const solanaAddress = async () => {
-  const publickey = window?.solflare?.publicKey
+  const publickey = await getProvider().publicKey
   return publickey?.toString()
 }
 
@@ -67,6 +73,8 @@ const transfer = async ({
   amount,
   safeCode,
 }) => {
+  console.log('11111', from, to, tokenAddress, targetAddress, amount, safeCode)
+
   const provider = getProvider()
 
   const fromPublicKey = getPublicKey(from)
@@ -91,6 +99,8 @@ const transfer = async ({
     tokenPublicKey,
     toPublicKey
   )
+
+  console.log('toTokenAccount', toTokenAccount)
 
   const tokenTransaction = new Transaction({
     recentBlockhash: recentBlockhash.blockhash,
@@ -130,6 +140,7 @@ const solanaHelper = {
   solanaAddress,
   transfer,
   disConnect,
+  connect,
 }
 
 export default solanaHelper

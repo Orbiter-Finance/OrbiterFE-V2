@@ -2045,7 +2045,8 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = ((isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test) ? crossAddressReceipt : compatibleGlobalWalletConf.value.walletPayload.walletAddress).toLowerCase();
+        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? await solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase());
+        console.log("compatibleGlobalWalletConf.value.walletPayload.walletAddress", crossAddressReceipt + "11213131", compatibleGlobalWalletConf.value.walletPayload.walletAddress)
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {

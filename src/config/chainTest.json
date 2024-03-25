@@ -148,53 +148,6 @@
   },
   {
     "api": {
-      "url": "https://alpha4.starknet.io",
-      "key": ""
-    },
-    "chainId": "SN_GOERLI",
-    "networkId": "goerli-alpha",
-    "internalId": "44",
-    "name": "Starknet(G)",
-    "contracts": [
-      "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"
-    ],
-    "nativeCurrency": {
-      "id": 0,
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-    },
-    "rpc": [
-      "https://starknet-testnet.public.blastapi.io"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0x03e85bfbb8e2a42b7bead9e88e9a1b19dbccf661471061807292120462396ec9"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
-      }
-    ],
-    "infoURL": "https://goerli.voyager.online"
-  },
-  {
-    "api": {
       "url": "https://api-testnet.polygonscan.com/api",
       "key": ""
     },
@@ -1013,28 +966,22 @@
   },
   {
     "api": {
-      "url": "https://alpha4.starknet.io",
+      "url": "",
       "key": ""
     },
-    "chainId": "SN_GOERLI",
-    "networkId": "goerli-alpha",
+    "chainId": "SN_SEPOLIA",
+    "networkId": "sepolia-alpha",
     "internalId": "44",
-    "name": "Starknet Görli",
+    "name": "Starknet Sepolia",
     "debug": false,
     "targetConfirmation": 1,
-    "bridge": 1,
     "service": {
       "rpc": "StarknetRpcScanningService"
     },
     "contract": {
-      "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3": "OBSource"
+      "0x03a375038b9957f47a457dd828189d233d086d0b5d7bef14aef365beefb3fc0d": "OBSource",
+      "0x07a937ddb092aac5a91735d1949ae997a0e8abb4057254b33f5c95eb2f0d51ce": "OrbiterRouterV3"
     },
-    "contracts": [
-      {
-        "name": "StarknetOrbiterRouter",
-        "address": "0x07a937ddb092aac5a91735d1949ae997a0e8abb4057254b33f5c95eb2f0d51ce"
-      }
-    ],
     "nativeCurrency": {
       "id": 0,
       "name": "Ether",
@@ -1043,28 +990,19 @@
       "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
     },
     "rpc": [
-      "https://starknet-testnet.public.blastapi.io"
+      "https://starknet-sepolia.public.blastapi.io"
     ],
-    "tokens": [
+    "contracts": [
       {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0x03e85bfbb8e2a42b7bead9e88e9a1b19dbccf661471061807292120462396ec9"
+        "name": "OBSource",
+        "address": "0x03a375038b9957f47a457dd828189d233d086d0b5d7bef14aef365beefb3fc0d"
       },
       {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
+        "name": "StarknetOrbiterRouter",
+        "address": "0x07a937ddb092aac5a91735d1949ae997a0e8abb4057254b33f5c95eb2f0d51ce"
       }
     ],
-    "infoURL": "https://goerli.voyager.online"
+    "tokens": [],
+    "infoURL": "https://sepolia.voyager.online"
   }
 ]
