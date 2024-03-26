@@ -300,7 +300,8 @@ export default {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress, solanaAddress] = this.currentWalletAddress
+      const [web3Address, starkNetAddress] = this.currentWalletAddress
+      const solanaAddress = solanaHelper.solanaAddress()
       const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
       if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
@@ -314,7 +315,9 @@ export default {
     },
     async getWalletAddressPoint () {
       const { isAddress, address } = this.getAddress()
-      const [_web3Address, starkNetAddress, solanaAddress] = this.currentWalletAddress
+      const [_web3Address, starkNetAddress] = this.currentWalletAddress
+
+      const solanaAddress = solanaHelper.solanaAddress()
 
       if (isAddress) {
         const pointRes = await requestPointSystem('v2/user/points', {
