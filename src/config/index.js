@@ -112,11 +112,11 @@ function convertMakerConfig(maker) {
     ) {
       continue
     }
-    if (+fromChainId == 38 || +toChainId == 38) {
-      if (!(+fromChainId == 38 && +toChainId == 1)) {
-        continue
-      }
-    }
+    // if (+fromChainId == 38 || +toChainId == 38) {
+    //   if (!(+fromChainId == 38 && +toChainId == 1)) {
+    //     continue
+    //   }
+    // }
 
     const c1Chain = chainList.find((item) => +item.internalId === +fromChainId)
     const c2Chain = chainList.find((item) => +item.internalId === +toChainId)
@@ -172,12 +172,12 @@ function convertMakerConfig(maker) {
         },
       }
 
-      if (
-        config.toChain.id == 1 &&
-        (config.toChain.symbol == 'USDC' || config.toChain.symbol == 'USDT')
-      ) {
-        continue
-      }
+      // if (
+      //   config.toChain.id == 1 &&
+      //   (config.toChain.symbol == 'USDC' || config.toChain.symbol == 'USDT')
+      // ) {
+      //   continue
+      // }
       // handle makerConfigs
       configs.push(config)
       // v1 maker configs
