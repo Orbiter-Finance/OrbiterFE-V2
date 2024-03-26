@@ -780,7 +780,7 @@ export default {
     },
     currentWalletAddress() {
       if(isSolanaDialog.value) {
-        return web3State.solana.solanaAddress
+        return solanaHelper.solanaAddress()
       }
       if (!!isStarkNetDialog.value) {
         return web3State.starkNet.starkNetAddress
@@ -816,7 +816,7 @@ export default {
     },
     walletType() {
       if(!!isSolanaDialog.value) {       
-        return web3State.solana.solanaWalletName
+        return "okxwallet"
       }
       if (!isStarkNetDialog.value) {
         const walletName = String(compatibleGlobalWalletConf.value.walletType)

@@ -341,7 +341,7 @@ export default {
                 return
             }
             const from = web3State.coinbase
-            const toAddress = await solanaHelper.solanaAddress()
+            const toAddress = solanaHelper.solanaAddress()
             const isConnected = await solanaHelper.isConnect()
 
             if(!toAddress || !isConnected) {
@@ -994,7 +994,7 @@ export default {
                     ? `${p_text}_${crossAddressReceipt}`
                     : p_text
                 if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-                    const solanaAddress = await solanaHelper.solanaAddress()
+                    const solanaAddress = solanaHelper.solanaAddress()
                     const isConnected = await solanaHelper.isConnect()
                     if(!isConnected || !solanaAddress) {
                         setSelectWalletDialogVisible(true)
@@ -1191,7 +1191,7 @@ export default {
                 transferDataState
 
                 const isConnected = await solanaHelper.isConnect()
-                let from = await solanaHelper.solanaAddress()
+                let from = solanaHelper.solanaAddress()
 
             if (!isConnected || !from) {
                 setSelectWalletDialogVisible(true)
@@ -1308,7 +1308,7 @@ export default {
             if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test){
                 const isConnectSolana = await solanaHelper.isConnect()
                 if(isConnectSolana) {
-                    from = await solanaHelper.solanaAddress()
+                    from = solanaHelper.solanaAddress()
                     if(!from){
                         util.showMessage('Solana Address Error: ' + from, 'error');
                         this.transferLoading = false

@@ -205,6 +205,7 @@ import {
     saveSenderPageWorkingState,
 } from '../../composition/hooks'
 import { CHAIN_ID } from "../../config";
+import solanaHelper from '../../util/solana/solana_helper';
 
 export default {
     name: 'Proceed',
@@ -363,7 +364,7 @@ export default {
             userAddress = web3State.starkNet.starkNetAddress;
           }
           if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
-            userAddress = web3State.solana.solanaAddress;
+            userAddress = solanaHelper.solanaAddress();
           }
           const accountUrl = explorerInfo.accountUrl || explorerInfo.url + '/address';
           const url = accountUrl + '/' + userAddress;
@@ -434,7 +435,7 @@ export default {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
                 if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
-                    userAddress = web3State.solana.solanaAddress
+                    userAddress = solanaHelper.solanaAddress()
                 }
                 url = util.getAccountExploreUrl(fromChainID) + userAddress
 
@@ -467,7 +468,7 @@ export default {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
                 if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-                    userAddress = web3State.solana.solanaAddress
+                    userAddress = solanaHelper.solanaAddress()
                 }
                 url = util.getAccountExploreUrl(toChainID) + userAddress
 

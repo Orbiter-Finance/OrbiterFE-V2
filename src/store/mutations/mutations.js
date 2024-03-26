@@ -6,6 +6,8 @@ import {
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
+import completionStarknetAddress from '../../util/completionStarknetAddress'
+
 export default {
   updateZKTokenList(state, obj) {
     if (obj.chainID === CHAIN_ID.zksync) {
@@ -89,7 +91,8 @@ export default {
     } else {
       web3State.starkNet.starkIsConnected = true
     }
-    web3State.starkNet.starkNetAddress = starkNetAddress
+    web3State.starkNet.starkNetAddress =
+      completionStarknetAddress(starkNetAddress)
   },
 
   updateStarkNetIsConnect(state, starkNetIsConnect) {

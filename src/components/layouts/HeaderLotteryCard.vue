@@ -50,6 +50,7 @@ import {
   setLotteryCardModalShow,
   setLotteryPointsNum,
   setLotteryCardProgress,
+  isSolanaDialog,
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -61,6 +62,7 @@ import {
 
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import CommCardTooltip from '../CommCardTooltip.vue'
+import solanaHelper from '../../util/solana/solana_helper';
 
 export default {
   name: 'HeaderLotteryCard',
@@ -92,10 +94,13 @@ export default {
       return isMobile.value
     },
     currentWalletAddress() {
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress
+      if(!!isSolanaDialog.value) {
+        return solanaHelper.solanaAddress()
       }
-      return web3State.coinbase
+      if (!!isStarkNetDialog.value) {
+        return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
+      }
+      return web3State.coinbase?.toLocaleLowerCase()
     },
     selectWalletDialogVisible() {
       return actDialogVisible.value
@@ -205,7 +210,7 @@ export default {
         data: { cardsCount = 0, progress },
         code,
       } = await requestLotteryCard('user/cards', {
-        address: this.currentWalletAddress?.toLocaleLowerCase(),
+        address: this.currentWalletAddress
       })
 
       if (Number(code) === 0) {

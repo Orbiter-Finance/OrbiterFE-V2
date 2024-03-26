@@ -201,13 +201,14 @@ export default {
     },
     connectAddress () {
       const address = this.isSelectedSolana && this.solanaAddress && (this.solanaAddress !== 'not connected') ? this.solanaAddress : (this.starkAddress === 'not connected' || this,this.connectFirstAddress === this.starkAddress ? 'Connect Wallet' : this.starkAddress)
+      console.log("address", address)
       return address
     },
     currentWalletAddress () {
       return [
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress,
-        web3State.starkNet.starkNetAddress,
-        web3State.solana.solanaAddress,
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
+        web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
+        solanaHelper.solanaAddress(),
         ...[],
       ]
     },
@@ -255,7 +256,7 @@ export default {
     },
     connectAWallet () {
       setSolanaDialog(false)
-      if(this.isSelectedStarkNet && !!this.isLogin) {
+      if(this.isSelectedSolana && this.isSelectedStarkNet) {
         if(this.starkAddress === 'not connected') {
           setConnectWalletGroupKey("STARKNET")
           setSelectWalletDialogVisible(true)
@@ -375,7 +376,7 @@ export default {
           data: { cardsCount = 0, progress },
           code,
         } = await requestLotteryCard('user/cards', {
-          address: address.toLocaleLowerCase(),
+          address: address
         })
 
         if (Number(code) === 0) {

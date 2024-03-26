@@ -87,6 +87,7 @@ import util from './util/util'
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from './util/constants/starknet/helper'
+import solanaHelper from './util/solana/solana_helper'
 const { walletDispatchersOnInit } = walletDispatchers
 
 export default {
@@ -107,7 +108,7 @@ export default {
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
-        web3State.solana.solanaAddress,
+        solanaHelper.solanaAddress(),
         ...[],
       ]
     },

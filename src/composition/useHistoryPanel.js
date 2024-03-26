@@ -3,8 +3,10 @@ import {
   walletIsLogin,
   compatibleGlobalWalletConf,
 } from './walletsResponsiveData'
-import { RequestMethod, requestOpenApi } from '../common/openApiAx';
-import util from "../util/util";
+import { RequestMethod, requestOpenApi } from '../common/openApiAx'
+import util from '../util/util'
+import { web3State } from './useCoinbase'
+import solanaHelper from '../util/solana/solana_helper'
 // import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
@@ -51,36 +53,54 @@ export function setHistoryInfo(info = {}, isShowHistory = true) {
     // userAddress: info.replyAccount,
     userAmount: info.fromAmountValue,
   }
-
 }
 
 export async function getTransactionsHistory(params = {}) {
   historyPanelState.isLoading = true
-  const walletAddress =
+  const evmAddress =
     compatibleGlobalWalletConf.value.walletPayload.walletAddress
+  const starknetAddress = web3State.starkNet.starkNetAddress
+  const solanaAddress = solanaHelper.solanaAddress()
+
+  const walletAddress = [
+    evmAddress?.toLocaleLowerCase(),
+    starknetAddress?.toLocaleLowerCase(),
+    solanaAddress,
+  ]
+    .filter((item) => !!item)
+    .join(',')
+
   if (!walletAddress) {
     historyPanelState.isLoading = false
     return
   }
   const cache = util.getCache(`history_${walletAddress}_${params.current || 1}`)
   try {
-    let res;
+    let res
     if (cache) {
-      res = cache;
+      res = cache
     } else {
-      res = await requestOpenApi(RequestMethod.getTransactionByAddress, [walletAddress.toLowerCase(), 10, params.current || 1]);
-      util.setCache(`history_${ walletAddress }_${ params.current || 1 }`, res, 10000);
+      res = await requestOpenApi(RequestMethod.getTransactionByAddress, [
+        walletAddress,
+        10,
+        params.current || 1,
+      ])
+      util.setCache(
+        `history_${walletAddress}_${params.current || 1}`,
+        res,
+        10000
+      )
     }
-    const { list, count } = res;
+    const { list, count } = res
     historyPanelState.transactionList = list.map((row) => {
-      const fromDate = new Date(row.fromTimestamp);
-      const toDate = new Date(row.toTimestamp);
-      row.fromTimeStampShow = util.formatDate(fromDate);
-      row.toTimeStampShow = util.formatDate(toDate);
-      row.fromTimeStampShowShort = util.formatDate(fromDate, true);
-      row.toTimeStampShowShort = util.formatDate(toDate, true);
-      row.fromAmountValue = (+row.fromValue).toFixed(8);
-      return row;
+      const fromDate = new Date(row.fromTimestamp)
+      const toDate = new Date(row.toTimestamp)
+      row.fromTimeStampShow = util.formatDate(fromDate)
+      row.toTimeStampShow = util.formatDate(toDate)
+      row.fromTimeStampShowShort = util.formatDate(fromDate, true)
+      row.toTimeStampShowShort = util.formatDate(toDate, true)
+      row.fromAmountValue = (+row.fromValue).toFixed(8)
+      return row
     })
     historyPanelState.transactionListInfo.current = Number(params.current || 1)
     historyPanelState.transactionListInfo.total = count

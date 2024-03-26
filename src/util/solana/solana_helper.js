@@ -3,6 +3,7 @@ import {
   Transaction,
   PublicKey,
   TransactionInstruction,
+  ComputeBudgetProgram,
 } from '@solana/web3.js'
 
 import {
@@ -25,8 +26,13 @@ const getConnection = () => {
   return new Connection(rpc, 'confirmed')
 }
 
-const getProvider = () => {
+const getWallet = () => {
   const provider = window?.okxwallet?.solana
+  return provider
+}
+
+const getProvider = () => {
+  const provider = getWallet()
   // const provider = window.solflare
 
   if (!provider) {
@@ -37,12 +43,11 @@ const getProvider = () => {
 }
 
 const disConnect = async () => {
-  console.log('getProvider', getProvider())
-  await getProvider().disconnect()
+  await getProvider()?.disconnect()
 }
 
 const connect = async () => {
-  const res = await getProvider().connect()
+  const res = await getProvider()?.connect()
   return !!res?.toString()
 }
 
@@ -64,13 +69,13 @@ const getTokenAccount = async ({
   )
 }
 
-const isConnect = async () => {
-  const isConnected = await getProvider().isConnected
+const isConnect = () => {
+  const isConnected = getWallet()?.isConnected
   return isConnected
 }
 
-const solanaAddress = async () => {
-  const publickey = await getProvider().publicKey
+const solanaAddress = () => {
+  const publickey = getWallet()?.publicKey
   return publickey?.toString()
 }
 
@@ -88,12 +93,9 @@ const transfer = async ({
 
   const connection = getConnection()
 
-  const recentBlockhash = await connection.getLatestBlockhash()
-
   const toPublicKey = new PublicKey(to)
 
   const tokenPublicKey = new PublicKey(tokenAddress)
-
   const fromTokenAccount = await getOrCreateAssociatedTokenAccount(
     connection,
     fromPublicKey,
@@ -108,10 +110,22 @@ const transfer = async ({
     toPublicKey
   )
 
+  const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
+    units: 1000000,
+  })
+
+  const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+    microLamports: 100,
+  })
+
+  const recentBlockhash = await connection.getLatestBlockhash('confirmed')
+
   const tokenTransaction = new Transaction({
     recentBlockhash: recentBlockhash.blockhash,
     feePayer: fromPublicKey,
   })
+    .add(modifyComputeUnits)
+    .add(addPriorityFee)
     .add(
       createTransferInstruction(
         fromTokenAccount.address,
@@ -133,6 +147,7 @@ const transfer = async ({
     )
 
   const res = await tokenTransaction.getEstimatedFee(connection)
+  console.log('res', res)
 
   const signature = await provider.signAndSendTransaction(tokenTransaction)
   console.log('signature', signature)
@@ -152,7 +167,7 @@ const activationTokenAccount = async ({ toChainID, fromCurrency }) => {
 
   const provider = getProvider()
 
-  const solAddress = await solanaAddress()
+  const solAddress = solanaAddress()
 
   const fromPublicKey = getPublicKey(solAddress)
 

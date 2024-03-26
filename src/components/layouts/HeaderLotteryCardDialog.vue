@@ -151,10 +151,13 @@ export default {
       return isMobile.value
     },
     currentWalletAddress() {
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress
+      if(!!isSolanaDialog.value) {
+        return solanaHelper.solanaAddress()
       }
-      return web3State.coinbase
+      if (!!isStarkNetDialog.value) {
+        return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
+      }
+      return web3State.coinbase?.toLocaleLowerCase()
     },
     selectWalletDialogVisible() {
       return actDialogVisible.value
@@ -218,7 +221,7 @@ export default {
     async getLotteryCardDataDraw(isRefresh) {
       try {
         const { data } = await requestLotteryCardDraw('user/card/draw', {
-        address: this.currentWalletAddress?.toLocaleLowerCase(),
+        address: this.currentWalletAddress
       })
 
       const point = data?.points || 0

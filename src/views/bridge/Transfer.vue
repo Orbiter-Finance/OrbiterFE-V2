@@ -884,9 +884,6 @@ export default {
         this.updateTransferInfo();
       }
     },
-    'web3State.solana.solanaAddress': function (newValue) {
-      console.log("solana web3State.solana.solanaAddress", newValue)
-    },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
@@ -1039,12 +1036,6 @@ export default {
         }
       } else if ([CHAIN_ID.starknet, CHAIN_ID.starknet_test].includes(transferDataState.toChainID)) {
         this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
-      }
-      if ([CHAIN_ID.solana, CHAIN_ID.solana].includes(transferDataState.fromChainID)) {
-        console.log("solana transfer fillAddress")
-      } else if ([CHAIN_ID.solana, CHAIN_ID.solana].includes(transferDataState.toChainID)) {
-        // this.crossAddressReceipt = web3State.solana.solanaAddress;
-        console.log("solana transfer fillAddress")
       }
     },
     async syncV3Data(first) {
@@ -2045,7 +2036,7 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? await solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase());
+        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase());
         // sendTransfer
         this.$store.commit('updateConfirmRouteDescInfo', [
           {
@@ -2185,7 +2176,7 @@ export default {
         address = web3State.starkNet.starkNetAddress;
       }
       if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
-        address = await solanaHelper.solanaAddress();
+        address = solanaHelper.solanaAddress();
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
@@ -2215,7 +2206,7 @@ export default {
         address = web3State.starkNet.starkNetAddress;
       }
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        address = await solanaHelper.solanaAddress();
+        address = solanaHelper.solanaAddress();
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)

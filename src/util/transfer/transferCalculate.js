@@ -1050,7 +1050,7 @@ export default {
     ) {
       try {
         const isConnected = await solanaHelper.isConnect()
-        const solanaAddress = await solanaHelper.solanaAddress()
+        const solanaAddress = solanaHelper.solanaAddress()
 
         if (!solanaAddress || !isConnected) {
           setSelectWalletDialogVisible(true)

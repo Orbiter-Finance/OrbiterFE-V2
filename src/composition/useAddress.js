@@ -1,5 +1,6 @@
 import { web3State } from '../composition/hooks'
 import { compatibleGlobalWalletConf } from './walletsResponsiveData'
+import solanaHelper from '../util/solana/solana_helper'
 
 export function showAddress() {
   const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -20,7 +21,7 @@ export function starkAddress() {
   return 'not connected'
 }
 export function solAddress() {
-  const solanaAddress = web3State.solana.solanaAddress || ''
+  const solanaAddress = solanaHelper.solanaAddress() || ''
   if (solanaAddress && solanaAddress.length > 5) {
     const subStr1 = solanaAddress.slice(0, 4)
     const subStr2 = solanaAddress.slice(solanaAddress.length - 4)
