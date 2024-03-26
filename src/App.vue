@@ -213,7 +213,8 @@ export default {
       }
     },
     currentWalletAddress: function (newAddress) {
-      const [web3Address, starkNetAddress, solanaAddress] = newAddress
+      const [web3Address, starkNetAddress] = newAddress
+      const solanaAddress = solanaHelper.solanaAddress()
       if(solanaAddress) {
         setSolanaDialog(true)
         setActDialogVisible(true)
@@ -236,7 +237,8 @@ export default {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress, solanaAddress] = this.currentWalletAddress
+      const [web3Address, starkNetAddress] = this.currentWalletAddress
+      const solanaAddress = solanaHelper.solanaAddress()
       const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
       if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {

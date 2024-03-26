@@ -355,6 +355,12 @@ export default {
             const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx';
             window.open(txUrl + '/' + hash, '_blank');
             return;
+          } else {
+            if(isFrom) {
+                const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx';
+                window.open(txUrl + '/' + this.$store.state.proceedTXID, '_blank');
+                return;
+            } 
           }
 
           const { fromChainID, toChainID } = transferDataState;

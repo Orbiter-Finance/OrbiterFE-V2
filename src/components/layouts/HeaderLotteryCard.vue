@@ -153,15 +153,16 @@ export default {
         }
       }
     },
-    getAddress() {
+    getAddress () {
       let addressGroup = {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.walletAddress
-      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const [web3Address, starkNetAddress] = this.currentWalletAddress
+      const solanaAddress = solanaHelper.solanaAddress()
+      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup
       }
       return {
