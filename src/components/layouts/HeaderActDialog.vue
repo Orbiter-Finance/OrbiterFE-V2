@@ -807,7 +807,7 @@ export default {
       }
       if (!isStarkNetDialog.value) {
         return util.netWorkName(
-          compatibleGlobalWalletConf.value.walletPayload.networkId
+          +compatibleGlobalWalletConf.value.walletPayload.networkId
         )
       } else {
         return util.netWorkName(web3State.starkNet?.starkChain)
