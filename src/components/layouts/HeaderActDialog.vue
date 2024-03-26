@@ -652,6 +652,8 @@ import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
 import EcosystemDapp from './EcosystemDapp.vue'
 import solanaHelper from '../../util/solana/solana_helper'
+import { CHAIN_ID } from '../../config'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -789,7 +791,7 @@ export default {
     },
     networkId() {
       if(isSolanaDialog.value) {
-        return web3State.solana.solanaChain
+        return CHAIN_ID.solana
       }
       if (!isStarkNetDialog.value) {
         return compatibleGlobalWalletConf.value.walletPayload.networkId
@@ -800,7 +802,7 @@ export default {
     networkName() {
       if(!!isSolanaDialog.value) {
         return util.netWorkName(
-          web3State.solana.solanaChain
+          CHAIN_ID.solana
         )
       }
       if (!isStarkNetDialog.value) {
@@ -816,7 +818,7 @@ export default {
     },
     walletType() {
       if(!!isSolanaDialog.value) {       
-        return "okxwallet"
+        return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
       }
       if (!isStarkNetDialog.value) {
         const walletName = String(compatibleGlobalWalletConf.value.walletType)

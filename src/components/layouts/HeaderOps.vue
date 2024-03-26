@@ -181,7 +181,7 @@ export default {
       )
     },
     connectWalletIcon(){
-      return this.isSelectedSolana ? CHAIN_ID.solana : CHAIN_ID.starknet
+      return this.isSelectedSolana ? (web3State.solana.solanaWalletName || solanaHelper.readWalletName() || CHAIN_ID.solana) : CHAIN_ID.starknet
     },
     connectFirstWalletIcon(){
       return this.isSelectedSolana && this.isSelectedStarkNet ?  CHAIN_ID.starknet  : (this.globalSelectWalletConf.walletType ?

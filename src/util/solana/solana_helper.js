@@ -19,6 +19,16 @@ import util from '../util'
 import { isProd } from '../env'
 import { CHAIN_ID } from '../../config'
 
+const SOLNA_WALLET_NAME = ''
+
+const readWalletName = () => {
+  return sessionStorage.getItem(SOLNA_WALLET_NAME)
+}
+
+const updateWalletName = (str) => {
+  sessionStorage.setItem(SOLNA_WALLET_NAME, str?.toLocaleLowerCase() || '')
+}
+
 const getConnection = () => {
   const chainId = isProd() ? CHAIN_ID.solana : CHAIN_ID.solana_test
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
@@ -27,7 +37,8 @@ const getConnection = () => {
 }
 
 const getWallet = () => {
-  const provider = window?.okxwallet?.solana
+  const walletName = readWalletName()
+  const provider = window?.[walletName?.toLocaleLowerCase() || '']?.solana
   return provider
 }
 
@@ -36,7 +47,11 @@ const getProvider = () => {
   // const provider = window.solflare
 
   if (!provider) {
-    util.showMessage('Install OkxWallet', 'error')
+    util.showMessage(
+      'Install ' + (readWalletName() || 'Solana Wallet'),
+      'error'
+    )
+    updateWalletName('')
   }
 
   return provider
@@ -44,9 +59,11 @@ const getProvider = () => {
 
 const disConnect = async () => {
   await getProvider()?.disconnect()
+  updateWalletName('')
 }
 
-const connect = async () => {
+const connect = async (walletName) => {
+  updateWalletName(walletName)
   const res = await getProvider()?.connect()
   return !!res?.toString()
 }
@@ -219,6 +236,8 @@ const solanaHelper = {
   disConnect,
   connect,
   activationTokenAccount,
+  readWalletName,
+  updateWalletName,
 }
 
 export default solanaHelper

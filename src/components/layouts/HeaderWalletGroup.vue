@@ -217,6 +217,11 @@ export default {
           icon: 'okxwallet',
           title: 'OKXWallet',
         },
+        {
+          isConnect: false,
+          icon: 'phantom',
+          title: 'Phantom',
+        },
       ]
       return wallets
     },
@@ -234,18 +239,16 @@ export default {
     },
     async connectSolanaWallet(item) {
 
-      const status = await solanaHelper.connect()
+      const status = await solanaHelper.connect(item.icon)
       const fromPublicKey = solanaHelper.solanaAddress()
 
       console.log("fromPublicKey", fromPublicKey)
       store.commit('updateSolanaAddress', fromPublicKey)
-      store.commit('updateSolanaWalletName', item.title.toLocaleLowerCase())
-      store.commit('updateSolanaWalletIcon', item.icon)
+      store.commit('updateSolanaWalletName', item.icon.toLocaleLowerCase())
+      store.commit('updateSolanaWalletIcon', item.icon.toLocaleLowerCase())
       store.commit('updateSolanaIsConnect', status)
 
-      if (status) {
-        this.closeSelectWalletDialog()
-      }
+      this.closeSelectWalletDialog()
 
       return
     },
