@@ -248,7 +248,7 @@
             </div>
           </div>
 
-          <div v-if="!isStarknet" class="card_3">
+          <div v-if="!isStarknet && !isSolana" class="card_3">
             <div class="text_14">
               Held Orbiter NFT
               <o-tooltip>
@@ -628,6 +628,10 @@ import {
   actEcosystemPoints,
   actTotalActivityPoint,
   actNftList,
+  isSolanaDialog,
+  solAddress,
+  setConnectWalletGroupKey,
+  setSolanaDialog,
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -647,6 +651,9 @@ import { PONITS_EXPAND_COUNT } from '../../const'
 import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
 import EcosystemDapp from './EcosystemDapp.vue'
+import solanaHelper from '../../util/solana/solana_helper'
+import { CHAIN_ID } from '../../config'
+import { ChainId } from '@loopring-web/loopring-sdk'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -756,19 +763,31 @@ export default {
     isStarknet() {
       return isStarkNetDialog.value
     },
+    isSolana() {
+      return isSolanaDialog.value
+    },
     showWalletAddress() {
+      if(isSolanaDialog.value) {
+        return solAddress()
+      }
       if (!isStarkNetDialog.value) {
         return showAddress()
       }
       return starkAddress()
     },
     currentWalletAddress() {
+      if(isSolanaDialog.value) {
+        return solanaHelper.solanaAddress()
+      }
       if (!!isStarkNetDialog.value) {
         return web3State.starkNet.starkNetAddress
       }
       return web3State.coinbase
     },
     networkId() {
+      if(isSolanaDialog.value) {
+        return CHAIN_ID.solana
+      }
       if (!isStarkNetDialog.value) {
         return compatibleGlobalWalletConf.value.walletPayload.networkId
       } else {
@@ -776,9 +795,14 @@ export default {
       }
     },
     networkName() {
+      if(!!isSolanaDialog.value) {
+        return util.netWorkName(
+          CHAIN_ID.solana
+        )
+      }
       if (!isStarkNetDialog.value) {
         return util.netWorkName(
-          compatibleGlobalWalletConf.value.walletPayload.networkId
+          +compatibleGlobalWalletConf.value.walletPayload.networkId
         )
       } else {
         return util.netWorkName(web3State.starkNet?.starkChain)
@@ -788,6 +812,9 @@ export default {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
+      if(!!isSolanaDialog.value) {       
+        return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
+      }
       if (!isStarkNetDialog.value) {
         const walletName = String(compatibleGlobalWalletConf.value.walletType)
           .toLowerCase()
@@ -902,9 +929,17 @@ export default {
       this.closeDrawerOpacity = 0.5
       this.closeDrawerPaddingLeft = 0
     },
-    disconnect() {
+    async disconnect() {
       try {
-        if (!isStarkNetDialog.value) {
+        if(!!isSolanaDialog.value) {
+          await solanaHelper.disConnect()
+          setConnectWalletGroupKey("SOLANA")
+          this.$store.commit('updateSolanaAddress', "")
+          this.$store.commit('updateSolanaWalletName', "")
+          this.$store.commit('updateSolanaWalletIcon', "")
+          this.$store.commit('updateSolanaIsConnect', false)
+          setSolanaDialog(false)
+        } else if (!isStarkNetDialog.value) {
           this.selectedWallet = {}
           localStorage.setItem('selectedWallet', JSON.stringify({}))
           this.$store.commit('updateLocalLogin', false)
@@ -916,8 +951,10 @@ export default {
           walletDispatchersOnDisconnect[
             compatibleGlobalWalletConf.value.walletType
           ]()
-        } else {
+          setConnectWalletGroupKey("EVM")
+        } else  {
           disConnectStarkNetWallet()
+          setConnectWalletGroupKey("STARKNET")
         }
       } catch (e) {
         console.error(e)

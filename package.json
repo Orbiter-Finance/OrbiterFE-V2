@@ -26,6 +26,8 @@
     "@imtbl/imx-sdk": "^1.5.0",
     "@loopring-web/loopring-sdk": "3.5.12",
     "@sentry/vue": "^7.80.0",
+    "@solana/spl-token": "^0.4.2",
+    "@solana/web3.js": "^1.91.1",
     "@vue/composition-api": "^1.7.0",
     "@wagmi/core": "^1.3.7",
     "@walletconnect/modal-sign-html": "2.5.8",

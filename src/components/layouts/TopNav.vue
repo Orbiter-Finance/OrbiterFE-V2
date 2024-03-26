@@ -143,6 +143,8 @@ import {
   setSelectWalletDialogVisible,
   starkAddress,
   setActDialogVisible,
+  setConnectWalletGroupKey,
+  setSolanaDialog
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -284,7 +286,7 @@ export default {
       }
       // Middle.$emit('connectWallet', true)
       setSelectWalletDialogVisible(true)
-
+      setConnectWalletGroupKey("EVM")
     },
     connectAWallet () {
       if (isBrowserApp()) {
@@ -292,8 +294,10 @@ export default {
         return
       }
       setStarkNetDialog(false)
+      setSolanaDialog(flase)
       setSelectWalletDialogVisible(true)
       setActDialogVisible(true)
+      setConnectWalletGroupKey("EVM")
     },
   },
 }
