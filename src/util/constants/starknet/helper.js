@@ -206,9 +206,6 @@ export async function sendTransfer(
         receiverAddress,
         getUint256CalldataFromBN(String(amount)),
         l1Address,
-        shortString
-          .splitLongString(l1Address)
-          .map((item) => shortString.encodeShortString(item)),
       ])
       // const approveTxCall = getApproveTxCall(contractAddress, tokenContract.address);
       // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
@@ -221,9 +218,7 @@ export async function sendTransfer(
         tokenAddress,
         receiverAddress,
         getUint256CalldataFromBN(String(amount)),
-        shortString
-          .splitLongString(l1Address)
-          .map((item) => shortString.encodeShortString(item)),
+        l1Address,
       ])
       // const transferERC20TxCall = getTransferERC20TxCall(tokenAddress, receiverAddress, l1Address, amount, crossContract.address);
       tx = await getStarknet().account.execute(transferERC20TxCall)
