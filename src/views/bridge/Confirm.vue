@@ -352,7 +352,7 @@ export default {
 
             try {
                 const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                if(res === "signature") {
+                if(res !== "created") {
                     return
                 }
             } catch (error) {
@@ -1003,7 +1003,7 @@ export default {
                     }
                     try {
                         const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                        if(res === "signature") {
+                        if(res !== "created") {
                             return
                         }
                     } catch (error) {
@@ -1323,7 +1323,7 @@ export default {
 
                 try {
                     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                    if(res === "signature") {
+                    if(res !== "created") {
                         return
                     }
                 } catch (error) {

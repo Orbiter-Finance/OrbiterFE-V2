@@ -201,28 +201,34 @@ const activationTokenAccount = async ({ toChainID, fromCurrency }) => {
 
   util.showMessage('The current Solana account is not activated', 'warning')
 
-  const associatedTokenPublickey = getAssociatedTokenAddressSync(
-    tokenPublicKey,
-    fromPublicKey
-  )
-
-  const recentBlockhash = await connection.getLatestBlockhash()
-
-  const tokenTransaction = new Transaction({
-    recentBlockhash: recentBlockhash.blockhash,
-    feePayer: fromPublicKey,
-  }).add(
-    createAssociatedTokenAccountInstruction(
-      fromPublicKey,
-      associatedTokenPublickey,
-      fromPublicKey,
-      tokenPublicKey
+  try {
+    const associatedTokenPublickey = getAssociatedTokenAddressSync(
+      tokenPublicKey,
+      fromPublicKey
     )
-  )
 
-  const signature = await provider.signAndSendTransaction(tokenTransaction)
-  console.log('signature', signature)
+    const recentBlockhash = await connection.getLatestBlockhash('confirmed')
 
+    const tokenTransaction = new Transaction({
+      recentBlockhash: recentBlockhash.blockhash,
+      feePayer: fromPublicKey,
+    }).add(
+      createAssociatedTokenAccountInstruction(
+        fromPublicKey,
+        associatedTokenPublickey,
+        fromPublicKey,
+        tokenPublicKey
+      )
+    )
+
+    const signature = await provider.signAndSendTransaction(tokenTransaction)
+    console.log('signature', signature)
+  } catch (error) {
+    util.showMessage(
+      error?.message || error?.data?.message || String(error),
+      'error'
+    )
+  }
   return 'register'
 }
 
