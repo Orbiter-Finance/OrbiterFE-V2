@@ -695,14 +695,9 @@ export default {
       taskMobileHeight: 0,
       bannerList: [
         {
-          url: 'https://galxe.com/Holdstation/campaign/GCguDtwUZM',
-          img: 'hold.png',
-          timeStamp: '2024-02-19 17:00:00',
-        },
-        {
-          url: 'https://galxe.com/izumi/campaign/GCxPjtwC1U',
-          img: 'zeta.png',
-          timeStamp: '2024-02-08 00:00:00',
+          url: 'https://galxe.com/OrbiterFinance/campaign/GCPhNtTQKf',
+          img: 'bitget.jpg',
+          timeStamp: '2024-04-28 18:00:00',
         },
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
     }
