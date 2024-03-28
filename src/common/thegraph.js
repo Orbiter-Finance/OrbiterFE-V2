@@ -422,8 +422,32 @@ export async function getMdcRuleLatest(dealerAddress) {
 function sortRule(ruleList) {
   const symbolSortMap = { ETH: 1, USDC: 2, USDT: 3, DAI: 4 }
   if (!Object.keys(makerSortMap).length) {
+    console.log('ruleList', ruleList)
     Array.from(new Set(ruleList))
-      .sort(function () {
+      .sort(function (a, b) {
+        const [makerAAddress, maker1Weight] =
+          process.env.VUE_APP_MAKER_1_ADDRESS?.split('_')
+        const [makerBAddress, maker2Weight] =
+          process.env.VUE_APP_MAKER_2_ADDRESS?.split('_')
+
+        const recipientA = a?.recipient?.toLocaleLowerCase()
+        const recipientB = b?.recipient?.toLocaleLowerCase()
+        const makerA = makerAAddress?.toLocaleLowerCase()
+        const makerB = makerBAddress?.toLocaleLowerCase()
+
+        if (
+          (!!makerA &&
+            !!makerB &&
+            recipientA === makerA?.toLocaleLowerCase() &&
+            recipientB === makerB?.toLocaleLowerCase()) ||
+          (recipientA === makerB?.toLocaleLowerCase() &&
+            recipientB === makerA?.toLocaleLowerCase())
+        ) {
+          return (
+            (Number(maker2Weight) || 0) * Math.random() -
+            (Number(maker1Weight) || 0) * Math.random()
+          )
+        }
         return 0.5 - Math.random()
       })
       .forEach((rule, index) => {
