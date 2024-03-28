@@ -350,15 +350,15 @@ export default {
                 return
             }
 
-            try {
-                const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                if(res !== "created") {
-                    return
-                }
-            } catch (error) {
-                util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-                return
-            }
+            // try {
+            //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+            //     if(res !== "created") {
+            //         return
+            //     }
+            // } catch (error) {
+            //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
+            //     return
+            // }
 
             const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
@@ -1001,15 +1001,15 @@ export default {
                         setConnectWalletGroupKey("SOLANA")
                         return 
                     }
-                    try {
-                        const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                        if(res !== "created") {
-                            return
-                        }
-                    } catch (error) {
-                        util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-                        return
-                    }
+                    // try {
+                    //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+                    //     if(res !== "created") {
+                    //         return
+                    //     }
+                    // } catch (error) {
+                    //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
+                    //     return
+                    // }
                     memo = `${p_text}_${solanaAddress}`
                 }
 
@@ -1321,15 +1321,15 @@ export default {
                     return
                 }
 
-                try {
-                    const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                    if(res !== "created") {
-                        return
-                    }
-                } catch (error) {
-                    util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-                    return
-                }
+                // try {
+                //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+                //     if(res !== "created") {
+                //         return
+                //     }
+                // } catch (error) {
+                //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
+                //     return
+                // }
 
                 const hash = await sendTransferV3({
                     targetAddress: from,
