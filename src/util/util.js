@@ -342,7 +342,7 @@ export default {
     const res = []
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
-    let rpcList = shuffle(uniq(chainInfo?.rpc || []))
+    let rpcList = chainInfo?.rpc || [];
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
@@ -353,7 +353,11 @@ export default {
     } catch (e) {
       console.error('parse stableRpc  error', e)
     }
-    return rpcList
+    rpcList = shuffle(rpcList);
+    if (process.env[`RPC_${chainId}`] && process.env[`RPC_${chainId}`].includes('http')) {
+      rpcList.push(process.env[`RPC_${chainId}`])
+    }
+    return uniq(rpcList);
   },
 
   // the actual transfer amount
