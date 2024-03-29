@@ -52,7 +52,7 @@
             {
                 "name": "BTC",
                 "symbol": "BTC",
-                "decimals": 18,
+                "decimals": 8,
                 "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
             }
         ],
@@ -119,7 +119,7 @@
             {
                 "name": "BTC",
                 "symbol": "BTC",
-                "decimals": 18,
+                "decimals": 8,
                 "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f"
             }
         ],
@@ -379,7 +379,7 @@
             {
                 "name": "BTC",
                 "symbol": "BTC",
-                "decimals": 18,
+                "decimals": 8,
                 "address": "0x68f180fcce6836688e9084f035309e29bf0a2095"
             }
         ],
@@ -676,7 +676,7 @@
             {
                 "name": "BTC",
                 "symbol": "BTC",
-                "decimals": 18,
+                "decimals": 8,
                 "address": "0xBBeB516fb02a01611cBBE0453Fe3c580D7281011"
             }
         ],
@@ -1034,7 +1034,7 @@
             {
                 "name": "BTC",
                 "symbol": "BTC",
-                "decimals": 18,
+                "decimals": 8,
                 "address": "0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4"
             }
         ],
