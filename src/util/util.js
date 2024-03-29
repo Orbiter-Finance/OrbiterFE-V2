@@ -10,24 +10,35 @@ import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
-import { RequestMethod, requestOpenApi } from "../common/openApiAx";
-import axios from 'axios';
+import { RequestMethod, requestOpenApi } from '../common/openApiAx'
+import axios from 'axios'
 let chainsList = []
 
 export default {
   async getSolanaBalance(chainId, address, tokenAddress) {
     if (['SOLANA_DEV', 'SOLANA_TEST', 'SOLANA_MAIN'].includes(chainId)) {
-      const networkParams = chainId === 'SOLANA_DEV' ? '?network=devnet' : '';
+      const networkParams = chainId === 'SOLANA_DEV' ? '?network=devnet' : ''
       // solflare
       try {
-        const res = await axios.get(`https://wallet-api.solflare.com/v3/portfolio/tokens/${address}${networkParams}`, { timeout: 2000 });
-        const tokens = res.data.tokens;
-        const token = tokens.find(item => String(item.mint) === String(tokenAddress));
-        if (!token) return "0";
-        return new BigNumber(token.totalUiAmount).multipliedBy(10 ** token.decimals);
+        const res = await axios.get(
+          `https://wallet-api.solflare.com/v3/portfolio/tokens/${address}${networkParams}`,
+          { timeout: 2000 }
+        )
+        const tokens = res.data.tokens
+        const token = tokens.find(
+          (item) => String(item.mint) === String(tokenAddress)
+        )
+        if (!token) return '0'
+        return new BigNumber(token.totalUiAmount).multipliedBy(
+          10 ** token.decimals
+        )
       } catch (e) {
-        console.error('solflare api error', e);
-        return await requestOpenApi(RequestMethod.getBalance, [chainId, address, tokenAddress]);
+        console.error('solflare api error', e)
+        return await requestOpenApi(RequestMethod.getBalance, [
+          chainId,
+          address,
+          tokenAddress,
+        ])
       }
     }
   },
@@ -342,7 +353,7 @@ export default {
     const res = []
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
-    let rpcList = chainInfo?.rpc || [];
+    let rpcList = chainInfo?.rpc || []
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
@@ -353,11 +364,14 @@ export default {
     } catch (e) {
       console.error('parse stableRpc  error', e)
     }
-    rpcList = shuffle(rpcList);
-    if (process.env[`RPC_${chainId}`] && process.env[`RPC_${chainId}`].includes('http')) {
+    rpcList = shuffle(rpcList)
+    if (
+      process.env[`RPC_${chainId}`] &&
+      process.env[`RPC_${chainId}`].includes('http')
+    ) {
       rpcList.push(process.env[`RPC_${chainId}`])
     }
-    return uniq(rpcList);
+    return uniq(rpcList)
   },
 
   // the actual transfer amount
@@ -379,7 +393,11 @@ export default {
       .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
       .dividedBy(new BigNumber(1000))
     const gasFee_fix = gasFee.decimalPlaces(
-      selectMakerConfig.fromChain.decimals === 18 ? 5 : 2,
+      selectMakerConfig.fromChain.decimals === 8
+        ? 4
+        : selectMakerConfig.fromChain.decimals === 18
+        ? 5
+        : 2,
       BigNumber.ROUND_UP
     )
 

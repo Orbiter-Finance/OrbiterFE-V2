@@ -1422,7 +1422,7 @@ export default {
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
       // }
-      const availableDigit = fromChain.decimals === 18 ? 6 : 2;
+      const availableDigit = fromChain.decimals === 8 ? 4 : fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
@@ -1781,11 +1781,11 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       if (fromChain.chainId === CHAIN_ID.loopring || fromChain.chainId === CHAIN_ID.loopring_test || toChain.chainId === CHAIN_ID.loopring || toChain.chainId === CHAIN_ID.loopring_test) {
-        this.transferValue = fromChain.decimals === 18
+        this.transferValue = fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       } else {
-        this.transferValue = fromChain.decimals === 18
+        this.transferValue = fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       }
@@ -2138,9 +2138,11 @@ export default {
               toChain.symbol,
               toChain.decimals
       );
+      console.log("_balance", _balance)
       if (_balance > 0) {
         // Max use maker balance's 95%, because it transfer need gasfee(also zksync need changePubKey fee)
         this.makerMaxBalance = (new BigNumber(_balance).multipliedBy(0.95)).toString();
+        console.log("this.makerMaxBalance", this.makerMaxBalance)
       }
     },
     gasCost() {
