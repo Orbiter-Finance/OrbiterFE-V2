@@ -49,7 +49,7 @@
     },
     "2-54": {
         "BTC-BTC": {
-            "gasFee": 30,
+            "gasFee": 3,
             "tradingFee": 0.0001,
             "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
             "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
@@ -121,7 +121,7 @@
     },
     "7-54": {
         "BTC-BTC": {
-            "gasFee": 30,
+            "gasFee": 3,
             "tradingFee": 0.0001,
             "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
             "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
