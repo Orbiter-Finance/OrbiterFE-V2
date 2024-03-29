@@ -53,7 +53,7 @@
                 "name": "BTC",
                 "symbol": "BTC",
                 "decimals": 18,
-                "address": "0xBTC"
+                "address": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599"
             }
         ],
         "xvmList": [
@@ -120,7 +120,7 @@
                 "name": "BTC",
                 "symbol": "BTC",
                 "decimals": 18,
-                "address": "0xBTC"
+                "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f"
             }
         ],
         "xvmList": [
@@ -380,7 +380,7 @@
                 "name": "BTC",
                 "symbol": "BTC",
                 "decimals": 18,
-                "address": "0xBTC"
+                "address": "0x68f180fcce6836688e9084f035309e29bf0a2095"
             }
         ],
         "xvmList": [
@@ -677,7 +677,7 @@
                 "name": "BTC",
                 "symbol": "BTC",
                 "decimals": 18,
-                "address": "0xBTC"
+                "address": "0xBBeB516fb02a01611cBBE0453Fe3c580D7281011"
             }
         ],
         "infoURL": "https://explorer.zksync.io",
@@ -743,7 +743,7 @@
                 "name": "BTC",
                 "symbol": "BTC",
                 "decimals": 18,
-                "address": "0xBTC"
+                "address": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c"
             }
         ],
         "infoURL": "https://bscscan.com",
@@ -1035,7 +1035,7 @@
                 "name": "BTC",
                 "symbol": "BTC",
                 "decimals": 18,
-                "address": "0xBTC"
+                "address": "0x3aAB2285ddcDdaD8edf438C1bAB47e1a9D05a9b4"
             }
         ],
         "infoURL": "https://lineascan.build",
@@ -1629,7 +1629,13 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [],
+        "tokens": [{
+            "name": "BTC",
+            "symbol": "BTC",
+            "decimals": 18,
+            "coinKey": "BTC",
+            "address": "0x0000000000000000000000000000000000000000"
+        }],
         "internalId": "54",
         "nativeCurrency": {
             "name": "BTC",
@@ -1644,8 +1650,8 @@
         "networkId": "4200",
         "explorers": [],
         "contract": {
-            "": "OrbiterRouterV3",
-            "": "OBSource"
+            "0x4b8a4641c140b3aa6be8d99786fafe47a65869db": "OrbiterRouterV3",
+            "0x12bdaF8a32e436051439A2777ecB0A70245aD7Ee": "OBSource"
         },
         "contracts": []
     }
