@@ -1629,13 +1629,7 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [{
-            "name": "BTC",
-            "symbol": "BTC",
-            "decimals": 18,
-            "coinKey": "BTC",
-            "address": "0x0000000000000000000000000000000000000000"
-        }],
+        "tokens": [],
         "internalId": "54",
         "nativeCurrency": {
             "name": "BTC",
