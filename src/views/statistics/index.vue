@@ -324,7 +324,7 @@ export default {
       if (isAmount) {
         exchangeRes = await exchangeToCoin(1, sourceCurrency, 'USD')
       }
-      const dateList = Object.keys(statisticsData)
+      const dateList = Object.keys(statisticsData).reverse()
       const dataBySourceChain = {
         others: [],
       }
