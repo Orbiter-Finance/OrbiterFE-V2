@@ -1527,33 +1527,33 @@
         ]
     },
     {
-        "name":"Proof of Play Apex",
-        "rpc":[
+        "name": "Proof of Play Apex",
+        "rpc": [
             "https://rpc.apex.proofofplay.com"
         ],
-        "features":[
+        "features": [
             "Etherscan",
             {
-                "name":"evm-account6"
+                "name": "evm-account6"
             }
         ],
-        "service":{
-            "rpc":"EVMRpcScanningV6Service"
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens":[],
-        "internalId":"53",
-        "nativeCurrency":{
-            "name":"Ether",
-            "symbol":"ETH",
-            "decimals":18,
-            "coinKey":"ETH",
-            "address":"0x0000000000000000000000000000000000000000"
+        "tokens": [],
+        "internalId": "53",
+        "nativeCurrency": {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "coinKey": "ETH",
+            "address": "0x0000000000000000000000000000000000000000"
         },
-        "infoURL":"",
-        "shortName":"apex",
-        "chainId":"70700",
-        "networkId":"70700",
-        "explorers":[],
+        "infoURL": "https://explorer.apex.proofofplay.com",
+        "shortName": "apex",
+        "chainId": "70700",
+        "networkId": "70700",
+        "explorers": [],
         "contract": {
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource"
@@ -1578,5 +1578,39 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Merlin",
+        "rpc": [
+            "https://rpc.merlinchain.io"
+        ],
+        "features": [
+            "Etherscan",
+            {
+                "name": "evm-account6"
+            }
+        ],
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "tokens": [],
+        "internalId": "54",
+        "nativeCurrency": {
+            "name": "BTC",
+            "symbol": "BTC",
+            "decimals": 18,
+            "coinKey": "BTC",
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "infoURL": "https://scan.merlinchain.io",
+        "shortName": "merlin",
+        "chainId": "4200",
+        "networkId": "4200",
+        "explorers": [],
+        "contract": {
+            "": "OrbiterRouterV3",
+            "": "OBSource"
+        },
+        "contracts": []
     }
 ]
