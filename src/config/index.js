@@ -62,6 +62,7 @@ const makerFiles = shuffleArray(
         '80c-prod.json',
         'e4e-prod.json',
         '1c8-prod.json',
+        '502d-prod.json',
         'usdt-prod.json',
         'usdc-prod.json',
       ]
