@@ -1554,8 +1554,9 @@
         "chainId":"70700",
         "networkId":"70700",
         "explorers":[],
-        "contract":{
-
+        "contract": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
+            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc": "OBSource"
         },
         "contracts":[
 
