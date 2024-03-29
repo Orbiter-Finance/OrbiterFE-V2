@@ -48,6 +48,12 @@
                 "symbol": "USDT",
                 "decimals": 6,
                 "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+            },
+            {
+                "name": "BTC",
+                "symbol": "BTC",
+                "decimals": 18,
+                "address": "0xBTC"
             }
         ],
         "xvmList": [
@@ -109,6 +115,12 @@
                 "symbol": "USDT",
                 "decimals": 6,
                 "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+            },
+            {
+                "name": "BTC",
+                "symbol": "BTC",
+                "decimals": 18,
+                "address": "0xBTC"
             }
         ],
         "xvmList": [
@@ -363,6 +375,12 @@
                 "symbol": "USDT",
                 "decimals": 6,
                 "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"
+            },
+            {
+                "name": "BTC",
+                "symbol": "BTC",
+                "decimals": 18,
+                "address": "0xBTC"
             }
         ],
         "xvmList": [
@@ -654,6 +672,12 @@
                 "symbol": "USDT",
                 "decimals": 6,
                 "address": "0x493257fD37EDB34451f62EDf8D2a0C418852bA4C"
+            },
+            {
+                "name": "BTC",
+                "symbol": "BTC",
+                "decimals": 18,
+                "address": "0xBTC"
             }
         ],
         "infoURL": "https://explorer.zksync.io",
@@ -714,6 +738,12 @@
                 "symbol": "USDC",
                 "decimals": 18,
                 "address": "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d"
+            },
+            {
+                "name": "BTC",
+                "symbol": "BTC",
+                "decimals": 18,
+                "address": "0xBTC"
             }
         ],
         "infoURL": "https://bscscan.com",
@@ -1000,6 +1030,12 @@
                 "symbol": "USDT",
                 "decimals": 6,
                 "address": "0xA219439258ca9da29E9Cc4cE5596924745e12B93"
+            },
+            {
+                "name": "BTC",
+                "symbol": "BTC",
+                "decimals": 18,
+                "address": "0xBTC"
             }
         ],
         "infoURL": "https://lineascan.build",
