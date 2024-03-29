@@ -1556,10 +1556,27 @@
         "explorers":[],
         "contract": {
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
-            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc": "OBSource"
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource"
         },
-        "contracts":[
-
+        "contracts": [
+            {
+                "name": "OBSource",
+                "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferERC20(address,address,uint256,bytes)"
+                ]
+            },
+            {
+                "name": "OrbiterRouterV3",
+                "address": "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transferTokens(address,address[],uint256[])"
+                ]
+            }
         ]
     }
 ]
