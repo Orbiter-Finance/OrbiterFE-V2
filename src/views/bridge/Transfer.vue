@@ -858,15 +858,15 @@ export default {
       if (oldValue !== newValue && newValue !== '0x') {
         this.updateTransferInfo();
         // this.getWalletAddressPoint(newValue);
-        this.getWalletAddressActList(newValue);
-        setTimeout(async () => {
-          const res = await requestPointSystem('user/nfts', {
-            address: newValue,
-          });
-          setActNftList(res?.data?.nfts.map((item) => {
-            return { img: `${ item }.png` };
-          }));
-        }, 0);
+        // this.getWalletAddressActList(newValue);
+        // setTimeout(async () => {
+        //   const res = await requestPointSystem('user/nfts', {
+        //     address: newValue,
+        //   });
+        //   setActNftList(res?.data?.nfts.map((item) => {
+        //     return { img: `${ item }.png` };
+        //   }));
+        // }, 0);
       }
       if (newValue === '0x') {
         setActDialogVisible(false);

@@ -90,6 +90,10 @@ import { connectStarkNetWallet } from './util/constants/starknet/helper'
 import solanaHelper from './util/solana/solana_helper'
 const { walletDispatchersOnInit } = walletDispatchers
 
+let timerOptions = 0
+let timerActivityList = 0
+let timeNft = 0
+
 export default {
   name: 'App',
   computed: {
@@ -105,10 +109,11 @@ export default {
       return this.$store.state.themeMode === 'light'
     },
     currentWalletAddress () {
+      const solanaAddress = web3State.solana.solanaAddress || solanaHelper.solanaAddress()
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
-        solanaHelper.solanaAddress(),
+        solanaAddress,
         ...[],
       ]
     },
@@ -253,6 +258,13 @@ export default {
     async getNftList () {
       const { isAddress, address } = this.getAddress()
 
+      const timerN = +new Date()
+
+      if(Number(timerN - timeNft) < 1000) {
+        return 
+      }
+      timeNft = timerN
+
       if (isAddress) {
         const res = await requestPointSystem('user/nfts', {
           address,
@@ -266,6 +278,13 @@ export default {
     },
     async getWalletAddressActList () {
       const { isAddress, address } = this.getAddress()
+
+      const timerN = +new Date()
+
+      if(Number(timerN - timerActivityList) < 1000) {
+        return 
+      }
+      timerActivityList = timerN
 
       if (isAddress) {
         const res = await requestPointSystem('v2/activity/list', {
@@ -291,6 +310,14 @@ export default {
     },
     async getWalletAddressPoint () {
       const { isAddress, address } = this.getAddress()
+
+      const timerN = +new Date()
+
+      if(Number(timerN - timerOptions) < 1000) {
+        return 
+      }
+
+      timerOptions = timerN
 
       if (isAddress) {
         const pointRes = await requestPointSystem('v2/user/points', {

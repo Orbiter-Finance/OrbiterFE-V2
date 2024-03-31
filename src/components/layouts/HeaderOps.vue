@@ -224,7 +224,7 @@ export default {
   watch: {
     selectWalletDialogVisible: function (newVisible) {
       if (!!newVisible) {
-        this.getWalletAddressPoint()
+        // this.getWalletAddressPoint()
       }
     },
   },
@@ -422,7 +422,7 @@ export default {
     }, 5000)
 
     // const walletAddress = await util.getAsyncWalletAddress();
-    this.getWalletAddressPoint()
+    // this.getWalletAddressPoint()
   },
 }
 </script>
