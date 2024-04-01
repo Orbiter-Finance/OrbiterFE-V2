@@ -58,14 +58,22 @@ async function getTransferGasLimit(
   if (web3State.isInstallMeta || provider) {
     const web3 = new Web3(provider || window.ethereum)
     const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
     let gasLimit = 55000
     try {
       if (util.isEthTokenAddress(localChainID, tokenAddress)) {
-        gasLimit = await web3.eth.estimateGas({
-          from,
-          to: selectMakerConfig.recipient,
-          value,
-        })
+        gasLimit = await Promise.any([
+          web3.eth.estimateGas({
+            from,
+            to: selectMakerConfig.recipient,
+            value,
+          }),
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(0)
+            }, 10000)
+          }),
+        ])
         return gasLimit
       } else {
         const ABI = Coin_ABI
@@ -74,11 +82,16 @@ async function getTransferGasLimit(
           return gasLimit
         }
 
-        gasLimit = await ecourseContractInstance.methods
-          .transfer(to, value)
-          .estimateGas({
+        gasLimit = await Promise.any([
+          ecourseContractInstance.methods.transfer(to, value).estimateGas({
             from,
-          })
+          }),
+          new Promise((resolve) => {
+            setTimeout(() => {
+              resolve(0)
+            }, 10000)
+          }),
+        ])
         return gasLimit
       }
     } catch (err) {

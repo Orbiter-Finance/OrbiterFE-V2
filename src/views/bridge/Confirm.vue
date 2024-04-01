@@ -1124,7 +1124,7 @@ export default {
                     value,
                     provider
                 )
-                if (fromChainID === 2 && gasLimit < 21000) {
+                if (fromChainID === 2 && !!Number(gasLimit) && gasLimit < 21000) {
                     gasLimit = 21000
                 }
                 const eprovider = new providers.Web3Provider(
@@ -1152,7 +1152,7 @@ export default {
                         from,
                         to: selectMakerConfig.recipient,
                         value,
-                        gasLimit,
+                        ...(Number(gasLimit) ? {gasLimit} : {}),
                     })
                     .then((res) => {
                         // event 
@@ -1826,10 +1826,10 @@ export default {
                         to,
                         tValue.tAmount
                     )
-                    if (String(fromChainID) === "42161" && gasLimit < 21000) {
+                    if (String(fromChainID) === "42161" && !!Number(gasLimit) && gasLimit < 21000) {
                         gasLimit = 21000
                     }
-                    const objOption = { from: account, gas: gasLimit }
+                    const objOption = { from: account, ...(Number(gasLimit) ? {gas: gasLimit} : {}) }
 
                     const selectChainID = selectMakerConfig?.fromChain?.chainId
                     try {
