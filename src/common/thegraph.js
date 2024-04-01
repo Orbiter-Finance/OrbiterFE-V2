@@ -425,10 +425,12 @@ function sortRule(ruleList) {
     console.log('ruleList', ruleList)
     Array.from(new Set(ruleList))
       .sort(function (a, b) {
-        const [makerAAddress, maker1Weight] =
-          process.env.VUE_APP_MAKER_1_ADDRESS?.split('_')
-        const [makerBAddress, maker2Weight] =
-          process.env.VUE_APP_MAKER_2_ADDRESS?.split('_')
+        const [makerAAddress, maker1Weight] = (
+          process.env.VUE_APP_MAKER_1_ADDRESS || ''
+        )?.split('_')
+        const [makerBAddress, maker2Weight] = (
+          process.env.VUE_APP_MAKER_2_ADDRESS || ''
+        )?.split('_')
 
         const recipientA = a?.recipient?.toLocaleLowerCase()
         const recipientB = b?.recipient?.toLocaleLowerCase()
