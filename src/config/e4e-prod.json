@@ -280,13 +280,14 @@
     "19-24": {
         "ETH-ETH": {
             "gasFee": 0.5,
-            "tradingFee": 0.0013,
+            "tradingFee": 0.0005,
             "makerAddress": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         }
     },
     "30-19": {
@@ -669,10 +670,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 2,
             "minPrice": 0.00005,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0005,
             "gasFee": 1.5,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         }
     },
     "30-31": {
@@ -995,10 +997,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 2,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 10,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-30": {
@@ -1321,10 +1324,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 2,
             "minPrice": 0.00005,
-            "tradingFee": 0.001,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.001
         }
     },
     "24-1": {
@@ -1345,10 +1349,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0018,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0018
         }
     },
     "24-14": {
@@ -1369,10 +1374,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-4": {
@@ -1393,10 +1399,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0013,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         }
     },
     "24-2": {
@@ -1417,10 +1424,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-3": {
@@ -1441,10 +1449,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-16": {
@@ -1465,10 +1474,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-6": {
@@ -1489,10 +1499,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-17": {
@@ -1513,10 +1524,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-15": {
@@ -1537,10 +1549,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-7": {
@@ -1561,10 +1574,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 5,
             "minPrice": 0.00005,
-            "tradingFee": 0.0015,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0015
         }
     },
     "24-23": {
@@ -1586,11 +1600,11 @@
             "sender": "0xE4eDb277e41dc89aB076a1F049f4a3EfA700bCE8",
             "maxPrice": 2,
             "minPrice": 0.00005,
-            "tradingFee": 0.0007,
+            "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
             "endTime": 99999999999999,
-            "originWithholdingFee": 0.0015
+            "originWithholdingFee": 0.0007
         }
     },
     "23-1": {
@@ -3935,13 +3949,14 @@
     "25-24": {
         "ETH-ETH": {
             "gasFee": 2,
-            "tradingFee": 0.0013,
+            "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 2,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0013
         }
     },
     "30-25": {
@@ -4319,13 +4334,14 @@
     "38-24": {
         "ETH-ETH": {
             "gasFee": 0.5,
-            "tradingFee": 0.0007,
+            "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0007
         }
     },
     "30-38": {
@@ -5369,7 +5385,8 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0005
         }
     },
     "16-40": {
@@ -5813,7 +5830,8 @@
             "maxPrice": 1,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "originWithholdingFee": 0.0005
         }
     },
     "40-53": {
