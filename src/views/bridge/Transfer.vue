@@ -1416,13 +1416,13 @@ export default {
     async updateSendBtnInfo() {
       const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
       if (!selectMakerConfig) return;
-      const { fromChain } = selectMakerConfig;
+      const { fromChain, toChain } = selectMakerConfig;
       await this.getMakerMaxBalance();
       this.updateToValue();
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
       // }
-      const availableDigit = fromChain.decimals === 8 ? 4 : fromChain.decimals === 18 ? 6 : 2;
+      const availableDigit = toChain.decimals === 8 || fromChain.decimals === 8 ? 4 : fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
@@ -1781,11 +1781,11 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       if (fromChain.chainId === CHAIN_ID.loopring || fromChain.chainId === CHAIN_ID.loopring_test || toChain.chainId === CHAIN_ID.loopring || toChain.chainId === CHAIN_ID.loopring_test) {
-        this.transferValue = fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = toChain.decimals === 8 ||  fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       } else {
-        this.transferValue = fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       }
