@@ -395,7 +395,7 @@ export default {
     const gasFee_fix = gasFee.decimalPlaces(
       selectMakerConfig.fromChain.decimals === 8 ||
         selectMakerConfig.toChain.decimals === 8
-        ? 4
+        ? 6
         : selectMakerConfig.fromChain.decimals === 18
         ? 5
         : 2,

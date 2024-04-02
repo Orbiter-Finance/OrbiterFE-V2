@@ -70,7 +70,7 @@ function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
   let gasFee = toAmount_tradingFee
     .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
     .dividedBy(new BigNumber(1000))
-  let digit = decimals === 8 || toDecimals === 8 ? 4 : decimals === 18 ? 5 : 2
+  let digit = decimals === 8 || toDecimals === 8 ? 6 : decimals === 18 ? 5 : 2
   let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
   let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
 
@@ -218,7 +218,7 @@ function removeSidesZero(param) {
  * @param {number} precision
  */
 function getDigitByPrecision(precision) {
-  return precision === 8 ? 4 : precision === 18 ? 6 : 2
+  return precision === 8 ? 6 : precision === 18 ? 6 : 2
 }
 
 export default {

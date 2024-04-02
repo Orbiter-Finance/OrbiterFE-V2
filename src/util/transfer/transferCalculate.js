@@ -1212,7 +1212,14 @@ export default {
   },
 
   safeCode() {
-    const { selectMakerConfig, toChainID } = transferDataState
+    const { selectMakerConfig, toChainID, fromCurrency } = transferDataState
+
+    const currency = fromCurrency || selectMakerConfig?.fromChain?.symbol
+
+    if (currency?.toLocaleLowerCase() === 'btc') {
+      const chainInfo = util.getV3ChainInfoByChainId(toChainID)
+      return chainInfo.internalId
+    }
 
     let makerConfig = selectMakerConfig
     const isCheck = String(toChainID) === String(makerConfig.toChain.chainId)

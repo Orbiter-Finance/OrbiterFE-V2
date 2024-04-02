@@ -1930,7 +1930,7 @@ export default {
             const toCurrency = toChain.symbol
             const slippage = selectMakerConfig.slippage
             if (fromCurrency !== toCurrency) {
-                const decimal =  toChain.decimals === 8 ? 4 : toChain.decimals === 18 ? 5 : 3
+                const decimal =  toChain.decimals === 8 ? 6 : toChain.decimals === 18 ? 5 : 3
                 const highValue = (
                     await exchangeToCoin(amount, fromCurrency, toCurrency)
                 ).toFixed(decimal)
