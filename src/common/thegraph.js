@@ -422,7 +422,6 @@ export async function getMdcRuleLatest(dealerAddress) {
 function sortRule(ruleList) {
   const symbolSortMap = { ETH: 1, USDC: 2, USDT: 3, DAI: 4 }
   if (!Object.keys(makerSortMap).length) {
-    console.log('ruleList', ruleList)
     Array.from(new Set(ruleList))
       .sort(function (a, b) {
         const [makerAAddress, maker1Weight] = (
