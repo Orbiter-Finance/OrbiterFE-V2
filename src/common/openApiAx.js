@@ -27,6 +27,7 @@ export const RequestMethod = {
   offline: 'orbiter_offline',
   collectUserTransaction: 'orbiter_collectUserTransaction',
   chainList: 'orbiter_chainList',
+  getBalance: 'orbiter_getBalance'
 }
 
 export async function requestOpenApi(method, params, isV3 = true) {

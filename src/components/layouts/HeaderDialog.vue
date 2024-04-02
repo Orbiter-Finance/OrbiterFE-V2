@@ -126,6 +126,7 @@ import {
     selectWalletDialogVisible,
     setSelectWalletDialogVisible,
     web3State,
+    setConnectWalletGroupKey
 } from '../../composition/hooks'
 import {
     compatibleGlobalWalletConf,
@@ -134,7 +135,7 @@ import {
 import Middle from '../../util/middle/middle'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
+import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, COIN98_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
 import { onCopySuccess, onCopyError, isMobileDevice, isBrowserApp } from '../../util';
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
@@ -226,6 +227,11 @@ export default {
                     icon: 'tallyho',
                     title: 'Taho',
                 },
+                {
+                    isConnect: false,
+                    icon: 'coin98',
+                    title: COIN98_APP,
+                }
             ]
             // the brave wallet is exclusive to the brave browser
             // so if in other browsers, we should hide brave wallet connect option to users
@@ -236,13 +242,22 @@ export default {
         },
         loginInfoData() {
             if (this.isStarkNetDialog) {
-                const starkChain = web3State.starkNet?.starkChain
+                const starkChain = web3State.starkNet?.starkChainc
+                const solanaChain = web3State.solana?.solanaChain
                 let networkName = ''
                 if (starkChain) {
                     if (starkChain === CHAIN_ID.starknet) {
                         networkName = 'Starknet Mainnet'
                     } else if (starkChain === CHAIN_ID.starknet_test) {
                         networkName = 'Goerli Testnet'
+                    }
+                }
+
+                if (solanaChain) {
+                    if (solanaChain === CHAIN_ID.solana) {
+                        networkName = 'Solana Mainnet'
+                    } else if (solanaChain === CHAIN_ID.solana_test) {
+                        networkName = 'Solana Dev'
                     }
                 }
 
@@ -318,6 +333,7 @@ export default {
         onCopyError,
         closeSelectWalletDialog() {
             setSelectWalletDialogVisible(false)
+            setConnectWalletGroupKey("EVM")
         },
         connectWallet(walletConf) {
             this.closeSelectWalletDialog()

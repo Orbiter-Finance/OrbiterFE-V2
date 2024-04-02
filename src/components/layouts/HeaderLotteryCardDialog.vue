@@ -151,10 +151,13 @@ export default {
       return isMobile.value
     },
     currentWalletAddress() {
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress
+      if(!!isSolanaDialog.value) {
+        return solanaHelper.solanaAddress()
       }
-      return web3State.coinbase
+      if (!!isStarkNetDialog.value) {
+        return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
+      }
+      return web3State.coinbase?.toLocaleLowerCase()
     },
     selectWalletDialogVisible() {
       return actDialogVisible.value
@@ -185,15 +188,16 @@ export default {
     handleRefresh() {
       this.key += 1
     },
-    getAddress() {
+    getAddress () {
       let addressGroup = {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.walletAddress
-      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const [web3Address, starkNetAddress] = this.currentWalletAddress
+      const solanaAddress = solanaHelper.solanaAddress()
+      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup
       }
       return {
@@ -216,8 +220,9 @@ export default {
     },
 
     async getLotteryCardDataDraw(isRefresh) {
-      const { data } = await requestLotteryCardDraw('user/card/draw', {
-        address: this.currentWalletAddress?.toLocaleLowerCase(),
+      try {
+        const { data } = await requestLotteryCardDraw('user/card/draw', {
+        address: this.currentWalletAddress
       })
 
       const point = data?.points || 0
@@ -244,6 +249,13 @@ export default {
           await this.getWalletAddressPoint()
         }, 0)
       } else {
+        this.$notify.error({
+          title: 'Failed to draw card O-Points',
+          duration: 3000,
+        })
+      }
+      } catch (error) {
+        this.handleHidden()
         this.$notify.error({
           title: 'Failed to draw card O-Points',
           duration: 3000,

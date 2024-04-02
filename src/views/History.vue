@@ -180,13 +180,15 @@
     getTransactionsHistory,
     recoverSenderPageWorkingState,
     setHistoryInfo,
+    web3State
   } from '../composition/hooks';
   import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
   import { RequestMethod, requestOpenApi } from "../common/openApiAx";
   import util from "../util/util";
   import { decimalNum} from "../util/decimalNum"
   import BigNumber from 'bignumber.js'
-import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
+  import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
+  import solanaHelper from "../util/solana/solana_helper"
   let timer = 0
   export default {
     name: 'History',
@@ -252,7 +254,10 @@ import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
         return historyPanelState.transactionListInfo
       },
       currentWalletAddress() {
-        return compatibleGlobalWalletConf.value.walletPayload.walletAddress;
+        const evmAddress = web3State.coinbase
+        const starknetAddress = web3State.starkNet.starkNetAddress
+        const solanaAddress = solanaHelper.solanaAddress()
+        return [evmAddress, starknetAddress, solanaAddress].filter(item=>!!item).join(",")
       },
     },
     watch: {
@@ -305,6 +310,8 @@ import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
         if (selectChainId === CHAIN_ID.starknet || selectChainId === CHAIN_ID.starknet_test) {
           // starknet
           txHash = util.starknetHashFormat(txHash);
+        } else if (selectChainId === CHAIN_ID.solana || selectChainId === CHAIN_ID.solana_test) {
+          // solana
         } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
           if (!Number(txHash)) {
             util.showMessage("Hash error", "error");

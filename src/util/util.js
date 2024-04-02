@@ -9,8 +9,40 @@ import { Coin_ABI } from './constants/contract/contract.js'
 import { isProd } from './env'
 import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
+import { shuffle, uniq } from 'lodash'
+import { RequestMethod, requestOpenApi } from '../common/openApiAx'
+import axios from 'axios'
+let chainsList = []
 
 export default {
+  async getSolanaBalance(chainId, address, tokenAddress) {
+    if (['SOLANA_DEV', 'SOLANA_TEST', 'SOLANA_MAIN'].includes(chainId)) {
+      const networkParams = chainId === 'SOLANA_DEV' ? '?network=devnet' : ''
+      // solflare
+      try {
+        const res = await axios.get(
+          `https://wallet-api.solflare.com/v3/portfolio/tokens/${address}${networkParams}`,
+          { timeout: 2000 }
+        )
+        const tokens = res.data.tokens
+        const token = tokens.find(
+          (item) => String(item.mint) === String(tokenAddress)
+        )
+        if (!token) return '0'
+        return new BigNumber(token.totalUiAmount).multipliedBy(
+          10 ** token.decimals
+        )
+      } catch (e) {
+        console.error('solflare api error', e)
+        return await requestOpenApi(RequestMethod.getBalance, [
+          chainId,
+          address,
+          tokenAddress,
+        ])
+      }
+    }
+  },
+
   getAccountAddressError(address, isStarknet) {
     if (isStarknet) {
       try {
@@ -216,27 +248,49 @@ export default {
     if (!supportContractWallet.find((item) => item === fromChainID)) {
       return true
     }
-    const rpc = this.stableRpc(fromChainID)
-    if (rpc) {
-      const web3 = new Web3(rpc)
-      const walletAddress =
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      const code = await web3.eth.getCode(walletAddress)
-      if (code && code !== '0x') {
-        return false
-      }
+
+    const res = await this.requestWeb3(
+      fromChainID,
+      'getCode',
+      compatibleGlobalWalletConf.value.walletPayload.walletAddress
+    )
+
+    if (res && res !== '0x') {
+      return false
     }
+
+    // const rpc = await this.stableRpc(fromChainID)
+
+    // if (rpc) {
+    //   const web3 = new Web3(rpc)
+    //   const walletAddress =
+    //     compatibleGlobalWalletConf.value.walletPayload.walletAddress
+    //   const code = await web3.eth.getCode(walletAddress)
+    //   if (code && code !== '0x') {
+    //     return false
+    //   }
+    // }
     return true
   },
 
-  stableWeb3(chainId) {
-    return new Web3(this.stableRpc(String(chainId)))
+  async stableWeb3(chainId) {
+    return new Web3(await this.stableRpc(String(chainId)))
   },
 
-  stableRpc(chainId) {
-    const rpcList = this.getRpcList(chainId)
-    if (rpcList.length) {
-      return rpcList[0]
+  async stableRpc(chainId) {
+    const rpcList = await this.getRpcList(chainId)
+    const res = await Promise.any(
+      rpcList.map((item) => {
+        return new Promise(async (resolve) => {
+          const web3 = new Web3(item)
+          const res = await web3.eth.getBlockNumber()
+          resolve(item)
+        })
+      })
+    )
+
+    if (res) {
+      return res
     }
     console.error(`${chainId} Unable to find stable rpc node`)
     return null
@@ -250,19 +304,74 @@ export default {
     )
   },
 
-  getRpcList(chainId) {
-    const chainInfo = this.getV3ChainInfoByChainId(chainId)
-    const rpcList = (chainInfo?.rpc || []).sort(function () {
-      return 0.5 - Math.random()
+  async getNetworkRpc() {
+    let list = chainsList
+    if (!list?.length) {
+      try {
+        const res = await fetch('https://chainid.network/chains.json')
+        const data = await res.json()
+        chainsList = data || []
+        list = data || []
+      } catch (error) {}
+    }
+    return list?.map((item) => item) || []
+  },
+
+  getChainIdNetworkRpclist(networkList, chainId) {
+    const group =
+      networkList.filter((item) => {
+        return String(item?.chainId) === String(chainId)
+      })?.[0]?.rpc || []
+
+    return (
+      group?.filter(
+        (option) =>
+          !(
+            option.includes('${') ||
+            option.includes('ws://') ||
+            option.includes('wss://')
+          )
+      ) || []
+    )
+  },
+
+  cleanRpcList(networkList, rpcList) {
+    const rpcGroup = networkList.concat(rpcList)
+    let list = []
+    rpcGroup.forEach((item) => {
+      const flag = list.some((option) => option.trim() === item.trim())
+      if (!flag) {
+        list = list.concat([item.trim()])
+      }
     })
+
+    return list
+  },
+
+  async getRpcList(chainId) {
+    // const res = await this.getNetworkRpc()
+    const res = []
+    const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
+    const chainInfo = this.getV3ChainInfoByChainId(chainId)
+    let rpcList = chainInfo?.rpc || []
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
       if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
-        return [stableRpc.rpc, ...rpcList]
+        rpcList = [stableRpc.rpc, ...rpcList]
       }
-    } catch (e) {}
-    return rpcList
+      rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
+    } catch (e) {
+      console.error('parse stableRpc  error', e)
+    }
+    rpcList = shuffle(rpcList)
+    if (
+      process.env[`RPC_${chainId}`] &&
+      process.env[`RPC_${chainId}`].includes('http')
+    ) {
+      rpcList.push(process.env[`RPC_${chainId}`])
+    }
+    return uniq(rpcList)
   },
 
   // the actual transfer amount
@@ -284,7 +393,11 @@ export default {
       .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
       .dividedBy(new BigNumber(1000))
     const gasFee_fix = gasFee.decimalPlaces(
-      selectMakerConfig.fromChain.decimals === 18 ? 5 : 2,
+      selectMakerConfig.fromChain.decimals === 8
+        ? 4
+        : selectMakerConfig.fromChain.decimals === 18
+        ? 5
+        : 2,
       BigNumber.ROUND_UP
     )
 
@@ -327,6 +440,8 @@ export default {
       CHAIN_ID.zksync_test,
       CHAIN_ID.starknet,
       CHAIN_ID.starknet_test,
+      CHAIN_ID.solana,
+      CHAIN_ID.solana_test,
       CHAIN_ID.imx,
       CHAIN_ID.imx_test,
       CHAIN_ID.loopring,
@@ -384,6 +499,16 @@ export default {
       fromChainID === CHAIN_ID.starknet_test ||
       toChainID === CHAIN_ID.starknet ||
       toChainID === CHAIN_ID.starknet_test
+    )
+  },
+
+  isSolana() {
+    const { fromChainID, toChainID } = transferDataState
+    return (
+      fromChainID === CHAIN_ID.solana ||
+      fromChainID === CHAIN_ID.solana_test ||
+      toChainID === CHAIN_ID.solana ||
+      toChainID === CHAIN_ID.solana_test
     )
   },
 
@@ -464,8 +589,8 @@ export default {
       this.showMessage(error.message, 'error')
     }
   },
-  requestWeb3(chainId, method, ...args) {
-    const rpcList = this.getRpcList(chainId)
+  async requestWeb3(chainId, method, ...args) {
+    const rpcList = await this.getRpcList(chainId)
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {
@@ -497,8 +622,8 @@ export default {
       }
     })
   },
-  getWeb3TokenBalance(chainId, userAddress, tokenAddress) {
-    const rpcList = this.getRpcList(chainId)
+  async getWeb3TokenBalance(chainId, userAddress, tokenAddress) {
+    const rpcList = await this.getRpcList(chainId)
     return new Promise(async (resolve, reject) => {
       let result
       if (rpcList && rpcList.length > 0) {

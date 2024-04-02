@@ -22,17 +22,19 @@
         <BottomNav v-if="$route.path !== '/home'" />
       </keep-alive>
     </div>
-    <HeaderDialog />
+    <!-- <HeaderDialog /> -->
     <HeaderActDialog
       v-if="$route.path !== '/statistics' && $route.path !== '/home'"
       style="z-index: 999"
     />
+    <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
   </div>
 </template>
 
 <script>
+import 'solana-wallets-vue-2/styles.css'
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
@@ -50,13 +52,17 @@ import {
   isMobile,
   setActDialogVisible,
   setStarkNetDialog,
+  setSolanaDialog,
   web3State,
   isStarkNetDialog,
+  isSolanaDialog,
   setActAddPoint,
   setActAddPointVisible,
   setActPoint,
   setActNftList,
   updateActDataList,
+  setSelectWalletDialogVisible,
+  setConnectWalletGroupKey
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -70,6 +76,7 @@ import * as topbg from './assets/v2/light-top-bg.jpg'
 import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
 import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
+import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import {
   setIsBraveWallet,
   performInitMobileAppWallet,
@@ -80,7 +87,12 @@ import util from './util/util'
 import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from './util/constants/starknet/helper'
+import solanaHelper from './util/solana/solana_helper'
 const { walletDispatchersOnInit } = walletDispatchers
+
+let timerOptions = 0
+let timerActivityList = 0
+let timeNft = 0
 
 export default {
   name: 'App',
@@ -97,9 +109,11 @@ export default {
       return this.$store.state.themeMode === 'light'
     },
     currentWalletAddress () {
+      const solanaAddress = web3State.solana.solanaAddress || solanaHelper.solanaAddress()
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
+        solanaAddress,
         ...[],
       ]
     },
@@ -157,10 +171,14 @@ export default {
     HeaderDialog,
     HeaderActDialog,
     HeaderLotteryCardDialog,
+    HeaderWalletGroup
   },
   async mounted () {
     if (isBrowserApp()) {
-      await connectStarkNetWallet()
+      // await connectStarkNetWallet()
+
+      setSelectWalletDialogVisible(true)
+      setConnectWalletGroupKey("STARKNET")
     }
 
     if (isBraveBrowser()) {
@@ -201,10 +219,15 @@ export default {
     },
     currentWalletAddress: function (newAddress) {
       const [web3Address, starkNetAddress] = newAddress
-      if (starkNetAddress) {
+      const solanaAddress = solanaHelper.solanaAddress()
+      if(solanaAddress) {
+        setSolanaDialog(true)
+        setActDialogVisible(true)
+      } else  if (starkNetAddress) {
         setStarkNetDialog(true)
         setActDialogVisible(true)
       }
+      
       if (!!web3Address || !!starkNetAddress) {
         this.dataList = []
         this.getWalletAddressActList()
@@ -220,9 +243,10 @@ export default {
         address: '',
       }
       const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const solanaAddress = solanaHelper.solanaAddress()
+      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup
       }
       return {
@@ -233,6 +257,13 @@ export default {
     },
     async getNftList () {
       const { isAddress, address } = this.getAddress()
+
+      const timerN = +new Date()
+
+      if(Number(timerN - timeNft) < 1000) {
+        return 
+      }
+      timeNft = timerN
 
       if (isAddress) {
         const res = await requestPointSystem('user/nfts', {
@@ -247,6 +278,13 @@ export default {
     },
     async getWalletAddressActList () {
       const { isAddress, address } = this.getAddress()
+
+      const timerN = +new Date()
+
+      if(Number(timerN - timerActivityList) < 1000) {
+        return 
+      }
+      timerActivityList = timerN
 
       if (isAddress) {
         const res = await requestPointSystem('v2/activity/list', {
@@ -273,6 +311,14 @@ export default {
     async getWalletAddressPoint () {
       const { isAddress, address } = this.getAddress()
 
+      const timerN = +new Date()
+
+      if(Number(timerN - timerOptions) < 1000) {
+        return 
+      }
+
+      timerOptions = timerN
+
       if (isAddress) {
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
@@ -291,7 +337,8 @@ export default {
     performInitCurrentLoginWallet () {
       performInitMobileAppWallet()
 
-      getZksToken.getSupportZksTokenList()
+      // TAG:close zkspace
+      // getZksToken.getSupportZksTokenList()
       getLpToken.getSupportLpTokenList()
 
       const isOkxwalletApp = window.ethereum?.isOkxWallet && isMobileDevice()

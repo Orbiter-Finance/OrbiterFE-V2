@@ -17,6 +17,13 @@ export const web3State = reactive({
     starkIsConnected: false,
     starkChain: '',
   },
+  solana: {
+    solanaAddress: '',
+    solanaWalletName: '',
+    solanaWalletIcon: '',
+    solanaIsConnected: false,
+    solanaChain: '',
+  },
 })
 
 export function updateCoinbase(coinbase) {
@@ -31,9 +38,9 @@ export function updateCoinbase(coinbase) {
   updatelpAccountInfo(null)
   updatelpApiKey(null)
   if (coinbase instanceof Array) {
-    web3State.coinbase = coinbase[0];
+    web3State.coinbase = coinbase[0]
   } else {
-    web3State.coinbase = coinbase;
+    web3State.coinbase = coinbase
   }
 }
 export function updatelpApiKey(accountInfo) {

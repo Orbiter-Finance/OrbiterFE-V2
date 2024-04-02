@@ -1,0 +1,146 @@
+{
+    "1-54": {
+        "BTC-BTC": {
+            "gasFee": 0,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "54-1": {
+        "BTC-BTC": {
+            "gasFee": 12,
+            "tradingFee": 0.0003,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "15-54": {
+        "BTC-BTC": {
+            "gasFee": 0,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "54-15": {
+        "BTC-BTC": {
+            "gasFee": 12,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "2-54": {
+        "BTC-BTC": {
+            "gasFee": 3,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "54-2": {
+        "BTC-BTC": {
+            "gasFee": 12,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "14-54": {
+        "BTC-BTC": {
+            "gasFee": 0,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "54-14": {
+        "BTC-BTC": {
+            "gasFee": 12,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "23-54": {
+        "BTC-BTC": {
+            "gasFee": 0,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "54-23": {
+        "BTC-BTC": {
+            "gasFee": 12,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "7-54": {
+        "BTC-BTC": {
+            "gasFee": 3,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "54-7": {
+        "BTC-BTC": {
+            "gasFee": 12,
+            "tradingFee": 0.0001,
+            "makerAddress": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "sender": "0xe01a40a0894970fc4c2b06f36f5eb94e73ea502d",
+            "maxPrice": 0.05,
+            "minPrice": 0.0001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    }
+}

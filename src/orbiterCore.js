@@ -1,4 +1,4 @@
-import { CHAIN_ID } from "./config";
+import { CHAIN_ID } from './config'
 
 const BigNumber = require('bignumber.js')
 
@@ -14,26 +14,46 @@ const MAX_BITS = {
   [CHAIN_ID.zksync_test]: 35,
   [CHAIN_ID.imx_test]: 28,
   [CHAIN_ID.dydx_test]: 28,
-  [CHAIN_ID.zkspace_test]: 35
-};
+  [CHAIN_ID.zkspace_test]: 35,
+}
 
 function isLPChain(chain) {
-  if (chain === CHAIN_ID.loopring || chain === CHAIN_ID.loopring_test || chain === 'loopring') {
+  if (
+    chain === CHAIN_ID.loopring ||
+    chain === CHAIN_ID.loopring_test ||
+    chain === 'loopring'
+  ) {
     return true
   }
 }
 
 function isLimitNumber(chain) {
-  if (chain === CHAIN_ID.zksync || chain === CHAIN_ID.zksync_test || chain === 'zksync') {
+  if (
+    chain === CHAIN_ID.zksync ||
+    chain === CHAIN_ID.zksync_test ||
+    chain === 'zksync'
+  ) {
     return true
   }
-  if (chain === CHAIN_ID.imx || chain === CHAIN_ID.imx_test || chain === 'immutablex') {
+  if (
+    chain === CHAIN_ID.imx ||
+    chain === CHAIN_ID.imx_test ||
+    chain === 'immutablex'
+  ) {
     return true
   }
-  if (chain === CHAIN_ID.dydx || chain === CHAIN_ID.dydx_test || chain === 'dydx') {
+  if (
+    chain === CHAIN_ID.dydx ||
+    chain === CHAIN_ID.dydx_test ||
+    chain === 'dydx'
+  ) {
     return true
   }
-  if (chain === CHAIN_ID.zkspace || chain === CHAIN_ID.zksync_test || chain === 'zkspace') {
+  if (
+    chain === CHAIN_ID.zkspace ||
+    chain === CHAIN_ID.zksync_test ||
+    chain === 'zkspace'
+  ) {
     return true
   }
   return false
@@ -48,7 +68,7 @@ function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
   let gasFee = toAmount_tradingFee
     .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
     .dividedBy(new BigNumber(1000))
-  let digit = decimals === 18 ? 5 : 2
+  let digit = decimals === 8 ? 4 : decimals === 18 ? 5 : 2
   let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
   let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
 
@@ -196,7 +216,7 @@ function removeSidesZero(param) {
  * @param {number} precision
  */
 function getDigitByPrecision(precision) {
-  return precision === 18 ? 6 : 2
+  return precision === 8 ? 4 : precision === 18 ? 6 : 2
 }
 
 export default {

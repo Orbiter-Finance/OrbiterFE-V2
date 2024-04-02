@@ -205,6 +205,7 @@ import {
     saveSenderPageWorkingState,
 } from '../../composition/hooks'
 import { CHAIN_ID } from "../../config";
+import solanaHelper from '../../util/solana/solana_helper';
 
 export default {
     name: 'Proceed',
@@ -354,6 +355,12 @@ export default {
             const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx';
             window.open(txUrl + '/' + hash, '_blank');
             return;
+          } else {
+            if(isFrom) {
+                const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx';
+                window.open(txUrl + '/' + this.$store.state.proceedTXID, '_blank');
+                return;
+            } 
           }
 
           const { fromChainID, toChainID } = transferDataState;
@@ -362,6 +369,9 @@ export default {
           if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
             userAddress = web3State.starkNet.starkNetAddress;
           }
+          if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
+            userAddress = solanaHelper.solanaAddress();
+          }
           const accountUrl = explorerInfo.accountUrl || explorerInfo.url + '/address';
           const url = accountUrl + '/' + userAddress;
           window.open(url, '_blank');
@@ -369,7 +379,7 @@ export default {
         getExplorer(isFrom = true) {
             const chainId = this.getChainId(isFrom);
             const chainInfo = util.getV3ChainInfoByChainId(chainId);
-            return chainInfo.explorers;
+            return chainInfo.explorers?.length > 1 ? chainInfo.explorers : null;
         },
         showChainIcon(isFrom = true) {
             if (this.detailData) {
@@ -430,6 +440,9 @@ export default {
                 if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
+                if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+                    userAddress = solanaHelper.solanaAddress()
+                }
                 url = util.getAccountExploreUrl(fromChainID) + userAddress
 
                 // ImmutableX
@@ -459,6 +472,9 @@ export default {
                 let userAddress = web3State.coinbase
                 if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
                     userAddress = web3State.starkNet.starkNetAddress
+                }
+                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+                    userAddress = solanaHelper.solanaAddress()
                 }
                 url = util.getAccountExploreUrl(toChainID) + userAddress
 

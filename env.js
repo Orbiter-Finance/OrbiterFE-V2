@@ -1,9 +1,11 @@
-import { isL2DataDev } from "./src/util";
-import { CHAIN_ID } from "./src/config";
+import { isL2DataDev } from './src/util'
+import { CHAIN_ID } from './src/config'
 
 export default {
   // l2BaseUrl: isProd() ? 'https://l2api.orbiter.finance' : 'http://datastation.joeyzhou.xyz',
-  l2BaseUrl: isL2DataDev() ? 'http://datastation.joeyzhou.xyz' : 'https://l2api.orbiter.finance',
+  l2BaseUrl: isL2DataDev()
+    ? 'http://datastation.joeyzhou.xyz'
+    : 'https://l2api.orbiter.finance',
   metaMaskNetworkId: {
     [CHAIN_ID.starknet]: 1,
     [CHAIN_ID.dydx]: 1,
@@ -11,6 +13,7 @@ export default {
     [CHAIN_ID.zkspace]: 1,
     [CHAIN_ID.imx]: 1,
     [CHAIN_ID.zksync]: 1,
+    [CHAIN_ID.solana]: 1,
 
     [CHAIN_ID.starknet_test]: 5,
     [CHAIN_ID.dydx_test]: 5,
@@ -18,6 +21,7 @@ export default {
     [CHAIN_ID.zkspace_test]: 5,
     [CHAIN_ID.imx_test]: 5,
     [CHAIN_ID.zksync_test]: 5,
+    [CHAIN_ID.solana_test]: 5,
   },
   txExploreUrl: {
     [CHAIN_ID.zksync]: 'https://zkscan.io/explorer/transactions/',
@@ -26,9 +30,12 @@ export default {
     [CHAIN_ID.dydx_test]: 'https://trade.stage.dydx.exchange/',
     [CHAIN_ID.imx_test]: 'https://api.sandbox.x.immutable.com/v1/transfers/',
     [CHAIN_ID.loopring]: 'https://explorer.loopring.io/tx/',
-    [CHAIN_ID.loopring_test]: 'https://loopring.io/#/l2assets/history/Transactions/',
+    [CHAIN_ID.loopring_test]:
+      'https://loopring.io/#/l2assets/history/Transactions/',
     [CHAIN_ID.zkspace]: 'https://zkspace.info/transaction/',
-    [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/transaction/'
+    [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/transaction/',
+    [CHAIN_ID.solana]: 'https://solscan.io/tx/',
+    [CHAIN_ID.solana_test]: 'https://solscan.io/tx/',
   },
   accountExploreUrl: {
     [CHAIN_ID.zksync]: 'https://zkscan.io/explorer/accounts/',
@@ -38,11 +45,14 @@ export default {
     [CHAIN_ID.imx]: 'https://market.immutable.com/inventory/',
     [CHAIN_ID.imx_test]: 'https://api.sandbox.x.immutable.com/v1/transfers/',
     [CHAIN_ID.loopring]: 'https://loopring.io/#/l2assets/history/Transactions/',
-    [CHAIN_ID.loopring_test]: 'https://loopring.io/#/l2assets/history/Transactions/',
+    [CHAIN_ID.loopring_test]:
+      'https://loopring.io/#/l2assets/history/Transactions/',
     [CHAIN_ID.dydx]: 'https://trade.dydx.exchange/',
     [CHAIN_ID.dydx_test]: 'https://trade.stage.dydx.exchange/',
     [CHAIN_ID.zkspace]: 'https://zkspace.info/account/',
-    [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/account/'
+    [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/account/',
+    [CHAIN_ID.solana]: 'https://solscan.io/account/',
+    [CHAIN_ID.solana_test]: 'https://solscan.io/account/',
   },
   gasPriceMap: {
     [CHAIN_ID.mainnet]: 100,
@@ -52,7 +62,7 @@ export default {
     [CHAIN_ID.po]: 60,
     [CHAIN_ID.op]: 0.001,
     [CHAIN_ID.imx]: 1.7,
-    [CHAIN_ID.loopring]: 100
+    [CHAIN_ID.loopring]: 100,
   },
   gasLimitMap: {
     [CHAIN_ID.mainnet]: 35000,
@@ -68,6 +78,6 @@ export default {
     [CHAIN_ID.zksync2]: 10560,
     [CHAIN_ID.bsc]: 150000,
     [CHAIN_ID.nova]: 150000,
-    [CHAIN_ID.pozkevm]: 300000
-  }
-};
+    [CHAIN_ID.pozkevm]: 300000,
+  },
+}

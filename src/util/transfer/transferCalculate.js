@@ -2,6 +2,7 @@ import { getContractFactory, predeploys } from '@eth-optimism/contracts'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { ethers, providers } from 'ethers'
+
 import thirdapi from '../../core/actions/thirdapi'
 import zkspace from '../../core/actions/zkspace'
 import orbiterCore from '../../orbiterCore'
@@ -22,10 +23,14 @@ import {
   transferDataState,
   web3State,
   tradingPairsData,
+  setSelectWalletDialogVisible,
+  setConnectWalletGroupKey,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
+
+import solanaHelper from '../solana/solana_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -208,7 +213,7 @@ export default {
           fromChainID,
           lpTokenInfo
         )
-        const decimals = 18 // loopringFee must be use eth
+        const decimals = lpTokenInfo ? lpTokenInfo.decimals : 18
         return Number(loopringFee) / 10 ** decimals
       } catch (error) {
         console.warn('lp getTransferFeeerror:')
@@ -260,7 +265,7 @@ export default {
           console.warn('lp getTransferFeeerror:')
         }
       }
-      const rpcList = util.getRpcList(fromChainID)
+      const rpcList = await util.getRpcList(fromChainID)
       if (!rpcList.length) {
         return 0
       }
@@ -280,7 +285,7 @@ export default {
         [CHAIN_ID.base, CHAIN_ID.zora, CHAIN_ID.opbnb].includes(fromChainID)
       ) {
         const provider = new providers.JsonRpcProvider({
-          url: util.stableRpc(fromChainID),
+          url: await util.stableRpc(fromChainID),
         })
         const fee = await provider.getFeeData()
         gasPrice = fee.maxPriorityFeePerGas.toString()
@@ -339,7 +344,8 @@ export default {
         lpTokenInfo
       )
       // lpGasFee must use eth
-      return (Number(loopringFee) / 10 ** 18).toFixed(6)
+      const decimals = lpTokenInfo ? lpTokenInfo.decimals : 18
+      return Number(loopringFee) / 10 ** decimals
     }
     if (
       fromChainID === CHAIN_ID.zkspace ||
@@ -601,6 +607,14 @@ export default {
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
       ethGas += SNWithDrawL1Gas
     }
+    if (
+      fromChainID === CHAIN_ID.solana ||
+      fromChainID === CHAIN_ID.solana_test
+    ) {
+      // solana cost
+      console.log('solana gas')
+      ethGas = 15 * 10 ** 3
+    }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
         const fromGasPrice = await this.getGasPrice(fromChainID)
@@ -759,7 +773,7 @@ export default {
       try {
         // Ar deposit
         const toGasPrice = await this.getGasPrice(
-          (toChainID === toChainID) === CHAIN_ID.ar ? m : g
+          toChainID === CHAIN_ID.ar ? m : g
         )
         const arDepositGas =
           toGasPrice *
@@ -773,7 +787,7 @@ export default {
     }
     if (toChainID === CHAIN_ID.base || toChainID === CHAIN_ID.base_test) {
       const toGasPrice = await this.getGasPrice(
-        (toChainID === toChainID) === CHAIN_ID.base ? m : g
+        toChainID === CHAIN_ID.base ? m : g
       )
       const arDepositGas =
         toGasPrice *
@@ -1031,6 +1045,30 @@ export default {
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
     } else if (
+      localChainID === CHAIN_ID.solana ||
+      localChainID === CHAIN_ID.solana_test
+    ) {
+      try {
+        const isConnected = await solanaHelper.isConnect()
+        const solanaAddress = solanaHelper.solanaAddress()
+
+        if (!solanaAddress || !isConnected) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+          return '0'
+        }
+
+        const tokenAccountBalance = await util.getSolanaBalance(
+          localChainID,
+          userAddress,
+          tokenAddress
+        )
+
+        return String(tokenAccountBalance || '0')
+      } catch (error) {
+        return '0'
+      }
+    } else if (
       localChainID === CHAIN_ID.imx ||
       localChainID === CHAIN_ID.imx_test
     ) {
@@ -1116,7 +1154,7 @@ export default {
     ) {
       return null
     }
-    const rpcList = util.getRpcList(fromChainId)
+    const rpcList = await util.getRpcList(fromChainId)
     for (const rpc of rpcList) {
       try {
         const response = await axios.post(rpc, {
@@ -1140,7 +1178,7 @@ export default {
   async getOPFee(fromChainID) {
     // Create an ethers provider connected to the public mainnet endpoint.
     const provider = new ethers.providers.JsonRpcProvider(
-      util.stableRpc(fromChainID)
+      await util.stableRpc(fromChainID)
     )
     // Create contract instances connected to the GPO and WETH contracts.
     const GasPriceOracle = getContractFactory('OVM_GasPriceOracle')
@@ -1214,7 +1252,7 @@ export default {
   },
   async calEBCValue() {
     const { selectMakerConfig, fromChainID, toChainID } = transferDataState
-    const web3 = util.stableWeb3(isDev() ? 5 : 1)
+    const web3 = await util.stableWeb3(isDev() ? 5 : 1)
     const provider = new ethers.providers.Web3Provider(web3.currentProvider)
     util.log('ebcAddress', selectMakerConfig.ebcAddress)
     const contractInstance = new ethers.Contract(

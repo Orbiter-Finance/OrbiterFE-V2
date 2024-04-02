@@ -10,8 +10,7 @@
           <div class="lottery-tooltip">
             <div>Your chances of flopping: {{ total }}</div>
             <div class="lottery-tooltip-bottom">
-              Bridging ({{ currentProgress }}/{{ max }}) TX
-              Get Flip
+              Bridging ({{ currentProgress }}/{{ max }}) TX Get Flip
             </div>
           </div>
         </template>
@@ -50,7 +49,8 @@ import {
   setLotteryCardTotal,
   setLotteryCardModalShow,
   setLotteryPointsNum,
-  setLotteryCardProgress
+  setLotteryCardProgress,
+  isSolanaDialog,
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -62,6 +62,7 @@ import {
 
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import CommCardTooltip from '../CommCardTooltip.vue'
+import solanaHelper from '../../util/solana/solana_helper';
 
 export default {
   name: 'HeaderLotteryCard',
@@ -74,7 +75,6 @@ export default {
     }
   },
   computed: {
-    
     currentProgress() {
       return lotteryCardCurrentProgress.value
     },
@@ -94,10 +94,13 @@ export default {
       return isMobile.value
     },
     currentWalletAddress() {
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress
+      if(!!isSolanaDialog.value) {
+        return solanaHelper.solanaAddress()
       }
-      return web3State.coinbase
+      if (!!isStarkNetDialog.value) {
+        return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
+      }
+      return web3State.coinbase?.toLocaleLowerCase()
     },
     selectWalletDialogVisible() {
       return actDialogVisible.value
@@ -140,27 +143,26 @@ export default {
   },
   methods: {
     async handleShow() {
-        if (!this.visible && this.isMobile) {
-          this.visible = true;
-        } else {
-          this.visible = false
-          if (!!this.total) {
-            await this.getLotteryCardDataDraw()
-            setLotteryCardModalShow(true)
-            await this.getLotteryCardData()
-          }
-
+      if (!this.visible && this.isMobile) {
+        this.visible = true
+      } else {
+        this.visible = false
+        if (!!this.total) {
+          await this.getLotteryCardDataDraw()
+          await this.getLotteryCardData()
+        }
       }
     },
-    getAddress() {
+    getAddress () {
       let addressGroup = {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.walletAddress
-      const address = !!isStarkNetDialog.value ? starkNetAddress : web3Address
+      const [web3Address, starkNetAddress] = this.currentWalletAddress
+      const solanaAddress = solanaHelper.solanaAddress()
+      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || util.getAccountAddressError(address || '', isStarknet)) {
+      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup
       }
       return {
@@ -169,30 +171,35 @@ export default {
         address,
       }
     },
-    
+
     async getLotteryCardDataDraw() {
-      const { data } = await requestLotteryCardDraw(
-        'user/card/draw',
-        {
+      try {
+        const { data } = await requestLotteryCardDraw('user/card/draw', {
           address: this.currentWalletAddress?.toLocaleLowerCase(),
-        }
-      )
-      const point = data?.points || ""
+        })
+        const point = data?.points || ''
 
-      if (Number(point)) {
-        setActAddPoint(String(point))
+        if (Number(point)) {
+          setActAddPoint(String(point))
+          setLotteryCardModalShow(true)
 
-        setTimeout(() => {
-          setLotteryPointsNum(point)
-          setActAddPointVisible(true)
           setTimeout(() => {
-            setActAddPointVisible(false)
-          }, 3000)
-        }, 1000)
-        setTimeout(async () => {
-          await this.getWalletAddressPoint()
-        }, 0)
-      } else {
+            setLotteryPointsNum(point)
+            setActAddPointVisible(true)
+            setTimeout(() => {
+              setActAddPointVisible(false)
+            }, 3000)
+          }, 1000)
+          setTimeout(async () => {
+            await this.getWalletAddressPoint()
+          }, 0)
+        } else {
+          this.$notify.error({
+            title: 'Failed to draw card O-Points',
+            duration: 3000,
+          })
+        }
+      } catch (error) {
         this.$notify.error({
           title: 'Failed to draw card O-Points',
           duration: 3000,
@@ -204,7 +211,7 @@ export default {
         data: { cardsCount = 0, progress },
         code,
       } = await requestLotteryCard('user/cards', {
-        address: this.currentWalletAddress?.toLocaleLowerCase(),
+        address: this.currentWalletAddress
       })
 
       if (Number(code) === 0) {
@@ -230,7 +237,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 @keyframes card-rotate {
   0%,
   84%,
@@ -315,5 +321,4 @@ export default {
     }
   }
 }
-
 </style>
