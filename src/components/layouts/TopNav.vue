@@ -21,7 +21,6 @@
           :iconName="navIcons.logo"
         />
         <HeaderLinks
-          v-if="$route.path !== '/statistics'"
           style="margin-top: 24px; margin-left: 134px; min-width: 280px"
         />
       </div>

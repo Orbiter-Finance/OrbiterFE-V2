@@ -1422,7 +1422,7 @@ export default {
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
       // }
-      const availableDigit = toChain.decimals === 8 || fromChain.decimals === 8 ? 4 : fromChain.decimals === 18 ? 6 : 2;
+      const availableDigit = fromChain.decimals === 8 ? 4 : fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
@@ -1618,7 +1618,11 @@ export default {
       let opBalance = 10 ** -avalibleDigit;
       let preGasDigit = 3;
       let preGas = 0;
-      if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
+
+      const chainInfo = util.getV3ChainInfoByChainId(fromChain.chainId)
+
+      if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
+      [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
         preGas = 10 ** -preGasDigit;
       }
       let userBalance = new BigNumber(this.fromBalance)
