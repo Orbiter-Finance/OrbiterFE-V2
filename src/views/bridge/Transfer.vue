@@ -1618,7 +1618,11 @@ export default {
       let opBalance = 10 ** -avalibleDigit;
       let preGasDigit = 3;
       let preGas = 0;
-      if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
+
+      const chainInfo = util.getV3ChainInfoByChainId(fromChain.chainId)
+
+      if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
+      [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
         preGas = 10 ** -preGasDigit;
       }
       let userBalance = new BigNumber(this.fromBalance)
@@ -1781,11 +1785,11 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       if (fromChain.chainId === CHAIN_ID.loopring || fromChain.chainId === CHAIN_ID.loopring_test || toChain.chainId === CHAIN_ID.loopring || toChain.chainId === CHAIN_ID.loopring_test) {
-        this.transferValue = toChain.decimals === 8 ||  fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       } else {
-        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       }

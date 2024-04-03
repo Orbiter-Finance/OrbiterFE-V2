@@ -1648,5 +1648,40 @@
             "0x12bdaF8a32e436051439A2777ecB0A70245aD7Ee": "OBSource"
         },
         "contracts": []
+    },
+    {
+        "name": "BEVM Mainnet",
+        "rpc": [
+            "https://rpc-mainnet-1.bevm.io/",
+            "https://rpc-mainnet-2.bevm.io/"
+        ],
+        "features": [
+            "Etherscan",
+            {
+                "name": "evm-account6"
+            }
+        ],
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "tokens": [],
+        "internalId": "55",
+        "nativeCurrency": {
+            "name": "BTC",
+            "symbol": "BTC",
+            "decimals": 18,
+            "coinKey": "BTC",
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "infoURL": "https://scan-mainnet.bevm.io",
+        "shortName": "BEVM",
+        "chainId": "11501",
+        "networkId": "11501",
+        "explorers": [],
+        "contract": {
+            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
+            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc": "OBSource"
+        },
+        "contracts": []
     }
 ]
