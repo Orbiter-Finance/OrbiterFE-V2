@@ -228,6 +228,11 @@ export default {
           icon: 'phantom',
           title: 'Phantom',
         },
+        {
+            isConnect: false,
+            icon: 'trustwallet',
+            title: TRUSTWALLET_APP,
+        }
       ]
       return wallets
     },
