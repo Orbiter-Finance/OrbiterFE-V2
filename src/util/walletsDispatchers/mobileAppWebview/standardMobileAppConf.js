@@ -9,6 +9,7 @@ import {
   ZERION_APP,
   WALLETCONNECT,
   COIN98_APP,
+  TRUSTWALLET_APP,
 } from '../constants'
 import { isBraveWallet } from '../utils'
 
@@ -68,6 +69,11 @@ const standardMobileAppConf = [
   {
     walletType: COIN98_APP,
     walletIsInstalledInvestigator: (provider) => provider.isCoin98,
+    chainIdTransfer: (chainId) => Number(chainId),
+  },
+  {
+    walletType: TRUSTWALLET_APP,
+    walletIsInstalledInvestigator: (provider) => provider.isTrustWallet,
     chainIdTransfer: (chainId) => Number(chainId),
   },
 ]
