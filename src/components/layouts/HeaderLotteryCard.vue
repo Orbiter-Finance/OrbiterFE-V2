@@ -100,7 +100,8 @@ export default {
       if (!!isStarkNetDialog.value) {
         return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
       }
-      return web3State.coinbase?.toLocaleLowerCase()
+      const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+      return evmAddress?.toLocaleLowerCase()
     },
     selectWalletDialogVisible() {
       return actDialogVisible.value

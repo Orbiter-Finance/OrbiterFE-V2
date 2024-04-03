@@ -340,7 +340,7 @@ export default {
             if (!walletIsLogin.value) {
                 return
             }
-            const from = web3State.coinbase
+            const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress
             const toAddress = solanaHelper.solanaAddress()
             const isConnected = await solanaHelper.isConnect()
 
@@ -1224,7 +1224,7 @@ export default {
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
-                const evmAddress = web3State.coinbase
+                const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
                 const targetAddress = toChainID === CHAIN_ID.starknet ||
                 toChainID === CHAIN_ID.starknet_test ? starkNetAddress: evmAddress
