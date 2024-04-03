@@ -122,18 +122,20 @@ import {
 } from './services/getStatisticsData'
 import * as echarts from 'echarts'
 import {
-  CHAIN_LIST,
   simpleMonthAbbreviations,
   monthAbbreviations,
   CHART_TOTAL_LABELS,
 } from './contants/index'
 import { exchangeToCoin } from '../../util/coinbase'
-import { formatCurrency } from '../../util/util'
+import util, { formatCurrency } from '../../util/util'
 import { mapMutations } from 'vuex'
 import { BigNumber } from 'bignumber.js'
+import { utils } from 'ethers'
+
+let chainList = []
 
 export default {
-  data () {
+  data() {
     return {
       addressCount: 0,
       totalUsd: 0,
@@ -146,30 +148,50 @@ export default {
       hideDataLoading: false,
       hideTxLoading: false,
       hideAmountLoading: false,
-      hideUserLoading: false,
+      hideUserLoading: false
     }
   },
   computed: {
-    formatTxCount () {
+    formatTxCount() {
       return formatCurrency(Number(this.txCount, 0)) || 0
     },
-    formatTotalUsd () {
+    formatTotalUsd() {
       const fixedTotal = Number(this.totalUsd)
       const oneBillion = 10 ** 9
       return this.totalUsd ? `$${(fixedTotal / oneBillion).toFixed(2)}B` : 0
     },
-    formatAmountCount () {
+    formatAmountCount() {
       return formatCurrency(Number(this.addressCount, 0)) || 0
     },
   },
-  mounted () {
+  mounted() {
     this.toggleThemeMode('light')
-    this.init()
+    this.getChains()
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    init () {
-      queryUSDAmountStatisticsData().then(USDAmountData => {
+    async getChains() {
+      try {
+        if (!chainList?.length) {
+          const res = await fetch('https://api.orbiter.finance/sdk/chains', {})
+          const data = await res.json()
+
+          chainList = data?.result?.map((item) => {
+            return item.chainId
+          })
+        }
+
+        if (chainList?.length) {
+          this.init()
+        } else {
+          this.showError()
+        }
+      } catch (error) {
+        this.showError()
+      }
+    },
+    init() {
+      queryUSDAmountStatisticsData().then((USDAmountData) => {
         this.hideDataLoading = true
         if (!USDAmountData) {
           this.showError()
@@ -181,7 +203,7 @@ export default {
         queryTxStatisticsData(),
         queryTxStatisticsData('USDC'),
         queryTxStatisticsData('USDT'),
-      ]).then(res => {
+      ]).then((res) => {
         this.hideAmountLoading = true
         this.hideTxLoading = true
         if (!res[0] || !res[1] || !res[2]) {
@@ -198,7 +220,7 @@ export default {
           this.initTxStatisticsData(amountChartDom, true, true)
         })
       })
-      queryUsersStatisticsData().then(userStatisticsData => {
+      queryUsersStatisticsData().then((userStatisticsData) => {
         this.hideUserLoading = true
         if (!userStatisticsData) {
           this.showError()
@@ -209,24 +231,24 @@ export default {
         })
       })
     },
-    showError () {
+    showError() {
       this.$notify.error({
         title: `query data error; please refresh.`,
         duration: 3000,
       })
     },
-    initUSDAmountData (USDAmountData) {
+    initUSDAmountData(USDAmountData) {
       this.addressCount = USDAmountData.addressCount || 0
       this.totalUsd = USDAmountData.totalUsd || 0
       this.txCount = USDAmountData.txCount || 0
     },
-    initTxStatisticsData (chartDom, bySource = true, isAmount = false) {
+    initTxStatisticsData(chartDom, bySource = true, isAmount = false) {
       this.initTxStatisticsChart(chartDom, bySource, isAmount)
     },
-    initUserStatisticsData (userStatisticsData) {
+    initUserStatisticsData(userStatisticsData) {
       this.initUserStatisticsChart(userStatisticsData)
     },
-    initUserStatisticsChart (userStatisticsData) {
+    initUserStatisticsChart(userStatisticsData) {
       const chartDom = document.getElementById('user-chart')
       const currentChart = echarts.init(chartDom)
       const { dateList = [], seriesData = [] } =
@@ -240,10 +262,10 @@ export default {
       }
       this.renderChart(currentChart, dateList, currentSeriesData)
     },
-    getUserData (userStatisticsData) {
+    getUserData(userStatisticsData) {
       const dateList = []
       const seriesData = []
-      userStatisticsData.forEach(item => {
+      userStatisticsData.forEach((item) => {
         dateList.unshift(item.source_date)
         seriesData.unshift(item.address_count)
       })
@@ -252,10 +274,10 @@ export default {
         seriesData,
       }
     },
-    clickChange () {
+    clickChange() {
       this.$loader.show()
       this.showSource = !this.showSource
-      this.$nextTick(_ => {
+      this.$nextTick((_) => {
         const chartDom = document.getElementById(
           this.showSource ? 'tx-source-chart' : 'tx-dest-chart'
         )
@@ -265,7 +287,7 @@ export default {
         this.initTxStatisticsData(chartDom, this.showSource)
       })
     },
-    async initTxStatisticsChart (chartDom, bySource, isAmount) {
+    async initTxStatisticsChart(chartDom, bySource, isAmount) {
       const currentChart = echarts.init(chartDom)
       const { dateList = [], seriesData: seriesETHData = {} } =
         await this.getChartData(this.ethStatisticsData, bySource, isAmount)
@@ -288,23 +310,91 @@ export default {
         seriesUSDTData
       )
 
-      const currentSeriesData = Object.keys(seriesETHData).map(item => {
+      let count = 0
+
+      Object.keys(concatSeriesData).forEach((item) => {
+        const len = concatSeriesData[item]?.length || 0
+        if (len > count) {
+          count = len
+        }
+      })
+
+      let filterList = []
+      Object.keys(concatSeriesData).forEach((item) => {
+        filterList.push({
+          chain: item,
+          value: concatSeriesData[item]?.[count - 2] || 0,
+        })
+      })
+
+      filterList = filterList
+        .sort((a, b) => {
+          return b.value - a.value
+        })
+        .slice(0, 10)
+      let obj = {}
+
+      Object.keys(concatSeriesData).map((item) => {
+        const flag = filterList.some((option) => option.chain === item)
+        const others = obj.others || []
+        const value = concatSeriesData[item]
+        if (flag) {
+          obj = {
+            ...obj,
+            [item]: value,
+          }
+        } else {
+          obj = {
+            ...obj,
+            others: new Array(count).fill(0).map((option, index) => {
+              return utils.formatEther(
+                utils
+                  .parseEther(value[index] || '0')
+                  .add(utils.parseEther(others[index] || '0'))
+              )
+            }),
+          }
+        }
+      })
+
+      concatSeriesData = obj
+
+      concatSeriesData = Object.keys(concatSeriesData).map((item)=> {
+        return ({
+          chain: item,
+          data: concatSeriesData[item]
+        })
+      })
+
+      concatSeriesData = filterList.map((item)=>{
+        return concatSeriesData.filter((option)=> {
+          return option.chain === item.chain
+        })[0]
+
+      }).concat(
+        concatSeriesData.filter((item)=> {
+        return item.chain === "others"
+      })
+      )
+
+      const currentSeriesData = concatSeriesData.map((item) => {
+        const chainInfo = util.getV3ChainInfoByChainId(item.chain)
         return {
-          name: CHAIN_LIST?.[item] || 'Others',
+          name: chainInfo?.name || 'Other',
           type: 'bar',
           stack: 'Ad',
           emphasis: {
             focus: 'series',
           },
-          data: concatSeriesData[item],
+          data: item.data,
         }
       })
       this.renderChart(currentChart, dateList, currentSeriesData)
     },
-    concatSeriesData (seriesETHData, seriesUSDCData, seriesUSDTData) {
+    concatSeriesData(seriesETHData, seriesUSDCData, seriesUSDTData) {
       let mergedSeriesData = {}
       let keys = Object.keys(seriesETHData)
-      keys.forEach(key => {
+      keys.forEach((key) => {
         mergedSeriesData[key] = seriesETHData[key].map((num, idx) => {
           return new BigNumber(num)
             .plus(seriesUSDCData?.[key]?.[idx] || 0)
@@ -314,7 +404,7 @@ export default {
       })
       return mergedSeriesData
     },
-    async getChartData (
+    async getChartData(
       statisticsData,
       bySource = true,
       isAmount = false,
@@ -325,15 +415,13 @@ export default {
         exchangeRes = await exchangeToCoin(1, sourceCurrency, 'USD')
       }
       const dateList = Object.keys(statisticsData).reverse()
-      const dataBySourceChain = {
-        others: [],
-      }
-      dateList.forEach(item => {
+      const dataBySourceChain = {}
+
+      dateList.forEach((item) => {
         const dateValue = {}
-        statisticsData[item].forEach(v => {
+        statisticsData[item].forEach((v) => {
           const byKey = bySource ? v[0] : v[1]
-          const isOthersKey = !CHAIN_LIST[byKey]
-          const currentKey = isOthersKey ? 'others' : byKey
+          const currentKey = byKey
           const byValue = isAmount
             ? exchangeRes.multipliedBy(v[4]).toNumber()
             : Number(v[3])
@@ -344,11 +432,11 @@ export default {
           }
         })
         const dateValueKeys = Object.keys(dateValue)
-        dateValueKeys.forEach(q => {
+        chainList.forEach((q) => {
           if (dataBySourceChain?.[q]) {
-            dataBySourceChain[q].push(dateValue?.[q].toFixed(2))
+            dataBySourceChain[q].push(dateValue?.[q]?.toFixed(2) || '0')
           } else {
-            dataBySourceChain[q] = [dateValue?.[q].toFixed(2)]
+            dataBySourceChain[q] = [dateValue?.[q]?.toFixed(2) || '0']
           }
         })
       })
@@ -357,7 +445,7 @@ export default {
         seriesData: dataBySourceChain,
       }
     },
-    renderChart (chart, dateList, series, extParams = {}) {
+    renderChart(chart, dateList, series, extParams = {}) {
       const option = {
         tooltip: {
           trigger: 'axis',
@@ -420,7 +508,7 @@ export default {
           trigger: 'axis',
           formatter: function (params) {
             let totalValue = 0
-            params.forEach(item => {
+            params.forEach((item) => {
               totalValue += Number(item.value)
             })
             const currentParamsDate = params[0].name
@@ -465,7 +553,7 @@ export default {
                           ? `<div style="margin-bottom:6px">Chains</div>
                       <div style="display:flex;flex-direction:column;">
                         ${params
-                          .map(v => {
+                          .map((v) => {
                             return `
                               <div style="display:flex;margin-bottom:4px;justify-content:space-between;">
                                 <div style="display:flex;align-items: center;">
