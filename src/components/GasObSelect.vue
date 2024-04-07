@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     currentWalletAddress() {
-      return web3State.coinbase
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || web3State.coinbase
     },
     dataList() {
       const zksync2Token = chain.filter(
