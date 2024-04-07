@@ -937,7 +937,7 @@ export default {
         toChain.chainId !== CHAIN_ID.starknet && 
         toChain.chainId !== CHAIN_ID.starknet_test
       )) {
-        this.crossAddressReceipt = web3State.coinbase
+        this.crossAddressReceipt = compatibleGlobalWalletConf.value.walletPayload.walletAddress
       }
       }catch(error) {
         console.error('loopringFromFillAddress error', error);
