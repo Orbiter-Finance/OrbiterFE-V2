@@ -133,6 +133,7 @@ import { BigNumber } from 'bignumber.js'
 import { utils } from 'ethers'
 
 let chainList = []
+const STATISTICS_VALUE = 1000
 
 export default {
   data() {
@@ -331,7 +332,10 @@ export default {
         .sort((a, b) => {
           return b.value - a.value
         })
-        .slice(0, 10)
+        .filter((item)=>{
+          const value = item.value
+          return Number(value || 0) >= STATISTICS_VALUE
+        })
       let obj = {}
 
       Object.keys(concatSeriesData).map((item) => {
