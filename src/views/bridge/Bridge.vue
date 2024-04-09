@@ -4,13 +4,7 @@
       <div v-show="!isMobile && status === '1' && !showDetail" class="sub-tabs">
         <ToggleBtn @input="toggleTab" />
       </div>
-      <!-- <div class="notice-box">
-        <div>iCon</div>
-        <div class="notice-group">
-          <div class="notice-content">1233333&nbsp;&nbsp;&nbsp;</div>
-          <div class="notice-content">1233333&nbsp;&nbsp;&nbsp;</div>
-        </div>
-      </div> -->
+      <Notice />
       <div
         v-show="isSenderTab && status === '1' && !showDetail"
         class="sender-box"
@@ -103,6 +97,7 @@ import {
   changeCurPageStatus,
   historyPanelState,
 } from '../../composition/hooks'
+import Notice from "../../components/Notice.vue"
 
 export default {
   name: 'Bridge',
@@ -113,6 +108,7 @@ export default {
     ToggleBtn,
     SvgIconThemed,
     CommBtn,
+    Notice
   },
   computed: {
     isLightMode () {
@@ -175,17 +171,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
-@keyframes move-notice-left {
-  0% {
-      transform: translateX(0);
-  }
-
-  100% {
-      transform: translateX(-100%);
-  }
-
-}
 .app {
   .bridge-page {
     .maker-box {
@@ -248,34 +233,6 @@ export default {
         background: #df2e2d;
         color: #ffffff;
         box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
-      }
-    }
-  }
-  .notice-box {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    margin-bottom: 16px;
-    width: 480px;
-    max-width: 100%;
-    height: 48px;
-    background: #FBEAEA;
-    border-radius: 12px;
-    text-align: left;
-    padding: 14px;
-    .notice-group {
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      flex: 1;
-      overflow: hidden;
-      display: block;
-      white-space: nowrap;
-      .notice-content {
-        width: 100%;
-        display: inline-block;
-        animation: move-notice-left 10s linear infinite;
-	      white-space: nowrap;
       }
     }
   }

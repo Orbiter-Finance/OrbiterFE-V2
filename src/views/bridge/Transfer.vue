@@ -436,7 +436,7 @@ import {
   setConnectWalletGroupKey
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
-import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
+import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 import { ethers } from 'ethers'
@@ -1087,7 +1087,8 @@ export default {
     },
     async openApiFilter() {
       try {
-        const banList = await requestOpenApi(RequestMethod.offline, []);
+        const data = await getNoticeData();
+        const banList = data?.map((item)=> item.rule) || []
         if (Array.isArray(banList)) {
           this.banList = banList;
         }
@@ -1098,7 +1099,8 @@ export default {
       const self = this;
       const cron = setInterval(async () => {
         try {
-          const banList = await requestOpenApi(RequestMethod.offline, []);
+          const data = await getNoticeData();
+          const banList = data?.map((item)=> item.rule) || []
           if (Array.isArray(banList)) {
             self.banList = banList;
           }
