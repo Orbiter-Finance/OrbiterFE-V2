@@ -98,6 +98,7 @@ export async function getNoticeData() {
           dest: dest && dest === '*' ? null : Number(dest),
           sourceToken: sourceToken && sourceToken === '*' ? null : sourceToken,
           destToken: destToken && destToken === '*' ? null : destToken,
+          description,
         },
       }
     })
