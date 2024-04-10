@@ -80,26 +80,36 @@ export default {
   },
   computed: {
     currentWalletAddress() {
-      return web3State.coinbase
+      const evmAddress =
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress
+      return evmAddress
     },
     dataList() {
-      const zksync2Token = chain.filter(
-        (item) => item.chainId === CHAIN_ID.zksync2
-      )[0]
-
-      const zksync2TokenList = zksync2Token
-        ? [zksync2Token.nativeCurrency, ...zksync2Token.tokens]
-        : []
-
-      let list = []
-
-      if (transferDataState.fromChainID === CHAIN_ID.zksync2) {
-        list = zksync2TokenList.concat([{
-          symbol: "HOLD",
-          address: "0xed4040fD47629e7c8FBB7DA76bb50B3e7695F0f2",
-          decimals: 18
-        }])
-      }
+      let list = [
+        {
+            "name": "Ether",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        {
+          name: 'USD Coin',
+          symbol: 'USDC',
+          decimals: 6,
+          address: '0x3355df6d4c9c3035724fd0e3914de96a5a83aaf4',
+        },
+        {
+          name: 'USDT',
+          symbol: 'USDT',
+          decimals: 6,
+          address: '0x493257fD37EDB34451f62EDf8D2a0C418852bA4C',
+        },
+        {
+          symbol: 'HOLD',
+          address: '0xed4040fD47629e7c8FBB7DA76bb50B3e7695F0f2',
+          decimals: 18,
+        },
+      ]
 
       list = list.map((item) => ({
         amount: 0,
@@ -207,7 +217,7 @@ export default {
 
       let obj = {}
       this.dataList.forEach((item) => {
-        const value = item.value === 'ETH' ? "0" : "0.01"
+        const value = item.value === 'ETH' ? '0' : '0.01'
 
         obj = {
           ...obj,
