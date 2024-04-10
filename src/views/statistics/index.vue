@@ -174,7 +174,7 @@ export default {
     async getChains() {
       try {
         if (!chainList?.length) {
-          const res = await fetch('https://api.orbiter.finance/sdk/chains', {})
+          const res = await fetch(process.env.VUE_APP_OPEN_URL +'/sdk/chains', {})
           const data = await res.json()
 
           chainList = data?.result?.map((item) => {

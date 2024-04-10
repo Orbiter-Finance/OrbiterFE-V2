@@ -10,6 +10,7 @@ import {
   METAMASK,
   WALLETCONNECT,
   TOKEN_POCKET_APP,
+  FOXWALLET_APP,
 } from '../constants'
 import standardWalletLoader from '../standardWalletReducer/standardWalletLoader'
 import standardWalletConf from './standardPCBrowserWalletConf'
@@ -46,6 +47,7 @@ const pcBrowserWalletDispatchersOnInit = {
   [METAMASK]: metaMaskDispatcherOnInit,
   [WALLETCONNECT]: () => walletConnectDispatcherOnInit(WALLETCONNECT),
   [IM_TOKEN_APP]: () => walletConnectDispatcherOnInit(IM_TOKEN_APP),
+  [FOXWALLET_APP]: () => walletConnectDispatcherOnInit(FOXWALLET_APP),
   ...standardPCBrowserDispatchersOnInit,
 }
 // disconnect method for each supported wallet
@@ -53,6 +55,7 @@ const pcBrowserWalletDispatchersOnDisconnect = {
   [METAMASK]: metaMaskDispatcherOnDisconnect,
   [WALLETCONNECT]: walletConnectDispatcherOnDisconnect,
   [IM_TOKEN_APP]: walletConnectDispatcherOnDisconnect,
+  [FOXWALLET_APP]: walletConnectDispatcherOnDisconnect,
   [TOKEN_POCKET_APP]: tokenPocketDispatcherOnDisconnect,
   ...standardPCBrowserWalletDispatchersOnDisconnect,
 }
@@ -64,6 +67,9 @@ const loginStatusCheckerOfPCBrowserWallet = {
     fetchTargetWalletLoginStatus({ walletType: WALLETCONNECT }),
   [IM_TOKEN_APP]: () =>
     fetchTargetWalletLoginStatus({ walletType: IM_TOKEN_APP }),
+
+  [FOXWALLET_APP]: () =>
+    fetchTargetWalletLoginStatus({ walletType: FOXWALLET_APP }),
   ...standardLoginStatusCheckerOfPCBrowser,
 }
 
@@ -72,17 +78,20 @@ const loginStatusCheckerOfPCBrowserWallet = {
 const pcBrowserWalletDispatchersOnSignature = {
   [WALLETCONNECT]: walletConnectDispatcherOnSignature,
   [IM_TOKEN_APP]: walletConnectDispatcherOnSignature,
+  [FOXWALLET_APP]: walletConnectDispatcherOnSignature,
 }
 
 const pcBrowserWalletDispatchersOnAddChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
   [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
+  [FOXWALLET_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnAddChain,
 }
 
 const pcBrowserDispatchersOnSwitchChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
   [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
+  [FOXWALLET_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnSwitchChain,
 }
 
