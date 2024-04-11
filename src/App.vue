@@ -30,6 +30,9 @@
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
+    <div id="ton-connect-wallet">
+
+    </div>
   </div>
 </template>
 
@@ -88,6 +91,8 @@ import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from './util/constants/starknet/helper'
 import solanaHelper from './util/solana/solana_helper'
+import tonHelper from "./util/ton/ton_helper"
+
 const { walletDispatchersOnInit } = walletDispatchers
 
 let timerOptions = 0
@@ -174,6 +179,7 @@ export default {
     HeaderWalletGroup
   },
   async mounted () {
+    tonHelper.tonConnectCall();
     if (isBrowserApp()) {
       // await connectStarkNetWallet()
 
@@ -196,6 +202,7 @@ export default {
 
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
+
   },
   watch: {
     isLogin: function (item1, item2) {
@@ -462,5 +469,11 @@ export default {
   /*  box-sizing: border-box;*/
   /*  z-index: 999;*/
   /*}*/
+}
+
+#ton-connect-wallet {
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 </style>
