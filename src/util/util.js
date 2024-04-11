@@ -394,7 +394,7 @@ export default {
       .dividedBy(new BigNumber(1000))
     const gasFee_fix = gasFee.decimalPlaces(
       selectMakerConfig.fromChain.decimals === 8
-        ? 4
+        ? 6
         : selectMakerConfig.fromChain.decimals === 18
         ? 5
         : 2,

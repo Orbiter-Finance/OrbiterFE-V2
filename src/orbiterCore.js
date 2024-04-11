@@ -216,7 +216,7 @@ function removeSidesZero(param) {
  * @param {number} precision
  */
 function getDigitByPrecision(precision) {
-  return precision === 8 ? 4 : precision === 18 ? 6 : 2
+  return precision === 8 ? 6 : precision === 18 ? 6 : 2
 }
 
 export default {
