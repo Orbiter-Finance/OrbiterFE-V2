@@ -1,9 +1,9 @@
-import { ETHTokenType, ImmutableXClient } from '@imtbl/imx-sdk'
+import { ImmutableXClient } from '@imtbl/imx-sdk'
 import { ethers, providers } from 'ethers'
 import Web3 from 'web3'
 import config from '../../core/utils/config'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
-import { CHAIN_ID } from "../../config";
+import { CHAIN_ID } from '../../config'
 
 const CONTRACTS = {
   ropsten: {

@@ -92,6 +92,10 @@ export default {
           href: '/data',
         },
         {
+          name: 'Explore',
+          href: '/statistics',
+        },
+        {
           name: 'About us',
           href: '/home',
         },

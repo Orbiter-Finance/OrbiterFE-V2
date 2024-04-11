@@ -254,7 +254,7 @@
         return historyPanelState.transactionListInfo
       },
       currentWalletAddress() {
-        const evmAddress = web3State.coinbase
+        const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         const starknetAddress = web3State.starkNet.starkNetAddress
         const solanaAddress = solanaHelper.solanaAddress()
         return [evmAddress, starknetAddress, solanaAddress].filter(item=>!!item).join(",")

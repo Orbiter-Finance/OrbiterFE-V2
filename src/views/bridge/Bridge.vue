@@ -4,6 +4,7 @@
       <div v-show="!isMobile && status === '1' && !showDetail" class="sub-tabs">
         <ToggleBtn @input="toggleTab" />
       </div>
+      <Notice />
       <div
         v-show="isSenderTab && status === '1' && !showDetail"
         class="sender-box"
@@ -96,6 +97,7 @@ import {
   changeCurPageStatus,
   historyPanelState,
 } from '../../composition/hooks'
+import Notice from "../../components/Notice.vue"
 
 export default {
   name: 'Bridge',
@@ -106,6 +108,7 @@ export default {
     ToggleBtn,
     SvgIconThemed,
     CommBtn,
+    Notice
   },
   computed: {
     isLightMode () {
