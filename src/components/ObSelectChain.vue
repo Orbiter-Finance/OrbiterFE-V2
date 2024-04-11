@@ -75,6 +75,7 @@ import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
 import  solanaHelper from '../util/solana/solana_helper';
+import  tonHelper from '../util/ton/ton_helper';
 import { getStarknet } from 'get-starknet'
 
 export default {
@@ -231,10 +232,12 @@ export default {
                     // ton
                     if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
 
-                        setSelectWalletDialogVisible(true)
-                        setConnectWalletGroupKey("TON")
-                        console.log("TON")
-                        return 
+                        const account = await tonHelper.account()
+                        const isConnected = await tonHelper.isConnected()
+                        if(!account || !isConnected) {
+                            await tonHelper.connect()
+                            return
+                        }
                     }
                     // immutableX
                     if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {

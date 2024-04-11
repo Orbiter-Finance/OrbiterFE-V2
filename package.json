@@ -52,7 +52,7 @@
     "solana-wallets-vue-2": "^0.1.6",
     "starknet": "5.19.5",
     "swiper": "5",
-    "tonweb": "^0.0.66",
+    "tonweb": "0.0.60",
     "truffle-privatekey-provider": "^1.5.0",
     "tunnel": "0.0.6",
     "viem": "^1.2.14",

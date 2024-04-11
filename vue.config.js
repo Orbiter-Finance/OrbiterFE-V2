@@ -30,6 +30,18 @@ module.exports = {
       })
       .end()
     config.module
+      .rule('ton')
+      .test(/\.js$/)
+      .include.add(path.resolve(__dirname, 'node_modules/tonweb'))
+      .add(path.resolve(__dirname, 'node_modules/@tonconnect'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators],
+      })
+      .end()
+    config.module
       .rule('starknet')
       .test(/(\.mjs$)|(\.js$)/)
       .include.add(resolve('node_modules/starknet'))

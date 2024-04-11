@@ -17711,10 +17711,10 @@ toidentifier@1.0.1:
   resolved "https://registry.npmmirror.com/toidentifier/-/toidentifier-1.0.1.tgz#3be34321a88a820ed1bd80dfaa33e479fbb8dd35"
   integrity sha512-o5sSPKEkg/DIQNmH43V0/uerLrpzVedkUh8tGNvaeXpfpuwjKenlSox/2O/BTlZUtEe+JG7s5YhEz608PlAHRA==
 
-tonweb@^0.0.66:
-  version "0.0.66"
-  resolved "https://mirrors.cloud.tencent.com/npm/tonweb/-/tonweb-0.0.66.tgz#e9aa1f81ac2c2a9b0ff692294d58b1dfea516fb4"
-  integrity sha512-ntDJU1b/kgMFvOYN09FvhdnAfwnZh8W5sONkUP+P0FQkYRa/027otRxApp5gfxZ9DR+3WTnCQgrsG/EXv8RhEA==
+tonweb@0.0.60:
+  version "0.0.60"
+  resolved "https://mirrors.cloud.tencent.com/npm/tonweb/-/tonweb-0.0.60.tgz#d7a87c0c483c743c9d717e2093ea3bce0a66f8a2"
+  integrity sha512-cTGxJ3b/iPJLIBQy5LzM9kvxPHrT+sG2cpGM8LFlPvhTapqXmwPuyDpF3UKjS9LWXD6rF3CA2mLXbaq32MKLUA==
   dependencies:
     "@ledgerhq/hw-transport-web-ble" "5.48.0"
     "@ledgerhq/hw-transport-webhid" "5.48.0"

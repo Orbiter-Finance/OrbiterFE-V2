@@ -57,20 +57,6 @@
             </div>
           </div>
         </div>
-        <div v-else-if="connectWalletGroupKey === 'TON'" class="wallet-group">
-          <div class="wallet-group-title">Ton Wallet</div>
-          <div class="wallet-group-list">
-            <div
-              v-for="item in tonWallet"
-              :key="item.title"
-              class="wallet-item"
-              @click="connectTonWallet(item)"
-            >
-              <img class="wallet-img" :src="item.imageUrl" />
-              <span class="wallet-title">{{ item.name }}</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
@@ -126,11 +112,6 @@ const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
 
 export default {
   name: 'HeaderWalletGroup',
-  data() {
-    return {
-      tonWallet: [],
-    }
-  },
   computed: {
     connectWalletGroupKey() {
       return connectWalletGroupKey.value
@@ -275,50 +256,12 @@ export default {
     this.getTonWallet()
   },
   methods: {
-    async getTonWallet() {
-      const res = await new TonconnectUI.WalletsListManager().fetchWalletsList()
-      this.tonWallet = res
-    },
     closeSelectWalletDialog() {
       setSelectWalletDialogVisible(false)
       setConnectWalletGroupKey('EVM')
     },
     checkIsMobileEnv() {
       return isMobileDevice()
-    },
-    async connectTonWallet(item) {
-      console.log('item', item)
-      console.log('this.tonWallet', this.tonWallet)
-      console.log('TonconnectUiSdk', TonconnectUiSdk)
-      const tonConnect = new TonconnectUiSdk.TonConnect({
-        manifestUrl: 'https://myApp.com/assets/tonconnect-manifest.json',
-      })
-      console.log('tonConnect', tonConnect)
-
-      const ton = tonConnect.connect({
-        universalLink: item.universalLink,
-        bridgeUrl: item.bridgeUrl,
-      }, { tonProof: process.env.VUE_APP_WALLET_CONNECT_PROJECTID })
-      console.log('ton', ton)
-
-      const res = tonConnect.connect({
-        jsBridgeKey: item.jsBridgeKey,
-      })
-
-      setTimeout(() => {
-        console.log('res', res, tonConnect, tonConnect?.account)
-
-        if (!tonConnect?.account?.address) {
-          return
-        }
-
-        console.log(
-          'TonconnectUiSdk.toUserFriendlyAddress',
-          TonconnectUiSdk.toUserFriendlyAddress(tonConnect.account.address)
-        )
-      }, 5000)
-
-      return
     },
     async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)

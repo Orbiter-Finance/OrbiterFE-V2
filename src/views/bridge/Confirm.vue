@@ -214,6 +214,7 @@ import { CHAIN_ID } from "../../config";
 import { isBrowserApp, isProd } from "../../util";
 import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, zksyncEraGasTokenContract } from "../../util/zksyncEraGasToken";
 import solanaHelper from '../../util/solana/solana_helper';
+import tonHelper from '../../util/ton/ton_helper';
 import { shortString } from 'starknet';
 
 const {
@@ -273,7 +274,7 @@ export default {
             const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
 
-            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
                 realTransferAmount = ethers.utils.formatEther(
                     ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
                     )
@@ -333,7 +334,7 @@ export default {
         },
     },
     methods: {
-        async transferToSolana() {
+        async transferToSolanaOrTon() {
             const { selectMakerConfig, fromChainID, transferValue, toChainID, fromCurrency } =
                 transferDataState
 
@@ -341,13 +342,30 @@ export default {
                 return
             }
             const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress || web3State.coinbase
-            const toAddress = solanaHelper.solanaAddress()
-            const isConnected = await solanaHelper.isConnect()
 
-            if(!toAddress || !isConnected) {
-                setSelectWalletDialogVisible(true)
-                setConnectWalletGroupKey("SOLANA")
-                return
+            let toAddress = solanaHelper.solanaAddress()
+            let isConnected = await solanaHelper.isConnect()
+
+            if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+                toAddress = solanaHelper.solanaAddress()
+                isConnected = await solanaHelper.isConnect()
+
+                if(!toAddress || !isConnected) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("SOLANA")
+                    return
+                }
+            }
+
+
+            if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                toAddress = tonHelper.solanaAddress()
+                isConnected = await tonHelper.isConnected()
+
+                if(!toAddress || !isConnected) {
+                    await tonHelper.connect()
+                    return
+                }
             }
 
             // try {
@@ -443,7 +461,7 @@ export default {
                 }
 
             } catch (err) {
-                console.error('transferToSolana error', err);
+                console.error('transferToSolanaOrTon error', err);
                 this.$notify.error({
                     title: err?.data?.message || err.message,
                     duration: 3000,
@@ -1013,6 +1031,26 @@ export default {
                     memo = `${p_text}_${solanaAddress}`
                 }
 
+                if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                    const tonAddress = tonHelper.isConnected()
+                    const tonIsConnected =  tonHelper.account()
+                    if(!tonIsConnected || !tonAddress) {
+                        await tonHelper.connect()
+                        return 
+                    }
+                    // try {
+                    //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+                    //     if(res !== "created") {
+                    //         return
+                    //     }
+                    // } catch (error) {
+                    //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
+                    //     return
+                    // }
+                    memo = `${p_text}_${tonAddress}`
+                }
+
+
                 if (memo.length > 128) {
                     this.$notify.error({
                         title: 'The sending address is too long',
@@ -1261,13 +1299,86 @@ export default {
                 this.transferLoading = false
             }
         },
+        async tonTransfer(value) {
+            console.log("value", value)
+            const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+                transferDataState
+
+                const isConnected = await tonHelper.isConnected()
+                let from = await tonHelper.account()
+
+            if (!isConnected || !from) {
+                await tonHelper.connect()
+                this.transferLoading = false
+                return
+            }
+
+            const safeCode =  transferCalculate.safeCode()
+
+            const { starkNetAddress, starkChain } = web3State.starkNet
+
+            const rAmount = new BigNumber(transferValue)
+              .plus(new BigNumber(selectMakerConfig.tradingFee))
+              .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+            const rAmountValue = rAmount.toFixed()
+            
+            if (
+                toChainID === CHAIN_ID.starknet ||
+                toChainID === CHAIN_ID.starknet_test
+            ) {
+
+                if (!starkNetAddress) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("STARKNET")
+                    this.transferLoading = false
+                    return;
+                }
+            }
+            try {
+                const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+                const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+                const targetAddress = toChainID === CHAIN_ID.starknet ||
+                toChainID === CHAIN_ID.starknet_test ? starkNetAddress: evmAddress
+
+                const hash = await tonHelper.transfer({
+                    from: from,
+                    to: selectMakerConfig.recipient,
+                    tokenAddress,
+                    targetAddress,
+                    amount: rAmountValue,
+                    safeCode
+                })
+                try {
+                    this.$gtag.event('click', {
+                    'event_category': 'Transfer',
+                    'event_label': selectMakerConfig.recipient,
+                    'userAddress': from, 
+                    'hash': hash 
+                    })
+                }catch(error) {
+                  console.error('click error', error);
+                }
+     
+                if (hash) {
+                    this.onTransferSucceed(from, value, fromChainID, hash)
+                }
+            } catch (error) {
+              console.error('transfer error', error);
+                this.$notify.error({
+                    title: error.message || String(error),
+                    duration: 3000,
+                })
+            } finally {
+                this.transferLoading = false
+            }
+        },
         async starknetTransfer(value) {
             const { selectMakerConfig, fromChainID, toChainID, fromCurrency, transferValue } =
                 transferDataState
             let from = ""
             let tokenAddress = selectMakerConfig.fromChain.tokenAddress
-
-            console.log("toChainID", toChainID)
 
             if (
                 fromChainID === CHAIN_ID.starknet ||
@@ -1305,22 +1416,41 @@ export default {
                     return
                 }
             }
-            if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test){
-                const isConnectSolana = await solanaHelper.isConnect()
-                if(isConnectSolana) {
-                    from = solanaHelper.solanaAddress()
-                    if(!from){
-                        util.showMessage('Solana Address Error: ' + from, 'error');
-                        this.transferLoading = false
-                        return;
-                    }
-                } else {
-                    setSelectWalletDialogVisible(true)
-                    setConnectWalletGroupKey("SOLANA")
-                    this.transferLoading = false
-                    return
-                }
+            if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test){
 
+                if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test ) {
+                    const isConnectSolana = await solanaHelper.isConnect()
+                    if(isConnectSolana) {
+                        from = solanaHelper.solanaAddress()
+                        if(!from){
+                            util.showMessage('Solana Address Error: ' + from, 'error');
+                            this.transferLoading = false
+                            return;
+                        }
+                    } else {
+                        setSelectWalletDialogVisible(true)
+                        setConnectWalletGroupKey("SOLANA")
+                        this.transferLoading = false
+                        return
+                    }
+                }
+                
+                if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ) {
+                    const tonIsConnected =  tonHelper.isConnected()
+                    const account =  tonHelper.account()
+                    if(!!account && tonIsConnected) {
+                        from = account
+                        if(!from){
+                            util.showMessage('Solana Address Error: ' + from, 'error');
+                            this.transferLoading = false
+                            return;
+                        }
+                    } else {
+                        await tonHelper.connect()
+                        this.transferLoading = false
+                        return
+                    }
+                }
                 // try {
                 //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
                 //     if(res !== "created") {
@@ -1647,6 +1777,16 @@ export default {
                 }
             }
 
+            if(toChainID === CHAIN_ID.ton) {
+                toAddress = tonHelper.account()
+                const isConnected = await tonHelper.isConnected()
+
+                if(!toAddress || !isConnected) {
+                    await tonHelper.connect()
+                    return
+                }
+            }
+
             if(toChainID === CHAIN_ID.starknet) {
                 toAddress = web3State.starkNet.starkNetAddress
 
@@ -1692,7 +1832,7 @@ export default {
             }
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
-            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test) {
+            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test && fromChainID !== CHAIN_ID.ton && fromChainID !== CHAIN_ID.ton_test) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
@@ -1768,6 +1908,11 @@ export default {
                     return 
                 }
 
+                if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+                    this.tonTransfer(tValue.tAmount)
+                    return 
+                }
+
                 const account =
                     compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
@@ -1781,8 +1926,8 @@ export default {
                     return
                 }
 
-                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-                    await this.transferToSolana()
+                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                    await this.transferToSolanaOrTon()
                     this.transferLoading = false
                     return
                 }

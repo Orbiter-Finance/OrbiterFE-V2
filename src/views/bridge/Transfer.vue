@@ -442,6 +442,7 @@ import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcB
 import { ethers } from 'ethers'
 
 import solanaHelper from "../../util/solana/solana_helper"
+import tonHelper from "../../util/ton/ton_helper"
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -2002,6 +2003,14 @@ export default {
           if(!isConnect) {
             setSelectWalletDialogVisible(true)
             setConnectWalletGroupKey("SOLANA")
+            return
+          }
+          
+        } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+          const isConnected = await tonHelper.isConnected()
+          const account = await tonHelper.account()
+          if(!isConnected || !account) {
+            await tonHelper.connect()
             return
           }
           
