@@ -23,7 +23,10 @@
             </div>
           </div>
         </div>
-        <div v-else-if="connectWalletGroupKey === 'STARKNET'" class="wallet-group">
+        <div
+          v-else-if="connectWalletGroupKey === 'STARKNET'"
+          class="wallet-group"
+        >
           <div class="wallet-group-title">StarkNet Wallet</div>
           <div class="wallet-group-list">
             <div
@@ -37,7 +40,10 @@
             </div>
           </div>
         </div>
-        <div v-else-if="connectWalletGroupKey === 'SOLANA'" class="wallet-group">
+        <div
+          v-else-if="connectWalletGroupKey === 'SOLANA'"
+          class="wallet-group"
+        >
           <div class="wallet-group-title">Solana Wallet</div>
           <div class="wallet-group-list">
             <div
@@ -48,6 +54,20 @@
             >
               <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
               <span class="wallet-title">{{ item.title }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-else-if="connectWalletGroupKey === 'TON'" class="wallet-group">
+          <div class="wallet-group-title">Ton Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in tonWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectTonWallet(item)"
+            >
+              <img class="wallet-img" :src="item.imageUrl" />
+              <span class="wallet-title">{{ item.name }}</span>
             </div>
           </div>
         </div>
@@ -66,7 +86,7 @@ import {
   setSelectWalletDialogVisible,
   web3State,
   connectWalletGroupKey,
-  setConnectWalletGroupKey
+  setConnectWalletGroupKey,
 } from '../../composition/hooks'
 
 import walletDispatchers, {
@@ -75,7 +95,7 @@ import walletDispatchers, {
   COIN98_APP,
   WALLETCONNECT,
   CURRENT_SUPPORT_WALLET,
-// TRUSTWALLET_APP,
+  // TRUSTWALLET_APP,
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -93,13 +113,24 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 
 import { store } from '../../store'
-import solanaHelper from '../../util/solana/solana_helper';
+import solanaHelper from '../../util/solana/solana_helper'
+
+import { THEME, TonConnectUI } from '@tonconnect/ui'
+import * as TonconnectUI from '@tonconnect/ui'
+import * as TonconnectUiSdk from '@tonconnect/sdk'
+
+let ton
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
 
 export default {
   name: 'HeaderWalletGroup',
+  data() {
+    return {
+      tonWallet: [],
+    }
+  },
   computed: {
     connectWalletGroupKey() {
       return connectWalletGroupKey.value
@@ -240,16 +271,56 @@ export default {
       return walletIsLogin.value
     },
   },
+  created() {
+    this.getTonWallet()
+  },
   methods: {
+    async getTonWallet() {
+      const res = await new TonconnectUI.WalletsListManager().fetchWalletsList()
+      this.tonWallet = res
+    },
     closeSelectWalletDialog() {
       setSelectWalletDialogVisible(false)
-      setConnectWalletGroupKey("EVM")
+      setConnectWalletGroupKey('EVM')
     },
     checkIsMobileEnv() {
       return isMobileDevice()
     },
-    async connectSolanaWallet(item) {
+    async connectTonWallet(item) {
+      console.log('item', item)
+      console.log('this.tonWallet', this.tonWallet)
+      console.log('TonconnectUiSdk', TonconnectUiSdk)
+      const tonConnect = new TonconnectUiSdk.TonConnect({
+        manifestUrl: 'https://myApp.com/assets/tonconnect-manifest.json',
+      })
+      console.log('tonConnect', tonConnect)
 
+      const ton = tonConnect.connect({
+        universalLink: item.universalLink,
+        bridgeUrl: item.bridgeUrl,
+      }, { tonProof: process.env.VUE_APP_WALLET_CONNECT_PROJECTID })
+      console.log('ton', ton)
+
+      const res = tonConnect.connect({
+        jsBridgeKey: item.jsBridgeKey,
+      })
+
+      setTimeout(() => {
+        console.log('res', res, tonConnect, tonConnect?.account)
+
+        if (!tonConnect?.account?.address) {
+          return
+        }
+
+        console.log(
+          'TonconnectUiSdk.toUserFriendlyAddress',
+          TonconnectUiSdk.toUserFriendlyAddress(tonConnect.account.address)
+        )
+      }, 5000)
+
+      return
+    },
+    async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)
       const fromPublicKey = solanaHelper.solanaAddress()
 
@@ -288,7 +359,6 @@ export default {
     },
 
     async connectStarkNetWallet(walletConf) {
-
       const wallet = await connect({
         order: [walletConf.key],
         include: [walletConf.key],
@@ -406,6 +476,13 @@ export default {
             margin-top: 12px;
             border-radius: 8px;
             cursor: pointer;
+
+            .wallet-img {
+              width: 28px;
+              height: 28px;
+              border-radius: 4px;
+              margin-right: 14px;
+            }
 
             .wallet-icon {
               width: 28px;

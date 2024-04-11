@@ -196,8 +196,11 @@ export default {
         },
         async getChainInfo(e, index) {
             // When chain use stark system
+            console.log("e.localID", e.localID)
+
             if (this.isStarkSystem(e.localID)) {
                 try {
+
                     // starknet
                     if (e.localID === CHAIN_ID.starknet || e.localID === CHAIN_ID.starknet_test) {
                         const { starkIsConnected, starkNetAddress } =
@@ -215,6 +218,7 @@ export default {
                             // }
                         }
                     }
+
                     // solana
                     if (e.localID === CHAIN_ID.solana || e.localID === CHAIN_ID.solana_test) {
                         const isConnected = await solanaHelper.isConnect()
@@ -223,6 +227,14 @@ export default {
                             setConnectWalletGroupKey("SOLANA")
                             return 
                         }
+                    }
+                    // ton
+                    if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
+
+                        setSelectWalletDialogVisible(true)
+                        setConnectWalletGroupKey("TON")
+                        console.log("TON")
+                        return 
                     }
                     // immutableX
                     if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
@@ -273,7 +285,7 @@ export default {
         search() { },
         checkKeyWord() { },
         isStarkSystem(chainId) {
-            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
+            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.ton, CHAIN_ID.ton_test].indexOf(chainId) > -1
         },
     }
 }

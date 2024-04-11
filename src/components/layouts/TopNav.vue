@@ -125,6 +125,9 @@
         </div>
       </el-drawer>
     </template>
+    <div id="ton-connect-wallet">
+
+    </div>
   </div>
 </template>
 
