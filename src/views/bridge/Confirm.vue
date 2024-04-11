@@ -1224,7 +1224,7 @@ export default {
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
-                const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+                const evmAddress = web3State.coinbase
 
                 const targetAddress = toChainID === CHAIN_ID.starknet ||
                 toChainID === CHAIN_ID.starknet_test ? starkNetAddress: evmAddress

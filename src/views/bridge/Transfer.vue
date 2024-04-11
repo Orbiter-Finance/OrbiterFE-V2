@@ -1843,6 +1843,7 @@ export default {
       try {
         if (this.banList) {
           for (const ban of this.banList) {
+            const description = ban?.description
             if (process.env.VUE_APP_TurnOffOfflineChecking) {
               continue;
             }
@@ -1851,14 +1852,14 @@ export default {
                 if (ban.sourceToken && ban.sourceToken === fromCurrency) {
                   if (ban.destToken && ban.destToken === toCurrency) {
                     this.$notify.error({
-                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                      title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
                       duration: 3000,
                     });
                     return;
                   }
                   if (!ban.destToken) {
                     this.$notify.error({
-                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                      title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
                       duration: 3000,
                     });
                     return;
@@ -1867,7 +1868,7 @@ export default {
 
                 if (!ban.sourceToken) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
@@ -1879,14 +1880,14 @@ export default {
               if (util.getInternalIdByChainId(fromChainID) === ban.source) {
                 if (ban.sourceToken && ban.sourceToken === fromCurrency) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.fromChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.fromChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return
                 }
                 if (!ban.sourceToken) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
@@ -1898,14 +1899,14 @@ export default {
               if (util.getInternalIdByChainId(toChainID) === ban.dest) {
                 if (ban.destToken && ban.destToken === toCurrency) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
                 }
                 if (!ban.destToken) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
