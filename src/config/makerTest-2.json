@@ -309,7 +309,7 @@
   },
   "552-535": {
     "ETH-ETH": {
-      "makerAddress": "EQAbNUkB7gX-5lu_6XPDuoXohy7cE55ytsoOnOGEPwOK5KR6",
+      "makerAddress": "0QAbNUkB7gX-5lu_6XPDuoXohy7cE55ytsoOnOGEPwOK5EI1",
       "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
       "gasFee": 50,
       "tradingFee": 0.005,
@@ -323,7 +323,7 @@
   "535-552": {
     "ETH-ETH": {
       "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-      "sender": "EQAbNUkB7gX-5lu_6XPDuoXohy7cE55ytsoOnOGEPwOK5KR6",
+      "sender": "0QAbNUkB7gX-5lu_6XPDuoXohy7cE55ytsoOnOGEPwOK5EI1",
       "gasFee": 50,
       "tradingFee": 0.005,
       "maxPrice": 5,

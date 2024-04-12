@@ -1816,10 +1816,10 @@ export default {
         await walletConnectDispatcherOnInit(WALLETCONNECT);
         return;
       }
-      if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
-        util.log('sendBtnInfo disabled');
-        return;
-      }
+      // if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
+      //   util.log('sendBtnInfo disabled');
+      //   return;
+      // }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();

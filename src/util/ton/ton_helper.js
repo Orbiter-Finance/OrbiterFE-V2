@@ -117,8 +117,9 @@ const transfer = async ({
   const cell = new TonWeb.boc.Cell()
   console.log('cell', cell)
 
-  // cell.bits.writeAddress(tonConnect?.account?.address)
-  // console.log('writeAddress')
+  const myAddress = tonConnect?.account?.address
+
+  const account1 = account()
 
   const tonweb = new TonWeb(
     new TonWeb.HttpProvider('https://testnet.toncenter.com/api/v2/jsonRPC', {
@@ -127,7 +128,8 @@ const transfer = async ({
     })
   )
   console.log('tonweb', tonweb)
-
+  cell.bits.writeAddress(new TonWeb.Address(myAddress))
+  console.log('writeAddress')
   const getWalletAddressResponse = await tonweb.provider.call2(
     tokenAddress,
     'get_wallet_address',
@@ -136,7 +138,45 @@ const transfer = async ({
   console.log('getWalletAddressResponse', getWalletAddressResponse)
 
   const jettonWalletAddress = parseAddress(getWalletAddressResponse)
-  console.log('jettonWalletAddress', jettonWalletAddress)
+  console.log(
+    'jettonWalletAddress',
+    jettonWalletAddress.toString(true, true, true)
+  )
+
+  const burnOP = 0xf8a7ea5 // burn op
+  const queryId = new TonWeb.utils.BN(0)
+  console.log('queryId', queryId)
+
+  console.log('amount', amount, new TonWeb.utils.BN(amount))
+
+  const burnPayload = new TonWeb.boc.Cell()
+  const customPayload = new TonWeb.boc.Cell()
+  customPayload.bits.writeString(targetAddress)
+  customPayload.bits.writeUint(hexToBN(targetAddress), 160)
+  burnPayload.bits.writeUint(burnOP, 32)
+  burnPayload.bits.writeUint(queryId, 64)
+  burnPayload.bits.writeCoins(new TonWeb.utils.BN(amount))
+  burnPayload.bits.writeAddress()
+  console.log('account1', account1)
+  burnPayload.bits.writeBit(1)
+  burnPayload.refs.push(customPayload)
+  console.log('customPayload', customPayload)
+  const payloadBase64 = TonWeb.utils.bytesToBase64(
+    await burnPayload.toBoc(false)
+  )
+
+  const res = await tonConnect.sendTransaction({
+    validUntil: Math.floor(Date.now() / 1000) + 60, // 1 minute
+    messages: [
+      {
+        address: jettonWalletAddress.toString(true, true, true),
+        amount: TonWeb.utils.toNano('0').toString(),
+        payload: payloadBase64,
+      },
+    ],
+  })
+
+  console.log('res', res)
 }
 
 const tonHelper = {
