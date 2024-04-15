@@ -150,11 +150,15 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
+        "rpc": [
+
+        ],
         "watch": [
             "api"
         ],
-        "contracts": [],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "id": 1,
@@ -179,7 +183,9 @@
             }
         ],
         "infoURL": "",
-        "contract": {}
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -402,11 +408,15 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
+        "rpc": [
+
+        ],
         "watch": [
             "api"
         ],
-        "contracts": [],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -416,7 +426,9 @@
             }
         ],
         "infoURL": "https://immutascan.io",
-        "contract": {}
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -440,7 +452,9 @@
         "watch": [
             "api"
         ],
-        "contracts": [],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "id": 6,
@@ -451,7 +465,9 @@
             }
         ],
         "infoURL": "https://explorer.loopring.io",
-        "contract": {}
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -476,7 +492,9 @@
             "api",
             "rpc"
         ],
-        "contracts": [],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "name": "Ether (WETH)",
@@ -511,11 +529,15 @@
             "decimals": 0,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
+        "rpc": [
+
+        ],
         "watch": [
             "api"
         ],
-        "contracts": [],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "name": "USD Coin",
@@ -542,11 +564,15 @@
             "decimals": 18,
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "rpc": [],
+        "rpc": [
+
+        ],
         "watch": [
             "api"
         ],
-        "contracts": [],
+        "contracts": [
+
+        ],
         "tokens": [
             {
                 "id": 4,
@@ -557,7 +583,9 @@
             }
         ],
         "infoURL": "https://zkspace.info",
-        "contract": {}
+        "contract": {
+
+        }
     },
     {
         "api": {
@@ -583,8 +611,12 @@
             "rpc",
             "api"
         ],
-        "contracts": [],
-        "tokens": [],
+        "contracts": [
+
+        ],
+        "tokens": [
+
+        ],
         "infoURL": "https://bobascan.com"
     },
     {
@@ -788,7 +820,9 @@
             "https://polygon-zkevm-mainnet.public.blastapi.io",
             "https://polygon-zkevm.blockpi.network/v1/rpc/public"
         ],
-        "xvmList": [],
+        "xvmList": [
+
+        ],
         "watch": [
             "rpc"
         ],
@@ -890,7 +924,9 @@
         "contracts": [
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
         ],
-        "features": [],
+        "features": [
+
+        ],
         "nativeCurrency": {
             "name": "ETH",
             "symbol": "ETH",
@@ -1063,7 +1099,9 @@
         "internalId": "25",
         "name": "OpBNB",
         "debug": false,
-        "features": [],
+        "features": [
+
+        ],
         "contracts": [
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc"
         ],
@@ -1107,7 +1145,9 @@
         "networkId": "7777777",
         "internalId": "30",
         "name": "Zora",
-        "features": [],
+        "features": [
+
+        ],
         "debug": false,
         "contracts": [
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172"
@@ -1127,7 +1167,9 @@
         "watch": [
             "rpc"
         ],
-        "tokens": [],
+        "tokens": [
+
+        ],
         "infoURL": "https://explorer.zora.energy",
         "contract": {
             "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OBSource",
@@ -1143,7 +1185,9 @@
         "networkId": "169",
         "internalId": "31",
         "name": "Manta",
-        "features": [],
+        "features": [
+
+        ],
         "debug": false,
         "contracts": [
             "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc"
@@ -1179,7 +1223,9 @@
         "router": {
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "infoURL": "https://manta-pacific.calderaexplorer.xyz",
         "contract": {
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
@@ -1244,7 +1290,9 @@
         "networkId": "255",
         "internalId": "36",
         "name": "Kroma",
-        "features": [],
+        "features": [
+
+        ],
         "debug": false,
         "contracts": [
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172",
@@ -1267,7 +1315,9 @@
             "0x2598d7bC9D3b4B6124f3282E49Eee68db270F516": "OrbiterRouterV3",
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OBSource"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "infoURL": "https://kromascan.com",
         "contract": {
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
@@ -1277,7 +1327,9 @@
     {
         "name": "ZetaChain",
         "chain": "ETH",
-        "features": [],
+        "features": [
+
+        ],
         "nativeCurrency": {
             "name": "Zeta",
             "symbol": "ZETA",
@@ -1358,7 +1410,9 @@
             "coinKey": "ETH",
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
@@ -1392,7 +1446,9 @@
                 ]
             }
         ],
-        "explorers": []
+        "explorers": [
+
+        ]
     },
     {
         "name": "Blast",
@@ -1416,7 +1472,9 @@
             "coinKey": "ETH",
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
@@ -1456,7 +1514,9 @@
         "rpc": [
             "https://solana-mainnet.g.alchemy.com/v2/J3tWMROCkv-w67cWYdz2AMYLjeOjjmkA"
         ],
-        "features": [],
+        "features": [
+
+        ],
         "service": {
             "rpc": "SolanaRpcScanningService"
         },
@@ -1489,12 +1549,16 @@
                 "icon": "solana"
             }
         ],
-        "contract": {},
+        "contract": {
+
+        },
         "contracts": [
             {
                 "name": "SolanaProgramId",
                 "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
-                "methods": []
+                "methods": [
+
+                ]
             }
         ]
     },
@@ -1512,7 +1576,9 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "internalId": "53",
         "nativeCurrency": {
             "name": "Ether",
@@ -1525,7 +1591,9 @@
         "shortName": "apex",
         "chainId": "70700",
         "networkId": "70700",
-        "explorers": [],
+        "explorers": [
+
+        ],
         "contract": {
             "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource"
@@ -1565,7 +1633,9 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "internalId": "54",
         "nativeCurrency": {
             "name": "BTC",
@@ -1578,47 +1648,81 @@
         "shortName": "merlin",
         "chainId": "4200",
         "networkId": "4200",
-        "explorers": [],
+        "explorers": [
+
+        ],
         "contract": {
             "0x4b8a4641c140b3aa6be8d99786fafe47a65869db": "OrbiterRouterV3",
             "0x12bdaF8a32e436051439A2777ecB0A70245aD7Ee": "OBSource"
         },
-        "contracts": []
+        "contracts": [
+
+        ]
     },
     {
         "name": "BEVM Mainnet",
         "rpc": [
-            "https://rpc-mainnet-1.bevm.io/",
-            "https://rpc-mainnet-2.bevm.io/"
+            "https://rpc-mainnet-1.bevm.io",
+            "https://rpc-mainnet-2.bevm.io"
         ],
         "features": [
-            "Etherscan",
             {
                 "name": "evm-account6"
+            },
+            {
+                "name": "evm-rpc"
             }
         ],
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [],
+        "tokens": [
+
+        ],
         "internalId": "55",
         "nativeCurrency": {
-            "name": "BTC",
+            "name": "Bitcoin",
             "symbol": "BTC",
             "decimals": 18,
             "coinKey": "BTC",
             "address": "0x0000000000000000000000000000000000000000"
         },
-        "infoURL": "https://scan-mainnet.bevm.io",
-        "shortName": "BEVM",
+        "infoURL": "https://bevm.io",
+        "shortName": "bevm",
         "chainId": "11501",
         "networkId": "11501",
-        "explorers": [],
+        "icon": "bevm",
+        "explorers": [
+            {
+                "name": "bevm mainnet scan",
+                "url": "https://scan-mainnet.bevm.io",
+                "standard": "none"
+            }
+        ],
         "contract": {
-            "0x13E46b2a3f8512eD4682a8Fb8B560589fE3C2172": "OrbiterRouterV3",
-            "0xD9D74a29307cc6Fc8BF424ee4217f1A587FBc8Dc": "OBSource"
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
         },
-        "contracts": []
+        "contracts": [
+            {
+                "name": "OBSource",
+                "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferERC20(address,address,uint256,bytes)"
+                ]
+            },
+            {
+                "name": "OrbiterRouterV3",
+                "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transferTokens(address,address[],uint256[])"
+                ]
+            }
+        ]
     },
     {
         "name": "X Layer mainnet",
@@ -1636,7 +1740,15 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [],
+        "tokens": [
+            {
+                "name": "Wrapped Ether",
+                "symbol": "ETH",
+                "decimals": 18,
+                "coinKey": "ETH",
+                "address": "0x5a77f1443d16ee5761d310e38b62f77f726bc71c"
+            }
+        ],
         "internalId": "27",
         "nativeCurrency": {
             "name": "OK Token",
