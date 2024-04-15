@@ -207,6 +207,9 @@ import {
 import { CHAIN_ID } from "../../config";
 import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper';
+import {
+  compatibleGlobalWalletConf,
+} from '../../composition/walletsResponsiveData'
 
 export default {
     name: 'Proceed',
@@ -442,7 +445,7 @@ export default {
             const { fromChainID } = transferDataState
             if (this.$store.state.proceedState === 1) {
                 // let userAddress = web3State.coinbase
-                const userAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+                let userAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
                 if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
                     userAddress = web3State.starkNet.starkNetAddress
                 }
