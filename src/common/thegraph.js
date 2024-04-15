@@ -441,25 +441,16 @@ function sortRule(ruleList) {
         if (
           !!makerA &&
           !!makerB &&
-          recipientA === makerA?.toLocaleLowerCase() &&
-          recipientB === makerB?.toLocaleLowerCase()
+          (recipientA === makerA?.toLocaleLowerCase() ||
+            recipientB === makerB?.toLocaleLowerCase() ||
+            recipientA === makerB?.toLocaleLowerCase() ||
+            recipientB === makerA?.toLocaleLowerCase())
         ) {
           random = random || Math.random()
           const randomNum = random
           const total =
             (Number(maker1Weight) || 0) + (Number(maker2Weight) || 0)
           return (Number(maker1Weight) || 0) / total - randomNum
-        } else if (
-          !!makerA &&
-          !!makerB &&
-          recipientA === makerB?.toLocaleLowerCase() &&
-          recipientB === makerA?.toLocaleLowerCase()
-        ) {
-          random = random || Math.random()
-          const randomNum = random
-          const total =
-            (Number(maker1Weight) || 0) + (Number(maker2Weight) || 0)
-          return randomNum - (Number(maker1Weight) || 0) / total
         }
         return 0.5 - Math.random()
       })
