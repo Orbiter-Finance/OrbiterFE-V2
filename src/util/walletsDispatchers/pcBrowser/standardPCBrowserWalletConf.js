@@ -9,6 +9,7 @@ import {
   TOKEN_POCKET_APP,
   ZERION,
   COIN98_APP,
+  TRUSTWALLET_APP,
 } from '../constants'
 import { Notification } from 'element-ui'
 import { isBraveWallet } from '../utils'
@@ -154,6 +155,23 @@ export default [
         duration: 3000,
         message:
           '<div style="font-family:Inter Regular;text-align: left;">If you already have Coin 98 Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
+    },
+  },
+  {
+    walletType: TRUSTWALLET_APP,
+    icon: TRUSTWALLET_APP,
+    walletIsInstalledInvestigator: (provider) => provider.isTrustWallet,
+    shouldAddChainCode: -32603,
+    walletNotInstallReducer: () => {
+      return Notification({
+        title: 'Error: Trust Wallet has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have Trust Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },

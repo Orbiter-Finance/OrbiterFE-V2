@@ -158,11 +158,13 @@ export default {
       let totalFee = fee.totalFee
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
+        const evmAddress =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         const addressState = await syncHttpProvider.getState(web3State.coinbase)
         if (!addressState.committed || addressState.committed?.nonce == 0) {
           const changePubKeyFee = await syncHttpProvider.getTransactionFee(
             { ChangePubKey: { onchainPubkeyAuth: false } },
-            web3State.coinbase,
+            evmAddress || web3State.coinbase,
             resultToken.id
           )
           totalFee = totalFee.add(changePubKeyFee.totalFee)
@@ -177,9 +179,11 @@ export default {
     ) {
       let transferFee = 0
       try {
+        const evmAddress =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
-          web3State.coinbase
+          evmAddress
         )
       } catch (error) {
         console.warn('getZKSpaceTransferGasFeeError =', error)
@@ -1218,7 +1222,7 @@ export default {
 
     if (currency?.toLocaleLowerCase() === 'btc') {
       const chainInfo = util.getV3ChainInfoByChainId(toChainID)
-      return chainInfo.internalId
+      return String(chainInfo.internalId)
     }
 
     let makerConfig = selectMakerConfig

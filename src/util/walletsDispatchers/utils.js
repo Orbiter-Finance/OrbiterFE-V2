@@ -17,6 +17,7 @@ import {
   ZERION,
   ZERION_APP,
   COIN98_APP,
+  TRUSTWALLET_APP,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -63,6 +64,7 @@ export const withPerformInterruptWallet = (fn) => {
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
+  if (walletType === TRUSTWALLET_APP) return !!ethereum.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
@@ -144,6 +146,7 @@ export const getMobileAppTypeByProvider = () => {
   if (!provider) return undefined
   if (provider.isImToken) return IM_TOKEN_APP
   if (provider.isCoin98) return COIN98_APP
+  if (provider.isTrustWallet) return TRUSTWALLET_APP
   if (provider.isTokenPocket) return TOKEN_POCKET_APP
   if (provider.isMetaMask && !provider.isTokenPocket) return METAMASK_APP
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP

@@ -201,7 +201,6 @@ export default {
     },
     connectAddress () {
       const address = this.isSelectedSolana && this.solanaAddress && (this.solanaAddress !== 'not connected') ? this.solanaAddress : (this.starkAddress === 'not connected' || this,this.connectFirstAddress === this.starkAddress ? 'Connect Wallet' : this.starkAddress)
-      console.log("address", address)
       return address
     },
     currentWalletAddress () {

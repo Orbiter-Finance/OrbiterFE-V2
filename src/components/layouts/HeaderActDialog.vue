@@ -782,7 +782,8 @@ export default {
       if (!!isStarkNetDialog.value) {
         return web3State.starkNet.starkNetAddress
       }
-      return web3State.coinbase
+      const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+      return evmAddress?.toLocaleLowerCase();
     },
     networkId() {
       if(isSolanaDialog.value) {

@@ -155,7 +155,7 @@
           <div>
             <div v-if="showError" class="search" style="font-weight: bolder;">
               No relevant destination Transaction Hash is found. You can submit your source Transaction Hash on the
-              <span class="url" @click="openUrl('http://discord.gg/hJJvXP7C73')">Discord-support</span>
+              <span class="url" @click="openUrl('https://discord.gg/jRJKK8avGM')">Discord-support</span>
               channel, we will help you on this. Your assets are safe.
             </div>
             <div class="search" style="margin-top: 20px;">
@@ -254,7 +254,7 @@
         return historyPanelState.transactionListInfo
       },
       currentWalletAddress() {
-        const evmAddress = web3State.coinbase
+        const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         const starknetAddress = web3State.starkNet.starkNetAddress
         const solanaAddress = solanaHelper.solanaAddress()
         return [evmAddress, starknetAddress, solanaAddress].filter(item=>!!item).join(",")

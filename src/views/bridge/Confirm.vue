@@ -212,7 +212,7 @@ import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
 import { CHAIN_ID } from "../../config";
 import { isBrowserApp, isProd } from "../../util";
-import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20 } from "../../util/zksyncEraGasToken";
+import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, zksyncEraGasTokenContract } from "../../util/zksyncEraGasToken";
 import solanaHelper from '../../util/solana/solana_helper';
 import { shortString } from 'starknet';
 
@@ -340,7 +340,7 @@ export default {
             if (!walletIsLogin.value) {
                 return
             }
-            const from = web3State.coinbase
+            const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress || web3State.coinbase
             const toAddress = solanaHelper.solanaAddress()
             const isConnected = await solanaHelper.isConnect()
 
@@ -1224,8 +1224,7 @@ export default {
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
-                const evmAddress = web3State.coinbase
-
+                const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
                 const targetAddress = toChainID === CHAIN_ID.starknet ||
                 toChainID === CHAIN_ID.starknet_test ? starkNetAddress: evmAddress
 
@@ -1629,16 +1628,61 @@ export default {
         async zksync2GasToken () {
             const account =
                     compatibleGlobalWalletConf.value.walletPayload.walletAddress
-            const { fromChainID, selectMakerConfig } = transferDataState
+            const { fromChainID, selectMakerConfig, toChainID } = transferDataState
             const tokenAddress = selectMakerConfig.fromChain.tokenAddress
             const to = selectMakerConfig.recipient
-            const tValue = transferCalculate.getTransferTValue()           
+            const tValue = transferCalculate.getTransferTValue()                                 
+
+            let toAddress = ""
+
+            if(toChainID === CHAIN_ID.solana) {
+                toAddress = solanaHelper.solanaAddress()
+                const isConnected = await solanaHelper.isConnect()
+
+                if(!toAddress || !isConnected) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("SOLANA")
+                    return
+                }
+            }
+
+            if(toChainID === CHAIN_ID.starknet) {
+                toAddress = web3State.starkNet.starkNetAddress
+                let { starkChain } = web3State.starkNet
+
+                if(!toAddress) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("STARKNET")
+                    this.transferLoading = false
+                    return
+                }
+
+                starkChain = +starkChain ? +starkChain : starkChain
+                if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+                    util.showMessage('please connect Starknet Wallet', 'error')
+                    this.transferLoading = false
+                    return
+                }
+                if (
+                    (fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) &&
+                    (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
+                ) {
+                    util.showMessage(
+                        'please switch Starknet Wallet to mainnet',
+                        'error'
+                    )
+                    this.transferLoading = false
+                    return
+                }
+            }
 
             try {
-                if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
+                if(toAddress) {
+                    await zksyncEraGasTokenContract({account, fromChainID, to, amount: tValue.tAmount, tokenAddress, onTransferSucceed: this.onTransferSucceed, toAddress })
+                }else if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
                 // When tokenAddress is eth
                     await zksyncEraGasTokenETH({account, fromChainID, to, amount: tValue.tAmount,onTransferSucceed: this.onTransferSucceed})
-                } else {
+                }  else {
                     await zksyncEraGasTokenERC20({account, fromChainID, to, amount: tValue.tAmount, tokenAddress, onTransferSucceed: this.onTransferSucceed})
                 }
                 updateGasTokenInfo({})
@@ -1749,6 +1793,11 @@ export default {
                     return
                 }
 
+                if ((fromChainID === CHAIN_ID.zksync2) &&  this.gasTokenInfoValue.value && (this.gasTokenInfoValue.value !== "ETH")) {
+                    this.zksync2GasToken()
+                    return
+                }
+
                 if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
                     await this.transferToSolana()
                     this.transferLoading = false
@@ -1767,11 +1816,6 @@ export default {
 
                 if (fromChainID === CHAIN_ID.dydx || fromChainID === CHAIN_ID.dydx_test) {
                     this.dydxTransfer(tValue.tAmount)
-                    return
-                }
-
-                if ((fromChainID === CHAIN_ID.zksync2) &&  this.gasTokenInfoValue.value && (this.gasTokenInfoValue.value !== "ETH")) {
-                    this.zksync2GasToken()
                     return
                 }
 
@@ -1870,6 +1914,9 @@ export default {
                         })
                 }
             }
+
+            this.transferLoading = false
+
         },
         onTransferSucceed(from, amount, fromChainID, transactionHash) {
             const { selectMakerConfig } = transferDataState
@@ -1918,6 +1965,7 @@ export default {
             this.expectValue = `${ transferDataState.ebcValue } ${ selectMakerConfig.fromChain.symbol }`;
             return;
         }
+        // st
         const amount = orbiterCore.getToAmountFromUserAmount(
             new BigNumber(transferValue).plus(
                 new BigNumber(selectMakerConfig.tradingFee)
@@ -1925,6 +1973,7 @@ export default {
             selectMakerConfig,
             false
         )
+        //xvm
         if (util.isExecuteXVMContract()) {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol

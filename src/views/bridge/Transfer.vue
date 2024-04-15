@@ -436,7 +436,7 @@ import {
   setConnectWalletGroupKey
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
-import { RequestMethod, requestOpenApi, requestPointSystem } from "../../common/openApiAx";
+import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
 import { ethers } from 'ethers'
@@ -937,7 +937,7 @@ export default {
         toChain.chainId !== CHAIN_ID.starknet && 
         toChain.chainId !== CHAIN_ID.starknet_test
       )) {
-        this.crossAddressReceipt = web3State.coinbase
+        this.crossAddressReceipt = compatibleGlobalWalletConf.value.walletPayload.walletAddress
       }
       }catch(error) {
         console.error('loopringFromFillAddress error', error);
@@ -1087,7 +1087,8 @@ export default {
     },
     async openApiFilter() {
       try {
-        const banList = await requestOpenApi(RequestMethod.offline, []);
+        const data = await getNoticeData();
+        const banList = data?.map((item)=> item.rule) || []
         if (Array.isArray(banList)) {
           this.banList = banList;
         }
@@ -1098,7 +1099,8 @@ export default {
       const self = this;
       const cron = setInterval(async () => {
         try {
-          const banList = await requestOpenApi(RequestMethod.offline, []);
+          const data = await getNoticeData();
+          const banList = data?.map((item)=> item.rule) || []
           if (Array.isArray(banList)) {
             self.banList = banList;
           }
@@ -1422,7 +1424,7 @@ export default {
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
       // }
-      const availableDigit = toChain.decimals === 8 || fromChain.decimals === 8 ? 6 : fromChain.decimals === 18 ? 6 : 2;
+      const availableDigit = fromChain.decimals === 8 ? 6 : fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
@@ -1618,7 +1620,11 @@ export default {
       let opBalance = 10 ** -avalibleDigit;
       let preGasDigit = 3;
       let preGas = 0;
-      if ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
+
+      const chainInfo = util.getV3ChainInfoByChainId(fromChain.chainId)
+
+      if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
+      [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
         preGas = 10 ** -preGasDigit;
       }
       let userBalance = new BigNumber(this.fromBalance)
@@ -1781,7 +1787,7 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       if (fromChain.chainId === CHAIN_ID.loopring || fromChain.chainId === CHAIN_ID.loopring_test || toChain.chainId === CHAIN_ID.loopring || toChain.chainId === CHAIN_ID.loopring_test) {
-        this.transferValue = toChain.decimals === 8 ||  fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,4})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       } else {
@@ -1837,6 +1843,7 @@ export default {
       try {
         if (this.banList) {
           for (const ban of this.banList) {
+            const description = ban?.description
             if (process.env.VUE_APP_TurnOffOfflineChecking) {
               continue;
             }
@@ -1845,14 +1852,14 @@ export default {
                 if (ban.sourceToken && ban.sourceToken === fromCurrency) {
                   if (ban.destToken && ban.destToken === toCurrency) {
                     this.$notify.error({
-                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                      title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
                       duration: 3000,
                     });
                     return;
                   }
                   if (!ban.destToken) {
                     this.$notify.error({
-                      title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                      title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
                       duration: 3000,
                     });
                     return;
@@ -1861,7 +1868,7 @@ export default {
 
                 if (!ban.sourceToken) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.fromChain.name }-${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
@@ -1873,14 +1880,14 @@ export default {
               if (util.getInternalIdByChainId(fromChainID) === ban.source) {
                 if (ban.sourceToken && ban.sourceToken === fromCurrency) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.fromChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.fromChain.name } network ${ fromCurrency } transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return
                 }
                 if (!ban.sourceToken) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.fromChain.name } network transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
@@ -1892,14 +1899,14 @@ export default {
               if (util.getInternalIdByChainId(toChainID) === ban.dest) {
                 if (ban.destToken && ban.destToken === toCurrency) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.toChain.name } network ${ toCurrency } transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
                 }
                 if (!ban.destToken) {
                   this.$notify.error({
-                    title: `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
+                    title: description || `The ${ selectMakerConfig.toChain.name } network transaction maintenance, please try again later`,
                     duration: 3000,
                   });
                   return;
@@ -1933,19 +1940,19 @@ export default {
         }
         if (!selectMakerConfig) return;
         const { fromChain } = selectMakerConfig;
-        let nonce = await getNonce.getNonce(
-                fromChain.chainId,
-                fromChain.tokenAddress,
-                fromChain.symbol,
-                compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        );
-        if (nonce > 8999) {
-          this.$notify.error({
-            title: `Address with the nonce over 9000 are not supported by Orbiter`,
-            duration: 3000,
-          });
-          return;
-        }
+        // let nonce = await getNonce.getNonce(
+        //         fromChain.chainId,
+        //         fromChain.tokenAddress,
+        //         fromChain.symbol,
+        //         compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        // );
+        // if (nonce > 8999) {
+        //   this.$notify.error({
+        //     title: `Address with the nonce over 9000 are not supported by Orbiter`,
+        //     duration: 3000,
+        //   });
+        //   return;
+        // }
 
         if (
                 !this.transferValue ||
