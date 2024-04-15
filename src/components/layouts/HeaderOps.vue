@@ -361,6 +361,7 @@ export default {
       const { isAddress, address } = this.getAddress()
       const [_web3Address, starkNetAddress] = this.currentWalletAddress
 
+      const tonAddress = tonHelper.account()
       const solanaAddress = solanaHelper.solanaAddress()
 
       if (isAddress) {
@@ -370,7 +371,10 @@ export default {
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
-          if(solanaAddress) {
+          if(tonAddress) {
+            setTonDialog(true)
+            setActDialogVisible(true)
+          } else  if(solanaAddress) {
             setSolanaDialog(true)
             setActDialogVisible(true)
           } else if (starkNetAddress) {

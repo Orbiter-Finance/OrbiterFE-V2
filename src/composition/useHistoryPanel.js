@@ -7,6 +7,7 @@ import { RequestMethod, requestOpenApi } from '../common/openApiAx'
 import util from '../util/util'
 import { web3State } from './useCoinbase'
 import solanaHelper from '../util/solana/solana_helper'
+import tonHelper from '../util/ton/ton_helper'
 // import { getTransactionsHistoryApi } from '../core/routes/transactions'
 
 export const historyPanelState = reactive({
@@ -61,8 +62,10 @@ export async function getTransactionsHistory(params = {}) {
     compatibleGlobalWalletConf.value.walletPayload.walletAddress
   const starknetAddress = web3State.starkNet.starkNetAddress
   const solanaAddress = solanaHelper.solanaAddress()
+  const tonAddress = web3State.ton.tonAddress || tonHelper.account()
 
   const walletAddress = [
+    tonAddress,
     evmAddress?.toLocaleLowerCase(),
     starknetAddress?.toLocaleLowerCase(),
     solanaAddress,

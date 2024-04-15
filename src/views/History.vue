@@ -189,6 +189,7 @@
   import BigNumber from 'bignumber.js'
   import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
   import solanaHelper from "../util/solana/solana_helper"
+import tonHelper from '../util/ton/ton_helper';
   let timer = 0
   export default {
     name: 'History',
@@ -257,7 +258,8 @@
         const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         const starknetAddress = web3State.starkNet.starkNetAddress
         const solanaAddress = solanaHelper.solanaAddress()
-        return [evmAddress, starknetAddress, solanaAddress].filter(item=>!!item).join(",")
+        const tonAddress = web3State?.ton?.tonAddress || tonHelper.account()
+        return [evmAddress, starknetAddress, solanaAddress, tonAddress].filter(item=>!!item).join(",")
       },
     },
     watch: {

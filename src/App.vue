@@ -66,7 +66,8 @@ import {
   updateActDataList,
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
-  isTonDialog
+  isTonDialog,
+  setTonDialog
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -116,7 +117,9 @@ export default {
     },
     currentWalletAddress () {
       const solanaAddress = web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+      const tonAddress = web3State.ton.tonAddress || tonHelper.account()
       return [
+        tonAddress,
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
         solanaAddress,
@@ -228,10 +231,14 @@ export default {
     currentWalletAddress: function (newAddress) {
       const [web3Address, starkNetAddress] = newAddress
       const solanaAddress = solanaHelper.solanaAddress()
-      if(solanaAddress) {
+      const tonAddress = tonHelper.account()()
+      if(tonAddress) {
+        setTonDialog(true)
+        setActDialogVisible(true)
+      } else if(solanaAddress) {
         setSolanaDialog(true)
         setActDialogVisible(true)
-      } else  if (starkNetAddress) {
+      } else if (starkNetAddress) {
         setStarkNetDialog(true)
         setActDialogVisible(true)
       }

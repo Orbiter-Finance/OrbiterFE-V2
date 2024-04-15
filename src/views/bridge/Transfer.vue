@@ -2238,7 +2238,7 @@ export default {
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
         address = solanaHelper.solanaAddress();
       }
-      if (fromChainID === CHAIN_ID.tons || fromChainID === CHAIN_ID.ton_test) {
+      if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
       }
       if (address && address !== '0x') {
