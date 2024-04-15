@@ -254,6 +254,15 @@ export default {
                 toChainID === CHAIN_ID.solana_test
             )
         },
+        isTonChain() {
+            const { fromChainID, toChainID } = transferDataState
+            return (
+                fromChainID === CHAIN_ID.ton ||
+                fromChainID === CHAIN_ID.ton_test ||
+                toChainID === CHAIN_ID.ton ||
+                toChainID === CHAIN_ID.ton_test
+            )
+        },
         currentFromChainID() {
             const { fromChainID } = transferDataState
             return fromChainID
@@ -359,7 +368,7 @@ export default {
 
 
             if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-                toAddress = tonHelper.solanaAddress()
+                toAddress = tonHelper.account()
                 isConnected = await tonHelper.isConnected()
 
                 if(!toAddress || !isConnected) {
@@ -367,6 +376,8 @@ export default {
                     return
                 }
             }
+
+            console.log("toAddress", toAddress)
 
             // try {
             //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
@@ -1032,8 +1043,8 @@ export default {
                 }
 
                 if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-                    const tonAddress = tonHelper.isConnected()
-                    const tonIsConnected =  tonHelper.account()
+                    const tonAddress = tonHelper.account()
+                    const tonIsConnected =  tonHelper.isConnected()
                     if(!tonIsConnected || !tonAddress) {
                         await tonHelper.connect()
                         return 
@@ -1779,7 +1790,7 @@ export default {
 
             if(toChainID === CHAIN_ID.ton) {
                 toAddress = tonHelper.account()
-                const isConnected = await tonHelper.isConnected()
+                const isConnected = tonHelper.isConnected()
 
                 if(!toAddress || !isConnected) {
                     await tonHelper.connect()

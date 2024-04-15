@@ -65,7 +65,8 @@ import {
   setActNftList,
   updateActDataList,
   setSelectWalletDialogVisible,
-  setConnectWalletGroupKey
+  setConnectWalletGroupKey,
+  isTonDialog
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -251,7 +252,10 @@ export default {
       }
       const [web3Address, starkNetAddress] = this.currentWalletAddress
       const solanaAddress = solanaHelper.solanaAddress()
-      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
+      const tonAddress = tonHelper.account()
+      const address = !!isTonDialog.value && tonAddress ? tonAddress : (
+        !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
+      )
       const isStarknet = !!isStarkNetDialog.value
       if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup

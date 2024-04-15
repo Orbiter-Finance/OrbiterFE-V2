@@ -1,6 +1,7 @@
 import { TonConnectUI } from '@tonconnect/ui'
-import { toUserFriendlyAddress } from '@tonconnect/sdk'
 import TonWeb from 'tonweb'
+import { utils } from 'ethers'
+import { store } from '../../store'
 
 let tonConnect
 
@@ -61,6 +62,20 @@ const hexToBN = (hex) /* BN */ => {
   return bn
 }
 
+const getJettonWalletAddress = async ({ tonweb, userAdress, tokenAddress }) => {
+  const cell = new TonWeb.boc.Cell()
+
+  cell.bits.writeAddress(userAdress)
+
+  const getWalletAddressResponse = await tonweb.provider.call2(
+    tokenAddress,
+    'get_wallet_address',
+    [['tvm.Slice', bytesToBase64(await cell.toBoc(false))]]
+  )
+  const jettonWalletAddress = parseAddress(getWalletAddressResponse)
+  return jettonWalletAddress
+}
+
 const tonConnectCall = async () => {
   if (tonConnect) {
     return tonConnect
@@ -71,6 +86,18 @@ const tonConnectCall = async () => {
   })
 
   tonConnect = tonConnectUI
+  console.log('tonConnect', tonConnect)
+  tonConnect.onStatusChange((wallet) => {
+    console.log('wallet', wallet)
+    if (wallet?.account?.address) {
+      store.commit(
+        'updateTonAddress',
+        new TonWeb.Address(wallet?.account?.address).toString(true, true, true)
+      )
+    } else {
+      store.commit('updateTonAddress', '')
+    }
+  })
   return tonConnect
 }
 
@@ -79,10 +106,12 @@ const connect = async () => {
 }
 
 const account = () => {
-  console.log('tonConnect', tonConnect)
-  console.log('tonConnect?.account', tonConnect?.account)
   if (tonConnect?.account?.address) {
-    return toUserFriendlyAddress(tonConnect?.account?.address)
+    return new TonWeb.Address(tonConnect?.account?.address).toString(
+      true,
+      true,
+      true
+    )
   }
   return tonConnect?.account
 }
@@ -99,6 +128,19 @@ const chain = async () => {
   return tonConnect?.account?.chain
 }
 
+const readWalletName = () => {
+  return tonConnect?.wallet?.imageUrl
+}
+
+const tonwebProvider = () => {
+  return new TonWeb(
+    new TonWeb.HttpProvider('https://testnet.toncenter.com/api/v2/jsonRPC', {
+      apiKey:
+        'd843619b379084d133f061606beecbf72ae2bf60e0622e808f2a3f631673599b',
+    })
+  )
+}
+
 const transfer = async ({
   from,
   to,
@@ -107,76 +149,52 @@ const transfer = async ({
   amount,
   safeCode,
 }) => {
-  console.log('from', from)
-  console.log('to', to)
-  console.log('tokenAddress', tokenAddress)
-  console.log('targetAddress', targetAddress)
-  console.log('amount', amount)
-  console.log('safeCode', safeCode)
+  const tonweb = tonwebProvider()
 
-  const cell = new TonWeb.boc.Cell()
-  console.log('cell', cell)
+  const fromAddress = new TonWeb.Address(tonConnect?.account?.address)
+  const toAddress = new TonWeb.Address(to)
 
-  const myAddress = tonConnect?.account?.address
-
-  const account1 = account()
-
-  const tonweb = new TonWeb(
-    new TonWeb.HttpProvider('https://testnet.toncenter.com/api/v2/jsonRPC', {
-      apiKey:
-        'd843619b379084d133f061606beecbf72ae2bf60e0622e808f2a3f631673599b',
-    })
-  )
-  console.log('tonweb', tonweb)
-  cell.bits.writeAddress(new TonWeb.Address(myAddress))
-  console.log('writeAddress')
-  const getWalletAddressResponse = await tonweb.provider.call2(
+  const fromJettonWalletAddress = await getJettonWalletAddress({
+    tonweb,
+    userAdress: fromAddress,
     tokenAddress,
-    'get_wallet_address',
-    [['tvm.Slice', bytesToBase64(await cell.toBoc(false))]]
-  )
-  console.log('getWalletAddressResponse', getWalletAddressResponse)
+  })
 
-  const jettonWalletAddress = parseAddress(getWalletAddressResponse)
-  console.log(
-    'jettonWalletAddress',
-    jettonWalletAddress.toString(true, true, true)
+  const forwardPayload = new TonWeb.boc.Cell()
+  forwardPayload.bits.writeUint(0, 32)
+  forwardPayload.bits.writeString(
+    utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
   )
 
-  const burnOP = 0xf8a7ea5 // burn op
-  const queryId = new TonWeb.utils.BN(0)
-  console.log('queryId', queryId)
+  const jettonTransferBody = new TonWeb.boc.Cell()
+  jettonTransferBody.bits.writeUint(0xf8a7ea5, 32)
+  jettonTransferBody.bits.writeUint(0, 64)
+  jettonTransferBody.bits.writeCoins(new TonWeb.utils.BN(amount))
+  jettonTransferBody.bits.writeAddress(toAddress)
+  jettonTransferBody.bits.writeAddress(fromAddress)
+  jettonTransferBody.bits.writeBit(false)
+  jettonTransferBody.bits.writeCoins(TonWeb.utils.toNano('0'))
+  jettonTransferBody.bits.writeBit(true)
+  jettonTransferBody.refs.push(forwardPayload)
 
-  console.log('amount', amount, new TonWeb.utils.BN(amount))
-
-  const burnPayload = new TonWeb.boc.Cell()
-  const customPayload = new TonWeb.boc.Cell()
-  customPayload.bits.writeString(targetAddress)
-  customPayload.bits.writeUint(hexToBN(targetAddress), 160)
-  burnPayload.bits.writeUint(burnOP, 32)
-  burnPayload.bits.writeUint(queryId, 64)
-  burnPayload.bits.writeCoins(new TonWeb.utils.BN(amount))
-  burnPayload.bits.writeAddress()
-  console.log('account1', account1)
-  burnPayload.bits.writeBit(1)
-  burnPayload.refs.push(customPayload)
-  console.log('customPayload', customPayload)
   const payloadBase64 = TonWeb.utils.bytesToBase64(
-    await burnPayload.toBoc(false)
+    await jettonTransferBody.toBoc(false)
   )
 
-  const res = await tonConnect.sendTransaction({
+  const { boc } = await tonConnect.sendTransaction({
     validUntil: Math.floor(Date.now() / 1000) + 60, // 1 minute
     messages: [
       {
-        address: jettonWalletAddress.toString(true, true, true),
-        amount: TonWeb.utils.toNano('0').toString(),
+        address: fromJettonWalletAddress.toString(true, true, true),
+        amount: TonWeb.utils.toNano('0.1').toString(),
         payload: payloadBase64,
       },
     ],
   })
 
-  console.log('res', res)
+  return TonWeb.utils.bytesToBase64(
+    await TonWeb.boc.Cell.oneFromBoc(TonWeb.utils.base64ToBytes(boc)).hash()
+  )
 }
 
 const tonHelper = {
@@ -187,6 +205,10 @@ const tonHelper = {
   disconnect,
   chain,
   transfer,
+  readWalletName,
+  tonwebProvider,
+  bytesToBase64,
+  parseAddress,
 }
 
 export default tonHelper

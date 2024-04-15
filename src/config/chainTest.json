@@ -1013,7 +1013,7 @@
     "chainId": "TON_SEPOLIA",
     "icon": "TON_MAIN",
     "networkId": "TON_SEPOLIA",
-    "internalId": "552",
+    "internalId": "556",
     "name": "TON",
     "batchLimit": 20,
     "debug": false,
@@ -1038,8 +1038,8 @@
     ],
     "tokens": [
       {
-        "name": "ETH",
-        "symbol": "ETH",
+        "name": "USDC",
+        "symbol": "USDC",
         "decimals": 6,
         "address": "EQAQjU0zuO0YJSnHMXaUUOQ5Kru2O2i_4zfbqR-kHvf-DNRm"
       }

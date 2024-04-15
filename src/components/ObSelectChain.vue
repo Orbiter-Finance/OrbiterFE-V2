@@ -127,7 +127,7 @@ export default {
                 CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
-                CHAIN_ID.solana, CHAIN_ID.solana_test
+                CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.ton, CHAIN_ID.ton_test
             ]
             return this.orderChainIds(chainOrderIds, newArray)
         },
@@ -145,7 +145,7 @@ export default {
                 CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
-                CHAIN_ID.solana, CHAIN_ID.solana_test
+                CHAIN_ID.solana, CHAIN_ID.solana_test,CHAIN_ID.ton, CHAIN_ID.ton_test
             ]
             return customSort(chainOrderIds,chains)
         },

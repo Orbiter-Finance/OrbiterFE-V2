@@ -206,6 +206,7 @@ import {
 } from '../../composition/hooks'
 import { CHAIN_ID } from "../../config";
 import solanaHelper from '../../util/solana/solana_helper';
+import tonHelper from '../../util/ton/ton_helper';
 
 export default {
     name: 'Proceed',
@@ -373,6 +374,9 @@ export default {
           if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
             userAddress = solanaHelper.solanaAddress();
           }
+          if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
+            userAddress = tonHelper.account();
+          }
           const accountUrl = explorerInfo.accountUrl || explorerInfo.url + '/address';
           const url = accountUrl + '/' + userAddress;
           window.open(url, '_blank');
@@ -445,6 +449,9 @@ export default {
                 if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
                     userAddress = solanaHelper.solanaAddress()
                 }
+                if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+                    userAddress = tonHelper.account();
+                }
                 url = util.getAccountExploreUrl(fromChainID) + userAddress
 
                 // ImmutableX
@@ -478,6 +485,9 @@ export default {
                 }
                 if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
                     userAddress = solanaHelper.solanaAddress()
+                }
+                if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                    userAddress = tonHelper.account();
                 }
                 url = util.getAccountExploreUrl(toChainID) + userAddress
 

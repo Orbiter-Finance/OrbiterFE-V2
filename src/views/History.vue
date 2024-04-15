@@ -312,6 +312,8 @@
           txHash = util.starknetHashFormat(txHash);
         } else if (selectChainId === CHAIN_ID.solana || selectChainId === CHAIN_ID.solana_test) {
           // solana
+        } else if (selectChainId === CHAIN_ID.ton || selectChainId === CHAIN_ID.ton_test) {
+          // ton
         } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
           if (!Number(txHash)) {
             util.showMessage("Hash error", "error");

@@ -2,6 +2,7 @@ import { getContractFactory, predeploys } from '@eth-optimism/contracts'
 import axios from 'axios'
 import BigNumber from 'bignumber.js'
 import { ethers, providers } from 'ethers'
+import TonWeb from 'tonweb'
 
 import thirdapi from '../../core/actions/thirdapi'
 import zkspace from '../../core/actions/zkspace'
@@ -31,6 +32,7 @@ import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import solanaHelper from '../solana/solana_helper'
+import tonHelper from '../ton/ton_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -158,7 +160,8 @@ export default {
       let totalFee = fee.totalFee
       // When account's nonce is zero(0), add ChangePubKey fee
       try {
-        const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        const evmAddress =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         const addressState = await syncHttpProvider.getState(web3State.coinbase)
         if (!addressState.committed || addressState.committed?.nonce == 0) {
           const changePubKeyFee = await syncHttpProvider.getTransactionFee(
@@ -178,7 +181,8 @@ export default {
     ) {
       let transferFee = 0
       try {
-        const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        const evmAddress =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
         transferFee = await zkspace.getZKSpaceTransferGasFee(
           fromChainID,
           evmAddress
@@ -614,8 +618,11 @@ export default {
       fromChainID === CHAIN_ID.solana_test
     ) {
       // solana cost
-      console.log('solana gas')
       ethGas = 15 * 10 ** 3
+    }
+    if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+      // solana cost
+      ethGas = 1 * 10 ** 8
     }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
@@ -1067,6 +1074,52 @@ export default {
         )
 
         return String(tokenAccountBalance || '0')
+      } catch (error) {
+        return '0'
+      }
+    } else if (
+      localChainID === CHAIN_ID.ton ||
+      localChainID === CHAIN_ID.ton_test
+    ) {
+      try {
+        const isConnected = tonHelper.isConnected()
+        const tonAddress = tonHelper.account()
+
+        if (!tonAddress || !isConnected) {
+          await tonHelper.connect()
+          return '0'
+        }
+
+        const tonweb = tonHelper.tonwebProvider()
+
+        const userTonAddress = new TonWeb.Address(tonAddress)
+        const cell = new TonWeb.boc.Cell()
+
+        cell.bits.writeAddress(userTonAddress)
+
+        const getWalletAddressResponse = await tonweb.provider.call2(
+          tokenAddress,
+          'get_wallet_address',
+          [['tvm.Slice', tonHelper.bytesToBase64(await cell.toBoc(false))]]
+        )
+
+        const jettonWalletAddress = tonHelper.parseAddress(
+          getWalletAddressResponse
+        )
+        try {
+          const jettonWalletData = await tonweb.provider.call2(
+            jettonWalletAddress.toString(true, true, true),
+            'get_wallet_data'
+          )
+          const balance = jettonWalletData[0]
+          return balance.toString()
+        } catch (e) {
+          if (e.result.exit_code === -13) {
+            return '0'
+          } else {
+            throw e
+          }
+        }
       } catch (error) {
         return '0'
       }

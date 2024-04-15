@@ -252,9 +252,6 @@ export default {
       return walletIsLogin.value
     },
   },
-  created() {
-    this.getTonWallet()
-  },
   methods: {
     closeSelectWalletDialog() {
       setSelectWalletDialogVisible(false)

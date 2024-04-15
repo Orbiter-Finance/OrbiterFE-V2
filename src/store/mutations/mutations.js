@@ -134,6 +134,12 @@ export default {
     }
     web3State.solana.solanaAddress = solanaAddress
   },
+  updateTonAddress(state, tonAddress) {
+    if (!tonAddress || tonAddress.length === 0) {
+      tonAddress = ''
+    }
+    web3State.ton.tonAddress = tonAddress
+  },
   updateSolanaWalletName(state, solanaWalletName) {
     if (!solanaWalletName || solanaWalletName.length === 0) {
       solanaWalletName = ''
