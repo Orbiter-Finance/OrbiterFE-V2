@@ -7,6 +7,9 @@ import config from '../config'
 const makerSortMap = {}
 let v2TradingPairs = []
 
+let random = 0
+let random2 = 0
+
 export async function getV2TradingPair() {
   if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
     throw new Error('USE LOCAL Config')
@@ -444,9 +447,11 @@ function sortRule(ruleList) {
           (recipientA === makerB?.toLocaleLowerCase() &&
             recipientB === makerA?.toLocaleLowerCase())
         ) {
+          random = random || Math.random()
+          random2 = random2 || Math.random()
           return (
-            (Number(maker2Weight) || 0) * Math.random() -
-            (Number(maker1Weight) || 0) * Math.random()
+            (Number(maker2Weight) || 0) * random -
+            (Number(maker1Weight) || 0) * random2
           )
         }
         return 0.5 - Math.random()

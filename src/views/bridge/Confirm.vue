@@ -1649,15 +1649,33 @@ export default {
 
             if(toChainID === CHAIN_ID.starknet) {
                 toAddress = web3State.starkNet.starkNetAddress
+                let { starkChain } = web3State.starkNet
 
                 if(!toAddress) {
                     setSelectWalletDialogVisible(true)
                     setConnectWalletGroupKey("STARKNET")
+                    this.transferLoading = false
+                    return
+                }
+
+                starkChain = +starkChain ? +starkChain : starkChain
+                if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+                    util.showMessage('please connect Starknet Wallet', 'error')
+                    this.transferLoading = false
+                    return
+                }
+                if (
+                    (fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) &&
+                    (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
+                ) {
+                    util.showMessage(
+                        'please switch Starknet Wallet to mainnet',
+                        'error'
+                    )
+                    this.transferLoading = false
                     return
                 }
             }
-
-            console.log("toAddress", toAddress)
 
             try {
                 if(toAddress) {
@@ -1948,6 +1966,7 @@ export default {
             this.expectValue = `${ transferDataState.ebcValue } ${ selectMakerConfig.fromChain.symbol }`;
             return;
         }
+        // st
         const amount = orbiterCore.getToAmountFromUserAmount(
             new BigNumber(transferValue).plus(
                 new BigNumber(selectMakerConfig.tradingFee)
@@ -1955,6 +1974,7 @@ export default {
             selectMakerConfig,
             false
         )
+        //xvm
         if (util.isExecuteXVMContract()) {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol
