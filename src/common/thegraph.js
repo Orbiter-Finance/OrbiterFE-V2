@@ -7,6 +7,8 @@ import config from '../config'
 const makerSortMap = {}
 let v2TradingPairs = []
 
+let random = 0
+
 export async function getV2TradingPair() {
   if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
     throw new Error('USE LOCAL Config')
@@ -437,17 +439,27 @@ function sortRule(ruleList) {
         const makerB = makerBAddress?.toLocaleLowerCase()
 
         if (
-          (!!makerA &&
-            !!makerB &&
-            recipientA === makerA?.toLocaleLowerCase() &&
-            recipientB === makerB?.toLocaleLowerCase()) ||
-          (recipientA === makerB?.toLocaleLowerCase() &&
-            recipientB === makerA?.toLocaleLowerCase())
+          !!makerA &&
+          !!makerB &&
+          recipientA === makerA?.toLocaleLowerCase() &&
+          recipientB === makerB?.toLocaleLowerCase()
         ) {
-          return (
-            (Number(maker2Weight) || 0) * Math.random() -
-            (Number(maker1Weight) || 0) * Math.random()
-          )
+          random = random || Math.random()
+          const randomNum = random
+          const total =
+            (Number(maker1Weight) || 0) + (Number(maker2Weight) || 0)
+          return (Number(maker1Weight) || 0) / total - randomNum
+        } else if (
+          !!makerA &&
+          !!makerB &&
+          recipientA === makerB?.toLocaleLowerCase() &&
+          recipientB === makerA?.toLocaleLowerCase()
+        ) {
+          random = random || Math.random()
+          const randomNum = random
+          const total =
+            (Number(maker1Weight) || 0) + (Number(maker2Weight) || 0)
+          return randomNum - (Number(maker1Weight) || 0) / total
         }
         return 0.5 - Math.random()
       })
