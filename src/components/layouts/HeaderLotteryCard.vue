@@ -51,6 +51,7 @@ import {
   setLotteryPointsNum,
   setLotteryCardProgress,
   isSolanaDialog,
+  isTonDialog,
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -63,6 +64,7 @@ import {
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import CommCardTooltip from '../CommCardTooltip.vue'
 import solanaHelper from '../../util/solana/solana_helper';
+import tonHelper from '../../util/ton/ton_helper'
 
 export default {
   name: 'HeaderLotteryCard',
@@ -94,6 +96,9 @@ export default {
       return isMobile.value
     },
     currentWalletAddress() {
+      if(!!isTonDialog.value) {
+        return tonHelper.account()
+      }
       if(!!isSolanaDialog.value) {
         return solanaHelper.solanaAddress()
       }

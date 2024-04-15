@@ -120,6 +120,7 @@ import {
 } from '../../common/openApiAx'
 
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import tonHelper from "../../util/ton/ton_helper"
 
 export default {
   name: 'HeaderLotteryCardDialog',
@@ -151,6 +152,9 @@ export default {
       return isMobile.value
     },
     currentWalletAddress() {
+      if(!!isTonDialog.value) {
+        return tonHelper.account()
+      }
       if(!!isSolanaDialog.value) {
         return solanaHelper.solanaAddress()
       }
