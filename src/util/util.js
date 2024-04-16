@@ -82,7 +82,7 @@ export default {
     })
   },
   netWorkName(networkId) {
-    return this.getV3ChainInfoByChainId(networkId)?.name || 'Unknown Network'
+    return this.getV3ChainInfoByChainId(networkId)?.name || networkId || 'Unknown Network'
   },
   chainName(chainId) {
     return this.getV3ChainInfoByChainId(chainId)?.name || chainId || ''

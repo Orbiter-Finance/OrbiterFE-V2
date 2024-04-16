@@ -782,7 +782,6 @@ export default {
       return starkAddress()
     },
     currentWalletAddress() {
-      console.log("isTonDialog.value", isTonDialog.value)
       if(isTonDialog.value) {
         return tonHelper.account()
       }

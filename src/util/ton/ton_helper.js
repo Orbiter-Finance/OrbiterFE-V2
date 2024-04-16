@@ -86,9 +86,7 @@ const tonConnectCall = async () => {
   })
 
   tonConnect = tonConnectUI
-  console.log('tonConnect', tonConnect)
   tonConnect.onStatusChange((wallet) => {
-    console.log('wallet', wallet)
     if (wallet?.account?.address) {
       store.commit(
         'updateTonAddress',
@@ -98,6 +96,7 @@ const tonConnectCall = async () => {
       store.commit('updateTonAddress', '')
     }
   })
+  console.log('tonConnect', tonConnect)
   return tonConnect
 }
 

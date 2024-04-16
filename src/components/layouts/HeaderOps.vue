@@ -295,25 +295,30 @@ export default {
         await option.connect()
       }      
     },
-    connectAWallet () {
-      setSolanaDialog(false)
-      if(this.isSelectedSolana && this.isSelectedStarkNet) {
-        if(this.starkAddress === 'not connected') {
-          setConnectWalletGroupKey("STARKNET")
-          setSelectWalletDialogVisible(true)
-        } else {
-          setStarkNetDialog(true)
-          setActDialogVisible(true)
-        }
-      } else {
-        if(this.showAddress === 'not connected' || !this.isLogin) {
+    async connectAWallet () {
+      const evm = {
+        address: this.showAddress,
+        connect: async ()=>{
           setConnectWalletGroupKey("EVM")
           setSelectWalletDialogVisible(true)
-        } else {
+        },
+        open: ()=>{
+          setTonDialog(false)
+          setSolanaDialog(false)
           setStarkNetDialog(false)
           setActDialogVisible(true)
         }
       }
+      const option = this.otherAddress.slice(1).findLast((item)=> item.isSelected) ||  evm
+      const isConnect = option?.address !== 'Connect Wallet' && option?.address !== 'not connected'
+      console.log("option", option)
+      console.log("isConnect", isConnect)
+      if(isConnect) {
+        option.open()
+        setActDialogVisible(true)
+      } else {
+        await option.connect()
+      } 
     },
     showHistory () {
       this.$emit('closeDrawer')
