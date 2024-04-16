@@ -26,7 +26,7 @@ export default {
         'Orbiter bridge': 'https://www.orbiter.finance/',
         'AAzkprover SDK': 'https://github.com/Orbiter-Finance/zkprover-dapp',
         Twitter: 'https://twitter.com/Orbiter_Finance',
-        Discord: 'https://discord.gg/jRJKK8avGM',
+        Discord: 'https://discord.gg/rZsryPuPur',
         Medium: 'https://orbiter-finance.medium.com/',
         'User Docs': 'https://docs.orbiter.finance/',
         Yellowpaper:

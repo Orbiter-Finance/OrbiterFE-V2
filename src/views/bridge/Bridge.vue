@@ -152,7 +152,7 @@ export default {
       if (type === 1) {
         window.open('https://docs.orbiter.finance/makersystem', '_blank')
       } else if (type === 2) {
-        window.open('https://discord.gg/jRJKK8avGM', '_blank')
+        window.open('https://discord.gg/rZsryPuPur', '_blank')
       } else if (type === 99) {
         window.open('https://testmaker.orbiter.finance/', '_blank')
       }
