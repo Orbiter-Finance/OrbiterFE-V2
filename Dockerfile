@@ -1,6 +1,7 @@
 FROM node:lts-alpine
 WORKDIR /app
 COPY package.json yarn.lock ./
+RUN yarn install--ignore-engines
 RUN yarn
 COPY ./ /app
 
