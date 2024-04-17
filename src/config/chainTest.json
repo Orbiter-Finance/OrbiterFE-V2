@@ -795,7 +795,7 @@
     "batchLimit": 20,
     "debug": false,
     "service": {
-      "rpc": "SolanaRpcScanningService"
+        "api": "TonApiScanningService"
     },
     "features": [
       {
@@ -808,9 +808,7 @@
       "decimals": 9,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": [
-      "https://solana-devnet.g.alchemy.com/v2/t9lfb_P_pmAzmcUm0iaJydUhpLrjQx85"
-    ],
+    "rpc": [],
     "contracts": [
     ],
     "tokens": [
