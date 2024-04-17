@@ -787,9 +787,9 @@
       "url": "",
       "key": ""
     },
-    "chainId": "TON_SEPOLIA",
+    "chainId": "TON_TEST",
     "icon": "TON_MAIN",
-    "networkId": "TON_SEPOLIA",
+    "networkId": "TON_TEST",
     "internalId": "556",
     "name": "TON",
     "batchLimit": 20,

@@ -191,9 +191,10 @@ const transfer = async ({
     ],
   })
 
-  return TonWeb.utils.bytesToBase64(
-    await TonWeb.boc.Cell.oneFromBoc(TonWeb.utils.base64ToBytes(boc)).hash()
-  )
+  const hash = await TonWeb.boc.Cell.oneFromBoc(
+    TonWeb.utils.base64ToBytes(boc)
+  ).hash()
+  return TonWeb.utils.bytesToHex(hash)
 }
 
 const tonHelper = {
