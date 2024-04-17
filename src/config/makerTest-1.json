@@ -4912,5 +4912,31 @@
             "startTime": 0,
             "endTime": 99999999999999
         }
-    }
+    },
+    "535-556": {
+        "USDC-USDC": {
+          "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
+          "sender": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
+          "gasFee": 5,
+          "tradingFee": 0.0001,
+          "maxPrice": 5,
+          "minPrice": 0.001,
+          "slippage": 200,
+          "startTime": 0,
+          "endTime": 99999999999999
+        }
+      },
+      "556-535": {
+        "USDC-USDC": {
+          "makerAddress": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
+          "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
+          "gasFee": 5,
+          "tradingFee": 0.0001,
+          "maxPrice": 5,
+          "minPrice": 0.001,
+          "slippage": 200,
+          "startTime": 0,
+          "endTime": 99999999999999
+        }
+      }
 }
