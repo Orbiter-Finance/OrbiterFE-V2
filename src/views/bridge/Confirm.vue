@@ -271,7 +271,7 @@ export default {
             return gasTokenInfo.info
         },
         confirmData() {
-            const { selectMakerConfig, transferValue, fromChainID } = transferDataState
+            const { selectMakerConfig, transferValue, fromChainID, toChainID } = transferDataState
             // 0.000120000000009022 to 0.000120...09022
             let realTransferAmount = transferCalculate
                 .realTransferAmount()
@@ -283,7 +283,10 @@ export default {
             const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
 
-            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || 
+            toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test ||
+            fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test ||
+             toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
                 realTransferAmount = ethers.utils.formatEther(
                     ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
                     )
