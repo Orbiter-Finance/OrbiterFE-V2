@@ -38,7 +38,7 @@ export const CHAIN_ID = {
   solana: 'SOLANA_MAIN',
   solana_test: 'SOLANA_DEV',
   ton: 'TON_MAIN',
-  ton_test: 'TON_SEPOLIA',
+  ton_test: 'TON_TEST',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',
