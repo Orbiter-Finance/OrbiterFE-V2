@@ -159,7 +159,7 @@ const transfer = async ({
   })
 
   const forwardPayload = new TonWeb.boc.Cell()
-  forwardPayload.bits.writeUint(0, 64)
+  forwardPayload.bits.writeUint(0, 128)
   forwardPayload.bits.writeString(
     utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
   )
