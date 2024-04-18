@@ -4833,8 +4833,6 @@
             "endTime": 99999999999999
         }
     },
-
-
     "526-543": {
         "BTC-BTC": {
             "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
@@ -4915,28 +4913,54 @@
     },
     "535-556": {
         "USDC-USDC": {
-          "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-          "sender": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
-          "gasFee": 5,
-          "tradingFee": 0.0001,
-          "maxPrice": 5,
-          "minPrice": 0.001,
-          "slippage": 200,
-          "startTime": 0,
-          "endTime": 99999999999999
+            "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
+            "sender": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
+            "gasFee": 5,
+            "tradingFee": 0.0001,
+            "maxPrice": 5,
+            "minPrice": 0.001,
+            "slippage": 200,
+            "startTime": 0,
+            "endTime": 99999999999999
         }
-      },
-      "556-535": {
+    },
+    "556-535": {
         "USDC-USDC": {
-          "makerAddress": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
-          "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
-          "gasFee": 5,
-          "tradingFee": 0.0001,
-          "maxPrice": 5,
-          "minPrice": 0.001,
-          "slippage": 200,
-          "startTime": 0,
-          "endTime": 99999999999999
+            "makerAddress": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
+            "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
+            "gasFee": 5,
+            "tradingFee": 0.0001,
+            "maxPrice": 5,
+            "minPrice": 0.001,
+            "slippage": 200,
+            "startTime": 0,
+            "endTime": 99999999999999
         }
-      }
+    },
+    "44-556": {
+        "ETH-ETH": {
+            "makerAddress": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
+            "sender": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
+            "gasFee": 5,
+            "tradingFee": 0.001,
+            "maxPrice": 0.1,
+            "minPrice": 0.001,
+            "slippage": 200,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "556-44": {
+        "ETH-ETH": {
+            "makerAddress": "EQBuY4vL7hXPtY6vQaaH23TAPrQ-JXPD7I9iq_piH_SSLORF",
+            "sender": "0x04ccaab5ce62f653979f67cf08eb9b85a71e6f8cabbab17a076d65d968e8abfc",
+            "gasFee": 5,
+            "tradingFee": 0.001,
+            "maxPrice": 0.1,
+            "minPrice": 0.001,
+            "slippage": 200,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    }
 }

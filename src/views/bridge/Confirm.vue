@@ -1348,13 +1348,32 @@ export default {
                     return;
                 }
             }
+
+            if (
+                toChainID === CHAIN_ID.solana ||
+                toChainID === CHAIN_ID.solana_test
+            ) {
+
+                const solanaAddress = solanaHelper.solanaAddress()
+                const isConnect = solanaHelper.isConnect()
+
+                if (!solanaAddress || !isConnect) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("SOLANA")
+                    this.transferLoading = false
+                    return;
+                }
+            }
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
                 const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
-                const targetAddress = toChainID === CHAIN_ID.starknet ||
+                let targetAddress = toChainID === CHAIN_ID.starknet ||
                 toChainID === CHAIN_ID.starknet_test ? starkNetAddress: evmAddress
+
+                targetAddress = toChainID === CHAIN_ID.solana ||
+                toChainID === CHAIN_ID.solana_test ? solanaHelper.solanaAddress(): targetAddress
 
                 const hash = await tonHelper.transfer({
                     from: from,

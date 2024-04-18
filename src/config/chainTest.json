@@ -132,7 +132,7 @@
       "url": "https://alpha4.starknet.io",
       "key": ""
     },
-    "chainId": "SN_GOERLI",
+    "chainId": "SN_SEPOLIA",
     "networkId": "goerli-alpha",
     "internalId": "44",
     "name": "Starknet(G)",
@@ -817,6 +817,12 @@
         "symbol": "USDC",
         "decimals": 6,
         "address": "EQAQjU0zuO0YJSnHMXaUUOQ5Kru2O2i_4zfbqR-kHvf-DNRm"
+      },
+      {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 9,
+        "address": "EQAK21xHTaxD04aX6SMqTegMXrnDfjszsjQTZGZRkB_jQEt2"
       }
     ],
     "infoURL": "https://testnet.tonscan.org"

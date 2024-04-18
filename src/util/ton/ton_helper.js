@@ -152,11 +152,20 @@ const transfer = async ({
   const fromAddress = new TonWeb.Address(tonConnect?.account?.address)
   const toAddress = new TonWeb.Address(to)
 
+  console.log('targetAddress', targetAddress)
+
   const fromJettonWalletAddress = await getJettonWalletAddress({
     tonweb,
     userAdress: fromAddress,
     tokenAddress,
   })
+
+  console.log('fromJettonWalletAddress', fromJettonWalletAddress)
+
+  console.log(
+    'utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))',
+    utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
+  )
 
   const forwardPayload = new TonWeb.boc.Cell()
   forwardPayload.bits.writeUint(0, 128)
