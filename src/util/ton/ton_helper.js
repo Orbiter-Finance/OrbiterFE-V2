@@ -96,7 +96,6 @@ const tonConnectCall = async () => {
       store.commit('updateTonAddress', '')
     }
   })
-  console.log('tonConnect', tonConnect)
   return tonConnect
 }
 
@@ -160,7 +159,7 @@ const transfer = async ({
   })
 
   const forwardPayload = new TonWeb.boc.Cell()
-  forwardPayload.bits.writeUint(0, 32)
+  forwardPayload.bits.writeUint(0, 64)
   forwardPayload.bits.writeString(
     utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
   )
@@ -191,9 +190,10 @@ const transfer = async ({
     ],
   })
 
-  return TonWeb.utils.bytesToBase64(
-    await TonWeb.boc.Cell.oneFromBoc(TonWeb.utils.base64ToBytes(boc)).hash()
-  )
+  const hash = await TonWeb.boc.Cell.oneFromBoc(
+    TonWeb.utils.base64ToBytes(boc)
+  ).hash()
+  return TonWeb.utils.bytesToHex(hash)
 }
 
 const tonHelper = {
