@@ -5920,7 +5920,7 @@
     },
     "27-7": {
         "ETH-ETH": {
-            "gasFee": 0.5,
+            "gasFee": 0.3,
             "tradingFee": 0.00016,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
