@@ -1758,7 +1758,7 @@
             "address": "0x0000000000000000000000000000000000000000"
         },
         "batchLimit": 10,
-        "infoURL": "",
+        "infoURL": "https://www.okx.com/explorer/xlayer",
         "shortName": "X Layer",
         "chainId": "196",
         "networkId": "196",
