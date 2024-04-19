@@ -193,14 +193,6 @@ export default {
         toChainID === CHAIN_ID.ton_test
       )
     },
-    connectWalletIcon(){
-      return this.isSelectedTon ? ( CHAIN_ID.ton ) :
-      this.isSelectedSolana ? (web3State.solana.solanaWalletName || solanaHelper.readWalletName() || CHAIN_ID.solana) : CHAIN_ID.starknet
-    },
-    connectFirstWalletIcon(){
-      return this.isSelectedSolana && this.isSelectedStarkNet ?  CHAIN_ID.starknet  : (this.globalSelectWalletConf.walletType ?
-            this.globalSelectWalletConf.walletType.toLowerCase() : "")
-    },
     starkAddress () {
       return starkAddress()
     },
@@ -213,9 +205,6 @@ export default {
     showAddress () {
       return showAddress()
     },
-    connectFirstAddress () {
-      return this.isSelectedSolana && this.isSelectedStarkNet ?  this.starkAddress : this.showAddress
-    },
     otherAddress () {
       return [{
         address: this.tAddress,
@@ -224,8 +213,11 @@ export default {
           await tonHelper.connect()
         },
         open: ()=>{
+          setSolanaDialog(false)
+          setStarkNetDialog(false)
           setTonDialog(true)
-        }
+        },
+        icon: CHAIN_ID.ton
       }, {
         address: this.solanaAddress,
         isSelected: this.isSelectedSolana,
@@ -235,7 +227,10 @@ export default {
         },
         open: ()=>{
           setSolanaDialog(true)
-        }
+          setStarkNetDialog(false)
+          setTonDialog(false)
+        },
+        icon: solanaHelper.readWalletName() || CHAIN_ID.solana
       }, {
         address: this.starkAddress,
         isSelected: this.isSelectedStarkNet,
@@ -245,8 +240,27 @@ export default {
         },
         open: ()=>{
           setStarkNetDialog(true)
-        }
+          setSolanaDialog(false)
+          setTonDialog(false)
+        },
+        icon: CHAIN_ID.starknet
       }]
+    },
+    connectFirstWalletIcon(){
+      const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
+      const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0]
+      return firstGroup?.icon || (this.globalSelectWalletConf.walletType ?
+            this.globalSelectWalletConf.walletType.toLowerCase() : "")
+    },
+    connectWalletIcon(){
+      return this.otherAddress.filter((item)=>!!item.isSelected)[0]?.icon || (this.globalSelectWalletConf.walletType ?
+            this.globalSelectWalletConf.walletType.toLowerCase() : "")
+
+    },
+    connectFirstAddress () {
+      const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
+      const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0]
+      return firstGroup?.address || this.showAddress
     },
     connectAddress () {
       const option = this.otherAddress.filter((item)=> item.isSelected)[0]
@@ -286,7 +300,7 @@ export default {
     },
     async connectStarkNetWallet () {
       const option = this.otherAddress.filter((item)=> item.isSelected)[0]
-      const isConnect = option?.address !== 'Connect Wallet' && option?.address !== 'not connected'
+      const isConnect = option?.address && option?.address !== 'Connect Wallet' && option?.address !== 'not connected'
 
       if(isConnect) {
         option.open()
@@ -309,15 +323,14 @@ export default {
           setActDialogVisible(true)
         }
       }
-      const option = this.otherAddress.slice(1).findLast((item)=> item.isSelected) ||  evm
-      const isConnect = option?.address !== 'Connect Wallet' && option?.address !== 'not connected'
-      console.log("option", option)
-      console.log("isConnect", isConnect)
+      const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
+      const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0] || evm
+      const isConnect = firstGroup?.address && firstGroup?.address !== 'Connect Wallet' && firstGroup?.address !== 'not connected'
       if(isConnect) {
-        option.open()
+        firstGroup.open()
         setActDialogVisible(true)
       } else {
-        await option.connect()
+        await firstGroup.connect()
       } 
     },
     showHistory () {
