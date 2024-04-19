@@ -119,10 +119,10 @@ export default {
       const solanaAddress = web3State.solana.solanaAddress || solanaHelper.solanaAddress()
       const tonAddress = web3State.ton.tonAddress || tonHelper?.account()
       return [
-        tonAddress,
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
         solanaAddress,
+        tonAddress,
         ...[],
       ]
     },
