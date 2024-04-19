@@ -161,10 +161,10 @@ const transfer = async ({
   forwardPayload.bits.writeUint(0, 128)
 
   forwardPayload.bits.writeString(`c=${safeCode}&t=${targetAddress}`)
-
+  const queryId = new Date().getHours() * 3600 + new Date().getMinutes() * 60 + new Date().getSeconds();
   const jettonTransferBody = new TonWeb.boc.Cell()
   jettonTransferBody.bits.writeUint(0xf8a7ea5, 32)
-  jettonTransferBody.bits.writeUint(0, 64)
+  jettonTransferBody.bits.writeUint(queryId, 64)
   jettonTransferBody.bits.writeCoins(new TonWeb.utils.BN(amount))
   jettonTransferBody.bits.writeAddress(toAddress)
   jettonTransferBody.bits.writeAddress(fromAddress)
@@ -191,7 +191,9 @@ const transfer = async ({
   const hash = await TonWeb.boc.Cell.oneFromBoc(
     TonWeb.utils.base64ToBytes(boc)
   ).hash()
-  return TonWeb.utils.bytesToHex(hash)
+  const hexHash = TonWeb.utils.bytesToHex(hash);
+  console.log('hash', hash, 'hexHash', hexHash, 'queryId', queryId);
+  return hexHash;
 }
 
 const tonHelper = {
