@@ -386,7 +386,7 @@ export default {
 
             const safeCode =  transferCalculate.safeCode()
 
-            const str = `c=${safeCode}&t=${toAddress}`
+            const str = `t=${toAddress}`
 
             try {
                 let transferHash = ''
@@ -400,6 +400,7 @@ export default {
                 const rAmount = new BigNumber(transferValue)
                 .plus(new BigNumber(selectMakerConfig.tradingFee))
                 .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+                .plus(new BigNumber(safeCode))
                 const rAmountValue = rAmount.toFixed()
 
 
