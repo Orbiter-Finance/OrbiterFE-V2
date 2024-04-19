@@ -1829,9 +1829,9 @@
         "internalId": "58",
         "nativeCurrency": {
           "name": "Core Blockchain Native Token",
-          "symbol": "Core",
+          "symbol": "CORE",
           "decimals": 18,
-          "coinKey": "Core",
+          "coinKey": "CORE",
           "address": "0x0000000000000000000000000000000000000000"
         },
         "infoURL": "https://www.coredao.org",
