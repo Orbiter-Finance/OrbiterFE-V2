@@ -1795,7 +1795,7 @@
         ]
     },
     {
-        "name": "Core Blockchain Mainnet",
+        "name": "Core Blockchain",
         "chain": "Core",
         "rpc": [
           "https://rpc.coredao.org/",
