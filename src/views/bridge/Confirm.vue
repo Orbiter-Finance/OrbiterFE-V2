@@ -284,9 +284,8 @@ export default {
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
 
             if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || 
-            toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test ||
-            fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test ||
-             toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test 
+            ) {
                 realTransferAmount = ethers.utils.formatEther(
                     ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
                     )
@@ -418,7 +417,7 @@ export default {
 
             const safeCode =  transferCalculate.safeCode()
 
-            const str = `c=${safeCode}&t=${toAddress}`
+            const str = `t=${toAddress}`
 
             try {
                 let transferHash = ''
@@ -431,9 +430,8 @@ export default {
 
                 const rAmount = new BigNumber(transferValue)
                 .plus(new BigNumber(selectMakerConfig.tradingFee))
-                .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+                .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals)).plus(new BigNumber(safeCode))
                 const rAmountValue = rAmount.toFixed()
-
 
                 const transferContract = new ethers.Contract(
                     contractAddress,
