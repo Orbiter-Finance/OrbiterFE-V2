@@ -1793,5 +1793,83 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Core Blockchain Mainnet",
+        "chain": "Core",
+        "rpc": [
+          "https://rpc.coredao.org/",
+          "https://rpc-core.icecreamswap.com",
+          "https://core.drpc.org"
+        ],
+        "features": [
+          {
+            "name": "evm-account"
+          }
+        ],
+        "service": {
+          "rpc": "EVMRpcScanningV6Service"
+        },
+        "tokens": [
+          {
+            "name": "BTCB",
+            "coinKey": "BTC",
+            "symbol": "BTC",
+            "decimals": 18,
+            "address": "0x7A6888c85eDBA8E38F6C7E0485212da602761C08"
+          },
+          {
+            "name": "USD Coin",
+            "coinKey": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "address": "0xa4151b2b3e269645181dccf2d426ce75fcbdeca9"
+          }
+        ],
+        "internalId": 58,
+        "nativeCurrency": {
+          "name": "Core Blockchain Native Token",
+          "symbol": "Core",
+          "decimals": 18,
+          "coinKey": "Core",
+          "address": "0x0000000000000000000000000000000000000000"
+        },
+        "infoURL": "https://www.coredao.org",
+        "shortName": "core",
+        "chainId": "1116",
+        "networkId": "1116",
+        "icon": "core",
+        "explorers": [
+          {
+            "name": "Core Scan",
+            "url": "https://scan.coredao.org",
+            "icon": "core",
+            "standard": "EIP3091"
+          }
+        ],
+        "contract": {
+          "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+          "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
+        "contracts": [
+          {
+            "name": "OBSource",
+            "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+            "methods": [
+              "transfer(address,bytes)",
+              "transferERC20(address,address,uint256,bytes)"
+            ]
+          },
+          {
+            "name": "OrbiterRouterV3",
+            "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+            "methods": [
+              "transfer(address,bytes)",
+              "transferToken(address,address,uint256,bytes)",
+              "transfers(address[],uint256[])",
+              "transferTokens(address,address[],uint256[])"
+            ]
+          }
+        ]
     }
 ]
