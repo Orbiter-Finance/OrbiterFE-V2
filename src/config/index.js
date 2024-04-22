@@ -59,10 +59,10 @@ const maker = {}
 const makerFiles = shuffleArray(
   isProd()
     ? [
-        '80c-prod.json',
-        'e4e-prod.json',
+        'eth-80c-prod.json',
+        'eth-e4e-prod.json',
         '1c8-prod.json',
-        '502d-prod.json',
+        'btc-prod.json',
         'usdt-prod.json',
         'usdc-prod.json',
       ]
