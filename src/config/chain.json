@@ -1795,7 +1795,7 @@
         ]
     },
     {
-        "name": "Core Blockchain Mainnet",
+        "name": "Core Blockchain",
         "chain": "Core",
         "rpc": [
           "https://rpc.coredao.org/",
@@ -1826,12 +1826,12 @@
             "address": "0xa4151b2b3e269645181dccf2d426ce75fcbdeca9"
           }
         ],
-        "internalId": 58,
+        "internalId": "58",
         "nativeCurrency": {
           "name": "Core Blockchain Native Token",
-          "symbol": "Core",
+          "symbol": "CORE",
           "decimals": 18,
-          "coinKey": "Core",
+          "coinKey": "CORE",
           "address": "0x0000000000000000000000000000000000000000"
         },
         "infoURL": "https://www.coredao.org",
