@@ -1871,5 +1871,46 @@
             ]
           }
         ]
-    }
+    },
+    {
+        "name": "B² Network",
+        "chain": "B² Network",
+        "rpc": [
+          "https://rpc.bsquared.network/"
+        ],
+        "features": [
+          {
+            "name": "evm-account"
+          },
+          {
+            "name": "evm-rpc"
+          }
+        ],
+        "service": {
+          "rpc": "EVMRpcScanningV6Service"
+        },
+        "tokens": [],
+        "internalId": 46,
+        "nativeCurrency": {
+          "name": "BTC",
+          "coinKey": "BTC",
+          "symbol": "BTC",
+          "decimals": 18,
+          "address": "0x0000000000000000000000000000000000000000"
+        },
+        "infoURL": "https://www.bsquared.network",
+        "shortName": "B² Network",
+        "chainId": "223",
+        "networkId": "223",
+        "icon": "B² Network",
+        "explorers": [
+          {
+            "name": "B² Network scan",
+            "url": "https://explorer.bsquared.network",
+            "standard": "B² Network"
+          }
+        ],
+        "contract": {},
+        "contracts": []
+      }
 ]
