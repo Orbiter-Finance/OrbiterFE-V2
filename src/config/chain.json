@@ -1890,7 +1890,7 @@
           "rpc": "EVMRpcScanningV6Service"
         },
         "tokens": [],
-        "internalId": 46,
+        "internalId": "46",
         "nativeCurrency": {
           "name": "BTC",
           "coinKey": "BTC",
