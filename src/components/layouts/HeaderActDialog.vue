@@ -639,7 +639,7 @@ import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
 import getUTCTime from '../../util/time'
-import { onCopySuccess } from '../../util'
+import { isProd, onCopySuccess } from '../../util'
 import walletDispatchers, {
   WALLETCONNECT,
   CURRENT_SUPPORT_WALLET,
@@ -810,7 +810,7 @@ export default {
     networkName() {
       if(!!isTonDialog.value) {
         return util.netWorkName(
-          CHAIN_ID.ton
+          !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
         )
       }
       if(!!isSolanaDialog.value) {

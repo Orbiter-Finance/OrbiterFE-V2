@@ -1,6 +1,7 @@
 import { TonConnectUI } from '@tonconnect/ui'
 import TonWeb from 'tonweb'
 import { store } from '../../store'
+import { isProd } from '../env'
 
 let tonConnect
 
@@ -89,7 +90,12 @@ const tonConnectCall = async () => {
     if (wallet?.account?.address) {
       store.commit(
         'updateTonAddress',
-        new TonWeb.Address(wallet?.account?.address).toString(true, true, true)
+        new TonWeb.Address(wallet?.account?.address).toString(
+          true,
+          true,
+          false,
+          !isProd()
+        )
       )
     } else {
       store.commit('updateTonAddress', '')
@@ -104,11 +110,13 @@ const connect = async () => {
 
 const account = () => {
   if (tonConnect?.account?.address) {
-    return new TonWeb.Address(tonConnect?.account?.address).toString(
+    const address = new TonWeb.Address(tonConnect?.account?.address).toString(
       true,
       true,
-      true
+      true,
+      !isProd()
     )
+    return address
   }
   return tonConnect?.account
 }
@@ -161,7 +169,10 @@ const transfer = async ({
   forwardPayload.bits.writeUint(0, 128)
 
   forwardPayload.bits.writeString(`c=${safeCode}&t=${targetAddress}`)
-  const queryId = new Date().getHours() * 3600 + new Date().getMinutes() * 60 + new Date().getSeconds();
+  const queryId =
+    new Date().getHours() * 3600 +
+    new Date().getMinutes() * 60 +
+    new Date().getSeconds()
   const jettonTransferBody = new TonWeb.boc.Cell()
   jettonTransferBody.bits.writeUint(0xf8a7ea5, 32)
   jettonTransferBody.bits.writeUint(queryId, 64)
@@ -191,9 +202,9 @@ const transfer = async ({
   const hash = await TonWeb.boc.Cell.oneFromBoc(
     TonWeb.utils.base64ToBytes(boc)
   ).hash()
-  const hexHash = TonWeb.utils.bytesToHex(hash);
-  console.log('hash', hash, 'hexHash', hexHash, 'queryId', queryId);
-  return hexHash;
+  const hexHash = TonWeb.utils.bytesToHex(hash)
+  console.log('hash', hash, 'hexHash', hexHash, 'queryId', queryId)
+  return hexHash
 }
 
 const tonHelper = {
