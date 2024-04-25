@@ -1273,7 +1273,7 @@ export default {
 
     if (currency?.toLocaleLowerCase() === 'btc') {
       const chainInfo = util.getV3ChainInfoByChainId(toChainID)
-      return chainInfo.internalId
+      return String(chainInfo.internalId)
     }
 
     let makerConfig = selectMakerConfig
