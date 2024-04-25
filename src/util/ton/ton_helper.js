@@ -76,6 +76,10 @@ const getJettonWalletAddress = async ({ tonweb, userAdress, tokenAddress }) => {
   return jettonWalletAddress
 }
 
+const addressToTonwebAddress = (address) => {
+  return new TonWeb.Address(address).toString(true, true, false, !isProd())
+}
+
 const tonConnectCall = async () => {
   if (tonConnect) {
     return tonConnect
@@ -90,12 +94,7 @@ const tonConnectCall = async () => {
     if (wallet?.account?.address) {
       store.commit(
         'updateTonAddress',
-        new TonWeb.Address(wallet?.account?.address).toString(
-          true,
-          true,
-          false,
-          !isProd()
-        )
+        addressToTonwebAddress(wallet?.account?.address)
       )
     } else {
       store.commit('updateTonAddress', '')
@@ -110,12 +109,7 @@ const connect = async () => {
 
 const account = () => {
   if (tonConnect?.account?.address) {
-    const address = new TonWeb.Address(tonConnect?.account?.address).toString(
-      true,
-      true,
-      true,
-      !isProd()
-    )
+    const address = addressToTonwebAddress(tonConnect?.account?.address)
     return address
   }
   return tonConnect?.account
@@ -219,6 +213,7 @@ const tonHelper = {
   tonwebProvider,
   bytesToBase64,
   parseAddress,
+  addressToTonwebAddress,
 }
 
 export default tonHelper
