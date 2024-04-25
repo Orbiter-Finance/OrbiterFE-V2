@@ -132,6 +132,7 @@ function convertMakerConfig(maker) {
       const fromToken = fromTokenList.find(
         (item) => item.symbol === fromChainSymbol
       )
+
       const toToken = toTokenList.find((item) => item.symbol === toChainSymbol)
       if (!fromToken || !toToken) continue
       const config = {
@@ -143,6 +144,7 @@ function convertMakerConfig(maker) {
         sender: makerData.sender,
         tradingFee: makerData.tradingFee,
         gasFee: makerData.gasFee,
+        tieredFee: makerData?.tieredFee,
         fromChain: {
           id: +fromChainId,
           networkId: c1Chain.networkId,
