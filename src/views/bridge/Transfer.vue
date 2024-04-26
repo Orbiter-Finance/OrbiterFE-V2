@@ -196,13 +196,13 @@
           />
         </div>
       </div>
-      <div 
+      <!-- <div 
         v-show="String(transferDataState.toChainID) == '196'"
         class="transfer-banner"
         :style="`${!isNewVersion || isCrossAddress ? '' : 'margin: 20px 0 10px'}`"
       >
         <img src="../../assets/transfer-banner.png" alt="">
-      </div>
+      </div> -->
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
