@@ -587,7 +587,7 @@
                   :key="index"
                 >
                   <div
-                    @click="openUrl(item.url)"
+                    @click="openUrl(item)"
                     class="box_75"
                     :style="`background: url(${require('../../assets/activity/banner/' +
                       item.img)});background-size: 100% 100%;`"
@@ -697,11 +697,13 @@ export default {
         {
           url: 'https://app.galxe.com/quest/Holdstation/GCDRfthVsE',
           img: 'paymaster.png',
+          name: "paymaster",
           timeStamp: '2024-05-03 09:00:00',
         },
         {
           url: 'https://galxe.com/OrbiterFinance/campaign/GCPhNtTQKf',
           img: 'bitget.jpg',
+          name: "bitget",
           timeStamp: '2024-04-28 18:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
@@ -1028,8 +1030,14 @@ export default {
       dataList.push(...doneList)
       updateActDataList([...dataList])
     },
-    openUrl(url) {
-      window.open(url, '_blank')
+    openUrl(item) {
+      try {
+        this.$gtag.event('banner', {
+        'name': item.name
+        })
+      }catch(error) {
+      }
+      window.open(item.url, '_blank')
     },
     mobileCloseAct() {
       if (isMobile.value) {
