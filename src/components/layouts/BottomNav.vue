@@ -53,7 +53,7 @@ export default {
                 {
                     icon: 'discord',
                     title: 'Discord',
-                    value: 'https://discord.gg/orbiter-finance',
+                    value: 'https://discord.gg/FbztTBvnBT',
                 },
             ],
         }

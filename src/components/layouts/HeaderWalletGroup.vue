@@ -81,7 +81,8 @@ import walletDispatchers, {
   COIN98_APP,
   WALLETCONNECT,
   CURRENT_SUPPORT_WALLET,
-  // TRUSTWALLET_APP,
+  FOXWALLET_APP,
+// TRUSTWALLET_APP,
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -196,11 +197,11 @@ export default {
           icon: 'coin98',
           title: COIN98_APP,
         },
-        // {
-        //     isConnect: false,
-        //     icon: 'trustwallet',
-        //     title: TRUSTWALLET_APP,
-        // }
+        {
+            isConnect: false,
+            icon: 'foxwallet',
+            title: FOXWALLET_APP,
+        }
       ]
       // the brave wallet is exclusive to the brave browser
       // so if in other browsers, we should hide brave wallet connect option to users

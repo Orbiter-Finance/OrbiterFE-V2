@@ -6,7 +6,7 @@
        Apologies for any inconvenience.<br>
       For feedback or concerns, please reach out to us on
        <span class="url" @click="openUrl('https://twitter.com/OrbiterResearch')">Twitter</span> or
-       <span class="url" @click="openUrl('http://discord.gg/hJJvXP7C73')">Discord</span>.</span>
+       <span class="url" @click="openUrl('https://discord.gg/FbztTBvnBT')">Discord</span>.</span>
     </div>
     <div v-if="webStatus === 1" class="l2data" >
       <Chart />

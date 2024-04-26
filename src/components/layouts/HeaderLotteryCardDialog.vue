@@ -620,7 +620,10 @@ export default {
         display: flex;
         justify-content: center;
         align-content: center;
-
+        position: relative;
+        top: 0;
+        left: 0;
+        z-index: 4;
         .lottery-dialog-confirm-count {
           display: flex;
           justify-content: center;
@@ -649,6 +652,10 @@ export default {
       justify-content: center;
       align-content: center;
       margin-top: 42px;
+      position: relative;
+      top: 0;
+      left: 0;
+      z-index: 4;
       .lottery-dialog-close {
         width: 32px;
         height: 100%;

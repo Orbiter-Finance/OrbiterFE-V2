@@ -1303,10 +1303,17 @@ export default {
       : 9000 + Number(chainInfo.internalId) + ''
   },
 
+  getTradingFee() {
+    const { selectMakerConfig } = transferDataState
+    return new BigNumber(selectMakerConfig.tradingFee).minus(
+      new BigNumber(this.discount())
+    )
+  },
+
   getTransferTValue() {
     const { selectMakerConfig, transferValue, fromChainID } = transferDataState
     const rAmount = new BigNumber(transferValue)
-      .plus(new BigNumber(selectMakerConfig.tradingFee))
+      .plus(this.getTradingFee())
       .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
     const rAmountValue = rAmount.toFixed()
     const p_text = this.safeCode()
@@ -1369,9 +1376,8 @@ export default {
   },
   realTransferAmount() {
     const { selectMakerConfig, transferValue, fromChainID } = transferDataState
-    const userValue = new BigNumber(transferValue).plus(
-      new BigNumber(selectMakerConfig.tradingFee)
-    )
+    const userValue = new BigNumber(transferValue).plus(this.getTradingFee())
+
     if (!fromChainID || !userValue) {
       return 0
     }
@@ -1392,5 +1398,41 @@ export default {
         new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
       )
     }
+  },
+  max() {
+    const { selectMakerConfig, transferValue } = transferDataState
+
+    const { tieredFee } = selectMakerConfig
+
+    const tieredFeeList = tieredFee
+      ?.filter((item) => {
+        const [min, max] = item?.range
+        return (
+          Number(min) <= Number(transferValue) &&
+          Number(max) >= Number(transferValue)
+        )
+      })
+      ?.map((item) => item?.discount || '0')
+
+    const tieredFeeMax = Math.max(...(tieredFeeList || []), 0)
+    return tieredFeeMax
+  },
+  discount() {
+    const { selectMakerConfig } = transferDataState
+
+    const withholdingFee = +(selectMakerConfig.tradingFee || 0)
+
+    const tieredFeeMax = this.max()
+    let discount = '0'
+    if (tieredFeeMax) {
+      const w = ethers.utils.parseEther(withholdingFee + '')
+      discount = ethers.utils.formatEther(
+        w
+          .mul(ethers.utils.parseEther(tieredFeeMax / 100 + ''))
+          .div(ethers.utils.parseEther('1'))
+      )
+    }
+
+    return discount
   },
 }

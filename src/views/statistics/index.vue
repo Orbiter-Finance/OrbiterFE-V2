@@ -146,6 +146,7 @@ export default {
       ethStatisticsData: undefined,
       usdcStatisticsData: undefined,
       usdtStatisticsData: undefined,
+      btcStatisticsData: undefined,
       hideDataLoading: false,
       hideTxLoading: false,
       hideAmountLoading: false,
@@ -174,7 +175,7 @@ export default {
     async getChains() {
       try {
         if (!chainList?.length) {
-          const res = await fetch('https://api.orbiter.finance/sdk/chains', {})
+          const res = await fetch(process.env.VUE_APP_OPEN_URL +'/sdk/chains', {})
           const data = await res.json()
 
           chainList = data?.result?.map((item) => {
@@ -204,6 +205,7 @@ export default {
         queryTxStatisticsData(),
         queryTxStatisticsData('USDC'),
         queryTxStatisticsData('USDT'),
+        queryTxStatisticsData('BTC'),
       ]).then((res) => {
         this.hideAmountLoading = true
         this.hideTxLoading = true
@@ -215,6 +217,7 @@ export default {
           this.ethStatisticsData = res[0]
           this.usdcStatisticsData = res[1]
           this.usdtStatisticsData = res[2]
+          this.btcStatisticsData = res[3]
           const txChartDom = document.getElementById('tx-source-chart')
           this.initTxStatisticsData(txChartDom, true)
           const amountChartDom = document.getElementById('amount-chart')
@@ -304,11 +307,19 @@ export default {
         isAmount,
         'USDT'
       )
+      const { seriesData: seriesBTCData } = await this.getChartData(
+        this.btcStatisticsData,
+        bySource,
+        isAmount,
+        'BTC'
+      )
+      
       let concatSeriesData = {}
       concatSeriesData = this.concatSeriesData(
         seriesETHData,
         seriesUSDCData,
-        seriesUSDTData
+        seriesUSDTData,
+        seriesBTCData
       )
 
       let count = 0
@@ -395,7 +406,7 @@ export default {
       })
       this.renderChart(currentChart, dateList, currentSeriesData)
     },
-    concatSeriesData(seriesETHData, seriesUSDCData, seriesUSDTData) {
+    concatSeriesData(seriesETHData, seriesUSDCData, seriesUSDTData, seriesBTCData) {
       let mergedSeriesData = {}
       let keys = Object.keys(seriesETHData)
       keys.forEach((key) => {
@@ -403,6 +414,7 @@ export default {
           return new BigNumber(num)
             .plus(seriesUSDCData?.[key]?.[idx] || 0)
             .plus(seriesUSDTData?.[key]?.[idx] || 0)
+            .plus(seriesBTCData?.[key]?.[idx] || 0)
             .toString()
         })
       })
@@ -427,7 +439,7 @@ export default {
           const byKey = bySource ? v[0] : v[1]
           const currentKey = byKey
           const byValue = isAmount
-            ? exchangeRes.multipliedBy(v[4]).toNumber()
+            ? exchangeRes.multipliedBy(v[4] || "0").toNumber()
             : Number(v[3])
           if (dateValue?.[currentKey]) {
             dateValue[currentKey] += byValue

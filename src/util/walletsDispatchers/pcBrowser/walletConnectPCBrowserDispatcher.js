@@ -18,7 +18,6 @@ import util from '../../util'
 import { updateCoinbase } from '../../../composition/useCoinbase'
 import { transferDataState } from '../../../composition/useTransferData'
 import config from '../../../config'
-import { WALLETCONNECT } from '../constants'
 
 let connector = null // when walletconnect connect success, connector will be assigned connector instance
 // this hof helps the following functions to throw errors
@@ -131,11 +130,66 @@ const onSessionUpdateCallback = (payload) => {
   }
 }
 
+const getChains = async () => {
+  try {
+    const configChain = config.chain
+    const res2 = await fetch(process.env.VUE_APP_OPEN_URL + '/sdk/chains', {})
+    const data = await res2.json()
+    const bridgeChainList = data?.result?.map((item) => {
+      return item.chainId
+    })
+    const list = configChain?.filter(
+      (item) =>
+        (bridgeChainList || []).some(
+          (option) =>
+            Number(option) === Number(item.chainId) ||
+            Number(option) === Number(item.chainId)
+        ) && !!item?.rpc?.length
+    )
+    const chainL = list.map((item) => {
+      return {
+        blockExplorers: {
+          default: {
+            name: item?.name || '',
+            url: item.infoURL || '',
+          },
+          etherscan: {
+            name: item?.name || '',
+            url: item.infoURL || '',
+          },
+        },
+        contracts: {},
+        fees: undefined,
+        formatters: undefined,
+        name: item.name,
+        id: Number(item.chainId),
+        nativeCurrency: item.nativeCurrency,
+        network: item.name,
+        serializers: undefined,
+        rpcUrls: {
+          default: {
+            http: item.rpc.filter((option) => !option.includes('${')),
+          },
+          public: {
+            http: item.rpc.filter((option) => !option.includes('${')),
+          },
+        },
+      }
+    })
+
+    return chainL
+  } catch (error) {
+    return []
+  }
+}
+
 // wake up the wallet connect modal by invoke this method
 export const walletConnectDispatcherOnInit = async (walletType) => {
   const projectId = process.env.VUE_APP_WALLET_CONNECT_PROJECTID
   if (!projectId) throw new Error('Project id missing.')
-  const chains = Object.values(chainsModule)
+  const chainsWagmi = Object.values(chainsModule)
+  const chainsApi = await getChains()
+  const chains = chainsWagmi.concat(chainsApi)
   const { publicClient } = configureChains(chains, [w3mProvider({ projectId })])
   const wagmiConfig = createConfig({
     autoConnect: true,
@@ -180,15 +234,15 @@ export const walletConnectDispatcherOnInit = async (walletType) => {
     // if there is no connection, createSession will be invoked for pop up a qrcode scan box
     await web3Modal.openModal()
   }
-  updateGlobalSelectWalletConf(
-    WALLETCONNECT,
-    {
-      walletAddress: ethereumClient.getAccount().address,
-      networkId,
-      provider: null,
-    },
-    true
-  )
+  // updateGlobalSelectWalletConf(
+  //   WALLETCONNECT,
+  //   {
+  //     walletAddress: ethereumClient.getAccount().address,
+  //     networkId,
+  //     provider: null,
+  //   },
+  //   true
+  // )
   return ethereumClient.getAccount()
 }
 

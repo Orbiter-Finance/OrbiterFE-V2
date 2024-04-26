@@ -26,7 +26,12 @@
                     <div v-if="item.isCom" >
                         <GasObSelect></GasObSelect>
                     </div>
-                    <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''}`">{{ item.desc }}</span>
+                    <div>
+                        <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''} ${item.tieredFee || item.discount ? 'text-decoration-line-through' : ''}`">{{ item.desc }}</span>
+                        <div v-if="item.tieredFee" class="n-withholding-fee">
+                            <div >{{ item.nWithholdingFee }} <span class="tiered-fee-max">(↓{{ item.tieredFee }}%)</span></div>
+                        </div>
+                    </div>
                     <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
                         <span v-if="isMobile"><br /></span>
                         {{ item.lineThrough }}
@@ -283,9 +288,19 @@ export default {
             const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
 
-            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || 
-                fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test 
-            ) {
+            const tieredFeeMax = transferCalculate.max()
+
+            let discount = transferCalculate
+                .discount()
+                .toString()
+
+            let nWithholdingFee = ethers.utils.formatEther(
+                ethers.utils.parseEther(withholdingFee+"").sub(
+                    ethers.utils.parseEther(discount)
+                )
+            )
+
+            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test ) {
                 realTransferAmount = ethers.utils.formatEther(
                     ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
                     )
@@ -300,6 +315,9 @@ export default {
                     desc:
                         selectMakerConfig.tradingFee +
                         ' ' +
+                        selectMakerConfig.fromChain.symbol,
+                    tieredFee: tieredFeeMax,
+                    nWithholdingFee: nWithholdingFee + ' ' +
                         selectMakerConfig.fromChain.symbol,
                     lineThrough: withholdingFee<originWithholdingFee?originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
                 },
@@ -430,7 +448,8 @@ export default {
 
                 const rAmount = new BigNumber(transferValue)
                 .plus(new BigNumber(selectMakerConfig.tradingFee))
-                .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals)).plus(new BigNumber(safeCode))
+                .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+                .plus(new BigNumber(safeCode))
                 const rAmountValue = rAmount.toFixed()
 
                 const transferContract = new ethers.Contract(
@@ -1820,15 +1839,33 @@ export default {
 
             if(toChainID === CHAIN_ID.starknet) {
                 toAddress = web3State.starkNet.starkNetAddress
+                let { starkChain } = web3State.starkNet
 
                 if(!toAddress) {
                     setSelectWalletDialogVisible(true)
                     setConnectWalletGroupKey("STARKNET")
+                    this.transferLoading = false
+                    return
+                }
+
+                starkChain = +starkChain ? +starkChain : starkChain
+                if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+                    util.showMessage('please connect Starknet Wallet', 'error')
+                    this.transferLoading = false
+                    return
+                }
+                if (
+                    (fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) &&
+                    (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
+                ) {
+                    util.showMessage(
+                        'please switch Starknet Wallet to mainnet',
+                        'error'
+                    )
+                    this.transferLoading = false
                     return
                 }
             }
-
-            console.log("toAddress", toAddress)
 
             try {
                 if(toAddress) {
@@ -2124,6 +2161,7 @@ export default {
             this.expectValue = `${ transferDataState.ebcValue } ${ selectMakerConfig.fromChain.symbol }`;
             return;
         }
+        // st
         const amount = orbiterCore.getToAmountFromUserAmount(
             new BigNumber(transferValue).plus(
                 new BigNumber(selectMakerConfig.tradingFee)
@@ -2131,6 +2169,7 @@ export default {
             selectMakerConfig,
             false
         )
+        //xvm
         if (util.isExecuteXVMContract()) {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol
@@ -2175,6 +2214,10 @@ export default {
     .fee {
         color: #eeeeee;
     }
+}
+.text-decoration-line-through {
+    font-style: oblique 40deg;
+    text-decoration: line-through;
 }
 .app-mobile {
     .confirm-box {
@@ -2222,6 +2265,25 @@ export default {
             .textBold {
                 font-weight: 600;
             }
+
+            .n-withholding-fee {
+                margin-top: -8px;
+
+                .tiered-fee-max {
+                    margin-top: -8px;
+                    font-size: 12px;
+                    color: #df2e2d;
+                    font-weight: 700;
+                }
+                .tiered-fee-discount {
+                    margin-top: -8px;
+                    font-size: 12px;
+                    color: #3183ff;
+                    font-weight: 700;
+                }
+            }
+
+            
         }
 
         .descBottom {

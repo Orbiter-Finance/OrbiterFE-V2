@@ -207,10 +207,7 @@ import {
 import { CHAIN_ID } from "../../config";
 import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper';
-import {
-  compatibleGlobalWalletConf,
-} from '../../composition/walletsResponsiveData'
-
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 export default {
     name: 'Proceed',
     props: {

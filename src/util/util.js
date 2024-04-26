@@ -82,7 +82,11 @@ export default {
     })
   },
   netWorkName(networkId) {
-    return this.getV3ChainInfoByChainId(networkId)?.name || networkId || 'Unknown Network'
+    return (
+      this.getV3ChainInfoByChainId(networkId)?.name ||
+      networkId ||
+      'Unknown Network'
+    )
   },
   chainName(chainId) {
     return this.getV3ChainInfoByChainId(chainId)?.name || chainId || ''
@@ -393,8 +397,7 @@ export default {
       .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
       .dividedBy(new BigNumber(1000))
     const gasFee_fix = gasFee.decimalPlaces(
-      selectMakerConfig.fromChain.decimals === 8 ||
-        selectMakerConfig.toChain.decimals === 8
+      selectMakerConfig.fromChain.decimals === 8
         ? 6
         : selectMakerConfig.fromChain.decimals === 18
         ? 5

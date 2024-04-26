@@ -698,10 +698,15 @@ export default {
       taskMobileHeight: 0,
       bannerList: [
         {
+          url: 'https://app.galxe.com/quest/Holdstation/GCDRfthVsE',
+          img: 'paymaster.png',
+          timeStamp: '2024-05-03 09:00:00',
+        },
+        {
           url: 'https://galxe.com/OrbiterFinance/campaign/GCPhNtTQKf',
           img: 'bitget.jpg',
           timeStamp: '2024-04-28 18:00:00',
-        },
+        }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
     }
   },
