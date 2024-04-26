@@ -32,6 +32,11 @@ export const CHAIN_ID = {
   opbnb: '204',
   manta: '169',
   scroll: '534352',
+  xlayer: '196',
+  blast: '81457',
+  mode: '34443',
+  merlin: '4200',
+  bevm: '11501',
 
   zksync_test: 'zksync_test',
   starknet_test: 'SN_SEPOLIA',
@@ -132,6 +137,7 @@ function convertMakerConfig(maker) {
       const fromToken = fromTokenList.find(
         (item) => item.symbol === fromChainSymbol
       )
+
       const toToken = toTokenList.find((item) => item.symbol === toChainSymbol)
       if (!fromToken || !toToken) continue
       const config = {
@@ -143,6 +149,7 @@ function convertMakerConfig(maker) {
         sender: makerData.sender,
         tradingFee: makerData.tradingFee,
         gasFee: makerData.gasFee,
+        tieredFee: makerData?.tieredFee,
         fromChain: {
           id: +fromChainId,
           networkId: c1Chain.networkId,

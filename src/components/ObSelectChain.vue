@@ -138,10 +138,19 @@ export default {
                 chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
             }
             const chainOrderIds = [
+                CHAIN_ID.mainnet,
+                CHAIN_ID.ar,
+                CHAIN_ID.op,
+                CHAIN_ID.xlayer,
+                CHAIN_ID.blast,
+                CHAIN_ID.mode,
+                CHAIN_ID.zora,
+                CHAIN_ID.merlin,
+                CHAIN_ID.bevm,
                 CHAIN_ID.zksync2, CHAIN_ID.zksync2_test, CHAIN_ID.zksync, CHAIN_ID.zksync_test,
-                CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test, CHAIN_ID.po, CHAIN_ID.po_test, CHAIN_ID.mainnet,
-                CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
-                CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
+                CHAIN_ID.pozkevm, CHAIN_ID.pozkevm_test, CHAIN_ID.po, CHAIN_ID.po_test, 
+                CHAIN_ID.goerli,  CHAIN_ID.ar_test, CHAIN_ID.nova, CHAIN_ID.loopring,
+                CHAIN_ID.loopring_test,  CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
                 CHAIN_ID.solana, CHAIN_ID.solana_test

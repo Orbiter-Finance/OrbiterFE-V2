@@ -1934,5 +1934,70 @@
               ]
             }
           ]
+      },
+      {
+        "name": "Bitlayer",
+        "chain": "Bitlayer",
+        "rpc": [
+          "https://rpc.bitlayer.org",
+          "https://rpc.bitlayer-rpc.com",
+          "https://rpc.ankr.com/bitlayer"
+        ],
+        "features": [
+          {
+            "name": "evm-account"
+          },
+          {
+            "name": "evm-rpc"
+          }
+        ],
+        "service": {
+          "rpc": "EVMRpcScanningV6Service"
+        },
+        "tokens": [],
+        "internalId": "59",
+        "nativeCurrency": {
+          "name": "BTC",
+          "coinKey": "BTC",
+          "symbol": "BTC",
+          "decimals": 18,
+          "address": "0x0000000000000000000000000000000000000000"
+        },
+        "infoURL": "https://docs.bitlayer.org/",
+        "shortName": "Bitlayer",
+        "chainId": "200901",
+        "networkId": "200901",
+        "icon": "bitlayer",
+        "explorers": [
+          {
+            "name": "bitlayer mainnet scan",
+            "url": "https://www.btrscan.com",
+            "standard": "bitlayer"
+          }
+        ],
+        "contract": {
+          "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+          "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+        },
+        "contracts": [
+          {
+            "name": "OBSource",
+            "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+            "methods": [
+              "transfer(address,bytes)",
+              "transferERC20(address,address,uint256,bytes)"
+            ]
+          },
+          {
+            "name": "OrbiterRouterV3",
+            "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+            "methods": [
+              "transfer(address,bytes)",
+              "transferToken(address,address,uint256,bytes)",
+              "transfers(address[],uint256[])",
+              "transferTokens(address,address[],uint256[])"
+            ]
+          }
+        ]
       }
 ]
