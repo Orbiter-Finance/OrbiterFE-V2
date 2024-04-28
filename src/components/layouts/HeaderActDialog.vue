@@ -695,6 +695,12 @@ export default {
       taskMobileHeight: 0,
       bannerList: [
         {
+          url: "https://fusion.gobob.xyz/?refCode=2ae49l",
+          img: 'bob.jpg',
+          name: "BOB FUSION",
+          timeStamp: '2024-05-28 06:00:00',
+        },
+        {
           url: 'https://app.galxe.com/quest/Holdstation/GCDRfthVsE',
           img: 'paymaster.png',
           name: "paymaster",
