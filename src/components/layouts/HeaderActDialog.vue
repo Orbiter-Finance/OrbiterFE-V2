@@ -1039,7 +1039,8 @@ export default {
     openUrl(item) {
       try {
         this.$gtag.event('banner', {
-        'name': item.name
+          'event_category': item.name,
+          'event_label': item.url,
         })
       }catch(error) {
       }
