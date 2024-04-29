@@ -321,9 +321,9 @@
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
                   <svg-icon
-                    v-if="item?.label?.icon"
+                    v-if="item.label.icon"
                     class="icon"
-                    :iconName="item?.label?.icon"
+                    :iconName="item.label.icon"
                   ></svg-icon>
                   <div class="text">{{ item.name }}</div>
                 </div>
@@ -645,8 +645,13 @@ export default {
     },
     actDataList() {
       const list = transferDataState.actDataList || []
-      console.log("actDataList", list, list.filter((item) => item.type === 1))
-      return list
+      return list.map((item)=> ({
+        ...item,
+        label: {
+          icon: "",
+          ...(item?.label || {})
+        }
+      }))
     },
     actOtherDataList() {
       const list = transferDataState.actDataList || []
