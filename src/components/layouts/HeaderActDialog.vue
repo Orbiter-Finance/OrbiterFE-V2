@@ -321,6 +321,7 @@
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
                   <svg-icon
+                    v-if="item.label.icon"
                     class="icon"
                     :iconName="item.label.icon"
                   ></svg-icon>
