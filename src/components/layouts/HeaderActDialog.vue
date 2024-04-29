@@ -250,59 +250,62 @@
 
           <div v-if="!isStarknet && !isSolana" class="card_3">
             <div class="text_14">
-              Held Orbiter NFT
-              <o-tooltip>
-                <template v-slot:titleDesc>
-                  <div style="margin-left: -20px">
-                    <span>
-                      Currently, only the official Pilot NFT series held by the
-                      address is displayed, showing only one of multiple NFTs of
-                      the same rank.
-                    </span>
-                  </div>
-                </template>
-                <img
-                  style="
-                    width: 20px;
-                    height: 20px;
-                    vertical-align: top;
-                    margin-left: 4px;
-                  "
-                  :src="require('../../assets/activity/tooltip.png')"
-                />
-              </o-tooltip>
+              <div>Held Orbiter NFT
+                <o-tooltip>
+                  <template v-slot:titleDesc>
+                    <div style="margin-left: -20px">
+                      <span>
+                        Currently, only the official Pilot NFT series held by the
+                        address is displayed, showing only one of multiple NFTs of
+                        the same rank.
+                      </span>
+                    </div>
+                  </template>
+                  <img
+                    style="
+                      width: 20px;
+                      height: 20px;
+                      vertical-align: top;
+                      margin-left: 4px;
+                    "
+                    :src="require('../../assets/activity/tooltip.png')"
+                  />
+                </o-tooltip></div>
+              <div class="extends" @click="toggleNftListStatus">{{ extendsNftList ? "-" : "+" }}</div>
             </div>
-            <div v-if="!nftList.length" class="text-wrapper_38">
-              <span class="text_55">No Orbiter Series NFTs were obtained</span>
-            </div>
-            <div class="nft_box" v-else>
-              <div
-                class="box_div"
-                :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`"
-              >
+            <div v-show="extendsNftList" class="nft-list-group">
+              <div v-if="!nftList.length" class="text-wrapper_38">
+                <span class="text_55">No Orbiter Series NFTs were obtained</span>
+              </div>
+              <div class="nft_box" v-else>
                 <div
-                  v-for="(item, index) in nftList"
-                  :key="index"
-                  class="section_70"
-                  :style="`background: url(${require('../../assets/activity/nft/' +
-                    item.img)});background-size: 100% 100%;border:${item.border};`"
-                ></div>
+                  class="box_div"
+                  :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`"
+                >
+                  <div
+                    v-for="(item, index) in nftList"
+                    :key="index"
+                    class="section_70"
+                    :style="`background: url(${require('../../assets/activity/nft/' +
+                      item.img)});background-size: 100% 100%;border:${item.border};`"
+                  ></div>
+                </div>
+                <div :hidden="!turnLeft" class="btn">
+                  <img
+                    @click="scrollDiv(1)"
+                    class="img"
+                    :src="require('../../assets/activity/turn_right.png')"
+                  />
+                </div>
+                <div :hidden="!turnRight" class="btn_2">
+                  <img
+                    @click="scrollDiv(0)"
+                    class="img_2"
+                    :src="require('../../assets/activity/turn_right.png')"
+                  />
+                </div>
+                <div class="card_cover"></div>
               </div>
-              <div :hidden="!turnLeft" class="btn">
-                <img
-                  @click="scrollDiv(1)"
-                  class="img"
-                  :src="require('../../assets/activity/turn_right.png')"
-                />
-              </div>
-              <div :hidden="!turnRight" class="btn_2">
-                <img
-                  @click="scrollDiv(0)"
-                  class="img_2"
-                  :src="require('../../assets/activity/turn_right.png')"
-                />
-              </div>
-              <div class="card_cover"></div>
             </div>
           </div>
         </div>
@@ -549,6 +552,7 @@ export default {
       countDownDate: '00',
       left: 0,
       questsShow: false,
+      extendsNftList: false,
       nftSeries: [
         { img: '0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png' },
         { img: '0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png' },
@@ -752,6 +756,12 @@ export default {
     },
   },
   methods: {
+    toggleNftListStatus() {
+      this.extendsNftList = !this.extendsNftList
+      setTimeout(() => {
+        this.getTaskHeight()
+        }, 200)
+    },
     showPointsCall() {
       const group = JSON.parse(
         localStorage.getItem(PONITS_EXPAND_COUNT) || JSON.stringify({})
@@ -1933,7 +1943,7 @@ export default {
       display: flex;
       width: 100%;
       height: 60px;
-      margin: 8px 0 12px 20px;
+      margin: 8px 0 0 20px;
       overflow: hidden;
 
       .box_div {
@@ -2000,13 +2010,16 @@ export default {
       }
     }
 
-    .text-wrapper_38 {
-      // background-color: rgba(245, 245, 245, 1);
-      // border-radius: 8px;
-      // height: 60px;
+    .nft-list-group {
       width: 100%;
-      margin: 8px 0 8px 20px;
-      display: flex;
+      .text-wrapper_38 {
+        // background-color: rgba(245, 245, 245, 1);
+        // border-radius: 8px;
+        // height: 60px;
+        width: 100%;
+        margin: 8px 0 8px 20px;
+        display: flex;
+      }
     }
 
     .text_55 {
@@ -2032,6 +2045,11 @@ export default {
       margin: 3px 0 0 20px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+
+      .extends {
+        cursor: pointer;
+      }
     }
   }
 
@@ -2193,7 +2211,7 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 23px;
-    margin: 0 0 0 16px;
+    margin: 12px 0 0 16px;
   }
 
   .ativity-list {
@@ -2204,7 +2222,7 @@ export default {
       border-radius: 12px;
       background-color: #F5F5F5;
       padding: 12px;
-      margin: 16px;
+      margin: 12px 16px;
       .activity-card-title {
         width: 100%;
         display: flex;
@@ -2373,7 +2391,7 @@ export default {
       text-align: left;
       white-space: nowrap;
       line-height: 23px;
-      margin: 0 0 4px 16px;
+      margin: 12px 0 0 16px;
     }
 
     .box_1 {
@@ -2577,7 +2595,7 @@ export default {
         text-align: left;
         white-space: nowrap;
         line-height: 23px;
-        margin: 0 0 4px 16px;
+        margin: 12px 0 0 16px;
       }
 
       .box_1 {
