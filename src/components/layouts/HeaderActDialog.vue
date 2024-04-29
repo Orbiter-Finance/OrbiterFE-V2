@@ -315,6 +315,7 @@
         <div class="ativity-list" 
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
+        v-if="!!actDataList.length"
         >
           <template v-for="item in actDataList">
             <div class="activity-card">
