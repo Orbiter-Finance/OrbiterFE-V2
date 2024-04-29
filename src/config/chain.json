@@ -2025,7 +2025,7 @@
               "address":"0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3"
            }
         ],
-        "internalId":57,
+        "internalId":"57",
         "nativeCurrency":{
            "name":"ETH",
            "coinKey":"ETH",
