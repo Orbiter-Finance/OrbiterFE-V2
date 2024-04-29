@@ -293,19 +293,21 @@ export default {
           page: 1,
         })
         const list = res.data.list
-        const dataList = []
-        const undoneList = []
-        const doneList = []
-        for (const data of list) {
-          for (const task of data.taskList) {
-            if (task.status) {
-              doneList.push(task)
-            } else {
-              undoneList.push(task)
-            }
-          }
-        }
-        updateActDataList([...dataList, ...undoneList, ...doneList])
+        // const dataList = []
+        // const undoneList = []
+        // const doneList = []
+        // console.log("list", list)
+        // for (const data of list) {
+        //   for (const task of data.taskList) {
+        //     if (task.status) {
+        //       doneList.push(task)
+        //     } else {
+        //       undoneList.push(task)
+        //     }
+        //   }
+        // }
+        // updateActDataList([...dataList, ...undoneList, ...doneList])
+        updateActDataList(list)
       }
     },
     async getWalletAddressPoint () {
