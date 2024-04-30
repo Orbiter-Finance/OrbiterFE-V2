@@ -161,9 +161,12 @@ export default {
             const data = {};
             for (const groupName in this.chainsGroup) {
                 const chainsIds = this.chainsGroup[groupName]
-                let chains = this.transferChainData.filter(
-                    (item) => chainsIds.find(chainId=>String(chainId) === String(item.localID))
-                )
+                let chains = chainsIds.map((item) => {
+                    return this.transferChainData.filter(
+                        (option) => (String(item) === String(option.localID))
+                    )[0]
+                }).filter((option)=> !!option )
+                
                 if (this.keyword || this.keyword !== '') {
                     chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
                 }
