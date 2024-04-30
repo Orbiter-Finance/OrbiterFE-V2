@@ -206,7 +206,7 @@ import {
 } from '../../composition/hooks'
 import { CHAIN_ID } from "../../config";
 import solanaHelper from '../../util/solana/solana_helper';
-
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 export default {
     name: 'Proceed',
     props: {
