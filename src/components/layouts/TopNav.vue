@@ -288,15 +288,16 @@ export default {
       setConnectWalletGroupKey("EVM")
     },
     connectAWallet () {
+      console.log("this.showAddress", this.showAddress)
       if (isBrowserApp()) {
         walletConnectDispatcherOnInit(WALLETCONNECT)
         return
       }
       setStarkNetDialog(false)
-      setSolanaDialog(flase)
-      setSelectWalletDialogVisible(true)
+      setSolanaDialog(false)
+      // setSelectWalletDialogVisible(true)
       setActDialogVisible(true)
-      setConnectWalletGroupKey("EVM")
+      // setConnectWalletGroupKey("EVM")
     },
   },
 }
