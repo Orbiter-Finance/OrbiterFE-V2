@@ -293,7 +293,7 @@ export default {
         return
       }
       setStarkNetDialog(false)
-      setSolanaDialog(flase)
+      setSolanaDialog(false)
       setSelectWalletDialogVisible(true)
       setActDialogVisible(true)
       setConnectWalletGroupKey("EVM")
