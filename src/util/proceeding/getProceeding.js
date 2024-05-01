@@ -60,10 +60,11 @@ function confirmUserTransaction(chainId, userAddress, hash) {
           }
           break
         }
-        case 98: {
+        case 96: {
           storeUpdateProceedState(4)
           break
         }
+        case 98:
         case 99: {
           completeTx(
             userAddress,
