@@ -2069,5 +2069,45 @@
               ]
            }
         ]
-     }
+     },
+  {
+    "name": "zkLink Nova",
+    "rpc": [
+      "https://rpc.zklink.io"
+    ],
+    "features": [
+      {
+        "name": "evm-account"
+      },
+      {
+        "name": "evm-rpc"
+      }
+    ],
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "tokens": [],
+    "internalId": "48",
+    "nativeCurrency": {
+      "name": "ETH",
+      "coinKey": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "infoURL": "https://explorer.gobob.xyz",
+    "shortName": "zkLink",
+    "chainId": "810180",
+    "networkId": "810180",
+    "icon": "zklink",
+    "explorers": [
+      {
+        "name": "zklink Network scan",
+        "url": "https://explorer.zklink.io",
+        "standard": "zklink"
+      }
+    ],
+    "contract": {},
+    "contracts": []
+  }
 ]
