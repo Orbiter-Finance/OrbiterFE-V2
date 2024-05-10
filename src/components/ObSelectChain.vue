@@ -24,7 +24,7 @@
 
             <div class="list-content">
                 <template v-if="isExistChainsGroup">
-                    <template v-for="(chains, name) of groupChains" >
+                    <template v-for="(chains, name) of groupChainData" >
                         <div class="contentItem title" >{{ toCapitalize(name) }}</div>
                         <div v-for="(item, index) of chains" :key="name + index"
                             @click="getChainInfo(item, index)" class="contentItem">
@@ -154,10 +154,38 @@ export default {
             ]
             return this.orderChainIds(chainOrderIds, newArray)
         },
+        groupChains:function() {
+            const data = {};
+            for (const groupName in this.chainsGroup) {
+                const chainsIds = this.chainsGroup[groupName]
+                let chains = chainsIds.map((item) => {
+                    return this.transferChainData.filter(
+                        (option) => (String(item) === String(option.localID))
+                    )[0]
+                }).filter((option)=> !!option )
+                
+                if (this.keyword || this.keyword !== '') {
+                    chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
+                }
+                data[groupName] = chains;
+            }
+            return data;
+        },
+        groupChainData: function () {
+            return this.tabKey !== this.tabsList[0]?.key ? {} : this.groupChains
+        },
         newChainData: function () {
-            let chains = this.transferChainData.filter(
-                    (item) => !this.localIdsInGroup.find(id=>String(id) === String(item.localID))
-                )
+
+            let chainList = []
+
+            for (const groupName in this.groupChains) {
+                const chainsIds = this.groupChains[groupName]
+                chainList = chainList.concat(chainsIds || [])
+            }
+            
+            console.log("this.transferChainData", this.localIdsInGroup, this.transferChainData)
+
+            let chains = this.transferChainData.concat(chainList)
             if (this.keyword || this.keyword !== '') {
                 chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
             }
@@ -179,30 +207,26 @@ export default {
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
                 CHAIN_ID.solana, CHAIN_ID.solana_test
             ]
-            const data = customSort(chainOrderIds,chains)
+            let data = customSort(chainOrderIds,chains)
             const list = chainsSelectGroup?.[this.tabKey]
 
-            return this.tabKey === this.tabsList[0]?.key ? data : data.filter((item)=>{
-                return list?.some((option)=> String(option).trim().toLocaleLowerCase() === String(item?.localID).trim().toLocaleLowerCase())
+            data = data.filter((item)=>{
+                const flag = this.tabKey === this.tabsList[0]?.key
+                return flag || list?.some((option)=> String(option).trim().toLocaleLowerCase() === String(item?.localID).trim().toLocaleLowerCase())
             })
-        },
-        groupChains:function() {
-            const data = {};
-            for (const groupName in this.chainsGroup) {
-                const chainsIds = this.chainsGroup[groupName]
-                let chains = chainsIds.map((item) => {
-                    return this.transferChainData.filter(
-                        (option) => (String(item) === String(option.localID))
-                    )[0]
-                }).filter((option)=> !!option )
-                
-                if (this.keyword || this.keyword !== '') {
-                    chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
+
+            let chainData = []
+
+            data.forEach((item)=>{
+                const flag = chainData?.some((option)=> String(option?.localID).trim().toLocaleLowerCase() === String(item?.localID).trim().toLocaleLowerCase())
+                if(!flag) {
+                    chainData =  chainData.concat([item])
                 }
-                data[groupName] = chains;
-            }
-            return data;
-        }
+            })
+
+            return chainData
+        },
+
     },
     watch: {},
     mounted() { },
@@ -308,6 +332,7 @@ export default {
                     return
                 }
             }
+            this.$emit('getChainInfo', e)
             this.closerButton()
         },
         stopPenetrate(e) {
