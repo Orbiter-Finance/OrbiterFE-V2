@@ -706,7 +706,20 @@
     "watch": [
       "rpc"
     ],
-    "tokens": [],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
+      },
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x5da066443180476e8f113546a0D112517D0d4915"
+      }
+    ],
     "infoURL": "https://sepolia.etherscan.io"
   },
   {

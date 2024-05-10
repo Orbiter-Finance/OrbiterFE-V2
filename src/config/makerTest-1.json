@@ -538,9 +538,11 @@
             "minPrice": 0.1,
             "slippage": 200,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "bridgeType": 1
         },
         "USDT-USDT": {
+            "bridgeType": 1,
             "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
             "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
             "gasFee": 100,

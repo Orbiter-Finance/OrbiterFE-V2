@@ -183,8 +183,6 @@ export default {
                 chainList = chainList.concat(chainsIds || [])
             }
             
-            console.log("this.transferChainData", this.localIdsInGroup, this.transferChainData)
-
             let chains = this.transferChainData.concat(chainList)
             if (this.keyword || this.keyword !== '') {
                 chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
