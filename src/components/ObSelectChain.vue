@@ -7,6 +7,13 @@
                     <SvgIconThemed style="width: 20px; height: 20px; cursor: pointer" iconName="close" />
                 </div>
             </div>
+            <div class="selectChainTab">
+                <template v-for="tab of tabsList" >
+                    <div :key="tab.key" :class="tabKey === tab.key ? 'selectChainItem selectChainActiveItem' : 'selectChainItem'"
+                    @click="selectTab(tab)"
+                    >{{ tab.label }}</div>
+                </template>
+            </div>
             <div style="width: 100%; position: relative">
                 <input type="text" v-model="keyword" class="input" @input="checkKeyWord()"
                     :placeholder="`input search text`" />
@@ -77,6 +84,10 @@ import config, { CHAIN_ID } from '../config';
 import  solanaHelper from '../util/solana/solana_helper';
 import { getStarknet } from 'get-starknet'
 
+const chainConfig = config.chainConfig
+
+const chainsSelectGroup = JSON.parse(process.env.VUE_APP_CHAINS_SELECT_GROUP || '{}')
+
 export default {
     name: 'ObSelectChain',
     components: { SvgIconThemed },
@@ -92,9 +103,22 @@ export default {
         return {
             keyword: '',
             loadingIndex: -1,
+            tabKey: "All"
         }
     },
     computed: {
+        tabsList() {
+            return [{
+                key: "All",
+                label: "All",
+            }, {
+                key: "ETH",
+                label: "Ethereum & L2",
+            }, {
+                key: "BTC",
+                label: "BTC L2",
+            }]
+        },
         isExistChainsGroup() {
             return !!Object.keys(this.chainsGroup).length
         },
@@ -155,7 +179,12 @@ export default {
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
                 CHAIN_ID.solana, CHAIN_ID.solana_test
             ]
-            return customSort(chainOrderIds,chains)
+            const data = customSort(chainOrderIds,chains)
+            const list = chainsSelectGroup?.[this.tabKey]
+
+            return this.tabKey === this.tabsList[0]?.key ? data : data.filter((item)=>{
+                return list?.some((option)=> String(option).trim().toLocaleLowerCase() === String(item?.localID).trim().toLocaleLowerCase())
+            })
         },
         groupChains:function() {
             const data = {};
@@ -178,6 +207,9 @@ export default {
     watch: {},
     mounted() { },
     methods: {
+        selectTab(tab) {
+            this.tabKey = tab.key
+        },
         getChainsInGroup(chainLocalIds) {
             if (!chainLocalIds) {
                 return []
@@ -276,7 +308,6 @@ export default {
                     return
                 }
             }
-            this.$emit('getChainInfo', e)
             this.closerButton()
         },
         stopPenetrate(e) {
@@ -295,8 +326,11 @@ export default {
 <style lang="scss" scoped>
 .app {
     .obSelectChainBody {
-        width: 320px;
-        height: 372px;
+        width: 100%;
+        height: 608px;
+        max-width: 404px;
+        max-height: 608px;
+        overflow: hidden;
     }
 }
 
@@ -304,13 +338,14 @@ export default {
     .obSelectChainBody {
         width: calc(100% - 30px);
         max-height: 90vh;
-        height: 372px;
+        height: 608px;
+        overflow: hidden;
     }
 }
 
 .obSelectChainBody {
     position: relative;
-    margin: 4.2rem auto;
+    margin: 4.2rem auto 0;
     // height: calc(
     //   100vh - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height)
     // );
@@ -322,6 +357,36 @@ export default {
         // margin: 1rem 1.5rem;
         position: relative;
         padding: 0 20px;
+
+        .selectChainTab {
+            width: 100%;
+            height: 32px;
+            font-size: 14px;
+            border-radius: 8px;
+            background-color: #F5F5F5;
+            padding: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 14px 0;
+
+            .selectChainItem {
+                width: 33%;
+                height: 100%;
+                font-weight: 500;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+            }
+
+            .selectChainActiveItem {
+                background: #FFFFFF;
+                border-radius: 6px;
+                color: #222222;
+                font-weight: 700;
+            }
+        }
 
         .topItem {
             width: 100%;
@@ -364,7 +429,7 @@ export default {
 
     .list-content-box {
         overflow-y: scroll;
-        height: calc(100% - 90px);
+        height: calc(100% - 120px);
 
         .title {
             font-size: 13px;
