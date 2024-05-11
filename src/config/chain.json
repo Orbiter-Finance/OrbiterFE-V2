@@ -136,7 +136,8 @@
         "contract": {
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
             "0x752bc92211d1ecbb31f84e57c9dfc39a15df9cfa": "OrbiterRouterV1",
-            "0x6a065083886ec63d274b8e1fe19ae2ddf498bfdd": "OrbiterRouterV3"
+            "0x6a065083886ec63d274b8e1fe19ae2ddf498bfdd": "OrbiterRouterV3",
+            "0x6285a466a98f513E1f6bE29ACad27d173d3b3c59": "OPool"
         }
     },
     {
@@ -761,7 +762,8 @@
         "infoURL": "https://bscscan.com",
         "contract": {
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
-            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3",
+            "0x6285a466a98f513E1f6bE29ACad27d173d3b3c59": "OPool"
         }
     },
     {
