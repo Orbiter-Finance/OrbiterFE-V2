@@ -1,6 +1,7 @@
 {
     "15-2": {
         "AIDOGE-AIDOGE": {
+            "bridgeType": 1,
             "makerAddress": "0x732efacd14b0355999aebb133585787921aba3a9",
             "sender": "0x732efacd14b0355999aebb133585787921aba3a9",
             "maxPrice": 1300000000000,
@@ -13,6 +14,7 @@
     },
     "2-15": {
         "AIDOGE-AIDOGE": {
+            "bridgeType": 1,
             "makerAddress": "0x732efacd14b0355999aebb133585787921aba3a9",
             "sender": "0x732efacd14b0355999aebb133585787921aba3a9",
             "maxPrice": 1300000000000,

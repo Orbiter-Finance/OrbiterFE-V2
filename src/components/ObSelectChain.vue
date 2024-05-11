@@ -271,7 +271,6 @@ export default {
     },
     methods: {
         selectSymbol(symbol){
-            console.log("symbolsymbolsymbolsymbolsymbol", symbol)
             if(symbol !== this.symbol) {
                 this.updateTime = +new Date()
                 balanceList = []
