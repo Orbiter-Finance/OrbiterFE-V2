@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 
+const DEC = ['', 'K', 'M', 'B', 'T', 'A']
+
 export const decimalNum = (
   num = 0,
   decimal,
@@ -37,4 +39,27 @@ export const decimalNum = (
   }
 
   return currencySymbol + negativeNChar + intStr
+}
+
+export const decimalNumTh = (
+  num = 0,
+  decimal,
+  delimiter = '',
+  currencySymbol = ''
+) => {
+  const val = decimalNum(num, decimal, delimiter)
+
+  let value = val
+
+  const strA = val.split(delimiter)
+
+  const len = strA.length
+
+  if (len > 1) {
+    value = decimalNum([strA[0], strA[1]].join('.'), decimal) + DEC[len - 1]
+  }
+
+  console.log('value22222', value)
+
+  return currencySymbol + value
 }

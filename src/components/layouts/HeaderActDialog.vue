@@ -576,22 +576,16 @@ export default {
       taskMobileHeight: 0,
       bannerList: [
         {
+          url: 'https://app.zklink.io/aggregation-parade',
+          img: 'aggregation-parade.png',
+          name: "aggregation-parade",
+          timeStamp: '2024-05-25 10:00:00',
+        },
+        {
           url: "https://fusion.gobob.xyz/?refCode=2ae49l",
           img: 'bob.jpg',
           name: "BOB FUSION",
           timeStamp: '2024-05-28 06:00:00',
-        },
-        {
-          url: 'https://app.galxe.com/quest/Holdstation/GCDRfthVsE',
-          img: 'paymaster.png',
-          name: "paymaster",
-          timeStamp: '2024-05-03 09:00:00',
-        },
-        {
-          url: 'https://galxe.com/OrbiterFinance/campaign/GCPhNtTQKf',
-          img: 'bitget.jpg',
-          name: "bitget",
-          timeStamp: '2024-04-28 18:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
     }

@@ -395,6 +395,9 @@
     "name": "BSC(G)",
     "debug": false,
     "contracts": [],
+    "contract": {
+      "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0": "OPool"
+    },
     "nativeCurrency": {
       "name": "BNB",
       "symbol": "BNB",
@@ -425,13 +428,19 @@
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
+        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
       },
       {
         "name": "DAI",
         "symbol": "DAI",
         "decimals": 18,
         "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
+      },
+      {
+        "name": "AIDOGE",
+        "symbol": "AIDOGE",
+        "decimals": 6,
+        "address": "0x6FE7f27BE081D25222C47ee5ff418455b88aBB8C"
       }
     ],
     "xvmList": [
@@ -706,7 +715,20 @@
     "watch": [
       "rpc"
     ],
-    "tokens": [],
+    "tokens": [
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
+      },
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x5da066443180476e8f113546a0D112517D0d4915"
+      }
+    ],
     "infoURL": "https://sepolia.etherscan.io"
   },
   {
@@ -930,7 +952,8 @@
       "rpc": "EVMRpcScanningV6Service"
     },
     "contract": {
-      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
+      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3",
+      "0x6a99aF2B5398Ee7bb340bfC337d32Eb8D58655ae": "OPool"
     },
     "contracts": [
       {
@@ -960,7 +983,14 @@
         "symbol": "USDT",
         "decimals": 6,
         "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
+      },
+      {
+        "name": "AIDOGE",
+        "symbol": "AIDOGE",
+        "decimals": 6,
+        "address": "0xc36353B3Efc4D8F3f18063E39C445eBcE77905cF"
       }
+
     ],
     "infoURL": "https://sepolia.arbiscan.io"
   },

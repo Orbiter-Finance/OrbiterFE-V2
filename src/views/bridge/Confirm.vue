@@ -65,10 +65,11 @@
                                 margin-left: 0.7rem;
                                 margin-right: 0.7rem;
                                 color: #df2e2d;
-                                width: 90px;
+                                width: 100px;
                                 display: -moz-inline-box;
                                 display: inline-block;
                                 text-align: center;
+                                white-space: nowrap;
                             "
                         >
                             {{ desc.from }}
@@ -80,10 +81,11 @@
                             margin-left: 0.7rem;
                             margin-right: 0.7rem;
                             color: #df2e2d;
-                            width: 90px;
+                            width: 100px;
                             display: -moz-inline-box;
                             display: inline-block;
                             text-align: center;
+                            white-space: nowrap;
                         "
                     >
                         {{ desc.from }}
@@ -211,7 +213,7 @@ import {
     compatibleGlobalWalletConf,
 } from '../../composition/walletsResponsiveData'
 import { isMobile, transferDataState, web3State, gasTokenInfo, updateGasTokenInfo, setSelectWalletDialogVisible, setConnectWalletGroupKey } from '../../composition/hooks'
-import { Coin_ABI, Orbiter_V3_ABI_EVM } from '../../util/constants/contract/contract.js'
+import { Coin_ABI, Orbiter_V3_ABI_EVM, Orbiter_OPOOL_ABI } from '../../util/constants/contract/contract.js'
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
@@ -267,7 +269,19 @@ export default {
         },
         confirmData() {
             const { selectMakerConfig, transferValue, fromChainID } = transferDataState
-            // 0.000120000000009022 to 0.000120...09022
+
+            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+
+            const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
+
+            let symbol = chainInfo?.nativeCurrency?.symbol
+             symbol = bridgeType1 ? symbol : selectMakerConfig.fromChain.symbol
+
+             let getTradingFee = transferCalculate
+                .getTradingFee()
+                .toString()
+
+                // 0.000120000000009022 to 0.000120...09022
             let realTransferAmount = transferCalculate
                 .realTransferAmount()
                 .toString()
@@ -275,6 +289,9 @@ export default {
                 /(.*?0)0{4,}(0.*?)/,
                 '$1...$2'
             )
+
+            realTransferAmount = bridgeType1 ? transferValue : realTransferAmount
+
             const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
             const withholdingFee = +(selectMakerConfig.tradingFee || 0);
 
@@ -305,7 +322,7 @@ export default {
                     desc:
                         selectMakerConfig.tradingFee +
                         ' ' +
-                        selectMakerConfig.fromChain.symbol,
+                        symbol,
                     tieredFee: tieredFeeMax,
                     nWithholdingFee: nWithholdingFee + ' ' +
                         selectMakerConfig.fromChain.symbol,
@@ -325,13 +342,16 @@ export default {
                     desc:
                         realTransferAmount +
                         ' ' +
-                        selectMakerConfig.fromChain.symbol,
+                        selectMakerConfig.fromChain.symbol + (bridgeType1 ? " + " +  withholdingFee +
+                        ' ' +
+                        symbol : ""),
                     textBold: true,
                 },
                 {
                     icon: 'received',
                     title: 'Received',
                     desc: this.expectValue,
+                    ...(bridgeType1 ? {notice: "Token burning results in a less number of tokens received"} : {}),
                     textBold: true,
                 },
                 ...(isGasTokenChain ? [{
@@ -353,6 +373,91 @@ export default {
         },
     },
     methods: {
+        async BridgeType1Transfer() {
+            const { selectMakerConfig, fromChainID, transferValue } = transferDataState
+            const safeCode =  transferCalculate.safeCode()
+
+            const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress || web3State.coinbase
+
+            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+            const withholdingFee =  selectMakerConfig.tradingFee
+
+            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+            const recipient = selectMakerConfig.recipient
+
+            console.log("transferValue", transferValue, chainInfo, safeCode)
+            const contractGroup = chainInfo?.contract || {}
+
+            const contractList = Object.keys(contractGroup).map((key)=> {
+                return ({
+                    name: contractGroup[key],
+                    address: key 
+                })
+            })
+
+            const contractAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
+            try {
+                const provider = new ethers.providers.Web3Provider(
+                    compatibleGlobalWalletConf.value.walletPayload.provider
+                )
+
+
+                const signer = provider.getSigner()
+
+                const amount = new BigNumber(transferValue)
+                .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+                const amountValue = amount.toFixed()
+
+                const tokenContract = new ethers.Contract(
+                    tokenAddress,
+                    Coin_ABI,
+                    signer
+                )
+
+                console.log("tokenContract", tokenContract)
+
+                const allowance = await tokenContract.allowance(from, contractAddress)
+
+                console.log("allowance", allowance)
+
+                if(allowance.lt(amountValue)) {
+                    const approveRes = await tokenContract.approve(contractAddress, amountValue)
+                    console.log("approveRes", approveRes)
+                    await approveRes.wait()
+
+                }
+
+                const transferContract = new ethers.Contract(
+                    contractAddress,
+                    Orbiter_OPOOL_ABI,
+                    signer
+                )
+
+                console.log("transferContract", withholdingFee, transferContract, chainInfo.nativeCurrency.decimals)
+
+                const res = await transferContract.inbox(
+                        recipient,
+                        tokenAddress,
+                        amountValue,
+                        ethers.utils.hexlify(ethers.utils.toUtf8Bytes(`c=${safeCode}`)),
+                        {
+                            value: ethers.utils.parseUnits(String(withholdingFee), chainInfo.nativeCurrency.decimals)
+                        })
+                if (res.hash) {
+
+                    this.onTransferSucceed(from, amountValue, fromChainID, res.hash)
+                }
+
+            } catch (err) {
+                console.error('BridgeType1Transfer error', err);
+                this.$notify.error({
+                    title: err?.data?.message || err.message,
+                    duration: 3000,
+                })
+                this.transferLoading = false
+            }
+        },
         async transferToSolana() {
             const { selectMakerConfig, fromChainID, transferValue, toChainID, fromCurrency } =
                 transferDataState
@@ -1728,6 +1833,9 @@ export default {
             }
             const { fromChainID, toChainID, selectMakerConfig } =
                 transferDataState
+
+            const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
+
             if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
@@ -1799,6 +1907,12 @@ export default {
                     this.transferLoading = false
                     return
                 }
+
+                if(bridgeType1) {
+                    this.BridgeType1Transfer()
+                    return 
+                }
+
                 if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
                     this.solanaTransfer(tValue.tAmount)
                     return 
@@ -1980,11 +2094,16 @@ export default {
     async mounted() {
         const { selectMakerConfig, transferValue } = transferDataState
         const { fromChain, toChain } = selectMakerConfig
+        
         if (selectMakerConfig.ebcId && transferDataState.ebcValue) {
             this.expectValue = `${ transferDataState.ebcValue } ${ selectMakerConfig.fromChain.symbol }`;
             return;
         }
         // st
+
+        const slippage = selectMakerConfig.slippage;
+        const bridgeType = selectMakerConfig.bridgeType
+
         const amount = orbiterCore.getToAmountFromUserAmount(
             new BigNumber(transferValue).plus(
                 new BigNumber(selectMakerConfig.tradingFee)
@@ -1992,11 +2111,11 @@ export default {
             selectMakerConfig,
             false
         )
+
         //xvm
         if (util.isExecuteXVMContract()) {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol
-            const slippage = selectMakerConfig.slippage
             if (fromCurrency !== toCurrency) {
                 const decimal =  toChain.decimals === 8 ? 6 : toChain.decimals === 18 ? 5 : 3
                 const highValue = (
@@ -2009,6 +2128,10 @@ export default {
             } else {
                 this.expectValue = `${amount} ${toCurrency}`
             }
+        } else if (Number(bridgeType) === 1) {
+            const toValue = amount.multipliedBy(1 - slippage / 10000);
+            this.expectValue = `${toValue} ${selectMakerConfig.fromChain.symbol}`
+
         } else {
             this.expectValue = `${amount} ${selectMakerConfig.fromChain.symbol}`
         }

@@ -7,8 +7,9 @@ const defaultTransferDateState = {
   transferValue: 0,
   gasFee: 0,
   ethPrice: 0,
-  actDataList: []
+  actDataList: [],
 }
+
 export const transferDataState = reactive({
   ...defaultTransferDateState,
 })
