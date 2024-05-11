@@ -271,29 +271,29 @@ export default {
     },
     methods: {
         selectSymbol(symbol){
-            if(symbol !== this.symbol) {
-                this.updateTime = +new Date()
-                balanceList = []
-            }
-            this.symbol = symbol
-            const _this = this
+            // if(symbol !== this.symbol) {
+            //     this.updateTime = +new Date()
+            //     balanceList = []
+            // }
+            // this.symbol = symbol
+            // const _this = this
 
-            timerT = setTimeout(() => {
-                clearTimeout(timerT)
-                clearInterval(timer)
-                _this.getBalance() 
+            // timerT = setTimeout(() => {
+            //     clearTimeout(timerT)
+            //     clearInterval(timer)
+            //     _this.getBalance() 
             
-                timer = setInterval(() => {
-                    clearInterval(timer)
-                    clearTimeout(timerT)
-                    _this.getBalance() 
-                },  1000 * 60);
-            }, 100);
+            //     timer = setInterval(() => {
+            //         clearInterval(timer)
+            //         clearTimeout(timerT)
+            //         _this.getBalance() 
+            //     },  1000 * 60);
+            // }, 100);
         },
         getChainBalance(chainId) {
-            if(!balanceList?.length) return "--"
+            if(!balanceList?.length) return ""
             const option = balanceList.filter((item)=> item.chainId === chainId)[0]
-            return option ? `${decimalNum(option?.balance, 6) || "0"} ${this.symbol || ""}` : "--"
+            return option ? `${decimalNum(option?.balance, 6) || "0"} ${this.symbol || ""}` : ""
         },
         async getBalance() {
             const symbol = this.symbol
