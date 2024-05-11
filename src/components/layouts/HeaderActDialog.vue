@@ -250,354 +250,233 @@
 
           <div v-if="!isStarknet && !isSolana" class="card_3">
             <div class="text_14">
-              Held Orbiter NFT
-              <o-tooltip>
-                <template v-slot:titleDesc>
-                  <div style="margin-left: -20px">
-                    <span>
-                      Currently, only the official Pilot NFT series held by the
-                      address is displayed, showing only one of multiple NFTs of
-                      the same rank.
-                    </span>
-                  </div>
-                </template>
-                <img
-                  style="
-                    width: 20px;
-                    height: 20px;
-                    vertical-align: top;
-                    margin-left: 4px;
-                  "
-                  :src="require('../../assets/activity/tooltip.png')"
-                />
-              </o-tooltip>
+              <div>Held Orbiter NFT
+                <o-tooltip>
+                  <template v-slot:titleDesc>
+                    <div style="margin-left: -20px">
+                      <span>
+                        Currently, only the official Pilot NFT series held by the
+                        address is displayed, showing only one of multiple NFTs of
+                        the same rank.
+                      </span>
+                    </div>
+                  </template>
+                  <img
+                    style="
+                      width: 20px;
+                      height: 20px;
+                      vertical-align: top;
+                      margin-left: 4px;
+                    "
+                    :src="require('../../assets/activity/tooltip.png')"
+                  />
+                </o-tooltip></div>
+              <div class="extends" @click="toggleNftListStatus">{{ extendsNftList ? "-" : "+" }}</div>
             </div>
-            <div v-if="!nftList.length" class="text-wrapper_38">
-              <span class="text_55">No Orbiter Series NFTs were obtained</span>
-            </div>
-            <div class="nft_box" v-else>
-              <div
-                class="box_div"
-                :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`"
-              >
+            <div v-show="extendsNftList" class="nft-list-group">
+              <div v-if="!nftList.length" class="text-wrapper_38">
+                <span class="text_55">No Orbiter Series NFTs were obtained</span>
+              </div>
+              <div class="nft_box" v-else>
                 <div
-                  v-for="(item, index) in nftList"
-                  :key="index"
-                  class="section_70"
-                  :style="`background: url(${require('../../assets/activity/nft/' +
-                    item.img)});background-size: 100% 100%;border:${item.border};`"
-                ></div>
+                  class="box_div"
+                  :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`"
+                >
+                  <div
+                    v-for="(item, index) in nftList"
+                    :key="index"
+                    class="section_70"
+                    :style="`background: url(${require('../../assets/activity/nft/' +
+                      item.img)});background-size: 100% 100%;border:${item.border};`"
+                  ></div>
+                </div>
+                <div :hidden="!turnLeft" class="btn">
+                  <img
+                    @click="scrollDiv(1)"
+                    class="img"
+                    :src="require('../../assets/activity/turn_right.png')"
+                  />
+                </div>
+                <div :hidden="!turnRight" class="btn_2">
+                  <img
+                    @click="scrollDiv(0)"
+                    class="img_2"
+                    :src="require('../../assets/activity/turn_right.png')"
+                  />
+                </div>
+                <div class="card_cover"></div>
               </div>
-              <div :hidden="!turnLeft" class="btn">
-                <img
-                  @click="scrollDiv(1)"
-                  class="img"
-                  :src="require('../../assets/activity/turn_right.png')"
-                />
-              </div>
-              <div :hidden="!turnRight" class="btn_2">
-                <img
-                  @click="scrollDiv(0)"
-                  class="img_2"
-                  :src="require('../../assets/activity/turn_right.png')"
-                />
-              </div>
-              <div class="card_cover"></div>
             </div>
           </div>
         </div>
         <div style="width: 100%; display: flex;">
           <span class="text_21">🛸 Quests </span>
         </div>
-        <div 
-        class="card"
+        <div class="ativity-list" 
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
+        v-if="!!actDataList.length"
         >
-          <div v-if="questsShow" class="nft_vice_title">
-            <img
-              :src="require('../../assets/activity/banner/quests.png')"
-              alt=""
-            />
-            <div
-              class="nft_vice_title_link"
-              @click="openUrl('https://www.layer220.io/')"
-            ></div>
-            <div class="nft_vice_title_tooltip">
-              <o-tooltip>
-                <template v-slot:titleDesc>
-                  <div style="margin-left: -20px">
-                    <span
-                      >Transactions via the Inscription Cross-Rollup Protocol
-                      will receive 5 O-Points/TX during the limited time(1
-                      month)! After this period, the reward will be adjusted to
-                      3 O-Points/TX.</span
-                    >
-                    <!-- <a class="points_more" href="https://www.layer220.io/" target="_blank">More</a> -->
+          <template v-for="item in actDataList">
+            <div class="activity-card">
+              <div class="activity-card-title">
+                <div class="activity-card-title-left">
+                  <svg-icon
+                    v-if="item.label.icon"
+                    class="icon"
+                    :iconName="item.label.icon"
+                  ></svg-icon>
+                  <div class="text">{{ item.name }}</div>
+                </div>
+                <div class="text_5">
+                  {{ formatTime2(item.startTime) }} -
+                  {{ formatTime2(item.endTime) }}
+                </div>
+              </div>
+            <div>
+              <template v-for="option in item.taskList">
+                <div v-if="option.status === 0" class="box_1">
+                  <div class="text-wrapper_1 flex-row">
+                    <span class="text_1">{{ option.points }}</span>
+                    <span class="text_2">O-Points</span>
                   </div>
-                </template>
-                <img
-                  class="thumbnail_1_3"
-                  :src="require('../../assets/activity/tip_ico.png')"
-                />
-              </o-tooltip>
-            </div>
-          </div>
-          
-          <div
-            v-loading="listLoading"
-            element-loading-background="rgba(0, 0, 0, 0)"
-          >
-            <!-- <div
-            class="box_1 box_1_top"
-            style="margin-top: 0; cursor: pointer"
-            @click="
-              openUrl('https://galxe.com/OrbiterFinance/campaign/GCbnmUNe9g')
-            "
-          >
-            <div class="box_1_hot">🔥</div>
-            <div
-              style="
-                width: 82px;
-                border-radius: 8px;
-                margin-top: 12px;
-                display: flex;
-                justify-content: center;
-              "
-            >
-              <el-carousel
-                :interval="4000"
-                indicator-position="none"
-                type="card"
-                height="64px"
-                style="width: 72px"
-                arrow="never"
-              >
-                <el-carousel-item
-                  v-for="(item, index) in nftSeries"
-                  :key="index"
-                >
+                  <div class="border-dashed"></div>
+                  <div
+                    style="
+                      font-size: 12px;
+                      font-family: OpenSansRoman-SemiBold;
+                      position: absolute;
+                      left: 100px;
+                      top: 13px;
+                    "
+                  >
+                    <div class="text_3" v-html="option.description"></div>
+                    <div
+                      style="margin-top: 10px; display: flex; flex-direction: row"
+                    >
+                      <div
+                        v-for="tag in option.tags"
+                        class="text-wrapper_17 flex-col"
+                      >
+                        <span class="text_27">{{ tag.description }}</span>
+                      </div>
+                      <div class="text-wrapper_18">
+                        <span class="text_28" v-if="!!option.progress">{{
+                          option.progress
+                            ? `${option.progress.current}/${option.progress.total}`
+                            : '0/0'
+                        }}</span>
+                        <span v-else class="text_28">Undone</span>
+                      </div>
+                      
+                    </div>
+                  </div>
                   <img
-                    style="max-width: 100%; height: auto"
-                    :src="require('../../assets/activity/nft/' + item.img)"
+                    :hidden="!isLightMode"
+                    class="thumbnail_1"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/curve_up.png')"
                   />
-                </el-carousel-item>
-              </el-carousel>
-            </div>
-            <div class="border-dashed"></div>
-            <div
-              style="
-                font-size: 12px;
-                font-family: OpenSansRoman-SemiBold;
-                position: absolute;
-                left: 100px;
-                top: 13px;
-              "
-            >
-              <div class="text_1_3">
-                Orbiter's ONLY official Pilot NFT Series
-                <SvgIconThemed v-if="true" size="lg" style="rotate: -90deg" />
-              </div>
-              <div class="text_2_3">
-                Early Loyalty Identification for TOP Users
-              </div>
-              <div style="margin-top: 7px; display: flex; flex-direction: row">
-                <div class="text-wrapper_1_17">
-                  <span class="text_27">Deadline Countdown</span>
+                  <img
+                    :hidden="!isLightMode"
+                    class="thumbnail_2"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/curve_down.png')"
+                  />
+                  <img
+                    :hidden="isLightMode"
+                    class="thumbnail_5"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/curve_up_dark.png')"
+                  />
+                  <img
+                    :hidden="isLightMode"
+                    class="thumbnail_6"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/curve_down_dark.png')"
+                  />
                 </div>
-                <div class="text-wrapper_1_46" style="margin-left: 5px">
-                  <span class="text_1_69">{{ countDownDate }}</span>
-                </div>
-                :
-                <div class="text-wrapper_1_46">
-                  <span class="text_1_69">{{ countDownHour }}</span>
-                </div>
-                :
-                <div class="text-wrapper_1_46">
-                  <span class="text_1_69">{{ countDownMin }}</span>
-                </div>
-                :
-                <div class="text-wrapper_1_46">
-                  <span class="text_1_69">{{ countDownSecond }}</span>
-                </div>
-              </div>
-            </div>
-            <img
-              :hidden="!isLightMode"
-              class="thumbnail_1"
-              referrerpolicy="no-referrer"
-              :src="require('../../assets/activity/curve_up.png')"
-            />
-            <img
-              :hidden="!isLightMode"
-              class="thumbnail_2"
-              referrerpolicy="no-referrer"
-              :src="require('../../assets/activity/curve_down.png')"
-            />
-            <img
-              :hidden="isLightMode"
-              class="thumbnail_5"
-              referrerpolicy="no-referrer"
-              :src="require('../../assets/activity/curve_up_dark.png')"
-            />
-            <img
-              :hidden="isLightMode"
-              class="thumbnail_6"
-              referrerpolicy="no-referrer"
-              :src="require('../../assets/activity/curve_down_dark.png')"
-            />
-          </div> -->
-            <HeaderActGroup
-              v-if="!!actOtherDataList.length"
-              :dataList="actOtherDataList"
-            />
-            <template v-for="item in actDataList">
-              <div v-if="item.status === 0" class="box_1">
-                <div class="text-wrapper_1 flex-row">
-                  <span class="text_1">{{ item.points }}</span>
-                  <span class="text_2">O-Points</span>
-                </div>
-                <div class="border-dashed"></div>
-                <div
-                  style="
-                    font-size: 12px;
-                    font-family: OpenSansRoman-SemiBold;
-                    position: absolute;
-                    left: 100px;
-                    top: 13px;
-                  "
-                >
-                  <div class="text_3" v-html="item.description"></div>
+                <div v-else class="box_2">
+                  <div class="text-wrapper_3">
+                    <span class="text_6">{{ option.points }}</span>
+                    <span class="text_7">O-Points</span>
+                  </div>
+                  <div class="border-dashed_2"></div>
                   <div
-                    style="margin-top: 10px; display: flex; flex-direction: row"
+                    style="
+                      font-size: 12px;
+                      font-family: OpenSansRoman-SemiBold;
+                      position: absolute;
+                      left: 100px;
+                      top: 13px;
+                    "
                   >
+                    <div class="text_8" v-html="option.description"></div>
+  
                     <div
-                      v-for="tag in item.tags"
-                      class="text-wrapper_17 flex-col"
+                      style="margin-top: 10px; display: flex; flex-direction: row"
                     >
-                      <span class="text_27">{{ tag.description }}</span>
-                    </div>
-                    <div class="text-wrapper_18">
-                      <span class="text_28" v-if="!!item.progress">{{
-                        item.progress
-                          ? `${item.progress.current}/${item.progress.total}`
-                          : '0/0'
-                      }}</span>
-                      <span v-else class="text_28">Undone</span>
-                    </div>
-                    <div class="text_5">
-                      {{ formatTime2(item.conditions.startTime) }} -
-                      {{ formatTime2(item.conditions.endTime) }}
+                      <div
+                        v-for="tag in option.tags"
+                        class="text-wrapper_14 flex-col"
+                      >
+                        <span class="text_29">{{ tag.description }}</span>
+                      </div>
+                      <div class="text-wrapper_4 flex-col">
+                        <span class="text_9">Done</span>
+                      </div>
                     </div>
                   </div>
+                  <img
+                    :hidden="!isLightMode"
+                    class="thumbnail_3"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/curve_up_gray.png')"
+                  />
+                  <img
+                    :hidden="!isLightMode"
+                    class="thumbnail_4"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/curve_down_gray.png')"
+                  />
+                  <img
+                    :hidden="isLightMode"
+                    class="thumbnail_5"
+                    referrerpolicy="no-referrer"
+                    :src="require('../../assets/activity/curve_up_dark_done.png')"
+                  />
+                  <img
+                    :hidden="isLightMode"
+                    class="thumbnail_6"
+                    referrerpolicy="no-referrer"
+                    :src="
+                      require('../../assets/activity/curve_down_dark_done.png')
+                    "
+                  />
                 </div>
-                <img
-                  :hidden="!isLightMode"
-                  class="thumbnail_1"
-                  referrerpolicy="no-referrer"
-                  :src="require('../../assets/activity/curve_up.png')"
-                />
-                <img
-                  :hidden="!isLightMode"
-                  class="thumbnail_2"
-                  referrerpolicy="no-referrer"
-                  :src="require('../../assets/activity/curve_down.png')"
-                />
-                <img
-                  :hidden="isLightMode"
-                  class="thumbnail_5"
-                  referrerpolicy="no-referrer"
-                  :src="require('../../assets/activity/curve_up_dark.png')"
-                />
-                <img
-                  :hidden="isLightMode"
-                  class="thumbnail_6"
-                  referrerpolicy="no-referrer"
-                  :src="require('../../assets/activity/curve_down_dark.png')"
-                />
-              </div>
-              <div v-else class="box_2">
-                <div class="text-wrapper_3">
-                  <span class="text_6">{{ item.points }}</span>
-                  <span class="text_7">O-Points</span>
-                </div>
-                <div class="border-dashed_2"></div>
-                <div
-                  style="
-                    font-size: 12px;
-                    font-family: OpenSansRoman-SemiBold;
-                    position: absolute;
-                    left: 100px;
-                    top: 13px;
-                  "
-                >
-                  <div class="text_8" v-html="item.description"></div>
-
-                  <div
-                    style="margin-top: 10px; display: flex; flex-direction: row"
-                  >
-                    <div
-                      v-for="tag in item.tags"
-                      class="text-wrapper_14 flex-col"
-                    >
-                      <span class="text_29">{{ tag.description }}</span>
-                    </div>
-                    <div class="text-wrapper_4 flex-col">
-                      <span class="text_9">Done</span>
-                    </div>
-                    <div class="text_10">
-                      {{ formatTime2(item.conditions.startTime) }} -
-                      {{ formatTime2(item.conditions.endTime) }}
-                    </div>
-                  </div>
-                </div>
-                <img
-                  :hidden="!isLightMode"
-                  class="thumbnail_3"
-                  referrerpolicy="no-referrer"
-                  :src="require('../../assets/activity/curve_up_gray.png')"
-                />
-                <img
-                  :hidden="!isLightMode"
-                  class="thumbnail_4"
-                  referrerpolicy="no-referrer"
-                  :src="require('../../assets/activity/curve_down_gray.png')"
-                />
-                <img
-                  :hidden="isLightMode"
-                  class="thumbnail_5"
-                  referrerpolicy="no-referrer"
-                  :src="require('../../assets/activity/curve_up_dark_done.png')"
-                />
-                <img
-                  :hidden="isLightMode"
-                  class="thumbnail_6"
-                  referrerpolicy="no-referrer"
-                  :src="
-                    require('../../assets/activity/curve_down_dark_done.png')
-                  "
-                />
-              </div>
-            </template>
-            <div style="padding-bottom: 36px" v-if="!!bannerList.length">
-              <div class="text_48">More: Partners' Incentives</div>
-              <el-carousel :interval="4000" trigger="click" height="110px">
-                <el-carousel-item
-                  v-for="(item, index) in bannerList"
-                  :key="index"
-                >
-                  <div
-                    @click="openUrl(item.url)"
-                    class="box_75"
-                    :style="`background: url(${require('../../assets/activity/banner/' +
-                      item.img)});background-size: 100% 100%;`"
-                  ></div>
-                </el-carousel-item>
-              </el-carousel>
+              </template>
             </div>
-          </div>
-
+            </div>
+          </template>
         </div>
+        <div ref="banner_list_ref" style="padding-bottom: 36px" v-if="!!bannerList.length">
+          <div class="text_48">More: Partners' Incentives</div>
+          <el-carousel :interval="4000" trigger="click" height="110px">
+            <el-carousel-item
+              v-for="(item, index) in bannerList"
+              :key="index"
+            >
+              <div
+                @click="openUrl(item)"
+                class="box_75"
+                :style="`background: url(${require('../../assets/activity/banner/' +
+                  item.img)});background-size: 100% 100%;`"
+              ></div>
+            </el-carousel-item>
+          </el-carousel>
+        </div>
+      </div>
+        
 
         <div ref="ecosystem_dapp">
         <!-- <EcosystemDapp></EcosystemDapp> -->
@@ -632,14 +511,13 @@ import {
   solAddress,
   setConnectWalletGroupKey,
   setSolanaDialog,
-  isTonDialog,
-  tonAddress,
+  updateActDataList
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
 import getUTCTime from '../../util/time'
-import { isProd, onCopySuccess } from '../../util'
+import { onCopySuccess } from '../../util'
 import walletDispatchers, {
   WALLETCONNECT,
   CURRENT_SUPPORT_WALLET,
@@ -656,7 +534,6 @@ import EcosystemDapp from './EcosystemDapp.vue'
 import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import { ChainId } from '@loopring-web/loopring-sdk'
-import tonHelper from '../../util/ton/ton_helper'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -677,6 +554,7 @@ export default {
       countDownDate: '00',
       left: 0,
       questsShow: false,
+      extendsNftList: false,
       nftSeries: [
         { img: '0x4a0E7cf70E2816De8e6c30f67968575d17925A55.png' },
         { img: '0x5B9b40c26f6FBD053840A212A0627C55db8ea28c.png' },
@@ -698,13 +576,21 @@ export default {
       taskMobileHeight: 0,
       bannerList: [
         {
+          url: "https://fusion.gobob.xyz/?refCode=2ae49l",
+          img: 'bob.jpg',
+          name: "BOB FUSION",
+          timeStamp: '2024-05-28 06:00:00',
+        },
+        {
           url: 'https://app.galxe.com/quest/Holdstation/GCDRfthVsE',
           img: 'paymaster.png',
+          name: "paymaster",
           timeStamp: '2024-05-03 09:00:00',
         },
         {
           url: 'https://galxe.com/OrbiterFinance/campaign/GCPhNtTQKf',
           img: 'bitget.jpg',
+          name: "bitget",
           timeStamp: '2024-04-28 18:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
@@ -760,10 +646,19 @@ export default {
     },
     actDataList() {
       const list = transferDataState.actDataList || []
-      return list.filter((item) => item.type === 1)
+      return list.map((item)=> ({
+        ...item,
+        label: {
+          icon: "",
+          ...(item?.label || {})
+        }
+      }))
     },
     actOtherDataList() {
       const list = transferDataState.actDataList || []
+      console.log("actOtherDataList", list.filter(
+        (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
+      ))
       return list.filter(
         (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
       )
@@ -775,9 +670,6 @@ export default {
       return isSolanaDialog.value
     },
     showWalletAddress() {
-      if(isTonDialog.value) {
-        return tonAddress()
-      }
       if(isSolanaDialog.value) {
         return solAddress()
       }
@@ -787,9 +679,6 @@ export default {
       return starkAddress()
     },
     currentWalletAddress() {
-      if(isTonDialog.value) {
-        return tonHelper.account()
-      }
       if(isSolanaDialog.value) {
         return solanaHelper.solanaAddress()
       }
@@ -800,9 +689,6 @@ export default {
       return evmAddress?.toLocaleLowerCase();
     },
     networkId() {
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
       if(isSolanaDialog.value) {
         return CHAIN_ID.solana
       }
@@ -813,11 +699,6 @@ export default {
       }
     },
     networkName() {
-      if(!!isTonDialog.value) {
-        return util.netWorkName(
-          !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
-        )
-      }
       if(!!isSolanaDialog.value) {
         return util.netWorkName(
           CHAIN_ID.solana
@@ -835,9 +716,6 @@ export default {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
       if(!!isSolanaDialog.value) {       
         return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
       }
@@ -885,6 +763,12 @@ export default {
     },
   },
   methods: {
+    toggleNftListStatus() {
+      this.extendsNftList = !this.extendsNftList
+      setTimeout(() => {
+        this.getTaskHeight()
+        }, 200)
+    },
     showPointsCall() {
       const group = JSON.parse(
         localStorage.getItem(PONITS_EXPAND_COUNT) || JSON.stringify({})
@@ -908,9 +792,9 @@ export default {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
-      // const ecosystem_dapp = this.$refs.ecosystem_dapp?.clientHeight || 50
+      const bannerListRef = this.$refs.banner_list_ref?.clientHeight || 50
       
-      this.taskHeight = total - eleHeight - walletGroupEle - 72
+      this.taskHeight = total - eleHeight - walletGroupEle - bannerListRef - 72
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle -20
       }
@@ -957,9 +841,6 @@ export default {
     },
     async disconnect() {
       try {
-        if(!!isTonDialog.value) {
-          await tonHelper.disconnect()
-        }
         if(!!isSolanaDialog.value) {
           await solanaHelper.disConnect()
           setConnectWalletGroupKey("SOLANA")
@@ -1035,24 +916,31 @@ export default {
       })
       this.total = res.data.total
       const list = res.data.list
-      const dataList = []
-      const undoneList = []
-      const doneList = []
-      for (const data of list) {
-        for (const task of data.taskList) {
-          if (task.status) {
-            doneList.push({ ...task, twitter: data.twitter })
-          } else {
-            undoneList.push({ ...task, twitter: data.twitter })
-          }
-        }
-      }
-      dataList.push(...undoneList)
-      dataList.push(...doneList)
-      updateActDataList([...dataList])
+      // const dataList = []
+      // const undoneList = []
+      // const doneList = []
+      // for (const data of list) {
+      //   for (const task of data.taskList) {
+      //     if (task.status) {
+      //       doneList.push({ ...task, twitter: data.twitter })
+      //     } else {
+      //       undoneList.push({ ...task, twitter: data.twitter })
+      //     }
+      //   }
+      // }
+      // dataList.push(...undoneList)
+      // dataList.push(...doneList)
+      updateActDataList(list)
     },
-    openUrl(url) {
-      window.open(url, '_blank')
+    openUrl(item) {
+      try {
+        this.$gtag.event('banner-' + item.name, {
+          'event_category': item.name,
+          'event_label': item.url,
+        })
+      }catch(error) {
+      }
+      window.open(item.url, '_blank')
     },
     mobileCloseAct() {
       if (isMobile.value) {
@@ -1482,7 +1370,7 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 18px;
-    margin: 20px 0 0 16px;
+    margin: 10px 0 0 16px;
   }
 
   .box_75 {
@@ -1638,10 +1526,10 @@ export default {
     background-color: rgba(255, 255, 255, 1);
     border-radius: 8px;
     position: relative;
-    width: 388px;
+    width: 100%;
     height: 88px;
     border: 1px solid rgba(34, 34, 34, 1);
-    margin: 16px 0 0 16px;
+    margin-top: 8px;
   }
 
   .box_1_top {
@@ -1816,7 +1704,6 @@ export default {
   }
 
   .text_5 {
-    width: 79px;
     height: 17px;
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
@@ -1825,7 +1712,6 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
-    margin: 2px 0 0 4px;
   }
 
   .thumbnail_1 {
@@ -1848,10 +1734,10 @@ export default {
     background-color: rgba(255, 255, 255, 1);
     border-radius: 8px;
     position: relative;
-    width: 388px;
+    width: 100%;
     height: 88px;
     border: 1px solid rgba(238, 238, 238, 1);
-    margin: 16px 0 0 16px;
+    margin-top: 8px;
   }
 
   .text-wrapper_3 {
@@ -2064,7 +1950,7 @@ export default {
       display: flex;
       width: 100%;
       height: 60px;
-      margin: 8px 0 12px 20px;
+      margin: 8px 0 0 20px;
       overflow: hidden;
 
       .box_div {
@@ -2131,13 +2017,16 @@ export default {
       }
     }
 
-    .text-wrapper_38 {
-      // background-color: rgba(245, 245, 245, 1);
-      // border-radius: 8px;
-      // height: 60px;
+    .nft-list-group {
       width: 100%;
-      margin: 8px 0 8px 20px;
-      display: flex;
+      .text-wrapper_38 {
+        // background-color: rgba(245, 245, 245, 1);
+        // border-radius: 8px;
+        // height: 60px;
+        width: 100%;
+        margin: 8px 0 8px 20px;
+        display: flex;
+      }
     }
 
     .text_55 {
@@ -2163,6 +2052,11 @@ export default {
       margin: 3px 0 0 20px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+
+      .extends {
+        cursor: pointer;
+      }
     }
   }
 
@@ -2324,46 +2218,47 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 23px;
-    margin: 0 0 4px 16px;
+    margin: 12px 0 0 16px;
   }
 
-  .nft_vice_title {
+  .ativity-list {
     width: 100%;
-    overflow-wrap: break-word;
-    color: #999999;
-    font-size: 14px;
-    font-family: OpenSansRoman-Regular;
-    text-align: left;
-    padding: 0 16px;
-    position: relative;
-    top: 0;
-    left: 0;
-
-    & > img {
-      width: 100%;
-    }
-
-    .nft_vice_title_link {
-      width: 35%;
-      height: 50%;
-      position: absolute;
-      top: 50%;
-      right: 16px;
-      z-index: 2;
-      cursor: pointer;
-    }
-
-    .nft_vice_title_tooltip {
-      position: absolute;
-      top: 0;
-      right: 16px;
-      & img {
-        width: 20px;
-        height: 20px;
+    overflow-y: auto;
+    .activity-card {
+      width: calc(100% - 32px);
+      border-radius: 12px;
+      background-color: #F5F5F5;
+      padding: 12px;
+      margin: 12px 16px;
+      .activity-card-title {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .activity-card-title-left {
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          .icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 6px;
+          }
+          .text {
+            color: rgb(34, 34, 34);
+            font-family: OpenSansRoman-Bold;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 19px;
+            letter-spacing: 0px;
+            text-align: left;
+          }
+        }
+        
       }
     }
   }
-
   .text_65 {
     cursor: pointer;
     width: 39px;
@@ -2381,6 +2276,16 @@ export default {
 
 .dark-theme {
   .act {
+    .ativity-list {
+      .activity-card {
+        background: #373951;
+        .activity-card-title {
+          .text {
+            color: #FFF;
+          }
+        }
+      }
+    }
     .card_3 {
       .text_14 {
         color: rgba(255, 255, 255, 1);
@@ -2493,7 +2398,7 @@ export default {
       text-align: left;
       white-space: nowrap;
       line-height: 23px;
-      margin: 0 0 4px 16px;
+      margin: 12px 0 0 16px;
     }
 
     .box_1 {
@@ -2501,10 +2406,10 @@ export default {
       background-color: rgba(71, 74, 111, 1);
       border-radius: 8px;
       position: relative;
-      width: 388px;
       height: 88px;
+      width: 100%;
       border: 1px solid rgba(255, 255, 255, 0.2);
-      margin: 16px 0 0 16px;
+      margin-top: 8px;
     }
 
     .box_2 {
@@ -2512,10 +2417,10 @@ export default {
       background-color: rgba(54, 57, 81, 1);
       border-radius: 8px;
       position: relative;
-      width: 388px;
+      width: 100%;
       height: 88px;
       border: 1px solid rgba(238, 238, 238, 0.1);
-      margin: 16px 0 0 16px;
+      margin-top: 8px;
     }
 
     .text-wrapper_2 {
@@ -2635,16 +2540,6 @@ export default {
       width: 91.5%;
     }
 
-    .box_1 {
-      width: 91.5%;
-      margin: 16px;
-    }
-
-    .box_2 {
-      width: 91.5%;
-      margin: 16px;
-    }
-
     .thumbnail_1 {
       top: 82px;
     }
@@ -2686,7 +2581,6 @@ export default {
       }
 
       .text_5 {
-        width: 31px;
         height: 17px;
         overflow-wrap: break-word;
         color: rgba(255, 255, 255, 0.8);
@@ -2695,7 +2589,6 @@ export default {
         text-align: left;
         white-space: nowrap;
         line-height: 17px;
-        margin: 1px 0 0 12px;
       }
 
       .text_21 {
@@ -2709,7 +2602,7 @@ export default {
         text-align: left;
         white-space: nowrap;
         line-height: 23px;
-        margin: 0 0 4px 16px;
+        margin: 12px 0 0 16px;
       }
 
       .box_1 {
@@ -2719,8 +2612,8 @@ export default {
         position: relative;
         height: 88px;
         border: 1px solid rgba(255, 255, 255, 0.2);
-        width: 91.5%;
-        margin: 16px;
+        width: 100%;
+        margin-top: 8px;
       }
 
       .box_2 {
@@ -2728,10 +2621,10 @@ export default {
         background-color: rgba(54, 57, 81, 1);
         border-radius: 8px;
         position: relative;
-        width: 91.5%;
+        width: 100%;
         height: 88px;
         border: 1px solid rgba(238, 238, 238, 0.1);
-        margin: 16px;
+        margin-top: 8px;
       }
 
       .text-wrapper_2 {

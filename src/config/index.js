@@ -152,6 +152,7 @@ function convertMakerConfig(maker) {
         tradingFee: makerData.tradingFee,
         gasFee: makerData.gasFee,
         tieredFee: makerData?.tieredFee,
+        bridgeType: makerData?.bridgeType,
         fromChain: {
           id: +fromChainId,
           networkId: c1Chain.networkId,

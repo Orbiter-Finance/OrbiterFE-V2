@@ -63,18 +63,22 @@ function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
   const decimals =
     selectMakerConfig.fromChain?.decimals || selectMakerConfig.precision
   const toDecimals = selectMakerConfig.toChain?.decimals
-
   let toAmount_tradingFee = new BigNumber(userAmount).minus(
     new BigNumber(selectMakerConfig.tradingFee)
   )
+
   let gasFee = toAmount_tradingFee
     .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
     .dividedBy(new BigNumber(1000))
-  let digit = decimals === 8 ? 6 : decimals === 18 ? 5 : 2
+  let digit = decimals === 8 || toDecimals === 8 ? 6 : decimals === 18 ? 5 : 2
   let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
   let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
 
-  if (!toAmount_fee || isNaN(toAmount_fee)) {
+  if (
+    !toAmount_fee ||
+    isNaN(toAmount_fee) ||
+    toAmount_fee.lt(new BigNumber(0))
+  ) {
     return 0
   }
   if (isWei) {
