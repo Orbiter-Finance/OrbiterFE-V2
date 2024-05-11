@@ -20,14 +20,48 @@
                 <SvgIconThemed @click="search" class="searchIcon" icon="search" />
             </div>
         </div>
-        <div class="list-content-box ob-scrollbar">
+        <div class="list-content-box ob-scrollbar" :key="updateTime">
 
             <div class="list-content">
                 <template v-if="isExistChainsGroup">
-                    <template v-for="(chains, name) of groupChainData" >
+                    <template v-for="(chains, name) of groupChains" >
                         <div class="contentItem title" >{{ toCapitalize(name) }}</div>
                         <div v-for="(item, index) of chains" :key="name + index"
                             @click="getChainInfo(item, index)" class="contentItem">
+                            <div class="contentItemChain">
+                                <svg-icon
+                                    class="logo"
+                                    :iconName="item.localID"
+                                    style="margin-right: 1.5rem;"
+                                ></svg-icon>
+                                <span>{{ item.chain }}</span>
+                                <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                                    height="1.5rem" />
+                            </div>
+                            <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                        </div>
+                    </template>
+                    <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
+                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
+                        class="contentItem">
+                        <div class="contentItemChain">
+                            <svg-icon
+                            class="logo"
+                            :iconName="item.localID"
+                            style="margin-right: 1.5rem;"
+                            ></svg-icon>
+                            <span>{{ item.chain }}</span>
+                            <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                        </div>
+                        <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                    </div>
+                </template>
+                <template v-else>
+                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
+                        class="contentItem">
+                        <div class="contentItemChain">
+
                             <svg-icon
                                 class="logo"
                                 :iconName="item.localID"
@@ -35,33 +69,9 @@
                             ></svg-icon>
                             <span>{{ item.chain }}</span>
                             <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                                height="1.5rem" />
+                            height="1.5rem" />
                         </div>
-                    </template>
-                    <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
-                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
-                        class="contentItem">
-                        <svg-icon
-                            class="logo"
-                            :iconName="item.localID"
-                            style="margin-right: 1.5rem;"
-                        ></svg-icon>
-                        <span>{{ item.chain }}</span>
-                        <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                            height="1.5rem" />
-                    </div>
-                </template>
-                <template v-else>
-                    <div v-for="(item, index) in newChainData" :key="item.chain + index" @click="getChainInfo(item, index)"
-                        class="contentItem">
-                        <svg-icon
-                            class="logo"
-                            :iconName="item.localID"
-                            style="margin-right: 1.5rem;"
-                        ></svg-icon>
-                        <span>{{ item.chain }}</span>
-                        <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                            height="1.5rem" />
+                        <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
                     </div>
                 </template>
             </div>
@@ -75,18 +85,28 @@ import { DydxHelper } from '../util/dydx/dydx_helper'
 import { IMXHelper } from '../util/immutablex/imx_helper'
 import util from '../util/util.js'
 import {customSort} from '../util/index'
+import {decimalNum} from '../util/decimalNum'
 
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
-import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey } from '../composition/hooks'
+import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey, transferDataState } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
 import  solanaHelper from '../util/solana/solana_helper';
+import transferCalculate from '../util/transfer/transferCalculate'
 import { getStarknet } from 'get-starknet'
+import { ethers } from 'ethers'
+import BigNumber from 'bignumber.js'
 
 const chainConfig = config.chainConfig
 
 const chainsSelectGroup = JSON.parse(process.env.VUE_APP_CHAINS_SELECT_GROUP || '{}')
+
+let timer = 0
+let timerT = 0
+let timeNum = 0
+
+let balanceList = []
 
 export default {
     name: 'ObSelectChain',
@@ -103,10 +123,23 @@ export default {
         return {
             keyword: '',
             loadingIndex: -1,
-            tabKey: "All"
+            tabKey: "All",
+            updateTime: 0
         }
     },
     computed: {
+        currentWalletAddress() {
+            const evmAddress =
+              compatibleGlobalWalletConf.value.walletPayload.walletAddress
+            return evmAddress
+        },
+        starknetAddress () {
+           return web3State.starkNet.starkNetAddress
+        },
+        solanaAddress() {
+            const solanaAddress = web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+            return solanaAddress
+        },
         tabsList() {
             return [{
                 key: "All",
@@ -163,27 +196,35 @@ export default {
                         (option) => (String(item) === String(option.localID))
                     )[0]
                 }).filter((option)=> !!option )
+
+                const list = chainsSelectGroup?.[this.tabKey]
+
+                chains = chains.filter((item)=>{
+                    const flag = this.tabKey === this.tabsList[0]?.key
+                    return flag || list?.some((option)=> String(option).trim().toLocaleLowerCase() === String(item?.localID).trim().toLocaleLowerCase())
+                })
+
+                let chainData = []
+
+                chains.forEach((item)=>{
+                    const flag = chainData?.some((option)=> String(option?.localID).trim().toLocaleLowerCase() === String(item?.localID).trim().toLocaleLowerCase())
+                    if(!flag) {
+                        chainData =  chainData.concat([item])
+                    }
+                })
                 
                 if (this.keyword || this.keyword !== '') {
                     chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
                 }
                 data[groupName] = chains;
             }
+            
             return data;
         },
-        groupChainData: function () {
-            return this.tabKey !== this.tabsList[0]?.key ? {} : this.groupChains
-        },
         newChainData: function () {
-
-            let chainList = []
-
-            for (const groupName in this.groupChains) {
-                const chainsIds = this.groupChains[groupName]
-                chainList = chainList.concat(chainsIds || [])
-            }
-            
-            let chains = this.transferChainData.concat(chainList)
+            let chains = this.transferChainData.filter(
+                    (item) => !this.localIdsInGroup.find(id=>String(id) === String(item.localID))
+                )
             if (this.keyword || this.keyword !== '') {
                 chains = chains.filter(item=> item.chain.toLowerCase().includes(this.keyword.toLowerCase()))
             }
@@ -205,6 +246,7 @@ export default {
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
                 CHAIN_ID.solana, CHAIN_ID.solana_test
             ]
+
             let data = customSort(chainOrderIds,chains)
             const list = chainsSelectGroup?.[this.tabKey]
 
@@ -223,12 +265,116 @@ export default {
             })
 
             return chainData
-        },
+        }
 
     },
-    watch: {},
-    mounted() { },
+    mounted() {
+        const _this = this
+
+        timerT = setTimeout(() => {
+            clearTimeout(timerT)
+            clearInterval(timer)
+            _this.getBalance() 
+
+            timer = setInterval(() => {
+                clearInterval(timer)
+                clearTimeout(timerT)
+                _this.getBalance() 
+            },  1000 * 60);
+        }, 100);
+
+        
+    },
     methods: {
+        getChainBalance(chainId) {
+            if(!balanceList?.length) return "--"
+            const option = balanceList.filter((item)=> item.chainId === chainId)[0]
+            return option ? `${decimalNum(option?.balance, 6) || "0"} ${option?.tokenName || ""}` : "--"
+        },
+        async getBalance() {
+            const { fromChainID, toChainID, fromCurrency, toCurrency, selectMakerConfig } = transferDataState;
+            let chainList = []
+
+            for (const groupName in this.groupChains) {
+                const chainsIds = this.groupChains[groupName]
+                chainList = chainList.concat(chainsIds || [])
+            }
+
+            let chains = this.newChainData.concat(chainList)
+
+            let chainData = []
+
+            chains.forEach((item)=>{
+                const flag = chainData?.some((option)=> String(option?.localID).trim().toLocaleLowerCase() === String(item?.localID).trim().toLocaleLowerCase())
+                if(!flag) {
+                    chainData =  chainData.concat([item])
+                }
+            })
+
+            let list = chainData.map( (item)=> {
+                const chainInfo = util.getV3ChainInfoByChainId(item?.localID)
+
+                const group = chainInfo?.tokens?.concat?.(chainInfo?.nativeCurrency || {})?.filter((option)=> option.symbol === selectMakerConfig?.fromChain?.symbol)?.[0]
+
+                let address = ""
+                if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test) {
+                    address = this.solanaAddress
+                } else if(item.localID === CHAIN_ID.starknet || item.localID ===  CHAIN_ID.starknet_test) {
+                    address = this.starknetAddress
+                } else {
+                    address = this.currentWalletAddress
+                }
+
+                return group ? ({
+                    localChainID: item.localID,
+                    tokenAddress: group.address,
+                    tokenName: group.symbol,
+                    decimals: group.decimals,
+                    userAddress: address,
+                }) : ({
+                    localChainID: item.localID,
+                    tokenName: selectMakerConfig?.fromChain?.symbol,
+                })
+            })
+            list = list.filter((item)=>{
+                const option = balanceList?.filter((option)=> String(option?.chainId)?.toLocaleLowerCase() === String(item.localChainID)?.toLocaleLowerCase() )[0]
+                return !option || new BigNumber(option.balance).gt("0") || (Number(+new Date() - this.updateTime) > 1000 * 60 * 3)
+            })
+
+            const res = await Promise.all(list.map(async (item)=> {
+                const defaultResult = ({
+                        balance: "0",
+                        chainId: item?.localChainID,
+                        tokenName: item.tokenName
+                    }) 
+                try {
+                    if(item?.tokenAddress && item?.userAddress){
+                        const balance = await transferCalculate.getTransferBalance(
+                            item.localChainID,
+                            item.tokenAddress,
+                            item.tokenName,
+                            item.userAddress,
+                        )
+
+                        return ({
+                            balance: ethers.utils.formatUnits(balance, item.decimals),
+                            chainId: item.localChainID,
+                            tokenName: item.tokenName
+                        }) 
+                    } else {
+                        return defaultResult
+                    }
+                } catch (error) {
+                    return defaultResult
+                    
+                }
+            })) 
+
+            this.updateTime = +new Date()
+            
+            balanceList = res
+
+        },
         selectTab(tab) {
             this.tabKey = tab.key
         },
@@ -375,6 +521,7 @@ export default {
     height: calc(100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
     border-radius: 20px;
     padding: 20px 0;
+    font-family: OpenSansRoman-Regular;
 
     .selectChainContent {
         // margin: 1rem 1.5rem;
@@ -401,6 +548,8 @@ export default {
                 justify-content: center;
                 align-items: center;
                 cursor: pointer;
+                color: #999999;
+                font-family: OpenSansRoman-Regular;
             }
 
             .selectChainActiveItem {
@@ -418,11 +567,11 @@ export default {
             font-weight: bold;
             line-height: 2rem;
             display: flex;
-            // justify-content: space-between;
-            justify-content: center;
+            justify-content: space-between;
             padding: 0 1rem;
             margin-bottom: 18px;
             position: relative;
+            text-align: left;
         }
 
         .input {
@@ -473,20 +622,36 @@ export default {
         font-weight: 700;
         font-size: 16px;
         line-height: 24px;
+        justify-content: space-between;
+        font-family: OpenSansRoman-Regular;
 
-        .logo {
-            width: 2.4rem;
-            height: 2.4rem;
-            border-radius: 50%;
-            background: rgba($color: #000000, $alpha: 0.05);
-            padding: 0.2rem;
+        .contentItemChain {
+            display: flex;
+            align-items: center;
+
+            .logo {
+                width: 2.4rem;
+                height: 2.4rem;
+                border-radius: 50%;
+                background: rgba($color: #000000, $alpha: 0.05);
+                padding: 0.2rem;
+            }
+    
+            .right {
+                text-align: right;
+                position: absolute;
+                right: 0.5rem;
+            }
         }
 
-        .right {
-            text-align: right;
-            position: absolute;
-            right: 0.5rem;
+        .contentItemBalance {
+            font-size: 14px;
+            font-weight: 500;
+            font-family: OpenSansRoman-Regular;
+            color: #999999;
         }
+
+        
     }
 }
 

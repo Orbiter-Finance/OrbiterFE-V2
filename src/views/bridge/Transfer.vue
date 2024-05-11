@@ -2045,6 +2045,7 @@ export default {
           }
         }
         const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
+        const toChainInfo = util.getV3ChainInfoByChainId(toChainID);
         const toAddressAll = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
                 selectMakerConfig.recipient).toLowerCase();
@@ -2056,7 +2057,55 @@ export default {
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase());
         // sendTransfer
-        this.$store.commit('updateConfirmRouteDescInfo', [
+        const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
+        const contractGroup = chainInfo?.contract || {}
+
+        const contractList = Object.keys(contractGroup).map((key)=> {
+            return ({
+                name: contractGroup[key],
+                address: key 
+            })
+        })
+        const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
+        const toContractGroup = toChainInfo?.contract || {}
+
+        console.log("toContractGroup", toContractGroup)
+
+        const toContractList = Object.keys(toContractGroup).map((key)=> {
+          return ({
+              name: toContractGroup[key],
+              address: key 
+          })
+        })
+        const ContractToAddress = toContractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
+        this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
+          {
+            no: 1,
+            from: selectMakerConfig.tradingFee + chainInfo?.nativeCurrency?.symbol,
+            to: toAddress,
+            fromTip: '',
+            toTip: toAddressAll,
+            icon: 'wallet'
+          },
+          {
+            no: 2,
+            from: new BigNumber(this.transferValue).toFixed(4) + fromCurrency,
+            to: util.shortAddress(contractFromAddress),
+            fromTip: '',
+            toTip: toAddressAll,
+            icon: 'contract'
+          },
+          {
+            no: 3,
+            from: util.shortAddress(ContractToAddress) || senderShortAddress,
+            to: util.shortAddress(walletAddress),
+            fromTip: senderAddress,
+            toTip: walletAddress,
+            icon: 'wallet'
+          }
+        ]: [
           {
             no: 1,
             from: new BigNumber(this.transferValue).plus(
