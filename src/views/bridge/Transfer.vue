@@ -449,6 +449,7 @@ import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcB
 import { ethers } from 'ethers'
 
 import solanaHelper from "../../util/solana/solana_helper"
+import { decimalNum } from '../../util/decimalNum'
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -2083,22 +2084,14 @@ export default {
         this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
           {
             no: 1,
-            from: selectMakerConfig.tradingFee + chainInfo?.nativeCurrency?.symbol,
-            to: toAddress,
-            fromTip: '',
-            toTip: toAddressAll,
-            icon: 'wallet'
-          },
-          {
-            no: 2,
-            from: new BigNumber(this.transferValue).toFixed(4) + fromCurrency,
+            from: decimalNum(new BigNumber(this.transferValue), 4) + fromCurrency,
             to: util.shortAddress(contractFromAddress),
             fromTip: '',
             toTip: toAddressAll,
             icon: 'contract'
           },
           {
-            no: 3,
+            no: 2,
             from: util.shortAddress(ContractToAddress) || senderShortAddress,
             to: util.shortAddress(walletAddress),
             fromTip: senderAddress,

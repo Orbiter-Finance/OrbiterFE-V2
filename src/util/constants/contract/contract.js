@@ -1502,11 +1502,6 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
       {
-        internalType: 'address',
-        name: '_tokenReceiver',
-        type: 'address',
-      },
-      {
         internalType: 'address[]',
         name: '_makers',
         type: 'address[]',
@@ -1565,6 +1560,11 @@ const Orbiter_OPOOL_ABI = [
     type: 'error',
   },
   {
+    inputs: [],
+    name: 'ReentrancyGuardReentrantCall',
+    type: 'error',
+  },
+  {
     inputs: [
       {
         internalType: 'address',
@@ -1588,6 +1588,18 @@ const Orbiter_OPOOL_ABI = [
         indexed: true,
         internalType: 'address',
         name: 'token',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'tokenfrom',
+        type: 'address',
+      },
+      {
+        indexed: false,
+        internalType: 'address',
+        name: 'tokenReceiver',
         type: 'address',
       },
       {
@@ -1707,6 +1719,25 @@ const Orbiter_OPOOL_ABI = [
     inputs: [
       {
         internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'managerList',
+    outputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
         name: 'token',
         type: 'address',
       },
@@ -1734,9 +1765,9 @@ const Orbiter_OPOOL_ABI = [
   {
     inputs: [
       {
-        internalType: 'address[]',
-        name: 'tokens',
-        type: 'address[]',
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
       },
       {
         internalType: 'address[]',
@@ -1800,9 +1831,32 @@ const Orbiter_OPOOL_ABI = [
   {
     inputs: [
       {
-        internalType: 'address',
-        name: '_tokenReceiver',
-        type: 'address',
+        internalType: 'address[]',
+        name: 'tokens',
+        type: 'address[]',
+      },
+      {
+        internalType: 'address[]',
+        name: 'managers',
+        type: 'address[]',
+      },
+    ],
+    name: 'setManagerList',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address[]',
+        name: 'tokens',
+        type: 'address[]',
+      },
+      {
+        internalType: 'address[]',
+        name: 'receivers',
+        type: 'address[]',
       },
     ],
     name: 'setTokenReceiver',
@@ -1811,8 +1865,14 @@ const Orbiter_OPOOL_ABI = [
     type: 'function',
   },
   {
-    inputs: [],
-    name: 'tokenReceiver',
+    inputs: [
+      {
+        internalType: 'address',
+        name: '',
+        type: 'address',
+      },
+    ],
+    name: 'tokenReceivers',
     outputs: [
       {
         internalType: 'address',
@@ -1832,6 +1892,24 @@ const Orbiter_OPOOL_ABI = [
       },
     ],
     name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'token',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+    ],
+    name: 'withdraw',
     outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
