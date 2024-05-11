@@ -1536,6 +1536,8 @@ export default {
         this.toValue = 0;
         return;
       }
+      const slippage = selectMakerConfig.slippage;
+      const bridgeType = selectMakerConfig.bridgeType
       let amount = orbiterCore.getToAmountFromUserAmount(
               new BigNumber(this.transferValue).plus(
                       new BigNumber(selectMakerConfig.tradingFee)
@@ -1543,17 +1545,19 @@ export default {
               selectMakerConfig,
               false
       );
+
       if (fromCurrency !== toCurrency) {
         const exchangeRates = this.rates;
         const fromRate = exchangeRates[fromCurrency];
         const toRate = exchangeRates[toCurrency];
-        const slippage = selectMakerConfig.slippage;
         if (!fromRate || !toRate || !slippage) {
           util.log('get rate fail', fromCurrency, fromRate, toCurrency, toRate);
           return 0;
         }
         const value = (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
         this.toValue = new BigNumber(value).multipliedBy(1 - slippage / 10000);
+      } else if(Number(bridgeType) === 1) {
+        this.toValue = amount.multipliedBy(1 - slippage / 10000);
       } else {
         this.toValue = amount;
       }
@@ -2114,10 +2118,23 @@ export default {
             precision
     ) {
       const { fromCurrency, selectMakerConfig } = transferDataState;
-      const sender = selectMakerConfig.sender;
+      let sender = selectMakerConfig.sender;
+      const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
       try {
         if (!sender) {
           return '';
+        }
+        if(bridgeType1) {
+          const chainInfo = util.getV3ChainInfoByChainId(chainId)
+          const contractGroup = chainInfo?.contract || {}
+          const contractList = Object.keys(contractGroup).map((key)=> {
+              return ({
+                  name: contractGroup[key],
+                  address: key 
+              })
+          })
+          sender = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
         }
         const response = await transferCalculate.getTransferBalance(
                 chainId,

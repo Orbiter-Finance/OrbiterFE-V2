@@ -178,27 +178,27 @@
             "endTime": 99999999999999,
             "tieredFee": [
                 {
-                  "range": [
-                    0.1,
-                    0.2
-                  ],
-                  "discount": 10
+                    "range": [
+                        0.1,
+                        0.2
+                    ],
+                    "discount": 10
                 },
                 {
-                  "range": [
-                    0.3,
-                    0.4
-                  ],
-                  "discount": 20
+                    "range": [
+                        0.3,
+                        0.4
+                    ],
+                    "discount": 20
                 },
                 {
-                  "range": [
-                    0.2,
-                    0.3
-                  ],
-                  "discount": 30
+                    "range": [
+                        0.2,
+                        0.3
+                    ],
+                    "discount": 30
                 }
-              ]
+            ]
         },
         "USDC-USDC": {
             "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
@@ -212,27 +212,27 @@
             "endTime": 99999999999999,
             "tieredFee": [
                 {
-                  "range": [
-                    0.1,
-                    0.2
-                  ],
-                  "discount": 0.1
+                    "range": [
+                        0.1,
+                        0.2
+                    ],
+                    "discount": 0.1
                 },
                 {
-                  "range": [
-                    0.3,
-                    0.4
-                  ],
-                  "discount": 0.3
+                    "range": [
+                        0.3,
+                        0.4
+                    ],
+                    "discount": 0.3
                 },
                 {
-                  "range": [
-                    0.2,
-                    0.3
-                  ],
-                  "discount": 0.2
+                    "range": [
+                        0.2,
+                        0.3
+                    ],
+                    "discount": 0.2
                 }
-              ]
+            ]
         },
         "USDT-USDT": {
             "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
@@ -246,27 +246,27 @@
             "endTime": 99999999999999,
             "tieredFee": [
                 {
-                  "range": [
-                    0.1,
-                    0.2
-                  ],
-                  "discount": 0.1
+                    "range": [
+                        0.1,
+                        0.2
+                    ],
+                    "discount": 0.1
                 },
                 {
-                  "range": [
-                    0.3,
-                    0.4
-                  ],
-                  "discount": 0.3
+                    "range": [
+                        0.3,
+                        0.4
+                    ],
+                    "discount": 0.3
                 },
                 {
-                  "range": [
-                    0.2,
-                    0.3
-                  ],
-                  "discount": 0.2
+                    "range": [
+                        0.2,
+                        0.3
+                    ],
+                    "discount": 0.2
                 }
-              ]
+            ]
         }
     },
     "526-88": {
@@ -538,11 +538,9 @@
             "minPrice": 0.1,
             "slippage": 200,
             "startTime": 0,
-            "endTime": 99999999999999,
-            "bridgeType": 1
+            "endTime": 99999999999999
         },
         "USDT-USDT": {
-            "bridgeType": 1,
             "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
             "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
             "gasFee": 100,
@@ -5028,6 +5026,34 @@
             "gasFee": 5,
             "tradingFee": 0.001,
             "maxPrice": 0.1,
+            "minPrice": 0.001,
+            "slippage": 200,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "515-535": {
+        "AIDOGE-AIDOGE": {
+            "bridgeType": 1,
+            "makerAddress": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
+            "sender": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 5,
+            "minPrice": 0.001,
+            "slippage": 200,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "535-515": {
+        "AIDOGE-AIDOGE": {
+            "bridgeType": 1,
+            "makerAddress": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
+            "sender": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
+            "gasFee": 5,
+            "tradingFee": 0.001,
+            "maxPrice": 5,
             "minPrice": 0.001,
             "slippage": 200,
             "startTime": 0,
