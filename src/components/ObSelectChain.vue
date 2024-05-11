@@ -16,7 +16,7 @@
             </div>
             <div style="width: 100%; position: relative">
                 <input type="text" v-model="keyword" class="input" @input="checkKeyWord()"
-                    :placeholder="`input search text`" />
+                    :placeholder="`Search`" />
                 <SvgIconThemed @click="search" class="searchIcon" icon="search" />
             </div>
         </div>
@@ -90,7 +90,7 @@ import {decimalNum} from '../util/decimalNum'
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
 import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
-import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey, transferDataState } from '../composition/hooks'
+import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey, transferDataState, selectTokenSymbol } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
 import  solanaHelper from '../util/solana/solana_helper';
 import transferCalculate from '../util/transfer/transferCalculate'
@@ -124,7 +124,8 @@ export default {
             keyword: '',
             loadingIndex: -1,
             tabKey: "All",
-            updateTime: 0
+            updateTime: 0,
+            symbol: this.symbol
         }
     },
     computed: {
@@ -268,31 +269,35 @@ export default {
         }
 
     },
-    mounted() {
-        const _this = this
-
-        timerT = setTimeout(() => {
-            clearTimeout(timerT)
-            clearInterval(timer)
-            _this.getBalance() 
-
-            timer = setInterval(() => {
-                clearInterval(timer)
-                clearTimeout(timerT)
-                _this.getBalance() 
-            },  1000 * 60);
-        }, 100);
-
-        
-    },
     methods: {
+        selectSymbol(symbol){
+            console.log("symbolsymbolsymbolsymbolsymbol", symbol)
+            if(symbol !== this.symbol) {
+                this.updateTime = +new Date()
+                balanceList = []
+            }
+            this.symbol = symbol
+            const _this = this
+
+            timerT = setTimeout(() => {
+                clearTimeout(timerT)
+                clearInterval(timer)
+                _this.getBalance() 
+            
+                timer = setInterval(() => {
+                    clearInterval(timer)
+                    clearTimeout(timerT)
+                    _this.getBalance() 
+                },  1000 * 60);
+            }, 100);
+        },
         getChainBalance(chainId) {
             if(!balanceList?.length) return "--"
             const option = balanceList.filter((item)=> item.chainId === chainId)[0]
-            return option ? `${decimalNum(option?.balance, 6) || "0"} ${option?.tokenName || ""}` : "--"
+            return option ? `${decimalNum(option?.balance, 6) || "0"} ${this.symbol || ""}` : "--"
         },
         async getBalance() {
-            const { fromChainID, toChainID, fromCurrency, toCurrency, selectMakerConfig } = transferDataState;
+            const symbol = this.symbol
             let chainList = []
 
             for (const groupName in this.groupChains) {
@@ -314,7 +319,7 @@ export default {
             let list = chainData.map( (item)=> {
                 const chainInfo = util.getV3ChainInfoByChainId(item?.localID)
 
-                const group = chainInfo?.tokens?.concat?.(chainInfo?.nativeCurrency || {})?.filter((option)=> option.symbol === selectMakerConfig?.fromChain?.symbol)?.[0]
+                const group = chainInfo?.tokens?.concat?.(chainInfo?.nativeCurrency || {})?.filter((option)=> option.symbol === symbol)?.[0]
 
                 let address = ""
                 if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test) {
@@ -333,7 +338,7 @@ export default {
                     userAddress: address,
                 }) : ({
                     localChainID: item.localID,
-                    tokenName: selectMakerConfig?.fromChain?.symbol,
+                    tokenName: symbol,
                 })
             })
             list = list.filter((item)=>{

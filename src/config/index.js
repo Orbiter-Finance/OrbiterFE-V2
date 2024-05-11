@@ -70,6 +70,7 @@ const makerFiles = shuffleArray(
         'btc-prod.json',
         'usdt-prod.json',
         'usdc-prod.json',
+        'aidoge-prod.json',
       ]
     : ['makerTest-1.json', 'makerTest-2.json']
 )

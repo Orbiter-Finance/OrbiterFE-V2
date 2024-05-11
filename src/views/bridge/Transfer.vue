@@ -321,6 +321,7 @@
       <CommDialog ref="SelectFromChainPopupRef">
         <div slot="PoperContent" style="width: 100%">
           <ObSelectChain
+                  ref="selectFromChainRef"
                   :ChainData="fromChainIdList"
                   v-on:getChainInfo="getFromChainInfo"
                   v-on:closeSelect="closeFromChainPopupClick()"
@@ -543,6 +544,9 @@ export default {
     };
   },
   computed: {
+    selectFromTokenSymbol(){
+      return this.selectFromToken
+    },
     selectStarknet() {
       return util.isStarkNet();
     },
@@ -829,7 +833,8 @@ export default {
     crossAddressReceipt: function (newValue) {
       updateCrossAddressReceipt(newValue);
     },
-    selectFromToken(newValue) {
+    selectFromTokenSymbol:function (newValue) {
+      this.$refs.selectFromChainRef.selectSymbol(newValue)
       if (transferDataState.fromCurrency !== newValue) {
         this.updateTransferInfo({ fromCurrency: newValue });
         this.clearTransferValue();
@@ -843,8 +848,6 @@ export default {
         this.isTipFromTokenAddress = false
         this.isTiptargetTokenAddress = false
       }
-
-
     },
     selectToToken: function (newValue) {
       if (transferDataState.toCurrency !== newValue) {

@@ -349,6 +349,7 @@ export default {
                     icon: 'received',
                     title: 'Received',
                     desc: this.expectValue,
+                    ...(bridgeType1 ? {notice: "Token burning results in a less number of tokens received"} : {}),
                     textBold: true,
                 },
                 ...(isGasTokenChain ? [{

@@ -121,6 +121,12 @@
                 "symbol": "BTC",
                 "decimals": 8,
                 "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f"
+            },
+            {
+                "name": "AIDOGE",
+                "symbol": "AIDOGE",
+                "decimals": 6,
+                "address": "0x09E18590E8f76b6Cf471b3cd75fE1A1a9D2B2c2b"
             }
         ],
         "xvmList": [
@@ -744,6 +750,12 @@
                 "symbol": "BTC",
                 "decimals": 18,
                 "address": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c"
+            },
+            {
+                "name": "AIDOGE",
+                "symbol": "AIDOGE",
+                "decimals": 6,
+                "address": "0x8edB3Dc279B953E7E07819BBf22E783637B7cb06"
             }
         ],
         "infoURL": "https://bscscan.com",
