@@ -1443,6 +1443,10 @@ export default {
       let userMax = useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN) > 0
               ? useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        useBalance = new BigNumber(this.fromBalance)
+        userMax = useBalance
+      }
       let makerMax = new BigNumber(fromChain.maxPrice);
       let makerMin = new BigNumber(this.userMinPrice);
       let transferValue = new BigNumber(this.transferValue || 0);
@@ -1462,7 +1466,7 @@ export default {
         if (transferValue.comparedTo(userMax) > 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
-          util.log('transferValue > userMax', transferValue.toString(), userMax.toString());
+          util.log('transferValue > userMax', transferValue.toString(), useBalance, userMax.toString());
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           info.disabled = 'disabled';
@@ -1674,7 +1678,8 @@ export default {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
       }
       if(Number(selectMakerConfig?.bridgeType) === 1) {
-        max =userBalance
+        max = userBalance
+        userMax = userBalance
       }
       this.userMaxPrice = max.toString();
     },
