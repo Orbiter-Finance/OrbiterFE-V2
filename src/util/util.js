@@ -131,10 +131,11 @@ export default {
     var result = Y + M + D + h + m + s
     return result
   },
-  shortAddress(address) {
+  shortAddress(address, dec) {
+    const i = dec || 4
     if (address && address.length > 5) {
-      var subStr1 = address.substr(0, 4)
-      var subStr2 = address.substr(address.length - 4, 4)
+      var subStr1 = address.substr(0, i)
+      var subStr2 = address.substr(address.length - i, i)
       return subStr1 + '...' + subStr2
     }
     return ''

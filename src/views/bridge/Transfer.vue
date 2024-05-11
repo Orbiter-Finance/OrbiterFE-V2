@@ -450,7 +450,7 @@ import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcB
 import { ethers } from 'ethers'
 
 import solanaHelper from "../../util/solana/solana_helper"
-import { decimalNum } from '../../util/decimalNum'
+import { decimalNumTh } from '../../util/decimalNum'
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -1638,18 +1638,29 @@ export default {
 
       const chainInfo = util.getV3ChainInfoByChainId(fromChain.chainId)
 
+      let tradingFee = selectMakerConfig.tradingFee
+
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        avalibleDigit = 0
+        opBalance = 0
+        preGasDigit = 0
+        preGas = 0
+        tradingFee = 0
+      }
+
       if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
       [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
         preGas = 10 ** -preGasDigit;
       }
       let userBalance = new BigNumber(this.fromBalance)
-              .minus(new BigNumber(selectMakerConfig.tradingFee))
+              .minus(new BigNumber(tradingFee))
               .minus(new BigNumber(opBalance))
               .minus(new BigNumber(transferGasFee))
               .minus(new BigNumber(preGas));
       let userMax = userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
               ? userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
+
       let max = userMax.comparedTo(new BigNumber(fromChain.maxPrice)) > 0
               ? new BigNumber(fromChain.maxPrice)
               : userMax;
@@ -1661,6 +1672,9 @@ export default {
               fromChain.decimals === 18
       ) {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
+      }
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        max =userBalance
       }
       this.userMaxPrice = max.toString();
     },
@@ -2087,7 +2101,7 @@ export default {
         this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
           {
             no: 1,
-            from: decimalNum(new BigNumber(this.transferValue), 4) + fromCurrency,
+            from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
             to: util.shortAddress(contractFromAddress),
             fromTip: '',
             toTip: toAddressAll,

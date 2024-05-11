@@ -65,10 +65,11 @@
                                 margin-left: 0.7rem;
                                 margin-right: 0.7rem;
                                 color: #df2e2d;
-                                width: 90px;
+                                width: 100px;
                                 display: -moz-inline-box;
                                 display: inline-block;
                                 text-align: center;
+                                white-space: nowrap;
                             "
                         >
                             {{ desc.from }}
@@ -80,10 +81,11 @@
                             margin-left: 0.7rem;
                             margin-right: 0.7rem;
                             color: #df2e2d;
-                            width: 90px;
+                            width: 100px;
                             display: -moz-inline-box;
                             display: inline-block;
                             text-align: center;
+                            white-space: nowrap;
                         "
                     >
                         {{ desc.from }}
