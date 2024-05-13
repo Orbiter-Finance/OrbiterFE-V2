@@ -2100,7 +2100,22 @@
     "service": {
       "rpc": "EVMRpcScanningV6Service"
     },
-    "tokens": [],
+    "tokens": [
+        {
+            "name": "USDC",
+            "coinKey": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "address": "0x70064389730D2BDBcF85D8565A855716Cda0Bfca"
+        },
+        {
+            "name": "USDT",
+            "coinKey": "USDT",
+            "symbol": "USDT",
+            "decimals": 6,
+            "address": "0x0ace5E8e1Be0d3Df778f639d79fa8231b376b9F1"
+        }
+    ],
     "internalId": "48",
     "nativeCurrency": {
       "name": "ETH",
@@ -2119,6 +2134,58 @@
         "name": "zklink Network scan",
         "url": "https://explorer.zklink.io",
         "standard": "zklink"
+      }
+    ],
+    "contract": {},
+    "contracts": []
+  },
+  {
+    "api": {
+      "url": "https://testnet.toncenter.com/api/v2/jsonRPC",
+      "key": ""
+    },
+    "name": "TON",
+    "rpc": [
+      "https://testnet.tonapi.io"
+    ],
+    "features": [],
+    "service": {
+      "api": "TonApiScanningService"
+    },
+    "tokens": [
+      {
+        "name": "USDC",
+        "coinKey": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": ""
+      },
+      {
+        "name": "USDT",
+        "coinKey": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": ""
+      }
+    ],
+    "internalId": "56",
+    "nativeCurrency": {
+      "name": "TON",
+      "coinKey": "TON",
+      "symbol": "TON",
+      "decimals": 9,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "infoURL": "https://tonviewer.com",
+    "shortName": "TON",
+    "chainId": "TON",
+    "networkId": "TON",
+    "icon": "TON",
+    "explorers": [
+      {
+        "name": "TON scan",
+        "url": "https://tonviewer.com",
+        "standard": "TON"
       }
     ],
     "contract": {},
