@@ -321,6 +321,7 @@
       <CommDialog ref="SelectFromChainPopupRef">
         <div slot="PoperContent" style="width: 100%">
           <ObSelectChain
+                  ref="selectFromChainRef"
                   :ChainData="fromChainIdList"
                   v-on:getChainInfo="getFromChainInfo"
                   v-on:closeSelect="closeFromChainPopupClick()"
@@ -449,6 +450,7 @@ import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcB
 import { ethers } from 'ethers'
 
 import solanaHelper from "../../util/solana/solana_helper"
+import { decimalNumTh } from '../../util/decimalNum'
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -542,6 +544,9 @@ export default {
     };
   },
   computed: {
+    selectFromTokenSymbol(){
+      return this.selectFromToken
+    },
     selectStarknet() {
       return util.isStarkNet();
     },
@@ -828,7 +833,8 @@ export default {
     crossAddressReceipt: function (newValue) {
       updateCrossAddressReceipt(newValue);
     },
-    selectFromToken(newValue) {
+    selectFromTokenSymbol:function (newValue) {
+      this.$refs.selectFromChainRef.selectSymbol(newValue)
       if (transferDataState.fromCurrency !== newValue) {
         this.updateTransferInfo({ fromCurrency: newValue });
         this.clearTransferValue();
@@ -842,8 +848,6 @@ export default {
         this.isTipFromTokenAddress = false
         this.isTiptargetTokenAddress = false
       }
-
-
     },
     selectToToken: function (newValue) {
       if (transferDataState.toCurrency !== newValue) {
@@ -1439,6 +1443,10 @@ export default {
       let userMax = useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN) > 0
               ? useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        useBalance = new BigNumber(this.fromBalance)
+        userMax = useBalance
+      }
       let makerMax = new BigNumber(fromChain.maxPrice);
       let makerMin = new BigNumber(this.userMinPrice);
       let transferValue = new BigNumber(this.transferValue || 0);
@@ -1458,7 +1466,7 @@ export default {
         if (transferValue.comparedTo(userMax) > 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
-          util.log('transferValue > userMax', transferValue.toString(), userMax.toString());
+          util.log('transferValue > userMax', transferValue.toString(), useBalance, userMax.toString());
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           info.disabled = 'disabled';
@@ -1536,6 +1544,8 @@ export default {
         this.toValue = 0;
         return;
       }
+      const slippage = selectMakerConfig.slippage;
+      const bridgeType = selectMakerConfig.bridgeType
       let amount = orbiterCore.getToAmountFromUserAmount(
               new BigNumber(this.transferValue).plus(
                       new BigNumber(selectMakerConfig.tradingFee)
@@ -1543,17 +1553,19 @@ export default {
               selectMakerConfig,
               false
       );
+
       if (fromCurrency !== toCurrency) {
         const exchangeRates = this.rates;
         const fromRate = exchangeRates[fromCurrency];
         const toRate = exchangeRates[toCurrency];
-        const slippage = selectMakerConfig.slippage;
         if (!fromRate || !toRate || !slippage) {
           util.log('get rate fail', fromCurrency, fromRate, toCurrency, toRate);
           return 0;
         }
         const value = (amount.dividedBy(fromRate).multipliedBy(toRate)).toFixed(6);
         this.toValue = new BigNumber(value).multipliedBy(1 - slippage / 10000);
+      } else if(Number(bridgeType) === 1) {
+        this.toValue = amount.multipliedBy(1 - slippage / 10000);
       } else {
         this.toValue = amount;
       }
@@ -1630,18 +1642,29 @@ export default {
 
       const chainInfo = util.getV3ChainInfoByChainId(fromChain.chainId)
 
+      let tradingFee = selectMakerConfig.tradingFee
+
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        avalibleDigit = 0
+        opBalance = 0
+        preGasDigit = 0
+        preGas = 0
+        tradingFee = 0
+      }
+
       if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
       [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
         preGas = 10 ** -preGasDigit;
       }
       let userBalance = new BigNumber(this.fromBalance)
-              .minus(new BigNumber(selectMakerConfig.tradingFee))
+              .minus(new BigNumber(tradingFee))
               .minus(new BigNumber(opBalance))
               .minus(new BigNumber(transferGasFee))
               .minus(new BigNumber(preGas));
       let userMax = userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
               ? userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
+
       let max = userMax.comparedTo(new BigNumber(fromChain.maxPrice)) > 0
               ? new BigNumber(fromChain.maxPrice)
               : userMax;
@@ -1653,6 +1676,10 @@ export default {
               fromChain.decimals === 18
       ) {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
+      }
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        max = userBalance
+        userMax = userBalance
       }
       this.userMaxPrice = max.toString();
     },
@@ -2041,6 +2068,7 @@ export default {
           }
         }
         const chainInfo = util.getV3ChainInfoByChainId(fromChainID);
+        const toChainInfo = util.getV3ChainInfoByChainId(toChainID);
         const toAddressAll = (util.isExecuteXVMContract() ?
                 chainInfo.xvmList[0] :
                 selectMakerConfig.recipient).toLowerCase();
@@ -2052,7 +2080,47 @@ export default {
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase());
         // sendTransfer
-        this.$store.commit('updateConfirmRouteDescInfo', [
+        const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
+        const contractGroup = chainInfo?.contract || {}
+
+        const contractList = Object.keys(contractGroup).map((key)=> {
+            return ({
+                name: contractGroup[key],
+                address: key 
+            })
+        })
+        const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
+        const toContractGroup = toChainInfo?.contract || {}
+
+        console.log("toContractGroup", toContractGroup)
+
+        const toContractList = Object.keys(toContractGroup).map((key)=> {
+          return ({
+              name: toContractGroup[key],
+              address: key 
+          })
+        })
+        const ContractToAddress = toContractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
+        this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
+          {
+            no: 1,
+            from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
+            to: util.shortAddress(contractFromAddress),
+            fromTip: '',
+            toTip: toAddressAll,
+            icon: 'contract'
+          },
+          {
+            no: 2,
+            from: util.shortAddress(ContractToAddress) || senderShortAddress,
+            to: util.shortAddress(walletAddress),
+            fromTip: senderAddress,
+            toTip: walletAddress,
+            icon: 'wallet'
+          }
+        ]: [
           {
             no: 1,
             from: new BigNumber(this.transferValue).plus(
@@ -2114,10 +2182,23 @@ export default {
             precision
     ) {
       const { fromCurrency, selectMakerConfig } = transferDataState;
-      const sender = selectMakerConfig.sender;
+      let sender = selectMakerConfig.sender;
+      const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
       try {
         if (!sender) {
           return '';
+        }
+        if(bridgeType1) {
+          const chainInfo = util.getV3ChainInfoByChainId(chainId)
+          const contractGroup = chainInfo?.contract || {}
+          const contractList = Object.keys(contractGroup).map((key)=> {
+              return ({
+                  name: contractGroup[key],
+                  address: key 
+              })
+          })
+          sender = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
+
         }
         const response = await transferCalculate.getTransferBalance(
                 chainId,

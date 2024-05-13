@@ -121,6 +121,12 @@
                 "symbol": "BTC",
                 "decimals": 8,
                 "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f"
+            },
+            {
+                "name": "AIDOGE",
+                "symbol": "AIDOGE",
+                "decimals": 6,
+                "address": "0x09E18590E8f76b6Cf471b3cd75fE1A1a9D2B2c2b"
             }
         ],
         "xvmList": [
@@ -130,7 +136,8 @@
         "contract": {
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
             "0x752bc92211d1ecbb31f84e57c9dfc39a15df9cfa": "OrbiterRouterV1",
-            "0x6a065083886ec63d274b8e1fe19ae2ddf498bfdd": "OrbiterRouterV3"
+            "0x6a065083886ec63d274b8e1fe19ae2ddf498bfdd": "OrbiterRouterV3",
+            "0x6285a466a98f513E1f6bE29ACad27d173d3b3c59": "OPool"
         }
     },
     {
@@ -302,7 +309,7 @@
                 "name": "USD Coin",
                 "symbol": "USDC",
                 "decimals": 6,
-                "address": "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"
+                "address": "0x3c499c542cef5e3811e1192ce70d8cc03d5c3359"
             },
             {
                 "name": "Tether USD",
@@ -744,12 +751,19 @@
                 "symbol": "BTC",
                 "decimals": 18,
                 "address": "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c"
+            },
+            {
+                "name": "AIDOGE",
+                "symbol": "AIDOGE",
+                "decimals": 6,
+                "address": "0x8edB3Dc279B953E7E07819BBf22E783637B7cb06"
             }
         ],
         "infoURL": "https://bscscan.com",
         "contract": {
             "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
-            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+            "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3",
+            "0x6285a466a98f513E1f6bE29ACad27d173d3b3c59": "OPool"
         }
     },
     {
@@ -2069,5 +2083,45 @@
               ]
            }
         ]
-     }
+     },
+  {
+    "name": "zkLink Nova",
+    "rpc": [
+      "https://rpc.zklink.io"
+    ],
+    "features": [
+      {
+        "name": "evm-account"
+      },
+      {
+        "name": "evm-rpc"
+      }
+    ],
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "tokens": [],
+    "internalId": "48",
+    "nativeCurrency": {
+      "name": "ETH",
+      "coinKey": "ETH",
+      "symbol": "ETH",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "infoURL": "https://explorer.zklink.io",
+    "shortName": "zkLink",
+    "chainId": "810180",
+    "networkId": "810180",
+    "icon": "zklink",
+    "explorers": [
+      {
+        "name": "zklink Network scan",
+        "url": "https://explorer.zklink.io",
+        "standard": "zklink"
+      }
+    ],
+    "contract": {},
+    "contracts": []
+  }
 ]

@@ -2543,18 +2543,6 @@
             "endTime": 99999999999999
         }
     },
-    "3-51": {
-        "USDC-USDC": {
-            "gasFee": 1,
-            "tradingFee": 2.5,
-            "makerAddress": "0x41d3d33156ae7c62c094aae2995003ae63f587b3",
-            "sender": "DowTWse9Sjzj1kN1V6zevfGtQ6wWpigug7TPCdTr6UNP",
-            "maxPrice": 20000,
-            "minPrice": 0.1,
-            "startTime": 0,
-            "endTime": 99999999999999
-        }
-    },
     "51-14": {
         "USDC-USDC": {
             "gasFee": 0,
