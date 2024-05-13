@@ -2109,14 +2109,14 @@ export default {
             from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
             to: util.shortAddress(contractFromAddress),
             fromTip: '',
-            toTip: toAddressAll,
+            toTip: contractFromAddress,
             icon: 'contract'
           },
           {
             no: 2,
             from: util.shortAddress(ContractToAddress) || senderShortAddress,
             to: util.shortAddress(walletAddress),
-            fromTip: senderAddress,
+            fromTip: ContractToAddress || senderAddress,
             toTip: walletAddress,
             icon: 'wallet'
           }
