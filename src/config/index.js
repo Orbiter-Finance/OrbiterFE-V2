@@ -42,6 +42,8 @@ export const CHAIN_ID = {
   starknet_test: 'SN_SEPOLIA',
   solana: 'SOLANA_MAIN',
   solana_test: 'SOLANA_DEV',
+  ton: 'TON',
+  ton_test: 'TON_TEST',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',

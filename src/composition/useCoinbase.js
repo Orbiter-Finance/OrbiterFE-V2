@@ -24,6 +24,9 @@ export const web3State = reactive({
     solanaIsConnected: false,
     solanaChain: '',
   },
+  ton: {
+    tonAddress: '',
+  },
 })
 
 export function updateCoinbase(coinbase) {

@@ -30,6 +30,9 @@
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
+    <div id="ton-connect-wallet">
+
+    </div>
   </div>
 </template>
 
@@ -62,7 +65,9 @@ import {
   setActNftList,
   updateActDataList,
   setSelectWalletDialogVisible,
-  setConnectWalletGroupKey
+  setConnectWalletGroupKey,
+  isTonDialog,
+  setTonDialog
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -88,6 +93,8 @@ import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from './util/constants/starknet/helper'
 import solanaHelper from './util/solana/solana_helper'
+import tonHelper from "./util/ton/ton_helper"
+
 const { walletDispatchersOnInit } = walletDispatchers
 
 let timerOptions = 0
@@ -110,10 +117,12 @@ export default {
     },
     currentWalletAddress () {
       const solanaAddress = web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+      const tonAddress = web3State.ton.tonAddress || tonHelper?.account()
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
         solanaAddress,
+        tonAddress,
         ...[],
       ]
     },
@@ -174,6 +183,7 @@ export default {
     HeaderWalletGroup
   },
   async mounted () {
+    tonHelper.tonConnectCall();
     if (isBrowserApp()) {
       // await connectStarkNetWallet()
 
@@ -196,6 +206,7 @@ export default {
 
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
+
   },
   watch: {
     isLogin: function (item1, item2) {
@@ -220,10 +231,14 @@ export default {
     currentWalletAddress: function (newAddress) {
       const [web3Address, starkNetAddress] = newAddress
       const solanaAddress = solanaHelper.solanaAddress()
-      if(solanaAddress) {
+      const tonAddress = tonHelper.account()
+      if(tonAddress) {
+        setTonDialog(true)
+        setActDialogVisible(true)
+      } else if(solanaAddress) {
         setSolanaDialog(true)
         setActDialogVisible(true)
-      } else  if (starkNetAddress) {
+      } else if (starkNetAddress) {
         setStarkNetDialog(true)
         setActDialogVisible(true)
       }
@@ -244,7 +259,10 @@ export default {
       }
       const [web3Address, starkNetAddress] = this.currentWalletAddress
       const solanaAddress = solanaHelper.solanaAddress()
-      const address = !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
+      const tonAddress = tonHelper.account()
+      const address = !!isTonDialog.value && tonAddress ? tonAddress : (
+        !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
+      )
       const isStarknet = !!isStarkNetDialog.value
       if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
         return addressGroup
@@ -464,5 +482,11 @@ export default {
   /*  box-sizing: border-box;*/
   /*  z-index: 999;*/
   /*}*/
+}
+
+#ton-connect-wallet {
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 </style>

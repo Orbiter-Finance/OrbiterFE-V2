@@ -509,13 +509,15 @@ import {
   solAddress,
   setConnectWalletGroupKey,
   setSolanaDialog,
-  updateActDataList
+  updateActDataList,
+  isTonDialog,
+  tonAddress,
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
 import getUTCTime from '../../util/time'
-import { onCopySuccess } from '../../util'
+import { isProd, onCopySuccess } from '../../util'
 import walletDispatchers, {
   WALLETCONNECT,
   CURRENT_SUPPORT_WALLET,
@@ -533,6 +535,7 @@ import EcosystemDappPro from './EcosystemDappPro.vue'
 import ActDialogBanner from './ActDialogBanner.vue'
 import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
+import tonHelper from '../../util/ton/ton_helper'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -666,6 +669,9 @@ export default {
       return isSolanaDialog.value
     },
     showWalletAddress() {
+      if(isTonDialog.value) {
+        return tonAddress()
+      }
       if(isSolanaDialog.value) {
         return solAddress()
       }
@@ -675,6 +681,9 @@ export default {
       return starkAddress()
     },
     currentWalletAddress() {
+      if(isTonDialog.value) {
+        return tonHelper.account()
+      }
       if(isSolanaDialog.value) {
         return solanaHelper.solanaAddress()
       }
@@ -685,6 +694,9 @@ export default {
       return evmAddress?.toLocaleLowerCase();
     },
     networkId() {
+      if(isTonDialog.value) {
+        return CHAIN_ID.ton
+      }
       if(isSolanaDialog.value) {
         return CHAIN_ID.solana
       }
@@ -695,6 +707,11 @@ export default {
       }
     },
     networkName() {
+      if(!!isTonDialog.value) {
+        return util.netWorkName(
+          !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
+        )
+      }
       if(!!isSolanaDialog.value) {
         return util.netWorkName(
           CHAIN_ID.solana
@@ -712,6 +729,9 @@ export default {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
+      if(isTonDialog.value) {
+        return CHAIN_ID.ton
+      }
       if(!!isSolanaDialog.value) {       
         return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
       }
@@ -837,6 +857,9 @@ export default {
     },
     async disconnect() {
       try {
+        if(!!isTonDialog.value) {
+          await tonHelper.disconnect()
+        }
         if(!!isSolanaDialog.value) {
           await solanaHelper.disConnect()
           setConnectWalletGroupKey("SOLANA")

@@ -23,7 +23,10 @@
             </div>
           </div>
         </div>
-        <div v-else-if="connectWalletGroupKey === 'STARKNET'" class="wallet-group">
+        <div
+          v-else-if="connectWalletGroupKey === 'STARKNET'"
+          class="wallet-group"
+        >
           <div class="wallet-group-title">StarkNet Wallet</div>
           <div class="wallet-group-list">
             <div
@@ -37,7 +40,10 @@
             </div>
           </div>
         </div>
-        <div v-else-if="connectWalletGroupKey === 'SOLANA'" class="wallet-group">
+        <div
+          v-else-if="connectWalletGroupKey === 'SOLANA'"
+          class="wallet-group"
+        >
           <div class="wallet-group-title">Solana Wallet</div>
           <div class="wallet-group-list">
             <div
@@ -66,7 +72,7 @@ import {
   setSelectWalletDialogVisible,
   web3State,
   connectWalletGroupKey,
-  setConnectWalletGroupKey
+  setConnectWalletGroupKey,
 } from '../../composition/hooks'
 
 import walletDispatchers, {
@@ -75,8 +81,8 @@ import walletDispatchers, {
   COIN98_APP,
   WALLETCONNECT,
   CURRENT_SUPPORT_WALLET,
-FOXWALLET_APP,
-// TRUSTWALLET_APP,
+  FOXWALLET_APP,
+  // TRUSTWALLET_APP,
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -94,7 +100,13 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 
 import { store } from '../../store'
-import solanaHelper from '../../util/solana/solana_helper';
+import solanaHelper from '../../util/solana/solana_helper'
+
+import { THEME, TonConnectUI } from '@tonconnect/ui'
+import * as TonconnectUI from '@tonconnect/ui'
+import * as TonconnectUiSdk from '@tonconnect/sdk'
+
+let ton
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
@@ -244,13 +256,12 @@ export default {
   methods: {
     closeSelectWalletDialog() {
       setSelectWalletDialogVisible(false)
-      setConnectWalletGroupKey("EVM")
+      setConnectWalletGroupKey('EVM')
     },
     checkIsMobileEnv() {
       return isMobileDevice()
     },
     async connectSolanaWallet(item) {
-
       const status = await solanaHelper.connect(item.icon)
       const fromPublicKey = solanaHelper.solanaAddress()
 
@@ -289,7 +300,6 @@ export default {
     },
 
     async connectStarkNetWallet(walletConf) {
-
       const wallet = await connect({
         order: [walletConf.key],
         include: [walletConf.key],
@@ -407,6 +417,13 @@ export default {
             margin-top: 12px;
             border-radius: 8px;
             cursor: pointer;
+
+            .wallet-img {
+              width: 28px;
+              height: 28px;
+              border-radius: 4px;
+              margin-right: 14px;
+            }
 
             .wallet-icon {
               width: 28px;

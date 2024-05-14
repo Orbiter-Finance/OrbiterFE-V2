@@ -398,7 +398,8 @@ export default {
       .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
       .dividedBy(new BigNumber(1000))
     const gasFee_fix = gasFee.decimalPlaces(
-      selectMakerConfig.fromChain.decimals === 8
+      selectMakerConfig.fromChain.decimals === 8 ||
+        selectMakerConfig.toChain.decimals === 8
         ? 6
         : selectMakerConfig.fromChain.decimals === 18
         ? 5
@@ -447,6 +448,8 @@ export default {
       CHAIN_ID.starknet_test,
       CHAIN_ID.solana,
       CHAIN_ID.solana_test,
+      CHAIN_ID.ton,
+      CHAIN_ID.ton_test,
       CHAIN_ID.imx,
       CHAIN_ID.imx_test,
       CHAIN_ID.loopring,
@@ -517,6 +520,15 @@ export default {
     )
   },
 
+  isTon() {
+    const { fromChainID, toChainID } = transferDataState
+    return (
+      fromChainID === CHAIN_ID.ton ||
+      fromChainID === CHAIN_ID.ton_test ||
+      toChainID === CHAIN_ID.ton ||
+      toChainID === CHAIN_ID.ton_test
+    )
+  },
   isSupportXVMContract() {
     const { fromChainID, selectMakerConfig, fromCurrency, toCurrency } =
       transferDataState

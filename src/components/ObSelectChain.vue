@@ -93,6 +93,7 @@ import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
 import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey, transferDataState, selectTokenSymbol } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
 import  solanaHelper from '../util/solana/solana_helper';
+import  tonHelper from '../util/ton/ton_helper';
 import transferCalculate from '../util/transfer/transferCalculate'
 import { getStarknet } from 'get-starknet'
 import { ethers } from 'ethers'
@@ -184,7 +185,7 @@ export default {
                 CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
-                CHAIN_ID.solana, CHAIN_ID.solana_test
+                CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.ton, CHAIN_ID.ton_test
             ]
             return this.orderChainIds(chainOrderIds, newArray)
         },
@@ -245,7 +246,7 @@ export default {
                 CHAIN_ID.loopring_test,  CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
-                CHAIN_ID.solana, CHAIN_ID.solana_test
+                CHAIN_ID.solana, CHAIN_ID.solana_test,CHAIN_ID.ton, CHAIN_ID.ton_test
             ]
 
             let data = customSort(chainOrderIds,chains)
@@ -412,8 +413,11 @@ export default {
         },
         async getChainInfo(e, index) {
             // When chain use stark system
+            console.log("e.localID", e.localID)
+
             if (this.isStarkSystem(e.localID)) {
                 try {
+
                     // starknet
                     if (e.localID === CHAIN_ID.starknet || e.localID === CHAIN_ID.starknet_test) {
                         const { starkIsConnected, starkNetAddress } =
@@ -431,6 +435,7 @@ export default {
                             // }
                         }
                     }
+
                     // solana
                     if (e.localID === CHAIN_ID.solana || e.localID === CHAIN_ID.solana_test) {
                         const isConnected = await solanaHelper.isConnect()
@@ -438,6 +443,16 @@ export default {
                             setSelectWalletDialogVisible(true)
                             setConnectWalletGroupKey("SOLANA")
                             return 
+                        }
+                    }
+                    // ton
+                    if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
+
+                        const account = await tonHelper.account()
+                        const isConnected = await tonHelper.isConnected()
+                        if(!account || !isConnected) {
+                            await tonHelper.connect()
+                            return
                         }
                     }
                     // immutableX
@@ -489,7 +504,7 @@ export default {
         search() { },
         checkKeyWord() { },
         isStarkSystem(chainId) {
-            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
+            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.ton, CHAIN_ID.ton_test].indexOf(chainId) > -1
         },
     }
 }
