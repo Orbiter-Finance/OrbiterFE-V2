@@ -3231,7 +3231,7 @@
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
-            "gasFee": null,
+            "gasFee": 10,
             "tradingFee": 1.5,
             "maxPrice": 10000,
             "minPrice": 0.1,
@@ -3375,7 +3375,7 @@
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
-            "gasFee": null,
+            "gasFee": 10,
             "tradingFee": 2,
             "maxPrice": 10000,
             "minPrice": 0.1,
@@ -3447,7 +3447,7 @@
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
-            "gasFee": null,
+            "gasFee": 10,
             "tradingFee": 1.8,
             "maxPrice": 10000,
             "minPrice": 0.1,
