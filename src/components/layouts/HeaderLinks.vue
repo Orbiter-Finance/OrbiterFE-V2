@@ -95,10 +95,10 @@ export default {
           name: 'Explore',
           href: '/statistics',
         },
-        {
-          name: 'About us',
-          href: '/home',
-        },
+        // {
+        //   name: 'About us',
+        //   href: '/home',
+        // },
         // {
         //   name: 'More',
         //   children: []
