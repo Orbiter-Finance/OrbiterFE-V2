@@ -2140,6 +2140,58 @@
     "contracts": []
   },
   {
+    "api": {
+      "url": "https://testnet.toncenter.com/api/v2/jsonRPC",
+      "key": ""
+    },
+    "name": "TON",
+    "rpc": [
+      "https://testnet.tonapi.io"
+    ],
+    "features": [],
+    "service": {
+      "api": "TonApiScanningService"
+    },
+    "tokens": [
+      {
+        "name": "JUSDC",
+        "coinKey": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "EQB-MPwrd1G6WKNkLz_VnV6WqBDd142KMQv-g1O-8QUA3728"
+      },
+      {
+        "name": "JUSDT",
+        "coinKey": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "EQBynBO23ywHy_CgarY9NK9FTz0yDsG82PtcbSTQgGoXwiuA"
+      }
+    ],
+    "internalId": "56",
+    "nativeCurrency": {
+      "name": "TON",
+      "coinKey": "TON",
+      "symbol": "TON",
+      "decimals": 9,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "infoURL": "https://tonviewer.com",
+    "shortName": "TON",
+    "chainId": "TON",
+    "networkId": "TON",
+    "icon": "TON",
+    "explorers": [
+      {
+        "name": "TON scan",
+        "url": "https://tonviewer.com",
+        "standard": "TON"
+      }
+    ],
+    "contract": {},
+    "contracts": []
+  },
+  {
     "name": "BounceBit",
     "rpc": [
       "https://fullnode-mainnet.bouncebitapi.com"
