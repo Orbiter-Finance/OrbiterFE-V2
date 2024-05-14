@@ -49,14 +49,14 @@ export default new Router({
         keepAlive: false,
       },
     },
-    {
-      path: '/home',
-      component: Home,
-      meta: {
-        title: 'Orbiter',
-        keepAlive: false,
-      },
-    },
+    // {
+    //   path: '/home',
+    //   component: Home,
+    //   meta: {
+    //     title: 'Orbiter',
+    //     keepAlive: false,
+    //   },
+    // },
     {
       path: '/statistics',
       component: Statistics,

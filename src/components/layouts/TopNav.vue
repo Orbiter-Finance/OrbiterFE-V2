@@ -270,7 +270,8 @@ export default {
     },
     toHome () {
       setPageSenderTab()
-      this.$route.path !== '/home' && this.$router.push({ path: '/home' })
+      // this.$route.path !== '/home' && this.$router.push({ path: '/home' })
+      this.$router.push({ path: '/' })
     },
     toggleTab (tab) {
       setPageTab(tab)
