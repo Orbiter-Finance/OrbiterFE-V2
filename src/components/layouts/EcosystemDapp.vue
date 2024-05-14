@@ -1,46 +1,81 @@
 <template>
   <div class="ecosystem-dapp-com">
-    <div style="width: 100%; display: flex">
-      <span class="title">Ecosystem DApp </span>
+    <div class="title">
+      <span class="text">Ecosystem DApp </span>
+        <svg class="expand" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 16 16" fill="none">
+          <desc>
+              Created with Pixso.
+          </desc>
+          <defs/>
+          <rect rx="4.000000" width="16.000000" height="16.000000" fill="#EEEEEE" fill-opacity="0"/>
+          <rect x="0.500000" y="0.500000" rx="4.000000" width="15.000000" height="15.000000" stroke="#EEEEEE" stroke-opacity="0" stroke-width="1.000000"/>
+          <path d="M10.77 4.69L10.77 4.72L10.97 5L5.02 5L5.22 4.72L5.22 4.69C5.05 4.57 4.82 4.6 4.7 4.77C4.57 4.94 4.6 5.17 4.77 5.3L4.8 5.29L5.01 5.01L8 7.25L10.98 5.01L11.19 5.29L11.22 5.3C11.39 5.17 11.42 4.94 11.3 4.77C11.17 4.6 10.94 4.57 10.77 4.69Z" fill="#D8D8D8" fill-opacity="0" fill-rule="evenodd"/>
+          <path d="M5 5L8 7.25L11 5" stroke="#222222" stroke-opacity="1.000000" stroke-width="0.750000" stroke-linejoin="round" stroke-linecap="round"/>
+          <path d="M10.77 8.44L10.77 8.47L10.97 8.75L5.02 8.75L5.22 8.47L5.22 8.44C5.05 8.32 4.82 8.35 4.7 8.52C4.57 8.69 4.6 8.92 4.77 9.05L4.8 9.04L5.01 8.76L8 11L10.98 8.76L11.19 9.04L11.22 9.05C11.39 8.92 11.42 8.69 11.3 8.52C11.17 8.35 10.94 8.32 10.77 8.44Z" fill="#D8D8D8" fill-opacity="0" fill-rule="evenodd"/>
+          <path d="M5 8.75L8 11L11 8.75" stroke="#222222" stroke-opacity="1.000000" stroke-width="0.750000" stroke-linejoin="round" stroke-linecap="round"/>
+        </svg>
     </div>
     <div class="content">
       <div class="top">
-        <img
-          class="image"
-          :src="require('../../assets/activity/ecosystem-dapp-logo.png')"
+        <div class="dapp_group_img">
+          <img
+          class="dapp1"
+          :src="require('../../assets/activity/ecosystem_dapp/dapp_1.png')"
         />
+        <img
+          class="dapp2"
+          :src="require('../../assets/activity/ecosystem_dapp/dapp_2.png')"
+        />
+        </div>
         <div class="top-right">
           <div class="label">Layer2-20 🔥</div>
           <div class="text">
-            <o-tooltip>
+            1st Fair launch on Likwid
+            <!-- <o-tooltip>
               <template v-slot:titleDesc>
                 <div style="margin-left: -20px">
                   <span>
-                    $L2, The First Omni-Inscription for ETH Community, powered by
-                    Orbiter Finance. Fair mint is starting!
+                    1st Fair launch on Likwid
                   </span>
                 </div>
               </template>
               <div class="text">
-                $L2, The First Omni-Inscription for ETH Community, powered by
-                Orbiter Finance. Fair mint is starting!
+                1st Fair launch on Likwid
               </div>
-            </o-tooltip>
+            </o-tooltip> -->
           </div>
         </div>
       </div>
       <div class="bottom">
         <div class="progress-group">
           <div class="holders">
-            <div class="total">Holders: {{ decimalNumC(holders, 0, ',') }}</div>
-            <div class="ratio">{{ decimalNumC(ratio, 3) }}%</div>
+            <div class="total">
+              Fundraise Goal: 
+              <div class="amount">{{ decimalNumC(holders, 0, ',') }} ETH</div>
+              <o-tooltip>
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px">
+                    <span>
+                      100% refund for oversubscribed part
+                    </span>
+                  </div>
+                </template>
+                <img
+                  class="help-icon"
+                  :src="require('../../assets/activity/tip_ico.png')"
+                />
+              </o-tooltip>
+            </div>
+            <div class="ratio">{{ decimalNumC(ratio, 3) }}% !!</div>
           </div>
           <div class="progress-box">
-            <div class="progress" :style="{width: decimalNumC(ratio, 3)+'%'}"></div>
+            <div class="progress" :style="{width: decimalNumC(ratio, 3)+'%'}"
+            :class="Number(ratio) >= 100 ? 'progress100' : 'default-bg'"
+            ></div>
           </div>
         </div>
-        <div :class="['mint', {'mint-end': isEnd}]" @click="openUrl('https://www.layer220.io/')">
-          Mint
+        <div :class="['join', {'join-end': isEnd}]" @click="openUrl('https://www.layer220.io/')">
+          Join
         </div>
       </div>
     </div>
@@ -54,7 +89,7 @@ export default {
   data() {
     return {
       holders: 0,
-      ratio: 0,
+      ratio: 100,
       isEnd: false
     }
   },
@@ -70,17 +105,17 @@ export default {
         'https://api.layer220.io/statistic?protocol=layer2-20&tick=%24L2',
         {}
       )
-      const {
-        data: { totalHolders, max, totalAmount },
-      } = await res.json()
+      // const {
+      //   data: { totalHolders = 0, max, totalAmount }
+      // } = await res.json()
 
-      this.holders = totalHolders || 0
+      // this.holders = totalHolders || 0
 
-      if (Number(max) && Number(totalAmount)) {
-        const total = (totalAmount * 100) / max
-        this.ratio = Number(total) <= 100 ? Number(total) : 100
-        this.isEnd = this.ratio === 100
-      }
+      // if (Number(max) && Number(totalAmount)) {
+      //   const total = (totalAmount * 100) / max
+      //   this.ratio = Number(total) <= 100 ? Number(total) : 100
+      //   this.isEnd = this.ratio === 100
+      // }
     },
   },
   created() {
@@ -89,24 +124,39 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
 .ecosystem-dapp-com {
   width: 100%;
-  padding: 16px 12px 16px 16px;
+  padding: 16px 12px;
   box-sizing: border-box;
   .title {
-    font-family: Kodchasan-Bold;
-    font-size: 16px;
-    font-weight: bold;
-    color: #222222;
-    line-height: 22px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .text {
+      font-family: Kodchasan-Bold;
+      font-size: 16px;
+      font-weight: bold;
+      color: #222222;
+      line-height: 22px;
+    }
+    .expand {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: rgb(238, 238, 238);
+      cursor: pointer;
+    }
   }
   .content {
     width: 100%;
     background: #ffffff;
     border-radius: 8px;
-    border: 1px solid #222222;
-    padding: 12px;
+    padding: 12px 10px;
     margin-top: 12px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
 
     .top {
       width: 100%;
@@ -114,11 +164,23 @@ export default {
       justify-content: space-between;
       align-items: center;
 
-      .image {
-        width: 44px;
-        height: 44px;
-        border-radius: 8px;
-        margin-right: 12px;
+      .dapp_group_img {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-right: 8px;
+        .dapp1 {
+          width: 44px;
+          height: 44px;
+        }
+
+        .dapp2 {
+          width: 20px;
+          height: 20px;
+          position: absolute;
+          right: -2px;
+          bottom: -2px;
+        }
       }
 
       .top-right {
@@ -128,7 +190,7 @@ export default {
 
         .label {
           width: 100%;
-          font-size: 14px;
+          font-size: 18px;
           font-weight: bold;
           color: #222222;
           line-height: 18px;
@@ -137,9 +199,10 @@ export default {
 
         .text {
           width: 100%;
-          font-size: 12px;
+          font-size: 14px;
           font-weight: 400;
           color: #999999;
+          font-weight: 500;
           line-height: 18px;
           font-family: OpenSansRoman-Regular;
           margin-top: 4px;
@@ -167,18 +230,45 @@ export default {
           width: 100%;
 
           .total {
+            display: flex;
+            align-items: center;
             font-size: 14px;
             font-family: OpenSansRoman-Regular;
-            font-weight: 600;
             color: #999999;
-            line-height: 19px;
+            line-height: 20px;
+
+            .amount {
+              margin-left: 4px;
+              font-weight: 600;
+              color: #222222;
+            }
+
+            .help-icon {
+              margin-left: 1.5px;
+              width: 16px;
+              height: 16px;
+            }
           }
 
           .ratio {
-            font-size: 14px;
+            font-size: 16px;
             font-family: OpenSansRoman-Regular;
             font-weight: 600;
             color: #222222;
+            font-size: 16px;
+            font-weight: 700;
+            color: #7F0D0D;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(243.43deg, rgb(253, 4, 15),rgb(255, 190, 93));
+            background-position-x: initial;
+            background-position-y: initial;
+            background-size: initial;
+            background-repeat-x: initial;
+            background-repeat-y: initial;
+            background-attachment: initial;
+            background-origin: initial;
+            -webkit-background-clip: text;
+            background-color: initial;
           }
         }
 
@@ -191,13 +281,20 @@ export default {
 
           .progress {
             height: 8px;
-            background: #222222;
             border-radius: 6px;
+          }
+
+          .default-bg {
+            background: #222222;
+          }
+
+          .progress100 {
+            background: linear-gradient(90.00deg, rgb(255, 0, 164) 1.799%,rgb(113, 109, 255) 26.644%,rgb(255, 190, 93) 68.961%,rgb(253, 4, 15) 97.662%);
           }
         }
       }
 
-      .mint {
+      .join {
         width: 72px;
         height: 32px;
         background: #222222;
@@ -213,7 +310,7 @@ export default {
         cursor: pointer;
       }
 
-      .mint-end {
+      .join-end {
         opacity: 0.5;
       }
     }
@@ -224,7 +321,7 @@ export default {
 .dark-theme { 
 
   .ecosystem-dapp-com{
-    .title {
+    .text {
       color: #f5f5f5;
     }
 
@@ -248,21 +345,21 @@ export default {
           .holders{
             .total {
               color: rgba(255, 255, 255, 0.6);
-            }
-            .ratio{
-              color: rgba(255, 255, 255, 0.8);
+              .amount {
+                color: #DDDDDD;
+              }
             }
           }
 
           .progress-box {
-            .progress {
+            .default-bg {
               background-color: #DF2E2E;
             }
           }
 
       
         }
-        .mint {
+        .join {
           background-color: #DF2E2E;
         }
       }
