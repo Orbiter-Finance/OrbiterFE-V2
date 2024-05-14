@@ -136,7 +136,7 @@ const readWalletName = () => {
 const tonwebProvider = () => {
   const chainId = isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
-  const rpc = chainInfo?.rpc?.[0]
+  const rpc = chainInfo?.api?.url
   return new TonWeb(
     new TonWeb.HttpProvider(rpc, {
       apiKey: process.env.VUE_APP_TON_API_KEY,

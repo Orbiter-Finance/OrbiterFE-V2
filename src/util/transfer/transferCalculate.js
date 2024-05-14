@@ -33,6 +33,7 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import solanaHelper from '../solana/solana_helper'
 import tonHelper from '../ton/ton_helper'
+import { zeroAddress } from 'viem'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -1093,20 +1094,24 @@ export default {
         const tonweb = tonHelper.tonwebProvider()
 
         const userTonAddress = new TonWeb.Address(tonAddress)
-        const cell = new TonWeb.boc.Cell()
-
-        cell.bits.writeAddress(userTonAddress)
-
-        const getWalletAddressResponse = await tonweb.provider.call2(
-          tokenAddress,
-          'get_wallet_address',
-          [['tvm.Slice', tonHelper.bytesToBase64(await cell.toBoc(false))]]
-        )
-
-        const jettonWalletAddress = tonHelper.parseAddress(
-          getWalletAddressResponse
-        )
         try {
+          if (tokenAddress === zeroAddress) {
+            const res = await tonweb.getBalance(userTonAddress)
+            return res.toString()
+          }
+          const cell = new TonWeb.boc.Cell()
+
+          cell.bits.writeAddress(userTonAddress)
+
+          const getWalletAddressResponse = await tonweb.provider.call2(
+            tokenAddress,
+            'get_wallet_address',
+            [['tvm.Slice', tonHelper.bytesToBase64(await cell.toBoc(false))]]
+          )
+
+          const jettonWalletAddress = tonHelper.parseAddress(
+            getWalletAddressResponse
+          )
           const jettonWalletData = await tonweb.provider.call2(
             jettonWalletAddress.toString(true, true, true),
             'get_wallet_data'

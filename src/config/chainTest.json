@@ -810,7 +810,7 @@
   },
   {
     "api": {
-      "url": "",
+      "url": "https://testnet.toncenter.com/api/v2/jsonRPC",
       "key": ""
     },
     "chainId": "TON_TEST",
