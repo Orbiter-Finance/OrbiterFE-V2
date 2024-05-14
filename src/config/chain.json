@@ -2141,12 +2141,12 @@
   },
   {
     "api": {
-      "url": "https://testnet.toncenter.com/api/v2/jsonRPC",
+      "url": "https://toncenter.com/api/v2/jsonRPC",
       "key": ""
     },
     "name": "TON",
     "rpc": [
-      "https://testnet.tonapi.io"
+      "https://tonapi.io"
     ],
     "features": [],
     "service": {
