@@ -2106,14 +2106,14 @@
             "coinKey": "USDC",
             "symbol": "USDC",
             "decimals": 6,
-            "address": "0x70064389730D2BDBcF85D8565A855716Cda0Bfca"
+            "address": "0x1a1A3b2ff016332e866787B311fcB63928464509"
         },
         {
             "name": "USDT",
             "coinKey": "USDT",
             "symbol": "USDT",
             "decimals": 6,
-            "address": "0x0ace5E8e1Be0d3Df778f639d79fa8231b376b9F1"
+            "address": "0x2F8A25ac62179B31D62D7F80884AE57464699059"
         }
     ],
     "internalId": "48",
