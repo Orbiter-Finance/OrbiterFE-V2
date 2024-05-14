@@ -2190,5 +2190,50 @@
     ],
     "contract": {},
     "contracts": []
+  },
+  {
+    "name": "BounceBit",
+    "rpc": [
+      "https://fullnode-mainnet.bouncebitapi.com"
+    ],
+    "features": [
+      {
+        "name": "evm-rpc"
+      }
+    ],
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "tokens": [
+      {
+        "name": "BBTC",
+        "coinKey": "BTC",
+        "symbol": "BTC",
+        "decimals": 18,
+        "address": "0xF5e11df1ebCf78b6b6D26E04FF19cD786a1e81dC"
+      }
+    ],
+    "internalId": "64",
+    "nativeCurrency": {
+      "name": "BB",
+      "coinKey": "BB",
+      "symbol": "BB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "infoURL": "https://bbscan.io",
+    "shortName": "BounceBit",
+    "chainId": "6001",
+    "networkId": "6001",
+    "icon": "BounceBit",
+    "explorers": [
+      {
+        "name": "BounceBit",
+        "url": "https://bbscan.io",
+        "standard": "BounceBit"
+      }
+    ],
+    "contract": {},
+    "contracts": []
   }
 ]
