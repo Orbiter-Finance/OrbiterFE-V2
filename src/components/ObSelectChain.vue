@@ -525,7 +525,7 @@ export default {
     height: calc(100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
     border-radius: 20px;
     padding: 20px 0;
-    font-family: OpenSansRoman-Regular;
+    font-family: Inter Regular;
 
     .selectChainContent {
         // margin: 1rem 1.5rem;
@@ -553,7 +553,7 @@ export default {
                 align-items: center;
                 cursor: pointer;
                 color: #999999;
-                font-family: OpenSansRoman-Regular;
+                font-family: Inter Regular;
             }
 
             .selectChainActiveItem {
@@ -627,7 +627,7 @@ export default {
         font-size: 16px;
         line-height: 24px;
         justify-content: space-between;
-        font-family: OpenSansRoman-Regular;
+        font-family: Inter Regular;
 
         .contentItemChain {
             display: flex;
@@ -651,7 +651,7 @@ export default {
         .contentItemBalance {
             font-size: 14px;
             font-weight: 500;
-            font-family: OpenSansRoman-Regular;
+            font-family: Inter Regular;
             color: #999999;
         }
 
