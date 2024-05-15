@@ -35,10 +35,12 @@
                                     style="margin-right: 1.5rem;"
                                 ></svg-icon>
                                 <span>{{ item.chain }}</span>
-                                <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                                    height="1.5rem" />
+                                
                             </div>
-                            <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                            <div class="contentItemBalance">
+                                <CommLoading v-if="!getChainBalance(item.localID)"  style="left: 1rem; top: 0rem" width="1.5rem"
+                                    height="1.5rem" />
+                                {{ getChainBalance(item.localID) }}</div>
                         </div>
                     </template>
                     <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
@@ -51,10 +53,12 @@
                             style="margin-right: 1.5rem;"
                             ></svg-icon>
                             <span>{{ item.chain }}</span>
-                            <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                            height="1.5rem" />
+                           
                         </div>
-                        <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                        <div class="contentItemBalance">
+                            <CommLoading v-if="!getChainBalance(item.localID)"  style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                            {{ getChainBalance(item.localID) }}</div>
                     </div>
                 </template>
                 <template v-else>
@@ -68,10 +72,11 @@
                                 style="margin-right: 1.5rem;"
                             ></svg-icon>
                             <span>{{ item.chain }}</span>
-                            <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                            height="1.5rem" />
                         </div>
-                        <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                        <div class="contentItemBalance">
+                            <CommLoading v-if="!getChainBalance(item.localID)" style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                            {{ getChainBalance(item.localID) }}</div>
                     </div>
                 </template>
             </div>
@@ -694,6 +699,7 @@ export default {
         }
 
         .contentItemBalance {
+            display: flex;
             font-size: 14px;
             font-weight: 500;
             font-family: Inter Regular;
