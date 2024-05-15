@@ -206,7 +206,7 @@ export default {
   transition: all 0.5s linear;
 
   &.up {
-    height: 54px;
+    height: 50px;
   }
   &.down {
     height: 310px;

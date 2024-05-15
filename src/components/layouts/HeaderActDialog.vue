@@ -469,10 +469,12 @@
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
 
           <div v-if="showEcosystemDapp">
-            <!-- <EcosystemDapp></EcosystemDapp> -->
-            <EcosystemDappPro
+            <EcosystemDapp
             v-on:getTaskHeight="getTaskHeight"
-            ></EcosystemDappPro>
+            ></EcosystemDapp>
+            <!-- <EcosystemDappPro
+            v-on:getTaskHeight="getTaskHeight"
+            ></EcosystemDappPro> -->
           </div>
           <div v-else >
             <ActDialogBanner ></ActDialogBanner>
@@ -592,7 +594,7 @@ export default {
           timeStamp: '2024-05-28 06:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
-      showEcosystemDapp: false
+      showEcosystemDapp: true
     }
   },
   computed: {
