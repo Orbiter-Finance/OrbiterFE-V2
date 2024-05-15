@@ -112,12 +112,14 @@
                   />
                 </o-tooltip>
               </div>
-              <div class="ratio">{{ decimalNumC(ratio, 3) }}% !!</div>
+              <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">{{ decimalNumC(ratio, 3) }}% 
+                <span v-show="Number(ratio) >= 100">!!</span>
+              </div>
             </div>
             <div class="progress-box">
               <div
                 class="progress"
-                :style="{ width: decimalNumC(ratio, 3) + '%' }"
+                :style="{ width:  Number(ratio) >= 100 ? '100%' :decimalNumC(ratio, 3) + '%' }"
                 :class="Number(ratio) >= 100 ? 'progress100' : 'default-bg'"
               ></div>
             </div>
@@ -143,7 +145,7 @@ export default {
   data() {
     return {
       holders: 0,
-      ratio: 100,
+      ratio: 0,
       isEnd: false,
       show: false,
     }
@@ -153,7 +155,9 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     openUrl(url) {
-      window.open(url, '_blank')
+      // window.open(url, '_blank')
+      this.ratio += 50
+
     },
     async getData() {
       const res = await fetch(
@@ -303,15 +307,6 @@ export default {
           text-align: left;
           padding-left: 64px;
 
-          .label {
-            width: 100%;
-            font-size: 18px;
-            font-weight: bold;
-            color: #222222;
-            line-height: 18px;
-            font-family: OpenSansRoman-Regular;
-          }
-
           .text {
             width: 100%;
             font-size: 12px;
@@ -333,6 +328,7 @@ export default {
         color: #222222;
         font-size: 18px;
         font-weight: 700;
+        font-family: OpenSansRoman-ExtraBold;
       }
 
       .bottom {
@@ -375,8 +371,16 @@ export default {
             .ratio {
               font-size: 16px;
               font-family: OpenSansRoman-Regular;
-              font-weight: 600;
+              font-weight: 500;
               color: #222222;
+              font-size: 16px;
+              font-weight: 700;
+            }
+
+            .ratio100 {
+              font-size: 16px;
+              font-family: OpenSansRoman-Regular;
+              font-weight: 600;
               font-size: 16px;
               font-weight: 700;
               color: #7f0d0d;

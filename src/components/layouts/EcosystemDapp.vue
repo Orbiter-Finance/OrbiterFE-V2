@@ -118,7 +118,9 @@
                     />
                   </o-tooltip>
                 </div>
-                <div class="ratio">{{ decimalNumC(ratio, 3) }}% !!</div>
+                <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">{{ decimalNumC(ratio, 3) }}% 
+                  <span v-show="Number(ratio) >= 100">!!</span>
+                </div>
               </div>
               <div class="progress-box">
                 <div
@@ -330,7 +332,7 @@ export default {
           font-weight: bold;
           color: #222222;
           line-height: 18px;
-          font-family: OpenSansRoman-Regular;
+          font-family: OpenSansRoman-ExtraBold;
         }
 
         .text {
@@ -389,8 +391,16 @@ export default {
           .ratio {
             font-size: 16px;
             font-family: OpenSansRoman-Regular;
-            font-weight: 600;
+            font-weight: 500;
             color: #222222;
+            font-size: 16px;
+            font-weight: 700;
+          }
+
+          .ratio100 {
+            font-size: 16px;
+            font-family: OpenSansRoman-Regular;
+            font-weight: 600;
             font-size: 16px;
             font-weight: 700;
             color: #7f0d0d;

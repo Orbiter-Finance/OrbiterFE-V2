@@ -469,12 +469,12 @@
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
 
           <div v-if="showEcosystemDapp">
-            <EcosystemDapp
+            <!-- <EcosystemDapp
             v-on:getTaskHeight="getTaskHeight"
-            ></EcosystemDapp>
-            <!-- <EcosystemDappPro
+            ></EcosystemDapp> -->
+            <EcosystemDappPro
             v-on:getTaskHeight="getTaskHeight"
-            ></EcosystemDappPro> -->
+            ></EcosystemDappPro>
           </div>
           <div v-else >
             <ActDialogBanner ></ActDialogBanner>
