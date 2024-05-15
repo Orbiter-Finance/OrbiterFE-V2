@@ -105,8 +105,11 @@ const chainsSelectGroup = JSON.parse(process.env.VUE_APP_CHAINS_SELECT_GROUP || 
 
 let timer = 0
 let timerT = 0
-let timeNum = 0
+let timeGroup = 0
 
+let time1 = 0
+let time2 = 0
+let localAddress = ""
 let balanceList = []
 
 export default {
@@ -121,12 +124,13 @@ export default {
         },
     },
     data() {
+        const { query } = this.$route;
         return {
             keyword: '',
             loadingIndex: -1,
             tabKey: "All",
             updateTime: 0,
-            symbol: this.symbol
+            symbol: query.token || "ETH"
         }
     },
     computed: {
@@ -270,33 +274,84 @@ export default {
         }
 
     },
+    created() {
+        setTimeout(() => {
+            this.getBanlanceGroupCall()
+        }, 1000);
+    },
+    watch: {
+        ChainData: function (newData, oldData) {
+            clearTimeout(time1)
+            if(newData?.length !== oldData?.length) {
+                time1 = setTimeout(() => {
+                    this.getBanlanceGroupCall()
+                }, 100);
+            }
+        },
+        currentWalletAddress: function(newAddress, oldAddress) {
+            if(localAddress !== newAddress) {
+                localAddress = newAddress
+                clearTimeout(time2)
+                time2 = setTimeout(() => {
+                this.getBanlanceGroupCall()
+            }, 100);
+            }
+        }
+    },
     methods: {
         selectSymbol(symbol){
-            // if(symbol !== this.symbol) {
-            //     this.updateTime = +new Date()
-            //     balanceList = []
-            // }
-            // this.symbol = symbol
-            // const _this = this
+            if(symbol !== this.symbol) {
+                this.updateTime = +new Date()
+                balanceList = []
+            }
+            this.symbol = symbol
+            const _this = this
 
-            // timerT = setTimeout(() => {
-            //     clearTimeout(timerT)
-            //     clearInterval(timer)
-            //     _this.getBalance() 
+            timerT = setTimeout(() => {
+                clearTimeout(timerT)
+                clearInterval(timer)
+                _this.getBanlanceGroupCall() 
             
-            //     timer = setInterval(() => {
-            //         clearInterval(timer)
-            //         clearTimeout(timerT)
-            //         _this.getBalance() 
-            //     },  1000 * 60);
-            // }, 100);
+                timer = setInterval(() => {
+                    clearInterval(timer)
+                    clearTimeout(timerT)
+                    _this.getBanlanceGroupCall() 
+                },  1000 * 60);
+            }, 100);
         },
         getChainBalance(chainId) {
             if(!balanceList?.length) return ""
             const option = balanceList.filter((item)=> item.chainId === chainId)[0]
             return option ? `${decimalNum(option?.balance, 6) || "0"} ${this.symbol || ""}` : ""
         },
+        async getBalanceCall(group) {
+            let defaultResult = ({
+                balance: "0",
+                chainId: group?.localChainID,
+                tokenName: group.tokenName
+            }) 
+            try {
+                if(group?.tokenAddress && group?.userAddress){
+                    const balance = await transferCalculate.getTransferBalance(
+                        group.localChainID,
+                        group.tokenAddress,
+                        group.tokenName,
+                        group.userAddress,
+                    )
+                    defaultResult = ({
+                        balance: ethers.utils.formatUnits(balance, group.decimals),
+                        chainId: group.localChainID,
+                        tokenName: group.tokenName
+                    }) 
+                }
+            } catch (error) {
+                
+            }
+            balanceList = balanceList.concat([defaultResult])
+            this.updateTime = +new Date()
+        },
         async getBalance() {
+            balanceList = []
             const symbol = this.symbol
             let chainList = []
 
@@ -322,7 +377,9 @@ export default {
                 const group = chainInfo?.tokens?.concat?.(chainInfo?.nativeCurrency || {})?.filter((option)=> option.symbol === symbol)?.[0]
 
                 let address = ""
-                if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test) {
+                if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test){
+                    address = tonHelper.account()
+                } else if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test) {
                     address = this.solanaAddress
                 } else if(item.localID === CHAIN_ID.starknet || item.localID ===  CHAIN_ID.starknet_test) {
                     address = this.starknetAddress
@@ -341,44 +398,17 @@ export default {
                     tokenName: symbol,
                 })
             })
-            list = list.filter((item)=>{
-                const option = balanceList?.filter((option)=> String(option?.chainId)?.toLocaleLowerCase() === String(item.localChainID)?.toLocaleLowerCase() )[0]
-                return !option || new BigNumber(option.balance).gt("0") || (Number(+new Date() - this.updateTime) > 1000 * 60 * 3)
+
+            list.forEach((item)=> {
+                this.getBalanceCall(item)
             })
 
-            const res = await Promise.all(list.map(async (item)=> {
-                const defaultResult = ({
-                        balance: "0",
-                        chainId: item?.localChainID,
-                        tokenName: item.tokenName
-                    }) 
-                try {
-                    if(item?.tokenAddress && item?.userAddress){
-                        const balance = await transferCalculate.getTransferBalance(
-                            item.localChainID,
-                            item.tokenAddress,
-                            item.tokenName,
-                            item.userAddress,
-                        )
-
-                        return ({
-                            balance: ethers.utils.formatUnits(balance, item.decimals),
-                            chainId: item.localChainID,
-                            tokenName: item.tokenName
-                        }) 
-                    } else {
-                        return defaultResult
-                    }
-                } catch (error) {
-                    return defaultResult
-                    
-                }
-            })) 
-
-            this.updateTime = +new Date()
-            
-            balanceList = res
-
+        },
+        getBanlanceGroupCall(){
+            clearTimeout(timeGroup)
+            timeGroup = setTimeout(() => {
+                this.getBalance() 
+            }, 50);
         },
         selectTab(tab) {
             this.tabKey = tab.key
@@ -409,11 +439,11 @@ export default {
             return theArray
         },
         closerButton() {
+            this.tabKey = "All",
             this.$emit('closeSelect')
         },
         async getChainInfo(e, index) {
             // When chain use stark system
-            console.log("e.localID", e.localID)
 
             if (this.isStarkSystem(e.localID)) {
                 try {
