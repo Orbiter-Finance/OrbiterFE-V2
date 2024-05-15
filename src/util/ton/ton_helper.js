@@ -86,8 +86,9 @@ const tonConnectCall = async () => {
   if (tonConnect) {
     return tonConnect
   }
+  const url = new URL(window.location.href)
   const tonConnectUI = new TonConnectUI({
-    manifestUrl: 'https://<YOUR_APP_URL>/tonconnect-manifest.json',
+    manifestUrl: url.origin + '/tonconnect-manifest.json',
     buttonRootId: 'ton-connect-wallet',
   })
 
