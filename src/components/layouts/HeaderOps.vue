@@ -164,7 +164,7 @@ export default {
       return compatibleGlobalWalletConf.value
     },
     isLogin () {
-      return walletIsLogin.value
+      return walletIsLogin.value || this.isSelectedStarkNet || this.isSelectedSolana || this.isSelectedTon
     },
     isSelectedStarkNet () {
       const { toChainID, fromChainID } = transferDataState

@@ -2106,7 +2106,7 @@
       "decimals": 9,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "infoURL": "https://tonviewer.com",
+    "infoURL": "https://tonscan.org",
     "shortName": "TON",
     "chainId": "TON",
     "networkId": "TON",
@@ -2192,7 +2192,7 @@
       "symbol": "ETH",
       "decimals": 18
     },
-    "infoURL": "https://optopia.ai",
+    "infoURL": "https://scan.optopia.ai",
     "chainId": "62050",
     "networkId": "62050",
     "explorers": [
