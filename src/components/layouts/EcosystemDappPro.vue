@@ -78,40 +78,54 @@
           <div class="top-right">
             <div class="text">
               1st Fair launch on Likwid
-              <!-- <o-tooltip>
-                  <template v-slot:titleDesc>
-                    <div style="margin-left: -20px">
-                      <span>
-                        1st Fair launch on Likwid
-                      </span>
-                    </div>
-                  </template>
-                  <div class="text">
-                    1st Fair launch on Likwid
-                  </div>
-                </o-tooltip> -->
+              <div class="time">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="16.000000"
+                  height="16.000000"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path
+                    id="Vector"
+                    d="M8 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 8 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 8 14.66Z"
+                    stroke="#999999"
+                    stroke-opacity="1.000000"
+                    stroke-width="1.000000"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    id="Vector"
+                    d="M10.47 10.11L8.4 8.88C8.04 8.67 7.75 8.15 7.75 7.73L7.75 5"
+                    stroke="#999999"
+                    stroke-opacity="1.000000"
+                    stroke-width="1.000000"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                  />
+                  <g opacity="0.000000" />
+                </svg>
+                <div
+                  :key="item.symbol"
+                  class="time-item"
+                  v-for="item in timeList"
+                >
+                  <div class="time-value">{{ item.value }}</div>
+                  <div class="time-symbol">{{ item.symbol }}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div class="label">
-          <div>Layer2-20 🔥</div>
-          <div class="time">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16.000000" height="16.000000" viewBox="0 0 16 16" fill="none">
-              <path id="Vector" d="M8 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 8 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 8 14.66Z" stroke="#999999" stroke-opacity="1.000000" stroke-width="1.000000" stroke-linejoin="round"/>
-              <path id="Vector" d="M10.47 10.11L8.4 8.88C8.04 8.67 7.75 8.15 7.75 7.73L7.75 5" stroke="#999999" stroke-opacity="1.000000" stroke-width="1.000000" stroke-linejoin="round" stroke-linecap="round"/>
-              <g opacity="0.000000"/>
-            </svg>
-            <div :key="item.symbol" class="time-item" v-for="item in timeList">
-              <div class="time-value">{{ item.value }}</div>
-              <div class="time-symbol">{{ item.symbol }}</div>
-            </div>
-          </div>
+          <div>$BATE® 🔥</div>
         </div>
         <div class="bottom">
           <div class="progress-group">
             <div class="holders">
               <div class="total">
-                Fundraise Goal:
+                Current Funds Raised:
                 <div class="amount">{{ decimalNumC(holders, 0, ',') }} ETH</div>
                 <o-tooltip>
                   <template v-slot:titleDesc>
@@ -121,7 +135,7 @@
                   </template>
                   <img
                     class="help-icon"
-                    :src="require('../../assets/activity/tip_ico.png')"
+                    :src="require('../../assets/activity/tooltip.png')"
                   />
                 </o-tooltip>
               </div>
@@ -138,7 +152,9 @@
                     Number(ratio) >= 100 ? '100%' : decimalNumC(ratio, 3) + '%',
                 }"
                 :class="Number(ratio) >= 100 ? 'progress100' : 'default-bg'"
-              ></div>
+              >
+            <div class="skeleton"></div>
+            </div>
             </div>
           </div>
           <div
@@ -187,9 +203,7 @@ export default {
       // const {
       //   data: { totalHolders = 0, max, totalAmount }
       // } = await res.json()
-
       // this.holders = totalHolders || 0
-
       // if (Number(max) && Number(totalAmount)) {
       //   const total = (totalAmount * 100) / max
       //   this.ratio = Number(total) <= 100 ? Number(total) : 100
@@ -231,6 +245,7 @@ export default {
     timer1 = setInterval(() => {
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
+      console.log(timeS, timeS)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
@@ -252,16 +267,20 @@ export default {
             symbol: 'S',
           },
         ]
+        return
       }
       let d = Math.floor(time / 3600 / 24)
-      d = d < 10 ? '0' + d : d
       time -= d * 3600 * 24
+      d = d < 0 ? 0 : d
+      d = d < 10 ? '0' + d : d
       let h = Math.floor(time / 3600)
-      h = h < 10 ? '0' + h : h
       time -= h * 3600
+      h = h < 0 ? 0 : h
+      h = h < 10 ? '0' + h : h
       let m = Math.floor(time / 60)
-      m = m < 10 ? '0' + m : m
       time -= m * 60
+      m = m < 0 ? 0 : m
+      m = m < 10 ? '0' + m : m
       const s = time < 10 ? '0' + time : time
 
       this.timeList = [
@@ -290,6 +309,13 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@keyframes shine {
+  to {
+    // Move shine from left to right, with offset on the right based on the width of the shine - see background-size
+    background-position: right -40px top 0;
+  }
+}
+
 .ecosystem-dapp-pro-com {
   width: 100%;
   padding: 16px 12px;
@@ -404,9 +430,37 @@ export default {
             font-weight: 500;
             line-height: 18px;
             font-family: OpenSansRoman-Regular;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .time {
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              font-family: OpenSansRoman-Regular;
+              .time-item {
+                display: flex;
+                .time-value {
+                  font-size: 14px;
+                  color: #222222;
+                  margin: 0 2px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  font-weight: 700;
+                  font-family: OpenSansRoman-SemiBold;
+                }
+                .time-symbol {
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  font-size: 12px;
+                  color: #999999;
+                  margin: 0 2px;
+                }
+              }
+            }
           }
         }
       }
@@ -420,35 +474,6 @@ export default {
         font-size: 18px;
         font-weight: 700;
         font-family: OpenSansRoman-ExtraBold;
-
-        .time {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          font-family: OpenSansRoman-Regular;
-          .time-item {
-            display: flex;
-            .time-value {
-              font-size: 14px;
-              font-weight: 500;
-              color: #222222;
-              margin: 0 2px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-family: OpenSansRoman-ExtraBold;
-
-            }
-            .time-symbol {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-size: 12px;
-              color: #999999;
-              margin: 0 2px;
-            }
-          }
-        }
       }
 
       .bottom {
@@ -545,6 +570,21 @@ export default {
                 rgb(255, 190, 93) 68.961%,
                 rgb(253, 4, 15) 97.662%
               );
+
+              .skeleton {
+                width: 100%;
+                height: 100%;
+                background-image: linear-gradient(
+                  90deg,
+                  rgba(#fff, 0),
+                  rgba(#fff, 0.4),
+                  rgba(#fff, 0)
+                );
+                background-size: 40px 100%; // width of the shine
+                background-repeat: no-repeat; // No need to repeat the shine effect
+                background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
+                animation: shine 2s ease infinite;
+              }
             }
           }
         }
