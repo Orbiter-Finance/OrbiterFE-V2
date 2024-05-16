@@ -133,7 +133,7 @@ export default {
         return {
             keyword: '',
             loadingIndex: -1,
-            tabKey: "All",
+            tabKey: "ALL",
             updateTime: 0,
             symbol: query.token || "ETH"
         }
@@ -153,7 +153,7 @@ export default {
         },
         tabsList() {
             return [{
-                key: "All",
+                key: "ALL",
                 label: "All",
             }, {
                 key: "ETH",
@@ -163,11 +163,21 @@ export default {
                 label: "BTC L2",
             }]
         },
+        chainsGroup() {
+            const chainsGroupL = config.chainsGroup 
+            const symbol =  this.symbol
+            let obj = {}
+            for (const groupName in chainsGroupL) {
+                const group = chainsGroupL?.[groupName||""]?.[this.tabKey||""] || {}
+                const list = group?.[symbol || ""] || group?.DEFAULT
+                obj = {
+                    [groupName]: list || []
+                }
+            }
+            return obj
+        },
         isExistChainsGroup() {
             return !!Object.keys(this.chainsGroup).length
-        },
-        chainsGroup() {
-            return config.chainsGroup || {}
         },
         localIdsInGroup() {
             const localIdsInGroup = Object.values(this.chainsGroup).reduce((localIds, ids) => {
@@ -305,6 +315,7 @@ export default {
     },
     methods: {
         selectSymbol(symbol){
+            console.log("symbol", symbol)
             if(symbol !== this.symbol) {
                 this.updateTime = +new Date()
                 balanceList = []
@@ -444,7 +455,7 @@ export default {
             return theArray
         },
         closerButton() {
-            this.tabKey = "All",
+            this.tabKey = "ALL",
             this.$emit('closeSelect')
         },
         async getChainInfo(e, index) {

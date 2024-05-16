@@ -74,7 +74,11 @@ function confirmUserTransaction(chainId, userAddress, hash) {
           break
         }
       }
-      if (status === 98) {
+      if (
+        status === 98 &&
+        chainId !== CHAIN_ID.ton &&
+        chainId !== CHAIN_ID.ton_test
+      ) {
         const toTx = txList.find((item) => item.side === 1)
         if (toTx?.hash && util.isEvmChain(toTx.chainId)) {
           const receipt = await util.requestWeb3(
