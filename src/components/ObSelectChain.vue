@@ -315,7 +315,6 @@ export default {
     },
     methods: {
         selectSymbol(symbol){
-            console.log("symbol", symbol)
             if(symbol !== this.symbol) {
                 this.updateTime = +new Date()
                 balanceList = []

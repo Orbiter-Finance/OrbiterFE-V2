@@ -1584,7 +1584,6 @@ export default {
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
       if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test) {
-        console.log("solana specialProcessing")
         if (this.isCrossAddress) this.isCrossAddress = false;
         if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
