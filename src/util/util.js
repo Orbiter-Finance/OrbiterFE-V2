@@ -43,6 +43,16 @@ export default {
     }
   },
 
+  async getTonBalance(chainId, address, tokenAddress) {
+    const res = await requestOpenApi(RequestMethod.getBalance, [
+      chainId,
+      address,
+      tokenAddress,
+    ])
+
+    return res || '0'
+  },
+
   getAccountAddressError(address, isStarknet) {
     if (isStarknet) {
       try {

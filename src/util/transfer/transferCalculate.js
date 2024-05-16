@@ -1083,6 +1083,15 @@ export default {
       localChainID === CHAIN_ID.ton_test
     ) {
       try {
+        if (isMaker) {
+          const tokenAccountBalance = await util.getTonBalance(
+            localChainID,
+            userAddress,
+            tokenAddress
+          )
+          return String(tokenAccountBalance || '0')
+        }
+
         const isConnected = tonHelper.isConnected()
         const tonAddress = tonHelper.account()
 
