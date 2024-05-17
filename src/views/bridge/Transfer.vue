@@ -1782,6 +1782,7 @@ export default {
     // open selectChain
     showFromChainPopupClick() {
       this.$refs.SelectFromChainPopupRef.showCustom();
+      this.$refs.selectFromChainRef.show()
     },
     // close selectChain
     closeFromChainPopupClick(data) {

@@ -1,5 +1,7 @@
 <template>
-  <div class="ecosystem-dapp-pro-com" :class="show ? 'down' : 'up'">
+  <div ref="ecosystem_dapp_pro_ref" class="ecosystem-dapp-pro-com" 
+  :style="show ? 'height: 50px;' : 'height:' + height + 'px' "
+  >
     <div class="title">
       <span class="text">Ecosystem DApp </span>
       <svg
@@ -119,14 +121,14 @@
           </div>
         </div>
         <div class="label">
-          <div>$BATE® 🔥</div>
+          <div class="symbol-logo"></div>
         </div>
         <div class="bottom">
           <div class="progress-group">
             <div class="holders">
               <div class="total">
                 Current Funds Raised:
-                <div class="amount">{{ decimalNumC(holders, 0, ',') }} ETH</div>
+                <div class="amount">{{ decimalNumC(amount, 0, ',') }} ETH</div>
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
@@ -171,6 +173,8 @@
 <script>
 import getUTCTime from '../../util/time'
 import { decimalNum } from '../../util/decimalNum'
+import { ethers } from 'ethers'
+import Web3 from 'web3'
 
 let timer
 let timer1
@@ -179,12 +183,14 @@ export default {
   name: 'EcosystemDappPro',
   data() {
     return {
-      holders: 0,
+      amount: 0,
       ratio: 0,
+      total: "10",
       isEnd: false,
       show: false,
       timeStr: '2024-5-15 18:00:00',
       timeList: [],
+      height: 0
     }
   },
   methods: {
@@ -196,21 +202,31 @@ export default {
       this.ratio += 50
     },
     async getData() {
-      // const res = await fetch(
-      //   'https://api.layer220.io/statistic?protocol=layer2-20&tick=%24L2',
-      //   {}
-      // )
-      // const {
-      //   data: { totalHolders = 0, max, totalAmount }
-      // } = await res.json()
-      // this.holders = totalHolders || 0
-      // if (Number(max) && Number(totalAmount)) {
-      //   const total = (totalAmount * 100) / max
-      //   this.ratio = Number(total) <= 100 ? Number(total) : 100
-      //   this.isEnd = this.ratio === 100
-      // }
+
+      const web3 = new Web3(
+        new Web3.providers.HttpProvider("https://rpc.vizing.com")
+      )
+      const raw = web3.eth.abi.encodeFunctionSignature("presaleAccumulate()")
+
+      const res = await web3.eth.call({
+        // from: zeroAddress,
+        to: "0x80D7e5ecef907B6B452DCA0eA886A1773480F4b2",
+        data: raw
+      })
+      const result = web3.eth.abi.decodeParameters(
+          ["uint256"],
+          res || "");
+          console.log("result", result)
+      const amount = ethers.utils.formatEther(result[0])
+      this.amount = amount
+      const ratio = ethers.utils.parseEther(amount).mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther(this.total))
+      console.log("ratio", ratio,  ethers.utils.formatEther(ratio))
+      this.ratio = ethers.utils.formatEther(ratio)
     },
     triggle() {
+      const height = this.$refs.ecosystem_dapp_pro_ref.clientHeight
+      console.log("height", height)
+
       this.show = !this.show
       let time = 1000
 
@@ -320,16 +336,8 @@ export default {
   width: 100%;
   padding: 16px 12px;
   box-sizing: border-box;
-  height: 310px;
   will-change: height;
   transition: all 0.5s linear;
-
-  &.up {
-    height: 50px;
-  }
-  &.down {
-    height: 310px;
-  }
 
   .title {
     width: 100%;
@@ -371,7 +379,7 @@ export default {
 
     .banner {
       width: 100%;
-      padding: 16.75%;
+      padding: 28.125%;
       background: url('../../assets/activity/ecosystem_dapp/banner.png') 100%
         no-repeat;
       background-size: 100% 100%;
@@ -395,6 +403,7 @@ export default {
         .dapp1 {
           width: 56px;
           height: 56px;
+          border-radius: 50%;
         }
 
         .dapp2 {
@@ -403,6 +412,7 @@ export default {
           position: absolute;
           right: 4px;
           bottom: 4px;
+          border-radius: 50%;
         }
       }
     }
@@ -474,6 +484,13 @@ export default {
         font-size: 18px;
         font-weight: 700;
         font-family: OpenSansRoman-ExtraBold;
+        .symbol-logo {
+          width: 52.2px;
+          height: 18px;
+          background: url('../../assets/activity/ecosystem_dapp/symbol-logo.png') 100%
+            no-repeat;
+          background-size: 100% 100%;
+        }
       }
 
       .bottom {
@@ -504,6 +521,7 @@ export default {
                 margin-left: 4px;
                 font-weight: 600;
                 color: #222222;
+                font-size: 12px;
               }
 
               .help-icon {
@@ -522,10 +540,9 @@ export default {
             }
 
             .ratio100 {
-              font-size: 16px;
+              font-size: 14px;
               font-family: OpenSansRoman-Regular;
               font-weight: 600;
-              font-size: 16px;
               font-weight: 700;
               color: #7f0d0d;
               -webkit-text-fill-color: transparent;
@@ -552,14 +569,15 @@ export default {
             background: #eeeeee;
             border-radius: 6px;
             margin-top: 4px;
+            overflow: hidden;
 
             .progress {
               height: 8px;
-              border-radius: 6px;
             }
 
             .default-bg {
               background: #222222;
+              border-radius: 6px;
             }
 
             .progress100 {
@@ -590,7 +608,7 @@ export default {
         }
 
         .join {
-          width: 72px;
+          width: 56px;
           height: 32px;
           background: #222222;
           border-radius: 18px;

@@ -94,15 +94,12 @@ import {decimalNum} from '../util/decimalNum'
 
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
-import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
-import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey, transferDataState, selectTokenSymbol } from '../composition/hooks'
+import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
 import  solanaHelper from '../util/solana/solana_helper';
 import  tonHelper from '../util/ton/ton_helper';
 import transferCalculate from '../util/transfer/transferCalculate'
-import { getStarknet } from 'get-starknet'
 import { ethers } from 'ethers'
-import BigNumber from 'bignumber.js'
 
 const chainConfig = config.chainConfig
 
@@ -239,7 +236,6 @@ export default {
                 }
                 data[groupName] = chains;
             }
-            
             return data;
         },
         newChainData: function () {
@@ -289,59 +285,35 @@ export default {
         }
 
     },
-    created() {
-        setTimeout(() => {
-            this.getBanlanceGroupCall()
-        }, 1000);
-    },
     watch: {
-        ChainData: function (newData, oldData) {
-            clearTimeout(time1)
-            if(newData?.length !== oldData?.length) {
-                time1 = setTimeout(() => {
-                    this.getBanlanceGroupCall()
-                }, 100);
-            }
-        },
-        currentWalletAddress: function(newAddress, oldAddress) {
-            if(localAddress !== newAddress) {
+        currentWalletAddress: function(newAddress) {
+            if((localAddress !== newAddress) && newAddress) {
                 localAddress = newAddress
                 clearTimeout(time2)
                 time2 = setTimeout(() => {
-                this.getBanlanceGroupCall()
+                this.getBanlanceGroupCall(
+                    this.symbol
+                )
             }, 100);
             }
         }
     },
     methods: {
-        selectSymbol(symbol){
-            if(symbol !== this.symbol) {
-                this.updateTime = +new Date()
+        show() {
+            this.updateTime = +new Date()
                 balanceList = []
-            }
+            this.getBanlanceGroupCall() 
+        },
+        selectSymbol(symbol){
             this.symbol = symbol
-            const _this = this
-
-            timerT = setTimeout(() => {
-                clearTimeout(timerT)
-                clearInterval(timer)
-                _this.getBanlanceGroupCall() 
-            
-                timer = setInterval(() => {
-                    clearInterval(timer)
-                    clearTimeout(timerT)
-                    _this.getBanlanceGroupCall() 
-                },  1000 * 60);
-            }, 100);
         },
         getChainBalance(chainId) {
-            if(!balanceList?.length) return ""
             const option = balanceList.filter((item)=> item.chainId === chainId)[0]
-            return option ? `${decimalNum(option?.balance, 6) || "0"} ${this.symbol || ""}` : ""
+            return option ? option?.balance : ""
         },
         async getBalanceCall(group) {
             let defaultResult = ({
-                balance: "0",
+                balance: "--",
                 chainId: group?.localChainID,
                 tokenName: group.tokenName
             }) 
@@ -354,7 +326,7 @@ export default {
                         group.userAddress,
                     )
                     defaultResult = ({
-                        balance: ethers.utils.formatUnits(balance, group.decimals),
+                        balance: `${decimalNum(ethers.utils.formatUnits(balance, group.decimals), 8)} ${group.tokenName}`,
                         chainId: group.localChainID,
                         tokenName: group.tokenName
                     }) 
@@ -419,7 +391,7 @@ export default {
             })
 
         },
-        getBanlanceGroupCall(){
+        getBanlanceGroupCall(  ){
             clearTimeout(timeGroup)
             timeGroup = setTimeout(() => {
                 this.getBalance() 

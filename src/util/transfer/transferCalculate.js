@@ -24,14 +24,11 @@ import {
   transferDataState,
   web3State,
   tradingPairsData,
-  setSelectWalletDialogVisible,
-  setConnectWalletGroupKey,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
 
-import solanaHelper from '../solana/solana_helper'
 import tonHelper from '../ton/ton_helper'
 import { zeroAddress } from 'viem'
 
@@ -1059,15 +1056,6 @@ export default {
       localChainID === CHAIN_ID.solana_test
     ) {
       try {
-        const isConnected = await solanaHelper.isConnect()
-        const solanaAddress = solanaHelper.solanaAddress()
-
-        if (!solanaAddress || !isConnected) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          return '0'
-        }
-
         const tokenAccountBalance = await util.getSolanaBalance(
           localChainID,
           userAddress,
@@ -1092,17 +1080,9 @@ export default {
           return String(tokenAccountBalance || '0')
         }
 
-        const isConnected = tonHelper.isConnected()
-        const tonAddress = tonHelper.account()
-
-        if (!tonAddress || !isConnected) {
-          await tonHelper.connect()
-          return '0'
-        }
-
         const tonweb = tonHelper.tonwebProvider()
 
-        const userTonAddress = new TonWeb.Address(tonAddress)
+        const userTonAddress = new TonWeb.Address(userAddress)
         try {
           if (tokenAddress === zeroAddress) {
             const res = await tonweb.getBalance(userTonAddress)
