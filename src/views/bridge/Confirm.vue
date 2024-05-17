@@ -595,7 +595,7 @@ export default {
                 }
 
                 if (transferHash) {
-                    this.onTransferSucceed(from, rAmount, fromChainID, transferHash)
+                    this.onTransferSucceed(from, rAmount, fromChainID, transferHash, toChainID)
                 }
 
             } catch (err) {
@@ -2230,7 +2230,7 @@ export default {
             this.transferLoading = false
 
         },
-        onTransferSucceed(from, amount, fromChainID, transactionHash) {
+        onTransferSucceed(from, amount, fromChainID, transactionHash, toChainID) {
             const { selectMakerConfig } = transferDataState
             const { path, query } = this.$route;
             if (process.env['VUE_APP_SDK_URL']) {
@@ -2252,7 +2252,8 @@ export default {
                 amount,
                 fromChainID,
                 transactionHash,
-                !!selectMakerConfig.ebcId
+                !!selectMakerConfig.ebcId,
+                toChainID
             )
 
             // Immutablex's identifier is not a hash

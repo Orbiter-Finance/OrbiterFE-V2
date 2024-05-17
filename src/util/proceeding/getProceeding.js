@@ -15,7 +15,7 @@ const storeUpdateProceedState = (state) => {
 
 let cron
 
-function confirmUserTransaction(chainId, userAddress, hash) {
+function confirmUserTransaction(chainId, userAddress, hash, toChainId) {
   let currentStatus = 1
   if (cron) {
     clearInterval(cron)
@@ -30,6 +30,7 @@ function confirmUserTransaction(chainId, userAddress, hash) {
     //   }
     //   return;
     // }
+    console.log('toChainId', toChainId)
     try {
       const { status, txList = [] } =
         (await requestOpenApi(RequestMethod.getTransactionByHash, [hash])) || {}
@@ -65,6 +66,14 @@ function confirmUserTransaction(chainId, userAddress, hash) {
           break
         }
         case 98:
+          if (toChainId !== CHAIN_ID.ton && toChainId !== CHAIN_ID.ton_test) {
+            completeTx(
+              userAddress,
+              txList.find((item) => item.side === 0)?.hash,
+              txList.find((item) => item.side === 1).hash
+            )
+          }
+          break
         case 99: {
           completeTx(
             userAddress,
@@ -74,11 +83,7 @@ function confirmUserTransaction(chainId, userAddress, hash) {
           break
         }
       }
-      if (
-        status === 98 &&
-        chainId !== CHAIN_ID.ton &&
-        chainId !== CHAIN_ID.ton_test
-      ) {
+      if (status === 98) {
         const toTx = txList.find((item) => item.side === 1)
         if (toTx?.hash && util.isEvmChain(toTx.chainId)) {
           const receipt = await util.requestWeb3(
@@ -119,7 +124,15 @@ async function completeTx(userAddress, fromHash, toHash) {
 }
 
 export default {
-  UserTransferReady(user, maker, amount, localChainID, txHash) {
+  UserTransferReady(
+    user,
+    maker,
+    amount,
+    localChainID,
+    txHash,
+    ebcId,
+    toChainId
+  ) {
     util.setCache(`history_${user.toLowerCase()}_1`, '', -1)
     if (
       localChainID === CHAIN_ID.starknet ||
@@ -147,6 +160,6 @@ export default {
     store.commit('updateProceedingUserTransferLocalChainID', localChainID)
     store.commit('updateProceedingUserTransferTxid', txHash)
     // console.log(txHash)
-    confirmUserTransaction(localChainID, user, txHash)
+    confirmUserTransaction(localChainID, user, txHash, toChainId)
   },
 }
