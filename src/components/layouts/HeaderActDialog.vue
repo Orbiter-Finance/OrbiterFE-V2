@@ -315,6 +315,8 @@
         <div class="ativity-list" 
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
+        >
+        <div 
         v-if="!!actDataList.length"
         >
           <template v-for="item in actDataList">
@@ -459,29 +461,27 @@
             </div>
           </template>
         </div>
-        <div ref="banner_list_ref" style="padding-bottom: 36px" v-if="!!bannerList.length">
-          <div class="text_48">More: Partners' Incentives</div>
-          <el-carousel :interval="4000" trigger="click" height="110px">
-            <el-carousel-item
-              v-for="(item, index) in bannerList"
-              :key="index"
-            >
-              <div
-                @click="openUrl(item)"
-                class="box_75"
-                :style="`background: url(${require('../../assets/activity/banner/' +
-                  item.img)});background-size: 100% 100%;`"
-              ></div>
-            </el-carousel-item>
-          </el-carousel>
+          
+          <div v-if="showEcosystemDapp">
+            <ActDialogBanner></ActDialogBanner>
+          </div>
+        </div>
+        <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
+
+          <div v-if="showEcosystemDapp">
+            <!-- <EcosystemDapp
+            v-on:getTaskHeight="getTaskHeight"
+            ></EcosystemDapp> -->
+            <EcosystemDappPro
+            v-on:getTaskHeight="getTaskHeight"
+            ></EcosystemDappPro>
+          </div>
+          <div v-else >
+            <ActDialogBanner ></ActDialogBanner>
+          </div>
+
         </div>
       </div>
-        
-
-        <div ref="ecosystem_dapp">
-        <!-- <EcosystemDapp></EcosystemDapp> -->
-        </div>
-
       </div>
     </div>
   </div>
@@ -511,13 +511,15 @@ import {
   solAddress,
   setConnectWalletGroupKey,
   setSolanaDialog,
-  updateActDataList
+  updateActDataList,
+  isTonDialog,
+  tonAddress,
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
 import getUTCTime from '../../util/time'
-import { onCopySuccess } from '../../util'
+import { isProd, onCopySuccess } from '../../util'
 import walletDispatchers, {
   WALLETCONNECT,
   CURRENT_SUPPORT_WALLET,
@@ -531,9 +533,11 @@ import { PONITS_EXPAND_COUNT } from '../../const'
 import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
 import EcosystemDapp from './EcosystemDapp.vue'
+import EcosystemDappPro from './EcosystemDappPro.vue'
+import ActDialogBanner from './ActDialogBanner.vue'
 import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
-import { ChainId } from '@loopring-web/loopring-sdk'
+import tonHelper from '../../util/ton/ton_helper'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -543,7 +547,9 @@ export default {
     SvgIconThemed,
     HeaderActGroup,
     HeaderLotteryCard,
-    EcosystemDapp
+    EcosystemDapp,
+    EcosystemDappPro,
+    ActDialogBanner
   },
   data() {
     return {
@@ -588,6 +594,7 @@ export default {
           timeStamp: '2024-05-28 06:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
+      showEcosystemDapp: false
     }
   },
   computed: {
@@ -664,6 +671,9 @@ export default {
       return isSolanaDialog.value
     },
     showWalletAddress() {
+      if(isTonDialog.value) {
+        return tonAddress()
+      }
       if(isSolanaDialog.value) {
         return solAddress()
       }
@@ -673,6 +683,9 @@ export default {
       return starkAddress()
     },
     currentWalletAddress() {
+      if(isTonDialog.value) {
+        return tonHelper.account()
+      }
       if(isSolanaDialog.value) {
         return solanaHelper.solanaAddress()
       }
@@ -683,6 +696,9 @@ export default {
       return evmAddress?.toLocaleLowerCase();
     },
     networkId() {
+      if(isTonDialog.value) {
+        return CHAIN_ID.ton
+      }
       if(isSolanaDialog.value) {
         return CHAIN_ID.solana
       }
@@ -693,6 +709,11 @@ export default {
       }
     },
     networkName() {
+      if(!!isTonDialog.value) {
+        return util.netWorkName(
+          !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
+        )
+      }
       if(!!isSolanaDialog.value) {
         return util.netWorkName(
           CHAIN_ID.solana
@@ -710,6 +731,9 @@ export default {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
+      if(isTonDialog.value) {
+        return CHAIN_ID.ton
+      }
       if(!!isSolanaDialog.value) {       
         return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
       }
@@ -786,9 +810,9 @@ export default {
       let walletGroupEle = this.$refs.block_top_wallet_group?.clientHeight || 0
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
-      const bannerListRef = this.$refs.banner_list_ref?.clientHeight || 50
+      const actDialogBottomGroupRef = this.$refs.act_dialog_bottom_group_ref?.clientHeight || 50 
       
-      this.taskHeight = total - eleHeight - walletGroupEle - bannerListRef - 72
+      this.taskHeight = total - eleHeight - actDialogBottomGroupRef - walletGroupEle - 72
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle -20
       }
@@ -835,6 +859,9 @@ export default {
     },
     async disconnect() {
       try {
+        if(!!isTonDialog.value) {
+          await tonHelper.disconnect()
+        }
         if(!!isSolanaDialog.value) {
           await solanaHelper.disConnect()
           setConnectWalletGroupKey("SOLANA")
@@ -926,16 +953,6 @@ export default {
       // dataList.push(...doneList)
       updateActDataList(list)
     },
-    openUrl(item) {
-      try {
-        this.$gtag.event('banner-' + item.name, {
-          'event_category': item.name,
-          'event_label': item.url,
-        })
-      }catch(error) {
-      }
-      window.open(item.url, '_blank')
-    },
     mobileCloseAct() {
       if (isMobile.value) {
         setActDialogVisible(false)
@@ -984,28 +1001,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-::v-deep .el-carousel__indicators--horizontal {
-  /*position: absolute;*/
-  /*bottom: 5px;*/
-  /*text-align: right;*/
-
-  .el-carousel__indicator--horizontal button {
-    width: 6px;
-    height: 6px;
-    background: #ffffff;
-    border-radius: 50%;
-    opacity: 0.5;
-  }
-
-  .el-carousel__indicator--horizontal.is-active button {
-    width: 14px;
-    height: 6px;
-    background: #ffffff;
-    opacity: 1;
-    border-radius: 10px;
-  }
-}
-
 .shake-top {
   -webkit-animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
   animation: shake-top 0.8s cubic-bezier(0.455, 0.03, 0.515, 0.955) both;
@@ -1365,15 +1360,6 @@ export default {
     white-space: nowrap;
     line-height: 18px;
     margin: 10px 0 0 16px;
-  }
-
-  .box_75 {
-    cursor: pointer;
-    border-radius: 8px;
-    width: 388px;
-    height: 104px;
-    margin-left: 16px;
-    margin-top: 8px;
   }
 
   .card {
@@ -2528,10 +2514,6 @@ export default {
 
     .section_54 {
       width: calc(100% - 40px);
-    }
-
-    .box_75 {
-      width: 91.5%;
     }
 
     .thumbnail_1 {

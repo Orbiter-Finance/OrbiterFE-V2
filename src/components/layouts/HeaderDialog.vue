@@ -254,6 +254,14 @@ export default {
                 }
 
                 if (solanaChain) {
+                    if (solanaChain === CHAIN_ID.ton) {
+                        networkName = 'Ton Mainnet'
+                    } else if (solanaChain === CHAIN_ID.ton_test) {
+                        networkName = 'Ton Test'
+                    }
+                }
+
+                if (solanaChain) {
                     if (solanaChain === CHAIN_ID.solana) {
                         networkName = 'Solana Mainnet'
                     } else if (solanaChain === CHAIN_ID.solana_test) {

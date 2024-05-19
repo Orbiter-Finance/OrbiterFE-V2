@@ -48,6 +48,11 @@ export default {
     ) {
       return 0
     } else if (
+      localChainID === CHAIN_ID.ton ||
+      localChainID === CHAIN_ID.ton_test
+    ) {
+      return 0
+    } else if (
       localChainID === CHAIN_ID.imx ||
       localChainID === CHAIN_ID.imx_test
     ) {

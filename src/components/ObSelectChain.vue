@@ -35,10 +35,12 @@
                                     style="margin-right: 1.5rem;"
                                 ></svg-icon>
                                 <span>{{ item.chain }}</span>
-                                <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                                    height="1.5rem" />
+                                
                             </div>
-                            <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                            <div class="contentItemBalance">
+                                <CommLoading v-if="!getChainBalance(item.localID)"  style="left: 1rem; top: 0rem" width="1.5rem"
+                                    height="1.5rem" />
+                                {{ getChainBalance(item.localID) }}</div>
                         </div>
                     </template>
                     <div class="contentItem title" >{{ toCapitalize('networks') }}</div>
@@ -51,10 +53,12 @@
                             style="margin-right: 1.5rem;"
                             ></svg-icon>
                             <span>{{ item.chain }}</span>
-                            <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                            height="1.5rem" />
+                           
                         </div>
-                        <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                        <div class="contentItemBalance">
+                            <CommLoading v-if="!getChainBalance(item.localID)"  style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                            {{ getChainBalance(item.localID) }}</div>
                     </div>
                 </template>
                 <template v-else>
@@ -68,10 +72,11 @@
                                 style="margin-right: 1.5rem;"
                             ></svg-icon>
                             <span>{{ item.chain }}</span>
-                            <CommLoading v-if="loadingIndex == index" style="left: 1rem; top: 0rem" width="1.5rem"
-                            height="1.5rem" />
                         </div>
-                        <div class="contentItemBalance">{{ getChainBalance(item.localID) }}</div>
+                        <div class="contentItemBalance">
+                            <CommLoading v-if="!getChainBalance(item.localID)" style="left: 1rem; top: 0rem" width="1.5rem"
+                            height="1.5rem" />
+                            {{ getChainBalance(item.localID) }}</div>
                     </div>
                 </template>
             </div>
@@ -89,14 +94,12 @@ import {decimalNum} from '../util/decimalNum'
 
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData'
 import { SvgIconThemed } from './'
-import { connectStarkNetWallet } from '../util/constants/starknet/helper.js'
-import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey, transferDataState, selectTokenSymbol } from '../composition/hooks'
+import { web3State, setSelectWalletDialogVisible, setConnectWalletGroupKey } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config';
 import  solanaHelper from '../util/solana/solana_helper';
+import  tonHelper from '../util/ton/ton_helper';
 import transferCalculate from '../util/transfer/transferCalculate'
-import { getStarknet } from 'get-starknet'
 import { ethers } from 'ethers'
-import BigNumber from 'bignumber.js'
 
 const chainConfig = config.chainConfig
 
@@ -104,8 +107,11 @@ const chainsSelectGroup = JSON.parse(process.env.VUE_APP_CHAINS_SELECT_GROUP || 
 
 let timer = 0
 let timerT = 0
-let timeNum = 0
+let timeGroup = 0
 
+let time1 = 0
+let time2 = 0
+let localAddress = ""
 let balanceList = []
 
 export default {
@@ -120,12 +126,13 @@ export default {
         },
     },
     data() {
+        const { query } = this.$route;
         return {
             keyword: '',
             loadingIndex: -1,
-            tabKey: "All",
+            tabKey: "ALL",
             updateTime: 0,
-            symbol: this.symbol
+            symbol: query.token || "ETH"
         }
     },
     computed: {
@@ -143,7 +150,7 @@ export default {
         },
         tabsList() {
             return [{
-                key: "All",
+                key: "ALL",
                 label: "All",
             }, {
                 key: "ETH",
@@ -153,11 +160,21 @@ export default {
                 label: "BTC L2",
             }]
         },
+        chainsGroup() {
+            const chainsGroupL = config.chainsGroup 
+            const symbol =  this.symbol
+            let obj = {}
+            for (const groupName in chainsGroupL) {
+                const group = chainsGroupL?.[groupName||""]?.[this.tabKey||""] || {}
+                const list = group?.[symbol || ""] || group?.DEFAULT
+                obj = {
+                    [groupName]: list || []
+                }
+            }
+            return obj
+        },
         isExistChainsGroup() {
             return !!Object.keys(this.chainsGroup).length
-        },
-        chainsGroup() {
-            return config.chainsGroup || {}
         },
         localIdsInGroup() {
             const localIdsInGroup = Object.values(this.chainsGroup).reduce((localIds, ids) => {
@@ -184,7 +201,7 @@ export default {
                 CHAIN_ID.loopring_test, CHAIN_ID.op, CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
-                CHAIN_ID.solana, CHAIN_ID.solana_test
+                CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.ton, CHAIN_ID.ton_test
             ]
             return this.orderChainIds(chainOrderIds, newArray)
         },
@@ -219,7 +236,6 @@ export default {
                 }
                 data[groupName] = chains;
             }
-            
             return data;
         },
         newChainData: function () {
@@ -245,7 +261,7 @@ export default {
                 CHAIN_ID.loopring_test,  CHAIN_ID.op_test, CHAIN_ID.zkspace, CHAIN_ID.zkspace_test,
                 CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.metis,CHAIN_ID.dydx,CHAIN_ID.dydx_test, CHAIN_ID.boba,
                 CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.bsc, CHAIN_ID.bsc_test,
-                CHAIN_ID.solana, CHAIN_ID.solana_test
+                CHAIN_ID.solana, CHAIN_ID.solana_test,CHAIN_ID.ton, CHAIN_ID.ton_test
             ]
 
             let data = customSort(chainOrderIds,chains)
@@ -269,33 +285,60 @@ export default {
         }
 
     },
+    watch: {
+        currentWalletAddress: function(newAddress) {
+            if((localAddress !== newAddress) && newAddress) {
+                localAddress = newAddress
+                clearTimeout(time2)
+                time2 = setTimeout(() => {
+                this.getBanlanceGroupCall(
+                    this.symbol
+                )
+            }, 100);
+            }
+        }
+    },
     methods: {
+        show() {
+            this.updateTime = +new Date()
+                balanceList = []
+            this.getBanlanceGroupCall() 
+        },
         selectSymbol(symbol){
-            // if(symbol !== this.symbol) {
-            //     this.updateTime = +new Date()
-            //     balanceList = []
-            // }
-            // this.symbol = symbol
-            // const _this = this
-
-            // timerT = setTimeout(() => {
-            //     clearTimeout(timerT)
-            //     clearInterval(timer)
-            //     _this.getBalance() 
-            
-            //     timer = setInterval(() => {
-            //         clearInterval(timer)
-            //         clearTimeout(timerT)
-            //         _this.getBalance() 
-            //     },  1000 * 60);
-            // }, 100);
+            this.symbol = symbol
         },
         getChainBalance(chainId) {
-            if(!balanceList?.length) return ""
             const option = balanceList.filter((item)=> item.chainId === chainId)[0]
-            return option ? `${decimalNum(option?.balance, 6) || "0"} ${this.symbol || ""}` : ""
+            return option ? option?.balance : ""
+        },
+        async getBalanceCall(group) {
+            let defaultResult = ({
+                balance: "--",
+                chainId: group?.localChainID,
+                tokenName: group.tokenName
+            }) 
+            try {
+                if(group?.tokenAddress && group?.userAddress){
+                    const balance = await transferCalculate.getTransferBalance(
+                        group.localChainID,
+                        group.tokenAddress,
+                        group.tokenName,
+                        group.userAddress,
+                    )
+                    defaultResult = ({
+                        balance: `${decimalNum(ethers.utils.formatUnits(balance, group.decimals), 8)} ${group.tokenName}`,
+                        chainId: group.localChainID,
+                        tokenName: group.tokenName
+                    }) 
+                }
+            } catch (error) {
+                
+            }
+            balanceList = balanceList.concat([defaultResult])
+            this.updateTime = +new Date()
         },
         async getBalance() {
+            balanceList = []
             const symbol = this.symbol
             let chainList = []
 
@@ -321,7 +364,9 @@ export default {
                 const group = chainInfo?.tokens?.concat?.(chainInfo?.nativeCurrency || {})?.filter((option)=> option.symbol === symbol)?.[0]
 
                 let address = ""
-                if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test) {
+                if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test){
+                    address = tonHelper.account()
+                } else if(item.localID === CHAIN_ID.solana || item.localID ===  CHAIN_ID.solana_test) {
                     address = this.solanaAddress
                 } else if(item.localID === CHAIN_ID.starknet || item.localID ===  CHAIN_ID.starknet_test) {
                     address = this.starknetAddress
@@ -340,44 +385,17 @@ export default {
                     tokenName: symbol,
                 })
             })
-            list = list.filter((item)=>{
-                const option = balanceList?.filter((option)=> String(option?.chainId)?.toLocaleLowerCase() === String(item.localChainID)?.toLocaleLowerCase() )[0]
-                return !option || new BigNumber(option.balance).gt("0") || (Number(+new Date() - this.updateTime) > 1000 * 60 * 3)
+
+            list.forEach((item)=> {
+                this.getBalanceCall(item)
             })
 
-            const res = await Promise.all(list.map(async (item)=> {
-                const defaultResult = ({
-                        balance: "0",
-                        chainId: item?.localChainID,
-                        tokenName: item.tokenName
-                    }) 
-                try {
-                    if(item?.tokenAddress && item?.userAddress){
-                        const balance = await transferCalculate.getTransferBalance(
-                            item.localChainID,
-                            item.tokenAddress,
-                            item.tokenName,
-                            item.userAddress,
-                        )
-
-                        return ({
-                            balance: ethers.utils.formatUnits(balance, item.decimals),
-                            chainId: item.localChainID,
-                            tokenName: item.tokenName
-                        }) 
-                    } else {
-                        return defaultResult
-                    }
-                } catch (error) {
-                    return defaultResult
-                    
-                }
-            })) 
-
-            this.updateTime = +new Date()
-            
-            balanceList = res
-
+        },
+        getBanlanceGroupCall(  ){
+            clearTimeout(timeGroup)
+            timeGroup = setTimeout(() => {
+                this.getBalance() 
+            }, 50);
         },
         selectTab(tab) {
             this.tabKey = tab.key
@@ -408,12 +426,15 @@ export default {
             return theArray
         },
         closerButton() {
+            this.tabKey = "ALL",
             this.$emit('closeSelect')
         },
         async getChainInfo(e, index) {
             // When chain use stark system
+
             if (this.isStarkSystem(e.localID)) {
                 try {
+
                     // starknet
                     if (e.localID === CHAIN_ID.starknet || e.localID === CHAIN_ID.starknet_test) {
                         const { starkIsConnected, starkNetAddress } =
@@ -431,6 +452,7 @@ export default {
                             // }
                         }
                     }
+
                     // solana
                     if (e.localID === CHAIN_ID.solana || e.localID === CHAIN_ID.solana_test) {
                         const isConnected = await solanaHelper.isConnect()
@@ -438,6 +460,16 @@ export default {
                             setSelectWalletDialogVisible(true)
                             setConnectWalletGroupKey("SOLANA")
                             return 
+                        }
+                    }
+                    // ton
+                    if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
+
+                        const account = await tonHelper.account()
+                        const isConnected = await tonHelper.isConnected()
+                        if(!account || !isConnected) {
+                            await tonHelper.connect()
+                            return
                         }
                     }
                     // immutableX
@@ -489,7 +521,7 @@ export default {
         search() { },
         checkKeyWord() { },
         isStarkSystem(chainId) {
-            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test].indexOf(chainId) > -1
+            return [CHAIN_ID.starknet, CHAIN_ID.starknet_test, CHAIN_ID.solana, CHAIN_ID.solana_test, CHAIN_ID.dydx, CHAIN_ID.dydx_test, CHAIN_ID.imx, CHAIN_ID.imx_test, CHAIN_ID.ton, CHAIN_ID.ton_test].indexOf(chainId) > -1
         },
     }
 }
@@ -525,7 +557,7 @@ export default {
     height: calc(100% - 8.4rem - var(--top-nav-height) - var(--bottom-nav-height));
     border-radius: 20px;
     padding: 20px 0;
-    font-family: OpenSansRoman-Regular;
+    font-family: Inter Regular;
 
     .selectChainContent {
         // margin: 1rem 1.5rem;
@@ -553,7 +585,7 @@ export default {
                 align-items: center;
                 cursor: pointer;
                 color: #999999;
-                font-family: OpenSansRoman-Regular;
+                font-family: Inter Regular;
             }
 
             .selectChainActiveItem {
@@ -627,7 +659,7 @@ export default {
         font-size: 16px;
         line-height: 24px;
         justify-content: space-between;
-        font-family: OpenSansRoman-Regular;
+        font-family: Inter Regular;
 
         .contentItemChain {
             display: flex;
@@ -649,9 +681,10 @@ export default {
         }
 
         .contentItemBalance {
+            display: flex;
             font-size: 14px;
             font-weight: 500;
-            font-family: OpenSansRoman-Regular;
+            font-family: Inter Regular;
             color: #999999;
         }
 
