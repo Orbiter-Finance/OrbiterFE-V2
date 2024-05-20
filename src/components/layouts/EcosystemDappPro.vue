@@ -1,6 +1,6 @@
 <template>
   <div ref="ecosystem_dapp_pro_ref" class="ecosystem-dapp-pro-com" 
-  :style="showCard ? 'height: 312px' : 'height: 50px;' "
+  :style="showCard ? 'height: 320px' : 'height: 50px;' "
   >
     <div class="title">
       <span class="text">Ecosystem DApp </span>
@@ -353,7 +353,7 @@ export default {
 
 .ecosystem-dapp-pro-com {
   width: 100%;
-  padding: 16px 12px;
+  padding: 16px 20px;
   box-sizing: border-box;
   will-change: height;
   transition: all 0.5s linear;
@@ -407,7 +407,7 @@ export default {
       top: 0;
       left: 0;
       z-index: 1;
-
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
       .dapp_group_img {
         position: absolute;
         bottom: 0;
