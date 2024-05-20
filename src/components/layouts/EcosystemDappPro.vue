@@ -1,16 +1,17 @@
 <template>
   <div ref="ecosystem_dapp_pro_ref" class="ecosystem-dapp-pro-com" 
-  :style="show ? 'height: 312px' : 'height: 50px;' "
+  :style="showCard ? 'height: 312px' : 'height: 50px;' "
   >
     <div class="title">
       <span class="text">Ecosystem DApp </span>
       <svg
+        v-show="!isMobile"
         class="expand"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 16 16"
         fill="none"
-        @click="triggle"
+        @click="triggle(!showCard)"
       >
         <desc>Created with Pixso.</desc>
         <defs />
@@ -61,7 +62,7 @@
         />
       </svg>
     </div>
-    <div class="content" :class="show ? 'down' : 'up'">
+    <div class="content" :class="showCard ? 'down' : 'up'">
       <div class="banner">
         <div class="dapp_group_img">
           <img
@@ -177,6 +178,9 @@ import getUTCTime from '../../util/time'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
 import Web3 from 'web3'
+import {  isMobile } from '../../composition/hooks'
+import util from '../../util/util'
+
 
 let timer
 let timer1
@@ -193,6 +197,24 @@ export default {
       timeStr: '2024-5-15 18:00:00',
       timeList: []
     }
+  },
+  computed: {
+    isMobile () {
+      return isMobile.value
+    },
+    showCard() {
+      return this.isMobile || this.show
+    }
+  },
+  watch: {
+    isMobile: function (mobile1) {
+
+      if(!mobile1) {
+        this.show = false
+        this.triggle(false)
+      }
+      
+    },
   },
   methods: {
     decimalNumC(num, decimal, delimiter) {
@@ -225,8 +247,8 @@ export default {
       const ratio = ethers.utils.parseEther(amount).mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther(this.total))
       this.ratio = ethers.utils.formatEther(ratio)
     },
-    triggle() {
-      this.show = !this.show
+    triggle(status) {
+      this.show = status
       let time = 1000
 
       try {
@@ -234,12 +256,11 @@ export default {
           time -= 10
           if (time < -10) {
             clearInterval(timer)
-            throw new Error('aaaaa')
+            util.log('card', status)
           }
           this.$emit('getTaskHeight')
         }, 10)
       } catch (error) {
-        console.error('error', error)
         clearInterval(timer)
       }
     },
@@ -260,7 +281,6 @@ export default {
     timer1 = setInterval(() => {
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
-      console.log(timeS, timeS)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
@@ -362,7 +382,7 @@ export default {
   .content {
     width: 100%;
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-top: 12px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
     opacity: 1;
@@ -637,6 +657,13 @@ export default {
         .top-right {
           .text {
             color: rgba(255, 255, 255, 0.6);
+            .time {
+              .time-item {
+                .time-value {
+                  color: rgba(255, 255, 255, 0.8);
+                }
+              }
+            }
           }
         }
       }
