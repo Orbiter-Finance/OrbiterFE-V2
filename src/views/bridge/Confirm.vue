@@ -479,8 +479,8 @@ export default {
             }
             const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress || web3State.coinbase
 
-            let toAddress = solanaHelper.solanaAddress()
-            let isConnected = await solanaHelper.isConnect()
+            let toAddress = ""
+            let isConnected = false
 
             if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
                 toAddress = solanaHelper.solanaAddress()
@@ -1376,6 +1376,10 @@ export default {
                 return
             }
 
+            const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+            let targetAddress = evmAddress
+
             const safeCode =  transferCalculate.safeCode()
 
             const { starkNetAddress, starkChain } = web3State.starkNet
@@ -1384,11 +1388,29 @@ export default {
               .plus(new BigNumber(selectMakerConfig.tradingFee))
               .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
             const rAmountValue = rAmount.toFixed()
+
+            if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                targetAddress = tonHelper.account()
+                const isConnected = await tonHelper.isConnected()
+
+                if(!targetAddress || !isConnected) {
+                    await tonHelper.connect()
+                    return
+                }
+            }
             
             if (
                 toChainID === CHAIN_ID.starknet ||
                 toChainID === CHAIN_ID.starknet_test
             ) {
+
+                if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+                    util.showMessage('please connect Starknet Wallet', 'error')
+                    this.transferLoading = false
+                    return
+                }
+
+                targetAddress = starkNetAddress
 
                 if (!starkNetAddress) {
                     setSelectWalletDialogVisible(true)
@@ -1399,11 +1421,6 @@ export default {
             }
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
-
-                const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-
-                const targetAddress = toChainID === CHAIN_ID.starknet ||
-                toChainID === CHAIN_ID.starknet_test ? starkNetAddress: evmAddress
 
                 const hash = await solanaHelper.transfer({
                     from: from,
@@ -1459,11 +1476,23 @@ export default {
               .plus(new BigNumber(selectMakerConfig.tradingFee))
               .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
             const rAmountValue = rAmount.toFixed()
+
+            const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+            let targetAddress = evmAddress
             
             if (
                 toChainID === CHAIN_ID.starknet ||
                 toChainID === CHAIN_ID.starknet_test
             ) {
+
+                targetAddress = starkNetAddress
+
+                if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+                    util.showMessage('please connect Starknet Wallet', 'error')
+                    this.transferLoading = false
+                    return
+                }
 
                 if (!starkNetAddress) {
                     setSelectWalletDialogVisible(true)
@@ -1481,6 +1510,8 @@ export default {
                 const solanaAddress = solanaHelper.solanaAddress()
                 const isConnect = solanaHelper.isConnect()
 
+                targetAddress = solanaAddress
+
                 if (!solanaAddress || !isConnect) {
                     setSelectWalletDialogVisible(true)
                     setConnectWalletGroupKey("SOLANA")
@@ -1491,16 +1522,8 @@ export default {
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
-                const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-
-                let targetAddress = toChainID === CHAIN_ID.starknet ||
-                toChainID === CHAIN_ID.starknet_test ? starkNetAddress: evmAddress
-
-                targetAddress = toChainID === CHAIN_ID.solana ||
-                toChainID === CHAIN_ID.solana_test ? solanaHelper.solanaAddress(): targetAddress
-
                 const hash = await tonHelper.transfer({
-                    from: from,
+                    from,
                     to: selectMakerConfig.recipient,
                     tokenAddress,
                     targetAddress,
@@ -1534,7 +1557,7 @@ export default {
         async starknetTransfer(value) {
             const { selectMakerConfig, fromChainID, toChainID, fromCurrency, transferValue } =
                 transferDataState
-            let from = ""
+            let to = ""
             let tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
             if (
@@ -1578,9 +1601,9 @@ export default {
                 if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test ) {
                     const isConnectSolana = await solanaHelper.isConnect()
                     if(isConnectSolana) {
-                        from = solanaHelper.solanaAddress()
-                        if(!from){
-                            util.showMessage('Solana Address Error: ' + from, 'error');
+                        to = solanaHelper.solanaAddress()
+                        if(!to){
+                            util.showMessage('Solana Address Error: ' + to, 'error');
                             this.transferLoading = false
                             return;
                         }
@@ -1596,9 +1619,9 @@ export default {
                     const tonIsConnected =  tonHelper.isConnected()
                     const account =  tonHelper.account()
                     if(!!account && tonIsConnected) {
-                        from = account
-                        if(!from){
-                            util.showMessage('Solana Address Error: ' + from, 'error');
+                        to = account
+                        if(!to){
+                            util.showMessage('Solana Address Error: ' + to, 'error');
                             this.transferLoading = false
                             return;
                         }
@@ -1619,7 +1642,7 @@ export default {
                 // }
 
                 const hash = await sendTransferV3({
-                    targetAddress: from,
+                    targetAddress: to,
                     tokenAddress,
                     makerAddress: selectMakerConfig.recipient,
                     amount: new BigNumber(value),

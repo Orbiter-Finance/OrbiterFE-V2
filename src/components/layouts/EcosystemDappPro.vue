@@ -1,6 +1,6 @@
 <template>
   <div ref="ecosystem_dapp_pro_ref" class="ecosystem-dapp-pro-com" 
-  :style="show ? 'height: 50px;' : 'height:' + height + 'px' "
+  :style="show ? 'height: 312px' : 'height: 50px;' "
   >
     <div class="title">
       <span class="text">Ecosystem DApp </span>
@@ -121,14 +121,16 @@
           </div>
         </div>
         <div class="label">
-          <div class="symbol-logo"></div>
+          <div >
+            $ORBGUY
+          </div>
         </div>
         <div class="bottom">
           <div class="progress-group">
             <div class="holders">
               <div class="total">
                 Current Funds Raised:
-                <div class="amount">{{ decimalNumC(amount, 0, ',') }} ETH</div>
+                <div class="amount">{{ decimalNumC(amount, 4, ',') }} ETH</div>
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
@@ -161,7 +163,7 @@
           </div>
           <div
             :class="['join', { 'join-end': isEnd }]"
-            @click="openUrl('https://www.layer220.io/')"
+            @click="openUrl('https://likwid.meme/launch')"
           >
             Join
           </div>
@@ -189,8 +191,7 @@ export default {
       isEnd: false,
       show: false,
       timeStr: '2024-5-15 18:00:00',
-      timeList: [],
-      height: 0
+      timeList: []
     }
   },
   methods: {
@@ -198,8 +199,11 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     openUrl(url) {
-      // window.open(url, '_blank')
-      this.ratio += 50
+      this.$gtag.event('$ORBGUY', {
+          event_category: "$ORBGUY",
+          event_label: url,
+        })
+      window.open(url, '_blank')
     },
     async getData() {
 
@@ -216,17 +220,12 @@ export default {
       const result = web3.eth.abi.decodeParameters(
           ["uint256"],
           res || "");
-          console.log("result", result)
       const amount = ethers.utils.formatEther(result[0])
       this.amount = amount
       const ratio = ethers.utils.parseEther(amount).mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther(this.total))
-      console.log("ratio", ratio,  ethers.utils.formatEther(ratio))
       this.ratio = ethers.utils.formatEther(ratio)
     },
     triggle() {
-      const height = this.$refs.ecosystem_dapp_pro_ref.clientHeight
-      console.log("height", height)
-
       this.show = !this.show
       let time = 1000
 
@@ -379,7 +378,7 @@ export default {
 
     .banner {
       width: 100%;
-      padding: 28.125%;
+      padding: 16.75%;
       background: url('../../assets/activity/ecosystem_dapp/banner.png') 100%
         no-repeat;
       background-size: 100% 100%;
@@ -484,13 +483,6 @@ export default {
         font-size: 18px;
         font-weight: 700;
         font-family: OpenSansRoman-ExtraBold;
-        .symbol-logo {
-          width: 52.2px;
-          height: 18px;
-          background: url('../../assets/activity/ecosystem_dapp/symbol-logo.png') 100%
-            no-repeat;
-          background-size: 100% 100%;
-        }
       }
 
       .bottom {
