@@ -131,7 +131,7 @@
             <div class="holders">
               <div class="total">
                 Current Funds Raised:
-                <div class="amount">{{ decimalNumC(amount, 4, ',') }} ETH</div>
+                <div class="amount">{{ decimalNumC(amount, 2, ',') }} ETH</div>
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
@@ -145,7 +145,7 @@
                 </o-tooltip>
               </div>
               <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">
-                {{ decimalNumC(ratio, 3) }}%
+                {{ decimalNumC(ratio, 1) }}%
                 <span v-show="Number(ratio) >= 100">!!</span>
               </div>
             </div>
@@ -193,8 +193,8 @@ export default {
       ratio: 0,
       total: "10",
       isEnd: false,
-      show: false,
-      timeStr: '2024-5-15 18:00:00',
+      show: true,
+      timeStr: '2024-5-23 16:00:00',
       timeList: []
     }
   },
@@ -210,8 +210,8 @@ export default {
     isMobile: function (mobile1) {
 
       if(!mobile1) {
-        this.show = false
-        this.triggle(false)
+        this.show = true
+        this.triggle(true)
       }
       
     },
@@ -236,7 +236,7 @@ export default {
 
       const res = await web3.eth.call({
         // from: zeroAddress,
-        to: "0x80D7e5ecef907B6B452DCA0eA886A1773480F4b2",
+        to: "0xFaf184a9d23A4F0377c7b1A4D58aB0d36353190B",
         data: raw
       })
       const result = web3.eth.abi.decodeParameters(
@@ -353,7 +353,7 @@ export default {
 
 .ecosystem-dapp-pro-com {
   width: 100%;
-  padding: 16px 20px;
+  padding: 16px 12px;
   box-sizing: border-box;
   will-change: height;
   transition: all 0.5s linear;
