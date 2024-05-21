@@ -594,7 +594,7 @@ export default {
           timeStamp: '2024-05-28 06:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
-      showEcosystemDapp: false
+      showEcosystemDapp: true
     }
   },
   computed: {

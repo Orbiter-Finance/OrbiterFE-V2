@@ -1,16 +1,17 @@
 <template>
   <div ref="ecosystem_dapp_pro_ref" class="ecosystem-dapp-pro-com" 
-  :style="show ? 'height: 50px;' : 'height:' + height + 'px' "
+  :style="showCard ? 'height: 320px' : 'height: 50px;' "
   >
     <div class="title">
       <span class="text">Ecosystem DApp </span>
       <svg
+        v-show="!isMobile"
         class="expand"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
         viewBox="0 0 16 16"
         fill="none"
-        @click="triggle"
+        @click="triggle(!showCard)"
       >
         <desc>Created with Pixso.</desc>
         <defs />
@@ -61,7 +62,7 @@
         />
       </svg>
     </div>
-    <div class="content" :class="show ? 'down' : 'up'">
+    <div class="content" :class="showCard ? 'down' : 'up'">
       <div class="banner">
         <div class="dapp_group_img">
           <img
@@ -121,14 +122,16 @@
           </div>
         </div>
         <div class="label">
-          <div class="symbol-logo"></div>
+          <div >
+            $ORBGUY
+          </div>
         </div>
         <div class="bottom">
           <div class="progress-group">
             <div class="holders">
               <div class="total">
                 Current Funds Raised:
-                <div class="amount">{{ decimalNumC(amount, 0, ',') }} ETH</div>
+                <div class="amount">{{ decimalNumC(amount, 2, ',') }} ETH</div>
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
@@ -142,7 +145,7 @@
                 </o-tooltip>
               </div>
               <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">
-                {{ decimalNumC(ratio, 3) }}%
+                {{ decimalNumC(ratio, 1) }}%
                 <span v-show="Number(ratio) >= 100">!!</span>
               </div>
             </div>
@@ -161,7 +164,7 @@
           </div>
           <div
             :class="['join', { 'join-end': isEnd }]"
-            @click="openUrl('https://www.layer220.io/')"
+            @click="openUrl('https://likwid.meme/launch')"
           >
             Join
           </div>
@@ -175,6 +178,9 @@ import getUTCTime from '../../util/time'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
 import Web3 from 'web3'
+import {  isMobile } from '../../composition/hooks'
+import util from '../../util/util'
+
 
 let timer
 let timer1
@@ -187,19 +193,39 @@ export default {
       ratio: 0,
       total: "10",
       isEnd: false,
-      show: false,
-      timeStr: '2024-5-15 18:00:00',
-      timeList: [],
-      height: 0
+      show: true,
+      timeStr: '2024/5/23 16:00:00',
+      timeList: []
     }
+  },
+  computed: {
+    isMobile () {
+      return isMobile.value
+    },
+    showCard() {
+      return this.isMobile || this.show
+    }
+  },
+  watch: {
+    isMobile: function (mobile1) {
+
+      if(!mobile1) {
+        this.show = true
+        this.triggle(true)
+      }
+      
+    },
   },
   methods: {
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
     openUrl(url) {
-      // window.open(url, '_blank')
-      this.ratio += 50
+      this.$gtag.event('$ORBGUY', {
+          event_category: "$ORBGUY",
+          event_label: url,
+        })
+      window.open(url, '_blank')
     },
     async getData() {
 
@@ -210,24 +236,19 @@ export default {
 
       const res = await web3.eth.call({
         // from: zeroAddress,
-        to: "0x80D7e5ecef907B6B452DCA0eA886A1773480F4b2",
+        to: "0xFaf184a9d23A4F0377c7b1A4D58aB0d36353190B",
         data: raw
       })
       const result = web3.eth.abi.decodeParameters(
           ["uint256"],
           res || "");
-          console.log("result", result)
       const amount = ethers.utils.formatEther(result[0])
       this.amount = amount
       const ratio = ethers.utils.parseEther(amount).mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther(this.total))
-      console.log("ratio", ratio,  ethers.utils.formatEther(ratio))
       this.ratio = ethers.utils.formatEther(ratio)
     },
-    triggle() {
-      const height = this.$refs.ecosystem_dapp_pro_ref.clientHeight
-      console.log("height", height)
-
-      this.show = !this.show
+    triggle(status) {
+      this.show = status
       let time = 1000
 
       try {
@@ -235,12 +256,11 @@ export default {
           time -= 10
           if (time < -10) {
             clearInterval(timer)
-            throw new Error('aaaaa')
+            util.log('card', status)
           }
           this.$emit('getTaskHeight')
         }, 10)
       } catch (error) {
-        console.error('error', error)
         clearInterval(timer)
       }
     },
@@ -261,7 +281,7 @@ export default {
     timer1 = setInterval(() => {
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
-      console.log(timeS, timeS)
+      console.log("t", t, timeS)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
@@ -363,7 +383,7 @@ export default {
   .content {
     width: 100%;
     background: #ffffff;
-    border-radius: 8px;
+    border-radius: 12px;
     margin-top: 12px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
     opacity: 1;
@@ -379,7 +399,7 @@ export default {
 
     .banner {
       width: 100%;
-      padding: 28.125%;
+      padding: 16.75%;
       background: url('../../assets/activity/ecosystem_dapp/banner.png') 100%
         no-repeat;
       background-size: 100% 100%;
@@ -388,7 +408,7 @@ export default {
       top: 0;
       left: 0;
       z-index: 1;
-
+      box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
       .dapp_group_img {
         position: absolute;
         bottom: 0;
@@ -484,13 +504,6 @@ export default {
         font-size: 18px;
         font-weight: 700;
         font-family: OpenSansRoman-ExtraBold;
-        .symbol-logo {
-          width: 52.2px;
-          height: 18px;
-          background: url('../../assets/activity/ecosystem_dapp/symbol-logo.png') 100%
-            no-repeat;
-          background-size: 100% 100%;
-        }
       }
 
       .bottom {
@@ -645,6 +658,13 @@ export default {
         .top-right {
           .text {
             color: rgba(255, 255, 255, 0.6);
+            .time {
+              .time-item {
+                .time-value {
+                  color: rgba(255, 255, 255, 0.8);
+                }
+              }
+            }
           }
         }
       }
