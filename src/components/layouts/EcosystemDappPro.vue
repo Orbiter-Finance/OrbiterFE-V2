@@ -194,7 +194,7 @@ export default {
       total: "10",
       isEnd: false,
       show: true,
-      timeStr: '2024-5-23 16:00:00',
+      timeStr: '2024/5/23 16:00:00',
       timeList: []
     }
   },
@@ -281,6 +281,7 @@ export default {
     timer1 = setInterval(() => {
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
+      console.log("t", t, timeS)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)

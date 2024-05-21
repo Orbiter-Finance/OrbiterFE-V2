@@ -26,13 +26,13 @@ export default {
           url: 'https://app.zklink.io/aggregation-parade',
           img: 'aggregation-parade.png',
           name: 'aggregation-parade',
-          timeStamp: '2024-05-25 10:00:00',
+          timeStamp: '2024/05/25 10:00:00',
         },
         {
           url: 'https://fusion.gobob.xyz/?refCode=2ae49l',
           img: 'bob.jpg',
           name: 'BOB FUSION',
-          timeStamp: '2024-05-28 06:00:00',
+          timeStamp: '2024/05/28 06:00:00',
         },
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
     }
