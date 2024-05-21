@@ -2183,7 +2183,13 @@
     "service": {
       "rpc": "EVMRpcScanningV6Service"
     },
-    "tokens": [],
+    "tokens": [{
+        "name": "ETH",
+        "coinKey": "ETH",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0x0000000000000000000000000000000000000000"
+      }],
     "internalId": "66",
     "nativeCurrency": {
       "coinKey": "ETH",

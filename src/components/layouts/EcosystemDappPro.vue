@@ -281,7 +281,6 @@ export default {
     timer1 = setInterval(() => {
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
-      console.log("t", t, timeS)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
