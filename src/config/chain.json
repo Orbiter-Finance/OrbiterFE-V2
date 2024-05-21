@@ -2223,5 +2223,43 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Cyber",
+    "rpc": [
+      "https://rpc.cyber.co",
+      "https://cyber.alt.technology"
+    ],
+    "features": [
+      {
+        "name": "evm-account6"
+      },
+      {
+        "name": "evm-rpc"
+      }
+    ],
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "tokens": [],
+    "internalId": "67",
+    "nativeCurrency": {
+      "coinKey": "ETH",
+      "address": "0x0000000000000000000000000000000000000000",
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "infoURL": "https://cyberscan.co",
+    "chainId": "7560",
+    "networkId": "7560",
+    "explorers": [
+      {
+        "name": "Cyber Mainnet Explorer",
+        "url": "https://cyberscan.co",
+        "standard": "EIP3091"
+      }
+    ],
+    "contracts": []
   }
 ]
