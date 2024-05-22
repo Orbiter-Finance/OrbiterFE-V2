@@ -120,7 +120,7 @@
             <div class="left">To</div>
           </o-tooltip>
           <div v-else class="left">To</div>
-          <div v-if="isLogin" class="right">
+          <!-- <div v-if="isLogin" class="right">
             Balance:
             <CommLoading
                     :hidden="!toBalanceLoading"
@@ -129,7 +129,7 @@
                     height="1.2rem"
             />
             <span :hidden="toBalanceLoading">{{ toBalance }}</span>
-          </div>
+          </div> -->
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
@@ -1441,7 +1441,12 @@ export default {
       const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
-      await this.getMakerMaxBalance();
+      await this.getMakerMaxBalance().catch(error=> {
+          util.showMessage(
+              `getMakerMaxBalance fail ${error.message}`,
+              'error'
+          );
+      })
       this.updateToValue();
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
@@ -1495,7 +1500,7 @@ export default {
           info.disabled = 'disabled';
           util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
         }
-
+        
         if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND';
           info.disabled = 'disabled';
@@ -2282,7 +2287,7 @@ export default {
     },
     async refreshUserBalance() {
       this.fromBalanceLoading = true;
-      this.toBalanceLoading = true;
+      // this.toBalanceLoading = true;
       const self = this;
       const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
@@ -2330,24 +2335,24 @@ export default {
       if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
       }
-      if (address && address !== '0x') {
-          await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
-                  .then((response) => {
-                    const balance = (response / 10 ** toChain.decimals).toFixed(6);
-                    self.toBalance = balance;
-                  })
-                  .catch((error) => {
-                    console.warn(error);
-                  }).finally(() => {
-                  self.toBalanceLoading = false;
-          });
-        // } else {
-        //   self.toBalance = toChainBalanceMap[toChain.symbol];
-        // }
-          self.toBalanceLoading = false;
-      } else {
-        self.toBalanceLoading = false;
-      }
+      // if (address && address !== '0x') {
+      //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
+      //             .then((response) => {
+      //               const balance = (response / 10 ** toChain.decimals).toFixed(6);
+      //               self.toBalance = balance;
+      //             })
+      //             .catch((error) => {
+      //               console.warn(error);
+      //             }).finally(() => {
+      //             self.toBalanceLoading = false;
+      //     });
+      //   // } else {
+      //   //   self.toBalance = toChainBalanceMap[toChain.symbol];
+      //   // }
+      //     self.toBalanceLoading = false;
+      // } else {
+      //   self.toBalanceLoading = false;
+      // }
     },
   },
 };
