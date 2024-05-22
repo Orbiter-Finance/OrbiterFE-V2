@@ -1557,7 +1557,8 @@ export default {
         async starknetTransfer(value) {
             const { selectMakerConfig, fromChainID, toChainID, fromCurrency, transferValue } =
                 transferDataState
-            let to = ""
+            let to = "";
+            let from = '';
             let tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
             if (
