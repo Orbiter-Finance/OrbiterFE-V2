@@ -2285,7 +2285,7 @@
       "rpc": "EVMRpcScanningV6Service"
     },
     "tokens": [],
-    "internalId": 68,
+    "internalId": "68",
     "nativeCurrency": {
       "coinKey": "ETH",
       "address": "0x0000000000000000000000000000000000000000",
