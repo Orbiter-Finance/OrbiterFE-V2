@@ -1669,7 +1669,7 @@ export default {
                 this.transferLoading = false
                 return
             }
-            from =
+            let from =
                 compatibleGlobalWalletConf.value.walletPayload.walletAddress
             if (isBrowserApp()) {
                 from = transferDataState.crossAddressReceipt;
