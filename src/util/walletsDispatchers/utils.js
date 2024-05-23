@@ -18,6 +18,7 @@ import {
   ZERION_APP,
   COIN98_APP,
   TRUSTWALLET_APP,
+  SAFEPAL,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -64,6 +65,7 @@ export const withPerformInterruptWallet = (fn) => {
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
+  if (walletType === SAFEPAL) return ethereum.isSafePal
   if (walletType === TRUSTWALLET_APP) return !!ethereum.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally

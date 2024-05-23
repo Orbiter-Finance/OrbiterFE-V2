@@ -10,6 +10,7 @@ import {
   WALLETCONNECT,
   COIN98_APP,
   TRUSTWALLET_APP,
+  SAFEPAL,
 } from '../constants'
 import { isBraveWallet } from '../utils'
 
@@ -25,6 +26,11 @@ const standardMobileAppConf = [
   {
     walletType: IM_TOKEN_APP,
     walletIsInstalledInvestigator: (provider) => provider.isImToken,
+    chainIdTransfer: defaultChainIdTransfer,
+  },
+  {
+    walletType: SAFEPAL,
+    walletIsInstalledInvestigator: (provider) => provider.isSafePal,
     chainIdTransfer: defaultChainIdTransfer,
   },
   {

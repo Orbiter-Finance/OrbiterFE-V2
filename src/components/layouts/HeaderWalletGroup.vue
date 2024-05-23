@@ -83,6 +83,7 @@ import walletDispatchers, {
   CURRENT_SUPPORT_WALLET,
   FOXWALLET_APP,
   // TRUSTWALLET_APP,
+  SAFEPAL
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -201,6 +202,11 @@ export default {
             isConnect: false,
             icon: 'foxwallet',
             title: FOXWALLET_APP,
+        },
+        {
+          isConnect: false,
+          icon: 'safepal',
+          title: SAFEPAL,
         }
       ]
       // the brave wallet is exclusive to the brave browser
