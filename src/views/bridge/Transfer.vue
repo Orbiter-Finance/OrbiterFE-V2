@@ -1697,6 +1697,7 @@ export default {
         userMax = userBalance
       }
       this.userMaxPrice = max.toString();
+      this.transferValue = max.toString();
     },
     // addBalance(chainId, symbol, value, address) {
     //   const walletAddress = address || compatibleGlobalWalletConf.value.walletPayload.walletAddress;
@@ -2118,8 +2119,6 @@ export default {
         const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
 
         const toContractGroup = toChainInfo?.contract || {}
-
-        console.log("toContractGroup", toContractGroup)
 
         const toContractList = Object.keys(toContractGroup).map((key)=> {
           return ({
