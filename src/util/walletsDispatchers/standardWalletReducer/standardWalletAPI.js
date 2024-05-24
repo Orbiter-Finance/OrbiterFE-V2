@@ -18,7 +18,7 @@ import {
 import { showMessage } from '../../constants/web3/getWeb3'
 import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
-import { BRAVE, BRAVE_APP } from '../constants'
+import { BRAVE, BRAVE_APP, SAFEPAL } from '../constants'
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
@@ -37,7 +37,9 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
           return
         }
         try {
-          matchProvider.enable().then(() => console.log('enable'))
+          if (walletType !== SAFEPAL) {
+            const res = await matchProvider.enable()
+          }
         } catch (error) {
           console.log('enable error', error)
         }
