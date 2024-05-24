@@ -7,6 +7,13 @@
  */
 import standardWalletLoader from '../standardWalletReducer/standardWalletLoader'
 import standardMobileAppConf from './standardMobileAppConf'
+import { walletConnectDispatcherOnInit } from '../pcBrowser/walletConnectPCBrowserDispatcher'
+import {
+  IM_TOKEN_APP,
+  WALLETCONNECT,
+  FOXWALLET_APP,
+  SAFEPAL,
+} from '../constants'
 
 // get switch network method, init wallet method, disconnect method, add chain method and more useful methods of
 // every mobile app(imtoken, metamask, tokenpocket, ...etc)
@@ -21,8 +28,16 @@ const {
     mobileAppWebviewDispatchersOnSwitchChain,
 } = standardWalletLoader(standardMobileAppConf)
 
+const mobileAppWebviewDispatchersOnInitN = {
+  ...mobileAppWebviewDispatchersOnInit,
+  [WALLETCONNECT]: () => walletConnectDispatcherOnInit(WALLETCONNECT),
+  [IM_TOKEN_APP]: () => walletConnectDispatcherOnInit(IM_TOKEN_APP),
+  [SAFEPAL]: () => walletConnectDispatcherOnInit(SAFEPAL),
+  [FOXWALLET_APP]: () => walletConnectDispatcherOnInit(FOXWALLET_APP),
+}
+
 export default {
-  walletDispatchersOnInit: mobileAppWebviewDispatchersOnInit,
+  walletDispatchersOnInit: mobileAppWebviewDispatchersOnInitN,
   walletDispatchersOnAddChain: mobileAppWebviewDispatchersOnAddChain,
   walletDispatchersOnSwitchChain: mobileAppWebviewDispatchersOnSwitchChain,
   walletDispatchersOnDisconnect: mobileAppWebviewDispatchersOnDisconnect,
