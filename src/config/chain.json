@@ -2328,5 +2328,37 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Taiko",
+    "rpc": [
+      "https://rpc.taiko.xyz"
+    ],
+    "features": [
+      {
+        "name": "evm-account6"
+      },
+      {
+        "name": "evm-rpc"
+      }
+    ],
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "tokens": [],
+    "internalId": "20",
+    "nativeCurrency": {
+      "coinKey": "ETH",
+      "address": "0x0000000000000000000000000000000000000000",
+      "name": "ETH",
+      "symbol": "ETH",
+      "decimals": 18
+    },
+    "infoURL": "",
+    "chainId": "167000",
+    "networkId": "167000",
+    "explorers": [],
+    "contract": {},
+    "contracts": []
   }
 ]
