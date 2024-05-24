@@ -40,6 +40,8 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
           if (walletType !== SAFEPAL) {
             const res = await matchProvider.enable()
             resolve(matchProvider)
+          } else {
+            resolve(matchProvider)
           }
         } catch (error) {
           console.log('enable error', error)
