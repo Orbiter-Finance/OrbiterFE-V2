@@ -89,6 +89,7 @@ export const performWalletInformation = async (
       method: 'net_version ',
     })
   }
+  console.log('networkId', networkId)
   if (!networkId)
     showMessage('get netWorkID failed, refresh and try again', 'error')
   else {
@@ -106,6 +107,8 @@ export const performWalletInformation = async (
       method: 'eth_accounts',
     })
   }
+  console.log('walletAddress', walletAddress)
+
   if (!walletAddress)
     showMessage(
       `get coinbase failed，please unlock ${walletType} or generate a new address`,
@@ -195,13 +198,17 @@ export const universalWalletInitHandler = (walletConf) => {
 // when they r changed
 const walletInfoChangeWatcher = (walletConf, walletProvider) => {
   const { chainIdTransfer = (chainId) => chainId } = walletConf
-  walletProvider.autoRefreshOnNetworkChange = false
+  walletProvider = {
+    ...(walletProvider || {}),
+    autoRefreshOnNetworkChange: false,
+  }
+
   // why call Object.assign? because "window.ethereum" is frozen in brave browser
   // so we defrosted it to ensure that the emit can be assign again
   if (
     !isBraveWallet &&
-    !window.ethereum?.isLoopring &&
-    !window.ethereum.isTokenPocket
+    !window?.ethereum?.isLoopring &&
+    !window?.ethereum?.isTokenPocket
   )
     window.ethereum = Object.assign({}, window.ethereum)
   // rewrite ethereum.emit because when a wallet extension switches networks

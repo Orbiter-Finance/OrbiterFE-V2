@@ -138,7 +138,7 @@ export default [
   {
     walletType: TOKEN_POCKET_APP,
     icon: TOKEN_POCKET_APP,
-    walletIsInstalledInvestigator: (provider) => provider.isTokenPocket,
+    walletIsInstalledInvestigator: (provider) => provider?.isTokenPocket,
     chainIdTransfer: (chainId) => parseInt(chainId, 16),
   },
   {
