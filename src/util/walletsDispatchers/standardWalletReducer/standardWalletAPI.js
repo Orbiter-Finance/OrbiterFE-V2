@@ -36,7 +36,7 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
           resolve(null)
           return
         }
-        matchProvider.enable().then(() => resolve(matchProvider))
+        resolve(matchProvider)
       } catch (error) {
         const errorMsg = 'User denied account access'
         showMessage(errorMsg, 'error')

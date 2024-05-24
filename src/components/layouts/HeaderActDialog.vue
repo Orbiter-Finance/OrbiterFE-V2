@@ -861,8 +861,7 @@ export default {
       try {
         if(!!isTonDialog.value) {
           await tonHelper.disconnect()
-        }
-        if(!!isSolanaDialog.value) {
+        }else if(!!isSolanaDialog.value) {
           await solanaHelper.disConnect()
           setConnectWalletGroupKey("SOLANA")
           this.$store.commit('updateSolanaAddress', "")

@@ -112,6 +112,13 @@ export const findMatchWeb3ProviderByWalletType = (
       return window.okxwallet
     }
 
+    if (
+      walletType === SAFEPAL &&
+      typeof window.safepalProvider !== 'undefined'
+    ) {
+      return window.safepalProvider
+    }
+
     if (walletType === BIT_KEEP && typeof window.bitkeep !== 'undefined') {
       return window.bitkeep.ethereum
     }
@@ -147,6 +154,7 @@ export const getMobileAppTypeByProvider = () => {
   const provider = window?.ethereum
   if (!provider) return undefined
   if (provider.isImToken) return IM_TOKEN_APP
+  if (provider.isSafePal) return SAFEPAL
   if (provider.isCoin98) return COIN98_APP
   if (provider.isTrustWallet) return TRUSTWALLET_APP
   if (provider.isTokenPocket) return TOKEN_POCKET_APP
