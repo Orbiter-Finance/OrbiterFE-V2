@@ -1697,7 +1697,9 @@ export default {
         userMax = userBalance
       }
       this.userMaxPrice = max.toString();
-      this.transferValue = max.toString();
+      if(!this.queryParams.amount) {
+        this.transferValue = max.toString();
+      }
     },
     // addBalance(chainId, symbol, value, address) {
     //   const walletAddress = address || compatibleGlobalWalletConf.value.walletPayload.walletAddress;
