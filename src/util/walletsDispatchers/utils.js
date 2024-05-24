@@ -123,7 +123,7 @@ export const findMatchWeb3ProviderByWalletType = (
       return window.bitkeep.ethereum
     }
 
-    if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
+    if (ethereumWalletTypeFitChecker(walletType, window.ethereum || {}))
       return window.ethereum
     return null
   }
@@ -151,7 +151,7 @@ export const fetchTargetWalletLoginStatus = ({ walletType }) => {
  * mobile app webview only!!!!!!! don't use in other place!!!!
  */
 export const getMobileAppTypeByProvider = () => {
-  const provider = window?.ethereum
+  const provider = window?.ethereum || {}
   if (!provider) return undefined
   if (provider.isImToken) return IM_TOKEN_APP
   if (provider.isSafePal) return SAFEPAL
