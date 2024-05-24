@@ -39,11 +39,12 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
         try {
           if (walletType !== SAFEPAL) {
             const res = await matchProvider.enable()
+            resolve(matchProvider)
           }
         } catch (error) {
           console.log('enable error', error)
+          resolve(matchProvider)
         }
-        resolve(matchProvider)
       } catch (error) {
         const errorMsg = 'User denied account access'
         showMessage(errorMsg, 'error')
