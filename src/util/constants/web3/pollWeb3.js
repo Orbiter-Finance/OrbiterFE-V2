@@ -3,10 +3,7 @@ import { store } from '../../../store'
 import { updateCoinbase } from '../../../composition/hooks'
 
 const pollWeb3 = function () {
-  compatibleGlobalWalletConf.value.walletPayload.provider = {
-    ...(compatibleGlobalWalletConf.value.walletPayload.provider || {}),
-    autoRefreshOnNetworkChange: false,
-  }
+  compatibleGlobalWalletConf.value.walletPayload.provider.autoRefreshOnNetworkChange = false
   compatibleGlobalWalletConf.value.walletPayload.provider.on(
     'chainChanged',
     (chainId) => {
