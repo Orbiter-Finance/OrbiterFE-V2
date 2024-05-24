@@ -24,7 +24,7 @@ import { BRAVE, BRAVE_APP } from '../constants'
 // if installed, the provider of this wallet will be return
 // otherwise it will throw error;
 export const installWallet = (walletType, walletIsInstalledInvestigator) => {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     if (window.ethereum || typeof window.okxwallet !== 'undefined') {
       try {
         // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
@@ -35,6 +35,11 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
         if (!matchProvider) {
           resolve(null)
           return
+        }
+        try {
+          matchProvider.enable().then(() => console.log('enable'))
+        } catch (error) {
+          console.log('enable error', error)
         }
         resolve(matchProvider)
       } catch (error) {
@@ -130,6 +135,7 @@ export const universalWalletInitHandler = (walletConf) => {
        * 3. provider: if window.ethereum conflict, this prop is the ethereum match this wallet
        * 4. networkId
        */
+      console.log('performResult', performResult, provider)
       const legalWalletConfig = {
         walletType,
         loginSuccess: true,
