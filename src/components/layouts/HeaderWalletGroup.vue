@@ -207,7 +207,12 @@ export default {
           isConnect: false,
           icon: 'safepal',
           title: SAFEPAL,
-        }
+        },
+        // {
+        //   isConnect: false,
+        //   icon: 'trustwallet',
+        //   title: TRUSTWALLET_APP,
+        // }
       ]
       // the brave wallet is exclusive to the brave browser
       // so if in other browsers, we should hide brave wallet connect option to users
