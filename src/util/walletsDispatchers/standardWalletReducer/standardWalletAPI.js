@@ -18,13 +18,13 @@ import {
 import { showMessage } from '../../constants/web3/getWeb3'
 import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
-import { BRAVE, BRAVE_APP } from '../constants'
+import { BRAVE, BRAVE_APP, SAFEPAL } from '../constants'
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
 // otherwise it will throw error;
 export const installWallet = (walletType, walletIsInstalledInvestigator) => {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     if (window.ethereum || typeof window.okxwallet !== 'undefined') {
       try {
         // findMatchWeb3ProviderByWalletType will helps u to check ethereum conflicts
@@ -36,7 +36,17 @@ export const installWallet = (walletType, walletIsInstalledInvestigator) => {
           resolve(null)
           return
         }
-        matchProvider.enable().then(() => resolve(matchProvider))
+        try {
+          if (walletType !== SAFEPAL) {
+            const res = await matchProvider.enable()
+            resolve(matchProvider)
+          } else {
+            resolve(matchProvider)
+          }
+        } catch (error) {
+          console.log('enable error', error)
+          resolve(matchProvider)
+        }
       } catch (error) {
         const errorMsg = 'User denied account access'
         showMessage(errorMsg, 'error')
@@ -99,6 +109,7 @@ export const performWalletInformation = async (
       method: 'eth_accounts',
     })
   }
+
   if (!walletAddress)
     showMessage(
       `get coinbase failed，please unlock ${walletType} or generate a new address`,
@@ -188,12 +199,13 @@ export const universalWalletInitHandler = (walletConf) => {
 const walletInfoChangeWatcher = (walletConf, walletProvider) => {
   const { chainIdTransfer = (chainId) => chainId } = walletConf
   walletProvider.autoRefreshOnNetworkChange = false
+
   // why call Object.assign? because "window.ethereum" is frozen in brave browser
   // so we defrosted it to ensure that the emit can be assign again
   if (
     !isBraveWallet &&
-    !window.ethereum?.isLoopring &&
-    !window.ethereum.isTokenPocket
+    !window?.ethereum?.isLoopring &&
+    !window?.ethereum?.isTokenPocket
   )
     window.ethereum = Object.assign({}, window.ethereum)
   // rewrite ethereum.emit because when a wallet extension switches networks
@@ -202,8 +214,12 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
   // called maybe not pure
   if (typeof window.okxwallet === 'undefined' && !isBraveWallet)
     window.ethereum.emit = walletProvider.emit
-  console.notifyLog('wallet provider listening....', walletProvider)
-  walletProvider.on('chainChanged', (chainId) => {
+  console.notifyLog(
+    'wallet provider listening....',
+    walletProvider.on,
+    walletProvider
+  )
+  walletProvider?.on('chainChanged', (chainId) => {
     console.successLog(
       'chainId updated, convert result',
       chainIdTransfer(chainId)
@@ -212,7 +228,7 @@ const walletInfoChangeWatcher = (walletConf, walletProvider) => {
       networkId: chainIdTransfer(chainId),
     })
   })
-  walletProvider.on('accountsChanged', ([newWalletAddress = '']) => {
+  walletProvider?.on('accountsChanged', ([newWalletAddress = '']) => {
     console.successLog('user wallet address updated', newWalletAddress)
     if (!newWalletAddress) {
       withPerformInterruptWallet(() => {})()

@@ -46,7 +46,7 @@ const standardMobileAppConf = [
   {
     walletType: METAMASK_APP,
     walletIsInstalledInvestigator: (provider) =>
-      provider.isMetaMask && !provider.isTokenPocket,
+      provider.isMetaMask && !provider?.isTokenPocket,
     shouldAddChainCode: -32603,
     chainIdTransfer: defaultChainIdTransfer,
     chainIdTransferOnInitProcess: true,
@@ -58,7 +58,7 @@ const standardMobileAppConf = [
   },
   {
     walletType: TOKEN_POCKET_APP,
-    walletIsInstalledInvestigator: (provider) => provider.isTokenPocket,
+    walletIsInstalledInvestigator: (provider) => provider?.isTokenPocket,
     chainIdTransfer: defaultChainIdTransfer,
   },
   {
