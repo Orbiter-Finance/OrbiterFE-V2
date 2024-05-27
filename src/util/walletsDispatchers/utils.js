@@ -66,7 +66,8 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
   if (walletType === SAFEPAL) return ethereum.isSafePal
-  if (walletType === TRUSTWALLET_APP) return !!ethereum.isTrustWallet
+  if (walletType === TRUSTWALLET_APP)
+    return !!window?.trustwallet?.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
@@ -110,6 +111,10 @@ export const findMatchWeb3ProviderByWalletType = (
 
     if (walletType === OKXWALLET && typeof window.okxwallet !== 'undefined') {
       return window.okxwallet
+    }
+
+    if (walletType === TRUSTWALLET_APP && window.trustwallet !== 'undefined') {
+      return window.trustwallet
     }
 
     if (

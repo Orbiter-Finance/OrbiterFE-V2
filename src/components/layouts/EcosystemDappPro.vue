@@ -1,6 +1,8 @@
 <template>
-  <div ref="ecosystem_dapp_pro_ref" class="ecosystem-dapp-pro-com" 
-  :style="showCard ? 'height: 320px' : 'height: 50px;' "
+  <div
+    ref="ecosystem_dapp_pro_ref"
+    class="ecosystem-dapp-pro-com"
+    :style="showCard ? 'height: 300px' : 'height: 50px;'"
   >
     <div class="title">
       <span class="text">Ecosystem DApp </span>
@@ -64,7 +66,7 @@
     </div>
     <div class="content" :class="showCard ? 'down' : 'up'">
       <div class="banner">
-        <div class="dapp_group_img">
+        <!-- <div class="dapp_group_img">
           <img
             class="dapp1"
             :src="require('../../assets/activity/ecosystem_dapp/dapp_1.png')"
@@ -73,15 +75,15 @@
             class="dapp2"
             :src="require('../../assets/activity/ecosystem_dapp/dapp_2.png')"
           />
-        </div>
+        </div> -->
       </div>
 
       <div class="info">
         <div class="top">
           <div class="top-right">
-            <div class="text">
-              1st Fair launch on Likwid
-              <div class="time">
+            <div class="card-title">
+              <div class="card-first">Fair Launch</div>
+              <div class="card-next">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -90,52 +92,58 @@
                   viewBox="0 0 16 16"
                   fill="none"
                 >
+                  <defs />
                   <path
-                    id="Vector"
-                    d="M8 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 8 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 8 14.66Z"
-                    stroke="#999999"
+                    d="M8.75 6.75C8.75 4.95 7.29 3.5 5.5 3.5C3.7 3.5 2.25 4.95 2.25 6.75C2.25 8.54 3.7 10 5.5 10C7.29 10 8.75 8.54 8.75 6.75Z"
+                    stroke="#666666"
                     stroke-opacity="1.000000"
                     stroke-width="1.000000"
-                    stroke-linejoin="round"
                   />
                   <path
-                    id="Vector"
-                    d="M10.47 10.11L8.4 8.88C8.04 8.67 7.75 8.15 7.75 7.73L7.75 5"
-                    stroke="#999999"
+                    d="M9.71 3.61C9.99 3.54 10.29 3.5 10.59 3.5C11.45 3.5 12.28 3.84 12.89 4.45C13.5 5.06 13.84 5.88 13.84 6.75C13.84 7.61 13.5 8.43 12.89 9.04C12.28 9.65 11.45 10 10.59 10"
+                    stroke="#666666"
                     stroke-opacity="1.000000"
                     stroke-width="1.000000"
                     stroke-linejoin="round"
                     stroke-linecap="round"
                   />
-                  <g opacity="0.000000" />
+                  <path
+                    d="M1 12.33C1.5 11.61 2.18 11.02 2.96 10.61C3.74 10.21 4.61 9.99 5.5 9.99C6.38 9.99 7.25 10.21 8.03 10.61C8.81 11.02 9.49 11.61 10 12.33"
+                    stroke="#666666"
+                    stroke-opacity="1.000000"
+                    stroke-width="1.000000"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M10.59 10C11.47 9.99 12.34 10.21 13.12 10.61C13.91 11.02 14.58 11.61 15.09 12.33"
+                    stroke="#666666"
+                    stroke-opacity="1.000000"
+                    stroke-width="1.000000"
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                  />
                 </svg>
-                <div
-                  :key="item.symbol"
-                  class="time-item"
-                  v-for="item in timeList"
-                >
-                  <div class="time-value">{{ item.value }}</div>
-                  <div class="time-symbol">{{ item.symbol }}</div>
-                </div>
+                {{ decimalNumC(holders, 0, ',') }}
               </div>
             </div>
           </div>
         </div>
         <div class="label">
-          <div >
-            $ORBGUY
+          <div>
+            The initial Tx requires a fix value of 0.00888e. 
           </div>
         </div>
         <div class="bottom">
           <div class="progress-group">
             <div class="holders">
               <div class="total">
-                Current Funds Raised:
-                <div class="amount">{{ decimalNumC(amount, 2, ',') }} ETH</div>
+                Launch Progress:
+                <!-- <div class="amount">{{ decimalNumC(amount, 2, ',') }} ETH</div> -->
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
-                      <span> 100% refund for oversubscribed part </span>
+                      <span>Receive an airdrop share for every 6 TXs To Taiko. Stops once the total amount (2,888,888 TXs) reaches. </span>
                     </div>
                   </template>
                   <img
@@ -145,7 +153,7 @@
                 </o-tooltip>
               </div>
               <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">
-                {{ decimalNumC(ratio, 1) }}%
+                {{ decimalNumC(ratio, 6) }}%
                 <span v-show="Number(ratio) >= 100">!!</span>
               </div>
             </div>
@@ -158,13 +166,13 @@
                 }"
                 :class="Number(ratio) >= 100 ? 'progress100' : 'default-bg'"
               >
-            <div class="skeleton"></div>
-            </div>
+                <div class="skeleton"></div>
+              </div>
             </div>
           </div>
           <div
             :class="['join', { 'join-end': isEnd }]"
-            @click="openUrl('https://likwid.meme/launch')"
+            @click="openUrl()"
           >
             Join
           </div>
@@ -178,9 +186,8 @@ import getUTCTime from '../../util/time'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
 import Web3 from 'web3'
-import {  isMobile } from '../../composition/hooks'
+import { isMobile } from '../../composition/hooks'
 import util from '../../util/util'
-
 
 let timer
 let timer1
@@ -189,62 +196,58 @@ export default {
   name: 'EcosystemDappPro',
   data() {
     return {
-      amount: 0,
+      holders: 0,
       ratio: 0,
-      total: "10",
+      total: '2888888',
       isEnd: false,
       show: true,
       timeStr: '2024/5/23 16:00:00',
-      timeList: []
+      timeList: [],
     }
   },
   computed: {
-    isMobile () {
+    isMobile() {
       return isMobile.value
     },
     showCard() {
       return this.isMobile || this.show
-    }
+    },
   },
   watch: {
     isMobile: function (mobile1) {
-
-      if(!mobile1) {
+      if (!mobile1) {
         this.show = true
         this.triggle(true)
       }
-      
     },
   },
   methods: {
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
-    openUrl(url) {
-      this.$gtag.event('$ORBGUY', {
-          event_category: "$ORBGUY",
-          event_label: url,
-        })
+    openUrl() {
+      const url = "https://www.pinketh.xyz/"
+      this.$gtag.event('TaiKo', {
+        event_category: 'TaiKo',
+        event_label: url,
+      })
       window.open(url, '_blank')
     },
     async getData() {
-
-      const web3 = new Web3(
-        new Web3.providers.HttpProvider("https://rpc.vizing.com")
+      const res = await fetch(
+        'https://api.orbiter.finance/taiko-pink/address/tx_count',
+        {}
       )
-      const raw = web3.eth.abi.encodeFunctionSignature("presaleAccumulate()")
-
-      const res = await web3.eth.call({
-        // from: zeroAddress,
-        to: "0xFaf184a9d23A4F0377c7b1A4D58aB0d36353190B",
-        data: raw
-      })
-      const result = web3.eth.abi.decodeParameters(
-          ["uint256"],
-          res || "");
-      const amount = ethers.utils.formatEther(result[0])
-      this.amount = amount
-      const ratio = ethers.utils.parseEther(amount).mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther(this.total))
+      const {
+        result: { txCount = '0', addressCount = '0' },
+      } = await res.json()
+      const amount = !isNaN(Number(txCount)) ? String(txCount) : '0'
+      const holders = !isNaN(Number(addressCount)) ? String(addressCount) : '0'
+      this.holders = holders
+      const ratio = ethers.utils
+        .parseEther(amount)
+        .mul(ethers.utils.parseEther('100'))
+        .div(ethers.utils.parseEther(this.total))
       this.ratio = ethers.utils.formatEther(ratio)
     },
     triggle(status) {
@@ -277,67 +280,67 @@ export default {
       return Date.parse(d2)
     },
   },
-  mounted() {
-    timer1 = setInterval(() => {
-      const t = this.getUTCTime1(this.timeStr)
-      const timeS = Math.floor((t - getUTCTime()) / 1000)
-      let time = timeS
-      if (timeS <= 0) {
-        clearInterval(timer1)
-        this.timeList = [
-          {
-            value: '00',
-            symbol: 'D',
-          },
-          {
-            value: '00',
-            symbol: 'H',
-          },
-          {
-            value: '00',
-            symbol: 'M',
-          },
-          {
-            value: '00',
-            symbol: 'S',
-          },
-        ]
-        return
-      }
-      let d = Math.floor(time / 3600 / 24)
-      time -= d * 3600 * 24
-      d = d < 0 ? 0 : d
-      d = d < 10 ? '0' + d : d
-      let h = Math.floor(time / 3600)
-      time -= h * 3600
-      h = h < 0 ? 0 : h
-      h = h < 10 ? '0' + h : h
-      let m = Math.floor(time / 60)
-      time -= m * 60
-      m = m < 0 ? 0 : m
-      m = m < 10 ? '0' + m : m
-      const s = time < 10 ? '0' + time : time
+  // mounted() {
+  //   timer1 = setInterval(() => {
+  //     const t = this.getUTCTime1(this.timeStr)
+  //     const timeS = Math.floor((t - getUTCTime()) / 1000)
+  //     let time = timeS
+  //     if (timeS <= 0) {
+  //       clearInterval(timer1)
+  //       this.timeList = [
+  //         {
+  //           value: '00',
+  //           symbol: 'D',
+  //         },
+  //         {
+  //           value: '00',
+  //           symbol: 'H',
+  //         },
+  //         {
+  //           value: '00',
+  //           symbol: 'M',
+  //         },
+  //         {
+  //           value: '00',
+  //           symbol: 'S',
+  //         },
+  //       ]
+  //       return
+  //     }
+  //     let d = Math.floor(time / 3600 / 24)
+  //     time -= d * 3600 * 24
+  //     d = d < 0 ? 0 : d
+  //     d = d < 10 ? '0' + d : d
+  //     let h = Math.floor(time / 3600)
+  //     time -= h * 3600
+  //     h = h < 0 ? 0 : h
+  //     h = h < 10 ? '0' + h : h
+  //     let m = Math.floor(time / 60)
+  //     time -= m * 60
+  //     m = m < 0 ? 0 : m
+  //     m = m < 10 ? '0' + m : m
+  //     const s = time < 10 ? '0' + time : time
 
-      this.timeList = [
-        {
-          value: d,
-          symbol: 'D',
-        },
-        {
-          value: h,
-          symbol: 'H',
-        },
-        {
-          value: m,
-          symbol: 'M',
-        },
-        {
-          value: s,
-          symbol: 'S',
-        },
-      ]
-    }, 1000)
-  },
+  //     this.timeList = [
+  //       {
+  //         value: d,
+  //         symbol: 'D',
+  //       },
+  //       {
+  //         value: h,
+  //         symbol: 'H',
+  //       },
+  //       {
+  //         value: m,
+  //         symbol: 'M',
+  //       },
+  //       {
+  //         value: s,
+  //         symbol: 'S',
+  //       },
+  //     ]
+  //   }, 1000)
+  // },
   created() {
     this.getData()
   },
@@ -437,7 +440,7 @@ export default {
     }
 
     .info {
-      padding: 12px 16px;
+      padding: 8px 16px;
       width: 100%;
 
       .top {
@@ -447,11 +450,11 @@ export default {
         align-items: center;
 
         .top-right {
-          flex: 1;
-          text-align: left;
-          padding-left: 64px;
+          display: flex;
+          justify-content: start;
+          align-items: center;
 
-          .text {
+          .card-title {
             width: 100%;
             font-size: 12px;
             font-weight: 400;
@@ -463,31 +466,35 @@ export default {
             justify-content: space-between;
             align-items: center;
 
-            .time {
+            .card-first {
+              color: rgb(8, 12, 24);
+              font-weight: 700;
+              padding: 2px 8px;
+              border-radius: 12px;
+              line-height: 16px;
+              background: linear-gradient(
+                169deg,
+                rgb(248, 218, 211) 7.353%,
+                rgb(220, 84, 161) 60.561%
+              );
+            }
+
+            .card-next {
+              color: rgb(102, 102, 102);
+              font-weight: 600;
+              padding: 2px 8px;
               display: flex;
-              justify-content: flex-end;
+              justify-content: center;
               align-items: center;
-              font-family: OpenSansRoman-Regular;
-              .time-item {
-                display: flex;
-                .time-value {
-                  font-size: 14px;
-                  color: #222222;
-                  margin: 0 2px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  font-weight: 700;
-                  font-family: OpenSansRoman-SemiBold;
-                }
-                .time-symbol {
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  font-size: 12px;
-                  color: #999999;
-                  margin: 0 2px;
-                }
+              margin-left: 6px;
+              box-sizing: border-box;
+              line-height: 16px;
+              border: 1px solid rgb(238, 238, 238);
+              border-radius: 999px;
+              background: rgb(245, 245, 245);
+
+              > svg {
+                margin-right: 2px;
               }
             }
           }
@@ -495,14 +502,15 @@ export default {
       }
 
       .label {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 2px;
-        color: #222222;
-        font-size: 18px;
-        font-weight: 700;
-        font-family: OpenSansRoman-ExtraBold;
+        margin-top: 8px;
+        color: rgb(34, 34, 34);
+        font-family: General Sans;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        letter-spacing: 0px;
+        text-align: left;
+        font-family: OpenSansRoman-SemiBold;
       }
 
       .bottom {
@@ -655,15 +663,8 @@ export default {
 
       .top {
         .top-right {
-          .text {
+          .card-title {
             color: rgba(255, 255, 255, 0.6);
-            .time {
-              .time-item {
-                .time-value {
-                  color: rgba(255, 255, 255, 0.8);
-                }
-              }
-            }
           }
         }
       }

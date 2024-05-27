@@ -514,6 +514,7 @@ export default {
       saveTimeLoading: false,
 
       boxLoading: false,
+      isClickMax: false,
 
       // balanceMap: {},
       originGasCost: 0,
@@ -1697,8 +1698,9 @@ export default {
         userMax = userBalance
       }
       this.userMaxPrice = max.toString();
-      if(!this.queryParams.amount) {
+      if(!this.queryParams.amount && this.isClickMax) {
         this.transferValue = max.toString();
+        this.isClickMax = false
       }
     },
     // addBalance(chainId, symbol, value, address) {
@@ -1750,6 +1752,7 @@ export default {
       this.selectToToken = val;
     },
     fromMax() {
+      this.isClickMax = true
       if (!walletIsLogin.value) {
         this.transferValue = '0';
         return;
