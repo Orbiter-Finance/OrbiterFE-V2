@@ -2354,7 +2354,7 @@
       "symbol": "ETH",
       "decimals": 18
     },
-    "infoURL": "",
+    "infoURL": "https://taikoscan.io",
     "chainId": "167000",
     "networkId": "167000",
     "explorers": [],
