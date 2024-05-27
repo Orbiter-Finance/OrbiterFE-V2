@@ -5,6 +5,7 @@ const Data = () => import('./views/data/Index/Index.vue')
 const DataDetail = () => import('./views/data/DataDetail/DataDetail.vue')
 const Home = () => import('./views/home/index.vue')
 const Statistics = () => import('./views/statistics/index.vue')
+const Ecosystem = () => import('./views/ecosystem/index.vue')
 
 Vue.use(Router)
 
@@ -62,6 +63,14 @@ export default new Router({
       component: Statistics,
       meta: {
         title: 'Statistics',
+        keepAlive: false,
+      },
+    },
+    {
+      path: '/ecosystem',
+      component: Ecosystem,
+      meta: {
+        title: 'Ecosystem',
         keepAlive: false,
       },
     },
