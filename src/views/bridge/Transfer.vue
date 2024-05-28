@@ -549,7 +549,7 @@ export default {
       cronList: [],
       banList: [],
       remarkText: {
-        "167000": "Transfer 0.00888 ETH to get $PINK"
+        // "167000": "Transfer 0.00888 ETH to get $PINK"
       }
     };
   },
