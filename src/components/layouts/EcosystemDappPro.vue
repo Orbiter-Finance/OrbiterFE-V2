@@ -131,7 +131,9 @@
         </div>
         <div class="label">
           <div>
-            The initial Tx requires a fix value of 0.00888e. 
+            <!-- For 1st bridge TX: Transfer <span class="condition">0.00888 ETH</span> to Taiko to grab $PINK. -->
+            <!-- The initial Tx requires a fix value of <span class="condition">0.00888e</span>.  -->
+            Transfer at least <span class="condition">6TXs</span> to Taiko to grab <span class="condition">$PINK</span>.
           </div>
         </div>
         <div class="bottom">
@@ -511,6 +513,13 @@ export default {
         letter-spacing: 0px;
         text-align: left;
         font-family: OpenSansRoman-SemiBold;
+
+        .condition {
+          white-space: nowrap;
+          font-weight: 700;
+          color: #F81E96;
+          font-family: OpenSansRoman-SemiBold;
+        }
       }
 
       .bottom {
