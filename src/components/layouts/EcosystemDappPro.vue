@@ -131,7 +131,7 @@
         </div>
         <div class="label">
           <div>
-            The initial Tx requires a fix value of 0.00888e. 
+            The initial Tx requires a fix value of <span class="condition">0.00888e</span>. 
           </div>
         </div>
         <div class="bottom">
@@ -511,6 +511,12 @@ export default {
         letter-spacing: 0px;
         text-align: left;
         font-family: OpenSansRoman-SemiBold;
+
+        .condition {
+          white-space: nowrap;
+          font-weight: 700;
+          color: #F91B94;
+        }
       }
 
       .bottom {
