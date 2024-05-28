@@ -2447,13 +2447,6 @@ export default {
           color: rgba(51, 51, 51, 0.3);
           font-size: 14px;
         }
-        .dark-theme {
-          .remark {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 12px;
-            zoom: 0.8;
-          }
-        }
       }
 
       .right {
@@ -2743,5 +2736,17 @@ export default {
     }
   }
   
+}
+
+.dark-theme {
+  .remark {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 12px;
+    zoom: 0.8;
+  }
+  .remark-pc {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 14px;
+  }
 }
 </style>CHAIN_ID, CHAIN_ID, 
