@@ -133,7 +133,8 @@
           <div>
             <!-- For 1st bridge TX: Transfer <span class="condition">0.00888 ETH</span> to Taiko to grab $PINK. -->
             <!-- The initial Tx requires a fix value of <span class="condition">0.00888e</span>.  -->
-            Transfer at least <span class="condition">6TXs</span> to Taiko to grab <span class="condition">$PINK</span>.
+            <!-- Transfer at least <span class="condition">6TXs</span> to Taiko to grab <span class="condition">$PINK</span>. -->
+            Transfer every <span class="condition">6TXs</span> to Taiko to grab <span class="condition">$PINK</span>.
           </div>
         </div>
         <div class="bottom">
