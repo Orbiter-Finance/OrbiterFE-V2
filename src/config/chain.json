@@ -2293,7 +2293,7 @@
       "symbol": "ETH",
       "decimals": 18
     },
-    "infoURL": "https://mainnet-explorer.ailayer.xyz",
+    "infoURL": "https://explorer.mintchain.io",
     "chainId": "185",
     "networkId": "185",
     "explorers": [
