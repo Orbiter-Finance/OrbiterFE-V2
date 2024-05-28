@@ -139,7 +139,6 @@
               ></svg-icon>
             <span>{{ showChainName(false) }}</span>
             <SvgIconThemed v-if="toChainIdList.length" />
-            <span v-show="remark" :class="isMobileSize ? 'remark' : 'remark-pc'">{{ remark }}</span>
           </div>
           <div style="display: flex; align-items: center;height: 30px" class="right">
             <div v-if="toTokenList.length" style="margin-left: 4px">
@@ -157,6 +156,7 @@
               <HelpIcon style="margin-left: 0.5rem" size="sm" />
             </o-tooltip>
             <div class="right-value">{{ toValue }}</div>
+            <span v-show="remark" :class="isMobileSize ? 'remark' : 'remark-pc'">{{ remark }}</span>
           </div>
         </div>
       </div>
@@ -549,7 +549,7 @@ export default {
       cronList: [],
       banList: [],
       remarkText: {
-        // "167000": "Transfer 0.00888 ETH to get $PINK"
+        "167000": "at least 6TXs to grab $PINK"
       }
     };
   },
@@ -2438,22 +2438,6 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        .remark {
-          color: rgba(51, 51, 51, 0.3);
-          font-size: 12px;
-          zoom: 0.8;
-        }
-        .remark-pc {
-          color: rgba(51, 51, 51, 0.3);
-          font-size: 12px;
-        }
-        .dark-theme {
-          .remark {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 12px;
-            zoom: 0.8;
-          }
-        }
       }
 
       .right {
@@ -2466,6 +2450,18 @@ export default {
         background-color: transparent;
         transition: all 0.2s ease 0s;
         flex-direction: row-reverse;
+
+        .remark {
+          color: rgba(51, 51, 51, 0.2);
+          font-size: 12px;
+          zoom: 0.8;
+          margin-right: 4px;
+        }
+        .remark-pc {
+          color: rgba(51, 51, 51, 0.2);
+          font-size: 14px;
+          margin-right: 4px;
+        }
       }
       .right-value {
         font-weight: 700;
@@ -2743,5 +2739,17 @@ export default {
     }
   }
   
+}
+
+.dark-theme {
+  .remark {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 12px;
+    zoom: 0.8;
+  }
+  .remark-pc {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 14px;
+  }
 }
 </style>CHAIN_ID, CHAIN_ID, 
