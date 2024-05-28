@@ -156,7 +156,7 @@
               <HelpIcon style="margin-left: 0.5rem" size="sm" />
             </o-tooltip>
             <div class="right-value">{{ toValue }}</div>
-            <span v-show="remark" :class="isMobileSize ? 'remark' : 'remark-pc'">{{ remark }}</span>
+            <span v-show="remark" class="remark">{{ remark }}</span>
           </div>
         </div>
       </div>
@@ -2453,14 +2453,9 @@ export default {
 
         .remark {
           color: rgba(51, 51, 51, 0.2);
-          font-size: 12px;
-          zoom: 0.8;
-          margin-right: 4px;
-        }
-        .remark-pc {
-          color: rgba(51, 51, 51, 0.2);
           font-size: 14px;
           margin-right: 4px;
+          white-space: nowrap;
         }
       }
       .right-value {
@@ -2744,12 +2739,9 @@ export default {
 .dark-theme {
   .remark {
     color: rgba(255, 255, 255, 0.2) !important;
-    font-size: 12px;
-    zoom: 0.8;
-  }
-  .remark-pc {
-    color: rgba(255, 255, 255, 0.2) !important;
     font-size: 14px;
+    margin-right: 4px;
+    white-space: nowrap;
   }
 }
 </style>CHAIN_ID, CHAIN_ID, 
