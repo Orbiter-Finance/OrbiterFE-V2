@@ -549,7 +549,7 @@ export default {
       cronList: [],
       banList: [],
       remarkText: {
-        // "167000": "Transfer 0.00888 ETH to get $PINK"
+        "167000": "at least 6TXs to grab $PINK"
       }
     };
   },
@@ -2445,7 +2445,7 @@ export default {
         }
         .remark-pc {
           color: rgba(51, 51, 51, 0.3);
-          font-size: 12px;
+          font-size: 14px;
         }
         .dark-theme {
           .remark {
