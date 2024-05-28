@@ -73,7 +73,7 @@
         :banner="'banner.png'"
         :tag="'Fair Launch'"
         :tagStyle="'background: linear-gradient( 169deg, rgb(248, 218, 211) 7.353%,  rgb(220, 84, 161) 60.561%);'"
-        :description="`Transfer every <span class='orbiter_global_ecosystem_dapp_condition'>6TXs</span> to Taiko to grab  <span class='condition'>$PINK</span>.`"
+        :description="`Transfer every <span class='orbiter_global_ecosystem_dapp_condition_pink'>6TXs</span> to Taiko to grab  <span class='orbiter_global_ecosystem_dapp_condition_pink'>$PINK</span>.`"
         :isProgress="true"
         :name="'TaiKo'"
         :url="'https://www.pinketh.xyz/'"
