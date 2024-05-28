@@ -139,6 +139,7 @@
               ></svg-icon>
             <span>{{ showChainName(false) }}</span>
             <SvgIconThemed v-if="toChainIdList.length" />
+            <span v-show="remark" :class="isMobileSize ? 'remark' : 'remark-pc'">{{ remark }}</span>
           </div>
           <div style="display: flex; align-items: center;height: 30px" class="right">
             <div v-if="toTokenList.length" style="margin-left: 4px">
@@ -546,10 +547,22 @@ export default {
       formWith: 0,
 
       cronList: [],
-      banList: []
+      banList: [],
+      remarkText: {
+        "167000": "Transfer 0.00888 ETH to get $PINK"
+      }
     };
   },
   computed: {
+    isMobileSize() {
+      return isMobile.value
+    },
+    remark () {
+      if(this.toValue?.gt && this.toValue?.gt("0")) {
+        return ""
+      }
+      return this.remarkText[String(transferDataState?.toChainID)]
+    },
     selectFromTokenSymbol(){
       return this.selectFromToken
     },
@@ -2425,6 +2438,22 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        .remark {
+          color: rgba(51, 51, 51, 0.3);
+          font-size: 12px;
+          zoom: 0.8;
+        }
+        .remark-pc {
+          color: rgba(51, 51, 51, 0.3);
+          font-size: 12px;
+        }
+        .dark-theme {
+          .remark {
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 12px;
+            zoom: 0.8;
+          }
+        }
       }
 
       .right {

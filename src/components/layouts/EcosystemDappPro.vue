@@ -2,7 +2,7 @@
   <div
     ref="ecosystem_dapp_pro_ref"
     class="ecosystem-dapp-pro-com"
-    :style="showCard ? 'height: 300px' : 'height: 50px;'"
+    :style="showCard ? 'height: 320px' : 'height: 50px;'"
   >
     <div class="title">
       <span class="text">Ecosystem DApp </span>
@@ -131,7 +131,8 @@
         </div>
         <div class="label">
           <div>
-            The initial Tx requires a fix value of <span class="condition">0.00888e</span>. 
+            For 1st bridge TX: Transfer <span class="condition">0.00888 ETH</span> to Taiko to grab $PINK.
+            <!-- The initial Tx requires a fix value of <span class="condition">0.00888e</span>.  -->
           </div>
         </div>
         <div class="bottom">
@@ -515,7 +516,8 @@ export default {
         .condition {
           white-space: nowrap;
           font-weight: 700;
-          color: #F91B94;
+          color: #F81E96;
+          font-family: OpenSansRoman-SemiBold;
         }
       }
 
