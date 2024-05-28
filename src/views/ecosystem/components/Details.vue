@@ -1,5 +1,5 @@
 <template>
-  <div class="ecosystem-info-details">
+  <div id="ecosystem-info-details" class="ecosystem-info-details">
     <div class="top">
       <div class="logo">
         <img
@@ -146,6 +146,21 @@ export default {
       border: 1px solid rgb(182, 182, 182);
       border-radius: 12px;
       background: rgb(238, 238, 238);
+    }
+  }
+}
+
+
+@media (max-width: 720px) {
+  #ecosystem-info-details.ecosystem-info-details {
+    .title {
+      font-size: 24px;
+    }
+    .descrition {
+      font-size: 12px;
+    }
+    .tag{
+      font-size: 14px;
     }
   }
 }

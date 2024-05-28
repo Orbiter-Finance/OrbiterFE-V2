@@ -1,5 +1,5 @@
 <template>
-  <div class="ecosystem-info-task">
+  <div id="ecosystem-info-task" class="ecosystem-info-task">
     <div class="brdge-card">
       <div class="content success" v-if="isBridge">
         <div class="text">Congratulations! You are eligible!</div>
@@ -19,18 +19,23 @@
         <div class="bridge-btn">Bridge</div>
       </div>
     </div>
-    <div class="tsak-card" :class="isBridge ? '' : 'disable'" v-for="item in taskList" :key="item.name">
-        <div class="label">
-            <img
-              class="image"
-              :src="require(`../../../assets/ecosystem/${item.name}.svg`)"
-            />
-            Follow @bullishs_io
-          </div>
-          <img
-          class="more-btn"
-          :src="require('../../../assets/ecosystem/task-more.svg')"
+    <div
+      class="tsak-card"
+      :class="isBridge ? '' : 'disable'"
+      v-for="item in taskList"
+      :key="item.name"
+    >
+      <div class="label">
+        <img
+          class="image"
+          :src="require(`../../../assets/ecosystem/${item.name}.svg`)"
         />
+        Follow @bullishs_io
+      </div>
+      <img
+        class="more-btn"
+        :src="require('../../../assets/ecosystem/task-more.svg')"
+      />
     </div>
   </div>
 </template>
@@ -41,9 +46,11 @@ export default {
   data() {
     return {
       isBridge: true,
-      taskList: [{
-        name: "x"
-      }]
+      taskList: [
+        {
+          name: 'x',
+        },
+      ],
     }
   },
 }
@@ -116,34 +123,52 @@ export default {
     cursor: pointer;
 
     .label {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        font-size: 18px;
-        font-weight: 700;
-        line-height: 25px;
-        letter-spacing: 0px;
-        text-align: left;
-        .image {
-            width: 24px;
-            height: 24px;
-            margin-right: 8px;
-          }
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 25px;
+      letter-spacing: 0px;
+      text-align: left;
+      .image {
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+      }
     }
 
     .more-btn {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 20px;
-        height: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 20px;
     }
   }
-
 
   .disable {
     cursor: not-allowed;
     opacity: 0.3;
+  }
 }
+@media (max-width: 720px) {
+  #ecosystem-info-task.ecosystem-info-task {
+    .brdge-card {
+      .content {
+        padding: 8px 12px;
+        .text {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .tsak-card {
+      padding: 8px 12px;
+      .label {
+        font-size: 16px;
+      }
+    }
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="ecosystem-reward-container">
+  <div id="ecosystem-reward-container" class="ecosystem-reward-container">
     <div class="content">
       <div class="title">
         <div>Reward</div>
@@ -234,8 +234,15 @@ export default {
       letter-spacing: 0px;
       text-align: center;
       border-radius: 24px;
-background: rgb(239, 47, 45);
-opacity: 0.5;
+      background: rgb(239, 47, 45);
+      opacity: 0.5;
+    }
+  }
+}
+@media (max-width: 720px) {
+  #ecosystem-reward-container.ecosystem-reward-container {
+    .claim {
+      margin-top: 32px;
     }
   }
 }

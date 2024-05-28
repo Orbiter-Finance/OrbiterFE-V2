@@ -1,5 +1,5 @@
 <template>
-  <div class="ecosystem-info-container">
+  <div id="ecosystem-info-container" class="ecosystem-info-container">
     <EcosystemInfoDetails></EcosystemInfoDetails>
     <div class="task-box">
     <EcosystemInfoTask></EcosystemInfoTask>
@@ -28,4 +28,5 @@ export default {
     margin-top: 24px;
   }
 }
+
 </style>
