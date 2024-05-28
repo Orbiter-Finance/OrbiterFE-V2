@@ -156,6 +156,7 @@
               <HelpIcon style="margin-left: 0.5rem" size="sm" />
             </o-tooltip>
             <div class="right-value">{{ toValue }}</div>
+            <span v-show="remark" :class="isMobileSize ? 'remark' : 'remark-pc'">{{ remark }}</span>
           </div>
         </div>
       </div>
@@ -514,6 +515,7 @@ export default {
       saveTimeLoading: false,
 
       boxLoading: false,
+      isClickMax: false,
 
       // balanceMap: {},
       originGasCost: 0,
@@ -545,10 +547,22 @@ export default {
       formWith: 0,
 
       cronList: [],
-      banList: []
+      banList: [],
+      remarkText: {
+        "167000": "at least 6TXs to grab $PINK"
+      }
     };
   },
   computed: {
+    isMobileSize() {
+      return isMobile.value
+    },
+    remark () {
+      if(this.toValue?.gt && this.toValue?.gt("0")) {
+        return ""
+      }
+      return this.remarkText[String(transferDataState?.toChainID)]
+    },
     selectFromTokenSymbol(){
       return this.selectFromToken
     },
@@ -1697,8 +1711,9 @@ export default {
         userMax = userBalance
       }
       this.userMaxPrice = max.toString();
-      if(!this.queryParams.amount) {
+      if(!this.queryParams.amount && this.isClickMax) {
         this.transferValue = max.toString();
+        this.isClickMax = false
       }
     },
     // addBalance(chainId, symbol, value, address) {
@@ -1750,6 +1765,7 @@ export default {
       this.selectToToken = val;
     },
     fromMax() {
+      this.isClickMax = true
       if (!walletIsLogin.value) {
         this.transferValue = '0';
         return;
@@ -2434,6 +2450,18 @@ export default {
         background-color: transparent;
         transition: all 0.2s ease 0s;
         flex-direction: row-reverse;
+
+        .remark {
+          color: rgba(51, 51, 51, 0.2);
+          font-size: 12px;
+          zoom: 0.8;
+          margin-right: 4px;
+        }
+        .remark-pc {
+          color: rgba(51, 51, 51, 0.2);
+          font-size: 14px;
+          margin-right: 4px;
+        }
       }
       .right-value {
         font-weight: 700;
@@ -2711,5 +2739,17 @@ export default {
     }
   }
   
+}
+
+.dark-theme {
+  .remark {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 12px;
+    zoom: 0.8;
+  }
+  .remark-pc {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 14px;
+  }
 }
 </style>CHAIN_ID, CHAIN_ID, 

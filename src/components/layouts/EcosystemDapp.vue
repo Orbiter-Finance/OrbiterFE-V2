@@ -199,7 +199,7 @@ export default {
       ratio: 0,
       isEnd: false,
       show: false,
-      timeStr: '2024-5-15 18:00:00',
+      timeStr: '2024/5/15 18:00:00',
       timeList: [],
     }
   },
