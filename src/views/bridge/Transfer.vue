@@ -549,7 +549,7 @@ export default {
       cronList: [],
       banList: [],
       remarkText: {
-        "167000": "at least 6TXs to grab $PINK"
+        "167000": "Every 6TXs can grab $PINK"
       }
     };
   },
