@@ -79,7 +79,7 @@
         :url="'https://www.pinketh.xyz/'"
       />
       </el-carousel-item>
-      <!-- <el-carousel-item >
+      <el-carousel-item >
         <EcosystemDapp 
             :holders="totalUser"
             :ratio="ratio"
@@ -92,7 +92,7 @@
             :name="'0xastra'"
             :url="'https://0xastra.xyz/'"
           />
-      </el-carousel-item> -->
+      </el-carousel-item>
     </el-carousel>
     
     
