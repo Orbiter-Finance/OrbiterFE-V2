@@ -70,7 +70,7 @@
         :holders="holders"
         :ratio="ratio"
         :showCard="showCard"
-        :banner="'banner.png'"
+        :banner="'banner.gif'"
         :tag="'Fair Launch'"
         :tagStyle="'background: linear-gradient( 169deg, rgb(248, 218, 211) 7.353%,  rgb(220, 84, 161) 60.561%);'"
         :description="`Transfer ≥ <span class='orbiter_global_ecosystem_dapp_condition_pink'>6TXs</span> to Taiko to grab  <span class='orbiter_global_ecosystem_dapp_condition_pink'>$PINK</span>.`"
