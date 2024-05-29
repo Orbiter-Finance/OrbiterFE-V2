@@ -19,7 +19,8 @@ export const ZERION_APP = 'ZerionApp' // zerion wallet constant
 export const COIN98_APP = 'Coin98' // Coin98 wallet constant
 export const TRUSTWALLET_APP = 'TrustWallet' // Coin98 wallet constant
 export const FOXWALLET_APP = 'FoxWallet' // Coin98 wallet constant
-export const TONWALLER = 'Ton Wallet' // Coin98 wallet constant
+export const TONWALLET = 'Ton Wallet' // Coin98 wallet constant
+export const SAFEPAL = 'SafePal' // Coin98 wallet constant
 
 export const CURRENT_SUPPORT_WALLET = [
   METAMASK,
@@ -35,4 +36,5 @@ export const CURRENT_SUPPORT_WALLET = [
   COIN98_APP,
   TRUSTWALLET_APP,
   FOXWALLET_APP,
+  SAFEPAL,
 ].map((item) => item.toLocaleLowerCase())

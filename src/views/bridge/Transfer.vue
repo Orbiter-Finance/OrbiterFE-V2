@@ -120,7 +120,7 @@
             <div class="left">To</div>
           </o-tooltip>
           <div v-else class="left">To</div>
-          <div v-if="isLogin" class="right">
+          <!-- <div v-if="isLogin" class="right">
             Balance:
             <CommLoading
                     :hidden="!toBalanceLoading"
@@ -129,7 +129,7 @@
                     height="1.2rem"
             />
             <span :hidden="toBalanceLoading">{{ toBalance }}</span>
-          </div>
+          </div> -->
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
@@ -156,6 +156,7 @@
               <HelpIcon style="margin-left: 0.5rem" size="sm" />
             </o-tooltip>
             <div class="right-value">{{ toValue }}</div>
+            <span v-show="remark" class="remark">{{ remark }}</span>
           </div>
         </div>
       </div>
@@ -514,6 +515,7 @@ export default {
       saveTimeLoading: false,
 
       boxLoading: false,
+      isClickMax: false,
 
       // balanceMap: {},
       originGasCost: 0,
@@ -545,10 +547,22 @@ export default {
       formWith: 0,
 
       cronList: [],
-      banList: []
+      banList: [],
+      remarkText: {
+        "167000": "Every 6TXs can grab $PINK"
+      }
     };
   },
   computed: {
+    isMobileSize() {
+      return isMobile.value
+    },
+    remark () {
+      if(this.toValue?.gt && this.toValue?.gt("0")) {
+        return ""
+      }
+      return this.remarkText[String(transferDataState?.toChainID)]
+    },
     selectFromTokenSymbol(){
       return this.selectFromToken
     },
@@ -1441,7 +1455,12 @@ export default {
       const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
-      await this.getMakerMaxBalance();
+      await this.getMakerMaxBalance().catch(error=> {
+          util.showMessage(
+              `getMakerMaxBalance fail ${error.message}`,
+              'error'
+          );
+      })
       this.updateToValue();
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
@@ -1495,7 +1514,7 @@ export default {
           info.disabled = 'disabled';
           util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
         }
-
+        
         if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND';
           info.disabled = 'disabled';
@@ -1692,6 +1711,10 @@ export default {
         userMax = userBalance
       }
       this.userMaxPrice = max.toString();
+      if(!this.queryParams.amount && this.isClickMax) {
+        this.transferValue = max.toString();
+        this.isClickMax = false
+      }
     },
     // addBalance(chainId, symbol, value, address) {
     //   const walletAddress = address || compatibleGlobalWalletConf.value.walletPayload.walletAddress;
@@ -1742,6 +1765,7 @@ export default {
       this.selectToToken = val;
     },
     fromMax() {
+      this.isClickMax = true
       if (!walletIsLogin.value) {
         this.transferValue = '0';
         return;
@@ -2114,8 +2138,6 @@ export default {
 
         const toContractGroup = toChainInfo?.contract || {}
 
-        console.log("toContractGroup", toContractGroup)
-
         const toContractList = Object.keys(toContractGroup).map((key)=> {
           return ({
               name: toContractGroup[key],
@@ -2282,7 +2304,7 @@ export default {
     },
     async refreshUserBalance() {
       this.fromBalanceLoading = true;
-      this.toBalanceLoading = true;
+      // this.toBalanceLoading = true;
       const self = this;
       const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
@@ -2330,24 +2352,24 @@ export default {
       if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
       }
-      if (address && address !== '0x') {
-          await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
-                  .then((response) => {
-                    const balance = (response / 10 ** toChain.decimals).toFixed(6);
-                    self.toBalance = balance;
-                  })
-                  .catch((error) => {
-                    console.warn(error);
-                  }).finally(() => {
-                  self.toBalanceLoading = false;
-          });
-        // } else {
-        //   self.toBalance = toChainBalanceMap[toChain.symbol];
-        // }
-          self.toBalanceLoading = false;
-      } else {
-        self.toBalanceLoading = false;
-      }
+      // if (address && address !== '0x') {
+      //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
+      //             .then((response) => {
+      //               const balance = (response / 10 ** toChain.decimals).toFixed(6);
+      //               self.toBalance = balance;
+      //             })
+      //             .catch((error) => {
+      //               console.warn(error);
+      //             }).finally(() => {
+      //             self.toBalanceLoading = false;
+      //     });
+      //   // } else {
+      //   //   self.toBalance = toChainBalanceMap[toChain.symbol];
+      //   // }
+      //     self.toBalanceLoading = false;
+      // } else {
+      //   self.toBalanceLoading = false;
+      // }
     },
   },
 };
@@ -2428,6 +2450,13 @@ export default {
         background-color: transparent;
         transition: all 0.2s ease 0s;
         flex-direction: row-reverse;
+
+        .remark {
+          color: rgba(51, 51, 51, 0.2);
+          font-size: 14px;
+          margin-right: 4px;
+          white-space: nowrap;
+        }
       }
       .right-value {
         font-weight: 700;
@@ -2705,5 +2734,14 @@ export default {
     }
   }
   
+}
+
+.dark-theme {
+  .remark {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 14px;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
 }
 </style>CHAIN_ID, CHAIN_ID, 

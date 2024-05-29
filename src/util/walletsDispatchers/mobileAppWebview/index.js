@@ -21,8 +21,12 @@ const {
     mobileAppWebviewDispatchersOnSwitchChain,
 } = standardWalletLoader(standardMobileAppConf)
 
+const mobileAppWebviewDispatchersOnInitN = {
+  ...mobileAppWebviewDispatchersOnInit,
+}
+
 export default {
-  walletDispatchersOnInit: mobileAppWebviewDispatchersOnInit,
+  walletDispatchersOnInit: mobileAppWebviewDispatchersOnInitN,
   walletDispatchersOnAddChain: mobileAppWebviewDispatchersOnAddChain,
   walletDispatchersOnSwitchChain: mobileAppWebviewDispatchersOnSwitchChain,
   walletDispatchersOnDisconnect: mobileAppWebviewDispatchersOnDisconnect,

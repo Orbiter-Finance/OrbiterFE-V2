@@ -18,6 +18,7 @@ import {
   ZERION_APP,
   COIN98_APP,
   TRUSTWALLET_APP,
+  SAFEPAL,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -64,7 +65,9 @@ export const withPerformInterruptWallet = (fn) => {
 export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
-  if (walletType === TRUSTWALLET_APP) return !!ethereum.isTrustWallet
+  if (walletType === SAFEPAL) return ethereum.isSafePal
+  if (walletType === TRUSTWALLET_APP)
+    return !!window?.trustwallet?.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
   if (walletType === TALLYHO) return ethereum.isTally
   if (walletType === COINBASE) return ethereum.isCoinbaseWallet
@@ -72,7 +75,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === BRAVE_APP) return isBraveWallet
   if (walletType === IM_TOKEN_APP) return ethereum.isImToken
   if (walletType === METAMASK_APP) return ethereum.isMetaMask
-  if (walletType === TOKEN_POCKET_APP) return ethereum.isTokenPocket
+  if (walletType === TOKEN_POCKET_APP) return ethereum?.isTokenPocket
   if (walletType === BIT_KEEP_APP) return 'isBitKeepChrome' in ethereum
   if (walletType === COINBASE_APP)
     return ethereum.isCoinbaseBrowser && ethereum.isCoinbaseWallet
@@ -110,11 +113,22 @@ export const findMatchWeb3ProviderByWalletType = (
       return window.okxwallet
     }
 
+    if (walletType === TRUSTWALLET_APP && window.trustwallet !== 'undefined') {
+      return window.trustwallet
+    }
+
+    if (
+      walletType === SAFEPAL &&
+      typeof window.safepalProvider !== 'undefined'
+    ) {
+      return window.safepalProvider
+    }
+
     if (walletType === BIT_KEEP && typeof window.bitkeep !== 'undefined') {
       return window.bitkeep.ethereum
     }
 
-    if (ethereumWalletTypeFitChecker(walletType, window.ethereum))
+    if (ethereumWalletTypeFitChecker(walletType, window.ethereum || {}))
       return window.ethereum
     return null
   }
@@ -142,13 +156,14 @@ export const fetchTargetWalletLoginStatus = ({ walletType }) => {
  * mobile app webview only!!!!!!! don't use in other place!!!!
  */
 export const getMobileAppTypeByProvider = () => {
-  const provider = window?.ethereum
+  const provider = window?.ethereum || {}
   if (!provider) return undefined
   if (provider.isImToken) return IM_TOKEN_APP
+  if (provider.isSafePal) return SAFEPAL
   if (provider.isCoin98) return COIN98_APP
   if (provider.isTrustWallet) return TRUSTWALLET_APP
-  if (provider.isTokenPocket) return TOKEN_POCKET_APP
-  if (provider.isMetaMask && !provider.isTokenPocket) return METAMASK_APP
+  if (provider?.isTokenPocket) return TOKEN_POCKET_APP
+  if (provider.isMetaMask && !provider?.isTokenPocket) return METAMASK_APP
   if ('isBitKeepChrome' in provider) return BIT_KEEP_APP
   if (provider.isCoinbaseWallet && provider.isCoinbaseBrowser)
     return COINBASE_APP
