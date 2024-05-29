@@ -1,185 +1,110 @@
 <template>
-  <div class="ecosystem-dapp-com" :class="show ? 'down' : 'up'">
-    <div class="title">
-      <span class="text">Ecosystem DApp </span>
-      <svg
-        class="expand"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        viewBox="0 0 16 16"
-        fill="none"
-        @click="triggle"
-      >
-        <desc>Created with Pixso.</desc>
-        <defs />
-        <rect
-          rx="4.000000"
-          width="16.000000"
-          height="16.000000"
-          fill="#EEEEEE"
-          fill-opacity="0"
-        />
-        <rect
-          x="0.500000"
-          y="0.500000"
-          rx="4.000000"
-          width="15.000000"
-          height="15.000000"
-          stroke="#EEEEEE"
-          stroke-opacity="0"
-          stroke-width="1.000000"
-        />
-        <path
-          d="M10.77 4.69L10.77 4.72L10.97 5L5.02 5L5.22 4.72L5.22 4.69C5.05 4.57 4.82 4.6 4.7 4.77C4.57 4.94 4.6 5.17 4.77 5.3L4.8 5.29L5.01 5.01L8 7.25L10.98 5.01L11.19 5.29L11.22 5.3C11.39 5.17 11.42 4.94 11.3 4.77C11.17 4.6 10.94 4.57 10.77 4.69Z"
-          fill="#D8D8D8"
-          fill-opacity="0"
-          fill-rule="evenodd"
-        />
-        <path
-          d="M5 5L8 7.25L11 5"
-          stroke="#222222"
-          stroke-opacity="1.000000"
-          stroke-width="0.750000"
-          stroke-linejoin="round"
-          stroke-linecap="round"
-        />
-        <path
-          d="M10.77 8.44L10.77 8.47L10.97 8.75L5.02 8.75L5.22 8.47L5.22 8.44C5.05 8.32 4.82 8.35 4.7 8.52C4.57 8.69 4.6 8.92 4.77 9.05L4.8 9.04L5.01 8.76L8 11L10.98 8.76L11.19 9.04L11.22 9.05C11.39 8.92 11.42 8.69 11.3 8.52C11.17 8.35 10.94 8.32 10.77 8.44Z"
-          fill="#D8D8D8"
-          fill-opacity="0"
-          fill-rule="evenodd"
-        />
-        <path
-          d="M5 8.75L8 11L11 8.75"
-          stroke="#222222"
-          stroke-opacity="1.000000"
-          stroke-width="0.750000"
-          stroke-linejoin="round"
-          stroke-linecap="round"
-        />
-      </svg>
-    </div>
-    <div class="content-group">
-      <div class="content-box" :class="Number(ratio) >= 100 ? 'ratio' : ''">
-        <div class="content">
-          <div class="top">
-            <div class="dapp_group_img">
-              <img
-                class="dapp1"
-                :src="
-                  require('../../assets/activity/ecosystem_dapp/dapp_1.png')
-                "
-              />
-              <img
-                class="dapp2"
-                :src="
-                  require('../../assets/activity/ecosystem_dapp/dapp_2.png')
-                "
-              />
-            </div>
-            <div class="top-right">
-              <div class="label">
-                <div>Layer2-20 🔥</div>
-                <div class="time">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    width="16.000000"
-                    height="16.000000"
-                    viewBox="0 0 16 16"
-                    fill="none"
-                  >
-                    <path
-                      id="Vector"
-                      d="M8 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 8 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 8 14.66Z"
-                      stroke="#999999"
-                      stroke-opacity="1.000000"
-                      stroke-width="1.000000"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      id="Vector"
-                      d="M10.47 10.11L8.4 8.88C8.04 8.67 7.75 8.15 7.75 7.73L7.75 5"
-                      stroke="#999999"
-                      stroke-opacity="1.000000"
-                      stroke-width="1.000000"
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                    />
-                    <g opacity="0.000000" />
-                  </svg>
-                  <div
-                    :key="item.symbol"
-                    class="time-item"
-                    v-for="item in timeList"
-                  >
-                    <div class="time-value">{{ item.value }}</div>
-                    <div class="time-symbol">{{ item.symbol }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="text">
-                1st Fair launch on Likwid
-                <!-- <o-tooltip>
-                  <template v-slot:titleDesc>
-                    <div style="margin-left: -20px">
-                      <span>
-                        1st Fair launch on Likwid
-                      </span>
-                    </div>
-                  </template>
-                  <div class="text">
-                    1st Fair launch on Likwid
-                  </div>
-                </o-tooltip> -->
-              </div>
+  <div class="ecosystem-dapp" :class="showCard ? 'down' : 'up'">
+    <div
+      class="banner"
+      :style="`background: url(${require('../../assets/activity/ecosystem_dapp/' +
+        banner)}) 100% no-repeat; background-size: 100% 100%;`"
+    ></div>
+
+    <div class="info">
+      <div class="top">
+        <div class="top-right">
+          <div class="card-title">
+            <div class="card-first" :style="tagStyle">{{ tag }}</div>
+            <div class="card-next">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="16.000000"
+                height="16.000000"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <defs />
+                <path
+                  d="M8.75 6.75C8.75 4.95 7.29 3.5 5.5 3.5C3.7 3.5 2.25 4.95 2.25 6.75C2.25 8.54 3.7 10 5.5 10C7.29 10 8.75 8.54 8.75 6.75Z"
+                  stroke="#666666"
+                  stroke-opacity="1.000000"
+                  stroke-width="1.000000"
+                />
+                <path
+                  d="M9.71 3.61C9.99 3.54 10.29 3.5 10.59 3.5C11.45 3.5 12.28 3.84 12.89 4.45C13.5 5.06 13.84 5.88 13.84 6.75C13.84 7.61 13.5 8.43 12.89 9.04C12.28 9.65 11.45 10 10.59 10"
+                  stroke="#666666"
+                  stroke-opacity="1.000000"
+                  stroke-width="1.000000"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M1 12.33C1.5 11.61 2.18 11.02 2.96 10.61C3.74 10.21 4.61 9.99 5.5 9.99C6.38 9.99 7.25 10.21 8.03 10.61C8.81 11.02 9.49 11.61 10 12.33"
+                  stroke="#666666"
+                  stroke-opacity="1.000000"
+                  stroke-width="1.000000"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M10.59 10C11.47 9.99 12.34 10.21 13.12 10.61C13.91 11.02 14.58 11.61 15.09 12.33"
+                  stroke="#666666"
+                  stroke-opacity="1.000000"
+                  stroke-width="1.000000"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                />
+              </svg>
+              {{ decimalNumC(holders, 0, ',') }}
             </div>
           </div>
-          <div class="bottom">
-            <div class="progress-group">
-              <div class="holders">
-                <div class="total">
-                  Fundraise Goal:
-                  <div class="amount">
-                    {{ decimalNumC(holders, 0, ',') }} ETH
+        </div>
+      </div>
+
+      <div class="label">
+        <div class="description" v-html="description"></div>
+
+        <div v-show="!isProgress"  :class="['join', { 'join-end': isEnd }]" @click="openUrl()">
+          Join
+        </div>
+      </div>
+      <div v-show="isProgress" class="bottom">
+        <div class="progress-group">
+          <div class="holders">
+            <div class="total">
+              Launch Progress:
+              <o-tooltip>
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px">
+                    <span
+                      >Receive an airdrop share for every 6 TXs To Taiko. Stops
+                      once the total amount (2,888,888 TXs) reaches.
+                    </span>
                   </div>
-                  <o-tooltip>
-                    <template v-slot:titleDesc>
-                      <div style="margin-left: -20px">
-                        <span> 100% refund for oversubscribed part </span>
-                      </div>
-                    </template>
-                    <img
-                      class="help-icon"
-                      :src="require('../../assets/activity/tip_ico.png')"
-                    />
-                  </o-tooltip>
-                </div>
-                <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">
-                  {{ decimalNumC(ratio, 3) }}%
-                  <span v-show="Number(ratio) >= 100">!!</span>
-                </div>
-              </div>
-              <div class="progress-box">
-                <div
-                  class="progress"
-                  :style="{
-                    width:
-                      Number(ratio) >= 100
-                        ? '100%'
-                        : decimalNumC(ratio, 3) + '%',
-                  }"
-                  :class="Number(ratio) >= 100 ? 'progress100' : 'default-bg'"
-                ></div>
-              </div>
+                </template>
+                <img
+                  class="help-icon"
+                  :src="require('../../assets/activity/tooltip.png')"
+                />
+              </o-tooltip>
             </div>
+            <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">
+              {{ decimalNumC(ratio, 6) }}%
+              <span v-show="Number(ratio) >= 100">!!</span>
+            </div>
+          </div>
+          <div class="progress-box">
             <div
-              :class="['join', { 'join-end': isEnd }]"
-              @click="openUrl('https://www.layer220.io/')"
+              class="progress"
+              :style="{
+                width:
+                  Number(ratio) >= 100 ? '100%' : decimalNumC(ratio, 3) + '%',
+              }"
+              :class="Number(ratio) >= 100 ? 'progress100' : 'default-bg'"
             >
-              Join
+              <div class="skeleton"></div>
             </div>
           </div>
+        </div>
+        <div :class="['join', { 'join-end': isEnd }]" @click="openUrl()">
+          Join
         </div>
       </div>
     </div>
@@ -193,225 +118,98 @@ let timer1
 
 export default {
   name: 'EcosystemDapp',
+  props: {
+    holders: String | Number,
+    ratio: String | Number,
+    showCard: Boolean,
+    banner: String,
+    tag: String,
+    description: String,
+    tagStyle: String,
+    isProgress: Boolean,
+    naem: String,
+    url: String,
+  },
   data() {
     return {
-      holders: 0,
-      ratio: 0,
       isEnd: false,
-      show: false,
-      timeStr: '2024/5/15 18:00:00',
-      timeList: [],
     }
   },
   methods: {
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
-    openUrl(url) {
-      // window.open(url, '_blank')
-      this.ratio += 50
+    openUrl() {
+      const name = this.name
+      const url = this.url
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: url,
+      })
+      window.open(url, '_blank')
     },
-    async getData() {
-      // const res = await fetch(
-      //   'https://api.layer220.io/statistic?protocol=layer2-20&tick=%24L2',
-      //   {}
-      // )
-      // const {
-      //   data: { totalHolders = 0, max, totalAmount }
-      // } = await res.json()
-      // this.holders = totalHolders || 0
-      // if (Number(max) && Number(totalAmount)) {
-      //   const total = (totalAmount * 100) / max
-      //   this.ratio = Number(total) <= 100 ? Number(total) : 100
-      //   this.isEnd = this.ratio === 100
-      // }
-    },
-    triggle() {
-      this.show = !this.show
-      let time = 1000
-
-      try {
-        timer = setInterval(() => {
-          time -= 10
-          if (time < -10) {
-            clearInterval(timer)
-            throw new Error('aaaaa')
-          }
-          this.$emit('getTaskHeight')
-        }, 10)
-      } catch (error) {
-        console.error('error', error)
-        clearInterval(timer)
-      }
-
-    },
-
-    getUTCTime1(str) {
-      let d1 = new Date(str)
-      let d2 = new Date(
-        d1.getUTCFullYear(),
-        d1.getUTCMonth(),
-        d1.getUTCDate(),
-        d1.getUTCHours(),
-        d1.getUTCMinutes(),
-        d1.getUTCSeconds()
-      )
-      return Date.parse(d2)
-    },
-  },
-
-  mounted() {
-      timer1 = setInterval(() => {
-        const t = this.getUTCTime1(this.timeStr)
-        const timeS = Math.floor((t - getUTCTime()) / 1000)
-        let time = timeS
-        if (timeS <= 0) {
-          clearInterval(timer1)
-          this.timeList = [
-            {
-              value: '00',
-              symbol: 'D',
-            },
-            {
-              value: '00',
-              symbol: 'H',
-            },
-            {
-              value: '00',
-              symbol: 'M',
-            },
-            {
-              value: '00',
-              symbol: 'S',
-            },
-          ]
-        }
-        let d = Math.floor(time / 3600 / 24)
-        d = d < 10 ? '0' + d : d
-        time -= d * 3600 * 24
-        let h = Math.floor(time / 3600)
-        h = h < 10 ? '0' + h : h
-        time -= h * 3600
-        let m = Math.floor(time / 60)
-        m = m < 10 ? '0' + m : m
-        time -= m * 60
-        const s = time < 10 ? '0' + time : time
-
-        this.timeList = [
-          {
-            value: d,
-            symbol: 'D',
-          },
-          {
-            value: h,
-            symbol: 'H',
-          },
-          {
-            value: m,
-            symbol: 'M',
-          },
-          {
-            value: s,
-            symbol: 'S',
-          },
-        ]
-      }, 1000)
-    },
-  created() {
-    this.getData()
   },
 }
 </script>
 <style lang="scss" scoped>
-@keyframes ecosystem-dapp-rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.ecosystem-dapp-com {
+.ecosystem-dapp {
   width: 100%;
-  height: 186px;
-  padding: 16px 12px;
-  box-sizing: border-box;
-  will-change: height;
+  height: 240px;
+  background: #ffffff;
+  border-radius: 12px;
+  margin-top: 12px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
+  opacity: 1;
+  will-change: opacity;
   transition: all 0.5s linear;
+
   &.up {
-    height: 50px;
+    opacity: 0;
   }
   &.down {
-    height: 186px;
+    opacity: 1;
   }
 
-  .title {
+  .banner {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .text {
-      font-family: Kodchasan-Bold;
-      font-size: 16px;
-      font-weight: bold;
-      color: #222222;
-      line-height: 22px;
-    }
-    .expand {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      background: rgb(238, 238, 238);
-      cursor: pointer;
-    }
-  }
-
-  .content-group {
-    width: 100%;
-    padding: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    border-radius: 6px;
-    margin-top: 12px;
+    padding: 16.75%;
+    border-radius: 12px;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 1;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);
-
-    .content-box {
-      position: relative;
-      top: 0;
+    .dapp_group_img {
+      position: absolute;
+      bottom: 0;
       left: 0;
-      z-index: 1;
-      width: 100%;
+      padding: 4px;
+      background: #fff;
+      border-radius: 50%;
+      z-index: 2;
+      transform: translateY(50%);
+      left: 16px;
 
-      &.ratio::before {
-        content: '';
+      .dapp1 {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+      }
+
+      .dapp2 {
+        width: 20px;
+        height: 20px;
         position: absolute;
-        width: 200%;
-        padding: 100% 0;
-        top: -50%;
-        left: -50%;
-        background: conic-gradient(
-          rgb(255, 0, 164),
-          rgb(113, 109, 255),
-          rgb(255, 190, 93),
-          rgb(253, 4, 15)
-        );
-        z-index: -1;
-        border-radius: 6px;
-        margin-top: -50%;
-        animation: ecosystem-dapp-rotate 5s linear infinite;
+        right: 4px;
+        bottom: 4px;
+        border-radius: 50%;
       }
     }
   }
 
-  .content {
+  .info {
+    padding: 8px 16px;
     width: 100%;
-    background: #ffffff;
-    border-radius: 6px;
-    padding: 12px 10px;
 
     .top {
       width: 100%;
@@ -419,82 +217,76 @@ export default {
       justify-content: space-between;
       align-items: center;
 
-      .dapp_group_img {
-        position: relative;
-        top: 0;
-        left: 0;
-        margin-right: 8px;
-        .dapp1 {
-          width: 44px;
-          height: 44px;
-        }
-
-        .dapp2 {
-          width: 20px;
-          height: 20px;
-          position: absolute;
-          right: -2px;
-          bottom: -2px;
-        }
-      }
-
       .top-right {
-        flex: 1;
-        text-align: left;
-        width: calc(100% - 56px);
+        display: flex;
+        justify-content: start;
+        align-items: center;
 
-        .label {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-top: 2px;
-          color: #222222;
-          font-size: 18px;
-          font-weight: 700;
-          font-family: OpenSansRoman-ExtraBold;
-
-          .time {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            font-family: OpenSansRoman-Regular;
-            .time-item {
-              display: flex;
-              .time-value {
-                font-size: 14px;
-                font-weight: 500;
-                color: #222222;
-                margin: 0 2px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: OpenSansRoman-ExtraBold;
-              }
-              .time-symbol {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 12px;
-                color: #999999;
-                margin: 0 2px;
-              }
-            }
-          }
-        }
-
-        .text {
+        .card-title {
           width: 100%;
-          font-size: 14px;
+          font-size: 12px;
           font-weight: 400;
           color: #999999;
           font-weight: 500;
           line-height: 18px;
           font-family: OpenSansRoman-Regular;
-          margin-top: 4px;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          .card-first {
+            color: rgb(8, 12, 24);
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            line-height: 16px;
+          }
+
+          .card-next {
+            color: rgb(102, 102, 102);
+            font-weight: 600;
+            padding: 2px 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 6px;
+            box-sizing: border-box;
+            line-height: 16px;
+            border: 1px solid rgb(238, 238, 238);
+            border-radius: 999px;
+            background: rgb(245, 245, 245);
+
+            > svg {
+              margin-right: 2px;
+            }
+          }
         }
+      }
+    }
+
+    .label {
+      margin-top: 8px;
+      color: rgb(34, 34, 34);
+      font-family: General Sans;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+      letter-spacing: 0px;
+      text-align: left;
+      font-family: OpenSansRoman-SemiBold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .description {
+        flex: 1;
+      }
+
+      .condition {
+        white-space: nowrap;
+        font-weight: 700;
+        color: #f81e96;
+        font-family: OpenSansRoman-SemiBold;
       }
     }
 
@@ -503,7 +295,7 @@ export default {
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      margin-top: 12px;
+      margin-top: 4px;
 
       .progress-group {
         flex: 1;
@@ -526,6 +318,7 @@ export default {
               margin-left: 4px;
               font-weight: 600;
               color: #222222;
+              font-size: 12px;
             }
 
             .help-icon {
@@ -544,10 +337,9 @@ export default {
           }
 
           .ratio100 {
-            font-size: 16px;
+            font-size: 14px;
             font-family: OpenSansRoman-Regular;
             font-weight: 600;
-            font-size: 16px;
             font-weight: 700;
             color: #7f0d0d;
             -webkit-text-fill-color: transparent;
@@ -574,14 +366,15 @@ export default {
           background: #eeeeee;
           border-radius: 6px;
           margin-top: 4px;
+          overflow: hidden;
 
           .progress {
             height: 8px;
-            border-radius: 6px;
           }
 
           .default-bg {
             background: #222222;
+            border-radius: 6px;
           }
 
           .progress100 {
@@ -592,76 +385,89 @@ export default {
               rgb(255, 190, 93) 68.961%,
               rgb(253, 4, 15) 97.662%
             );
+
+            .skeleton {
+              width: 100%;
+              height: 100%;
+              background-image: linear-gradient(
+                90deg,
+                rgba(#fff, 0),
+                rgba(#fff, 0.4),
+                rgba(#fff, 0)
+              );
+              background-size: 40px 100%; // width of the shine
+              background-repeat: no-repeat; // No need to repeat the shine effect
+              background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
+              animation: shine 2s ease infinite;
+            }
           }
         }
       }
-
-      .join {
-        width: 72px;
-        height: 32px;
-        background: #222222;
-        border-radius: 18px;
-        margin-left: 12px;
-        font-size: 14px;
-        font-family: OpenSansRoman-Regular;
-        font-weight: bold;
-        color: #ffffff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-      }
-
-      .join-end {
-        opacity: 0.5;
-      }
     }
+  }
+
+  .join {
+    width: 56px;
+    height: 32px;
+    background: #222222;
+    border-radius: 18px;
+    margin-left: 12px;
+    font-size: 14px;
+    font-family: OpenSansRoman-Regular;
+    font-weight: bold;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .join-end {
+    opacity: 0.5;
   }
 }
 
 .dark-theme {
-  .ecosystem-dapp-com {
-    .text {
-      color: #f5f5f5;
+  .ecosystem-dapp {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgb(71, 74, 111);
+
+    .top {
+      .top-right {
+        .card-title {
+          color: rgba(255, 255, 255, 0.6);
+        }
+      }
     }
 
-    .content {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background-color: rgb(71, 74, 111);
+    .label {
+      color: rgba(255, 255, 255, 0.8);
+    }
 
-      .top {
-        .top-right {
-          .label {
+    .bottom {
+      .progress-group {
+        .holders {
+          .ratio {
             color: rgba(255, 255, 255, 0.8);
           }
-          .text {
+          .total {
             color: rgba(255, 255, 255, 0.6);
-          }
-        }
-      }
-
-      .bottom {
-        .progress-group {
-          .holders {
-            .total {
-              color: rgba(255, 255, 255, 0.6);
-              .amount {
-                color: #dddddd;
-              }
-            }
-          }
-
-          .progress-box {
-            .default-bg {
-              background-color: #df2e2e;
+            .amount {
+              color: #dddddd;
             }
           }
         }
-        .join {
-          background-color: #df2e2e;
+
+        .progress-box {
+          .default-bg {
+            background-color: #df2e2e;
+          }
         }
       }
     }
+  }
+  .join {
+    background-color: #df2e2e;
   }
 }
 </style>

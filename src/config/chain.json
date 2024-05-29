@@ -1898,7 +1898,13 @@
         "service": {
           "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [],
+        "tokens": [{
+            "name": "Ethereum Token",
+            "coinKey": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0xef63d4e178b3180beec9b0e143e0f37f4c93f4c2"
+          }],
         "internalId": "59",
         "nativeCurrency": {
           "name": "BTC",
