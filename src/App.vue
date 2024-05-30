@@ -10,21 +10,21 @@
   >
     <div class="app-content">
       <keep-alive>
-        <TopNav />
+        <TopNav v-if="$route.path !== '/prizes'" />
       </keep-alive>
-      <div class="main">
+      <div class="main" :style="`padding-top: ${$route.path === '/prizes' ? '0px' : '24px'}`">
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" class="router" />
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
       <keep-alive>
-        <BottomNav v-if="$route.path !== '/home'" />
+        <BottomNav v-if="$route.path !== '/home' && $route.path !== '/prizes'" />
       </keep-alive>
     </div>
     <!-- <HeaderDialog /> -->
     <HeaderActDialog
-      v-if="$route.path !== '/statistics' && $route.path !== '/home'"
+      v-if="$route.path !== '/statistics' && $route.path !== '/home' && $route.path !== '/prizes'" 
       style="z-index: 999"
     />
     <HeaderWalletGroup />
@@ -130,7 +130,13 @@ export default {
       return actDialogVisible.value
     },
     styles () {
+      if(this.$route.path === '/prizes') {
+          return {
+            background: 'rgb(0, 0, 0)'
+          }
+        }
       if (!this.isMobile) {
+        
         if (this.isLightMode) {
           return {
             'background-position': 'left bottom, left top',
@@ -416,6 +422,8 @@ export default {
 .app {
   .app-content {
     .main {
+      width: 100%;
+      height: 100%;
       padding-top: 24px;
     }
   }
