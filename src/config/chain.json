@@ -2189,12 +2189,19 @@
     "service": {
       "rpc": "EVMRpcScanningV6Service"
     },
-    "tokens": [{
-        "name": "ETH",
-        "coinKey": "ETH",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x0000000000000000000000000000000000000000"
+    "tokens": [ {
+        "name": "USDC",
+        "coinKey": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0xb62f35b9546a908d11c5803ecbba735abc3e3eae"
+      },
+      {
+        "name": "USDT",
+        "coinKey": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x05d032ac25d322df992303dca074ee7392c117b9"
       }],
     "internalId": "66",
     "nativeCurrency": {
