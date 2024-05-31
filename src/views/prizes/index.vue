@@ -49,6 +49,7 @@ export default {
     width: 100%;
     max-width: 1080px;
     height: 100%;
+    overflow: hidden;
   }
   .bg1 {
     position: absolute;

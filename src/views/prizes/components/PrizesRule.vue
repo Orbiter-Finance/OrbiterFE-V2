@@ -61,7 +61,7 @@ export default {
 <style scoped lang="scss">
 .prizes-rule {
   width: 100%;
-  margin-top: 64px;
+  margin: 64px 0 200px;
   .rule-title {
     width: 100%;
     font-size: 32px;
