@@ -10,7 +10,7 @@
   >
     <div class="app-content">
       <keep-alive>
-        <TopNav v-if="$route.path !== '/prizes'" />
+        <TopNav/>
       </keep-alive>
       <div class="main" :style="`padding-top: ${$route.path === '/prizes' ? '0px' : '24px'}`">
         <keep-alive>
@@ -24,7 +24,7 @@
     </div>
     <!-- <HeaderDialog /> -->
     <HeaderActDialog
-      v-if="$route.path !== '/statistics' && $route.path !== '/home' && $route.path !== '/prizes'" 
+      v-if="$route.path !== '/statistics' && $route.path !== '/home'" 
       style="z-index: 999"
     />
     <HeaderWalletGroup />

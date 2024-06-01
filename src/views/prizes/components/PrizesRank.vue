@@ -35,13 +35,13 @@
       </div>
       <div
         class="rank-list-item rank-list-card-item"
-        v-for="(item, index) in new Array(10).fill(1)"
+        v-for="(item, index) in rankData"
         :key="index"
       >
-        <div class="ranking">Rank</div>
-        <div class="user-address">0x024a...49ac41</div>
-        <div class="cumulative-tx">320 tx</div>
-        <div class="emit-reward">+$ 1,500 USDC</div>
+        <div class="ranking">{{ item.rank }}</div>
+        <div class="user-address">{{ shortAddress(item.address) }}</div>
+        <div class="cumulative-tx">{{ decimalNumC(item.count, 0, ",") }} tx</div>
+        <div class="emit-reward">+$ {{ decimalNumC(item.reward, 2, ",") }} USDC</div>
       </div>
       <div class="pagination-group">
         <el-pagination
@@ -49,7 +49,7 @@
           class="rank-pagination"
           layout="prev, pager, next"
           :current-page="1"
-          :total="100"
+          :total="len"
         >
         </el-pagination>
       </div>
@@ -58,39 +58,71 @@
 </template>
 
 <script>
+import { decimalNum } from '../../../util/decimalNum'
+
 export default {
   name: 'PrizesRank',
+  props: {
+    rankList: Array
+  },
+
   data() {
     return {
-      rankTopData: [
+      current: 1,
+    }
+  },
+  computed: {
+    rankTopData(){
+      const [first, next, last] = this.rankList?.slice(0, 3) || []
+      return [
         {
-          tx: '120',
-          address: '0x024a...49ac41',
-          reward: '$900 USDC',
+          tx: this.decimalNumC(next?.count, 0, ","),
+          address: this.shortAddress(next?.address),
+          reward: Number(next?.reward) ?  `${this.decimalNumC(next?.reward, 2, ",")} USDC`: "--",
           rank: '2',
           bg: 'linear-gradient(180.00deg, rgb(211, 253, 255),rgb(157, 211, 211))',
         },
         {
-          tx: '320',
-          address: '0x024a...49ac41',
-          reward: '$1500 USDC',
+          tx: this.decimalNumC(first?.count, 0, ","),
+          address: this.shortAddress(first?.address),
+          reward: Number(first?.reward) ?  `${this.decimalNumC(first?.reward, 2, ",")} USDC`: "--",
           rank: '1',
           bg: 'linear-gradient(180.00deg, rgb(255, 212, 151),rgb(255, 166, 41))',
         },
         {
-          tx: '83',
-          address: '0x024a...49ac41',
-          reward: '$600 USDC',
+          tx: this.decimalNumC(last?.count, 0, ","),
+          address: this.shortAddress(last?.address),
+          reward: Number(last?.reward) ?  `${this.decimalNumC(last?.reward, 2, ",")} USDC`: "--",
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
         },
-      ],
+      ]
+    },
+    len() {
+      return this.rankList?.length || 0
+    },
+    rankData() {
+      let idx = this.current 
+      idx = idx > 0 ? idx -1 : 0
+      const len = idx * 10
+      return this.rankList.slice(len, len +10)
     }
   },
   methods: {
     curChange(cur) {
-      console.log('cur', cur)
+      this.current = cur
     },
+    decimalNumC(num, decimal, delimiter, symbol) {
+      return decimalNum(num, decimal, delimiter, symbol)
+    },
+    shortAddress(address, splitN = 6) {
+      if(address?.length >= (splitN * 2)) {
+        const first = address.slice(0, splitN) 
+        const last = address.slice(address?.length -splitN) 
+        return first + "..." + last
+      }
+      return ""
+    }
   },
 }
 </script>

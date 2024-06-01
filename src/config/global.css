@@ -201,6 +201,8 @@ input {
   -ms-user-select: none;
   /*IE10*/
   user-select: none;
+  padding: 0;
+  margin: 0;
 }
 
 input {
@@ -279,4 +281,10 @@ p {
 
 .orbiter_global_prizes_tx-color {
   color: #FFBA56;
+}
+
+
+*::-webkit-scrollbar {
+  /* width: 0; */
+  display: none;
 }

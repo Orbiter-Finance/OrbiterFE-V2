@@ -9,7 +9,7 @@
           <img :src="require('../../../assets/prizes/' + item.img)" />
         </div>
         <div class="prizes-ratio-item-group" :style="`color: ${item.color};`">
-          <div class="text">{{ item.text }}</div>
+          <div class="text">{{ item.ratio }}</div>
         </div>
         <div class="prizes-ratio-item-group">
           <div class="des">{{ item.des }}</div>
@@ -21,7 +21,7 @@
         <div>My progress</div>
         <div class="rank-reward">
           <span>Estimated earnings: </span>
-          <span class="reward-amount">519.5 USDC</span>
+          <span class="reward-amount">{{ rewardAmount }} USDC</span>
         </div>
       </div>
       <div class="description">
@@ -31,7 +31,7 @@
         </div>
         <div class="current-rank">
           <span>Current rank: </span>
-          <span class="current-ranking">19</span>
+          <span class="current-ranking">{{ userRanking }}</span>
         </div>
       </div>
 
@@ -41,7 +41,9 @@
             class="progress-ratio-group-item"
             v-for="item in progressStage"
             :key="item.position"
-            :style="`left: ${(item.position / 20) * 100}%;`"
+            :style="`left: ${(item.position / 20) * 100}%;color:${
+              tipsLabel === item.ratio ? '#FFBA56' : 'rgba(255, 255, 255, 0.6)'
+            };`"
           >
             {{ item.ratio }}
           </div>
@@ -49,7 +51,7 @@
         <div class="pogress-box">
           <div
             class="progress-bar"
-            :style="`width: ${(currentStage / 20) * 100}%;`"
+            :style="`width: ${ratio}%;`"
           ></div>
           <div
             class="progress-stage"
@@ -58,16 +60,16 @@
             :style="`left: ${(item.position / 20) * 100}%;visibility:${
               item.position ? 'visable' : 'hidden'
             };background-color:${
-              currentStage > item.value ? '#FFBA56' : '#222222'
+              txAmount >= item.value ? '#FFBA56' : '#222222'
             };`"
           ></div>
           <div
             class="progress-tx-current-stage"
-            :style="`left: ${(currentStage / 20) * 100}%;visibility:${
-              currentStage ? 'visable' : 'hidden'
+            :style="`left: ${ratio}%;visibility:${
+              !isHiddenTips ? 'visable' : 'hidden'
             };`"
           >
-            <div>15%</div>
+            <div>{{ tipsLabel }}</div>
             <div class="progress-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -168,6 +170,8 @@
 
 <script>
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
+import { decimalNum } from '../../../util/decimalNum'
+
 const ratio10 = '#DBEF2D'
 const ratio15 = '#FF29DA'
 const ratio20 = '#A862EA'
@@ -175,44 +179,106 @@ const ratio25 = '#00EEEE'
 const ratio30 = '#FFA629'
 export default {
   name: 'PrizesAllocation',
+  props: {
+    rank: Number,
+    tx: Number,
+    reward: String,
+    top100Tx: Number
+  },
   components: {
     PrizesTaskSuccessIcon,
   },
-  data() {
-    return {
-      ratioList: [
+  computed: {
+    progressStage() {
+      return  [
+        {
+          position: 0,
+          label: '0',
+          ratio: '0',
+          value: 0,
+        },
         {
           img: 'tx3.png',
-          text: '10%',
           color: ratio10,
           des: 'Cumulative ≥3 tx',
+          position: 3,
+          label: '3',
+          ratio: '10%',
+          value: 3,
         },
         {
           img: 'tx5.png',
-          text: '15%',
           color: ratio15,
           des: 'Cumulative ≥5 tx',
+          position: 5,
+          label: '5',
+          ratio: '15%',
+          value: 5,
         },
         {
           img: 'tx8.png',
-          text: '20%',
           color: ratio20,
           des: 'Cumulative ≥8 tx',
+          position: 8,
+          label: '8',
+          ratio: '20%',
+          value: 8,
         },
         {
           img: 'tx15.png',
-          text: '25%',
           color: ratio25,
           des: 'Cumulative ≥15 tx',
+          position: 15,
+          label: '15',
+          ratio: '25%',
+          value: 15,
         },
         {
           img: 'top100.png',
-          text: '30%',
           color: ratio30,
           des: 'Top 100 users',
+          position: 20,
+          label: 'Top 100',
+          ratio: '30%',
+          value: this.top100Tx || 0,
         },
-      ],
-      taskOptionsList: [
+      ]
+    },
+    ratioList() {
+      return this.progressStage.slice(1)
+    },
+    userRanking() {
+      return this.rank
+    },
+    rewardAmount() {
+      return this.decimalNumC(this.reward, 2, ",")
+    },
+    isHiddenTips() {
+      return this.progressStage.some((item)=> item.value === this.txAmount)
+    },
+    tipsLabel() {
+      const list = this.progressStage.filter((item)=> item.value <= this.txAmount) || []
+      const option = list[list?.length -1] || {}
+      return option?.ratio || "--"
+    },
+    txAmount() {
+      return this.tx
+    },
+    ratio() {
+      const stage = this.txAmount
+      const tx100 = this.top100Tx >= 20 ? this.top100Tx : 20
+      let base = 75
+      let progressRation = 0
+      if(stage >= 15) {
+        const rest = Math.floor((stage - 15) * 100 / (tx100 - 15) / 5)
+        progressRation = base + rest
+      }
+      return progressRation >= 100 ? 100 : progressRation
+    },
+    taskOptionsList() {
+      const txN = this.txAmount
+
+      return [
         {
           icon: 'x',
           text: `Quote the Tweet and mention 3 friends`,
@@ -222,89 +288,69 @@ export default {
           icon: 'bridge',
           text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> from any network to Arbitrum`,
           reward: '+5',
-          isSuccess: true,
+          isSuccess: txN >= 1,
         },
         {
           icon: 'bridge',
           text: `Bridge <span class="orbiter_global_prizes_tx-color">2 TX</span> from any network to Arbitrum`,
           reward: '+12',
+          isSuccess: true,
+          isSuccess: txN >= 2,
         },
-      ],
-      taskPoolList: [
+      ]
+    },
+    taskPoolList() {
+      const txN = this.txAmount
+      const rankN = this.rank
+      return [
         {
           icon: 'bridge',
           text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span> from any network to Arbitrum`,
           reward: '10% Prize Pool',
           color: ratio10,
-          isPromotion: true,
+          isSuccess: txN >= 3,
+          isPromotion: txN >=5,
         },
         {
           icon: 'bridge',
           text: `Bridge <span class="orbiter_global_prizes_tx-color">5 TX</span> from any network to Arbitrum`,
           reward: '15% Prize Pool',
-          isSuccess: true,
           color: ratio15,
+          isSuccess: txN >= 5,
+          isPromotion: txN >=8,
         },
         {
           icon: 'bridge',
           text: `Bridge <span class="orbiter_global_prizes_tx-color">8 TX</span> from any network to Arbitrum`,
           reward: '20% Prize Pool',
           color: ratio20,
+          isSuccess: txN >= 8,
+          isPromotion: txN >=15,
         },
         {
           icon: 'bridge',
           text: `Bridge <span class="orbiter_global_prizes_tx-color">15 TX</span> from any network to Arbitrum`,
           reward: '25% Prize Pool',
           color: ratio25,
+          isSuccess: txN >= 15,
+          isPromotion: Number(rankN) && (Number(rankN) <= 100),
         },
         {
           icon: 'bridge',
           text: `Bridge from any network to Arbitrum's <span class="orbiter_global_prizes_tx-color">Top 100</span>`,
           reward: '30% Prize Pool',
           color: ratio30,
+          isSuccess: Number(rankN) && (Number(rankN) <= 100),
+
         },
-      ],
-      progressStage: [
-        {
-          position: 0,
-          label: '0',
-          ratio: '0',
-          value: 0,
-        },
-        {
-          position: 3,
-          label: '3',
-          ratio: '10%',
-          value: 3,
-        },
-        {
-          position: 5,
-          label: '5',
-          ratio: '15%',
-          value: 5,
-        },
-        {
-          position: 8,
-          label: '8',
-          ratio: '20%',
-          value: 8,
-        },
-        {
-          position: 15,
-          label: '15',
-          ratio: '25%',
-          value: 15,
-        },
-        {
-          position: 20,
-          label: 'Top 100',
-          ratio: '30%',
-          value: 20,
-        },
-      ],
-      currentStage: 6,
+      ]
     }
   },
+  methods: {
+    decimalNumC(num, decimal, delimiter, symbol) {
+      return decimalNum(num, decimal, delimiter, symbol)
+    }
+  }
 }
 </script>
 

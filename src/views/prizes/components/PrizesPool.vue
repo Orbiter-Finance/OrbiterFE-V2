@@ -3,11 +3,11 @@
     <div class="pool-total">
       <div class="pool">
         <div>Prize pool (USDC)</div>
-        <div class="pool-total-amount">$100,000</div>
+        <div class="pool-total-amount">{{ totalPool }}</div>
       </div>
       <div class="participants">
         <div>Participants</div>
-        <div class="participants-total-amount">$100,000</div>
+        <div class="participants-total-amount">{{ totalAddress }}</div>
       </div>
     </div>
     <div class="progress-group">
@@ -24,8 +24,8 @@
         </div>
 
         <div class="progress-content">
-          <div class="progress-tips">
-            <div class="pool-text">$25,000</div>
+          <div class="progress-tips" :style="`padding-left: calc(${ratio}% - 4px);`">
+            <div class="pool-text" >{{ totalPool }}</div>
             <div class="progress-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -51,9 +51,9 @@
               v-for="(item,index) in new Array(9).fill(0)"
               :key="index"
             ></div>
-            <div class="progress"></div>
+            <div class="progress" :style="`width: ${ratio}%;`"></div>
           </div>
-          <div class="progress-tips">
+          <div class="progress-tips" :style="`padding-left: calc(${ratio}% - 4px);`">
             <div class="progress-icon">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -71,7 +71,7 @@
                 />
               </svg>
             </div>
-            <div class="participants-text">3,941</div>
+            <div class="participants-text">{{ totalAddress }}</div>
           </div>
         </div>
 
@@ -95,11 +95,17 @@
 </template>
 
 <script>
+import { decimalNum } from '../../../util/decimalNum'
+
 export default {
   name: 'PrizesPool',
+  props: {
+    addressCount: String,
+    totalRewards: String,
+  },
+
   data() {
     return {
-      ratio: '50',
       poolAmount: [
         '25,000',
         '35,000',
@@ -122,6 +128,31 @@ export default {
       ],
     }
   },
+  computed: {
+    totalAddress() {
+      return this.decimalNumC(this.addressCount, 0, ",")
+    },
+    totalPool() {
+      return this.decimalNumC(this.totalRewards, 0, ",", "$")
+    },
+    ratio() {
+      let ratioAmount = "0"
+      if(Number(this.totalRewards) >= 25000) {
+        const otherAmount = this.decimalNumC(Number(this.totalRewards) - 25000, 2)
+        const otherRatio = this.decimalNumC((otherAmount / 10000) * (100 / 9))
+        ratioAmount =  this.decimalNumC(Number(otherRatio) + (100 / 9), 2)
+      } else {
+        ratioAmount =  this.decimalNumC(100/ 9, 2)
+      }
+
+      return Number(ratioAmount) > 100 ? '100' : ratioAmount
+    }
+  },
+  methods: {
+    decimalNumC(num, decimal, delimiter, symbol) {
+      return decimalNum(num, decimal, delimiter, symbol)
+    }
+  }
 }
 </script>
 
@@ -237,7 +268,6 @@ export default {
             position: absolute;
             top: 0;
             left: 0;
-            width: 50%;
             height: 30px;
             background: linear-gradient(
               90deg,
@@ -249,7 +279,6 @@ export default {
         }
 
         .progress-tips {
-          padding-left: calc(50% - 4px);
           width: 120px;
           font-size: 14px;
           font-weight: 600;
