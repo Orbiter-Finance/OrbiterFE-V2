@@ -10,6 +10,7 @@ import {
   WALLETCONNECT,
   COIN98_APP,
   TRUSTWALLET_APP,
+  SAFEPAL,
 } from '../constants'
 import { isBraveWallet } from '../utils'
 
@@ -28,6 +29,11 @@ const standardMobileAppConf = [
     chainIdTransfer: defaultChainIdTransfer,
   },
   {
+    walletType: SAFEPAL,
+    walletIsInstalledInvestigator: (provider) => provider.isSafePal,
+    chainIdTransfer: defaultChainIdTransfer,
+  },
+  {
     walletType: LOOPRING_APP,
     walletIsInstalledInvestigator: (provider) => provider.isLoopring,
     chainIdTransfer: defaultChainIdTransfer,
@@ -40,7 +46,7 @@ const standardMobileAppConf = [
   {
     walletType: METAMASK_APP,
     walletIsInstalledInvestigator: (provider) =>
-      provider.isMetaMask && !provider.isTokenPocket,
+      provider.isMetaMask && !provider?.isTokenPocket,
     shouldAddChainCode: -32603,
     chainIdTransfer: defaultChainIdTransfer,
     chainIdTransferOnInitProcess: true,
@@ -52,7 +58,7 @@ const standardMobileAppConf = [
   },
   {
     walletType: TOKEN_POCKET_APP,
-    walletIsInstalledInvestigator: (provider) => provider.isTokenPocket,
+    walletIsInstalledInvestigator: (provider) => provider?.isTokenPocket,
     chainIdTransfer: defaultChainIdTransfer,
   },
   {

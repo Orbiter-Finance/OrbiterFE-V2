@@ -21,6 +21,7 @@
           :iconName="navIcons.logo"
         />
         <HeaderLinks
+          v-if="$route.path !== '/prizes'" 
           style="margin-top: 24px; margin-left: 134px; min-width: 280px"
         />
       </div>
@@ -34,6 +35,7 @@
         :icon="navIcons.logo"
       />
       <div
+      v-if="$route.path !== '/prizes'"
         style="
           flex: 1;
           display: flex;
@@ -64,7 +66,7 @@
         </div>
       </div>
       <div
-        v-if="isMobile"
+        v-if="isMobile && $route.path !== '/prizes'"
         :class="addPointVisible ? 'shake-top' : ''"
         :style="`z-index:999;width: 200px;display: flex;position: absolute;top: 60px;right:40px;opacity: ${
           addPointVisible ? 1 : 0
@@ -97,10 +99,12 @@
           v-else-if="$route.path !== '/home' && $route.path !== '/statistics'"
           @click="connectAWallet"
           class="wallet-status wallet-address"
+          :style="`margin-right:${$route.path !== '/prizes' ? '12px' : '0'}`"
         >
           {{ showAddress }}
         </div>
         <div
+          v-if="$route.path !== '/prizes'"
           @click="() => (drawerVisible = true)"
           class="center menu-outline"
           style="width: 44px; height: 44px; border-radius: 8px"
@@ -270,7 +274,8 @@ export default {
     },
     toHome () {
       setPageSenderTab()
-      this.$route.path !== '/home' && this.$router.push({ path: '/home' })
+      // this.$route.path !== '/home' && this.$router.push({ path: '/home' })
+      this.$router.push({ path: '/' })
     },
     toggleTab (tab) {
       setPageTab(tab)

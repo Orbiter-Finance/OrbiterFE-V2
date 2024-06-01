@@ -135,7 +135,7 @@ import {
 import Middle from '../../util/middle/middle'
 import util from '../../util/util'
 import { isBraveBrowser } from '../../util/browserUtils'
-import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, COIN98_APP, WALLETCONNECT } from '../../util/walletsDispatchers';
+import walletDispatchers, { METAMASK, TOKEN_POCKET_APP, COIN98_APP, WALLETCONNECT, SAFEPAL } from '../../util/walletsDispatchers';
 import { onCopySuccess, onCopyError, isMobileDevice, isBrowserApp } from '../../util';
 import { Notification } from 'element-ui'
 import { disConnectStarkNetWallet } from "../../util/constants/starknet/helper";
@@ -231,6 +231,11 @@ export default {
                     isConnect: false,
                     icon: 'coin98',
                     title: COIN98_APP,
+                },
+                {
+                    isConnect: false,
+                    icon: 'safepal',
+                    title: SAFEPAL,
                 }
             ]
             // the brave wallet is exclusive to the brave browser

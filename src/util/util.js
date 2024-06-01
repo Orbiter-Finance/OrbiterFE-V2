@@ -43,6 +43,16 @@ export default {
     }
   },
 
+  async getTonBalance(chainId, address, tokenAddress) {
+    const res = await requestOpenApi(RequestMethod.getBalance, [
+      chainId,
+      address,
+      tokenAddress,
+    ])
+
+    return res || '0'
+  },
+
   getAccountAddressError(address, isStarknet) {
     if (isStarknet) {
       try {
@@ -131,10 +141,11 @@ export default {
     var result = Y + M + D + h + m + s
     return result
   },
-  shortAddress(address) {
+  shortAddress(address, dec) {
+    const i = dec || 4
     if (address && address.length > 5) {
-      var subStr1 = address.substr(0, 4)
-      var subStr2 = address.substr(address.length - 4, 4)
+      var subStr1 = address.substr(0, i)
+      var subStr2 = address.substr(address.length - i, i)
       return subStr1 + '...' + subStr2
     }
     return ''
@@ -397,7 +408,8 @@ export default {
       .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
       .dividedBy(new BigNumber(1000))
     const gasFee_fix = gasFee.decimalPlaces(
-      selectMakerConfig.fromChain.decimals === 8
+      selectMakerConfig.fromChain.decimals === 8 ||
+        selectMakerConfig.toChain.decimals === 8
         ? 6
         : selectMakerConfig.fromChain.decimals === 18
         ? 5

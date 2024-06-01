@@ -2,6 +2,8 @@ import { TonConnectUI } from '@tonconnect/ui'
 import TonWeb from 'tonweb'
 import { store } from '../../store'
 import { isProd } from '../env'
+import { CHAIN_ID } from '../../config'
+import util from '../util'
 
 let tonConnect
 
@@ -84,8 +86,9 @@ const tonConnectCall = async () => {
   if (tonConnect) {
     return tonConnect
   }
+  const url = new URL(window.location.href)
   const tonConnectUI = new TonConnectUI({
-    manifestUrl: 'https://<YOUR_APP_URL>/tonconnect-manifest.json',
+    manifestUrl: url.origin + '/tonconnect-manifest.json',
     buttonRootId: 'ton-connect-wallet',
   })
 
@@ -132,10 +135,12 @@ const readWalletName = () => {
 }
 
 const tonwebProvider = () => {
+  const chainId = isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  const rpc = chainInfo?.api?.url
   return new TonWeb(
-    new TonWeb.HttpProvider('https://testnet.toncenter.com/api/v2/jsonRPC', {
-      apiKey:
-        'd843619b379084d133f061606beecbf72ae2bf60e0622e808f2a3f631673599b',
+    new TonWeb.HttpProvider(rpc, {
+      apiKey: process.env.VUE_APP_TON_API_KEY,
     })
   )
 }

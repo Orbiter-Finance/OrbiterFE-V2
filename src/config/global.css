@@ -201,6 +201,8 @@ input {
   -ms-user-select: none;
   /*IE10*/
   user-select: none;
+  padding: 0;
+  margin: 0;
 }
 
 input {
@@ -261,4 +263,28 @@ p {
 /* global tips style */
 .orbiter_global_o_points_title {
   color: #DF2E2E;
+}
+
+.orbiter_global_ecosystem_dapp_condition_pink {
+  white-space: nowrap;
+  font-weight: 700;
+  color: #f81e96;
+  font-family: OpenSansRoman-SemiBold;
+}
+
+.orbiter_global_ecosystem_dapp_condition_astra {
+  white-space: nowrap;
+  font-weight: 700;
+  color: #B3C700;
+  font-family: OpenSansRoman-SemiBold;
+}
+
+.orbiter_global_prizes_tx-color {
+  color: #FFBA56;
+}
+
+
+*::-webkit-scrollbar {
+  /* width: 0; */
+  display: none;
 }

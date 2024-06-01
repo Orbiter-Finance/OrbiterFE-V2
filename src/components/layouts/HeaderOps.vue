@@ -19,7 +19,7 @@
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
-      <span @click="openAct" class="ops-item" style="position: relative">
+      <span @click="openAct" class="ops-item" style="position: relative" v-if="$route.path !== '/prizes'">
         <img
           :hidden="!isLightMode"
           style="margin: -3px 0 0 0; width: 24px"
@@ -53,9 +53,9 @@
           />
         </div>
       </span>
-      <span @click="showHistory" class="ops-item">History</span>
+      <span @click="showHistory" class="ops-item" v-if="$route.path !== '/prizes'">History</span>
       <div
-        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
+        v-if="(isSelectedStarkNet || isSelectedSolana || isSelectedTon) && $route.path !== '/prizes'"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -70,6 +70,20 @@
         }}</span>
       </div>
       <div
+        v-if="$route.path === '/prizes'"
+        ref="connectedBtn"
+        @click="prizesConnectAWallet"
+        class="ops-item center prizes-wallet"
+        style="display: inline-flex"
+      >
+        <svg-icon
+          style="width: 2rem; height: 2rem"
+          :iconName="connectPrizesWalletIcon"
+        ></svg-icon>
+        <span class="address">{{ showAddress }}</span>
+      </div>
+      <div
+        v-else
         ref="connectedBtn"
         @click="connectAWallet"
         class="ops-item center"
@@ -82,7 +96,7 @@
         <span class="address">{{ connectFirstAddress }}</span>
       </div>
     </template>
-    <div @click="toggleThemeMode" class="ops-mode">
+    <div @click="toggleThemeMode" class="ops-mode" v-if="$route.path !== '/prizes'">
       <SvgIconThemed class="mode-icon" icon="mode" />
     </div>
   </div>
@@ -164,7 +178,7 @@ export default {
       return compatibleGlobalWalletConf.value
     },
     isLogin () {
-      return walletIsLogin.value
+      return walletIsLogin.value || this.isSelectedStarkNet || this.isSelectedSolana || this.isSelectedTon
     },
     isSelectedStarkNet () {
       const { toChainID, fromChainID } = transferDataState
@@ -246,6 +260,10 @@ export default {
         icon: CHAIN_ID.starknet
       }]
     },
+    connectPrizesWalletIcon() {
+      return (this.globalSelectWalletConf.walletType ?
+            this.globalSelectWalletConf.walletType.toLowerCase() : "")
+    },
     connectFirstWalletIcon(){
       const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
       const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0]
@@ -308,6 +326,19 @@ export default {
       } else {
         await option.connect()
       }      
+    },
+    async prizesConnectAWallet() {
+      const address = this.showAddress
+      if(address && address !== 'Connect Wallet' && address !== 'not connected') {
+          setTonDialog(false)
+          setSolanaDialog(false)
+          setStarkNetDialog(false)
+          setActDialogVisible(true)
+      } else {
+        setConnectWalletGroupKey("EVM")
+        setSelectWalletDialogVisible(true)
+      }
+
     },
     async connectAWallet () {
       const evm = {

@@ -38,7 +38,8 @@ export const setActPoint = (pointData) => {
   actTotalPoint.value = pointData.total
   actBasePoint.value = pointData.basePoints
   actTotalActivityPoint.value = pointData.totalActivityPoints
-  actEcosystemPoints.value = pointData.ecosystemPoints || '0'
+  actEcosystemPoints.value =
+    Number(pointData?.ecosystemPoints) + Number(pointData?.dappPoints) || '0'
 }
 export const setActNftList = (nftList) => {
   actNftList.value = nftList

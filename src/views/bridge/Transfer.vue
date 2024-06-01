@@ -33,7 +33,9 @@
             transferDataState.fromChainID === CHAIN_ID.starknet ||
             transferDataState.fromChainID === CHAIN_ID.starknet_test ||
             transferDataState.fromChainID === CHAIN_ID.solana ||
-            transferDataState.fromChainID === CHAIN_ID.solana_test 
+            transferDataState.fromChainID === CHAIN_ID.solana_test ||
+            transferDataState.fromChainID === CHAIN_ID.ton ||
+            transferDataState.fromChainID === CHAIN_ID.ton_test  
           "
           >
             <template v-slot:titleDesc>
@@ -107,7 +109,9 @@
             transferDataState.toChainID == CHAIN_ID.starknet ||
             transferDataState.toChainID == CHAIN_ID.starknet_test ||
             transferDataState.fromChainID === CHAIN_ID.solana ||
-            transferDataState.fromChainID === CHAIN_ID.solana_test 
+            transferDataState.fromChainID === CHAIN_ID.solana_test ||
+            transferDataState.fromChainID === CHAIN_ID.ton ||
+            transferDataState.fromChainID === CHAIN_ID.ton_test  
           "
           >
             <template v-slot:titleDesc>
@@ -116,7 +120,7 @@
             <div class="left">To</div>
           </o-tooltip>
           <div v-else class="left">To</div>
-          <div v-if="isLogin" class="right">
+          <!-- <div v-if="isLogin" class="right">
             Balance:
             <CommLoading
                     :hidden="!toBalanceLoading"
@@ -125,7 +129,7 @@
                     height="1.2rem"
             />
             <span :hidden="toBalanceLoading">{{ toBalance }}</span>
-          </div>
+          </div> -->
         </div>
         <div class="bottomItem">
           <div class="left" @click="changeToChain">
@@ -152,6 +156,7 @@
               <HelpIcon style="margin-left: 0.5rem" size="sm" />
             </o-tooltip>
             <div class="right-value">{{ toValue }}</div>
+            <span v-show="remark" class="remark">{{ remark }}</span>
           </div>
         </div>
       </div>
@@ -177,7 +182,7 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)  || (targetChainId === CHAIN_ID.ton || targetChainId === CHAIN_ID.ton_test)">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
@@ -321,6 +326,7 @@
       <CommDialog ref="SelectFromChainPopupRef">
         <div slot="PoperContent" style="width: 100%">
           <ObSelectChain
+                  ref="selectFromChainRef"
                   :ChainData="fromChainIdList"
                   v-on:getChainInfo="getFromChainInfo"
                   v-on:closeSelect="closeFromChainPopupClick()"
@@ -449,7 +455,8 @@ import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcB
 import { ethers } from 'ethers'
 
 import solanaHelper from "../../util/solana/solana_helper"
-import { decimalNum } from '../../util/decimalNum'
+import { decimalNumTh } from '../../util/decimalNum'
+import tonHelper from "../../util/ton/ton_helper"
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -508,6 +515,7 @@ export default {
       saveTimeLoading: false,
 
       boxLoading: false,
+      isClickMax: false,
 
       // balanceMap: {},
       originGasCost: 0,
@@ -539,10 +547,25 @@ export default {
       formWith: 0,
 
       cronList: [],
-      banList: []
+      banList: [],
+      remarkText: {
+        "167000": "Every 6TXs can grab $PINK"
+      }
     };
   },
   computed: {
+    isMobileSize() {
+      return isMobile.value
+    },
+    remark () {
+      if(this.toValue?.gt && this.toValue?.gt("0")) {
+        return ""
+      }
+      return this.remarkText[String(transferDataState?.toChainID)]
+    },
+    selectFromTokenSymbol(){
+      return this.selectFromToken
+    },
     selectStarknet() {
       return util.isStarkNet();
     },
@@ -568,6 +591,9 @@ export default {
       if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
         return false;
       }
+      if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
+        return false;
+      }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
@@ -581,6 +607,9 @@ export default {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
+        return false;
+      }
+      if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -625,7 +654,7 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
+      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -829,7 +858,8 @@ export default {
     crossAddressReceipt: function (newValue) {
       updateCrossAddressReceipt(newValue);
     },
-    selectFromToken(newValue) {
+    selectFromTokenSymbol:function (newValue) {
+      this.$refs.selectFromChainRef.selectSymbol(newValue)
       if (transferDataState.fromCurrency !== newValue) {
         this.updateTransferInfo({ fromCurrency: newValue });
         this.clearTransferValue();
@@ -843,8 +873,6 @@ export default {
         this.isTipFromTokenAddress = false
         this.isTiptargetTokenAddress = false
       }
-
-
     },
     selectToToken: function (newValue) {
       if (transferDataState.toCurrency !== newValue) {
@@ -1427,12 +1455,17 @@ export default {
       const { selectMakerConfig, fromCurrency, toCurrency } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
-      await this.getMakerMaxBalance();
+      await this.getMakerMaxBalance().catch(error=> {
+          util.showMessage(
+              `getMakerMaxBalance fail ${error.message}`,
+              'error'
+          );
+      })
       this.updateToValue();
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
       // }
-      const availableDigit = fromChain.decimals === 8 ? 6 : fromChain.decimals === 18 ? 6 : 2;
+      const availableDigit = toChain.decimals === 8 || fromChain.decimals === 8 ? 6 : fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
@@ -1440,6 +1473,10 @@ export default {
       let userMax = useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN) > 0
               ? useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        useBalance = new BigNumber(this.fromBalance)
+        userMax = useBalance
+      }
       let makerMax = new BigNumber(fromChain.maxPrice);
       let makerMin = new BigNumber(this.userMinPrice);
       let transferValue = new BigNumber(this.transferValue || 0);
@@ -1459,7 +1496,7 @@ export default {
         if (transferValue.comparedTo(userMax) > 0) {
           info.text = 'INSUFFICIENT FUNDS';
           info.disabled = 'disabled';
-          util.log('transferValue > userMax', transferValue.toString(), userMax.toString());
+          util.log('transferValue > userMax', transferValue.toString(), useBalance, userMax.toString());
         } else if (transferValue.comparedTo(makerMax) > 0) {
           info.text = 'INSUFFICIENT LIQUIDITY';
           info.disabled = 'disabled';
@@ -1477,7 +1514,7 @@ export default {
           info.disabled = 'disabled';
           util.log('toValue > 0 && toValue > makerMaxBalance', this.toValue.toString(), new BigNumber(this.makerMaxBalance).toString());
         }
-
+        
         if (this.isShowUnreachMinInfo || this.isShowMax) {
           info.text = 'SEND';
           info.disabled = 'disabled';
@@ -1565,8 +1602,7 @@ export default {
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test) {
-        console.log("solana specialProcessing")
+      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test) {
         if (this.isCrossAddress) this.isCrossAddress = false;
         if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
@@ -1635,18 +1671,29 @@ export default {
 
       const chainInfo = util.getV3ChainInfoByChainId(fromChain.chainId)
 
+      let tradingFee = selectMakerConfig.tradingFee
+
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        avalibleDigit = 0
+        opBalance = 0
+        preGasDigit = 0
+        preGas = 0
+        tradingFee = 0
+      }
+
       if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
       [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
         preGas = 10 ** -preGasDigit;
       }
       let userBalance = new BigNumber(this.fromBalance)
-              .minus(new BigNumber(selectMakerConfig.tradingFee))
+              .minus(new BigNumber(tradingFee))
               .minus(new BigNumber(opBalance))
               .minus(new BigNumber(transferGasFee))
               .minus(new BigNumber(preGas));
       let userMax = userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
               ? userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
+
       let max = userMax.comparedTo(new BigNumber(fromChain.maxPrice)) > 0
               ? new BigNumber(fromChain.maxPrice)
               : userMax;
@@ -1659,7 +1706,15 @@ export default {
       ) {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
       }
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
+        max = userBalance
+        userMax = userBalance
+      }
       this.userMaxPrice = max.toString();
+      if(!this.queryParams.amount && this.isClickMax) {
+        this.transferValue = max.toString();
+        this.isClickMax = false
+      }
     },
     // addBalance(chainId, symbol, value, address) {
     //   const walletAddress = address || compatibleGlobalWalletConf.value.walletPayload.walletAddress;
@@ -1710,6 +1765,7 @@ export default {
       this.selectToToken = val;
     },
     fromMax() {
+      this.isClickMax = true
       if (!walletIsLogin.value) {
         this.transferValue = '0';
         return;
@@ -1750,6 +1806,7 @@ export default {
     // open selectChain
     showFromChainPopupClick() {
       this.$refs.SelectFromChainPopupRef.showCustom();
+      this.$refs.selectFromChainRef.show()
     },
     // close selectChain
     closeFromChainPopupClick(data) {
@@ -2010,11 +2067,19 @@ export default {
             );
             return;
           }
-        } else if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+        } else if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
           const isConnect = await solanaHelper.isConnect()
           if(!isConnect) {
             setSelectWalletDialogVisible(true)
             setConnectWalletGroupKey("SOLANA")
+            return
+          }
+          
+        } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+          const isConnected = await tonHelper.isConnected()
+          const account = await tonHelper.account()
+          if(!isConnected || !account) {
+            await tonHelper.connect()
             return
           }
           
@@ -2056,7 +2121,9 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase());
+        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
+          toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase())
+        );
         // sendTransfer
         const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
         const contractGroup = chainInfo?.contract || {}
@@ -2071,8 +2138,6 @@ export default {
 
         const toContractGroup = toChainInfo?.contract || {}
 
-        console.log("toContractGroup", toContractGroup)
-
         const toContractList = Object.keys(toContractGroup).map((key)=> {
           return ({
               name: toContractGroup[key],
@@ -2084,17 +2149,17 @@ export default {
         this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
           {
             no: 1,
-            from: decimalNum(new BigNumber(this.transferValue), 4) + fromCurrency,
+            from: util.shortAddress(new BigNumber(this.transferValue).toString(), 2) + " " + fromCurrency,
             to: util.shortAddress(contractFromAddress),
             fromTip: '',
-            toTip: toAddressAll,
+            toTip: contractFromAddress,
             icon: 'contract'
           },
           {
             no: 2,
             from: util.shortAddress(ContractToAddress) || senderShortAddress,
             to: util.shortAddress(walletAddress),
-            fromTip: senderAddress,
+            fromTip: ContractToAddress || senderAddress,
             toTip: walletAddress,
             icon: 'wallet'
           }
@@ -2239,7 +2304,7 @@ export default {
     },
     async refreshUserBalance() {
       this.fromBalanceLoading = true;
-      this.toBalanceLoading = true;
+      // this.toBalanceLoading = true;
       const self = this;
       const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
@@ -2250,6 +2315,9 @@ export default {
       }
       if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
         address = solanaHelper.solanaAddress();
+      }
+      if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        address = tonHelper.account();
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
@@ -2281,24 +2349,27 @@ export default {
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
         address = solanaHelper.solanaAddress();
       }
-      if (address && address !== '0x') {
-          await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
-                  .then((response) => {
-                    const balance = (response / 10 ** toChain.decimals).toFixed(6);
-                    self.toBalance = balance;
-                  })
-                  .catch((error) => {
-                    console.warn(error);
-                  }).finally(() => {
-                  self.toBalanceLoading = false;
-          });
-        // } else {
-        //   self.toBalance = toChainBalanceMap[toChain.symbol];
-        // }
-          self.toBalanceLoading = false;
-      } else {
-        self.toBalanceLoading = false;
+      if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        address = tonHelper.account();
       }
+      // if (address && address !== '0x') {
+      //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
+      //             .then((response) => {
+      //               const balance = (response / 10 ** toChain.decimals).toFixed(6);
+      //               self.toBalance = balance;
+      //             })
+      //             .catch((error) => {
+      //               console.warn(error);
+      //             }).finally(() => {
+      //             self.toBalanceLoading = false;
+      //     });
+      //   // } else {
+      //   //   self.toBalance = toChainBalanceMap[toChain.symbol];
+      //   // }
+      //     self.toBalanceLoading = false;
+      // } else {
+      //   self.toBalanceLoading = false;
+      // }
     },
   },
 };
@@ -2379,6 +2450,13 @@ export default {
         background-color: transparent;
         transition: all 0.2s ease 0s;
         flex-direction: row-reverse;
+
+        .remark {
+          color: rgba(51, 51, 51, 0.2);
+          font-size: 14px;
+          margin-right: 4px;
+          white-space: nowrap;
+        }
       }
       .right-value {
         font-weight: 700;
@@ -2656,5 +2734,14 @@ export default {
     }
   }
   
+}
+
+.dark-theme {
+  .remark {
+    color: rgba(255, 255, 255, 0.2) !important;
+    font-size: 14px;
+    margin-right: 4px;
+    white-space: nowrap;
+  }
 }
 </style>CHAIN_ID, CHAIN_ID, 

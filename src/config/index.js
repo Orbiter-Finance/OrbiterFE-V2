@@ -42,7 +42,7 @@ export const CHAIN_ID = {
   starknet_test: 'SN_SEPOLIA',
   solana: 'SOLANA_MAIN',
   solana_test: 'SOLANA_DEV',
-  ton: 'TON_MAIN',
+  ton: 'TON',
   ton_test: 'TON_TEST',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
@@ -68,10 +68,12 @@ const makerFiles = shuffleArray(
     ? [
         'eth-80c-prod.json',
         'eth-e4e-prod.json',
+        'eth-ee73-prod.json',
         '1c8-prod.json',
         'btc-prod.json',
         'usdt-prod.json',
         'usdc-prod.json',
+        'aidoge-prod.json',
       ]
     : ['makerTest-1.json', 'makerTest-2.json']
 )
