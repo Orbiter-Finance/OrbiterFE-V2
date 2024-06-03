@@ -2,12 +2,15 @@
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
       <div class="prizes-details">
-        <div class="prizes-chain">
-          <svg-icon
-                style="width: 28px; height: 32px; margin-right: 8px"
-                iconName="42161"
-        ></svg-icon>
-          Arbitrum Super Season</div>
+        <div class="prizes-to-chain">
+          <div class="prizes-chain">
+            <svg-icon
+              style="width: 28px; height: 32px; margin-right: 8px"
+              iconName="42161"
+            ></svg-icon>
+            Arbitrum Super Season
+          </div>
+        </div>
         <div class="prizes-label">
           <span style="white-space: nowrap"
             >Split <span class="prizes-total-pool-amount">$100,000 </span></span
@@ -15,6 +18,11 @@
           <br />
           in prizes
         </div>
+        <img
+          class="prizes-banner-image-mobile"
+          :src="require('../../../assets/prizes/banner-bg.png')"
+        />
+        <div class="prizes-banner-mobile-bg"></div>
         <div class="time-label">Ends In</div>
         <div class="time-card">
           <div
@@ -26,12 +34,16 @@
             <div class="card-item-symbol">{{ item.symbol }}</div>
           </div>
         </div>
-        <div class="prizes-to-bridge">Go to Bridge</div>
+
+        <div class="prizes-to-bridge">
+          <div class="prizes-to-bridge-btn">Go to Bridge</div>
+        </div>
       </div>
       <img
         class="prizes-banner-image"
         :src="require('../../../assets/prizes/banner-bg.png')"
       />
+      <div class="prizes-banner-bg"></div>
     </div>
   </div>
 </template>
@@ -139,28 +151,37 @@ export default {
     justify-content: space-between;
     align-items: center;
     text-align: left;
+    position: relative;
+    top: 0;
+    left: 0;
+    z-index: 1;
     .prizes-details {
-      .prizes-chain {
+      .prizes-to-chain {
+        width: 100%;
         display: flex;
         justify-content: start;
         align-items: center;
-        width: fit-content;
-        padding: 12px 20px;
-        border-radius: 999px;
-        box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
-        backdrop-filter: blur(156px);
-        background: linear-gradient(
-          179.63deg,
-          rgba(239, 47, 45, 0.04) -15.508%,
-          rgba(255, 102, 101, 0.04) 116.073%
-        );
+        .prizes-chain {
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          width: fit-content;
+          padding: 12px 20px;
+          border-radius: 999px;
+          box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
+          backdrop-filter: blur(156px);
+          background: linear-gradient(
+            179.63deg,
+            rgba(239, 47, 45, 0.04) -15.508%,
+            rgba(255, 102, 101, 0.04) 116.073%
+          );
+        }
       }
 
       .prizes-label {
         margin-top: 16px;
         font-size: 64px;
         font-weight: 700;
-        line-height: 72px;
         letter-spacing: 0px;
         text-align: left;
         font-family: OpenSansRoman-Bold;
@@ -168,6 +189,28 @@ export default {
         .prizes-total-pool-amount {
           color: #ef2f2d;
         }
+      }
+
+      .prizes-banner-image-mobile {
+        width: 150%;
+        transform: translateX(-25%);
+        display: none;
+      }
+
+      .prizes-banner-mobile-bg {
+        display: none;
+        position: relative;
+        top: 0;
+        left: -100%;
+        width: 300%;
+        padding: 32%;
+        background-image: url('../../../assets/prizes/banner-bg-bottom.png');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 100% 100%;
+        transform: translateY(-50%);
+        z-index: -1;
+        margin-bottom: -64%;
       }
 
       .time-label {
@@ -215,27 +258,123 @@ export default {
       }
 
       .prizes-to-bridge {
-        width: 320px;
+        width: 100%;
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
-        margin-top: 24px;
-        border-radius: 8px;
-        padding: 12px 0;
-        background: linear-gradient(
-          -2.9deg,
-          rgb(239, 47, 45) 32.367%,
-          rgb(255, 102, 101) 85.541%
-        );
-        font-size: 20px;
-        font-weight: 600;
-        line-height: 28px;
-        cursor: pointer;
+
+        .prizes-to-bridge-btn {
+          width: 320px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          margin-top: 24px;
+          border-radius: 8px;
+          padding: 12px 0;
+          background: linear-gradient(
+            -2.9deg,
+            rgb(239, 47, 45) 32.367%,
+            rgb(255, 102, 101) 85.541%
+          );
+          font-size: 20px;
+          font-weight: 600;
+          line-height: 28px;
+          cursor: pointer;
+        }
       }
     }
     .prizes-banner-image {
       width: 68%;
       margin-right: -8%;
+    }
+
+    .prizes-banner-bg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 150%;
+      padding: 8%;
+      background-image: url('../../../assets/prizes/banner-bg-bottom.png');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 100% 100%;
+      transform: translateY(40%);
+      z-index: -1;
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  #prizes-top-banner {
+    .prizes-label {
+      font-size: 52px;
+    }
+  }
+}
+@media (max-width: 960px) {
+  #prizes-top-banner {
+    .prizes-label {
+      font-size: 40px;
+    }
+  }
+}
+@media (max-width: 840px) {
+  #prizes-top-banner {
+    .prizes-label {
+      font-size: 32px;
+    }
+  }
+}
+
+@media (max-width: 740px) {
+  #prizes-top-banner {
+    width: 100%;
+    .prizes-content {
+      width: 100%;
+      display: block;
+      text-align: center;
+      .prizes-details {
+        .prizes-banner-image-mobile {
+          display: flex;
+        }
+
+        .prizes-banner-mobile-bg{
+          display: flex;
+        }
+        .prizes-to-chain {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-content: center;
+        }
+        .prizes-label {
+          text-align: center;
+        }
+
+        .time-label {
+          text-align: center;
+        }
+
+        .time-card {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .prizes-to-bridge {
+          width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .prizes-banner-image {
+        display: none;
+      }
+      .prizes-banner-bg {
+        display: none;
+      }
     }
   }
 }
