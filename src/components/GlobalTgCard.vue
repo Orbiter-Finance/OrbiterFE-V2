@@ -1,6 +1,7 @@
 <template>
   <div class="global-tg-card"
   :style="`display: ${isMobile ? 'none': 'block'}`"
+  @click="openTelegram"
   >
     <img :src="require('../assets/tg.png')" alt="telegram" class="card-code">
     <div class="card-label">@orbiterORB</div>
@@ -14,6 +15,17 @@ export default {
   computed: {
     isMobile() {
       return isMobile.value
+    }
+  },
+  methods: {
+    openTelegram() {
+      const name = "telegram-share"
+      const url = 'https://t.me/orbiterORB'
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: url,
+      })
+      window.open(url, '_blank')
     }
   }
 }
@@ -51,6 +63,7 @@ export default {
   background-size: 100% 100%;
   animation: card-rotate 4s;
   -webkit-animation: card-rotate 4s;
+  cursor: pointer;
   .card-code {
     width: 96px;
     height: 96px;
