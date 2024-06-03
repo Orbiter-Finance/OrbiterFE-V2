@@ -71,7 +71,7 @@ export default {
     text-align: center;
   }
   .prizes-rule-card {
-    margin-top: 16px;
+    margin: 16px 0 4px;
     width: 100%;
     padding: 8px 24px 24px;
     border-radius: 16px;
@@ -91,6 +91,17 @@ export default {
       line-height: 23px;
       letter-spacing: 0px;
       opacity: 0.6;
+    }
+  }
+}
+
+@media (max-width: 740px) {
+  #prizes-rule {
+    width: 100%;
+    padding: 0 12px;
+    margin: 32px 0 60px;
+    .rule-title {
+      font-size: 24px;
     }
   }
 }

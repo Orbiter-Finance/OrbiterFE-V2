@@ -66,7 +66,7 @@ export default {
   },
   watch: {
     evmAddress(item1, item2) {
-      if (!!item1 && (item1 !== item2)) {
+      if (!!item1 && item1 !== item2) {
         this.getData2()
       }
     },
@@ -87,7 +87,9 @@ export default {
     async getData2() {
       if (!this.evmAddress) return
       const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}/dashboard-api/stat/competition/address?address=${this.evmAddress.toLocaleLowerCase()}`
+        `${
+          process.env.VUE_APP_OPEN_URL
+        }/dashboard-api/stat/competition/address?address=${this.evmAddress.toLocaleLowerCase()}`
       )
       const { result } = await response.json()
       const { count, rank, reward } = result || {}
@@ -116,6 +118,7 @@ export default {
   overflow: hidden;
   top: 0;
   left: 0;
+  padding: 32px 0;
   .content {
     width: 100%;
     max-width: 1080px;
@@ -141,6 +144,14 @@ export default {
     transform: translateX(35%);
     filter: blur(400px);
     background-color: #c20000;
+  }
+}
+
+@media (max-width: 740px) {
+  #orbiter-prizes {
+    .bg2 {
+      display: none;
+    }
   }
 }
 </style>
