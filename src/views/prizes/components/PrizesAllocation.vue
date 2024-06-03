@@ -402,7 +402,7 @@ export default {
       } else if (isTelegram) {
         if (!isBuild) {
           const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent('https://test.orbiter.finance/prizes')}&request_access=write`
-          window.open(url, 'target')
+          window.open(url, '_self')
         } else {
           window.open('https://t.me/orbiterORB', '_blank')
         }
