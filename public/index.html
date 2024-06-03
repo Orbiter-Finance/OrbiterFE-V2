@@ -63,7 +63,13 @@
     </noscript>
     <div id="app"></div>
     <script src="./web3@1.3.0.min.js"></script>
-   <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></script>
+    <script>
+       window.addEventListener('load', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            console.log("urlParams", urlParams, window.location)
+        });
+      </script>
+   <!-- <script src="https://unpkg.com/vconsole@latest/dist/vconsole.min.js"></>
    <script>
      var vConsole = new window.VConsole();
      console.log("window", window, window.okxwallet, window.ethereum)

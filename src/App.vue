@@ -33,7 +33,7 @@
     <div id="ton-connect-wallet">
 
     </div>
-    <GlobalTgCard ></GlobalTgCard>
+    <GlobalTgCard v-if="$route.path !== '/prizes'"></GlobalTgCard>
   </div>
 </template>
 

@@ -73,12 +73,12 @@
         :key="index"
       >
         <div class="ranking">{{ item.rank }}</div>
-        <div class="user-address">{{ shortAddress(item.address) }}</div>
+        <div class="user-address">{{ shortAddress(item.address, isMobile ? 4 : 6) }}</div>
         <div class="cumulative-tx">
           {{ decimalNumC(item.count, 0, ',') }} tx
         </div>
         <div class="emit-reward">
-          +$ {{ decimalNumC(item.reward, 2, ',') }} USDC
+          +${{ decimalNumC(item.reward, 2, ',') }} USDC
         </div>
       </div>
       <div class="pagination-group">
@@ -96,6 +96,7 @@
 </template>
 
 <script>
+import { isMobile } from '../../../composition/hooks';
 import { decimalNum } from '../../../util/decimalNum'
 
 export default {
@@ -110,6 +111,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     rankTopData() {
       const [first, next, last] = this.rankList?.slice(0, 3) || []
       return [
@@ -426,7 +430,7 @@ export default {
       align-items: center;
 
       .ranking {
-        width: 15%;
+        width: 64px;
       }
 
       .user-address {
@@ -494,6 +498,7 @@ export default {
 @media (max-width: 740px) {
   #prizes-rank {
     margin-top: 32px;
+    padding: 0 12px;
     .title {
       font-size: 24px;
     }
@@ -503,6 +508,27 @@ export default {
 
     .rank-top-mobile {
       display: block;
+    }
+
+    .rank-list {
+      padding: 0 12px;
+      .rank-list-header {
+        display: none;
+      }
+      .rank-list-card-item {
+        .ranking {
+          width: 40px;
+        }
+        .cumulative-tx {
+          width: 20%;
+        }
+        .emit-reward {
+          white-space: nowrap;
+        }
+        .ranking, .user-address, .cumulative-tx, .emit-reward {
+          font-size: 14px;
+        }
+      }
     }
   }
 }

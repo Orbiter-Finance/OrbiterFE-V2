@@ -21,19 +21,22 @@
     <div class="prizes-allocation-card">
       <div class="title">
         <div>My progress</div>
-        <div class="rank-reward">
-          <span>Estimated earnings: </span>
-          <span class="reward-amount">{{ rewardAmount }} USDC</span>
-        </div>
       </div>
       <div class="description">
         <div class="description-text">
           Accumulated <span class="remark">3</span> Bridges to share
           <span class="remark">10%</span> of prize pool
         </div>
+      </div>
+
+      <div class="user-rank-and-reward">
         <div class="current-rank">
           <span>Current rank: </span>
           <span class="current-ranking">{{ userRanking }}</span>
+        </div>
+        <div class="rank-reward">
+          <span>Estimated earnings: </span>
+          <span class="reward-amount">{{ rewardAmount }} USDC</span>
         </div>
       </div>
 
@@ -55,16 +58,6 @@
           </div>
           <div class="pogress-box">
             <div class="progress-bar" :style="`width: ${ratio}%;`"></div>
-            <div
-              class="progress-stage"
-              v-for="item in progressStage"
-              :key="item.position"
-              :style="`left: ${(item.position / 20) * 100}%;visibility:${
-                item.position ? 'visable' : 'hidden'
-              };background-color:${
-                txAmount >= item.value ? '#FFBA56' : '#222222'
-              };`"
-            ></div>
             <div
               class="progress-tx-current-stage"
               :style="`left: ${ratio}%;visibility:${
@@ -90,6 +83,16 @@
                 </svg>
               </div>
             </div>
+            <div
+              class="progress-stage"
+              v-for="item in progressStage"
+              :key="item.position"
+              :style="`left: ${(item.position / 20) * 100}%;visibility:${
+                item.position ? 'visable' : 'hidden'
+              };background-color:${
+                txAmount >= item.value ? '#FFBA56' : '#222222'
+              };`"
+            ></div>
           </div>
           <div class="progress-tx-group">
             <div
@@ -111,6 +114,7 @@
         v-for="item in taskOptionsList"
         :key="item.reward"
         :class="item.isSuccess ? 'task-card-options-group-success' : ''"
+        @click="openTelegram(item)"
       >
         <div class="task-card-options">
           <div class="info">
@@ -161,6 +165,7 @@
             ? `border: 1px solid ${item.color};backdrop-filter: blur(12px); background: ${item.color}18;`
             : ''
         "
+        @click="openTelegram(item)"
       >
         <div class="task-card-pool">
           <div class="info">
@@ -190,7 +195,11 @@
           <div v-if="item.isPromotion" class="prizes-promotion-mobile">
             Already entered in higher stage pools
           </div>
-          <div v-else class="pool-reward-info-mobile" :style="`color: ${item.color};`">
+          <div
+            v-else
+            class="pool-reward-info-mobile"
+            :style="`color: ${item.color};`"
+          >
             {{ item.reward }}
           </div>
         </div>
@@ -315,6 +324,7 @@ export default {
           icon: 'x',
           text: `Quote the Tweet and mention 3 friends`,
           reward: '+3',
+          type: "TG"
         },
         {
           icon: 'bridge',
@@ -380,6 +390,26 @@ export default {
   methods: {
     decimalNumC(num, decimal, delimiter, symbol) {
       return decimalNum(num, decimal, delimiter, symbol)
+    },
+    openTelegram(option) {
+      const isSuccess = option.isSuccess
+      const isBuild = false
+      const isTelegram = option.type === "TG"
+      console.log("isBuild, isSuccess, isTelegram", isBuild, isSuccess, isTelegram)
+
+      if(isSuccess) {
+
+      } else if (isTelegram) {
+        if (!isBuild) {
+          const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent('https://test.orbiter.finance/prizes')}&request_access=write`
+          window.open(url, '_blank')
+        } else {
+          window.open('https://t.me/orbiterORB', '_blank')
+        }
+      } else {
+        this.$router.push("/")
+      }
+      
     },
   },
 }
@@ -455,22 +485,6 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-
-      .rank-reward {
-        font-size: 18px;
-        letter-spacing: 0px;
-        text-align: right;
-
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-
-        .reward-amount {
-          padding-left: 4px;
-          color: #ffba56;
-          font-weight: 600;
-        }
-      }
     }
 
     .description {
@@ -494,18 +508,41 @@ export default {
           font-weight: 600;
         }
       }
+    }
+
+    .user-rank-and-reward {
+      width: 100%;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      margin-top: 8px;
 
       .current-rank {
         display: flex;
         justify-content: flex-end;
         align-items: center;
         font-size: 18px;
-
         letter-spacing: 0px;
         text-align: right;
+        margin-right: 8px;
         .current-ranking {
           padding-left: 4px;
           color: #ffba58;
+          font-weight: 600;
+        }
+      }
+      .rank-reward {
+        font-size: 18px;
+        letter-spacing: 0px;
+        text-align: right;
+
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+
+        .reward-amount {
+          padding-left: 4px;
+          color: #ffba56;
           font-weight: 600;
         }
       }
@@ -516,7 +553,7 @@ export default {
       overflow: auto;
       .pogress-group {
         width: 100%;
-        padding: 0 16px;
+        padding: 0 4px;
         min-width: 740px;
         margin: 16px 0 32px;
         font-size: 14px;
@@ -801,10 +838,35 @@ export default {
 
 @media (max-width: 740px) {
   #prizes-allocation {
+    padding: 0 16px;
     .prizes-allocation-title {
       font-size: 24px;
       .title-br {
         display: block;
+      }
+    }
+
+    .prizes-allocation-card {
+      padding: 16px;
+      .title {
+        font-size: 16px;
+      }
+
+      .description {
+        font-size: 14px;
+        .description-text {
+          flex-wrap: wrap;
+        }
+      }
+
+      .user-rank-and-reward {
+        font-size: 14px;
+        white-space: nowrap;
+        margin-top: 8px;
+        .current-rank,
+        .rank-reward {
+          font-size: 14px;
+        }
       }
     }
 
@@ -821,6 +883,7 @@ export default {
     }
 
     .task-card-options-group {
+      padding: 12px;
       .task-card-options {
         align-items: start;
         .info {
@@ -841,6 +904,7 @@ export default {
     }
 
     .task-card-pool-group {
+      padding: 12px;
       .task-card-pool {
         align-items: start;
         .info {
@@ -848,7 +912,7 @@ export default {
         }
 
         .pool-reward {
-          .pool-reward-info{
+          .pool-reward-info {
             display: none;
           }
         }
