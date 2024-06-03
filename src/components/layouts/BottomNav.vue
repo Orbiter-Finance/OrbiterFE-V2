@@ -46,6 +46,11 @@ export default {
                     value: 'https://twitter.com/Orbiter_Finance',
                 },
                 {
+                    icon: 'telegram',
+                    title: 'Telegram',
+                    value: 'https://t.me/orbiterORB',
+                },
+                {
                     icon: 'medium',
                     title: 'Medium',
                     value: 'https://orbiter-finance.medium.com/',
@@ -102,6 +107,9 @@ export default {
                     width: 24px;
                     height: 24px;
                     cursor: pointer;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
                 }
                 .links-icon:hover {
                     opacity: 0.8;
