@@ -33,6 +33,7 @@
     <div id="ton-connect-wallet">
 
     </div>
+    <GlobalTgCard ></GlobalTgCard>
   </div>
 </template>
 
@@ -40,6 +41,7 @@
 import 'solana-wallets-vue-2/styles.css'
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
+import GlobalTgCard from "./components/GlobalTgCard.vue"
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
   BRAVE_APP,
@@ -180,7 +182,8 @@ export default {
     HeaderDialog,
     HeaderActDialog,
     HeaderLotteryCardDialog,
-    HeaderWalletGroup
+    HeaderWalletGroup,
+    GlobalTgCard
   },
   async mounted () {
     tonHelper.tonConnectCall();
