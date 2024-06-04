@@ -21,20 +21,24 @@
     <div class="prizes-allocation-card">
       <div class="title">
         <div>My progress</div>
+        <img
+          class="top500-orbguy"
+          :src="require('../../../assets/prizes/top500-orbguy.png')"
+        />
       </div>
       <div class="description">
         <div class="description-text">
-          Accumulated <span class="remark">3</span> Bridges to share
-          <span class="remark">10%</span> of prize pool
+          Accumulated <span class="remark">{{ txAmount }}</span> Bridges to
+          share <span class="remark">{{ tipsLabel }}</span> of prize pool
         </div>
       </div>
 
       <div class="user-rank-and-reward">
-        <div class="current-rank">
+        <div class="current-rank" v-if="userRanking">
           <span>Current rank: </span>
           <span class="current-ranking">{{ userRanking }}</span>
         </div>
-        <div class="rank-reward">
+        <div v-if="rewardAmount" class="rank-reward">
           <span>Estimated earnings: </span>
           <span class="reward-amount">{{ rewardAmount }} USDC</span>
         </div>
@@ -60,9 +64,7 @@
             <div class="progress-bar" :style="`width: ${ratio}%;`"></div>
             <div
               class="progress-tx-current-stage"
-              :style="`left: ${ratio}%;visibility:${
-                !isHiddenTips ? 'visable' : 'hidden'
-              };`"
+              :style="`left: ${ratio}%;${isHiddenTips};`"
             >
               <div>{{ tipsLabel }}</div>
               <div class="progress-icon">
@@ -209,6 +211,13 @@
 </template>
 
 <script>
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+
+import {
+  setConnectWalletGroupKey,
+  setSelectWalletDialogVisible,
+} from '../../../composition/hooks'
+
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
 import { decimalNum } from '../../../util/decimalNum'
 
@@ -229,8 +238,11 @@ export default {
     PrizesTaskSuccessIcon,
   },
   computed: {
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
     progressStage() {
-      return [
+      return [].concat([
         {
           position: 0,
           label: '0',
@@ -280,9 +292,9 @@ export default {
           position: 20,
           label: 'Top 100',
           ratio: '30%',
-          value: this.top100Tx || 0,
+          value: this.top100Tx >= 20 ?  this.top100Tx : 20,
         },
-      ]
+      ])
     },
     ratioList() {
       return this.progressStage.slice(1)
@@ -290,20 +302,22 @@ export default {
     userRanking() {
       return this.rank
     },
+    txAmount() {
+      return this.tx
+    },
     rewardAmount() {
-      return this.decimalNumC(this.reward, 2, ',')
+      return Number(this.reward) ? this.decimalNumC(this.reward, 2, ',') : 0
     },
     isHiddenTips() {
-      return this.progressStage.some((item) => item.value === this.txAmount)
+      return "display:" + (!(Number(this.txAmount) <= 3 ||
+        this.progressStage.some((item) => item.value === this.txAmount)) ? 'block' : 'none')
+
     },
     tipsLabel() {
       const list =
         this.progressStage.filter((item) => item.value <= this.txAmount) || []
       const option = list[list?.length - 1] || {}
       return option?.ratio || '--'
-    },
-    txAmount() {
-      return this.tx
     },
     ratio() {
       const stage = this.txAmount
@@ -313,6 +327,8 @@ export default {
       if (stage >= 15) {
         const rest = Math.floor(((stage - 15) * 100) / (tx100 - 15) / 5)
         progressRation = base + rest
+      } else {
+        progressRation = (stage / 20) * 100
       }
       return progressRation >= 100 ? 100 : progressRation
     },
@@ -324,7 +340,7 @@ export default {
           icon: 'x',
           text: `Quote the Tweet and mention 3 friends`,
           reward: '+3',
-          type: "TG"
+          type: 'TG',
         },
         {
           icon: 'bridge',
@@ -391,25 +407,70 @@ export default {
     decimalNumC(num, decimal, delimiter, symbol) {
       return decimalNum(num, decimal, delimiter, symbol)
     },
-    openTelegram(option) {
+    async openTelegram(option) {
       const isSuccess = option.isSuccess
       const isBuild = false
-      const isTelegram = option.type === "TG"
-      console.log("isBuild, isSuccess, isTelegram", isBuild, isSuccess, isTelegram)
+      const isTelegram = option.type === 'TG'
+      const account = this.evmAddress
 
-      if(isSuccess) {
+      if (!account || account === '0x') {
+        setConnectWalletGroupKey('EVM')
+        setSelectWalletDialogVisible(true)
+        return
+      }
 
+      const localStr = sessionStorage.getItem('TELEGRAM_TOKEN')
+
+      if (isSuccess) {
       } else if (isTelegram) {
         if (!isBuild) {
-          const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent('https://test.orbiter.finance/prizes')}&request_access=write`
-          window.open(url, 'target')
+          if (localStr) {
+            const provider =
+              compatibleGlobalWalletConf.value.walletPayload.provider
+            const telegramInfo = JSON.parse(window.atob(localStr))
+            console.log('telegramInfo', telegramInfo)
+            const res = await provider.request({
+              method: 'personal_sign',
+              params: [
+                String('TelegramId:' + telegramInfo?.id),
+                account.toLocaleLowerCase(),
+              ],
+            })
+            const result = await fetch(
+              `${process.env.VUE_APP_OPEN_URL}/dashboard-api/stat/competition/updateTelegramInfo`,
+              {
+                headers: {
+                  token: res,
+                  'Content-Type': 'application/json',
+                },
+                method: 'POST',
+                body: JSON.stringify({
+                  accountInfo: {
+                    ext: {
+                      telegramHash: localStr,
+                    },
+                  },
+                }),
+              }
+            )
+            console.log('result', result)
+            const data = await result.json()
+            console.log('data', data)
+            if(data?.code === 0 ){
+              this.$notify.success(data.message)
+            }
+          } else {
+            const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent(
+              'https://test.orbiter.finance/prizes'
+            )}&request_access=write`
+            window.open(url, '_self')
+          }
         } else {
           window.open('https://t.me/orbiterORB', '_blank')
         }
       } else {
-        this.$router.push("/")
+        this.$router.push('/')
       }
-      
     },
   },
 }
@@ -485,6 +546,11 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
+
+      .top500-orbguy {
+        width: 266px;
+        height: 32px;
+      }
     }
 
     .description {
@@ -850,6 +916,9 @@ export default {
       padding: 16px;
       .title {
         font-size: 16px;
+        .top500-orbguy {
+          width: 200px;
+        }
       }
 
       .description {

@@ -18,9 +18,10 @@
           <br />
           in prizes
         </div>
+        <div class="prizes-orbguy">TOP 500 get an extra <svg-icon iconName="ORBGUY" class="orbguy-token-symbol" ></svg-icon> $ORBGUY!</div>
         <img
           class="prizes-banner-image-mobile"
-          :src="require('../../../assets/prizes/banner-bg.png')"
+          :src="require('../../../assets/prizes/banner-bg-mobile.png')"
         />
         <div class="prizes-banner-mobile-bg"></div>
         <div class="time-label">Ends In</div>
@@ -36,7 +37,9 @@
         </div>
 
         <div class="prizes-to-bridge">
-          <div class="prizes-to-bridge-btn">Go to Bridge</div>
+          <div class="prizes-to-bridge-btn" @click="toBridgeCall">
+            Go to Bridge
+          </div>
         </div>
       </div>
       <img
@@ -49,6 +52,7 @@
 </template>
 
 <script>
+import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import getUTCTime from '../../../util/time'
 
 let timer1
@@ -73,6 +77,7 @@ const timeListDefault = [
 ]
 
 export default {
+  components: { SvgIcon },
   name: 'PrizesTopBanner',
   data() {
     return {
@@ -93,6 +98,9 @@ export default {
         d1.getUTCSeconds()
       )
       return Date.parse(d2)
+    },
+    toBridgeCall() {
+      this.$router.push('/')
     },
   },
   mounted() {
@@ -191,9 +199,25 @@ export default {
         }
       }
 
+      .prizes-orbguy {
+        white-space: nowrap;
+        font-size: 26px;
+        font-weight: 600;
+        line-height: 40px;
+        letter-spacing: 0px;
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .orbguy-token-symbol {
+          width: 36px;
+          height: 36px;
+          margin: 0 8px;
+        }
+      }
+
       .prizes-banner-image-mobile {
-        width: 150%;
-        transform: translateX(-25%);
+        width: 100%;
         display: none;
       }
 
@@ -310,12 +334,26 @@ export default {
     .prizes-label {
       font-size: 52px;
     }
+    .prizes-orbguy {
+      font-size: 24px;
+      .orbguy-token-symbol {
+        width: 32px;
+        height: 32px;
+      }
+    }
   }
 }
 @media (max-width: 960px) {
   #prizes-top-banner {
     .prizes-label {
       font-size: 40px;
+    }
+    .prizes-orbguy {
+      font-size: 22px;
+      .orbguy-token-symbol {
+        width: 30px;
+        height: 30px;
+      }
     }
   }
 }
@@ -339,7 +377,7 @@ export default {
           display: flex;
         }
 
-        .prizes-banner-mobile-bg{
+        .prizes-banner-mobile-bg {
           display: flex;
         }
         .prizes-to-chain {
@@ -350,6 +388,14 @@ export default {
         }
         .prizes-label {
           text-align: center;
+        }
+        .prizes-orbguy {
+          font-size: 20px;
+          width: 100%;
+          .orbguy-token-symbol {
+            width: 28px;
+            height: 28px;
+          }
         }
 
         .time-label {

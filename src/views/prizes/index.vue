@@ -67,7 +67,8 @@ export default {
   watch: {
     evmAddress(item1, item2) {
       if (!!item1 && item1 !== item2) {
-        this.getData2()
+        this.getUserReward()
+        this.getUserInfo()
       }
     },
   },
@@ -84,7 +85,7 @@ export default {
       this.rankList = list
       this.top100Tx = list[list?.length - 1 || 0]?.count || 0
     },
-    async getData2() {
+    async getUserReward() {
       if (!this.evmAddress) return
       const response = await fetch(
         `${
@@ -99,6 +100,16 @@ export default {
         tx: count || 0,
         reward: reward || '0',
       }
+    },
+    async getUserInfo() {
+      if (!this.evmAddress) return
+      const response = await fetch(
+        `${
+          process.env.VUE_APP_OPEN_URL
+        }/dashboard-api/stat/competition/account/${this.evmAddress.toLocaleLowerCase()}`
+      )
+      const res = await response.json()
+      console.log('res', res)
     },
   },
 }
