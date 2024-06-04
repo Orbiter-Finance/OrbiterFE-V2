@@ -194,7 +194,6 @@ export default {
   },
   computed: {
     remark() {
-      console.log("transferDataState", transferDataState)
       const { toChainID, selectMakerConfig } = transferDataState
       const toChainId =selectMakerConfig.toChain.chainId ||  toChainID 
       const toArbText = this.type === "from" && 

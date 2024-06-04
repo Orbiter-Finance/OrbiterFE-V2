@@ -30,6 +30,7 @@
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
+    <HeaderAccountDialog></HeaderAccountDialog>
     <div id="ton-connect-wallet">
 
     </div>
@@ -84,6 +85,8 @@ import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
 import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
 import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
+import HeaderAccountDialog from './components/HeaderAccountDialog/index.vue'
+
 import {
   setIsBraveWallet,
   performInitMobileAppWallet,
@@ -183,7 +186,8 @@ export default {
     HeaderActDialog,
     HeaderLotteryCardDialog,
     HeaderWalletGroup,
-    GlobalTgCard
+    GlobalTgCard,
+    HeaderAccountDialog
   },
   async mounted () {
     tonHelper.tonConnectCall();

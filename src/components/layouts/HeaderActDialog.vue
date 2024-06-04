@@ -1,7 +1,7 @@
 <template>
   <div
     class="act header-dialog-box"
-    :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
+    :style="{ display: this.selectWalletDialogVisible ? 'none' : 'none' }"
   >
     <div
       v-if="isMobile"
