@@ -10,10 +10,7 @@ import {
 import { CHAIN_ID } from '../../config'
 
 import completionStarknetAddress from '../../util/completionStarknetAddress'
-import {
-  requestClaimLuckyBagReward,
-  drawClaimLuckyBagReward,
-} from '../../common/openApiAx'
+import { requestClaimLuckyBagReward } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import { ethers } from 'ethers'
 import util from '../../util/util'
@@ -204,11 +201,11 @@ export default {
         const address =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (!address && address !== '0x') return
-        util.showMessage('Opening...', 'warning')
+        // util.showMessage('Opening...', 'warning')
 
         let res = await requestClaimLuckyBagReward(address?.toLocaleLowerCase())
         if (!res?.result?.sign) {
-          res = await drawClaimLuckyBagReward(address?.toLocaleLowerCase())
+          // res = await drawClaimLuckyBagReward(address?.toLocaleLowerCase())
         }
         const { result, code, message = '' } = res || {}
         const {
