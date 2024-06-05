@@ -1,7 +1,7 @@
 <template>
   <div
     class="act header-dialog-box"
-    :style="{ display: this.selectWalletDialogVisible ? 'none' : 'none' }"
+    :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
   >
     <div
       v-if="isMobile"
@@ -22,84 +22,103 @@
     </div>
     <div @mouseover="mouseoverDialog" ref="block_1" class="block_1">
       <div ref="block_top_wallet_group">
-        <div class="section_54">
-          <div
-            class="box_114"
-            :style="`background-image: url(${require('../../assets/wallet/' +
-              walletType +
-              '.png')});background-size: 100% auto;`"
-          >
-            <svg-icon
-              class="image-wrapper_74"
-              :iconName="networkId"
-              style="width: 1.6rem; height: 1.6rem"
-            ></svg-icon>
-          </div>
-          <div class="text-wrapper_63 flex-col justify-between">
-            <div class="text_96">{{ showWalletAddress }}</div>
-            <div class="text_97">{{ networkName }}</div>
-          </div>
-          <div
-            v-clipboard:copy="currentWalletAddress"
-            v-clipboard:success="onCopySuccess"
-            class="label_17"
-          >
-            <svg
-              class="label_17"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              width="24px"
-              height="24px"
-              viewBox="0 0 24 24"
-              version="1.1"
+        <div class="user-info">
+          <div class="section_54">
+            <div
+              class="box_114"
+              :style="`background-image: url(${require('../../assets/wallet/' +
+                walletType +
+                '.png')});background-size: 100% auto;`"
             >
-              <title>Copy Address</title>
-
-              <g
-                id="page-1"
-                stroke="none"
-                stroke-width="1"
-                fill="none"
-                fill-rule="evenodd"
+              <svg-icon
+                class="image-wrapper_74"
+                :iconName="networkId"
+                style="width: 1.6rem; height: 1.6rem"
+              ></svg-icon>
+            </div>
+            <div class="text-wrapper_63 flex-col justify-between">
+              <div class="text_96">{{ showWalletAddress }}</div>
+              <div class="text_97">{{ networkName }}</div>
+            </div>
+            <div
+              v-clipboard:copy="currentWalletAddress"
+              v-clipboard:success="onCopySuccess"
+              class="label_17"
+            >
+              <svg
+                class="label_17"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="24px"
+                height="24px"
+                viewBox="0 0 24 24"
+                version="1.1"
               >
-                <g id="ic/copy">
-                  <rect
-                    id="rectangles"
-                    fill-rule="nonzero"
-                    x="0"
-                    y="0"
-                    width="24"
-                    height="24"
-                  />
-                  <path
-                    d="M14.6666667,12.6 L14.6666667,15.4 C14.6666667,17.7333333 13.7333333,18.6666667 11.4,18.6666667 L8.6,18.6666667 C6.26666667,18.6666667 5.33333333,17.7333333 5.33333333,15.4 L5.33333333,12.6 C5.33333333,10.2666667 6.26666667,9.33333333 8.6,9.33333333 L11.4,9.33333333 C13.7333333,9.33333333 14.6666667,10.2666667 14.6666667,12.6 Z"
-                    id="trails"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M18.6666667,8.6 L18.6666667,11.4 C18.6666667,13.7333333 17.7333333,14.6666667 15.4,14.6666667 L14.6666667,14.6666667 L14.6666667,12.6 C14.6666667,10.2666667 13.7333333,9.33333333 11.4,9.33333333 L9.33333333,9.33333333 L9.33333333,8.6 C9.33333333,6.26666667 10.2666667,5.33333333 12.6,5.33333333 L15.4,5.33333333 C17.7333333,5.33333333 18.6666667,6.26666667 18.6666667,8.6 Z"
-                    id="trails"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
+                <title>Copy Address</title>
+  
+                <g
+                  id="page-1"
+                  stroke="none"
+                  stroke-width="1"
+                  fill="none"
+                  fill-rule="evenodd"
+                >
+                  <g id="ic/copy">
+                    <rect
+                      id="rectangles"
+                      fill-rule="nonzero"
+                      x="0"
+                      y="0"
+                      width="24"
+                      height="24"
+                    />
+                    <path
+                      d="M14.6666667,12.6 L14.6666667,15.4 C14.6666667,17.7333333 13.7333333,18.6666667 11.4,18.6666667 L8.6,18.6666667 C6.26666667,18.6666667 5.33333333,17.7333333 5.33333333,15.4 L5.33333333,12.6 C5.33333333,10.2666667 6.26666667,9.33333333 8.6,9.33333333 L11.4,9.33333333 C13.7333333,9.33333333 14.6666667,10.2666667 14.6666667,12.6 Z"
+                      id="trails"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <path
+                      d="M18.6666667,8.6 L18.6666667,11.4 C18.6666667,13.7333333 17.7333333,14.6666667 15.4,14.6666667 L14.6666667,14.6666667 L14.6666667,12.6 C14.6666667,10.2666667 13.7333333,9.33333333 11.4,9.33333333 L9.33333333,9.33333333 L9.33333333,8.6 C9.33333333,6.26666667 10.2666667,5.33333333 12.6,5.33333333 L15.4,5.33333333 C17.7333333,5.33333333 18.6666667,6.26666667 18.6666667,8.6 Z"
+                      id="trails"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </g>
                 </g>
-              </g>
-            </svg>
+              </svg>
+            </div>
+  
+            <div style="flex: 1; display: flex; justify-content: flex-end">
+              <div @click="disconnect" class="label_19">
+                <img
+                  class="img"
+                  :src="require('../../assets/activity/exit.png')"
+                />
+              </div>
+            </div>
           </div>
+          <div>
+            <div class="text-wrapper_45">
+              <div class="text_98">Total O-Points </div>
+              <div class="text_99">
+                <div class="left">
+                  {{ totalPoint }}
+                  <HeaderLotteryCard />
+                </div>
 
-          <div style="flex: 1; display: flex; justify-content: flex-end">
-            <div @click="disconnect" class="label_19">
-              <img
-                :hidden="!isLightMode"
-                class="img"
-                :src="require('../../assets/activity/exit.png')"
-              />
-              <img
-                :hidden="isLightMode"
-                class="img"
-                :src="require('../../assets/activity/exit_dark.png')"
-              />
+                <div class="right">
+                  <div
+                  @click="openClaimRewardModal"
+                  class="reward">
+                    <svg-icon iconName="ORBGUY"></svg-icon>
+                    Reward
+                  </div>
+                  <div 
+                  @click="openUserInfoDetailsCardModal"
+                  class="details">Details</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -113,201 +132,6 @@
         "
       >
         <div ref="block_top_group">
-          <div
-            class="card_2"
-            :style="showDetail ? 'height: 176px;' : 'height: 120px;'"
-          >
-            <div class="text-wrapper_45">
-              <div class="text_98">O-Points Summary</div>
-              <div class="text_99">{{ totalPoint }}
-                <HeaderLotteryCard />
-              </div>
-            </div>
-            <div
-              class="card_bottom"
-              :style="
-                showDetail
-                  ? 'opacity: 1;transition: opacity 0.5s ease;'
-                  : 'opacity: 0'
-              "
-            >
-              <div class="line_1"></div>
-              <div class="points_group">
-                <div class="group_1_12">
-                  <div class="box_1_48">
-                    <span class="text_1_8">Basic Points</span>
-                    <o-tooltip>
-                      <template v-slot:titleDesc>
-                        <div style="margin-left: -20px">
-                          <span>
-                            Basic contribution rewards for using Orbiter Finance
-                            for bridge transactions.
-                          </span>
-                          <a
-                            class="points_more"
-                            href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards"
-                            target="_blank"
-                            >More</a
-                          >
-                        </div>
-                      </template>
-                      <img
-                        class="thumbnail_1_3"
-
-                        :src="require('../../assets/activity/tip_ico.png')"
-                      />
-                    </o-tooltip>
-                  </div>
-                  <div class="text-wrapper_1_35">
-                    <span class="text_1_9">{{ actBasePoint }}</span>
-                  </div>
-                </div>
-                <div class="group_1_12">
-                  <div class="box_1_48">
-                    <span class="text_1_8">Activity Points</span>
-                    <o-tooltip>
-                      <template v-slot:titleDesc>
-                        <div style="margin-left: -20px">
-                          <span
-                            >Task rewards for participating in Orbiter
-                            Finance-related activities.</span
-                          >
-                          <a
-                            class="points_more"
-                            href="https://docs.orbiter.finance/o-points#activity-points-and-exchange-standards"
-                            target="_blank"
-                            >More</a
-                          >
-                        </div>
-                      </template>
-                      <img
-                        class="thumbnail_1_3"
-
-                        :src="require('../../assets/activity/tip_ico.png')"
-                      />
-                    </o-tooltip>
-                  </div>
-                  <div class="text-wrapper_1_35">
-                    <span class="text_1_9">{{ actTotalActivityPoint }}</span>
-                  </div>
-                </div>
-                <div class="group_1_12">
-                  <div class="box_1_48">
-                    <span class="text_1_8">Ecosystem Points</span>
-                    <o-tooltip>
-                      <template v-slot:titleDesc>
-                        <div style="margin-left: -20px">
-                          <span>
-                            Rewards for interacting with orbiter's ecosystem
-                            dapp based on orbiter cross-rollup protocols.
-                          </span>
-                          <!-- <a class="points_more" href="https://docs.orbiter.finance/o-points#basic-points-and-exchange-standards" target="_blank">More</a> -->
-                        </div>
-                      </template>
-                      <img
-                        class="thumbnail_1_3"
-                        :src="require('../../assets/activity/tip_ico.png')"
-                      />
-                    </o-tooltip>
-                  </div>
-                  <div class="text-wrapper_1_35">
-                    <span class="text_1_9">{{ actEcosystemPoints }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div @click="expand" class="down">
-              <img
-                :hidden="showDetail"
-                class="img"
-                :src="require('../../assets/activity/down.png')"
-              />
-              <img
-                :hidden="!showDetail"
-                class="img"
-                :src="require('../../assets/activity/up.png')"
-              />
-            </div>
-
-            <div
-              v-if="!isMobile"
-              :class="addPointVisible ? 'shake-top' : ''"
-              :style="`display: flex;position: absolute;top: 80px;left:-3px;opacity: ${
-                addPointVisible ? 1 : 0
-              };transition: opacity 0.5s ease-in-out;`"
-            >
-              <img
-                class="label_2"
-                :src="require('../../assets/activity/add_flower.png')"
-              />
-              <span class="text_1_2"> {{ addPoint }} O-Points </span>
-              <img
-                class="thumbnail_1_1"
-                :src="require('../../assets/activity/add_flower_2.png')"
-              />
-            </div>
-          </div>
-
-          <div v-if="!isStarknet && !isSolana" class="card_3">
-            <div class="text_14">
-              <div>Held Orbiter NFT
-                <o-tooltip>
-                  <template v-slot:titleDesc>
-                    <div style="margin-left: -20px">
-                      <span>
-                        Currently, only the official Pilot NFT series held by the
-                        address is displayed, showing only one of multiple NFTs of
-                        the same rank.
-                      </span>
-                    </div>
-                  </template>
-                  <img
-                    style="
-                      width: 20px;
-                      height: 20px;
-                      vertical-align: top;
-                      margin-left: 4px;
-                    "
-                    :src="require('../../assets/activity/tooltip.png')"
-                  />
-                </o-tooltip></div>
-              <div class="extends" @click="toggleNftListStatus">{{ extendsNftList ? "-" : "+" }}</div>
-            </div>
-            <div v-show="extendsNftList" class="nft-list-group">
-              <div v-if="!nftList.length" class="text-wrapper_38">
-                <span class="text_55">No Orbiter Series NFTs were obtained</span>
-              </div>
-              <div class="nft_box" v-else>
-                <div
-                  class="box_div"
-                  :style="`transform: translateX(-${left}px);transition: transform .4s ease-in-out;`"
-                >
-                  <div
-                    v-for="(item, index) in nftList"
-                    :key="index"
-                    class="section_70"
-                    :style="`background: url(${require('../../assets/activity/nft/' +
-                      item.img)});background-size: 100% 100%;border:${item.border};`"
-                  ></div>
-                </div>
-                <div :hidden="!turnLeft" class="btn">
-                  <img
-                    @click="scrollDiv(1)"
-                    class="img"
-                    :src="require('../../assets/activity/turn_right.png')"
-                  />
-                </div>
-                <div :hidden="!turnRight" class="btn_2">
-                  <img
-                    @click="scrollDiv(0)"
-                    class="img_2"
-                    :src="require('../../assets/activity/turn_right.png')"
-                  />
-                </div>
-                <div class="card_cover"></div>
-              </div>
-            </div>
-          </div>
         </div>
         <div style="width: 100%; display: flex;">
           <span class="text_21">🛸 Quests </span>
@@ -316,6 +140,7 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
+        <!-- <PrizesCard></PrizesCard> -->
         <div 
         v-if="!!actDataList.length"
         >
@@ -335,126 +160,46 @@
                   {{ formatTime2(item.endTime) }}
                 </div>
               </div>
-            <div>
+              <div>
               <template v-for="option in item.taskList">
-                <div v-if="option.status === 0" class="box_1">
-                  <div class="text-wrapper_1 flex-row">
-                    <span class="text_1">{{ option.points }}</span>
-                    <span class="text_2">O-Points</span>
+                <div class="task-card" 
+                :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                >
+                  <div class="title">
+                    <div class="task-info">
+                    <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
+                    <div class="description" v-html="option.description"></div>
+                    </div>
                   </div>
-                  <div class="border-dashed"></div>
-                  <div
-                    style="
-                      font-size: 12px;
-                      font-family: OpenSansRoman-SemiBold;
-                      position: absolute;
-                      left: 100px;
-                      top: 13px;
-                    "
-                  >
-                    <div class="text_3" v-html="option.description"></div>
+                  <div class="group">
                     <div
-                      style="margin-top: 10px; display: flex; flex-direction: row"
-                    >
-                      <div
+                      v-if="option.status === 0"
                         v-for="tag in option.tags"
                         class="text-wrapper_17 flex-col"
+                        :key="tag.description"
                       >
-                        <span class="text_27">{{ tag.description }}</span>
-                      </div>
-                      <div class="text-wrapper_18">
-                        <span class="text_28" v-if="!!option.progress">{{
-                          option.progress
-                            ? `${option.progress.current}/${option.progress.total}`
-                            : '0/0'
-                        }}</span>
-                        <span v-else class="text_28">Undone</span>
-                      </div>
-                      
+                      <span class="text_27">{{ tag.description }}</span>
                     </div>
-                  </div>
-                  <img
-                    :hidden="!isLightMode"
-                    class="thumbnail_1"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/curve_up.png')"
-                  />
-                  <img
-                    :hidden="!isLightMode"
-                    class="thumbnail_2"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/curve_down.png')"
-                  />
-                  <img
-                    :hidden="isLightMode"
-                    class="thumbnail_5"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/curve_up_dark.png')"
-                  />
-                  <img
-                    :hidden="isLightMode"
-                    class="thumbnail_6"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/curve_down_dark.png')"
-                  />
-                </div>
-                <div v-else class="box_2">
-                  <div class="text-wrapper_3">
-                    <span class="text_6">{{ option.points }}</span>
-                    <span class="text_7">O-Points</span>
-                  </div>
-                  <div class="border-dashed_2"></div>
-                  <div
-                    style="
-                      font-size: 12px;
-                      font-family: OpenSansRoman-SemiBold;
-                      position: absolute;
-                      left: 100px;
-                      top: 13px;
-                    "
-                  >
-                    <div class="text_8" v-html="option.description"></div>
-  
-                    <div
-                      style="margin-top: 10px; display: flex; flex-direction: row"
-                    >
-                      <div
-                        v-for="tag in option.tags"
-                        class="text-wrapper_14 flex-col"
-                      >
-                        <span class="text_29">{{ tag.description }}</span>
-                      </div>
-                      <div class="text-wrapper_4 flex-col">
-                        <span class="text_9">Done</span>
-                      </div>
+                    <div v-else class="text-wrapper_4 flex-col">
+                      <span class="text_9">Done</span>
                     </div>
+
+                    <div class="group-reward">
+                      <svg-icon iconName="O-Points"></svg-icon>
+                      + {{ option.points }} OPoints
+                    </div>
+                    
+
+                    <div class="text-wrapper_18">
+                      <span class="text_28" v-if="!!option.progress">{{
+                        option.progress
+                          ? `${option.progress.current}/${option.progress.total}`
+                          : '0/0'
+                      }}</span>
+                      <span v-else class="text_28">Undone</span>
+                    </div>
+                    
                   </div>
-                  <img
-                    :hidden="!isLightMode"
-                    class="thumbnail_3"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/curve_up_gray.png')"
-                  />
-                  <img
-                    :hidden="!isLightMode"
-                    class="thumbnail_4"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/curve_down_gray.png')"
-                  />
-                  <img
-                    :hidden="isLightMode"
-                    class="thumbnail_5"
-                    referrerpolicy="no-referrer"
-                    :src="require('../../assets/activity/curve_up_dark_done.png')"
-                  />
-                  <img
-                    :hidden="isLightMode"
-                    class="thumbnail_6"
-                    referrerpolicy="no-referrer"
-                    :src="
-                      require('../../assets/activity/curve_down_dark_done.png')
-                    "
-                  />
                 </div>
               </template>
             </div>
@@ -503,9 +248,6 @@ import {
   actAddPointVisible,
   actAddPoint,
   actTotalPoint,
-  actBasePoint,
-  actEcosystemPoints,
-  actTotalActivityPoint,
   actNftList,
   isSolanaDialog,
   solAddress,
@@ -514,6 +256,7 @@ import {
   updateActDataList,
   isTonDialog,
   tonAddress,
+  setUserInfoDetailsCardModalShow
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -538,7 +281,8 @@ import ActDialogBanner from './ActDialogBanner.vue'
 import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
-
+import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import PrizesCard  from "./PrizesCard.vue"
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
 export default {
@@ -549,7 +293,9 @@ export default {
     HeaderLotteryCard,
     EcosystemDapp,
     EcosystemDappPro,
-    ActDialogBanner
+    ActDialogBanner,
+    SvgIcon,
+    PrizesCard
   },
   data() {
     return {
@@ -635,15 +381,6 @@ export default {
     },
     totalPoint() {
       return actTotalPoint.value
-    },
-    actBasePoint() {
-      return actBasePoint.value
-    },
-    actEcosystemPoints() {
-      return actEcosystemPoints.value
-    },
-    actTotalActivityPoint() {
-      return actTotalActivityPoint.value
     },
     actDataList() {
       const list = transferDataState.actDataList || []
@@ -781,6 +518,12 @@ export default {
     },
   },
   methods: {
+    openClaimRewardModal() {
+      this.$store.commit("getClaimORBGUYRewardData", 'REWARD')
+    },
+    openUserInfoDetailsCardModal () {
+      setUserInfoDetailsCardModalShow(true)
+    },
     toggleNftListStatus() {
       this.extendsNftList = !this.extendsNftList
       setTimeout(() => {
@@ -811,8 +554,7 @@ export default {
       let eleHeight = this.$refs.block_top_group?.clientHeight || 0
       const total = this.$refs.block_1?.clientHeight || 50
       const actDialogBottomGroupRef = this.$refs.act_dialog_bottom_group_ref?.clientHeight || 50 
-      
-      this.taskHeight = total - eleHeight - actDialogBottomGroupRef - walletGroupEle - 72
+      this.taskHeight = total - eleHeight - actDialogBottomGroupRef - walletGroupEle - 32
       if (isMobile) {
         this.taskMobileHeight = total - walletGroupEle -20
       }
@@ -1082,7 +824,7 @@ export default {
   color: #3478f5;
   text-decoration: underline;
   cursor: pointer;
-  font-family: OpenSansRoman-SemiBold;
+  font-family: GeneralSans-SemiBold;
   padding: 0 2px;
   line-height: 17px;
 }
@@ -1100,7 +842,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(30, 180, 171, 1);
     font-size: 18px;
-    font-family: OpenSansRoman-ExtraBold;
+    font-family: GeneralSans-Medium;
     text-align: right;
     white-space: nowrap;
     line-height: 24px;
@@ -1144,7 +886,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(255, 255, 255, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1170,7 +912,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(255, 255, 255, 1);
     font-size: 16px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     font-weight: 700;
     text-align: left;
     white-space: nowrap;
@@ -1214,11 +956,7 @@ export default {
   }
 
   .text-wrapper_45 {
-    border-radius: 12px;
-    background-image: url('../../assets/activity/point_bg.png');
-    /*background-repeat: repeat-x;*/
-    background-size: 100% auto;
-    height: 120px;
+    width: 100%;
     padding-top: 2px;
   }
 
@@ -1228,31 +966,89 @@ export default {
     overflow-wrap: break-word;
     color: rgba(255, 255, 255, 1);
     font-size: 14px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: left;
     white-space: nowrap;
     line-height: 19px;
-    margin: 16px 0 0 20px;
+    margin-top: 8px;
   }
 
   .text_99 {
     display: flex;
-    height: 46px;
-    overflow-wrap: break-word;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    .left {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      height: 46px;
+      overflow-wrap: break-word;
+      color: rgba(255, 255, 255, 1);
+      font-size: 34px;
+      font-family: GeneralSans-Medium;
+      text-align: left;
+      white-space: nowrap;
+      line-height: 46px;
+    }
+
+    .right {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      .reward {
+        font-size: 14px;
+        font-weight: 600;
+        padding: 8px;
+        border: 1px solid rgb(242, 185, 255);
+        border-radius: 8px;
+        box-shadow: inset 0px 0px 8px 0px rgb(242, 185, 255);
+        backdrop-filter: blur(8px);
+        background: rgba(242, 185, 255, 0.1);
+        color: #F2B9FF;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        svg {
+          width: 20px;
+          height: 20px;
+          margin-right: 8px;
+        }
+      }
+
+      .details {
+        font-size: 14px;
+        font-weight: 600;
+        margin-left: 8px;
+        border: 1px solid rgb(219, 239, 45);
+        border-radius: 8px;
+        box-shadow: inset 0px 0px 8px 0px rgb(219, 239, 45),0px 0px 4px 0px rgba(219, 239, 45, 0.4);
+        backdrop-filter: blur(8px);
+        background: rgba(219, 239, 45, 0.1);
+        color: #DBEF2D;
+        padding: 8px 24px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .user-info {
     color: rgba(255, 255, 255, 1);
-    font-size: 34px;
-    font-family: OpenSansRoman-ExtraBold;
-    text-align: left;
-    white-space: nowrap;
-    line-height: 46px;
-    margin: 8px 0 10px 20px;
+    width: 100%;
+    
+  padding: 16px;
+  background-image: url('../../assets/headerAccount/top-bg.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: #000;
   }
 
   .section_54 {
     display: flex;
     width: 388px;
     height: 45px;
-    margin: 20px 0 0 20px;
   }
 
   .box_114 {
@@ -1280,9 +1076,8 @@ export default {
   .text_96 {
     height: 22px;
     overflow-wrap: break-word;
-    color: rgba(34, 34, 34, 1);
     font-size: 16px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     text-align: left;
     white-space: nowrap;
     line-height: 22px;
@@ -1294,7 +1089,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 14px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 19px;
@@ -1328,14 +1123,14 @@ export default {
     line-height: 36px;
     text-align: center;
     margin: 5px 0 0 0;
-    background: #f5f5f5;
+    background: #000000;
     border-radius: 11px;
     display: flex;
     align-items: center;
     justify-content: center;
 
     &:hover {
-      border: 1px solid #222222;
+      border: 1px solid #666666;
       background-color: transparent !important;
     }
 
@@ -1397,13 +1192,12 @@ export default {
   .text_27 {
     height: 17px;
     overflow-wrap: break-word;
-    color: rgba(255, 255, 255, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
-    margin: 1px 8px;
+    margin: 0 8px;
   }
 
   .text_29 {
@@ -1412,7 +1206,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(134, 136, 150, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     font-weight: 700;
     text-align: left;
     white-space: nowrap;
@@ -1426,7 +1220,10 @@ export default {
     background: url('../../assets/activity/light_tag_undone.png') 100% no-repeat;
     background-size: 100% 100%;
     margin-left: 2px;
-    /*width: 35px;*/
+    width: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .text_28 {
@@ -1435,7 +1232,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1443,8 +1240,11 @@ export default {
 
   .text-wrapper_17 {
     height: 20px;
-    background: url('../../assets/activity/fee_tag_undone.png') 100% no-repeat;
-    background-size: 100% 100%;
+    border-radius: 4px;
+    background: rgb(245, 245, 245);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .text-wrapper_1_17 {
@@ -1467,7 +1267,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 11px;
-    font-family: OpenSansRoman-ExtraBold;
+    font-family: GeneralSans-Medium;
     text-align: center;
     white-space: nowrap;
     line-height: 15px;
@@ -1498,6 +1298,7 @@ export default {
     position: absolute;
     width: 420px;
     height: 100%;
+    border-radius: 16px 0px 0px 16px;
   }
 
   .box_1 {
@@ -1565,7 +1366,7 @@ export default {
     height: 33px;
     color: #ffffff;
     font-size: 24px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     font-weight: 700;
     text-align: center;
     white-space: nowrap;
@@ -1581,7 +1382,7 @@ export default {
     overflow-wrap: break-word;
     color: #ffffff;
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: center;
     white-space: nowrap;
     line-height: 17px;
@@ -1624,7 +1425,7 @@ export default {
     // width: 210px;
     height: 19px;
     font-size: 14px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     color: rgba(34, 34, 34, 1);
     line-height: 19px;
     white-space: nowrap;
@@ -1636,7 +1437,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(102, 102, 102, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1649,7 +1450,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 13px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     text-align: left;
     line-height: 18px;
   }
@@ -1674,7 +1475,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     /*font-weight: NaN;*/
     text-align: left;
     white-space: nowrap;
@@ -1687,7 +1488,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1734,7 +1535,7 @@ export default {
     width: 14px;
     height: 33px;
     font-size: 24px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     font-weight: 700;
     text-align: center;
     white-space: nowrap;
@@ -1750,7 +1551,7 @@ export default {
     height: 17px;
     overflow-wrap: break-word;
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: center;
     white-space: nowrap;
     line-height: 17px;
@@ -1775,7 +1576,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: left;
     line-height: 17px;
   }
@@ -1792,6 +1593,9 @@ export default {
     background-size: 100% 100%;
     margin-left: 2px;
     width: 47px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   .text_9 {
@@ -1800,7 +1604,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1812,7 +1616,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1865,7 +1669,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 24px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     font-weight: 700;
     text-align: right;
     white-space: nowrap;
@@ -1878,7 +1682,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -1903,7 +1707,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: left;
     line-height: 17px;
   }
@@ -2013,7 +1817,7 @@ export default {
       overflow-wrap: break-word;
       color: #999999;
       font-size: 14px;
-      font-family: OpenSansRoman-Regular;
+      font-family: GeneralSans-Regular;
       text-align: left;
       white-space: nowrap;
     }
@@ -2045,7 +1849,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -2086,7 +1890,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 24px;
-    font-family: OpenSansRoman-Bold;
+    font-family: GeneralSans-Bold;
     font-weight: 700;
     text-align: right;
     white-space: nowrap;
@@ -2099,7 +1903,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -2117,7 +1921,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 14px;
-    font-family: OpenSansRoman-SemiBold;
+    font-family: GeneralSans-SemiBold;
     text-align: left;
     line-height: 19px;
   }
@@ -2134,7 +1938,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(34, 34, 34, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -2146,7 +1950,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(153, 153, 153, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
@@ -2226,7 +2030,7 @@ export default {
           }
           .text {
             color: rgb(34, 34, 34);
-            font-family: OpenSansRoman-Bold;
+            font-family: GeneralSans-Bold;
             font-size: 14px;
             font-weight: 700;
             line-height: 19px;
@@ -2235,6 +2039,60 @@ export default {
           }
         }
         
+      }
+
+      .task-card {
+        width: 100%;
+        border-radius: 8px;
+        background-color: #FFF;
+        margin-top: 8px;
+        padding: 12px;
+        text-align: left;
+        .title {
+          width: 100%;
+          font-size: 14px;
+          font-weight: 700;
+          line-height: 20px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .task-info {
+            display: flex;
+            justify-content: start;
+            align-items: start;
+            .task-icon {
+              width: 20px;
+              height: 20px;
+              margin-right: 8px;
+            }
+          }
+        }
+
+        .group {
+          width: 100%;
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          margin-top: 8px;
+
+          .group-reward {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            padding: 2px 4px;
+            border-radius: 4px;
+            background: rgb(245, 245, 245);
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 16px;
+            margin: 0 8px;
+            svg {
+              width: 16px;
+              height: 16px;
+              margin-right: 4px;
+            }
+          }
+        }
       }
     }
   }
@@ -2245,7 +2103,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(93, 147, 247, 1);
     font-size: 12px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     text-align: center;
     white-space: nowrap;
     line-height: 17px;
@@ -2295,15 +2153,6 @@ export default {
 
       .text_1_69 {
         color: rgba(255, 255, 255, 1);
-      }
-    }
-
-    .label_19 {
-      background: #363951;
-
-      &:hover {
-        border: 1px solid #dddddd;
-        background-color: transparent !important;
       }
     }
 
@@ -2360,7 +2209,7 @@ export default {
       overflow-wrap: break-word;
       color: rgba(255, 255, 255, 0.4);
       font-size: 12px;
-      font-family: OpenSansRoman-Regular;
+      font-family: GeneralSans-Regular;
       text-align: left;
       white-space: nowrap;
       line-height: 17px;
@@ -2438,7 +2287,7 @@ export default {
       overflow-wrap: break-word;
       color: rgba(255, 255, 255, 0.8);
       font-size: 12px;
-      font-family: OpenSansRoman-SemiBold;
+      font-family: GeneralSans-SemiBold;
       text-align: left;
       white-space: nowrap;
       line-height: 17px;
@@ -2475,7 +2324,12 @@ export default {
       background-color: #ffffff;
       position: absolute;
       width: 100%;
-      max-height: 324px;
+      max-height: 520px;
+      border-radius: 16px 16px 0 0;
+
+      .user-info {
+        border-radius: 16px 16px 0 0;
+      }
     }
 
     .card_2 {
@@ -2560,7 +2414,7 @@ export default {
         overflow-wrap: break-word;
         color: rgba(255, 255, 255, 0.8);
         font-size: 12px;
-        font-family: OpenSansRoman-SemiBold;
+        font-family: GeneralSans-SemiBold;
         text-align: left;
         white-space: nowrap;
         line-height: 17px;

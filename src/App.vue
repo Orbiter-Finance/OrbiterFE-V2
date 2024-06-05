@@ -30,11 +30,12 @@
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
-    <HeaderAccountDialog></HeaderAccountDialog>
+    <ClaimRewardModal ></ClaimRewardModal>
     <div id="ton-connect-wallet">
 
     </div>
     <GlobalTgCard ></GlobalTgCard>
+    <UserInfoDetailsCardModal></UserInfoDetailsCardModal>
   </div>
 </template>
 
@@ -70,7 +71,8 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   isTonDialog,
-  setTonDialog
+  setTonDialog,
+  setClaimCardModalAmountInfo
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -85,7 +87,8 @@ import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
 import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
 import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
-import HeaderAccountDialog from './components/HeaderAccountDialog/index.vue'
+import UserInfoDetailsCardModal from './components/layouts/UserInfoDetailsCardModal.vue'
+import ClaimRewardModal from './components/layouts/ClaimRewardModal.vue'
 
 import {
   setIsBraveWallet,
@@ -99,6 +102,8 @@ import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from './util/constants/starknet/helper'
 import solanaHelper from './util/solana/solana_helper'
 import tonHelper from "./util/ton/ton_helper"
+import { requestClaimLuckyBagReward } from './common/openApiAx'
+import { ethers } from 'ethers'
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -187,7 +192,8 @@ export default {
     HeaderLotteryCardDialog,
     HeaderWalletGroup,
     GlobalTgCard,
-    HeaderAccountDialog
+    UserInfoDetailsCardModal,
+    ClaimRewardModal
   },
   async mounted () {
     tonHelper.tonConnectCall();
@@ -239,6 +245,9 @@ export default {
       const [web3Address, starkNetAddress] = newAddress
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
+      if(newAddress) {
+        this.getClaimRewardModalData()
+      }
       if(tonAddress) {
         setTonDialog(true)
         setActDialogVisible(true)
@@ -259,6 +268,30 @@ export default {
     },
   },
   methods: {
+    async getClaimRewardModalData() {
+      const [web3Address] = this.currentWalletAddress
+      if(!web3Address) return
+      try {
+        const res = await requestClaimLuckyBagReward(web3Address.toLocaleLowerCase())
+        const { result } = res || {}
+
+        const {totalQuantity =0, max=0 } = result
+
+        setClaimCardModalAmountInfo({
+          max,
+          totalQuantity,
+          ratio: Number(totalQuantity)
+            ? ethers.utils
+                .parseEther(String(totalQuantity))
+                .mul('100')
+                .div(ethers.utils.parseEther(String(max)))
+                .toString()
+            : '0',
+        })
+      } catch (error) {
+        
+      }
+    },
     getAddress () {
       let addressGroup = {
         isAddress: false,

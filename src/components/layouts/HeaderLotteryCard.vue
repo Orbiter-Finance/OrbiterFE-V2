@@ -153,7 +153,7 @@ export default {
         this.visible = true
       } else {
         this.visible = false
-        if (!!this.total) {
+        if (!!this.total || true) {
           await this.getLotteryCardDataDraw()
           await this.getLotteryCardData()
         }
@@ -188,7 +188,7 @@ export default {
         })
         const point = data?.points || ''
 
-        if (Number(point)) {
+        if (Number(point) || true) {
           setActAddPoint(String(point))
           setLotteryCardModalShow(true)
 
@@ -269,10 +269,10 @@ export default {
   font-size: 12px;
   line-height: 17px;
   margin-left: -20px;
-  font-family: OpenSansRoman-Bold;
+  font-family: GeneralSans-Bold;
   .lottery-tooltip-bottom {
     margin-top: 8px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
   }
 }
 

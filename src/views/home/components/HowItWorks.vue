@@ -81,7 +81,7 @@ export default {
   margin-top: 24px;
   font-size: 18px;
   cursor: pointer;
-  font-family: OpenSansRoman-SemiBold, OpenSansRoman;
+  font-family: GeneralSans-SemiBold, OpenSansRoman;
   font-weight: 600;
   color: #df2e2d;
 }

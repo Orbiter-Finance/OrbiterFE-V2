@@ -114,7 +114,7 @@ export default {
   margin-top: 102px;
   cursor: pointer;
   font-size: 18px;
-  font-family: OpenSansRoman-SemiBold, OpenSansRoman;
+  font-family: GeneralSans-SemiBold, OpenSansRoman;
   font-weight: 600;
   color: #df2e2d;
   line-height: 24px;

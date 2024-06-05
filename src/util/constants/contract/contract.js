@@ -1920,6 +1920,198 @@ const Orbiter_OPOOL_ABI = [
   },
 ]
 
+const Orbiter_CLAIM_ABI = [
+  {
+    inputs: [
+      { internalType: 'address', name: 'owner_', type: 'address' },
+      { internalType: 'address[]', name: 'signers_', type: 'address[]' },
+      { internalType: 'address', name: 'rewardToken_', type: 'address' },
+    ],
+    stateMutability: 'nonpayable',
+    type: 'constructor',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'target', type: 'address' }],
+    name: 'AddressEmptyCode',
+    type: 'error',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+    name: 'AddressInsufficientBalance',
+    type: 'error',
+  },
+  { inputs: [], name: 'ECDSAInvalidSignature', type: 'error' },
+  {
+    inputs: [{ internalType: 'uint256', name: 'length', type: 'uint256' }],
+    name: 'ECDSAInvalidSignatureLength',
+    type: 'error',
+  },
+  {
+    inputs: [{ internalType: 'bytes32', name: 's', type: 'bytes32' }],
+    name: 'ECDSAInvalidSignatureS',
+    type: 'error',
+  },
+  { inputs: [], name: 'FailedInnerCall', type: 'error' },
+  {
+    inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
+    name: 'OwnableInvalidOwner',
+    type: 'error',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
+    name: 'OwnableUnauthorizedAccount',
+    type: 'error',
+  },
+  { inputs: [], name: 'ReentrancyGuardReentrantCall', type: 'error' },
+  {
+    inputs: [{ internalType: 'address', name: 'token', type: 'address' }],
+    name: 'SafeERC20FailedOperation',
+    type: 'error',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      { indexed: true, internalType: 'bytes32', name: 'id', type: 'bytes32' },
+      { indexed: true, internalType: 'uint64', name: 'flag', type: 'uint64' },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'winner',
+        type: 'address',
+      },
+    ],
+    name: 'Claim',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'previousOwner',
+        type: 'address',
+      },
+      {
+        indexed: true,
+        internalType: 'address',
+        name: 'newOwner',
+        type: 'address',
+      },
+    ],
+    name: 'OwnershipTransferred',
+    type: 'event',
+  },
+  {
+    inputs: [
+      {
+        components: [
+          { internalType: 'bytes32', name: 'id', type: 'bytes32' },
+          { internalType: 'uint256', name: 'value', type: 'uint256' },
+          { internalType: 'uint64', name: 'expiredTimestamp', type: 'uint64' },
+          { internalType: 'uint64', name: 'flag', type: 'uint64' },
+        ],
+        internalType: 'struct OrbiterLottery.Card[]',
+        name: 'cards',
+        type: 'tuple[]',
+      },
+      { internalType: 'bytes[]', name: 'signs', type: 'bytes[]' },
+    ],
+    name: 'claim',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'winner', type: 'address' },
+      {
+        components: [
+          { internalType: 'bytes32', name: 'id', type: 'bytes32' },
+          { internalType: 'uint256', name: 'value', type: 'uint256' },
+          { internalType: 'uint64', name: 'expiredTimestamp', type: 'uint64' },
+          { internalType: 'uint64', name: 'flag', type: 'uint64' },
+        ],
+        internalType: 'struct OrbiterLottery.Card',
+        name: 'card',
+        type: 'tuple',
+      },
+    ],
+    name: 'encodeCard',
+    outputs: [{ internalType: 'bytes32', name: 'data', type: 'bytes32' }],
+    stateMutability: 'pure',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
+    name: 'getClaimedCards',
+    outputs: [
+      {
+        components: [
+          { internalType: 'bytes32', name: 'id', type: 'bytes32' },
+          { internalType: 'uint256', name: 'value', type: 'uint256' },
+          { internalType: 'uint64', name: 'expiredTimestamp', type: 'uint64' },
+          { internalType: 'uint64', name: 'flag', type: 'uint64' },
+        ],
+        internalType: 'struct OrbiterLottery.Card[]',
+        name: '',
+        type: 'tuple[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'owner',
+    outputs: [{ internalType: 'address', name: '', type: 'address' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'renounceOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'token', type: 'address' }],
+    name: 'setRewardToken',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address[]', name: 'signers', type: 'address[]' },
+      { internalType: 'bool[]', name: 'status', type: 'bool[]' },
+    ],
+    name: 'setSigners',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [{ internalType: 'address', name: 'newOwner', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      { internalType: 'address', name: 'token', type: 'address' },
+      { internalType: 'uint256', name: 'amount', type: 'uint256' },
+    ],
+    name: 'withdraw',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  { stateMutability: 'payable', type: 'receive' },
+]
+
 export {
   Coin_ABI,
   XVM_ABI,
@@ -1928,4 +2120,5 @@ export {
   PAYMASTER_ABI,
   Orbiter_V3_ABI_EVM,
   Orbiter_OPOOL_ABI,
+  Orbiter_CLAIM_ABI,
 }
