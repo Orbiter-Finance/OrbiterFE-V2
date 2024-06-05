@@ -391,14 +391,14 @@ export default {
           reward: '25% Prize Pool',
           color: ratio25,
           isSuccess: txN >= 15,
-          isPromotion: Number(rankN) && Number(rankN) <= 100,
+          isPromotion: txN >= 20 && Number(rankN) && Number(rankN) <= 100,
         },
         {
           icon: 'bridge',
           text: `Bridge from any network to Arbitrum's <span class="orbiter_global_prizes_tx-color">Top 100</span>`,
           reward: '30% Prize Pool',
           color: ratio30,
-          isSuccess: Number(rankN) && Number(rankN) <= 100,
+          isSuccess: txN >= 20 && Number(rankN) && Number(rankN) <= 100,
         },
       ]
     },
