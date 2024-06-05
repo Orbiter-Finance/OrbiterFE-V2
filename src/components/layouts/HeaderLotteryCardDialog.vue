@@ -110,6 +110,8 @@ import {
   setLotteryCardModalShow,
   setLotteryPointsNum,
   setLotteryCardProgress,
+  isTonDialog,
+  isSolanaDialog
 } from '../../composition/hooks'
 import util from '../../util/util'
 
