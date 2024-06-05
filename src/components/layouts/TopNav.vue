@@ -186,7 +186,7 @@ export default {
       return this.isLightMode ? starknetLogoLight : starknetLogoDark
     },
     isLogin () {
-      return walletIsLogin.value
+      return walletIsLogin.value && this.showAddress
     },
     isMobile () {
       return isMobile.value
