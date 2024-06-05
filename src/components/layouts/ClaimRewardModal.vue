@@ -292,9 +292,9 @@ export default {
       const provider = new ethers.providers.Web3Provider(
           compatibleGlobalWalletConf.value.walletPayload.provider
         )
-      const chainID = +provider?.network?.chainId || +this.currentNetwork
+      const chainID = +web3State?.networkId || +provider?.network?.chainId || +this.currentNetwork
 
-      console.log("chainID", compatibleGlobalWalletConf?.value?.walletPayload?.provider, chainID)
+      console.log("chainID", chainID)
 
       if(Number(chainID) !== 42161) {
         util.showMessage("Please Switch Arbitrum Network", 'warning');
