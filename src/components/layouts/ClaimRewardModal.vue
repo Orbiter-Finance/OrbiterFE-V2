@@ -66,15 +66,7 @@
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px">
-                          <span
-                            >Over 50 O-points users can claim a reward randomly. A total reward of 300,000 $ORBGUY available. Rewards are claimed on Arbitrum network. FCFS!</span
-                          >
-                          <a
-                            class="points_more"
-                            href="https://docs.orbiter.finance/o-points#activity-points-and-exchange-standards"
-                            target="_blank"
-                            >More</a
-                          >
+                          <span>Over 50 O-points users can claim a reward randomly. A total reward of 200,000 $ORBGUY available. Rewards are claimed on Arbitrum network. FCFS!</span>
                         </div>
                       </template>
                       <svg-icon
@@ -291,6 +283,7 @@ export default {
     },
     handleHidden() {
       this.isClaim = false
+      this.loading = false
       this.$store.commit('getClaimORBGUYRewardData', '')
     },
     async claim() {
@@ -300,6 +293,8 @@ export default {
           compatibleGlobalWalletConf.value.walletPayload.provider
         )
       const chainID = +provider?.network?.chainId || +this.currentNetwork
+
+      console.log("chainID", compatibleGlobalWalletConf?.value?.walletPayload?.provider, chainID)
 
       if(Number(chainID) !== 42161) {
         util.showMessage("Please Switch Arbitrum Network", 'warning');
