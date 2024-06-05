@@ -203,11 +203,12 @@ export default {
       if (type) {
         const address =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        if (!address && address !== '0x') return
         util.showMessage('Opening...', 'warning')
 
-        let res = await requestClaimLuckyBagReward(address.toLocaleLowerCase())
+        let res = await requestClaimLuckyBagReward(address?.toLocaleLowerCase())
         if (!res?.result?.sign) {
-          res = await drawClaimLuckyBagReward(address.toLocaleLowerCase())
+          res = await drawClaimLuckyBagReward(address?.toLocaleLowerCase())
         }
         const { result, code, message = '' } = res || {}
         const {
