@@ -263,9 +263,13 @@ export default {
       this.cardIds = []
       const evmAddress = this.currentEvmAddress
       if (!evmAddress) return
-      const provider = new ethers.providers.Web3Provider(
-        compatibleGlobalWalletConf.value.walletPayload.provider
+
+      const web3Provider = await util.stableWeb3("42161")
+
+      const provider = new ethers.providers.JsonRpcProvider(
+        web3Provider
       )
+
       const signer = provider.getSigner()
 
       const claimContract = new ethers.Contract(
@@ -275,7 +279,6 @@ export default {
       )
 
       const cardIds = await claimContract.getClaimedCards(evmAddress)
-      console.log("cardIdscardIdscardIdscardIds", cardIds)
       this.cardIds = [].concat(cardIds)
     },
     decimalNumC(num, decimal, delimiter) {
@@ -293,8 +296,6 @@ export default {
           compatibleGlobalWalletConf.value.walletPayload.provider
         )
       const chainID = +web3State?.networkId || +provider?.network?.chainId || +this.currentNetwork
-
-      console.log("chainID", chainID)
 
       if(Number(chainID) !== 42161) {
         util.showMessage("Please Switch Arbitrum Network", 'warning');
@@ -346,7 +347,6 @@ export default {
         await res.wait()
         this.isClaim = true
       } catch (error) {
-        console.log('error', error)
         util.showMessage(String(error?.message || error), 'error')
         this.loading = false
       }
