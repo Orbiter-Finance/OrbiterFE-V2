@@ -1245,6 +1245,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: 600;
   }
 
   .text-wrapper_1_17 {
