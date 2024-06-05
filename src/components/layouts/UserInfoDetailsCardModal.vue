@@ -49,8 +49,7 @@
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
                     <span
-                      >Task rewards for participating in Orbiter Finance-related
-                      activities.</span
+                      >Over 50 O-points users can claim a reward randomly. A total reward of 200,000 $ORBGUY available. Rewards are claimed on Arbitrum network. FCFS!</span
                     >
                     <a
                       class="points_more"
