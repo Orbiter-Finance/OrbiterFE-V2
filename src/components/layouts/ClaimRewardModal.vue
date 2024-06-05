@@ -266,11 +266,11 @@ export default {
 
       const web3Provider = await util.stableWeb3("42161")
 
-      const provider = new ethers.providers.JsonRpcProvider(
-        web3Provider
+      const provider = new ethers.providers.Web3Provider(
+        web3Provider.currentProvider
       )
 
-      const signer = provider.getSigner()
+      const signer = provider.getSigner(evmAddress)
 
       const claimContract = new ethers.Contract(
         CLAIM_ORBGUY_CONTRACT_ADDRESS,
@@ -279,6 +279,7 @@ export default {
       )
 
       const cardIds = await claimContract.getClaimedCards(evmAddress)
+
       this.cardIds = [].concat(cardIds)
     },
     decimalNumC(num, decimal, delimiter) {
