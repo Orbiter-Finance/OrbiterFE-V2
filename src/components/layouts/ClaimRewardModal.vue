@@ -45,7 +45,7 @@
               </div>
               <div
                 class="claim-btn"
-                :style="`opacity:${loading ? '0.4' : '1'};`"
+                :style="`opacity:${loading ? '0.4' : '1'};cursor:${loading ? 'not-allowed' : 'pointer'};`"
                 @click="claim"
                 v-if="!isClaimed"
               >
@@ -183,6 +183,9 @@ import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import JoinMediaCard from './JoinMediaCard.vue'
 import { Orbiter_CLAIM_ABI } from '../../util/constants/contract/contract'
 import { CLAIM_ORBGUY_CONTRACT_ADDRESS } from "../../const"
+
+import { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
+import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
 export default {
   components: { SvgIcon },
   name: 'ClaimRewardModal',
@@ -205,6 +208,9 @@ export default {
     },
     claimCardModalDataInfoData() {
       return claimCardModalDataInfo.value
+    },
+    currentNetwork() {
+      return compatibleGlobalWalletConf.value.walletPayload.networkId;
     },
     claimAmount() {
       const { data = []} = this.claimCardModalDataInfoData || {}
@@ -321,18 +327,29 @@ export default {
     async claim() {
       if (this.isClaim || this.loading) return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
-      const chainID = +compatibleGlobalWalletConf.value.walletPayload.networkId
-      console.log("chainID", chainID)
+      const provider = new ethers.providers.Web3Provider(
+          compatibleGlobalWalletConf.value.walletPayload.provider
+        )
+      const chainID = +provider?.network?.chainId || +this.currentNetwork
+
       if(Number(chainID) !== 42161) {
         util.showMessage("Please Switch Arbitrum Network", 'warning');
+        if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
+              try {
+                if (!await util.ensureWalletNetwork("42161")) {
+                  return;
+                }
+              } catch (err) {
+                console.error(err);
+                util.showMessage(err.message, 'error');
+                return;
+              }
+            } 
         return
       }
       try {
         this.loading = true
 
-        const provider = new ethers.providers.Web3Provider(
-          compatibleGlobalWalletConf.value.walletPayload.provider
-        )
         const signer = provider.getSigner()
 
         const claimContract = new ethers.Contract(
@@ -351,12 +368,22 @@ export default {
           }),
           [...(signData || [])],
         ]
-        console.log("params", data, signData, params)
-        const res = await claimContract.claim(params[0], params[1])
+
+        let emitGas = ethers.utils.parseUnits("500000")
+        try {
+         emitGas = await claimContract.estimateGas.claim(params[0], params[1])
+        } catch (error) {
+          
+        }
+
+        const res = await claimContract.claim(params[0], params[1], {
+          gasLimit: emitGas.mul("12").div("10")
+        })
         await res.wait()
         this.isClaim = true
       } catch (error) {
         console.log('error', error)
+        util.showMessage(String(error?.message || error), 'error')
         this.loading = false
       }
     },
