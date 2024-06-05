@@ -183,7 +183,7 @@ import { decimalNum } from '../../util/decimalNum'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import JoinMediaCard from './JoinMediaCard.vue'
 import { Orbiter_CLAIM_ABI } from '../../util/constants/contract/contract'
-
+import { CLAIM_ORBGUY_CONTRACT_ADDRESS } from "../../const"
 export default {
   components: { SvgIcon },
   name: 'ClaimRewardModal',
@@ -208,7 +208,6 @@ export default {
       return claimCardModalDataInfo.value
     },
     claimAmount() {
-      console.log("this.claimCardModalDataInfoData", web3State)
       const { data = []} = this.claimCardModalDataInfoData || {}
       const cardIds = this.cardIds
 
@@ -304,7 +303,7 @@ export default {
       const signer = provider.getSigner()
 
       const claimContract = new ethers.Contract(
-        '0xEE907981a042680532428020bc3868352A887508',
+        CLAIM_ORBGUY_CONTRACT_ADDRESS,
         Orbiter_CLAIM_ABI,
         signer
       )
@@ -338,7 +337,7 @@ export default {
         const signer = provider.getSigner()
 
         const claimContract = new ethers.Contract(
-          '0xEE907981a042680532428020bc3868352A887508',
+          CLAIM_ORBGUY_CONTRACT_ADDRESS,
           Orbiter_CLAIM_ABI,
           signer
         )

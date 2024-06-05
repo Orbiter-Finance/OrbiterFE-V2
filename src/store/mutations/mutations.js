@@ -199,53 +199,58 @@ export default {
     toggleBodyCls()
   },
   async getClaimORBGUYRewardData(state, type) {
-    if (type) {
-      const address =
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      util.showMessage('Opening...', 'warning')
+    try {
+      if (type) {
+        const address =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        util.showMessage('Opening...', 'warning')
 
-      let res = await requestClaimLuckyBagReward(address.toLocaleLowerCase())
-      if (!res?.result?.sign) {
-        res = await drawClaimLuckyBagReward(address.toLocaleLowerCase())
-      }
-      const { result, code, message = '' } = res || {}
-      const {
-        max = 0,
-        totalQuantity = 0,
-        card = {},
-        businessIdentity = '',
-        sign = '',
-      } = result || {}
-      if (Number(code) === 0) {
-        setClaimCardModalDataInfo({
-          data: [
-            {
-              expiredTimestamp: card?.expiredTimestamp,
-              id: card?.id,
-              value: card?.value,
-              flag: businessIdentity,
-            },
-          ],
-          sign: [sign],
-        })
-        setClaimCardModalAmountInfo({
-          max,
-          totalQuantity,
-          ratio: Number(totalQuantity)
-            ? ethers.utils
-                .parseEther(String(totalQuantity))
-                .mul('100')
-                .div(ethers.utils.parseEther(String(max)))
-                .toString()
-            : '0',
-        })
-        setClaimCardModalShow(true, type)
+        let res = await requestClaimLuckyBagReward(address.toLocaleLowerCase())
+        if (!res?.result?.sign) {
+          res = await drawClaimLuckyBagReward(address.toLocaleLowerCase())
+        }
+        const { result, code, message = '' } = res || {}
+        const {
+          max = 0,
+          totalQuantity = 0,
+          card = {},
+          businessIdentity = '',
+          sign = '',
+        } = result || {}
+        if (Number(code) === 0) {
+          setClaimCardModalDataInfo({
+            data: [
+              {
+                expiredTimestamp: card?.expiredTimestamp,
+                id: card?.id,
+                value: card?.value,
+                flag: businessIdentity,
+              },
+            ],
+            sign: [sign],
+          })
+          setClaimCardModalAmountInfo({
+            max,
+            totalQuantity,
+            ratio: Number(totalQuantity)
+              ? ethers.utils
+                  .parseEther(String(totalQuantity))
+                  .mul('100')
+                  .div(ethers.utils.parseEther(String(max)))
+                  .toString()
+              : '0',
+          })
+          setClaimCardModalShow(true, type)
+        } else {
+          util.showMessage(String(message), 'warning')
+        }
       } else {
-        util.showMessage(String(message), 'warning')
+        setClaimCardModalShow(false, type)
+        setClaimCardModalDataInfo(null)
       }
-    } else {
-      setClaimCardModalShow(false, type)
-      setClaimCardModalDataInfo(null)
+    } catch (error) {
+      console.log('error', error)
+      util.showMessage(String(error), 'warning')
     }
   },
 }
