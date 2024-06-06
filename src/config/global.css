@@ -283,6 +283,10 @@ p {
   color: #FFBA56;
 }
 
+.orbiter_global_prizes_tips_underline {
+  text-decoration: underline;
+}
+
 
 *::-webkit-scrollbar {
   /* width: 0; */

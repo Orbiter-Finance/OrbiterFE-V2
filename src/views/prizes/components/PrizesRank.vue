@@ -1,6 +1,6 @@
 <template>
   <div id="prizes-rank" class="prizes-rank">
-    <div class="title">Top 100 Users</div>
+    <div class="title">Leaderboard Top 100 Users</div>
     <div class="rank-top">
       <div
         :class="'rank-top-' + item.rank"
@@ -64,7 +64,7 @@
       <div class="rank-list-header rank-list-card-item">
         <div class="ranking">Rank</div>
         <div class="user-address">User</div>
-        <div class="cumulative-tx">Cumulative Tx</div>
+        <div class="cumulative-tx">Total Transaction</div>
         <div class="emit-reward">Estimated earnings</div>
       </div>
       <div

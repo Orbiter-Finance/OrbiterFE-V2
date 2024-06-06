@@ -1,9 +1,9 @@
 <template>
   <div id="prizes-allocation" class="prizes-allocation">
     <div class="prizes-allocation-title">
-      Overall prize pool
+      $100,000 Bridging 
       <br class="title-br" />
-      composition and allocation
+      Competition Dashboard
     </div>
     <div class="prizes-ratio-group">
       <div class="prizes-ratio-item" v-for="item in ratioList" :key="item.text">
@@ -22,23 +22,22 @@
       <div class="title">
         <div>My progress</div>
         <img
-          class="top500-orbguy"
-          :src="require('../../../assets/prizes/top500-orbguy.png')"
+          class="top800-orbguy"
+          :src="require('../../../assets/prizes/top800-orbguy.png')"
         />
       </div>
       <div class="description">
         <div class="description-text">
-          Accumulated <span class="remark">{{ txAmount }}</span> Bridges to
-          share <span class="remark">{{ tipsLabel }}</span> of prize pool
+          Already in the <span class="remark">{{ tipsLabel }}</span> prize pool. Keep bridging to earn more!
         </div>
       </div>
 
       <div class="user-rank-and-reward">
-        <div class="current-rank" v-if="userRanking">
+        <div class="current-rank" v-if="isUserRanking">
           <span>Current rank: </span>
           <span class="current-ranking">{{ userRanking }}</span>
         </div>
-        <div v-if="rewardAmount" class="rank-reward">
+        <div v-if="isRewardAmount" class="rank-reward">
           <span>Estimated earnings: </span>
           <span class="reward-amount">{{ rewardAmount }} USDC</span>
         </div>
@@ -66,24 +65,25 @@
               class="progress-tx-current-stage"
               :style="`left: ${ratio}%;${isHiddenTips};`"
             >
-              <div>{{ tipsLabel }}</div>
-              <div class="progress-icon">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  width="8.489258"
-                  height="5.242645"
-                  viewBox="0 0 8.48926 5.24265"
-                  fill="none"
-                >
-                  <path
-                    d="M1 0L7.48 0C8.37 0 8.82 1.07 8.19 1.7L4.95 4.94C4.56 5.34 3.92 5.34 3.53 4.94L0.29 1.7C-0.34 1.07 0.11 0 1 0Z"
-                    fill="#FFA629"
-                    fill-opacity="1.000000"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </div>
+            <div class="progress-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="8.489258"
+                height="5.242645"
+                viewBox="0 0 8.48926 5.24265"
+                fill="none"
+              >
+                <path
+                  d="M1 0L7.48 0C8.37 0 8.82 1.07 8.19 1.7L4.95 4.94C4.56 5.34 3.92 5.34 3.53 4.94L0.29 1.7C-0.34 1.07 0.11 0 1 0Z"
+                  fill="#FFA629"
+                  fill-opacity="1.000000"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </div>
+              <div>{{ tipsLabelTx }}</div>
+              
             </div>
             <div
               class="progress-stage"
@@ -118,7 +118,7 @@
         :class="item.isSuccess ? 'task-card-options-group-success' : ''"
         @click="openTelegram(item)"
       >
-        <div class="task-card-options">
+        <div class="task-card-options" :style="`opacity:${item.isPromotion ? '0.4' : '1'};`">
           <div class="info">
             <div class="icon">
               <img
@@ -161,15 +161,14 @@
         class="task-card-pool-group"
         v-for="item in taskPoolList"
         :key="item.reward"
-        :class="item.isPromotion ? 'task-card-pool-group-promotion' : ''"
         :style="
-          item.isSuccess
-            ? `border: 1px solid ${item.color};backdrop-filter: blur(12px); background: ${item.color}18;`
-            : ''
-        "
+        item.isSuccess && !item.isPromotion
+          ? `border: 1px solid ${item.color};backdrop-filter: blur(12px);`
+          : ''
+        "        
         @click="openTelegram(item)"
       >
-        <div class="task-card-pool">
+        <div class="task-card-pool" :style="`opacity:${item.isPromotion ? '0.4' : '1'};`">
           <div class="info">
             <div class="icon">
               <img
@@ -245,43 +244,43 @@ export default {
       return [].concat([
         {
           position: 0,
-          label: '0',
+          label: '0Tx',
           ratio: '0',
           value: 0,
         },
         {
           img: 'tx3.png',
           color: ratio10,
-          des: 'Cumulative ≥3 tx',
+          des: 'Bridge TX ≥ 3 ≥3 tx',
           position: 3,
-          label: '3',
+          label: '3Tx',
           ratio: '10%',
           value: 3,
         },
         {
           img: 'tx5.png',
           color: ratio15,
-          des: 'Cumulative ≥5 tx',
+          des: 'Bridge TX ≥ 3 ≥5 tx',
           position: 5,
-          label: '5',
+          label: '5Tx',
           ratio: '15%',
           value: 5,
         },
         {
           img: 'tx8.png',
           color: ratio20,
-          des: 'Cumulative ≥8 tx',
+          des: 'Bridge TX ≥ 3 ≥8 tx',
           position: 8,
-          label: '8',
+          label: '8Tx',
           ratio: '20%',
           value: 8,
         },
         {
           img: 'tx15.png',
           color: ratio25,
-          des: 'Cumulative ≥15 tx',
+          des: 'Bridge TX ≥ 3 ≥15 tx',
           position: 15,
-          label: '15',
+          label: '15Tx',
           ratio: '25%',
           value: 15,
         },
@@ -299,19 +298,29 @@ export default {
     ratioList() {
       return this.progressStage.slice(1)
     },
+    isUserRanking() {
+      return this.txAmount >= 20
+    },
     userRanking() {
       return this.rank
     },
     txAmount() {
       return this.tx
     },
+    isRewardAmount() {
+      return Number(this.userRanking) && Number(this.userRanking ) <= 100
+    },
     rewardAmount() {
       return Number(this.reward) ? this.decimalNumC(this.reward, 2, ',') : 0
     },
     isHiddenTips() {
+      console.log("this.txAmount < this.top100Tx", this.txAmount, this.top100Tx)
       return "display:" + (!(Number(this.txAmount) <= 3 ||
-        this.progressStage.some((item) => item.value === this.txAmount)) ? 'block' : 'none')
+        this.progressStage.some((item) => item.value === this.txAmount) || this.txAmount >= this.top100Tx) ? 'block' : 'none')
 
+    },
+    tipsLabelTx() {
+      return this.txAmount  + " Tx"
     },
     tipsLabel() {
       const list =
@@ -337,23 +346,25 @@ export default {
 
       return [
         {
-          icon: 'x',
-          text: `Quote the Tweet and mention 3 friends`,
+          icon: 'telegram',
+          text: `Join Orbiter Telegram`,
           reward: '+3',
           type: 'TG',
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> from any network to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
           reward: '+5',
           isSuccess: txN >= 1,
+          isPromotion: txN >=2,
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">2 TX</span> from any network to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">2 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
           reward: '+12',
           isSuccess: true,
           isSuccess: txN >= 2,
+          isPromotion: txN >=3
         },
       ]
     },
@@ -363,7 +374,7 @@ export default {
       return [
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span> from any network to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
           reward: '10% Prize Pool',
           color: ratio10,
           isSuccess: txN >= 3,
@@ -371,7 +382,7 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">5 TX</span> from any network to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">5 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
           reward: '15% Prize Pool',
           color: ratio15,
           isSuccess: txN >= 5,
@@ -379,7 +390,7 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">8 TX</span> from any network to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">8 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
           reward: '20% Prize Pool',
           color: ratio20,
           isSuccess: txN >= 8,
@@ -387,18 +398,18 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">15 TX</span> from any network to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">15 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
           reward: '25% Prize Pool',
           color: ratio25,
           isSuccess: txN >= 15,
-          isPromotion: Number(rankN) && Number(rankN) <= 100,
+          isPromotion: txN >= 20 && Number(rankN) && Number(rankN) <= 100,
         },
         {
           icon: 'bridge',
-          text: `Bridge from any network to Arbitrum's <span class="orbiter_global_prizes_tx-color">Top 100</span>`,
+          text: `Bridge ≥20 TX from specific chain to Arbitrum <span class="orbiter_global_prizes_tx-color">Top 100 users </span>`,
           reward: '30% Prize Pool',
           color: ratio30,
-          isSuccess: Number(rankN) && Number(rankN) <= 100,
+          isSuccess: txN >= 20 && Number(rankN) && Number(rankN) <= 100,
         },
       ]
     },
@@ -437,7 +448,7 @@ export default {
               ],
             })
             const result = await fetch(
-              `${process.env.VUE_APP_OPEN_URL}/dashboard-api/stat/competition/updateTelegramInfo`,
+              `${process.env.VUE_APP_OPEN_URL}/points_platform/competition/info`,
               {
                 headers: {
                   token: res,
@@ -547,7 +558,7 @@ export default {
       justify-content: space-between;
       align-items: center;
 
-      .top500-orbguy {
+      .top800-orbguy {
         width: 266px;
         height: 32px;
       }
@@ -659,9 +670,9 @@ export default {
 
           .progress-tx-current-stage {
             position: absolute;
-            top: -16px;
+            bottom: -16px;
             color: #ffa629;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, 50%);
             width: 32px;
 
             .progress-icon {
@@ -669,6 +680,7 @@ export default {
               display: flex;
               justify-content: center;
               align-items: center;
+              transform: rotate(180deg);
               & > svg {
                 width: 8px;
                 height: 8px;
@@ -815,10 +827,11 @@ export default {
     }
 
     .task-card-options-group-success {
-      border: 1px solid rgb(219, 239, 45);
+     // opacity: 0.6;
+     // border: 1px solid rgb(219, 239, 45);
       border-radius: 12px;
       backdrop-filter: blur(12px);
-      background: rgba(219, 239, 45, 0.15);
+     // background: rgba(219, 239, 45, 0.15);
     }
 
     .task-card-pool-group {
@@ -897,7 +910,7 @@ export default {
     }
 
     .task-card-pool-group-promotion {
-      opacity: 0.4;
+      opacity: 0.6;
     }
   }
 }
@@ -916,7 +929,7 @@ export default {
       padding: 16px;
       .title {
         font-size: 16px;
-        .top500-orbguy {
+        .top800-orbguy {
           width: 200px;
         }
       }

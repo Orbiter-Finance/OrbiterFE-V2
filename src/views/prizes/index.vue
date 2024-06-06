@@ -75,7 +75,7 @@ export default {
   methods: {
     async getData() {
       const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}/dashboard-api/stat/competition/info`
+        `${process.env.VUE_APP_OPEN_URL}/points_platform/competition/info`
       )
       const { result } = await response.json()
       const { addressCount, totalRewards, txCount, list } = result || {}
@@ -90,7 +90,7 @@ export default {
       const response = await fetch(
         `${
           process.env.VUE_APP_OPEN_URL
-        }/dashboard-api/stat/competition/address?address=${this.evmAddress.toLocaleLowerCase()}`
+        }/points_platform/competition/address?address=${this.evmAddress.toLocaleLowerCase()}`
       )
       const { result } = await response.json()
       const { count, rank, reward } = result || {}
@@ -106,7 +106,7 @@ export default {
       const response = await fetch(
         `${
           process.env.VUE_APP_OPEN_URL
-        }/dashboard-api/stat/competition/account/${this.evmAddress.toLocaleLowerCase()}`
+        }/points_platform/competition/account/${this.evmAddress.toLocaleLowerCase()}`
       )
       const res = await response.json()
       console.log('res', res)
