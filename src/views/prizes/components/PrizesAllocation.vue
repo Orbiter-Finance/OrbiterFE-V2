@@ -393,7 +393,7 @@ export default {
           reward: '+3',
           type: 'TG',
           isSuccess: !!this.isJoinTelegram,
-          isPromotion: txN >= 2 && !!this.isJoinTelegram,
+          isPromotion: txN >= 1 && !!this.isJoinTelegram,
         },
         {
           icon: 'bridge',
