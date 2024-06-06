@@ -19,24 +19,24 @@
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
-      <div class="lucky-bag-tab" @click="openLuckyBagModal">
-        <div class="lucky-bag-image"></div>
-        <div class="lucky-bag-info">
-          <div class="info-label">Grab 1% $ORBGUY</div>
-          <div class="info-progress">
-            <div
-              class="progress"
-              :style="{
-                width:
-                  Number(ratio) >= 100 ? '100%' : decimalNumC(ratio, 3) + '%',
-              }"
-            >
-              <div class="skeleton"></div>
-            </div>
+    <div v-if="$route.path !==  '/prizes'" class="lucky-bag-tab" @click="openLuckyBagModal">
+      <div class="lucky-bag-image"></div>
+      <div class="lucky-bag-info">
+        <div class="info-label">Grab 1% $ORBGUY</div>
+        <div class="info-progress">
+          <div
+            class="progress"
+            :style="{
+              width:
+                Number(ratio) >= 100 ? '100%' : decimalNumC(ratio, 3) + '%',
+            }"
+          >
+            <div class="skeleton"></div>
           </div>
         </div>
       </div>
-      <span @click="openAct" class="ops-item" style="position: relative">
+    </div>
+      <span v-if="$route.path !==  '/prizes'" @click="openAct" class="ops-item" style="position: relative">
         <img
           :hidden="!isLightMode"
           style="margin: -3px 0 0 0; width: 24px"
@@ -70,9 +70,9 @@
           />
         </div>
       </span>
-      <span @click="showHistory" class="ops-item">History</span>
+      <span @click="showHistory" class="ops-item" v-if="$route.path !== '/prizes'">History</span>
       <div
-        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
+        v-if="(isSelectedStarkNet || isSelectedSolana || isSelectedTon) && $route.path !== '/prizes'"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -85,6 +85,7 @@
         <span class="address">{{ connectAddress }}</span>
       </div>
       <div
+        v-else
         ref="connectedBtn"
         @click="connectAWallet"
         class="ops-item center"
@@ -97,7 +98,7 @@
         <span class="address">{{ connectFirstAddress }}</span>
       </div>
     </template>
-    <div @click="toggleThemeMode" class="ops-mode">
+    <div @click="toggleThemeMode" class="ops-mode" v-if="$route.path !== '/prizes'">
       <SvgIconThemed class="mode-icon" icon="mode" />
     </div>
   </div>
@@ -134,7 +135,7 @@ import {
   setSolanaDialog,
   isTonDialog,
   setTonDialog,
-  claimCardModalAmountInfo
+  claimCardModalAmountInfo,
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -159,12 +160,12 @@ export default {
     },
   },
   computed: {
-    claimCardModalAmountInfoData(){
+    claimCardModalAmountInfoData() {
       return claimCardModalAmountInfo.value
     },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
-      if(!Number(ratio)) return 0
+      if (!Number(ratio)) return 0
 
       return ratio
     },
@@ -281,17 +282,11 @@ export default {
         },
       ]
     },
-    connectFirstWalletIcon() {
-      const first = this.otherAddress.findIndex((item) => !!item.isSelected) + 1
-      const firstGroup = this.otherAddress
-        .slice(first)
-        .filter((item) => !!item.isSelected)[0]
-      return (
-        firstGroup?.icon ||
-        (this.globalSelectWalletConf.walletType
-          ? this.globalSelectWalletConf.walletType.toLowerCase()
-          : '')
-      )
+    connectFirstWalletIcon(){
+      const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
+      const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0]
+      return firstGroup?.icon || (this.globalSelectWalletConf.walletType ?
+            this.globalSelectWalletConf.walletType.toLowerCase() : "")
     },
     connectWalletIcon() {
       return (
@@ -329,6 +324,7 @@ export default {
     )
     return {
       selectedWallet,
+      recaptchaId: 0,
     }
   },
   watch: {
@@ -343,8 +339,22 @@ export default {
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
-    async openLuckyBagModal(){
-      this.$store.commit("getClaimORBGUYRewardData", "LUCKY_BAG")
+    async openLuckyBagModal() {
+      const recaptchaDiv = document.createElement('div')
+      recaptchaDiv.id = 'recaptcha-outside-badge'
+      this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
+      this.recaptchaId = grecaptcha.render(recaptchaDiv, {
+        sitekey: process.env['VUE_APP_RECAPTCHA'],
+        theme: 'light',
+        callback:(token) => {
+          this.$store.commit("getClaimORBGUYRewardData", {type: "LUCKY_BAG", token})
+          recaptchaDiv.remove()
+        }
+      })
+      recaptchaDiv.onclick = () => {
+        recaptchaDiv.remove()
+      }
+
     },
     openAct() {
       setActDialogVisible(true)
@@ -362,7 +372,7 @@ export default {
         setActDialogVisible(true)
       } else {
         await option.connect()
-      }
+      }      
     },
     async connectAWallet() {
       const evm = {
@@ -527,7 +537,20 @@ export default {
       }
     },
   },
-
+  created() {
+    if (typeof window === 'undefined') return
+    window.vueRecaptchaInit = () => {
+    }
+    const recaptchaScript = document.createElement('script')
+    const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+    recaptchaScript.setAttribute(
+      'src',
+      `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+    )
+    recaptchaScript.setAttribute('async', '')
+    recaptchaScript.setAttribute('defer', '')
+    ;(document.body || document.head).appendChild(recaptchaScript)
+  },
   async mounted() {
     const _this = this
     setInterval(async () => {
@@ -701,7 +724,7 @@ export default {
     align-items: center;
     margin-right: 10px;
     cursor: pointer;
-    
+
     .lucky-bag-image {
       position: absolute;
       bottom: -4px;

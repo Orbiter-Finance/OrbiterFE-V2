@@ -201,6 +201,8 @@ input {
   -ms-user-select: none;
   /*IE10*/
   user-select: none;
+  padding: 0;
+  margin: 0;
 }
 
 input {
@@ -282,4 +284,12 @@ p {
   font-weight: 700;
   font-weight: 600;
   font-family: GeneralSans-SemiBold;
+}
+
+.orbiter_global_prizes_tx-color {
+  color: #FFBA56;
+}
+
+.orbiter_global_prizes_tips_underline {
+  text-decoration: underline;
 }

@@ -141,9 +141,8 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <!-- <PrizesCard></PrizesCard> -->
+        <PrizesCard></PrizesCard>
         <div 
-        v-if="!!actDataList.length"
         >
           <template v-for="item in actDataList">
             <div class="activity-card">
@@ -520,7 +519,7 @@ export default {
   },
   methods: {
     openClaimRewardModal() {
-      this.$store.commit("getClaimORBGUYRewardData", 'REWARD')
+      this.$store.commit("getClaimORBGUYRewardData", {type: 'REWARD'})
     },
     openUserInfoDetailsCardModal () {
       setUserInfoDetailsCardModalShow(true)
@@ -1242,6 +1241,7 @@ export default {
   .text-wrapper_17 {
     height: 20px;
     border-radius: 4px;
+    background: linear-gradient(139.64deg, #e545ff, red 85.476%);
     display: flex;
     justify-content: center;
     align-items: center;

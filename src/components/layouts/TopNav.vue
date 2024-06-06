@@ -21,6 +21,7 @@
           :iconName="navIcons.logo"
         />
         <HeaderLinks
+          v-if="$route.path !== '/prizes'" 
           style="margin-top: 24px; margin-left: 134px; min-width: 280px"
         />
       </div>
@@ -34,6 +35,7 @@
         :icon="navIcons.logo"
       />
       <!-- <div
+      v-if="$route.path !== '/prizes'"
         style="
           flex: 1;
           display: flex;
@@ -67,7 +69,7 @@
       @click="openLuckyBagModal"
       ></div>
       <div
-        v-if="isMobile"
+        v-if="isMobile && $route.path !== '/prizes'"
         :class="addPointVisible ? 'shake-top' : ''"
         :style="`z-index:999;width: 200px;display: flex;position: absolute;top: 60px;right:40px;opacity: ${
           addPointVisible ? 1 : 0
@@ -100,10 +102,12 @@
           v-else-if="$route.path !== '/home' && $route.path !== '/statistics'"
           @click="connectAWallet"
           class="wallet-status wallet-address"
+          :style="`margin-right:${$route.path !== '/prizes' ? '12px' : '0'}`"
         >
           {{ showAddress }}
         </div>
         <div
+          v-if="$route.path !== '/prizes'"
           @click="() => (drawerVisible = true)"
           class="center menu-outline"
           style="width: 44px; height: 44px; border-radius: 8px"
@@ -163,6 +167,7 @@ export default {
   components: { SvgIconThemed, HeaderLinks, HeaderOps },
   data () {
     return {
+      recaptchaId: 0,
       drawerVisible: false,
     }
   },
@@ -265,9 +270,38 @@ export default {
       }
     },
   },
+  created() {
+    if (typeof window === 'undefined') return
+    window.vueRecaptchaInit = () => {
+    }
+    const recaptchaScript = document.createElement('script')
+    const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+    recaptchaScript.setAttribute(
+      'src',
+      `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+    )
+    recaptchaScript.setAttribute('async', '')
+    recaptchaScript.setAttribute('defer', '')
+    ;(document.body || document.head).appendChild(recaptchaScript)
+  },
   methods: {
     openLuckyBagModal(){
-      this.$store.commit("getClaimORBGUYRewardData", "LUCKY_BAG")      
+      const recaptchaDiv = document.createElement('div')
+      recaptchaDiv.id = 'recaptcha-outside-badge'
+      this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
+      this.recaptchaId = grecaptcha.render(recaptchaDiv, {
+        sitekey: process.env['VUE_APP_RECAPTCHA'],
+        theme: 'light',
+        callback:(token) => {
+          this.$store.commit("getClaimORBGUYRewardData", {type: "LUCKY_BAG", token})
+          recaptchaDiv.remove()
+        }
+      })
+      recaptchaDiv.onclick = () => {
+        recaptchaDiv.remove()
+      }
+      
+      // this.$store.commit("getClaimORBGUYRewardData", {type: "LUCKY_BAG"})      
     },
     openActDialog () {
       if (this.isLogin) {
