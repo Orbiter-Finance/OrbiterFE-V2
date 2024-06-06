@@ -200,7 +200,7 @@ export default {
   },
   async getClaimORBGUYRewardData(state, {type,token}) {
     try {
-      if (type === 'LUCKY_BAG') {
+      if (type) {
         const address =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (!address && address !== '0x') return
