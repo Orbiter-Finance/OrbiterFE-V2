@@ -132,7 +132,22 @@
                 :src="require('../../../assets/prizes/' + item.icon + '.svg')"
               />
             </div>
-            <div class="content-text" v-html="item.text"></div>
+            <div class="content-text-group">
+              <div class="content-text" v-html="item.text"></div>
+              <o-tooltip v-if="item.specificChain">
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px">
+                    <span> 
+                    <span>Specific chains include: </span>
+                    <br />
+                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin 
+                  </span>
+                  </div>
+                </template>
+                <div class="orbiter_global_prizes_tips_underline tip-text">specific chain</div>
+              </o-tooltip>
+              <span v-if="item.specificChain">to Arbitrum</span>
+            </div>
           </div>
           <div class="reward">
             <div class="reward-info">
@@ -185,7 +200,22 @@
                 :src="require('../../../assets/prizes/' + item.icon + '.svg')"
               />
             </div>
-            <div class="content-text" v-html="item.text"></div>
+            <div class="content-text-group">
+              <div class="content-text" v-html="item.text"></div>
+              <o-tooltip v-if="item.specificChain">
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px">
+                    <span> 
+                    <span>Specific chains include: </span>
+                    <br />
+                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin 
+                  </span>
+                  </div>
+                </template>
+                <div class="orbiter_global_prizes_tips_underline tip-text">specific chain</div>
+              </o-tooltip>
+              <span v-if="item.specificChain">to Arbitrum</span>
+            </div>
           </div>
           <div v-if="item.isPromotion" class="prizes-promotion">
             Already entered in higher stage pools
@@ -397,14 +427,16 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> `,
+          specificChain: true,
           reward: '+5',
           isSuccess: txN >= 1,
           isPromotion: txN >= 2,
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">2 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">2 TX</span>`,
+          specificChain: true,
           reward: '+12',
           isSuccess: true,
           isSuccess: txN >= 2,
@@ -418,7 +450,8 @@ export default {
       return [
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span>`,
+          specificChain: true,
           reward: '10% Prize Pool',
           color: ratio10,
           isSuccess: txN >= 3,
@@ -426,7 +459,8 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">5 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">5 TX</span>`,
+          specificChain: true,
           reward: '15% Prize Pool',
           color: ratio15,
           isSuccess: txN >= 5,
@@ -434,7 +468,8 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">8 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">8 TX</span>`,
+          specificChain: true,
           reward: '20% Prize Pool',
           color: ratio20,
           isSuccess: txN >= 8,
@@ -442,7 +477,8 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">15 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">15 TX</span>`,
+          specificChain: true,
           reward: '25% Prize Pool',
           color: ratio25,
           isSuccess: txN >= 15,
@@ -671,7 +707,7 @@ export default {
         white-space: nowrap;
         display: flex;
         justify-content: flex-end;
-        align-items: center;        
+        align-items: center;
         margin-right: 8px;
 
         .reward-amount {
@@ -853,12 +889,20 @@ export default {
             height: 24px;
           }
 
-          .content-text {
-            font-size: 16px;
-            font-weight: 500;
-            letter-spacing: 0px;
-            text-align: left;
-            margin-left: 4px;
+          .content-text-group {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            .content-text {
+              font-size: 16px;
+              font-weight: 500;
+              letter-spacing: 0px;
+              text-align: left;
+              margin: 0 4px;
+            }
+            .tip-text {
+              margin-right: 4px;
+            }
           }
         }
 
@@ -941,13 +985,22 @@ export default {
             height: 24px;
           }
 
-          .content-text {
-            font-size: 16px;
-            font-weight: 500;
-            letter-spacing: 0px;
-            text-align: left;
-            margin-left: 4px;
+          .content-text-group {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            .content-text {
+              font-size: 16px;
+              font-weight: 500;
+              letter-spacing: 0px;
+              text-align: left;
+              margin: 0 4px;
+            }
+            .tip-text {
+              margin-right: 4px;
+            }
           }
+          
         }
 
         .pool-reward {
