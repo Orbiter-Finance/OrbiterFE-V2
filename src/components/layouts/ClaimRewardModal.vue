@@ -51,13 +51,6 @@
               >
                 {{ loading ? 'loading...' : 'Claim' }}
               </div>
-              <div v-else class="go-to-swap"
-                @click="goToSwap"
-              > 
-                Go to swap <svg class="go-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14.062500" height="9.648438" viewBox="0 0 14.0625 9.64844" fill="none">
-                  <path id="→" d="M7.96 1.37L10.35 3.77L0 3.77L0 5.82L10.38 5.82L7.96 8.28L9.3 9.64L14.06 4.83L9.3 0L7.96 1.37Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="evenodd"/>
-                </svg>
-              </div>
 
               <div v-if="showProgress" class="progress-group">
                 <div class="progress-info">
@@ -682,28 +675,6 @@ export default {
               line-height: 22px;
               color: rgb(255, 255, 255);
               font-family: GeneralSans-SemiBold;
-            }
-
-            .go-to-swap {
-              width: 100%;
-              padding: 14px;
-              border-radius: 24px;
-              margin-top: 12px;
-              background: rgb(0, 0, 0);
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-size: 16px;
-              font-weight: 700;
-              line-height: 22px;
-              color: rgb(255, 255, 255);
-              font-family: GeneralSans-SemiBold;
-              cursor: pointer;
-              .go-icon {
-                margin-left: 8px;
-                width: 16px;
-                height: 16px;
-              }
             }
 
             .progress-group {
