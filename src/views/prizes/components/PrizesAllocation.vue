@@ -1,7 +1,7 @@
 <template>
   <div id="prizes-allocation" class="prizes-allocation">
     <div class="prizes-allocation-title">
-      $100,000 Bridging 
+      $100,000 Bridging
       <br class="title-br" />
       Competition Dashboard
     </div>
@@ -28,7 +28,8 @@
       </div>
       <div class="description">
         <div class="description-text">
-          Already in the <span class="remark">{{ tipsLabel }}</span> prize pool. Keep bridging to earn more!
+          Already in the <span class="remark">{{ tipsLabel }}</span> prize pool.
+          Keep bridging to earn more!
         </div>
       </div>
 
@@ -40,6 +41,10 @@
         <div v-if="isRewardAmount" class="rank-reward">
           <span>Estimated earnings: </span>
           <span class="reward-amount">{{ rewardAmount }} USDC</span>
+        </div>
+        <div v-if="isTxAmount" class="rank-tx-amount">
+          <span>Accumulated: </span>
+          <span class="tx-amount">{{ txAmount }} Tx bridges</span>
         </div>
       </div>
 
@@ -65,25 +70,24 @@
               class="progress-tx-current-stage"
               :style="`left: ${ratio}%;${isHiddenTips};`"
             >
-            <div class="progress-icon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                width="8.489258"
-                height="5.242645"
-                viewBox="0 0 8.48926 5.24265"
-                fill="none"
-              >
-                <path
-                  d="M1 0L7.48 0C8.37 0 8.82 1.07 8.19 1.7L4.95 4.94C4.56 5.34 3.92 5.34 3.53 4.94L0.29 1.7C-0.34 1.07 0.11 0 1 0Z"
-                  fill="#FFA629"
-                  fill-opacity="1.000000"
-                  fill-rule="evenodd"
-                />
-              </svg>
-            </div>
-            <div class="progress-current-tx">{{ tipsLabelTx }}</div>
-              
+              <div class="progress-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  width="8.489258"
+                  height="5.242645"
+                  viewBox="0 0 8.48926 5.24265"
+                  fill="none"
+                >
+                  <path
+                    d="M1 0L7.48 0C8.37 0 8.82 1.07 8.19 1.7L4.95 4.94C4.56 5.34 3.92 5.34 3.53 4.94L0.29 1.7C-0.34 1.07 0.11 0 1 0Z"
+                    fill="#FFA629"
+                    fill-opacity="1.000000"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div class="progress-current-tx">{{ tipsLabelTx }}</div>
             </div>
             <div
               class="progress-stage"
@@ -118,7 +122,10 @@
         :class="item.isSuccess ? 'task-card-options-group-success' : ''"
         @click="openTelegram(item)"
       >
-        <div class="task-card-options" :style="`opacity:${item.isPromotion ? '0.4' : '1'};`">
+        <div
+          class="task-card-options"
+          :style="`opacity:${item.isPromotion ? '0.4' : '1'};`"
+        >
           <div class="info">
             <div class="icon">
               <img
@@ -162,13 +169,16 @@
         v-for="item in taskPoolList"
         :key="item.reward"
         :style="
-        item.isSuccess && !item.isPromotion
-          ? `border: 1px solid ${item.color};backdrop-filter: blur(12px);`
-          : ''
-        "        
+          item.isSuccess && !item.isPromotion
+            ? `border: 1px solid ${item.color};backdrop-filter: blur(12px);`
+            : ''
+        "
         @click="openTelegram(item)"
       >
-        <div class="task-card-pool" :style="`opacity:${item.isPromotion ? '0.4' : '1'};`">
+        <div
+          class="task-card-pool"
+          :style="`opacity:${item.isPromotion ? '0.4' : '1'};`"
+        >
           <div class="info">
             <div class="icon">
               <img
@@ -220,12 +230,12 @@ import {
   prizesTop100tx,
   prizesUserReward,
   prizesUserTelegramId,
-  prizesUserIsJoinTelegram
+  prizesUserIsJoinTelegram,
 } from '../../../composition/hooks'
 
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
 import { decimalNum } from '../../../util/decimalNum'
-import { isDev } from '../../../util';
+import { isDev } from '../../../util'
 
 const ratio10 = '#DBEF2D'
 const ratio15 = '#FF29DA'
@@ -238,22 +248,22 @@ export default {
     PrizesTaskSuccessIcon,
   },
   computed: {
-    isJoinTelegram(){
+    isJoinTelegram() {
       return prizesUserIsJoinTelegram.value
     },
-    telegramId(){
+    telegramId() {
       return prizesUserTelegramId.value
     },
-    reward(){
+    reward() {
       return prizesUserReward.value
     },
-    top100Tx(){
+    top100Tx() {
       return prizesTop100tx.value
     },
-    tx(){
+    tx() {
       return prizesUserTx.value
     },
-    rank(){
+    rank() {
       return prizesUserRank.value
     },
     evmAddress() {
@@ -310,7 +320,7 @@ export default {
           position: 20,
           label: 'Top 100',
           ratio: '30%',
-          value: this.top100Tx >= 20 ?  this.top100Tx : 20,
+          value: this.top100Tx >= 20 ? this.top100Tx : 20,
         },
       ])
     },
@@ -327,20 +337,32 @@ export default {
       return this.tx
     },
     isRewardAmount() {
-      return Number(this.txAmount) >= 20 && Number(this.userRanking) && Number(this.userRanking ) <= 100
+      return (
+        Number(this.txAmount) >= 20 &&
+        Number(this.userRanking) &&
+        Number(this.userRanking) <= 100
+      )
     },
     rewardAmount() {
-
       return Number(this.reward) ? this.decimalNumC(this.reward, 2, ',') : 0
     },
+    isTxAmount() {
+      return Number(this.txAmount) >= 20
+    },
     isHiddenTips() {
-
-      return "display:" + (!(Number(this.txAmount) <= 3 ||
-        this.progressStage.some((item) => item.value === this.txAmount) || this.txAmount >= this.top100Tx) ? 'block' : 'none')
-
+      return (
+        'display:' +
+        (!(
+          Number(this.txAmount) <= 3 ||
+          this.progressStage.some((item) => item.value === this.txAmount) ||
+          this.txAmount >= this.top100Tx
+        )
+          ? 'block'
+          : 'none')
+      )
     },
     tipsLabelTx() {
-      return this.txAmount  + "Tx"
+      return this.txAmount + 'Tx'
     },
     tipsLabel() {
       const list =
@@ -354,7 +376,7 @@ export default {
       let base = 75
       let progressRation = 0
       if (stage >= 15) {
-        const rest = Math.floor(((stage - 15) * 100) / (tx100 - 15) / 5)
+        const rest = Math.floor(((stage - 15) * 25) / (tx100 - 15))
         progressRation = base + rest
       } else {
         progressRation = (stage / 20) * 100
@@ -371,14 +393,14 @@ export default {
           reward: '+3',
           type: 'TG',
           isSuccess: !!this.isJoinTelegram,
-          isPromotion: txN >=1
+          isPromotion: txN >= 2 && !!this.isJoinTelegram,
         },
         {
           icon: 'bridge',
           text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
           reward: '+5',
           isSuccess: txN >= 1,
-          isPromotion: txN >=2,
+          isPromotion: txN >= 2,
         },
         {
           icon: 'bridge',
@@ -386,7 +408,7 @@ export default {
           reward: '+12',
           isSuccess: true,
           isSuccess: txN >= 2,
-          isPromotion: txN >=3
+          isPromotion: txN >= 3,
         },
       ]
     },
@@ -489,16 +511,19 @@ export default {
             console.log('result', result)
             const data = await result.json()
             console.log('data', data)
-            if(data?.code === 0 ){
+            if (data?.code === 0) {
               this.$notify.success(data.message)
-              this.$store.commit("getPrizesuserInfo", this.evmAddress.toLocaleLowerCase())
+              this.$store.commit(
+                'getPrizesuserInfo',
+                this.evmAddress.toLocaleLowerCase()
+              )
             } else {
               this.$notify.warning(data.message)
             }
           } else {
             const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent(
               // 'https://test.orbiter.finance/prizes'
-              window.location.origin + "/prizes"
+              window.location.origin + '/prizes'
             )}&request_access=write`
             window.open(url, '_self')
           }
@@ -506,8 +531,11 @@ export default {
           window.open('https://t.me/orbiterORB', '_blank')
         }
       } else {
-        this.$router.push( isDev() ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
-
+        this.$router.push(
+          isDev()
+            ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia'
+            : '/?source=Ethereum&dest=Arbitrum&token=ETH'
+        )
       }
     },
   },
@@ -620,6 +648,7 @@ export default {
       justify-content: start;
       align-items: center;
       margin-top: 8px;
+      flex-wrap: wrap;
 
       .current-rank {
         display: flex;
@@ -629,6 +658,7 @@ export default {
         letter-spacing: 0px;
         text-align: right;
         margin-right: 8px;
+        white-space: nowrap;
         .current-ranking {
           padding-left: 4px;
           color: #ffba58;
@@ -639,12 +669,28 @@ export default {
         font-size: 18px;
         letter-spacing: 0px;
         text-align: right;
+        white-space: nowrap;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;        
+        margin-right: 8px;
 
+        .reward-amount {
+          padding-left: 4px;
+          color: #ffba56;
+          font-weight: 600;
+        }
+      }
+      .rank-tx-amount {
+        font-size: 18px;
+        letter-spacing: 0px;
+        text-align: right;
+        white-space: nowrap;
         display: flex;
         justify-content: flex-end;
         align-items: center;
 
-        .reward-amount {
+        .tx-amount {
           padding-left: 4px;
           color: #ffba56;
           font-weight: 600;
@@ -865,11 +911,11 @@ export default {
     }
 
     .task-card-options-group-success {
-     // opacity: 0.6;
-     // border: 1px solid rgb(219, 239, 45);
+      // opacity: 0.6;
+      // border: 1px solid rgb(219, 239, 45);
       border-radius: 12px;
       backdrop-filter: blur(12px);
-     // background: rgba(219, 239, 45, 0.15);
+      // background: rgba(219, 239, 45, 0.15);
     }
 
     .task-card-pool-group {
@@ -984,7 +1030,8 @@ export default {
         white-space: nowrap;
         margin-top: 8px;
         .current-rank,
-        .rank-reward {
+        .rank-reward,
+        .rank-tx-amount {
           font-size: 14px;
         }
       }
