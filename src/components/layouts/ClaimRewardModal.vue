@@ -233,7 +233,11 @@ export default {
       return claimCardModalType.value
     },
     isClaimed() {
-      const { data = [] } = this.claimCardModalDataInfoData || {}
+      const { data = [], isClaimedData } = this.claimCardModalDataInfoData || {}
+
+      if(isClaimedData) {
+        return true
+      }
 
       const cardIds = this.cardIds
       let amount = ethers.utils.parseEther('0')

@@ -237,6 +237,7 @@ export default {
             card = {},
             businessIdentity = '',
             sign = '',
+            status = '',
           } = result || {}
           if (Number(code) === 0) {
             setClaimCardModalDataInfo({
@@ -249,6 +250,7 @@ export default {
                 },
               ],
               sign: [sign],
+              isClaimedData: status === '1',
             })
             setClaimCardModalAmountInfo({
               max,
