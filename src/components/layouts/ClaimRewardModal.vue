@@ -259,28 +259,40 @@ export default {
       })
       window.open(url, '_blank')
     },
-    async getCardIds() {
-      this.cardIds = []
-      const evmAddress = this.currentEvmAddress
-      if (!evmAddress) return
+    async getCardIds(_self, rpcList, error) {
+      _self = _self || this
+      _self.cardIds = []
+      const evmAddress = _self.currentEvmAddress
+      if (!evmAddress || evmAddress === "0x") return
+      let rpc = ""
+      let currentRpcList = []
+      if(error) return
+      try {
+        if(rpcList?.length) {
+          currentRpcList = rpcList
+        } else {
+          currentRpcList = await util.getRpcList("42161")
+        }
+        rpc = currentRpcList?.[0] || ""
 
-      const web3Provider = await util.stableWeb3("42161")
+        const provider = new ethers.providers.JsonRpcProvider(
+          rpc
+        )
 
-      const provider = new ethers.providers.Web3Provider(
-        web3Provider.currentProvider
-      )
+        const signer = provider.getSigner(evmAddress)
 
-      const signer = provider.getSigner(evmAddress)
+        const claimContract = new ethers.Contract(
+          CLAIM_ORBGUY_CONTRACT_ADDRESS,
+          Orbiter_CLAIM_ABI,
+          signer
+        )
 
-      const claimContract = new ethers.Contract(
-        CLAIM_ORBGUY_CONTRACT_ADDRESS,
-        Orbiter_CLAIM_ABI,
-        signer
-      )
+        const cardIds = await claimContract.getClaimedCards(evmAddress)
 
-      const cardIds = await claimContract.getClaimedCards(evmAddress)
-
-      this.cardIds = [].concat(cardIds)
+        _self.cardIds = [].concat(cardIds)
+      } catch (error) {
+        _self.getCardIds(_self, currentRpcList?.slice(1), !currentRpcList?.slice(1)?.length)
+      }
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
@@ -359,6 +371,11 @@ export default {
         this.getCardIds()
       }
     },
+    currentEvmAddress(newValue) {
+      if (newValue && newValue !== "0x") {
+        this.getCardIds()
+      }
+    }
   },
 }
 </script>
