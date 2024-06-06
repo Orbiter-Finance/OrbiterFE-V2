@@ -51,11 +51,11 @@
           <svg-icon v-else class="task-icon" iconName="task-icon"></svg-icon>
           <div class="task-desction" v-html="item.text"></div>
         </div>
-        <PrizesTaskSuccessIcon
+        <!-- <PrizesTaskSuccessIcon
         class="task-success-icon"
         v-if="!item.isSuccess"
         :fillColor="'#DDF600'"
-      ></PrizesTaskSuccessIcon>
+      ></PrizesTaskSuccessIcon> -->
       </div>
       <div class="task-tag">
         <div class="tag-card">
