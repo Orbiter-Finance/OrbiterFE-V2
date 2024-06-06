@@ -8,7 +8,9 @@
         <div class="lottery-dialog-card-group">
           <div class="lottery-dialog-card lottery-dialog-card-animation">
             <div class="lottery-dialog-card-face">
-              <div v-if="isClaimed" class="card-title-reward">Claimed</div>
+              <div v-if="isClaimed && isAmount" class="card-title-reward">
+                Claimed
+              </div>
               <div
                 v-else-if="claimCardModalType === 'LUCKY_BAG'"
                 class="card-title"
@@ -18,7 +20,7 @@
                 🎉
               </div>
               <div
-                v-else-if="claimCardModalType === 'REWARD'"
+                v-else-if="claimCardModalType === 'REWARD' || !isAmount"
                 class="card-title-reward"
               >
                 Your Rewards
@@ -27,17 +29,28 @@
 
               <div class="token-symbol">
                 <img
-                  :src="require('../../assets/activity/orbguy-modal.png')"
+                  :src="
+                    isAmount
+                      ? require('../../assets/activity/orbguy-modal.png')
+                      : require('../../assets/activity/claim-empty.png')
+                  "
                   alt=""
                   class="symbol"
                 />
               </div>
 
               <div
+                v-if="isAmount"
                 class="token-amount"
                 :style="`color:${isClaimed ? '#1EB4AB' : '#000'};`"
               >
                 +{{ decimalNumC(claimAmount, 0) }} $ORBGUY
+              </div>
+
+              <div v-else class="not-token-amount">No rewards found</div>
+
+              <div v-if="!isAmount" class="not-token-amount-tips">
+                Explore Orbiter to grab some
               </div>
 
               <div v-show="!isClaimed" class="card-des">
@@ -45,21 +58,27 @@
               </div>
               <div
                 class="claim-btn"
-                :style="`opacity:${loading ? '0.4' : '1'};cursor:${loading ? 'not-allowed' : 'pointer'};`"
+                :style="`opacity:${loading ? '0.4' : '1'};cursor:${
+                  loading ? 'not-allowed' : 'pointer'
+                };`"
                 @click="claim"
                 v-if="!isClaimed"
               >
                 {{ loading ? 'loading...' : 'Claim' }}
               </div>
 
-              <div v-if="showProgress" class="progress-group">
+              <div v-if="showProgress && isAmount" class="progress-group">
                 <div class="progress-info">
                   <div class="progress-title">
                     <div class="progress-label">Claim Progress</div>
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px">
-                          <span>Over 50 O-points users can claim a reward randomly. A total reward of 200,000 $ORBGUY available. Rewards are claimed on Arbitrum network. FCFS!</span>
+                          <span
+                            >Over 50 O-points users can claim a reward randomly.
+                            A total reward of 200,000 $ORBGUY available. Rewards
+                            are claimed on Arbitrum network. FCFS!</span
+                          >
                         </div>
                       </template>
                       <svg-icon
@@ -90,17 +109,21 @@
                 </div>
               </div>
 
-              <div v-if="isClaimed" class="link-card">
+              <div v-if="isClaimed && isAmount" class="link-card">
                 <div class="link-label">
                   Trade $ORBGUY on
                   <img
-                  class="token-image"
-                  :src="require('../../assets/activity/LIKWID-launch.png')"
-                  alt="">
+                    class="token-image"
+                    :src="require('../../assets/activity/LIKWID-launch.png')"
+                    alt=""
+                  />
                 </div>
               </div>
             </div>
-            <div class="join-media-card-group" v-if="showMediaCard">
+            <div
+              class="join-media-card-group"
+              v-if="showMediaCard && !!isAmount"
+            >
               <JoinMediaCard></JoinMediaCard>
             </div>
           </div>
@@ -128,17 +151,17 @@ import {
   claimCardModalType,
   claimCardModalDataInfo,
   claimCardModalAmountInfo,
-  web3State
+  web3State,
 } from '../../composition/hooks'
-import util from "../../util/util"
+import util from '../../util/util'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import { decimalNum } from '../../util/decimalNum'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import JoinMediaCard from './JoinMediaCard.vue'
 import { Orbiter_CLAIM_ABI } from '../../util/constants/contract/contract'
-import { CLAIM_ORBGUY_CONTRACT_ADDRESS } from "../../const"
+import { CLAIM_ORBGUY_CONTRACT_ADDRESS } from '../../const'
 
-import { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
+import { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers'
 import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
 export default {
   components: { SvgIcon },
@@ -149,8 +172,8 @@ export default {
       isClaim: false,
       cardIds: [],
       loading: false,
-      url: "https://likwid.meme/swap",
-      name: "CLAIM_ORBGUY_LIKWID_SWAP"
+      url: 'https://likwid.meme/swap',
+      name: 'CLAIM_ORBGUY_LIKWID_SWAP',
     }
   },
   components: {
@@ -164,28 +187,46 @@ export default {
       return claimCardModalDataInfo.value
     },
     currentNetwork() {
-      return compatibleGlobalWalletConf.value.walletPayload.networkId;
+      return compatibleGlobalWalletConf.value.walletPayload.networkId
     },
     claimAmount() {
-      const { data = []} = this.claimCardModalDataInfoData || {}
+      const { data = [] } = this.claimCardModalDataInfoData || {}
       const cardIds = this.cardIds
 
       let amount = ethers.utils.parseEther('0')
       let total = ethers.utils.parseEther('0')
 
       data.forEach((item) => {
-        const flag = cardIds.some((option)=>  option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase())
+        const flag = cardIds.some(
+          (option) =>
+            option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase()
+        )
         const value = ethers.utils.parseEther(String(item.value || 0))
-        if(!flag) {
+        if (!flag) {
           amount = amount.add(value)
-        } 
+        }
         total = total.add(value)
-      });
+      })
 
       amount = ethers.utils.formatEther(amount)
       total = ethers.utils.formatEther(total)
-      
+
       return !Number(amount) ? total : amount
+    },
+    isAmount() {
+      const { data = [] } = this.claimCardModalDataInfoData || {}
+
+      let amount = ethers.utils.parseEther('0')
+
+      data.forEach((item) => {
+        amount = amount.add(ethers.utils.parseEther(String(item.value || 0)))
+      })
+      console.log(
+        '111111111',
+        ethers.utils.formatEther(amount),
+        amount.gte('0')
+      )
+      return amount.gt('0')
     },
     isShow() {
       return claimCardModalShow.value
@@ -197,18 +238,21 @@ export default {
       return claimCardModalType.value
     },
     isClaimed() {
-      const { data = []} = this.claimCardModalDataInfoData || {}
+      const { data = [] } = this.claimCardModalDataInfoData || {}
 
       const cardIds = this.cardIds
       let amount = ethers.utils.parseEther('0')
 
       data.forEach((item) => {
-        const flag = cardIds.some((option)=> option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase())
+        const flag = cardIds.some(
+          (option) =>
+            option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase()
+        )
         const value = ethers.utils.parseEther(String(item.value || 0))
-        if(!flag) {
+        if (!flag) {
           amount = amount.add(value)
-        } 
-      });
+        }
+      })
 
       amount = ethers.utils.formatEther(amount)
 
@@ -256,21 +300,19 @@ export default {
       _self = _self || this
       _self.cardIds = []
       const evmAddress = _self.currentEvmAddress
-      if (!evmAddress || evmAddress === "0x") return
-      let rpc = ""
+      if (!evmAddress || evmAddress === '0x') return
+      let rpc = ''
       let currentRpcList = []
-      if(error) return
+      if (error) return
       try {
-        if(rpcList?.length) {
+        if (rpcList?.length) {
           currentRpcList = rpcList
         } else {
-          currentRpcList = await util.getRpcList("42161")
+          currentRpcList = await util.getRpcList('42161')
         }
-        rpc = currentRpcList?.[0] || ""
+        rpc = currentRpcList?.[0] || ''
 
-        const provider = new ethers.providers.JsonRpcProvider(
-          rpc
-        )
+        const provider = new ethers.providers.JsonRpcProvider(rpc)
 
         const signer = provider.getSigner(evmAddress)
 
@@ -284,7 +326,11 @@ export default {
 
         _self.cardIds = [].concat(cardIds)
       } catch (error) {
-        _self.getCardIds(_self, currentRpcList?.slice(1), !currentRpcList?.slice(1)?.length)
+        _self.getCardIds(
+          _self,
+          currentRpcList?.slice(1),
+          !currentRpcList?.slice(1)?.length
+        )
       }
     },
     decimalNumC(num, decimal, delimiter) {
@@ -293,29 +339,36 @@ export default {
     handleHidden() {
       this.isClaim = false
       this.loading = false
-      this.$store.commit('getClaimORBGUYRewardData', {type: ''})
+      this.$store.commit('getClaimORBGUYRewardData', { type: '' })
     },
     async claim() {
       if (this.isClaim || this.loading) return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
       const provider = new ethers.providers.Web3Provider(
-          compatibleGlobalWalletConf.value.walletPayload.provider
-        )
-      const chainID = +web3State?.networkId || +provider?.network?.chainId || +this.currentNetwork
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
+      const chainID =
+        +web3State?.networkId ||
+        +provider?.network?.chainId ||
+        +this.currentNetwork
 
-      if(Number(chainID) !== 42161) {
-        util.showMessage("Please Switch Arbitrum Network", 'warning');
-        if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
-              try {
-                if (!await util.ensureWalletNetwork("42161")) {
-                  return;
-                }
-              } catch (err) {
-                console.error(err);
-                util.showMessage(err.message, 'error');
-                return;
-              }
-            } 
+      if (Number(chainID) !== 42161) {
+        util.showMessage('Please Switch Arbitrum Network', 'warning')
+        if (
+          [METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(
+            compatibleGlobalWalletConf.value.walletType
+          )
+        ) {
+          try {
+            if (!(await util.ensureWalletNetwork('42161'))) {
+              return
+            }
+          } catch (err) {
+            console.error(err)
+            util.showMessage(err.message, 'error')
+            return
+          }
+        }
         return
       }
       try {
@@ -329,7 +382,7 @@ export default {
           signer
         )
         const params = [
-          [...(data||[])].map((item) => {
+          [...(data || [])].map((item) => {
             return {
               id: item.id,
               value: ethers.utils.parseEther(String(item.value)).toString(),
@@ -340,15 +393,13 @@ export default {
           [...(signData || [])],
         ]
 
-        let emitGas = ethers.utils.parseUnits("500000")
+        let emitGas = ethers.utils.parseUnits('500000')
         try {
-         emitGas = await claimContract.estimateGas.claim(params[0], params[1])
-        } catch (error) {
-          
-        }
+          emitGas = await claimContract.estimateGas.claim(params[0], params[1])
+        } catch (error) {}
 
         const res = await claimContract.claim(params[0], params[1], {
-          gasLimit: emitGas.mul("12").div("10")
+          gasLimit: emitGas.mul('12').div('10'),
         })
         await res.wait()
         this.isClaim = true
@@ -365,10 +416,10 @@ export default {
       }
     },
     currentEvmAddress(newValue) {
-      if (newValue && newValue !== "0x") {
+      if (newValue && newValue !== '0x') {
         this.getCardIds()
       }
-    }
+    },
   },
 }
 </script>
@@ -637,6 +688,24 @@ export default {
               font-size: 24px;
               font-weight: 700;
               line-height: 32px;
+              letter-spacing: 0px;
+            }
+
+            .not-token-amount {
+              width: 100%;
+              margin-top: 24px;
+              font-size: 18px;
+              font-weight: 600;
+              line-height: 32px;
+              letter-spacing: 0px;
+              color: rgb(255, 79, 79);
+            }
+
+            .not-token-amount-tips {
+              color: rgb(34, 34, 34);
+              font-size: 16px;
+              font-weight: 500;
+              line-height: 24px;
               letter-spacing: 0px;
             }
 
