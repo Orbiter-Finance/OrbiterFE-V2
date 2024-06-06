@@ -508,8 +508,9 @@ export default {
                 }),
               }
             )
-            const data = await result.json()
+            const data = await result.json('TELEGRAM_TOKEN')
             if (data?.code === 0) {
+              sessionStorage.removeItem()
               this.$notify.success(data.message)
               this.$store.commit(
                 'getPrizesuserInfo',
@@ -519,7 +520,7 @@ export default {
               this.$notify.warning(data.message)
             }
           } else {
-            const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent(
+            const url = `https://oauth.telegram.org/auth?bot_id=7218481384&origin=${encodeURIComponent(
               // 'https://test.orbiter.finance/prizes'
               window.location.origin + '/prizes'
             )}&request_access=write`
