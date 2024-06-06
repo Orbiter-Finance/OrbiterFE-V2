@@ -27,6 +27,8 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import { ethers } from 'ethers'
 import util from '../../util/util'
 
+let timer
+
 export default {
   updateZKTokenList(state, obj) {
     if (obj.chainID === CHAIN_ID.zksync) {
@@ -208,67 +210,70 @@ export default {
     toggleBodyCls()
   },
   async getClaimORBGUYRewardData(state, { type, token }) {
-    try {
-      if (type) {
-        const address =
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        if (!address && address !== '0x') return
-        // util.showMessage('Opening...', 'warning')
-        //
+    clearTimeout(timer)
+    timer = setTimeout(async () => {
+      try {
+        if (type) {
+          const address =
+            compatibleGlobalWalletConf.value.walletPayload.walletAddress
+          if (!address && address !== '0x') return
+          // util.showMessage('Opening...', 'warning')
+          //
 
-        let res = await requestClaimLuckyBagReward(
-          address?.toLocaleLowerCase(),
-          token
-        )
-        if (!res?.result?.sign && type === 'LUCKY_BAG') {
-          res = await drawClaimLuckyBagReward(
+          let res = await requestClaimLuckyBagReward(
             address?.toLocaleLowerCase(),
             token
           )
-        }
-        const { result, code, message = '' } = res || {}
-        const {
-          max = 0,
-          totalQuantity = 0,
-          card = {},
-          businessIdentity = '',
-          sign = '',
-        } = result || {}
-        if (Number(code) === 0) {
-          setClaimCardModalDataInfo({
-            data: [
-              {
-                expiredTimestamp: card?.expiredTimestamp,
-                id: card?.id,
-                value: card?.value,
-                flag: businessIdentity,
-              },
-            ],
-            sign: [sign],
-          })
-          setClaimCardModalAmountInfo({
-            max,
-            totalQuantity,
-            ratio: Number(totalQuantity)
-              ? ethers.utils
-                  .parseEther(String(totalQuantity))
-                  .mul('100')
-                  .div(ethers.utils.parseEther(String(max)))
-                  .toString()
-              : '0',
-          })
-          setClaimCardModalShow(true, type)
+          if (!res?.result?.sign && type === 'LUCKY_BAG') {
+            res = await drawClaimLuckyBagReward(
+              address?.toLocaleLowerCase(),
+              token
+            )
+          }
+          const { result, code, message = '' } = res || {}
+          const {
+            max = 0,
+            totalQuantity = 0,
+            card = {},
+            businessIdentity = '',
+            sign = '',
+          } = result || {}
+          if (Number(code) === 0) {
+            setClaimCardModalDataInfo({
+              data: [
+                {
+                  expiredTimestamp: card?.expiredTimestamp,
+                  id: card?.id,
+                  value: card?.value,
+                  flag: businessIdentity,
+                },
+              ],
+              sign: [sign],
+            })
+            setClaimCardModalAmountInfo({
+              max,
+              totalQuantity,
+              ratio: Number(totalQuantity)
+                ? ethers.utils
+                    .parseEther(String(totalQuantity))
+                    .mul('100')
+                    .div(ethers.utils.parseEther(String(max)))
+                    .toString()
+                : '0',
+            })
+            setClaimCardModalShow(true, type)
+          } else {
+            util.showMessage(String(message), 'warning')
+          }
         } else {
-          util.showMessage(String(message), 'warning')
+          setClaimCardModalShow(false, type)
+          setClaimCardModalDataInfo(null)
         }
-      } else {
-        setClaimCardModalShow(false, type)
-        setClaimCardModalDataInfo(null)
+      } catch (error) {
+        console.log('error', error)
+        util.showMessage(String(error), 'warning')
       }
-    } catch (error) {
-      console.log('error', error)
-      util.showMessage(String(error), 'warning')
-    }
+    }, 500)
   },
 
   async getPrizesuserInfo(state, address) {

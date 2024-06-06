@@ -199,7 +199,7 @@ export default {
       const toArbText = this.type === "from" && 
       (toChainId === "42161")
       
-      ? "to arb" : ""
+      ? "$100,000 Prizes " : ""
 
       return ({
         167000: 'Grab $PINK Airdrop',

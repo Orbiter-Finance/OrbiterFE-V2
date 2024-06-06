@@ -22,7 +22,7 @@
     <div v-if="$route.path !==  '/prizes'" class="lucky-bag-tab" @click="openLuckyBagModal">
       <div class="lucky-bag-image"></div>
       <div class="lucky-bag-info">
-        <div class="info-label">Grab 1% $ORBGUY</div>
+        <div class="info-label">Grab 2% $ORBGUY</div>
         <div class="info-progress">
           <div
             class="progress"

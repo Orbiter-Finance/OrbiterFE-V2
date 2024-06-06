@@ -76,7 +76,7 @@
                         <div style="margin-left: -20px">
                           <span
                             >Over 50 O-points users can claim a reward randomly.
-                            A total reward of 200,000 $ORBGUY available. Rewards
+                            A total reward of 400,000 $ORBGUY available. Rewards
                             are claimed on Arbitrum network. FCFS!</span
                           >
                         </div>
@@ -221,11 +221,6 @@ export default {
       data.forEach((item) => {
         amount = amount.add(ethers.utils.parseEther(String(item.value || 0)))
       })
-      console.log(
-        '111111111',
-        ethers.utils.formatEther(amount),
-        amount.gte('0')
-      )
       return amount.gt('0')
     },
     isShow() {
