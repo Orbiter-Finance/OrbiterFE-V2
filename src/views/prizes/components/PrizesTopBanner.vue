@@ -8,17 +8,22 @@
               style="width: 28px; height: 32px; margin-right: 8px"
               iconName="42161"
             ></svg-icon>
-            Arbitrum Super Season
+            Arbitrum Summer Bridging
           </div>
         </div>
         <div class="prizes-label">
           <span style="white-space: nowrap"
-            >Split <span class="prizes-total-pool-amount">$100,000 </span></span
-          >
+            ><span class="prizes-total-pool-amount">$100,000 </span>
+            Bridging
+          </span>
           <br />
-          in prizes
+          Competition
         </div>
-        <div class="prizes-orbguy">TOP 500 get an extra <svg-icon iconName="ORBGUY" class="orbguy-token-symbol" ></svg-icon> $ORBGUY!</div>
+        <div class="prizes-orbguy">
+          TOP 800 users have chances to get extra
+          <svg-icon iconName="ORBGUY" class="orbguy-token-symbol"></svg-icon>
+          <span class="token-symbol">$ORBGUY!</span>
+        </div>
         <img
           class="prizes-banner-image-mobile"
           :src="require('../../../assets/prizes/banner-bg-mobile.png')"
@@ -38,7 +43,7 @@
 
         <div class="prizes-to-bridge">
           <div class="prizes-to-bridge-btn" @click="toBridgeCall">
-            Go to Bridge
+            Start Bridge
           </div>
         </div>
       </div>
@@ -207,12 +212,30 @@ export default {
         letter-spacing: 0px;
         margin-top: 12px;
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
         .orbguy-token-symbol {
           width: 36px;
           height: 36px;
           margin: 0 8px;
+        }
+        .token-symbol {
+          background-image: linear-gradient(
+            90deg,
+            rgb(248, 242, 254),
+            rgb(239, 197, 250),
+            rgb(195, 167, 248)
+          );
+          -webkit-text-fill-color: transparent;
+          background-position-x: initial;
+          background-position-y: initial;
+          background-size: initial;
+          background-repeat-x: initial;
+          background-repeat-y: initial;
+          background-attachment: initial;
+          background-origin: initial;
+          -webkit-background-clip: text;
+          background-color: initial;
         }
       }
 
@@ -311,6 +334,7 @@ export default {
     .prizes-banner-image {
       width: 68%;
       margin-right: -8%;
+      margin-left: -24%;
     }
 
     .prizes-banner-bg {
@@ -318,12 +342,12 @@ export default {
       bottom: 0;
       left: 0;
       width: 150%;
-      padding: 8%;
+      padding: 12%;
       background-image: url('../../../assets/prizes/banner-bg-bottom.png');
       background-repeat: no-repeat;
       background-position: center;
       background-size: 100% 100%;
-      transform: translateY(40%);
+      transform: translateY(30%);
       z-index: -1;
     }
   }
