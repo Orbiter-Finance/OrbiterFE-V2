@@ -50,7 +50,12 @@
 
 <script>
 import { SvgIconThemed } from '../'
-import { isMobile, curPageTabState, setPageTab, transferDataState } from '../../composition/hooks';
+import {
+  isMobile,
+  curPageTabState,
+  setPageTab,
+  transferDataState,
+} from '../../composition/hooks'
 
 export default {
   name: 'HeaderLinks',
@@ -63,14 +68,14 @@ export default {
     },
   },
   computed: {
-    isMobile () {
+    isMobile() {
       return isMobile.value
     },
-    curPageTabState () {
+    curPageTabState() {
       return curPageTabState.value
     },
   },
-  data () {
+  data() {
     return {
       navs: [
         {
@@ -95,6 +100,10 @@ export default {
           name: 'Explore',
           href: '/statistics',
         },
+        {
+          name: 'Prizes',
+          href: '/prizes',
+        },
         // {
         //   name: 'About us',
         //   href: '/home',
@@ -107,14 +116,20 @@ export default {
     }
   },
   methods: {
-    route2 (tar) {
-      const dealerId = transferDataState.dealerId;
-      const path = tar.href;
-      const routeObj = dealerId ? { path, query: { dealerId } } : { path };
+    route2(tar) {
+      if (tar.name.toLocaleLowerCase() === 'prizes'.toLocaleLowerCase()) {
+        this.$gtag.event('PATH_TO_PRIZES', {
+          event_category: 'PATH_TO_PRIZES',
+          event_label: 'to prizes',
+        })
+      }
+      const dealerId = transferDataState.dealerId
+      const path = tar.href
+      const routeObj = dealerId ? { path, query: { dealerId } } : { path }
       this.$route.path !== path && this.$router.push(routeObj)
       isMobile && this.$emit('closeDrawer')
     },
-    subnavClick (nav, snav) {
+    subnavClick(nav, snav) {
       this.route2(nav)
       setPageTab(snav.name)
     },

@@ -88,7 +88,7 @@ export default {
   name: 'PrizesTopBanner',
   data() {
     return {
-      timeStr: '2024/6/23 16:00:00',
+      timeStr: '2024/6/20 08:00:00',
       timeList: timeListDefault,
     }
   },

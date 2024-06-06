@@ -266,14 +266,12 @@ export default {
 
   async getPrizesuserInfo(state, address) {
     if (!address || address === '0x') return
-    console.log('address', address)
     const response = await fetch(
       `${
         process.env.VUE_APP_OPEN_URL
       }/points_platform/competition/address?address=${address.toLocaleLowerCase()}`
     )
     const { result } = await response.json()
-    console.log('result', result)
     const { count, rank, reward, isJoinTelegram, telegramId } = result || {}
 
     setPrizesUserRank(rank || '0')
