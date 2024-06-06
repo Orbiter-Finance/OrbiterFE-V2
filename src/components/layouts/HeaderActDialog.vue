@@ -1,6 +1,7 @@
 <template>
   <div
     class="act header-dialog-box"
+    id="act-header-dialog-box"
     :style="{ display: this.selectWalletDialogVisible ? 'block' : 'none' }"
   >
     <div
@@ -2113,7 +2114,7 @@ export default {
 }
 
 .dark-theme {
-  .act {
+  #act-header-dialog-box.act {
     .ativity-list {
       .activity-card {
         background: #373951;
@@ -2307,6 +2308,17 @@ export default {
 
     .text_48 {
       color: rgba(255, 255, 255, 1);
+    }
+
+    .task-card {
+      background-color: var(--dark-page-box-bg);
+      .text-wrapper_17 {
+        background-color: #222222;
+      }
+
+      .group-reward {
+        background-color: #222222;
+      }
     }
   }
 }
