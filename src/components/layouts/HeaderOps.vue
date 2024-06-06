@@ -344,11 +344,7 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     async openLuckyBagModal(){
-      util.showMessage(
-              `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-              'error'
-          );
-      // this.$store.commit("getClaimORBGUYRewardData", "LUCKY_BAG")
+      this.$store.commit("getClaimORBGUYRewardData", "LUCKY_BAG")
     },
     openAct() {
       setActDialogVisible(true)
