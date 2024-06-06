@@ -135,7 +135,7 @@ import {
   setSolanaDialog,
   isTonDialog,
   setTonDialog,
-  claimCardModalAmountInfo
+  claimCardModalAmountInfo,
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -160,12 +160,12 @@ export default {
     },
   },
   computed: {
-    claimCardModalAmountInfoData(){
+    claimCardModalAmountInfoData() {
       return claimCardModalAmountInfo.value
     },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
-      if(!Number(ratio)) return 0
+      if (!Number(ratio)) return 0
 
       return ratio
     },
@@ -324,6 +324,7 @@ export default {
     )
     return {
       selectedWallet,
+      recaptchaId: 0,
     }
   },
   watch: {
@@ -338,12 +339,22 @@ export default {
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
-    async openLuckyBagModal(){
-      util.showMessage(
-              `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-              'error'
-          );
-      // this.$store.commit("getClaimORBGUYRewardData", "LUCKY_BAG")
+    async openLuckyBagModal() {
+      const recaptchaDiv = document.createElement('div')
+      recaptchaDiv.id = 'recaptcha-outside-badge'
+      this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
+      this.recaptchaId = grecaptcha.render(recaptchaDiv, {
+        sitekey: process.env['VUE_APP_RECAPTCHA'],
+        theme: 'light',
+        callback:(token) => {
+          this.$store.commit("getClaimORBGUYRewardData", {type: "LUCKY_BAG", token})
+          recaptchaDiv.remove()
+        }
+      })
+      recaptchaDiv.onclick = () => {
+        recaptchaDiv.remove()
+      }
+
     },
     openAct() {
       setActDialogVisible(true)
@@ -526,7 +537,20 @@ export default {
       }
     },
   },
-
+  created() {
+    if (typeof window === 'undefined') return
+    window.vueRecaptchaInit = () => {
+    }
+    const recaptchaScript = document.createElement('script')
+    const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+    recaptchaScript.setAttribute(
+      'src',
+      `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+    )
+    recaptchaScript.setAttribute('async', '')
+    recaptchaScript.setAttribute('defer', '')
+    ;(document.body || document.head).appendChild(recaptchaScript)
+  },
   async mounted() {
     const _this = this
     setInterval(async () => {
@@ -700,7 +724,7 @@ export default {
     align-items: center;
     margin-right: 10px;
     cursor: pointer;
-    
+
     .lucky-bag-image {
       position: absolute;
       bottom: -4px;

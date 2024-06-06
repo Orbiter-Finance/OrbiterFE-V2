@@ -519,7 +519,7 @@ export default {
   },
   methods: {
     openClaimRewardModal() {
-      this.$store.commit("getClaimORBGUYRewardData", 'REWARD')
+      this.$store.commit("getClaimORBGUYRewardData", {type: 'REWARD'})
     },
     openUserInfoDetailsCardModal () {
       setUserInfoDetailsCardModalShow(true)
@@ -1246,6 +1246,8 @@ export default {
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    color: #FFF;
+    background: linear-gradient(139.64deg, rgb(229, 69, 255) 0%,rgb(255, 0, 0) 85.476%);
   }
 
   .text-wrapper_1_17 {

@@ -537,4 +537,18 @@ export default {
   height: 0;
   overflow: hidden;
 }
+#recaptcha-outside-badge{
+  position: fixed;
+  top:0px;
+  left:0px;
+  height:100%;
+  width:100%;
+  z-index: 99999;
+
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  display: flex;
+  align-items: center;
+
+}
 </style>

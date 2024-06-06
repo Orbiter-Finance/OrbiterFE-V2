@@ -90,6 +90,7 @@
 import getUTCTime from '../../util/time'
 
 import { decimalNum } from '../../util/decimalNum'
+import PrizesTaskSuccessIcon from "../../views/prizes/components/PrizesTaskSuccess.vue"
 
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 
@@ -118,6 +119,9 @@ export default {
       timeStr: '2024/6/20 08:00:00',
       timeList: [],
     }
+  },
+  components:{
+    PrizesTaskSuccessIcon
   },
   computed: {
     isJoinTelegram() {
