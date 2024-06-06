@@ -108,3 +108,13 @@ export async function getNoticeData() {
 
   return list
 }
+
+export async function requestClaimLuckyBagReward(address) {
+  return await openApiAx.get(`/points_platform/reward/address/${address}`)
+}
+
+export async function drawClaimLuckyBagReward(address) {
+  return await openApiAx.post(`/points_platform/reward/draw`, {
+    address,
+  })
+}

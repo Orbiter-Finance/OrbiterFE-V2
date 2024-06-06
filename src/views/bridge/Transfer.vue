@@ -201,13 +201,6 @@
           />
         </div>
       </div>
-      <div 
-        v-show="String(transferDataState.toChainID) == '196'"
-        class="transfer-banner"
-        :style="`${!isNewVersion || isCrossAddress ? '' : 'margin: 20px 0 10px'}`"
-      >
-        <img src="../../assets/transfer-banner.png" alt="">
-      </div>
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -326,6 +319,7 @@
       <CommDialog ref="SelectFromChainPopupRef">
         <div slot="PoperContent" style="width: 100%">
           <ObSelectChain
+                  :type="'from'"
                   ref="selectFromChainRef"
                   :ChainData="fromChainIdList"
                   v-on:getChainInfo="getFromChainInfo"
@@ -336,6 +330,7 @@
       <CommDialog ref="SelectToChainPopupRef">
         <div slot="PoperContent" style="width: 100%">
           <ObSelectChain
+                  :type="'to'"
                   :ChainData="toChainIdList"
                   v-on:getChainInfo="getToChainInfo"
                   v-on:closeSelect="closeToChainPopupClick()"

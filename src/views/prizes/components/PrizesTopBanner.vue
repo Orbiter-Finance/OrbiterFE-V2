@@ -20,9 +20,10 @@
           Competition
         </div>
         <div class="prizes-orbguy">
-          TOP 800 users have chances to get extra
+          TOP 800 will get 
           <svg-icon iconName="ORBGUY" class="orbguy-token-symbol"></svg-icon>
-          <span class="token-symbol">$ORBGUY!</span>
+          <span class="token-symbol">$ORBGUY! </span>
+          randomly
         </div>
         <img
           class="prizes-banner-image-mobile"
@@ -58,6 +59,7 @@
 
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
+import { isDev } from '../../../util';
 import getUTCTime from '../../../util/time'
 
 let timer1
@@ -105,7 +107,7 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
-      this.$router.push('/')
+      this.$router.push( isDev()? '?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
     },
   },
   mounted() {
@@ -236,6 +238,7 @@ export default {
           background-origin: initial;
           -webkit-background-clip: text;
           background-color: initial;
+          padding-right: 8px;
         }
       }
 

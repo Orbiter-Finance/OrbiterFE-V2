@@ -1,20 +1,22 @@
 <template>
   <div id="orbiter-prizes" class="orbiter-prizes">
-    <div class="content">
-      <!-- <PrizesTopNav></PrizesTopNav> -->
-      <PrizesTopBanner></PrizesTopBanner>
-      <PrizesPool
-        :addressCount="addressCount"
-        :totalRewards="totalRewards"
-      ></PrizesPool>
-      <PrizesAllocation
-        :rank="userInfo.rank"
-        :tx="userInfo.tx"
-        :reward="userInfo.reward"
-        :top100Tx="top100Tx"
-      ></PrizesAllocation>
-      <PrizesRank :rankList="rankList"></PrizesRank>
-      <PrizesRule></PrizesRule>
+    <PrizesTopNav></PrizesTopNav>
+    <div class="prizes-content">
+      <div class="content">
+        <PrizesTopBanner></PrizesTopBanner>
+        <PrizesPool
+          :addressCount="addressCount"
+          :totalRewards="totalRewards"
+        ></PrizesPool>
+        <PrizesAllocation
+          :rank="userInfo.rank"
+          :tx="userInfo.tx"
+          :reward="userInfo.reward"
+          :top100Tx="top100Tx"
+        ></PrizesAllocation>
+        <PrizesRank :rankList="rankList"></PrizesRank>
+        <PrizesRule></PrizesRule>
+      </div>
     </div>
     <div class="bg1"></div>
     <div class="bg2"></div>
@@ -24,7 +26,7 @@
 <script>
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
-// import PrizesTopNav from './components/PrizesTopNav.vue'
+import PrizesTopNav from './components/PrizesTopNav.vue'
 import PrizesTopBanner from './components/PrizesTopBanner.vue'
 import PrizesPool from './components/PrizesPool.vue'
 import PrizesAllocation from './components/PrizesAllocation.vue'
@@ -34,7 +36,7 @@ import PrizesRule from './components/PrizesRule.vue'
 export default {
   name: 'Prizes',
   components: {
-    // PrizesTopNav,
+    PrizesTopNav,
     PrizesTopBanner,
     PrizesPool,
     PrizesAllocation,
@@ -68,7 +70,6 @@ export default {
     evmAddress(item1, item2) {
       if (!!item1 && item1 !== item2) {
         this.getUserReward()
-        this.getUserInfo()
       }
     },
   },
@@ -100,17 +101,7 @@ export default {
         tx: count || 0,
         reward: reward || '0',
       }
-    },
-    async getUserInfo() {
-      if (!this.evmAddress) return
-      const response = await fetch(
-        `${
-          process.env.VUE_APP_OPEN_URL
-        }/points_platform/competition/account/${this.evmAddress.toLocaleLowerCase()}`
-      )
-      const res = await response.json()
-      console.log('res', res)
-    },
+    }
   },
 }
 </script>
@@ -122,19 +113,26 @@ export default {
   font-size: 16px;
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: start;
   position: relative;
   overflow: hidden;
   top: 0;
   left: 0;
-  padding: 32px 0;
-  .content {
+  padding: 0 0 32px;
+  z-index: 1;
+
+  .prizes-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    max-width: 1080px;
-    height: 100%;
+
+    .content {
+      width: 100%;
+      max-width: 1080px;
+      height: 100%;
+    }
   }
+
   .bg1 {
     position: absolute;
     top: 0;

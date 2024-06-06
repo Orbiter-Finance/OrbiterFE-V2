@@ -3,10 +3,20 @@ import {
   updatelpApiKey,
   updatelpAccountInfo,
   web3State,
+  setClaimCardModalShow,
+  setClaimCardModalDataInfo,
+  setClaimCardModalAmountInfo,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
 import completionStarknetAddress from '../../util/completionStarknetAddress'
+import {
+  requestClaimLuckyBagReward,
+  drawClaimLuckyBagReward,
+} from '../../common/openApiAx'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
+import { ethers } from 'ethers'
+import util from '../../util/util'
 
 export default {
   updateZKTokenList(state, obj) {
@@ -187,5 +197,61 @@ export default {
     }
     localStorage.setItem('themeMode', state.themeMode)
     toggleBodyCls()
+  },
+  async getClaimORBGUYRewardData(state, type) {
+    try {
+      if (type) {
+        const address =
+          compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        if (!address && address !== '0x') return
+        // util.showMessage('Opening...', 'warning')
+
+        let res = await requestClaimLuckyBagReward(address?.toLocaleLowerCase())
+        if (!res?.result?.sign) {
+          res = await drawClaimLuckyBagReward(address?.toLocaleLowerCase())
+        }
+        const { result, code, message = '' } = res || {}
+        const {
+          max = 0,
+          totalQuantity = 0,
+          card = {},
+          businessIdentity = '',
+          sign = '',
+        } = result || {}
+        if (Number(code) === 0) {
+          setClaimCardModalDataInfo({
+            data: [
+              {
+                expiredTimestamp: card?.expiredTimestamp,
+                id: card?.id,
+                value: card?.value,
+                flag: businessIdentity,
+              },
+            ],
+            sign: [sign],
+          })
+          setClaimCardModalAmountInfo({
+            max,
+            totalQuantity,
+            ratio: Number(totalQuantity)
+              ? ethers.utils
+                  .parseEther(String(totalQuantity))
+                  .mul('100')
+                  .div(ethers.utils.parseEther(String(max)))
+                  .toString()
+              : '0',
+          })
+          setClaimCardModalShow(true, type)
+        } else {
+          util.showMessage(String(message), 'warning')
+        }
+      } else {
+        setClaimCardModalShow(false, type)
+        setClaimCardModalDataInfo(null)
+      }
+    } catch (error) {
+      console.log('error', error)
+      util.showMessage(String(error), 'warning')
+    }
   },
 }
