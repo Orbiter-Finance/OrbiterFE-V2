@@ -6,6 +6,15 @@ import {
   setClaimCardModalShow,
   setClaimCardModalDataInfo,
   setClaimCardModalAmountInfo,
+  setPrizesUserRank,
+  setPrizesUserTx,
+  setPrizesUserReward,
+  setPrizesUserTelegramId,
+  setPrizesUserIsJoinTelegram,
+  setPrizesTotalAddress,
+  setPrizesTotalRewards,
+  setPrizesRankList,
+  setPrizesTop100tx,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -253,5 +262,38 @@ export default {
       console.log('error', error)
       util.showMessage(String(error), 'warning')
     }
+  },
+
+  async getPrizesuserInfo(state, address) {
+    if (!address || address === '0x') return
+    console.log('address', address)
+    const response = await fetch(
+      `${
+        process.env.VUE_APP_OPEN_URL
+      }/points_platform/competition/address?address=${address.toLocaleLowerCase()}`
+    )
+    const { result } = await response.json()
+    console.log('result', result)
+    const { count, rank, reward, isJoinTelegram, telegramId } = result || {}
+
+    setPrizesUserRank(rank || '0')
+    setPrizesUserTx(count || '0')
+    setPrizesUserReward(reward || '0')
+    setPrizesUserTelegramId(telegramId || '')
+    setPrizesUserIsJoinTelegram(!!isJoinTelegram)
+  },
+
+  async getPrizesData() {
+    const response = await fetch(
+      `${process.env.VUE_APP_OPEN_URL}/points_platform/competition/info`
+    )
+    const { result } = await response.json()
+    const { addressCount, totalRewards, txCount, list } = result || {}
+
+    setPrizesTotalAddress(addressCount ? String(addressCount) : '0')
+    setPrizesTotalRewards(totalRewards ? String(totalRewards) : '0')
+    // this.txCount = txCount ? String(txCount) : '0'
+    setPrizesRankList(list)
+    setPrizesTop100tx(list[list?.length - 1 || 0]?.count || 0)
   },
 }

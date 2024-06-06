@@ -96,14 +96,11 @@
 </template>
 
 <script>
-import { isMobile } from '../../../composition/hooks';
+import { isMobile, prizesRankList } from '../../../composition/hooks';
 import { decimalNum } from '../../../util/decimalNum'
 
 export default {
   name: 'PrizesRank',
-  props: {
-    rankList: Array,
-  },
 
   data() {
     return {
@@ -111,6 +108,9 @@ export default {
     }
   },
   computed: {
+    rankList() {
+      return prizesRankList.value
+    },
     isMobile() {
       return isMobile.value
     },

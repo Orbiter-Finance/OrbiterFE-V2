@@ -4,17 +4,9 @@
     <div class="prizes-content">
       <div class="content">
         <PrizesTopBanner></PrizesTopBanner>
-        <PrizesPool
-          :addressCount="addressCount"
-          :totalRewards="totalRewards"
-        ></PrizesPool>
-        <PrizesAllocation
-          :rank="userInfo.rank"
-          :tx="userInfo.tx"
-          :reward="userInfo.reward"
-          :top100Tx="top100Tx"
-        ></PrizesAllocation>
-        <PrizesRank :rankList="rankList"></PrizesRank>
+        <PrizesPool></PrizesPool>
+        <PrizesAllocation></PrizesAllocation>
+        <PrizesRank ></PrizesRank>
         <PrizesRule></PrizesRule>
       </div>
     </div>
@@ -43,28 +35,13 @@ export default {
     PrizesRank,
     PrizesRule,
   },
-  data() {
-    return {
-      addressCount: '0',
-      totalRewards: '0',
-      txCount: '0',
-
-      rankList: [],
-      userInfo: {
-        rank: 0,
-        tx: 0,
-        reward: '0',
-      },
-      top100Tx: 0,
-    }
-  },
   computed: {
     evmAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
     },
   },
   created() {
-    this.getData()
+    this.$store.commit("getPrizesData")
   },
   watch: {
     evmAddress(item1, item2) {
@@ -74,41 +51,18 @@ export default {
     },
   },
   methods: {
-    async getData() {
-      const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}/points_platform/competition/info`
-      )
-      const { result } = await response.json()
-      const { addressCount, totalRewards, txCount, list } = result || {}
-      this.addressCount = addressCount ? String(addressCount) : '0'
-      this.totalRewards = totalRewards ? String(totalRewards) : '0'
-      this.txCount = txCount ? String(txCount) : '0'
-      this.rankList = list
-      this.top100Tx = list[list?.length - 1 || 0]?.count || 0
-    },
     async getUserReward() {
-      if (!this.evmAddress) return
-      const response = await fetch(
-        `${
-          process.env.VUE_APP_OPEN_URL
-        }/points_platform/competition/address?address=${this.evmAddress.toLocaleLowerCase()}`
-      )
-      const { result } = await response.json()
-      const { count, rank, reward } = result || {}
-      this.userInfo = {
-        ...this.userInfo,
-        rank: rank || 0,
-        tx: count || 0,
-        reward: reward || '0',
-      }
-    }
+      console.log("11111111")
+      if (!this.evmAddress || this.evmAddress === "0x") return
+      this.$store.commit("getPrizesuserInfo", this.evmAddress.toLocaleLowerCase())
+    },
   },
 }
 </script>
 
 <style scoped lang="scss">
 .orbiter-prizes {
-  font-family: OpenSansRoman-Regular;
+  font-family: GeneralSans-Regular;
   color: #fff;
   font-size: 16px;
   width: 100%;

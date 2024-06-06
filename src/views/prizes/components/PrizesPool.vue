@@ -103,14 +103,14 @@
 </template>
 
 <script>
+import { 
+  prizesTotalAddress,
+  prizesTotalRewards
+ } from "../../../composition/hooks"
 import { decimalNum } from '../../../util/decimalNum'
 
 export default {
   name: 'PrizesPool',
-  props: {
-    addressCount: String,
-    totalRewards: String,
-  },
 
   data() {
     return {
@@ -137,6 +137,12 @@ export default {
     }
   },
   computed: {
+    addressCount() {
+      return prizesTotalAddress.value
+    },
+    totalRewards() {
+      return prizesTotalRewards.value
+    },
     totalAddress() {
       return this.decimalNumC(this.addressCount, 0, ',')
     },

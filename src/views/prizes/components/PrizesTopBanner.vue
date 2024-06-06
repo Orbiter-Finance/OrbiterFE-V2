@@ -107,7 +107,7 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
-      this.$router.push( isDev()? '?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
+      this.$router.push( isDev()? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
     },
   },
   mounted() {
@@ -199,7 +199,7 @@ export default {
         font-weight: 700;
         letter-spacing: 0px;
         text-align: left;
-        font-family: OpenSansRoman-Bold;
+        font-family: GeneralSans-Bold;
 
         .prizes-total-pool-amount {
           color: #ef2f2d;
