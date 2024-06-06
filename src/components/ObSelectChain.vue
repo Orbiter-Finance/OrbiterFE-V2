@@ -146,6 +146,7 @@ import {
   web3State,
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
+  transferDataState
 } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config'
 import solanaHelper from '../util/solana/solana_helper'
@@ -178,6 +179,7 @@ export default {
         return []
       },
     },
+    type: String
   },
   data() {
     const { query } = this.$route
@@ -187,12 +189,42 @@ export default {
       tabKey: 'ALL',
       updateTime: 0,
       symbol: query.token || 'ETH',
-      remark: {
-        167000: 'Grab $PINK Airdrop',
-      },
+      
     }
   },
   computed: {
+    remark() {
+      const { toChainID, selectMakerConfig } = transferDataState
+      const toChainId =selectMakerConfig.toChain.chainId ||  toChainID 
+      const toArbText = this.type === "from" && 
+      (toChainId === "42161")
+      
+      ? "to arb" : ""
+
+      return ({
+        167000: 'Grab $PINK Airdrop',
+        81457: toArbText,
+        62050: toArbText,
+        42766: toArbText,
+        34443: toArbText,
+        810180: toArbText,
+        7777777: toArbText,
+        169: toArbText,
+        5000: toArbText,
+        137: toArbText,
+        534352: toArbText,
+        204: toArbText,
+        "zksync": toArbText,
+        42170: toArbText,
+        70700: toArbText,
+        56: toArbText,
+        60808: toArbText,
+        324: toArbText,
+        167000: toArbText,
+        11501: toArbText,
+        4200: toArbText,
+      })
+    },
     currentWalletAddress() {
       const evmAddress =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress

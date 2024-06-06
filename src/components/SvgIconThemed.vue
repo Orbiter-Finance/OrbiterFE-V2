@@ -50,13 +50,16 @@ export default {
         showedCls() {
             return `svg-icon-${this.size}`
         },
+        themeMode() {
+            return this.themeMode ? "light" : "dark"
+        },
         showedIconName() {
             return typeof this.icon === 'string'
                 ? `${this.$store.state.themeMode}-${this.icon}`
                 : this.iconName
         },
         isLightMode() {
-            return this.$store.state.themeMode === 'light'
+            return this.$store.state.themeMode === 'light' && this.$route.path !==  '/prizes'
         },
         color() {
             return this.isLightMode

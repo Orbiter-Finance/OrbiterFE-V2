@@ -18,6 +18,15 @@ export const actNftList = ref([])
 
 export const lotteryCardTotal = ref('0')
 export const lotteryCardModalShow = ref(false)
+export const claimCardModalShow = ref(false)
+
+// LUCKY_BAG CARD REWARD
+export const claimCardModalType = ref('REWARD')
+
+export const claimCardModalDataInfo = ref(null)
+export const claimCardModalAmountInfo = ref(null)
+
+export const userInfoDetailsCardModalShow = ref(false)
 export const lotteryPointsNum = ref('0')
 export const lotteryCardCurrentProgress = ref('0')
 export const lotteryCardProgressMax = ref('0')
@@ -48,6 +57,26 @@ export const setActNftList = (nftList) => {
 export const setLotteryCardTotal = (flag) => (lotteryCardTotal.value = flag)
 export const setLotteryCardModalShow = (flag) =>
   (lotteryCardModalShow.value = flag)
+
+/**
+ *
+ * @param {*} flag true | false
+ * @param {*} type LUCKY_BAG | CARD | REWARD
+ */
+export const setClaimCardModalShow = (flag, type = '') => {
+  claimCardModalShow.value = flag
+  claimCardModalType.value = type
+}
+
+export const setClaimCardModalDataInfo = (data) =>
+  (claimCardModalDataInfo.value = data)
+
+export const setClaimCardModalAmountInfo = (data) =>
+  (claimCardModalAmountInfo.value = data)
+
+export const setUserInfoDetailsCardModalShow = (flag) =>
+  (userInfoDetailsCardModalShow.value = flag)
+
 export const setLotteryPointsNum = (flag) => (lotteryPointsNum.value = flag)
 export const setLotteryCardDataGroup = (dataGroup) => {
   lotteryCardTotal.value = dataGroup.lotteryCardTotal

@@ -82,7 +82,7 @@
                 />
               </svg>
             </div>
-              <div>{{ tipsLabelTx }}</div>
+            <div class="progress-current-tx">{{ tipsLabelTx }}</div>
               
             </div>
             <div
@@ -219,6 +219,7 @@ import {
 
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
 import { decimalNum } from '../../../util/decimalNum'
+import { isDev } from '../../../util';
 
 const ratio10 = '#DBEF2D'
 const ratio15 = '#FF29DA'
@@ -251,7 +252,7 @@ export default {
         {
           img: 'tx3.png',
           color: ratio10,
-          des: 'Bridge TX ≥ 3 ≥3 tx',
+          des: 'Bridge TX ≥ 3 tx',
           position: 3,
           label: '3Tx',
           ratio: '10%',
@@ -260,7 +261,7 @@ export default {
         {
           img: 'tx5.png',
           color: ratio15,
-          des: 'Bridge TX ≥ 3 ≥5 tx',
+          des: 'Bridge TX ≥ 5 tx',
           position: 5,
           label: '5Tx',
           ratio: '15%',
@@ -269,7 +270,7 @@ export default {
         {
           img: 'tx8.png',
           color: ratio20,
-          des: 'Bridge TX ≥ 3 ≥8 tx',
+          des: 'Bridge TX ≥ 8 tx',
           position: 8,
           label: '8Tx',
           ratio: '20%',
@@ -278,7 +279,7 @@ export default {
         {
           img: 'tx15.png',
           color: ratio25,
-          des: 'Bridge TX ≥ 3 ≥15 tx',
+          des: 'Bridge TX ≥ 15 tx',
           position: 15,
           label: '15Tx',
           ratio: '25%',
@@ -311,16 +312,17 @@ export default {
       return Number(this.userRanking) && Number(this.userRanking ) <= 100
     },
     rewardAmount() {
+
       return Number(this.reward) ? this.decimalNumC(this.reward, 2, ',') : 0
     },
     isHiddenTips() {
-      console.log("this.txAmount < this.top100Tx", this.txAmount, this.top100Tx)
+
       return "display:" + (!(Number(this.txAmount) <= 3 ||
         this.progressStage.some((item) => item.value === this.txAmount) || this.txAmount >= this.top100Tx) ? 'block' : 'none')
 
     },
     tipsLabelTx() {
-      return this.txAmount  + " Tx"
+      return this.txAmount  + "Tx"
     },
     tipsLabel() {
       const list =
@@ -448,7 +450,7 @@ export default {
               ],
             })
             const result = await fetch(
-              `${process.env.VUE_APP_OPEN_URL}/points_platform/competition/info`,
+              `${process.env.VUE_APP_OPEN_URL}/points_platform/competition/updateTelegramInfo`,
               {
                 headers: {
                   token: res,
@@ -469,6 +471,9 @@ export default {
             console.log('data', data)
             if(data?.code === 0 ){
               this.$notify.success(data.message)
+            } else {
+              this.$notify.warning(data.message)
+
             }
           } else {
             const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent(
@@ -480,7 +485,8 @@ export default {
           window.open('https://t.me/orbiterORB', '_blank')
         }
       } else {
-        this.$router.push('/')
+        this.$router.push( isDev() ? '?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
+
       }
     },
   },
@@ -664,6 +670,10 @@ export default {
             transform: translate(-50%, -50%);
           }
 
+          .progress-stage:first-child {
+            transform: translate(0%, -50%);
+          }
+
           .progress-stage:last-child {
             transform: translate(-100%, -50%);
           }
@@ -673,7 +683,7 @@ export default {
             bottom: -16px;
             color: #ffa629;
             transform: translate(-50%, 50%);
-            width: 32px;
+            width: 52px;
 
             .progress-icon {
               width: 100%;
@@ -685,6 +695,11 @@ export default {
                 width: 8px;
                 height: 8px;
               }
+            }
+
+            .progress-current-tx {
+              white-space: nowrap;
+              font-weight: 600;
             }
           }
         }
@@ -724,7 +739,9 @@ export default {
             transform: translate(-50%, -50%);
             white-space: nowrap;
           }
-
+          .progress-tx-group-item:first-child {
+            transform: translate(0%, -50%);
+          }
           .progress-tx-group-item:last-child {
             transform: translate(-100%, -50%);
           }

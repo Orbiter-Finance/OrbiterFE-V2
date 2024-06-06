@@ -34,7 +34,7 @@
         :style="navIcons.style"
         :icon="navIcons.logo"
       />
-      <div
+      <!-- <div
       v-if="$route.path !== '/prizes'"
         style="
           flex: 1;
@@ -64,7 +64,10 @@
             :src="require('../../assets/activity/point.png')"
           />
         </div>
-      </div>
+      </div> -->
+      <div class="lucky-bag-mobile" 
+      @click="openLuckyBagModal"
+      ></div>
       <div
         v-if="isMobile && $route.path !== '/prizes'"
         :class="addPointVisible ? 'shake-top' : ''"
@@ -147,7 +150,7 @@ import {
   starkAddress,
   setActDialogVisible,
   setConnectWalletGroupKey,
-  setSolanaDialog
+  setSolanaDialog,
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -187,7 +190,7 @@ export default {
       return this.isLightMode ? starknetLogoLight : starknetLogoDark
     },
     isLogin () {
-      return walletIsLogin.value
+      return walletIsLogin.value && this.showAddress
     },
     isMobile () {
       return isMobile.value
@@ -267,6 +270,9 @@ export default {
     },
   },
   methods: {
+    openLuckyBagModal(){
+      this.$store.commit("getClaimORBGUYRewardData", "LUCKY_BAG")      
+    },
     openActDialog () {
       if (this.isLogin) {
         setActDialogVisible(true)
@@ -391,6 +397,14 @@ export default {
     cursor: pointer;
   }
 
+  .lucky-bag-mobile {
+    width: 40px;
+    height: 40px;
+    background-image: url(../../assets/lucky-bag-mobile.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
   .nav-wrap {
     display: flex;
     align-items: center;
@@ -416,7 +430,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(30, 180, 171, 1);
     font-size: 18px;
-    font-family: OpenSansRoman-ExtraBold;
+    font-family: GeneralSans-Medium;
     text-align: right;
     white-space: nowrap;
     line-height: 24px;

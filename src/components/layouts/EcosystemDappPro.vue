@@ -65,37 +65,49 @@
       </svg>
     </div>
     <el-carousel :interval="6000" trigger="click" height="272px">
-      <el-carousel-item >
-        <EcosystemDapp 
-        :holders="holders"
-        :ratio="ratio"
-        :showCard="showCard"
-        :banner="'banner.gif'"
-        :tag="'Fair Launch'"
-        :tagStyle="'background: linear-gradient( 169deg, rgb(248, 218, 211) 7.353%,  rgb(220, 84, 161) 60.561%);'"
-        :description="`Transfer ≥ <span class='orbiter_global_ecosystem_dapp_condition_pink'>6TXs</span> to Taiko to grab  <span class='orbiter_global_ecosystem_dapp_condition_pink'>$PINK</span>.`"
-        :isProgress="true"
-        :name="'TaiKo'"
-        :url="'https://www.pinketh.xyz/'"
-      />
+      <!-- <el-carousel-item>
+        <EcosystemDapp
+          :holders="holders"
+          :ratio="ratio"
+          :showCard="showCard"
+          :banner="'likwid.png'"
+          :tag="'Vote to Earn'"
+          :tagStyle="'background:linear-gradient(172.41deg, rgb(242, 185, 255) 26.053%,rgb(254, 206, 210) 64.374%);'"
+          :description="`<span class='orbiter_global_ecosystem_dapp_condition_likwid'>3 Votes to qualify.</span> Each address can win 10-50 $ORBGUY randomly. FCFS!`"
+          :isProgress="false"
+          :name="'likwid'"
+          :url="'https://0xastra.xyz/'"
+        />
+      </el-carousel-item> -->
+      <el-carousel-item>
+        <EcosystemDapp
+          :holders="holders"
+          :ratio="ratio"
+          :showCard="showCard"
+          :banner="'banner.gif'"
+          :tag="'Fair Launch'"
+          :tagStyle="'background: linear-gradient( 169deg, rgb(248, 218, 211) 7.353%,  rgb(220, 84, 161) 60.561%);'"
+          :description="`Transfer ≥ <span class='orbiter_global_ecosystem_dapp_condition_pink'>6TXs</span> to Taiko to grab  <span class='orbiter_global_ecosystem_dapp_condition_pink'>$PINK</span>.`"
+          :isProgress="true"
+          :name="'TaiKo'"
+          :url="'https://www.pinketh.xyz/'"
+        />
       </el-carousel-item>
-      <el-carousel-item >
-        <EcosystemDapp 
-            :holders="totalUser"
-            :ratio="ratio"
-            :showCard="showCard"
-            :banner="'astra.jpg'"
-            :tag="'Cross-chain Game'"
-            :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-            :description="'Exclusive Early Rewards for orbiter Premium Users is airdroping.'"
-            :isProgress="false"
-            :name="'0xastra'"
-            :url="'https://0xastra.xyz/'"
-          />
+      <el-carousel-item>
+        <EcosystemDapp
+          :holders="totalUser"
+          :ratio="ratio"
+          :showCard="showCard"
+          :banner="'astra.jpg'"
+          :tag="'Cross-chain Game'"
+          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
+          :description="'Exclusive Early Rewards for orbiter Premium Users is airdroping.'"
+          :isProgress="false"
+          :name="'0xastra'"
+          :url="'https://0xastra.xyz/'"
+        />
       </el-carousel-item>
     </el-carousel>
-    
-    
   </div>
 </template>
 <script>
@@ -105,7 +117,7 @@ import { ethers } from 'ethers'
 import Web3 from 'web3'
 import { isMobile } from '../../composition/hooks'
 import util from '../../util/util'
-import EcosystemDapp from "./EcosystemDapp.vue"
+import EcosystemDapp from './EcosystemDapp.vue'
 
 let timer
 let timer1
@@ -113,7 +125,7 @@ let timer1
 export default {
   name: 'EcosystemDappPro',
   components: {
-    EcosystemDapp
+    EcosystemDapp,
   },
   data() {
     return {
@@ -148,22 +160,21 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     openUrl() {
-      const url = "https://www.pinketh.xyz/"
+      const url = 'https://www.pinketh.xyz/'
       this.$gtag.event('TaiKo', {
         event_category: 'TaiKo',
         event_label: url,
       })
       window.open(url, '_blank')
     },
-    async getData2(){
+    async getData2() {
       const res = await fetch('https://api.0xastra.xyz/user/data', {
         headers: {
-          apikey: '6dffe1c9-9855-4460-a46f-4f1fc48b8283'
-        }
+          apikey: '6dffe1c9-9855-4460-a46f-4f1fc48b8283',
+        },
       })
       const data = await res.json()
-      this.totalUser = data?.data?.totalUser || "0"
-
+      this.totalUser = data?.data?.totalUser || '0'
     },
     async getData() {
       const res = await fetch(
@@ -315,7 +326,6 @@ export default {
       cursor: pointer;
     }
   }
-  
 }
 
 .dark-theme {
