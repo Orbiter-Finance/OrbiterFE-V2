@@ -198,17 +198,18 @@ export default {
     localStorage.setItem('themeMode', state.themeMode)
     toggleBodyCls()
   },
-  async getClaimORBGUYRewardData(state, type) {
+  async getClaimORBGUYRewardData(state, {type,token}) {
     try {
-      if (type) {
+      if (type === 'LUCKY_BAG') {
         const address =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if (!address && address !== '0x') return
         // util.showMessage('Opening...', 'warning')
+        // 
 
-        let res = await requestClaimLuckyBagReward(address?.toLocaleLowerCase())
+        let res = await requestClaimLuckyBagReward(address?.toLocaleLowerCase(), token)
         if (!res?.result?.sign) {
-          res = await drawClaimLuckyBagReward(address?.toLocaleLowerCase())
+          res = await drawClaimLuckyBagReward(address?.toLocaleLowerCase(), token)
         }
         const { result, code, message = '' } = res || {}
         const {

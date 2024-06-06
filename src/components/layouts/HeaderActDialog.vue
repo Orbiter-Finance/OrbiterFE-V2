@@ -520,7 +520,7 @@ export default {
   },
   methods: {
     openClaimRewardModal() {
-      this.$store.commit("getClaimORBGUYRewardData", 'REWARD')
+      this.$store.commit("getClaimORBGUYRewardData", {type: 'REWARD'})
     },
     openUserInfoDetailsCardModal () {
       setUserInfoDetailsCardModalShow(true)

@@ -300,7 +300,7 @@ export default {
     handleHidden() {
       this.isClaim = false
       this.loading = false
-      this.$store.commit('getClaimORBGUYRewardData', '')
+      this.$store.commit('getClaimORBGUYRewardData', {type: ''})
     },
     async claim() {
       if (this.isClaim || this.loading) return
