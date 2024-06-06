@@ -1242,11 +1242,12 @@ export default {
   .text-wrapper_17 {
     height: 20px;
     border-radius: 4px;
-    background: rgb(245, 245, 245);
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    color: #FFF;
+    background: linear-gradient(139.64deg, rgb(229, 69, 255) 0%,rgb(255, 0, 0) 85.476%);
   }
 
   .text-wrapper_1_17 {
@@ -2312,9 +2313,6 @@ export default {
 
     .task-card {
       background-color: var(--dark-page-box-bg);
-      .text-wrapper_17 {
-        background-color: #222222;
-      }
 
       .group-reward {
         background-color: #222222;
