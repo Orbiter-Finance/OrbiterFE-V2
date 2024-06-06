@@ -22,7 +22,7 @@
         />
         <HeaderLinks
           v-if="$route.path !== '/prizes'" 
-          style="margin-top: 24px; margin-left: 134px; min-width: 280px"
+          style="margin-top: 24px; margin-left: 66px; min-width: 280px"
         />
       </div>
       <HeaderOps v-if="$route.path !== '/statistics'" />
