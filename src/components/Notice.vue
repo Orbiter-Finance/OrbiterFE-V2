@@ -89,7 +89,7 @@ export default {
       try {
         const data = await getNoticeData()
         const list = data?.map((item)=> item.description || "") || []
-        this.noticeList = [...new Set(list.map((item)=> item.trim()))]
+        this.noticeList = [...new Set(list.map((item)=> item.trim()))].filter((item)=> !!item)
         if(this.noticeList?.length) {
           const dymanicStyle = `@keyframes move-notice-left {
             0% {

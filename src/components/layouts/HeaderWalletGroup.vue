@@ -443,7 +443,7 @@ export default {
             }
 
             .wallet-title {
-              font-family: OpenSansRoman, OpenSansRoman;
+              font-family: GeneralSans, GeneralSans;
               font-weight: 600;
               font-size: 16px;
               color: #222222;

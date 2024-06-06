@@ -110,6 +110,8 @@ import {
   setLotteryCardModalShow,
   setLotteryPointsNum,
   setLotteryCardProgress,
+  isTonDialog,
+  isSolanaDialog
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -501,7 +503,7 @@ export default {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1200;
+  z-index: 1000;
   -webkit-transform: translate3d(-50%, -50%, 1px);
   -moz-transform: translate3d(-50%, -50%, 1px);
   -o-transform: translate3d(-50%, -50%, 1px);
@@ -535,7 +537,7 @@ export default {
           border-radius: 4px;
           font-size: 14px;
           line-height: 19px;
-          font-family: OpenSansRoman-Regular;
+          font-family: GeneralSans-Regular;
           font-weight: 600;
         }
       }
@@ -579,7 +581,7 @@ export default {
               background-size: contain;
               margin: 29% auto auto;
               font-size: 32px;
-              font-family: OpenSansRoman-ExtraBold;
+              font-family: GeneralSans-Medium;
               line-height: 43px;
               text-shadow: 2px 2px 0px #000000;
             }
@@ -587,7 +589,7 @@ export default {
             .lottery-card-points-rule {
               width: 75%;
               text-align: center;
-              font-family: OpenSansRoman-Regular;
+              font-family: GeneralSans-Regular;
               margin: auto auto 34px;
               font-size: 13px;
               line-height: 18px;
@@ -595,7 +597,7 @@ export default {
               white-space: break-spaces;
               color: #666666;
               & > span {
-                font-family: OpenSansRoman-SemiBold;
+                font-family: GeneralSans-SemiBold;
                 color: #222222;
               }
             }
@@ -630,7 +632,7 @@ export default {
           align-items: center;
           width: 40%;
           height: 100%;
-          font-family: OpenSansRoman-ExtraBold;
+          font-family: GeneralSans-Medium;
           background-image: url('../../assets/activity/header_lottery_card/confirm.png');
           background-repeat: no-repeat;
           font-size: 18px;

@@ -201,6 +201,8 @@ input {
   -ms-user-select: none;
   /*IE10*/
   user-select: none;
+  padding: 0;
+  margin: 0;
 }
 
 input {
@@ -267,12 +269,27 @@ p {
   white-space: nowrap;
   font-weight: 700;
   color: #f81e96;
-  font-family: OpenSansRoman-SemiBold;
+  font-family: GeneralSans-SemiBold;
 }
 
 .orbiter_global_ecosystem_dapp_condition_astra {
   white-space: nowrap;
   font-weight: 700;
   color: #B3C700;
-  font-family: OpenSansRoman-SemiBold;
+  font-family: GeneralSans-SemiBold;
+}
+
+.orbiter_global_ecosystem_dapp_condition_likwid {
+  white-space: nowrap;
+  font-weight: 700;
+  font-weight: 600;
+  font-family: GeneralSans-SemiBold;
+}
+
+.orbiter_global_prizes_tx-color {
+  color: #FFBA56;
+}
+
+.orbiter_global_prizes_tips_underline {
+  text-decoration: underline;
 }

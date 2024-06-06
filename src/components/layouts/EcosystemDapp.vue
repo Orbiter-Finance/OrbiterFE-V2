@@ -229,7 +229,7 @@ export default {
           color: #999999;
           font-weight: 500;
           line-height: 18px;
-          font-family: OpenSansRoman-Regular;
+          font-family: GeneralSans-Regular;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -273,7 +273,7 @@ export default {
       line-height: 20px;
       letter-spacing: 0px;
       text-align: left;
-      font-family: OpenSansRoman-SemiBold;
+      font-family: GeneralSans-SemiBold;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -286,7 +286,7 @@ export default {
         white-space: nowrap;
         font-weight: 700;
         color: #f81e96;
-        font-family: OpenSansRoman-SemiBold;
+        font-family: GeneralSans-SemiBold;
       }
     }
 
@@ -310,7 +310,7 @@ export default {
             display: flex;
             align-items: center;
             font-size: 14px;
-            font-family: OpenSansRoman-Regular;
+            font-family: GeneralSans-Regular;
             color: #999999;
             line-height: 20px;
 
@@ -329,7 +329,7 @@ export default {
           }
 
           .ratio {
-            font-family: OpenSansRoman-Regular;
+            font-family: GeneralSans-Regular;
             font-weight: 500;
             color: #222222;
             font-size: 14px;
@@ -338,7 +338,7 @@ export default {
 
           .ratio100 {
             font-size: 14px;
-            font-family: OpenSansRoman-Regular;
+            font-family: GeneralSans-Regular;
             font-weight: 600;
             font-weight: 700;
             color: #7f0d0d;
@@ -413,7 +413,7 @@ export default {
     border-radius: 18px;
     margin-left: 12px;
     font-size: 14px;
-    font-family: OpenSansRoman-Regular;
+    font-family: GeneralSans-Regular;
     font-weight: bold;
     color: #ffffff;
     display: flex;

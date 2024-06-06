@@ -95,7 +95,7 @@ export default {
 .learn-more {
   font-size: 18px;
   margin-top: 120px;
-  font-family: OpenSansRoman-SemiBold, OpenSansRoman;
+  font-family: GeneralSans-SemiBold, GeneralSans;
   font-weight: 600;
   color: #df2e2d;
   cursor: pointer;

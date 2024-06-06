@@ -19,7 +19,33 @@
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
-      <span @click="openAct" class="ops-item" style="position: relative">
+      <div
+        v-if="$route.path !== '/prizes'"
+        class="lucky-bag-tab"
+        @click="openLuckyBagModal"
+      >
+        <div class="lucky-bag-image"></div>
+        <div class="lucky-bag-info">
+          <div class="info-label">Grab 2% $ORBGUY</div>
+          <div class="info-progress">
+            <div
+              class="progress"
+              :style="{
+                width:
+                  Number(ratio) >= 100 ? '100%' : decimalNumC(ratio, 3) + '%',
+              }"
+            >
+              <div class="skeleton"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <span
+        v-if="$route.path !== '/prizes'"
+        @click="openAct"
+        class="ops-item"
+        style="position: relative"
+      >
         <img
           :hidden="!isLightMode"
           style="margin: -3px 0 0 0; width: 24px"
@@ -53,9 +79,17 @@
           />
         </div>
       </span>
-      <span @click="showHistory" class="ops-item">History</span>
+      <span
+        @click="showHistory"
+        class="ops-item"
+        v-if="$route.path !== '/prizes'"
+        >History</span
+      >
       <div
-        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
+        v-if="
+          (isSelectedStarkNet || isSelectedSolana || isSelectedTon) &&
+          $route.path !== '/prizes'
+        "
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -65,11 +99,10 @@
           style="width: 2rem; height: 2rem"
           :iconName="connectWalletIcon"
         ></svg-icon>
-        <span class="address">{{
-          connectAddress
-        }}</span>
+        <span class="address">{{ connectAddress }}</span>
       </div>
       <div
+        v-else
         ref="connectedBtn"
         @click="connectAWallet"
         class="ops-item center"
@@ -82,7 +115,11 @@
         <span class="address">{{ connectFirstAddress }}</span>
       </div>
     </template>
-    <div @click="toggleThemeMode" class="ops-mode">
+    <div
+      @click="toggleThemeMode"
+      class="ops-mode"
+      v-if="$route.path !== '/prizes'"
+    >
       <SvgIconThemed class="mode-icon" icon="mode" />
     </div>
   </div>
@@ -117,8 +154,9 @@ import {
   transferDataState,
   setConnectWalletGroupKey,
   setSolanaDialog,
-isTonDialog,
-setTonDialog
+  isTonDialog,
+  setTonDialog,
+  claimCardModalAmountInfo,
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -130,6 +168,7 @@ import { requestPointSystem, requestLotteryCard } from '../../common/openApiAx'
 import util from '../../util/util'
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
+import { decimalNum } from '../../util/decimalNum'
 const addressPointMap = {}
 export default {
   name: 'HeaderOps',
@@ -142,31 +181,45 @@ export default {
     },
   },
   computed: {
-    addPoint () {
+    claimCardModalAmountInfoData() {
+      return claimCardModalAmountInfo.value
+    },
+    ratio() {
+      const { ratio } = this.claimCardModalAmountInfoData || {}
+      if (!Number(ratio)) return 0
+
+      return ratio
+    },
+    addPoint() {
       return actAddPoint.value
     },
-    totalPoint () {
+    totalPoint() {
       return actTotalPoint.value
     },
-    addPointVisible () {
+    addPointVisible() {
       return actAddPointVisible.value && !actDialogVisible.value
     },
-    isMobile () {
+    isMobile() {
       return isMobile.value
     },
-    selectWalletDialogVisible () {
+    selectWalletDialogVisible() {
       return actDialogVisible.value
     },
-    isLightMode () {
+    isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
-    globalSelectWalletConf () {
+    globalSelectWalletConf() {
       return compatibleGlobalWalletConf.value
     },
-    isLogin () {
-      return walletIsLogin.value || this.isSelectedStarkNet || this.isSelectedSolana || this.isSelectedTon
+    isLogin() {
+      return (
+        walletIsLogin.value ||
+        this.isSelectedStarkNet ||
+        this.isSelectedSolana ||
+        this.isSelectedTon
+      )
     },
-    isSelectedStarkNet () {
+    isSelectedStarkNet() {
       const { toChainID, fromChainID } = transferDataState
       return (
         fromChainID === CHAIN_ID.starknet ||
@@ -175,7 +228,7 @@ export default {
         toChainID === CHAIN_ID.starknet_test
       )
     },
-    isSelectedSolana () {
+    isSelectedSolana() {
       const { fromChainID, toChainID } = transferDataState
       return (
         fromChainID === CHAIN_ID.solana ||
@@ -184,7 +237,7 @@ export default {
         toChainID === CHAIN_ID.solana_test
       )
     },
-    isSelectedTon () {
+    isSelectedTon() {
       const { fromChainID, toChainID } = transferDataState
       return (
         fromChainID === CHAIN_ID.ton ||
@@ -193,81 +246,96 @@ export default {
         toChainID === CHAIN_ID.ton_test
       )
     },
-    starkAddress () {
+    starkAddress() {
       return starkAddress()
     },
-    solanaAddress () {
+    solanaAddress() {
       return solAddress()
     },
-    tAddress () {
+    tAddress() {
       return tonAddress()
     },
-    showAddress () {
+    showAddress() {
       return showAddress()
     },
-    otherAddress () {
-      return [{
-        address: this.tAddress,
-        isSelected: this.isSelectedTon,
-        connect: async ()=>{
-          await tonHelper.connect()
+    otherAddress() {
+      return [
+        {
+          address: this.tAddress,
+          isSelected: this.isSelectedTon,
+          connect: async () => {
+            await tonHelper.connect()
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(true)
+          },
+          icon: CHAIN_ID.ton,
         },
-        open: ()=>{
-          setSolanaDialog(false)
-          setStarkNetDialog(false)
-          setTonDialog(true)
+        {
+          address: this.solanaAddress,
+          isSelected: this.isSelectedSolana,
+          connect: () => {
+            setConnectWalletGroupKey('SOLANA')
+            setSelectWalletDialogVisible(true)
+          },
+          open: () => {
+            setSolanaDialog(true)
+            setStarkNetDialog(false)
+            setTonDialog(false)
+          },
+          icon: solanaHelper.readWalletName() || CHAIN_ID.solana,
         },
-        icon: CHAIN_ID.ton
-      }, {
-        address: this.solanaAddress,
-        isSelected: this.isSelectedSolana,
-        connect: ()=>{
-          setConnectWalletGroupKey("SOLANA")
-          setSelectWalletDialogVisible(true)
+        {
+          address: this.starkAddress,
+          isSelected: this.isSelectedStarkNet,
+          connect: () => {
+            setConnectWalletGroupKey('STARKNET')
+            setSelectWalletDialogVisible(true)
+          },
+          open: () => {
+            setStarkNetDialog(true)
+            setSolanaDialog(false)
+            setTonDialog(false)
+          },
+          icon: CHAIN_ID.starknet,
         },
-        open: ()=>{
-          setSolanaDialog(true)
-          setStarkNetDialog(false)
-          setTonDialog(false)
-        },
-        icon: solanaHelper.readWalletName() || CHAIN_ID.solana
-      }, {
-        address: this.starkAddress,
-        isSelected: this.isSelectedStarkNet,
-        connect: ()=>{
-          setConnectWalletGroupKey("STARKNET")
-          setSelectWalletDialogVisible(true)
-        },
-        open: ()=>{
-          setStarkNetDialog(true)
-          setSolanaDialog(false)
-          setTonDialog(false)
-        },
-        icon: CHAIN_ID.starknet
-      }]
+      ]
     },
-    connectFirstWalletIcon(){
-      const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
-      const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0]
-      return firstGroup?.icon || (this.globalSelectWalletConf.walletType ?
-            this.globalSelectWalletConf.walletType.toLowerCase() : "")
+    connectFirstWalletIcon() {
+      const first = this.otherAddress.findIndex((item) => !!item.isSelected) + 1
+      const firstGroup = this.otherAddress
+        .slice(first)
+        .filter((item) => !!item.isSelected)[0]
+      return (
+        firstGroup?.icon ||
+        (this.globalSelectWalletConf.walletType
+          ? this.globalSelectWalletConf.walletType.toLowerCase()
+          : '')
+      )
     },
-    connectWalletIcon(){
-      return this.otherAddress.filter((item)=>!!item.isSelected)[0]?.icon || (this.globalSelectWalletConf.walletType ?
-            this.globalSelectWalletConf.walletType.toLowerCase() : "")
-
+    connectWalletIcon() {
+      return (
+        this.otherAddress.filter((item) => !!item.isSelected)[0]?.icon ||
+        (this.globalSelectWalletConf.walletType
+          ? this.globalSelectWalletConf.walletType.toLowerCase()
+          : '')
+      )
     },
-    connectFirstAddress () {
-      const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
-      const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0]
+    connectFirstAddress() {
+      const first = this.otherAddress.findIndex((item) => !!item.isSelected) + 1
+      const firstGroup = this.otherAddress
+        .slice(first)
+        .filter((item) => !!item.isSelected)[0]
       return firstGroup?.address || this.showAddress
     },
-    connectAddress () {
-      const option = this.otherAddress.filter((item)=> item.isSelected)[0]
+    connectAddress() {
+      const option = this.otherAddress.filter((item) => item.isSelected)[0]
       const address = option?.address || 'Connect Wallet'
       return address
     },
-    currentWalletAddress () {
+    currentWalletAddress() {
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
         web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
@@ -277,12 +345,13 @@ export default {
       ]
     },
   },
-  data () {
+  data() {
     const selectedWallet = JSON.parse(
       localStorage.getItem('selectedWallet') || '{}'
     )
     return {
       selectedWallet,
+      recaptchaId: 0,
     }
   },
   watch: {
@@ -294,46 +363,81 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    openAct () {
+    decimalNumC(num, decimal, delimiter) {
+      return decimalNum(num, decimal, delimiter)
+    },
+    async openLuckyBagModal() {
+      util.showMessage(
+        `😭 Oops, sorry! All gone! Catch us earlier next time!`,
+        'error'
+      )
+
+      // const recaptchaDiv = document.createElement('div')
+      // recaptchaDiv.id = 'recaptcha-outside-badge'
+      // this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
+      // this.recaptchaId = grecaptcha.render(recaptchaDiv, {
+      //   sitekey: process.env['VUE_APP_RECAPTCHA'],
+      //   theme: 'light',
+      //   callback: (token) => {
+      //     this.$store.commit('getClaimORBGUYRewardData', {
+      //       type: 'LUCKY_BAG',
+      //       token,
+      //     })
+      //     recaptchaDiv.remove()
+      //   },
+      // })
+      // recaptchaDiv.onclick = () => {
+      //   recaptchaDiv.remove()
+      // }
+    },
+    openAct() {
       setActDialogVisible(true)
       this.$emit('closeDrawer')
     },
-    async connectStarkNetWallet () {
-      const option = this.otherAddress.filter((item)=> item.isSelected)[0]
-      const isConnect = option?.address && option?.address !== 'Connect Wallet' && option?.address !== 'not connected'
+    async connectStarkNetWallet() {
+      const option = this.otherAddress.filter((item) => item.isSelected)[0]
+      const isConnect =
+        option?.address &&
+        option?.address !== 'Connect Wallet' &&
+        option?.address !== 'not connected'
 
-      if(isConnect) {
+      if (isConnect) {
         option.open()
         setActDialogVisible(true)
       } else {
         await option.connect()
-      }      
+      }
     },
-    async connectAWallet () {
+    async connectAWallet() {
       const evm = {
         address: this.showAddress,
-        connect: async ()=>{
-          setConnectWalletGroupKey("EVM")
+        connect: async () => {
+          setConnectWalletGroupKey('EVM')
           setSelectWalletDialogVisible(true)
         },
-        open: ()=>{
+        open: () => {
           setTonDialog(false)
           setSolanaDialog(false)
           setStarkNetDialog(false)
           setActDialogVisible(true)
-        }
+        },
       }
-      const first = this.otherAddress.findIndex((item)=>!!item.isSelected) + 1
-      const firstGroup = this.otherAddress.slice(first).filter((item)=>!!item.isSelected)[0] || evm
-      const isConnect = firstGroup?.address && firstGroup?.address !== 'Connect Wallet' && firstGroup?.address !== 'not connected'
-      if(isConnect) {
+      const first = this.otherAddress.findIndex((item) => !!item.isSelected) + 1
+      const firstGroup =
+        this.otherAddress.slice(first).filter((item) => !!item.isSelected)[0] ||
+        evm
+      const isConnect =
+        firstGroup?.address &&
+        firstGroup?.address !== 'Connect Wallet' &&
+        firstGroup?.address !== 'not connected'
+      if (isConnect) {
         firstGroup.open()
         setActDialogVisible(true)
       } else {
         await firstGroup.connect()
-      } 
+      }
     },
-    showHistory () {
+    showHistory() {
       this.$emit('closeDrawer')
 
       const route = this.$route
@@ -354,7 +458,7 @@ export default {
           path: '/history',
         })
     },
-    getAddress () {
+    getAddress() {
       let addressGroup = {
         isAddress: false,
         address: '',
@@ -362,11 +466,20 @@ export default {
       const [web3Address, starkNetAddress] = this.currentWalletAddress
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
-      const address = !!isTonDialog.value && tonAddress ? tonAddress : (
-        !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
-      )
+      const address =
+        !!isTonDialog.value && tonAddress
+          ? tonAddress
+          : !!isSolanaDialog.value && solanaAddress
+          ? solanaAddress
+          : !!isStarkNetDialog.value
+          ? starkNetAddress
+          : web3Address
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
+      if (
+        !address ||
+        (!isSolanaDialog.value &&
+          util.getAccountAddressError(address || '', isStarknet))
+      ) {
         return addressGroup
       }
       return {
@@ -375,7 +488,7 @@ export default {
         address,
       }
     },
-    async getWalletAddressPoint () {
+    async getWalletAddressPoint() {
       const { isAddress, address } = this.getAddress()
       const [_web3Address, starkNetAddress] = this.currentWalletAddress
 
@@ -389,10 +502,10 @@ export default {
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
-          if(tonAddress) {
+          if (tonAddress) {
             setTonDialog(true)
             setActDialogVisible(true)
-          } else  if(solanaAddress) {
+          } else if (solanaAddress) {
             setSolanaDialog(true)
             setActDialogVisible(true)
           } else if (starkNetAddress) {
@@ -400,7 +513,7 @@ export default {
             setActDialogVisible(true)
           }
           setTimeout(() => {
-            setActAddPoint(String(point || ""))
+            setActAddPoint(String(point || ''))
             setActAddPointVisible(true)
             setTimeout(() => {
               setActAddPointVisible(false)
@@ -409,7 +522,7 @@ export default {
         }
       }
     },
-    async getWalletAddressActList () {
+    async getWalletAddressActList() {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
@@ -437,7 +550,7 @@ export default {
       }
     },
 
-    async getLotteryCardData () {
+    async getLotteryCardData() {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
@@ -445,7 +558,7 @@ export default {
           data: { cardsCount = 0, progress },
           code,
         } = await requestLotteryCard('user/cards', {
-          address: address
+          address: address,
         })
 
         if (Number(code) === 0) {
@@ -458,8 +571,20 @@ export default {
       }
     },
   },
-
-  async mounted () {
+  created() {
+    // if (typeof window === 'undefined') return
+    // window.vueRecaptchaInit = () => {}
+    // const recaptchaScript = document.createElement('script')
+    // const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+    // recaptchaScript.setAttribute(
+    //   'src',
+    //   `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+    // )
+    // recaptchaScript.setAttribute('async', '')
+    // recaptchaScript.setAttribute('defer', '')
+    // ;(document.body || document.head).appendChild(recaptchaScript)
+  },
+  async mounted() {
     const _this = this
     setInterval(async () => {
       if (!this.$store.state.proceeding.makerTransfer.txid) return
@@ -571,7 +696,7 @@ export default {
   overflow-wrap: break-word;
   color: rgba(30, 180, 171, 1);
   font-size: 18px;
-  font-family: OpenSansRoman-ExtraBold;
+  font-family: GeneralSans-Medium;
   text-align: right;
   white-space: nowrap;
   line-height: 24px;
@@ -613,6 +738,82 @@ export default {
       height: 16px;
     }
   }
+
+  .lucky-bag-tab {
+    box-sizing: border-box;
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 999px;
+    background: linear-gradient(
+      170.35deg,
+      rgb(255, 250, 236) 28.059%,
+      rgb(255, 215, 104) 57.771%
+    );
+    padding: 4px 18px 4px 58px;
+    position: relative;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+
+    .lucky-bag-image {
+      position: absolute;
+      bottom: -4px;
+      left: -6px;
+      width: 58px;
+      height: 50px;
+      background-image: url(../../assets/lucky-bag.png);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+
+    .lucky-bag-info {
+      .info-label {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 20px;
+        letter-spacing: 0px;
+        white-space: nowrap;
+      }
+
+      .info-progress {
+        width: 100%;
+        height: 6px;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 6px;
+        margin-top: 2px;
+        overflow: hidden;
+
+        .progress {
+          height: 6px;
+          background: linear-gradient(
+            90deg,
+            rgb(223, 46, 45) 43.689%,
+            rgb(255, 150, 50) 100%
+          );
+          border-radius: 6px;
+        }
+
+        .skeleton {
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(
+            90deg,
+            rgba(#fff, 0),
+            rgba(#fff, 0.4),
+            rgba(#fff, 0)
+          );
+          background-size: 40px 100%; // width of the shine
+          background-repeat: no-repeat; // No need to repeat the shine effect
+          background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
+          animation: shine 2s ease infinite;
+        }
+      }
+    }
+  }
+
   .ops-item {
     padding: 8px 18px;
     border-radius: 20px;

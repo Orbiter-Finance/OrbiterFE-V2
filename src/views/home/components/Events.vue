@@ -100,7 +100,7 @@ export default {
 }
 .view-more {
   font-size: 18px;
-  font-family: OpenSansRoman-SemiBold, OpenSansRoman;
+  font-family: GeneralSans-SemiBold, GeneralSans;
   font-weight: 600;
   cursor: pointer;
   color: #df2e2d;

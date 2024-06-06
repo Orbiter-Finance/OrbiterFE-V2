@@ -21,7 +21,8 @@
           :iconName="navIcons.logo"
         />
         <HeaderLinks
-          style="margin-top: 24px; margin-left: 134px; min-width: 280px"
+          v-if="$route.path !== '/prizes'" 
+          style="margin-top: 24px; margin-left: 66px; min-width: 280px"
         />
       </div>
       <HeaderOps v-if="$route.path !== '/statistics'" />
@@ -33,7 +34,8 @@
         :style="navIcons.style"
         :icon="navIcons.logo"
       />
-      <div
+      <!-- <div
+      v-if="$route.path !== '/prizes'"
         style="
           flex: 1;
           display: flex;
@@ -62,9 +64,12 @@
             :src="require('../../assets/activity/point.png')"
           />
         </div>
-      </div>
+      </div> -->
+      <div class="lucky-bag-mobile" 
+      @click="openLuckyBagModal"
+      ></div>
       <div
-        v-if="isMobile"
+        v-if="isMobile && $route.path !== '/prizes'"
         :class="addPointVisible ? 'shake-top' : ''"
         :style="`z-index:999;width: 200px;display: flex;position: absolute;top: 60px;right:40px;opacity: ${
           addPointVisible ? 1 : 0
@@ -97,10 +102,12 @@
           v-else-if="$route.path !== '/home' && $route.path !== '/statistics'"
           @click="connectAWallet"
           class="wallet-status wallet-address"
+          :style="`margin-right:${$route.path !== '/prizes' ? '12px' : '0'}`"
         >
           {{ showAddress }}
         </div>
         <div
+          v-if="$route.path !== '/prizes'"
           @click="() => (drawerVisible = true)"
           class="center menu-outline"
           style="width: 44px; height: 44px; border-radius: 8px"
@@ -143,7 +150,7 @@ import {
   starkAddress,
   setActDialogVisible,
   setConnectWalletGroupKey,
-  setSolanaDialog
+  setSolanaDialog,
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -160,6 +167,7 @@ export default {
   components: { SvgIconThemed, HeaderLinks, HeaderOps },
   data () {
     return {
+      recaptchaId: 0,
       drawerVisible: false,
     }
   },
@@ -183,7 +191,7 @@ export default {
       return this.isLightMode ? starknetLogoLight : starknetLogoDark
     },
     isLogin () {
-      return walletIsLogin.value
+      return walletIsLogin.value && this.showAddress
     },
     isMobile () {
       return isMobile.value
@@ -262,7 +270,39 @@ export default {
       }
     },
   },
+  created() {
+    // if (typeof window === 'undefined') return
+    // window.vueRecaptchaInit = () => {
+    // }
+    // const recaptchaScript = document.createElement('script')
+    // const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+    // recaptchaScript.setAttribute(
+    //   'src',
+    //   `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+    // )
+    // recaptchaScript.setAttribute('async', '')
+    // recaptchaScript.setAttribute('defer', '')
+    // ;(document.body || document.head).appendChild(recaptchaScript)
+  },
   methods: {
+    openLuckyBagModal(){
+      // const recaptchaDiv = document.createElement('div')
+      // recaptchaDiv.id = 'recaptcha-outside-badge'
+      // this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
+      // this.recaptchaId = grecaptcha.render(recaptchaDiv, {
+      //   sitekey: process.env['VUE_APP_RECAPTCHA'],
+      //   theme: 'light',
+      //   callback:(token) => {
+      //     this.$store.commit("getClaimORBGUYRewardData", {type: "LUCKY_BAG", token})
+      //     recaptchaDiv.remove()
+      //   }
+      // })
+      // recaptchaDiv.onclick = () => {
+      //   recaptchaDiv.remove()
+      // }
+      this.$store.commit("getClaimORBGUYRewardData", {type: "LUCKY_BAG", token: ""})
+      // this.$store.commit("getClaimORBGUYRewardData", {type: "LUCKY_BAG"})      
+    },
     openActDialog () {
       if (this.isLogin) {
         setActDialogVisible(true)
@@ -387,6 +427,14 @@ export default {
     cursor: pointer;
   }
 
+  .lucky-bag-mobile {
+    width: 40px;
+    height: 40px;
+    background-image: url(../../assets/lucky-bag-mobile.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+
   .nav-wrap {
     display: flex;
     align-items: center;
@@ -412,7 +460,7 @@ export default {
     overflow-wrap: break-word;
     color: rgba(30, 180, 171, 1);
     font-size: 18px;
-    font-family: OpenSansRoman-ExtraBold;
+    font-family: GeneralSans-Medium;
     text-align: right;
     white-space: nowrap;
     line-height: 24px;

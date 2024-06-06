@@ -201,6 +201,7 @@
           />
         </div>
       </div>
+      <img :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -319,6 +320,7 @@
       <CommDialog ref="SelectFromChainPopupRef">
         <div slot="PoperContent" style="width: 100%">
           <ObSelectChain
+                  :type="'from'"
                   ref="selectFromChainRef"
                   :ChainData="fromChainIdList"
                   v-on:getChainInfo="getFromChainInfo"
@@ -329,6 +331,7 @@
       <CommDialog ref="SelectToChainPopupRef">
         <div slot="PoperContent" style="width: 100%">
           <ObSelectChain
+                  :type="'to'"
                   :ChainData="toChainIdList"
                   v-on:getChainInfo="getToChainInfo"
                   v-on:closeSelect="closeToChainPopupClick()"
@@ -955,6 +958,13 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    goToPrizes(){
+      this.$gtag.event("TRANSFER_TO_PRIZES", {
+        event_category: "TRANSFER_TO_PRIZES",
+        event_label: "to prizes",
+      })
+      this.$router.push("/prizes")
+    },
     loopringFromFillAddress(value) {
       try {
         const { selectMakerConfig = {} } = transferDataState
@@ -2499,7 +2509,7 @@ export default {
     }
   }
   .btn {
-    margin-top: 32px;
+    margin-top: 24px;
     height: 50px;
     display: inline-block;
     line-height: 34px;
@@ -2658,6 +2668,12 @@ export default {
       }
     }
   }
+}
+
+.prizes-card {
+  width: 100%;
+  margin-top: 16px;
+  cursor: pointer;
 }
 
 .dark-theme {
