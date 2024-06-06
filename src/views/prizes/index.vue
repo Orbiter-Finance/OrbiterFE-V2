@@ -52,7 +52,6 @@ export default {
   },
   methods: {
     async getUserReward() {
-      console.log("11111111")
       if (!this.evmAddress || this.evmAddress === "0x") return
       this.$store.commit("getPrizesuserInfo", this.evmAddress.toLocaleLowerCase())
     },

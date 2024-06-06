@@ -23,33 +23,52 @@ export default {
     return {
       ruleList: [
         {
-          label: 'How to get rewards',
+          label: 'How to Get Rewards:',
           text: [
-            'Complete the following tasks to get the corresponding reward points:',
-            '1. Completion of the activity official tweet forwarding: bonus 3 points',
-            '2. Completion of the first transaction: additional 5 bonus points',
-            '3. Completion of the second transaction: an additional 12 points.',
-            'Accumulate the specified number of transactions, you can participate in the bonus pool:',
-            '- Accumulated 3 transactions: 10% of the bonus pool.',
-            '- Accumulated 5 transactions: 15% of the bonus pool',
-            '- Accumulated 8 transactions: 20% of the bonus pool',
-            '- Accumulated 15 transactions: 25% of the bonus pool',
-            '- Top 100 trades (number of trades must be greater than 20): 30% of the bonus pool.',
+            'Bridge from specific chain to Arbitrum. ',
+            'Specific chains include: Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin',
           ],
         },
         {
-          label: 'Bonus pool release rules',
+          label: 'Complete the following tasks to get rewards accordingly:',
           text: [
-            '- If the number of participants is less than 5000, the initial bonus pool is $25,000.',
-            '- For every 1,000 new traders, the bonus will be increased by $2,000, and the bonus pool will be increased until it reaches the maximum of $100,000.',
+            '1. Join the orbiter telegram group: +3 OPoints',
+            '2. Complete the first bridging: +5 OPoints',
+            '3. Complete the second bridging: +12 OPoints',
           ],
         },
         {
-          label: 'Special Instructions',
+          label:
+            'Complete the specified amount of transactions to share the prize pool accordingly:',
           text: [
-            '- To be eligible for the $100,000 prize pool, you only need to have completed at least 3 transactions.',
-            '- The top 100 traders during the campaign period will receive up to $1,500.',
-            '- The more participants you have, the higher the prize pool will be!',
+            '- Complete 3 transactions: share 10% of the prize pool',
+            '- Complete 5 transactions: share 15% of the prize pool',
+            '- Complete 8 transactions: share 20% of the prize pool',
+            '- Complete 15 transactions: share 25% of the prize pool',
+            '- Top 100 users (the transactions are over 20): share 30% of the prize pool',
+          ],
+        },
+        {
+          label: 'Surprise rewards:',
+          text: [
+            'The top 800 users (according to the amount of transactions) will receive a certain amount of $ORBGUY for free randomly! ',
+          ],
+        },
+        {
+          label: 'Reward Distribution Rules',
+          text: [
+            '- When the number of participants is ≤ 5000, and the initial prize pool is $25,000.',
+            '- For every 1000 users participation, the prize pool will increase $2,000, and the prize pool will increase in this way until $100,000 highest.',
+            '- Each address can only share the rewards of the final prize pool level counted at the end of the competition, and the bonus pool each user gets cannot be accumulated.',
+            '- The prize pools for the tiers that have completed 3-15 bridging transactions tasks, the winning users will share the prize equally according to the prize pool.',
+            '- The top 100 users will share 30% of the prize pool according to the proportion of transaction amounts.',
+          ],
+        },
+        {
+          label: 'Note',
+          text: [
+            '- You only need to complete more than 3 transactions to participate in the prize pool of $100,000.',
+            '- The rewards will be distributed when the competition ends.',
           ],
         },
       ],

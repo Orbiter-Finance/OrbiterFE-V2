@@ -181,7 +181,6 @@ export default {
       event.preventDefault()
     },
     close() {
-      console.log('111111')
       setUserInfoDetailsCardModalShow(false)
     },
   },

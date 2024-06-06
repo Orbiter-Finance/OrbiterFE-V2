@@ -508,9 +508,7 @@ export default {
                 }),
               }
             )
-            console.log('result', result)
             const data = await result.json()
-            console.log('data', data)
             if (data?.code === 0) {
               this.$notify.success(data.message)
               this.$store.commit(

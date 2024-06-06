@@ -141,9 +141,8 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <!-- <PrizesCard></PrizesCard> -->
+        <PrizesCard></PrizesCard>
         <div 
-        v-if="!!actDataList.length"
         >
           <template v-for="item in actDataList">
             <div class="activity-card">
@@ -1242,7 +1241,7 @@ export default {
   .text-wrapper_17 {
     height: 20px;
     border-radius: 4px;
-    background: rgb(245, 245, 245);
+    background: linear-gradient(139.64deg, #e545ff, red 85.476%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2312,9 +2311,6 @@ export default {
 
     .task-card {
       background-color: var(--dark-page-box-bg);
-      .text-wrapper_17 {
-        background-color: #222222;
-      }
 
       .group-reward {
         background-color: #222222;

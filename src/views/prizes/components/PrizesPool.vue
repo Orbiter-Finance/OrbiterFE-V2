@@ -156,9 +156,7 @@ export default {
           Number(this.totalRewards) - 25000,
           2
         )
-        console.log("otherAmount", otherAmount)
         const otherRatio = this.decimalNumC((otherAmount / (75000 / 8)) * (100 / 9))
-        console.log("otherRatio", otherRatio)
         ratioAmount = this.decimalNumC(Number(otherRatio) + 100 / 9, 2)
       } else {
         ratioAmount = this.decimalNumC(100 / 9, 2)
