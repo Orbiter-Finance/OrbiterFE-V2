@@ -215,6 +215,12 @@ import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsi
 import {
   setConnectWalletGroupKey,
   setSelectWalletDialogVisible,
+  prizesUserRank,
+  prizesUserTx,
+  prizesTop100tx,
+  prizesUserReward,
+  prizesUserTelegramId,
+  prizesUserIsJoinTelegram
 } from '../../../composition/hooks'
 
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
@@ -228,16 +234,28 @@ const ratio25 = '#00EEEE'
 const ratio30 = '#FFA629'
 export default {
   name: 'PrizesAllocation',
-  props: {
-    rank: Number,
-    tx: Number,
-    reward: String,
-    top100Tx: Number,
-  },
   components: {
     PrizesTaskSuccessIcon,
   },
   computed: {
+    isJoinTelegram(){
+      return prizesUserIsJoinTelegram.value
+    },
+    telegramId(){
+      return prizesUserTelegramId.value
+    },
+    reward(){
+      return prizesUserReward.value
+    },
+    top100Tx(){
+      return prizesTop100tx.value
+    },
+    tx(){
+      return prizesUserTx.value
+    },
+    rank(){
+      return prizesUserRank.value
+    },
     evmAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
     },
@@ -309,7 +327,7 @@ export default {
       return this.tx
     },
     isRewardAmount() {
-      return Number(this.userRanking) && Number(this.userRanking ) <= 100
+      return Number(this.txAmount) >= 20 && Number(this.userRanking) && Number(this.userRanking ) <= 100
     },
     rewardAmount() {
 
@@ -352,6 +370,8 @@ export default {
           text: `Join Orbiter Telegram`,
           reward: '+3',
           type: 'TG',
+          isSuccess: !!this.isJoinTelegram,
+          isPromotion: txN >=1
         },
         {
           icon: 'bridge',
@@ -421,10 +441,10 @@ export default {
       return decimalNum(num, decimal, delimiter, symbol)
     },
     async openTelegram(option) {
-      const isSuccess = option.isSuccess
-      const isBuild = false
+      const isBuild = !!this.telegramId
       const isTelegram = option.type === 'TG'
       const account = this.evmAddress
+      const isSuccess = option.isSuccess
 
       if (!account || account === '0x') {
         setConnectWalletGroupKey('EVM')
@@ -471,13 +491,14 @@ export default {
             console.log('data', data)
             if(data?.code === 0 ){
               this.$notify.success(data.message)
+              this.$store.commit("getPrizesuserInfo", this.evmAddress.toLocaleLowerCase())
             } else {
               this.$notify.warning(data.message)
-
             }
           } else {
             const url = `https://oauth.telegram.org/auth?bot_id=6914656754&origin=${encodeURIComponent(
-              'https://test.orbiter.finance/prizes'
+              // 'https://test.orbiter.finance/prizes'
+              window.location.origin + "/prizes"
             )}&request_access=write`
             window.open(url, '_self')
           }
@@ -485,7 +506,7 @@ export default {
           window.open('https://t.me/orbiterORB', '_blank')
         }
       } else {
-        this.$router.push( isDev() ? '?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
+        this.$router.push( isDev() ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
 
       }
     },
