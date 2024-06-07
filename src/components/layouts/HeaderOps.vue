@@ -20,7 +20,6 @@
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
       <div
-        v-if="$route.path !== '/prizes'"
         class="lucky-bag-tab"
         @click="openLuckyBagModal"
       >
@@ -41,7 +40,6 @@
         </div>
       </div>
       <span
-        v-if="$route.path !== '/prizes'"
         @click="openAct"
         class="ops-item"
         style="position: relative"
@@ -82,13 +80,11 @@
       <span
         @click="showHistory"
         class="ops-item"
-        v-if="$route.path !== '/prizes'"
         >History</span
       >
       <div
         v-if="
-          (isSelectedStarkNet || isSelectedSolana || isSelectedTon) &&
-          $route.path !== '/prizes'
+          (isSelectedStarkNet || isSelectedSolana || isSelectedTon)
         "
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
@@ -102,7 +98,6 @@
         <span class="address">{{ connectAddress }}</span>
       </div>
       <div
-        v-else
         ref="connectedBtn"
         @click="connectAWallet"
         class="ops-item center"
@@ -118,7 +113,6 @@
     <div
       @click="toggleThemeMode"
       class="ops-mode"
-      v-if="$route.path !== '/prizes'"
     >
       <SvgIconThemed class="mode-icon" icon="mode" />
     </div>
