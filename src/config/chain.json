@@ -2343,7 +2343,8 @@
     {
         "name": "Taiko",
         "rpc": [
-            "https://rpc.taiko.xyz"
+            "https://rpc.taiko.xyz",
+            "wss://ws.taiko.xyz"
         ],
         "features": [
             {
@@ -2356,7 +2357,15 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [],
+        "tokens": [
+            {
+                "coinKey": "USDC",
+                "address": "0x07d83526730c7438048D55A4fc0b850e2aaB6f0b",
+                "name": "USDC Coin",
+                "symbol": "USDC",
+                "decimals": 6
+            }
+        ],
         "internalId": "20",
         "nativeCurrency": {
             "coinKey": "ETH",
@@ -2365,11 +2374,38 @@
             "symbol": "ETH",
             "decimals": 18
         },
-        "infoURL": "https://taikoscan.io",
+        "infoURL": "https://explorer.taiko.xyz",
         "chainId": "167000",
         "networkId": "167000",
-        "explorers": [],
-        "contract": {},
-        "contracts": []
+        "explorers": [
+            {
+                "name": "Taiko Mainnet Explorer",
+                "url": "https://explorer.taiko.xyz"
+            }
+        ],
+        "contract": {
+            "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+            "0x2598d7bc9d3b4b6124f3282e49eee68db270f516": "OrbiterRouterV3"
+        },
+        "contracts": [
+            {
+                "name": "OBSource",
+                "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferERC20(address,address,uint256,bytes)"
+                ]
+            },
+            {
+                "name": "OrbiterRouterV3",
+                "address": "0x2598d7bc9d3b4b6124f3282e49eee68db270f516",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transferTokens(address,address[],uint256[])"
+                ]
+            }
+        ]
     }
 ]
