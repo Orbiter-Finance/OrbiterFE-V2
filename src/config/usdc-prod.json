@@ -4300,7 +4300,7 @@
         "USDC-USDC": {
             "makerAddress": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
             "sender": "0x41d3D33156aE7c62c094AAe2995003aE63f587B3",
-            "gasFee": 18,
+            "gasFee": 0,
             "tradingFee": 0.7,
             "maxPrice": 10000,
             "minPrice": 0.1,
