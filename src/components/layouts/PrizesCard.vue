@@ -139,6 +139,7 @@ import {
   prizesUserRank,
   prizesUserTx,
 } from '../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData';
 
 const ratio10 = '#DBEF2D'
 const ratio15 = '#FF29DA'
@@ -264,8 +265,15 @@ export default {
         },
       ]
     },
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
   },
   methods: {
+    async getUserReward() {
+      if (!this.evmAddress || this.evmAddress === "0x") return
+      this.$store.commit("getPrizesuserInfo", this.evmAddress.toLocaleLowerCase())
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
@@ -343,6 +351,13 @@ export default {
       ]
     }, 1000)
   },
+  watch: {
+    evmAddress(item1, item2) {
+      if (!!item1 && item1 !== item2) {
+        this.getUserReward()
+      }
+    },
+  }
 }
 </script>
 
