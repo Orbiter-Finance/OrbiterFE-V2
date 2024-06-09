@@ -55,7 +55,7 @@
           </div>
         </div>
         <div v-else class="lucky-bag-info">
-          <div class="info-label">Grab 1% $ORBGUY</div>
+          <div class="info-label">Grab {{ maxGrantRatio }}% $ORBGUY</div>
           <div class="info-progress">
             <div
               class="progress"
@@ -182,6 +182,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
 import getUTCTime from '../../util/time'
+import { ethers } from 'ethers'
 
 let timer1
 
@@ -211,6 +212,11 @@ export default {
       if (!Number(ratio)) return 0
 
       return ratio
+    },
+    maxGrantRatio() {
+      const { max } =  claimCardModalAmountInfo.value || {}
+
+      return ethers.utils.parseEther(max ? String(max) : "0").mul("100").div(ethers.utils.parseEther("20000000")).toString()
     },
     addPoint() {
       return actAddPoint.value

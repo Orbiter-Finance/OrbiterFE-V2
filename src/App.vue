@@ -322,9 +322,10 @@ export default {
           web3Address.toLocaleLowerCase()
         )
         const { result } = res || {}
-        const { stock = 0, maxGrant = 0, activityTime = 0, chainId } = result || {}
+        const { stock = 0, maxGrant = 0, activityTime = 0, chainId, max = 0 } = result || {}
         const totalQuantity = maxGrant - stock || 0
         setClaimCardModalAmountInfo({
+          maxTotal: max,
           max: maxGrant,
           totalQuantity: totalQuantity,
           activityTime,
