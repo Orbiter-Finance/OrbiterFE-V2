@@ -659,7 +659,8 @@ export default {
 
     timer1 = setInterval(() => {
       const t = this?.claimCardModalAmountInfoData?.activityTime || 0
-      const timeS = Math.floor((t - getUTCTime()) / 1000)
+      console.log("t", t)
+      const timeS = Math.floor(t - getUTCTime() / 1000)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
@@ -877,6 +878,7 @@ export default {
       display: flex;
       justify-content: start;
       align-items: center;
+      padding: 4px 0;
       .time-group {
         display: flex;
         justify-content: center;
