@@ -44,18 +44,82 @@
       v-for="item in taskOptionsList"
       :key="item.reward"
       :class="item.isSuccess ? 'task-card-options-group-success' : ''"
+      :style="`opacity:${item.isPromotion ? '0.6' : '1'}`"
     >
       <div class="task-title">
         <div class="task-info">
-          <svg v-if="item.type === 'TG'" class="task-icon" data-v-9dcf37f8="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16.000000" height="16.000000" viewBox="0 0 16 16" fill="none" ><defs data-v-9dcf37f8=""><clipPath data-v-9dcf37f8="" id="clip812_520"><rect data-v-9dcf37f8="" id="telegram.19a5a5db.svg" rx="4.000000" width="16.000000" height="16.000000" fill="white" fill-opacity="0"></rect></clipPath></defs><rect data-v-9dcf37f8="" id="telegram.19a5a5db.svg" rx="4.000000" width="16.000000" height="16.000000" fill="#279EFF" fill-opacity="1.000000"></rect><g data-v-9dcf37f8="" clip-path="url(#clip812_520)"><path data-v-9dcf37f8="" id="Vector" d="M12.97 4.75L11.46 11.88C11.34 12.38 11.05 12.5 10.63 12.27L8.33 10.57L7.22 11.63C7.16 11.7 7.09 11.75 7.01 11.79C6.93 11.83 6.84 11.85 6.75 11.85L6.92 9.51L11.18 5.69C11.37 5.52 11.14 5.43 10.89 5.6L5.62 8.9L3.36 8.19C2.86 8.03 2.85 7.7 3.46 7.46L12.33 4.04C12.74 3.89 13.1 4.13 12.97 4.75Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="evenodd"></path></g></svg>
+          <svg
+            v-if="item.type === 'TG'"
+            class="task-icon"
+            data-v-9dcf37f8=""
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            width="16.000000"
+            height="16.000000"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <defs data-v-9dcf37f8="">
+              <clipPath data-v-9dcf37f8="" id="clip812_520">
+                <rect
+                  data-v-9dcf37f8=""
+                  id="telegram.19a5a5db.svg"
+                  rx="4.000000"
+                  width="16.000000"
+                  height="16.000000"
+                  fill="white"
+                  fill-opacity="0"
+                ></rect>
+              </clipPath>
+            </defs>
+            <rect
+              data-v-9dcf37f8=""
+              id="telegram.19a5a5db.svg"
+              rx="4.000000"
+              width="16.000000"
+              height="16.000000"
+              fill="#279EFF"
+              fill-opacity="1.000000"
+            ></rect>
+            <g data-v-9dcf37f8="" clip-path="url(#clip812_520)">
+              <path
+                data-v-9dcf37f8=""
+                id="Vector"
+                d="M12.97 4.75L11.46 11.88C11.34 12.38 11.05 12.5 10.63 12.27L8.33 10.57L7.22 11.63C7.16 11.7 7.09 11.75 7.01 11.79C6.93 11.83 6.84 11.85 6.75 11.85L6.92 9.51L11.18 5.69C11.37 5.52 11.14 5.43 10.89 5.6L5.62 8.9L3.36 8.19C2.86 8.03 2.85 7.7 3.46 7.46L12.33 4.04C12.74 3.89 13.1 4.13 12.97 4.75Z"
+                fill="#FFFFFF"
+                fill-opacity="1.000000"
+                fill-rule="evenodd"
+              ></path>
+            </g>
+          </svg>
           <svg-icon v-else class="task-icon" iconName="task-icon"></svg-icon>
-          <div class="task-desction" v-html="item.text"></div>
+          <div class="task-desction-group">
+            <span class="task-desction" v-html="item.text"></span>
+            <o-tooltip v-if="item.specificChain">
+              <template v-slot:titleDesc>
+                <div style="margin-left: -20px">
+                  <span>
+                    <span>Specific chains include: </span>
+                    <br />
+                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
+                    Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova,
+                    Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM,
+                    Merlin
+                  </span>
+                </div>
+              </template>
+              <span class="orbiter_global_prizes_tips_underline tip-text"
+                >specific chain</span
+              >
+            </o-tooltip>
+            <span v-if="item.specificChain">to Arbitrum</span>
+          </div>
         </div>
         <PrizesTaskSuccessIcon
-        class="task-success-icon"
-        v-if="!item.isSuccess"
-        :fillColor="'#DDF600'"
-      ></PrizesTaskSuccessIcon>
+          class="task-success-icon"
+          v-if="!!item.isSuccess"
+          :fillColor="'#DDF600'"
+        ></PrizesTaskSuccessIcon>
       </div>
       <div class="task-tag">
         <div class="tag-card">
@@ -70,15 +134,53 @@
       v-for="item in taskPoolList"
       :key="item.reward"
       :class="item.isSuccess ? 'task-card-options-group-success' : ''"
+      :style="`opacity:${item.isPromotion ? '0.6' : '1'};border:${
+        item.isSuccess && !item.isPromotion
+          ? '1px solid ' + item.color
+          : '0 none'
+      }`"
     >
       <div class="task-title">
         <div class="task-info">
           <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
-          <div class="task-desction" v-html="item.text"></div>
+
+          <div class="task-desction-group">
+            <span class="task-desction" v-html="item.text"></span>
+            <o-tooltip v-if="item.specificChain">
+              <template v-slot:titleDesc>
+                <div style="margin-left: -20px">
+                  <span>
+                    <span>Specific chains include: </span>
+                    <br />
+                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
+                    Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova,
+                    Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM,
+                    Merlin
+                  </span>
+                </div>
+              </template>
+              <span class="orbiter_global_prizes_tips_underline tip-text"
+                >specific chain</span
+              >
+            </o-tooltip>
+            <span v-if="item.specificChain">to Arbitrum</span>
+          </div>
         </div>
+        <PrizesTaskSuccessIcon
+          class="task-success-icon"
+          v-if="!!item.isSuccess"
+          :fillColor="item.color"
+        ></PrizesTaskSuccessIcon>
       </div>
       <div class="task-tag">
-        <div class="tag-card" :style="`background-color: ${item.color};`">
+        <div v-if="item.isPromotion" class="promotion">
+          Already entered in higher stage pools
+        </div>
+        <div
+          v-else
+          class="tag-card"
+          :style="`background-color: ${item.color};`"
+        >
           {{ item.reward }}
         </div>
       </div>
@@ -90,6 +192,7 @@
 import getUTCTime from '../../util/time'
 
 import { decimalNum } from '../../util/decimalNum'
+import PrizesTaskSuccessIcon from '../../views/prizes/components/PrizesTaskSuccess.vue'
 
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 
@@ -101,6 +204,7 @@ import {
   prizesUserRank,
   prizesUserTx,
 } from '../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
 const ratio10 = '#DBEF2D'
 const ratio15 = '#FF29DA'
@@ -118,6 +222,9 @@ export default {
       timeStr: '2024/6/20 08:00:00',
       timeList: [],
     }
+  },
+  components: {
+    PrizesTaskSuccessIcon,
   },
   computed: {
     isJoinTelegram() {
@@ -153,18 +260,20 @@ export default {
           reward: '+3',
           type: 'TG',
           isSuccess: !!this.isJoinTelegram,
-          isPromotion: txN >= 2 && !!this.isJoinTelegram,
+          isPromotion: txN >= 1 && !!this.isJoinTelegram,
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">1 TX</span> `,
+          specificChain: true,
           reward: '+5',
           isSuccess: txN >= 1,
           isPromotion: txN >= 2,
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">2 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">2 TX</span>`,
+          specificChain: true,
           reward: '+12',
           isSuccess: true,
           isSuccess: txN >= 2,
@@ -178,7 +287,8 @@ export default {
       return [
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span>`,
+          specificChain: true,
           reward: '10% Prize Pool',
           color: ratio10,
           isSuccess: txN >= 3,
@@ -186,7 +296,8 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">5 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">5 TX</span>`,
+          specificChain: true,
           reward: '15% Prize Pool',
           color: ratio15,
           isSuccess: txN >= 5,
@@ -194,7 +305,8 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">8 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">8 TX</span>`,
+          specificChain: true,
           reward: '20% Prize Pool',
           color: ratio20,
           isSuccess: txN >= 8,
@@ -202,7 +314,8 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">15 TX</span> <span class="orbiter_global_prizes_tips_underline">specific chain</span> to Arbitrum`,
+          text: `Bridge <span class="orbiter_global_prizes_tx-color">15 TX</span>`,
+          specificChain: true,
           reward: '25% Prize Pool',
           color: ratio25,
           isSuccess: txN >= 15,
@@ -217,8 +330,18 @@ export default {
         },
       ]
     },
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
   },
   methods: {
+    async getUserReward() {
+      if (!this.evmAddress || this.evmAddress === '0x') return
+      this.$store.commit(
+        'getPrizesuserInfo',
+        this.evmAddress.toLocaleLowerCase()
+      )
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
@@ -295,6 +418,13 @@ export default {
         },
       ]
     }, 1000)
+  },
+  watch: {
+    evmAddress(item1, item2) {
+      if (!!item1 && item1 !== item2) {
+        this.getUserReward()
+      }
+    },
   },
 }
 </script>
@@ -381,14 +511,19 @@ export default {
           height: 20px;
           margin-right: 8px;
         }
-        .task-desction {
+        .task-desction-group {
           font-size: 14px;
           font-weight: 700;
           line-height: 20px;
+          .task-desction {
+            margin: 0 4px;
+          }
+          .tip-text {
+            margin-right: 4px;
+          }
         }
       }
     }
-
 
     .task-tag {
       width: 100%;
@@ -436,10 +571,16 @@ export default {
           height: 20px;
           margin-right: 8px;
         }
-        .task-desction {
+        .task-desction-group {
           font-size: 14px;
           font-weight: 700;
           line-height: 20px;
+          .task-desction {
+            margin: 0 4px;
+          }
+          .tip-text {
+            margin-right: 4px;
+          }
         }
       }
     }
@@ -465,9 +606,16 @@ export default {
           margin: 0 4px;
         }
       }
+
+      .promotion {
+        white-space: nowrap;
+        font-size: 12px;
+        font-weight: 500;
+        line-height: 16px;
+        letter-spacing: 0px;
+      }
     }
   }
-
 }
 
 .dark-theme {
@@ -487,6 +635,5 @@ export default {
       }
     }
   }
-  
 }
 </style>

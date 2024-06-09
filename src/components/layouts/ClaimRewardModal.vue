@@ -8,7 +8,9 @@
         <div class="lottery-dialog-card-group">
           <div class="lottery-dialog-card lottery-dialog-card-animation">
             <div class="lottery-dialog-card-face">
-              <div v-if="isClaimed" class="card-title-reward">Claimed</div>
+              <div v-if="isClaimed && isAmount" class="card-title-reward">
+                Claimed
+              </div>
               <div
                 v-else-if="claimCardModalType === 'LUCKY_BAG'"
                 class="card-title"
@@ -18,7 +20,7 @@
                 🎉
               </div>
               <div
-                v-else-if="claimCardModalType === 'REWARD'"
+                v-else-if="claimCardModalType === 'REWARD' || !isAmount"
                 class="card-title-reward"
               >
                 Your Rewards
@@ -27,46 +29,56 @@
 
               <div class="token-symbol">
                 <img
-                  :src="require('../../assets/activity/orbguy-modal.png')"
+                  :src="
+                    isAmount
+                      ? require('../../assets/activity/orbguy-modal.png')
+                      : require('../../assets/activity/claim-empty.png')
+                  "
                   alt=""
                   class="symbol"
                 />
               </div>
 
               <div
+                v-if="isAmount"
                 class="token-amount"
                 :style="`color:${isClaimed ? '#1EB4AB' : '#000'};`"
               >
-                +{{ decimalNumC(claimAmount, 0) }} $ORBGUY
+                {{ decimalNumC(claimAmount, 0) }} $ORBGUY
               </div>
 
-              <div v-show="!isClaimed" class="card-des">
+              <div v-else class="not-token-amount">No rewards found</div>
+
+              <div v-if="!isAmount" class="not-token-amount-tips">
+                Explore Orbiter to grab some
+              </div>
+
+              <div v-if="!!isAmount" class="card-des">
                 The 1st Meme for Orbiter Community
               </div>
               <div
                 class="claim-btn"
-                :style="`opacity:${loading ? '0.4' : '1'};cursor:${loading ? 'not-allowed' : 'pointer'};`"
+                :style="`opacity:${loading ? '0.4' : '1'};cursor:${
+                  loading ? 'not-allowed' : 'pointer'
+                };`"
                 @click="claim"
-                v-if="!isClaimed"
+                v-if="!isClaimed && !showMediaStepCard"
               >
                 {{ loading ? 'loading...' : 'Claim' }}
               </div>
-              <div v-else class="go-to-swap"
-                @click="goToSwap"
-              > 
-                Go to swap <svg class="go-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="14.062500" height="9.648438" viewBox="0 0 14.0625 9.64844" fill="none">
-                  <path id="→" d="M7.96 1.37L10.35 3.77L0 3.77L0 5.82L10.38 5.82L7.96 8.28L9.3 9.64L14.06 4.83L9.3 0L7.96 1.37Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="evenodd"/>
-                </svg>
-              </div>
 
-              <div v-if="showProgress" class="progress-group">
+              <div v-if="showProgress && isAmount" class="progress-group">
                 <div class="progress-info">
                   <div class="progress-title">
                     <div class="progress-label">Claim Progress</div>
                     <o-tooltip>
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px">
-                          <span>Over 50 O-points users can claim a reward randomly. A total reward of 200,000 $ORBGUY available. Rewards are claimed on Arbitrum network. FCFS!</span>
+                          <span
+                            >Over 50 O-points users can claim a reward randomly.
+                            A total reward of 400,000 $ORBGUY available. Rewards
+                            are claimed on Arbitrum network. FCFS!</span
+                          >
                         </div>
                       </template>
                       <svg-icon
@@ -97,18 +109,34 @@
                 </div>
               </div>
 
-              <div v-if="isClaimed" class="link-card">
+              <div v-if="isClaimed && isAmount" class="link-card">
                 <div class="link-label">
                   Trade $ORBGUY on
                   <img
-                  class="token-image"
-                  :src="require('../../assets/activity/LIKWID-launch.png')"
-                  alt="">
+                    class="token-image"
+                    :src="require('../../assets/activity/LIKWID-launch.png')"
+                    alt=""
+                  />
                 </div>
               </div>
+              <div v-if="showClaimChainText" class="claim-chain-text">
+                Claim your Token on
+                <span class="chain-name">{{ chainName }}</span>
+              </div>
             </div>
-            <div class="join-media-card-group" v-if="showMediaCard">
+            <div
+              class="join-media-card-group"
+              v-if="showMediaCard && !!isAmount"
+            >
               <JoinMediaCard></JoinMediaCard>
+            </div>
+            <div class="join-media-card-group" v-if="showMediaStepCard">
+              <MediaStepCard
+                :claimCall="claim"
+                :isLoading="loading"
+                :rewardChainId="rewardChainId"
+                @getStepStatus="setStepStatus"
+              ></MediaStepCard>
             </div>
           </div>
         </div>
@@ -119,7 +147,7 @@
       <div class="lottery-dialog-close-group">
         <div
           @click.self="handleHidden"
-          v-if="!disabled"
+          v-if="isShowClose"
           class="lottery-dialog-close"
         ></div>
       </div>
@@ -135,33 +163,34 @@ import {
   claimCardModalType,
   claimCardModalDataInfo,
   claimCardModalAmountInfo,
-  web3State
+  web3State,
 } from '../../composition/hooks'
-import util from "../../util/util"
+import util from '../../util/util'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import { decimalNum } from '../../util/decimalNum'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import JoinMediaCard from './JoinMediaCard.vue'
-import { Orbiter_CLAIM_ABI } from '../../util/constants/contract/contract'
-import { CLAIM_ORBGUY_CONTRACT_ADDRESS } from "../../const"
+import MediaStepCard from './MediaStepCard.vue'
 
-import { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers';
+import { Orbiter_CLAIM_ABI } from '../../util/constants/contract/contract'
+
+import { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers'
 import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
 export default {
   components: { SvgIcon },
   name: 'ClaimRewardModal',
   data() {
     return {
-      disabled: false,
       isClaim: false,
       cardIds: [],
       loading: false,
-      url: "https://likwid.meme/swap",
-      name: "CLAIM_ORBGUY_LIKWID_SWAP"
+      url: 'https://likwid.meme/swap',
+      name: 'CLAIM_ORBGUY_LIKWID_SWAP',
     }
   },
   components: {
     JoinMediaCard,
+    MediaStepCard,
   },
   computed: {
     currentEvmAddress() {
@@ -170,29 +199,56 @@ export default {
     claimCardModalDataInfoData() {
       return claimCardModalDataInfo.value
     },
+    rewardInfo() {
+      const { data = [] } = this.claimCardModalDataInfoData || {}
+      return data?.[0] || {}
+    },
+    rewardChainId() {
+      return this.rewardInfo?.chainId || ''
+    },
+    claimCardModalAmountInfoData() {
+      console.log(
+        'claimCardModalAmountInfo.value',
+        claimCardModalAmountInfo.value
+      )
+      return claimCardModalAmountInfo.value
+    },
     currentNetwork() {
-      return compatibleGlobalWalletConf.value.walletPayload.networkId;
+      return compatibleGlobalWalletConf.value.walletPayload.networkId
     },
     claimAmount() {
-      const { data = []} = this.claimCardModalDataInfoData || {}
+      const { data = [] } = this.claimCardModalDataInfoData || {}
       const cardIds = this.cardIds
 
       let amount = ethers.utils.parseEther('0')
       let total = ethers.utils.parseEther('0')
 
       data.forEach((item) => {
-        const flag = cardIds.some((option)=>  option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase())
+        const flag = cardIds.some(
+          (option) =>
+            option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase()
+        )
         const value = ethers.utils.parseEther(String(item.value || 0))
-        if(!flag) {
+        if (!flag) {
           amount = amount.add(value)
-        } 
+        }
         total = total.add(value)
-      });
+      })
 
       amount = ethers.utils.formatEther(amount)
       total = ethers.utils.formatEther(total)
-      
+
       return !Number(amount) ? total : amount
+    },
+    isAmount() {
+      const { data = [] } = this.claimCardModalDataInfoData || {}
+
+      let amount = ethers.utils.parseEther('0')
+
+      data.forEach((item) => {
+        amount = amount.add(ethers.utils.parseEther(String(item.value || 0)))
+      })
+      return amount.gt('0')
     },
     isShow() {
       return claimCardModalShow.value
@@ -204,18 +260,25 @@ export default {
       return claimCardModalType.value
     },
     isClaimed() {
-      const { data = []} = this.claimCardModalDataInfoData || {}
+      const { data = [], isClaimedData } = this.claimCardModalDataInfoData || {}
+
+      if (isClaimedData) {
+        return true
+      }
 
       const cardIds = this.cardIds
       let amount = ethers.utils.parseEther('0')
 
       data.forEach((item) => {
-        const flag = cardIds.some((option)=> option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase())
+        const flag = cardIds.some(
+          (option) =>
+            option?.id?.toLocaleLowerCase() === item.id?.toLocaleLowerCase()
+        )
         const value = ethers.utils.parseEther(String(item.value || 0))
-        if(!flag) {
+        if (!flag) {
           amount = amount.add(value)
-        } 
-      });
+        }
+      })
 
       amount = ethers.utils.formatEther(amount)
 
@@ -227,8 +290,13 @@ export default {
     showMediaCard() {
       return this.claimCardModalType !== 'LUCKY_BAG' || this.isClaimed
     },
-    claimCardModalAmountInfoData() {
-      return claimCardModalAmountInfo.value
+    showMediaStepCard() {
+      const { chainId } = this.claimCardModalAmountInfoData || {}
+      return (
+        this.rewardChainId === chainId &&
+        this.claimCardModalType === 'LUCKY_BAG' &&
+        !this.isClaimed
+      )
     },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
@@ -248,8 +316,26 @@ export default {
 
       return totalQuantity
     },
+    isShowClose() {
+      return (
+        this.isClaimed ||
+        this.claimCardModalType !== 'LUCKY_BAG' ||
+        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS')
+      )
+    },
+    chainName() {
+      return util.chainName(this.rewardChainId)
+    },
+    showClaimChainText() {
+      return !this.showMediaStepCard && this.isAmount && !this.isClaimed
+    },
   },
   methods: {
+    setStepStatus(status) {
+      if (status === 3) {
+        localStorage.setItem('LUCKY_BAG_JOIN_MEDIA_STATUS', 'true')
+      }
+    },
     goToSwap() {
       const name = this.name
       const url = this.url
@@ -263,26 +349,26 @@ export default {
       _self = _self || this
       _self.cardIds = []
       const evmAddress = _self.currentEvmAddress
-      if (!evmAddress || evmAddress === "0x") return
-      let rpc = ""
+      if (!evmAddress || evmAddress === '0x') return
+      let rpc = ''
       let currentRpcList = []
-      if(error) return
+      const chainId = this.rewardChainId
+      const claimContract = this.rewardInfo?.claimContract
+      if (error || chainId | claimContract) return
       try {
-        if(rpcList?.length) {
+        if (rpcList?.length) {
           currentRpcList = rpcList
         } else {
-          currentRpcList = await util.getRpcList("42161")
+          currentRpcList = await util.getRpcList(chainId)
         }
-        rpc = currentRpcList?.[0] || ""
+        rpc = currentRpcList?.[0] || ''
 
-        const provider = new ethers.providers.JsonRpcProvider(
-          rpc
-        )
+        const provider = new ethers.providers.JsonRpcProvider(rpc)
 
         const signer = provider.getSigner(evmAddress)
 
         const claimContract = new ethers.Contract(
-          CLAIM_ORBGUY_CONTRACT_ADDRESS,
+          claimContract,
           Orbiter_CLAIM_ABI,
           signer
         )
@@ -291,7 +377,11 @@ export default {
 
         _self.cardIds = [].concat(cardIds)
       } catch (error) {
-        _self.getCardIds(_self, currentRpcList?.slice(1), !currentRpcList?.slice(1)?.length)
+        _self.getCardIds(
+          _self,
+          currentRpcList?.slice(1),
+          !currentRpcList?.slice(1)?.length
+        )
       }
     },
     decimalNumC(num, decimal, delimiter) {
@@ -300,29 +390,52 @@ export default {
     handleHidden() {
       this.isClaim = false
       this.loading = false
-      this.$store.commit('getClaimORBGUYRewardData', '')
+      this.$store.commit('getClaimORBGUYRewardData', { type: '' })
     },
     async claim() {
-      if (this.isClaim || this.loading) return
+      
+      const chainId = this.rewardChainId
+      const rewardInfo = this.rewardInfo
+      const claimContract = rewardInfo?.claimContract
+      if (this.isClaim || this.loading || !chainId || !claimContract) return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
       const provider = new ethers.providers.Web3Provider(
-          compatibleGlobalWalletConf.value.walletPayload.provider
-        )
-      const chainID = +web3State?.networkId || +provider?.network?.chainId || +this.currentNetwork
+        compatibleGlobalWalletConf.value.walletPayload.provider
+      )
+      const addTokenRes = await provider.provider.request({
+            method: 'wallet_watchAsset',
+            params: {
+                type: 'ERC20',
+                options: {
+                    address: rewardInfo?.token,
+                    symbol: rewardInfo?.symbol,
+                    decimals: rewardInfo?.decimals,
+                    image: "",
+                },
+            },
+        });
+      const chainID =
+        +web3State?.networkId ||
+        +provider?.network?.chainId ||
+        +this.currentNetwork
 
-      if(Number(chainID) !== 42161) {
-        util.showMessage("Please Switch Arbitrum Network", 'warning');
-        if ([METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(compatibleGlobalWalletConf.value.walletType)) {
-              try {
-                if (!await util.ensureWalletNetwork("42161")) {
-                  return;
-                }
-              } catch (err) {
-                console.error(err);
-                util.showMessage(err.message, 'error');
-                return;
-              }
-            } 
+      if (Number(chainID) !== Number(chainId)) {
+        util.showMessage(`Please Switch ${this.chainName} Network`, 'warning')
+        if (
+          [METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(
+            compatibleGlobalWalletConf.value.walletType
+          )
+        ) {
+          try {
+            if (!(await util.ensureWalletNetwork(String(chainId)))) {
+              return
+            }
+          } catch (err) {
+            console.error(err)
+            util.showMessage(err.message, 'error')
+            return
+          }
+        }
         return
       }
       try {
@@ -331,12 +444,12 @@ export default {
         const signer = provider.getSigner()
 
         const claimContract = new ethers.Contract(
-          CLAIM_ORBGUY_CONTRACT_ADDRESS,
+          claimContract,
           Orbiter_CLAIM_ABI,
           signer
         )
         const params = [
-          [...(data||[])].map((item) => {
+          [...(data || [])].map((item) => {
             return {
               id: item.id,
               value: ethers.utils.parseEther(String(item.value)).toString(),
@@ -347,17 +460,16 @@ export default {
           [...(signData || [])],
         ]
 
-        let emitGas = ethers.utils.parseUnits("500000")
+        let emitGas = ethers.utils.parseUnits('500000')
         try {
-         emitGas = await claimContract.estimateGas.claim(params[0], params[1])
-        } catch (error) {
-          
-        }
+          emitGas = await claimContract.estimateGas.claim(params[0], params[1])
+        } catch (error) {}
 
         const res = await claimContract.claim(params[0], params[1], {
-          gasLimit: emitGas.mul("12").div("10")
+          gasLimit: emitGas.mul('12').div('10'),
         })
         await res.wait()
+        
         this.isClaim = true
       } catch (error) {
         util.showMessage(String(error?.message || error), 'error')
@@ -372,10 +484,10 @@ export default {
       }
     },
     currentEvmAddress(newValue) {
-      if (newValue && newValue !== "0x") {
+      if (newValue && newValue !== '0x') {
         this.getCardIds()
       }
-    }
+    },
   },
 }
 </script>
@@ -647,6 +759,24 @@ export default {
               letter-spacing: 0px;
             }
 
+            .not-token-amount {
+              width: 100%;
+              margin-top: 24px;
+              font-size: 18px;
+              font-weight: 600;
+              line-height: 32px;
+              letter-spacing: 0px;
+              color: rgb(255, 79, 79);
+            }
+
+            .not-token-amount-tips {
+              color: rgb(34, 34, 34);
+              font-size: 16px;
+              font-weight: 500;
+              line-height: 24px;
+              letter-spacing: 0px;
+            }
+
             .card-des {
               font-size: 16px;
               font-weight: 500;
@@ -682,28 +812,6 @@ export default {
               line-height: 22px;
               color: rgb(255, 255, 255);
               font-family: GeneralSans-SemiBold;
-            }
-
-            .go-to-swap {
-              width: 100%;
-              padding: 14px;
-              border-radius: 24px;
-              margin-top: 12px;
-              background: rgb(0, 0, 0);
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              font-size: 16px;
-              font-weight: 700;
-              line-height: 22px;
-              color: rgb(255, 255, 255);
-              font-family: GeneralSans-SemiBold;
-              cursor: pointer;
-              .go-icon {
-                margin-left: 8px;
-                width: 16px;
-                height: 16px;
-              }
             }
 
             .progress-group {
@@ -797,6 +905,18 @@ export default {
                   width: 55px;
                   height: 12px;
                 }
+              }
+            }
+
+            .claim-chain-text {
+              width: 100%;
+              margin-top: 12px;
+              font-size: 14px;
+              font-weight: 600;
+              line-height: 20px;
+              letter-spacing: 0px;
+              .chain-name {
+                color: rgb(223, 46, 45);
               }
             }
           }
