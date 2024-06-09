@@ -44,7 +44,7 @@
                 class="token-amount"
                 :style="`color:${isClaimed ? '#1EB4AB' : '#000'};`"
               >
-                +{{ decimalNumC(claimAmount, 0) }} $ORBGUY
+                {{ decimalNumC(claimAmount, 0) }} $ORBGUY
               </div>
 
               <div v-else class="not-token-amount">No rewards found</div>
@@ -53,7 +53,7 @@
                 Explore Orbiter to grab some
               </div>
 
-              <div v-show="!isClaimed" class="card-des">
+              <div v-if="!!isAmount" class="card-des">
                 The 1st Meme for Orbiter Community
               </div>
               <div
@@ -62,7 +62,7 @@
                   loading ? 'not-allowed' : 'pointer'
                 };`"
                 @click="claim"
-                v-if="!isClaimed"
+                v-if="!isClaimed && !showMediaStepCard"
               >
                 {{ loading ? 'loading...' : 'Claim' }}
               </div>
@@ -119,12 +119,24 @@
                   />
                 </div>
               </div>
+              <div v-if="showClaimChainText" class="claim-chain-text">
+                Claim your Token on
+                <span class="chain-name">{{ chainName }}</span>
+              </div>
             </div>
             <div
               class="join-media-card-group"
               v-if="showMediaCard && !!isAmount"
             >
               <JoinMediaCard></JoinMediaCard>
+            </div>
+            <div class="join-media-card-group" v-if="showMediaStepCard">
+              <MediaStepCard
+                :claimCall="claim"
+                :isLoading="loading"
+                :rewardChainId="rewardChainId"
+                @getStepStatus="setStepStatus"
+              ></MediaStepCard>
             </div>
           </div>
         </div>
@@ -135,7 +147,7 @@
       <div class="lottery-dialog-close-group">
         <div
           @click.self="handleHidden"
-          v-if="!disabled"
+          v-if="isShowClose"
           class="lottery-dialog-close"
         ></div>
       </div>
@@ -158,8 +170,9 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import { decimalNum } from '../../util/decimalNum'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import JoinMediaCard from './JoinMediaCard.vue'
+import MediaStepCard from './MediaStepCard.vue'
+
 import { Orbiter_CLAIM_ABI } from '../../util/constants/contract/contract'
-import { CLAIM_ORBGUY_CONTRACT_ADDRESS } from '../../const'
 
 import { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers'
 import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
@@ -168,7 +181,6 @@ export default {
   name: 'ClaimRewardModal',
   data() {
     return {
-      disabled: false,
       isClaim: false,
       cardIds: [],
       loading: false,
@@ -178,6 +190,7 @@ export default {
   },
   components: {
     JoinMediaCard,
+    MediaStepCard,
   },
   computed: {
     currentEvmAddress() {
@@ -185,6 +198,20 @@ export default {
     },
     claimCardModalDataInfoData() {
       return claimCardModalDataInfo.value
+    },
+    rewardInfo() {
+      const { data = [] } = this.claimCardModalDataInfoData || {}
+      return data?.[0] || {}
+    },
+    rewardChainId() {
+      return this.rewardInfo?.chainId || ''
+    },
+    claimCardModalAmountInfoData() {
+      console.log(
+        'claimCardModalAmountInfo.value',
+        claimCardModalAmountInfo.value
+      )
+      return claimCardModalAmountInfo.value
     },
     currentNetwork() {
       return compatibleGlobalWalletConf.value.walletPayload.networkId
@@ -235,7 +262,7 @@ export default {
     isClaimed() {
       const { data = [], isClaimedData } = this.claimCardModalDataInfoData || {}
 
-      if(isClaimedData) {
+      if (isClaimedData) {
         return true
       }
 
@@ -263,8 +290,13 @@ export default {
     showMediaCard() {
       return this.claimCardModalType !== 'LUCKY_BAG' || this.isClaimed
     },
-    claimCardModalAmountInfoData() {
-      return claimCardModalAmountInfo.value
+    showMediaStepCard() {
+      const { chainId } = this.claimCardModalAmountInfoData || {}
+      return (
+        this.rewardChainId === chainId &&
+        this.claimCardModalType === 'LUCKY_BAG' &&
+        !this.isClaimed
+      )
     },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
@@ -284,8 +316,26 @@ export default {
 
       return totalQuantity
     },
+    isShowClose() {
+      return (
+        this.isClaimed ||
+        this.claimCardModalType !== 'LUCKY_BAG' ||
+        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS')
+      )
+    },
+    chainName() {
+      return util.chainName(this.rewardChainId)
+    },
+    showClaimChainText() {
+      return !this.showMediaStepCard && this.isAmount && !this.isClaimed
+    },
   },
   methods: {
+    setStepStatus(status) {
+      if (status === 3) {
+        localStorage.setItem('LUCKY_BAG_JOIN_MEDIA_STATUS', 'true')
+      }
+    },
     goToSwap() {
       const name = this.name
       const url = this.url
@@ -302,12 +352,14 @@ export default {
       if (!evmAddress || evmAddress === '0x') return
       let rpc = ''
       let currentRpcList = []
-      if (error) return
+      const chainId = this.rewardChainId
+      const claimContract = this.rewardInfo?.claimContract
+      if (error || chainId | claimContract) return
       try {
         if (rpcList?.length) {
           currentRpcList = rpcList
         } else {
-          currentRpcList = await util.getRpcList('42161')
+          currentRpcList = await util.getRpcList(chainId)
         }
         rpc = currentRpcList?.[0] || ''
 
@@ -316,7 +368,7 @@ export default {
         const signer = provider.getSigner(evmAddress)
 
         const claimContract = new ethers.Contract(
-          CLAIM_ORBGUY_CONTRACT_ADDRESS,
+          claimContract,
           Orbiter_CLAIM_ABI,
           signer
         )
@@ -341,25 +393,41 @@ export default {
       this.$store.commit('getClaimORBGUYRewardData', { type: '' })
     },
     async claim() {
-      if (this.isClaim || this.loading) return
+      
+      const chainId = this.rewardChainId
+      const rewardInfo = this.rewardInfo
+      const claimContract = rewardInfo?.claimContract
+      if (this.isClaim || this.loading || !chainId || !claimContract) return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
       const provider = new ethers.providers.Web3Provider(
         compatibleGlobalWalletConf.value.walletPayload.provider
       )
+      const addTokenRes = await provider.provider.request({
+            method: 'wallet_watchAsset',
+            params: {
+                type: 'ERC20',
+                options: {
+                    address: rewardInfo?.token,
+                    symbol: rewardInfo?.symbol,
+                    decimals: rewardInfo?.decimals,
+                    image: "",
+                },
+            },
+        });
       const chainID =
         +web3State?.networkId ||
         +provider?.network?.chainId ||
         +this.currentNetwork
 
-      if (Number(chainID) !== 42161) {
-        util.showMessage('Please Switch Arbitrum Network', 'warning')
+      if (Number(chainID) !== Number(chainId)) {
+        util.showMessage(`Please Switch ${this.chainName} Network`, 'warning')
         if (
           [METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(
             compatibleGlobalWalletConf.value.walletType
           )
         ) {
           try {
-            if (!(await util.ensureWalletNetwork('42161'))) {
+            if (!(await util.ensureWalletNetwork(String(chainId)))) {
               return
             }
           } catch (err) {
@@ -376,7 +444,7 @@ export default {
         const signer = provider.getSigner()
 
         const claimContract = new ethers.Contract(
-          CLAIM_ORBGUY_CONTRACT_ADDRESS,
+          claimContract,
           Orbiter_CLAIM_ABI,
           signer
         )
@@ -401,6 +469,7 @@ export default {
           gasLimit: emitGas.mul('12').div('10'),
         })
         await res.wait()
+        
         this.isClaim = true
       } catch (error) {
         util.showMessage(String(error?.message || error), 'error')
@@ -836,6 +905,18 @@ export default {
                   width: 55px;
                   height: 12px;
                 }
+              }
+            }
+
+            .claim-chain-text {
+              width: 100%;
+              margin-top: 12px;
+              font-size: 14px;
+              font-weight: 600;
+              line-height: 20px;
+              letter-spacing: 0px;
+              .chain-name {
+                color: rgb(223, 46, 45);
               }
             }
           }

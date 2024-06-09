@@ -110,19 +110,37 @@ export async function getNoticeData() {
 }
 
 export async function requestClaimLuckyBagReward(address, token) {
-  return await openApiAx.get(`/points_platform/reward/address/${address}`, {
-    headers: {
-      'recaptcha-token': token
+  return await openApiAx.get(
+    `/points_platform/reward/luckyORBGuyInfo/${address}`,
+    {
+      headers: {
+        'recaptcha-token': token,
+      },
     }
-  })
+  )
+}
+
+export async function requestClaimLuckyBagRewardData(address, token) {
+  return await openApiAx.get(
+    `/points_platform/reward/token-reward/${address}?flag=1`,
+    {
+      headers: {
+        'recaptcha-token': token,
+      },
+    }
+  )
 }
 
 export async function drawClaimLuckyBagReward(address, token) {
-  return await openApiAx.post(`/points_platform/reward/luckyORBGuy`, {
-    address,
-  }, {
-    headers: {
-      'recaptcha-token': token
+  return await openApiAx.post(
+    `/points_platform/reward/luckyORBGuy`,
+    {
+      address,
+    },
+    {
+      headers: {
+        'recaptcha-token': token,
+      },
     }
-  })
+  )
 }
