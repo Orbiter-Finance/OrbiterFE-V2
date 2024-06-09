@@ -204,7 +204,7 @@ export default {
       return claimCardModalDataInfo.value
     },
     isTimeOut() {
-      return !!Number(this?.claimCardModalAmountInfoData?.activityTime) || true
+      return !!Number(this?.claimCardModalAmountInfoData?.activityTime)
     },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
