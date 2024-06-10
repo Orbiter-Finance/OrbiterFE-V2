@@ -15,13 +15,20 @@ import {
   setPrizesRankList,
   setPrizesTop100tx,
   claimCardModalDataInfo,
+  claimCardModalAmountInfo,
+  setClaimCardModalAmountInfo,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
 import completionStarknetAddress from '../../util/completionStarknetAddress'
-import { drawClaimLuckyBagReward } from '../../common/openApiAx'
+import {
+  drawClaimLuckyBagReward,
+  requestClaimLuckyBagReward,
+  requestClaimLuckyBagRewardData,
+} from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
+import { ethers } from 'ethers'
 
 let timer
 
@@ -205,10 +212,79 @@ export default {
     localStorage.setItem('themeMode', state.themeMode)
     toggleBodyCls()
   },
+  async requestLuckyBagDataInfo(state, { address }) {
+    if (!address) return
+    try {
+      try {
+        const res1 = await requestClaimLuckyBagRewardData(
+          address.toLocaleLowerCase()
+        )
+
+        const list = res1?.map((item) => {
+          return {
+            expiredTimestamp: item?.deadline,
+            id: item?.serial_number,
+            value: item?.quantity,
+            flag: item?.business_identity,
+            claimContract: item?.claim_contract,
+            decimals: item?.decimals,
+            symbol: item?.symbol,
+            token: item?.token,
+            chainId: item?.chain_id,
+          }
+        })
+        const signList = res1?.map((item) => {
+          return item.sign
+        })
+
+        setClaimCardModalDataInfo({
+          data: list,
+          sign: signList,
+          isClaimedData:
+            res1?.length && !res1.some((item) => item.status !== '1'),
+        })
+      } catch (error) {}
+
+      const res = await requestClaimLuckyBagReward(address.toLocaleLowerCase())
+      const { result } = res || {}
+      const {
+        stock = 0,
+        maxGrant = 0,
+        activityTime = 0,
+        chainId,
+        max = 0,
+        clainContract = '',
+        token = '',
+        symbol = '',
+        decimals = '',
+      } = result || {}
+      const totalQuantity = maxGrant - stock || 0
+
+      setClaimCardModalAmountInfo({
+        maxTotal: max,
+        max: maxGrant,
+        totalQuantity,
+        activityTime,
+        chainId,
+        claimContract: clainContract,
+        token,
+        symbol,
+        decimals,
+        ratio: Number(totalQuantity)
+          ? ethers.utils
+              .parseEther(String(totalQuantity))
+              .mul('100')
+              .div(ethers.utils.parseEther(String(maxGrant)))
+              .toString()
+          : '0',
+      })
+    } catch (error) {}
+  },
   async getClaimORBGUYRewardData(state, { type, token }) {
     clearTimeout(timer)
     timer = setTimeout(async () => {
-      const { sign: signList } = claimCardModalDataInfo.value || {}
+      const { sign: signList, data = [] } = claimCardModalDataInfo.value || {}
+      const info = (data[0] = claimCardModalAmountInfo.value || {})
       try {
         if (type) {
           const address =
@@ -218,45 +294,38 @@ export default {
           //
           let res = {}
           if (type === 'LUCKY_BAG') {
-            if (!signList?.length) {
-              res = await drawClaimLuckyBagReward(
-                address?.toLocaleLowerCase(),
-                token
-              )
-              const { result, code, message = '' } = res || {}
-              const {
-                card = {},
-                businessIdentity = '',
-                sign = '',
-                status = '',
-              } = result || {}
-              if (Number(code) === 0) {
-                setClaimCardModalDataInfo({
-                  data: [
-                    {
-                      expiredTimestamp: card?.expiredTimestamp,
-                      id: card?.id,
-                      value: card?.value,
-                      flag: businessIdentity,
+            res = await drawClaimLuckyBagReward(
+              address?.toLocaleLowerCase(),
+              token
+            )
+            const { result, code, message = '' } = res || {}
+            const {
+              card = {},
+              businessIdentity = '',
+              sign = '',
+              status = '',
+            } = result || {}
+            if (Number(code) === 0) {
+              setClaimCardModalDataInfo({
+                data: [
+                  {
+                    expiredTimestamp: card?.expiredTimestamp,
+                    id: card?.id,
+                    value: card?.value,
+                    flag: businessIdentity,
 
-                      claimContract: card?.claim_contract,
-                      decimals: card?.decimals,
-                      symbol: card?.symbol,
-                      token: card?.token,
-                    },
-                  ],
-                  sign: [sign],
-                  isClaimedData: status === '1',
-                })
-                setClaimCardModalShow(true, type)
-              } else {
-                util.showMessage(String(message), 'warning')
-              }
+                    claimContract: info?.claimContract,
+                    decimals: info?.decimals,
+                    symbol: info?.symbol,
+                    token: info?.token,
+                  },
+                ],
+                sign: [sign],
+                isClaimedData: status === '1',
+              })
+              setClaimCardModalShow(true, type)
             } else {
-              util.showMessage(
-                'Your address has already received a lucky bag. Each address can only claim once.',
-                'warning'
-              )
+              util.showMessage(String(message), 'warning')
             }
           } else {
             setClaimCardModalShow(true, type)

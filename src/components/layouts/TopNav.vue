@@ -161,6 +161,8 @@ import starknetLogoLight from '../../assets/v2/starknet-logo-light.png'
 import { isBrowserApp } from '../../util'
 import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 import { WALLETCONNECT } from '../../util/walletsDispatchers'
+import getUTCTime from '../../util/time'
+
 
 export default {
   name: 'TopNav',
@@ -296,10 +298,17 @@ export default {
       const { activityTime, ratio } = this.claimCardModalAmountInfoData || {}
       const { data } = this.claimCardModalDataInfoData || {}
       if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
-      if((!Number(activityTime) ||!(Number(ratio) - 100)) && !data?.length) {
+      if(data?.length) {
+        util.showMessage(
+          'Your address has already received a lucky bag. Each address can only claim once.',
+          'warning'
+        )
+              return
+      }
+      if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
         util.showMessage(
         `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-        'error'
+        'warning'
       )
         return
       }

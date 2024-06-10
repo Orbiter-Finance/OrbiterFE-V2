@@ -207,10 +207,6 @@ export default {
       return this.rewardInfo?.chainId || ''
     },
     claimCardModalAmountInfoData() {
-      console.log(
-        'claimCardModalAmountInfo.value',
-        claimCardModalAmountInfo.value
-      )
       return claimCardModalAmountInfo.value
     },
     currentNetwork() {
@@ -353,8 +349,8 @@ export default {
       let rpc = ''
       let currentRpcList = []
       const chainId = this.rewardChainId
-      const claimContract = this.rewardInfo?.claimContract
-      if (error || chainId | claimContract) return
+      const claimContractAddress = this.rewardInfo?.claimContract
+      if (error || chainId | claimContractAddress) return
       try {
         if (rpcList?.length) {
           currentRpcList = rpcList
@@ -368,7 +364,7 @@ export default {
         const signer = provider.getSigner(evmAddress)
 
         const claimContract = new ethers.Contract(
-          claimContract,
+          claimContractAddress,
           Orbiter_CLAIM_ABI,
           signer
         )
@@ -396,24 +392,13 @@ export default {
       
       const chainId = this.rewardChainId
       const rewardInfo = this.rewardInfo
-      const claimContract = rewardInfo?.claimContract
-      if (this.isClaim || this.loading || !chainId || !claimContract) return
+      const claimContractAddress = rewardInfo?.claimContract
+      if (this.isClaim || this.loading || !chainId || !claimContractAddress) return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
       const provider = new ethers.providers.Web3Provider(
         compatibleGlobalWalletConf.value.walletPayload.provider
       )
-      const addTokenRes = await provider.provider.request({
-            method: 'wallet_watchAsset',
-            params: {
-                type: 'ERC20',
-                options: {
-                    address: rewardInfo?.token,
-                    symbol: rewardInfo?.symbol,
-                    decimals: rewardInfo?.decimals,
-                    image: "",
-                },
-            },
-        });
+      
       const chainID =
         +web3State?.networkId ||
         +provider?.network?.chainId ||
@@ -444,7 +429,7 @@ export default {
         const signer = provider.getSigner()
 
         const claimContract = new ethers.Contract(
-          claimContract,
+          claimContractAddress,
           Orbiter_CLAIM_ABI,
           signer
         )
@@ -469,8 +454,21 @@ export default {
           gasLimit: emitGas.mul('12').div('10'),
         })
         await res.wait()
-        
         this.isClaim = true
+
+        const addTokenRes = await provider.provider.request({
+            method: 'wallet_watchAsset',
+            params: {
+                type: 'ERC20',
+                options: {
+                    address: rewardInfo?.token,
+                    symbol: rewardInfo?.symbol,
+                    decimals: rewardInfo?.decimals,
+                    image: "",
+                },
+            },
+        });
+        
       } catch (error) {
         util.showMessage(String(error?.message || error), 'error')
         this.loading = false
