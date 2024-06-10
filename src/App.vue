@@ -78,9 +78,7 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   isTonDialog,
-  setTonDialog,
-  setClaimCardModalAmountInfo,
-  setClaimCardModalDataInfo,
+  setTonDialog
 } from './composition/hooks'
 import {
   walletIsLogin,

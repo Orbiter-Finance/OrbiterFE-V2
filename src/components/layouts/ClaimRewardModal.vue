@@ -62,7 +62,7 @@
                   loading ? 'not-allowed' : 'pointer'
                 };`"
                 @click="claim"
-                v-if="!isClaimed && !showMediaStepCard"
+                v-if="!isClaimed && !showMediaStepCard &&!!isAmount"
               >
                 {{ loading ? 'loading...' : 'Claim' }}
               </div>
