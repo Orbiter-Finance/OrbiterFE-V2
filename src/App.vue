@@ -78,7 +78,8 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   isTonDialog,
-  setTonDialog
+  setTonDialog,
+  setClaimCardModalShow
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -260,6 +261,7 @@ export default {
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
       if (newAddress && newAddress !== oldAddress) {
+        setClaimCardModalShow(false, '')
         this.getClaimRewardModalData()
       }
       if (tonAddress) {

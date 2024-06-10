@@ -42,7 +42,7 @@
               <div
                 v-if="isAmount"
                 class="token-amount"
-                :style="`color:${isClaimed ? '#1EB4AB' : '#000'};`"
+                :style="`color:#222;`"
               >
                 {{ decimalNumC(claimAmount, 0) }} $ORBGUY
               </div>
@@ -186,6 +186,7 @@ export default {
       loading: false,
       url: 'https://likwid.meme/swap',
       name: 'CLAIM_ORBGUY_LIKWID_SWAP',
+      status: 1
     }
   },
   components: {
@@ -316,7 +317,8 @@ export default {
       return (
         this.isClaimed ||
         this.claimCardModalType !== 'LUCKY_BAG' ||
-        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS')
+        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+        this.status === 3
       )
     },
     chainName() {
@@ -328,6 +330,8 @@ export default {
   },
   methods: {
     setStepStatus(status) {
+      console.log("status", status)
+      this.status = status
       if (status === 3) {
         localStorage.setItem('LUCKY_BAG_JOIN_MEDIA_STATUS', 'true')
       }

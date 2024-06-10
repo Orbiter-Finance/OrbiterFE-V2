@@ -403,7 +403,6 @@ export default {
       const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
       const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
       const info = data?.[0]
-      console.log("isClaimedData", chainId, info, isClaimedData)
       if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
       if(info) {
         if(!!isClaimedData) {

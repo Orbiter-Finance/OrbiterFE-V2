@@ -143,6 +143,7 @@ export default {
       this.isNext = false
       const status = this.stepStatus + 1
       this.stepStatus = status
+      this.$emit("getStepStatus", status)
       if(status === 3) {
         localStorage.setItem("LUCKY_BAG_JOIN_MEDIA_STATUS", "true")
       }
