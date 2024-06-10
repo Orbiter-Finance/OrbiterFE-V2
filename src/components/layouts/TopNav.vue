@@ -296,15 +296,24 @@ export default {
   },
   methods: {
     openLuckyBagModal() {
-      const { activityTime, ratio } = this.claimCardModalAmountInfoData || {}
+      const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
       const { data } = this.claimCardModalDataInfoData || {}
       if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
-      if(data?.length) {
-        util.showMessage(
-          'Your address has already received a lucky bag. Each address can only claim once.',
-          'warning'
-        )
-              return
+      const info = data?.[0]
+      if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
+      if(info) {
+        if(!!isClaimedData) {
+          util.showMessage(
+            'Your address has already received a lucky bag. Each address can only claim once.',
+            'warning'
+          )
+          return
+        } else {
+          if(chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()) {
+            setClaimCardModalShow(true, 'LUCKY_BAG')
+            return
+          }
+        }
       }
       if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
         util.showMessage(
