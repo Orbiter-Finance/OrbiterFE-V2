@@ -257,11 +257,11 @@ export default {
         this.getNftList()
       }
     },
-    currentWalletAddress: function (newAddress) {
+    currentWalletAddress: function (newAddress, oldAddress) {
       const [web3Address, starkNetAddress] = newAddress
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
-      if (newAddress) {
+      if (newAddress && newAddress !== oldAddress) {
         this.getClaimRewardModalData()
       }
       if (tonAddress) {
@@ -288,57 +288,7 @@ export default {
       setClaimCardModalDataInfo(null)
       const [web3Address] = this.currentWalletAddress
       if (!web3Address) return
-      try {
-        try {
-          const res1 = await requestClaimLuckyBagRewardData(
-            web3Address.toLocaleLowerCase()
-          )
-          const list = res1?.map((item) => {
-            return {
-              expiredTimestamp: item?.deadline,
-              id: item?.serial_number,
-              value: item?.quantity,
-              flag: item?.business_identity,
-              claimContract: item?.claim_contract,
-              decimals: item?.decimals,
-              symbol: item?.symbol,
-              token: item?.token,
-              chainId: item?.chain_id
-            }
-          })
-          const signList = res1?.map((item) => {
-            return item.sign
-          })
-
-          setClaimCardModalDataInfo({
-            data: list,
-            sign: signList,
-            isClaimedData:
-              res1?.length && !res1.some((item) => item.status !== '1'),
-          })
-        } catch (error) {}
-
-        const res = await requestClaimLuckyBagReward(
-          web3Address.toLocaleLowerCase()
-        )
-        const { result } = res || {}
-        const { stock = 0, maxGrant = 0, activityTime = 0, chainId, max = 0 } = result || {}
-        const totalQuantity = maxGrant - stock || 0
-        setClaimCardModalAmountInfo({
-          maxTotal: max,
-          max: maxGrant,
-          totalQuantity: totalQuantity,
-          activityTime,
-          chainId,
-          ratio: Number(totalQuantity)
-            ? ethers.utils
-                .parseEther(String(totalQuantity))
-                .mul('100')
-                .div(ethers.utils.parseEther(String(maxGrant)))
-                .toString()
-            : '0',
-        })
-      } catch (error) {}
+      this.$store.commit("requestLuckyBagDataInfo", {address: web3Address})
     },
     getAddress() {
       let addressGroup = {

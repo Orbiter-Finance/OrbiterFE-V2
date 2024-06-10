@@ -205,7 +205,8 @@ export default {
       return claimCardModalDataInfo.value
     },
     isTimeOut() {
-      return !!Number(this?.claimCardModalAmountInfoData?.activityTime)
+      const time = this?.claimCardModalAmountInfoData?.activityTime
+      return !!Number(time) && (time >= getUTCTime() / 1000)
     },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
@@ -399,10 +400,17 @@ export default {
       const { activityTime, ratio } = this.claimCardModalAmountInfoData || {}
       const { data } = this.claimCardModalDataInfoData || {}
       if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
-      if((!Number(activityTime) ||!(Number(ratio) - 100)) && !data?.length) {
+      if(data?.length) {
+        util.showMessage(
+          'Your address has already received a lucky bag. Each address can only claim once.',
+          'warning'
+        )
+              return
+      }
+      if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
         util.showMessage(
         `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-        'error'
+        'warning'
       )
         return
       }
@@ -629,41 +637,18 @@ export default {
     }
   },
   async mounted() {
-    const _this = this
-    setInterval(async () => {
-      if (!this.$store.state.proceeding.makerTransfer.txid) return
-      const { address } = this.getAddress()
-
-      if (address && address !== '0x') {
-        const pointRes = await requestPointSystem('v2/user/points', {
-          address,
-        })
-        const point = pointRes.data.total
-        if (addressPointMap[address.toLowerCase()] === undefined) {
-          addressPointMap[address.toLowerCase()] = point
-        }
-        if (point > addressPointMap[address.toLowerCase()]) {
-          setActAddPoint(`+${point - addressPointMap[address.toLowerCase()]}`)
-          setActAddPointVisible(true)
-          addressPointMap[address.toLowerCase()] = point
-          setTimeout(() => {
-            _this.getWalletAddressActList()
-            setActAddPointVisible(false)
-          }, 3000)
-        }
-        setActPoint(pointRes.data)
-        this.getLotteryCardData()
-      }
-    }, 5000)
-
 
     timer1 = setInterval(() => {
+      
+      const { activityTime } = this.claimCardModalAmountInfoData || {}
+
       const t = this?.claimCardModalAmountInfoData?.activityTime || 0
-      console.log("t", t)
+
       const timeS = Math.floor(t - getUTCTime() / 1000)
+      console.log("timeS", t, timeS)
       let time = timeS
       if (timeS <= 0) {
-        clearInterval(timer1)
+        // clearInterval(timer1)
         this.timeList = [
           {
             value: '00',
@@ -717,6 +702,36 @@ export default {
         },
       ]
     }, 1000)
+
+    const _this = this
+    setInterval(async () => {
+      if (!this.$store.state.proceeding.makerTransfer.txid) return
+      const { address } = this.getAddress()
+
+      if (address && address !== '0x') {
+        const pointRes = await requestPointSystem('v2/user/points', {
+          address,
+        })
+        const point = pointRes.data.total
+        if (addressPointMap[address.toLowerCase()] === undefined) {
+          addressPointMap[address.toLowerCase()] = point
+        }
+        if (point > addressPointMap[address.toLowerCase()]) {
+          setActAddPoint(`+${point - addressPointMap[address.toLowerCase()]}`)
+          setActAddPointVisible(true)
+          addressPointMap[address.toLowerCase()] = point
+          setTimeout(() => {
+            _this.getWalletAddressActList()
+            setActAddPointVisible(false)
+          }, 3000)
+        }
+        setActPoint(pointRes.data)
+        this.getLotteryCardData()
+      }
+    }, 5000)
+
+
+    
     // const walletAddress = await util.getAsyncWalletAddress();
     // this.getWalletAddressPoint()
   },
