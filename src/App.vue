@@ -285,7 +285,6 @@ export default {
   },
   methods: {
     async getClaimRewardModalData() {
-      setClaimCardModalDataInfo(null)
       const [web3Address] = this.currentWalletAddress
       if (!web3Address) return
       this.$store.commit("requestLuckyBagDataInfo", {address: web3Address})
