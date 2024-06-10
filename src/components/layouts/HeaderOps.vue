@@ -217,7 +217,9 @@ export default {
     maxGrantRatio() {
       const { max } =  claimCardModalAmountInfo.value || {}
 
-      return ethers.utils.parseEther(max ? String(max) : "0").mul("100").div(ethers.utils.parseEther("20000000")).toString()
+      return ethers.utils.formatEther(
+        ethers.utils.parseEther(max ? String(max) : "0").mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther("20000000"))
+      )
     },
     addPoint() {
       return actAddPoint.value
@@ -637,18 +639,23 @@ export default {
     }
   },
   async mounted() {
-
+    let flag = false
     timer1 = setInterval(() => {
       
       const { activityTime } = this.claimCardModalAmountInfoData || {}
 
-      const t = this?.claimCardModalAmountInfoData?.activityTime || 0
+      const t = activityTime || 0
 
       const timeS = Math.floor(t - getUTCTime() / 1000)
-      console.log("timeS", t, timeS)
       let time = timeS
       if (timeS <= 0) {
-        // clearInterval(timer1)
+        if(Number(t)) {
+          const [web3Address] = this.currentWalletAddress
+
+          this.$store.commit("requestLuckyBagDataInfo", {address: web3Address})
+          clearInterval(timer1)
+
+        }
         this.timeList = [
           {
             value: '00',

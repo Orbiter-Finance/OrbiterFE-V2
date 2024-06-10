@@ -215,6 +215,8 @@ export default {
   async requestLuckyBagDataInfo(state, { address }) {
     if (!address) return
     try {
+      setClaimCardModalDataInfo(null)
+      setClaimCardModalAmountInfo(null)
       try {
         const res1 = await requestClaimLuckyBagRewardData(
           address.toLocaleLowerCase()
