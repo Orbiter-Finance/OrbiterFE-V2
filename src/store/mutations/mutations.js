@@ -243,7 +243,7 @@ export default {
           data: list,
           sign: signList,
           isClaimedData:
-            res1?.length && !res1.some((item) => item.status !== '1'),
+            res1?.length && !res1.some((item) => item.status === '0'),
         })
       } catch (error) {}
 
@@ -285,8 +285,8 @@ export default {
   async getClaimORBGUYRewardData(state, { type, token }) {
     clearTimeout(timer)
     timer = setTimeout(async () => {
-      const { sign: signList, data = [] } = claimCardModalDataInfo.value || {}
-      const info = (data[0] = claimCardModalAmountInfo.value || {})
+      const { data = [] } = claimCardModalDataInfo.value || {}
+      const info = data[0] || claimCardModalAmountInfo.value || {}
       try {
         if (type) {
           const address =
@@ -320,6 +320,7 @@ export default {
                     decimals: info?.decimals,
                     symbol: info?.symbol,
                     token: info?.token,
+                    chainId: info?.chainId,
                   },
                 ],
                 sign: [sign],

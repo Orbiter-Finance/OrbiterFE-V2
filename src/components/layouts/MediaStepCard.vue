@@ -104,10 +104,11 @@ export default {
     },
   name: 'MediaStepCard',
   data() {
+    const status = localStorage.getItem("LUCKY_BAG_JOIN_MEDIA_STATUS")
     return {
       step1Url: 'https://t.me/likwid_meme',
       step1Name: 'JOIN_LIKWID_TELEGRAM',
-      stepStatus: 1,
+      stepStatus: status ? 3 : 1,
       isNext: false,
       step2Url: 'https://twitter.com/LIKWID_MEME',
       step2Name: 'JOIN_LIKWID_X',
@@ -291,7 +292,7 @@ export default {
         font-weight: 600;
         line-height: 20px;
         letter-spacing: 0px;
-        white-space: nowrap;
+        text-align: left;
         .chain-name {
             color: rgb(223, 46, 45);
         }

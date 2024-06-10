@@ -169,6 +169,7 @@ import {
   setTonDialog,
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
+  setClaimCardModalShow
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -399,15 +400,24 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     async openLuckyBagModal() {
-      const { activityTime, ratio } = this.claimCardModalAmountInfoData || {}
-      const { data } = this.claimCardModalDataInfoData || {}
+      const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
+      const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
+      const info = data?.[0]
+      console.log("isClaimedData", chainId, info, isClaimedData)
       if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
-      if(data?.length) {
-        util.showMessage(
-          'Your address has already received a lucky bag. Each address can only claim once.',
-          'warning'
-        )
-              return
+      if(info) {
+        if(!!isClaimedData) {
+          util.showMessage(
+            'Your address has already received a lucky bag. Each address can only claim once.',
+            'warning'
+          )
+          return
+        } else {
+          if(chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()) {
+            setClaimCardModalShow(true, 'LUCKY_BAG')
+            return
+          }
+        }
       }
       if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
         util.showMessage(
