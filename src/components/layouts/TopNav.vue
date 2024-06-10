@@ -162,6 +162,7 @@ import { isBrowserApp } from '../../util'
 import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 import { WALLETCONNECT } from '../../util/walletsDispatchers'
 import getUTCTime from '../../util/time'
+import util from '../../util/util'
 
 
 export default {
