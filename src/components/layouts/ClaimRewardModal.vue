@@ -76,7 +76,7 @@
                         <div style="margin-left: -20px">
                           <span
                             >Over 50 O-points users can claim a reward randomly.
-                            A total reward of 400,000 $ORBGUY available. Rewards
+                            A total reward of {{ decimalNumC(max, 0, ',') }} $ORBGUY available. Rewards
                             are claimed on Arbitrum network. FCFS!</span
                           >
                         </div>
