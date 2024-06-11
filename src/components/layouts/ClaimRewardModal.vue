@@ -460,6 +460,7 @@ export default {
         await res.wait()
         this.isClaim = true
         localStorage.removeItem("LUCKY_BAG_JOIN_MEDIA_STATUS")
+        this.$store.commit("requestLuckyBagDataInfo", {address: this.currentEvmAddress})
         const addTokenRes = await provider.provider.request({
             method: 'wallet_watchAsset',
             params: {
