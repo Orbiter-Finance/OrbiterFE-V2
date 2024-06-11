@@ -511,14 +511,19 @@ export default {
       }
 
       const localStr = sessionStorage.getItem('TELEGRAM_TOKEN')
+      let telegramInfo = null
+      try {
+       telegramInfo = JSON.parse(window.atob(localStr || ""))
+      } catch (error) {
+        
+      }
 
       if (isSuccess) {
       } else if (isTelegram) {
         if (!isBuild) {
-          if (localStr) {
+          if (telegramInfo) {
             const provider =
               compatibleGlobalWalletConf.value.walletPayload.provider
-            const telegramInfo = JSON.parse(window.atob(localStr))
             console.log('telegramInfo', telegramInfo)
             const res = await provider.request({
               method: 'personal_sign',
