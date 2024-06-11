@@ -459,7 +459,7 @@ export default {
         })
         await res.wait()
         this.isClaim = true
-
+        localStorage.remove("LUCKY_BAG_JOIN_MEDIA_STATUS")
         const addTokenRes = await provider.provider.request({
             method: 'wallet_watchAsset',
             params: {
