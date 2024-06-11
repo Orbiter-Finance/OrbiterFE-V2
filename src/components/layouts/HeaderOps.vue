@@ -19,14 +19,43 @@
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
-      <div
-        v-if="$route.path !== '/prizes'"
-        class="lucky-bag-tab"
-        @click="openLuckyBagModal"
-      >
+      <div class="lucky-bag-tab" @click="openLuckyBagModal">
         <div class="lucky-bag-image"></div>
-        <div class="lucky-bag-info">
-          <div class="info-label">Grab 2% $ORBGUY</div>
+        <div v-if="isTimeOut" class="tiem-out">
+          <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          width="16.000000"
+          height="16.000000"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            id="Vector"
+            d="M7.99 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 7.99 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 7.99 14.66Z"
+            stroke="#292D32"
+            stroke-opacity="2"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+          <path
+            id="Vector"
+            d="M10.47 10.12L8.4 8.88C8.04 8.67 7.75 8.16 7.75 7.74L7.75 5"
+            stroke="#292D32"
+            stroke-opacity="2"
+            stroke-width="2"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          />
+          <g opacity="0.000000" />
+        </svg>
+          <div class="time-group" v-for="item in timeList" :key="item.symbol">
+            <div class="time-value">{{ item.value }}</div>
+            <div class="time-symbol">{{ item.symbol }}</div>
+          </div>
+        </div>
+        <div v-else class="lucky-bag-info">
+          <div class="info-label">Grab {{ maxGrantRatio }}% $ORBGUY</div>
           <div class="info-progress">
             <div
               class="progress"
@@ -40,12 +69,7 @@
           </div>
         </div>
       </div>
-      <span
-        v-if="$route.path !== '/prizes'"
-        @click="openAct"
-        class="ops-item"
-        style="position: relative"
-      >
+      <span @click="openAct" class="ops-item" style="position: relative">
         <img
           :hidden="!isLightMode"
           style="margin: -3px 0 0 0; width: 24px"
@@ -79,17 +103,9 @@
           />
         </div>
       </span>
-      <span
-        @click="showHistory"
-        class="ops-item"
-        v-if="$route.path !== '/prizes'"
-        >History</span
-      >
+      <span @click="showHistory" class="ops-item">History</span>
       <div
-        v-if="
-          (isSelectedStarkNet || isSelectedSolana || isSelectedTon) &&
-          $route.path !== '/prizes'
-        "
+        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -102,7 +118,6 @@
         <span class="address">{{ connectAddress }}</span>
       </div>
       <div
-        v-else
         ref="connectedBtn"
         @click="connectAWallet"
         class="ops-item center"
@@ -115,11 +130,7 @@
         <span class="address">{{ connectFirstAddress }}</span>
       </div>
     </template>
-    <div
-      @click="toggleThemeMode"
-      class="ops-mode"
-      v-if="$route.path !== '/prizes'"
-    >
+    <div @click="toggleThemeMode" class="ops-mode">
       <SvgIconThemed class="mode-icon" icon="mode" />
     </div>
   </div>
@@ -157,6 +168,8 @@ import {
   isTonDialog,
   setTonDialog,
   claimCardModalAmountInfo,
+  claimCardModalDataInfo,
+  setClaimCardModalShow
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -169,6 +182,11 @@ import util from '../../util/util'
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
+import getUTCTime from '../../util/time'
+import { ethers } from 'ethers'
+
+let timer1
+
 const addressPointMap = {}
 export default {
   name: 'HeaderOps',
@@ -184,11 +202,25 @@ export default {
     claimCardModalAmountInfoData() {
       return claimCardModalAmountInfo.value
     },
+    claimCardModalDataInfoData() {
+      return claimCardModalDataInfo.value
+    },
+    isTimeOut() {
+      const time = this?.claimCardModalAmountInfoData?.activityTime
+      return !!Number(time) && (time >= getUTCTime() / 1000)
+    },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
       if (!Number(ratio)) return 0
 
       return ratio
+    },
+    maxGrantRatio() {
+      const { max } =  claimCardModalAmountInfo.value || {}
+
+      return ethers.utils.formatEther(
+        ethers.utils.parseEther(max ? String(max) : "0").mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther("20000000"))
+      )
     },
     addPoint() {
       return actAddPoint.value
@@ -352,6 +384,7 @@ export default {
     return {
       selectedWallet,
       recaptchaId: 0,
+      timeList: [],
     }
   },
   watch: {
@@ -367,28 +400,55 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     async openLuckyBagModal() {
-      util.showMessage(
+      const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
+      const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
+      const info = data?.[0]
+      if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
+      if(info) {
+        if(!!isClaimedData) {
+          util.showMessage(
+            'Your address has already received a lucky bag. Each address can only claim once.',
+            'warning'
+          )
+          return
+        } else {
+          if(chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()) {
+            setClaimCardModalShow(true, 'LUCKY_BAG')
+            return
+          }
+        }
+      }
+      if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
+        util.showMessage(
         `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-        'error'
+        'warning'
       )
-
-      // const recaptchaDiv = document.createElement('div')
-      // recaptchaDiv.id = 'recaptcha-outside-badge'
-      // this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
-      // this.recaptchaId = grecaptcha.render(recaptchaDiv, {
-      //   sitekey: process.env['VUE_APP_RECAPTCHA'],
-      //   theme: 'light',
-      //   callback: (token) => {
-      //     this.$store.commit('getClaimORBGUYRewardData', {
-      //       type: 'LUCKY_BAG',
-      //       token,
-      //     })
-      //     recaptchaDiv.remove()
-      //   },
-      // })
-      // recaptchaDiv.onclick = () => {
-      //   recaptchaDiv.remove()
-      // }
+        return
+      }
+      if (process.env['VUE_APP_RECAPTCHA']) {
+        const recaptchaDiv = document.createElement('div')
+        recaptchaDiv.id = 'recaptcha-outside-badge'
+        this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
+        this.recaptchaId = grecaptcha.render(recaptchaDiv, {
+          sitekey: process.env['VUE_APP_RECAPTCHA'],
+          theme: 'light',
+          callback: (token) => {
+            this.$store.commit('getClaimORBGUYRewardData', {
+              type: 'LUCKY_BAG',
+              token,
+            })
+            recaptchaDiv.remove()
+          },
+        })
+        recaptchaDiv.onclick = () => {
+          recaptchaDiv.remove()
+        }
+      } else {
+        this.$store.commit('getClaimORBGUYRewardData', {
+              type: 'LUCKY_BAG',
+              token: "",
+            })
+      }
     },
     openAct() {
       setActDialogVisible(true)
@@ -572,19 +632,93 @@ export default {
     },
   },
   created() {
-    // if (typeof window === 'undefined') return
-    // window.vueRecaptchaInit = () => {}
-    // const recaptchaScript = document.createElement('script')
-    // const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
-    // recaptchaScript.setAttribute(
-    //   'src',
-    //   `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
-    // )
-    // recaptchaScript.setAttribute('async', '')
-    // recaptchaScript.setAttribute('defer', '')
-    // ;(document.body || document.head).appendChild(recaptchaScript)
+    if (process.env['VUE_APP_RECAPTCHA']) {
+
+      if (typeof window === 'undefined') return
+      window.vueRecaptchaInit = () => {}
+      const recaptchaScript = document.createElement('script')
+      const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+      recaptchaScript.setAttribute(
+        'src',
+        `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+      )
+      recaptchaScript.setAttribute('async', '')
+      recaptchaScript.setAttribute('defer', '')
+      ;(document.body || document.head).appendChild(recaptchaScript)
+    }
   },
   async mounted() {
+    let flag = false
+    timer1 = setInterval(() => {
+      
+      const { activityTime } = this.claimCardModalAmountInfoData || {}
+
+      const t = activityTime || 0
+
+      const timeS = Math.floor(t - getUTCTime() / 1000)
+      let time = timeS
+      if (timeS <= 0) {
+        if(Number(t)) {
+          const [web3Address] = this.currentWalletAddress
+
+          this.$store.commit("requestLuckyBagDataInfo", {address: web3Address})
+          clearInterval(timer1)
+
+        }
+        this.timeList = [
+          {
+            value: '00',
+            symbol: 'D',
+          },
+          {
+            value: '00',
+            symbol: 'H',
+          },
+          {
+            value: '00',
+            symbol: 'M',
+          },
+          {
+            value: '00',
+            symbol: 'S',
+          },
+        ]
+        return
+      }
+      let d = Math.floor(time / 3600 / 24)
+      time -= d * 3600 * 24
+      d = d < 0 ? 0 : d
+      d = d < 10 ? '0' + d : d
+      let h = Math.floor(time / 3600)
+      time -= h * 3600
+      h = h < 0 ? 0 : h
+      h = h < 10 ? '0' + h : h
+      let m = Math.floor(time / 60)
+      time -= m * 60
+      m = m < 0 ? 0 : m
+      m = m < 10 ? '0' + m : m
+      const s = time < 10 ? '0' + time : time
+
+      this.timeList = [
+        {
+          value: d,
+          symbol: 'D',
+        },
+        {
+          value: h,
+          symbol: 'H',
+        },
+        {
+          value: m,
+          symbol: 'M',
+        },
+        {
+          value: s,
+          symbol: 'S',
+        },
+      ]
+    }, 1000)
+
     const _this = this
     setInterval(async () => {
       if (!this.$store.state.proceeding.makerTransfer.txid) return
@@ -612,6 +746,8 @@ export default {
       }
     }, 5000)
 
+
+    
     // const walletAddress = await util.getAsyncWalletAddress();
     // this.getWalletAddressPoint()
   },
@@ -767,6 +903,32 @@ export default {
       background-image: url(../../assets/lucky-bag.png);
       background-repeat: no-repeat;
       background-size: 100% 100%;
+    }
+
+    .tiem-out {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      padding: 4px 0;
+      .time-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .time-value {
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 16px;
+          letter-spacing: 0px;
+          margin: 0 2px;
+        }
+        .time-symbol {
+          font-family: GeneralSans-Regular;
+          color: rgb(153, 153, 153);
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 16px;
+        }
+      }
     }
 
     .lucky-bag-info {
