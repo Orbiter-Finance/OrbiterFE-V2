@@ -354,7 +354,7 @@ export default {
       let currentRpcList = []
       const chainId = this.rewardChainId
       const claimContractAddress = this.rewardInfo?.claimContract
-      if (error || chainId | claimContractAddress) return
+      if (error || !chainId || !claimContractAddress) return
       try {
         if (rpcList?.length) {
           currentRpcList = rpcList

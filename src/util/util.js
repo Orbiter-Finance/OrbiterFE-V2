@@ -365,6 +365,7 @@ export default {
 
   async getRpcList(chainId) {
     // const res = await this.getNetworkRpc()
+    // if (!chainId) return
     const res = []
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
