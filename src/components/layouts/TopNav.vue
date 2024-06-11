@@ -150,7 +150,8 @@ import {
   setConnectWalletGroupKey,
   setSolanaDialog,
   claimCardModalAmountInfo,
-  claimCardModalDataInfo
+  claimCardModalDataInfo,
+  setClaimCardModalShow
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -297,7 +298,7 @@ export default {
   methods: {
     openLuckyBagModal() {
       const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
-      const { data } = this.claimCardModalDataInfoData || {}
+      const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
       if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
       const info = data?.[0]
       if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
