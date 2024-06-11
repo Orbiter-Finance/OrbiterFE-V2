@@ -7,56 +7,54 @@
           :src="require('../../assets/activity/likwid-qr.png')"
         />
       </div>
+      <div class="step1-des">
+        <span class="step-des-title ">Step 1: </span>
+        Join LIKWID Group 
+        <svg
+        class="media-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        width="16.000000"
+        height="16.000000"
+        viewBox="0 0 16 16"
+        fill="none"
+      >
+        <defs>
+          <clipPath id="clip812_520">
+            <rect
+              id="telegram.19a5a5db.svg"
+              rx="4.000000"
+              width="16.000000"
+              height="16.000000"
+              fill="white"
+              fill-opacity="0"
+            />
+          </clipPath>
+        </defs>
+        <rect
+          id="telegram.19a5a5db.svg"
+          rx="4.000000"
+          width="16.000000"
+          height="16.000000"
+          fill="#279EFF"
+          fill-opacity="1.000000"
+        />
+        <g clip-path="url(#clip812_520)">
+          <path
+            id="Vector"
+            d="M12.97 4.75L11.46 11.88C11.34 12.38 11.05 12.5 10.63 12.27L8.33 10.57L7.22 11.63C7.16 11.7 7.09 11.75 7.01 11.79C6.93 11.83 6.84 11.85 6.75 11.85L6.92 9.51L11.18 5.69C11.37 5.52 11.14 5.43 10.89 5.6L5.62 8.9L3.36 8.19C2.86 8.03 2.85 7.7 3.46 7.46L12.33 4.04C12.74 3.89 13.1 4.13 12.97 4.75Z"
+            fill="#FFFFFF"
+            fill-opacity="1.000000"
+            fill-rule="evenodd"
+          />
+        </g>
+      </svg>
+      </div>
+
       <div v-if="isNext" class="step1-next" @click="stepNextClick">
         Next Step
       </div>
-      <div v-else class="step1-des">
-        <span class="step-des-title ">Step 1: </span>
-        Join LIKWID Group</div>
-      <div class="step1-url">
-        <svg
-          class="media-icon"
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          width="16.000000"
-          height="16.000000"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <defs>
-            <clipPath id="clip812_520">
-              <rect
-                id="telegram.19a5a5db.svg"
-                rx="4.000000"
-                width="16.000000"
-                height="16.000000"
-                fill="white"
-                fill-opacity="0"
-              />
-            </clipPath>
-          </defs>
-          <rect
-            id="telegram.19a5a5db.svg"
-            rx="4.000000"
-            width="16.000000"
-            height="16.000000"
-            fill="#279EFF"
-            fill-opacity="1.000000"
-          />
-          <g clip-path="url(#clip812_520)">
-            <path
-              id="Vector"
-              d="M12.97 4.75L11.46 11.88C11.34 12.38 11.05 12.5 10.63 12.27L8.33 10.57L7.22 11.63C7.16 11.7 7.09 11.75 7.01 11.79C6.93 11.83 6.84 11.85 6.75 11.85L6.92 9.51L11.18 5.69C11.37 5.52 11.14 5.43 10.89 5.6L5.62 8.9L3.36 8.19C2.86 8.03 2.85 7.7 3.46 7.46L12.33 4.04C12.74 3.89 13.1 4.13 12.97 4.75Z"
-              fill="#FFFFFF"
-              fill-opacity="1.000000"
-              fill-rule="evenodd"
-            />
-          </g>
-        </svg>
-        <div class="link" @click="openLink(step1Name, step1Url)">
-          {{ step1Url }}
-        </div>
-      </div>
+      <div v-else class="step1-btn" @click="joinTelegram">Join</div>
     </div>
     <div v-else-if="stepStatus === 2" class="step2-content">
       <div class="step2-des">
@@ -114,11 +112,6 @@ export default {
       step2Name: 'JOIN_LIKWID_X',
     }
   },
-  created() {
-    timer = setTimeout(() => {
-      this.updateStepNextStatus()
-    }, 10000)
-  },
   computed: {
     chainId(){
         return this.rewardChainId
@@ -131,6 +124,10 @@ export default {
     }
   },
   methods: {
+    joinTelegram(){
+      this.openLink(this.step1Name, this.step1Url)
+      this.updateStepNextStatus()
+    },
     goToFollow(){
         this.openLink(this.step2Name, this.step2Url)
         this.updateStepNextStatus()
@@ -201,13 +198,22 @@ export default {
       line-height: 20px;
       letter-spacing: 0px;
       white-space: nowrap;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .media-icon {
+        width: 16px;
+        height: 16px;
+        margin-left: 4px;
+      }
     }
 
-    .step1-next {
+    .step1-btn {
+      border-radius: 8px;
+      background: rgb(0, 0, 0);
       margin-top: 12px;
       width: 100%;
-      border-radius: 8px;
-      background: rgb(223, 46, 45);
       padding: 12px 0;
       font-size: 16px;
       font-weight: 700;
@@ -216,29 +222,18 @@ export default {
       color: #fff;
       cursor: pointer;
     }
-
-    .step1-url {
+    .step1-next {
+      border-radius: 8px;
+      background: rgb(223, 46, 45);
+      margin-top: 12px;
       width: 100%;
-      margin-top: 8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      white-space: nowrap;
-      .media-icon {
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
-      }
-      .link {
-        white-space: nowrap;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 16px;
-        letter-spacing: 0px;
-        color: rgb(39, 158, 255);
-        text-decoration: underline;
-        cursor: pointer;
-      }
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: 0px;
+      color: #fff;
+      cursor: pointer;
     }
   }
 
