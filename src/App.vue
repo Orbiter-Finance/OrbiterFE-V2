@@ -258,9 +258,10 @@ export default {
     },
     currentWalletAddress: function (newAddress, oldAddress) {
       const [web3Address, starkNetAddress] = newAddress
+      const [web3OldAddress] = oldAddress || []
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
-      if (newAddress && newAddress !== oldAddress) {
+      if (web3Address && web3Address !== web3OldAddress) {
         setClaimCardModalShow(false, '')
         this.getClaimRewardModalData()
       }

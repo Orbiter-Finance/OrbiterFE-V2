@@ -19,7 +19,7 @@
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
-      <div class="lucky-bag-tab" @click="openLuckyBagModal">
+      <div v-if="!isMobile" class="lucky-bag-tab" @click="openLuckyBagModal">
         <div class="lucky-bag-image"></div>
         <div v-if="isTimeOut" class="tiem-out">
           <svg
@@ -103,7 +103,7 @@
           />
         </div>
       </span>
-      <span @click="showHistory" class="ops-item">History</span>
+      <!-- <span @click="showHistory" class="ops-item">History</span> -->
       <div
         v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
         ref="connectedStarkNetBtn"
@@ -130,9 +130,9 @@
         <span class="address">{{ connectFirstAddress }}</span>
       </div>
     </template>
-    <div @click="toggleThemeMode" class="ops-mode">
+    <!-- <div @click="toggleThemeMode" class="ops-mode">
       <SvgIconThemed class="mode-icon" icon="mode" />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -858,7 +858,7 @@ export default {
 }
 
 .header-ops {
-  margin-right: 16px;
+  // margin-right: 16px;
   display: flex;
   align-items: center;
   .ops-mode {
