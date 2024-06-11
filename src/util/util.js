@@ -365,7 +365,7 @@ export default {
 
   async getRpcList(chainId) {
     // const res = await this.getNetworkRpc()
-    // if (!chainId) return
+    if (!chainId) return
     const res = []
     const netWorkRpcList = this.getChainIdNetworkRpclist(res, chainId)
     const chainInfo = this.getV3ChainInfoByChainId(chainId)
@@ -373,7 +373,7 @@ export default {
     const storageRpc = localStorage.getItem(`${chainId}_stable_rpc`)
     try {
       const stableRpc = JSON.parse(storageRpc)
-      if (stableRpc.rpc && stableRpc.expireTime > new Date().valueOf()) {
+      if (stableRpc?.rpc && stableRpc.expireTime > new Date().valueOf()) {
         rpcList = [stableRpc.rpc, ...rpcList]
       }
       rpcList = this.cleanRpcList(netWorkRpcList, rpcList)
