@@ -23,17 +23,11 @@ export default {
     return {
       bannerList: [
         {
-          url: 'https://app.zklink.io/aggregation-parade',
-          img: 'aggregation-parade.png',
-          name: 'aggregation-parade',
-          timeStamp: '2024/05/25 10:00:00',
-        },
-        {
-          url: 'https://fusion.gobob.xyz/?refCode=2ae49l',
-          img: 'bob.jpg',
-          name: 'BOB FUSION',
-          timeStamp: '2024/05/28 06:00:00',
-        },
+          url: 'https://kzco.in/',
+          img: 'zksync.png',
+          name: 'Bridge from/to zkSync',
+          timeStamp: '2024/06/19 18:00:00',
+        }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
     }
   },
