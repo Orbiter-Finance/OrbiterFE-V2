@@ -107,23 +107,33 @@
           </div>
           <div>
             <div class="text-wrapper_45">
-              <div class="text_98">Total O-Points </div>
+              <div class="text_98"
+              @click="openUserInfoDetailsCardModal"
+              >
+                Total O-Points
+                <img :src="require('../../assets/activity/extends.svg')" alt="">
+              </div>
               <div class="text_99">
-                <div class="left">
+                <div class="left"
+                @click="openUserInfoDetailsCardModal"
+                >
                   {{ totalPoint }}
                   <HeaderLotteryCard />
                 </div>
 
                 <div class="right">
+                  <div 
+                  @click="openOPointsRankingCardModal"
+                  class="ranking">
+                    <img :src="require('../../assets/activity/ranking-icon.svg')" alt="">
+                    Details</div>
                   <div
                   @click="openClaimRewardModal"
                   class="reward">
                     <svg-icon iconName="ORBGUY"></svg-icon>
                     Reward
                   </div>
-                  <div 
-                  @click="openUserInfoDetailsCardModal"
-                  class="details">Details</div>
+                  
                 </div>
               </div>
             </div>
@@ -262,7 +272,8 @@ import {
   updateActDataList,
   isTonDialog,
   tonAddress,
-  setUserInfoDetailsCardModalShow
+  setUserInfoDetailsCardModalShow,
+setOPointsCardModalShow
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -535,6 +546,9 @@ export default {
     },
     openClaimRewardModal() {
       this.$store.commit("getClaimORBGUYRewardData", {type: 'REWARD'})
+    },
+    openOPointsRankingCardModal() {
+      setOPointsCardModalShow(true)
     },
     openUserInfoDetailsCardModal () {
       setUserInfoDetailsCardModalShow(true)
@@ -986,6 +1000,7 @@ export default {
     white-space: nowrap;
     line-height: 19px;
     margin-top: 8px;
+    cursor: pointer;
   }
 
   .text_99 {
@@ -1005,12 +1020,39 @@ export default {
       text-align: left;
       white-space: nowrap;
       line-height: 46px;
+      cursor: pointer;
     }
 
     .right {
       display: flex;
       justify-content: flex-end;
       align-items: center;
+
+      .ranking {
+        font-family: GeneralSans-Medium;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        border: 1px solid rgb(246, 192, 82);
+        border-radius: 8px;
+        box-shadow: inset 0px 0px 8px 0px rgb(246, 192, 82);
+        backdrop-filter: blur(8px);
+        background: rgba(246, 192, 82, 0.1);
+        padding: 8px;
+        cursor: pointer;
+        color: rgb(255, 217, 139);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 19px;
+        letter-spacing: 0px;
+
+        img {
+          width: 20px;
+          height: 20px;
+          margin-right: 4px;
+        }
+      }
 
       .reward {
         font-size: 14px;
@@ -1026,25 +1068,12 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        margin-left: 8px;
         svg {
           width: 20px;
           height: 20px;
           margin-right: 8px;
         }
-      }
-
-      .details {
-        font-size: 14px;
-        font-weight: 600;
-        margin-left: 8px;
-        border: 1px solid rgb(219, 239, 45);
-        border-radius: 8px;
-        box-shadow: inset 0px 0px 8px 0px rgb(219, 239, 45),0px 0px 4px 0px rgba(219, 239, 45, 0.4);
-        backdrop-filter: blur(8px);
-        background: rgba(219, 239, 45, 0.1);
-        color: #DBEF2D;
-        padding: 8px 24px;
-        cursor: pointer;
       }
     }
   }

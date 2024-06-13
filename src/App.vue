@@ -43,6 +43,7 @@
     <div id="ton-connect-wallet"></div>
     <GlobalTgCard v-if="$route.path !== '/prizes'"></GlobalTgCard>
     <UserInfoDetailsCardModal></UserInfoDetailsCardModal>
+    <OPointsRankingCard></OPointsRankingCard>
   </div>
 </template>
 
@@ -96,6 +97,7 @@ import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialo
 import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import UserInfoDetailsCardModal from './components/layouts/UserInfoDetailsCardModal.vue'
 import ClaimRewardModal from './components/layouts/ClaimRewardModal.vue'
+import OPointsRankingCard from './components/layouts/OPointsRankingCard.vue'
 
 import {
   setIsBraveWallet,
@@ -210,6 +212,7 @@ export default {
     GlobalTgCard,
     UserInfoDetailsCardModal,
     ClaimRewardModal,
+    OPointsRankingCard
   },
   async mounted() {
     tonHelper.tonConnectCall()
