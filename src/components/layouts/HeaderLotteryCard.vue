@@ -66,6 +66,8 @@ import CommCardTooltip from '../CommCardTooltip.vue'
 import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper'
 
+let timer
+
 export default {
   name: 'HeaderLotteryCard',
   components: {
@@ -149,15 +151,19 @@ export default {
   },
   methods: {
     async handleShow() {
-      if (!this.visible && this.isMobile) {
-        this.visible = true
-      } else {
-        this.visible = false
-        if (!!this.total) {
-          await this.getLotteryCardDataDraw()
-          await this.getLotteryCardData()
+      clearTimeout(timer)
+      timer = setTimeout(async () => {
+        if (!this.visible && this.isMobile) {
+          this.visible = true
+        } else {
+          this.visible = false
+          if (!!this.total) {
+              await this.getLotteryCardDataDraw()
+              await this.getLotteryCardData()
+          }
         }
-      }
+      }, 500);
+
     },
     getAddress () {
       let addressGroup = {

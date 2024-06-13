@@ -1,9 +1,11 @@
 <template>
-  <div id="task-prizes-card" class="task-prizes-card">
+  <div 
+  @click="goToPrizes"
+  id="task-prizes-card" class="task-prizes-card">
     <div class="card-title">
       <div class="title-info">
         <svg-icon iconName="42161" class="task-icon"></svg-icon>
-        <div class="label"><span>$100,000</span> Bridging Competition</div>
+        <div class="label"><span>$100,000</span> Prize Pool</div>
       </div>
       <div class="time">
         <svg
@@ -17,7 +19,7 @@
           <path
             id="Vector"
             d="M7.99 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 7.99 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 7.99 14.66Z"
-            stroke="#292D32"
+            stroke="rgba(255,255,255,0.6)"
             stroke-opacity="1.000000"
             stroke-width="1.000000"
             stroke-linejoin="round"
@@ -25,7 +27,7 @@
           <path
             id="Vector"
             d="M10.47 10.12L8.4 8.88C8.04 8.67 7.75 8.16 7.75 7.74L7.75 5"
-            stroke="#292D32"
+            stroke="rgba(255,255,255,0.6)"
             stroke-opacity="1.000000"
             stroke-width="1.000000"
             stroke-linejoin="round"
@@ -39,7 +41,7 @@
         </div>
       </div>
     </div>
-    <div
+    <!-- <div
       class="task-card-options-group"
       v-for="item in taskOptionsList"
       :key="item.reward"
@@ -184,7 +186,7 @@
           {{ item.reward }}
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -335,6 +337,13 @@ export default {
     },
   },
   methods: {
+    goToPrizes() {
+      this.$gtag.event("OPointsGoToPrizes", {
+        event_category: "OPointsGoToPrizes",
+        event_label: "o points modal task go to prizes",
+      })
+      this.$router.push("/prizes")
+    },
     async getUserReward() {
       if (!this.evmAddress || this.evmAddress === '0x') return
       this.$store.commit(
@@ -434,8 +443,15 @@ export default {
   margin: 12px 16px;
   padding: 12px;
   width: calc(100% - 32px);
-  background-color: #f5f5f5;
+  // background-color: #f5f5f5;
   border-radius: 12px;
+  box-sizing: border-box;
+  border: 1px solid rgb(18, 170, 255);
+  border-radius: 12px;
+  box-shadow: inset 0px 0px 24px 0px rgb(18, 170, 255);
+  background: rgb(0, 0, 0);
+  color: #FFF;
+  cursor: pointer;
 
   .card-title {
     display: flex;
@@ -459,7 +475,7 @@ export default {
         letter-spacing: 0px;
         white-space: nowrap;
         span {
-          color: #ff402b;
+          color: #12AAFF;
         }
       }
     }
@@ -481,7 +497,7 @@ export default {
           margin: 0 2px;
         }
         .time-symbol {
-          color: rgb(153, 153, 153);
+          color: rgba(255, 255, 255, 0.6);
           font-size: 12px;
           font-weight: 400;
           line-height: 16px;
