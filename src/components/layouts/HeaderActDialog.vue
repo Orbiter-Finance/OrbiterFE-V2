@@ -1299,7 +1299,7 @@ export default {
   .close-drawer {
     cursor: pointer;
     position: absolute;
-    left: -460px;
+    left: -468px;
     width: 40px;
     height: 100%;
     z-index: 100;
@@ -1319,7 +1319,7 @@ export default {
     right: 0px;
     background-color: #ffffff;
     position: absolute;
-    width: 420px;
+    width: 428px;
     height: 100%;
     border-radius: 16px 0px 0px 16px;
   }

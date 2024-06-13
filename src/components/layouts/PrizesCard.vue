@@ -5,7 +5,7 @@
     <div class="card-title">
       <div class="title-info">
         <svg-icon iconName="42161" class="task-icon"></svg-icon>
-        <div class="label"><span>$100,000</span> Bridging Competition</div>
+        <div class="label"><span>$100,000</span> Prize Pool</div>
       </div>
       <div class="time">
         <svg
@@ -475,7 +475,7 @@ export default {
         letter-spacing: 0px;
         white-space: nowrap;
         span {
-          color: #ff402b;
+          color: #12AAFF;
         }
       }
     }
