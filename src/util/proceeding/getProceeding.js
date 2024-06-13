@@ -7,7 +7,6 @@ import {
 } from '../../common/openApiAx'
 import util from '../util'
 import { CHAIN_ID } from '../../config'
-import { getTransactionsHistory } from '../../composition/useHistoryPanel'
 
 const storeUpdateProceedState = (state) => {
   store.commit('updateProceedState', state)
@@ -30,7 +29,6 @@ function confirmUserTransaction(chainId, userAddress, hash, toChainId) {
     //   }
     //   return;
     // }
-    console.log('toChainId', toChainId)
     try {
       const { status, txList = [] } =
         (await requestOpenApi(RequestMethod.getTransactionByHash, [hash])) || {}
@@ -107,10 +105,10 @@ function confirmUserTransaction(chainId, userAddress, hash, toChainId) {
   }, 10 * 1000)
 }
 
-async function completeTx(userAddress, fromHash, toHash) {
-  util.setCache(`history_${userAddress.toLowerCase()}_1`, '', -1)
+export async function completeTx(userAddress, fromHash, toHash) {
+  // util.setCache(`history_${userAddress.toLowerCase()}_1`, '', -1);
   await util.sleep(500)
-  getTransactionsHistory({ current: 1 })
+  // getTransactionsHistory({ current: 1 });
   clearInterval(cron)
   storeUpdateProceedState(5)
   try {

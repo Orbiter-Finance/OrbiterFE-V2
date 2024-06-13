@@ -4,6 +4,7 @@ module.exports = {
     '@babel/plugin-proposal-optional-chaining',
     '@babel/plugin-proposal-nullish-coalescing-operator',
     '@babel/plugin-proposal-logical-assignment-operators',
+    '@babel/plugin-proposal-private-methods',
     [
       'import',
       {
@@ -21,4 +22,4 @@ module.exports = {
       'sencond',
     ],
   ],
-}
+};

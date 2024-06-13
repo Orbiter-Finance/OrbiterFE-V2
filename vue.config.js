@@ -1,9 +1,9 @@
-const isProduction = process.env.NODE_ENV !== 'development'
-const path = require('path')
-const NullishCoalescingOperatorPlugin = require('@babel/plugin-proposal-nullish-coalescing-operator')
-const LogicalAssignmentOperators = require('@babel/plugin-proposal-logical-assignment-operators')
+const isProduction = process.env.NODE_ENV !== 'development';
+const path = require('path');
+const NullishCoalescingOperatorPlugin = require('@babel/plugin-proposal-nullish-coalescing-operator');
+const LogicalAssignmentOperators = require('@babel/plugin-proposal-logical-assignment-operators');
 function resolve(dir) {
-  return path.join(__dirname, dir)
+  return path.join(__dirname, dir);
 }
 
 module.exports = {
@@ -15,9 +15,21 @@ module.exports = {
   productionSourceMap: false,
   chainWebpack: (config) => {
     config.plugin('html').tap((args) => {
-      args[0].title = 'Orbiter'
-      return args
-    })
+      args[0].title = 'Orbiter';
+      return args;
+    });
+    config.module
+      .rule('mqtt')
+      .test(/\.js$/)
+      .include.add(path.resolve(__dirname, 'node_modules/mqtt'))
+      .add(path.resolve(__dirname, 'node_modules/mqtt-packet'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators],
+      })
+      .end();
     config.module
       .rule('solana')
       .test(/\.js$/)
@@ -28,7 +40,7 @@ module.exports = {
       .options({
         plugins: [LogicalAssignmentOperators],
       })
-      .end()
+      .end();
     config.module
       .rule('ton')
       .test(/\.js$/)
@@ -40,7 +52,7 @@ module.exports = {
       .options({
         plugins: [LogicalAssignmentOperators],
       })
-      .end()
+      .end();
     config.module
       .rule('starknet')
       .test(/(\.mjs$)|(\.js$)/)
@@ -52,7 +64,7 @@ module.exports = {
       .options({
         plugins: [NullishCoalescingOperatorPlugin],
       })
-      .end()
+      .end();
     config.module
       .rule('walletconnect')
       .test(/\.js$/)
@@ -67,12 +79,12 @@ module.exports = {
       .options({
         plugins: [NullishCoalescingOperatorPlugin],
       })
-      .end()
+      .end();
     config.externals({
       web3: 'Web3',
-    })
+    });
     // set svg-sprite-loader
-    config.module.rule('svg').exclude.add(resolve('src/icons')).end()
+    config.module.rule('svg').exclude.add(resolve('src/icons')).end();
     config.module
       .rule('icons')
       .test(/\.svg$/)
@@ -83,7 +95,7 @@ module.exports = {
       .options({
         symbolId: 'icon-[name]',
       })
-      .end()
+      .end();
   },
   css: {
     extract: true,
@@ -147,10 +159,10 @@ module.exports = {
         views: resolve(__dirname, './src/views'),
       },
       extensions: ['.js', '.vue', '.json'],
-    })
+    });
 
     if (isProduction) {
-      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
+      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
       config.optimization = {
         splitChunks: {
           cacheGroups: {
@@ -179,12 +191,12 @@ module.exports = {
             },
           },
         },
-      }
+      };
     } else {
-      config.devtool = 'source-map'
+      config.devtool = 'source-map';
     }
   },
   pluginOptions: {
     // ...
   },
-}
+};
