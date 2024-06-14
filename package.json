@@ -41,6 +41,7 @@
     "bignumber.js": "^9.0.1",
     "caniuse-lite": "^1.0.30001458",
     "core-js": "^3.6.5",
+    "crypto": "^1.0.1",
     "echarts": "^5.5.0",
     "element-resize-detector": "^1.2.4",
     "element-ui": "^2.14.1",
