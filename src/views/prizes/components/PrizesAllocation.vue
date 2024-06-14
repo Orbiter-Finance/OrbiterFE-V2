@@ -137,14 +137,19 @@
               <o-tooltip v-if="item.specificChain">
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
-                    <span> 
-                    <span>Specific chains include: </span>
-                    <br />
-                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin 
-                  </span>
+                    <span>
+                      <span>Specific chains include: </span>
+                      <br />
+                      Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
+                      Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum
+                      Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko,
+                      BEVM, Merlin
+                    </span>
                   </div>
                 </template>
-                <div class="orbiter_global_prizes_tips_underline tip-text">specific chain</div>
+                <div class="orbiter_global_prizes_tips_underline tip-text">
+                  specific chain
+                </div>
               </o-tooltip>
               <span v-if="item.specificChain">to Arbitrum</span>
             </div>
@@ -205,14 +210,19 @@
               <o-tooltip v-if="item.specificChain">
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
-                    <span> 
-                    <span>Specific chains include: </span>
-                    <br />
-                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin 
-                  </span>
+                    <span>
+                      <span>Specific chains include: </span>
+                      <br />
+                      Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
+                      Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum
+                      Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko,
+                      BEVM, Merlin
+                    </span>
                   </div>
                 </template>
-                <div class="orbiter_global_prizes_tips_underline tip-text">specific chain</div>
+                <div class="orbiter_global_prizes_tips_underline tip-text">
+                  specific chain
+                </div>
               </o-tooltip>
               <span v-if="item.specificChain">to Arbitrum</span>
             </div>
@@ -513,10 +523,8 @@ export default {
       const localStr = sessionStorage.getItem('TELEGRAM_TOKEN')
       let telegramInfo = null
       try {
-       telegramInfo = JSON.parse(window.atob(localStr || ""))
-      } catch (error) {
-        
-      }
+        telegramInfo = JSON.parse(window.atob(localStr || ''))
+      } catch (error) {}
 
       if (isSuccess) {
       } else if (isTelegram) {
@@ -571,10 +579,19 @@ export default {
           window.open('https://t.me/orbiterORB', '_blank')
         }
       } else {
-        this.$router.push(
+        this.$router.push({
+          path: 
           isDev()
             ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia'
             : '/?source=Ethereum&dest=Arbitrum&token=ETH'
+          })
+        localStorage.setItem(
+          'last_page_before_history',
+          JSON.stringify({
+            params: {},
+            path: '/',
+            query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
+          })
         )
       }
     },
@@ -1005,7 +1022,6 @@ export default {
               margin-right: 4px;
             }
           }
-          
         }
 
         .pool-reward {

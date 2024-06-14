@@ -621,6 +621,12 @@
                 "name": "l2scan",
                 "url": "https://zksync-era.l2scan.co",
                 "icon": "l2scan"
+            },
+            {   
+                "id": 3,
+                "icon":"oklink",
+                "name": "oklink",
+                "url": "https://www.oklink.com/zksync"
             }
         ],
         "rpc": [

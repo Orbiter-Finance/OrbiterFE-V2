@@ -107,7 +107,15 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
-      this.$router.push( isDev()? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
+      localStorage.setItem(
+          'last_page_before_history',
+          JSON.stringify({
+            params: {},
+            path: '/',
+            query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
+          })
+        )
+      this.$router.push({path: isDev()? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH'})
     },
   },
   mounted() {
