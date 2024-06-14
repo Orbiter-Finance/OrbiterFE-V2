@@ -13,7 +13,11 @@
           </div>
         </div>
         <div class="info">
-          <div class="info-label">Total O-Points</div>
+          <div class="info-label">Total O-Points
+            <div class="time-refresh-mobile">
+              <svg-icon class="clock" iconName="clock"></svg-icon> 42m ago
+            </div>
+          </div>
           <div class="total-options-amount">
             192,102,840
             <div class="time-refresh">
@@ -46,22 +50,51 @@
         <div class="rank-list-card-item my-rank-card">
           <div class="ranking">1,234,567</div>
           <div class="user-address">
-            <img class="user-image" :src="require('../../assets/activity/orbiter-user.png')" alt="">
-            My Account</div>
+            <img
+              class="user-image"
+              :src="require('../../assets/activity/orbiter-user.png')"
+              alt=""
+            />
+            My Account
+          </div>
           <div class="basic-points">240</div>
           <div class="activity-points">5,123</div>
           <div class="ecosystem-points">6,123</div>
           <div class="total-points">12,138</div>
         </div>
-        <div class="rank-list-card-item">
-          <div class="ranking">1,234,567</div>
-          <div class="user-address">0x024a...49ac41</div>
-          <div class="basic-points">240</div>
-          <div class="activity-points">5,123</div>
-          <div class="ecosystem-points">6,123</div>
-          <div class="total-points">12,138</div>
+        <div class="ranking-list-group">
+          <div
+            :key="index"
+            v-for="(item, index) in new Array(100).fill(0)"
+            class="rank-list-card-item"
+          >
+            <div class="ranking">
+              <div class="ranking-value"
+              :style="rankingStyle(index+1)"
+              >{{ index+1 }}</div>
+            </div>
+            <div class="user-address">0x024a...49ac41</div>
+            <div class="basic-points">240</div>
+            <div class="activity-points">5,123</div>
+            <div class="ecosystem-points">6,123</div>
+            <div class="total-points">12,138</div>
+          </div>
         </div>
+
+        <div class="pagination-group">
+          <el-pagination
+            :page-size="20"
+            @current-change="curChange"
+            class="rank-pagination"
+            layout="prev, pager, next"
+            :current-page="1"
+            :total="len"
+          >
+          </el-pagination>
+        </div>
+        
       </div>
+      
     </div>
   </div>
 </template>
@@ -75,15 +108,50 @@ import SvgIcon from '../SvgIcon/SvgIcon.vue'
 export default {
   components: { SvgIcon },
   name: 'OPointsRankingCard',
+  data() {
+    return {
+      current: 1,
+      len: 10000
+    }
+  },
   computed: {
     OPointsCardModalShow() {
       return OPointsCardModalShow.value
     },
   },
   methods: {
+    curChange(cur) {
+      this.current = cur
+    },
     close() {
       setOPointsCardModalShow(false)
     },
+    rankingStyle(rankValue) {
+      const key = Number(rankValue)
+      const list = [
+        'background: linear-gradient(180.00deg, rgb(255, 222, 155),rgb(243, 169, 19) 100%);',
+        'background: linear-gradient(180.00deg, rgb(240, 254, 255),rgb(190, 190, 190) 100%);',
+        'background: linear-gradient(180.00deg, rgb(233, 179, 135),rgb(197, 133, 81) 100%);',
+      ]
+      const base = 'width:24px;height:24px;border-radius:50%;'
+      let value = ''
+      switch (key) {
+        case 1:
+          value = list[0]
+          break
+        case 2:
+          value = list[1]
+          break
+        case 3:
+          value = list[2]
+          break
+        default:
+          value = ''
+          break
+      }
+      return value ? base + value : value
+    },
+    
   },
 }
 </script>
@@ -113,7 +181,7 @@ export default {
       background-repeat: no-repeat;
       background-size: 100% 100%;
       padding: 16px;
-      border: 16px 16px 0 0;
+      border-radius: 16px 16px 0 0;
       position: relative;
       top: 0;
       left: 0;
@@ -156,6 +224,10 @@ export default {
       .info {
         width: 100%;
         margin-top: 20px;
+        position: relative;
+        top: 0;
+        left: 0;
+        z-index: 1;
         .info-label {
           width: 100%;
           color: rgb(255, 255, 255);
@@ -164,6 +236,28 @@ export default {
           font-weight: 500;
           line-height: 20px;
           letter-spacing: 0px;
+          display: flex;
+          justify-content: start;
+          align-items: center;
+          .time-refresh-mobile {
+            display: none;
+            margin-left: 12px;
+            color: #b6b6b6;
+            font-family: GeneralSans-Regular;
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 16px;
+            letter-spacing: 0px;
+            padding: 4px 0;
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            .clock {
+              width: 16px;
+              height: 16px;
+              margin-right: 2px;
+            }
+          }
         }
         .total-options-amount {
           display: flex;
@@ -202,7 +296,7 @@ export default {
           justify-content: start;
           align-items: center;
           margin-top: 12px;
-          font-size: 15px;
+          font-size: 14px;
           font-weight: 600;
           line-height: 20px;
           letter-spacing: 0px;
@@ -214,7 +308,7 @@ export default {
             justify-content: start;
             align-items: center;
             margin-right: 12px;
-
+            white-space: nowrap;
             .total-user-amount {
               color: #ffd98b;
               font-family: GeneralSans-Medium;
@@ -226,7 +320,7 @@ export default {
             justify-content: start;
             align-items: center;
             margin-right: 12px;
-
+            white-space: nowrap;
             .total-user-opoints-amount {
               color: #ffd98b;
               font-family: GeneralSans-Medium;
@@ -255,7 +349,6 @@ export default {
       z-index: 2;
       background-color: #fff;
       width: 100%;
-      height: 500px;
       color: #222222;
       font-size: 14px;
       font-weight: 500;
@@ -263,9 +356,23 @@ export default {
       letter-spacing: 0px;
       font-family: GeneralSans-Medium;
 
+      .rank-list-header {
+        font-size: 12px;
+        font-weight: 400;
+        color: #666666;
+        font-family: GeneralSans-Regular;
+      }
+
+      .ranking-list-group {
+        width: 100%;
+        max-height: 400px;
+        overflow: auto;
+      }
+
       .rank-list-card-item {
         width: 100%;
-        padding: 10px;
+        padding: 0 10px;
+        height: 44px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -274,6 +381,15 @@ export default {
           width: 80px;
           white-space: nowrap;
           letter-spacing: 0px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .ranking-value {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
         }
 
         .user-address {
@@ -320,11 +436,88 @@ export default {
         background: rgba(255, 217, 139, 0.2);
       }
 
-      .rank-list-header {
-        font-size: 12px;
-        font-weight: 400;
-        color: #666666;
-        font-family: GeneralSans-Regular;
+      .pagination-group {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 12px;
+      }
+    }
+  }
+}
+
+::v-deep .rank-pagination .btn-next {
+  background: transparent;
+  color: #999999;
+}
+::v-deep .rank-pagination .el-pager .number {
+  background: transparent;
+  color: #999999;
+}
+::v-deep .rank-pagination .el-pager .more {
+  background: transparent;
+  color: #999999;
+}
+::v-deep .rank-pagination .btn-prev {
+  background: transparent;
+  color: #999999;
+}
+
+::v-deep .rank-pagination .el-pager .number.active {
+  border: 1px solid rgb(238, 238, 238);
+  border-radius: 4px;
+  background: rgb(245, 245, 245);
+  color: #222222;
+}
+
+@media (max-width: 760px) {
+  #o-points-card-modal {
+    align-items: flex-end;
+    .card-content {
+      border-radius: 16px 16px 0 0;
+      .top {
+        .info {
+          .info-label{
+            .time-refresh-mobile {
+              display: flex;
+            }
+          }
+          .total-amount {
+            flex-wrap: wrap;
+            .total-user,
+            .total-user-amount {
+              width: 100%;
+            }
+          }
+          .total-options-amount {
+            .time-refresh {
+              display: none;
+            }
+          }
+        }
+        .top-banner-image {
+          width: 183px;
+          height: 198px;
+          top: 40px;
+          right: -20px;
+        }
+      }
+      .table {
+        .rank-list-card-item {
+          .basic-points,
+          .activity-points,
+          .ecosystem-points {
+            display: none;
+          }
+        }
+        .ranking-list-group {
+          max-height: 200px;
+        }
+      }
+
+      .pagination-group {
+        padding: 8px 0 12px;
       }
     }
   }
