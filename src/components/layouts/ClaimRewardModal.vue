@@ -312,8 +312,8 @@ export default {
     },
     isShowClose() {
       const statusGroup =
-        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
-        JSON.stringify({})
+        JSON.parse(localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+        JSON.stringify({}))
       const evmAddress = (this.currentEvmAddress || '').toLocaleLowerCase()
 
       return (
@@ -409,6 +409,8 @@ export default {
       const chainId = this.rewardChainId
       const rewardInfo = this.rewardInfo
       const claimContractAddress = rewardInfo?.claimContract
+      const evmAddress = this.currentEvmAddress
+      if (!evmAddress || evmAddress === '0x') return
       if (this.isClaim || this.loading || !chainId || !claimContractAddress)
         return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
@@ -450,6 +452,16 @@ export default {
           Orbiter_CLAIM_ABI,
           signer
         )
+
+        try {
+          const cardIds = await claimContract.getClaimedCards(evmAddress)
+        } catch (error) {
+          console.log("error", error)
+          util.showMessage("Claim failed, please check your network/wallet address, 1 wallet could only claim once.", 'error')
+          this.loading = false
+          return
+        }
+
         const params = [
           [...(data || [])].map((item) => {
             return {
@@ -468,7 +480,7 @@ export default {
         } catch (error) {}
 
         const res = await claimContract.claim(params[0], params[1], {
-          gasLimit: emitGas.mul('12').div('10'),
+          gasLimit: emitGas.mul('12').div('10')
         })
         await res.wait()
         this.isClaim = true
@@ -488,8 +500,8 @@ export default {
           },
         })
       } catch (error) {
-        util.showMessage(String(error?.message || error), 'error')
         this.loading = false
+        util.showMessage(String(error?.message || error), 'error')
       }
     },
   },
