@@ -155,7 +155,6 @@
         </div>
         <div class="exploer-group">
           <div
-          v-if="getExplorer()"
           style="
             display: flex;
             align-items: center;
@@ -183,7 +182,6 @@
           </span>
         </div>
         <div
-        v-if="getExplorer(false)"
         style="
           display: flex;
           align-items: center;
