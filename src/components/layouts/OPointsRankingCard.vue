@@ -13,25 +13,26 @@
           </div>
         </div>
         <div class="info">
-          <div class="info-label">Total O-Points
+          <div class="info-label">
+            Total O-Points
             <div class="time-refresh-mobile">
-              <svg-icon class="clock" iconName="clock"></svg-icon> 42m ago
+              <svg-icon class="clock" iconName="clock"></svg-icon> {{ timeMin() }}m ago
             </div>
           </div>
           <div class="total-options-amount">
-            192,102,840
-            <div class="time-refresh">
-              <svg-icon class="clock" iconName="clock"></svg-icon> 42m ago
+            {{ decimalNumC(totalPoint, 2, ",") }}
+            <div class="time-refresh" >
+              <svg-icon class="clock" iconName="clock"></svg-icon> {{ timeMin() }}m ago
             </div>
           </div>
           <div class="total-amount">
             <div class="total-user">
               Total Users:
-              <div class="total-user-amount">3,880,000</div>
+              <div class="total-user-amount">{{ decimalNumC(addressCount, 2, ",") }}</div>
             </div>
-            <div class="total-user-opoints">
+            <div class="total-user-opoints">addressCount
               Top 1% Address:
-              <div class="total-user-opoints-amount">>800 Points</div>
+              <div class="total-user-opoints-amount">>{{ decimalNumC(ratePoint, 2, ",") }} Points</div>
             </div>
           </div>
         </div>
@@ -48,7 +49,7 @@
           <div class="total-points">Total Points</div>
         </div>
         <div class="rank-list-card-item my-rank-card">
-          <div class="ranking">1,234,567</div>
+          <div class="ranking">{{ pointRank }}</div>
           <div class="user-address">
             <img
               class="user-image"
@@ -57,27 +58,27 @@
             />
             My Account
           </div>
-          <div class="basic-points">240</div>
-          <div class="activity-points">5,123</div>
-          <div class="ecosystem-points">6,123</div>
-          <div class="total-points">12,138</div>
+          <div class="basic-points">{{ decimalNumC(baseOPoint, 2, ",") }}</div>
+          <div class="activity-points">{{ decimalNumC(totalActivityPoint, 2, ",") }}</div>
+          <div class="ecosystem-points">{{ decimalNumC(ecosystemPoints, 2, ",") }}</div>
+          <div class="total-points">{{ decimalNumC(totalPoint, 2, ",") }}</div>
         </div>
         <div class="ranking-list-group">
           <div
             :key="index"
-            v-for="(item, index) in new Array(100).fill(0)"
+            v-for="(item, index) in list"
             class="rank-list-card-item"
           >
             <div class="ranking">
-              <div class="ranking-value"
-              :style="rankingStyle(index+1)"
-              >{{ index+1 }}</div>
+              <div class="ranking-value" :style="rankingStyle(item.rank)">
+                {{ decimalNumC(item.rank, 0, ",") }}
+              </div>
             </div>
-            <div class="user-address">0x024a...49ac41</div>
-            <div class="basic-points">240</div>
-            <div class="activity-points">5,123</div>
-            <div class="ecosystem-points">6,123</div>
-            <div class="total-points">12,138</div>
+            <div class="user-address">{{ shortAddress(item.address) }}</div>
+            <div class="basic-points">{{ decimalNumC(item.basePoints, 2, ",") }}</div>
+            <div class="activity-points">{{ decimalNumC(item.totalActivityPoints, 2, ",") }}</div>
+            <div class="ecosystem-points">{{ decimalNumC(item.ecosystemPoints, 2, ",") }}</div>
+            <div class="total-points">{{ decimalNumC(item.total, 2, ",") }}</div>
           </div>
         </div>
 
@@ -92,9 +93,7 @@
           >
           </el-pagination>
         </div>
-        
       </div>
-      
     </div>
   </div>
 </template>
@@ -103,27 +102,76 @@
 import {
   setOPointsCardModalShow,
   OPointsCardModalShow,
+  actBasePoint,
+  actEcosystemPoints,
+  actTotalActivityPoint,
+  actTotalPoint,
+  actPointRank,
 } from '../../composition/hooks'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import { decimalNum } from '../../util/decimalNum'
+import util from '../../util/util'
+
 export default {
   components: { SvgIcon },
   name: 'OPointsRankingCard',
   data() {
     return {
       current: 1,
-      len: 10000
+      len: 10000,
+      loading: false,
+      isFetchList: false,
+      list: [],
+      lastRefreshTime: 0,
+      totalPoint: "0",
+      addressCount: "0",
+      ratePoint: "0",
     }
   },
   computed: {
     OPointsCardModalShow() {
       return OPointsCardModalShow.value
     },
+    baseOPoint() {
+      return actBasePoint.value
+    },
+    totalActivityPoint() {
+      return actTotalActivityPoint.value
+    },
+    ecosystemPoints() {
+      return actEcosystemPoints.value
+    },
+    totalPoint() {
+      return actTotalPoint.value
+    },
+    pointRank() {
+      const rank = actPointRank.value
+      return Number(rank) ? this.decimalNumC(rank, 0, ",") : "--"
+    },
   },
   methods: {
-    curChange(cur) {
+    shortAddress(address){
+      return util.shortAddress(address, 6)
+    },
+    timeMin(){
+      const lastRefreshTime = this.lastRefreshTime
+      const current = +new Date()
+      const timer = current - lastRefreshTime
+      
+      return Math.ceil(timer / 60 / 1000) | "0"
+    },
+    decimalNumC(num, decimal, delimiter) {
+      return decimalNum(num, decimal, delimiter)
+    },
+    async curChange(cur) {
+      const result = this.getRankDataList(cur)
       this.current = cur
     },
     close() {
+      this.current = 1
+      this.loading= false
+      this.isFetchList= false
+      this.list = []
       setOPointsCardModalShow(false)
     },
     rankingStyle(rankValue) {
@@ -133,7 +181,7 @@ export default {
         'background: linear-gradient(180.00deg, rgb(240, 254, 255),rgb(190, 190, 190) 100%);',
         'background: linear-gradient(180.00deg, rgb(233, 179, 135),rgb(197, 133, 81) 100%);',
       ]
-      const base = 'width:24px;height:24px;border-radius:50%;'
+      const base = 'border-radius:50%;'
       let value = ''
       switch (key) {
         case 1:
@@ -151,7 +199,46 @@ export default {
       }
       return value ? base + value : value
     },
-    
+    async getRankInfo() {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/info`
+      )
+      const { result } = await response.json()
+      const { lastRefreshTime, totalPoint, addressCount, ratePoint  }= result || {}
+      this.lastRefreshTime = lastRefreshTime
+      this.loading = false
+      this.totalPoint = totalPoint
+      this.addressCount = addressCount
+      this.ratePoint = ratePoint
+    },
+    async getRankDataList(current) {
+      try {
+        this.list = []
+        if(this.isFetchList) return
+        const page = current || this.current
+        const response = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/top?page=${page}&pageSize=20`
+        )
+        const { result } = await response.json()
+        this.list = result || []
+        this.isFetchList = false
+        this.loading = false
+        return "SUCCESS"
+      } catch (error) {
+        this.loading = false
+        return "ERROR"
+      }
+    },
+  },
+  watch: {
+    OPointsCardModalShow: function (status) {
+      const loading = this.loading
+      if (!loading && status) {
+        this.loading = true
+        this.getRankInfo()
+        this.getRankDataList()
+      }
+    },
   },
 }
 </script>
@@ -249,7 +336,6 @@ export default {
             line-height: 16px;
             letter-spacing: 0px;
             padding: 4px 0;
-            display: flex;
             justify-content: start;
             align-items: center;
             .clock {
@@ -366,6 +452,7 @@ export default {
       .ranking-list-group {
         width: 100%;
         max-height: 400px;
+        height: 400px;
         overflow: auto;
       }
 
@@ -382,10 +469,10 @@ export default {
           white-space: nowrap;
           letter-spacing: 0px;
           display: flex;
-          justify-content: center;
+          justify-content: start;
           align-items: center;
           .ranking-value {
-            width: 100%;
+            width:24px;height:24px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -478,7 +565,7 @@ export default {
       border-radius: 16px 16px 0 0;
       .top {
         .info {
-          .info-label{
+          .info-label {
             .time-refresh-mobile {
               display: flex;
             }
@@ -513,6 +600,7 @@ export default {
         }
         .ranking-list-group {
           max-height: 200px;
+          height: 200px;
         }
       }
 

@@ -122,6 +122,7 @@ const { walletDispatchersOnInit } = walletDispatchers
 let timerOptions = 0
 let timerActivityList = 0
 let timeNft = 0
+let timeRank = 0
 
 export default {
   name: 'App',

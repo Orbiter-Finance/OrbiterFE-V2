@@ -12,6 +12,7 @@ export const actTotalPoint = ref('0')
 export const actBasePoint = ref('0')
 export const actTotalActivityPoint = ref('0')
 export const actEcosystemPoints = ref('0')
+export const actPointRank = ref('0')
 export const connectWalletGroupKey = ref('EVM')
 
 export const actNftList = ref([])
@@ -51,6 +52,8 @@ export const setActPoint = (pointData) => {
   actEcosystemPoints.value =
     Number(pointData?.ecosystemPoints) + Number(pointData?.dappPoints) || '0'
 }
+export const setActPointRank = (flag) => (actPointRank.value = flag)
+
 export const setActNftList = (nftList) => {
   actNftList.value = nftList
 }

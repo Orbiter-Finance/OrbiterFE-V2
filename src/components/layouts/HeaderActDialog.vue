@@ -124,9 +124,11 @@
                 <div class="right">
                   <div 
                   @click="openOPointsRankingCardModal"
-                  class="ranking">
+                  class="ranking"
+                  >
                     <img :src="require('../../assets/activity/ranking-icon.svg')" alt="">
-                    Details</div>
+                  <span v-if="Number(pointRank)">{{ pointRank }}</span>
+                  </div>
                   <div
                   @click="openClaimRewardModal"
                   class="reward">
@@ -264,6 +266,7 @@ import {
   actAddPointVisible,
   actAddPoint,
   actTotalPoint,
+  actPointRank,
   actNftList,
   isSolanaDialog,
   solAddress,
@@ -273,7 +276,8 @@ import {
   isTonDialog,
   tonAddress,
   setUserInfoDetailsCardModalShow,
-setOPointsCardModalShow
+  setOPointsCardModalShow,
+  setActPointRank
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -301,6 +305,7 @@ import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import PrizesCard  from "./PrizesCard.vue"
 import { mapMutations } from 'vuex'
+import { decimalNum } from '../../util/decimalNum'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
@@ -400,6 +405,10 @@ export default {
     },
     totalPoint() {
       return actTotalPoint.value
+    },
+    pointRank() {
+      const rank = actPointRank.value 
+      return decimalNum(rank || "0", 0, ",")
     },
     actDataList() {
       const list = transferDataState.actDataList || []
@@ -513,6 +522,7 @@ export default {
 
       if (item1) {
         this.showPointsCall()
+        this.getUserRank()
       } else {
         this.showDetail = false
       }
@@ -538,6 +548,20 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
+    
+    async getUserRank() {
+      const address = this.currentWalletAddress
+      if(address) {
+        const response = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}//points_platform/rank/address/${address}`
+        )
+        const { result } = await response.json()
+        const { rank} = result || []
+        setActPointRank(
+          Number(rank) > 0 ? rank : 0
+        )
+      }
+    },
     goToHistory() {
       const route = this.$router
         localStorage.setItem(
@@ -1060,7 +1084,10 @@ export default {
         img {
           width: 20px;
           height: 20px;
-          margin-right: 4px;
+        }
+
+        span {
+          margin-left: 4px;
         }
       }
 
