@@ -539,9 +539,19 @@ export default {
   methods: {
     ...mapMutations(['toggleThemeMode']),
     goToHistory() {
-      this.$router.push({
-        path: '/history',
-      })
+      const route = this.$router
+        localStorage.setItem(
+          'last_page_before_history',
+          JSON.stringify({
+            path: route.path,
+            params: route.params,
+            query: route.query,
+          })
+        )
+      route.path !== '/history' &&
+        this.$router.push({
+          path: '/history',
+        })
       this.closeAct()
     },
     openClaimRewardModal() {
