@@ -118,12 +118,12 @@
             </div>
             <div class="contentItemBalance">
               <CommLoading
-                v-if="!getChainBalance(item.localID)"
+                v-if="loading"
                 style="left: 1rem; top: 0rem"
                 width="1.5rem"
                 height="1.5rem"
               />
-              {{ getChainBalance(item.localID) }}
+             <span v-else> {{ getChainBalance(item.localID) }}</span>
             </div>
           </div>
         </template>
@@ -155,6 +155,7 @@ import transferCalculate from '../util/transfer/transferCalculate'
 import { ethers } from 'ethers'
 import orbiterCryptoTool from '../util/orbiterCryptoTool'
 import { PASSPHRASE } from '../const'
+import { balanceList, updateBalanceList } from "../composition/hooks"
 
 const chainConfig = config.chainConfig
 
@@ -169,6 +170,7 @@ let timeGroup = 0
 let time1 = 0
 let time2 = 0
 let localAddress = ''
+let count = 0
 
 export default {
   name: 'ObSelectChain',
@@ -190,11 +192,13 @@ export default {
       tabKey: 'ALL',
       updateTime: 0,
       symbol: query.token || 'ETH',
-      balanceList: [],
       loading: false,
     }
   },
   computed: {
+    balanceGroup () {
+      return balanceList.value
+    },
     remark() {
       const { toChainID, selectMakerConfig } = transferDataState
       const toChainId = selectMakerConfig.toChain.chainId || toChainID
@@ -473,7 +477,7 @@ export default {
   },
   methods: {
     async getBalance() {
-      this.loading = true
+      // this.loading = true
       try {
         const tonAddress = tonHelper.account()
         const solanaAddress = solanaHelper.solanaAddress()
@@ -526,30 +530,38 @@ export default {
               chainId: option.chainId,
               value:
                 option.balances.filter((value) => value.symbol === symbol)[0]
-                  ?.balance || '--',
+                  ?.balance,
             }
+          
             chainInfoList = chainInfoList.concat([obj])
           })
         })
-        this.balanceList = chainInfoList
-        this.loading = false
+        ++count
+        updateBalanceList({
+          ...this.balanceGroup,
+          [symbol]: chainInfoList
+        })
+        // this.loading = false
       } catch (error) {
         console.log('error', error)
-        this.loading = false
+        // this.loading = false
       }
     },
-    show() {
+    show(isTo) {
       this.updateTime = +new Date()
-      this.getBanlanceGroupCall()
+      if(!isTo) {
+        this.getBanlanceGroupCall()
+      }
     },
     selectSymbol(symbol) {
       this.symbol = symbol
     },
     getChainBalance(chainId) {
-      const option = this.balanceList.filter(
+      const list = this.balanceGroup[this.symbol || ""] || []
+      const option = list.filter(
         (item) => item.chainId === chainId
       )[0]
-      return Number(option?.value) ? decimalNum(option?.value, 8, ',') : '--'
+      return !isNaN(option?.value) ? decimalNum(option?.value, 8, ',') : '--'
     },
     getBanlanceGroupCall() {
       clearTimeout(timeGroup)

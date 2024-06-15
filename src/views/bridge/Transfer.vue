@@ -333,6 +333,7 @@
           <ObSelectChain
                   :type="'to'"
                   :ChainData="toChainIdList"
+                  ref="selectToChainRef"
                   v-on:getChainInfo="getToChainInfo"
                   v-on:closeSelect="closeToChainPopupClick()"
           />
@@ -856,6 +857,7 @@ export default {
     },
     selectFromTokenSymbol:function (newValue) {
       this.$refs.selectFromChainRef.selectSymbol(newValue)
+      this.$refs.selectToChainRef.selectSymbol(newValue)
       if (transferDataState.fromCurrency !== newValue) {
         this.updateTransferInfo({ fromCurrency: newValue });
         this.clearTransferValue();
@@ -1799,6 +1801,7 @@ export default {
         return;
       }
       this.showToChainPopupClick();
+      this.$refs.selectToChainRef.show(true)
     },
     getFromChainInfo(e) {
       if (transferDataState.fromChainID !== e.localID) this.updateTransferInfo({ fromChainID: e.localID });
