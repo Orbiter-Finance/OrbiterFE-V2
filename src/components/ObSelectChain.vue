@@ -500,7 +500,7 @@ export default {
             type: 'EVM',
           },
         ].filter((item) => !!item.address)
-        console.log('address', symbol, address)
+        // console.log('address', symbol, address)
         const respone = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/sdk/chains/balance`,
           {
@@ -524,7 +524,7 @@ export default {
           iv
         )
         const list = JSON.parse(decodeData)
-        console.log("decodeData", JSON.parse(decodeData))
+        // console.log("decodeData", JSON.parse(decodeData))
         let chainInfoList = []
         list.forEach((item) => {
           item.balancesList.forEach((option) => {
