@@ -197,7 +197,7 @@ export default {
   },
   computed: {
     balanceGroup () {
-      return balanceList.value
+      return balanceList.value || {}
     },
     remark() {
       const { toChainID, selectMakerConfig } = transferDataState
@@ -470,6 +470,7 @@ export default {
         localAddress = newAddress
         clearTimeout(time2)
         time2 = setTimeout(() => {
+          updateBalanceList(null)
           this.getBanlanceGroupCall(this.symbol)
         }, 100)
       }
