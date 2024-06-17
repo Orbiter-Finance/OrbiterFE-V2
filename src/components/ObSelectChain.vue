@@ -170,7 +170,6 @@ let timeGroup = 0
 let time1 = 0
 let time2 = 0
 let localAddress = ''
-let count = 0
 
 export default {
   name: 'ObSelectChain',
@@ -501,6 +500,7 @@ export default {
             type: 'EVM',
           },
         ].filter((item) => !!item.address)
+        // console.log('address', symbol, address)
         const respone = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/sdk/chains/balance`,
           {
@@ -524,6 +524,7 @@ export default {
           iv
         )
         const list = JSON.parse(decodeData)
+        // console.log("decodeData", JSON.parse(decodeData))
         let chainInfoList = []
         list.forEach((item) => {
           item.balancesList.forEach((option) => {
@@ -537,7 +538,6 @@ export default {
             chainInfoList = chainInfoList.concat([obj])
           })
         })
-        ++count
         updateBalanceList({
           ...this.balanceGroup,
           [symbol]: chainInfoList
