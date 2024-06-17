@@ -144,7 +144,11 @@ export default {
       return prizesTotalRewards.value
     },
     totalAddress() {
-      return this.decimalNumC(this.addressCount, 0, ',')
+      let addressCount = this.addressCount
+      if(Number(addressCount) >= 45000) {
+        return this.decimalNumC("45000", 0, ',') + "+"
+      }
+      return this.decimalNumC(addressCount, 0, ',')
     },
     totalPool() {
       return this.decimalNumC(this.totalRewards, 0, ',', '$')
