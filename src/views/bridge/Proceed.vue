@@ -974,7 +974,7 @@ export default {
   .proceed-box {
     .ProceedContent {
       .chainDataContent {
-        .item {
+        .exploer-group {
           .switch-btn-2 {
             background-color: #282938;
             color: #ffffff;
