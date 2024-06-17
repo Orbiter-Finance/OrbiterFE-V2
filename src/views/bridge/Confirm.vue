@@ -385,6 +385,90 @@ export default {
         },
     },
     methods: {
+        async loopringWalletTransfer(rAmountValue) {
+            const { selectMakerConfig, fromChainID } = transferDataState
+
+            const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress || web3State.coinbase
+            const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+
+            const contractGroup = chainInfo?.contract || {}
+
+            try {
+
+            const contractList = Object.keys(contractGroup).map((key)=> {
+                return ({
+                    name: contractGroup[key],
+                    address: key 
+                })
+            })
+
+            const contractAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OrbiterRouterV3"?.toLocaleLowerCase())[0]?.address
+
+            if(!contractAddress) {
+                this.$notify.error({
+                    title: 'Not Contract, ChainId: ' + fromChainID ,
+                    duration: 3000,
+                })
+                return
+            }
+            let transferHash = ""
+
+            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+            const recipient = selectMakerConfig.recipient
+
+            const provider = new ethers.providers.Web3Provider(
+                compatibleGlobalWalletConf.value.walletPayload.provider || window?.ethereum
+            )
+            const signer = provider.getSigner()
+            const transferContract = new ethers.Contract(
+                    contractAddress,
+                    Orbiter_V3_ABI_EVM,
+                    signer
+                )
+                if (util.isEthTokenAddress(fromChainID, tokenAddress)) {
+                    // When tokenAddress is eth
+                    const res = await transferContract.transfer(
+                        recipient,
+                        "0x",
+                        {
+                            value: rAmountValue
+                        })
+                    transferHash = res?.hash
+
+                } else {
+                    const tokenContact = new ethers.Contract(tokenAddress, Coin_ABI, signer)
+
+                    const allowance = await tokenContact.allowance(from, contractAddress)
+                    if(!allowance.gte(rAmountValue.toString())) {
+                        const approveRes = await tokenContact.approve(contractAddress, rAmountValue.toString())
+                        const result = await approveRes.wait()
+                    }
+
+                    const res = await transferContract.transferToken(
+                        tokenAddress,
+                        recipient,
+                        rAmountValue,
+                        "0x"
+                    )
+
+                    transferHash = res?.hash
+                }
+
+                if (transferHash) {
+                    this.onTransferSucceed(from, rAmountValue, fromChainID, transferHash)
+                }
+                this.transferLoading = false
+            } catch (err) {
+                console.error('transferToSolanaOrTon error', err);
+                this.transferLoading = false
+                this.$notify.error({
+                    title: err?.data?.message || err.message,
+                    duration: 3000,
+                })
+            }
+
+
+        },
         async BridgeType1Transfer() {
             const { selectMakerConfig, fromChainID, transferValue } = transferDataState
             const safeCode =  transferCalculate.safeCode()
@@ -2152,6 +2236,12 @@ export default {
 
                 if (fromChainID === CHAIN_ID.dydx || fromChainID === CHAIN_ID.dydx_test) {
                     this.dydxTransfer(tValue.tAmount)
+                    return
+                }
+                
+                //EVM AA address
+                if(window.ethereum?.isLoopring) {
+                    this.loopringWalletTransfer(tValue.tAmount)
                     return
                 }
 

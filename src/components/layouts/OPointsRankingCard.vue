@@ -32,7 +32,7 @@
             </div>
             <div class="total-user-opoints">addressCount
               Top 1% Address:
-              <div class="total-user-opoints-amount">>{{ decimalNumC(ratePoint, 2, ",") }} Points</div>
+              <div class="total-user-opoints-amount">≥{{ decimalNumC(ratePoint, 2, ",") }} Points</div>
             </div>
           </div>
         </div>

@@ -291,7 +291,6 @@ export default {
   position: relative;
   top: 0;
   left: 0;
-  z-index: 101;
   width: 20px;
   height: 100%;
   margin-left: 12px;

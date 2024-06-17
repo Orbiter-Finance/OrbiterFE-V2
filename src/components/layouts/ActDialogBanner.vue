@@ -23,11 +23,17 @@ export default {
     return {
       bannerList: [
         {
+          url: 'https://t.me/catizenbot?start=we_2205992_4',
+          img: 'catizenbot.png',
+          name: 'catizenbot',
+          timeStamp: '2024/07/01 09:00:00',
+        },
+        {
           url: 'https://kzco.in/',
           img: 'zksync.png',
           name: 'Bridge from/to zkSync',
           timeStamp: '2024/06/19 18:00:00',
-        }
+        },
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
     }
   },

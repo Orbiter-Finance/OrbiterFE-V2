@@ -296,6 +296,7 @@ export default {
   top: 0;
   left: 0;
   height: 50px;
+  z-index: 10;
   .ecosystem-dapp-pro-content {
     width: 100%;
     padding: 16px 12px;

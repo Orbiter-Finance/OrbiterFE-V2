@@ -123,6 +123,7 @@
 
                 <div class="right">
                   <div 
+                  v-if="false"
                   @click="openOPointsRankingCardModal"
                   class="ranking"
                   >
