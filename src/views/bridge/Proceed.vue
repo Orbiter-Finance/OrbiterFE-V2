@@ -457,6 +457,7 @@ export default {
 
     },
     openIconUrl(isFrom, explorerInfo) {
+      let params = explorerInfo?.name?.toLocaleLowerCase() === "oklink" ? "?channelID=orb" :""
       let hash = ''
       if (this.detailData) {
         hash = isFrom ? this.detailData.fromTxHash : this.detailData.toTxHash
@@ -466,13 +467,13 @@ export default {
           ? this.$store.state.proceeding.userTransfer.txid
           : this.$store.state.proceeding.makerTransfer.txid
       if (hash) {
-        const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx'
-        window.open(txUrl + '/' + hash, '_blank')
+        const txUrl = ( explorerInfo.txUrl || explorerInfo.url) + '/tx' + '/' + hash + params
+        window.open(txUrl, '_blank')
         return
       } else {
         if (isFrom) {
-          const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx'
-          window.open(txUrl + '/' + this.$store.state.proceedTXID, '_blank')
+          const txUrl = (explorerInfo.txUrl || explorerInfo.url) + '/tx' + '/' + this.$store.state.proceedTXID + params
+          window.open(txUrl, '_blank')
           return
         }
       }
@@ -493,7 +494,7 @@ export default {
       }
       const accountUrl =
         explorerInfo.accountUrl || explorerInfo.url + '/address'
-      const url = accountUrl + '/' + userAddress
+      const url = accountUrl + '/' + userAddress + params
       window.open(url, '_blank')
     },
     getExplorer(isFrom = true) {
