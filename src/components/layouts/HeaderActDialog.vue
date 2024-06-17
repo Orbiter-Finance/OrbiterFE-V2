@@ -127,7 +127,7 @@
                   class="ranking"
                   >
                     <img :src="require('../../assets/activity/ranking-icon.svg')" alt="">
-                  <span v-if="Number(pointRank)">{{ pointRank }}</span>
+                  <span v-if="!!pointRank">{{ decimalNumC(pointRank, 0, ",") }}</span>
                   </div>
                   <div
                   @click="openClaimRewardModal"
@@ -408,7 +408,7 @@ export default {
     },
     pointRank() {
       const rank = actPointRank.value 
-      return decimalNum(rank || "0", 0, ",")
+      return rank ? String(rank) : "0" 
     },
     actDataList() {
       const list = transferDataState.actDataList || []
@@ -548,7 +548,9 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    
+    decimalNumC(num, decimal, delimiter) {
+      return decimalNum(num, decimal, delimiter)
+    },
     async getUserRank() {
       const address = this.currentWalletAddress
       if(address) {

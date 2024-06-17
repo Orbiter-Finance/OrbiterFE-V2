@@ -61,7 +61,7 @@
           <div class="basic-points">{{ decimalNumC(baseOPoint, 2, ",") }}</div>
           <div class="activity-points">{{ decimalNumC(totalActivityPoint, 2, ",") }}</div>
           <div class="ecosystem-points">{{ decimalNumC(ecosystemPoints, 2, ",") }}</div>
-          <div class="total-points">{{ decimalNumC(totalPoint, 2, ",") }}</div>
+          <div class="total-points">{{ decimalNumC(currentTotalPoint, 2, ",") }}</div>
         </div>
         <div class="ranking-list-group">
           <div
@@ -111,6 +111,7 @@ import {
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import { decimalNum } from '../../util/decimalNum'
 import util from '../../util/util'
+import { ethers } from 'ethers'
 
 export default {
   components: { SvgIcon },
@@ -141,7 +142,7 @@ export default {
     ecosystemPoints() {
       return actEcosystemPoints.value
     },
-    totalPoint() {
+    currentTotalPoint() {
       return actTotalPoint.value
     },
     pointRank() {
@@ -220,7 +221,15 @@ export default {
           `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/top?page=${page}&pageSize=20`
         )
         const { result } = await response.json()
-        this.list = result || []
+        this.list = (result || []).map((item)=>{
+          return ({
+            ...(item || {}),
+            ecosystemPoints: ethers.utils.formatEther(ethers.utils.parseEther(item?.ecosystemPoints ? String(item?.ecosystemPoints) : "0").add(
+              ethers.utils.parseEther(item?.dappPoints ? String(item?.dappPoints) : "0")
+            ))
+          })
+        })
+        console.log("this.list", this.list)
         this.isFetchList = false
         this.loading = false
         return "SUCCESS"
