@@ -109,6 +109,8 @@ import {
  } from "../../../composition/hooks"
 import { decimalNum } from '../../../util/decimalNum'
 
+const invAccountNumber = 50000
+
 export default {
   name: 'PrizesPool',
 
@@ -145,8 +147,8 @@ export default {
     },
     totalAddress() {
       let addressCount = this.addressCount
-      if(Number(addressCount) >= 45000) {
-        return this.decimalNumC("45000", 0, ',') + "+"
+      if(Number(addressCount) >= invAccountNumber) {
+        return this.decimalNumC(invAccountNumber, 0, ',') + "+"
       }
       return this.decimalNumC(addressCount, 0, ',')
     },
