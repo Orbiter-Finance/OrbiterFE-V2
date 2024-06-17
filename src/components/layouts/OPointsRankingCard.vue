@@ -58,10 +58,10 @@
             />
             My Account
           </div>
-          <div class="basic-points">{{ decimalNumC(baseOPoint, 2, ",") }}</div>
-          <div class="activity-points">{{ decimalNumC(totalActivityPoint, 2, ",") }}</div>
-          <div class="ecosystem-points">{{ decimalNumC(ecosystemPoints, 2, ",") }}</div>
-          <div class="total-points">{{ decimalNumC(currentTotalPoint, 2, ",") }}</div>
+          <div class="basic-points">{{ baseOPoint }}</div>
+          <div class="activity-points">{{ totalActivityPoint }}</div>
+          <div class="ecosystem-points">{{ecosystemPoints }}</div>
+          <div class="total-points">{{ currentTotalPoint }}</div>
         </div>
         <div class="ranking-list-group">
           <div
@@ -107,6 +107,7 @@ import {
   actTotalActivityPoint,
   actTotalPoint,
   actPointRank,
+  actPointFetchStatus
 } from '../../composition/hooks'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import { decimalNum } from '../../util/decimalNum'
@@ -133,21 +134,28 @@ export default {
     OPointsCardModalShow() {
       return OPointsCardModalShow.value
     },
+    pointFetchStatus() {
+      return actPointFetchStatus.value
+    },
     baseOPoint() {
-      return actBasePoint.value
+      const base = actBasePoint.value
+      return this.pointFetchStatus ? this.decimalNumC(base, 2, ",") : "--"
     },
     totalActivityPoint() {
-      return actTotalActivityPoint.value
+      const totalActivity = actTotalActivityPoint.value
+      return this.pointFetchStatus ? this.decimalNumC(totalActivity, 2, ",") : "--"
     },
     ecosystemPoints() {
-      return actEcosystemPoints.value
+      const ecosystem = actEcosystemPoints.value
+      return this.pointFetchStatus ? this.decimalNumC(ecosystem, 2, ",") : "--"
     },
     currentTotalPoint() {
-      return actTotalPoint.value
+      const total = actTotalPoint.value
+      return this.pointFetchStatus ? this.decimalNumC(total, 2, ",") : "--"
     },
     pointRank() {
       const rank = actPointRank.value
-      return Number(rank) ? this.decimalNumC(rank, 0, ",") : "--"
+      return this.pointFetchStatus && Number(rank) > 0 ? this.decimalNumC(rank, 0, ",") : "--"
     },
   },
   methods: {
@@ -229,7 +237,6 @@ export default {
             ))
           })
         })
-        console.log("this.list", this.list)
         this.isFetchList = false
         this.loading = false
         return "SUCCESS"

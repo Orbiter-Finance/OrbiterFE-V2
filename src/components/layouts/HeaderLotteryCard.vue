@@ -52,6 +52,7 @@ import {
   setLotteryCardProgress,
   isSolanaDialog,
   isTonDialog,
+  setActPointFetchStatus
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -241,6 +242,7 @@ export default {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })

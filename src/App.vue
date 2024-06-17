@@ -80,7 +80,8 @@ import {
   setConnectWalletGroupKey,
   isTonDialog,
   setTonDialog,
-  setClaimCardModalShow
+  setClaimCardModalShow,
+  setActPointFetchStatus
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -391,6 +392,7 @@ export default {
       timerOptions = timerN
 
       if (isAddress) {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })

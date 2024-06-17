@@ -443,7 +443,8 @@ import {
   updateActDataList, setActPoint, setActDialogVisible, setActNftList,
   updateTradingPairsData,
   setSelectWalletDialogVisible,
-  setConnectWalletGroupKey
+  setConnectWalletGroupKey,
+  setActPointFetchStatus
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
@@ -1029,6 +1030,7 @@ export default {
       if (util.getAccountAddressError(address)) {
         return;
       }
+      setActPointFetchStatus()
       const pointRes = await requestPointSystem('v2/user/points', {
         address
       });

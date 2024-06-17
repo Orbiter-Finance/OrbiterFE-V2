@@ -295,6 +295,7 @@ import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
+let time2 = 0
 
 export default {
   name: 'HeaderActDialog',
@@ -519,10 +520,15 @@ export default {
           this.getTaskHeight()
         }, 200)
       }
+
+      
     },
     currentWalletAddress(item1, item2) {
       if (!!item1 && !!item2) {
         this.showPointsCall()
+      }
+      if(item1 && (item1 !== item2)) {
+        this.getUserRank()
       }
     },
     isMobile(item1, item2) {
@@ -539,17 +545,21 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     async getUserRank() {
-      const address = this.currentWalletAddress
-      if(address) {
-        const response = await fetch(
-          `${process.env.VUE_APP_OPEN_URL}//points_platform/rank/address/${address}`
-        )
-        const { result } = await response.json()
-        const { rank} = result || []
-        setActPointRank(
-          Number(rank) > 0 ? rank : 0
-        )
-      }
+      clearTimeout(time2)
+      time2 = setTimeout(async () => {
+
+        const address = this.currentWalletAddress
+        if(address) {
+          const response = await fetch(
+            `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
+          )
+          const { result } = await response.json()
+          const { rank} = result || []
+          setActPointRank(
+            Number(rank) > 0 ? rank : 0
+          )
+        }
+      }, 200)
     },
     goToHistory() {
       const route = this.$router
