@@ -457,7 +457,7 @@ export default {
 
     },
     openIconUrl(isFrom, explorerInfo) {
-      let params = explorerInfo?.name?.toLocaleLowerCase() === "oklink" ? "?channelID=orb" :""
+      let params = explorerInfo?.name?.toLocaleLowerCase() === "oklink" ? "?channelId=orbite" :""
       let hash = ''
       if (this.detailData) {
         hash = isFrom ? this.detailData.fromTxHash : this.detailData.toTxHash
