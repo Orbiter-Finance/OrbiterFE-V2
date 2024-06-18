@@ -30,7 +30,7 @@
               Total Users:
               <div class="total-user-amount">{{ decimalNumC(addressCount, 2, ",") }}</div>
             </div>
-            <div class="total-user-opoints">addressCount
+            <div class="total-user-opoints">
               Top 1% Address:
               <div class="total-user-opoints-amount">≥{{ decimalNumC(ratePoint, 2, ",") }} Points</div>
             </div>
