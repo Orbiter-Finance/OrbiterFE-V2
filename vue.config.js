@@ -2,6 +2,7 @@ const isProduction = process.env.NODE_ENV !== 'development'
 const path = require('path')
 const NullishCoalescingOperatorPlugin = require('@babel/plugin-proposal-nullish-coalescing-operator')
 const LogicalAssignmentOperators = require('@babel/plugin-proposal-logical-assignment-operators')
+
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -18,6 +19,18 @@ module.exports = {
       args[0].title = 'Orbiter'
       return args
     })
+    config.module
+      .rule('mqtt')
+      .test(/\.js$/)
+      .include.add(path.resolve(__dirname, 'node_modules/mqtt'))
+      .add(path.resolve(__dirname, 'node_modules/mqtt-packet'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators],
+      })
+      .end()
     config.module
       .rule('solana')
       .test(/\.js$/)

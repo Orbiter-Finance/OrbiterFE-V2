@@ -21,6 +21,7 @@ export const TRUSTWALLET_APP = 'TrustWallet' // Coin98 wallet constant
 export const FOXWALLET_APP = 'FoxWallet' // Coin98 wallet constant
 export const TONWALLET = 'Ton Wallet' // Coin98 wallet constant
 export const SAFEPAL = 'SafePal' // Coin98 wallet constant
+export const BINANCEWALLET = 'Binance Wallet' // Coin98 wallet constant
 
 export const CURRENT_SUPPORT_WALLET = [
   METAMASK,
@@ -37,4 +38,5 @@ export const CURRENT_SUPPORT_WALLET = [
   TRUSTWALLET_APP,
   FOXWALLET_APP,
   SAFEPAL,
+  BINANCEWALLET,
 ].map((item) => item.toLocaleLowerCase())

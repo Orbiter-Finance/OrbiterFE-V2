@@ -19,36 +19,36 @@
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
-      <div class="lucky-bag-tab" @click="openLuckyBagModal">
+      <div v-if="!isMobile" class="lucky-bag-tab" @click="openLuckyBagModal">
         <div class="lucky-bag-image"></div>
         <div v-if="isTimeOut" class="tiem-out">
           <svg
-          xmlns="http://www.w3.org/2000/svg"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          width="16.000000"
-          height="16.000000"
-          viewBox="0 0 16 16"
-          fill="none"
-        >
-          <path
-            id="Vector"
-            d="M7.99 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 7.99 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 7.99 14.66Z"
-            stroke="#292D32"
-            stroke-opacity="2"
-            stroke-width="2"
-            stroke-linejoin="round"
-          />
-          <path
-            id="Vector"
-            d="M10.47 10.12L8.4 8.88C8.04 8.67 7.75 8.16 7.75 7.74L7.75 5"
-            stroke="#292D32"
-            stroke-opacity="2"
-            stroke-width="2"
-            stroke-linejoin="round"
-            stroke-linecap="round"
-          />
-          <g opacity="0.000000" />
-        </svg>
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            width="16.000000"
+            height="16.000000"
+            viewBox="0 0 16 16"
+            fill="none"
+          >
+            <path
+              id="Vector"
+              d="M7.99 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 7.99 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 7.99 14.66Z"
+              stroke="#292D32"
+              stroke-opacity="2"
+              stroke-width="2"
+              stroke-linejoin="round"
+            />
+            <path
+              id="Vector"
+              d="M10.47 10.12L8.4 8.88C8.04 8.67 7.75 8.16 7.75 7.74L7.75 5"
+              stroke="#292D32"
+              stroke-opacity="2"
+              stroke-width="2"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+            />
+            <g opacity="0.000000" />
+          </svg>
           <div class="time-group" v-for="item in timeList" :key="item.symbol">
             <div class="time-value">{{ item.value }}</div>
             <div class="time-symbol">{{ item.symbol }}</div>
@@ -103,7 +103,7 @@
           />
         </div>
       </span>
-      <span @click="showHistory" class="ops-item">History</span>
+      <!-- <span @click="showHistory" class="ops-item">History</span> -->
       <div
         v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
         ref="connectedStarkNetBtn"
@@ -130,9 +130,9 @@
         <span class="address">{{ connectFirstAddress }}</span>
       </div>
     </template>
-    <div @click="toggleThemeMode" class="ops-mode">
+    <!-- <div @click="toggleThemeMode" class="ops-mode">
       <SvgIconThemed class="mode-icon" icon="mode" />
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -169,7 +169,8 @@ import {
   setTonDialog,
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
-  setClaimCardModalShow
+  setClaimCardModalShow,
+  setActPointFetchStatus
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -182,7 +183,6 @@ import util from '../../util/util'
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
-import getUTCTime from '../../util/time'
 import { ethers } from 'ethers'
 
 let timer1
@@ -207,7 +207,7 @@ export default {
     },
     isTimeOut() {
       const time = this?.claimCardModalAmountInfoData?.activityTime
-      return !!Number(time) && (time >= getUTCTime() / 1000)
+      return !!Number(time) && time >= this.timeNum()
     },
     ratio() {
       const { ratio } = this.claimCardModalAmountInfoData || {}
@@ -216,10 +216,13 @@ export default {
       return ratio
     },
     maxGrantRatio() {
-      const { max } =  claimCardModalAmountInfo.value || {}
+      const { max } = claimCardModalAmountInfo.value || {}
 
       return ethers.utils.formatEther(
-        ethers.utils.parseEther(max ? String(max) : "0").mul(ethers.utils.parseEther("100")).div(ethers.utils.parseEther("20000000"))
+        ethers.utils
+          .parseEther(max ? String(max) : '0')
+          .mul(ethers.utils.parseEther('100'))
+          .div(ethers.utils.parseEther('20000000'))
       )
     },
     addPoint() {
@@ -396,33 +399,47 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
+    timeNum() {
+      return Math.floor(Date.now() / 1000)
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
     async openLuckyBagModal() {
-      const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
+      const { activityTime, ratio, chainId } =
+        this.claimCardModalAmountInfoData || {}
       const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
       const info = data?.[0]
-      if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
-      if(info) {
-        if(!!isClaimedData) {
+      if (
+        !this.claimCardModalAmountInfoData ||
+        !this.claimCardModalDataInfoData
+      )
+        return
+      if (info) {
+        if (!!isClaimedData) {
           util.showMessage(
             'Your address has already received a lucky bag. Each address can only claim once.',
             'warning'
           )
           return
         } else {
-          if(chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()) {
+          if (
+            chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()
+          ) {
             setClaimCardModalShow(true, 'LUCKY_BAG')
             return
           }
         }
       }
-      if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
+      if (
+        !Number(activityTime) ||
+        activityTime > this.timeNum() ||
+        Number(ratio) >= 100
+      ) {
         util.showMessage(
-        `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-        'warning'
-      )
+          `😭 Oops, sorry! All gone! Catch us earlier next time!`,
+          'warning'
+        )
         return
       }
       if (process.env['VUE_APP_RECAPTCHA']) {
@@ -445,9 +462,9 @@ export default {
         }
       } else {
         this.$store.commit('getClaimORBGUYRewardData', {
-              type: 'LUCKY_BAG',
-              token: "",
-            })
+          type: 'LUCKY_BAG',
+          token: '',
+        })
       }
     },
     openAct() {
@@ -556,6 +573,7 @@ export default {
       const solanaAddress = solanaHelper.solanaAddress()
 
       if (isAddress) {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
@@ -633,7 +651,6 @@ export default {
   },
   created() {
     if (process.env['VUE_APP_RECAPTCHA']) {
-
       if (typeof window === 'undefined') return
       window.vueRecaptchaInit = () => {}
       const recaptchaScript = document.createElement('script')
@@ -650,20 +667,20 @@ export default {
   async mounted() {
     let flag = false
     timer1 = setInterval(() => {
-      
       const { activityTime } = this.claimCardModalAmountInfoData || {}
 
       const t = activityTime || 0
 
-      const timeS = Math.floor(t - getUTCTime() / 1000)
+      const timeS = Math.floor(t - this.timeNum())
       let time = timeS
       if (timeS <= 0) {
-        if(Number(t)) {
+        if (Number(t)) {
           const [web3Address] = this.currentWalletAddress
 
-          this.$store.commit("requestLuckyBagDataInfo", {address: web3Address})
+          this.$store.commit('requestLuckyBagDataInfo', {
+            address: web3Address,
+          })
           clearInterval(timer1)
-
         }
         this.timeList = [
           {
@@ -725,6 +742,7 @@ export default {
       const { address } = this.getAddress()
 
       if (address && address !== '0x') {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
@@ -746,8 +764,6 @@ export default {
       }
     }, 5000)
 
-
-    
     // const walletAddress = await util.getAsyncWalletAddress();
     // this.getWalletAddressPoint()
   },
@@ -858,7 +874,7 @@ export default {
 }
 
 .header-ops {
-  margin-right: 16px;
+  // margin-right: 16px;
   display: flex;
   align-items: center;
   .ops-mode {

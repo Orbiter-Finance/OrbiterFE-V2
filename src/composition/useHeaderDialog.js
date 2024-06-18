@@ -12,6 +12,8 @@ export const actTotalPoint = ref('0')
 export const actBasePoint = ref('0')
 export const actTotalActivityPoint = ref('0')
 export const actEcosystemPoints = ref('0')
+export const actPointFetchStatus = ref(false)
+export const actPointRank = ref('0')
 export const connectWalletGroupKey = ref('EVM')
 
 export const actNftList = ref([])
@@ -27,6 +29,7 @@ export const claimCardModalDataInfo = ref(null)
 export const claimCardModalAmountInfo = ref(null)
 
 export const userInfoDetailsCardModalShow = ref(false)
+export const OPointsCardModalShow = ref(false)
 export const lotteryPointsNum = ref('0')
 export const lotteryCardCurrentProgress = ref('0')
 export const lotteryCardProgressMax = ref('0')
@@ -43,13 +46,18 @@ export const setActDialogHover = (flag) => (actDialogHover.value = flag)
 export const setActAddPointVisible = (flag) => (actAddPointVisible.value = flag)
 export const setActAddPoint = (flag) => (actAddPoint.value = flag)
 export const setActTotalPoint = (flag) => (actTotalPoint.value = flag)
+export const setActPointFetchStatus = (flag) =>
+  (actPointFetchStatus.value = false)
 export const setActPoint = (pointData) => {
   actTotalPoint.value = pointData.total
   actBasePoint.value = pointData.basePoints
   actTotalActivityPoint.value = pointData.totalActivityPoints
   actEcosystemPoints.value =
     Number(pointData?.ecosystemPoints) + Number(pointData?.dappPoints) || '0'
+  actPointFetchStatus.value = true
 }
+export const setActPointRank = (flag) => (actPointRank.value = flag)
+
 export const setActNftList = (nftList) => {
   actNftList.value = nftList
 }
@@ -76,6 +84,8 @@ export const setClaimCardModalAmountInfo = (data) =>
 
 export const setUserInfoDetailsCardModalShow = (flag) =>
   (userInfoDetailsCardModalShow.value = flag)
+export const setOPointsCardModalShow = (flag) =>
+  (OPointsCardModalShow.value = flag)
 
 export const setLotteryPointsNum = (flag) => (lotteryPointsNum.value = flag)
 export const setLotteryCardDataGroup = (dataGroup) => {

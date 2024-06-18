@@ -333,6 +333,7 @@
           <ObSelectChain
                   :type="'to'"
                   :ChainData="toChainIdList"
+                  ref="selectToChainRef"
                   v-on:getChainInfo="getToChainInfo"
                   v-on:closeSelect="closeToChainPopupClick()"
           />
@@ -442,7 +443,8 @@ import {
   updateActDataList, setActPoint, setActDialogVisible, setActNftList,
   updateTradingPairsData,
   setSelectWalletDialogVisible,
-  setConnectWalletGroupKey
+  setConnectWalletGroupKey,
+  setActPointFetchStatus
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
@@ -856,6 +858,7 @@ export default {
     },
     selectFromTokenSymbol:function (newValue) {
       this.$refs.selectFromChainRef.selectSymbol(newValue)
+      this.$refs.selectToChainRef.selectSymbol(newValue)
       if (transferDataState.fromCurrency !== newValue) {
         this.updateTransferInfo({ fromCurrency: newValue });
         this.clearTransferValue();
@@ -1027,6 +1030,7 @@ export default {
       if (util.getAccountAddressError(address)) {
         return;
       }
+      setActPointFetchStatus()
       const pointRes = await requestPointSystem('v2/user/points', {
         address
       });
@@ -1799,6 +1803,7 @@ export default {
         return;
       }
       this.showToChainPopupClick();
+      this.$refs.selectToChainRef.show(true)
     },
     getFromChainInfo(e) {
       if (transferDataState.fromChainID !== e.localID) this.updateTransferInfo({ fromChainID: e.localID });

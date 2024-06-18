@@ -1,19 +1,15 @@
 <template>
   <div class="media-step-card">
-    <div v-if="stepStatus === 1" class="step1-content">
+    <div v-if="currentStepStatus === 1" class="step1-content">
       <div class="media-iamge">
         <img
           class="card-qr"
           :src="require('../../assets/activity/likwid-qr.png')"
         />
       </div>
-      <div v-if="isNext" class="step1-next" @click="stepNextClick">
-        Next Step
-      </div>
-      <div v-else class="step1-des">
-        <span class="step-des-title ">Step 1: </span>
-        Join LIKWID Group</div>
-      <div class="step1-url">
+      <div class="step1-des">
+        <span class="step-des-title">Step 1: </span>
+        Join LIKWID Group
         <svg
           class="media-icon"
           xmlns="http://www.w3.org/2000/svg"
@@ -53,15 +49,18 @@
             />
           </g>
         </svg>
-        <div class="link" @click="openLink(step1Name, step1Url)">
-          {{ step1Url }}
-        </div>
       </div>
+
+      <div v-if="isNext" class="step1-next" @click="stepNextClick">
+        Next Step
+      </div>
+      <div v-else class="step1-btn" @click="joinTelegram">Join</div>
     </div>
-    <div v-else-if="stepStatus === 2" class="step2-content">
+    <div v-else-if="currentStepStatus === 2" class="step2-content">
       <div class="step2-des">
-        <span class="step-des-title ">Step 2: </span>
-        Follow <span @click="goToFollow" class="link">@LIKWID_MEME</span> for ALPHA updates.
+        <span class="step-des-title">Step 2: </span>
+        Follow <span @click="goToFollow" class="link">@LIKWID_MEME</span> for
+        ALPHA updates.
       </div>
       <div v-if="isNext" class="step2-next" @click="stepNextClick">
         Next Step
@@ -69,71 +68,86 @@
       <div v-else class="step2-btn" @click="goToFollow">Go to Follow</div>
     </div>
     <div v-else class="step3-content">
-        <div class="step3-des">
-            <span class="step-des-title ">Step 3: </span>
-            Claim your Token on <span class="chain-name">{{ chainName }}</span>
-        </div>
-        <div class="step3-btn" @click="claim"
+      <div class="step3-des">
+        <span class="step-des-title">Step 3: </span>
+        Claim your Token on <span class="chain-name">{{ chainName }}</span>
+      </div>
+      <div
+        class="step3-btn"
+        @click="claim"
         :style="`opacity:${loading ? '0.4' : '1'};cursor:${
-            loading ? 'not-allowed' : 'pointer'
-          };`"
-        >{{ loading ? 'loading...' : 'Claim' }}</div>
-        <div class="link-card">
-            <div class="link-label">
-              Trade $ORBGUY on
-              <img
-                class="token-image"
-                :src="require('../../assets/activity/LIKWID-launch.png')"
-                alt=""
-              />
-            </div>
+          loading ? 'not-allowed' : 'pointer'
+        };`"
+      >
+        {{ loading ? 'loading...' : 'Claim' }}
+      </div>
+      <div class="link-card">
+        <div class="link-label">
+          Trade $ORBGUY on
+          <img
+            class="token-image"
+            :src="require('../../assets/activity/LIKWID-launch.png')"
+            alt=""
+          />
         </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import util from '../../util/util'
+import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 
 let timer
 export default {
-    props: {
-        claimCall: Function,
-        isLoading: Boolean,
-        rewardChainId: String
-    },
+  props: {
+    claimCall: Function,
+    isLoading: Boolean,
+    rewardChainId: String,
+  },
   name: 'MediaStepCard',
   data() {
-    const status = localStorage.getItem("LUCKY_BAG_JOIN_MEDIA_STATUS")
     return {
       step1Url: 'https://t.me/likwid_meme',
       step1Name: 'JOIN_LIKWID_TELEGRAM',
-      stepStatus: status ? 3 : 1,
+      stepStatus: 1,
       isNext: false,
       step2Url: 'https://twitter.com/LIKWID_MEME',
       step2Name: 'JOIN_LIKWID_X',
     }
   },
-  created() {
-    timer = setTimeout(() => {
-      this.updateStepNextStatus()
-    }, 10000)
-  },
   computed: {
-    chainId(){
-        return this.rewardChainId
+    currentEvmAddress() {
+      return compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress
+    },
+    currentStepStatus() {
+      const statusGroup =
+        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+        JSON.stringify({})
+
+      const evmAddress = (this.currentEvmAddress || '').toLocaleLowerCase()
+
+      return JSON.parse(statusGroup)[evmAddress] ? 3 : this.stepStatus
+    },
+    chainId() {
+      return this.rewardChainId
     },
     loading() {
-        return this.isLoading
+      return this.isLoading
     },
-    chainName(){
-        return util.chainName(this.chainId)
-    }
+    chainName() {
+      return util.chainName(this.chainId)
+    },
   },
   methods: {
-    goToFollow(){
-        this.openLink(this.step2Name, this.step2Url)
-        this.updateStepNextStatus()
+    joinTelegram() {
+      this.openLink(this.step1Name, this.step1Url)
+      this.updateStepNextStatus()
+    },
+    goToFollow() {
+      this.openLink(this.step2Name, this.step2Url)
+      this.updateStepNextStatus()
     },
     updateStepNextStatus() {
       clearTimeout(timer)
@@ -143,13 +157,25 @@ export default {
       this.isNext = false
       const status = this.stepStatus + 1
       this.stepStatus = status
-      this.$emit("getStepStatus", status)
-      if(status === 3) {
-        localStorage.setItem("LUCKY_BAG_JOIN_MEDIA_STATUS", "true")
+      this.$emit('getStepStatus', status)
+      if (status === 3) {
+        const statusGroup =
+          localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+          JSON.stringify({})
+        const evmAddress = (this.currentEvmAddress || '').toLocaleLowerCase()
+        if (evmAddress) {
+          localStorage.setItem(
+            'LUCKY_BAG_JOIN_MEDIA_STATUS',
+            JSON.stringify({
+              ...JSON.parse(statusGroup),
+              [evmAddress]: 'true',
+            })
+          )
+        }
       }
     },
     openLink(tag, url) {
-        const name = tag + "_LUCKY_BAG"
+      const name = tag + '_LUCKY_BAG'
       this.$gtag.event(name, {
         event_category: name,
         event_label: url,
@@ -157,9 +183,9 @@ export default {
       window.open(url, '_blank')
     },
     claim() {
-        if (this.isLoading) return
-        this.claimCall()
-    }
+      if (this.isLoading) return
+      this.claimCall()
+    },
   },
 }
 </script>
@@ -201,13 +227,22 @@ export default {
       line-height: 20px;
       letter-spacing: 0px;
       white-space: nowrap;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .media-icon {
+        width: 16px;
+        height: 16px;
+        margin-left: 4px;
+      }
     }
 
-    .step1-next {
+    .step1-btn {
+      border-radius: 8px;
+      background: rgb(0, 0, 0);
       margin-top: 12px;
       width: 100%;
-      border-radius: 8px;
-      background: rgb(223, 46, 45);
       padding: 12px 0;
       font-size: 16px;
       font-weight: 700;
@@ -216,29 +251,18 @@ export default {
       color: #fff;
       cursor: pointer;
     }
-
-    .step1-url {
+    .step1-next {
+      border-radius: 8px;
+      background: rgb(223, 46, 45);
+      margin-top: 12px;
       width: 100%;
-      margin-top: 8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      white-space: nowrap;
-      .media-icon {
-        width: 16px;
-        height: 16px;
-        margin-right: 4px;
-      }
-      .link {
-        white-space: nowrap;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 16px;
-        letter-spacing: 0px;
-        color: rgb(39, 158, 255);
-        text-decoration: underline;
-        cursor: pointer;
-      }
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: 0px;
+      color: #fff;
+      cursor: pointer;
     }
   }
 
@@ -288,54 +312,54 @@ export default {
 
   .step3-content {
     .step3-des {
-        width: 100%;
-        font-size: 14px;
-        font-weight: 600;
-        line-height: 20px;
-        letter-spacing: 0px;
-        text-align: left;
-        .chain-name {
-            color: rgb(223, 46, 45);
-        }
+      width: 100%;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 20px;
+      letter-spacing: 0px;
+      text-align: left;
+      .chain-name {
+        color: rgb(223, 46, 45);
+      }
     }
     .step3-btn {
-        border-radius: 8px;
-        background: rgb(223, 46, 45);
-        margin-top: 12px;
-        width: 100%;
-        padding: 12px 0;
-        font-size: 16px;
-        font-weight: 700;
-        line-height: 22px;
-        letter-spacing: 0px;
-        color: #fff;
-        cursor: pointer;
+      border-radius: 8px;
+      background: rgb(223, 46, 45);
+      margin-top: 12px;
+      width: 100%;
+      padding: 12px 0;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 22px;
+      letter-spacing: 0px;
+      color: #fff;
+      cursor: pointer;
     }
     .link-card {
-        width: 100%;
-        margin-top: 12px;
-        border-radius: 8px;
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .link-label {
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 20px;
+        font-family: GeneralSans-SemiBold;
 
-        .link-label {
-          display: flex;
-          justify-content: start;
-          align-items: center;
-          white-space: nowrap;
-          font-size: 14px;
-          font-weight: 500;
-          line-height: 20px;
-          font-family: GeneralSans-SemiBold;
-
-          .token-image {
-            margin-left: 4px;
-            width: 55px;
-            height: 12px;
-          }
+        .token-image {
+          margin-left: 4px;
+          width: 55px;
+          height: 12px;
         }
       }
+    }
   }
 }
 </style>

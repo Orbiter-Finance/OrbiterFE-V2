@@ -91,33 +91,51 @@
             </div>
   
             <div style="flex: 1; display: flex; justify-content: flex-end">
+              <div @click="goToHistory" class="label_19">
+                <img class="tools-icon" :src="require('../../assets/activity/history.svg')" alt="">
+              </div>
+              <div @click="toggleThemeMode" class="label_19">
+                <img class="tools-icon" :src="require(`../../assets/activity/${$store.state.themeMode}-theme.svg`)" alt="">
+              </div>
               <div @click="disconnect" class="label_19">
                 <img
                   class="img"
-                  :src="require('../../assets/activity/exit.png')"
+                  :src="require('../../assets/activity/disconnect.svg')"
                 />
               </div>
             </div>
           </div>
           <div>
             <div class="text-wrapper_45">
-              <div class="text_98">Total O-Points </div>
+              <div class="text_98"
+              @click="openUserInfoDetailsCardModal"
+              >
+                Total O-Points
+                <img :src="require('../../assets/activity/extends.svg')" alt="">
+              </div>
               <div class="text_99">
-                <div class="left">
+                <div class="left"
+                @click="openUserInfoDetailsCardModal"
+                >
                   {{ totalPoint }}
                   <HeaderLotteryCard />
                 </div>
 
                 <div class="right">
+                  <div 
+                  @click="openOPointsRankingCardModal"
+                  class="ranking"
+                  >
+                    <img :src="require('../../assets/activity/ranking-icon.svg')" alt="">
+                  <span v-if="!!pointRank">{{ decimalNumC(pointRank, 0, ",") }}</span>
+                  </div>
                   <div
                   @click="openClaimRewardModal"
                   class="reward">
                     <svg-icon iconName="ORBGUY"></svg-icon>
                     Reward
                   </div>
-                  <div 
-                  @click="openUserInfoDetailsCardModal"
-                  class="details">Details</div>
+                  
                 </div>
               </div>
             </div>
@@ -206,25 +224,12 @@
             </div>
           </template>
         </div>
-          
-          <div v-if="showEcosystemDapp">
-            <ActDialogBanner></ActDialogBanner>
-          </div>
         </div>
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
 
-          <div v-if="showEcosystemDapp">
-            <!-- <EcosystemDapp
-            v-on:getTaskHeight="getTaskHeight"
-            ></EcosystemDapp> -->
+          <ActDialogBanner ></ActDialogBanner>
             <EcosystemDappPro
-            v-on:getTaskHeight="getTaskHeight"
             ></EcosystemDappPro>
-          </div>
-          <div v-else >
-            <ActDialogBanner ></ActDialogBanner>
-          </div>
-
         </div>
       </div>
       </div>
@@ -248,6 +253,7 @@ import {
   actAddPointVisible,
   actAddPoint,
   actTotalPoint,
+  actPointRank,
   actNftList,
   isSolanaDialog,
   solAddress,
@@ -256,7 +262,9 @@ import {
   updateActDataList,
   isTonDialog,
   tonAddress,
-  setUserInfoDetailsCardModalShow
+  setUserInfoDetailsCardModalShow,
+  setOPointsCardModalShow,
+  setActPointRank
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -283,7 +291,11 @@ import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import PrizesCard  from "./PrizesCard.vue"
+import { mapMutations } from 'vuex'
+import { decimalNum } from '../../util/decimalNum'
+
 const { walletDispatchersOnDisconnect } = walletDispatchers
+let time2 = 0
 
 export default {
   name: 'HeaderActDialog',
@@ -381,6 +393,10 @@ export default {
     },
     totalPoint() {
       return actTotalPoint.value
+    },
+    pointRank() {
+      const rank = actPointRank.value 
+      return rank ? String(rank) : "0" 
     },
     actDataList() {
       const list = transferDataState.actDataList || []
@@ -494,6 +510,7 @@ export default {
 
       if (item1) {
         this.showPointsCall()
+        this.getUserRank()
       } else {
         this.showDetail = false
       }
@@ -503,10 +520,15 @@ export default {
           this.getTaskHeight()
         }, 200)
       }
+
+      
     },
     currentWalletAddress(item1, item2) {
       if (!!item1 && !!item2) {
         this.showPointsCall()
+      }
+      if(item1 && (item1 !== item2)) {
+        this.getUserRank()
       }
     },
     isMobile(item1, item2) {
@@ -518,8 +540,48 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['toggleThemeMode']),
+    decimalNumC(num, decimal, delimiter) {
+      return decimalNum(num, decimal, delimiter)
+    },
+    async getUserRank() {
+      clearTimeout(time2)
+      time2 = setTimeout(async () => {
+
+        const address = this.currentWalletAddress
+        if(address) {
+          const response = await fetch(
+            `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
+          )
+          const { result } = await response.json()
+          const { rank} = result || []
+          setActPointRank(
+            Number(rank) > 0 ? rank : 0
+          )
+        }
+      }, 200)
+    },
+    goToHistory() {
+      const route = this.$router
+        localStorage.setItem(
+          'last_page_before_history',
+          JSON.stringify({
+            path: route.path,
+            params: route.params,
+            query: route.query,
+          })
+        )
+      route.path !== '/history' &&
+        this.$router.push({
+          path: '/history',
+        })
+      this.closeAct()
+    },
     openClaimRewardModal() {
       this.$store.commit("getClaimORBGUYRewardData", {type: 'REWARD'})
+    },
+    openOPointsRankingCardModal() {
+      setOPointsCardModalShow(true)
     },
     openUserInfoDetailsCardModal () {
       setUserInfoDetailsCardModalShow(true)
@@ -971,6 +1033,7 @@ export default {
     white-space: nowrap;
     line-height: 19px;
     margin-top: 8px;
+    cursor: pointer;
   }
 
   .text_99 {
@@ -990,12 +1053,42 @@ export default {
       text-align: left;
       white-space: nowrap;
       line-height: 46px;
+      cursor: pointer;
     }
 
     .right {
       display: flex;
       justify-content: flex-end;
       align-items: center;
+
+      .ranking {
+        font-family: GeneralSans-Medium;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        border: 1px solid rgb(246, 192, 82);
+        border-radius: 8px;
+        box-shadow: inset 0px 0px 8px 0px rgb(246, 192, 82);
+        backdrop-filter: blur(8px);
+        background: rgba(246, 192, 82, 0.1);
+        padding: 8px;
+        cursor: pointer;
+        color: rgb(255, 217, 139);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 19px;
+        letter-spacing: 0px;
+
+        img {
+          width: 20px;
+          height: 20px;
+        }
+
+        span {
+          margin-left: 4px;
+        }
+      }
 
       .reward {
         font-size: 14px;
@@ -1011,25 +1104,12 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        margin-left: 8px;
         svg {
           width: 20px;
           height: 20px;
           margin-right: 8px;
         }
-      }
-
-      .details {
-        font-size: 14px;
-        font-weight: 600;
-        margin-left: 8px;
-        border: 1px solid rgb(219, 239, 45);
-        border-radius: 8px;
-        box-shadow: inset 0px 0px 8px 0px rgb(219, 239, 45),0px 0px 4px 0px rgba(219, 239, 45, 0.4);
-        backdrop-filter: blur(8px);
-        background: rgba(219, 239, 45, 0.1);
-        color: #DBEF2D;
-        padding: 8px 24px;
-        cursor: pointer;
       }
     }
   }
@@ -1114,7 +1194,7 @@ export default {
         -webkit-stroke: #222222;
       }
     }
-  }
+  } 
 
   .label_19 {
     cursor: pointer;
@@ -1132,6 +1212,11 @@ export default {
     &:hover {
       border: 1px solid #666666;
       background-color: transparent !important;
+    }
+
+    .tools-icon {
+      width: 20px;
+      height: 20px;
     }
 
     .img {
@@ -1279,7 +1364,7 @@ export default {
   .close-drawer {
     cursor: pointer;
     position: absolute;
-    left: -460px;
+    left: -468px;
     width: 40px;
     height: 100%;
     z-index: 100;
@@ -1299,7 +1384,7 @@ export default {
     right: 0px;
     background-color: #ffffff;
     position: absolute;
-    width: 420px;
+    width: 428px;
     height: 100%;
     border-radius: 16px 0px 0px 16px;
   }
@@ -2377,7 +2462,7 @@ export default {
     }
 
     .section_54 {
-      width: calc(100% - 40px);
+      width: 100%;
     }
 
     .thumbnail_1 {

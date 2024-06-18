@@ -43,6 +43,7 @@
     <div id="ton-connect-wallet"></div>
     <GlobalTgCard v-if="$route.path !== '/prizes'"></GlobalTgCard>
     <UserInfoDetailsCardModal></UserInfoDetailsCardModal>
+    <OPointsRankingCard></OPointsRankingCard>
   </div>
 </template>
 
@@ -79,7 +80,8 @@ import {
   setConnectWalletGroupKey,
   isTonDialog,
   setTonDialog,
-  setClaimCardModalShow
+  setClaimCardModalShow,
+  setActPointFetchStatus
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -96,6 +98,7 @@ import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialo
 import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import UserInfoDetailsCardModal from './components/layouts/UserInfoDetailsCardModal.vue'
 import ClaimRewardModal from './components/layouts/ClaimRewardModal.vue'
+import OPointsRankingCard from './components/layouts/OPointsRankingCard.vue'
 
 import {
   setIsBraveWallet,
@@ -120,6 +123,7 @@ const { walletDispatchersOnInit } = walletDispatchers
 let timerOptions = 0
 let timerActivityList = 0
 let timeNft = 0
+let timeRank = 0
 
 export default {
   name: 'App',
@@ -210,6 +214,7 @@ export default {
     GlobalTgCard,
     UserInfoDetailsCardModal,
     ClaimRewardModal,
+    OPointsRankingCard
   },
   async mounted() {
     tonHelper.tonConnectCall()
@@ -258,9 +263,10 @@ export default {
     },
     currentWalletAddress: function (newAddress, oldAddress) {
       const [web3Address, starkNetAddress] = newAddress
+      const [web3OldAddress] = oldAddress || []
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
-      if (newAddress && newAddress !== oldAddress) {
+      if (web3Address && web3Address !== web3OldAddress) {
         setClaimCardModalShow(false, '')
         this.getClaimRewardModalData()
       }
@@ -386,6 +392,7 @@ export default {
       timerOptions = timerN
 
       if (isAddress) {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })

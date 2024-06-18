@@ -11,6 +11,7 @@ import {
   COIN98_APP,
   TRUSTWALLET_APP,
   SAFEPAL,
+  BINANCEWALLET,
 } from '../constants'
 import { isBraveWallet } from '../utils'
 
@@ -31,6 +32,11 @@ const standardMobileAppConf = [
   {
     walletType: SAFEPAL,
     walletIsInstalledInvestigator: (provider) => provider.isSafePal,
+    chainIdTransfer: defaultChainIdTransfer,
+  },
+  {
+    walletType: BINANCEWALLET,
+    walletIsInstalledInvestigator: (provider) => provider.isBinance,
     chainIdTransfer: defaultChainIdTransfer,
   },
   {

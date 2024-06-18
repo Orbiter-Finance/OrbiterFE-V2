@@ -39,11 +39,7 @@
                 />
               </div>
 
-              <div
-                v-if="isAmount"
-                class="token-amount"
-                :style="`color:#222;`"
-              >
+              <div v-if="isAmount" class="token-amount" :style="`color:#222;`">
                 {{ decimalNumC(claimAmount, 0) }} $ORBGUY
               </div>
 
@@ -62,7 +58,7 @@
                   loading ? 'not-allowed' : 'pointer'
                 };`"
                 @click="claim"
-                v-if="!isClaimed && !showMediaStepCard &&!!isAmount"
+                v-if="!isClaimed && !showMediaStepCard && !!isAmount"
               >
                 {{ loading ? 'loading...' : 'Claim' }}
               </div>
@@ -76,8 +72,9 @@
                         <div style="margin-left: -20px">
                           <span
                             >Over 50 O-points users can claim a reward randomly.
-                            A total reward of 400,000 $ORBGUY available. Rewards
-                            are claimed on Arbitrum network. FCFS!</span
+                            A total reward of
+                            {{ decimalNumC(max, 0, ',') }} $ORBGUY available.
+                            Rewards are claimed on Arbitrum network. FCFS!</span
                           >
                         </div>
                       </template>
@@ -186,7 +183,7 @@ export default {
       loading: false,
       url: 'https://likwid.meme/swap',
       name: 'CLAIM_ORBGUY_LIKWID_SWAP',
-      status: 1
+      status: 1,
     }
   },
   components: {
@@ -314,10 +311,15 @@ export default {
       return totalQuantity
     },
     isShowClose() {
+      const statusGroup =
+        JSON.parse(localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+        JSON.stringify({}))
+      const evmAddress = (this.currentEvmAddress || '').toLocaleLowerCase()
+
       return (
         this.isClaimed ||
         this.claimCardModalType !== 'LUCKY_BAG' ||
-        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+        statusGroup[evmAddress] ||
         this.status === 3
       )
     },
@@ -330,10 +332,21 @@ export default {
   },
   methods: {
     setStepStatus(status) {
-      console.log("status", status)
       this.status = status
       if (status === 3) {
-        localStorage.setItem('LUCKY_BAG_JOIN_MEDIA_STATUS', 'true')
+        const statusGroup =
+          localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+          JSON.stringify({})
+        const evmAddress = (this.currentEvmAddress || '').toLocaleLowerCase()
+        if (evmAddress) {
+          localStorage.setItem(
+            'LUCKY_BAG_JOIN_MEDIA_STATUS',
+            JSON.stringify({
+              ...JSON.parse(statusGroup),
+              [evmAddress]: 'true',
+            })
+          )
+        }
       }
     },
     goToSwap() {
@@ -354,7 +367,7 @@ export default {
       let currentRpcList = []
       const chainId = this.rewardChainId
       const claimContractAddress = this.rewardInfo?.claimContract
-      if (error || chainId | claimContractAddress) return
+      if (error || !chainId || !claimContractAddress) return
       try {
         if (rpcList?.length) {
           currentRpcList = rpcList
@@ -393,16 +406,18 @@ export default {
       this.$store.commit('getClaimORBGUYRewardData', { type: '' })
     },
     async claim() {
-      
       const chainId = this.rewardChainId
       const rewardInfo = this.rewardInfo
       const claimContractAddress = rewardInfo?.claimContract
-      if (this.isClaim || this.loading || !chainId || !claimContractAddress) return
+      const evmAddress = this.currentEvmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      if (this.isClaim || this.loading || !chainId || !claimContractAddress)
+        return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
       const provider = new ethers.providers.Web3Provider(
         compatibleGlobalWalletConf.value.walletPayload.provider
       )
-      
+
       const chainID =
         +web3State?.networkId ||
         +provider?.network?.chainId ||
@@ -437,6 +452,16 @@ export default {
           Orbiter_CLAIM_ABI,
           signer
         )
+
+        try {
+          const cardIds = await claimContract.getClaimedCards(evmAddress)
+        } catch (error) {
+          console.log("error", error)
+          util.showMessage("Claim failed, please check your network/wallet address, 1 wallet could only claim once.", 'error')
+          this.loading = false
+          return
+        }
+
         const params = [
           [...(data || [])].map((item) => {
             return {
@@ -455,27 +480,28 @@ export default {
         } catch (error) {}
 
         const res = await claimContract.claim(params[0], params[1], {
-          gasLimit: emitGas.mul('12').div('10'),
+          gasLimit: emitGas.mul('12').div('10')
         })
         await res.wait()
         this.isClaim = true
-
+        this.$store.commit('requestLuckyBagDataInfo', {
+          address: this.currentEvmAddress,
+        })
         const addTokenRes = await provider.provider.request({
-            method: 'wallet_watchAsset',
-            params: {
-                type: 'ERC20',
-                options: {
-                    address: rewardInfo?.token,
-                    symbol: rewardInfo?.symbol,
-                    decimals: rewardInfo?.decimals,
-                    image: "",
-                },
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              address: rewardInfo?.token,
+              symbol: rewardInfo?.symbol,
+              decimals: rewardInfo?.decimals,
+              image: '',
             },
-        });
-        
+          },
+        })
       } catch (error) {
-        util.showMessage(String(error?.message || error), 'error')
         this.loading = false
+        util.showMessage(String(error?.message || error), 'error')
       }
     },
   },
