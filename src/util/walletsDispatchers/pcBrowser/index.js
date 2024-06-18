@@ -12,6 +12,7 @@ import {
   TOKEN_POCKET_APP,
   FOXWALLET_APP,
   SAFEPAL,
+  BINANCEWALLET,
 } from '../constants'
 import standardWalletLoader from '../standardWalletReducer/standardWalletLoader'
 import standardWalletConf from './standardPCBrowserWalletConf'
@@ -49,6 +50,7 @@ const pcBrowserWalletDispatchersOnInit = {
   [WALLETCONNECT]: () => walletConnectDispatcherOnInit(WALLETCONNECT),
   [IM_TOKEN_APP]: () => walletConnectDispatcherOnInit(IM_TOKEN_APP),
   [SAFEPAL]: () => walletConnectDispatcherOnInit(SAFEPAL),
+  [BINANCEWALLET]: () => walletConnectDispatcherOnInit(BINANCEWALLET),
   [FOXWALLET_APP]: () => walletConnectDispatcherOnInit(FOXWALLET_APP),
   ...standardPCBrowserDispatchersOnInit,
 }
@@ -58,6 +60,7 @@ const pcBrowserWalletDispatchersOnDisconnect = {
   [WALLETCONNECT]: walletConnectDispatcherOnDisconnect,
   [IM_TOKEN_APP]: walletConnectDispatcherOnDisconnect,
   [SAFEPAL]: walletConnectDispatcherOnDisconnect,
+  [BINANCEWALLET]: walletConnectDispatcherOnDisconnect,
   [FOXWALLET_APP]: walletConnectDispatcherOnDisconnect,
   [TOKEN_POCKET_APP]: tokenPocketDispatcherOnDisconnect,
   ...standardPCBrowserWalletDispatchersOnDisconnect,
@@ -71,6 +74,8 @@ const loginStatusCheckerOfPCBrowserWallet = {
   [IM_TOKEN_APP]: () =>
     fetchTargetWalletLoginStatus({ walletType: IM_TOKEN_APP }),
   [SAFEPAL]: () => fetchTargetWalletLoginStatus({ walletType: SAFEPAL }),
+  [BINANCEWALLET]: () =>
+    fetchTargetWalletLoginStatus({ walletType: BINANCEWALLET }),
   [FOXWALLET_APP]: () =>
     fetchTargetWalletLoginStatus({ walletType: FOXWALLET_APP }),
   ...standardLoginStatusCheckerOfPCBrowser,
@@ -82,6 +87,7 @@ const pcBrowserWalletDispatchersOnSignature = {
   [WALLETCONNECT]: walletConnectDispatcherOnSignature,
   [IM_TOKEN_APP]: walletConnectDispatcherOnSignature,
   [SAFEPAL]: walletConnectDispatcherOnSignature,
+  [BINANCEWALLET]: walletConnectDispatcherOnSignature,
   [FOXWALLET_APP]: walletConnectDispatcherOnSignature,
 }
 
@@ -89,6 +95,7 @@ const pcBrowserWalletDispatchersOnAddChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
   [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
   [SAFEPAL]: walletConnectDispatcherOnAddChain,
+  [BINANCEWALLET]: walletConnectDispatcherOnAddChain,
   [FOXWALLET_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnAddChain,
 }
@@ -96,7 +103,7 @@ const pcBrowserWalletDispatchersOnAddChain = {
 const pcBrowserDispatchersOnSwitchChain = {
   [WALLETCONNECT]: walletConnectDispatcherOnAddChain,
   [IM_TOKEN_APP]: walletConnectDispatcherOnAddChain,
-  [SAFEPAL]: walletConnectDispatcherOnAddChain,
+  [BINANCEWALLET]: walletConnectDispatcherOnAddChain,
   [FOXWALLET_APP]: walletConnectDispatcherOnAddChain,
   ...standardPCBrowserWalletDispatchersOnSwitchChain,
 }
