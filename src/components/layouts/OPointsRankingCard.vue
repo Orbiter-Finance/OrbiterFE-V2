@@ -74,7 +74,7 @@
                 {{ decimalNumC(item.rank, 0, ",") }}
               </div>
             </div>
-            <div class="user-address">{{ shortAddress(item.address) }}</div>
+            <div class="user-address">{{ item.address }}</div>
             <div class="basic-points">{{ decimalNumC(item.basePoints, 2, ",") }}</div>
             <div class="activity-points">{{ decimalNumC(item.totalActivityPoints, 2, ",") }}</div>
             <div class="ecosystem-points">{{ decimalNumC(item.ecosystemPoints, 2, ",") }}</div>
@@ -120,7 +120,7 @@ export default {
   data() {
     return {
       current: 1,
-      len: 10000,
+      len: 20000,
       loading: false,
       isFetchList: false,
       list: [],
