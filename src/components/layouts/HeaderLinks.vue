@@ -191,6 +191,7 @@ export default {
       height: 24px;
       margin-right: 39px;
       cursor: pointer;
+      white-space: nowrap;
     }
     .nav-item:last-child {
       margin-right: 0;

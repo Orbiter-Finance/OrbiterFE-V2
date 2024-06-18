@@ -10,30 +10,37 @@
   >
     <div class="app-content">
       <keep-alive>
-        <TopNav v-if="$route.path !== '/prizes'"/>
+        <TopNav v-if="$route.path !== '/prizes'" />
       </keep-alive>
-      <div class="main" :style="`padding-top: ${$route.path === '/prizes' ? '0px' : '24px'}`">
+      <div
+        class="main"
+        :style="`padding-top: ${$route.path === '/prizes' ? '0px' : '24px'}`"
+      >
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" class="router" />
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
       <keep-alive>
-        <BottomNav v-if="$route.path !== '/home' && $route.path !== '/prizes'" />
+        <BottomNav
+          v-if="$route.path !== '/home' && $route.path !== '/prizes'"
+        />
       </keep-alive>
     </div>
     <!-- <HeaderDialog /> -->
     <HeaderActDialog
-      v-if="$route.path !== '/statistics' && $route.path !== '/home' && $route.path !== '/prizes'"
+      v-if="
+        $route.path !== '/statistics' &&
+        $route.path !== '/home' &&
+        $route.path !== '/prizes'
+      "
       style="z-index: 999"
     />
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog />
-    <ClaimRewardModal ></ClaimRewardModal>
-    <div id="ton-connect-wallet">
-
-    </div>
+    <ClaimRewardModal></ClaimRewardModal>
+    <div id="ton-connect-wallet"></div>
     <GlobalTgCard v-if="$route.path !== '/prizes'"></GlobalTgCard>
     <UserInfoDetailsCardModal></UserInfoDetailsCardModal>
   </div>
@@ -43,7 +50,7 @@
 import 'solana-wallets-vue-2/styles.css'
 import TopNav from './components/layouts/TopNav.vue'
 import BottomNav from './components/layouts/BottomNav.vue'
-import GlobalTgCard from "./components/GlobalTgCard.vue"
+import GlobalTgCard from './components/GlobalTgCard.vue'
 import getZkToken from './util/tokenInfo/supportZkTokenInfo'
 import walletDispatchers, {
   BRAVE_APP,
@@ -72,7 +79,7 @@ import {
   setConnectWalletGroupKey,
   isTonDialog,
   setTonDialog,
-  setClaimCardModalAmountInfo
+  setClaimCardModalShow
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -101,8 +108,11 @@ import { isBraveBrowser } from './util/browserUtils'
 import { getWeb3 } from './util/constants/web3/getWeb3'
 import { connectStarkNetWallet } from './util/constants/starknet/helper'
 import solanaHelper from './util/solana/solana_helper'
-import tonHelper from "./util/ton/ton_helper"
-import { requestClaimLuckyBagReward } from './common/openApiAx'
+import tonHelper from './util/ton/ton_helper'
+import {
+  requestClaimLuckyBagReward,
+  requestClaimLuckyBagRewardData,
+} from './common/openApiAx'
 import { ethers } from 'ethers'
 
 const { walletDispatchersOnInit } = walletDispatchers
@@ -114,19 +124,20 @@ let timeNft = 0
 export default {
   name: 'App',
   computed: {
-    isMobile () {
+    isMobile() {
       return isMobile.value
     },
-    isLogin () {
+    isLogin() {
       return (
         web3State.isInstallMeta && web3State.isInjected && web3State.localLogin
       )
     },
-    isLightMode () {
+    isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
-    currentWalletAddress () {
-      const solanaAddress = web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+    currentWalletAddress() {
+      const solanaAddress =
+        web3State.solana.solanaAddress || solanaHelper.solanaAddress()
       const tonAddress = web3State.ton.tonAddress || tonHelper?.account()
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
@@ -136,17 +147,16 @@ export default {
         ...[],
       ]
     },
-    selectWalletDialogVisible () {
+    selectWalletDialogVisible() {
       return actDialogVisible.value
     },
-    styles () {
-      if(this.$route.path === '/prizes') {
-          return {
-            background: 'rgb(0, 0, 0)'
-          }
+    styles() {
+      if (this.$route.path === '/prizes') {
+        return {
+          background: 'rgb(0, 0, 0)',
         }
+      }
       if (!this.isMobile) {
-        
         if (this.isLightMode) {
           return {
             'background-position': 'left bottom, left top',
@@ -183,7 +193,7 @@ export default {
       }
     },
   },
-  data () {
+  data() {
     return {
       // lightbg,
       // darkbg,
@@ -199,15 +209,15 @@ export default {
     HeaderWalletGroup,
     GlobalTgCard,
     UserInfoDetailsCardModal,
-    ClaimRewardModal
+    ClaimRewardModal,
   },
-  async mounted () {
-    tonHelper.tonConnectCall();
+  async mounted() {
+    tonHelper.tonConnectCall()
     if (isBrowserApp()) {
       // await connectStarkNetWallet()
 
       setSelectWalletDialogVisible(true)
-      setConnectWalletGroupKey("STARKNET")
+      setConnectWalletGroupKey('STARKNET')
     }
 
     if (isBraveBrowser()) {
@@ -216,7 +226,7 @@ export default {
           .request({
             method: 'web3_clientVersion',
           })
-          .then(clientVersion => {
+          .then((clientVersion) => {
             return clientVersion.split('/')[0] === 'BraveWallet'
           })
       )
@@ -225,7 +235,6 @@ export default {
 
     // init wallet info by the localStorage
     this.performInitCurrentLoginWallet()
-
   },
   watch: {
     isLogin: function (item1, item2) {
@@ -247,24 +256,26 @@ export default {
         this.getNftList()
       }
     },
-    currentWalletAddress: function (newAddress) {
+    currentWalletAddress: function (newAddress, oldAddress) {
       const [web3Address, starkNetAddress] = newAddress
+      const [web3OldAddress] = oldAddress || []
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
-      if(newAddress) {
+      if (web3Address && web3Address !== web3OldAddress) {
+        setClaimCardModalShow(false, '')
         this.getClaimRewardModalData()
       }
-      if(tonAddress) {
+      if (tonAddress) {
         setTonDialog(true)
         setActDialogVisible(true)
-      } else if(solanaAddress) {
+      } else if (solanaAddress) {
         setSolanaDialog(true)
         setActDialogVisible(true)
       } else if (starkNetAddress) {
         setStarkNetDialog(true)
         setActDialogVisible(true)
       }
-      
+
       if (!!web3Address || !!starkNetAddress) {
         this.dataList = []
         this.getWalletAddressActList()
@@ -276,29 +287,10 @@ export default {
   methods: {
     async getClaimRewardModalData() {
       const [web3Address] = this.currentWalletAddress
-      if(!web3Address) return
-      try {
-        const res = await requestClaimLuckyBagReward(web3Address.toLocaleLowerCase())
-        const { result } = res || {}
-
-        const {totalQuantity =0, max=0 } = result
-
-        setClaimCardModalAmountInfo({
-          max,
-          totalQuantity,
-          ratio: Number(totalQuantity)
-            ? ethers.utils
-                .parseEther(String(totalQuantity))
-                .mul('100')
-                .div(ethers.utils.parseEther(String(max)))
-                .toString()
-            : '0',
-        })
-      } catch (error) {
-        
-      }
+      if (!web3Address) return
+      this.$store.commit("requestLuckyBagDataInfo", {address: web3Address})
     },
-    getAddress () {
+    getAddress() {
       let addressGroup = {
         isAddress: false,
         address: '',
@@ -306,11 +298,20 @@ export default {
       const [web3Address, starkNetAddress] = this.currentWalletAddress
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
-      const address = !!isTonDialog.value && tonAddress ? tonAddress : (
-        !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
-      )
+      const address =
+        !!isTonDialog.value && tonAddress
+          ? tonAddress
+          : !!isSolanaDialog.value && solanaAddress
+          ? solanaAddress
+          : !!isStarkNetDialog.value
+          ? starkNetAddress
+          : web3Address
       const isStarknet = !!isStarkNetDialog.value
-      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
+      if (
+        !address ||
+        (!isSolanaDialog.value &&
+          util.getAccountAddressError(address || '', isStarknet))
+      ) {
         return addressGroup
       }
       return {
@@ -319,13 +320,13 @@ export default {
         address,
       }
     },
-    async getNftList () {
+    async getNftList() {
       const { isAddress, address } = this.getAddress()
 
       const timerN = +new Date()
 
-      if(Number(timerN - timeNft) < 1000) {
-        return 
+      if (Number(timerN - timeNft) < 1000) {
+        return
       }
       timeNft = timerN
 
@@ -334,19 +335,19 @@ export default {
           address,
         })
         setActNftList(
-          res?.data?.nfts.map(item => {
+          res?.data?.nfts.map((item) => {
             return { img: `${item}.png` }
           })
         )
       }
     },
-    async getWalletAddressActList () {
+    async getWalletAddressActList() {
       const { isAddress, address } = this.getAddress()
 
       const timerN = +new Date()
 
-      if(Number(timerN - timerActivityList) < 1000) {
-        return 
+      if (Number(timerN - timerActivityList) < 1000) {
+        return
       }
       timerActivityList = timerN
 
@@ -374,13 +375,13 @@ export default {
         updateActDataList(list)
       }
     },
-    async getWalletAddressPoint () {
+    async getWalletAddressPoint() {
       const { isAddress, address } = this.getAddress()
 
       const timerN = +new Date()
 
-      if(Number(timerN - timerOptions) < 1000) {
-        return 
+      if (Number(timerN - timerOptions) < 1000) {
+        return
       }
 
       timerOptions = timerN
@@ -389,7 +390,7 @@ export default {
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
-        const point = pointRes.data.total || ""
+        const point = pointRes.data.total || ''
         setActPoint(pointRes.data)
         if (point) {
           setActAddPoint(String(point))
@@ -400,7 +401,7 @@ export default {
         }
       }
     },
-    performInitCurrentLoginWallet () {
+    performInitCurrentLoginWallet() {
       performInitMobileAppWallet()
 
       // TAG:close zkspace
@@ -536,5 +537,18 @@ export default {
   width: 0;
   height: 0;
   overflow: hidden;
+}
+#recaptcha-outside-badge {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 100%;
+  width: 100%;
+  z-index: 99999;
+
+  background: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  display: flex;
+  align-items: center;
 }
 </style>

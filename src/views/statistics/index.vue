@@ -142,6 +142,7 @@ export default {
       totalUsd: 0,
       txCount: 0,
       showSource: true,
+      sourceChart: undefined,
       destChart: undefined,
       ethStatisticsData: undefined,
       usdcStatisticsData: undefined,
@@ -282,6 +283,8 @@ export default {
       this.$loader.show()
       this.showSource = !this.showSource
       this.$nextTick((_) => {
+        this.sourceChart?.clear()
+        this.destChart?.clear()
         const chartDom = document.getElementById(
           this.showSource ? 'tx-source-chart' : 'tx-dest-chart'
         )
@@ -600,6 +603,9 @@ export default {
       }
       if (chart._dom._prevClass === 'tx-dest-chart') {
         this.destChart = chart
+      }
+      if (chart._dom._prevClass === 'tx-source-chart') {
+        this.sourceChart = chart
       }
       chart && chart.setOption(option)
     },

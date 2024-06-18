@@ -7,9 +7,8 @@
         <div
           class="card-rule-text"
           v-for="(option, idx) in item.text"
-          :key="idx"
+          :key="idx" v-html="option"
         >
-          {{ option }}
         </div>
       </div>
     </div>
@@ -26,7 +25,7 @@ export default {
           label: 'How to Get Rewards:',
           text: [
             'Bridge from specific chain to Arbitrum. ',
-            'Specific chains include: Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin',
+            'Specific chains include:<strong> Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin</strong>',
           ],
         },
         {
@@ -108,6 +107,7 @@ export default {
       font-size: 14px;
       font-weight: 400;
       line-height: 23px;
+      font-family: 'Open Sans';
       letter-spacing: 0px;
       opacity: 0.6;
     }

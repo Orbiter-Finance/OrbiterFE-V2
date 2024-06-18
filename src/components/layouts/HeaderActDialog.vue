@@ -91,10 +91,16 @@
             </div>
   
             <div style="flex: 1; display: flex; justify-content: flex-end">
+              <div @click="goToHistory" class="label_19">
+                <img class="tools-icon" :src="require('../../assets/activity/history.svg')" alt="">
+              </div>
+              <div @click="toggleThemeMode" class="label_19">
+                <img class="tools-icon" :src="require(`../../assets/activity/${$store.state.themeMode}-theme.svg`)" alt="">
+              </div>
               <div @click="disconnect" class="label_19">
                 <img
                   class="img"
-                  :src="require('../../assets/activity/exit.png')"
+                  :src="require('../../assets/activity/disconnect.svg')"
                 />
               </div>
             </div>
@@ -283,6 +289,8 @@ import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import PrizesCard  from "./PrizesCard.vue"
+import { mapMutations } from 'vuex'
+
 const { walletDispatchersOnDisconnect } = walletDispatchers
 
 export default {
@@ -518,8 +526,15 @@ export default {
     },
   },
   methods: {
+    ...mapMutations(['toggleThemeMode']),
+    goToHistory() {
+      this.$router.push({
+        path: '/history',
+      })
+      this.closeAct()
+    },
     openClaimRewardModal() {
-      this.$store.commit("getClaimORBGUYRewardData", 'REWARD')
+      this.$store.commit("getClaimORBGUYRewardData", {type: 'REWARD'})
     },
     openUserInfoDetailsCardModal () {
       setUserInfoDetailsCardModalShow(true)
@@ -1114,7 +1129,7 @@ export default {
         -webkit-stroke: #222222;
       }
     }
-  }
+  } 
 
   .label_19 {
     cursor: pointer;
@@ -1132,6 +1147,11 @@ export default {
     &:hover {
       border: 1px solid #666666;
       background-color: transparent !important;
+    }
+
+    .tools-icon {
+      width: 20px;
+      height: 20px;
     }
 
     .img {
@@ -1246,6 +1266,8 @@ export default {
     justify-content: center;
     align-items: center;
     font-weight: 600;
+    color: #FFF;
+    background: linear-gradient(139.64deg, rgb(229, 69, 255) 0%,rgb(255, 0, 0) 85.476%);
   }
 
   .text-wrapper_1_17 {
@@ -2375,7 +2397,7 @@ export default {
     }
 
     .section_54 {
-      width: calc(100% - 40px);
+      width: 100%;
     }
 
     .thumbnail_1 {

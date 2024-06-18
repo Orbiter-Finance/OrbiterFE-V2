@@ -21,8 +21,8 @@
           :iconName="navIcons.logo"
         />
         <HeaderLinks
-          v-if="$route.path !== '/prizes'" 
-          style="margin-top: 24px; margin-left: 134px; min-width: 280px"
+          v-if="$route.path !== '/prizes'"
+          style="margin-top: 24px; margin-left: 66px; min-width: 280px"
         />
       </div>
       <HeaderOps v-if="$route.path !== '/statistics'" />
@@ -65,9 +65,7 @@
           />
         </div>
       </div> -->
-      <div class="lucky-bag-mobile" 
-      @click="openLuckyBagModal"
-      ></div>
+      <div class="lucky-bag-mobile" @click="openLuckyBagModal"></div>
       <div
         v-if="isMobile && $route.path !== '/prizes'"
         :class="addPointVisible ? 'shake-top' : ''"
@@ -151,6 +149,9 @@ import {
   setActDialogVisible,
   setConnectWalletGroupKey,
   setSolanaDialog,
+  claimCardModalAmountInfo,
+  claimCardModalDataInfo,
+  setClaimCardModalShow
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -161,41 +162,51 @@ import starknetLogoLight from '../../assets/v2/starknet-logo-light.png'
 import { isBrowserApp } from '../../util'
 import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher'
 import { WALLETCONNECT } from '../../util/walletsDispatchers'
+import getUTCTime from '../../util/time'
+import util from '../../util/util'
+
 
 export default {
   name: 'TopNav',
   components: { SvgIconThemed, HeaderLinks, HeaderOps },
-  data () {
+  data() {
     return {
+      recaptchaId: 0,
       drawerVisible: false,
     }
   },
   computed: {
-    addPoint () {
+    claimCardModalAmountInfoData() {
+      return claimCardModalAmountInfo.value
+    },
+    claimCardModalDataInfoData() {
+      return claimCardModalDataInfo.value
+    },
+    addPoint() {
       return actAddPoint.value
     },
-    addPointVisible () {
+    addPointVisible() {
       return actAddPointVisible.value
     },
-    showAddress () {
+    showAddress() {
       if (isBrowserApp()) {
         return starkAddress()
       }
       return showAddress()
     },
-    isLightMode () {
+    isLightMode() {
       return this.$store.state.themeMode === 'light'
     },
-    currentStarknetLogo () {
+    currentStarknetLogo() {
       return this.isLightMode ? starknetLogoLight : starknetLogoDark
     },
-    isLogin () {
+    isLogin() {
       return walletIsLogin.value && this.showAddress
     },
-    isMobile () {
+    isMobile() {
       return isMobile.value
     },
-    refererUpper () {
+    refererUpper() {
       // Don't use [$route.query.referer], because it will delay
       const { href } = window.location
       const match = href.match(/referer=(\w*)/i)
@@ -204,17 +215,17 @@ export default {
       }
       return ''
     },
-    isRinkeby () {
+    isRinkeby() {
       const { href } = window.location
       return /rinkeby\.orbiter/i.test(href)
     },
-    isStarknet () {
+    isStarknet() {
       return this.refererUpper === 'STARKNET'
     },
-    isBRAAVOS () {
+    isBRAAVOS() {
       return this.refererUpper === 'BRAAVOS'
     },
-    navIcons () {
+    navIcons() {
       const icons = {
         logo: 'logo-mobile',
         logoStyle: { width: '41px', height: '40px' },
@@ -269,37 +280,101 @@ export default {
       }
     },
   },
+  created() {
+    if (process.env['VUE_APP_RECAPTCHA']) {
+      if (typeof window === 'undefined') return
+      window.vueRecaptchaInit = () => {}
+      const recaptchaScript = document.createElement('script')
+      const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+      recaptchaScript.setAttribute(
+        'src',
+        `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+      )
+      recaptchaScript.setAttribute('async', '')
+      recaptchaScript.setAttribute('defer', '')
+      ;(document.body || document.head).appendChild(recaptchaScript)
+    }
+  },
   methods: {
-    openLuckyBagModal(){
-      this.$store.commit("getClaimORBGUYRewardData", "LUCKY_BAG")      
+    openLuckyBagModal() {
+      const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
+      const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
+      if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
+      const info = data?.[0]
+      if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
+      if(info) {
+        if(!!isClaimedData) {
+          util.showMessage(
+            'Your address has already received a lucky bag. Each address can only claim once.',
+            'warning'
+          )
+          return
+        } else {
+          if(chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()) {
+            setClaimCardModalShow(true, 'LUCKY_BAG')
+            return
+          }
+        }
+      }
+      if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
+        util.showMessage(
+        `😭 Oops, sorry! All gone! Catch us earlier next time!`,
+        'warning'
+      )
+        return
+      }
+      if (process.env['VUE_APP_RECAPTCHA']) {
+        const recaptchaDiv = document.createElement('div')
+        recaptchaDiv.id = 'recaptcha-outside-badge'
+        this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
+        this.recaptchaId = grecaptcha.render(recaptchaDiv, {
+          sitekey: process.env['VUE_APP_RECAPTCHA'],
+          theme: 'light',
+          callback: (token) => {
+            this.$store.commit('getClaimORBGUYRewardData', {
+              type: 'LUCKY_BAG',
+              token,
+            })
+            recaptchaDiv.remove()
+          },
+        })
+        recaptchaDiv.onclick = () => {
+          recaptchaDiv.remove()
+        }
+      } else {
+        this.$store.commit('getClaimORBGUYRewardData', {
+          type: 'LUCKY_BAG',
+          token: '',
+        })
+      }
     },
-    openActDialog () {
+    openActDialog() {
       if (this.isLogin) {
         setActDialogVisible(true)
       }
     },
-    toHome () {
+    toHome() {
       setPageSenderTab()
       // this.$route.path !== '/home' && this.$router.push({ path: '/home' })
       this.$router.push({ path: '/' })
     },
-    toggleTab (tab) {
+    toggleTab(tab) {
       setPageTab(tab)
     },
-    showToggleBtn () {
+    showToggleBtn() {
       return this.$route.path === '/' || this.$route.path === '/history'
     },
-    connectWallet () {
+    connectWallet() {
       if (isBrowserApp()) {
         walletConnectDispatcherOnInit(WALLETCONNECT)
         return
       }
       // Middle.$emit('connectWallet', true)
       setSelectWalletDialogVisible(true)
-      setConnectWalletGroupKey("EVM")
+      setConnectWalletGroupKey('EVM')
     },
-    connectAWallet () {
-      console.log("this.showAddress", this.showAddress)
+    connectAWallet() {
+      console.log('this.showAddress', this.showAddress)
       if (isBrowserApp()) {
         walletConnectDispatcherOnInit(WALLETCONNECT)
         return
@@ -311,7 +386,6 @@ export default {
       // setConnectWalletGroupKey("EVM")
     },
   },
-  
 }
 </script>
 

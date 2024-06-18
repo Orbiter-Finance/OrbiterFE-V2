@@ -6,3 +6,7 @@ export const PONITS_EXPAND_COUNT = 'PONITS_EXPAND_COUNT'
 
 export const CLAIM_ORBGUY_CONTRACT_ADDRESS =
   process.env.VUE_APP_CLAIM_ORBGUY_CONTRACT_ADDRESS
+
+export const MQTT_USER_NAME = process.env.VUE_APP_MQTT_USER_NAME
+export const MQTT_PASSWORD = process.env.VUE_APP_MQTT_PASSWORD
+export const MQTT_HREF = process.env.VUE_APP_MQTT_HREF

@@ -22,7 +22,7 @@
         <div class="prizes-orbguy">
           TOP 800 will get 
           <svg-icon iconName="ORBGUY" class="orbguy-token-symbol"></svg-icon>
-          <span class="token-symbol">$ORBGUY! </span>
+          <span class="token-symbol">$ORBGUY </span>
           randomly
         </div>
         <img

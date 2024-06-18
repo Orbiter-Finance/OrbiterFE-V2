@@ -287,6 +287,10 @@ export default {
   created() {
     this.getData()
     this.getData2()
+    const _self = this
+    setTimeout(() => {
+      _self.triggle(false)
+    }, 5000)
   },
 }
 </script>

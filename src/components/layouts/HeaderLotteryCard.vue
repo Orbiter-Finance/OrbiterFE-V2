@@ -153,7 +153,7 @@ export default {
         this.visible = true
       } else {
         this.visible = false
-        if (!!this.total || true) {
+        if (!!this.total) {
           await this.getLotteryCardDataDraw()
           await this.getLotteryCardData()
         }
