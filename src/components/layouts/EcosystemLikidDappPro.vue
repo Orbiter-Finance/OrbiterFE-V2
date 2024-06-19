@@ -61,9 +61,9 @@
             </div>
           </div>
         </div>
-        <!-- <div class="label">
-          <div>$ORBGUY</div>
-        </div> -->
+        <div class="label">
+          <div>$GATO</div>
+        </div>
         <div class="bottom">
           <div class="progress-group">
             <div class="holders">
