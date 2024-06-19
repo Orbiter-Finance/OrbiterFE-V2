@@ -282,9 +282,9 @@ export default {
     this.getData2()
     const _self = this
     if(!this.isMobile) {
-      setTimeout(() => {
-        _self.triggle(false)
-      }, 5000)
+      // setTimeout(() => {
+      //   _self.triggle(false)
+      // }, 5000)
     }
   },
 }
