@@ -138,8 +138,8 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     openUrl(url) {
-      this.$gtag.event('$ORBGUY', {
-        event_category: '$ORBGUY',
+      this.$gtag.event('$GATO', {
+        event_category: '$GATO',
         event_label: url,
       })
       window.open(url, '_blank')
