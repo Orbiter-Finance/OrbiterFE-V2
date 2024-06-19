@@ -581,7 +581,7 @@ export default {
       this.$store.commit("getClaimORBGUYRewardData", {type: 'REWARD'})
     },
     openOPointsRankingCardModal() {
-      setOPointsCardModalShow(true)
+      // setOPointsCardModalShow(true)
     },
     openUserInfoDetailsCardModal () {
       setUserInfoDetailsCardModalShow(true)
