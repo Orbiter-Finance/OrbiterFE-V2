@@ -99,7 +99,7 @@
             :holders="totalUser"
             :ratio="ratio"
             :showCard="showCard"
-            :banner="'astra.jpg'"
+            :banner="'astra.png'"
             :tag="'Cross-chain Game'"
             :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
             :description="'Exclusive Early Rewards for orbiter Premium Users is airdroping.'"
