@@ -3,11 +3,11 @@
     <div class="card-title">Congratulations 🎉</div>
     <div class="ranking-info info">
       <div class="label">Current rank</div>
-      <div class="amount">1592tx bridges</div>
+      <div class="amount">19</div>
     </div>
     <div class="tx-info info">
       <div class="label">Accumulated</div>
-      <div class="amount">19</div>
+      <div class="amount">1592tx bridges</div>
     </div>
     <div class="reward-card-group">
       <div class="reward-card">
@@ -21,7 +21,7 @@
         <div class="usdc-symbol">
           <svg-icon iconName="ORBGUY"></svg-icon>
         </div>
-        <div class="reward-amount">+1,478.84 $ORBGUY</div>
+        <div class="reward-amount">+1,478 $ORBGUY</div>
         <div class="claim-btn">Claim</div>
       </div>
     </div>
@@ -39,7 +39,7 @@ export default {
 
 <style lang="scss" scoped>
 .prizes-claim-card {
-  width: 520px;
+  width: 456px;
   border: 2px solid rgb(239, 47, 45);
   border-radius: 16px;
   box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4),
@@ -118,6 +118,7 @@ export default {
         line-height: 22px;
         letter-spacing: 0px;
         text-align: center;
+        cursor: pointer;
       }
     }
   }
