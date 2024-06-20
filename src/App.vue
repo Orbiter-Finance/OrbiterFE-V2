@@ -10,11 +10,11 @@
   >
     <div class="app-content">
       <keep-alive>
-        <TopNav v-if="isNotPrizes" />
+        <TopNav v-if="isTopNav" />
       </keep-alive>
       <div
         class="main"
-        :style="`padding-top: ${!isNotPrizes ? '0px' : '24px'}`"
+        :style="`padding-top: ${!isTopNav ? '0px' : '24px'}`"
       >
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" class="router" />
@@ -36,12 +36,12 @@
     />
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
-    <HeaderLotteryCardDialog v-if="isNotPrizes" />
-    <ClaimRewardModal v-if="isNotPrizes"></ClaimRewardModal>
+    <HeaderLotteryCardDialog v-if="isTopNav" />
+    <ClaimRewardModal v-if="isTopNav"></ClaimRewardModal>
     <div id="ton-connect-wallet"></div>
-    <GlobalTgCard v-if="isNotPrizes"></GlobalTgCard>
-    <UserInfoDetailsCardModal v-if="isNotPrizes"></UserInfoDetailsCardModal>
-    <OPointsRankingCard v-if="isNotPrizes"></OPointsRankingCard>
+    <GlobalTgCard v-if="isTopNav"></GlobalTgCard>
+    <UserInfoDetailsCardModal v-if="isTopNav"></UserInfoDetailsCardModal>
+    <OPointsRankingCard v-if="isTopNav"></OPointsRankingCard>
   </div>
 </template>
 
@@ -130,10 +130,13 @@ export default {
       return this.$route.path
     },
     isNotPrizes() {
-      return this.isInit && this.routerPath !== '/prizes'
+      return this.routerPath !== '/prizes'
+    },
+    isTopNav() {
+      return this.isInit && this.isNotPrizes
     },
     isBottomNav() {
-      return this.isNotPrizes && this.routerPath !== '/home'
+      return this.isTopNav && this.routerPath !== '/home'
     },
     isHeaderActDialog(){
       return this.isBottomNav && this.routerPath !== '/statistics'
@@ -261,7 +264,9 @@ export default {
     isLogin: function (item1, item2) {
       if (item1 !== item2) {
         if (!!item1) {
-          setActDialogVisible(true)
+          if(this.isNotPrizes) {
+            setActDialogVisible(true)
+          }
         } else {
           setActDialogVisible(false)
         }
@@ -285,7 +290,9 @@ export default {
       const tonAddress = tonHelper.account()
       if (web3Address && web3Address !== web3OldAddress) {
         setClaimCardModalShow(false, '')
-        this.getClaimRewardModalData()
+        if(this.isTopNav) {
+          this.getClaimRewardModalData()
+        }
       }
       if (tonAddress) {
         setTonDialog(true)
@@ -299,7 +306,7 @@ export default {
       }
 
       if (!!web3Address || !!starkNetAddress) {
-        if(this.isNotPrizes) {
+        if(this.isTopNav) {
           this.getWalletAddressActList()
           this.getWalletAddressPoint()
           this.getNftList()
