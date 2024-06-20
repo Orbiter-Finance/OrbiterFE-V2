@@ -46,7 +46,7 @@
           <div class="prizes-to-bridge-btn" @click="toBridgeCall"
           :style="`opacity: ${isEnd ? '0.3' : '1'};`"
           >
-            Start Bridge
+            {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
           </div>
         </div>
       </div>
@@ -91,7 +91,7 @@ export default {
   name: 'PrizesTopBanner',
   data() {
     return {
-      timeStr: '2024-06-20T10:30:00.000Z',
+      timeStr: '2024-06-20T13:30:00.000Z',
       timeList: timeListDefault,
     }
   },
