@@ -10,11 +10,11 @@
   >
     <div class="app-content">
       <keep-alive>
-        <TopNav v-if="$route.path !== '/prizes'" />
+        <TopNav v-if="isNotPrizes" />
       </keep-alive>
       <div
         class="main"
-        :style="`padding-top: ${$route.path === '/prizes' ? '0px' : '24px'}`"
+        :style="`padding-top: ${!isNotPrizes ? '0px' : '24px'}`"
       >
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" class="router" />
@@ -23,27 +23,25 @@
       </div>
       <keep-alive>
         <BottomNav
-          v-if="$route.path !== '/home' && $route.path !== '/prizes'"
+          v-if="isBottomNav"
         />
       </keep-alive>
     </div>
     <!-- <HeaderDialog /> -->
     <HeaderActDialog
       v-if="
-        $route.path !== '/statistics' &&
-        $route.path !== '/home' &&
-        $route.path !== '/prizes'
+        isHeaderActDialog
       "
       style="z-index: 999"
     />
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
-    <HeaderLotteryCardDialog />
-    <ClaimRewardModal></ClaimRewardModal>
+    <HeaderLotteryCardDialog v-if="isNotPrizes" />
+    <ClaimRewardModal v-if="isNotPrizes"></ClaimRewardModal>
     <div id="ton-connect-wallet"></div>
-    <GlobalTgCard v-if="$route.path !== '/prizes'"></GlobalTgCard>
-    <UserInfoDetailsCardModal></UserInfoDetailsCardModal>
-    <OPointsRankingCard></OPointsRankingCard>
+    <GlobalTgCard v-if="isNotPrizes"></GlobalTgCard>
+    <UserInfoDetailsCardModal v-if="isNotPrizes"></UserInfoDetailsCardModal>
+    <OPointsRankingCard v-if="isNotPrizes"></OPointsRankingCard>
   </div>
 </template>
 
@@ -128,6 +126,18 @@ let timeRank = 0
 export default {
   name: 'App',
   computed: {
+    routerPath() {
+      return this.$route.path
+    },
+    isNotPrizes() {
+      return this.isInit && this.routerPath !== '/prizes'
+    },
+    isBottomNav() {
+      return this.isNotPrizes && this.routerPath !== '/home'
+    },
+    isHeaderActDialog(){
+      return this.isBottomNav && this.routerPath !== '/statistics'
+    },
     isMobile() {
       return isMobile.value
     },
@@ -202,6 +212,7 @@ export default {
       // lightbg,
       // darkbg,
       // topbg,
+      isInit: false
     }
   },
   components: {
@@ -215,6 +226,11 @@ export default {
     UserInfoDetailsCardModal,
     ClaimRewardModal,
     OPointsRankingCard
+  },
+  updated() {
+    if(!this.isInit) {
+      this.isInit = true
+    }
   },
   async mounted() {
     tonHelper.tonConnectCall()
@@ -255,10 +271,11 @@ export default {
     },
     selectWalletDialogVisible: function (newVisible) {
       if (!!newVisible) {
-        this.dataList = []
-        this.getWalletAddressActList()
-        this.getWalletAddressPoint()
-        this.getNftList()
+        if(this.isHeaderActDialog) {
+          this.getWalletAddressActList()
+          this.getWalletAddressPoint()
+          this.getNftList()
+        }
       }
     },
     currentWalletAddress: function (newAddress, oldAddress) {
@@ -282,10 +299,11 @@ export default {
       }
 
       if (!!web3Address || !!starkNetAddress) {
-        this.dataList = []
-        this.getWalletAddressActList()
-        this.getWalletAddressPoint()
-        this.getNftList()
+        if(this.isNotPrizes) {
+          this.getWalletAddressActList()
+          this.getWalletAddressPoint()
+          this.getNftList()
+        }
       }
     },
   },
@@ -363,7 +381,6 @@ export default {
           page: 1,
         })
         const list = res.data.list
-        // const dataList = []
         // const undoneList = []
         // const doneList = []
         // console.log("list", list)
