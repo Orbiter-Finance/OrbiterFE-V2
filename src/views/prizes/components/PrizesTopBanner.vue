@@ -134,7 +134,7 @@ export default {
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
-        prizesTimeEnd, (true)
+        setPrizesTimeEnd(true)
         this.timeList = timeListDefault
         return
       }
