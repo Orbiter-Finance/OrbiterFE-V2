@@ -334,7 +334,7 @@ export default {
         .info-label {
           width: 100%;
           color: rgb(255, 255, 255);
-          font-family: GeneralSans-Semibold;
+          font-family: GeneralSans-SemiBold;
           font-size: 16px;
           font-weight: 500;
           line-height: 20px;
@@ -403,7 +403,7 @@ export default {
           line-height: 20px;
           letter-spacing: 0px;
 
-          font-family: GeneralSans-Semibold;
+          font-family: GeneralSans-SemiBold;
 
           .total-user {
             display: flex;
