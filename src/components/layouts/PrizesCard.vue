@@ -221,7 +221,7 @@ export default {
   name: 'PrizesCard',
   data() {
     return {
-      timeStr: '2024/6/20 08:00:00',
+      timeStr: '2024-06-20T10:30:00.000Z',
       timeList: [],
     }
   },
