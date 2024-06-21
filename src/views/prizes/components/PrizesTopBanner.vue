@@ -115,6 +115,7 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
+      if(this.isEnd) return
       localStorage.setItem(
           'last_page_before_history',
           JSON.stringify({
@@ -348,7 +349,7 @@ export default {
           font-size: 20px;
           font-weight: 600;
           line-height: 28px;
-          cursor: pointer;
+          // cursor: pointer;
         }
       }
     }
