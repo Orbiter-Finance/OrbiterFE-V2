@@ -201,7 +201,7 @@
           />
         </div>
       </div>
-      <img v-if="!isPrizesEnd" :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
+      <!-- <img v-if="false" :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" /> -->
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"

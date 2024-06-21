@@ -276,11 +276,9 @@ export default {
     },
     selectWalletDialogVisible: function (newVisible) {
       if (!!newVisible) {
-        if(this.isHeaderActDialog) {
           this.getWalletAddressActList()
           this.getWalletAddressPoint()
           this.getNftList()
-        }
       }
     },
     currentWalletAddress: function (newAddress, oldAddress) {
