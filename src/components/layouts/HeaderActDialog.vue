@@ -787,6 +787,7 @@ export default {
   async mounted() {
     const getTaskHeight = this.getTaskHeight
     let timer = false
+    getTaskHeight()
     window.addEventListener('resize', () => {
       if (!timer) {
         timer = true
