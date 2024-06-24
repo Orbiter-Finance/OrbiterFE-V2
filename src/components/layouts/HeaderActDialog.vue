@@ -97,7 +97,7 @@
               <div @click="toggleThemeMode" class="label_19">
                 <img class="tools-icon" :src="require(`../../assets/activity/${$store.state.themeMode}-theme.svg`)" alt="">
               </div>
-              <div @click="disconnect" class="label_19">
+              <div @click="disconnect" class="label_19" v-if="!isMobile">
                 <img
                   class="img"
                   :src="require('../../assets/activity/disconnect.svg')"

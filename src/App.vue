@@ -239,8 +239,9 @@ export default {
     tonHelper.tonConnectCall()
     if (isBrowserApp()) {
       // await connectStarkNetWallet()
-
-      setSelectWalletDialogVisible(true)
+      if(!isMobileDevice()) {
+        setSelectWalletDialogVisible(true)
+      }
       setConnectWalletGroupKey('STARKNET')
     }
 
@@ -264,7 +265,7 @@ export default {
     isLogin: function (item1, item2) {
       if (item1 !== item2) {
         if (!!item1) {
-          if(this.isNotPrizes) {
+          if(this.isNotPrizes && !isMobileDevice()) {
             setActDialogVisible(true)
           }
         } else {
