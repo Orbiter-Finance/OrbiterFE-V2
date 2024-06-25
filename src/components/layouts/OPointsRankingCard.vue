@@ -88,7 +88,7 @@
             @current-change="curChange"
             class="rank-pagination"
             layout="prev, pager, next"
-            :current-page="1"
+            :current-page="current"
             :total="len"
           >
           </el-pagination>
