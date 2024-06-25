@@ -466,7 +466,7 @@ export default {
           [...(data || [])].map((item) => {
             return {
               id: item.id,
-              value: ethers.utils.parseEther(String(item.value)).toString(),
+              value: ethers.utils.parseUnits(String(item.value), item.decimals).toString(),
               expiredTimestamp: Number(item.expiredTimestamp),
               flag: Number(item.flag),
             }
