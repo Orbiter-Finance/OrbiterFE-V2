@@ -17,7 +17,12 @@
     </div>
     <div class="reward-card-group">
       <div class="reward-group">
-        <div class="reward-card" v-for="item in list" :key="item.symbol">
+        <div
+          class="reward-card"
+          v-for="item in list"
+          :key="item.symbol"
+          :style="isFetch ? '48%' : '100%'"
+        >
           <div class="usdc-symbol">
             <svg-icon v-if="item.symbol" :iconName="item.symbol"></svg-icon>
             <div v-else class="reward-image"></div>
@@ -25,17 +30,17 @@
           <div v-if="item.symbol" class="reward-amount">
             {{ item.quantity }} ${{ item.symbol }}
           </div>
-          <div v-else class="reward-amount-extra">extra prize</div>
+          <!-- <div v-else class="reward-amount-extra">extra prize</div> -->
         </div>
       </div>
 
       <div class="claim-group">
-        <div class="claim-btn" @click="claim">go to earn</div>
+        <div class="claim-btn" @click="claim">earn extra prize</div>
       </div>
     </div>
     <div class="desction">
       <!-- Claim your Token on <span class="tips">Arbitrum</span> -->
-      partner's incentives
+      partner's incentives from AAbank
     </div>
   </div>
 </template>
@@ -55,6 +60,7 @@ export default {
   name: 'PrizesClaimCard',
   data() {
     return {
+      isFetch: false,
       list: [
         {
           symbol: '',
@@ -103,12 +109,19 @@ export default {
       timer = setTimeout(async () => {
         const res = await requestClaimPrizesRewardData(this.evmAddress)
         if (res.length) {
+          this.isFetch = true
           this.list = res.map((item) => {
             return {
               ...item,
               quantity: this.decimalNumC(item.quantity, '6', ','),
             }
           })
+        } else {
+          this.list = [{
+              symbol: '',
+              quantity: '',
+            }]
+          this.isFetch = false
         }
       }, 200)
     },
@@ -175,7 +188,6 @@ export default {
       justify-content: center;
       align-items: start;
       .reward-card {
-        width: 48%;
         padding: 24px 16px 0;
         .usdc-symbol {
           width: 100%;
@@ -188,8 +200,8 @@ export default {
           }
 
           .reward-image {
-            width: 132px;
-            height: 100px;
+            width: 165px;
+            height: 125px;
             background-image: url(../../../assets/prizes/reward.png);
             background-size: 100% 100%;
             background-repeat: no-repeat;
@@ -199,7 +211,7 @@ export default {
           width: 100%;
           margin-top: 12px;
           color: rgb(255, 255, 255);
-          font-size: 20px;
+          font-size: 16px;
           font-weight: 700;
           line-height: 32px;
           letter-spacing: 0px;
@@ -211,7 +223,7 @@ export default {
         .reward-amount-extra {
           width: 100%;
           color: rgb(255, 255, 255);
-          font-size: 20px;
+          font-size: 16px;
           font-weight: 700;
           line-height: 32px;
           letter-spacing: 0px;
@@ -224,14 +236,14 @@ export default {
 
     .claim-group {
       width: 100%;
-      padding: 12px 16px;
+      padding: 12px 16px 24px;
       .claim-btn {
         width: 100%;
         border-radius: 8px;
         background: rgb(223, 46, 45);
         padding: 12px 0;
         font-family: GeneralSans-Bold;
-        font-size: 16px;
+        font-size: 20px;
         font-weight: 700;
         line-height: 22px;
         letter-spacing: 0px;
