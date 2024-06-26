@@ -144,3 +144,9 @@ export async function drawClaimLuckyBagReward(address, token) {
     }
   )
 }
+
+export async function requestClaimPrizesRewardData(address) {
+  return await openApiAx.get(
+    `/points_platform/reward/token-reward/${address}?flag=2`
+  )
+}

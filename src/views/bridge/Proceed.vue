@@ -20,189 +20,195 @@
         <CommLoading v-else class="right" width="1.2rem" height="1.2rem" />
       </div>
       <div class="chainDataContent">
-        <div v-if="isMobile" class="middle-icon-abs" style="z-index: 2">
-          <div v-if="isProcee" :class="[{ 'rocket-box-bg': isProcee }]"></div>
-          <div v-else :class="['rocket-box']">
-            <SvgIconThemed v-if="!detailData" icon="satellite" size="xs" />
-            <SvgIconThemed
-              v-else
-              iconName="succeed"
-              style="width: 24px; height: 24px"
-            />
+        <div class="chain-info">
+          <div v-if="isMobile" class="middle-icon-abs" style="z-index: 2">
+            <div v-if="isProcee" :class="[{ 'rocket-box-bg': isProcee }]"></div>
+            <div v-else :class="['rocket-box']">
+              <SvgIconThemed v-if="!detailData" icon="satellite" size="xs" />
+              <SvgIconThemed
+                v-else
+                iconName="succeed"
+                style="width: 24px; height: 24px"
+              />
+            </div>
           </div>
-        </div>
-        <div class="item left" style="z-index: 3">
-          <div class="chain-name from">
-            <span>{{ FromChainName }}</span>
-          </div>
-          <div class="chain">
-            <svg-icon
-              :iconName="showChainIcon()"
-              style="width: 56px; height: 56px"
-            ></svg-icon>
-          </div>
-          <div class="tx from-tx" @click="goToExplorFrom">
-            <template v-if="!detailData">
+          <div class="item left" style="z-index: 3">
+            <div class="chain-name from">
+              <span>{{ FromChainName }}</span>
+            </div>
+            <div class="chain">
               <svg-icon
-                v-if="$store.state.proceedState === 1"
-                class="status-icon"
-                color="#df2e2d"
-                iconName="history_2"
+                :iconName="showChainIcon()"
+                style="width: 56px; height: 56px"
               ></svg-icon>
-              <svg-icon
-                v-else-if="$store.state.proceedState === 2"
-                class="status-icon"
-                color="#df2e2d"
-                iconName="history_3"
-              ></svg-icon>
+            </div>
+            <div class="tx from-tx" @click="goToExplorFrom">
+              <template v-if="!detailData">
+                <svg-icon
+                  v-if="$store.state.proceedState === 1"
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="history_2"
+                ></svg-icon>
+                <svg-icon
+                  v-else-if="$store.state.proceedState === 2"
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="history_3"
+                ></svg-icon>
+                <svg-icon
+                  v-else
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="status-success"
+                ></svg-icon>
+              </template>
               <svg-icon
                 v-else
                 class="status-icon"
                 color="#df2e2d"
                 iconName="status-success"
               ></svg-icon>
-            </template>
-            <svg-icon
-              v-else
-              class="status-icon"
-              color="#df2e2d"
-              iconName="status-success"
-            ></svg-icon>
-            <span>{{ FromTx }}</span>
+              <span>{{ FromTx }}</span>
+            </div>
+            <!--                    <div v-if="!getExplorer()" class="switch-btn" @click="() => switchNetWork()">-->
+            <!--                        Switch Network-->
+            <!--                    </div>-->
           </div>
-          <!--                    <div v-if="!getExplorer()" class="switch-btn" @click="() => switchNetWork()">-->
-          <!--                        Switch Network-->
-          <!--                    </div>-->
-          <div
-            v-if="getExplorer()"
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 28px;
-            "
-          >
-            <span
-              @click="openIconUrl(true, item)"
-              id="switch-btn-id"
-              class="switch-btn-2"
-              v-for="(item, index) in getExplorer()"
-              :style="`${index !== 0 ? 'margin-left:4px' : ''}`"
-              :key="item.name"
+          <div class="middle-icon">
+            <div
+              v-if="!isMobile"
+              :class="['rocket-box', { 'rocket-box-bg': isProcee }]"
             >
+              <SvgIconThemed
+                v-if="!isProcee && !detailData"
+                icon="satellite"
+                size="xs"
+              />
+              <!-- <SvgIconThemed v-if="!isProcee && detailData" iconName="succeed" style="width:24px;height:24px;" /> -->
+            </div>
+            <div v-if="!isMobile" class="rocket-line-box">
+              <SvgIconThemed
+                icon="rocket-line"
+                style="width: 161px; height: 14px; margin-top: 10px"
+              />
+            </div>
+          </div>
+          <div class="item right" style="z-index: 3">
+            <div class="chain-name to">
+              <span>{{ toChainName }}</span>
+            </div>
+            <div class="chain">
               <svg-icon
-                v-if="item.icon"
-                :iconName="item.icon"
-                style="width: 18px; height: 18px; margin-right: 4px"
+                :iconName="showChainIcon(false)"
+                style="width: 56px; height: 56px"
               ></svg-icon>
-              <span style="height: 20px; line-height: 20px">{{
-                item.name
-              }}</span>
-            </span>
+            </div>
+            <div class="tx to-tx" @click="goToExplorTo">
+              <template v-if="!detailData">
+                <svg-icon
+                  v-if="$store.state.proceedState === 4"
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="history_3"
+                ></svg-icon>
+                <svg-icon
+                  v-else-if="$store.state.proceedState === 5"
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="status-success"
+                ></svg-icon>
+                <svg-icon
+                  v-else
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="history_1"
+                ></svg-icon>
+              </template>
+              <template v-else>
+                <svg-icon
+                  v-if="detailData.state === 0"
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="status-success"
+                ></svg-icon>
+                <svg-icon
+                  v-else-if="detailData.state === 1"
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="history_2"
+                ></svg-icon>
+                <svg-icon
+                  v-else
+                  class="status-icon"
+                  color="#df2e2d"
+                  iconName="status-error"
+                ></svg-icon>
+              </template>
+              <span>{{ ToTx }}</span>
+            </div>
+            <!--                    <div class="switch-btn" @click="() => switchNetWork(false)">-->
+            <!--                        Switch Network-->
+            <!--                    </div>-->
+           
           </div>
         </div>
-        <div class="middle-icon">
+        <div class="exploer-group">
           <div
-            v-if="!isMobile"
-            :class="['rocket-box', { 'rocket-box-bg': isProcee }]"
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            flex-wrap: wrap;
+            width: 40%;
+          "
+        >
+          <span
+            @click="openIconUrl(true, item)"
+            id="switch-btn-id"
+            class="switch-btn-2"
+            v-for="(item, index) in getExplorer()"
+            :style="`${index !== 0 ? 'margin-left:4px' : ''}`"
+            :key="item.name"
           >
-            <SvgIconThemed
-              v-if="!isProcee && !detailData"
-              icon="satellite"
-              size="xs"
-            />
-            <!-- <SvgIconThemed v-if="!isProcee && detailData" iconName="succeed" style="width:24px;height:24px;" /> -->
-          </div>
-          <div v-if="!isMobile" class="rocket-line-box">
-            <SvgIconThemed
-              icon="rocket-line"
-              style="width: 161px; height: 14px; margin-top: 10px"
-            />
-          </div>
-        </div>
-        <div class="item right" style="z-index: 3">
-          <div class="chain-name to">
-            <span>{{ toChainName }}</span>
-          </div>
-          <div class="chain">
             <svg-icon
-              :iconName="showChainIcon(false)"
-              style="width: 56px; height: 56px"
+              v-if="item.icon"
+              :iconName="item.icon"
+              style="width: 18px; height: 18px; margin-right: 4px"
             ></svg-icon>
-          </div>
-          <div class="tx to-tx" @click="goToExplorTo">
-            <template v-if="!detailData">
-              <svg-icon
-                v-if="$store.state.proceedState === 4"
-                class="status-icon"
-                color="#df2e2d"
-                iconName="history_3"
-              ></svg-icon>
-              <svg-icon
-                v-else-if="$store.state.proceedState === 5"
-                class="status-icon"
-                color="#df2e2d"
-                iconName="status-success"
-              ></svg-icon>
-              <svg-icon
-                v-else
-                class="status-icon"
-                color="#df2e2d"
-                iconName="history_1"
-              ></svg-icon>
-            </template>
-            <template v-else>
-              <svg-icon
-                v-if="detailData.state === 0"
-                class="status-icon"
-                color="#df2e2d"
-                iconName="status-success"
-              ></svg-icon>
-              <svg-icon
-                v-else-if="detailData.state === 1"
-                class="status-icon"
-                color="#df2e2d"
-                iconName="history_2"
-              ></svg-icon>
-              <svg-icon
-                v-else
-                class="status-icon"
-                color="#df2e2d"
-                iconName="status-error"
-              ></svg-icon>
-            </template>
-            <span>{{ ToTx }}</span>
-          </div>
-          <!--                    <div class="switch-btn" @click="() => switchNetWork(false)">-->
-          <!--                        Switch Network-->
-          <!--                    </div>-->
-          <div
-            v-if="getExplorer(false)"
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              height: 28px;
-            "
-          >
-            <span
-              @click="openIconUrl(false, item)"
-              id="switch-btn-id-2"
-              class="switch-btn-2"
-              v-for="item in getExplorer(false)"
-              :key="item.name"
-            >
-              <svg-icon
-                v-if="item.icon"
-                :iconName="item.icon"
-                style="width: 18px; height: 18px; margin-right: 4px"
-              ></svg-icon>
-              <span style="height: 20px; line-height: 20px">{{
-                item.name
-              }}</span>
-            </span>
-          </div>
+            <span style="height: 20px; line-height: 20px">{{
+              item.name
+            }}</span>
+          </span>
         </div>
+        <div
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+          flex-wrap: wrap;
+          width: 48%;
+        "
+      >
+        <span
+          @click="openIconUrl(false, item)"
+          id="switch-btn-id-2"
+          class="switch-btn-2"
+          v-for="item in getExplorer(false)"
+          :key="item.name"
+        >
+          <svg-icon
+            v-if="item.icon"
+            :iconName="item.icon"
+            style="width: 18px; height: 18px; margin-right: 4px"
+          ></svg-icon>
+          <span style="height: 20px; line-height: 20px">{{
+            item.name
+          }}</span>
+        </span>
+      </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -451,6 +457,8 @@ export default {
 
     },
     openIconUrl(isFrom, explorerInfo) {
+      // let params = explorerInfo?.icon?.toLocaleLowerCase() === "oklink" ? "?channelId=orbite" :""
+      let params = "?channelId=orbite"
       let hash = ''
       if (this.detailData) {
         hash = isFrom ? this.detailData.fromTxHash : this.detailData.toTxHash
@@ -460,13 +468,13 @@ export default {
           ? this.$store.state.proceeding.userTransfer.txid
           : this.$store.state.proceeding.makerTransfer.txid
       if (hash) {
-        const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx'
-        window.open(txUrl + '/' + hash, '_blank')
+        const txUrl = ( explorerInfo.txUrl || explorerInfo.url) + '/tx' + '/' + hash + params
+        window.open(txUrl, '_blank')
         return
       } else {
         if (isFrom) {
-          const txUrl = explorerInfo.txUrl || explorerInfo.url + '/tx'
-          window.open(txUrl + '/' + this.$store.state.proceedTXID, '_blank')
+          const txUrl = (explorerInfo.txUrl || explorerInfo.url) + '/tx' + '/' + this.$store.state.proceedTXID + params
+          window.open(txUrl, '_blank')
           return
         }
       }
@@ -487,7 +495,7 @@ export default {
       }
       const accountUrl =
         explorerInfo.accountUrl || explorerInfo.url + '/address'
-      const url = accountUrl + '/' + userAddress
+      const url = accountUrl + '/' + userAddress + params
       window.open(url, '_blank')
     },
     getExplorer(isFrom = true) {
@@ -754,6 +762,10 @@ export default {
       .chainDataContent {
         padding: 20px 41px;
         width: 520px;
+
+        .chain-info {
+          width: 100%;
+        }
         .middle-icon {
           .rocket-box {
             margin-top: 18px;
@@ -776,6 +788,12 @@ export default {
         height: 100%;
         position: relative;
         overflow: hidden;
+        .chain-info {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          overflow: hidden;
+        }
         .middle-icon-abs {
           position: absolute;
           top: 0;
@@ -807,6 +825,13 @@ export default {
             background-size: 200%;
           }
         }
+
+        .exploer-group {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+        }
       }
     }
   }
@@ -834,12 +859,15 @@ export default {
       margin-bottom: 12px;
     }
     .chainDataContent {
-      height: 280px;
+      // height: 280px;
       border-radius: 20px;
-      position: relative;
-      display: flex;
-      flex-direction: row;
-      text-align: center;
+
+      .chain-info {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        text-align: center;
+      }
 
       .item {
         width: 128px;
@@ -894,13 +922,30 @@ export default {
         }
         .switch-btn {
           width: 128px;
-          height: 28px;
           border-radius: 20px;
           font-weight: 400;
           font-size: 14px;
           line-height: 28px;
           cursor: pointer;
         }
+        
+      }
+      .middle-icon {
+        flex: 1;
+        .rocket-box {
+          height: 60px;
+          display: flex;
+          align-items: flex-end;
+          justify-content: center;
+          background-repeat: no-repeat;
+        }
+      }
+
+      .exploer-group {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
         .switch-btn-2 {
           display: flex;
           align-items: center;
@@ -915,22 +960,13 @@ export default {
           line-height: 20px;
           cursor: pointer;
           background-color: rgba(255, 255, 255, 1);
+          margin: 2px;
         }
         #switch-btn-id:hover {
           border: rgba(34, 34, 34, 1) 1px solid;
         }
         #switch-btn-id-2:hover {
           border: rgba(34, 34, 34, 1) 1px solid;
-        }
-      }
-      .middle-icon {
-        flex: 1;
-        .rocket-box {
-          height: 60px;
-          display: flex;
-          align-items: flex-end;
-          justify-content: center;
-          background-repeat: no-repeat;
         }
       }
     }
@@ -940,7 +976,7 @@ export default {
   .proceed-box {
     .ProceedContent {
       .chainDataContent {
-        .item {
+        .exploer-group {
           .switch-btn-2 {
             background-color: #282938;
             color: #ffffff;

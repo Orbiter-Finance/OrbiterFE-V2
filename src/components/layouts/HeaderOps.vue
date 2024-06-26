@@ -170,6 +170,7 @@ import {
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
   setClaimCardModalShow,
+  setActPointFetchStatus
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -572,6 +573,7 @@ export default {
       const solanaAddress = solanaHelper.solanaAddress()
 
       if (isAddress) {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
@@ -740,6 +742,7 @@ export default {
       const { address } = this.getAddress()
 
       if (address && address !== '0x') {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })

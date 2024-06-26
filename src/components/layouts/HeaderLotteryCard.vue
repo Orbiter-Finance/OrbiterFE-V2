@@ -52,6 +52,7 @@ import {
   setLotteryCardProgress,
   isSolanaDialog,
   isTonDialog,
+  setActPointFetchStatus
 } from '../../composition/hooks'
 import util from '../../util/util'
 
@@ -65,6 +66,8 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import CommCardTooltip from '../CommCardTooltip.vue'
 import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper'
+
+let timer
 
 export default {
   name: 'HeaderLotteryCard',
@@ -149,15 +152,19 @@ export default {
   },
   methods: {
     async handleShow() {
-      if (!this.visible && this.isMobile) {
-        this.visible = true
-      } else {
-        this.visible = false
-        if (!!this.total) {
-          await this.getLotteryCardDataDraw()
-          await this.getLotteryCardData()
+      clearTimeout(timer)
+      timer = setTimeout(async () => {
+        if (!this.visible && this.isMobile) {
+          this.visible = true
+        } else {
+          this.visible = false
+          if (!!this.total) {
+              await this.getLotteryCardDataDraw()
+              await this.getLotteryCardData()
+          }
         }
-      }
+      }, 500);
+
     },
     getAddress () {
       let addressGroup = {
@@ -235,6 +242,7 @@ export default {
       const { isAddress, address } = this.getAddress()
 
       if (isAddress) {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })
@@ -283,7 +291,6 @@ export default {
   position: relative;
   top: 0;
   left: 0;
-  z-index: 101;
   width: 20px;
   height: 100%;
   margin-left: 12px;

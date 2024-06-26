@@ -60,12 +60,12 @@
               </div>
               <div class="contentItemBalance">
                 <CommLoading
-                  v-if="!getChainBalance(item.localID)"
+                  v-if="loading"
                   style="left: 1rem; top: 0rem"
                   width="1.5rem"
                   height="1.5rem"
                 />
-                {{ getChainBalance(item.localID) }}
+                <span v-else>{{ getChainBalance(item.localID) }}</span>
               </div>
             </div>
           </template>
@@ -89,12 +89,12 @@
             </div>
             <div class="contentItemBalance">
               <CommLoading
-                v-if="!getChainBalance(item.localID)"
+                v-if="loading"
                 style="left: 1rem; top: 0rem"
                 width="1.5rem"
                 height="1.5rem"
               />
-              {{ getChainBalance(item.localID) }}
+              <span v-else>{{ getChainBalance(item.localID) }}</span>
             </div>
           </div>
         </template>
@@ -118,12 +118,12 @@
             </div>
             <div class="contentItemBalance">
               <CommLoading
-                v-if="!getChainBalance(item.localID)"
+                v-if="loading"
                 style="left: 1rem; top: 0rem"
                 width="1.5rem"
                 height="1.5rem"
               />
-              {{ getChainBalance(item.localID) }}
+             <span v-else> {{ getChainBalance(item.localID) }}</span>
             </div>
           </div>
         </template>
@@ -146,13 +146,16 @@ import {
   web3State,
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
-  transferDataState
+  transferDataState,
 } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config'
 import solanaHelper from '../util/solana/solana_helper'
 import tonHelper from '../util/ton/ton_helper'
 import transferCalculate from '../util/transfer/transferCalculate'
 import { ethers } from 'ethers'
+import orbiterCryptoTool from '../util/orbiterCryptoTool'
+import { PASSPHRASE } from '../const'
+import { balanceList, updateBalanceList } from "../composition/hooks"
 
 const chainConfig = config.chainConfig
 
@@ -167,7 +170,6 @@ let timeGroup = 0
 let time1 = 0
 let time2 = 0
 let localAddress = ''
-let balanceList = []
 
 export default {
   name: 'ObSelectChain',
@@ -179,7 +181,7 @@ export default {
         return []
       },
     },
-    type: String
+    type: String,
   },
   data() {
     const { query } = this.$route
@@ -189,19 +191,19 @@ export default {
       tabKey: 'ALL',
       updateTime: 0,
       symbol: query.token || 'ETH',
-      
+      loading: false,
     }
   },
   computed: {
+    balanceGroup () {
+      return balanceList.value || {}
+    },
     remark() {
       const { toChainID, selectMakerConfig } = transferDataState
-      const toChainId =selectMakerConfig.toChain.chainId ||  toChainID 
-      const toArbText = this.type === "from" && 
-      (toChainId === "42161")
-      
-      ? "" : ""
+      const toChainId = selectMakerConfig.toChain.chainId || toChainID
+      const toArbText = this.type === 'from' && toChainId === '42161' ? '' : ''
 
-      return ({
+      return {
         167000: 'Grab $PINK Airdrop',
         81457: toArbText,
         62050: toArbText,
@@ -214,7 +216,7 @@ export default {
         137: toArbText,
         534352: toArbText,
         204: toArbText,
-        "zksync": toArbText,
+        zksync: toArbText,
         42170: toArbText,
         70700: toArbText,
         56: toArbText,
@@ -223,7 +225,7 @@ export default {
         167000: toArbText,
         11501: toArbText,
         4200: toArbText,
-      })
+      }
     },
     currentWalletAddress() {
       const evmAddress =
@@ -467,120 +469,100 @@ export default {
         localAddress = newAddress
         clearTimeout(time2)
         time2 = setTimeout(() => {
+          updateBalanceList(null)
           this.getBanlanceGroupCall(this.symbol)
         }, 100)
       }
     },
   },
   methods: {
-    show() {
+    async getBalance() {
+      // this.loading = true
+      try {
+        const tonAddress = tonHelper.account()
+        const solanaAddress = solanaHelper.solanaAddress()
+        const symbol = this.symbol
+        const address = [
+          {
+            address: tonAddress,
+            type: 'Ton',
+          },
+          {
+            address: solanaAddress,
+            type: 'Solana',
+          },
+          {
+            address: this.starknetAddress,
+            type: 'Starknet',
+          },
+          {
+            address: this.currentWalletAddress,
+            type: 'EVM',
+          },
+        ].filter((item) => !!item.address)
+        // console.log('address', symbol, address)
+        const respone = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}/sdk/chains/balance`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'POST',
+            body: JSON.stringify({
+              address: address,
+              tokens: [symbol],
+            }),
+          }
+        )
+        const res = await respone.json()
+        const { result } = res || {}
+        const { data, iv } = result || {}
+
+        const decodeData = await orbiterCryptoTool.aesDecrypt(
+          data,
+          PASSPHRASE,
+          iv
+        )
+        const list = JSON.parse(decodeData)
+        // console.log("decodeData", JSON.parse(decodeData))
+        let chainInfoList = []
+        list.forEach((item) => {
+          item.balancesList.forEach((option) => {
+            const obj = {
+              chainId: option.chainId,
+              value:
+                option.balances.filter((value) => value.symbol === symbol)[0]
+                  ?.balance,
+            }
+          
+            chainInfoList = chainInfoList.concat([obj])
+          })
+        })
+        updateBalanceList({
+          ...this.balanceGroup,
+          [symbol]: chainInfoList
+        })
+        // this.loading = false
+      } catch (error) {
+        console.log('error', error)
+        // this.loading = false
+      }
+    },
+    show(isTo) {
       this.updateTime = +new Date()
-      balanceList = []
-      this.getBanlanceGroupCall()
+      if(!isTo) {
+        this.getBanlanceGroupCall()
+      }
     },
     selectSymbol(symbol) {
       this.symbol = symbol
     },
     getChainBalance(chainId) {
-      const option = balanceList.filter((item) => item.chainId === chainId)[0]
-      return option ? option?.balance : ''
-    },
-    async getBalanceCall(group) {
-      let defaultResult = {
-        balance: '--',
-        chainId: group?.localChainID,
-        tokenName: group.tokenName,
-      }
-      try {
-        if (group?.tokenAddress && group?.userAddress) {
-          const balance = await transferCalculate.getTransferBalance(
-            group.localChainID,
-            group.tokenAddress,
-            group.tokenName,
-            group.userAddress
-          )
-          defaultResult = {
-            balance: `${decimalNum(
-              ethers.utils.formatUnits(balance, group.decimals),
-              8
-            )} ${group.tokenName}`,
-            chainId: group.localChainID,
-            tokenName: group.tokenName,
-          }
-        }
-      } catch (error) {}
-      balanceList = balanceList.concat([defaultResult])
-      this.updateTime = +new Date()
-    },
-    async getBalance() {
-      balanceList = []
-      const symbol = this.symbol
-      let chainList = []
-
-      for (const groupName in this.groupChains) {
-        const chainsIds = this.groupChains[groupName]
-        chainList = chainList.concat(chainsIds || [])
-      }
-
-      let chains = this.newChainData.concat(chainList)
-
-      let chainData = []
-
-      chains.forEach((item) => {
-        const flag = chainData?.some(
-          (option) =>
-            String(option?.localID).trim().toLocaleLowerCase() ===
-            String(item?.localID).trim().toLocaleLowerCase()
-        )
-        if (!flag) {
-          chainData = chainData.concat([item])
-        }
-      })
-
-      let list = chainData.map((item) => {
-        const chainInfo = util.getV3ChainInfoByChainId(item?.localID)
-
-        const group = chainInfo?.tokens
-          ?.concat?.(chainInfo?.nativeCurrency || {})
-          ?.filter((option) => option.symbol === symbol)?.[0]
-
-        let address = ''
-        if (
-          item.localID === CHAIN_ID.solana ||
-          item.localID === CHAIN_ID.solana_test
-        ) {
-          address = tonHelper.account()
-        } else if (
-          item.localID === CHAIN_ID.solana ||
-          item.localID === CHAIN_ID.solana_test
-        ) {
-          address = this.solanaAddress
-        } else if (
-          item.localID === CHAIN_ID.starknet ||
-          item.localID === CHAIN_ID.starknet_test
-        ) {
-          address = this.starknetAddress
-        } else {
-          address = this.currentWalletAddress
-        }
-
-        return group
-          ? {
-              localChainID: item.localID,
-              tokenAddress: group.address,
-              tokenName: group.symbol,
-              decimals: group.decimals,
-              userAddress: address,
-            }
-          : {
-              localChainID: item.localID,
-              tokenName: symbol,
-            }
-      })
-
-      list.forEach((item) => {
-        this.getBalanceCall(item)
-      })
+      const list = this.balanceGroup[this.symbol || ""] || []
+      const option = list.filter(
+        (item) => item.chainId === chainId
+      )[0]
+      return !isNaN(option?.value) ? decimalNum(option?.value, 8, ',') : '--'
     },
     getBanlanceGroupCall() {
       clearTimeout(timeGroup)
@@ -925,16 +907,14 @@ export default {
 .dark-theme {
   #obSelectChainBody {
     .selectChainTab {
-        background: var(--dark-page-bg);
-        .selectChainItem {
-            
-        }
-        .selectChainActiveItem {
-            color: #FFF;
-            background: var(--dark-page-box-bg);
-          }
+      background: var(--dark-page-bg);
+      .selectChainItem {
+      }
+      .selectChainActiveItem {
+        color: #fff;
+        background: var(--dark-page-box-bg);
+      }
     }
-    
   }
 }
 </style>

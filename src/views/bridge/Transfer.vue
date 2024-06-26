@@ -12,7 +12,7 @@
                   @show="() => (isRaiseUpFromTokenListVisible = true)"
           ></ObSelect>
         </div>
-        <div v-if="!isV3" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
+        <!-- <div v-if="!isV3" style="flex-grow: 1;display: flex;justify-content: flex-end;align-items: center">
           <span :style="`margin-right:10px;color:${isNewVersion ? (!isLightMode ? '#22DED7' : '#4890FE') : '#888888'}`">{{ isNewVersion ? 'V2' : 'V1' }}</span>
           <el-switch :hidden="isLightMode"
                      v-model="isNewVersion"
@@ -24,7 +24,7 @@
                      active-color="#4890FE"
                      inactive-color="#888888">
           </el-switch>
-        </div>
+        </div> -->
       </div>
       <div class="from-area">
         <div class="topItem">
@@ -201,7 +201,7 @@
           />
         </div>
       </div>
-      <img :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
+      <!-- <img v-if="false" :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" /> -->
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -333,6 +333,7 @@
           <ObSelectChain
                   :type="'to'"
                   :ChainData="toChainIdList"
+                  ref="selectToChainRef"
                   v-on:getChainInfo="getToChainInfo"
                   v-on:closeSelect="closeToChainPopupClick()"
           />
@@ -442,7 +443,9 @@ import {
   updateActDataList, setActPoint, setActDialogVisible, setActNftList,
   updateTradingPairsData,
   setSelectWalletDialogVisible,
-  setConnectWalletGroupKey
+  setConnectWalletGroupKey,
+  setActPointFetchStatus,
+  prizesTimeEnd
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
@@ -550,6 +553,9 @@ export default {
     };
   },
   computed: {
+    isPrizesEnd(){
+      return prizesTimeEnd.value
+    },
     isMobileSize() {
       return isMobile.value
     },
@@ -856,6 +862,7 @@ export default {
     },
     selectFromTokenSymbol:function (newValue) {
       this.$refs.selectFromChainRef.selectSymbol(newValue)
+      this.$refs.selectToChainRef.selectSymbol(newValue)
       if (transferDataState.fromCurrency !== newValue) {
         this.updateTransferInfo({ fromCurrency: newValue });
         this.clearTransferValue();
@@ -1027,6 +1034,7 @@ export default {
       if (util.getAccountAddressError(address)) {
         return;
       }
+      setActPointFetchStatus()
       const pointRes = await requestPointSystem('v2/user/points', {
         address
       });
@@ -1799,6 +1807,7 @@ export default {
         return;
       }
       this.showToChainPopupClick();
+      this.$refs.selectToChainRef.show(true)
     },
     getFromChainInfo(e) {
       if (transferDataState.fromChainID !== e.localID) this.updateTransferInfo({ fromChainID: e.localID });

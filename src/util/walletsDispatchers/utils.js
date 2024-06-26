@@ -19,6 +19,7 @@ import {
   COIN98_APP,
   TRUSTWALLET_APP,
   SAFEPAL,
+  BINANCEWALLET,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -66,6 +67,7 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (!walletType || !ethereum) return false
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
   if (walletType === SAFEPAL) return ethereum.isSafePal
+  if (walletType === BINANCEWALLET) return ethereum.isBinance
   if (walletType === TRUSTWALLET_APP)
     return !!window?.trustwallet?.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
@@ -160,6 +162,7 @@ export const getMobileAppTypeByProvider = () => {
   if (!provider) return undefined
   if (provider.isImToken) return IM_TOKEN_APP
   if (provider.isSafePal) return SAFEPAL
+  if (provider.isBinance) return BINANCEWALLET
   if (provider.isCoin98) return COIN98_APP
   if (provider.isTrustWallet) return TRUSTWALLET_APP
   if (provider?.isTokenPocket) return TOKEN_POCKET_APP

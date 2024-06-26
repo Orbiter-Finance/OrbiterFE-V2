@@ -10,11 +10,11 @@
   >
     <div class="app-content">
       <keep-alive>
-        <TopNav v-if="$route.path !== '/prizes'" />
+        <TopNav v-if="isTopNav" />
       </keep-alive>
       <div
         class="main"
-        :style="`padding-top: ${$route.path === '/prizes' ? '0px' : '24px'}`"
+        :style="`padding-top: ${!isTopNav ? '0px' : '24px'}`"
       >
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" class="router" />
@@ -23,26 +23,25 @@
       </div>
       <keep-alive>
         <BottomNav
-          v-if="$route.path !== '/home' && $route.path !== '/prizes'"
+          v-if="isBottomNav"
         />
       </keep-alive>
     </div>
     <!-- <HeaderDialog /> -->
     <HeaderActDialog
       v-if="
-        $route.path !== '/statistics' &&
-        $route.path !== '/home' &&
-        $route.path !== '/prizes'
+        isHeaderActDialog
       "
       style="z-index: 999"
     />
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
-    <HeaderLotteryCardDialog />
-    <ClaimRewardModal></ClaimRewardModal>
+    <HeaderLotteryCardDialog v-if="isTopNav" />
+    <ClaimRewardModal v-if="isTopNav"></ClaimRewardModal>
     <div id="ton-connect-wallet"></div>
-    <GlobalTgCard v-if="$route.path !== '/prizes'"></GlobalTgCard>
-    <UserInfoDetailsCardModal></UserInfoDetailsCardModal>
+    <GlobalTgCard v-if="isTopNav"></GlobalTgCard>
+    <UserInfoDetailsCardModal v-if="isTopNav"></UserInfoDetailsCardModal>
+    <OPointsRankingCard v-if="isTopNav"></OPointsRankingCard>
   </div>
 </template>
 
@@ -79,7 +78,8 @@ import {
   setConnectWalletGroupKey,
   isTonDialog,
   setTonDialog,
-  setClaimCardModalShow
+  setClaimCardModalShow,
+  setActPointFetchStatus
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -96,6 +96,7 @@ import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialo
 import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import UserInfoDetailsCardModal from './components/layouts/UserInfoDetailsCardModal.vue'
 import ClaimRewardModal from './components/layouts/ClaimRewardModal.vue'
+import OPointsRankingCard from './components/layouts/OPointsRankingCard.vue'
 
 import {
   setIsBraveWallet,
@@ -120,10 +121,26 @@ const { walletDispatchersOnInit } = walletDispatchers
 let timerOptions = 0
 let timerActivityList = 0
 let timeNft = 0
+let timeRank = 0
 
 export default {
   name: 'App',
   computed: {
+    routerPath() {
+      return this.$route.path
+    },
+    isNotPrizes() {
+      return this.routerPath !== '/prizes'
+    },
+    isTopNav() {
+      return this.isInit && this.isNotPrizes
+    },
+    isBottomNav() {
+      return this.isTopNav && this.routerPath !== '/home'
+    },
+    isHeaderActDialog(){
+      return this.isBottomNav && this.routerPath !== '/statistics'
+    },
     isMobile() {
       return isMobile.value
     },
@@ -198,6 +215,7 @@ export default {
       // lightbg,
       // darkbg,
       // topbg,
+      isInit: false
     }
   },
   components: {
@@ -210,6 +228,12 @@ export default {
     GlobalTgCard,
     UserInfoDetailsCardModal,
     ClaimRewardModal,
+    OPointsRankingCard
+  },
+  updated() {
+    if(!this.isInit) {
+      this.isInit = true
+    }
   },
   async mounted() {
     tonHelper.tonConnectCall()
@@ -240,7 +264,9 @@ export default {
     isLogin: function (item1, item2) {
       if (item1 !== item2) {
         if (!!item1) {
-          setActDialogVisible(true)
+          if(this.isNotPrizes) {
+            setActDialogVisible(true)
+          }
         } else {
           setActDialogVisible(false)
         }
@@ -250,10 +276,9 @@ export default {
     },
     selectWalletDialogVisible: function (newVisible) {
       if (!!newVisible) {
-        this.dataList = []
-        this.getWalletAddressActList()
-        this.getWalletAddressPoint()
-        this.getNftList()
+          this.getWalletAddressActList()
+          this.getWalletAddressPoint()
+          this.getNftList()
       }
     },
     currentWalletAddress: function (newAddress, oldAddress) {
@@ -263,7 +288,9 @@ export default {
       const tonAddress = tonHelper.account()
       if (web3Address && web3Address !== web3OldAddress) {
         setClaimCardModalShow(false, '')
-        this.getClaimRewardModalData()
+        if(this.isTopNav) {
+          this.getClaimRewardModalData()
+        }
       }
       if (tonAddress) {
         setTonDialog(true)
@@ -277,10 +304,11 @@ export default {
       }
 
       if (!!web3Address || !!starkNetAddress) {
-        this.dataList = []
-        this.getWalletAddressActList()
-        this.getWalletAddressPoint()
-        this.getNftList()
+        if(this.isTopNav) {
+          this.getWalletAddressActList()
+          this.getWalletAddressPoint()
+          this.getNftList()
+        }
       }
     },
   },
@@ -358,7 +386,6 @@ export default {
           page: 1,
         })
         const list = res.data.list
-        // const dataList = []
         // const undoneList = []
         // const doneList = []
         // console.log("list", list)
@@ -387,6 +414,7 @@ export default {
       timerOptions = timerN
 
       if (isAddress) {
+        setActPointFetchStatus()
         const pointRes = await requestPointSystem('v2/user/points', {
           address,
         })

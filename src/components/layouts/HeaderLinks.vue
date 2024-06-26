@@ -55,6 +55,7 @@ import {
   curPageTabState,
   setPageTab,
   transferDataState,
+  setActDialogVisible
 } from '../../composition/hooks'
 
 export default {
@@ -122,6 +123,7 @@ export default {
           event_category: 'PATH_TO_PRIZES',
           event_label: 'to prizes',
         })
+        setActDialogVisible(false)
       }
       const dealerId = transferDataState.dealerId
       const path = tar.href

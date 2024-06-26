@@ -20,15 +20,20 @@
           Competition
         </div>
         <div class="prizes-orbguy">
-          TOP 800 will get 
+          TOP 800 will get
           <svg-icon iconName="ORBGUY" class="orbguy-token-symbol"></svg-icon>
           <span class="token-symbol">$ORBGUY </span>
           randomly
         </div>
-        <img
+        <!-- <img
           class="prizes-banner-image-mobile"
           :src="require('../../../assets/prizes/banner-bg-mobile.png')"
-        />
+        /> -->
+
+        <div class="prizes-banner-image-mobile">
+          <PrizesClaimCard ></PrizesClaimCard>
+        </div>
+
         <div class="prizes-banner-mobile-bg"></div>
         <div class="time-label">Ends In</div>
         <div class="time-card">
@@ -43,15 +48,20 @@
         </div>
 
         <div class="prizes-to-bridge">
-          <div class="prizes-to-bridge-btn" @click="toBridgeCall">
-            Start Bridge
+          <div class="prizes-to-bridge-btn" @click="toBridgeCall"
+          :style="`opacity: ${isEnd ? '0.3' : '1'};`"
+          >
+            {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
           </div>
         </div>
       </div>
-      <img
+      <!-- <img
         class="prizes-banner-image"
         :src="require('../../../assets/prizes/banner-bg.png')"
-      />
+      /> -->
+      <div class="prizes-claim-group">
+        <PrizesClaimCard ></PrizesClaimCard>
+      </div>
       <div class="prizes-banner-bg"></div>
     </div>
   </div>
@@ -59,8 +69,10 @@
 
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
-import { isDev } from '../../../util';
+import { isDev } from '../../../util'
 import getUTCTime from '../../../util/time'
+import PrizesClaimCard from "./PrizesClaimCard.vue"
+import { prizesTimeEnd, setPrizesTimeEnd } from "../../../composition/hooks"
 
 let timer1
 
@@ -84,12 +96,20 @@ const timeListDefault = [
 ]
 
 export default {
-  components: { SvgIcon },
+  components: { 
+    SvgIcon,
+    PrizesClaimCard
+   },
   name: 'PrizesTopBanner',
   data() {
     return {
-      timeStr: '2024/6/20 08:00:00',
+      timeStr: '2024-06-20T13:30:00.000Z',
       timeList: timeListDefault,
+    }
+  },
+  computed: {
+    isEnd() {
+      return prizesTimeEnd.value
     }
   },
   methods: {
@@ -107,16 +127,31 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
-      this.$router.push( isDev()? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH')
+      if(this.isEnd) return
+      localStorage.setItem(
+        'last_page_before_history',
+        JSON.stringify({
+          params: {},
+          path: '/',
+          query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
+        })
+      )
+      this.$router.push({
+        path: isDev()
+          ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia'
+          : '/?source=Ethereum&dest=Arbitrum&token=ETH',
+      })
     },
   },
   mounted() {
+    
     timer1 = setInterval(() => {
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
+        setPrizesTimeEnd(true)
         this.timeList = timeListDefault
         return
       }
@@ -330,10 +365,18 @@ export default {
           font-size: 20px;
           font-weight: 600;
           line-height: 28px;
-          cursor: pointer;
+          // cursor: pointer;
         }
       }
     }
+
+    .prizes-claim-group {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     .prizes-banner-image {
       width: 68%;
       margin-right: -8%;
@@ -353,6 +396,7 @@ export default {
       transform: translateY(30%);
       z-index: -1;
     }
+
   }
 }
 
@@ -401,6 +445,7 @@ export default {
       text-align: center;
       .prizes-details {
         .prizes-banner-image-mobile {
+          padding: 24px 12px;
           display: flex;
         }
 
@@ -443,6 +488,9 @@ export default {
         }
       }
       .prizes-banner-image {
+        display: none;
+      }
+      .prizes-claim-group {
         display: none;
       }
       .prizes-banner-bg {

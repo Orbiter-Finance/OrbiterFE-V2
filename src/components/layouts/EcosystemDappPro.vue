@@ -1,71 +1,72 @@
 <template>
-  <div
-    ref="ecosystem_dapp_pro_ref"
-    class="ecosystem-dapp-pro-com"
-    :style="showCard ? 'height: 310px' : 'height: 50px;'"
-  >
-    <div class="title">
-      <span class="text">Ecosystem DApp </span>
-      <svg
-        v-show="!isMobile"
-        class="expand"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        viewBox="0 0 16 16"
-        fill="none"
-        @click="triggle(!showCard)"
-      >
-        <desc>Created with Pixso.</desc>
-        <defs />
-        <rect
-          rx="4.000000"
-          width="16.000000"
-          height="16.000000"
-          fill="#EEEEEE"
-          fill-opacity="0"
-        />
-        <rect
-          x="0.500000"
-          y="0.500000"
-          rx="4.000000"
-          width="15.000000"
-          height="15.000000"
-          stroke="#EEEEEE"
-          stroke-opacity="0"
-          stroke-width="1.000000"
-        />
-        <path
-          d="M10.77 4.69L10.77 4.72L10.97 5L5.02 5L5.22 4.72L5.22 4.69C5.05 4.57 4.82 4.6 4.7 4.77C4.57 4.94 4.6 5.17 4.77 5.3L4.8 5.29L5.01 5.01L8 7.25L10.98 5.01L11.19 5.29L11.22 5.3C11.39 5.17 11.42 4.94 11.3 4.77C11.17 4.6 10.94 4.57 10.77 4.69Z"
-          fill="#D8D8D8"
-          fill-opacity="0"
-          fill-rule="evenodd"
-        />
-        <path
-          d="M5 5L8 7.25L11 5"
-          stroke="#222222"
-          stroke-opacity="1.000000"
-          stroke-width="0.750000"
-          stroke-linejoin="round"
-          stroke-linecap="round"
-        />
-        <path
-          d="M10.77 8.44L10.77 8.47L10.97 8.75L5.02 8.75L5.22 8.47L5.22 8.44C5.05 8.32 4.82 8.35 4.7 8.52C4.57 8.69 4.6 8.92 4.77 9.05L4.8 9.04L5.01 8.76L8 11L10.98 8.76L11.19 9.04L11.22 9.05C11.39 8.92 11.42 8.69 11.3 8.52C11.17 8.35 10.94 8.32 10.77 8.44Z"
-          fill="#D8D8D8"
-          fill-opacity="0"
-          fill-rule="evenodd"
-        />
-        <path
-          d="M5 8.75L8 11L11 8.75"
-          stroke="#222222"
-          stroke-opacity="1.000000"
-          stroke-width="0.750000"
-          stroke-linejoin="round"
-          stroke-linecap="round"
-        />
-      </svg>
-    </div>
-    <el-carousel :interval="6000" trigger="click" height="272px">
-      <!-- <el-carousel-item>
+  <div class="ecosystem-dapp-pro-com">
+    <div
+      ref="ecosystem_dapp_pro_ref"
+      class="ecosystem-dapp-pro-content"
+      :style="contentStyle"
+    >
+      <div class="title">
+        <span class="text">Ecosystem DApp </span>
+        <svg
+          v-show="!isMobile"
+          class="expand"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 0 16 16"
+          fill="none"
+          @click="triggle(!showCard)"
+        >
+          <desc>Created with Pixso.</desc>
+          <defs />
+          <rect
+            rx="4.000000"
+            width="16.000000"
+            height="16.000000"
+            fill="#EEEEEE"
+            fill-opacity="0"
+          />
+          <rect
+            x="0.500000"
+            y="0.500000"
+            rx="4.000000"
+            width="15.000000"
+            height="15.000000"
+            stroke="#EEEEEE"
+            stroke-opacity="0"
+            stroke-width="1.000000"
+          />
+          <path
+            d="M10.77 4.69L10.77 4.72L10.97 5L5.02 5L5.22 4.72L5.22 4.69C5.05 4.57 4.82 4.6 4.7 4.77C4.57 4.94 4.6 5.17 4.77 5.3L4.8 5.29L5.01 5.01L8 7.25L10.98 5.01L11.19 5.29L11.22 5.3C11.39 5.17 11.42 4.94 11.3 4.77C11.17 4.6 10.94 4.57 10.77 4.69Z"
+            fill="#D8D8D8"
+            fill-opacity="0"
+            fill-rule="evenodd"
+          />
+          <path
+            d="M5 5L8 7.25L11 5"
+            stroke="#222222"
+            stroke-opacity="1.000000"
+            stroke-width="0.750000"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          />
+          <path
+            d="M10.77 8.44L10.77 8.47L10.97 8.75L5.02 8.75L5.22 8.47L5.22 8.44C5.05 8.32 4.82 8.35 4.7 8.52C4.57 8.69 4.6 8.92 4.77 9.05L4.8 9.04L5.01 8.76L8 11L10.98 8.76L11.19 9.04L11.22 9.05C11.39 8.92 11.42 8.69 11.3 8.52C11.17 8.35 10.94 8.32 10.77 8.44Z"
+            fill="#D8D8D8"
+            fill-opacity="0"
+            fill-rule="evenodd"
+          />
+          <path
+            d="M5 8.75L8 11L11 8.75"
+            stroke="#222222"
+            stroke-opacity="1.000000"
+            stroke-width="0.750000"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+          />
+        </svg>
+      </div>
+      <el-carousel :interval="6000" trigger="click" height="272px">
+        <!-- <el-carousel-item>
         <EcosystemDapp
           :holders="holders"
           :ratio="ratio"
@@ -80,34 +81,40 @@
         />
       </el-carousel-item> -->
       <el-carousel-item>
-        <EcosystemDapp
-          :holders="holders"
-          :ratio="ratio"
-          :showCard="showCard"
-          :banner="'banner.gif'"
-          :tag="'Fair Launch'"
-          :tagStyle="'background: linear-gradient( 169deg, rgb(248, 218, 211) 7.353%,  rgb(220, 84, 161) 60.561%);'"
-          :description="`Transfer ≥ <span class='orbiter_global_ecosystem_dapp_condition_pink'>6TXs</span> to Taiko to grab  <span class='orbiter_global_ecosystem_dapp_condition_pink'>$PINK</span>.`"
-          :isProgress="true"
-          :name="'TaiKo'"
-          :url="'https://www.pinketh.xyz/'"
-        />
+        <EcosystemLikidDappPro
+        :showCard="showCard"
+        ></EcosystemLikidDappPro>
       </el-carousel-item>
-      <el-carousel-item>
-        <EcosystemDapp
-          :holders="totalUser"
-          :ratio="ratio"
-          :showCard="showCard"
-          :banner="'astra.jpg'"
-          :tag="'Cross-chain Game'"
-          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-          :description="'Exclusive Early Rewards for orbiter Premium Users is airdroping.'"
-          :isProgress="false"
-          :name="'0xastra'"
-          :url="'https://0xastra.xyz/'"
-        />
-      </el-carousel-item>
-    </el-carousel>
+        <el-carousel-item>
+          <EcosystemDapp
+            :holders="holders"
+            :ratio="ratio"
+            :showCard="showCard"
+            :banner="'banner.gif'"
+            :tag="'Fair Launch'"
+            :tagStyle="'background: linear-gradient( 169deg, rgb(248, 218, 211) 7.353%,  rgb(220, 84, 161) 60.561%);'"
+            :description="`Transfer ≥ <span class='orbiter_global_ecosystem_dapp_condition_pink'>6TXs</span> to Taiko to grab  <span class='orbiter_global_ecosystem_dapp_condition_pink'>$PINK</span>.`"
+            :isProgress="true"
+            :name="'TaiKo'"
+            :url="'https://www.pinketh.xyz/'"
+          />
+        </el-carousel-item>
+        <el-carousel-item>
+          <EcosystemDapp
+            :holders="totalUser"
+            :ratio="ratio"
+            :showCard="showCard"
+            :banner="'astra.png'"
+            :tag="'Cross-chain Game'"
+            :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
+            :description="'Exclusive Early Rewards for orbiter Premium Users is airdroping.'"
+            :isProgress="false"
+            :name="'0xastra'"
+            :url="'https://0xastra.xyz/'"
+          />
+        </el-carousel-item>
+      </el-carousel>
+    </div>
   </div>
 </template>
 <script>
@@ -118,6 +125,7 @@ import Web3 from 'web3'
 import { isMobile } from '../../composition/hooks'
 import util from '../../util/util'
 import EcosystemDapp from './EcosystemDapp.vue'
+import EcosystemLikidDappPro from './EcosystemLikidDappPro.vue'
 
 let timer
 let timer1
@@ -126,6 +134,7 @@ export default {
   name: 'EcosystemDappPro',
   components: {
     EcosystemDapp,
+    EcosystemLikidDappPro
   },
   data() {
     return {
@@ -146,13 +155,11 @@ export default {
     showCard() {
       return this.isMobile || this.show
     },
-  },
-  watch: {
-    isMobile: function (mobile1) {
-      if (!mobile1) {
-        this.show = true
-        this.triggle(true)
-      }
+    contentStyle() {
+      let style = ""
+      style += this.showCard ? 'height: 310px;' : 'height: 50px;'
+      style += this.isMobile ? 'position: relative;' : 'position: absolute;'
+      return style
     },
   },
   methods: {
@@ -195,20 +202,6 @@ export default {
     },
     triggle(status) {
       this.show = status
-      let time = 1000
-
-      try {
-        timer = setInterval(() => {
-          time -= 10
-          if (time < -10) {
-            clearInterval(timer)
-            util.log('card', status)
-          }
-          this.$emit('getTaskHeight')
-        }, 10)
-      } catch (error) {
-        clearInterval(timer)
-      }
     },
     getUTCTime1(str) {
       let d1 = new Date(str)
@@ -287,10 +280,12 @@ export default {
   created() {
     this.getData()
     this.getData2()
-    const _self = this
-    setTimeout(() => {
-      _self.triggle(false)
-    }, 5000)
+    // const _self = this
+    // if(!this.isMobile) {
+    //   setTimeout(() => {
+    //     _self.triggle(false)
+    //   }, 5000)
+    // }
   },
 }
 </script>
@@ -304,38 +299,52 @@ export default {
 
 .ecosystem-dapp-pro-com {
   width: 100%;
-  padding: 16px 12px;
-  box-sizing: border-box;
-  will-change: height;
-  transition: all 0.5s linear;
-
-  .title {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 50px;
+  z-index: 10;
+  .ecosystem-dapp-pro-content {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 16px 12px;
+    box-sizing: border-box;
+    will-change: height;
+    transition: all 0.5s linear;
+    bottom: 0;
+    left: 0;
+    box-shadow: rgba(0, 0, 0, 0.11) 0px 0px 10px 0px;
+    background-color: #FFF;
+    .title {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
 
-    .text {
-      font-family: Kodchasan-Bold;
-      font-size: 16px;
-      font-weight: bold;
-      color: #222222;
-      line-height: 22px;
-    }
-    .expand {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      background: rgb(238, 238, 238);
-      cursor: pointer;
+      .text {
+        font-family: Kodchasan-Bold;
+        font-size: 16px;
+        font-weight: bold;
+        color: #222222;
+        line-height: 22px;
+      }
+      .expand {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        background: rgb(238, 238, 238);
+        cursor: pointer;
+      }
     }
   }
 }
 
 .dark-theme {
   .ecosystem-dapp-pro-com {
-    .text {
-      color: #f5f5f5;
+    .ecosystem-dapp-pro-content {
+      background-color: #373951;
+      .text {
+        color: #f5f5f5;
+      }
     }
   }
 }

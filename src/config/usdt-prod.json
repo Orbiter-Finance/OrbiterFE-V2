@@ -1643,18 +1643,6 @@
             "endTime": 99999999999999
         }
     },
-    "3-56": {
-        "USDT-USDT": {
-            "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
-            "sender": "UQBN1z9drcrBbuKgJMYBQdV4c58XymfTooTZ3aZJzdc2IHHN",
-            "gasFee": 0,
-            "tradingFee": 2,
-            "maxPrice": 10000,
-            "minPrice": 0.1,
-            "startTime": 0,
-            "endTime": 99999999999999
-        }
-    },
     "56-3": {
         "USDT-USDT": {
             "makerAddress": "UQBN1z9drcrBbuKgJMYBQdV4c58XymfTooTZ3aZJzdc2IHHN",

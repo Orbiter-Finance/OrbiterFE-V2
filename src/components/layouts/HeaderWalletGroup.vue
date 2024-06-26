@@ -83,7 +83,8 @@ import walletDispatchers, {
   CURRENT_SUPPORT_WALLET,
   FOXWALLET_APP,
   // TRUSTWALLET_APP,
-  SAFEPAL
+  SAFEPAL,
+  BINANCEWALLET
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -162,6 +163,11 @@ export default {
           isConnect: false,
           icon: 'okxwallet',
           title: 'OKXWallet',
+        },
+        {
+          isConnect: false,
+          icon: 'binance wallet',
+          title: BINANCEWALLET,
         },
         {
           isConnect: false,

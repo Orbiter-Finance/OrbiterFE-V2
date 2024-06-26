@@ -115,42 +115,66 @@
       <div class="inv"></div>
       <div class="task-title">Quest</div>
 
-      <div
-        class="task-card-options-group"
-        v-for="item in taskOptionsList"
-        :key="item.reward"
-        :class="item.isSuccess ? 'task-card-options-group-success' : ''"
-        @click="openTelegram(item)"
-      >
+      <div class="task-list-group">
         <div
-          class="task-card-options"
-          :style="`opacity:${item.isPromotion ? '0.4' : '1'};`"
+          class="task-card-options-group"
+          v-for="item in taskOptionsList"
+          :key="item.reward"
+          :class="item.isSuccess ? 'task-card-options-group-success' : ''"
+          @click="openTelegram(item)"
         >
-          <div class="info">
-            <div class="icon">
-              <img
-                :src="require('../../../assets/prizes/' + item.icon + '.svg')"
-              />
-            </div>
-            <div class="content-text-group">
-              <div class="content-text" v-html="item.text"></div>
-              <o-tooltip v-if="item.specificChain">
-                <template v-slot:titleDesc>
-                  <div style="margin-left: -20px">
-                    <span> 
-                    <span>Specific chains include: </span>
-                    <br />
-                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin 
-                  </span>
+          <div
+            class="task-card-options"
+            :style="`opacity:${item.isPromotion ? '0.4' : '1'};`"
+          >
+            <div class="info">
+              <div class="icon">
+                <img
+                  :src="require('../../../assets/prizes/' + item.icon + '.svg')"
+                />
+              </div>
+              <div class="content-text-group">
+                <div class="content-text" v-html="item.text"></div>
+                <o-tooltip v-if="item.specificChain">
+                  <template v-slot:titleDesc>
+                    <div style="margin-left: -20px">
+                      <span>
+                        <span>Specific chains include: </span>
+                        <br />
+                        Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
+                        Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum
+                        Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko,
+                        BEVM, Merlin
+                      </span>
+                    </div>
+                  </template>
+                  <div class="orbiter_global_prizes_tips_underline tip-text">
+                    specific chain
                   </div>
-                </template>
-                <div class="orbiter_global_prizes_tips_underline tip-text">specific chain</div>
-              </o-tooltip>
-              <span v-if="item.specificChain">to Arbitrum</span>
+                </o-tooltip>
+                <span v-if="item.specificChain">to Arbitrum</span>
+              </div>
+            </div>
+            <div class="reward">
+              <div class="reward-info">
+                {{ item.reward }}
+                <img
+                  style="margin: 0 4px"
+                  :src="require('../../../assets/prizes/o-points.svg')"
+                />
+                OPoints
+              </div>
+              <div class="reward-status">
+                <PrizesTaskSuccessIcon
+                  v-if="item.isSuccess"
+                  :fillColor="'#DDF600'"
+                ></PrizesTaskSuccessIcon>
+                <img v-else :src="require('../../../assets/prizes/more.svg')" />
+              </div>
             </div>
           </div>
-          <div class="reward">
-            <div class="reward-info">
+          <div class="reward-info-mobile-group">
+            <div class="reward-info-mobile">
               {{ item.reward }}
               <img
                 style="margin: 0 4px"
@@ -158,91 +182,83 @@
               />
               OPoints
             </div>
-            <div class="reward-status">
+          </div>
+        </div>
+
+        <div
+          class="task-card-pool-group"
+          v-for="item in taskPoolList"
+          :key="item.reward"
+          :style="
+            item.isSuccess && !item.isPromotion
+              ? `border: 1px solid ${item.color};backdrop-filter: blur(12px);`
+              : ''
+          "
+          @click="openTelegram(item)"
+        >
+          <div
+            class="task-card-pool"
+            :style="`opacity:${item.isPromotion ? '0.4' : '1'};`"
+          >
+            <div class="info">
+              <div class="icon">
+                <img
+                  :src="require('../../../assets/prizes/' + item.icon + '.svg')"
+                />
+              </div>
+              <div class="content-text-group">
+                <div class="content-text" v-html="item.text"></div>
+                <o-tooltip v-if="item.specificChain">
+                  <template v-slot:titleDesc>
+                    <div style="margin-left: -20px">
+                      <span>
+                        <span>Specific chains include: </span>
+                        <br />
+                        Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
+                        Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum
+                        Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko,
+                        BEVM, Merlin
+                      </span>
+                    </div>
+                  </template>
+                  <div class="orbiter_global_prizes_tips_underline tip-text">
+                    specific chain
+                  </div>
+                </o-tooltip>
+                <span v-if="item.specificChain">to Arbitrum</span>
+              </div>
+            </div>
+            <div v-if="item.isPromotion" class="prizes-promotion">
+              Already entered in higher stage pools
+            </div>
+            <div v-else class="pool-reward" :style="`color: ${item.color};`">
+              <div class="pool-reward-info">
+                {{ item.reward }}
+              </div>
               <PrizesTaskSuccessIcon
                 v-if="item.isSuccess"
-                :fillColor="'#DDF600'"
+                :fillColor="item.color"
+                style="margin-left: 4px"
               ></PrizesTaskSuccessIcon>
               <img v-else :src="require('../../../assets/prizes/more.svg')" />
             </div>
           </div>
-        </div>
-        <div class="reward-info-mobile-group">
-          <div class="reward-info-mobile">
-            {{ item.reward }}
-            <img
-              style="margin: 0 4px"
-              :src="require('../../../assets/prizes/o-points.svg')"
-            />
-            OPoints
-          </div>
-        </div>
-      </div>
-
-      <div
-        class="task-card-pool-group"
-        v-for="item in taskPoolList"
-        :key="item.reward"
-        :style="
-          item.isSuccess && !item.isPromotion
-            ? `border: 1px solid ${item.color};backdrop-filter: blur(12px);`
-            : ''
-        "
-        @click="openTelegram(item)"
-      >
-        <div
-          class="task-card-pool"
-          :style="`opacity:${item.isPromotion ? '0.4' : '1'};`"
-        >
-          <div class="info">
-            <div class="icon">
-              <img
-                :src="require('../../../assets/prizes/' + item.icon + '.svg')"
-              />
+          <div class="pool-reward-info-mobile-group">
+            <div v-if="item.isPromotion" class="prizes-promotion-mobile">
+              Already entered in higher stage pools
             </div>
-            <div class="content-text-group">
-              <div class="content-text" v-html="item.text"></div>
-              <o-tooltip v-if="item.specificChain">
-                <template v-slot:titleDesc>
-                  <div style="margin-left: -20px">
-                    <span> 
-                    <span>Specific chains include: </span>
-                    <br />
-                    Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin 
-                  </span>
-                  </div>
-                </template>
-                <div class="orbiter_global_prizes_tips_underline tip-text">specific chain</div>
-              </o-tooltip>
-              <span v-if="item.specificChain">to Arbitrum</span>
-            </div>
-          </div>
-          <div v-if="item.isPromotion" class="prizes-promotion">
-            Already entered in higher stage pools
-          </div>
-          <div v-else class="pool-reward" :style="`color: ${item.color};`">
-            <div class="pool-reward-info">
+            <div
+              v-else
+              class="pool-reward-info-mobile"
+              :style="`color: ${item.color};`"
+            >
               {{ item.reward }}
             </div>
-            <PrizesTaskSuccessIcon
-              v-if="item.isSuccess"
-              :fillColor="item.color"
-              style="margin-left: 4px"
-            ></PrizesTaskSuccessIcon>
-            <img v-else :src="require('../../../assets/prizes/more.svg')" />
           </div>
         </div>
-        <div class="pool-reward-info-mobile-group">
-          <div v-if="item.isPromotion" class="prizes-promotion-mobile">
-            Already entered in higher stage pools
-          </div>
-          <div
-            v-else
-            class="pool-reward-info-mobile"
-            :style="`color: ${item.color};`"
-          >
-            {{ item.reward }}
-          </div>
+
+        <div v-if="isEnd" class="prizes-end-modal">
+          End of event
         </div>
       </div>
     </div>
@@ -261,6 +277,7 @@ import {
   prizesUserReward,
   prizesUserTelegramId,
   prizesUserIsJoinTelegram,
+  prizesTimeEnd
 } from '../../../composition/hooks'
 
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
@@ -278,6 +295,9 @@ export default {
     PrizesTaskSuccessIcon,
   },
   computed: {
+    isEnd() {
+      return prizesTimeEnd.value
+    },
     isJoinTelegram() {
       return prizesUserIsJoinTelegram.value
     },
@@ -513,10 +533,8 @@ export default {
       const localStr = sessionStorage.getItem('TELEGRAM_TOKEN')
       let telegramInfo = null
       try {
-       telegramInfo = JSON.parse(window.atob(localStr || ""))
-      } catch (error) {
-        
-      }
+        telegramInfo = JSON.parse(window.atob(localStr || ''))
+      } catch (error) {}
 
       if (isSuccess) {
       } else if (isTelegram) {
@@ -571,10 +589,18 @@ export default {
           window.open('https://t.me/orbiterORB', '_blank')
         }
       } else {
-        this.$router.push(
-          isDev()
+        this.$router.push({
+          path: isDev()
             ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia'
-            : '/?source=Ethereum&dest=Arbitrum&token=ETH'
+            : '/?source=Ethereum&dest=Arbitrum&token=ETH',
+        })
+        localStorage.setItem(
+          'last_page_before_history',
+          JSON.stringify({
+            params: {},
+            path: '/',
+            query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
+          })
         )
       }
     },
@@ -871,187 +897,210 @@ export default {
       padding: 24px 0 4px;
     }
 
-    .task-card-options-group {
+    .task-list-group {
       width: 100%;
-      background: rgb(26, 26, 26);
-      margin-top: 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      padding: 16px;
-      .task-card-options {
+      position: relative;
+      top: 0;
+      left: 0;
+      .prizes-end-modal {
         width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+        border: 2px solid rgb(34, 34, 34);
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        background: rgba(26, 26, 26, 0.4);
+        z-index: 10;
         display: flex;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-
-        .info {
+        font-family: GeneralSans-SemiBold;
+        font-weight: 600;
+      }
+      .task-card-options-group {
+        width: 100%;
+        background: rgb(26, 26, 26);
+        margin-top: 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        border: 1px solid transparent;
+        padding: 16px;
+        .task-card-options {
+          width: 100%;
           display: flex;
-          justify-content: start;
+          justify-content: space-between;
           align-items: center;
-          .icon {
-            width: 24px;
-            height: 24px;
-          }
 
-          .content-text-group {
+          .info {
             display: flex;
             justify-content: start;
             align-items: center;
-            .content-text {
-              font-size: 16px;
-              font-weight: 500;
-              letter-spacing: 0px;
-              text-align: left;
-              margin: 0 4px;
+            .icon {
+              width: 24px;
+              height: 24px;
             }
-            .tip-text {
-              margin-right: 4px;
+
+            .content-text-group {
+              display: flex;
+              justify-content: start;
+              align-items: center;
+              .content-text {
+                font-size: 16px;
+                font-weight: 500;
+                letter-spacing: 0px;
+                text-align: left;
+                margin: 0 4px;
+              }
+              .tip-text {
+                margin-right: 4px;
+              }
             }
           }
-        }
 
-        .reward {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          font-size: 16px;
-          font-weight: 600;
-          letter-spacing: 0px;
-          text-align: right;
-
-          .reward-info {
+          .reward {
             display: flex;
             justify-content: flex-end;
             align-items: center;
-          }
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0px;
+            text-align: right;
 
-          .reward-status {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            margin-left: 6px;
-          }
-        }
-      }
+            .reward-info {
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+            }
 
-      .reward-info-mobile-group {
-        width: 100%;
-        display: none;
-        justify-content: start;
-        align-items: center;
-        margin-top: 8px;
-        font-size: 12px;
-        .reward-info-mobile {
-          display: flex;
-          justify-content: start;
-          align-items: center;
-          padding: 4px 8px;
-          border-radius: 4px;
-          background: rgb(0, 0, 0);
-
-          img {
-            width: 16px;
-            height: 16px;
+            .reward-status {
+              display: flex;
+              justify-content: flex-end;
+              align-items: center;
+              margin-left: 6px;
+            }
           }
         }
-      }
-    }
 
-    .task-card-options-group-success {
-      // opacity: 0.6;
-      // border: 1px solid rgb(219, 239, 45);
-      border-radius: 12px;
-      backdrop-filter: blur(12px);
-      // background: rgba(219, 239, 45, 0.15);
-    }
-
-    .task-card-pool-group {
-      width: 100%;
-      padding: 16px;
-      background: rgb(26, 26, 26);
-      margin-top: 12px;
-      border-radius: 12px;
-      cursor: pointer;
-      border: 1px solid transparent;
-
-      .task-card-pool {
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .info {
-          display: flex;
+        .reward-info-mobile-group {
+          width: 100%;
+          display: none;
           justify-content: start;
           align-items: center;
-          .icon {
-            width: 24px;
-            height: 24px;
-          }
-
-          .content-text-group {
+          margin-top: 8px;
+          font-size: 12px;
+          .reward-info-mobile {
             display: flex;
             justify-content: start;
             align-items: center;
-            .content-text {
-              font-size: 16px;
-              font-weight: 500;
-              letter-spacing: 0px;
-              text-align: left;
-              margin: 0 4px;
-            }
-            .tip-text {
-              margin-right: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgb(0, 0, 0);
+
+            img {
+              width: 16px;
+              height: 16px;
             }
           }
-          
-        }
-
-        .pool-reward {
-          display: flex;
-          justify-content: flex-end;
-          align-items: center;
-          font-size: 16px;
-          font-weight: 600;
-          letter-spacing: 0px;
-          text-align: right;
-        }
-
-        .prizes-promotion {
-          color: #ffff;
         }
       }
 
-      .pool-reward-info-mobile-group {
+      .task-card-options-group-success {
+        // opacity: 0.6;
+        // border: 1px solid rgb(219, 239, 45);
+        border-radius: 12px;
+        backdrop-filter: blur(12px);
+        // background: rgba(219, 239, 45, 0.15);
+      }
+
+      .task-card-pool-group {
         width: 100%;
-        display: none;
-        justify-content: start;
-        align-items: center;
-        margin-top: 8px;
-        .prizes-promotion-mobile {
+        padding: 16px;
+        background: rgb(26, 26, 26);
+        margin-top: 12px;
+        border-radius: 12px;
+        cursor: pointer;
+        border: 1px solid transparent;
+
+        .task-card-pool {
+          width: 100%;
           display: flex;
-          justify-content: start;
+          justify-content: space-between;
           align-items: center;
-          padding: 4px 8px;
-          border-radius: 4px;
-          background: rgb(0, 0, 0);
-          font-size: 12px;
+
+          .info {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            .icon {
+              width: 24px;
+              height: 24px;
+            }
+
+            .content-text-group {
+              display: flex;
+              justify-content: start;
+              align-items: center;
+              .content-text {
+                font-size: 16px;
+                font-weight: 500;
+                letter-spacing: 0px;
+                text-align: left;
+                margin: 0 4px;
+              }
+              .tip-text {
+                margin-right: 4px;
+              }
+            }
+          }
+
+          .pool-reward {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 0px;
+            text-align: right;
+          }
+
+          .prizes-promotion {
+            color: #ffff;
+          }
         }
-        .pool-reward-info-mobile {
-          display: flex;
+
+        .pool-reward-info-mobile-group {
+          width: 100%;
+          display: none;
           justify-content: start;
           align-items: center;
-          padding: 4px 8px;
-          border-radius: 4px;
-          background: rgb(0, 0, 0);
-          font-size: 12px;
+          margin-top: 8px;
+          .prizes-promotion-mobile {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgb(0, 0, 0);
+            font-size: 12px;
+          }
+          .pool-reward-info-mobile {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgb(0, 0, 0);
+            font-size: 12px;
+          }
         }
       }
-    }
 
-    .task-card-pool-group-promotion {
-      opacity: 0.6;
+      .task-card-pool-group-promotion {
+        opacity: 0.6;
+      }
     }
   }
 }
