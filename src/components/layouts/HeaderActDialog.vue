@@ -114,8 +114,7 @@
                 <img :src="require('../../assets/activity/extends.svg')" alt="">
               </div>
               <div class="text_99">
-                <div class="left"
-                >
+                <div class="left">
                   <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
                   <HeaderLotteryCard />
                 </div>
