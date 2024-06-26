@@ -25,10 +25,15 @@
           <span class="token-symbol">$ORBGUY </span>
           randomly
         </div>
-        <img
+        <!-- <img
           class="prizes-banner-image-mobile"
           :src="require('../../../assets/prizes/banner-bg-mobile.png')"
-        />
+        /> -->
+
+        <div class="prizes-banner-image-mobile">
+          <PrizesClaimCard ></PrizesClaimCard>
+        </div>
+
         <div class="prizes-banner-mobile-bg"></div>
         <div class="time-label">Ends In</div>
         <div class="time-card">
@@ -440,6 +445,7 @@ export default {
       text-align: center;
       .prizes-details {
         .prizes-banner-image-mobile {
+          padding: 24px 12px;
           display: flex;
         }
 
@@ -482,6 +488,9 @@ export default {
         }
       }
       .prizes-banner-image {
+        display: none;
+      }
+      .prizes-claim-group {
         display: none;
       }
       .prizes-banner-bg {
