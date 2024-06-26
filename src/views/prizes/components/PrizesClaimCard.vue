@@ -21,7 +21,7 @@
           class="reward-card"
           v-for="item in list"
           :key="item.symbol"
-          :style="isFetch ? '48%' : '100%'"
+          :style="`width: ${isFetch ? '48%' : '100%'}`"
         >
           <div class="usdc-symbol">
             <svg-icon v-if="item.symbol" :iconName="item.symbol"></svg-icon>
@@ -52,24 +52,23 @@ import { decimalNum } from '../../../util/decimalNum'
 import {
   prizesUserTx,
   prizesUserIsJoinTelegram,
+  prizesRewardList,
+  setPrizesRewardList,
+  prizesRewardIsFetch,
+  setPrizesRewardIsFetch
 } from '../../../composition/hooks'
 
 let timer
 
 export default {
   name: 'PrizesClaimCard',
-  data() {
-    return {
-      isFetch: false,
-      list: [
-        {
-          symbol: '',
-          quantity: '',
-        },
-      ],
-    }
-  },
   computed: {
+    isFetch() {
+      return prizesRewardIsFetch.value
+    },
+    list() {
+      return prizesRewardList.value
+    },
     isJoinTelegram() {
       return prizesUserIsJoinTelegram.value
     },
@@ -109,19 +108,19 @@ export default {
       timer = setTimeout(async () => {
         const res = await requestClaimPrizesRewardData(this.evmAddress)
         if (res.length) {
-          this.isFetch = true
-          this.list = res.map((item) => {
+          setPrizesRewardIsFetch(true)
+          setPrizesRewardList(res.map((item) => {
             return {
               ...item,
               quantity: this.decimalNumC(item.quantity, '6', ','),
             }
-          })
+          }))
         } else {
-          this.list = [{
+          setPrizesRewardList([{
               symbol: '',
               quantity: '',
-            }]
-          this.isFetch = false
+            }])
+            setPrizesRewardIsFetch(false)
         }
       }, 200)
     },
