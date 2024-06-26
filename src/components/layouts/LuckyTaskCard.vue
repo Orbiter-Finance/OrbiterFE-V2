@@ -132,9 +132,18 @@ export default {
   created() {
     this.getData()
   },
+  watch: {
+    evmAddress(item1, item2) {
+      if (!!item1 && item1 !== item2) {
+        this.getUserData()
+      }
+    },
+  },
   methods: {
     getData(){
         this.$store.commit("getLuckyBagTaskInfo")
+    },
+    getUserData(){
         if (!this.evmAddress || this.evmAddress === "0x") return
         this.$store.commit("getLuckyBagUserTaskInfo", this.evmAddress.toLocaleLowerCase())
     },
