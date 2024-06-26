@@ -373,4 +373,25 @@ export default {
     setPrizesRankList(list)
     setPrizesTop100tx(list[list?.length - 1 || 0]?.count || 0)
   },
+
+  async getLuckyBagTaskInfo() {
+    const response = await fetch(
+      `${process.env.VUE_APP_OPEN_URL}/activity/project/conditions/ac4f3cb3-6493-4d8f-8259-7482f8a22c13`
+    )
+    const res = await response.json()
+
+    console.log('res', res)
+  },
+
+  async getLuckyBagUserTaskInfo(state, address) {
+    if (!address || address === '0x') return
+    const response = await fetch(
+      `${
+        process.env.VUE_APP_OPEN_URL
+      }/activity/project/tasksStatus?projectId=ac4f3cb3-6493-4d8f-8259-7482f8a22c13&address=${address.toLocaleLowerCase()}`
+    )
+    const res = await response.json()
+
+    console.log('res111', res)
+  },
 }
