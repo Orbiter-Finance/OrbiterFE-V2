@@ -43,8 +43,10 @@
         </div>
 
         <div class="prizes-to-bridge">
-          <div class="prizes-to-bridge-btn" @click="toBridgeCall">
-            Start Bridge
+          <div class="prizes-to-bridge-btn" @click="toBridgeCall"
+          :style="`opacity: ${isEnd ? '0.3' : '1'};`"
+          >
+            {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
           </div>
         </div>
       </div>
@@ -61,6 +63,7 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { isDev } from '../../../util';
 import getUTCTime from '../../../util/time'
+import { prizesTimeEnd, setPrizesTimeEnd } from "../../../composition/hooks"
 
 let timer1
 
@@ -88,8 +91,13 @@ export default {
   name: 'PrizesTopBanner',
   data() {
     return {
-      timeStr: '2024/6/20 08:00:00',
+      timeStr: '2024-06-20T13:30:00.000Z',
       timeList: timeListDefault,
+    }
+  },
+  computed: {
+    isEnd() {
+      return prizesTimeEnd.value
     }
   },
   methods: {
@@ -107,6 +115,7 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
+      if(this.isEnd) return
       localStorage.setItem(
           'last_page_before_history',
           JSON.stringify({
@@ -119,12 +128,14 @@ export default {
     },
   },
   mounted() {
+    
     timer1 = setInterval(() => {
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
+        setPrizesTimeEnd(true)
         this.timeList = timeListDefault
         return
       }
@@ -338,7 +349,7 @@ export default {
           font-size: 20px;
           font-weight: 600;
           line-height: 28px;
-          cursor: pointer;
+          // cursor: pointer;
         }
       }
     }

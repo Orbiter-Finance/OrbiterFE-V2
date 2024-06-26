@@ -7,7 +7,8 @@
         <svg-icon iconName="42161" class="task-icon"></svg-icon>
         <div class="label"><span>$100,000</span> Prize Pool</div>
       </div>
-      <div class="time">
+      <div v-if="isEnd" class="time-end-label">In the statistics...</div>
+      <div v-else class="time">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -221,8 +222,9 @@ export default {
   name: 'PrizesCard',
   data() {
     return {
-      timeStr: '2024/6/20 08:00:00',
+      timeStr: '2024-06-20T13:30:00.000Z',
       timeList: [],
+      isEnd: false
     }
   },
   components: {
@@ -374,6 +376,7 @@ export default {
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
+        this.isEnd =  true
         this.timeList = [
           {
             value: '00',
@@ -478,6 +481,14 @@ export default {
           color: #12AAFF;
         }
       }
+    }
+
+    .time-end-label {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 19px;
+      letter-spacing: 0px;
+      white-space: nowrap;
     }
 
     .time {

@@ -97,7 +97,7 @@
               <div @click="toggleThemeMode" class="label_19">
                 <img class="tools-icon" :src="require(`../../assets/activity/${$store.state.themeMode}-theme.svg`)" alt="">
               </div>
-              <div @click="disconnect" class="label_19">
+              <div @click="disconnect" class="label_19" v-if="!isMobile">
                 <img
                   class="img"
                   :src="require('../../assets/activity/disconnect.svg')"
@@ -114,10 +114,8 @@
                 <img :src="require('../../assets/activity/extends.svg')" alt="">
               </div>
               <div class="text_99">
-                <div class="left"
-                @click="openUserInfoDetailsCardModal"
-                >
-                  {{ totalPoint }}
+                <div class="left">
+                   <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
                   <HeaderLotteryCard />
                 </div>
 
@@ -787,6 +785,7 @@ export default {
   async mounted() {
     const getTaskHeight = this.getTaskHeight
     let timer = false
+    getTaskHeight()
     window.addEventListener('resize', () => {
       if (!timer) {
         timer = true

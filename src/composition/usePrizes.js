@@ -9,11 +9,13 @@ export const prizesUserTx = ref('0')
 export const prizesUserReward = ref('0')
 export const prizesUserTelegramId = ref('')
 export const prizesUserIsJoinTelegram = ref(false)
+export const prizesTimeEnd = ref(false)
 
 export const setPrizesTotalAddress = (flag) => (prizesTotalAddress.value = flag)
 export const setPrizesTotalRewards = (flag) => (prizesTotalRewards.value = flag)
 export const setPrizesRankList = (flag) => (prizesRankList.value = flag)
 export const setPrizesTop100tx = (flag) => (prizesTop100tx.value = flag)
+export const setPrizesTimeEnd = (flag) => (prizesTimeEnd.value = flag)
 
 export const setPrizesUserRank = (flag) => (prizesUserRank.value = flag)
 export const setPrizesUserTx = (flag) => (prizesUserTx.value = flag)
