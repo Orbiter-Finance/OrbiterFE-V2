@@ -195,7 +195,7 @@ export default {
         })
         const point = data?.points || ''
 
-        if (Number(point) || true) {
+        if (Number(point)) {
           setActAddPoint(String(point))
           setLotteryCardModalShow(true)
 
