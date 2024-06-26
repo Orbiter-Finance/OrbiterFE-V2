@@ -1,10 +1,10 @@
 <template>
   <div class="prizes-claim-card" id="prizes-claim-card">
-    <div class="card-title">Achievements! 🎉</div>
+    <div class="card-title"> {{ isFetch ? 'Congratulations!' : 'Achievements!' }} 🎉</div>
 
     <div v-if="tx >= 3" class="ranking-info info">
       <div class="label">Current rank</div>
-      <div class="amount">19</div>
+      <div class="amount">{{ decimalNumC(rank, 0, ",") }}</div>
     </div>
 
     <div class="tx-info info">
@@ -30,17 +30,18 @@
           <div v-if="item.symbol" class="reward-amount">
             {{ item.quantity }} ${{ item.symbol }}
           </div>
-          <!-- <div v-else class="reward-amount-extra">extra prize</div> -->
         </div>
       </div>
 
       <div class="claim-group">
-        <div class="claim-btn" @click="claim">earn extra prize</div>
+        <div class="claim-btn" @click="claim">
+          {{ isFetch ? 'claim' : 'earn extra prize' }}
+        </div>
       </div>
     </div>
     <div class="desction">
-      <!-- Claim your Token on <span class="tips">Arbitrum</span> -->
-      partner's incentives from AAbank
+      <span v-if="isFetch">Claim your Token on <span class="tips">Arbitrum</span> from AAbank</span>
+      <span v-else>partner's incentives from AAbank</span>
     </div>
   </div>
 </template>
@@ -55,7 +56,8 @@ import {
   prizesRewardList,
   setPrizesRewardList,
   prizesRewardIsFetch,
-  setPrizesRewardIsFetch
+  setPrizesRewardIsFetch,
+  prizesUserRank
 } from '../../../composition/hooks'
 
 let timer
@@ -74,6 +76,9 @@ export default {
     },
     tx() {
       return prizesUserTx.value
+    },
+    rank() {
+      return prizesUserRank.value
     },
     txAmount() {
       return this.decimalNumC(this.tx || '0', 0, ',')
