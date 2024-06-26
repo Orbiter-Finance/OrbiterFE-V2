@@ -25,9 +25,7 @@
           <div v-if="item.symbol" class="reward-amount">
             {{ item.quantity }} ${{ item.symbol }}
           </div>
-          <div v-else class="reward-amount-extra">
-            extra prize
-          </div>
+          <div v-else class="reward-amount-extra">extra prize</div>
         </div>
       </div>
 
@@ -50,6 +48,8 @@ import {
   prizesUserTx,
   prizesUserIsJoinTelegram,
 } from '../../../composition/hooks'
+
+let timer
 
 export default {
   name: 'PrizesClaimCard',
@@ -83,6 +83,9 @@ export default {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
     },
   },
+  created() {
+    this.getData()
+  },
   watch: {
     evmAddress(item1, item2) {
       if (!!item1 && item1 !== item2) {
@@ -95,27 +98,30 @@ export default {
       return decimalNum(num, decimal, delimiter, symbol)
     },
     async getData() {
+      clearTimeout(timer)
       if (!this.evmAddress || this.evmAddress === '0x') return
-      const res = await requestClaimPrizesRewardData(this.evmAddress)
-      if (res.length) {
-        this.list = res.map((item) => {
-          return {
-            ...item,
-            quantity: this.decimalNumC(item.quantity, '6', ','),
-          }
-        })
-      }
+      timer = setTimeout(async () => {
+        const res = await requestClaimPrizesRewardData(this.evmAddress)
+        if (res.length) {
+          this.list = res.map((item) => {
+            return {
+              ...item,
+              quantity: this.decimalNumC(item.quantity, '6', ','),
+            }
+          })
+        }
+      }, 200)
     },
     claim() {
       if (!this.evmAddress || this.evmAddress === '0x') return
-      const name = "go to earn prizes"
+      const name = 'go to earn prizes'
       const url = `https://www.aabank.xyz/claim?from=orbiter&user=${this.evmAddress}`
       this.$gtag.event(name, {
         event_category: name,
         event_label: url,
       })
-      window.open(url, "_blanck")
-    }
+      window.open(url, '_blanck')
+    },
   },
 }
 </script>
@@ -186,7 +192,7 @@ export default {
             height: 100px;
             background-image: url(../../../assets/prizes/reward.png);
             background-size: 100% 100%;
-            background-repeat: no-repeat; 
+            background-repeat: no-repeat;
           }
         }
         .reward-amount {
@@ -249,7 +255,6 @@ export default {
 }
 
 @media (max-width: 740px) {
-
   #prizes-claim-card {
     .reward-card {
       .reward-image {

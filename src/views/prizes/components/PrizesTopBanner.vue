@@ -51,7 +51,8 @@
           <div class="prizes-to-bridge-btn" @click="toBridgeCall"
           :style="`opacity: ${isEnd ? '0.3' : '1'};`"
           >
-            {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
+            <!-- {{ isEnd ? 'In the statistics...' : 'Start Bridge' }} -->
+            {{ isEnd ? 'Claim' : 'Start Bridge' }}
           </div>
         </div>
       </div>
