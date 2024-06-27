@@ -17,6 +17,9 @@ import {
   claimCardModalDataInfo,
   claimCardModalAmountInfo,
   setClaimCardModalAmountInfo,
+  setLuckyBaTaskgOrbguyInfo,
+  setLuckyBaTaskgUserOrbguyInfo,
+  setClaimCardModalOtherDataInfo,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -31,6 +34,7 @@ import util from '../../util/util'
 import { ethers } from 'ethers'
 
 let timer
+let timer1
 
 export default {
   updateZKTokenList(state, obj) {
@@ -282,7 +286,7 @@ export default {
       })
     } catch (error) {}
   },
-  async getClaimORBGUYRewardData(state, { type, token }) {
+  async getClaimORBGUYRewardData(state, { type, token, distributeResult }) {
     clearTimeout(timer)
     timer = setTimeout(async () => {
       const { data = [] } = claimCardModalDataInfo.value || {}
@@ -330,6 +334,9 @@ export default {
             } else {
               util.showMessage(String(message), 'warning')
             }
+          } else if (type === 'LUCKY_BAG_TASK') {
+            setClaimCardModalOtherDataInfo({ distributeResult })
+            setClaimCardModalShow(true, type)
           } else {
             setClaimCardModalShow(true, type)
           }
@@ -380,18 +387,33 @@ export default {
     )
     const res = await response.json()
 
-    console.log('res', res)
+    const data = res?.result?.conditions?.[0]
+
+    setLuckyBaTaskgOrbguyInfo({
+      total: Number(data?.rule?.rewardTarget) || 0,
+      current: Number(data?.result?.totalRewardCount) || 0,
+      progressRatio: Number(data?.result?.rewardProcess) || 0,
+    })
   },
 
   async getLuckyBagUserTaskInfo(state, address) {
     if (!address || address === '0x') return
-    const response = await fetch(
-      `${
-        process.env.VUE_APP_OPEN_URL
-      }/activity/project/tasksStatus?projectId=ac4f3cb3-6493-4d8f-8259-7482f8a22c13&address=${address.toLocaleLowerCase()}`
-    )
-    const res = await response.json()
-
-    console.log('res111', res)
+    clearTimeout(timer1)
+    timer1 = setTimeout(async () => {
+      const response = await fetch(
+        `${
+          process.env.VUE_APP_OPEN_URL
+        }/activity/project/tasksStatus?projectId=ac4f3cb3-6493-4d8f-8259-7482f8a22c13&address=${address.toLocaleLowerCase()}`
+      )
+      const res = await response.json()
+      setLuckyBaTaskgUserOrbguyInfo(
+        res?.result?.tasksStatus?.slice(0, 3)?.map((item) => {
+          return {
+            taskResult: Number(item?.taskResult) || 0,
+            distributeResult: Number(item?.distributeResult) || 0,
+          }
+        }) || []
+      )
+    }, 500)
   },
 }

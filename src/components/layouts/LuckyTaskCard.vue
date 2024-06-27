@@ -6,9 +6,9 @@
         <div class="banner-progress">
           <div class="progress-label">Claim Progress</div>
           <div class="progress-amount">
-            <span class="current-amount">70,849</span>/<span
+            <span class="current-amount">{{ current }}</span>/<span
               class="total-amount"
-              >100,000</span
+              >{{ total }}</span
             >
           </div>
         </div>
@@ -33,7 +33,7 @@
             <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
             <div class="task-desction-group">
               <span class="task-desction" v-html="item.text"></span>
-              <o-tooltip v-if="item.specificChain">
+              <o-tooltip >
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px">
                           <span>
@@ -47,7 +47,7 @@
                         >specific chain</span
                       >
                     </o-tooltip>
-              <span v-if="item.specificChain">to opBNB/BSC</span>
+              <span>to opBNB/BSC</span>
             </div>
           </div>
           <PrizesTaskSuccessIcon
@@ -71,7 +71,7 @@
             <div class="task-progress">{{ item.taskResult }}/{{ item.key }}</div>
           </div>
 
-          <img class="bag-image" :src="require('../../assets/activity/points_task/bag.png')" alt="">
+          <img v-if="item.isTask" class="bag-image" @click="drawLuckyTaskBag(item)" :src="require('../../assets/activity/points_task/bag.png')" alt="">
         </div>
       </div>
     </div>
@@ -84,20 +84,40 @@ import { decimalNum } from '../../util/decimalNum'
 
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 
+import { luckyBaTaskgOrbguyInfo, luckyBaTaskgUserOrbguyInfo, actDialogVisible } from "../../composition/hooks"
+
 export default {
   components: { SvgIcon },
   name: 'LuckyTaskCard',
-  data() {
-    return {
-      ratio: 50,
-    }
-  },
 
   computed: {
+    luckyBagInfo() {
+      return luckyBaTaskgOrbguyInfo.value
+    },
+    total() {
+      const t = this.luckyBagInfo?.total
+      return this.decimalNumC(Number(t) || 0, 2, ",")
+    },
+    current() {
+      let c = this.luckyBagInfo?.current
+      const t = this.luckyBagInfo?.total
+      c = t >= c ? c : t
+      return this.decimalNumC(Number(c) || 0, 2, ",")
+    },
+    ratio() {
+      const r = Number(this.luckyBagInfo?.progressRatio) * 100
+
+      return r >= 100 ? 100 : r
+    },
     evmAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
     },
+    luckyBagUserInfo() {
+      return luckyBaTaskgUserOrbguyInfo.value
+    }, 
     taskList() {
+      const luckyUserList = this.luckyBagUserInfo || []
+      console.log("luckyUserList", luckyUserList)
       return [
         {
           icon: 'bridge',
@@ -105,8 +125,9 @@ export default {
           text: `Bridge <span class="orbiter_global_lucky_bag_task">3TX</span> from `,
           tips: 'Bronze luckybag',
           opoints: '15',
-          taskResult: 0,
-          specificChain: true,
+          taskResult: luckyUserList[0]?.taskResult || 0,
+          distributeResult: luckyUserList[0]?.distributeResult || 0,
+          isTask: luckyUserList[0]?.taskResult  >= 3,
           bg: 'linear-gradient(180.00deg, rgb(233, 179, 135),rgb(197, 133, 81) 100%)',
         },
         {
@@ -115,8 +136,9 @@ export default {
           opoints: '40',
           text: `Bridge <span class="orbiter_global_lucky_bag_task">6TX</span> from `,
           tips: 'Silver luckybag',
-          taskResult: 0,
-          specificChain: true,
+          taskResult: luckyUserList[1]?.taskResult || 0,
+          distributeResult: luckyUserList[1]?.distributeResult || 0,
+          isTask: luckyUserList[1]?.taskResult  >= 6,
           bg: 'linear-gradient(180.00deg, rgb(240, 254, 255),rgb(190, 190, 190) 100%)',
         },
         {
@@ -125,11 +147,15 @@ export default {
           opoints: '60',
           text: `Bridge <span class="orbiter_global_lucky_bag_task">9TX</span> from `,
           tips: 'Gold luckybag',
-          taskResult: 0,
-          specificChain: true,
+          taskResult: luckyUserList[2]?.taskResult || 0,
+          distributeResult: luckyUserList[2]?.distributeResult || 0,
+          isTask: luckyUserList[2]?.taskResult  >= 9,
           bg: 'linear-gradient(180.00deg, rgb(255, 222, 155),rgb(243, 169, 19) 100%)',
         },
       ]
+    },
+    selectWalletDialogVisible() {
+      return actDialogVisible.value
     },
   },
   created() {
@@ -141,8 +167,20 @@ export default {
         this.getUserData()
       }
     },
+    selectWalletDialogVisible: function (newVisible) {
+      if (!!newVisible) {
+        this.getUserData()
+      }
+    },
   },
   methods: {
+    drawLuckyTaskBag(data) {
+      console.log("data", data)
+      this.$store.commit("getClaimORBGUYRewardData", {
+          type: "LUCKY_BAG_TASK",
+          distributeResult: Number(data?.distributeResult) || 0
+      })
+    },
     getData(){
         this.$store.commit("getLuckyBagTaskInfo")
     },
