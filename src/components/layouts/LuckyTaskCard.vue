@@ -2,7 +2,7 @@
   <div id="lucky-task-card" class="lucky-task-card">
     <div class="top-banenr">
       <div class="banner-content">
-        <div class="banner-title">Get $ORBGUY and Opoints</div>
+        <div class="banner-title">$Orbguy Prize Pool</div>
         <div class="banner-progress">
           <div class="progress-label">Claim Progress</div>
           <div class="progress-amount">
@@ -230,6 +230,7 @@ export default {
         white-space: nowrap;
         font-family: GeneralSans-Bold;
         font-weight: 700;
+        color: #df2e2d;
       }
 
       .banner-progress {
