@@ -266,7 +266,7 @@ export default {
       .progress-box {
         width: 100%;
         height: 8px;
-        background: #eeeeee;
+        background: rgba(255, 255, 255, 0.3);
         border-radius: 6px;
         margin-top: 8px;
         overflow: hidden;
@@ -410,6 +410,10 @@ export default {
 .dark-theme {
   #lucky-task-card {
     background-color: #373951;
+
+    .card-tips {
+      color: #18191f;
+    }
 
     .task-card-item {
         background-color: var(--dark-page-box-bg);
