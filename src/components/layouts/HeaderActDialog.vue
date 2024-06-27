@@ -97,7 +97,7 @@
               <div @click="toggleThemeMode" class="label_19">
                 <img class="tools-icon" :src="require(`../../assets/activity/${$store.state.themeMode}-theme.svg`)" alt="">
               </div>
-              <div @click="disconnect" class="label_19">
+              <div @click="disconnect" class="label_19" v-if="!isMobile">
                 <img
                   class="img"
                   :src="require('../../assets/activity/disconnect.svg')"
@@ -115,8 +115,8 @@
               </div>
               <div class="text_99">
                 <div class="left">
-                  <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
-                  <HeaderLotteryCard />
+                <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
+                <HeaderLotteryCard />
                 </div>
 
                 <div class="right">
@@ -159,7 +159,7 @@
         >
         <PrizesCard></PrizesCard>
         <LuckyTaskCard></LuckyTaskCard>
-        <div 
+        <div
         >
           <template v-for="item in actDataList">
             <div class="activity-card">

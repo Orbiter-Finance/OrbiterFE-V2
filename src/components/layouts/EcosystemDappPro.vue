@@ -80,11 +80,11 @@
           :url="'https://0xastra.xyz/'"
         />
       </el-carousel-item> -->
-      <el-carousel-item>
+      <!-- <el-carousel-item>
         <EcosystemLikidDappPro
         :showCard="showCard"
         ></EcosystemLikidDappPro>
-      </el-carousel-item>
+      </el-carousel-item> -->
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"
@@ -125,7 +125,7 @@ import Web3 from 'web3'
 import { isMobile } from '../../composition/hooks'
 import util from '../../util/util'
 import EcosystemDapp from './EcosystemDapp.vue'
-import EcosystemLikidDappPro from './EcosystemLikidDappPro.vue'
+// import EcosystemLikidDappPro from './EcosystemLikidDappPro.vue'
 
 let timer
 let timer1
@@ -134,7 +134,7 @@ export default {
   name: 'EcosystemDappPro',
   components: {
     EcosystemDapp,
-    EcosystemLikidDappPro
+    // EcosystemLikidDappPro
   },
   data() {
     return {
