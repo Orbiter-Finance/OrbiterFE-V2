@@ -11,6 +11,14 @@ export const prizesUserTelegramId = ref('')
 export const prizesUserIsJoinTelegram = ref(false)
 export const prizesTimeEnd = ref(false)
 
+export const prizesRewardList = ref([
+  {
+    symbol: '',
+    quantity: '',
+  },
+])
+export const prizesRewardIsFetch = ref(false)
+
 export const setPrizesTotalAddress = (flag) => (prizesTotalAddress.value = flag)
 export const setPrizesTotalRewards = (flag) => (prizesTotalRewards.value = flag)
 export const setPrizesRankList = (flag) => (prizesRankList.value = flag)
@@ -24,3 +32,7 @@ export const setPrizesUserTelegramId = (flag) =>
   (prizesUserTelegramId.value = flag)
 export const setPrizesUserIsJoinTelegram = (flag) =>
   (prizesUserIsJoinTelegram.value = flag)
+
+export const setPrizesRewardList = (flag) => (prizesRewardList.value = flag)
+export const setPrizesRewardIsFetch = (flag) =>
+  (prizesRewardIsFetch.value = flag)
