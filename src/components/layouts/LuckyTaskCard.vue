@@ -117,7 +117,6 @@ export default {
     }, 
     taskList() {
       const luckyUserList = this.luckyBagUserInfo || []
-      console.log("luckyUserList", luckyUserList)
       return [
         {
           icon: 'bridge',
@@ -175,7 +174,6 @@ export default {
   },
   methods: {
     drawLuckyTaskBag(data) {
-      console.log("data", data)
       this.$store.commit("getClaimORBGUYRewardData", {
           type: "LUCKY_BAG_TASK",
           distributeResult: Number(data?.distributeResult) || 0
