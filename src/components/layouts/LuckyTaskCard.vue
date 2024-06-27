@@ -126,7 +126,7 @@ export default {
           opoints: '15',
           taskResult: luckyUserList[0]?.taskResult || 0,
           distributeResult: luckyUserList[0]?.distributeResult || 0,
-          isTask: luckyUserList[0]?.taskResult  >= 3,
+          isTask: luckyUserList[0]?.distributed,
           bg: 'linear-gradient(180.00deg, rgb(233, 179, 135),rgb(197, 133, 81) 100%)',
         },
         {
@@ -137,7 +137,7 @@ export default {
           tips: 'Silver luckybag',
           taskResult: luckyUserList[1]?.taskResult || 0,
           distributeResult: luckyUserList[1]?.distributeResult || 0,
-          isTask: luckyUserList[1]?.taskResult  >= 6,
+          isTask: luckyUserList[1]?.distributed,
           bg: 'linear-gradient(180.00deg, rgb(240, 254, 255),rgb(190, 190, 190) 100%)',
         },
         {
@@ -148,7 +148,7 @@ export default {
           tips: 'Gold luckybag',
           taskResult: luckyUserList[2]?.taskResult || 0,
           distributeResult: luckyUserList[2]?.distributeResult || 0,
-          isTask: luckyUserList[2]?.taskResult  >= 9,
+          isTask: luckyUserList[2]?.distributed,
           bg: 'linear-gradient(180.00deg, rgb(255, 222, 155),rgb(243, 169, 19) 100%)',
         },
       ]

@@ -411,6 +411,7 @@ export default {
           return {
             taskResult: Number(item?.taskResult) || 0,
             distributeResult: Number(item?.distributeResult) || 0,
+            distributed: !!item?.distributed,
           }
         }) || []
       )
