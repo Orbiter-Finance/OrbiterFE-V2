@@ -20,15 +20,20 @@
           Competition
         </div>
         <div class="prizes-orbguy">
-          TOP 800 will get 
+          TOP 800 will get
           <svg-icon iconName="ORBGUY" class="orbguy-token-symbol"></svg-icon>
           <span class="token-symbol">$ORBGUY </span>
           randomly
         </div>
-        <img
+        <!-- <img
           class="prizes-banner-image-mobile"
           :src="require('../../../assets/prizes/banner-bg-mobile.png')"
-        />
+        /> -->
+
+        <div class="prizes-banner-image-mobile">
+          <PrizesClaimCard ></PrizesClaimCard>
+        </div>
+
         <div class="prizes-banner-mobile-bg"></div>
         <div class="time-label">Ends In</div>
         <div class="time-card">
@@ -46,14 +51,18 @@
           <div class="prizes-to-bridge-btn" @click="toBridgeCall"
           :style="`opacity: ${isEnd ? '0.3' : '1'};`"
           >
-            {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
+            <!-- {{ isEnd ? 'In the statistics...' : 'Start Bridge' }} -->
+            {{ isEnd ? 'Claim' : 'Start Bridge' }}
           </div>
         </div>
       </div>
-      <img
+      <!-- <img
         class="prizes-banner-image"
         :src="require('../../../assets/prizes/banner-bg.png')"
-      />
+      /> -->
+      <div class="prizes-claim-group">
+        <PrizesClaimCard ></PrizesClaimCard>
+      </div>
       <div class="prizes-banner-bg"></div>
     </div>
   </div>
@@ -61,8 +70,9 @@
 
 <script>
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
-import { isDev } from '../../../util';
+import { isDev } from '../../../util'
 import getUTCTime from '../../../util/time'
+import PrizesClaimCard from "./PrizesClaimCard.vue"
 import { prizesTimeEnd, setPrizesTimeEnd } from "../../../composition/hooks"
 
 let timer1
@@ -87,7 +97,10 @@ const timeListDefault = [
 ]
 
 export default {
-  components: { SvgIcon },
+  components: { 
+    SvgIcon,
+    PrizesClaimCard
+   },
   name: 'PrizesTopBanner',
   data() {
     return {
@@ -117,14 +130,18 @@ export default {
     toBridgeCall() {
       if(this.isEnd) return
       localStorage.setItem(
-          'last_page_before_history',
-          JSON.stringify({
-            params: {},
-            path: '/',
-            query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
-          })
-        )
-      this.$router.push({path: isDev()? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia' : '/?source=Ethereum&dest=Arbitrum&token=ETH'})
+        'last_page_before_history',
+        JSON.stringify({
+          params: {},
+          path: '/',
+          query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
+        })
+      )
+      this.$router.push({
+        path: isDev()
+          ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia'
+          : '/?source=Ethereum&dest=Arbitrum&token=ETH',
+      })
     },
   },
   mounted() {
@@ -353,6 +370,14 @@ export default {
         }
       }
     }
+
+    .prizes-claim-group {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     .prizes-banner-image {
       width: 68%;
       margin-right: -8%;
@@ -372,6 +397,7 @@ export default {
       transform: translateY(30%);
       z-index: -1;
     }
+
   }
 }
 
@@ -420,6 +446,7 @@ export default {
       text-align: center;
       .prizes-details {
         .prizes-banner-image-mobile {
+          padding: 24px 12px;
           display: flex;
         }
 
@@ -462,6 +489,9 @@ export default {
         }
       }
       .prizes-banner-image {
+        display: none;
+      }
+      .prizes-claim-group {
         display: none;
       }
       .prizes-banner-bg {

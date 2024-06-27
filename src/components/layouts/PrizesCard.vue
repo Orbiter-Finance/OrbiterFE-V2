@@ -7,7 +7,8 @@
         <svg-icon iconName="42161" class="task-icon"></svg-icon>
         <div class="label"><span>$100,000</span> Prize Pool</div>
       </div>
-      <div v-if="isEnd" class="time-end-label">In the statistics...</div>
+      <!-- <div v-if="isEnd" class="time-end-label">In the statistics...</div> -->
+      <div v-if="isEnd" class="time-end-label">Claim</div>
       <div v-else class="time">
         <svg
           xmlns="http://www.w3.org/2000/svg"
