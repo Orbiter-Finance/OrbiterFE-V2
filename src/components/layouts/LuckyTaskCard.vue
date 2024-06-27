@@ -33,24 +33,21 @@
             <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
             <div class="task-desction-group">
               <span class="task-desction" v-html="item.text"></span>
-              <!-- <o-tooltip v-if="item.specificChain">
+              <o-tooltip v-if="item.specificChain">
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px">
                           <span>
                             <span>Specific chains include: </span>
                             <br />
-                            Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
-                            Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova,
-                            Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM,
-                            Merlin
+                            Linea、Manta、Base、Arbitrum、Polygon、Polygon zkEVM、Optimism、Ethereum、zkSync Lite、ZKSyncEra、Scroll、Zora、Mantle
                           </span>
                         </div>
                       </template>
                       <span class="orbiter_global_prizes_tips_underline tip-text"
                         >specific chain</span
                       >
-                    </o-tooltip> -->
-              <!-- <span v-if="item.specificChain">to Arbitrum</span> -->
+                    </o-tooltip>
+              <span v-if="item.specificChain">to opBNB/BSC</span>
             </div>
           </div>
           <PrizesTaskSuccessIcon
@@ -68,10 +65,10 @@
 
             <div class="group-reward">
               <svg-icon iconName="O-Points"></svg-icon>
-              + {{ item.points }} OPoints
+              +{{ item.opoints }} OPoints
             </div>
 
-            <div class="task-progress">3/3</div>
+            <div class="task-progress">{{ item.taskResult }}/{{ item.key }}</div>
           </div>
 
           <img class="bag-image" :src="require('../../assets/activity/points_task/bag.png')" alt="">
@@ -105,25 +102,31 @@ export default {
         {
           icon: 'bridge',
           key: '3',
-          text: `Bridge <span class="orbiter_global_lucky_bag_task">3TX</span> from any network to opBNB`,
+          text: `Bridge <span class="orbiter_global_lucky_bag_task">3TX</span> from `,
           tips: 'Bronze luckybag',
           opoints: '15',
+          taskResult: 0,
+          specificChain: true,
           bg: 'linear-gradient(180.00deg, rgb(233, 179, 135),rgb(197, 133, 81) 100%)',
         },
         {
           icon: 'bridge',
           key: '6',
           opoints: '40',
-          text: `Bridge <span class="orbiter_global_lucky_bag_task">6TX</span> from any network to opBNB`,
+          text: `Bridge <span class="orbiter_global_lucky_bag_task">6TX</span> from `,
           tips: 'Silver luckybag',
+          taskResult: 0,
+          specificChain: true,
           bg: 'linear-gradient(180.00deg, rgb(240, 254, 255),rgb(190, 190, 190) 100%)',
         },
         {
           icon: 'bridge',
           key: '9',
           opoints: '60',
-          text: `Bridge <span class="orbiter_global_lucky_bag_task">9TX</span> from any network to opBNB`,
+          text: `Bridge <span class="orbiter_global_lucky_bag_task">9TX</span> from `,
           tips: 'Gold luckybag',
+          taskResult: 0,
+          specificChain: true,
           bg: 'linear-gradient(180.00deg, rgb(255, 222, 155),rgb(243, 169, 19) 100%)',
         },
       ]
