@@ -115,8 +115,8 @@
               </div>
               <div class="text_99">
                 <div class="left">
-                  <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
-                  <HeaderLotteryCard />
+                <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
+                <HeaderLotteryCard />
                 </div>
 
                 <div class="right">
