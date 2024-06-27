@@ -2,7 +2,7 @@
   <div id="lucky-task-card" class="lucky-task-card">
     <div class="top-banenr">
       <div class="banner-content">
-        <div class="banner-title">$Orbguy Prize Pool</div>
+        <div class="banner-title">$ORBGUY Prize Pool</div>
         <div class="banner-progress">
           <div class="progress-label">Claim Progress</div>
           <div class="progress-amount">
@@ -47,7 +47,7 @@
                         >specific chain</span
                       >
                     </o-tooltip>
-              <span>to opBNB/BSC</span>
+              <span>to opBNB/BNB Chain</span>
             </div>
           </div>
           <PrizesTaskSuccessIcon
