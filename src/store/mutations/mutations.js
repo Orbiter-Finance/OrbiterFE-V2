@@ -383,7 +383,7 @@ export default {
 
   async getLuckyBagTaskInfo() {
     const response = await fetch(
-      `${process.env.VUE_APP_OPEN_URL}/activity/project/conditions/ac4f3cb3-6493-4d8f-8259-7482f8a22c13`
+      `${process.env.VUE_APP_OPEN_URL}/active-platform/project/conditions/ac4f3cb3-6493-4d8f-8259-7482f8a22c13`
     )
     const res = await response.json()
 
@@ -403,7 +403,7 @@ export default {
       const response = await fetch(
         `${
           process.env.VUE_APP_OPEN_URL
-        }/activity/project/tasksStatus?projectId=ac4f3cb3-6493-4d8f-8259-7482f8a22c13&address=${address.toLocaleLowerCase()}`
+        }/active-platform/project/tasksStatus?projectId=ac4f3cb3-6493-4d8f-8259-7482f8a22c13&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
       setLuckyBaTaskgUserOrbguyInfo(
