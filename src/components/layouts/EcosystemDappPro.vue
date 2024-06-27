@@ -192,7 +192,6 @@ export default {
     async getData3() {
       const res = await fetch('https://www.bullishs.io/api/users/count')
       const data = await res.json()
-      console.log('data', data)
       this.bullishsTotal = data?.data || 0
     },
     async getData2() {

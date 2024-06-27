@@ -293,3 +293,7 @@ p {
 .orbiter_global_prizes_tips_underline {
   text-decoration: underline;
 }
+
+.orbiter_global_lucky_bag_task {
+  color: #FF4F4F;
+}

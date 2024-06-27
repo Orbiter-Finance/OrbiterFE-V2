@@ -115,8 +115,8 @@
               </div>
               <div class="text_99">
                 <div class="left">
-                   <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
-                  <HeaderLotteryCard />
+                <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
+                <HeaderLotteryCard />
                 </div>
 
                 <div class="right">
@@ -158,6 +158,7 @@
         @scroll="itemScroll"
         >
         <PrizesCard></PrizesCard>
+        <LuckyTaskCard></LuckyTaskCard>
         <div 
         >
           <template v-for="item in actDataList">
@@ -289,6 +290,7 @@ import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import PrizesCard  from "./PrizesCard.vue"
+import LuckyTaskCard  from "./LuckyTaskCard.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 
@@ -305,7 +307,8 @@ export default {
     EcosystemDappPro,
     ActDialogBanner,
     SvgIcon,
-    PrizesCard
+    PrizesCard,
+    LuckyTaskCard
   },
   data() {
     return {

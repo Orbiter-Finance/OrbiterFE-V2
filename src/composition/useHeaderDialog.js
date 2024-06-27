@@ -27,6 +27,7 @@ export const claimCardModalType = ref('REWARD')
 
 export const claimCardModalDataInfo = ref(null)
 export const claimCardModalAmountInfo = ref(null)
+export const claimCardModalOtherDataInfo = ref(null)
 
 export const userInfoDetailsCardModalShow = ref(false)
 export const OPointsCardModalShow = ref(false)
@@ -82,6 +83,9 @@ export const setClaimCardModalDataInfo = (data) =>
 export const setClaimCardModalAmountInfo = (data) =>
   (claimCardModalAmountInfo.value = data)
 
+export const setClaimCardModalOtherDataInfo = (data) =>
+  (claimCardModalOtherDataInfo.value = data)
+
 export const setUserInfoDetailsCardModalShow = (flag) =>
   (userInfoDetailsCardModalShow.value = flag)
 export const setOPointsCardModalShow = (flag) =>
@@ -97,4 +101,13 @@ export const setLotteryCardDataGroup = (dataGroup) => {
 export const setLotteryCardProgress = (dataGroup) => {
   lotteryCardCurrentProgress.value = dataGroup.lotteryCardCurrentProgress
   lotteryCardProgressMax.value = dataGroup.lotteryCardProgressMax
+}
+
+export const luckyBaTaskgOrbguyInfo = ref(null)
+export const luckyBaTaskgUserOrbguyInfo = ref([])
+export const setLuckyBaTaskgOrbguyInfo = (data) => {
+  luckyBaTaskgOrbguyInfo.value = data
+}
+export const setLuckyBaTaskgUserOrbguyInfo = (data) => {
+  luckyBaTaskgUserOrbguyInfo.value = data
 }
