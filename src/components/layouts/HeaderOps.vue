@@ -537,21 +537,21 @@ export default {
       }
     },
   },
-  created() {
-    if (process.env['VUE_APP_RECAPTCHA']) {
-      if (typeof window === 'undefined') return
-      window.vueRecaptchaInit = () => {}
-      const recaptchaScript = document.createElement('script')
-      const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
-      recaptchaScript.setAttribute(
-        'src',
-        `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
-      )
-      recaptchaScript.setAttribute('async', '')
-      recaptchaScript.setAttribute('defer', '')
-      ;(document.body || document.head).appendChild(recaptchaScript)
-    }
-  },
+  // created() {
+  //   if (process.env['VUE_APP_RECAPTCHA']) {
+  //     if (typeof window === 'undefined') return
+  //     window.vueRecaptchaInit = () => {}
+  //     const recaptchaScript = document.createElement('script')
+  //     const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+  //     recaptchaScript.setAttribute(
+  //       'src',
+  //       `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+  //     )
+  //     recaptchaScript.setAttribute('async', '')
+  //     recaptchaScript.setAttribute('defer', '')
+  //     ;(document.body || document.head).appendChild(recaptchaScript)
+  //   }
+  // },
   async mounted() {
     let flag = false
     timer1 = setInterval(() => {
