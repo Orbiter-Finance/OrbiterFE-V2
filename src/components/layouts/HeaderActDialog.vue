@@ -157,7 +157,7 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <PrizesCard></PrizesCard>
+        <!-- <PrizesCard></PrizesCard> -->
         <LuckyTaskCard></LuckyTaskCard>
         <div 
         >
@@ -226,7 +226,7 @@
         </div>
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
 
-          <ActDialogBanner ></ActDialogBanner>
+          <!-- <ActDialogBanner ></ActDialogBanner> -->
             <EcosystemDappPro
             ></EcosystemDappPro>
         </div>
@@ -284,12 +284,12 @@ import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
 import EcosystemDapp from './EcosystemDapp.vue'
 import EcosystemDappPro from './EcosystemDappPro.vue'
-import ActDialogBanner from './ActDialogBanner.vue'
+// import ActDialogBanner from './ActDialogBanner.vue'
 import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
-import PrizesCard  from "./PrizesCard.vue"
+// import PrizesCard  from "./PrizesCard.vue"
 import LuckyTaskCard  from "./LuckyTaskCard.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
@@ -305,9 +305,9 @@ export default {
     HeaderLotteryCard,
     EcosystemDapp,
     EcosystemDappPro,
-    ActDialogBanner,
+    // ActDialogBanner,
     SvgIcon,
-    PrizesCard,
+    // PrizesCard,
     LuckyTaskCard
   },
   data() {
