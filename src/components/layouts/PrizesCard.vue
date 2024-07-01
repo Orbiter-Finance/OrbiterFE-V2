@@ -328,7 +328,7 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge ≥20 TX from specific chain to Arbitrum <span class="orbiter_global_prizes_tx-color">Top 100 users </span>`,
+          text: `Bridge ≥20 TX from specific network to Arbitrum <span class="orbiter_global_prizes_tx-color">Top 100 users </span>`,
           reward: '30% Prize Pool',
           color: ratio30,
           isSuccess: txN >= 20 && Number(rankN) && Number(rankN) <= 100,
