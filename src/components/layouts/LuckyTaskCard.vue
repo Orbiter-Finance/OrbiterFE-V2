@@ -1,6 +1,6 @@
 <template>
   <div id="lucky-task-card" class="lucky-task-card">
-    <div class="top-banenr">
+    <div class="top-banenr" @click="openLuckyReward">
       <div class="banner-content">
         <div class="banner-title">$ORBGUY Prize Pool</div>
         <div class="banner-progress">
@@ -26,7 +26,7 @@
       </div>
     </div>
 
-    <div class="task-card-group">
+    <div class="task-card-group" v-if="false">
       <div class="task-card-item" v-for="item in taskList" :key="item.key">
         <div class="task-title">
           <div class="task-info">
@@ -173,6 +173,23 @@ export default {
     },
   },
   methods: {
+    openLuckyReward() {
+      const list = this.luckyBagUserInfo || []
+      let total = 0
+      list.forEach((item) => {
+        if(!!item?.distributed) {
+          total += (Number(item?.distributeResult) || 0)
+        }
+      });
+
+      if(!list?.length || !Number(total)) {
+        return 
+      }
+      this.$store.commit("getClaimORBGUYRewardData", {
+          type: "LUCKY_BAG_TASK",
+          distributeResult: total
+      })
+    },
     drawLuckyTaskBag(data) {
       this.$store.commit("getClaimORBGUYRewardData", {
           type: "LUCKY_BAG_TASK",
@@ -212,7 +229,7 @@ export default {
     background-image: url(../../assets/activity/points_task/lucky_orbguy.png);
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px;
     display: flex;
     justify-content: flex-start;
     align-items: center;

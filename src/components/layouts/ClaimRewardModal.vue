@@ -120,7 +120,9 @@
                 Claim your Token on
                 <span class="chain-name">{{ chainName }}</span>
               </div>
-              <div v-if="isLuckyBagTask" class="lucky_bag_task">Claim channel will be opened after the event ends.</div>
+              <div v-if="isLuckyBagTask" class="lucky_bag_task">
+                The claim channel will be opened soon. Thank you for your patience.
+              </div>
             </div>
             <div
               class="join-media-card-group"
