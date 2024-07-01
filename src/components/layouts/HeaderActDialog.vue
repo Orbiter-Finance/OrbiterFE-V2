@@ -190,13 +190,25 @@
                   </div>
                   <div class="group">
                     <div
-                      v-if="option.status === 0"
-                        v-for="tag in option.tags"
+                    v-if="option.status === 0"
+                    v-for="tag in option.tags"
+                    >
+                    <div v-if="tag.style === 'token'"
+                    class="token-tag"
+                    >
+                    <img v-if="tag.icon" :src="tag.icon" alt="" class="tag-token-icon">
+                    <span class="tag-token-text">{{ tag.description }}</span>
+                    </div>
+                    <div
                         class="text-wrapper_17 flex-col"
                         :key="tag.description"
+                        v-else
                       >
                       <span class="text_27">{{ tag.description }}</span>
                     </div>
+
+                    </div>
+                    
                     <div v-else class="text-wrapper_4 flex-col">
                       <span class="text_9">Done</span>
                     </div>
@@ -401,6 +413,8 @@ export default {
     },
     actDataList() {
       const list = transferDataState.actDataList || []
+
+      console.log("list", list)
       return list.map((item)=> ({
         ...item,
         label: {
@@ -1323,6 +1337,29 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
+  }
+
+  .token-tag {
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    color: #FFF;
+    background: #000000;
+    padding: 2px 4px;
+
+    .tag-token-icon {
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+    }
+
+    .tag-token-text {
+      font-size: 12px;
+      font-family: GeneralSans-SemiBold;
+    }
   }
 
   .text-wrapper_17 {
