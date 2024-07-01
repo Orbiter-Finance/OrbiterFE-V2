@@ -94,7 +94,7 @@
           :showCard="showCard"
           :banner="'pepe.png'"
           :tag="'First Cross-chain Memecoin'"
-          :tagStyle="'background: #75D422'"
+          :tagStyle="'background: linear-gradient(178.05deg, rgb(186, 250, 107) 11.723%,rgb(117, 212, 34) 53.312%);'"
           :description="`Bridge 15,000,000 ~ 25,000,000 PEPE to Base to generate pepe's PFP Collection.`"
           :isProgress="false"
           :name="'pepe'"
