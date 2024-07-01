@@ -95,7 +95,7 @@
           :banner="'pepe.png'"
           :tag="'First Cross-chain Memecoin'"
           :tagStyle="'background: #75D422'"
-          :description="`Bridge 15,000,000 ~ 25,000,000 PEPE to Base to generate pepe's PFP Collection`"
+          :description="`Bridge 15,000,000 ~ 25,000,000 PEPE to Base to generate pepe's PFP Collection.`"
           :isProgress="false"
           :name="'pepe'"
           :url="'https://www.colorprotocol.com/'"
