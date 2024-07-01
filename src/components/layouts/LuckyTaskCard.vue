@@ -44,10 +44,10 @@
                         </div>
                       </template>
                       <span class="orbiter_global_prizes_tips_underline tip-text"
-                        >specific chain</span
+                        >specific network</span
                       >
                     </o-tooltip>
-              <span>to opBNB/BNB Chain</span>
+              <span>to opBNB/BNB network</span>
             </div>
           </div>
           <PrizesTaskSuccessIcon
@@ -121,7 +121,7 @@ export default {
         {
           icon: 'bridge',
           key: '3',
-          text: `Bridge <span class="orbiter_global_lucky_bag_task">3TX</span> from `,
+          text: `Bridge 3TX from `,
           tips: 'Bronze luckybag',
           opoints: '15',
           taskResult: luckyUserList[0]?.taskResult || 0,
@@ -133,7 +133,7 @@ export default {
           icon: 'bridge',
           key: '6',
           opoints: '40',
-          text: `Bridge <span class="orbiter_global_lucky_bag_task">6TX</span> from `,
+          text: `Bridge 6TX from `,
           tips: 'Silver luckybag',
           taskResult: luckyUserList[1]?.taskResult || 0,
           distributeResult: luckyUserList[1]?.distributeResult || 0,
@@ -144,7 +144,7 @@ export default {
           icon: 'bridge',
           key: '9',
           opoints: '60',
-          text: `Bridge <span class="orbiter_global_lucky_bag_task">9TX</span> from `,
+          text: `Bridge 9TX from `,
           tips: 'Gold luckybag',
           taskResult: luckyUserList[2]?.taskResult || 0,
           distributeResult: luckyUserList[2]?.distributeResult || 0,
