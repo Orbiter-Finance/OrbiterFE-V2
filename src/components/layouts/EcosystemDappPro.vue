@@ -85,9 +85,27 @@
         :showCard="showCard"
         ></EcosystemLikidDappPro>
       </el-carousel-item> -->
+      <el-carousel-item>
+        <EcosystemDapp
+          :holders="0"
+          :isTags="true"
+          :isHolders="false"
+          :ratio="0"
+          :showCard="showCard"
+          :banner="'pepe.png'"
+          :tag="'First Cross-chain Memecoin'"
+          :tagStyle="'background: linear-gradient(137.39deg, rgb(115, 172, 48) 5.022%,rgb(96, 138, 49) 50.661%)'"
+          :description="`Bridge 15,000,000 ~ 25,000,000 PEPE to Base to generate pepe's PFP Collection`"
+          :isProgress="false"
+          :name="'pepe'"
+          :url="'https://www.colorprotocol.com/'"
+        />
+      </el-carousel-item>
         <el-carousel-item>
           <EcosystemDapp
             :holders="bullishsTotal"
+            :isTags="true"
+            :isHolders="true"
             :ratio="ratio"
             :showCard="showCard"
             :banner="'bullishs.png'"
@@ -102,6 +120,8 @@
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"
+            :isTags="true"
+            :isHolders="true"
             :ratio="ratio"
             :showCard="showCard"
             :banner="'banner.gif'"
@@ -116,6 +136,8 @@
         <el-carousel-item>
           <EcosystemDapp
             :holders="totalUser"
+            :isTags="true"
+            :isHolders="true"
             :ratio="ratio"
             :showCard="showCard"
             :banner="'astra.png'"
