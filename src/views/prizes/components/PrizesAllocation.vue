@@ -139,7 +139,7 @@
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
                       <span>
-                        <span>Specific chains include: </span>
+                        <span>Specific networks include: </span>
                         <br />
                         Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
                         Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum
@@ -149,7 +149,7 @@
                     </div>
                   </template>
                   <div class="orbiter_global_prizes_tips_underline tip-text">
-                    specific chain
+                    specific network
                   </div>
                 </o-tooltip>
                 <span v-if="item.specificChain">to Arbitrum</span>
@@ -212,7 +212,7 @@
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
                       <span>
-                        <span>Specific chains include: </span>
+                        <span>Specific networks include: </span>
                         <br />
                         Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta,
                         Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum
@@ -222,7 +222,7 @@
                     </div>
                   </template>
                   <div class="orbiter_global_prizes_tips_underline tip-text">
-                    specific chain
+                    specific network
                   </div>
                 </o-tooltip>
                 <span v-if="item.specificChain">to Arbitrum</span>
@@ -506,7 +506,7 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge ≥20 TX from specific chain to Arbitrum <span class="orbiter_global_prizes_tx-color">Top 100 users </span>`,
+          text: `Bridge ≥20 TX from specific network to Arbitrum <span class="orbiter_global_prizes_tx-color">Top 100 users </span>`,
           reward: '30% Prize Pool',
           color: ratio30,
           isSuccess: txN >= 20 && Number(rankN) && Number(rankN) <= 100,

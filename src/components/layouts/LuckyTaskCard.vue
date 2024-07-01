@@ -37,7 +37,7 @@
                       <template v-slot:titleDesc>
                         <div style="margin-left: -20px">
                           <span>
-                            <span>Specific chains include: </span>
+                            <span>Specific networks include: </span>
                             <br />
                             Linea、Manta、Base、Arbitrum、Polygon、Polygon zkEVM、Optimism、Ethereum、zkSync Lite、ZKSyncEra、Scroll、Zora、Mantle
                           </span>
