@@ -190,28 +190,27 @@
                   </div>
                   <div class="group">
                     <div
-                    v-if="option.status === 0"
                     v-for="tag in option.tags"
                     >
-                    <div v-if="tag.style === 'token'"
-                    class="token-tag"
-                    >
-                    <img v-if="tag.icon" :src="tag.icon" alt="" class="tag-token-icon">
-                    <span class="tag-token-text">{{ tag.description }}</span>
-                    </div>
-                    <div
-                        class="text-wrapper_17 flex-col"
-                        :key="tag.description"
-                        v-else
+                      <div v-if="tag.style === 'token'"
+                      class="token-tag"
                       >
-                      <span class="text_27">{{ tag.description }}</span>
-                    </div>
+                        <img v-if="tag.icon" :src="tag.icon" alt="" class="tag-token-icon">
+                        <span class="tag-token-text">{{ tag.description }}</span>
+                      </div>
+                      <div
+                          class="text-wrapper_17 flex-col"
+                          :key="tag.description"
+                          v-else
+                        >
+                        <span class="text_27">{{ tag.description }}</span>
+                      </div>
 
                     </div>
                     
-                    <div v-else class="text-wrapper_4 flex-col">
+                    <!-- <div v-else class="text-wrapper_4 flex-col">
                       <span class="text_9">Done</span>
-                    </div>
+                    </div> -->
 
                     <div class="group-reward">
                       <svg-icon iconName="O-Points"></svg-icon>
