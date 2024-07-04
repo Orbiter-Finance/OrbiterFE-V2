@@ -73,7 +73,8 @@
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
-                      <span> 100% refund for oversubscribed part </span>
+                      <span> 100% refund for <br />
+                        oversubscribed part </span>
                     </div>
                   </template>
                   <img
