@@ -85,7 +85,7 @@
         :showCard="showCard"
         ></EcosystemLikidDappPro>
       </el-carousel-item>
-      <el-carousel-item>
+      <!-- <el-carousel-item>
         <EcosystemDapp
           :holders="0"
           :isTags="true"
@@ -100,7 +100,7 @@
           :name="'pepe'"
           :url="'https://www.colorprotocol.com/'"
         />
-      </el-carousel-item>
+      </el-carousel-item> -->
         <el-carousel-item>
           <EcosystemDapp
             :holders="bullishsTotal"
