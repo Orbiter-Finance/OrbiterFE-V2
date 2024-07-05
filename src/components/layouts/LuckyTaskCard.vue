@@ -1,9 +1,12 @@
 <template>
   <div id="lucky-task-card" class="lucky-task-card">
-    <div class="top-banenr" @click="openLuckyReward">
+    <div class="top-banenr" >
       <div class="banner-content">
-        <div class="banner-title">$ORBGUY Prize Pool</div>
-        <div class="banner-progress">
+        <div class="banner-title">
+          <svg-icon class="task-icon" iconName="56"></svg-icon>
+          $ORBGUY Prize Pool
+        </div>
+        <!-- <div class="banner-progress">
           <div class="progress-label">Claim Progress</div>
           <div class="progress-amount">
             <span class="current-amount">{{ current }}</span>/<span
@@ -11,8 +14,8 @@
               >{{ total }}</span
             >
           </div>
-        </div>
-        <div class="progress-box">
+        </div> -->
+        <!-- <div class="progress-box">
           <div
             class="progress progress-bg"
             :style="{
@@ -22,11 +25,15 @@
           >
             <div class="skeleton"></div>
           </div>
-        </div>
+        </div> -->
+        <img class="bag-image" @click="drawLuckyTaskBag()"
+         :src="require(`../../assets/activity/points_task/${amount ? 'bag' :'bag-d'}.png`)" 
+        alt="">
+
       </div>
     </div>
 
-    <div class="task-card-group" v-if="false">
+    <!-- <div class="task-card-group" v-if="false">
       <div class="task-card-item" v-for="item in taskList" :key="item.key">
         <div class="task-title">
           <div class="task-info">
@@ -74,7 +81,7 @@
           <img v-if="item.isTask" class="bag-image" @click="drawLuckyTaskBag(item)" :src="require('../../assets/activity/points_task/bag.png')" alt="">
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -87,7 +94,9 @@ import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import { luckyBaTaskgOrbguyInfo, luckyBaTaskgUserOrbguyInfo, actDialogVisible } from "../../composition/hooks"
 
 export default {
-  components: { SvgIcon },
+  components: { 
+    SvgIcon
+   },
   name: 'LuckyTaskCard',
 
   computed: {
@@ -115,6 +124,15 @@ export default {
     luckyBagUserInfo() {
       return luckyBaTaskgUserOrbguyInfo.value
     }, 
+    amount() {
+      const luckyUserList = this.luckyBagUserInfo || []
+      let amountValue = 0
+      luckyUserList.forEach((item)=>{
+        const value = item?.taskResult || 0
+        amountValue += Number(value)
+      })
+      return amountValue
+    },
     taskList() {
       const luckyUserList = this.luckyBagUserInfo || []
       return [
@@ -173,28 +191,38 @@ export default {
     },
   },
   methods: {
-    openLuckyReward() {
-      const list = this.luckyBagUserInfo || []
-      let total = 0
-      list.forEach((item) => {
-        if(!!item?.distributed) {
-          total += (Number(item?.distributeResult) || 0)
-        }
-      });
+    // openLuckyReward() {
+    //   const list = this.luckyBagUserInfo || []
+    //   let total = 0
+    //   list.forEach((item) => {
+    //     if(!!item?.distributed) {
+    //       total += (Number(item?.distributeResult) || 0)
+    //     }
+    //   });
 
-      if(!list?.length || !Number(total)) {
-        return 
-      }
-      this.$store.commit("getClaimORBGUYRewardData", {
-          type: "LUCKY_BAG_TASK",
-          distributeResult: total
-      })
-    },
+    //   if(!list?.length || !Number(total)) {
+    //     return 
+    //   }
+    //   this.$store.commit("getClaimORBGUYRewardData", {
+    //       type: "LUCKY_BAG_TASK",
+    //       distributeResult: total
+    //   })
+    // },
     drawLuckyTaskBag(data) {
-      this.$store.commit("getClaimORBGUYRewardData", {
-          type: "LUCKY_BAG_TASK",
-          distributeResult: Number(data?.distributeResult) || 0
-      })
+      // this.$store.commit("getClaimORBGUYRewardData", {
+      //     type: "LUCKY_BAG_TASK",
+      //     distributeResult: Number(data?.distributeResult) || 0
+      // })
+      const evmAddress = this.evmAddress
+      if (!Number(this.amount) || !evmAddress || evmAddress === "0x") return
+      const name = "CLAIM_TO_BNB_LUCKY_BAG_AABANK"
+        const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
+        this.$gtag.event(name, {
+          event_category: name,
+          event_label: evmAddress,
+        })
+        window.open(url, '_blank')
+        return
     },
     getData(){
         this.$store.commit("getLuckyBagTaskInfo")
@@ -220,32 +248,54 @@ export default {
 .lucky-task-card {
   margin: 12px 16px;
   width: calc(100% - 32px);
-  background-color: #f5f5f5;
+  border: 1px solid rgb(243, 186, 47);
   border-radius: 12px;
+  box-shadow: inset 0px 0px 24px 0px rgb(243, 186, 47);
+  background: rgb(0, 0, 0);
 
   .top-banenr {
     width: 100%;
-    height: 100px;
-    background-image: url(../../assets/activity/points_task/lucky_orbguy.png);
+    // height: 100px;
+    // background-image: url(../../assets/activity/points_task/lucky_orbguy.png);
     background-repeat: no-repeat;
     background-size: 100% 100%;
     border-radius: 12px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    padding: 16px 20px;
+    padding: 12px;
     text-align: left;
     color: #fff;
     .banner-content {
-      width: 64%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
 
       .banner-title {
-        width: 100%;
-        font-size: 18px;
+
+        font-size: 14px;
         white-space: nowrap;
         font-family: GeneralSans-Bold;
         font-weight: 700;
-        color: #df2e2d;
+        white-space: nowrap;
+
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        .task-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 20px;
+          height: 20px;
+          margin-right: 6px;
+        }
+      }
+      .bag-image {
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
       }
 
       .banner-progress {
