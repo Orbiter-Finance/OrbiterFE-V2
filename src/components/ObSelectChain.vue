@@ -607,46 +607,39 @@ export default {
       if (this.isStarkSystem(e.localID)) {
         try {
           // starknet
-          if (
-            e.localID === CHAIN_ID.starknet ||
-            e.localID === CHAIN_ID.starknet_test
-          ) {
-            const { starkIsConnected, starkNetAddress } = web3State.starkNet
-            if (!starkIsConnected && !starkNetAddress) {
-              setConnectWalletGroupKey('STARKNET')
-              setSelectWalletDialogVisible(true)
-              return
-              // await connectStarkNetWallet()
-              // if (
-              //     !web3State.starkNet.starkIsConnected &&
-              //     !web3State.starkNet.starkNetAddress
-              // ) {
-              //     return
-              // }
-            }
-          }
+          // if (
+          //   e.localID === CHAIN_ID.starknet ||
+          //   e.localID === CHAIN_ID.starknet_test
+          // ) {
+          //   const { starkIsConnected, starkNetAddress } = web3State.starkNet
+          //   if (!starkIsConnected && !starkNetAddress) {
+          //     setConnectWalletGroupKey('STARKNET')
+          //     setSelectWalletDialogVisible(true)
+          //     return
+          //   }
+          // }
 
-          // solana
-          if (
-            e.localID === CHAIN_ID.solana ||
-            e.localID === CHAIN_ID.solana_test
-          ) {
-            const isConnected = await solanaHelper.isConnect()
-            if (!isConnected) {
-              setSelectWalletDialogVisible(true)
-              setConnectWalletGroupKey('SOLANA')
-              return
-            }
-          }
-          // ton
-          if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
-            const account = await tonHelper.account()
-            const isConnected = await tonHelper.isConnected()
-            if (!account || !isConnected) {
-              await tonHelper.connect()
-              return
-            }
-          }
+          // // solana
+          // if (
+          //   e.localID === CHAIN_ID.solana ||
+          //   e.localID === CHAIN_ID.solana_test
+          // ) {
+          //   const isConnected = await solanaHelper.isConnect()
+          //   if (!isConnected) {
+          //     setSelectWalletDialogVisible(true)
+          //     setConnectWalletGroupKey('SOLANA')
+          //     return
+          //   }
+          // }
+          // // ton
+          // if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
+          //   const account = await tonHelper.account()
+          //   const isConnected = await tonHelper.isConnected()
+          //   if (!account || !isConnected) {
+          //     await tonHelper.connect()
+          //     return
+          //   }
+          // }
           // immutableX
           if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
             this.loadingIndex = index

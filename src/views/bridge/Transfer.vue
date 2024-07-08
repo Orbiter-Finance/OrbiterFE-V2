@@ -182,9 +182,12 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)  || (targetChainId === CHAIN_ID.ton || targetChainId === CHAIN_ID.ton_test)">
+      <div 
+      :hidden="isHiddenCrossAddress"
+      >
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
-          <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
+          <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" 
+           v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
           <label v-else for="checkbox"> Recipient's Address </label>
         </div>
@@ -448,6 +451,7 @@ import {
   prizesTimeEnd
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
+import orbiterHelper from "../../util/orbiter_helper"
 import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
 import { getMdcRuleLatest, getV2TradingPair } from "../../common/thegraph";
 import { walletConnectDispatcherOnInit } from "../../util/walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher";
@@ -553,6 +557,12 @@ export default {
     };
   },
   computed: {
+    isHiddenCrossAddress() {
+      return this.fromChainId === CHAIN_ID.zksync || 
+      this.fromChainId === CHAIN_ID.zksync_test  || 
+      this.fromChainId === CHAIN_ID.imx_test || 
+      this.fromChainId === CHAIN_ID.imx
+    },
     isPrizesEnd(){
       return prizesTimeEnd.value
     },
@@ -654,10 +664,10 @@ export default {
     isStarknet() {
       return this.refererUpper === 'STARKNET';
     },
-    crossAddressInputDisable() {
-      const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
-    },
+    // crossAddressInputDisable() {
+    //   const toChainID = transferDataState.toChainID;
+    //   return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
+    // },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
       const { href } = window.location;
@@ -859,6 +869,7 @@ export default {
     },
     crossAddressReceipt: function (newValue) {
       updateCrossAddressReceipt(newValue);
+      this.updateTransferInfo()
     },
     selectFromTokenSymbol:function (newValue) {
       this.$refs.selectFromChainRef.selectSymbol(newValue)
@@ -965,6 +976,12 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    checkAddressCall() {
+      const {crossAddressReceipt, isCrossAddress, toChainID } = this.transferDataState
+      if(!isCrossAddress) return false
+      const isCheck = orbiterHelper.checkAddress({address: crossAddressReceipt, chainId: toChainID})
+      return isCheck
+    },
     goToPrizes(){
       this.$gtag.event("TRANSFER_TO_PRIZES", {
         event_category: "TRANSFER_TO_PRIZES",
@@ -1243,7 +1260,7 @@ export default {
       if (!this.isNewVersion) {
         toCurrency = fromCurrency;
       }
-      this.sendBtnInfo.disabled = 'disabled';
+      // this.sendBtnInfo.disabled = 'disabled';
 
       const isCrossAddress = transferDataState.isCrossAddress;
       const oldFromChainID = transferDataState.fromChainID;
@@ -1262,15 +1279,15 @@ export default {
       this.isLoopring = fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test;
       this.isBrowserApp = isBrowserApp();
 
-      if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
-        if (isCrossAddress && util.isExecuteXVMContract()) {
-          this.$notify.warning({
-            title: `Not supported yet Change Account.`,
-            duration: 3000,
-          });
-        }
-        this.isCrossAddress = false;
-      }
+      // if (fromCurrency === toCurrency && !this.isLoopring && !this.isBrowserApp) {
+      //   if (isCrossAddress && util.isExecuteXVMContract()) {
+      //     this.$notify.warning({
+      //       title: `Not supported yet Change Account.`,
+      //       duration: 3000,
+      //     });
+      //   }
+      //   // this.isCrossAddress = false;
+      // }
 
       const { query } = this.$route;
       const source = makerConfigs.find(item => item?.fromChain?.name.toLowerCase() === query?.source?.toLowerCase())?.fromChain?.chainId || 0;
@@ -1532,28 +1549,36 @@ export default {
           util.log('isShowUnreachMinInfo || isShowMax', this.isShowUnreachMinInfo, this.isShowMax);
         }
 
-        if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
-                !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
-          info.text = 'SEND';
+        if (this.isCrossAddress && !this.checkAddressCall()) {
+          info.text = `Check ${this.chainName} Address`;
           info.disabled = 'disabled';
           util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
                   fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
         }
 
-        if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
-                  this.crossAddressReceipt, this.isErrorAddress);
-        }
-        const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
-        const isCheck = !reg.test(this.crossAddressReceipt);
-        if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
-          info.text = 'SEND';
-          info.disabled = 'disabled';
-          util.log('this.isLoopring && !this.crossAddressReceipt',
-                  this.isLoopring, !this.crossAddressReceipt);
-        }
+        // if ((fromCurrency !== toCurrency || this.isCrossAddress) &&
+        //         !util.isSupportXVMContract() && !this.isLoopring && !util.isStarkNet()) {
+        //   info.text = 'SEND';
+        //   info.disabled = 'disabled';
+        //   util.log('(fromCurrency !== toCurrency || this.isCrossAddress) && !isSupportXVMContract && !this.isLoopring && !util.isStarkNet',
+        //           fromCurrency !== toCurrency, this.isCrossAddress, !util.isSupportXVMContract(), !this.isLoopring, !util.isStarkNet());
+        // }
+
+        // if (util.isSupportXVMContract() && this.isCrossAddress && (!this.crossAddressReceipt || this.isErrorAddress)) {
+        //   info.text = 'SEND';
+        //   info.disabled = 'disabled';
+        //   util.log('isSupportXVM && isCrossAddress && (!crossAddressReceipt || isErrorAddress)',
+        //           this.crossAddressReceipt, this.isErrorAddress);
+        // }
+
+        // const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
+        // const isCheck = !reg.test(this.crossAddressReceipt);
+        // if (this.isLoopring  && this.isCrossAddress && (!this.crossAddressReceipt || isCheck)) {
+        //   info.text = 'SEND';
+        //   info.disabled = 'disabled';
+        //   util.log('this.isLoopring && !this.crossAddressReceipt',
+        //           this.isLoopring, !this.crossAddressReceipt);
+        // }
       }
       this.sendBtnInfo = info;
     },
@@ -1619,25 +1644,25 @@ export default {
       }
       if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
         const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
-        if (!starkNetIsConnect || !starkNetAddress) {
-          await connectStarkNetWallet();
-          if (!web3State.starkNet.starkIsConnected && !web3State.starkNet.starkNetAddress) {
-            const makerConfig = makerConfigs[0];
-            this.updateTransferInfo({ fromChainID: makerConfig.fromChain.chainId });
-            return;
-          }
-        }
-        if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-          this.isCrossAddress = true;
-          this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
-          updateTransferExt({
-            fromAddress: this.currentWalletAddress,
-            ext: {
-              type: '0x03',
-              value: web3State.starkNet.starkNetAddress,
-            }
-          });
-        }
+        // if (!starkNetIsConnect || !starkNetAddress) {
+        //   // await connectStarkNetWallet();
+        //   if (!web3State.starkNet.starkIsConnected && !web3State.starkNet.starkNetAddress) {
+        //     const makerConfig = makerConfigs[0];
+        //     this.updateTransferInfo({ fromChainID: makerConfig.fromChain.chainId });
+        //     return;
+        //   }
+        // }
+        // if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+        //   this.isCrossAddress = true;
+        //   this.crossAddressReceipt = web3State.starkNet.starkNetAddress;
+        //   updateTransferExt({
+        //     fromAddress: this.currentWalletAddress,
+        //     ext: {
+        //       type: '0x03',
+        //       value: web3State.starkNet.starkNetAddress,
+        //     }
+        //   });
+        // }
       }
       if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test || toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
         if (walletIsLogin.value) {
@@ -1899,6 +1924,23 @@ export default {
       if (this.sendBtnInfo && this.sendBtnInfo.disabled === 'disabled') {
         util.log('sendBtnInfo disabled');
         return;
+      }
+
+      if(!this.isCrossAddress) {
+        let address = ""
+        if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+          address = tonHelper.account()
+        } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+          address = solanaHelper.solanaAddress()
+        } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+          address = this.starkAddress
+        } else {
+          address = this.currentWalletAddress
+        }
+        if(!orbiterHelper.checkAddress({chainId: toChainID, address: address})) {
+          orbiterHelper.openConnectModal({chainId: toChainID})
+          return
+        }
       }
       // if (selectMakerConfig.ebcId) {
       //   try {

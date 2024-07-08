@@ -104,10 +104,6 @@ import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcB
 import { store } from '../../store'
 import solanaHelper from '../../util/solana/solana_helper'
 
-import { THEME, TonConnectUI } from '@tonconnect/ui'
-import * as TonconnectUI from '@tonconnect/ui'
-import * as TonconnectUiSdk from '@tonconnect/sdk'
-
 let ton
 
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =

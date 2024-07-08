@@ -206,6 +206,27 @@ const transfer = async ({
   return hexHash
 }
 
+const checkAddress = (address) => {
+  const validNetworks = ['0:', '1:']
+  const validAddressLength = 66
+  const addressLen = 48
+  const OX_ADDRESS = new RegExp('^0x[0-9A-Fa-f]+$')
+  if (address.length === addressLen && !OX_ADDRESS.test(address)) {
+    return true
+  }
+
+  if (address.length !== validAddressLength) {
+    return false
+  }
+
+  const networkIdentifier = address.substring(0, 2)
+  if (!validNetworks.includes(networkIdentifier)) {
+    return false
+  }
+
+  return true
+}
+
 const tonHelper = {
   tonConnectCall,
   connect,
@@ -219,6 +240,7 @@ const tonHelper = {
   bytesToBase64,
   parseAddress,
   addressToTonwebAddress,
+  checkAddress,
 }
 
 export default tonHelper

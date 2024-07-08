@@ -232,6 +232,17 @@ const activationTokenAccount = async ({ toChainID, fromCurrency }) => {
   return 'register'
 }
 
+const checkAddress = (address) => {
+  try {
+    const publicKey = new PublicKey(address)
+    console.log('Valid Solana address:', publicKey.toString())
+    return true
+  } catch (error) {
+    console.error('Invalid Solana address:', error)
+    return false
+  }
+}
+
 const solanaHelper = {
   getConnection,
   getPublicKey,
@@ -244,6 +255,7 @@ const solanaHelper = {
   activationTokenAccount,
   readWalletName,
   updateWalletName,
+  checkAddress,
 }
 
 export default solanaHelper
