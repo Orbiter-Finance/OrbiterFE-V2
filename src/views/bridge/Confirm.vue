@@ -411,11 +411,11 @@ export default {
         toCrossAddressReceipt() {
             const { toChainID } = transferDataState
             if(this.isCrossAddress) {
-              if(!this.crossAddressReceipt || !orbiterHelper.checkAddress({address: this.crossAddressReceipt, chainId: toChainID})) {
+              if(!!this.crossAddressReceipt || !!orbiterHelper.checkAddress({address: this.crossAddressReceipt, chainId: toChainID})) {
+                return this.crossAddressReceipt
+              } else {
                 orbiterHelper.openConnectModal({chainId: toChainID})
                 return ""
-              } else {
-                return this.crossAddressReceipt
               }
             } else {
                 let address = ""
@@ -516,7 +516,7 @@ export default {
                 }
                 this.transferLoading = false
             } catch (err) {
-                console.error('transferToSolanaOrTon error', err);
+                console.error('loopringWalletTransfer error', err);
                 this.transferLoading = false
                 this.$notify.error({
                     title: err?.data?.message || err.message,
@@ -621,43 +621,10 @@ export default {
 
             let toAddress = this.toCrossAddressReceipt()
             let isConnected = false
-
             if(!toAddress) {
                 this.openConnectModal()
                 return 
             }
-
-            // if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-            //     toAddress = solanaHelper.solanaAddress()
-            //     isConnected = await solanaHelper.isConnect()
-
-            //     if(!toAddress || !isConnected) {
-            //         setSelectWalletDialogVisible(true)
-            //         setConnectWalletGroupKey("SOLANA")
-            //         return
-            //     }
-            // }
-
-
-            // if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-            //     toAddress = tonHelper.account()
-            //     isConnected = await tonHelper.isConnected()
-
-            //     if(!toAddress || !isConnected) {
-            //         await tonHelper.connect()
-            //         return
-            //     }
-            // }
-
-            // try {
-            //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-            //     if(res !== "created") {
-            //         return
-            //     }
-            // } catch (error) {
-            //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-            //     return
-            // }
 
             const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
@@ -1550,36 +1517,6 @@ export default {
                 return 
             }
 
-            // if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-            //     targetAddress = tonHelper.account()
-            //     const isConnected = await tonHelper.isConnected()
-
-            //     if(!targetAddress || !isConnected) {
-            //         await tonHelper.connect()
-            //         return
-            //     }
-            // }
-            
-            // if (
-            //     toChainID === CHAIN_ID.starknet ||
-            //     toChainID === CHAIN_ID.starknet_test
-            // ) {
-
-            //     if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-            //         util.showMessage('please connect Starknet Wallet', 'error')
-            //         this.transferLoading = false
-            //         return
-            //     }
-
-            //     targetAddress = starkNetAddress
-
-            //     if (!starkNetAddress) {
-            //         setSelectWalletDialogVisible(true)
-            //         setConnectWalletGroupKey("STARKNET")
-            //         this.transferLoading = false
-            //         return;
-            //     }
-            // }
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
@@ -1587,7 +1524,7 @@ export default {
                     from: from,
                     to: selectMakerConfig.recipient,
                     tokenAddress,
-                    toAddress,
+                    targetAddress: toAddress,
                     amount: rAmountValue,
                     safeCode
                 })
@@ -1692,7 +1629,7 @@ export default {
                     from,
                     to: selectMakerConfig.recipient,
                     tokenAddress,
-                    toAddress,
+                    targetAddress: toAddress,
                     amount: rAmountValue,
                     safeCode
                 })
@@ -2129,57 +2066,6 @@ export default {
                 return 
             }
 
-            // if(toChainID === CHAIN_ID.solana) {
-            //     toAddress = solanaHelper.solanaAddress()
-            //     const isConnected = await solanaHelper.isConnect()
-
-            //     if(!toAddress || !isConnected) {
-            //         setSelectWalletDialogVisible(true)
-            //         setConnectWalletGroupKey("SOLANA")
-            //         return
-            //     }
-            // }
-
-            // if(toChainID === CHAIN_ID.ton) {
-            //     toAddress = tonHelper.account()
-            //     const isConnected = tonHelper.isConnected()
-
-            //     if(!toAddress || !isConnected) {
-            //         await tonHelper.connect()
-            //         return
-            //     }
-            // }
-
-            // if(toChainID === CHAIN_ID.starknet) {
-            //     toAddress = web3State.starkNet.starkNetAddress
-            //     let { starkChain } = web3State.starkNet
-
-            //     if(!toAddress) {
-            //         setSelectWalletDialogVisible(true)
-            //         setConnectWalletGroupKey("STARKNET")
-            //         this.transferLoading = false
-            //         return
-            //     }
-
-            //     starkChain = +starkChain ? +starkChain : starkChain
-            //     if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-            //         util.showMessage('please connect Starknet Wallet', 'error')
-            //         this.transferLoading = false
-            //         return
-            //     }
-            //     if (
-            //         (fromChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet) &&
-            //         (starkChain === CHAIN_ID.starknet_test || starkChain === 'localhost')
-            //     ) {
-            //         util.showMessage(
-            //             'please switch Starknet Wallet to mainnet',
-            //             'error'
-            //         )
-            //         this.transferLoading = false
-            //         return
-            //     }
-            // }
-
             try {
                 if(toAddress) {
                     await zksyncEraGasTokenContract({account, fromChainID, to, amount: tValue.tAmount, tokenAddress, onTransferSucceed: this.onTransferSucceed, toAddress })
@@ -2336,9 +2222,17 @@ export default {
                 }
 
                 // EVM contract
-                if (isCrossAddress) {
+                if (util.isExecuteXVMContract()) {
                     this.transferLoading = true
                     await this.handleXVMContract()
+                    this.transferLoading = false
+                    return
+                }
+
+                 // EVM V3 contract
+                 if (isCrossAddress) {
+                    this.transferLoading = true
+                    await this.transferToSolanaOrTon()
                     this.transferLoading = false
                     return
                 }
