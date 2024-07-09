@@ -115,8 +115,8 @@
               </div>
               <div class="text_99">
                 <div class="left">
-                   <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
-                  <HeaderLotteryCard />
+                <span @click="openUserInfoDetailsCardModal">{{ totalPoint }}</span>
+                <HeaderLotteryCard />
                 </div>
 
                 <div class="right">
@@ -157,7 +157,8 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <PrizesCard></PrizesCard>
+        <!-- <PrizesCard></PrizesCard> -->
+        <LuckyTaskCard></LuckyTaskCard>
         <div 
         >
           <template v-for="item in actDataList">
@@ -189,16 +190,27 @@
                   </div>
                   <div class="group">
                     <div
-                      v-if="option.status === 0"
-                        v-for="tag in option.tags"
-                        class="text-wrapper_17 flex-col"
-                        :key="tag.description"
+                    v-for="tag in option.tags"
+                    >
+                      <div v-if="tag.style === 'token'"
+                      class="token-tag"
                       >
-                      <span class="text_27">{{ tag.description }}</span>
+                        <img v-if="tag.icon" :src="tag.icon" alt="" class="tag-token-icon">
+                        <span class="tag-token-text">{{ tag.description }}</span>
+                      </div>
+                      <div
+                          class="text-wrapper_17 flex-col"
+                          :key="tag.description"
+                          v-else
+                        >
+                        <span class="text_27">{{ tag.description }}</span>
+                      </div>
+
                     </div>
-                    <div v-else class="text-wrapper_4 flex-col">
+                    
+                    <!-- <div v-else class="text-wrapper_4 flex-col">
                       <span class="text_9">Done</span>
-                    </div>
+                    </div> -->
 
                     <div class="group-reward">
                       <svg-icon iconName="O-Points"></svg-icon>
@@ -225,7 +237,7 @@
         </div>
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
 
-          <ActDialogBanner ></ActDialogBanner>
+          <!-- <ActDialogBanner ></ActDialogBanner> -->
             <EcosystemDappPro
             ></EcosystemDappPro>
         </div>
@@ -283,12 +295,13 @@ import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
 import EcosystemDapp from './EcosystemDapp.vue'
 import EcosystemDappPro from './EcosystemDappPro.vue'
-import ActDialogBanner from './ActDialogBanner.vue'
+// import ActDialogBanner from './ActDialogBanner.vue'
 import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
-import PrizesCard  from "./PrizesCard.vue"
+// import PrizesCard  from "./PrizesCard.vue"
+import LuckyTaskCard  from "./LuckyTaskCard.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 
@@ -303,9 +316,10 @@ export default {
     HeaderLotteryCard,
     EcosystemDapp,
     EcosystemDappPro,
-    ActDialogBanner,
+    // ActDialogBanner,
     SvgIcon,
-    PrizesCard
+    // PrizesCard,
+    LuckyTaskCard
   },
   data() {
     return {
@@ -398,6 +412,8 @@ export default {
     },
     actDataList() {
       const list = transferDataState.actDataList || []
+
+      console.log("list", list)
       return list.map((item)=> ({
         ...item,
         label: {
@@ -1320,6 +1336,29 @@ export default {
     text-align: left;
     white-space: nowrap;
     line-height: 17px;
+  }
+
+  .token-tag {
+    height: 20px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    color: #FFF;
+    background: #000000;
+    padding: 2px 4px;
+
+    .tag-token-icon {
+      width: 12px;
+      height: 12px;
+      margin-right: 4px;
+    }
+
+    .tag-token-text {
+      font-size: 12px;
+      font-family: GeneralSans-SemiBold;
+    }
   }
 
   .text-wrapper_17 {

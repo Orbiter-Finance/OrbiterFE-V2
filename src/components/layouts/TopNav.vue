@@ -65,7 +65,6 @@
           />
         </div>
       </div> -->
-      <div class="lucky-bag-mobile" @click="openLuckyBagModal"></div>
       <div
         v-if="isMobile && $route.path !== '/prizes'"
         :class="addPointVisible ? 'shake-top' : ''"
@@ -281,73 +280,8 @@ export default {
     },
   },
   created() {
-    if (process.env['VUE_APP_RECAPTCHA']) {
-      if (typeof window === 'undefined') return
-      window.vueRecaptchaInit = () => {}
-      const recaptchaScript = document.createElement('script')
-      const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
-      recaptchaScript.setAttribute(
-        'src',
-        `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
-      )
-      recaptchaScript.setAttribute('async', '')
-      recaptchaScript.setAttribute('defer', '')
-      ;(document.body || document.head).appendChild(recaptchaScript)
-    }
   },
   methods: {
-    openLuckyBagModal() {
-      const { activityTime, ratio, chainId } = this.claimCardModalAmountInfoData || {}
-      const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
-      if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
-      const info = data?.[0]
-      if(!this.claimCardModalAmountInfoData || !this.claimCardModalDataInfoData) return
-      if(info) {
-        if(!!isClaimedData) {
-          util.showMessage(
-            'Your address has already received a lucky bag. Each address can only claim once.',
-            'warning'
-          )
-          return
-        } else {
-          if(chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()) {
-            setClaimCardModalShow(true, 'LUCKY_BAG')
-            return
-          }
-        }
-      }
-      if((!Number(activityTime) || ((activityTime > getUTCTime() / 1000)) || (Number(ratio) >= 100)) ) {
-        util.showMessage(
-        `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-        'warning'
-      )
-        return
-      }
-      if (process.env['VUE_APP_RECAPTCHA']) {
-        const recaptchaDiv = document.createElement('div')
-        recaptchaDiv.id = 'recaptcha-outside-badge'
-        this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
-        this.recaptchaId = grecaptcha.render(recaptchaDiv, {
-          sitekey: process.env['VUE_APP_RECAPTCHA'],
-          theme: 'light',
-          callback: (token) => {
-            this.$store.commit('getClaimORBGUYRewardData', {
-              type: 'LUCKY_BAG',
-              token,
-            })
-            recaptchaDiv.remove()
-          },
-        })
-        recaptchaDiv.onclick = () => {
-          recaptchaDiv.remove()
-        }
-      } else {
-        this.$store.commit('getClaimORBGUYRewardData', {
-          type: 'LUCKY_BAG',
-          token: '',
-        })
-      }
-    },
     openActDialog() {
       if (this.isLogin) {
         setActDialogVisible(true)

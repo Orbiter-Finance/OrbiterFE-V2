@@ -49,7 +49,7 @@
                 Explore Orbiter to grab some
               </div>
 
-              <div v-if="!!isAmount" class="card-des">
+              <div v-if="!!isAmount && !isLuckyBagTask" class="card-des">
                 The 1st Meme for Orbiter Community
               </div>
               <div
@@ -58,7 +58,7 @@
                   loading ? 'not-allowed' : 'pointer'
                 };`"
                 @click="claim"
-                v-if="!isClaimed && !showMediaStepCard && !!isAmount"
+                v-if="!isClaimed && !showMediaStepCard && !!isAmount && !isLuckyBagTask"
               >
                 {{ loading ? 'loading...' : 'Claim' }}
               </div>
@@ -120,6 +120,9 @@
                 Claim your Token on
                 <span class="chain-name">{{ chainName }}</span>
               </div>
+              <div v-if="isLuckyBagTask" class="lucky_bag_task">
+                The claim channel will be opened soon. Thank you for your patience.
+              </div>
             </div>
             <div
               class="join-media-card-group"
@@ -160,6 +163,7 @@ import {
   claimCardModalType,
   claimCardModalDataInfo,
   claimCardModalAmountInfo,
+  claimCardModalOtherDataInfo,
   web3State,
 } from '../../composition/hooks'
 import util from '../../util/util'
@@ -207,12 +211,17 @@ export default {
     claimCardModalAmountInfoData() {
       return claimCardModalAmountInfo.value
     },
+    claimCardModalOtherData() {
+      return claimCardModalOtherDataInfo.value
+    },
     currentNetwork() {
       return compatibleGlobalWalletConf.value.walletPayload.networkId
     },
     claimAmount() {
       const { data = [] } = this.claimCardModalDataInfoData || {}
       const cardIds = this.cardIds
+      if (this.isLuckyBagTask)
+        return this.claimCardModalOtherData?.distributeResult || 0
 
       let amount = ethers.utils.parseEther('0')
       let total = ethers.utils.parseEther('0')
@@ -235,6 +244,8 @@ export default {
       return !Number(amount) ? total : amount
     },
     isAmount() {
+      if (this.isLuckyBagTask)
+        return !!Number(this.claimCardModalOtherData?.distributeResult)
       const { data = [] } = this.claimCardModalDataInfoData || {}
 
       let amount = ethers.utils.parseEther('0')
@@ -253,8 +264,13 @@ export default {
     claimCardModalType() {
       return claimCardModalType.value
     },
+    isLuckyBagTask() {
+      return this.claimCardModalType === 'LUCKY_BAG_TASK'
+    },
     isClaimed() {
       const { data = [], isClaimedData } = this.claimCardModalDataInfoData || {}
+
+      if (this.isLuckyBagTask) return false
 
       if (isClaimedData) {
         return true
@@ -311,9 +327,10 @@ export default {
       return totalQuantity
     },
     isShowClose() {
-      const statusGroup =
-        JSON.parse(localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
-        JSON.stringify({}))
+      const statusGroup = JSON.parse(
+        localStorage.getItem('LUCKY_BAG_JOIN_MEDIA_STATUS') ||
+          JSON.stringify({})
+      )
       const evmAddress = (this.currentEvmAddress || '').toLocaleLowerCase()
 
       return (
@@ -327,7 +344,12 @@ export default {
       return util.chainName(this.rewardChainId)
     },
     showClaimChainText() {
-      return !this.showMediaStepCard && this.isAmount && !this.isClaimed
+      return (
+        !this.showMediaStepCard &&
+        this.isAmount &&
+        !this.isClaimed &&
+        this.claimCardModalType === 'LUCKY_BAG'
+      )
     },
   },
   methods: {
@@ -361,6 +383,7 @@ export default {
     async getCardIds(_self, rpcList, error) {
       _self = _self || this
       _self.cardIds = []
+      if (_self.claimCardModalType !== 'LUCKY_BAG') return
       const evmAddress = _self.currentEvmAddress
       if (!evmAddress || evmAddress === '0x') return
       let rpc = ''
@@ -406,11 +429,21 @@ export default {
       this.$store.commit('getClaimORBGUYRewardData', { type: '' })
     },
     async claim() {
+      const evmAddress = this.currentEvmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      if (this.isLuckyBagTask) {
+        const name = "CLAIM_REWARD_AABANK"
+        const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
+        this.$gtag.event(name, {
+          event_category: name,
+          event_label: evmAddress,
+        })
+        window.open(url, '_blank')
+        return
+      }
       const chainId = this.rewardChainId
       const rewardInfo = this.rewardInfo
       const claimContractAddress = rewardInfo?.claimContract
-      const evmAddress = this.currentEvmAddress
-      if (!evmAddress || evmAddress === '0x') return
       if (this.isClaim || this.loading || !chainId || !claimContractAddress)
         return
       const { data, sign: signData } = this.claimCardModalDataInfoData || {}
@@ -456,8 +489,11 @@ export default {
         try {
           const cardIds = await claimContract.getClaimedCards(evmAddress)
         } catch (error) {
-          console.log("error", error)
-          util.showMessage("Claim failed, please check your network/wallet address, 1 wallet could only claim once.", 'error')
+          console.log('error', error)
+          util.showMessage(
+            'Claim failed, please check your network/wallet address, 1 wallet could only claim once.',
+            'error'
+          )
           this.loading = false
           return
         }
@@ -466,7 +502,9 @@ export default {
           [...(data || [])].map((item) => {
             return {
               id: item.id,
-              value: ethers.utils.parseUnits(String(item.value), item.decimals).toString(),
+              value: ethers.utils
+                .parseUnits(String(item.value), item.decimals)
+                .toString(),
               expiredTimestamp: Number(item.expiredTimestamp),
               flag: Number(item.flag),
             }
@@ -480,7 +518,7 @@ export default {
         } catch (error) {}
 
         const res = await claimContract.claim(params[0], params[1], {
-          gasLimit: emitGas.mul('12').div('10')
+          gasLimit: emitGas.mul('12').div('10'),
         })
         await res.wait()
         this.isClaim = true
@@ -946,6 +984,15 @@ export default {
               .chain-name {
                 color: rgb(223, 46, 45);
               }
+            }
+
+            .lucky_bag_task {
+              width: 100%;
+              margin-top: 12px;
+              font-size: 14px;
+              font-weight: 600;
+              line-height: 20px;
+              letter-spacing: 0px;
             }
           }
 

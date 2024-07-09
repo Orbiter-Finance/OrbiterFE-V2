@@ -8,7 +8,7 @@
         <div class="dapp_group_img">
           <img
             class="dapp1"
-            :src="require('../../assets/activity/ecosystem_dapp/dapp_1.png')"
+            :src="require('../../assets/activity/ecosystem_dapp/TAIBOI.png')"
           />
           <img
             class="dapp2"
@@ -62,7 +62,7 @@
           </div>
         </div>
         <div class="label">
-          <div>$GATO</div>
+          <div>$TAIBOI</div>
         </div>
         <div class="bottom">
           <div class="progress-group">
@@ -73,7 +73,8 @@
                 <o-tooltip>
                   <template v-slot:titleDesc>
                     <div style="margin-left: -20px">
-                      <span> 100% refund for oversubscribed part </span>
+                      <span> 100% refund for <br />
+                        oversubscribed part </span>
                     </div>
                   </template>
                   <img
@@ -83,7 +84,7 @@
                 </o-tooltip>
               </div>
               <div :class="Number(ratio) >= 100 ? 'ratio100' : 'ratio'">
-                {{ decimalNumC(ratio, 1) }}%
+                {{ decimalNumC(ratio, 2) }}%
                 <span v-show="Number(ratio) >= 100">!!</span>
               </div>
             </div>
@@ -129,7 +130,7 @@ export default {
         ratio: 0,
         total: '10',
         isEnd: false,
-        timeStr: '2024-06-21T08:00:00.000Z',
+        timeStr: '2024-07-06T08:00:00.000Z',
         timeList: [],
     }
   },
@@ -151,7 +152,7 @@ export default {
       const raw = web3.eth.abi.encodeFunctionSignature('presaleAccumulate()')
       const res = await web3.eth.call({
         // from: zeroAddress,
-        to: '0x698460e83EbcD03c4733Cec37Bc602820Dfd7961',
+        to: '0x81a38430a18660fe5d6BB6F7A118E8240B2Da725',
         data: raw,
       })
       const result = web3.eth.abi.decodeParameters(['uint256'], res || '')

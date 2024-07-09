@@ -19,56 +19,6 @@
     <template
       v-if="isLogin && $route.path !== '/home' && $route.path !== '/statistics'"
     >
-      <div v-if="!isMobile" class="lucky-bag-tab" @click="openLuckyBagModal">
-        <div class="lucky-bag-image"></div>
-        <div v-if="isTimeOut" class="tiem-out">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:xlink="http://www.w3.org/1999/xlink"
-            width="16.000000"
-            height="16.000000"
-            viewBox="0 0 16 16"
-            fill="none"
-          >
-            <path
-              id="Vector"
-              d="M7.99 14.66C4.31 14.66 1.33 11.67 1.33 8C1.33 4.31 4.31 1.33 7.99 1.33C11.67 1.33 14.66 4.31 14.66 8C14.66 11.67 11.67 14.66 7.99 14.66Z"
-              stroke="#292D32"
-              stroke-opacity="2"
-              stroke-width="2"
-              stroke-linejoin="round"
-            />
-            <path
-              id="Vector"
-              d="M10.47 10.12L8.4 8.88C8.04 8.67 7.75 8.16 7.75 7.74L7.75 5"
-              stroke="#292D32"
-              stroke-opacity="2"
-              stroke-width="2"
-              stroke-linejoin="round"
-              stroke-linecap="round"
-            />
-            <g opacity="0.000000" />
-          </svg>
-          <div class="time-group" v-for="item in timeList" :key="item.symbol">
-            <div class="time-value">{{ item.value }}</div>
-            <div class="time-symbol">{{ item.symbol }}</div>
-          </div>
-        </div>
-        <div v-else class="lucky-bag-info">
-          <div class="info-label">Grab {{ maxGrantRatio }}% $ORBGUY</div>
-          <div class="info-progress">
-            <div
-              class="progress"
-              :style="{
-                width:
-                  Number(ratio) >= 100 ? '100%' : decimalNumC(ratio, 3) + '%',
-              }"
-            >
-              <div class="skeleton"></div>
-            </div>
-          </div>
-        </div>
-      </div>
       <span @click="openAct" class="ops-item" style="position: relative">
         <img
           :hidden="!isLightMode"
@@ -405,68 +355,6 @@ export default {
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
-    async openLuckyBagModal() {
-      const { activityTime, ratio, chainId } =
-        this.claimCardModalAmountInfoData || {}
-      const { data, isClaimedData } = this.claimCardModalDataInfoData || {}
-      const info = data?.[0]
-      if (
-        !this.claimCardModalAmountInfoData ||
-        !this.claimCardModalDataInfoData
-      )
-        return
-      if (info) {
-        if (!!isClaimedData) {
-          util.showMessage(
-            'Your address has already received a lucky bag. Each address can only claim once.',
-            'warning'
-          )
-          return
-        } else {
-          if (
-            chainId?.toLocaleLowerCase() === info?.chainId?.toLocaleLowerCase()
-          ) {
-            setClaimCardModalShow(true, 'LUCKY_BAG')
-            return
-          }
-        }
-      }
-      if (
-        !Number(activityTime) ||
-        activityTime > this.timeNum() ||
-        Number(ratio) >= 100
-      ) {
-        util.showMessage(
-          `😭 Oops, sorry! All gone! Catch us earlier next time!`,
-          'warning'
-        )
-        return
-      }
-      if (process.env['VUE_APP_RECAPTCHA']) {
-        const recaptchaDiv = document.createElement('div')
-        recaptchaDiv.id = 'recaptcha-outside-badge'
-        this.$el.insertBefore(recaptchaDiv, this.$el.childNodes[0])
-        this.recaptchaId = grecaptcha.render(recaptchaDiv, {
-          sitekey: process.env['VUE_APP_RECAPTCHA'],
-          theme: 'light',
-          callback: (token) => {
-            this.$store.commit('getClaimORBGUYRewardData', {
-              type: 'LUCKY_BAG',
-              token,
-            })
-            recaptchaDiv.remove()
-          },
-        })
-        recaptchaDiv.onclick = () => {
-          recaptchaDiv.remove()
-        }
-      } else {
-        this.$store.commit('getClaimORBGUYRewardData', {
-          type: 'LUCKY_BAG',
-          token: '',
-        })
-      }
-    },
     openAct() {
       setActDialogVisible(true)
       this.$emit('closeDrawer')
@@ -649,21 +537,21 @@ export default {
       }
     },
   },
-  created() {
-    if (process.env['VUE_APP_RECAPTCHA']) {
-      if (typeof window === 'undefined') return
-      window.vueRecaptchaInit = () => {}
-      const recaptchaScript = document.createElement('script')
-      const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
-      recaptchaScript.setAttribute(
-        'src',
-        `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
-      )
-      recaptchaScript.setAttribute('async', '')
-      recaptchaScript.setAttribute('defer', '')
-      ;(document.body || document.head).appendChild(recaptchaScript)
-    }
-  },
+  // created() {
+  //   if (process.env['VUE_APP_RECAPTCHA']) {
+  //     if (typeof window === 'undefined') return
+  //     window.vueRecaptchaInit = () => {}
+  //     const recaptchaScript = document.createElement('script')
+  //     const language = this.dataLanguage ? `&hl=${this.dataLanguage}` : ''
+  //     recaptchaScript.setAttribute(
+  //       'src',
+  //       `https://www.google.com/recaptcha/api.js?onload=vueRecaptchaInit&render=explicit${language}`
+  //     )
+  //     recaptchaScript.setAttribute('async', '')
+  //     recaptchaScript.setAttribute('defer', '')
+  //     ;(document.body || document.head).appendChild(recaptchaScript)
+  //   }
+  // },
   async mounted() {
     let flag = false
     timer1 = setInterval(() => {
@@ -888,107 +776,6 @@ export default {
     .mode-icon {
       width: 16px;
       height: 16px;
-    }
-  }
-
-  .lucky-bag-tab {
-    box-sizing: border-box;
-    border: 2px solid rgb(0, 0, 0);
-    border-radius: 999px;
-    background: linear-gradient(
-      170.35deg,
-      rgb(255, 250, 236) 28.059%,
-      rgb(255, 215, 104) 57.771%
-    );
-    padding: 4px 18px 4px 58px;
-    position: relative;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    margin-right: 10px;
-    cursor: pointer;
-
-    .lucky-bag-image {
-      position: absolute;
-      bottom: -4px;
-      left: -6px;
-      width: 58px;
-      height: 50px;
-      background-image: url(../../assets/lucky-bag.png);
-      background-repeat: no-repeat;
-      background-size: 100% 100%;
-    }
-
-    .tiem-out {
-      display: flex;
-      justify-content: start;
-      align-items: center;
-      padding: 4px 0;
-      .time-group {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .time-value {
-          font-size: 14px;
-          font-weight: 500;
-          line-height: 16px;
-          letter-spacing: 0px;
-          margin: 0 2px;
-        }
-        .time-symbol {
-          font-family: GeneralSans-Regular;
-          color: rgb(153, 153, 153);
-          font-size: 12px;
-          font-weight: 400;
-          line-height: 16px;
-        }
-      }
-    }
-
-    .lucky-bag-info {
-      .info-label {
-        font-size: 15px;
-        font-weight: 600;
-        line-height: 20px;
-        letter-spacing: 0px;
-        white-space: nowrap;
-      }
-
-      .info-progress {
-        width: 100%;
-        height: 6px;
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: 6px;
-        margin-top: 2px;
-        overflow: hidden;
-
-        .progress {
-          height: 6px;
-          background: linear-gradient(
-            90deg,
-            rgb(223, 46, 45) 43.689%,
-            rgb(255, 150, 50) 100%
-          );
-          border-radius: 6px;
-        }
-
-        .skeleton {
-          width: 100%;
-          height: 100%;
-          background-image: linear-gradient(
-            90deg,
-            rgba(#fff, 0),
-            rgba(#fff, 0.4),
-            rgba(#fff, 0)
-          );
-          background-size: 40px 100%; // width of the shine
-          background-repeat: no-repeat; // No need to repeat the shine effect
-          background-position: left -40px top 0; // Place shine on the left side, with offset on the left based on the width of the shine - see background-size
-          animation: shine 2s ease infinite;
-        }
-      }
     }
   }
 

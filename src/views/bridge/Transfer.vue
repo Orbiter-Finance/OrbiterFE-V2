@@ -1153,7 +1153,7 @@ export default {
           }
         } catch (error) {
         }
-      }, 30000);
+      }, 1000 * 60 * 5);
       this.cronList.push(cron);
      
     },

@@ -80,14 +80,48 @@
           :url="'https://0xastra.xyz/'"
         />
       </el-carousel-item> -->
-      <el-carousel-item>
+        <!-- <el-carousel-item>
         <EcosystemLikidDappPro
         :showCard="showCard"
         ></EcosystemLikidDappPro>
-      </el-carousel-item>
+      </el-carousel-item> -->
+      <!-- <el-carousel-item>
+        <EcosystemDapp
+          :holders="0"
+          :isTags="true"
+          :isHolders="false"
+          :ratio="0"
+          :showCard="showCard"
+          :banner="'pepe.png'"
+          :tag="'First Cross-chain Memecoin'"
+          :tagStyle="'background: linear-gradient(178.05deg, rgb(186, 250, 107) 11.723%,rgb(117, 212, 34) 53.312%);'"
+          :description="`Bridge 15,000,000 ~ 25,000,000 PEPE to Base to generate pepe's PFP Collection.`"
+          :isProgress="false"
+          :name="'pepe'"
+          :url="'https://www.colorprotocol.com/'"
+        />
+      </el-carousel-item> -->
+        <el-carousel-item>
+          <EcosystemDapp
+            :holders="bullishsTotal"
+            :isTags="true"
+            :isHolders="true"
+            :ratio="ratio"
+            :showCard="showCard"
+            :banner="'bullishs.png'"
+            :tag="'Cross-chain Game'"
+            :tagStyle="'background: linear-gradient(174.86deg, rgb(200, 129, 239) 28.525%,rgb(171, 70, 214) 57.649%);'"
+            :description="'Deposit 0.01 ETH to Earn Exclusive Mega Rewards for Orbiter Users!'"
+            :isProgress="false"
+            :name="'bullishs'"
+            :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
+          />
+        </el-carousel-item>
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"
+            :isTags="true"
+            :isHolders="true"
             :ratio="ratio"
             :showCard="showCard"
             :banner="'banner.gif'"
@@ -102,6 +136,8 @@
         <el-carousel-item>
           <EcosystemDapp
             :holders="totalUser"
+            :isTags="true"
+            :isHolders="true"
             :ratio="ratio"
             :showCard="showCard"
             :banner="'astra.png'"
@@ -125,7 +161,7 @@ import Web3 from 'web3'
 import { isMobile } from '../../composition/hooks'
 import util from '../../util/util'
 import EcosystemDapp from './EcosystemDapp.vue'
-import EcosystemLikidDappPro from './EcosystemLikidDappPro.vue'
+// import EcosystemLikidDappPro from './EcosystemLikidDappPro.vue'
 
 let timer
 let timer1
@@ -134,7 +170,7 @@ export default {
   name: 'EcosystemDappPro',
   components: {
     EcosystemDapp,
-    EcosystemLikidDappPro
+    // EcosystemLikidDappPro
   },
   data() {
     return {
@@ -146,6 +182,7 @@ export default {
       show: true,
       timeStr: '2024/5/23 16:00:00',
       timeList: [],
+      bullishsTotal: 0,
     }
   },
   computed: {
@@ -156,7 +193,7 @@ export default {
       return this.isMobile || this.show
     },
     contentStyle() {
-      let style = ""
+      let style = ''
       style += this.showCard ? 'height: 310px;' : 'height: 50px;'
       style += this.isMobile ? 'position: relative;' : 'position: absolute;'
       return style
@@ -173,6 +210,11 @@ export default {
         event_label: url,
       })
       window.open(url, '_blank')
+    },
+    async getData3() {
+      const res = await fetch('https://www.bullishs.io/api/users/count')
+      const data = await res.json()
+      this.bullishsTotal = data?.data || 0
     },
     async getData2() {
       const res = await fetch('https://api.0xastra.xyz/user/data', {
@@ -280,6 +322,7 @@ export default {
   created() {
     this.getData()
     this.getData2()
+    this.getData3()
     // const _self = this
     // if(!this.isMobile) {
     //   setTimeout(() => {
@@ -313,7 +356,7 @@ export default {
     bottom: 0;
     left: 0;
     box-shadow: rgba(0, 0, 0, 0.11) 0px 0px 10px 0px;
-    background-color: #FFF;
+    background-color: #fff;
     .title {
       width: 100%;
       display: flex;

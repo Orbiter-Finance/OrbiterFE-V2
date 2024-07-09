@@ -24,8 +24,8 @@ export default {
         {
           label: 'How to Get Rewards:',
           text: [
-            'Bridge from specific chain to Arbitrum. ',
-            'Specific chains include:<strong> Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin</strong>',
+            'Bridge from specific network to Arbitrum. ',
+            'Specific networks include:<strong> Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin</strong>',
           ],
         },
         {
