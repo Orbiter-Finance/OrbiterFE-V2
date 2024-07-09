@@ -1638,12 +1638,12 @@ export default {
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test) {
-        if (this.isCrossAddress) this.isCrossAddress = false;
-        if (this.crossAddressReceipt) this.crossAddressReceipt = '';
-      }
-      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-        const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
+      // if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test) {
+        // if (this.isCrossAddress) this.isCrossAddress = false;
+        // if (this.crossAddressReceipt) this.crossAddressReceipt = '';
+      // }
+      // if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+        // const { starkNetIsConnect, starkNetAddress } = web3State.starkNet;
         // if (!starkNetIsConnect || !starkNetAddress) {
         //   // await connectStarkNetWallet();
         //   if (!web3State.starkNet.starkIsConnected && !web3State.starkNet.starkNetAddress) {
@@ -1663,7 +1663,7 @@ export default {
         //     }
         //   });
         // }
-      }
+      // }
       if (fromChainID === CHAIN_ID.loopring || fromChainID === CHAIN_ID.loopring_test || toChainID === CHAIN_ID.loopring || toChainID === CHAIN_ID.loopring_test) {
         if (walletIsLogin.value) {
           this.inputTransferValue();

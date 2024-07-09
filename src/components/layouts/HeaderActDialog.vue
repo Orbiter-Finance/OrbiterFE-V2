@@ -413,7 +413,6 @@ export default {
     actDataList() {
       const list = transferDataState.actDataList || []
 
-      console.log("list", list)
       return list.map((item)=> ({
         ...item,
         label: {
