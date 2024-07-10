@@ -622,9 +622,9 @@
                 "url": "https://zksync-era.l2scan.co",
                 "icon": "l2scan"
             },
-            {   
+            {
                 "id": 3,
-                "icon":"oklink",
+                "icon": "oklink",
                 "name": "oklink",
                 "url": "https://www.oklink.com/zksync"
             }
@@ -2363,20 +2363,22 @@
         "service": {
             "rpc": "EVMRpcScanningV6Service"
         },
-        "tokens": [ {
-            "coinKey": "USDC",
-            "address": "0x07d83526730c7438048D55A4fc0b850e2aaB6f0b",
-            "name": "USDC Coin",
-            "symbol": "USDC",
-            "decimals": 6
-          },
-          {
-            "coinKey": "USDT",
-            "address": "0x2def195713cf4a606b49d07e520e22c17899a736",
-            "name": "Tether USD",
-            "symbol": "USDT",
-            "decimals": 6
-          }],
+        "tokens": [
+            {
+                "coinKey": "USDC",
+                "address": "0x07d83526730c7438048D55A4fc0b850e2aaB6f0b",
+                "name": "USDC Coin",
+                "symbol": "USDC",
+                "decimals": 6
+            },
+            {
+                "coinKey": "USDT",
+                "address": "0x2def195713cf4a606b49d07e520e22c17899a736",
+                "name": "Tether USD",
+                "symbol": "USDT",
+                "decimals": 6
+            }
+        ],
         "internalId": "20",
         "nativeCurrency": {
             "coinKey": "ETH",
@@ -2418,5 +2420,42 @@
                 ]
             }
         ]
+    },
+    {
+        "name": "Vizing",
+        "rpc": [
+            "https://rpc.vizing.com"
+        ],
+        "features": [
+            {
+                "name": "evm-account6"
+            },
+            {
+                "name": "evm-rpc"
+            }
+        ],
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "tokens": [],
+        "internalId": "61",
+        "nativeCurrency": {
+            "coinKey": "ETH",
+            "address": "0x0000000000000000000000000000000000000000",
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18
+        },
+        "infoURL": "https://explorer.vizing.com",
+        "chainId": "28518",
+        "networkId": "28518",
+        "explorers": [
+            {
+                "name": " Explorer",
+                "url": "https://explorer.vizing.com"
+            }
+        ],
+        "contract": {},
+        "contracts": []
     }
 ]
