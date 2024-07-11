@@ -56,7 +56,7 @@
                     <span>
                       <span>Specific networks include: </span>
                       <br />
-                      Arbitrum 、Linea、Cyber、Optopia、Base、Zklink Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora
+                      Arbitrum 、Linea、Cyber、Optopia、Base、Zklink Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora、Taiko
                     </span>
                   </div>
                 </template>
