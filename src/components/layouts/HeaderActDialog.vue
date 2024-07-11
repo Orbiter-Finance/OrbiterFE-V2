@@ -172,10 +172,19 @@
                   ></svg-icon>
                   <div class="text">{{ item.name }}</div>
                 </div>
-                <div class="text_5">
-                  {{ formatTime2(item.startTime) }} -
-                  {{ formatTime2(item.endTime) }}
-                </div>
+                <o-tooltip>
+                  <template v-slot:titleDesc>
+                    <div class="task-tips-time" style="margin-left: -20px">
+                      {{ formatTime3(item.startTime) }} -
+                    {{ formatTime3(item.endTime) }}
+                    </div>
+                  </template>
+                  <div class="text_5" >
+                    {{ formatTime2(item.startTime) }} -
+                    {{ formatTime2(item.endTime) }}
+                  </div>
+                </o-tooltip>
+                
               </div>
               <div>
               <template v-for="option in item.taskList">
@@ -780,19 +789,23 @@ export default {
       setActDialogVisible(false)
     },
     formatTime(time) {
-      const arr = String(new Date(time)).split(' ')
-
-      if (arr.length > 3) {
-        return `${arr[1]} ${arr[2]}th`
-      }
-      return `${new Date(time).getMonth()}. ${new Date(time).getDate()}th`
+      return `${new Date(time).getUTCMonth()}. ${new Date(time).getUTCDate()}th`
     },
     formatTime2(time) {
-      const arr = String(new Date(time)).split(' ')
-      if (arr.length > 3) {
-        return `${arr[1]}. ${arr[2]}`
-      }
-      return `${new Date(time).getMonth()}. ${new Date(time).getDate()}`
+      return `${new Date(time).getUTCMonth()}. ${new Date(time).getUTCDate()}`
+    },
+    formatTime3(time) {
+      const times = new Date(time)
+      let y = times.getUTCFullYear()
+      let m = times.getUTCMonth()
+      m = m < 0 ? 0 : m
+      let d = times.getUTCDate()
+      d = d < 10 ? '0' + d : d
+      let h = new Date(time).getUTCHours()
+      h = h < 10 ? '0' + h : h
+      let min =new Date(time).getUTCMinutes()
+      min = min < 10 ? '0' + min : min
+      return `${m}.${d} ${h}:${min} UTC`
     },
     mouseoverDialog() {
       setActDialogHover(true)
@@ -894,6 +907,11 @@ export default {
 
 .ant-tooltip-inner .tooltip-title {
   padding-left: 0 !important;
+}
+
+.task-tips-time {
+  letter-spacing: 0;
+  font-size: 12px;
 }
 
 .tooltip-title .points_more {
