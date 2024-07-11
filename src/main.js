@@ -8,7 +8,6 @@ import { store } from './store'
 import './config/theme.scss'
 import './config/global.css'
 import env from '../env'
-import * as Sentry from "@sentry/vue";
 
 import './icons'
 
@@ -23,9 +22,16 @@ import CommLoading from './components/CommLoading.vue'
 import Loader from './views/data/Loader'
 import { isDev, isLocal } from './util/env'
 import { GOOGLE_ANALYTICS_ID_TEST, GOOGLE_ANALYTICS_ID } from './const/index'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 // inject more powerful log method on the console object
 import './util/enhancedLogger'
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(relativeTime)
 
 // in some cases, we may need do something in webview(like imToken's webview environment)
 // local only!!!
