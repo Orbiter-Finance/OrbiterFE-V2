@@ -313,6 +313,7 @@ import SvgIcon from '../SvgIcon/SvgIcon.vue'
 import LuckyTaskCard  from "./LuckyTaskCard.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
+import dayjs from 'dayjs';
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -789,29 +790,14 @@ export default {
       setActDialogVisible(false)
     },
     formatTime(time) {
-      const times = new Date(time)
-      const m = new Date().toDateString().split(" ")[1] || (times.getUTCMonth() +1)
-
-      return `${m}. ${times.getUTCDate()}th`
+      return dayjs(time).format("MMM.DD")
     },
     formatTime2(time) {
-      const times = new Date(time)
-      const m = new Date().toDateString().split(" ")[1] || (times.getUTCMonth() +1)
 
-      return `${m}. ${times.getUTCDate()}`
+      return dayjs(time).format("MMM.DD")
     },
     formatTime3(time) {
-      const times = new Date(time)
-      let y = times.getUTCFullYear()
-      let m = new Date().toDateString().split(" ")[1] || (times.getUTCMonth() +1)
-      m = m < 0 ? 0 : m
-      let d = times.getUTCDate()
-      d = d < 10 ? '0' + d : d
-      let h = new Date(time).getUTCHours()
-      h = h < 10 ? '0' + h : h
-      let min =new Date(time).getUTCMinutes()
-      min = min < 10 ? '0' + min : min
-      return `${m}.${d} ${h}:${min} UTC`
+      return dayjs(time).format("MMM.DD HH:mm")
     },
     mouseoverDialog() {
       setActDialogHover(true)
