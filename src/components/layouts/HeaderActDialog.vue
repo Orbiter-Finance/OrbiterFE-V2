@@ -789,15 +789,21 @@ export default {
       setActDialogVisible(false)
     },
     formatTime(time) {
-      return `${new Date(time).getUTCMonth()}. ${new Date(time).getUTCDate()}th`
+      const times = new Date(time)
+      const m = new Date().toDateString().split(" ")[1] || (times.getUTCMonth() +1)
+
+      return `${m}. ${times.getUTCDate()}th`
     },
     formatTime2(time) {
-      return `${new Date(time).getUTCMonth()}. ${new Date(time).getUTCDate()}`
+      const times = new Date(time)
+      const m = new Date().toDateString().split(" ")[1] || (times.getUTCMonth() +1)
+
+      return `${m}. ${times.getUTCDate()}`
     },
     formatTime3(time) {
       const times = new Date(time)
       let y = times.getUTCFullYear()
-      let m = times.getUTCMonth()
+      let m = new Date().toDateString().split(" ")[1] || (times.getUTCMonth() +1)
       m = m < 0 ? 0 : m
       let d = times.getUTCDate()
       d = d < 10 ? '0' + d : d
