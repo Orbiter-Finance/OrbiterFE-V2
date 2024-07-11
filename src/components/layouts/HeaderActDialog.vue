@@ -423,7 +423,6 @@ export default {
     actDataList() {
       const list = transferDataState.actDataList || []
 
-      console.log("list", list)
       return list.map((item)=> ({
         ...item,
         label: {
@@ -434,9 +433,6 @@ export default {
     },
     actOtherDataList() {
       const list = transferDataState.actDataList || []
-      console.log("actOtherDataList", list.filter(
-        (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
-      ))
       return list.filter(
         (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
       )
@@ -790,14 +786,14 @@ export default {
       setActDialogVisible(false)
     },
     formatTime(time) {
-      return dayjs(time).format("MMM.DD")
+      return dayjs.utc(time).format("MMM.DD")
     },
     formatTime2(time) {
 
-      return dayjs(time).format("MMM.DD")
+      return dayjs.utc(time).format("MMM.DD")
     },
     formatTime3(time) {
-      return dayjs(time).format("MMM.DD HH:mm")
+      return dayjs.utc(time).format("MMM.DD HH:mm")
     },
     mouseoverDialog() {
       setActDialogHover(true)
