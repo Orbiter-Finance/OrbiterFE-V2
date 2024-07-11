@@ -1,4 +1,4 @@
-import { toggleBodyCls } from '../../util'
+import { isDev, toggleBodyCls } from '../../util'
 import {
   updatelpApiKey,
   updatelpAccountInfo,
@@ -32,6 +32,8 @@ import {
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import util from '../../util/util'
 import { ethers } from 'ethers'
+
+const activityProjectId = '5f622f2c-10d5-45b9-ab4d-c76f8d4a0086'
 
 let timer
 let timer1
@@ -383,8 +385,9 @@ export default {
 
   async getLuckyBagTaskInfo() {
     const response = await fetch(
-      // `${process.env.VUE_APP_OPEN_URL}/active-platform/project/conditions/ac4f3cb3-6493-4d8f-8259-7482f8a22c13`
-      `${process.env.VUE_APP_OPEN_URL}/activity/project/condition?projectId=5f622f2c-10d5-45b9-ab4d-c76f8d4a0086&name=orbguy`
+      `${process.env.VUE_APP_OPEN_URL}/${
+        isDev() ? 'activity' : 'active-platform'
+      }/project/condition?projectId=${activityProjectId}&name=orbguy`
     )
     const res = await response.json()
 
@@ -409,10 +412,9 @@ export default {
     clearTimeout(timer1)
     timer1 = setTimeout(async () => {
       const response = await fetch(
-        `${
-          process.env.VUE_APP_OPEN_URL
-          // }/active-platform/project/tasksStatus?projectId=ac4f3cb3-6493-4d8f-8259-7482f8a22c13&address=${address.toLocaleLowerCase()}`
-        }/activity/project/tasksStatus?projectId=5f622f2c-10d5-45b9-ab4d-c76f8d4a0086&address=${address.toLocaleLowerCase()}`
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/project/tasksStatus?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
       setLuckyBaTaskgUserOrbguyInfo(

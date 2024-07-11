@@ -56,7 +56,7 @@
                     <span>
                       <span>Specific networks include: </span>
                       <br />
-                      Arbitrum 、Linea、Cyber、Optopia、Optopia、Base、Zklink Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora
+                      Arbitrum 、Linea、Cyber、Optopia、Base、Zklink Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora
                     </span>
                   </div>
                 </template>
@@ -64,7 +64,7 @@
                   >specific network</span
                 >
               </o-tooltip>
-              <span>to scroll network</span>
+              <span>to Scroll network</span>
             </div>
           </div>
           <PrizesTaskSuccessIcon
@@ -75,7 +75,7 @@
         </div>
         <div class="task-card-item-info">
           <div class="taks-reward-info">
-            <div class="card-tips" :style="`background:linear-gradient(139.64deg, rgb(229, 69, 255) 0%, rgb(255, 0, 0) 85.476%);`">
+            <div class="card-tips" :style="`background:#000000;`">
               <svg-icon class="tips-icon" iconName="ORBGUY"></svg-icon>
               {{ item.tips }}
             </div>
@@ -148,7 +148,7 @@ export default {
       return r >= 100 ? 100 : r
     },
     evmAddress() {
-      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     luckyBagUserInfo() {
       return luckyBaTaskgUserOrbguyInfo.value
@@ -220,6 +220,7 @@ export default {
   },
   watch: {
     evmAddress(item1, item2) {
+      console.log("item1", item1)
       if (!!item1 && item1 !== item2) {
         this.getUserData()
       }
@@ -273,12 +274,6 @@ export default {
         ['uint256', 'uint256'],
         res || ''
       )
-      console.log(
-        'result',
-        result,
-        result[0] / result[1]
-      )
-
       this.price = this.decimalNumC(
         new BigNumber(result[0]).div(result[1] + "").toFixed(7) + "",
         7,
@@ -555,6 +550,7 @@ export default {
             font-family: GeneralSans-SemiBold;
             font-weight: 600;
             font-size: 12px;
+            color: #FFF;
             .tips-icon {
               width: 16px;
               height: 16px;
@@ -607,10 +603,6 @@ export default {
   #lucky-task-card-group {
     .lucky-task-card {
       background-color: #373951;
-
-      .card-tips {
-        color: #18191f;
-      }
     }
 
     .task-card-group {
