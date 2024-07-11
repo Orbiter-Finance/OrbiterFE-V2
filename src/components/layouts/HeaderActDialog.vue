@@ -1370,7 +1370,6 @@ export default {
   .text-wrapper_17 {
     height: 20px;
     border-radius: 4px;
-    background: linear-gradient(139.64deg, #e545ff, red 85.476%);
     display: flex;
     justify-content: center;
     align-items: center;

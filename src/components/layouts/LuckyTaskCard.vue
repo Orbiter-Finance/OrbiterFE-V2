@@ -4,13 +4,13 @@
       <div class="top-banenr">
         <div class="banner-content">
           <div class="banner-title">
-            <div class="banner-task-title">
+            <div class="banner-task-title orbiter_global_o_points_title">
               <svg-icon class="task-icon" iconName="534352"></svg-icon>
               $ORBGUY Prize Pool
             </div>
-            <div class="orbguy-price">
+            <div class="orbguy-price" @click="openLikwidSwap">
               <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
-              <div class="price-amount" @click="openLikwidSwap">{{ price }}</div>
+              <div class="price-amount">{{ price }}</div>
               <span class="price-symbol">ETH/ORBGUY</span>
             </div>
           </div>
@@ -42,7 +42,7 @@
     <div class="task-card-group">
       <div class="task-card-title">
         <svg-icon class="task-icon" iconName="534352"></svg-icon>
-        100,000 $ORBGUY Reward Event
+        100,000 $ORBGUY Reward
       </div>
       <div class="task-card-item" v-for="item in taskList" :key="item.key">
         <div class="task-title">
@@ -64,7 +64,7 @@
                   >specific network</span
                 >
               </o-tooltip>
-              <span>to Scroll network</span>
+              <span>to Scroll</span>
             </div>
           </div>
           <PrizesTaskSuccessIcon
@@ -220,7 +220,6 @@ export default {
   },
   watch: {
     evmAddress(item1, item2) {
-      console.log("item1", item1)
       if (!!item1 && item1 !== item2) {
         this.getUserData()
       }
@@ -235,7 +234,7 @@ export default {
   methods: {
     openLikwidSwap() {
       const evmAddress = this.evmAddress
-      if (!Number(this.amount) || !evmAddress || evmAddress === '0x') return
+      if (!evmAddress || evmAddress === '0x') return
       const name = 'TASK_TO_LIKWID_SWAP_SCROLL_ORBGUY'
       const url = 'https://likwid.meme/swap?from=orbiter&user=' + evmAddress
       this.$gtag.event(name, {

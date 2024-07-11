@@ -391,8 +391,6 @@ export default {
     )
     const res = await response.json()
 
-    console.log('res', res)
-
     const data = res?.result || {}
 
     const current = Number(data?.count) || 0
