@@ -158,11 +158,18 @@
         @scroll="itemScroll"
         >
         <!-- <PrizesCard></PrizesCard> -->
-        <LuckyTaskCard></LuckyTaskCard>
+         <LuckyTaskBagBanner></LuckyTaskBagBanner>
         <div 
         >
-          <template v-for="item in actDataList">
-            <div class="activity-card">
+          <div v-if="!actDataList.length">
+            <LuckyTaskCard></LuckyTaskCard>
+          </div>
+          <div v-else :key="index" v-for="(item, index) in actDataList">
+            <div v-if="Number(item.label.isTop) ===1">
+              <LuckyTaskCard></LuckyTaskCard>
+            </div>
+
+            <div v-else class="activity-card">
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
                   <svg-icon
@@ -241,7 +248,7 @@
               </template>
             </div>
             </div>
-          </template>
+          </div>
         </div>
         </div>
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
@@ -311,6 +318,7 @@ import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 // import PrizesCard  from "./PrizesCard.vue"
 import LuckyTaskCard  from "./LuckyTaskCard.vue"
+import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
@@ -329,7 +337,8 @@ export default {
     // ActDialogBanner,
     SvgIcon,
     // PrizesCard,
-    LuckyTaskCard
+    LuckyTaskCard,
+    LuckyTaskBagBanner
   },
   data() {
     return {
@@ -422,7 +431,6 @@ export default {
     },
     actDataList() {
       const list = transferDataState.actDataList || []
-
       return list.map((item)=> ({
         ...item,
         label: {
