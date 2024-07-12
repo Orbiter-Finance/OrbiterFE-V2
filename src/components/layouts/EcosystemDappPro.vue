@@ -101,6 +101,22 @@
           :url="'https://www.colorprotocol.com/'"
         />
       </el-carousel-item> -->
+      <el-carousel-item>
+        <EcosystemDapp
+          :holders="totalUser"
+          :isTags="true"
+          :isHolders="true"
+          :ratio="ratio"
+          :showCard="showCard"
+          :banner="'astra2.png'"
+          :tag="'Cross-chain Game'"
+          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
+          :description="'Complete quest to split 2M $MNT with 0xAstra.'"
+          :isProgress="false"
+          :name="'0xastra'"
+          :url="'https://0xastra.xyz/'"
+        />
+      </el-carousel-item>
         <el-carousel-item>
           <EcosystemDapp
             :holders="bullishsTotal"
@@ -133,22 +149,7 @@
             :url="'https://www.pinketh.xyz/'"
           />
         </el-carousel-item>
-        <el-carousel-item>
-          <EcosystemDapp
-            :holders="totalUser"
-            :isTags="true"
-            :isHolders="true"
-            :ratio="ratio"
-            :showCard="showCard"
-            :banner="'astra2.png'"
-            :tag="'Cross-chain Game'"
-            :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-            :description="'Complete quest to split 2M $MNT with 0xAstra.'"
-            :isProgress="false"
-            :name="'0xastra'"
-            :url="'https://0xastra.xyz/'"
-          />
-        </el-carousel-item>
+        
       </el-carousel>
     </div>
   </div>
