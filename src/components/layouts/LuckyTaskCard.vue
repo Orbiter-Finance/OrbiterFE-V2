@@ -17,7 +17,8 @@
                     <span>
                       <span>Specific networks include: </span>
                       <br />
-                      Arbitrum 、Linea、Cyber、Optopia、Base、Zklink Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora
+                      Arbitrum 、Linea、Cyber、Optopia、Base、Zklink
+                      Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora
                       <!-- 、Taiko -->
                     </span>
                   </div>
@@ -87,7 +88,7 @@ export default {
 
   data() {
     return {
-      price: "",
+      price: '',
     }
   },
 
@@ -144,15 +145,15 @@ export default {
           opoints: '285',
           text: `Bridge 51TX from `,
           tips: 'Diamond Bag',
-        }
-      ].map((item, index)=>{
+        },
+      ].map((item, index) => {
         const option = luckyUserList[index] || {}
-        return ({
-          ...item, 
+        return {
+          ...item,
           taskResult: option?.taskResult || 0,
           distributeResult: option?.distributeResult || 0,
           isTask: option?.distributed,
-        })
+        }
       })
     },
     selectWalletDialogVisible() {
@@ -181,17 +182,17 @@ export default {
       const list = this.luckyBagUserInfo || []
       let total = 0
       list.forEach((item) => {
-        if(!!item?.distributed) {
-          total += (Number(item?.distributeResult) || 0)
+        if (!!item?.distributed) {
+          total += Number(item?.distributeResult) || 0
         }
-      });
+      })
 
-      if(!list?.length || !Number(total)) {
+      if (!list?.length || !Number(total)) {
         return
       }
-      this.$store.commit("getClaimORBGUYRewardData", {
-          type: "LUCKY_BAG_TASK",
-          distributeResult: total
+      this.$store.commit('getClaimORBGUYRewardData', {
+        type: 'LUCKY_BAG_TASK',
+        distributeResult: total,
       })
     },
     async getOrbguyPrice() {
@@ -208,15 +209,15 @@ export default {
         res || ''
       )
       this.price = this.decimalNumC(
-        new BigNumber(result[0]).div(result[1] + "").toFixed(7) + "",
+        new BigNumber(result[0]).div(result[1] + '').toFixed(7) + '',
         7,
         ','
       )
     },
     drawLuckyTaskBag(data) {
-      this.$store.commit("getClaimORBGUYRewardData", {
-          type: "LUCKY_BAG_TASK",
-          distributeResult: Number(data?.distributeResult) || 0
+      this.$store.commit('getClaimORBGUYRewardData', {
+        type: 'LUCKY_BAG_TASK',
+        distributeResult: Number(data?.distributeResult) || 0,
       })
       // const evmAddress = this.evmAddress
       // if (!Number(this.amount) || !evmAddress || evmAddress === '0x') return
@@ -250,17 +251,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .lucky-task-card-group {
   width: 100%;
-
 
   .task-card-group {
     width: 100%;
     padding: 12px;
     margin: 12px 16px;
     width: calc(100% - 32px);
-    background: #F5F5F5;
+    background: #f5f5f5;
     border-radius: 12px;
 
     .task-card-title {
@@ -336,7 +335,7 @@ export default {
             font-family: GeneralSans-SemiBold;
             font-weight: 600;
             font-size: 12px;
-            color: #FFF;
+            color: #fff;
             .tips-icon {
               width: 16px;
               height: 16px;
@@ -363,15 +362,22 @@ export default {
           }
 
           .task-progress {
+            padding: 0 8px;
+            height: 20px;
+            background: url('../../assets/activity/light_tag_undone.png') 100%
+              no-repeat;
+            background-size: 100% 100%;
+            margin-left: 2px;
+            width: 35px;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 2px 4px;
-            border-radius: 4px;
-            background: rgb(245, 245, 245);
+            overflow-wrap: break-word;
             font-size: 12px;
-            font-weight: 600;
-            line-height: 16px;
+            font-family: GeneralSans-SemiBold;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
           }
         }
 
@@ -391,14 +397,20 @@ export default {
       background-color: #373951;
       .task-card-item {
         background-color: var(--dark-page-box-bg);
-  
-        .group-reward,
-        .task-progress {
+
+        .group-reward {
           background-color: #222222;
+        }
+        .task-progress {
+          color: rgba(255, 255, 255, 0.8);
+          height: 20px;
+          background: url('../../assets/activity/dark_tag_undone.png') 100%
+            no-repeat;
+          background-size: 100% 100%;
+          margin-left: 2px;
         }
       }
     }
-    
   }
 }
 </style>
