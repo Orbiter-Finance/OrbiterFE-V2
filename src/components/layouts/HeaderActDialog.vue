@@ -165,10 +165,9 @@
             <LuckyTaskCard></LuckyTaskCard>
           </div>
           <div v-else :key="index" v-for="(item, index) in actDataList">
-            <div v-if="Number(item.label.isTop) ===1">
+            <div v-if="!item">
               <LuckyTaskCard></LuckyTaskCard>
             </div>
-
             <div v-else class="activity-card">
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
@@ -431,12 +430,18 @@ export default {
     },
     actDataList() {
       const list = transferDataState.actDataList || []
-      return list.map((item)=> ({
+
+      const data= list.map((item)=> ({
         ...item,
         label: {
           icon: "",
           ...(item?.label || {})
         }
+      }))
+      return data.filter((item)=>{
+        return Number(item?.label?.isTop) ===1
+      }).concat([null]).concat( data.filter((item)=>{
+        return Number(item?.label?.isTop) !==1
       }))
     },
     actOtherDataList() {
