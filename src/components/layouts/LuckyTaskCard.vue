@@ -56,7 +56,8 @@
                     <span>
                       <span>Specific networks include: </span>
                       <br />
-                      Arbitrum 、Linea、Cyber、Optopia、Base、Zklink Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora、Taiko
+                      Arbitrum 、Linea、Cyber、Optopia、Base、Zklink Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora
+                      <!-- 、Taiko -->
                     </span>
                   </div>
                 </template>
@@ -303,6 +304,10 @@ export default {
         'getLuckyBagUserTaskInfo',
         this.evmAddress.toLocaleLowerCase()
       )
+      // this.$store.commit(
+      //   'getLuckyBagTaskUserOPointsInfo',
+      //   this.evmAddress.toLocaleLowerCase()
+      // )
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)

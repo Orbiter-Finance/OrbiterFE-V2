@@ -37,6 +37,7 @@ const activityProjectId = '5f622f2c-10d5-45b9-ab4d-c76f8d4a0086'
 
 let timer
 let timer1
+let timer2
 
 export default {
   updateZKTokenList(state, obj) {
@@ -428,6 +429,21 @@ export default {
           }
         }) || []
       )
+    }, 500)
+  },
+
+  async getLuckyBagTaskUserOPointsInfo(state, address) {
+    if (!address || address === '0x') return
+
+    clearTimeout(timer2)
+    timer2 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/account/getAccountReward?address=${activityProjectId}&rewardType=1&rewardName=opoint`
+      )
+      const res = await response.json()
+      console.log('res', res)
     }, 500)
   },
 }
