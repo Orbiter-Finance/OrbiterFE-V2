@@ -131,9 +131,11 @@ import util, { formatCurrency } from '../../util/util'
 import { mapMutations } from 'vuex'
 import { BigNumber } from 'bignumber.js'
 import { utils } from 'ethers'
-
-let chainList = []
+import config from '../../config';
+let globalChain = config.chain.map((item)=> item.chainId);
 const STATISTICS_VALUE = 1000
+
+const HIDDEN_CHAIN = ["28518"]
 
 export default {
   data() {
@@ -169,29 +171,14 @@ export default {
   },
   mounted() {
     this.toggleThemeMode('light')
-    this.getChains()
+    if(globalChain?.length) {
+      this.getChains()
+    }
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
     async getChains() {
-      try {
-        if (!chainList?.length) {
-          const res = await fetch(process.env.VUE_APP_OPEN_URL +'/sdk/chains', {})
-          const data = await res.json()
-
-          chainList = data?.result?.map((item) => {
-            return item.chainId
-          })
-        }
-
-        if (chainList?.length) {
-          this.init()
-        } else {
-          this.showError()
-        }
-      } catch (error) {
-        this.showError()
-      }
+      this.init()
     },
     init() {
       queryUSDAmountStatisticsData().then((USDAmountData) => {
@@ -316,7 +303,7 @@ export default {
         isAmount,
         'BTC'
       )
-      
+
       let concatSeriesData = {}
       concatSeriesData = this.concatSeriesData(
         seriesETHData,
@@ -336,10 +323,14 @@ export default {
 
       let filterList = []
       Object.keys(concatSeriesData).forEach((item) => {
-        filterList.push({
-          chain: item,
-          value: concatSeriesData[item]?.[count - 2] || 0,
-        })
+        const flag = globalChain.some((option) => item.toLocaleLowerCase() === option.toLocaleLowerCase()) && 
+        !HIDDEN_CHAIN.some((option) => item.toLocaleLowerCase() === option.toLocaleLowerCase())
+        if(flag) {
+          filterList.push({
+            chain: item,
+            value: concatSeriesData[item]?.[count - 2] || 0,
+          })
+        }
       })
 
       filterList = filterList
@@ -412,14 +403,30 @@ export default {
     concatSeriesData(seriesETHData, seriesUSDCData, seriesUSDTData, seriesBTCData) {
       let mergedSeriesData = {}
       let keys = Object.keys(seriesETHData)
+
+      let count = 0
+
+      keys.forEach((key)=> {
+        const len = seriesETHData?.[key]?.length || 0
+        if(len > count) {
+          count = len 
+        }
+      })
+
       keys.forEach((key) => {
-        mergedSeriesData[key] = seriesETHData[key].map((num, idx) => {
+
+        const ethData = seriesETHData?.[key]?.reverse() || []
+        const usdcData = seriesUSDCData?.[key]?.reverse() || []
+        const usdtData = seriesUSDTData?.[key]?.reverse() || []
+        const btcData = seriesBTCData?.[key]?.reverse() || []
+        mergedSeriesData[key] = new Array(count).fill(0).map((num, idx) => {
           return new BigNumber(num)
-            .plus(seriesUSDCData?.[key]?.[idx] || 0)
-            .plus(seriesUSDTData?.[key]?.[idx] || 0)
-            .plus(seriesBTCData?.[key]?.[idx] || 0)
+            .plus(ethData?.[idx] || 0)
+            .plus(usdcData?.[idx] || 0)
+            .plus(usdtData?.[idx] || 0)
+            .plus(btcData?.[idx] || 0)
             .toString()
-        })
+        }).reverse()
       })
       return mergedSeriesData
     },
@@ -451,6 +458,7 @@ export default {
           }
         })
         const dateValueKeys = Object.keys(dateValue)
+        const chainList = [... new Set(dateValueKeys.concat(globalChain))]
         chainList.forEach((q) => {
           if (dataBySourceChain?.[q]) {
             dataBySourceChain[q].push(dateValue?.[q]?.toFixed(2) || '0')
