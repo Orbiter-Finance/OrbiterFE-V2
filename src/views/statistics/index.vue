@@ -135,6 +135,8 @@ import config from '../../config';
 let globalChain = config.chain.map((item)=> item.chainId);
 const STATISTICS_VALUE = 1000
 
+const HIDDEN_CHAIN = ["28518"]
+
 export default {
   data() {
     return {
@@ -321,7 +323,9 @@ export default {
 
       let filterList = []
       Object.keys(concatSeriesData).forEach((item) => {
-        if(globalChain.some((option) => item.toLocaleLowerCase() === option.toLocaleLowerCase())) {
+        const flag = globalChain.some((option) => item.toLocaleLowerCase() === option.toLocaleLowerCase()) && 
+        !HIDDEN_CHAIN.some((option) => item.toLocaleLowerCase() === option.toLocaleLowerCase())
+        if(flag) {
           filterList.push({
             chain: item,
             value: concatSeriesData[item]?.[count - 2] || 0,
