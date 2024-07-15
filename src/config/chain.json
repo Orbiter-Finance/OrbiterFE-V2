@@ -3094,7 +3094,14 @@
              "symbol":"BTC",
              "decimals":8,
              "address":"0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3"
-          }
+          },
+          {
+            "name":"USDC.e",
+            "coinKey":"USDC",
+            "symbol":"USDC",
+            "decimals":6,
+            "address":"0xe75d0fb2c24a55ca1e3f96781a2bcc7bdba058f0"
+         }
        ],
        "internalId":57,
        "nativeCurrency":{
