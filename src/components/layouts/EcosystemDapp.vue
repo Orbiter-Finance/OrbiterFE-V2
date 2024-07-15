@@ -10,8 +10,8 @@
       <div class="top">
         <div class="top-right">
           <div class="card-title">
-            <div class="card-first" :style="tagStyle">{{ tag }}</div>
-            <div class="card-next">
+            <div class="card-first" v-if="isTags" :style="tagStyle">{{ tag }}</div>
+            <div class="card-next" v-if="isHolders">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -129,6 +129,9 @@ export default {
     isProgress: Boolean,
     naem: String,
     url: String,
+    isHolders: Boolean,
+    isTags: Boolean
+
   },
   data() {
     return {

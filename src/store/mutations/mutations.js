@@ -1,4 +1,4 @@
-import { toggleBodyCls } from '../../util'
+import { isDev, toggleBodyCls } from '../../util'
 import {
   updatelpApiKey,
   updatelpAccountInfo,
@@ -17,6 +17,9 @@ import {
   claimCardModalDataInfo,
   claimCardModalAmountInfo,
   setClaimCardModalAmountInfo,
+  setLuckyBaTaskgOrbguyInfo,
+  setLuckyBaTaskgUserOrbguyInfo,
+  setClaimCardModalOtherDataInfo,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -30,7 +33,11 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import util from '../../util/util'
 import { ethers } from 'ethers'
 
+const activityProjectId = '5f622f2c-10d5-45b9-ab4d-c76f8d4a0086'
+
 let timer
+let timer1
+let timer2
 
 export default {
   updateZKTokenList(state, obj) {
@@ -282,7 +289,7 @@ export default {
       })
     } catch (error) {}
   },
-  async getClaimORBGUYRewardData(state, { type, token }) {
+  async getClaimORBGUYRewardData(state, { type, token, distributeResult }) {
     clearTimeout(timer)
     timer = setTimeout(async () => {
       const { data = [] } = claimCardModalDataInfo.value || {}
@@ -330,6 +337,9 @@ export default {
             } else {
               util.showMessage(String(message), 'warning')
             }
+          } else if (type === 'LUCKY_BAG_TASK') {
+            setClaimCardModalOtherDataInfo({ distributeResult })
+            setClaimCardModalShow(true, type)
           } else {
             setClaimCardModalShow(true, type)
           }
@@ -372,5 +382,68 @@ export default {
     // this.txCount = txCount ? String(txCount) : '0'
     setPrizesRankList(list)
     setPrizesTop100tx(list[list?.length - 1 || 0]?.count || 0)
+  },
+
+  async getLuckyBagTaskInfo() {
+    const response = await fetch(
+      `${process.env.VUE_APP_OPEN_URL}/${
+        isDev() ? 'activity' : 'active-platform'
+      }/project/condition?projectId=${activityProjectId}&name=orbguy`
+    )
+    const res = await response.json()
+
+    const data = res?.result || {}
+
+    const current = Number(data?.count) || 0
+    const total = Number(data?.target) || 0
+
+    let ratio = total > 0 ? current / total : 0
+
+    setLuckyBaTaskgOrbguyInfo({
+      total,
+      current,
+      progressRatio: ratio,
+    })
+  },
+
+  async getLuckyBagUserTaskInfo(state, address) {
+    if (!address || address === '0x') return
+    clearTimeout(timer1)
+    timer1 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/project/tasksStatus?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
+      )
+      const res = await response.json()
+      setLuckyBaTaskgUserOrbguyInfo(
+        res?.result?.records?.map((item) => {
+          const list = JSON.parse(item.distribute_result || JSON.stringify([]))
+          const data = list.filter(
+            (option) => option.name.toLocaleLowerCase() === 'orbguy'
+          )[0]
+          return {
+            taskResult: Number(item?.task_result) || 0,
+            distributeResult: Number(data?.amount) || 0,
+            distributed: !!item?.distributed,
+          }
+        }) || []
+      )
+    }, 500)
+  },
+
+  async getLuckyBagTaskUserOPointsInfo(state, address) {
+    if (!address || address === '0x') return
+
+    clearTimeout(timer2)
+    timer2 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/account/getAccountReward?address=${activityProjectId}&rewardType=1&rewardName=opoint`
+      )
+      const res = await response.json()
+      console.log('res', res)
+    }, 500)
   },
 }
