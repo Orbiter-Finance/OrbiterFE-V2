@@ -206,7 +206,7 @@ export default {
           .reward-image {
             width: 165px;
             height: 125px;
-            background-image: url(../../../assets/prizes/reward.png);
+            background-image: url(../../../assets/prizes/v1/reward.png);
             background-size: 100% 100%;
             background-repeat: no-repeat;
           }

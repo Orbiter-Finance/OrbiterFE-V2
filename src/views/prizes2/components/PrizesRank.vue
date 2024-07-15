@@ -1,6 +1,5 @@
 <template>
   <div id="prizes-rank" class="prizes-rank">
-    <div class="title">Leaderboard Top 100 Users</div>
     <div class="rank-top">
       <div
         :class="'rank-top-' + item.rank"
@@ -23,8 +22,10 @@
         >
           {{ item.reward }}
         </div>
+        <div class="reward-total-amount">
+          {{ item.reward }}
+        </div>
       </div>
-      <div class="rank-top-bg"></div>
     </div>
     <div class="rank-top-mobile">
       <div
@@ -36,7 +37,7 @@
         <div class="rank-mobile-left">
           <img
             class="rank-logo"
-            :src="`${require('../../../assets/prizes/v1/rank-top-' +
+            :src="`${require('../../../assets/prizes/v2/rank-top-' +
               item.rank +
               '.png')}`"
             alt=""
@@ -58,7 +59,6 @@
           </div>
         </div>
       </div>
-      <div class="rank-top-mobile-bg"></div>
     </div>
     <div class="rank-list">
       <div class="rank-list-header rank-list-card-item">
@@ -71,14 +71,18 @@
         class="rank-list-item rank-list-card-item"
         v-for="(item, index) in rankData"
         :key="index"
+        :style="`background-color:${!!(index % 2) ? '#010101' : '#222222'};`"
       >
         <div class="ranking">{{ item.rank }}</div>
-        <div class="user-address">{{ shortAddress(item.address, isMobile ? 4 : 6) }}</div>
+        <div class="user-address">
+          {{ shortAddress(item.address, isMobile ? 4 : 6) }}
+        </div>
         <div class="cumulative-tx">
           {{ decimalNumC(item.count, 0, ',') }} tx
         </div>
         <div class="emit-reward">
-          +${{ decimalNumC(item.reward, 2, ',') }} USDC
+          <div>+${{ decimalNumC(item.reward, 2, ',') }} USDC</div>
+          <span>+${{ decimalNumC(item.reward, 2, ',') }} USDC</span>
         </div>
       </div>
       <div class="pagination-group">
@@ -96,7 +100,7 @@
 </template>
 
 <script>
-import { isMobile, prizesRankList } from '../../../composition/hooks';
+import { isMobile, prizesRankList } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
 
 export default {
@@ -121,28 +125,31 @@ export default {
           tx: this.decimalNumC(next?.count, 0, ','),
           address: this.shortAddress(next?.address),
           reward: Number(next?.reward)
-            ? `${this.decimalNumC(next?.reward, 2, ',', "$")} USDC`
+            ? `${this.decimalNumC(next?.reward, 2, ',', '$')} USDC`
             : '--',
           rank: '2',
           bg: 'linear-gradient(180.00deg, rgb(211, 253, 255),rgb(157, 211, 211))',
+          amount: 'rgba(192, 238, 239, 0.6)',
         },
         {
           tx: this.decimalNumC(first?.count, 0, ','),
           address: this.shortAddress(first?.address),
           reward: Number(first?.reward)
-            ? `${this.decimalNumC(first?.reward, 2, ',', "$")} USDC`
+            ? `${this.decimalNumC(first?.reward, 2, ',', '$')} USDC`
             : '--',
           rank: '1',
           bg: 'linear-gradient(180.00deg, rgb(255, 212, 151),rgb(255, 166, 41))',
+          amount: 'rgba(255, 209, 102, 0.6)',
         },
         {
           tx: this.decimalNumC(last?.count, 0, ','),
           address: this.shortAddress(last?.address),
           reward: Number(last?.reward)
-            ? `${this.decimalNumC(last?.reward, 2, ',', "$")} USDC`
+            ? `${this.decimalNumC(last?.reward, 2, ',', '$')} USDC`
             : '--',
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
+          amount: 'rgba(232, 178, 134, 0.6)',
         },
       ]
     },
@@ -198,20 +205,12 @@ export default {
 <style scoped lang="scss">
 .prizes-rank {
   width: 100%;
-  margin-top: 64px;
-  .title {
-    width: 100%;
-    font-size: 32px;
-    font-weight: 600;
-    line-height: 44px;
-    letter-spacing: 0px;
-    text-align: center;
-  }
+  margin-top: 44px;
 
   .rank-top {
     display: flex;
     justify-content: space-around;
-    align-items: center;
+    align-items: flex-end;
     width: 100%;
     margin-top: 32px;
     position: relative;
@@ -227,35 +226,43 @@ export default {
       background-size: 100% 100%;
       .tx-amount {
         width: 100%;
-        margin-top: 20px;
+        margin-top: 44px;
         .tx-label {
           color: rgba(255, 255, 255, 0.6);
         }
       }
       .rank-top-image-group {
         width: 100%;
-        margin: 10px 0;
+        margin: 16px 0;
         display: flex;
         justify-content: center;
         align-items: center;
       }
       .rank-user-address {
         width: 100%;
-        font-size: 18px;
-        font-weight: 500;
+        font-size: 24px;
+        font-family: GeneralSans-Medium;
         text-align: center;
       }
       .reward-label {
-        margin-top: 16px;
-        font-size: 12px;
+        margin-top: 8;
+        font-size: 14px;
         font-weight: 400;
         color: rgba(255, 255, 255, 0.6);
       }
       .reward-amount {
         font-size: 28px;
-        font-weight: 600;
+        font-family: GeneralSans-SemiBold;
         line-height: -1px;
         letter-spacing: 0px;
+      }
+
+      .reward-total-amount {
+        font-size: 14px;
+        font-family: GeneralSans-Medium;
+        line-height: 20px;
+        letter-spacing: 0px;
+        margin-top: 4px;
       }
 
       .reward-amount-default {
@@ -273,55 +280,43 @@ export default {
     }
 
     .rank-top-1 {
-      background-image: url(../../../assets/prizes/v1/top1.png);
-      margin-bottom: 72px;
-
+      width: 320px;
+      height: 440px;
+      background-image: url(../../../assets/prizes/v2/top1.png);
       .rank-top-img {
-        width: 80px;
-        height: 80px;
-        background-image: url(../../../assets/prizes/v1/rank-top-1.png);
+        width: 120px;
+        height: 120px;
+        background-image: url(../../../assets/prizes/v2/rank-top-1.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
       }
     }
     .rank-top-2 {
-      background-image: url(../../../assets/prizes/v1/top2.png);
-      margin-top: 72px;
+      width: 320px;
+      height: 400px;
+      background-image: url(../../../assets/prizes/v2/top2.png);
       .rank-top-img {
-        width: 80px;
-        height: 80px;
-        background-image: url(../../../assets/prizes/v1/rank-top-2.png);
+        width: 96px;
+        height: 96px;
+        background-image: url(../../../assets/prizes/v2/rank-top-2.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
       }
     }
     .rank-top-3 {
-      background-image: url(../../../assets/prizes/v1/top3.png);
-      margin-top: 72px;
+      width: 320px;
+      height: 400px;
+      background-image: url(../../../assets/prizes/v2/top3.png);
       .rank-top-img {
-        width: 80px;
-        height: 80px;
-        background-image: url(../../../assets/prizes/v1/rank-top-3.png);
+        width: 96px;
+        height: 96px;
+        background-image: url(../../../assets/prizes/v2/rank-top-3.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
       }
-    }
-
-    .rank-top-bg {
-      position: absolute;
-      width: 130%;
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, 50%);
-      padding: 20% 0;
-      background-image: url(../../../assets/prizes/v1/rank-bg.png);
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 100% 100%;
-      z-index: -1;
     }
   }
 
@@ -359,14 +354,14 @@ export default {
             font-size: 12px;
             .user-tx-amount {
               color: #ffffff;
-              font-weight: 500;
+                      font-family: GeneralSans-Medium;
             }
           }
 
           .user-info-address {
             margin-top: 8px;
             font-size: 18px;
-            font-weight: 500;
+                    font-family: GeneralSans-Medium;
           }
         }
       }
@@ -381,7 +376,7 @@ export default {
 
         .user-reward-amount {
           font-size: 18px;
-          font-weight: 600;
+          font-family: GeneralSans-SemiBold;
           margin-top: 8px;
           -webkit-text-fill-color: transparent;
           background-position-x: initial;
@@ -396,35 +391,19 @@ export default {
         }
       }
     }
-
-    .rank-top-mobile-bg {
-      width: 124%;
-      padding: 12%;
-      position: relative;
-      bottom: 0;
-      left: 50%;
-      transform: translate(-50%, 120%);
-      background-image: url(../../../assets/prizes/v1/rank-bg.png);
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: 100% 100%;
-      z-index: -1;
-      margin-top: -36%;
-    }
   }
 
   .rank-list {
     width: 100%;
-    padding: 0 32px;
-    background-color: #222222;
     text-align: left;
-    border-radius: 16px;
-    margin-top: 80px;
+    margin-top: 48px;
     position: relative;
+    border: 1px solid rgba(243, 223, 47, 0.3);
+    background: rgb(1, 1, 1);
 
     .rank-list-card-item {
       width: 100%;
-      padding: 14px 0;
+      padding: 14px 32px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -450,12 +429,17 @@ export default {
     .rank-list-header {
       font-size: 14px;
       color: rgba(255, 255, 255, 0.6);
+      background-color: #010101;
     }
 
     .rank-list-item {
-      font-weight: 600;
+      font-family: GeneralSans-SemiBold;
       .emit-reward {
-        color: #ddf600;
+        color: #FFD166;
+        span {
+          font-size: 14px;
+          color: rgba(#FFD166, 0.6);
+        }
       }
     }
 
@@ -470,29 +454,36 @@ export default {
 }
 
 ::v-deep .rank-pagination .btn-next {
-  background: transparent;
-  color: #5f6166;
+  background: #222222;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 4px;
 }
 ::v-deep .rank-pagination .el-pager .number {
-  background: transparent;
-  color: #5f6166;
+  background: #222222;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 4px;
 }
 ::v-deep .rank-pagination .el-pager .more {
-  background: transparent;
-  color: #5f6166;
+  background: #222222;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 4px;
 }
 ::v-deep .rank-pagination .btn-prev {
-  background: transparent;
-  color: #5f6166;
+  background: #222222;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 4px;
 }
 
 ::v-deep .rank-pagination .el-pager .number.active {
+  width: 30px;
+  height: 30px;
+  padding: 0;
   box-sizing: border-box;
-  border: 1px solid rgb(239, 47, 45);
+  border: 1px solid rgb(243, 186, 47);
   border-radius: 4px;
-  box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
-  backdrop-filter: blur(156px);
-  background: rgb(0, 0, 0);
+  background: rgb(1, 1, 1);
+  color: #F3BA2F;
+  margin: 0 4px;
 }
 
 @media (max-width: 740px) {
@@ -511,11 +502,11 @@ export default {
     }
 
     .rank-list {
-      padding: 0 12px;
       .rank-list-header {
         display: none;
       }
       .rank-list-card-item {
+        padding: 6px 12px;
         .ranking {
           width: 40px;
         }
@@ -525,8 +516,14 @@ export default {
         .emit-reward {
           white-space: nowrap;
         }
-        .ranking, .user-address, .cumulative-tx, .emit-reward {
+        .ranking,
+        .user-address,
+        .cumulative-tx,
+        .emit-reward {
           font-size: 14px;
+          span {
+            font-size: 12px;
+          }
         }
       }
     }
