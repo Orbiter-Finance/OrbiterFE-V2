@@ -71,7 +71,7 @@
             style="margin-right: 2px"
             alt=""
           />
-          Lucky Draw Chance: 0
+          Lucky Draw
         </div>
       </div>
 
@@ -80,38 +80,26 @@
           <div class="task-card-title">
             Daily Bridging,earn up to 275 O-Point!
           </div>
-          <div class="task-item-group">
-            <div
-              class="task-item"
-              v-for="item in timeList"
-              :key="item.time"
-            ></div>
-          </div>
-          <div class="task-progress">
-            <div
-              class="task-time-item"
-              v-for="item in timeList"
-              :key="item.time"
-            >
-              {{ item.time }}
+          <template v-for="(item, index) in timeList">
+            <div :key="index">
+              <div class="task-item-group">
+                <div
+                  class="task-item"
+                  v-for="item in item"
+                  :key="item.value"
+                ></div>
+              </div>
+              <div class="task-progress">
+                <div
+                  class="task-time-item"
+                  v-for="item in item"
+                  :key="item.value"
+                >
+                  {{ item.value }}
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="task-item-group">
-            <div
-              class="task-item"
-              v-for="item in timeList"
-              :key="item.time"
-            ></div>
-          </div>
-          <div class="task-progress">
-            <div
-              class="task-time-item"
-              v-for="item in timeList"
-              :key="item.time"
-            >
-              {{ item.time }}
-            </div>
-          </div>
+          </template>
         </div>
         <div class="opoints-card">
           <div class="opoints-card-title">
@@ -146,7 +134,14 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+
+import { prizesV2TaskList } from '../../../composition/hooks'
+
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
+import { concat } from 'ethers/lib/utils';
+
+const INVITE_NUM = 4
 
 export default {
   components: {
@@ -172,31 +167,6 @@ export default {
     isEnd() {
       return true
     },
-    timeList() {
-      return [
-        {
-          time: '7.15',
-        },
-        {
-          time: '7.16',
-        },
-        {
-          time: '7.17',
-        },
-        {
-          time: '7.18',
-        },
-        {
-          time: '7.19(2/3)',
-        },
-        {
-          time: '7.20',
-        },
-        {
-          time: '7.21',
-        },
-      ]
-    },
     opointsList() {
       return [
         {
@@ -212,6 +182,38 @@ export default {
           days: 14,
         },
       ]
+    },
+    taskList() {
+      return prizesV2TaskList.value
+    },
+    timeList() {
+      const taskList = this.taskList || []
+      let list = []
+      let stashList = []
+      taskList.forEach((item, index)=>{
+        const [startDate, endDate] = item?.rule?.date || []
+        const option =  {
+          startTime: dayjs.utc(startDate).format("MMM.DD"),
+          endTime: dayjs.utc(endDate).format("MMM.DD"),
+          value: dayjs.utc(startDate).format("MMM.DD"),
+          isOpen: false,
+          isSuccess: true,
+          isCurrent: false
+        }
+        if(!(index % INVITE_NUM)) {
+          if(!!index) {
+            list = list.concat([stashList])
+          }
+          stashList = [option]
+        } else if(!(index === taskList.length-1)) {
+          stashList = stashList.concat([option])
+        } else {
+          list = list.concat([stashList])
+        }
+
+      })
+
+      return list
     },
   },
 }

@@ -41,7 +41,8 @@ export default {
     },
   },
   created() {
-    this.$store.commit('getPrizesData')
+    this.$store.commit('getPrizesV2ProjectDetail')
+    this.$store.commit('getPrizesV2ProjectInfo')
   },
   watch: {
     evmAddress(item1, item2) {
@@ -54,7 +55,7 @@ export default {
     async getUserReward() {
       if (!this.evmAddress || this.evmAddress === '0x') return
       this.$store.commit(
-        'getPrizesuserInfo',
+        'getPrizesV2UserInfo',
         this.evmAddress.toLocaleLowerCase()
       )
     },

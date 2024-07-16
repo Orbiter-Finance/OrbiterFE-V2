@@ -20,6 +20,7 @@ import {
   setLuckyBaTaskgOrbguyInfo,
   setLuckyBaTaskgUserOrbguyInfo,
   setClaimCardModalOtherDataInfo,
+  setPrizesV2TaskList,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -38,6 +39,8 @@ const activityProjectId = '5f622f2c-10d5-45b9-ab4d-c76f8d4a0086'
 let timer
 let timer1
 let timer2
+let timer3
+let timer4
 
 export default {
   updateZKTokenList(state, obj) {
@@ -432,18 +435,47 @@ export default {
     }, 500)
   },
 
-  async getLuckyBagTaskUserOPointsInfo(state, address) {
-    if (!address || address === '0x') return
-
+  async getPrizesV2ProjectDetail(state) {
     clearTimeout(timer2)
     timer2 = setTimeout(async () => {
       const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}${
+          isDev() ? '/activity' : '/active-platform'
+        }/project/detail?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+      )
+      console.log('response', response)
+      const res = await response.json()
+      console.log('Detail', res)
+    }, 500)
+  },
+
+  async getPrizesV2ProjectInfo(state) {
+    clearTimeout(timer3)
+    timer3 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}${
+          isDev() ? '/activity' : '/active-platform'
+        }/project/info?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+      )
+      console.log('response', response)
+      const res = await response.json()
+      console.log('Info', res)
+      const list = res?.result?.tasks || []
+      setPrizesV2TaskList(list)
+    }, 500)
+  },
+
+  async getPrizesV2UserInfo(state, address) {
+    if (!address || address === '0x') return
+    clearTimeout(timer4)
+    timer4 = setTimeout(async () => {
+      const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}/${
           isDev() ? 'activity' : 'active-platform'
-        }/account/getAccountReward?address=${activityProjectId}&rewardType=1&rewardName=opoint`
+        }/project/tasksStatus?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
-      console.log('res', res)
+      console.log('User', res)
     }, 500)
   },
 }
