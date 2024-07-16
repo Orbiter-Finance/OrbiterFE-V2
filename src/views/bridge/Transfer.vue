@@ -1927,17 +1927,33 @@ export default {
       }
 
       if(!this.isCrossAddress) {
-        let address = ""
-        if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          address = tonHelper.account()
-        } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-          address = solanaHelper.solanaAddress()
-        } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          address = this.starkAddress
+
+        let fromAddress = ""
+        if(fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+          fromAddress = tonHelper.account()
+        } else  if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+          fromAddress = solanaHelper.solanaAddress()
+        } else  if(fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+          fromAddress = this.starkAddress
         } else {
-          address = this.currentWalletAddress
+          fromAddress = this.currentWalletAddress
         }
-        if(!orbiterHelper.checkAddress({chainId: toChainID, address: address})) {
+        if(!orbiterHelper.checkAddress({chainId: fromChainID, address: fromAddress})) {
+          orbiterHelper.openConnectModal({chainId: fromChainID})
+          return
+        }
+
+        let toAddress = ""
+        if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+          toAddress = tonHelper.account()
+        } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+          toAddress = solanaHelper.solanaAddress()
+        } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+          toAddress = this.starkAddress
+        } else {
+          toAddress = this.currentWalletAddress
+        }
+        if(!orbiterHelper.checkAddress({chainId: toChainID, address: toAddress})) {
           orbiterHelper.openConnectModal({chainId: toChainID})
           return
         }

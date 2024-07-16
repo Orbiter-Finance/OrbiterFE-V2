@@ -8,7 +8,6 @@ import {
 } from '../composition/hooks'
 
 const checkStarknetAddress = (address) => {
-  console.log('address?.length', address?.length)
   if (address?.length <= 50) {
     return false
   }
