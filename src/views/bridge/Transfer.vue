@@ -1941,6 +1941,9 @@ export default {
           orbiterHelper.openConnectModal({chainId: toChainID})
           return
         }
+      } else {
+        const isCheck = this.checkAddressCall()
+        if(!isCheck) return 
       }
       // if (selectMakerConfig.ebcId) {
       //   try {
