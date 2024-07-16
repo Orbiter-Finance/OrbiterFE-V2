@@ -924,13 +924,13 @@ export default {
     },
     'web3State.starkNet.starkNetAddress': function (newValue) {
       if (newValue) {
-        if (isArgentApp()) {
-          if ([CHAIN_ID.starknet, CHAIN_ID.starknet].includes(transferDataState.toChainID)) {
-            this.crossAddressReceipt = newValue;
-          }
-        } else {
-          this.crossAddressReceipt = newValue;
-        }
+        // if (isArgentApp()) {
+        //   if ([CHAIN_ID.starknet, CHAIN_ID.starknet].includes(transferDataState.toChainID)) {
+        //     this.crossAddressReceipt = newValue;
+        //   }
+        // } else {
+        //   this.crossAddressReceipt = newValue;
+        // }
         this.updateTransferInfo();
       }
     },
