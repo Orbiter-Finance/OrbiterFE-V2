@@ -1,5 +1,5 @@
 <template>
-  <div id="lucky-task-card-banner" class="lucky-task-card-banner">
+  <div id="lucky-task-card-banner" @click="luckyClick"  class="lucky-task-card-banner">
     <div class="lucky-task-card">
         <div class="top-banenr">
           <div class="banner-content">
@@ -47,6 +47,7 @@
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import { decimalNum } from '../../util/decimalNum'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import { isMobileDevice } from '../../util'
 
 import {
   luckyBaTaskgOrbguyInfo,
@@ -97,6 +98,14 @@ export default {
   },
 
   methods: {
+    luckyClick() {
+      if (isMobileDevice()) {
+        document.getElementById('block_mobile_scroll_group').scrollTop = document.getElementById('lucky-task-card-group').offsetTop - 160;
+      } else {
+        document.getElementById('ativity-list').scrollTop = document.getElementById('lucky-task-card-group').offsetTop - 200;
+      }
+
+    },
     openLikwidSwap() {
       const evmAddress = this.evmAddress
       if (!evmAddress || evmAddress === '0x') return
