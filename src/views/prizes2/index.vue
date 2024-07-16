@@ -10,8 +10,6 @@
         <PrizesRule></PrizesRule>
       </div>
     </div>
-    <div class="bg1"></div>
-    <div class="bg2"></div>
   </div>
 </template>
 
@@ -43,6 +41,8 @@ export default {
   created() {
     this.$store.commit('getPrizesV2ProjectDetail')
     this.$store.commit('getPrizesV2ProjectInfo')
+    this.$store.commit('getPrizesV2ProjectRank')
+    
   },
   watch: {
     evmAddress(item1, item2) {
@@ -94,8 +94,9 @@ export default {
 
 @media (max-width: 740px) {
   #orbiter-prizes {
-    .bg2 {
-      display: none;
+    .content {
+      width: 100%;
+      padding: 0 16px;
     }
   }
 }

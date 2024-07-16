@@ -9,61 +9,79 @@
           <label>Split among the first 700 users each day</label>
           <div class="fcfs"></div>
         </div>
-        <div class="orbguy-reward">Your Rewards: +32.59 $ORBGUY!</div>
+        <div class="orbguy-reward">
+          Your Rewards: +32.59
+          <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
+          $ORBGUY!
+        </div>
+      </div>
+      <div class="orbguy-info-mobile">
+        <label>
+          Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 ORBGUy
+          pack!
+        </label>
+        <div class="orbguy-reward">
+          Your Rewards: +32.59
+          <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
+          $ORBGUY!
+        </div>
       </div>
       <div class="orbguy-info">
         <label>
           Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 ORBGUy
           pack!
         </label>
-        <div class="orbguy-price">1 ORBGUY ≈ 0.0000806 ETH</div>
+        <div class="orbguy-price">1 ORBGUY ≈ {{ price }} ETH</div>
       </div>
 
-      <div class="orbguy-box">
-        <div class="orbguy-progress-amount">
-          <template v-for="item in list">
+      <div class="orbguy-box-group">
+        <div class="orbguy-box">
+          <div class="orbguy-progress-amount">
+            <template v-for="item in list">
+              <div
+                class="orbguy-progress-amount-item"
+                v-if="item.show"
+                :key="item.index"
+                :style="`left:${item.left};`"
+              >
+                {{ item.index }}00
+              </div>
+            </template>
+          </div>
+          <div class="orbguy-progress">
             <div
-              class="orbguy-progress-amount-item"
-              v-if="item.show"
-              :key="item.index"
-              :style="`left:${item.left};`"
-            >
-              {{ item.index }}00
-            </div>
-          </template>
-        </div>
-        <div class="orbguy-progress">
-          <div
-            class="progress-box"
-            :style="`width: calc(${userLeft} - 3px)`"
-          ></div>
-          <template v-for="item in list">
-            <div
-              class="orbguy-box-item"
-              v-if="item.show"
-              :key="item.index"
-              :style="`left:${item.left};`"
+              class="progress-box"
+              :style="`width: calc(${userLeft} - 3px)`"
             ></div>
-          </template>
+            <template v-for="item in list">
+              <div
+                class="orbguy-box-item"
+                v-if="item.show"
+                :key="item.index"
+                :style="`left:${item.left};`"
+              ></div>
+            </template>
 
-          <div class="orbguy-user-amount" :style="`left:${userLeft};`">
-            <img
-              :src="require('../../../assets/prizes/v2/user-group.svg')"
-              style="margin-right: 2px"
-              alt=""
-            />
-            167
+            <div v-if="!!Number(taskAddressCount)" class="orbguy-user-amount" :style="`left:${userLeft};`">
+              <img
+                :src="require('../../../assets/prizes/v2/user-group.svg')"
+                style="margin-right: 2px"
+                alt=""
+              />
+              {{ taskAddressCount }}
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="tips">
+      <div v-if="!!isDayEnd" class="tips">
         All rewards for today have been split! Make sure to join early tomorrow!
       </div>
-      <div class="prizes-to-bridge">
+      <div :class="`${isDayEnd ? 'prizes-to-bridge' : 'prizes-to-bridge prizes-day-not-end'}`">
         <div
           class="prizes-to-bridge-btn"
-          :style="`opacity: ${isEnd ? '0.3' : '1'};`"
+          :style="`opacity: ${!Number(orbguyAmount) ? '0.3' : '1'};`"
+          @click="openORBGUYReward"
         >
           <img
             class="draw-card"
@@ -134,14 +152,19 @@
 </template>
 
 <script>
-import dayjs from 'dayjs';
+import Web3 from 'web3'
+import dayjs from 'dayjs'
+const BigNumber = require('bignumber.js')
+import { decimalNum } from '../../../util/decimalNum'
 
-import { prizesV2TaskList } from '../../../composition/hooks'
+import {
+  prizesV2TaskList,
+  prizesV2ProjectTaskDetailsList,
+} from '../../../composition/hooks'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
-import { concat } from 'ethers/lib/utils';
 
-const INVITE_NUM = 4
+const INVITE_NUM = 7
 
 export default {
   components: {
@@ -149,20 +172,26 @@ export default {
   },
   name: 'PrizesDays',
   data() {
-    return {}
+    return {
+      price: '',
+    }
   },
   computed: {
+    projectTaskDetailsList() {
+      return prizesV2ProjectTaskDetailsList.value
+    },
     list() {
+      const count = this.taskAddressCount
       return new Array(8).fill(0).map((item, index) => {
         return {
           index,
-          show: !!index,
+          show: !!(count < (index *100)),
           left: (index / 7.2) * 100 + '%',
         }
       })
     },
     userLeft() {
-      return (167 / 750) * 100 + '%'
+      return ((this.taskAddressCount || 0) / 750) * 100 + '%'
     },
     isEnd() {
       return true
@@ -186,35 +215,99 @@ export default {
     taskList() {
       return prizesV2TaskList.value
     },
+    taskId() {
+      const taskList = this.taskList || []
+      const option = taskList.filter((item) => {
+        const [startDate, endDate] = item?.rule?.date || []
+        const startTime = +dayjs.utc(startDate)
+        const endTime = +dayjs.utc(endDate)
+        const now = +dayjs()
+        return startTime <= now && endTime >= now
+      })?.[0]
+      return option?.id
+    },
+    currentDetailsOption() {
+      const taskId = this.taskId
+      const list = this.projectTaskDetailsList
+      const option = list.filter((item) => {
+        return item.taskId === taskId
+      })?.[0]
+      return option
+    },
+    orbguyAmount() {
+      const currentOption = this.currentDetailsOption
+      return currentOption?.taskRewardInfos?.[0]?.distributedCount
+    },
+    taskAddressCount() {
+      const currentOption = this.currentDetailsOption
+      return currentOption?.taskAddressCount
+    },
     timeList() {
       const taskList = this.taskList || []
       let list = []
       let stashList = []
-      taskList.forEach((item, index)=>{
+      taskList.forEach((item, index) => {
         const [startDate, endDate] = item?.rule?.date || []
-        const option =  {
-          startTime: dayjs.utc(startDate).format("MMM.DD"),
-          endTime: dayjs.utc(endDate).format("MMM.DD"),
-          value: dayjs.utc(startDate).format("MMM.DD"),
+        const option = {
+          startTime: dayjs.utc(startDate).format('MMM.DD'),
+          endTime: dayjs.utc(endDate).format('MMM.DD'),
+          value: dayjs.utc(startDate).format('MMM.DD'),
           isOpen: false,
           isSuccess: true,
-          isCurrent: false
+          isCurrent: false,
         }
-        if(!(index % INVITE_NUM)) {
-          if(!!index) {
+        if (!(index % INVITE_NUM)) {
+          if (!!index) {
             list = list.concat([stashList])
           }
           stashList = [option]
-        } else if(!(index === taskList.length-1)) {
+        } else if (!(index === taskList.length - 1)) {
           stashList = stashList.concat([option])
         } else {
           list = list.concat([stashList])
         }
-
       })
 
       return list
     },
+    isDayEnd() {
+      return this.taskAddressCount >= 707
+    }
+  },
+  methods: {
+    decimalNumC(num, decimal, delimiter) {
+      return decimalNum(num, decimal, delimiter)
+    },
+    openORBGUYReward() {
+      if (Number(this.orbguyAmount)) {
+        this.$store.commit('getClaimORBGUYRewardData', {
+          type: 'LUCKY_BAG_TASK',
+          distributeResult: this.orbguyAmount,
+        })
+      }
+    },
+    async getOrbguyPrice() {
+      const web3 = new Web3(
+        new Web3.providers.HttpProvider('https://rpc.vizing.com')
+      )
+      const raw = web3.eth.abi.encodeFunctionSignature('getReserves()')
+      const res = await web3.eth.call({
+        to: '0xFaf184a9d23A4F0377c7b1A4D58aB0d36353190B',
+        data: raw,
+      })
+      const result = web3.eth.abi.decodeParameters(
+        ['uint256', 'uint256'],
+        res || ''
+      )
+      this.price = this.decimalNumC(
+        new BigNumber(result[0]).div(result[1] + '').toFixed(7) + '',
+        7,
+        ','
+      )
+    },
+  },
+  created() {
+    this.getOrbguyPrice()
   },
 }
 </script>
@@ -285,6 +378,16 @@ export default {
         font-family: GeneralSans-SemiBold;
         line-height: 16px;
         letter-spacing: 0px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .token-symbol-icon {
+          width: 20px;
+          height: 20px;
+          margin: 0 4px;
+          border: 1px solid rgb(34, 34, 34);
+          border-radius: 50%;
+        }
       }
     }
 
@@ -310,6 +413,10 @@ export default {
         text-decoration: underline;
         color: rgba(#ffffff, 0.6);
       }
+    }
+
+    .orbguy-info-mobile {
+      display: none;
     }
 
     .orbguy-box {
@@ -399,6 +506,10 @@ export default {
       color: #f3ba2f;
     }
 
+    .prizes-day-not-end {
+      margin-top: 80px;
+    }
+
     .prizes-to-bridge {
       width: 100%;
       display: flex;
@@ -413,7 +524,6 @@ export default {
         align-items: center;
         color: #010101;
 
-        margin-top: 16px;
         padding: 12px 0;
         background-image: url('../../../assets/prizes/v2/prizes-btn.png');
         font-size: 16px;
@@ -587,9 +697,174 @@ export default {
 @media (max-width: 740px) {
   #prizes-days {
     width: 100%;
+    margin-top: 32px;
 
     .title {
       font-size: 24px;
+      line-height: 28px;
+    }
+
+    .prizes-days-card {
+      margin-top: 16px;
+      padding: 16px;
+      .card-tilte {
+        display: block;
+        .left {
+          text-align: left;
+          justify-content: space-between;
+          margin-right: 0;
+          label {
+            white-space: normal;
+            font-size: 16px;
+            line-height: 20px;
+          }
+        }
+
+        .orbguy-reward {
+          display: none;
+        }
+      }
+
+      .orbguy-info-mobile {
+        display: block;
+        width: 100%;
+        label {
+          color: #f3ba2f;
+          font-size: 14px;
+          line-height: 1.25;
+          letter-spacing: 0px;
+        }
+
+        .orbguy-price {
+          font-size: 16px;
+          line-height: 20px;
+          letter-spacing: 0px;
+          text-decoration: underline;
+          color: rgba(#ffffff, 0.6);
+        }
+
+        .orbguy-reward {
+          margin-top: 12px;
+          color: #222222;
+          padding: 8px 14px;
+          background-image: url('../../../assets/prizes/v2/orbguy-reward-bg.png');
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 100% 100%;
+          font-size: 14px;
+          font-family: GeneralSans-SemiBold;
+          line-height: 16px;
+          letter-spacing: 0px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .token-symbol-icon {
+            width: 20px;
+            height: 20px;
+            margin: 0 4px;
+            border: 1px solid rgb(34, 34, 34);
+            border-radius: 50%;
+          }
+        }
+      }
+
+      .orbguy-info {
+        display: block;
+        label {
+          font-size: 14px;
+          line-height: 1.25;
+          display: none;
+        }
+        .orbguy-price {
+          margin-top: 4px;
+        }
+      }
+
+      .orbguy-box-group {
+        width: 100%;
+        overflow-x: auto;
+        height: 96px;
+        .orbguy-box {
+          width: 100%;
+          min-width: 750px;
+          .orbguy-progress-amount {
+            height: 24px;
+            .orbguy-progress-amount-item {
+              width: 32px;
+              font-size: 14px;
+            }
+          }
+          .orbguy-progress {
+            padding: 1px;
+            height: 16px;
+            .progress-box {
+              height: 12px;
+            }
+            .orbguy-box-item {
+              width: 32px;
+              height: 31px;
+            }
+            .orbguy-user-amount {
+              width: 32px;
+              height: 22px;
+              font-size: 12px;
+              line-height: 16px;
+              transform: translate(-50%, 28px);
+              img {
+                width: 12px;
+                height: 12px;
+              }
+            }
+          }
+        }
+      }
+
+      .tips {
+        margin-top: 8px;
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .prizes-day-not-end  {
+        margin-top: 16px;
+      }
+
+      .task-group {
+        display: block;
+        margin-top: 24px;
+        .task-card {
+          width: 100%;
+          margin-right: 0;
+          padding: 8px;
+          .task-card-title {
+            font-size: 16px;
+            line-height: 20px;
+          }
+        }
+        .opoints-card {
+          width: 100%;
+          margin-right: 0;
+          padding: 8px;
+          margin-top: 8px;
+          .opoints-card-title {
+            font-size: 16px;
+            line-height: 20px;
+          }
+          .opoints-reward-title {
+            margin-top: 16px;
+            font-size: 16px;
+            line-height: 20px;
+          }
+          .reward-info {
+            font-size: 24px;
+            line-height: 32px;
+            .o-points-symbol {
+              width: 24px;
+              height: 24px;
+            }
+          }
+        }
+      }
     }
   }
 }

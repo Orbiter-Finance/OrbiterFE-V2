@@ -7,9 +7,15 @@
         </div>
         <div class="prizes-label">
           <div style="white-space: nowrap">
-            <span class="prizes-total-pool-amount">$80,000 Prize Pool </span>
+            <span class="prizes-total-pool-amount">
+              $80,000
+              <br class="title-br" />
+              Prize Pool 
+            </span>
           </div>
-          <div class="token-symbol">200,000 $ORBGUY!</div>
+          <div class="token-symbol">200,000
+            <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
+            $ORBGUY!</div>
         </div>
         <img
           class="prizes-banner-image-mobile"
@@ -34,8 +40,9 @@
             @click="toBridgeCall"
             :style="`opacity: ${isEnd ? '0.3' : '1'};`"
           >
+          Start Bridge
             <!-- {{ isEnd ? 'In the statistics...' : 'Start Bridge' }} -->
-            {{ isEnd ? 'Claim' : 'Start Bridge' }}
+            <!-- {{ isEnd ? 'Claim' : 'Start Bridge' }} -->
           </div>
         </div>
       </div>
@@ -87,7 +94,8 @@ export default {
   },
   computed: {
     isEnd() {
-      return prizesTimeEnd.value
+      // return prizesTimeEnd.value
+      return false
     },
   },
   methods: {
@@ -206,11 +214,14 @@ export default {
 
       .prizes-label {
         margin-top: 16px;
-        font-size: 64px;
         font-weight: 700;
         letter-spacing: 0px;
         text-align: left;
         font-family: GeneralSans-Bold;
+
+        .title-br {
+          display: none;
+        }
 
         .prizes-total-pool-amount {
           background-image: linear-gradient(
@@ -228,6 +239,8 @@ export default {
           background-origin: initial;
           -webkit-background-clip: text;
           background-color: initial;
+          font-size: 64px;
+          line-height: 72px;
         }
 
         .token-symbol {
@@ -248,6 +261,15 @@ export default {
           -webkit-background-clip: text;
           background-color: initial;
           font-size: 44px;
+
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          .token-symbol-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 4px;
+          }
         }
       }
 
@@ -373,12 +395,17 @@ export default {
   #prizes-top-banner {
     .prizes-label {
       font-size: 32px;
+      .title-br {
+        display: flex;
+      }
     }
   }
 }
 
 @media (max-width: 740px) {
   #prizes-top-banner {
+    padding: 40px 0 20px;
+
     width: 100%;
     .prizes-content {
       width: 100%;
@@ -395,9 +422,26 @@ export default {
           display: flex;
           justify-content: center;
           align-content: center;
+
+          .prizes-chain {
+            width: 296px;
+            height: 40px;
+          }
         }
         .prizes-label {
           text-align: center;
+          .token-symbol {
+            font-size: 32px;
+          }
+          .token-symbol {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .token-symbol-icon {
+              width: 40px;
+              height: 40px;
+            }
+          }
         }
         .prizes-orbguy {
           font-size: 20px;
@@ -411,7 +455,7 @@ export default {
         .time-label {
           text-align: center;
         }
-
+        
         .time-card {
           display: flex;
           justify-content: center;
@@ -423,6 +467,11 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center;
+          .prizes-to-bridge-btn {
+            width: 320px;
+            height: 74px;
+            margin-top: 24px;
+          }
         }
       }
       .prizes-banner-image {

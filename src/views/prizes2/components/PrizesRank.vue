@@ -23,7 +23,7 @@
           {{ item.reward }}
         </div>
         <div class="reward-total-amount">
-          {{ item.reward }}
+          {{ item.refund }} + {{ item.reward }}
         </div>
       </div>
     </div>
@@ -44,7 +44,7 @@
           />
           <div class="rank-user-info">
             <div class="user-tx">
-              Cumulative <span class="user-tx-amount">{{ item.tx }} tx</span>
+              Cumulative <span class="user-tx-amount">{{ item.txAmount }} tx</span>
             </div>
             <div class="user-info-address">{{ item.address }}</div>
           </div>
@@ -55,7 +55,7 @@
             class="user-reward-amount"
             :style="`color: ${item.color};background-image: ${item.bg};`"
           >
-            {{ item.reward }}
+            {{ item.reward.amount }}
           </div>
         </div>
       </div>
@@ -78,11 +78,11 @@
           {{ shortAddress(item.address, isMobile ? 4 : 6) }}
         </div>
         <div class="cumulative-tx">
-          {{ decimalNumC(item.count, 0, ',') }} tx
+          {{ decimalNumC(item.txAmount, 0, ',') }} tx
         </div>
         <div class="emit-reward">
-          <div>+${{ decimalNumC(item.reward, 2, ',') }} USDC</div>
-          <span>+${{ decimalNumC(item.reward, 2, ',') }} USDC</span>
+          <div>+${{ decimalNumC(item.reward.amount, 2, ',') }} USDC</div>
+          <span>${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{ decimalNumC(item.reward.amount, 2, ',') }} USDC</span>
         </div>
       </div>
       <div class="pagination-group">
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { isMobile, prizesRankList } from '../../../composition/hooks'
+import { isMobile, prizesV2RankList } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
 
 export default {
@@ -113,7 +113,7 @@ export default {
   },
   computed: {
     rankList() {
-      return prizesRankList.value
+      return prizesV2RankList.value
     },
     isMobile() {
       return isMobile.value
@@ -122,34 +122,44 @@ export default {
       const [first, next, last] = this.rankList?.slice(0, 3) || []
       return [
         {
-          tx: this.decimalNumC(next?.count, 0, ','),
+          tx: this.decimalNumC(next?.txAmount, 0, ','),
           address: this.shortAddress(next?.address),
-          reward: Number(next?.reward)
-            ? `${this.decimalNumC(next?.reward, 2, ',', '$')} USDC`
+          reward: Number(next?.reward?.amount)
+            ? `${this.decimalNumC(next?.reward?.amount, 2, ',', '$')} USDC`
             : '--',
           rank: '2',
           bg: 'linear-gradient(180.00deg, rgb(211, 253, 255),rgb(157, 211, 211))',
           amount: 'rgba(192, 238, 239, 0.6)',
+          refund:  Number(next?.refund)
+            ? `${this.decimalNumC(next?.refund, 2, ',', '$')} USDC`
+            : '--',
         },
         {
-          tx: this.decimalNumC(first?.count, 0, ','),
+          tx: this.decimalNumC(first?.txAmount, 0, ','),
           address: this.shortAddress(first?.address),
-          reward: Number(first?.reward)
-            ? `${this.decimalNumC(first?.reward, 2, ',', '$')} USDC`
+          reward: Number(first?.reward?.amount)
+            ? `${this.decimalNumC(first?.reward?.amount, 2, ',', '$')} USDC`
             : '--',
           rank: '1',
           bg: 'linear-gradient(180.00deg, rgb(255, 212, 151),rgb(255, 166, 41))',
           amount: 'rgba(255, 209, 102, 0.6)',
+          refund:  Number(first?.refund)
+            ? `${this.decimalNumC(first?.refund, 2, ',', '$')} USDC`
+            : '--',
+
         },
         {
-          tx: this.decimalNumC(last?.count, 0, ','),
+          tx: this.decimalNumC(last?.txAmount, 0, ','),
           address: this.shortAddress(last?.address),
-          reward: Number(last?.reward)
-            ? `${this.decimalNumC(last?.reward, 2, ',', '$')} USDC`
+          reward: Number(last?.reward?.amount)
+            ? `${this.decimalNumC(last?.reward?.amount, 2, ',', '$')} USDC`
             : '--',
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
           amount: 'rgba(232, 178, 134, 0.6)',
+          refund:  Number(last?.refund)
+            ? `${this.decimalNumC(last?.refund, 2, ',', '$')} USDC`
+            : '--',
         },
       ]
     },
@@ -489,7 +499,7 @@ export default {
 @media (max-width: 740px) {
   #prizes-rank {
     margin-top: 32px;
-    padding: 0 12px;
+    padding: 0;
     .title {
       font-size: 24px;
     }
@@ -502,6 +512,7 @@ export default {
     }
 
     .rank-list {
+      margin-top: 36px;
       .rank-list-header {
         display: none;
       }

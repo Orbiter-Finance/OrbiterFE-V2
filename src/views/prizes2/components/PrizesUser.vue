@@ -1,9 +1,13 @@
 <template>
   <div class="prizes-user" id="prizes-user">
-    <div class="user-title"><span>$800,000</span> Prize Pool for Top 100</div>
-    <div class="vice-title">
-      <span>Top 10</span> get 0 bridging fee with up to <span>$2000</span> extra
-      bonus
+    <div class="title-group">
+      <div class="user-title"><span>$800,000</span> Prize Pool for Top 100</div>
+    </div>
+    <div class="title-group">
+      <div class="vice-title">
+        <span>Top 10</span> get 0 bridging fee with up to
+        <span>$2000</span> extra bonus
+      </div>
     </div>
 
     <div class="user-card">
@@ -43,6 +47,12 @@ export default {
 .prizes-user {
   width: 100%;
   margin-top: 80px;
+  .title-group {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .user-title {
     font-size: 48px;
     font-family: GeneralSans-SemiBold;
@@ -113,6 +123,53 @@ export default {
 @media (max-width: 740px) {
   #prizes-user {
     width: 100%;
+    margin-top: 32px;
+    .title-group {
+      width: 100%;
+    }
+    .user-title {
+      width: 80%;
+      font-size: 24px;
+      line-height: 28px;
+    }
+    .vice-title {
+      margin-top: 16px;
+      width: 80%;
+      font-size: 16px;
+      line-height: 20px;
+    }
+
+    .user-card {
+      margin-top: 16px;
+      padding: 16px;
+      .card-title {
+        font-size: 16px;
+        line-height: 20px;
+      }
+
+      .user-info {
+        margin-top: 8px;
+        display: block;
+
+        .info-item {
+          margin-top: 4px;
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          align-items: center;
+          .info-label {
+            font-size: 14px;
+            line-height: 18px;
+          }
+          .info-value {
+            flex: 1;
+            text-align: right;
+            font-size: 20px;
+            line-height: 24px;
+          }
+        }
+      }
+    }
   }
 }
 </style>

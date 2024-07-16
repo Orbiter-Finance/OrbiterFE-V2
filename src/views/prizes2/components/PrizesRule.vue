@@ -7,9 +7,9 @@
         <div
           class="card-rule-text"
           v-for="(option, idx) in item.text"
-          :key="idx" v-html="option"
-        >
-        </div>
+          :key="idx"
+          v-html="option"
+        ></div>
       </div>
     </div>
   </div>
@@ -89,17 +89,19 @@ export default {
     text-align: center;
   }
   .prizes-rule-card {
-    margin: 16px 0 4px;
-    width: 100%;
     padding: 8px 24px 24px;
-    border-radius: 16px;
-    background: rgb(34, 34, 34);
+    width: 100%;
+    border: 1px solid rgba(243, 223, 47, 0.3);
+    background: rgb(1, 1, 1);
     text-align: left;
+    margin-top: 16px;
     .card-label {
+      margin-top: 16px;
       font-size: 16px;
       font-weight: 600;
       line-height: 28px;
       letter-spacing: 0px;
+      font-family: GeneralSans-SemiBold;
       margin-top: 16px;
     }
 
@@ -107,7 +109,6 @@ export default {
       font-size: 14px;
       font-weight: 400;
       line-height: 23px;
-      font-family: 'Open Sans';
       letter-spacing: 0px;
       opacity: 0.6;
     }
@@ -117,8 +118,10 @@ export default {
 @media (max-width: 740px) {
   #prizes-rule {
     width: 100%;
-    padding: 0 12px;
     margin: 32px 0 60px;
+    .prizes-rule-card {
+      padding: 8px 16px;
+    }
     .rule-title {
       font-size: 24px;
     }

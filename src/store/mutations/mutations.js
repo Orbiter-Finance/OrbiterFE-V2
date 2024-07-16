@@ -21,6 +21,8 @@ import {
   setLuckyBaTaskgUserOrbguyInfo,
   setClaimCardModalOtherDataInfo,
   setPrizesV2TaskList,
+  setPrizesV2RankList,
+  setPrizesV2ProjectTaskDetailsList,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -41,6 +43,7 @@ let timer1
 let timer2
 let timer3
 let timer4
+let timer5
 
 export default {
   updateZKTokenList(state, obj) {
@@ -443,9 +446,10 @@ export default {
           isDev() ? '/activity' : '/active-platform'
         }/project/detail?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
       )
-      console.log('response', response)
       const res = await response.json()
-      console.log('Detail', res)
+      setPrizesV2ProjectTaskDetailsList(
+        res?.result?.projectDetail.taskDetails || []
+      )
     }, 500)
   },
 
@@ -457,18 +461,28 @@ export default {
           isDev() ? '/activity' : '/active-platform'
         }/project/info?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
       )
-      console.log('response', response)
       const res = await response.json()
-      console.log('Info', res)
       const list = res?.result?.tasks || []
       setPrizesV2TaskList(list)
+    }, 500)
+  },
+  async getPrizesV2ProjectRank(state) {
+    clearTimeout(timer4)
+    timer4 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}${
+          isDev() ? '/activity' : '/active-platform'
+        }/competition/rankReward?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+      )
+      const res = await response.json()
+      setPrizesV2RankList(res?.result?.rankRewards || [])
     }, 500)
   },
 
   async getPrizesV2UserInfo(state, address) {
     if (!address || address === '0x') return
-    clearTimeout(timer4)
-    timer4 = setTimeout(async () => {
+    clearTimeout(timer5)
+    timer5 = setTimeout(async () => {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}/${
           isDev() ? 'activity' : 'active-platform'
