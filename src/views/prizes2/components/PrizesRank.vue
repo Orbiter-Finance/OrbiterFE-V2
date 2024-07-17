@@ -83,7 +83,7 @@
           {{ decimalNumC(item.txAmount, 0, ',') }} tx
         </div>
         <div class="emit-reward">
-          <div>+${{ decimalNumC(item.reward.amount, 2, ',') }} USDC</div>
+          <div>+${{ decimalNumC((Number(item.reward.amount) || 0) + (Number(item.refund) || 0), 2, ',') }} USDC</div>
           <span>${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{ decimalNumC(item.reward.amount, 2, ',') }} USDC</span>
         </div>
       </div>

@@ -87,7 +87,7 @@
         }`"
       >
         <div
-          class="prizes-to-bridge-btn"
+          :class="`${isDraw ? 'prizes-to-bridge-animation' :''} prizes-to-bridge-btn`"
           :style="`opacity: ${isDraw ? '1' : '0.3'};`"
           @click="openORBGUYReward"
         >
@@ -184,13 +184,13 @@ import {
   prizesV2ProjectTaskDetailsList,
   prizesV2UserList,
   prizesV2TotalOrbguy,
-  prizesV2TimeEnd
+  prizesV2TimeEnd,
 } from '../../../composition/hooks'
 import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { SIGN_MESSAGE } from '../../../const'
-import { ethers } from 'ethers';
+import { ethers } from 'ethers'
 
 const INVITE_NUM = 7
 
@@ -215,8 +215,8 @@ export default {
     isEnd() {
       return prizesV2TimeEnd.value
     },
-    totalOrbguy(){
-      return this.decimalNumC(prizesV2TotalOrbguy.value || "0", 4, ",")
+    totalOrbguy() {
+      return this.decimalNumC(prizesV2TotalOrbguy.value || '0', 4, ',')
     },
     list() {
       const count = this.taskAddressCount || 0
@@ -305,7 +305,6 @@ export default {
     currentUserOption() {
       const taskId = this.taskId
       const list = this.userList
-      console.log('list', list)
       const option = list.filter((item) => {
         return item.task_id === taskId
       })?.[0]
@@ -510,16 +509,34 @@ export default {
   },
   created() {
     this.getOrbguyPrice()
-    console.log("1111",
-
-    ethers.utils.verifyMessage(SIGN_MESSAGE,"0x7ac83bf7008beb641f91746f5efafb734975dbf585607f90dd67c24633f6a3ba4d32251b582bf301fa130e4a0f7908eaf4453c42236caa96e52176362d665de61c")
-
-    )
   },
 }
 </script>
 
 <style lang="scss" scoped>
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+
+  2.8% {
+    transform: scale(1.3);
+  }
+
+  4.9% {
+    transform: scale(1);
+  }
+
+  8.2% {
+    transform: scale(1.3);
+  }
+
+  14% {
+    transform: scale(1);
+  }
+}
+
 .prizes-days {
   width: 100%;
   margin-top: 80px;
@@ -744,6 +761,11 @@ export default {
           width: 20px;
           height: 30px;
         }
+      }
+
+      .prizes-to-bridge-animation {
+        animation: heartBeat 6.3s  ease-in-out infinite;
+        -webkit-animation: heartBeat 6.3s  ease-in-out infinite;
       }
     }
 
