@@ -50,6 +50,9 @@
         class="prizes-banner-image"
         :src="require('../../../assets/prizes/v2/banner-bg.png')"
       />
+
+      <div class="prizes-linea"></div>
+      <div class="prizes-zksync-era"></div>
     </div>
   </div>
 </template>
@@ -193,6 +196,9 @@ export default {
     justify-content: space-between;
     align-items: center;
     text-align: left;
+    position: relative;
+    top: 0;
+    left: 0;
     .prizes-details {
       .prizes-to-chain {
         width: 100%;
@@ -357,9 +363,27 @@ export default {
 
     .prizes-banner-image {
       width: 45%;
-      margin-right: -8%;
-      margin-left: -24%;
     }
+  }
+
+  .prizes-linea {
+    width: 36px;
+    height: 36px;
+    background-image: url('../../../assets/prizes/v2/prizes-linea.png');
+    background-size: 36px 36px;
+    position: absolute;
+    top: -48px;
+    left: 40%;
+  }
+
+  .prizes-zksync-era {
+    width: 36px;
+    height: 36px;
+    background-image: url('../../../assets/prizes/v2/prizes-zksync-era.png');
+    background-size: 36px 36px;
+    position: absolute;
+    top: 60%;
+    left: -60px;
   }
 }
 
@@ -374,6 +398,10 @@ export default {
         width: 32px;
         height: 32px;
       }
+    }
+  
+    .prizes-zksync-era {
+      display: none;
     }
   }
 }
@@ -405,8 +433,12 @@ export default {
 @media (max-width: 740px) {
   #prizes-top-banner {
     padding: 40px 0 20px;
-
     width: 100%;
+
+    .prizes-linea {
+      display: none;
+    }
+
     .prizes-content {
       width: 100%;
       display: block;

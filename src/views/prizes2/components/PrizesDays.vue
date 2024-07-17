@@ -62,7 +62,11 @@
               ></div>
             </template>
 
-            <div v-if="!!Number(taskAddressCount)" class="orbguy-user-amount" :style="`left:${userLeft};`">
+            <div
+              v-if="!!Number(taskAddressCount)"
+              class="orbguy-user-amount"
+              :style="`left:${userLeft};`"
+            >
               <img
                 :src="require('../../../assets/prizes/v2/user-group.svg')"
                 style="margin-right: 2px"
@@ -77,10 +81,14 @@
       <div v-if="!!isDayEnd" class="tips">
         All rewards for today have been split! Make sure to join early tomorrow!
       </div>
-      <div :class="`${isDayEnd ? 'prizes-to-bridge' : 'prizes-to-bridge prizes-day-not-end'}`">
+      <div
+        :class="`${
+          isDayEnd ? 'prizes-to-bridge' : 'prizes-to-bridge prizes-day-not-end'
+        }`"
+      >
         <div
           class="prizes-to-bridge-btn"
-          :style="`opacity: ${!Number(orbguyAmount) ? '0.3' : '1'};`"
+          :style="`opacity: ${isDraw ? '1' : '0.3'};`"
           @click="openORBGUYReward"
         >
           <img
@@ -102,18 +110,22 @@
             <div :key="index">
               <div class="task-item-group">
                 <div
-                  class="task-item"
-                  v-for="item in item"
-                  :key="item.value"
+                  v-for="(option, idx) in item"
+                  :class="`task-item ${option.className}`"
+                  :key="idx"
                 ></div>
               </div>
               <div class="task-progress">
                 <div
                   class="task-time-item"
-                  v-for="item in item"
-                  :key="item.value"
+                  v-for="(option, idx) in item"
+                  :key="idx"
+                  :style="`opacity: ${option.isCurrent ? '1' : '0.6'};`"
                 >
-                  {{ item.value }}
+                  {{ option.value }}
+                  <span v-if="option.isCurrent && !option.isSuccess"
+                    >({{ option.txAmount }}/3)</span
+                  >
                 </div>
               </div>
             </div>
@@ -121,29 +133,39 @@
         </div>
         <div class="opoints-card">
           <div class="opoints-card-title">
-            Daily Bridging,earn up to 275 O-Point!
+            Your have checked in for
+            <span class="days">{{ signDays }}</span> days
           </div>
           <div class="opoints-group">
             <div
               class="opoints-item"
               v-for="item in opointsList"
               :key="item.days"
+              :style="`background-image: url(${require(`../../../assets/prizes/v2/opoints${item.reward}.png`)});`"
             ></div>
           </div>
           <div class="opoints-progress">
             <div
-              class="opoints-day-item"
+              :class="`opoints-day-item ${
+                item.isSuccess
+                  ? ' opoints-day-item-success'
+                  : 'opoints-day-item-base'
+              }`"
               v-for="item in opointsList"
               :key="item.days"
             >
               {{ item.days }} Days
             </div>
+            <div
+              class="opoints-progress-box"
+              :style="`width: ${opointsProgressRatio};`"
+            ></div>
           </div>
 
           <div class="opoints-reward-title">O-Point Rewards</div>
           <div class="reward-info">
             <svg-icon iconName="O-Points" class="o-points-symbol"></svg-icon>
-            56
+            {{ totalOpoints }}
           </div>
         </div>
       </div>
@@ -160,10 +182,13 @@ import { decimalNum } from '../../../util/decimalNum'
 import {
   prizesV2TaskList,
   prizesV2ProjectTaskDetailsList,
-  prizesV2UserList
+  prizesV2UserList,
 } from '../../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
+import { SIGN_MESSAGE } from '../../../const'
+import { ethers } from 'ethers';
 
 const INVITE_NUM = 7
 
@@ -175,18 +200,22 @@ export default {
   data() {
     return {
       price: '',
+      isDrawLoading: false,
     }
   },
   computed: {
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
     projectTaskDetailsList() {
       return prizesV2ProjectTaskDetailsList.value
     },
     list() {
-      const count = this.taskAddressCount
+      const count = this.taskAddressCount || 0
       return new Array(8).fill(0).map((item, index) => {
         return {
           index,
-          show: !!(count < (index *100)),
+          show: !!(count < index * 100),
           left: (index / 7.2) * 100 + '%',
         }
       })
@@ -197,26 +226,56 @@ export default {
     isEnd() {
       return true
     },
+    signDays() {
+      const signDayList = this.signDayList || []
+      let count = 0
+      let isCurrent = false
+      signDayList.forEach((item) => {
+        if (item.isCurrent) {
+          isCurrent = true
+          count += Number(item.isSign)
+        } else {
+          if (!isCurrent) {
+            if (item.isSign) {
+              count += 1
+            } else {
+              count = 0
+            }
+          }
+        }
+      })
+      return count
+    },
     opointsList() {
+      const total = this.signDays
       return [
         {
           days: 3,
+          reward: 43,
         },
         {
           days: 7,
+          reward: 63,
         },
         {
           days: 10,
+          reward: 63,
         },
         {
           days: 14,
+          reward: 63,
         },
-      ]
+      ].map((item) => {
+        return {
+          ...item,
+          isSuccess: total >= item.days,
+        }
+      })
     },
     taskList() {
       return prizesV2TaskList.value
     },
-    userList(){
+    userList() {
       return prizesV2UserList.value
     },
     taskId() {
@@ -238,10 +297,10 @@ export default {
       })?.[0]
       return option
     },
-    currentUserOption(){
+    currentUserOption() {
       const taskId = this.taskId
       const list = this.userList
-      console.log("list", list)
+      console.log('list', list)
       const option = list.filter((item) => {
         return item.task_id === taskId
       })?.[0]
@@ -249,9 +308,22 @@ export default {
     },
     orbguyAmount() {
       const currentOption = this.currentUserOption
-      console.log("currentOption", currentOption)
-      const option = JSON.parse(currentOption?.distribute_result || JSON.stringify([]))?.filter((item)=> item.name === "orbguy")?.[0]
-      return option?.amount
+      const option = JSON.parse(
+        currentOption?.distribute_result || JSON.stringify([])
+      )?.filter((item) => item.name === 'orbguy')?.[0]
+      return option?.amount || '0'
+    },
+    isDraw() {
+      return (
+        Number(this.currentTxamount) >= 3 &&
+        !Number(this.orbguyAmount) &&
+        !this.isDayEnd &&
+        !this.isDrawLoading
+      )
+    },
+    currentTxamount() {
+      const currentOption = this.currentUserOption
+      return Number(currentOption?.task_result) || 0
     },
     taskAddressCount() {
       const currentOption = this.currentDetailsOption
@@ -259,17 +331,33 @@ export default {
     },
     timeList() {
       const taskList = this.taskList || []
+      const userList = this.userList || []
       let list = []
       let stashList = []
       taskList.forEach((item, index) => {
+        const group =
+          userList?.filter((option) => option.task_id === item.id)?.[0] || {}
         const [startDate, endDate] = item?.rule?.date || []
+        const txAmount = Number(group?.task_result) || 0
+        const now = +dayjs()
+        const endTime = +dayjs.utc(endDate)
+
+        const className =
+          txAmount >= 3
+            ? 'task-item-success'
+            : now > endTime
+            ? 'task-item-not'
+            : 'task-item-base'
+
         const option = {
           startTime: dayjs.utc(startDate).format('MMM.DD'),
           endTime: dayjs.utc(endDate).format('MMM.DD'),
-          value: dayjs.utc(startDate).format('MMM.DD'),
-          isOpen: false,
-          isSuccess: true,
-          isCurrent: false,
+          // value: dayjs.utc(startDate).format('MMM.DD'),
+          value: dayjs.utc(startDate).format('HH:mm'),
+          isSuccess: txAmount >= 3,
+          isCurrent: this.taskId === item.id,
+          txAmount: txAmount,
+          className,
         }
         if (!(index % INVITE_NUM)) {
           if (!!index) {
@@ -287,18 +375,99 @@ export default {
     },
     isDayEnd() {
       return this.taskAddressCount >= 707
-    }
+    },
+    opointsProgressRatio() {
+      const total = this.signDays || 0
+      const ratio = this.decimalNumC((total / 14) * 100, 2)
+      return (ratio >= 100 ? 100 : ratio) + '%'
+    },
+    signDayList() {
+      const userList = this.userList || []
+      const list = userList.map((item, index) => {
+        const txAmount = Number(item?.task_result) || 0
+        return {
+          isCurrent: this.taskId === item.task_id,
+          isSign: txAmount >= 3,
+        }
+      })
+      return list
+    },
+    totalOpoints() {
+      const signDayList = this.signDayList
+      const opointsList = this.opointsList
+      let count = 0
+      let list = []
+      signDayList.forEach((item) => {
+        if (item.isSign) {
+          count += 1
+        } else {
+          list = list.concat([count])
+          count = 0
+        }
+      })
+      const total = list.reduce((prev, item) => {
+        if (Number(item) && Number(item) >= 3) {
+          const amount = opointsList.reduce((oPrev, option) => {
+            return oPrev + (item >= option.days ? option.reward : 0)
+          }, 0)
+          return prev + amount
+        }
+        return prev
+      }, 0)
+      return total
+    },
   },
   methods: {
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
-    openORBGUYReward() {
-      if (Number(this.orbguyAmount)) {
+    async signCall() {
+      try {
+        const address = this.evmAddress
+        const provider = compatibleGlobalWalletConf.value.walletPayload.provider
+        const res = await provider.request({
+          method: 'personal_sign',
+          params: [SIGN_MESSAGE, address.toLocaleLowerCase()],
+        })
+        return res
+      } catch (error) {
+        this.isDrawLoading = false
+        return ''
+      }
+    },
+    async drawCardCall(res) {
+      this.isDrawLoading = false
+      if (!res?.message) return
+      if (res?.status === 'Success' && Number(res?.message)) {
         this.$store.commit('getClaimORBGUYRewardData', {
           type: 'LUCKY_BAG_TASK',
-          distributeResult: this.orbguyAmount,
+          distributeResult: res?.message,
         })
+        this.drawCallback()
+      } else {
+        this.$notify.error({
+          title: res.message,
+          duration: 3000,
+        })
+      }
+    },
+    async openORBGUYReward() {
+      const address = this.evmAddress
+      if (!address || !this.taskId || address === '0x') {
+      } else {
+        if (this.isDraw) {
+          this.isDrawLoading = true
+          const token = await this.signCall()
+          if (!token) return
+          this.$store.commit('lotteryPrizesV2TaskReward', {
+            address,
+            taskId: this.taskId,
+            token,
+            call: (res) => {
+              this.drawCardCall(res)
+            },
+          })
+        }
       }
     },
     async getOrbguyPrice() {
@@ -320,9 +489,26 @@ export default {
         ','
       )
     },
+    async getUserReward() {
+      if (!this.evmAddress || this.evmAddress === '0x') return
+      this.$store.commit(
+        'getPrizesV2UserInfo',
+        this.evmAddress.toLocaleLowerCase()
+      )
+    },
+    drawCallback() {
+      this.getUserReward()
+      this.$store.commit('getPrizesV2ProjectDetail')
+      this.$store.commit('getPrizesV2ProjectRank')
+    },
   },
   created() {
     this.getOrbguyPrice()
+    console.log("1111",
+
+    ethers.utils.verifyMessage(SIGN_MESSAGE,"0x7ac83bf7008beb641f91746f5efafb734975dbf585607f90dd67c24633f6a3ba4d32251b582bf301fa130e4a0f7908eaf4453c42236caa96e52176362d665de61c")
+
+    )
   },
 }
 </script>
@@ -590,10 +776,21 @@ export default {
           .task-item {
             width: 48px;
             height: 48px;
-            background-image: url('../../../assets/prizes/v2/day-card.png');
             background-repeat: no-repeat;
             background-position: center;
             background-size: 100% 100%;
+          }
+
+          .task-item-base {
+            background-image: url('../../../assets/prizes/v2/day-card.png');
+          }
+
+          .task-item-success {
+            background-image: url('../../../assets/prizes/v2/success-card.png');
+          }
+
+          .task-item-not {
+            background-image: url('../../../assets/prizes/v2/not-card.png');
           }
         }
 
@@ -612,6 +809,7 @@ export default {
             line-height: 20px;
             letter-spacing: 0px;
             color: #f3ba2f;
+            flex: 1;
           }
         }
       }
@@ -632,6 +830,9 @@ export default {
           line-height: 28px;
           letter-spacing: 0px;
           text-align: left;
+          .days {
+            color: #dea638;
+          }
         }
 
         .opoints-group {
@@ -643,7 +844,6 @@ export default {
           .opoints-item {
             width: 54px;
             height: 48px;
-            background-image: url('../../../assets/prizes/v2/opoints43.png');
             background-repeat: no-repeat;
             background-position: center;
             background-size: 100% 100%;
@@ -660,6 +860,25 @@ export default {
           display: flex;
           justify-content: space-around;
           align-items: center;
+          position: relative;
+          top: 0;
+          left: 0;
+
+          .opoints-progress-box {
+            background: linear-gradient(
+              to right,
+              rgb(255, 195, 17),
+              rgb(243, 232, 66)
+            );
+            border-radius: 999px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 12px;
+            left: 0;
+            z-index: 0;
+          }
+
           .opoints-day-item {
             display: flex;
             justify-content: center;
@@ -667,16 +886,30 @@ export default {
             position: relative;
             top: 0;
             left: 0;
+            z-index: 1;
             width: 50px;
             height: 20px;
-            border: 2px solid rgb(1, 1, 1);
             border-radius: 999px;
-            background: rgb(44, 35, 9);
             font-size: 12px;
             font-family: GeneralSans-Medium;
             line-height: 20px;
             letter-spacing: 0px;
-            color: #f3ba2f;
+          }
+
+          .opoints-day-item-base {
+            color: rgba(243, 186, 47, 0.6);
+            background: rgb(44, 35, 9);
+            border: 2px solid rgb(1, 1, 1);
+          }
+
+          .opoints-day-item-success {
+            background: linear-gradient(
+              to right,
+              rgb(255, 195, 17),
+              rgb(243, 232, 66)
+            );
+            color: rgb(1, 1, 1);
+            font-family: GeneralSans-SemiBold;
           }
         }
 
@@ -840,7 +1073,7 @@ export default {
         line-height: 24px;
       }
 
-      .prizes-day-not-end  {
+      .prizes-day-not-end {
         margin-top: 16px;
       }
 

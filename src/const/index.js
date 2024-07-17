@@ -4,6 +4,8 @@ export const GOOGLE_ANALYTICS_ID = 'G-PD85RMCXR8'
 
 export const PONITS_EXPAND_COUNT = 'PONITS_EXPAND_COUNT'
 
+export const SIGN_MESSAGE = 'Hello Orbiter Finance'
+
 export const CLAIM_ORBGUY_CONTRACT_ADDRESS =
   process.env.VUE_APP_CLAIM_ORBGUY_CONTRACT_ADDRESS
 

@@ -46,6 +46,7 @@ let timer2
 let timer3
 let timer4
 let timer5
+let timer6
 
 export default {
   updateZKTokenList(state, obj) {
@@ -491,8 +492,55 @@ export default {
         }/project/tasksStatus?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
-      setPrizesV2UserRank(res?.result?.rank)
-      setPrizesV2UserList(res?.result?.records)
+      setPrizesV2UserRank(res?.result?.rank || [])
+      const records = res?.result?.records || []
+
+      setPrizesV2UserList(records.slice(0, records.length - 1))
+    }, 500)
+  },
+
+  async lotteryPrizesV2TaskReward(state, { address, taskId, token, call }) {
+    console.log('address, taskId, token, call', address, taskId, token, call)
+    if (!taskId || !token || !address || address === '0x') {
+      call({
+        status: 'Error',
+        message: '',
+      })
+      return
+    }
+    clearTimeout(timer6)
+    timer6 = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}/${
+            isDev() ? 'activity' : 'active-platform'
+          }/task/lottery?taskId=${taskId}&address=${address.toLocaleLowerCase()}&rewardName=orbguy`,
+          {
+            headers: {
+              token,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        const res = await response.json()
+        console.log('res', res)
+        if (Number(res?.code) !== 0) {
+          call({
+            status: 'Error',
+            message: res?.message || '',
+          })
+        } else {
+          call({
+            status: 'Success',
+            message: res?.result || '0',
+          })
+        }
+      } catch (error) {
+        call({
+          status: 'Error',
+          message: '',
+        })
+      }
     }, 500)
   },
 }

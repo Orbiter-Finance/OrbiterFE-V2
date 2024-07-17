@@ -15,7 +15,7 @@
       <div class="user-info">
         <div class="info-item">
           <div class="info-label">Address</div>
-          <div class="info-value">0x033a...823ac3</div>
+          <div class="info-value">{{ userAddress }}</div>
         </div>
         <div class="info-item">
           <div class="info-label">Rank</div>
@@ -49,6 +49,7 @@ import {
   prizesV2RankList
 } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum';
+import { shortenAddress } from '../../../util/shortenAddress';
 
 export default {
   components: { SvgIcon, SvgIconThemed },
@@ -68,7 +69,6 @@ export default {
       const total = list?.reduce((prev, item)=>{
         return prev + (Number((item?.task_result) || 0))
       }, 0)
-      console.log("total", total)
       return total 
     },
     evmAddress() {
@@ -76,10 +76,13 @@ export default {
     },
     estiReward() {
       const list = this.rankList
-      console.log("list", list)
       const option = list.filter((item)=> item.address?.toLocaleLowerCase() === this.evmAddress?.toLocaleLowerCase())?.[0]
       const amount = option?.reward?.amount
       return Number(amount) ? (this.decimalNumC(amount, 2, ",")+ " USDC") : "--"
+    },
+    userAddress() {
+      const address = this.evmAddress
+      return address ? shortenAddress(address) : "--"
     }
   },
   methods: {
