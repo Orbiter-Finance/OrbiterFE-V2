@@ -23,6 +23,8 @@ import {
   setPrizesV2TaskList,
   setPrizesV2RankList,
   setPrizesV2ProjectTaskDetailsList,
+  setPrizesV2UserRank,
+  setPrizesV2UserList,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -489,7 +491,8 @@ export default {
         }/project/tasksStatus?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
-      console.log('User', res)
+      setPrizesV2UserRank(res?.result?.rank)
+      setPrizesV2UserList(res?.result?.records)
     }, 500)
   },
 }

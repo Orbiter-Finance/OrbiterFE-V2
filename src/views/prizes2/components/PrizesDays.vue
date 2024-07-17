@@ -160,6 +160,7 @@ import { decimalNum } from '../../../util/decimalNum'
 import {
   prizesV2TaskList,
   prizesV2ProjectTaskDetailsList,
+  prizesV2UserList
 } from '../../../composition/hooks'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
@@ -215,6 +216,9 @@ export default {
     taskList() {
       return prizesV2TaskList.value
     },
+    userList(){
+      return prizesV2UserList.value
+    },
     taskId() {
       const taskList = this.taskList || []
       const option = taskList.filter((item) => {
@@ -234,13 +238,24 @@ export default {
       })?.[0]
       return option
     },
+    currentUserOption(){
+      const taskId = this.taskId
+      const list = this.userList
+      console.log("list", list)
+      const option = list.filter((item) => {
+        return item.task_id === taskId
+      })?.[0]
+      return option
+    },
     orbguyAmount() {
-      const currentOption = this.currentDetailsOption
-      return currentOption?.taskRewardInfos?.[0]?.distributedCount
+      const currentOption = this.currentUserOption
+      console.log("currentOption", currentOption)
+      const option = JSON.parse(currentOption?.distribute_result || JSON.stringify([]))?.filter((item)=> item.name === "orbguy")?.[0]
+      return option?.amount
     },
     taskAddressCount() {
       const currentOption = this.currentDetailsOption
-      return currentOption?.taskAddressCount
+      return currentOption?.taskRewardInfos?.[0]?.distributedCount
     },
     timeList() {
       const taskList = this.taskList || []

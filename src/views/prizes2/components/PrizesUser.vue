@@ -19,15 +19,17 @@
         </div>
         <div class="info-item">
           <div class="info-label">Rank</div>
-          <div class="info-value">3,492</div>
+          <div class="info-value">{{ userRank }}</div>
         </div>
         <div class="info-item">
           <div class="info-label">Cumulative</div>
-          <div class="info-value">92 Tx</div>
+          <div class="info-value">{{ txTotal }} Tx</div>
         </div>
         <div class="info-item">
           <div class="info-label">Estimated earnings</div>
-          <div class="info-value">--</div>
+          <div class="info-value">
+            {{ estiReward }}
+          </div>
         </div>
       </div>
     </div>
@@ -35,11 +37,56 @@
 </template>
 
 <script>
+
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import SvgIconThemed from '../../../components/SvgIconThemed.vue'
+
+import {
+  prizesV2UserRank,
+  prizesV2UserList,
+  prizesV2RankList
+} from '../../../composition/hooks'
+import { decimalNum } from '../../../util/decimalNum';
+
 export default {
   components: { SvgIcon, SvgIconThemed },
   name: 'PrizesUser',
+  computed: {
+    userList(){
+      return prizesV2UserList.value
+    },
+    userRank(){
+      return prizesV2UserRank.value || "--"
+    },
+    rankList(){
+      return prizesV2RankList.value
+    },
+    txTotal() {
+      const list = this.userList
+      const total = list?.reduce((prev, item)=>{
+        return prev + (Number((item?.task_result) || 0))
+      }, 0)
+      console.log("total", total)
+      return total 
+    },
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
+    estiReward() {
+      const list = this.rankList
+      console.log("list", list)
+      const option = list.filter((item)=> item.address?.toLocaleLowerCase() === this.evmAddress?.toLocaleLowerCase())?.[0]
+      const amount = option?.reward?.amount
+      return Number(amount) ? (this.decimalNumC(amount, 2, ",")+ " USDC") : "--"
+    }
+  },
+  methods: {
+    decimalNumC(num, decimal, delimiter) {
+      return decimalNum(num, decimal, delimiter)
+    },
+  }
 }
 </script>
 
