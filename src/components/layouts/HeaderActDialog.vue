@@ -158,11 +158,17 @@
         @scroll="itemScroll"
         >
         <!-- <PrizesCard></PrizesCard> -->
-        <LuckyTaskCard></LuckyTaskCard>
+         <LuckyTaskBagBanner></LuckyTaskBagBanner>
         <div 
         >
-          <template v-for="item in actDataList">
-            <div class="activity-card">
+          <div v-if="!actDataList.length">
+            <LuckyTaskCard></LuckyTaskCard>
+          </div>
+          <div v-else :key="index" v-for="(item, index) in actDataList">
+            <div v-if="!item">
+              <LuckyTaskCard></LuckyTaskCard>
+            </div>
+            <div v-else class="activity-card">
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
                   <svg-icon
@@ -241,7 +247,7 @@
               </template>
             </div>
             </div>
-          </template>
+          </div>
         </div>
         </div>
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
@@ -311,6 +317,7 @@ import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 // import PrizesCard  from "./PrizesCard.vue"
 import LuckyTaskCard  from "./LuckyTaskCard.vue"
+import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
@@ -329,7 +336,8 @@ export default {
     // ActDialogBanner,
     SvgIcon,
     // PrizesCard,
-    LuckyTaskCard
+    LuckyTaskCard,
+    LuckyTaskBagBanner
   },
   data() {
     return {
@@ -423,12 +431,17 @@ export default {
     actDataList() {
       const list = transferDataState.actDataList || []
 
-      return list.map((item)=> ({
+      const data= list.map((item)=> ({
         ...item,
         label: {
           icon: "",
           ...(item?.label || {})
         }
+      }))
+      return data.filter((item)=>{
+        return Number(item?.label?.isTop) ===1
+      }).concat([null]).concat( data.filter((item)=>{
+        return Number(item?.label?.isTop) !==1
       }))
     },
     actOtherDataList() {
@@ -1370,7 +1383,6 @@ export default {
   .text-wrapper_17 {
     height: 20px;
     border-radius: 4px;
-    background: linear-gradient(139.64deg, #e545ff, red 85.476%);
     display: flex;
     justify-content: center;
     align-items: center;

@@ -1,4 +1,4 @@
-import { toggleBodyCls } from '../../util'
+import { isDev, toggleBodyCls } from '../../util'
 import {
   updatelpApiKey,
   updatelpAccountInfo,
@@ -20,6 +20,11 @@ import {
   setLuckyBaTaskgOrbguyInfo,
   setLuckyBaTaskgUserOrbguyInfo,
   setClaimCardModalOtherDataInfo,
+  setPrizesV2TaskList,
+  setPrizesV2RankList,
+  setPrizesV2ProjectTaskDetailsList,
+  setPrizesV2UserRank,
+  setPrizesV2UserList,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -33,8 +38,15 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import util from '../../util/util'
 import { ethers } from 'ethers'
 
+const activityProjectId = '5f622f2c-10d5-45b9-ab4d-c76f8d4a0086'
+
 let timer
 let timer1
+let timer2
+let timer3
+let timer4
+let timer5
+let timer6
 
 export default {
   updateZKTokenList(state, obj) {
@@ -383,12 +395,11 @@ export default {
 
   async getLuckyBagTaskInfo() {
     const response = await fetch(
-      // `${process.env.VUE_APP_OPEN_URL}/active-platform/project/conditions/ac4f3cb3-6493-4d8f-8259-7482f8a22c13`
-      `${process.env.VUE_APP_OPEN_URL}/activity/project/condition?projectId=5f622f2c-10d5-45b9-ab4d-c76f8d4a0086&name=orbguy`
+      `${process.env.VUE_APP_OPEN_URL}/${
+        isDev() ? 'activity' : 'active-platform'
+      }/project/condition?projectId=${activityProjectId}&name=orbguy`
     )
     const res = await response.json()
-
-    console.log('res', res)
 
     const data = res?.result || {}
 
@@ -409,10 +420,9 @@ export default {
     clearTimeout(timer1)
     timer1 = setTimeout(async () => {
       const response = await fetch(
-        `${
-          process.env.VUE_APP_OPEN_URL
-          // }/active-platform/project/tasksStatus?projectId=ac4f3cb3-6493-4d8f-8259-7482f8a22c13&address=${address.toLocaleLowerCase()}`
-        }/activity/project/tasksStatus?projectId=5f622f2c-10d5-45b9-ab4d-c76f8d4a0086&address=${address.toLocaleLowerCase()}`
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/project/tasksStatus?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
       setLuckyBaTaskgUserOrbguyInfo(
@@ -428,6 +438,109 @@ export default {
           }
         }) || []
       )
+    }, 500)
+  },
+
+  async getPrizesV2ProjectDetail(state) {
+    clearTimeout(timer2)
+    timer2 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}${
+          isDev() ? '/activity' : '/active-platform'
+        }/project/detail?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+      )
+      const res = await response.json()
+      setPrizesV2ProjectTaskDetailsList(
+        res?.result?.projectDetail.taskDetails || []
+      )
+    }, 500)
+  },
+
+  async getPrizesV2ProjectInfo(state) {
+    clearTimeout(timer3)
+    timer3 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}${
+          isDev() ? '/activity' : '/active-platform'
+        }/project/info?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+      )
+      const res = await response.json()
+      const list = res?.result?.tasks || []
+      setPrizesV2TaskList(list)
+    }, 500)
+  },
+  async getPrizesV2ProjectRank(state) {
+    clearTimeout(timer4)
+    timer4 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}${
+          isDev() ? '/activity' : '/active-platform'
+        }/competition/rankReward?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+      )
+      const res = await response.json()
+      setPrizesV2RankList(res?.result?.rankRewards || [])
+    }, 500)
+  },
+
+  async getPrizesV2UserInfo(state, address) {
+    if (!address || address === '0x') return
+    clearTimeout(timer5)
+    timer5 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/project/tasksStatus?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba&address=${address.toLocaleLowerCase()}`
+      )
+      const res = await response.json()
+      setPrizesV2UserRank(res?.result?.rank || [])
+      const records = res?.result?.records || []
+
+      setPrizesV2UserList(records.slice(0, records.length - 1))
+    }, 500)
+  },
+
+  async lotteryPrizesV2TaskReward(state, { address, taskId, token, call }) {
+    console.log('address, taskId, token, call', address, taskId, token, call)
+    if (!taskId || !token || !address || address === '0x') {
+      call({
+        status: 'Error',
+        message: '',
+      })
+      return
+    }
+    clearTimeout(timer6)
+    timer6 = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}/${
+            isDev() ? 'activity' : 'active-platform'
+          }/task/lottery?taskId=${taskId}&address=${address.toLocaleLowerCase()}&rewardName=orbguy`,
+          {
+            headers: {
+              token,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        const res = await response.json()
+        console.log('res', res)
+        if (Number(res?.code) !== 0) {
+          call({
+            status: 'Error',
+            message: res?.message || '',
+          })
+        } else {
+          call({
+            status: 'Success',
+            message: res?.result || '0',
+          })
+        }
+      } catch (error) {
+        call({
+          status: 'Error',
+          message: '',
+        })
+      }
     }, 500)
   },
 }

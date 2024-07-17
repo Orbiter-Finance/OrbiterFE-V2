@@ -8,7 +8,7 @@
     <div class="prizes-ratio-group">
       <div class="prizes-ratio-item" v-for="item in ratioList" :key="item.text">
         <div class="prizes-ratio-item-group">
-          <img :src="require('../../../assets/prizes/' + item.img)" />
+          <img :src="require('../../../assets/prizes/v1/' + item.img)" />
         </div>
         <div class="prizes-ratio-item-group" :style="`color: ${item.color};`">
           <div class="text">{{ item.ratio }}</div>
@@ -23,7 +23,7 @@
         <div>My progress</div>
         <img
           class="top800-orbguy"
-          :src="require('../../../assets/prizes/top800-orbguy.png')"
+          :src="require('../../../assets/prizes/v1/top800-orbguy.png')"
         />
       </div>
       <div class="description">
@@ -130,7 +130,7 @@
             <div class="info">
               <div class="icon">
                 <img
-                  :src="require('../../../assets/prizes/' + item.icon + '.svg')"
+                  :src="require('../../../assets/prizes/v1/' + item.icon + '.svg')"
                 />
               </div>
               <div class="content-text-group">
@@ -160,7 +160,7 @@
                 {{ item.reward }}
                 <img
                   style="margin: 0 4px"
-                  :src="require('../../../assets/prizes/o-points.svg')"
+                  :src="require('../../../assets/prizes/v1/o-points.svg')"
                 />
                 OPoints
               </div>
@@ -169,7 +169,7 @@
                   v-if="item.isSuccess"
                   :fillColor="'#DDF600'"
                 ></PrizesTaskSuccessIcon>
-                <img v-else :src="require('../../../assets/prizes/more.svg')" />
+                <img v-else :src="require('../../../assets/prizes/v1/more.svg')" />
               </div>
             </div>
           </div>
@@ -178,7 +178,7 @@
               {{ item.reward }}
               <img
                 style="margin: 0 4px"
-                :src="require('../../../assets/prizes/o-points.svg')"
+                :src="require('../../../assets/prizes/v1/o-points.svg')"
               />
               OPoints
             </div>
@@ -203,7 +203,7 @@
             <div class="info">
               <div class="icon">
                 <img
-                  :src="require('../../../assets/prizes/' + item.icon + '.svg')"
+                  :src="require('../../../assets/prizes/v1/' + item.icon + '.svg')"
                 />
               </div>
               <div class="content-text-group">
@@ -240,7 +240,7 @@
                 :fillColor="item.color"
                 style="margin-left: 4px"
               ></PrizesTaskSuccessIcon>
-              <img v-else :src="require('../../../assets/prizes/more.svg')" />
+              <img v-else :src="require('../../../assets/prizes/v1/more.svg')" />
             </div>
           </div>
           <div class="pool-reward-info-mobile-group">
