@@ -25,6 +25,8 @@ import {
   setPrizesV2ProjectTaskDetailsList,
   setPrizesV2UserRank,
   setPrizesV2UserList,
+  setPrizesV2TotalOrbguy,
+  setPrizesV2ProjectTime,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -467,6 +469,7 @@ export default {
       const res = await response.json()
       const list = res?.result?.tasks || []
       setPrizesV2TaskList(list)
+      setPrizesV2ProjectTime(res?.result?.end_time || '')
     }, 500)
   },
   async getPrizesV2ProjectRank(state) {
@@ -492,10 +495,15 @@ export default {
         }/project/tasksStatus?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
-      setPrizesV2UserRank(res?.result?.rank || [])
+      setPrizesV2UserRank(res?.result?.rank || '--')
       const records = res?.result?.records || []
+      const distributeResults = res?.result?.distributeResults || []
 
-      setPrizesV2UserList(records.slice(0, records.length - 1))
+      setPrizesV2TotalOrbguy(
+        distributeResults.filter((item) => item.name === 'orbguy')?.[0]
+          ?.amount || '0'
+      )
+      setPrizesV2UserList(records)
     }, 500)
   },
 

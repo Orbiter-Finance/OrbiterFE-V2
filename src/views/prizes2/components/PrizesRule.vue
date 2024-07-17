@@ -22,18 +22,18 @@ export default {
     return {
       ruleList: [
         {
-          label: 'How to Get Rewards:',
+          label: '1. Which networks are participating in this event?',
           text: [
-            'Bridge from specific network to Arbitrum. ',
-            'Specific networks include:<strong> Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin</strong>',
+            '- To bridge from a specific network to OpBNB/BNB Chain, the <span>minimum amount required is 0.004 ETH.</span>',
+            '- The specific networks include: <span>Linea, Ethereum, Optimism, Base, zkSync Lite, Polygon, Arbitrum, Manta, Mantle, Arbitrum Nova, Scroll, ZKSyncEra, Zora, Starknet.</span>',
           ],
         },
         {
-          label: 'Complete the following tasks to get rewards accordingly:',
+          label: '2. How to Earn $ORBGUY Rewards?',
           text: [
-            '1. Join the orbiter telegram group: +3 OPoints',
-            '2. Complete the first bridging: +5 OPoints',
-            '3. Complete the second bridging: +12 OPoints',
+            '- Participants who complete at least 3 transactions daily will qualify to share a $ORBUGY gift bag valued at 4,000 USDC. 707 gift bags are distributed daily on a FCFS basis. Participants could engage in this activity for up to 14 consecutive days. ',
+            '- Note: Participants securing the 99th, 199th, 299th, 399th, 499th, 599th, and 699th positions when drawing a gift bag each day will receive a surprising $ORBGUY bonus.',
+            'Note: The lucky bag update time is 00:00 UTC.',
           ],
         },
         {
@@ -48,26 +48,38 @@ export default {
           ],
         },
         {
-          label: 'Surprise rewards:',
+          label: '3. How to Earn O-Points Rewards?',
           text: [
-            'The top 800 users (according to the amount of transactions) will receive a certain amount of $ORBGUY for free randomly! ',
+            'Participants can accumulate additional O-Points by completing the following tasks:',
+            'Complete 3 transactions daily for 3 consecutive days to earn an extra 32 O-Points.',
+            'Complete 3 transactions daily for 7 consecutive days to earn an extra 105 O-Points.',
+            'Complete 3 transactions daily for 10 consecutive days to earn an extra 165 O-Points.',
+            'Complete 3 transactions daily for 14 consecutive days to earn an extra 275 O-Points.',
+            'Note: The consecutive check-in days are also counted each day at 00:00 UTC. If the check-in streak is broken, the check-in streak will reset to zero.'
           ],
         },
         {
-          label: 'Reward Distribution Rules',
+          label: '4. How to Share 80,000 USDC and get 0 Bridging-Fee？',
           text: [
-            '- When the number of participants is ≤ 5000, and the initial prize pool is $25,000.',
-            '- For every 1000 users participation, the prize pool will increase $2,000, and the prize pool will increase in this way until $100,000 highest.',
-            '- Each address can only share the rewards of the final prize pool level counted at the end of the competition, and the bonus pool each user gets cannot be accumulated.',
-            '- The prize pools for the tiers that have completed 3-15 bridging transactions tasks, the winning users will share the prize equally according to the prize pool.',
-            '- The top 100 users will share 30% of the prize pool according to the proportion of transaction amounts.',
+            '- The top 100 users in the bridging competition will share an 80,000 USDC prize pool. Additionally, the top 10 users will receive a 0 Bridging Fee reward.',
+            '- The top 10 will also receive additional bonuses as follows:',
+            '1st Place: 2,000 USDC',
+            '2nd Place: 1,500 USDC',
+            '4th to 10th Places: 600 USDC each',
+            'We will rebate all bridging fees (up to 2USDC/tx) except for gas fees.',
           ],
         },
         {
-          label: 'Note',
+          label: '5. What is the 0 Bridging Fee Reward?',
           text: [
-            '- You only need to complete more than 3 transactions to participate in the prize pool of $100,000.',
+            '- For the top 10 users, all bridging fees (up to 2USDC/tx) except for gas fees will be rebated.',
             '- The rewards will be distributed when the competition ends.',
+          ],
+        },
+        {
+          label: '6. When will the rewards be distributed?',
+          text: [
+            'All rewards will be distributed when the competition ends. Please stay informed and claim your rewards within 3 days of the reward claim portal opening!'
           ],
         },
       ],

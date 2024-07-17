@@ -42,7 +42,8 @@ export default {
     this.$store.commit('getPrizesV2ProjectDetail')
     this.$store.commit('getPrizesV2ProjectInfo')
     this.$store.commit('getPrizesV2ProjectRank')
-    
+    this.getUserReward()
+
   },
   watch: {
     evmAddress(item1, item2) {
