@@ -40,8 +40,7 @@
             @click="toBridgeCall"
             :style="`opacity: ${isEnd ? '0.3' : '1'};`"
           >
-          Start Bridge
-            <!-- {{ isEnd ? 'In the statistics...' : 'Start Bridge' }} -->
+            {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
             <!-- {{ isEnd ? 'Claim' : 'Start Bridge' }} -->
           </div>
         </div>
@@ -61,7 +60,7 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { isDev } from '../../../util'
 import getUTCTime from '../../../util/time'
-import { prizesTimeEnd, setPrizesTimeEnd } from '../../../composition/hooks'
+import { prizesV2TimeEnd, setPrizesV2TimeEnd, prizesV2ProjectTime } from '../../../composition/hooks'
 
 let timer1
 
@@ -91,14 +90,15 @@ export default {
   name: 'PrizesTopBanner',
   data() {
     return {
-      timeStr: '2024-07-20T13:30:00.000Z',
       timeList: timeListDefault,
     }
   },
   computed: {
+    timeStr(){
+      return prizesV2ProjectTime.value
+    },
     isEnd() {
-      // return prizesTimeEnd.value
-      return false
+      return prizesV2TimeEnd.value
     },
   },
   methods: {
@@ -134,12 +134,13 @@ export default {
   },
   mounted() {
     timer1 = setInterval(() => {
+      if(!this.timeStr) return
       const t = this.getUTCTime1(this.timeStr)
       const timeS = Math.floor((t - getUTCTime()) / 1000)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
-        setPrizesTimeEnd(true)
+        setPrizesV2TimeEnd(true)
         this.timeList = timeListDefault
         return
       }

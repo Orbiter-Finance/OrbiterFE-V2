@@ -1,7 +1,7 @@
 <template>
   <div class="prizes-user" id="prizes-user">
     <div class="title-group">
-      <div class="user-title"><span>$800,000</span> Prize Pool for Top 100</div>
+      <div class="user-title"><span>$80,000</span> Prize Pool for Top 100</div>
     </div>
     <div class="title-group">
       <div class="vice-title">

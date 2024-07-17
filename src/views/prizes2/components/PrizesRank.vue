@@ -22,7 +22,9 @@
         >
           {{ item.reward }}
         </div>
-        <div class="reward-total-amount">
+        <div class="reward-total-amount"
+        :style="`color: ${item.color};background-image: ${item.bg};`"
+        >
           {{ item.refund }} + {{ item.reward }}
         </div>
       </div>
@@ -273,6 +275,17 @@ export default {
         line-height: 20px;
         letter-spacing: 0px;
         margin-top: 4px;
+
+        -webkit-text-fill-color: transparent;
+        background-position-x: initial;
+        background-position-y: initial;
+        background-size: initial;
+        background-repeat-x: initial;
+        background-repeat-y: initial;
+        background-attachment: initial;
+        background-origin: initial;
+        -webkit-background-clip: text;
+        background-color: initial;
       }
 
       .reward-amount-default {

@@ -10,7 +10,7 @@
           <div class="fcfs"></div>
         </div>
         <div class="orbguy-reward">
-          Your Rewards: +32.59
+          Your Rewards: +{{ totalOrbguy }}
           <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
           $ORBGUY!
         </div>
@@ -21,7 +21,7 @@
           pack!
         </label>
         <div class="orbguy-reward">
-          Your Rewards: +32.59
+          Your Rewards: +{{ totalOrbguy }}
           <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
           $ORBGUY!
         </div>
@@ -183,6 +183,8 @@ import {
   prizesV2TaskList,
   prizesV2ProjectTaskDetailsList,
   prizesV2UserList,
+  prizesV2TotalOrbguy,
+  prizesV2TimeEnd
 } from '../../../composition/hooks'
 import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
 
@@ -210,6 +212,12 @@ export default {
     projectTaskDetailsList() {
       return prizesV2ProjectTaskDetailsList.value
     },
+    isEnd() {
+      return prizesV2TimeEnd.value
+    },
+    totalOrbguy(){
+      return this.decimalNumC(prizesV2TotalOrbguy.value || "0", 4, ",")
+    },
     list() {
       const count = this.taskAddressCount || 0
       return new Array(8).fill(0).map((item, index) => {
@@ -222,9 +230,6 @@ export default {
     },
     userLeft() {
       return ((this.taskAddressCount || 0) / 750) * 100 + '%'
-    },
-    isEnd() {
-      return true
     },
     signDays() {
       const signDayList = this.signDayList || []
@@ -318,7 +323,8 @@ export default {
         Number(this.currentTxamount) >= 3 &&
         !Number(this.orbguyAmount) &&
         !this.isDayEnd &&
-        !this.isDrawLoading
+        !this.isDrawLoading &&
+        !this.isEnd
       )
     },
     currentTxamount() {
