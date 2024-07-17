@@ -78,7 +78,9 @@ export default {
       const list = this.rankList
       const option = list.filter((item)=> item.address?.toLocaleLowerCase() === this.evmAddress?.toLocaleLowerCase())?.[0]
       const amount = option?.reward?.amount
-      return Number(amount) ? (this.decimalNumC(amount, 2, ",")+ " USDC") : "--"
+      const refund = option?.refund
+      const total = (Number(amount) || 0) + (Number(refund) || 0)
+      return Number(total) ? (this.decimalNumC(total, 2, ",")+ " USDC") : "--"
     },
     userAddress() {
       const address = this.evmAddress
