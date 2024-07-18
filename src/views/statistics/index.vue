@@ -24,7 +24,7 @@
     </div>
     <div v-if="showSource" class="tx-content">
       <div class="tx-head">
-        <span class="tx-title">Tx Statistics</span>
+        <span class="tx-title">Tx Statistics <span>Data source: Orbiter Finance Bridge & Vizing</span></span>
         <div v-if="ethStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
@@ -55,7 +55,7 @@
     </div>
     <div v-else class="tx-content">
       <div class="tx-head">
-        <span class="tx-title">Tx Statistics</span>
+        <span class="tx-title">Tx statistics-info</span>
         <div v-if="ethStatisticsData" class="tx-select">
           <div
             :class="['tx-select-item', { 'tx-focus-item': showSource }]"
@@ -686,6 +686,9 @@ export default {
   font-weight: bold;
   font-size: 18px;
   color: #222222;
+  span{
+    color:#9a9797;font-size: 12px;
+  }
 }
 .tx-select {
   display: flex;
