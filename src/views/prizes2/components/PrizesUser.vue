@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="user-card">
+    <!-- <div class="user-card">
       <div class="card-title">My data</div>
       <div class="user-info">
         <div class="info-item">
@@ -32,7 +32,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
