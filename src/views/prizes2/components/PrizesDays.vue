@@ -1,12 +1,13 @@
 <template>
   <div id="prizes-days" class="prizes-days">
     <div class="title">
-      3Tx a Day, <span class="token-symbol">200k ORBGUY</span> Comes your Way!
+      Bridge 3tx daily, will get a share of 
+      <span class="token-symbol">$80,000 $ORBGUY 100%</span>
     </div>
     <div class="prizes-days-card">
       <div class="card-tilte">
         <div class="left">
-          <label>Split among the first 700 users each day</label>
+          <label>$80000 orbguy for the first 700 users each day</label>
           <div class="fcfs"></div>
         </div>
         <div class="orbguy-reward">
@@ -17,8 +18,7 @@
       </div>
       <div class="orbguy-info-mobile">
         <label>
-          Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 ORBGUy
-          pack!
+          Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 $ORBGUY lucky bag pack!
         </label>
         <div class="orbguy-reward">
           Your Rewards: +{{ totalOrbguy }}
@@ -28,8 +28,7 @@
       </div>
       <div class="orbguy-info">
         <label>
-          Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 ORBGUy
-          pack!
+          Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 $ORBGUY lucky bag!
         </label>
         <div @click="openLikwidSwap" class="orbguy-price">1 ORBGUY ≈ {{ price }} ETH</div>
       </div>
@@ -104,7 +103,7 @@
       <div class="task-group">
         <div class="task-card">
           <div class="task-card-title">
-            Daily Bridging,earn up to 275 O-Point!
+            Daily bridging can win you up to 420 OPoints
           </div>
           <template v-for="(item, index) in timeList">
             <div :key="index">
