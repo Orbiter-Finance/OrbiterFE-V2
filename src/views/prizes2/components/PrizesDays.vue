@@ -7,7 +7,7 @@
     <div class="prizes-days-card">
       <div class="card-tilte">
         <div class="left">
-          <label>$80000 orbguy for the first 700 users each day</label>
+          <label>$80000 orbguy for the first 700+7 users each day</label>
           <div class="fcfs"></div>
         </div>
         <div class="orbguy-reward">

@@ -1,12 +1,12 @@
 <template>
   <div class="prizes-user" id="prizes-user">
     <div class="title-group">
-      <div class="user-title"><span>$80,000</span> Prize Pool for Top 100</div>
+      <div class="user-title"><span>$200,000</span> value of $BNB for top 300</div>
     </div>
     <div class="title-group">
       <div class="vice-title">
-        <span>Top 10</span> get 0 bridging fee with up to
-        <span>$2000</span> extra bonus
+        <span>0 bridging fee </span> for
+        <span>top 10</span>
       </div>
     </div>
 
