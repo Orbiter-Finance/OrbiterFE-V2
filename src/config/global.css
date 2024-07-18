@@ -297,3 +297,8 @@ p {
 .orbiter_global_lucky_bag_task {
   color: #FF4F4F;
 }
+
+.orbiter_global_prizes_rule_tag {
+  color: #f3ba2f;
+  font-family: GeneralSans-SemiBold;
+}

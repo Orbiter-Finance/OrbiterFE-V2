@@ -31,7 +31,7 @@
           Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 ORBGUy
           pack!
         </label>
-        <div class="orbguy-price">1 ORBGUY ≈ {{ price }} ETH</div>
+        <div @click="openLikwidSwap" class="orbguy-price">1 ORBGUY ≈ {{ price }} ETH</div>
       </div>
 
       <div class="orbguy-box-group">
@@ -256,19 +256,19 @@ export default {
       return [
         {
           days: 3,
-          reward: 43,
+          reward: 32,
         },
         {
           days: 7,
-          reward: 63,
+          reward: 105,
         },
         {
           days: 10,
-          reward: 63,
+          reward: 165,
         },
         {
           days: 14,
-          reward: 63,
+          reward: 275,
         },
       ].map((item) => {
         return {
@@ -358,7 +358,7 @@ export default {
           startTime: dayjs.utc(startDate).format('MMM.DD'),
           endTime: dayjs.utc(endDate).format('MMM.DD'),
           // value: dayjs.utc(startDate).format('MMM.DD'),
-          value: dayjs.utc(startDate).format('HH:mm'),
+          value: dayjs.utc(startDate).format('H:mm'),
           isSuccess: txAmount >= 3,
           isCurrent: this.taskId === item.id,
           txAmount: txAmount,
@@ -423,6 +423,17 @@ export default {
     },
   },
   methods: {
+    openLikwidSwap() {
+      const evmAddress = this.evmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      const name = 'PRIZESV2_TO_LIKWID'
+      const url = 'https://likwid.meme/swap?from=orbiter&user=' + evmAddress
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: evmAddress,
+      })
+      window.open(url, '_blank')
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
@@ -982,9 +993,11 @@ export default {
 
     .prizes-days-card {
       margin-top: 16px;
-      padding: 16px;
+      padding: 12px 0;
       .card-tilte {
+        width: 100%;
         display: block;
+        padding: 0 12px;
         .left {
           text-align: left;
           justify-content: space-between;
@@ -1004,6 +1017,7 @@ export default {
       .orbguy-info-mobile {
         display: block;
         width: 100%;
+        padding: 0 12px;
         label {
           color: #f3ba2f;
           font-size: 14px;
@@ -1046,6 +1060,7 @@ export default {
 
       .orbguy-info {
         display: block;
+        padding: 0 12px;
         label {
           font-size: 14px;
           line-height: 1.25;
@@ -1063,6 +1078,7 @@ export default {
         .orbguy-box {
           width: 100%;
           min-width: 750px;
+          margin: 16px 12px 0;
           .orbguy-progress-amount {
             height: 24px;
             .orbguy-progress-amount-item {
@@ -1077,8 +1093,8 @@ export default {
               height: 12px;
             }
             .orbguy-box-item {
-              width: 32px;
-              height: 31px;
+              width: 48px;
+              height: 45px;
             }
             .orbguy-user-amount {
               width: 32px;
@@ -1108,6 +1124,7 @@ export default {
       .task-group {
         display: block;
         margin-top: 24px;
+        padding: 0 12px;
         .task-card {
           width: 100%;
           margin-right: 0;
@@ -1115,6 +1132,16 @@ export default {
           .task-card-title {
             font-size: 16px;
             line-height: 20px;
+          }
+          .task-item {
+            width: 32px;
+            height: 32px;
+          }
+
+          .task-time-item {
+            font-size: 12px;
+            zoom: 0.87;
+            white-space: nowrap;
           }
         }
         .opoints-card {
