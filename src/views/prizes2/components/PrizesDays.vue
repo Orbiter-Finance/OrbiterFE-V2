@@ -18,7 +18,7 @@
       </div>
       <div class="orbguy-info-mobile">
         <label>
-          Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 $ORBGUY lucky bag pack!
+          Lucky 99th, 199th..., Win $100 $ORBGUY lucky bag pack!
         </label>
         <div class="orbguy-reward">
           Your Rewards: +{{ totalOrbguy }}
@@ -28,7 +28,7 @@
       </div>
       <div class="orbguy-info">
         <label>
-          Lucky 99th, 199th, 299th,399th,499th,599th,699th: Win $100 $ORBGUY lucky bag!
+          Lucky 99th, 199th..., Win $100 $ORBGUY lucky bag!
         </label>
         <div @click="openLikwidSwap" class="orbguy-price">1 ORBGUY ≈ {{ price }} ETH</div>
       </div>
@@ -40,10 +40,10 @@
               <div
                 class="orbguy-progress-amount-item"
                 v-if="item.show"
-                :key="item.index"
+                :key="item.userAmount"
                 :style="`left:${item.left};`"
               >
-                {{ item.index }}00
+                {{ item.userAmount }}
               </div>
             </template>
           </div>
@@ -51,7 +51,9 @@
             <div
               class="progress-box"
               :style="`width: calc(${userLeft} - 3px)`"
-            ></div>
+            >
+            <div class="orbiter_global_skeleton"></div>
+          </div>
             <template v-for="item in list">
               <div
                 class="orbguy-box-item"
@@ -78,11 +80,13 @@
       </div>
 
       <div v-if="!!isDayEnd" class="tips">
-        All rewards for today have been split! Make sure to join early tomorrow!
+        Orbguy rewards for today have been distributed. Please come back tomorrow!
+        <br />
+        You can keep bridging to earn o-points and share $12w BNB prize pool!
       </div>
       <div
-        :class="`${
-          isDayEnd ? 'prizes-to-bridge' : 'prizes-to-bridge prizes-day-not-end'
+        :class="`prizes-to-bridge ${
+          isDayEnd ? 'prizes-day-end' : 'prizes-day-not-end'
         }`"
       >
         <div
@@ -219,10 +223,10 @@ export default {
     },
     list() {
       const count = this.taskAddressCount || 0
-      return new Array(8).fill(0).map((item, index) => {
+      return [0, 99, 199, 299, 399, 499, 599, 699].map((item, index) => {
         return {
-          index,
-          show: !!(count < index * 100),
+          userAmount: item,
+          show: !!(count < item),
           left: (index / 7.2) * 100 + '%',
         }
       })
@@ -378,7 +382,8 @@ export default {
       return list
     },
     isDayEnd() {
-      return this.taskAddressCount >= 707
+      // return this.taskAddressCount >= 707
+      return true
     },
     opointsProgressRatio() {
       const total = this.signDays || 0
@@ -738,6 +743,10 @@ export default {
       line-height: 32px;
       letter-spacing: 0px;
       color: #f3ba2f;
+    }
+
+    .prizes-day-end {
+      margin-top: 16px;
     }
 
     .prizes-day-not-end {

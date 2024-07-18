@@ -8,7 +8,7 @@
         <div class="prizes-label">
           <div style="white-space: nowrap">
             <span class="prizes-total-pool-amount">
-              $80,000
+              $200,000
               <br class="title-br" />
               Prize Pool 
             </span>

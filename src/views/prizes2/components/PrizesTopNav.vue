@@ -1,19 +1,38 @@
 <template>
-  <div class="prizes-top-nav" id="prizes-top-nav">
-    <div @click="toHome">
-      <svg-icon
-        class="logo"
-        :style="navIcons.style"
-        :icon="navIcons.logo"
-        :iconName="navIcons.logo"
-      ></svg-icon>
-    </div>
-    <div v-if="address" class="wallet">
-      <svg-icon class="wallet-icon" :iconName="connectWalletIcon"></svg-icon>
-      {{ address }}
-    </div>
-    <div v-else class="connect-wallet" @click="connetcWallet">
-      Connect Wallet
+  <div>
+    <div class="prizes-top-nav-empty"></div>
+    <div class="prizes-top-nav" id="prizes-top-nav">
+      <div @click="toHome">
+        <svg-icon
+          class="logo"
+          :style="navIcons.style"
+          :icon="navIcons.logo"
+          :iconName="navIcons.logo"
+        ></svg-icon>
+      </div>
+      <!-- <div class="user-card">
+        <div class="info-item">
+          <div class="info-label">Rank</div>
+          <div class="info-value">{{ userRank }}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Cumulative</div>
+          <div class="info-value">{{ txTotal }} Tx</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Estimated earnings</div>
+          <div class="info-value">
+            {{ estiReward }}
+          </div>
+        </div>
+      </div> -->
+      <div v-if="address" class="wallet">
+        <svg-icon class="wallet-icon" :iconName="connectWalletIcon"></svg-icon>
+        {{ address }}
+      </div>
+      <div v-else class="connect-wallet" @click="connetcWallet">
+        Connect Wallet
+      </div>
     </div>
   </div>
 </template>
@@ -26,7 +45,11 @@ import {
   isMobile,
   setConnectWalletGroupKey,
   setSelectWalletDialogVisible,
+  prizesV2UserRank,
+  prizesV2UserList,
+  prizesV2RankList,
 } from '../../../composition/hooks'
+
 import SvgIconThemed from '../../../components/SvgIconThemed.vue'
 export default {
   components: { SvgIcon, SvgIconThemed },
@@ -63,6 +86,37 @@ export default {
         }
       }
     },
+    userList() {
+      return prizesV2UserList.value
+    },
+    userRank() {
+      return prizesV2UserRank.value || '--'
+    },
+    rankList() {
+      return prizesV2RankList.value
+    },
+    txTotal() {
+      const list = this.userList
+      const total = list?.reduce((prev, item) => {
+        return prev + Number(item?.task_result || 0)
+      }, 0)
+      return total
+    },
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
+    estiReward() {
+      const list = this.rankList
+      const option = list.filter(
+        (item) =>
+          item.address?.toLocaleLowerCase() ===
+          this.evmAddress?.toLocaleLowerCase()
+      )?.[0]
+      const amount = option?.reward?.amount
+      const refund = option?.refund
+      const total = (Number(amount) || 0) + (Number(refund) || 0)
+      return Number(total) ? this.decimalNumC(total, 2, ',') + ' USDC' : '--'
+    },
   },
   methods: {
     toHome() {
@@ -77,19 +131,53 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.prizes-top-nav-empty {
+  width: 100%;
+  height: 78px;
+}
+
 .prizes-top-nav {
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 2;
 
+  backdrop-filter: blur(156px);
+  background: rgba(0, 0, 0, 0.1);
   .logo {
     cursor: pointer;
+  }
+
+  .user-card {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-image: url('../../../assets/prizes/v2/user-bg.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+
+    .info-item {
+      margin: 0 12px;
+      .info-label {
+        color: #f3ba2f;
+        text-align: left;
+        font-size: 16px;
+        font-family: GeneralSans-Medium;
+        line-height: 32px;
+        letter-spacing: 0px;
+      }
+      .info-value {
+        font-size: 24px;
+        font-family: GeneralSans-SemiBold;
+        line-height: 40px;
+        letter-spacing: 0px;
+      }
+    }
   }
 
   .wallet {
