@@ -20,7 +20,7 @@
           class="reward-amount reward-amount-default"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          +${{
+          +{{
             decimalNumC(
               (Number(item.reward) || 0) + (Number(item.refund) || 0),
               2,

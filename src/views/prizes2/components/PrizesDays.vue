@@ -1,19 +1,17 @@
 <template>
   <div id="prizes-days" class="prizes-days">
     <div class="title">
-      Bridge 3tx daily, will get a share of 
-      <span class="token-symbol">$80,000 $ORBGUY 100%</span>
+      <span class="token-symbol">$80,000 $ORBGUY</span>
     </div>
     <div class="prizes-days-card">
       <div class="card-tilte">
         <div class="left">
-          <label>$80000 orbguy for the first 700+7 users each day</label>
+          <label>Bridge 3tx, 100% get $ORBGUY</label>
           <div class="fcfs"></div>
         </div>
         <div class="orbguy-reward">
           Your Rewards: +{{ totalOrbguy }}
           <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
-          $ORBGUY!
         </div>
       </div>
       <div class="orbguy-info-mobile">
@@ -28,7 +26,7 @@
       </div>
       <div class="orbguy-info">
         <label>
-          Lucky 99th, 199th..., Win $100 $ORBGUY lucky bag!
+          Win $ORBGUY lucky bag!
         </label>
         <div @click="openLikwidSwap" class="orbguy-price">1 ORBGUY ≈ {{ price }} ETH</div>
       </div>
@@ -43,7 +41,7 @@
                 :key="item.userAmount"
                 :style="`left:${item.left};`"
               >
-                {{ item.userAmount }}
+                {{ item.userAmount }}th
               </div>
             </template>
           </div>
@@ -80,9 +78,7 @@
       </div>
 
       <div v-if="!!isDayEnd" class="tips">
-        Orbguy rewards for today have been distributed. Please come back tomorrow!
-        <br />
-        You can keep bridging to earn o-points and share $12w BNB prize pool!
+        orbguy for today have been distributed. you can draw tomorrow!
       </div>
       <div
         :class="`prizes-to-bridge ${
@@ -94,20 +90,15 @@
           :style="`opacity: ${isDraw ? '1' : '0.3'};`"
           @click="openORBGUYReward"
         >
-          <img
-            class="draw-card"
-            :src="require('../../../assets/prizes/v2/draw-card.png')"
-            style="margin-right: 2px"
-            alt=""
-          />
-          Lucky Draw
+          Lucky Draw <svg-icon style="width:24px;height:24px;margin-left:4px;" iconName="ORBGUY"></svg-icon>
         </div>
       </div>
 
       <div class="task-group">
         <div class="task-card">
           <div class="task-card-title">
-            Daily bridging can win you up to 420 OPoints
+            Your have checked in for
+            <span class="days">{{ signDays }}</span> days
           </div>
           <template v-for="(item, index) in timeList">
             <div :key="index">
@@ -136,28 +127,29 @@
         </div>
         <div class="opoints-card">
           <div class="opoints-card-title">
-            Your have checked in for
-            <span class="days">{{ signDays }}</span> days
+            Earn up to 420 O-Points
           </div>
           <div class="opoints-group">
             <div
-              class="opoints-item"
+              :class="`${item.days ? 'opoints-item' : 'opoints-item-empty'} ${item.isBounce ? 'bounce' : ''}`"
               v-for="item in opointsList"
               :key="item.days"
-              :style="`background-image: url(${require(`../../../assets/prizes/v2/opoints${item.reward}.png`)});`"
+              :style="`background-image: url(${item.days ? require(`../../../assets/prizes/v2/opoints${item.reward}.png`) : ''});`"
             ></div>
           </div>
           <div class="opoints-progress">
             <div
-              :class="`opoints-day-item ${
+              :class="`${item.days ? 'opoints-day-item' :'opoints-day-item-empty'} ${
+               item.days ? (
                 item.isSuccess
                   ? ' opoints-day-item-success'
                   : 'opoints-day-item-base'
+               ) : ''
               }`"
               v-for="item in opointsList"
               :key="item.days"
             >
-              {{ item.days }} Days
+              <span v-if="item.days">{{ item.days }} Days</span>
             </div>
             <div
               class="opoints-progress-box"
@@ -253,23 +245,32 @@ export default {
         }
       })
       return count
+
     },
     opointsList() {
       const total = this.signDays
       return [
         {
+          days: 0,
+          reward: 0
+        },
+        {
+          prev: 0,
           days: 3,
           reward: 32,
         },
         {
+          prev: 3,
           days: 7,
           reward: 105,
         },
         {
+          prev: 7,
           days: 10,
           reward: 165,
         },
         {
+          prev: 10,
           days: 14,
           reward: 275,
         },
@@ -277,6 +278,7 @@ export default {
         return {
           ...item,
           isSuccess: total >= item.days,
+          isBounce: total < item.days && total >= item.prev
         }
       })
     },
@@ -551,6 +553,42 @@ export default {
   }
 }
 
+@keyframes bounce {
+  from,
+  4%,
+  11.6%,
+  to {
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0);
+  }
+
+  8%,
+  8.6% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -30px, 0) scaleY(1.1);
+  }
+
+  14% {
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    transform: translate3d(0, -15px, 0) scaleY(1.05);
+  }
+
+  16% {
+    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    transform: translate3d(0, 0, 0) scaleY(0.95);
+  }
+
+  18% {
+    transform: translate3d(0, -4px, 0) scaleY(1.02);
+  }
+}
+
+.bounce {
+    animation: bounce 5s  infinite;
+    -webkit-animation: bounce 5s  infinite;
+  transform-origin: center bottom;
+}
+
 .prizes-days {
   width: 100%;
   margin-top: 80px;
@@ -810,6 +848,9 @@ export default {
           line-height: 28px;
           letter-spacing: 0px;
           text-align: left;
+          .days {
+            color: #dea638;
+          }
         }
 
         .task-item-group {
@@ -867,7 +908,6 @@ export default {
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
-        margin-right: 16px;
 
         .opoints-card-title {
           width: 100%;
@@ -876,16 +916,25 @@ export default {
           line-height: 28px;
           letter-spacing: 0px;
           text-align: left;
-          .days {
-            color: #dea638;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          .svg {
+            width: 28px;
+            height: 28px;
+            margin-left: 8px;
           }
         }
 
         .opoints-group {
           width: 100%;
           display: flex;
-          justify-content: space-around;
+          justify-content: space-between;
           align-items: center;
+
+          .opoints-item-empty {
+            width: 0px;
+          }
 
           .opoints-item {
             width: 54px;
@@ -904,7 +953,7 @@ export default {
           height: 10px;
           background: rgb(44, 35, 9);
           display: flex;
-          justify-content: space-around;
+          justify-content: space-between;
           align-items: center;
           position: relative;
           top: 0;
@@ -923,6 +972,10 @@ export default {
             height: 12px;
             left: 0;
             z-index: 0;
+          }
+
+          .opoints-day-item-empty {
+            width: 0px;
           }
 
           .opoints-day-item {
