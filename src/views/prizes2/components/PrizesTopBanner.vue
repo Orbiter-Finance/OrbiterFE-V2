@@ -378,13 +378,13 @@ export default {
   }
 
   .prizes-zksync-era {
-    width: 36px;
-    height: 36px;
+    width: 64px;
+    height: 64px;
     background-image: url('../../../assets/prizes/v2/prizes-zksync-era.png');
-    background-size: 36px 36px;
+    background-size: 64px 64px;
     position: absolute;
     top: 60%;
-    left: -60px;
+    left: -80px;
   }
 }
 

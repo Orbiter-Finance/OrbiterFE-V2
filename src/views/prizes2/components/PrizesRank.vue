@@ -27,7 +27,7 @@
               ','
             )
           }}
-          USDC
+          {{ item.symbol }}
         </div>
         <div
           class="reward-total-amount"
@@ -36,7 +36,7 @@
           ${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
             decimalNumC(item.reward, 2, ',')
           }}
-          USDC
+          {{ item.symbol }}
         </div>
       </div>
     </div>
@@ -76,7 +76,7 @@
                 ','
               )
             }}
-            USDC
+            {{ item.symbol }}
           </div>
         </div>
       </div>
@@ -115,13 +115,13 @@
                 ','
               )
             }}
-            USDC
+            {{ item.reward.name }}
           </div>
           <span
             >${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
               decimalNumC(item.reward.amount, 2, ',')
             }}
-            USDC</span
+            {{ item.reward.name }}</span
           >
         </div>
       </div>
@@ -168,8 +168,9 @@ export default {
           address: this.shortAddress(next?.address, this.isMobile ? 4 : 6),
           reward: next?.reward?.amount || 0,
           rank: '2',
-          bg: 'linear-gradient(180.00deg, rgb(211, 253, 255),rgb(157, 211, 211))',
-          amount: 'rgba(192, 238, 239, 0.6)',
+          bg: 'linear-gradient(180.00deg, rgb(232, 235, 237),rgb(157, 211, 211))',
+          color: 'rgba(192, 238, 239, 0.6)',
+          symbol: next?.reward?.name || "",
           refund: next?.refund || 0,
         },
         {
@@ -177,8 +178,9 @@ export default {
           address: this.shortAddress(first?.addres, this.isMobile ? 4 : 6),
           reward: first?.reward?.amount || 0,
           rank: '1',
-          bg: 'linear-gradient(180.00deg, rgb(255, 212, 151),rgb(255, 166, 41))',
-          amount: 'rgba(255, 209, 102, 0.6)',
+          bg: 'linear-gradient(0.00deg, rgb(255, 195, 17),rgb(243, 232, 66))',
+          color: 'rgba(255, 209, 102, 0.6)',
+          symbol: first?.reward?.name || "",
           refund: first?.refund || 0,
         },
         {
@@ -187,7 +189,8 @@ export default {
           reward: last?.reward?.amount || 0,
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
-          amount: 'rgba(232, 178, 134, 0.6)',
+          color: 'rgba(232, 178, 134, 0.6)',
+          symbol: last?.reward?.name || "",
           refund: last?.refund || 0,
         },
       ]

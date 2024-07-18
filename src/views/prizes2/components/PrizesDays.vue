@@ -256,19 +256,19 @@ export default {
       return [
         {
           days: 3,
-          reward: 43,
+          reward: 32,
         },
         {
           days: 7,
-          reward: 63,
+          reward: 105,
         },
         {
           days: 10,
-          reward: 63,
+          reward: 165,
         },
         {
           days: 14,
-          reward: 63,
+          reward: 275,
         },
       ].map((item) => {
         return {
