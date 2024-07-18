@@ -382,8 +382,7 @@ export default {
       return list
     },
     isDayEnd() {
-      // return this.taskAddressCount >= 707
-      return true
+      return this.taskAddressCount >= 707
     },
     opointsProgressRatio() {
       const total = this.signDays || 0
