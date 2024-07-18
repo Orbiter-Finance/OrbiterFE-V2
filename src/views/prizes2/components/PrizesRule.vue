@@ -24,8 +24,8 @@ export default {
         {
           label: '1. Which networks are participating in this event?',
           text: [
-            '- To bridge from a specific network to OpBNB/BNB Chain, the <span>minimum amount required is 0.004 ETH.</span>',
-            '- The specific networks include: <span>Linea, Ethereum, Optimism, Base, zkSync Lite, Polygon, Arbitrum, Manta, Mantle, Arbitrum Nova, Scroll, ZKSyncEra, Zora, Starknet.</span>',
+            '- To bridge from a specific network to OpBNB/BNB Chain, the <span class="orbiter_global_prizes_rule_tag">minimum amount required is 0.004 ETH.</span>',
+            '- The specific networks include: <span class="orbiter_global_prizes_rule_tag">Linea, Ethereum, Optimism, Base, zkSync Lite, Polygon, Arbitrum, Manta, Mantle, Arbitrum Nova, Scroll, ZKSyncEra, Zora, Starknet.</span>',
           ],
         },
         {
@@ -122,7 +122,7 @@ export default {
       font-weight: 400;
       line-height: 23px;
       letter-spacing: 0px;
-      opacity: 0.6;
+      color: rgba(255, 255, 255, 0.6);
     }
   }
 }

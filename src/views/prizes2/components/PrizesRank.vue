@@ -20,12 +20,23 @@
           class="reward-amount reward-amount-default"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          +${{ decimalNumC((Number(item.reward) || 0) + (Number(item.refund) || 0), 2, ',') }} USDC
+          +${{
+            decimalNumC(
+              (Number(item.reward) || 0) + (Number(item.refund) || 0),
+              2,
+              ','
+            )
+          }}
+          USDC
         </div>
-        <div class="reward-total-amount"
-        :style="`color: ${item.color};background-image: ${item.bg};`"
+        <div
+          class="reward-total-amount"
+          :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-        ${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{ decimalNumC(item.reward, 2, ',') }} USDC
+          ${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
+            decimalNumC(item.reward, 2, ',')
+          }}
+          USDC
         </div>
       </div>
     </div>
@@ -46,7 +57,8 @@
           />
           <div class="rank-user-info">
             <div class="user-tx">
-              Cumulative <span class="user-tx-amount">{{ item.txAmount }} tx</span>
+              Cumulative
+              <span class="user-tx-amount">{{ item.txAmount }} tx</span>
             </div>
             <div class="user-info-address">{{ item.address }}</div>
           </div>
@@ -57,7 +69,14 @@
             class="user-reward-amount"
             :style="`color: ${item.color};background-image: ${item.bg};`"
           >
-            {{ item.reward.amount }}
+            +${{
+              decimalNumC(
+                (Number(item.reward) || 0) + (Number(item.refund) || 0),
+                2,
+                ','
+              )
+            }}
+            USDC
           </div>
         </div>
       </div>
@@ -69,13 +88,18 @@
         <div class="cumulative-tx">Total Transaction</div>
         <div class="emit-reward">Estimated earnings</div>
       </div>
+      <div v-if="!rankData.length">
+      </div>
       <div
+        v-else
         class="rank-list-item rank-list-card-item"
         v-for="(item, index) in rankData"
         :key="index"
         :style="`background-color:${!!(index % 2) ? '#010101' : '#222222'};`"
       >
-        <div class="ranking">{{ item.rank }}</div>
+        <div class="ranking">
+          <div :class="'ranking-' + item.rank">{{ item.rank }}</div>
+        </div>
         <div class="user-address">
           {{ shortAddress(item.address, isMobile ? 4 : 6) }}
         </div>
@@ -83,8 +107,22 @@
           {{ decimalNumC(item.txAmount, 0, ',') }} tx
         </div>
         <div class="emit-reward">
-          <div>+${{ decimalNumC((Number(item.reward.amount) || 0) + (Number(item.refund) || 0), 2, ',') }} USDC</div>
-          <span>${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{ decimalNumC(item.reward.amount, 2, ',') }} USDC</span>
+          <div>
+            +${{
+              decimalNumC(
+                (Number(item.reward.amount) || 0) + (Number(item.refund) || 0),
+                2,
+                ','
+              )
+            }}
+            USDC
+          </div>
+          <span
+            >${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
+              decimalNumC(item.reward.amount, 2, ',')
+            }}
+            USDC</span
+          >
         </div>
       </div>
       <div class="pagination-group">
@@ -102,13 +140,15 @@
 </template>
 
 <script>
+import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { isMobile, prizesV2RankList } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
 
 export default {
   name: 'PrizesRank',
 
-  data() {
+  
+    SvgIcondata() {
     return {
       current: 1,
     }
@@ -125,7 +165,7 @@ export default {
       return [
         {
           tx: this.decimalNumC(next?.txAmount, 0, ','),
-          address: this.shortAddress(next?.address),
+          address: this.shortAddress(next?.address, this.isMobile ? 4 : 6),
           reward: next?.reward?.amount || 0,
           rank: '2',
           bg: 'linear-gradient(180.00deg, rgb(211, 253, 255),rgb(157, 211, 211))',
@@ -134,17 +174,16 @@ export default {
         },
         {
           tx: this.decimalNumC(first?.txAmount, 0, ','),
-          address: this.shortAddress(first?.address),
+          address: this.shortAddress(first?.addres, this.isMobile ? 4 : 6),
           reward: first?.reward?.amount || 0,
           rank: '1',
           bg: 'linear-gradient(180.00deg, rgb(255, 212, 151),rgb(255, 166, 41))',
           amount: 'rgba(255, 209, 102, 0.6)',
-          refund: first?.refund || 0 ,
-
+          refund: first?.refund || 0,
         },
         {
           tx: this.decimalNumC(last?.txAmount, 0, ','),
-          address: this.shortAddress(last?.address),
+          address: this.shortAddress(last?.address, this.isMobile ? 4 : 6),
           reward: last?.reward?.amount || 0,
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
@@ -365,14 +404,14 @@ export default {
             font-size: 12px;
             .user-tx-amount {
               color: #ffffff;
-                      font-family: GeneralSans-Medium;
+              font-family: GeneralSans-Medium;
             }
           }
 
           .user-info-address {
             margin-top: 8px;
             font-size: 18px;
-                    font-family: GeneralSans-Medium;
+            font-family: GeneralSans-Medium;
           }
         }
       }
@@ -420,6 +459,9 @@ export default {
       align-items: center;
 
       .ranking {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 64px;
       }
 
@@ -437,6 +479,51 @@ export default {
       }
     }
 
+    .ranking-1 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(
+        180deg,
+        rgb(255, 222, 155),
+        rgb(243, 169, 19) 100%
+      );
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      color: #000000;
+    }
+
+    .ranking-2 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(
+        180deg,
+        rgb(240, 254, 255),
+        rgb(190, 190, 190) 100%
+      );
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      color: #000000;
+    }
+
+    .ranking-3 {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(
+        180deg,
+        rgb(233, 179, 135),
+        rgb(197, 133, 81) 100%
+      );
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      color: #000000;
+    }
+
     .rank-list-header {
       font-size: 14px;
       color: rgba(255, 255, 255, 0.6);
@@ -446,10 +533,10 @@ export default {
     .rank-list-item {
       font-family: GeneralSans-SemiBold;
       .emit-reward {
-        color: #FFD166;
+        color: #ffd166;
         span {
           font-size: 14px;
-          color: rgba(#FFD166, 0.6);
+          color: rgba(#ffd166, 0.6);
         }
       }
     }
@@ -493,7 +580,7 @@ export default {
   border: 1px solid rgb(243, 186, 47);
   border-radius: 4px;
   background: rgb(1, 1, 1);
-  color: #F3BA2F;
+  color: #f3ba2f;
   margin: 0 4px;
 }
 
@@ -520,6 +607,9 @@ export default {
       .rank-list-card-item {
         padding: 6px 12px;
         .ranking {
+          display: flex;
+          justify-content: center;
+          align-items: center;
           width: 40px;
         }
         .cumulative-tx {
