@@ -188,8 +188,9 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #fff;
     color: rgba(51, 51, 51, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #FFF;
     .wallet-icon {
       width: 2rem;
       height: 2rem;
@@ -205,8 +206,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #df2e2d;
-    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #FFF;
     box-shadow: inset 0px -6px 0px rgba(0, 0, 0, 0.16);
     font-family: 'Inter Bold';
     cursor: pointer;

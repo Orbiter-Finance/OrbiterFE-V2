@@ -10,12 +10,14 @@
             <span class="prizes-total-pool-amount">
               $200,000
               <br class="title-br" />
-              Prize Pool 
+              Prize Pool
             </span>
           </div>
-          <div class="token-symbol">200,000
+          <div class="token-symbol">
+            200,000
             <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
-            $ORBGUY!</div>
+            $ORBGUY!
+          </div>
         </div>
         <img
           class="prizes-banner-image-mobile"
@@ -35,13 +37,15 @@
         </div>
 
         <div class="prizes-to-bridge">
-          <div
-            class="prizes-to-bridge-btn"
-            @click="toBridgeCall"
-            :style="`opacity: ${isEnd ? '0.3' : '1'};`"
-          >
-            {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
-            <!-- {{ isEnd ? 'Claim' : 'Start Bridge' }} -->
+          <div class="btn-group">
+            <div
+              class="prizes-to-bridge-btn"
+              @click="toBridgeCall"
+              :style="`opacity: ${isEnd ? '0.3' : '1'};`"
+            >
+              {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
+              <!-- {{ isEnd ? 'Claim' : 'Start Bridge' }} -->
+            </div>
           </div>
         </div>
       </div>
@@ -60,7 +64,12 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { isDev } from '../../../util'
 import getUTCTime from '../../../util/time'
-import { prizesV2TimeEnd, setPrizesV2TimeEnd, prizesV2ProjectTime } from '../../../composition/hooks'
+import {
+  prizesV2TimeEnd,
+  setPrizesV2TimeEnd,
+  prizesV2ProjectTime,
+} from '../../../composition/hooks'
+import dayjs from 'dayjs'
 
 let timer1
 
@@ -94,7 +103,7 @@ export default {
     }
   },
   computed: {
-    timeStr(){
+    timeStr() {
       return prizesV2ProjectTime.value
     },
     isEnd() {
@@ -131,17 +140,21 @@ export default {
           : '/?source=Ethereum&dest=Arbitrum&token=ETH',
       })
     },
+    toggleEnd() {
+      setPrizesV2TimeEnd(true)
+    },
   },
   mounted() {
+    const self = this
     timer1 = setInterval(() => {
-      if(!this.timeStr) return
-      const t = this.getUTCTime1(this.timeStr)
-      const timeS = Math.floor((t - getUTCTime()) / 1000)
+      if (!self.timeStr) return
+      const t = +dayjs.utc(self.timeStr)
+      const timeS = Math.floor((t - +dayjs()) / 1000)
       let time = timeS
       if (timeS <= 0) {
         clearInterval(timer1)
-        setPrizesV2TimeEnd(true)
-        this.timeList = timeListDefault
+        self.toggleEnd()
+        self.timeList = timeListDefault
         return
       }
       let d = Math.floor(time / 3600 / 24)
@@ -334,6 +347,13 @@ export default {
         display: flex;
         justify-content: start;
         align-items: center;
+
+        .btn-group {
+          background-color: #010101;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
 
         .prizes-to-bridge-btn {
           width: 348px;
