@@ -27,7 +27,7 @@ export default {
             '- To bridge from a specific network to OpBNB/BNB Chain.',
             '- The <span class="orbiter_global_prizes_rule_tag">minimum amount required: 0.004 ETH.</span>',
             '- Bridge Token: <span class="orbiter_global_prizes_rule_tag">ETH<span>',
-            '- The specific networks include: <span class="orbiter_global_prizes_rule_tag">Linea, Ethereum, Optimism, Base, zkSync Lite, Polygon, Arbitrum, Manta, Mantle, Arbitrum Nova, Scroll, ZKSyncEra, Zora, Starknet.</span>',
+            '- The specific networks include: <span class="orbiter_global_prizes_rule_tag">Linea, Ethereum, Optimism, Base, zkSync Lite, Polygon, Arbitrum, Manta, Mantle, Arbitrum Nova, Scroll, ZKSyncEra, Zora.</span>',
           ],
         },
         {

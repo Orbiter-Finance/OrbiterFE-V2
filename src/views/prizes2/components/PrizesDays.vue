@@ -14,7 +14,7 @@
         </div>
         <div class="value">
           Your have checked in for
-          <div class="days">3</div>
+          <div class="days">{{ signDays }}</div>
           days
         </div>
       </div>
@@ -24,6 +24,7 @@
         <div :key="index">
           <div class="task-item-group">
             <div
+              @click="toBridgeCall"
               v-for="(option, idx) in item"
               :class="`task-item ${option.className}`"
               :key="idx"
@@ -374,7 +375,7 @@ export default {
     bridgeLabel() {
       return !Number(this.orbguyAmount)
         ? 'start bridge'
-        : 'keep bridge to earn more'
+        : 'keep bridging to earn BNB'
     },
     isDraw() {
       return (
@@ -795,6 +796,7 @@ export default {
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
+        cursor: pointer;
       }
 
       .task-item-current {
@@ -998,15 +1000,15 @@ export default {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 8px;
             .reward {
               display: flex;
               justify-content: flex-start;
               align-items: center;
               font-size: 28px;
               .token-symbol {
-                width: 28px;
-                height: 28px;
+                width: 32px;
+                height: 32px;
                 margin-right: 8px;
               }
             }
@@ -1105,7 +1107,7 @@ export default {
             text-align: left;
           }
           .reward-info {
-            margin-top: 8px;
+            margin-top: 10px;
             width: 100%;
             display: flex;
             justify-content: start;
