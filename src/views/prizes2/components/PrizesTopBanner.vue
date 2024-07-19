@@ -14,9 +14,7 @@
             </span>
           </div>
           <div class="token-symbol">
-            200,000
-            <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
-            $ORBGUY!
+            <div class="prizes-token-info"></div>
           </div>
         </div>
         <img
@@ -24,7 +22,7 @@
           :src="require('../../../assets/prizes/v2/banner-bg-mobile.png')"
         />
 
-        <div class="time-label">Ends In</div>
+        <!-- <div class="time-label">Ends In</div> -->
         <div class="time-card">
           <div
             class="time-card-item"
@@ -264,31 +262,12 @@ export default {
         }
 
         .token-symbol {
-          background-image: linear-gradient(
-            90deg,
-            rgb(248, 242, 254),
-            rgb(239, 197, 250),
-            rgb(195, 167, 248)
-          );
-          -webkit-text-fill-color: transparent;
-          background-position-x: initial;
-          background-position-y: initial;
-          background-size: initial;
-          background-repeat-x: initial;
-          background-repeat-y: initial;
-          background-attachment: initial;
-          background-origin: initial;
-          -webkit-background-clip: text;
-          background-color: initial;
-          font-size: 44px;
-
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          .token-symbol-icon {
-            width: 56px;
-            height: 56px;
-            margin: 0 4px;
+          margin-top: 24px;
+          .prizes-token-info {
+            width: 500px;
+            height: 64px;
+            background-image: url(../../../assets/prizes/v2/prizes-info-image.png);
+            background-size: 100% 100%;
           }
         }
       }
@@ -312,7 +291,7 @@ export default {
         justify-content: start;
         align-items: center;
         width: 100%;
-        margin-top: 12px;
+        margin-top: 24px;
         .time-card-item {
           width: 72px;
           height: 72px;
@@ -490,9 +469,10 @@ export default {
             display: flex;
             justify-content: center;
             align-items: center;
-            .token-symbol-icon {
-              width: 40px;
-              height: 40px;
+            .prizes-token-info {
+              width: 80%;
+              height: 0;
+              padding: 6.4% 0;
             }
           }
         }
