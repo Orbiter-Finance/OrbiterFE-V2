@@ -338,8 +338,7 @@ export default {
         const now = +dayjs()
         return startTime <= now && endTime >= now
       })?.[0]
-      // return option?.id
-      return '6ad931a8-55ca-4bff-a371-a4a8576b08f8'
+      return option?.id
     },
     currentInfoOption() {
       const taskId = this.taskId
