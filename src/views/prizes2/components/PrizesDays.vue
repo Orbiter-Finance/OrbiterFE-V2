@@ -2,7 +2,7 @@
   <div id="prizes-days" class="prizes-days">
     <div class="title">
       <span class="token-symbol">$80,000 </span>
-      value of
+      worth of
       <svg-icon class="token" iconName="ORBGUY"></svg-icon>
       $ORBGUY
     </div>
@@ -935,7 +935,7 @@ export default {
     }
 
     .prizes-day-not-end {
-      margin-top: 80px;
+      margin-top: 48px;
     }
 
     .prizes-to-bridge {
