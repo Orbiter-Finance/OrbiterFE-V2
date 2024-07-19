@@ -8,6 +8,7 @@
         <PrizesUser></PrizesUser>
         <PrizesRank></PrizesRank>
         <PrizesRule></PrizesRule>
+        <!-- <PrizesUserBall></PrizesUserBall> -->
       </div>
     </div>
   </div>
@@ -22,6 +23,7 @@ import PrizesDays from "./components/PrizesDays.vue"
 import PrizesUser from './components/PrizesUser.vue'
 import PrizesRank from './components/PrizesRank.vue'
 import PrizesRule from './components/PrizesRule.vue'
+// import PrizesUserBall from './components/PrizesUserBall.vue'
 
 export default {
   name: 'Prizes2',
@@ -32,6 +34,7 @@ export default {
     PrizesUser,
     PrizesRank,
     PrizesRule,
+    // PrizesUserBall
   },
   computed: {
     evmAddress() {
