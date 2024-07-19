@@ -137,7 +137,7 @@
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
                     <span>
-                      $ORBUGY gift boxes are distributed daily on a FCFS basis.
+                      $ORBGUY gift boxes are distributed daily on a FCFS basis.
                       Participants securing the 99th, 199th, 299th, 399th,
                       499th, 599th, and 699th positions when drawing a gift box
                       each day will receive a surprising $ORBGUY bonus.

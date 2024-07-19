@@ -33,10 +33,10 @@ export default {
         {
           label: '2. How to Earn $ORBGUY Rewards?',
           text: [
-            '- Participants who complete at least 3 transactions daily will qualify to share a $ORBUGY gift box. $ORBUGY gift boxes are distributed daily on a FCFS basis.',
+            '- Participants who complete at least 3 transactions daily will qualify to share a $ORBGUY gift box. $ORBGUY gift boxes are distributed daily on a FCFS basis.',
             '- Each address can draw $ORBGUY lucky box once daily by completing tasks, earning one chance per day  Participants could engage in this activity for up to 14 consecutive days.',
             '- Note: Participants securing the 99th, 199th, 299th, 399th, 499th, 599th, and 699th positions when drawing a gift box each day will receive a surprising $ORBGUY bonus.',
-            '- Note: The  $ORBUGY gift box update time is 00:00 UTC.'
+            '- Note: The  $ORBGUY gift box update time is 00:00 UTC.'
           ],
         },
         {
