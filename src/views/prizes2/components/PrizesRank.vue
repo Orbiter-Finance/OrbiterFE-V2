@@ -20,14 +20,14 @@
           class="reward-amount reward-amount-default"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          +{{ decimalNumC(Number(item.reward) || 0, 2, ',') }}
+          +{{ decimalNumC(Number(item.reward) || 0, 4, ',') }}
           {{ item.symbol }}
         </div>
         <div
           class="reward-total-amount"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          ≈ ${{ decimalNumC(item.uAmount, 2, ',') }}
+          ≈ ${{ decimalNumC(item.uAmount, 4, ',') }}
         </div>
       </div>
     </div>
@@ -60,7 +60,7 @@
             class="user-reward-amount"
             :style="`color: ${item.color};background-image: ${item.bg};`"
           >
-            +{{ decimalNumC(Number(item.reward) || 0, 2, ',') }}
+            +{{ decimalNumC(Number(item.reward) || 0, 4, ',') }}
             {{ item.symbol }}
           </div>
         </div>
@@ -126,10 +126,10 @@
         </div>
         <div class="emit-reward">
           <div>
-            +{{ decimalNumC(Number(item.reward.amount) || 0, 2, ',') }}
+            +{{ decimalNumC(Number(item.reward.amount) || 0, 4, ',') }}
             {{ item.reward.name }}
           </div>
-          <span>≈ ${{ decimalNumC(item.reward.uAmount, 2, ',') }}</span>
+          <span>≈ ${{ decimalNumC(item.reward.uAmount, 4, ',') }}</span>
         </div>
       </div>
       <div class="pagination-group">
@@ -155,7 +155,6 @@ import {
   prizesV2UserRank,
 } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
-import { estimateContractGas } from 'viem/actions'
 
 export default {
   name: 'PrizesRank',
@@ -187,7 +186,7 @@ export default {
         },
         {
           tx: this.decimalNumC(first?.txAmount, 0, ','),
-          address: this.shortAddress(first?.addres, this.isMobile ? 4 : 6),
+          address: this.shortAddress(first?.address, this.isMobile ? 4 : 6),
           reward: first?.reward?.amount || 0,
           uAmount: first?.reward?.uAmount || 0,
           rank: '1',
