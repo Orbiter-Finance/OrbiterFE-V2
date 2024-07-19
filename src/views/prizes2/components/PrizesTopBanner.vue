@@ -124,6 +124,11 @@ export default {
     },
     toBridgeCall() {
       if (this.isEnd) return
+      const name ="PRIZES_V2_BANNER_TO_BRIDGE"
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: "to home",
+      })
       localStorage.setItem(
         'last_page_before_history',
         JSON.stringify({

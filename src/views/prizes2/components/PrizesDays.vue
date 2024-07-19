@@ -24,7 +24,7 @@
         <div :key="index">
           <div class="task-item-group">
             <div
-              @click="toBridgeCall"
+              @click="toBridgeCall(true)"
               v-for="(option, idx) in item"
               :class="`task-item ${option.className}`"
               :key="idx"
@@ -55,7 +55,7 @@
         <div
           class="prizes-to-bridge-btn"
           :style="`opacity: ${!isEnd ? '1' : '0.3'};`"
-          @click="toBridgeCall"
+          @click="toBridgeCall(false)"
         >
           {{ bridgeLabel }}
         </div>
@@ -512,8 +512,14 @@ export default {
     },
   },
   methods: {
-    toBridgeCall() {
+    toBridgeCall(isTask) {
       if (this.isEnd) return
+      const name =isTask ? "PRIZES_V2_DAY_TASK_TO_BRIDGE" : "PRIZES_V2_START_TASK_TO_BRIDGE"
+      const address = this.evmAddress
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: address,
+      })
       localStorage.setItem(
         'last_page_before_history',
         JSON.stringify({
