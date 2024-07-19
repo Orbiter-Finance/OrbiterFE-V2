@@ -129,13 +129,13 @@ export default {
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Arbitrum', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'BNB Chain', token: 'ETH' },
         })
       )
       this.$router.push({
         path: isDev()
-          ? '/?source=Sepolia%28G%29&dest=Arbitrum%20Sepolia'
-          : '/?source=Ethereum&dest=Arbitrum&token=ETH',
+          ? '/?source=Sepolia%28G%29&dest=BNB%20Chain'
+          : '/?source=Ethereum&dest=BNB%20Chain&token=ETH',
       })
     },
     toggleEnd() {
