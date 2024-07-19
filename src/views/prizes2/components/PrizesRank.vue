@@ -70,18 +70,16 @@
       <div class="rank-list-header rank-list-card-item">
         <div class="ranking">Rank</div>
         <div class="user-address">User</div>
-        <div class="cumulative-tx">Total Transaction</div>
+        <div class="cumulative-tx">
+          Total Transaction
+        </div>
         <div class="emit-reward">Estimated earnings</div>
       </div>
-      <div
-        class="rank-list-item rank-list-card-item rank-user-item"
-      >
+      <div class="rank-list-item rank-list-card-item rank-user-item">
         <div class="ranking">
           <div>{{ userRank }}</div>
         </div>
-        <div class="user-address">
-          My Account
-        </div>
+        <div class="user-address">My Account</div>
         <div class="cumulative-tx">
           {{ decimalNumC(txTotal, 0, ',') }} tx
           <img
@@ -110,11 +108,21 @@
         </div>
         <div class="cumulative-tx">
           {{ decimalNumC(item.txAmount, 0, ',') }} tx
-          <img
+
+          <o-tooltip>
+            <template v-slot:titleDesc>
+              <div style="margin-left: -20px">
+                <span >Bridging fee will be rebated when the competition ends.</span
+                >
+              </div>
+            </template>
+            <img
             v-if="Number(item.rank) <= 10"
             class="bridge-fee-image"
             :src="require('../../../assets/prizes/v2/bridge-fee.png')"
           />
+          </o-tooltip>
+          
         </div>
         <div class="emit-reward">
           <div>
@@ -140,9 +148,14 @@
 
 <script>
 import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
-import { isMobile, prizesV2RankList, prizesV2UserList, prizesV2UserRank } from '../../../composition/hooks'
+import {
+  isMobile,
+  prizesV2RankList,
+  prizesV2UserList,
+  prizesV2UserRank,
+} from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
-import { estimateContractGas } from 'viem/actions';
+import { estimateContractGas } from 'viem/actions'
 
 export default {
   name: 'PrizesRank',
@@ -250,7 +263,9 @@ export default {
       )?.[0]
       const amount = option?.reward?.amount
       const symbol = option?.reward?.name
-      return Number(amount) ? `${ this.decimalNumC(amount, 2, ',')}  ${symbol}` : '--'
+      return Number(amount)
+        ? `${this.decimalNumC(amount, 2, ',')}  ${symbol}`
+        : '--'
     },
     userAddress() {
       const address = this.evmAddress
@@ -277,6 +292,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.thumbnail_1_3 {
+  width: 16px;
+  height: 16px;
+  circle {
+    fill: rgba(255, 255, 255, 0.6) !important;
+  }
+}
 .prizes-rank {
   width: 100%;
   margin-top: 44px;

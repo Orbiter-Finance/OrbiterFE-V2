@@ -1,13 +1,25 @@
 <template>
   <div id="prizes-days" class="prizes-days">
     <div class="title">
-      <span class="token-symbol">$80,000 $ORBGUY</span>
+      <span class="token-symbol">$80,000 </span>
+      value of
+      <svg-icon class="token" iconName="ORBGUY"></svg-icon>
+      $ORBGUY
     </div>
     <div class="prizes-days-card">
       <div class="task-card-title">
-        <div class="label">Bridge 3tx Get $ORBGUY</div>
-        <div class="value">Your have checked in for <div class="days">3</div> days</div>
+        <div class="label">
+          Bridge 3tx daily Get $ORBGUY
+          <svg-icon class="token" iconName="ORBGUY"></svg-icon>
+        </div>
+        <div class="value">
+          Your have checked in for
+          <div class="days">3</div>
+          days
+        </div>
       </div>
+      <div class="utc-time">update time: 0:00(UTC)</div>
+      <div class="utc-time">current UTC time: {{ UTCTime }}</div>
       <template v-for="(item, index) in timeList">
         <div :key="index">
           <div class="task-item-group">
@@ -25,9 +37,7 @@
               :style="`opacity: ${option.isCurrent ? '1' : '0.6'};`"
             >
               {{ option.dayAmount }} Day
-              <span v-if="option.isProgress"
-                >({{ option.txAmount }}/3)</span
-              >
+              <span v-if="option.isProgress">({{ option.txAmount }}/3)</span>
             </div>
           </div>
         </div>
@@ -65,20 +75,37 @@
                 {{ totalOrbguy }}
               </div>
               <div
-              :style="`opacity: ${isDraw ? '1' : '0.3'};`"
-              :class="`${
-                isDraw ? 'prizes-to-bridge-animation' : ''
-              } draw-btn`"
-              @click="openORBGUYReward">Lucky Draw</div>
+                :style="`opacity: ${isDraw ? '1' : '0.3'};`"
+                :class="`${
+                  isDraw ? 'prizes-to-bridge-animation' : ''
+                } draw-btn`"
+                @click="openORBGUYReward"
+              >
+                Lucky Draw
+              </div>
             </div>
           </div>
           <div class="task-orbguy-days">
             <div class="task-orbguy-days-title">
-              <div class="task-orbguy-group">
-                lucky 99th,199th…,win $orguy super box!
-                <div class="fcfs"></div>
-              </div>
-              <div class="orbguy-amount">Remaining ORBGUY: 24,931</div>
+              <o-tooltip>
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px">
+                    <span>
+                      $ORBUGY gift boxes are distributed daily on a FCFS basis. 
+                      Participants securing the 99th, 199th, 
+                      299th, 399th, 499th, 599th, and 699th positions when
+                       drawing a gift box each day will receive a surprising $ORBGUY bonus.
+                      </span
+                    >
+                  </div>
+                </template>
+                <div class="task-orbguy-group">
+                  <span>lucky 99th,199th…,win $orguy super box!</span>
+                  <div class="fcfs"></div>
+                </div>
+              </o-tooltip>
+
+              <div class="orbguy-amount">Remaining ORBGUY: {{ remainAmount }}</div>
             </div>
             <div class="orbguy-box-group">
               <div class="orbguy-box">
@@ -95,10 +122,7 @@
                   </template>
                 </div>
                 <div class="orbguy-progress">
-                  <div
-                    class="progress-box"
-                    :style="`width: calc(${userLeft} - 3px)`"
-                  >
+                  <div class="progress-box" :style="`width: ${userLeft}`">
                     <div class="orbiter_global_skeleton"></div>
                   </div>
                   <template v-for="item in list">
@@ -190,13 +214,13 @@ import {
   prizesV2UserList,
   prizesV2TotalOrbguy,
   prizesV2TimeEnd,
+  isMobile,
 } from '../../../composition/hooks'
 import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
 
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { SIGN_MESSAGE } from '../../../const'
-
-const INVITE_NUM = 7
+import OTooltip from '../../../components/tooltip/oTooltip.vue'
 
 export default {
   components: {
@@ -207,9 +231,16 @@ export default {
     return {
       price: '',
       isDrawLoading: false,
+      UTCTime: dayjs.utc().format('MMM.DD YYYY HH:mm:ss'),
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
+    INVITE_NUM() {
+      return this.isMobile ? 3 : 7
+    },
     evmAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
     },
@@ -233,7 +264,9 @@ export default {
       })
     },
     userLeft() {
-      return ((this.taskAddressCount || 0) / 750) * 100 + '%'
+      let ratio = ((this.taskAddressCount || 0) / 707) * 100
+      ratio = this.isDayEnd ? 100 : ratio > 100 ? 99 : ratio
+      return (ratio || 0) + '%'
     },
     signDays() {
       const signDayList = this.signDayList || []
@@ -305,7 +338,8 @@ export default {
         const now = +dayjs()
         return startTime <= now && endTime >= now
       })?.[0]
-      return option?.id
+      // return option?.id
+      return '6ad931a8-55ca-4bff-a371-a4a8576b08f8'
     },
     currentInfoOption() {
       const taskId = this.taskId
@@ -339,14 +373,18 @@ export default {
       return option?.amount || '0'
     },
     bridgeLabel() {
-      return !Number(this.orbguyAmount) ? 'start bridge' : 'keep bridge to earn more'
+      return !Number(this.orbguyAmount)
+        ? 'start bridge'
+        : 'keep bridge to earn more'
     },
     isDraw() {
-      return Number(this.currentTxamount) >= 3 &&
+      return (
+        Number(this.currentTxamount) >= 3 &&
         !Number(this.orbguyAmount) &&
         !this.isDayEnd &&
         !this.isDrawLoading &&
         !this.isEnd
+      )
     },
     currentTxamount() {
       const currentOption = this.currentUserOption
@@ -354,7 +392,17 @@ export default {
     },
     taskAddressCount() {
       const currentOption = this.currentDetailsOption
-      return currentOption?.taskRewardInfos?.[0]?.distributedCount
+      const current = currentOption?.taskRewardInfos?.filter(
+        (item) => item?.name === 'orbguy'
+      )?.[0]
+      return current?.distributedCount
+    },
+    currentORBGUYAmount() {
+      const currentOption = this.currentDetailsOption
+      const current = currentOption?.taskRewardInfos?.filter(
+        (item) => item?.name === 'orbguy'
+      )?.[0]
+      return current?.rewardCount
     },
     timeList() {
       const taskList = this.taskList || []
@@ -371,14 +419,12 @@ export default {
 
         const className =
           txAmount >= 3
-            ? 'task-item-success' : (
-              this.taskId === item.id ? 
-              'task-item-current bounce'
-              : now > endTime
+            ? 'task-item-success'
+            : this.taskId === item.id
+            ? 'task-item-current bounce'
+            : now > endTime
             ? 'task-item-not'
             : 'task-item-base'
-            )
-            
 
         const option = {
           startTime: dayjs.utc(startDate).format('MMM.DD'),
@@ -390,9 +436,9 @@ export default {
           isProgress: now >= endTime || this.taskId === item.id,
           txAmount: txAmount,
           className,
-          dayAmount: index + 1
+          dayAmount: index + 1,
         }
-        if (!(index % INVITE_NUM)) {
+        if (!(index % this.INVITE_NUM)) {
           if (!!index) {
             list = list.concat([stashList])
           }
@@ -413,7 +459,8 @@ export default {
     },
     isDayEnd() {
       const total = Number(this.currentTotalORBGUYAmount) || 0
-      return total <= this.taskAddressCount
+      const current = Number(this.currentORBGUYAmount) || 0
+      return total <= current
     },
     opointsProgressRatio() {
       const total = this.signDays || 0
@@ -455,6 +502,13 @@ export default {
       }, 0)
       return total
     },
+    remainAmount(){
+      const total = Number(this.currentTotalORBGUYAmount) || 0
+      const current = Number(this.currentORBGUYAmount) || 0
+
+      const remain = total - current
+      return this.decimalNumC(remain >= 0 ? remain : 0, 2, ",")
+    }
   },
   methods: {
     toBridgeCall() {
@@ -638,6 +692,24 @@ export default {
   -webkit-animation: heartBeat 6.3s ease-in-out infinite;
 }
 
+.task-orbguy-group {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  span {
+    white-space: nowrap;
+  }
+  .fcfs {
+    width: 42px;
+    height: 16px;
+    margin-left: 4px;
+    background-image: url('../../../assets/prizes/v2/fcfs.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+  }
+}
+
 .prizes-days {
   width: 100%;
   margin-top: 80px;
@@ -648,8 +720,17 @@ export default {
     line-height: 56px;
     letter-spacing: 0px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     .token-symbol {
       color: rgb(243, 186, 47);
+      margin-right: 8px;
+    }
+    .token {
+      width: 56px;
+      height: 56px;
+      padding: 8px;
     }
   }
 
@@ -661,6 +742,12 @@ export default {
     background-position: center;
     background-size: 100% 100%;
     padding: 32px;
+
+    .utc-time {
+      width: 100%;
+      text-align: right;
+      font-size: 14px;
+    }
 
     .task-card-title {
       width: 100%;
@@ -677,6 +764,14 @@ export default {
 
       .label {
         font-size: 24px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        .token {
+          width: 24px;
+          height: 24px;
+          margin: 0 4px;
+        }
       }
 
       .value {
@@ -863,7 +958,6 @@ export default {
           height: 30px;
         }
       }
-
     }
 
     .task-group {
@@ -944,20 +1038,6 @@ export default {
             padding: 0 24px;
             justify-content: space-between;
             align-items: center;
-            .task-orbguy-group {
-              display: flex;
-              justify-content: flex-start;
-              align-items: center;
-              .fcfs {
-                width: 42px;
-                height: 16px;
-                margin-left: 4px;
-                background-image: url('../../../assets/prizes/v2/fcfs.png');
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: 100% 100%;
-              }
-            }
             .orbguy-amount {
               font-family: GeneralSans-Medium;
               color: rgba(255, 255, 255, 0.6);
@@ -1154,6 +1234,12 @@ export default {
 }
 
 @media (max-width: 740px) {
+
+  .task-orbguy-group {
+    align-items: start;
+    text-align: left;
+  }
+
   #prizes-days {
     width: 100%;
     margin-top: 32px;
@@ -1161,142 +1247,93 @@ export default {
     .title {
       font-size: 24px;
       line-height: 28px;
+      .token {
+        width: 24px;
+        height: 24px;
+        padding: 4px;
+      }
     }
 
     .prizes-days-card {
+      padding: 12px;
       margin-top: 16px;
-      padding: 12px 0;
-      .card-tilte {
-        width: 100%;
+      .task-card-title {
         display: block;
-        padding: 0 12px;
-        .left {
-          text-align: left;
-          justify-content: space-between;
-          margin-right: 0;
-          label {
-            white-space: normal;
-            font-size: 16px;
-            line-height: 20px;
-          }
-        }
-
-        .orbguy-reward {
-          display: none;
-        }
-      }
-
-      .orbguy-info-mobile {
-        display: block;
-        width: 100%;
-        padding: 0 12px;
-        label {
-          color: #f3ba2f;
-          font-size: 14px;
-          line-height: 1.25;
-          letter-spacing: 0px;
-        }
-
-        .orbguy-price {
+        .label {
           font-size: 16px;
-          line-height: 20px;
-          letter-spacing: 0px;
-          text-decoration: underline;
-          color: rgba(#ffffff, 0.6);
         }
-
-        .orbguy-reward {
-          margin-top: 12px;
-          color: #222222;
-          padding: 8px 14px;
-          background-image: url('../../../assets/prizes/v2/orbguy-reward-bg.png');
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: 100% 100%;
+        .value {
           font-size: 14px;
-          font-family: GeneralSans-SemiBold;
-          line-height: 16px;
-          letter-spacing: 0px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          .token-symbol-icon {
-            width: 20px;
-            height: 20px;
-            margin: 0 4px;
-            border: 1px solid rgb(34, 34, 34);
-            border-radius: 50%;
-          }
+          justify-content: flex-start;
         }
       }
 
-      .orbguy-info {
-        display: block;
-        padding: 0 12px;
-        label {
-          font-size: 14px;
-          line-height: 1.25;
-          display: none;
-        }
-        .orbguy-price {
-          margin-top: 4px;
-        }
+      .utc-time {
+        text-align: left;
+        font-size: 12px;
       }
 
-      .tips {
-        margin-top: 8px;
-        font-size: 16px;
-        line-height: 24px;
-      }
-
-      .prizes-day-not-end {
+      .task-item-group {
         margin-top: 16px;
       }
 
+      .tips {
+        font-size: 18px;
+      }
+
       .task-group {
-        display: block;
         margin-top: 24px;
-        padding: 0 12px;
+        display: block;
         .task-card {
           width: 100%;
           margin-right: 0;
-          padding: 8px;
-          .task-card-title {
-            font-size: 16px;
-            line-height: 20px;
-          }
-          .task-item {
-            width: 32px;
-            height: 32px;
+          .task-orbguy-info {
+            padding: 8px 12px;
+            .task-orbguy-info-title {
+              text-align: left;
+              display: block;
+              .orbguy-price {
+                margin-top: 4px;
+              }
+            }
+            .task-orbguy-info-reward {
+              .reward {
+                font-size: 20px;
+                .token-symbol {
+                  width: 20px;
+                  height: 20px;
+                }
+              }
+            }
           }
 
-          .task-time-item {
-            font-size: 12px;
-            zoom: 0.87;
-            white-space: nowrap;
+          .task-orbguy-days {
+            padding: 8px 0 24px;
+            .task-orbguy-days-title {
+              padding: 12px;
+              display: block;
+
+              .orbguy-amount {
+                text-align: left;
+                margin-top: 4px;
+              }
+            }
+            .orbguy-box-group {
+              width: calc(100% - 16px);
+              .orbguy-box {
+                margin-left: 12px;
+              }
+            }
           }
         }
+
         .opoints-card {
-          width: 100%;
-          margin-right: 0;
-          padding: 8px;
-          margin-top: 8px;
-          .opoints-card-title {
-            font-size: 16px;
-            line-height: 20px;
+          margin-top: 16px;
+          .my-opoints {
+            padding: 8px 12px;
           }
-          .opoints-reward-title {
-            margin-top: 16px;
-            font-size: 16px;
-            line-height: 20px;
-          }
-          .reward-info {
-            font-size: 24px;
-            line-height: 32px;
-            .o-points-symbol {
-              width: 24px;
-              height: 24px;
-            }
+          .opoints-progress-group {
+            padding: 8px 12px 16px;
           }
         }
       }
