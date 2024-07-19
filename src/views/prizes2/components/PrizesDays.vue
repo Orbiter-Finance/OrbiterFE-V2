@@ -62,96 +62,6 @@
       </div>
 
       <div class="task-group">
-        <div class="task-card">
-          <div class="task-orbguy-info">
-            <div class="task-orbguy-info-title">
-              <div>My $ORBGUY Rewards</div>
-              <div @click="openLikwidSwap" class="orbguy-price">
-                1 ORBGUY ≈ {{ price }} ETH
-              </div>
-            </div>
-            <div class="task-orbguy-info-reward">
-              <div class="reward">
-                <svg-icon class="token-symbol" iconName="ORBGUY"></svg-icon>
-                {{ totalOrbguy }}
-              </div>
-              <div
-                :style="`opacity: ${isDraw ? '1' : '0.3'};`"
-                :class="`${
-                  isDraw ? 'prizes-to-bridge-animation' : ''
-                } draw-btn`"
-                @click="openORBGUYReward"
-              >
-                Lucky Draw
-              </div>
-            </div>
-          </div>
-          <div class="task-orbguy-days">
-            <div class="task-orbguy-days-title">
-              <o-tooltip>
-                <template v-slot:titleDesc>
-                  <div style="margin-left: -20px">
-                    <span>
-                      $ORBUGY gift boxes are distributed daily on a FCFS basis. 
-                      Participants securing the 99th, 199th, 
-                      299th, 399th, 499th, 599th, and 699th positions when
-                       drawing a gift box each day will receive a surprising $ORBGUY bonus.
-                      </span
-                    >
-                  </div>
-                </template>
-                <div class="task-orbguy-group">
-                  <span>lucky 99th,199th…,win $orguy super box!</span>
-                  <div class="fcfs"></div>
-                </div>
-              </o-tooltip>
-
-              <div class="orbguy-amount">Remaining ORBGUY: {{ remainAmount }}</div>
-            </div>
-            <div class="orbguy-box-group">
-              <div class="orbguy-box">
-                <div class="orbguy-progress-amount">
-                  <template v-for="item in list">
-                    <div
-                      class="orbguy-progress-amount-item"
-                      v-if="item.show"
-                      :key="item.userAmount"
-                      :style="`left:${item.left};`"
-                    >
-                      {{ item.userAmount }}th
-                    </div>
-                  </template>
-                </div>
-                <div class="orbguy-progress">
-                  <div class="progress-box" :style="`width: ${userLeft}`">
-                    <div class="orbiter_global_skeleton"></div>
-                  </div>
-                  <template v-for="item in list">
-                    <div
-                      class="orbguy-box-item"
-                      v-if="item.show"
-                      :key="item.index"
-                      :style="`left:${item.left};`"
-                    ></div>
-                  </template>
-
-                  <div
-                    v-if="!!Number(taskAddressCount)"
-                    class="orbguy-user-amount"
-                    :style="`left:${userLeft};`"
-                  >
-                    <img
-                      :src="require('../../../assets/prizes/v2/user-group.svg')"
-                      style="margin-right: 2px"
-                      alt=""
-                    />
-                    {{ taskAddressCount }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="opoints-card">
           <div class="my-opoints">
             <div class="opoints-reward-title">My O-Point Rewards</div>
@@ -194,6 +104,97 @@
                 class="opoints-progress-box"
                 :style="`width: ${opointsProgressRatio};`"
               ></div>
+            </div>
+          </div>
+        </div>
+        <div class="task-card">
+          <div class="task-orbguy-info">
+            <div class="task-orbguy-info-left">
+              <div class="left-title">My $ORBGUY Rewards</div>
+
+              <div class="task-orbguy-info-reward">
+                <div class="reward">
+                  <svg-icon class="token-symbol" iconName="ORBGUY"></svg-icon>
+                  {{ totalOrbguy }}
+                </div>
+                <div @click="openLikwidSwap" class="orbguy-price">
+                  1 ORBGUY ≈ {{ price }} ETH
+                </div>
+              </div>
+            </div>
+
+            <div
+              :style="`opacity: ${isDraw ? '1' : '0.3'};`"
+              :class="`${isDraw ? 'prizes-to-bridge-animation' : ''} draw-btn`"
+              @click="openORBGUYReward"
+            >
+              Draw $ORBGUY
+            </div>
+          </div>
+          <div class="task-orbguy-days">
+            <div class="task-orbguy-days-title">
+              <o-tooltip>
+                <template v-slot:titleDesc>
+                  <div style="margin-left: -20px">
+                    <span>
+                      $ORBUGY gift boxes are distributed daily on a FCFS basis.
+                      Participants securing the 99th, 199th, 299th, 399th,
+                      499th, 599th, and 699th positions when drawing a gift box
+                      each day will receive a surprising $ORBGUY bonus.
+                    </span>
+                  </div>
+                </template>
+                <div class="task-orbguy-group">
+                  <span>lucky 99th,199th…,win $orguy super box!</span>
+                  <div class="fcfs"></div>
+                </div>
+              </o-tooltip>
+
+              <div class="orbguy-amount">
+                Remaining ORBGUY: {{ remainAmount }}
+              </div>
+            </div>
+            <div class="orbguy-box-group">
+              <div class="orbguy-box">
+                <div class="orbguy-progress-amount">
+                  <template v-for="item in list">
+                    <div
+                      class="orbguy-progress-amount-item"
+                      v-if="item.show"
+                      :key="item.userAmount"
+                      :style="`left:${item.left};`"
+                    >
+                      {{ item.userAmount }}th
+                    </div>
+                  </template>
+                </div>
+                <div class="orbguy-progress">
+                  <div class="progress-box" :style="`width: ${userLeft}`">
+                    <div class="orbiter_global_skeleton"></div>
+                  </div>
+                  <template v-for="item in list">
+                    <div
+                      class="orbguy-box-item"
+                      v-if="item.show"
+                      :key="item.index"
+                      :style="`left:${item.left};`"
+                    ></div>
+                  </template>
+
+                  <div
+                    v-if="!!Number(taskAddressCount)"
+                    class="orbguy-user-amount"
+                    :style="`left:${userLeft};`"
+                  >
+                    <img
+                      :src="require('../../../assets/prizes/v2/user-group.svg')"
+                      style="margin-right: 2px"
+                      alt=""
+                    />
+                    {{ taskAddressCount }}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -502,13 +503,13 @@ export default {
       }, 0)
       return total
     },
-    remainAmount(){
+    remainAmount() {
       const total = Number(this.currentTotalORBGUYAmount) || 0
       const current = Number(this.currentORBGUYAmount) || 0
 
       const remain = total - current
-      return this.decimalNumC(remain >= 0 ? remain : 0, 2, ",")
-    }
+      return this.decimalNumC(remain >= 0 ? remain : 0, 2, ',')
+    },
   },
   methods: {
     toBridgeCall() {
@@ -700,7 +701,7 @@ export default {
     white-space: nowrap;
   }
   .fcfs {
-    width: 42px;
+    width: 110px;
     height: 16px;
     margin-left: 4px;
     background-image: url('../../../assets/prizes/v2/fcfs.png');
@@ -974,7 +975,7 @@ export default {
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
-        margin-right: 16px;
+        margin-left: 16px;
 
         .task-orbguy-info {
           width: 100%;
@@ -982,51 +983,54 @@ export default {
           border-bottom: 1px solid #4a440f;
           font-size: 16px;
           font-family: GeneralSans-SemiBold;
-          .task-orbguy-info-title {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          .task-orbguy-info-left {
+            flex: 1;
+            .left-title {
+              text-align: left;
+            }
             .orbguy-price {
               font-family: GeneralSans-Medium;
               text-decoration: underline;
               color: rgba(255, 255, 255, 0.6);
-              font-size: 14px;
+              font-size: 12px;
               white-space: nowrap;
             }
-          }
-          .task-orbguy-info-reward {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 8px;
-            .reward {
+            .task-orbguy-info-reward {
+              width: 100%;
               display: flex;
               justify-content: flex-start;
-              align-items: center;
-              font-size: 28px;
-              .token-symbol {
-                width: 32px;
-                height: 32px;
-                margin-right: 8px;
+              align-items: flex-end;
+              .reward {
+                display: flex;
+                justify-content: flex-start;
+                align-items: flex-end;
+                font-size: 28px;
+                line-height: 1;
+                margin: 8px 8px 0 0;
+                .token-symbol {
+                  width: 32px;
+                  height: 32px;
+                  margin-right: 8px;
+                }
               }
+  
             }
-
-            .draw-btn {
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              color: #010101;
-              width: 106px;
-              height: 32px;
-              background-image: url('../../../assets/prizes/v2/draw-btn-bg.png');
-              background-repeat: no-repeat;
-              background-position: center;
-              background-size: 100% 100%;
-              font-size: 14px;
-              cursor: pointer;
-            }
+          }
+          .draw-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #010101;
+            width: 160px;
+            height: 40px;
+            background-image: url('../../../assets/prizes/v2/draw-btn-bg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 100% 100%;
+            cursor: pointer;
           }
         }
 
@@ -1235,9 +1239,8 @@ export default {
 }
 
 @media (max-width: 740px) {
-
   .task-orbguy-group {
-    align-items: start;
+    display: block;
     text-align: left;
   }
 
@@ -1286,26 +1289,39 @@ export default {
         margin-top: 24px;
         display: block;
         .task-card {
+          margin-top: 16px;
           width: 100%;
-          margin-right: 0;
+          margin-left: 0;
           .task-orbguy-info {
             padding: 8px 12px;
-            .task-orbguy-info-title {
+            .task-orbguy-info-left {
               text-align: left;
               display: block;
+              .left-title {
+                white-space: nowrap;
+              }
               .orbguy-price {
                 margin-top: 4px;
               }
-            }
-            .task-orbguy-info-reward {
-              .reward {
-                font-size: 20px;
-                .token-symbol {
-                  width: 20px;
-                  height: 20px;
+              .task-orbguy-info-reward {
+                .reward {
+                  font-size: 20px;
+                  .token-symbol {
+                    width: 20px;
+                    height: 20px;
+                  }
                 }
               }
+              .task-orbguy-info-reward {
+                display: block;
+              }
             }
+            .draw-btn {
+              width: 112px;
+              height: 28px;
+              font-size: 12px;
+            }
+            
           }
 
           .task-orbguy-days {
@@ -1329,7 +1345,6 @@ export default {
         }
 
         .opoints-card {
-          margin-top: 16px;
           .my-opoints {
             padding: 8px 12px;
           }
