@@ -15,9 +15,7 @@
         </div>
       </div>
       <div class="orbguy-info-mobile">
-        <label>
-          Lucky 99th, 199th..., Win $100 $ORBGUY lucky bag pack!
-        </label>
+        <label> Lucky 99th, 199th..., Win $100 $ORBGUY lucky bag pack! </label>
         <div class="orbguy-reward">
           Your Rewards: +{{ totalOrbguy }}
           <svg-icon class="token-symbol-icon" iconName="ORBGUY"></svg-icon>
@@ -25,10 +23,10 @@
         </div>
       </div>
       <div class="orbguy-info">
-        <label>
-          Win $ORBGUY lucky bag!
-        </label>
-        <div @click="openLikwidSwap" class="orbguy-price">1 ORBGUY ≈ {{ price }} ETH</div>
+        <label> Win $ORBGUY lucky bag! </label>
+        <div @click="openLikwidSwap" class="orbguy-price">
+          1 ORBGUY ≈ {{ price }} ETH
+        </div>
       </div>
 
       <div class="orbguy-box-group">
@@ -46,12 +44,9 @@
             </template>
           </div>
           <div class="orbguy-progress">
-            <div
-              class="progress-box"
-              :style="`width: calc(${userLeft} - 3px)`"
-            >
-            <div class="orbiter_global_skeleton"></div>
-          </div>
+            <div class="progress-box" :style="`width: calc(${userLeft} - 3px)`">
+              <div class="orbiter_global_skeleton"></div>
+            </div>
             <template v-for="item in list">
               <div
                 class="orbguy-box-item"
@@ -85,13 +80,20 @@
           isDayEnd ? 'prizes-day-end' : 'prizes-day-not-end'
         }`"
       >
-        <div
-          :class="`${isDraw ? 'prizes-to-bridge-animation' :''} prizes-to-bridge-btn`"
-          :style="`opacity: ${isDraw ? '1' : '0.3'};`"
-          @click="openORBGUYReward"
-        >
-          Lucky Draw <svg-icon style="width:24px;height:24px;margin-left:4px;" iconName="ORBGUY"></svg-icon>
-        </div>
+          <div
+            :class="`${
+              isDraw ? 'prizes-to-bridge-animation' : ''
+            } prizes-to-bridge-btn`"
+            :style="`opacity: ${isDraw ? '1' : '0.3'};`"
+            @click="openORBGUYReward"
+          >
+            {{ drawBtnLabel }}
+            <svg-icon
+              style="width: 24px; height: 24px; margin-left: 4px"
+              iconName="ORBGUY"
+              v-if="drawBtnStatus !== 2"
+            ></svg-icon>
+          </div>
       </div>
 
       <div class="task-group">
@@ -126,25 +128,31 @@
           </template>
         </div>
         <div class="opoints-card">
-          <div class="opoints-card-title">
-            Earn up to 420 O-Points
-          </div>
+          <div class="opoints-card-title">Earn up to 420 O-Points</div>
           <div class="opoints-group">
             <div
-              :class="`${item.days ? 'opoints-item' : 'opoints-item-empty'} ${item.isBounce ? 'bounce' : ''}`"
+              :class="`${item.days ? 'opoints-item' : 'opoints-item-empty'} ${
+                item.isBounce ? 'bounce' : ''
+              }`"
               v-for="item in opointsList"
               :key="item.days"
-              :style="`background-image: url(${item.days ? require(`../../../assets/prizes/v2/opoints${item.reward}.png`) : ''});`"
+              :style="`background-image: url(${
+                item.days
+                  ? require(`../../../assets/prizes/v2/opoints${item.reward}.png`)
+                  : ''
+              });`"
             ></div>
           </div>
           <div class="opoints-progress">
             <div
-              :class="`${item.days ? 'opoints-day-item' :'opoints-day-item-empty'} ${
-               item.days ? (
-                item.isSuccess
-                  ? ' opoints-day-item-success'
-                  : 'opoints-day-item-base'
-               ) : ''
+              :class="`${
+                item.days ? 'opoints-day-item' : 'opoints-day-item-empty'
+              } ${
+                item.days
+                  ? item.isSuccess
+                    ? ' opoints-day-item-success'
+                    : 'opoints-day-item-base'
+                  : ''
               }`"
               v-for="item in opointsList"
               :key="item.days"
@@ -245,14 +253,13 @@ export default {
         }
       })
       return count
-
     },
     opointsList() {
       const total = this.signDays
       return [
         {
           days: 0,
-          reward: 0
+          reward: 0,
         },
         {
           prev: 0,
@@ -278,7 +285,7 @@ export default {
         return {
           ...item,
           isSuccess: total >= item.days,
-          isBounce: total < item.days && total >= item.prev
+          isBounce: total < item.days && total >= item.prev,
         }
       })
     },
@@ -322,11 +329,26 @@ export default {
       )?.filter((item) => item.name === 'orbguy')?.[0]
       return option?.amount || '0'
     },
-    isDraw() {
-      return (
-        Number(this.currentTxamount) >= 3 &&
+    drawBtnStatus() {
+      if(Number(this.currentTxamount) < 3 ) {
+        return 0
+      } else if(Number(this.currentTxamount) >= 3 &&
         !Number(this.orbguyAmount) &&
         !this.isDayEnd &&
+        !this.isDrawLoading &&
+        !this.isEnd) {
+          return 1
+        } else {
+          return 2
+        }
+    },
+    drawBtnLabel() {
+      return ['lucky draw', 'lucky draw', 'keep bridge to earn more'][this.drawBtnStatus]
+    },
+    isDraw() {
+
+      return (
+        (this.drawBtnStatus !== 1) &&
         !this.isDrawLoading &&
         !this.isEnd
       )
@@ -530,7 +552,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 @keyframes heartBeat {
   0% {
     transform: scale(1);
@@ -584,8 +605,8 @@ export default {
 }
 
 .bounce {
-    animation: bounce 5s  infinite;
-    -webkit-animation: bounce 5s  infinite;
+  animation: bounce 5s infinite;
+  -webkit-animation: bounce 5s infinite;
   transform-origin: center bottom;
 }
 
@@ -820,8 +841,8 @@ export default {
       }
 
       .prizes-to-bridge-animation {
-        animation: heartBeat 6.3s  ease-in-out infinite;
-        -webkit-animation: heartBeat 6.3s  ease-in-out infinite;
+        animation: heartBeat 6.3s ease-in-out infinite;
+        -webkit-animation: heartBeat 6.3s ease-in-out infinite;
       }
     }
 
