@@ -3,7 +3,7 @@
     <div class="rule-title">Terms and Conditions</div>
     <div class="prizes-rule-card">
       <div v-for="(item, index) in ruleList" :key="index">
-        <div class="card-label" v-html="item.label"></div>
+        <div class="card-label">{{ item.label }}</div>
         <div
           class="card-rule-text"
           v-for="(option, idx) in item.text"
@@ -51,26 +51,26 @@ export default {
           ],
         },
         {
-          label: '4. How to Share $200,000 value of $BNB and get 0 Bridging-Fee?',
+          label: '4. How to Share 200$BNB and get 0 Bridging-Fee?',
           text: [
-            '- The top 100 users in the bridging competition will share an $200,000 value of $BNB prize pool. Additionally, the top 10 users will receive a 0 Bridging Fee extra reward.',
+            '- The top 300 users in the bridging competition will share a 200 $BNB prize pool. Additionally, the top 10 users will receive a 0 Bridging Fee extra reward.',
             '- We will rebate all bridging fees ($2/tx) except for gas fees.'
           ],
         },
         {
-          label: '<span class="orbiter_global_prizes_rule_tag">5. What is the 0 Bridging Fee Reward?</span>',
+          label: '5. What is the 0 Bridging Fee Reward?',
           text: [
             '- For the top 10 users, all bridging fees ($2/tx) except for gas fees will be rebated.',
           ],
         },
         {
-          label: '<span class="orbiter_global_prizes_rule_tag">6. What is the rule of ranking?</span>',
+          label: '6. What is the rule of ranking?',
           text: [
             '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value from largest to smallest. More transactions, greater chance to win!',
           ],
         },
         {
-          label: '<span class="orbiter_global_prizes_rule_tag">7. When will the rewards be distributed?</span>',
+          label: '7. When will the rewards be distributed?',
           text: [
             '- All rewards will be distributed when the competition ends, including $ORBGUY, BNB prize pool and top 10 winners\' all bridging fees.',
           ],

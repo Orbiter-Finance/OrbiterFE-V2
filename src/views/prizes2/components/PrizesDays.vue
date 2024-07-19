@@ -1009,6 +1009,7 @@ export default {
               display: flex;
               justify-content: flex-start;
               align-items: flex-end;
+              margin-top: 10px;
               .reward {
                 display: flex;
                 justify-content: flex-start;
@@ -1310,6 +1311,7 @@ export default {
                 margin-top: 4px;
               }
               .task-orbguy-info-reward {
+                display: block;
                 .reward {
                   font-size: 20px;
                   .token-symbol {
@@ -1317,9 +1319,6 @@ export default {
                     height: 20px;
                   }
                 }
-              }
-              .task-orbguy-info-reward {
-                display: block;
               }
             }
             .draw-btn {

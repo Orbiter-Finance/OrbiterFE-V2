@@ -2,8 +2,7 @@
   <div class="prizes-user" id="prizes-user">
     <div class="title-group">
       <div class="user-title">
-        <span>$120,000</span>
-         value of
+        <span>200</span>
          <svg-icon class="token" iconName="BNB"></svg-icon>
          $BNB for top 300</div>
     </div>
