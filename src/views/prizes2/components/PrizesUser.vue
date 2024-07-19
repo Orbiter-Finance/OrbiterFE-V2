@@ -5,8 +5,7 @@
     </div>
     <div class="title-group">
       <div class="vice-title">
-        <span>0 bridging fee </span> for
-        <span>top 10</span>
+       0 bridging fee for top 10
       </div>
     </div>
 

@@ -20,22 +20,14 @@
           class="reward-amount reward-amount-default"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          +{{
-            decimalNumC(
-              (Number(item.reward) || 0),
-              2,
-              ','
-            )
-          }}
+          +{{ decimalNumC(Number(item.reward) || 0, 2, ',') }}
           {{ item.symbol }}
         </div>
         <div
           class="reward-total-amount"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-        ≈ ${{
-            decimalNumC(item.uAmount, 2, ',')
-          }}
+          ≈ ${{ decimalNumC(item.uAmount, 2, ',') }}
         </div>
       </div>
     </div>
@@ -68,13 +60,7 @@
             class="user-reward-amount"
             :style="`color: ${item.color};background-image: ${item.bg};`"
           >
-            +{{
-              decimalNumC(
-                (Number(item.reward) || 0),
-                2,
-                ','
-              )
-            }}
+            +{{ decimalNumC(Number(item.reward) || 0, 2, ',') }}
             {{ item.symbol }}
           </div>
         </div>
@@ -87,8 +73,7 @@
         <div class="cumulative-tx">Total Transaction</div>
         <div class="emit-reward">Estimated earnings</div>
       </div>
-      <div v-if="!rankData.length">
-      </div>
+      <div v-if="!rankData.length"></div>
       <div
         v-else
         class="rank-list-item rank-list-card-item"
@@ -104,22 +89,18 @@
         </div>
         <div class="cumulative-tx">
           {{ decimalNumC(item.txAmount, 0, ',') }} tx
+          <img
+            v-if="Number(item.rank) <= 10"
+            class="bridge-fee-image"
+            :src="require('../../../assets/prizes/v2/bridge-fee.png')"
+          />
         </div>
         <div class="emit-reward">
           <div>
-            +{{
-              decimalNumC(
-                (Number(item.reward.amount) || 0),
-                2,
-                ','
-              )
-            }}
+            +{{ decimalNumC(Number(item.reward.amount) || 0, 2, ',') }}
             {{ item.reward.name }}
           </div>
-          <span>≈ ${{
-              decimalNumC(item.reward.uAmount, 2, ',')
-            }}</span
-          >
+          <span>≈ ${{ decimalNumC(item.reward.uAmount, 2, ',') }}</span>
         </div>
       </div>
       <div class="pagination-group">
@@ -143,9 +124,7 @@ import { decimalNum } from '../../../util/decimalNum'
 
 export default {
   name: 'PrizesRank',
-
-  
-    SvgIcondata() {
+  data() {
     return {
       current: 1,
     }
@@ -168,7 +147,7 @@ export default {
           rank: '2',
           bg: 'linear-gradient(180.00deg, rgb(232, 235, 237),rgb(157, 211, 211))',
           color: 'rgba(192, 238, 239, 0.6)',
-          symbol: next?.reward?.name || "",
+          symbol: next?.reward?.name || '',
           refund: next?.refund || 0,
         },
         {
@@ -179,7 +158,7 @@ export default {
           rank: '1',
           bg: 'linear-gradient(0.00deg, rgb(255, 195, 17),rgb(243, 232, 66))',
           color: 'rgba(255, 209, 102, 0.6)',
-          symbol: first?.reward?.name || "",
+          symbol: first?.reward?.name || '',
           refund: first?.refund || 0,
         },
         {
@@ -190,7 +169,7 @@ export default {
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
           color: 'rgba(232, 178, 134, 0.6)',
-          symbol: last?.reward?.name || "",
+          symbol: last?.reward?.name || '',
           refund: last?.refund || 0,
         },
       ]
@@ -335,6 +314,7 @@ export default {
     .rank-top-1 {
       width: 320px;
       height: 440px;
+      padding-top: 24px;
       background-image: url(../../../assets/prizes/v2/top1.png);
       .rank-top-img {
         width: 120px;
@@ -474,6 +454,13 @@ export default {
 
       .cumulative-tx {
         width: 30%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        .bridge-fee-image {
+          width: 95px;
+          height: 20px;
+        }
       }
 
       .emit-reward {
@@ -616,7 +603,12 @@ export default {
           width: 40px;
         }
         .cumulative-tx {
-          width: 20%;
+          width: 30%;
+          display: block;
+          .bridge-fee-image {
+            width: 72px;
+            height: 16px;
+          }
         }
         .emit-reward {
           white-space: nowrap;

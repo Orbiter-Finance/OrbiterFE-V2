@@ -80,20 +80,20 @@
           isDayEnd ? 'prizes-day-end' : 'prizes-day-not-end'
         }`"
       >
-          <div
-            :class="`${
-              isDraw ? 'prizes-to-bridge-animation' : ''
-            } prizes-to-bridge-btn`"
-            :style="`opacity: ${isDraw ? '1' : '0.3'};`"
-            @click="openORBGUYReward"
-          >
-            {{ drawBtnLabel }}
-            <svg-icon
-              style="width: 24px; height: 24px; margin-left: 4px"
-              iconName="ORBGUY"
-              v-if="drawBtnStatus !== 2"
-            ></svg-icon>
-          </div>
+        <div
+          :class="`${
+            isDraw ? 'prizes-to-bridge-animation' : ''
+          } prizes-to-bridge-btn`"
+          :style="`opacity: ${isDraw ? '1' : '0.3'};`"
+          @click="openORBGUYReward"
+        >
+          {{ drawBtnLabel }}
+          <svg-icon
+            style="width: 24px; height: 24px; margin-left: 4px"
+            iconName="ORBGUY"
+            v-if="drawBtnStatus !== 2"
+          ></svg-icon>
+        </div>
       </div>
 
       <div class="task-group">
@@ -128,47 +128,50 @@
           </template>
         </div>
         <div class="opoints-card">
-          <div class="opoints-card-title">Earn up to 420 O-Points</div>
-          <div class="opoints-group">
-            <div
-              :class="`${item.days ? 'opoints-item' : 'opoints-item-empty'} ${
-                item.isBounce ? 'bounce' : ''
-              }`"
-              v-for="item in opointsList"
-              :key="item.days"
-              :style="`background-image: url(${
-                item.days
-                  ? require(`../../../assets/prizes/v2/opoints${item.reward}.png`)
-                  : ''
-              });`"
-            ></div>
-          </div>
-          <div class="opoints-progress">
-            <div
-              :class="`${
-                item.days ? 'opoints-day-item' : 'opoints-day-item-empty'
-              } ${
-                item.days
-                  ? item.isSuccess
-                    ? ' opoints-day-item-success'
-                    : 'opoints-day-item-base'
-                  : ''
-              }`"
-              v-for="item in opointsList"
-              :key="item.days"
-            >
-              <span v-if="item.days">{{ item.days }} Days</span>
+          <div class="my-opoints">
+            <div class="opoints-reward-title">My O-Point Rewards</div>
+            <div class="reward-info">
+              <svg-icon iconName="O-Points" class="o-points-symbol"></svg-icon>
+              {{ totalOpoints }}
             </div>
-            <div
-              class="opoints-progress-box"
-              :style="`width: ${opointsProgressRatio};`"
-            ></div>
           </div>
-
-          <div class="opoints-reward-title">O-Point Rewards</div>
-          <div class="reward-info">
-            <svg-icon iconName="O-Points" class="o-points-symbol"></svg-icon>
-            {{ totalOpoints }}
+          <div class="opoints-progress-group">
+            <div class="opoints-card-title">Earn up to 420 O-Points</div>
+            <div class="opoints-group">
+              <div
+                :class="`${item.days ? 'opoints-item' : 'opoints-item-empty'} ${
+                  item.isBounce ? 'bounce' : ''
+                }`"
+                v-for="item in opointsList"
+                :key="item.days"
+                :style="`background-image: url(${
+                  item.days
+                    ? require(`../../../assets/prizes/v2/opoints${item.reward}.png`)
+                    : ''
+                });`"
+              ></div>
+            </div>
+            <div class="opoints-progress">
+              <div
+                :class="`${
+                  item.days ? 'opoints-day-item' : 'opoints-day-item-empty'
+                } ${
+                  item.days
+                    ? item.isSuccess
+                      ? ' opoints-day-item-success'
+                      : 'opoints-day-item-base'
+                    : ''
+                }`"
+                v-for="item in opointsList"
+                :key="item.days"
+              >
+                <span v-if="item.days">{{ item.days }} Days</span>
+              </div>
+              <div
+                class="opoints-progress-box"
+                :style="`width: ${opointsProgressRatio};`"
+              ></div>
+            </div>
           </div>
         </div>
       </div>
@@ -306,6 +309,14 @@ export default {
       })?.[0]
       return option?.id
     },
+    currentInfoOption() {
+      const taskId = this.taskId
+      const list = this.taskList
+      const option = list.filter((item) => {
+        return item.id === taskId
+      })?.[0]
+      return option
+    },
     currentDetailsOption() {
       const taskId = this.taskId
       const list = this.projectTaskDetailsList
@@ -330,28 +341,27 @@ export default {
       return option?.amount || '0'
     },
     drawBtnStatus() {
-      if(Number(this.currentTxamount) < 3 ) {
+      if (Number(this.currentTxamount) < 3) {
         return 0
-      } else if(Number(this.currentTxamount) >= 3 &&
+      } else if (
+        Number(this.currentTxamount) >= 3 &&
         !Number(this.orbguyAmount) &&
         !this.isDayEnd &&
         !this.isDrawLoading &&
-        !this.isEnd) {
-          return 1
-        } else {
-          return 2
-        }
+        !this.isEnd
+      ) {
+        return 1
+      } else {
+        return 2
+      }
     },
     drawBtnLabel() {
-      return ['lucky draw', 'lucky draw', 'keep bridge to earn more'][this.drawBtnStatus]
+      return ['lucky draw', 'lucky draw', 'keep bridge to earn more'][
+        this.drawBtnStatus
+      ]
     },
     isDraw() {
-
-      return (
-        (this.drawBtnStatus !== 1) &&
-        !this.isDrawLoading &&
-        !this.isEnd
-      )
+      return this.drawBtnStatus === 1 && !this.isDrawLoading && !this.isEnd
     },
     currentTxamount() {
       const currentOption = this.currentUserOption
@@ -405,8 +415,14 @@ export default {
 
       return list
     },
+    currentTotalORBGUYAmount() {
+      const list = this.currentInfoOption?.rewards || []
+      const option = list.filter((item) => item?.rule?.name === 'orbguy')?.[0]
+      return option?.rule?.limit?.amount || 0
+    },
     isDayEnd() {
-      return this.taskAddressCount >= 707
+      const total = Number(this.currentTotalORBGUYAmount) || 0
+      return total <= this.taskAddressCount
     },
     opointsProgressRatio() {
       const total = this.signDays || 0
@@ -924,137 +940,142 @@ export default {
 
       .opoints-card {
         flex: 1;
-        padding: 16px 24px;
         background-image: url('../../../assets/prizes/v2/opoints-card-bg.png');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
 
-        .opoints-card-title {
+        .my-opoints {
           width: 100%;
-          font-size: 20px;
-          font-family: GeneralSans-SemiBold;
-          line-height: 28px;
-          letter-spacing: 0px;
-          text-align: left;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          .svg {
-            width: 28px;
-            height: 28px;
-            margin-left: 8px;
+          padding: 20px 24px;
+          border-bottom: 1px solid #4a440f;
+          .opoints-reward-title {
+            font-family: GeneralSans-SemiBold;
+            line-height: 24px;
+            letter-spacing: 0px;
+            text-align: left;
           }
-        }
-
-        .opoints-group {
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-
-          .opoints-item-empty {
-            width: 0px;
-          }
-
-          .opoints-item {
-            width: 54px;
-            height: 48px;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 100% 100%;
-            margin-top: 16px;
-          }
-        }
-
-        .opoints-progress {
-          width: 100%;
-          margin-top: 12px;
-          border-radius: 999px;
-          height: 10px;
-          background: rgb(44, 35, 9);
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          position: relative;
-          top: 0;
-          left: 0;
-
-          .opoints-progress-box {
-            background: linear-gradient(
-              to right,
-              rgb(255, 195, 17),
-              rgb(243, 232, 66)
-            );
-            border-radius: 999px;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 12px;
-            left: 0;
-            z-index: 0;
-          }
-
-          .opoints-day-item-empty {
-            width: 0px;
-          }
-
-          .opoints-day-item {
+          .reward-info {
+            margin-top: 8px;
+            width: 100%;
             display: flex;
-            justify-content: center;
+            justify-content: start;
+            align-items: center;
+            font-size: 32px;
+            font-family: GeneralSans-SemiBold;
+            line-height: 40px;
+            letter-spacing: 0px;
+            .o-points-symbol {
+              width: 32px;
+              height: 32px;
+              margin-right: 4px;
+            }
+          }
+        }
+
+        .opoints-progress-group {
+          width: 100%;
+          padding: 20px 24px;
+          .opoints-card-title {
+            width: 100%;
+            font-family: GeneralSans-SemiBold;
+            line-height: 24px;
+            letter-spacing: 0px;
+            text-align: left;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            .svg {
+              width: 28px;
+              height: 28px;
+              margin-left: 8px;
+            }
+          }
+
+          .opoints-group {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .opoints-item-empty {
+              width: 0px;
+            }
+
+            .opoints-item {
+              width: 54px;
+              height: 48px;
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: 100% 100%;
+              margin-top: 16px;
+            }
+          }
+
+          .opoints-progress {
+            width: 100%;
+            margin-top: 12px;
+            border-radius: 999px;
+            height: 10px;
+            background: rgb(44, 35, 9);
+            display: flex;
+            justify-content: space-between;
             align-items: center;
             position: relative;
             top: 0;
             left: 0;
-            z-index: 1;
-            width: 50px;
-            height: 20px;
-            border-radius: 999px;
-            font-size: 12px;
-            font-family: GeneralSans-Medium;
-            line-height: 20px;
-            letter-spacing: 0px;
-          }
 
-          .opoints-day-item-base {
-            color: rgba(243, 186, 47, 0.6);
-            background: rgb(44, 35, 9);
-            border: 2px solid rgb(1, 1, 1);
-          }
+            .opoints-progress-box {
+              background: linear-gradient(
+                to right,
+                rgb(255, 195, 17),
+                rgb(243, 232, 66)
+              );
+              border-radius: 999px;
+              position: absolute;
+              top: 50%;
+              transform: translateY(-50%);
+              height: 12px;
+              left: 0;
+              z-index: 0;
+            }
 
-          .opoints-day-item-success {
-            background: linear-gradient(
-              to right,
-              rgb(255, 195, 17),
-              rgb(243, 232, 66)
-            );
-            color: rgb(1, 1, 1);
-            font-family: GeneralSans-SemiBold;
-          }
-        }
+            .opoints-day-item-empty {
+              width: 0px;
+            }
 
-        .opoints-reward-title {
-          margin-top: 28px;
-          font-size: 20px;
-          font-family: GeneralSans-SemiBold;
-          line-height: 28px;
-          letter-spacing: 0px;
-          text-align: left;
-        }
-        .reward-info {
-          margin-top: 8px;
-          width: 100%;
-          display: flex;
-          justify-content: start;
-          align-items: center;
-          font-size: 32px;
-          font-family: GeneralSans-SemiBold;
-          line-height: 40px;
-          letter-spacing: 0px;
-          .o-points-symbol {
-            width: 32px;
-            height: 32px;
-            margin-right: 4px;
+            .opoints-day-item {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              position: relative;
+              top: 0;
+              left: 0;
+              z-index: 1;
+              width: 50px;
+              height: 20px;
+              border-radius: 999px;
+              font-size: 12px;
+              font-family: GeneralSans-Medium;
+              line-height: 20px;
+              letter-spacing: 0px;
+            }
+
+            .opoints-day-item-base {
+              color: rgba(243, 186, 47, 0.6);
+              background: rgb(44, 35, 9);
+              border: 2px solid rgb(1, 1, 1);
+            }
+
+            .opoints-day-item-success {
+              background: linear-gradient(
+                to right,
+                rgb(255, 195, 17),
+                rgb(243, 232, 66)
+              );
+              color: rgb(1, 1, 1);
+              font-family: GeneralSans-SemiBold;
+            }
           }
         }
       }
