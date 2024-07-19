@@ -8,6 +8,7 @@
         <PrizesUser></PrizesUser>
         <PrizesRank></PrizesRank>
         <PrizesRule></PrizesRule>
+        <!-- <PrizesUserBall></PrizesUserBall> -->
       </div>
     </div>
   </div>
@@ -18,10 +19,11 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 
 import PrizesTopNav from './components/PrizesTopNav.vue'
 import PrizesTopBanner from './components/PrizesTopBanner.vue'
-import PrizesDays from "./components/PrizesDays.vue"
+import PrizesDays from './components/PrizesDays.vue'
 import PrizesUser from './components/PrizesUser.vue'
 import PrizesRank from './components/PrizesRank.vue'
 import PrizesRule from './components/PrizesRule.vue'
+// import PrizesUserBall from './components/PrizesUserBall.vue'
 
 export default {
   name: 'Prizes2',
@@ -32,6 +34,7 @@ export default {
     PrizesUser,
     PrizesRank,
     PrizesRule,
+    // PrizesUserBall,
   },
   computed: {
     evmAddress() {
@@ -43,7 +46,6 @@ export default {
     this.$store.commit('getPrizesV2ProjectInfo')
     this.$store.commit('getPrizesV2ProjectRank')
     this.getUserReward()
-
   },
   watch: {
     evmAddress(item1, item2) {

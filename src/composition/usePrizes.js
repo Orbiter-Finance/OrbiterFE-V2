@@ -56,4 +56,4 @@ export const setPrizesV2TotalOrbguy = (flag) =>
 export const setPrizesV2UserList = (flag) => (prizesV2UserList.value = flag)
 export const setPrizesV2ProjectTime = (flag) =>
   (prizesV2ProjectTime.value = flag)
-export const setPrizesv2TimeEnd = (flag) => (prizesV2TimeEnd.value = flag)
+export const setPrizesV2TimeEnd = (flag) => (prizesV2TimeEnd.value = flag)

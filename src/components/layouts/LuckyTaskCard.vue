@@ -178,6 +178,7 @@ export default {
   },
 
   methods: {
+
     openLuckyReward() {
       const list = this.luckyBagUserInfo || []
       let total = 0

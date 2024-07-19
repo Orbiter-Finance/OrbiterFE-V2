@@ -1,12 +1,15 @@
 <template>
   <div class="prizes-user" id="prizes-user">
     <div class="title-group">
-      <div class="user-title"><span>$200,000</span> value of $BNB for top 300</div>
+      <div class="user-title">
+        <span>$120,000</span>
+         value of
+         <svg-icon class="token" iconName="BNB"></svg-icon>
+         $BNB for top 300</div>
     </div>
     <div class="title-group">
       <div class="vice-title">
-        <span>0 bridging fee </span> for
-        <span>top 10</span>
+       0 bridging fee for top 10
       </div>
     </div>
 
@@ -110,8 +113,18 @@ export default {
     font-family: GeneralSans-SemiBold;
     line-height: 56px;
     letter-spacing: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
     span {
       color: #f3ba2f;
+      margin-right: 8px;
+    }
+    .token {
+      width: 56px;
+      height: 56px;
+      margin: 0 8px;
     }
   }
 
@@ -180,9 +193,13 @@ export default {
       width: 100%;
     }
     .user-title {
-      width: 80%;
+      width: 100%;
       font-size: 24px;
       line-height: 28px;
+      .token {
+        width: 24px;
+        height: 24px;
+      }
     }
     .vice-title {
       margin-top: 16px;

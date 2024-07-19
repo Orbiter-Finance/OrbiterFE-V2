@@ -20,23 +20,14 @@
           class="reward-amount reward-amount-default"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          +{{
-            decimalNumC(
-              (Number(item.reward) || 0) + (Number(item.refund) || 0),
-              2,
-              ','
-            )
-          }}
+          +{{ decimalNumC(Number(item.reward) || 0, 2, ',') }}
           {{ item.symbol }}
         </div>
         <div
           class="reward-total-amount"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          ${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
-            decimalNumC(item.reward, 2, ',')
-          }}
-          {{ item.symbol }}
+          ≈ ${{ decimalNumC(item.uAmount, 2, ',') }}
         </div>
       </div>
     </div>
@@ -69,13 +60,7 @@
             class="user-reward-amount"
             :style="`color: ${item.color};background-image: ${item.bg};`"
           >
-            +${{
-              decimalNumC(
-                (Number(item.reward) || 0) + (Number(item.refund) || 0),
-                2,
-                ','
-              )
-            }}
+            +{{ decimalNumC(Number(item.reward) || 0, 2, ',') }}
             {{ item.symbol }}
           </div>
         </div>
@@ -85,13 +70,31 @@
       <div class="rank-list-header rank-list-card-item">
         <div class="ranking">Rank</div>
         <div class="user-address">User</div>
-        <div class="cumulative-tx">Total Transaction</div>
+        <div class="cumulative-tx">
+          Total Transaction
+        </div>
         <div class="emit-reward">Estimated earnings</div>
       </div>
-      <div v-if="!rankData.length">
+      <div class="rank-list-item rank-list-card-item rank-user-item">
+        <div class="ranking">
+          <div>{{ userRank }}</div>
+        </div>
+        <div class="user-address">My Account</div>
+        <div class="cumulative-tx">
+          {{ decimalNumC(txTotal, 0, ',') }} tx
+          <img
+            v-if="Number(userRank) <= 10"
+            class="bridge-fee-image"
+            :src="require('../../../assets/prizes/v2/bridge-fee.png')"
+          />
+        </div>
+        <div class="emit-reward">
+          <div>
+            {{ estiReward }}
+          </div>
+        </div>
       </div>
       <div
-        v-else
         class="rank-list-item rank-list-card-item"
         v-for="(item, index) in rankData"
         :key="index"
@@ -105,24 +108,28 @@
         </div>
         <div class="cumulative-tx">
           {{ decimalNumC(item.txAmount, 0, ',') }} tx
+
+          <o-tooltip>
+            <template v-slot:titleDesc>
+              <div style="margin-left: -20px">
+                <span >Bridging fee will be rebated when the competition ends.</span
+                >
+              </div>
+            </template>
+            <img
+            v-if="Number(item.rank) <= 10"
+            class="bridge-fee-image"
+            :src="require('../../../assets/prizes/v2/bridge-fee.png')"
+          />
+          </o-tooltip>
+          
         </div>
         <div class="emit-reward">
           <div>
-            +${{
-              decimalNumC(
-                (Number(item.reward.amount) || 0) + (Number(item.refund) || 0),
-                2,
-                ','
-              )
-            }}
+            +{{ decimalNumC(Number(item.reward.amount) || 0, 2, ',') }}
             {{ item.reward.name }}
           </div>
-          <span
-            >${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
-              decimalNumC(item.reward.amount, 2, ',')
-            }}
-            {{ item.reward.name }}</span
-          >
+          <span>≈ ${{ decimalNumC(item.reward.uAmount, 2, ',') }}</span>
         </div>
       </div>
       <div class="pagination-group">
@@ -140,15 +147,19 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
-import { isMobile, prizesV2RankList } from '../../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+import {
+  isMobile,
+  prizesV2RankList,
+  prizesV2UserList,
+  prizesV2UserRank,
+} from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
+import { estimateContractGas } from 'viem/actions'
 
 export default {
   name: 'PrizesRank',
-
-  
-    SvgIcondata() {
+  data() {
     return {
       current: 1,
     }
@@ -167,30 +178,33 @@ export default {
           tx: this.decimalNumC(next?.txAmount, 0, ','),
           address: this.shortAddress(next?.address, this.isMobile ? 4 : 6),
           reward: next?.reward?.amount || 0,
+          uAmount: next?.reward?.uAmount || 0,
           rank: '2',
           bg: 'linear-gradient(180.00deg, rgb(232, 235, 237),rgb(157, 211, 211))',
           color: 'rgba(192, 238, 239, 0.6)',
-          symbol: next?.reward?.name || "",
+          symbol: next?.reward?.name || '',
           refund: next?.refund || 0,
         },
         {
           tx: this.decimalNumC(first?.txAmount, 0, ','),
           address: this.shortAddress(first?.addres, this.isMobile ? 4 : 6),
           reward: first?.reward?.amount || 0,
+          uAmount: first?.reward?.uAmount || 0,
           rank: '1',
           bg: 'linear-gradient(0.00deg, rgb(255, 195, 17),rgb(243, 232, 66))',
           color: 'rgba(255, 209, 102, 0.6)',
-          symbol: first?.reward?.name || "",
+          symbol: first?.reward?.name || '',
           refund: first?.refund || 0,
         },
         {
           tx: this.decimalNumC(last?.txAmount, 0, ','),
           address: this.shortAddress(last?.address, this.isMobile ? 4 : 6),
           reward: last?.reward?.amount || 0,
+          uAmount: last?.reward?.uAmount || 0,
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
           color: 'rgba(232, 178, 134, 0.6)',
-          symbol: last?.reward?.name || "",
+          symbol: last?.reward?.name || '',
           refund: last?.refund || 0,
         },
       ]
@@ -224,6 +238,39 @@ export default {
       const len = idx * 10
       return this.rankList.slice(len, len + 10)
     },
+    userList() {
+      return prizesV2UserList.value
+    },
+    userRank() {
+      return prizesV2UserRank.value || '--'
+    },
+    txTotal() {
+      const list = this.userList
+      const total = list?.reduce((prev, item) => {
+        return prev + Number(item?.task_result || 0)
+      }, 0)
+      return total
+    },
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
+    estiReward() {
+      const list = this.rankList
+      const option = list.filter(
+        (item) =>
+          item.address?.toLocaleLowerCase() ===
+          this.evmAddress?.toLocaleLowerCase()
+      )?.[0]
+      const amount = option?.reward?.amount
+      const symbol = option?.reward?.name
+      return Number(amount)
+        ? `${this.decimalNumC(amount, 2, ',')}  ${symbol}`
+        : '--'
+    },
+    userAddress() {
+      const address = this.evmAddress
+      return address ? shortenAddress(address) : '--'
+    },
   },
   methods: {
     curChange(cur) {
@@ -245,6 +292,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.thumbnail_1_3 {
+  width: 16px;
+  height: 16px;
+  circle {
+    fill: rgba(255, 255, 255, 0.6) !important;
+  }
+}
 .prizes-rank {
   width: 100%;
   margin-top: 44px;
@@ -335,6 +389,7 @@ export default {
     .rank-top-1 {
       width: 320px;
       height: 440px;
+      padding-top: 24px;
       background-image: url(../../../assets/prizes/v2/top1.png);
       .rank-top-img {
         width: 120px;
@@ -454,6 +509,10 @@ export default {
     border: 1px solid rgba(243, 223, 47, 0.3);
     background: rgb(1, 1, 1);
 
+    .rank-user-item {
+      background: rgba(248, 217, 46, 0.1);
+    }
+
     .rank-list-card-item {
       width: 100%;
       padding: 14px 32px;
@@ -474,6 +533,13 @@ export default {
 
       .cumulative-tx {
         width: 30%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        .bridge-fee-image {
+          width: 95px;
+          height: 20px;
+        }
       }
 
       .emit-reward {
@@ -535,6 +601,7 @@ export default {
 
     .rank-list-item {
       font-family: GeneralSans-SemiBold;
+      height: 76px;
       .emit-reward {
         color: #ffd166;
         span {
@@ -607,6 +674,9 @@ export default {
       .rank-list-header {
         display: none;
       }
+      .rank-list-item {
+        height: 54px;
+      }
       .rank-list-card-item {
         padding: 6px 12px;
         .ranking {
@@ -616,7 +686,12 @@ export default {
           width: 40px;
         }
         .cumulative-tx {
-          width: 20%;
+          width: 30%;
+          display: block;
+          .bridge-fee-image {
+            width: 72px;
+            height: 16px;
+          }
         }
         .emit-reward {
           white-space: nowrap;

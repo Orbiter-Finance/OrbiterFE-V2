@@ -140,7 +140,7 @@
           </div>
         </div>
       </div>
-      <div
+      <div id="block_mobile_scroll_group"
         ref="block_mobile_scroll_group"
         :style="
           isMobile
@@ -153,7 +153,7 @@
         <div style="width: 100%; display: flex;">
           <span class="text_21">🛸 Quests </span>
         </div>
-        <div class="ativity-list" 
+        <div class="ativity-list"  id="ativity-list"
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
