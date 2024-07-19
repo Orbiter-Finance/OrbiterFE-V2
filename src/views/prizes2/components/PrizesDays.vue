@@ -9,7 +9,7 @@
     <div class="prizes-days-card">
       <div class="task-card-title">
         <div class="label">
-          Bridge 3tx daily Get $ORBGUY
+          Bridge 3tx daily get $ORBGUY
           <svg-icon class="token" iconName="ORBGUY"></svg-icon>
         </div>
         <div class="value">
