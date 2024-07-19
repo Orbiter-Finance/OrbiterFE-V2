@@ -22,7 +22,7 @@
         >
           +{{
             decimalNumC(
-              (Number(item.reward) || 0) + (Number(item.refund) || 0),
+              (Number(item.reward) || 0),
               2,
               ','
             )
@@ -33,10 +33,9 @@
           class="reward-total-amount"
           :style="`color: ${item.color};background-image: ${item.bg};`"
         >
-          ${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
-            decimalNumC(item.reward, 2, ',')
+        ≈ ${{
+            decimalNumC(item.uAmount, 2, ',')
           }}
-          {{ item.symbol }}
         </div>
       </div>
     </div>
@@ -69,9 +68,9 @@
             class="user-reward-amount"
             :style="`color: ${item.color};background-image: ${item.bg};`"
           >
-            +${{
+            +{{
               decimalNumC(
-                (Number(item.reward) || 0) + (Number(item.refund) || 0),
+                (Number(item.reward) || 0),
                 2,
                 ','
               )
@@ -108,20 +107,18 @@
         </div>
         <div class="emit-reward">
           <div>
-            +${{
+            +{{
               decimalNumC(
-                (Number(item.reward.amount) || 0) + (Number(item.refund) || 0),
+                (Number(item.reward.amount) || 0),
                 2,
                 ','
               )
             }}
             {{ item.reward.name }}
           </div>
-          <span
-            >${{ decimalNumC(item.refund, 2, ',') }} USDC + ${{
-              decimalNumC(item.reward.amount, 2, ',')
-            }}
-            {{ item.reward.name }}</span
+          <span>≈ ${{
+              decimalNumC(item.reward.uAmount, 2, ',')
+            }}</span
           >
         </div>
       </div>
@@ -167,6 +164,7 @@ export default {
           tx: this.decimalNumC(next?.txAmount, 0, ','),
           address: this.shortAddress(next?.address, this.isMobile ? 4 : 6),
           reward: next?.reward?.amount || 0,
+          uAmount: next?.reward?.uAmount || 0,
           rank: '2',
           bg: 'linear-gradient(180.00deg, rgb(232, 235, 237),rgb(157, 211, 211))',
           color: 'rgba(192, 238, 239, 0.6)',
@@ -177,6 +175,7 @@ export default {
           tx: this.decimalNumC(first?.txAmount, 0, ','),
           address: this.shortAddress(first?.addres, this.isMobile ? 4 : 6),
           reward: first?.reward?.amount || 0,
+          uAmount: first?.reward?.uAmount || 0,
           rank: '1',
           bg: 'linear-gradient(0.00deg, rgb(255, 195, 17),rgb(243, 232, 66))',
           color: 'rgba(255, 209, 102, 0.6)',
@@ -187,6 +186,7 @@ export default {
           tx: this.decimalNumC(last?.txAmount, 0, ','),
           address: this.shortAddress(last?.address, this.isMobile ? 4 : 6),
           reward: last?.reward?.amount || 0,
+          uAmount: last?.reward?.uAmount || 0,
           rank: '3',
           bg: 'linear-gradient(180.00deg, rgb(255, 207, 168),rgb(197, 133, 81))',
           color: 'rgba(232, 178, 134, 0.6)',
