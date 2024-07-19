@@ -73,9 +73,30 @@
         <div class="cumulative-tx">Total Transaction</div>
         <div class="emit-reward">Estimated earnings</div>
       </div>
-      <div v-if="!rankData.length"></div>
       <div
-        v-else
+        class="rank-list-item rank-list-card-item rank-user-item"
+      >
+        <div class="ranking">
+          <div>{{ userRank }}</div>
+        </div>
+        <div class="user-address">
+          My Account
+        </div>
+        <div class="cumulative-tx">
+          {{ decimalNumC(txTotal, 0, ',') }} tx
+          <img
+            v-if="Number(userRank) <= 10"
+            class="bridge-fee-image"
+            :src="require('../../../assets/prizes/v2/bridge-fee.png')"
+          />
+        </div>
+        <div class="emit-reward">
+          <div>
+            {{ estiReward }}
+          </div>
+        </div>
+      </div>
+      <div
         class="rank-list-item rank-list-card-item"
         v-for="(item, index) in rankData"
         :key="index"
@@ -118,9 +139,10 @@
 </template>
 
 <script>
-import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
-import { isMobile, prizesV2RankList } from '../../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+import { isMobile, prizesV2RankList, prizesV2UserList, prizesV2UserRank } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
+import { estimateContractGas } from 'viem/actions';
 
 export default {
   name: 'PrizesRank',
@@ -202,6 +224,37 @@ export default {
       idx = idx > 0 ? idx - 1 : 0
       const len = idx * 10
       return this.rankList.slice(len, len + 10)
+    },
+    userList() {
+      return prizesV2UserList.value
+    },
+    userRank() {
+      return prizesV2UserRank.value || '--'
+    },
+    txTotal() {
+      const list = this.userList
+      const total = list?.reduce((prev, item) => {
+        return prev + Number(item?.task_result || 0)
+      }, 0)
+      return total
+    },
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
+    estiReward() {
+      const list = this.rankList
+      const option = list.filter(
+        (item) =>
+          item.address?.toLocaleLowerCase() ===
+          this.evmAddress?.toLocaleLowerCase()
+      )?.[0]
+      const amount = option?.reward?.amount
+      const symbol = option?.reward?.name
+      return Number(amount) ? `${ this.decimalNumC(amount, 2, ',')}  ${symbol}` : '--'
+    },
+    userAddress() {
+      const address = this.evmAddress
+      return address ? shortenAddress(address) : '--'
     },
   },
   methods: {
@@ -434,6 +487,10 @@ export default {
     border: 1px solid rgba(243, 223, 47, 0.3);
     background: rgb(1, 1, 1);
 
+    .rank-user-item {
+      background: rgba(248, 217, 46, 0.1);
+    }
+
     .rank-list-card-item {
       width: 100%;
       padding: 14px 32px;
@@ -522,6 +579,7 @@ export default {
 
     .rank-list-item {
       font-family: GeneralSans-SemiBold;
+      height: 76px;
       .emit-reward {
         color: #ffd166;
         span {
@@ -593,6 +651,9 @@ export default {
       margin-top: 36px;
       .rank-list-header {
         display: none;
+      }
+      .rank-list-item {
+        height: 54px;
       }
       .rank-list-card-item {
         padding: 6px 12px;
