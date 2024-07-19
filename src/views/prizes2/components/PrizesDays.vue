@@ -42,9 +42,7 @@
         }`"
       >
         <div
-          :class="`${
-            !isEnd ? 'prizes-to-bridge-animation' : ''
-          } prizes-to-bridge-btn`"
+          class="prizes-to-bridge-btn"
           :style="`opacity: ${!isEnd ? '1' : '0.3'};`"
           @click="toBridgeCall"
         >
@@ -71,7 +69,7 @@
               :class="`${
                 isDraw ? 'prizes-to-bridge-animation' : ''
               } draw-btn`"
-              @click="drawCardCall">Lucky Draw</div>
+              @click="openORBGUYReward">Lucky Draw</div>
             </div>
           </div>
           <div class="task-orbguy-days">
@@ -141,9 +139,7 @@
             <div class="opoints-card-title">Earn up to 420 O-Points</div>
             <div class="opoints-group">
               <div
-                :class="`${item.days ? 'opoints-item' : 'opoints-item-empty'} ${
-                  item.isBounce ? 'bounce' : ''
-                }`"
+                :class="`${item.days ? 'opoints-item' : 'opoints-item-empty'}`"
                 v-for="item in opointsList"
                 :key="item.days"
                 :style="`background-image: url(${
@@ -184,8 +180,9 @@
 <script>
 import Web3 from 'web3'
 import dayjs from 'dayjs'
-const BigNumber = require('bignumber.js')
 import { decimalNum } from '../../../util/decimalNum'
+import { isDev } from '../../../util'
+const BigNumber = require('bignumber.js')
 
 import {
   prizesV2TaskList,
@@ -273,17 +270,17 @@ export default {
         {
           prev: 3,
           days: 7,
-          reward: 105,
+          reward: 126,
         },
         {
           prev: 7,
           days: 10,
-          reward: 165,
+          reward: 240,
         },
         {
           prev: 10,
           days: 14,
-          reward: 275,
+          reward: 420,
         },
       ].map((item) => {
         return {
@@ -374,10 +371,14 @@ export default {
 
         const className =
           txAmount >= 3
-            ? 'task-item-success'
-            : now > endTime
+            ? 'task-item-success' : (
+              this.taskId === item.id ? 
+              'task-item-current bounce'
+              : now > endTime
             ? 'task-item-not'
             : 'task-item-base'
+            )
+            
 
         const option = {
           startTime: dayjs.utc(startDate).format('MMM.DD'),
@@ -501,7 +502,7 @@ export default {
       }
     },
     async drawCardCall(res) {
-      this.isDrawLoading = false
+      this.isDrawLoading = true
       if (!res?.message) return
       if (res?.status === 'Success' && Number(res?.message)) {
         this.$store.commit('getClaimORBGUYRewardData', {
@@ -700,6 +701,11 @@ export default {
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
+      }
+
+      .task-item-current {
+        background-image: url('../../../assets/prizes/v2/current-day-card.png');
+        scale: 1.2;
       }
 
       .task-item-base {
@@ -931,7 +937,7 @@ export default {
 
         .task-orbguy-days {
           width: 100%;
-          padding: 20px 0;
+          padding: 20px 2px;
           .task-orbguy-days-title {
             width: 100%;
             display: flex;
@@ -961,12 +967,12 @@ export default {
           }
 
           .orbguy-box-group {
-            width: calc(100% - 48px);
+            width: calc(100% - 24px);
             overflow-x: auto;
             height: 84px;
             .orbguy-box {
-              width: 100%;
-              min-width: 750px;
+              width: 616px;
+              min-width: 616px;
               margin: 16px 0 0 24px;
               .orbguy-progress-amount {
                 height: 12px;
