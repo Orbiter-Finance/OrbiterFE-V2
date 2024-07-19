@@ -204,7 +204,7 @@
           />
         </div>
       </div>
-      <!-- <img v-if="false" :src="require('../../assets/prizes/v1/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" /> -->
+      <img v-if="!isPrizesEnd" :src="require('../../assets/prizes/v2/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -448,7 +448,7 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   setActPointFetchStatus,
-  prizesTimeEnd
+  prizesV2TimeEnd
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import orbiterHelper from "../../util/orbiter_helper"
@@ -564,7 +564,7 @@ export default {
       this.fromChainId === CHAIN_ID.imx
     },
     isPrizesEnd(){
-      return prizesTimeEnd.value
+      return prizesV2TimeEnd.value
     },
     isMobileSize() {
       return isMobile.value
@@ -983,8 +983,8 @@ export default {
       return isCheck
     },
     goToPrizes(){
-      this.$gtag.event("TRANSFER_TO_PRIZES", {
-        event_category: "TRANSFER_TO_PRIZES",
+      this.$gtag.event("TRANSFER_TO_PRIZESV2", {
+        event_category: "TRANSFER_TO_PRIZESV2",
         event_label: "to prizes",
       })
       this.$router.push("/prizes")

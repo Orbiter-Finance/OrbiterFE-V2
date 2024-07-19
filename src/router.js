@@ -68,14 +68,6 @@ export default new Router({
       },
     },
     {
-      path: '/prizes-old',
-      component: PrizesOld,
-      meta: {
-        title: 'Prizes',
-        keepAlive: false,
-      },
-    },
-    {
       path: '/prizes',
       component: Prizes,
       meta: {

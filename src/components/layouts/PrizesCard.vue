@@ -341,8 +341,8 @@ export default {
   },
   methods: {
     goToPrizes() {
-      this.$gtag.event("OPointsGoToPrizes", {
-        event_category: "OPointsGoToPrizes",
+      this.$gtag.event("OPointsGoToPrizesV2", {
+        event_category: "OPointsGoToPrizesV2",
         event_label: "o points modal task go to prizes",
       })
       this.$router.push("/prizes")
