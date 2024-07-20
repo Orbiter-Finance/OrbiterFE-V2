@@ -270,7 +270,7 @@ export default {
           margin-top: 24px;
           .prizes-token-info {
             width: 500px;
-            height: 64px;
+            height: 56px;
             background-image: url(../../../assets/prizes/v2/prizes-info-image.png);
             background-size: 100% 100%;
           }
@@ -477,7 +477,7 @@ export default {
             .prizes-token-info {
               width: 80%;
               height: 0;
-              padding: 6.4% 0;
+              padding: 5.7% 0;
             }
           }
         }

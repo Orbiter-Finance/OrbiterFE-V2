@@ -376,7 +376,7 @@ export default {
     bridgeLabel() {
       return !Number(this.orbguyAmount)
         ? 'start bridge'
-        : 'keep bridging to earn BNB'
+        : 'keep bridging to earn $BNB'
     },
     isDraw() {
       return (
