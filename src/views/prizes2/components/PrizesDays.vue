@@ -145,7 +145,7 @@
                   </div>
                 </template>
                 <div class="task-orbguy-group">
-                  <span>lucky 99th,199th…,win $orguy super box!</span>
+                  <span>lucky 99th,199th…,win $orbguy super box!</span>
                   <div class="fcfs"></div>
                 </div>
               </o-tooltip>
