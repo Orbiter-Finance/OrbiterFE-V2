@@ -161,10 +161,10 @@
          <LuckyTaskBagBanner></LuckyTaskBagBanner>
         <div 
         >
-          <div v-if="!actDataList.length">
+          <!-- <div v-if="!actDataList.length">
             <LuckyTaskCard></LuckyTaskCard>
-          </div>
-          <div v-else :key="index" v-for="(item, index) in actDataList">
+          </div> -->
+          <div :key="index" v-for="(item, index) in actDataList">
             <div v-if="!item">
               <LuckyTaskCard></LuckyTaskCard>
             </div>
@@ -438,11 +438,7 @@ export default {
           ...(item?.label || {})
         }
       }))
-      return data.filter((item)=>{
-        return Number(item?.label?.isTop) ===1
-      }).concat([null]).concat( data.filter((item)=>{
-        return Number(item?.label?.isTop) !==1
-      }))
+      return data
     },
     actOtherDataList() {
       const list = transferDataState.actDataList || []
