@@ -494,10 +494,10 @@ export default {
       })
       const total = list.reduce((prev, item) => {
         if (Number(item) && Number(item) >= 3) {
-          const amount = opointsList.reduce((oPrev, option) => {
-            return oPrev + (item >= option.days ? option.reward : 0)
-          }, 0)
-          return prev + amount
+          const amountList = opointsList.filter((option)=> item >= option.days) || []
+          const index =amountList?.length ? (amountList?.length-1) : 0
+          const group = amountList[index] || {}
+          return prev + (group?.reward ? group.reward : 0)
         }
         return prev
       }, 0)
