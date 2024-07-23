@@ -1,13 +1,11 @@
 import { Fuel } from 'fuels'
-import { FuelWalletConnector } from '@fuels/connectors'
 
 const connect = async () => {
-  const fuel = new Fuel({
-    connectors: [new FuelWalletConnector()],
-  })
+  console.log('Fuel', Fuel)
+  // const fuel = new Fuel()
 
-  await fuel.selectConnector('Fuel Wallet')
-  await fuel.connect()
+  // await fuel.selectConnector('Fuel Wallet')
+  // await fuel.connect()
 }
 
 const fuelsHelper = {
