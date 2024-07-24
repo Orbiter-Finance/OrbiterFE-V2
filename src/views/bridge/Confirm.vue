@@ -319,7 +319,8 @@ export default {
             )
 
             if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || 
-                fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test 
+                fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test || 
+                fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test
             ) {
                 realTransferAmount = ethers.utils.formatEther(
                     ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
@@ -580,7 +581,7 @@ export default {
 
             if( toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
                 toAddress =await fuelsHelper.fuelsAccount()
-                isConnected =  fuelsHelper.isConnected()
+                isConnected =  await fuelsHelper.isConnected()
 
                 if(!toAddress || !isConnected) {
                     await fuelsHelper.connect()
@@ -1266,7 +1267,7 @@ export default {
 
                 if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
                     const fuelAddress = await fuelsHelper.fuelsAccount()
-                    const fuelIsConnected =  fuelsHelper.isConnected()
+                    const fuelIsConnected =  await fuelsHelper.isConnected()
                     if(!fuelIsConnected || !fuelAddress) {
                         await fuelsHelper.connect()
                         return 
@@ -1632,7 +1633,7 @@ export default {
             ) {
 
                 const fuelAddress = await fuelsHelper.fuelsAccount()
-                const isConnect = fuelsHelper.isConnected()
+                const isConnect = await fuelsHelper.isConnected()
 
                 targetAddress = fuelAddress
 
@@ -1778,7 +1779,8 @@ export default {
                     tokenAddress,
                     targetAddress,
                     amount: rAmountValue,
-                    safeCode
+                    safeCode,
+                    chainId:fromChainID
                 })
                 try {
                     this.$gtag.event('click', {
@@ -1867,7 +1869,7 @@ export default {
                 }
 
                 if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ) {
-                    const fuelIsConnected =  fuelsHelper.isConnected()
+                    const fuelIsConnected =  await fuelsHelper.isConnected()
                     const account = await fuelsHelper.fuelsAccount()
                     if(!!account && fuelIsConnected) {
                         to = account
@@ -2227,7 +2229,7 @@ export default {
 
             if(toChainID === CHAIN_ID.fuel) {
                 toAddress = await fuelsHelper.fuelsAccount()
-                const isConnected = fuelsHelper.isConnected()
+                const isConnected = await fuelsHelper.isConnected()
 
                 if(!toAddress || !isConnected) {
                     await fuelsHelper.connect()
@@ -2311,7 +2313,10 @@ export default {
 
             const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
 
-            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test && fromChainID !== CHAIN_ID.ton && fromChainID !== CHAIN_ID.ton_test) {
+            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && 
+            fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test && 
+            fromChainID !== CHAIN_ID.ton && fromChainID !== CHAIN_ID.ton_test && 
+            fromChainID !== CHAIN_ID.fuel && fromChainID !== CHAIN_ID.fuel_test) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()

@@ -98,6 +98,7 @@ import {
   starkAddress,
   solAddress,
   tonAddress,
+  fuelAddress,
   showAddress,
   saveSenderPageWorkingState,
   setActDialogVisible,
@@ -116,11 +117,13 @@ import {
   setConnectWalletGroupKey,
   setSolanaDialog,
   isTonDialog,
+  isFuelDialog,
   setTonDialog,
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
   setClaimCardModalShow,
-  setActPointFetchStatus
+  setActPointFetchStatus,
+  setFuelDialog
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -134,6 +137,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
+import fuelsHelper from '../../util/fuels/fuels_helper.js';
 
 let timer1
 
@@ -246,6 +250,9 @@ export default {
     solanaAddress() {
       return solAddress()
     },
+    async fAddress() {
+      return await fuelAddress()
+    },
     tAddress() {
       return tonAddress()
     },
@@ -255,6 +262,20 @@ export default {
     otherAddress() {
       return [
         {
+          address: this.fAddress,
+          isSelected: this.isSelectedFuel,
+          connect: async () => {
+            await fuelsHelper.connect()
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(false)
+            setFuelDialog(true)
+          },
+          icon: CHAIN_ID.fuel,
+        },
+        {
           address: this.tAddress,
           isSelected: this.isSelectedTon,
           connect: async () => {
@@ -263,6 +284,7 @@ export default {
           open: () => {
             setSolanaDialog(false)
             setStarkNetDialog(false)
+            setFuelDialog(false)
             setTonDialog(true)
           },
           icon: CHAIN_ID.ton,
@@ -277,6 +299,7 @@ export default {
           open: () => {
             setSolanaDialog(true)
             setStarkNetDialog(false)
+            setFuelDialog(false)
             setTonDialog(false)
           },
           icon: solanaHelper.readWalletName() || CHAIN_ID.solana,
@@ -292,6 +315,7 @@ export default {
             setStarkNetDialog(true)
             setSolanaDialog(false)
             setTonDialog(false)
+            setFuelDialog(false)
           },
           icon: CHAIN_ID.starknet,
         },
@@ -302,6 +326,7 @@ export default {
       const firstGroup = this.otherAddress
         .slice(first)
         .filter((item) => !!item.isSelected)[0]
+        console.log("firstGroup", this.otherAddress, firstGroup)
       return (
         firstGroup?.icon ||
         (this.globalSelectWalletConf.walletType
@@ -432,7 +457,7 @@ export default {
           path: '/history',
         })
     },
-    getAddress() {
+    async getAddress() {
       let addressGroup = {
         isAddress: false,
         address: '',
@@ -440,8 +465,11 @@ export default {
       const [web3Address, starkNetAddress] = this.currentWalletAddress
       const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
+      const fuelAddress = await fuelsHelper.fuelsAccount()
       const address =
-        !!isTonDialog.value && tonAddress
+      !!isFuelDialog.value && fuelAddress 
+          ? fuelAddress
+          : !!isTonDialog.value && tonAddress
           ? tonAddress
           : !!isSolanaDialog.value && solanaAddress
           ? solanaAddress
@@ -463,10 +491,11 @@ export default {
       }
     },
     async getWalletAddressPoint() {
-      const { isAddress, address } = this.getAddress()
+      const { isAddress, address } = await this.getAddress()
       const [_web3Address, starkNetAddress] = this.currentWalletAddress
 
       const tonAddress = tonHelper.account()
+      const fuelsAccount = await fuelsHelper.fuelsAccount()
       const solanaAddress = solanaHelper.solanaAddress()
 
       if (isAddress) {
@@ -477,7 +506,10 @@ export default {
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
-          if (tonAddress) {
+          if(fuelsAccount) {
+            setFuelDialog(true)
+            setActDialogVisible(true)
+          } else if (tonAddress) {
             setTonDialog(true)
             setActDialogVisible(true)
           } else if (solanaAddress) {
@@ -498,7 +530,7 @@ export default {
       }
     },
     async getWalletAddressActList() {
-      const { isAddress, address } = this.getAddress()
+      const { isAddress, address } = await this.getAddress()
 
       if (isAddress) {
         const res = await requestPointSystem('v2/activity/list', {
@@ -526,7 +558,7 @@ export default {
     },
 
     async getLotteryCardData() {
-      const { isAddress, address } = this.getAddress()
+      const { isAddress, address } = await this.getAddress()
 
       if (isAddress) {
         const {
@@ -636,7 +668,7 @@ export default {
     const _this = this
     setInterval(async () => {
       if (!this.$store.state.proceeding.makerTransfer.txid) return
-      const { address } = this.getAddress()
+      const { address } = await this.getAddress()
 
       if (address && address !== '0x') {
         setActPointFetchStatus()

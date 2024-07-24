@@ -21,7 +21,6 @@
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
-      <Fuel></Fuel>
 
       <keep-alive>
         <BottomNav
@@ -99,7 +98,6 @@ import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
 import UserInfoDetailsCardModal from './components/layouts/UserInfoDetailsCardModal.vue'
 import ClaimRewardModal from './components/layouts/ClaimRewardModal.vue'
 import OPointsRankingCard from './components/layouts/OPointsRankingCard.vue'
-import Fuel from './views/Fuel.vue'
 
 import {
   setIsBraveWallet,
@@ -232,7 +230,6 @@ export default {
     UserInfoDetailsCardModal,
     ClaimRewardModal,
     OPointsRankingCard,
-    Fuel
   },
   updated() {
     if(!this.isInit) {
