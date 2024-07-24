@@ -44,6 +44,8 @@ export const CHAIN_ID = {
   solana_test: 'SOLANA_DEV',
   ton: 'TON',
   ton_test: 'TON_TEST',
+  fuel: 'FUEL',
+  fuel_test: 'FUEL_TEST',
   loopring_test: 'loopring_test',
   zkspace_test: 'ZKSpace_test',
   dydx_test: 'dydx_test',

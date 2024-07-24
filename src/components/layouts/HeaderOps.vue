@@ -231,6 +231,15 @@ export default {
         toChainID === CHAIN_ID.ton_test
       )
     },
+    isSelectedFuel() {
+      const { fromChainID, toChainID } = transferDataState
+      return (
+        fromChainID === CHAIN_ID.fuel ||
+        fromChainID === CHAIN_ID.fuel_test ||
+        toChainID === CHAIN_ID.fuel ||
+        toChainID === CHAIN_ID.fuel_test
+      )
+    },
     starkAddress() {
       return starkAddress()
     },

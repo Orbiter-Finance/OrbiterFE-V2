@@ -30,7 +30,8 @@ import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
-import { zeroAddress } from 'viem'
+import fuelsHelper from '../fuels/fuels_helper'
+import { parseEther, zeroAddress } from 'viem'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -1063,6 +1064,26 @@ export default {
         )
 
         return String(tokenAccountBalance || '0')
+      } catch (error) {
+        return '0'
+      }
+    } else if (
+      localChainID === CHAIN_ID.fuel ||
+      localChainID === CHAIN_ID.fuel_test
+    ) {
+      try {
+        const amount = await fuelsHelper.getBalance({
+          chainId: localChainID,
+          tokenAddress,
+          userAddress,
+        })
+        console.log(
+          'amount',
+          isMaker,
+          amount,
+          parseEther(amount.toString()).toString()
+        )
+        return amount.toString()
       } catch (error) {
         return '0'
       }

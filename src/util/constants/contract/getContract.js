@@ -31,6 +31,9 @@ function getTransferContract(localChainID, contractAddress) {
   if (localChainID === CHAIN_ID.ton || localChainID === CHAIN_ID.ton_test) {
     return
   }
+  if (localChainID === CHAIN_ID.fuel || localChainID === CHAIN_ID.fuel_test) {
+    return
+  }
   if (walletIsLogin.value) {
     const web3 = new Web3(
       compatibleGlobalWalletConf.value.walletPayload.provider

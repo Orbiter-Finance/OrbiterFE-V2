@@ -35,7 +35,9 @@
             transferDataState.fromChainID === CHAIN_ID.solana ||
             transferDataState.fromChainID === CHAIN_ID.solana_test ||
             transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test  
+            transferDataState.fromChainID === CHAIN_ID.ton_test ||
+            transferDataState.fromChainID === CHAIN_ID.fuel ||
+            transferDataState.fromChainID === CHAIN_ID.fuel_test 
           "
           >
             <template v-slot:titleDesc>
@@ -111,7 +113,9 @@
             transferDataState.fromChainID === CHAIN_ID.solana ||
             transferDataState.fromChainID === CHAIN_ID.solana_test ||
             transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test  
+            transferDataState.fromChainID === CHAIN_ID.ton_test ||
+            transferDataState.fromChainID === CHAIN_ID.fuel ||
+            transferDataState.fromChainID === CHAIN_ID.fuel_test  
           "
           >
             <template v-slot:titleDesc>
@@ -182,7 +186,7 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)  || (targetChainId === CHAIN_ID.ton || targetChainId === CHAIN_ID.ton_test)">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)  || (targetChainId === CHAIN_ID.ton || targetChainId === CHAIN_ID.ton_test) || (targetChainId === CHAIN_ID.fuel || targetChainId === CHAIN_ID.fuel_test)">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
@@ -456,6 +460,7 @@ import { ethers } from 'ethers'
 import solanaHelper from "../../util/solana/solana_helper"
 import { decimalNumTh } from '../../util/decimalNum'
 import tonHelper from "../../util/ton/ton_helper"
+import fuelsHelper from '../../util/fuels/fuels_helper';
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -596,6 +601,9 @@ export default {
       if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
         return false;
       }
+      if (transferDataState.toChainID === CHAIN_ID.fuel || transferDataState.toChainID === CHAIN_ID.fuel_test) {
+        return false;
+      }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
@@ -612,6 +620,9 @@ export default {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
+        return false;
+      }
+      if (transferDataState.toChainID === CHAIN_ID.fuel || transferDataState.toChainID === CHAIN_ID.fuel_test) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -656,7 +667,16 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
+      return toChainID === CHAIN_ID.starknet || 
+      toChainID === CHAIN_ID.starknet_test || 
+      toChainID === CHAIN_ID.solana || 
+      toChainID === CHAIN_ID.solana_test || 
+      toChainID === CHAIN_ID.ton || 
+      toChainID === CHAIN_ID.ton_test || 
+      toChainID === CHAIN_ID.dydx || 
+      toChainID === CHAIN_ID.dydx_test || 
+      toChainID === CHAIN_ID.fuel || 
+      toChainID === CHAIN_ID.fuel_test ;
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -1613,7 +1633,17 @@ export default {
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test) {
+      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || 
+      oldToChainID === CHAIN_ID.starknet_test || 
+      oldToChainID === CHAIN_ID.dydx || 
+      oldToChainID === CHAIN_ID.dydx_test || 
+      oldToChainID === CHAIN_ID.solana || 
+      oldToChainID === CHAIN_ID.solana_test || 
+      oldToChainID === CHAIN_ID.ton || 
+      oldToChainID === CHAIN_ID.ton_test ||
+      oldToChainID === CHAIN_ID.fuel || 
+      oldToChainID === CHAIN_ID.fuel_test
+    ) {
         if (this.isCrossAddress) this.isCrossAddress = false;
         if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
@@ -2087,6 +2117,13 @@ export default {
             return
           }
           
+        } else if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+          const isConnect = await fuelsHelper.isConnected()
+          if(!isConnect) {
+            await fuelsHelper.connect()
+            return
+          }
+          
         } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           const isConnected = await tonHelper.isConnected()
           const account = await tonHelper.account()
@@ -2134,7 +2171,16 @@ export default {
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
-          toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase())
+          toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test ? 
+          await fuelsHelper.fuelsAccount() : (
+            toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? 
+            tonHelper.account()  : 
+          (
+            toChainID === CHAIN_ID.solana || 
+              toChainID ===  CHAIN_ID.solana_test ? 
+              solanaHelper.solanaAddress() : 
+              compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
+          ))
         );
         // sendTransfer
         const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
@@ -2331,6 +2377,9 @@ export default {
       if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
       }
+      if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+        address = await fuelsHelper.fuelsAccount();
+      }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
                   .then(async (response) => {
@@ -2363,6 +2412,9 @@ export default {
       }
       if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
+      }
+      if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+        address = await fuelsHelper.fuelsAccount();
       }
       // if (address && address !== '0x') {
       //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)

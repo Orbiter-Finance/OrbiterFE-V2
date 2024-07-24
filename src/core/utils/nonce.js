@@ -53,6 +53,11 @@ export default {
     ) {
       return 0
     } else if (
+      localChainID === CHAIN_ID.fuel ||
+      localChainID === CHAIN_ID.fuel_test
+    ) {
+      return 0
+    } else if (
       localChainID === CHAIN_ID.imx ||
       localChainID === CHAIN_ID.imx_test
     ) {

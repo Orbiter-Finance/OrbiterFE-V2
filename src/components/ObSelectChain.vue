@@ -151,6 +151,7 @@ import {
 import config, { CHAIN_ID } from '../config'
 import solanaHelper from '../util/solana/solana_helper'
 import tonHelper from '../util/ton/ton_helper'
+import fuelsHelper from '../util/fuels/fuels_helper'
 import transferCalculate from '../util/transfer/transferCalculate'
 import { ethers } from 'ethers'
 import orbiterCryptoTool from '../util/orbiterCryptoTool'
@@ -327,6 +328,8 @@ export default {
         CHAIN_ID.solana_test,
         CHAIN_ID.ton,
         CHAIN_ID.ton_test,
+        CHAIN_ID.fuel,
+        CHAIN_ID.fuel_test,
       ]
       return this.orderChainIds(chainOrderIds, newArray)
     },
@@ -481,8 +484,13 @@ export default {
       try {
         const tonAddress = tonHelper.account()
         const solanaAddress = solanaHelper.solanaAddress()
+        const fuelsAddress = await fuelsHelper.fuelsAccount()
         const symbol = this.symbol
         const address = [
+          {
+            address: fuelsAddress,
+            type: 'Fuel',
+          },
           {
             address: tonAddress,
             type: 'Ton',
@@ -639,6 +647,14 @@ export default {
             }
           }
           // ton
+          if (e.localID === CHAIN_ID.fuel || e.localID === CHAIN_ID.fuel_test) {
+            const account = await fuelsHelper.fuelsAccount()
+            const isConnected = await fuelsHelper.isConnected()
+            if (!account || !isConnected) {
+              await fuelsHelper.connect()
+              return
+            }
+          }
           if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
             const account = await tonHelper.account()
             const isConnected = await tonHelper.isConnected()
@@ -706,6 +722,8 @@ export default {
           CHAIN_ID.imx_test,
           CHAIN_ID.ton,
           CHAIN_ID.ton_test,
+          CHAIN_ID.fuel,
+          CHAIN_ID.fuel_test,
         ].indexOf(chainId) > -1
       )
     },

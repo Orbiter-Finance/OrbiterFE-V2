@@ -222,6 +222,7 @@ import { isBrowserApp, isProd } from "../../util";
 import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, zksyncEraGasTokenContract } from "../../util/zksyncEraGasToken";
 import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper';
+import fuelsHelper from '../../util/fuels/fuels_helper';
 import { shortString } from 'starknet';
 
 const {
@@ -459,7 +460,7 @@ export default {
                 }
                 this.transferLoading = false
             } catch (err) {
-                console.error('transferToSolanaOrTon error', err);
+                console.error('transferToNotEvm error', err);
                 this.transferLoading = false
                 this.$notify.error({
                     title: err?.data?.message || err.message,
@@ -554,7 +555,7 @@ export default {
                 this.transferLoading = false
             }
         },
-        async transferToSolanaOrTon() {
+        async transferToNotEvm() {
             const { selectMakerConfig, fromChainID, transferValue, toChainID, fromCurrency } =
                 transferDataState
 
@@ -573,6 +574,16 @@ export default {
                 if(!toAddress || !isConnected) {
                     setSelectWalletDialogVisible(true)
                     setConnectWalletGroupKey("SOLANA")
+                    return
+                }
+            }
+
+            if( toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+                toAddress =await fuelsHelper.fuelsAccount()
+                isConnected =  fuelsHelper.isConnected()
+
+                if(!toAddress || !isConnected) {
+                    await fuelsHelper.connect()
                     return
                 }
             }
@@ -683,7 +694,7 @@ export default {
                 }
 
             } catch (err) {
-                console.error('transferToSolanaOrTon error', err);
+                console.error('transferToNotEvm error', err);
                 this.$notify.error({
                     title: err?.data?.message || err.message,
                     duration: 3000,
@@ -1253,6 +1264,25 @@ export default {
                     memo = `${p_text}_${solanaAddress}`
                 }
 
+                if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+                    const fuelAddress = await fuelsHelper.fuelsAccount()
+                    const fuelIsConnected =  fuelsHelper.isConnected()
+                    if(!fuelIsConnected || !fuelAddress) {
+                        await fuelsHelper.connect()
+                        return 
+                    }
+                    // try {
+                    //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
+                    //     if(res !== "created") {
+                    //         return
+                    //     }
+                    // } catch (error) {
+                    //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
+                    //     return
+                    // }
+                    memo = `${p_text}_${fuelAddress}`
+                }
+
                 if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
                     const tonAddress = tonHelper.account()
                     const tonIsConnected =  tonHelper.isConnected()
@@ -1473,6 +1503,16 @@ export default {
               .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
             const rAmountValue = rAmount.toFixed()
 
+            if( toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+                targetAddress = await fuelsHelper.fuelsAccount()
+                const isConnected = await fuelsHelper.isConnected()
+
+                if(!targetAddress || !isConnected) {
+                    await fuelsHelper.connect()
+                    return
+                }
+            }
+
             if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
                 targetAddress = tonHelper.account()
                 const isConnected = await tonHelper.isConnected()
@@ -1587,6 +1627,22 @@ export default {
             }
 
             if (
+                toChainID === CHAIN_ID.fuel ||
+                toChainID === CHAIN_ID.fuel_test
+            ) {
+
+                const fuelAddress = await fuelsHelper.fuelsAccount()
+                const isConnect = fuelsHelper.isConnected()
+
+                targetAddress = fuelAddress
+
+                if (!fuelAddress || !isConnect) {
+                    await fuelsHelper.connect()
+                    return;
+                }
+            }
+
+            if (
                 toChainID === CHAIN_ID.solana ||
                 toChainID === CHAIN_ID.solana_test
             ) {
@@ -1607,6 +1663,116 @@ export default {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
                 const hash = await tonHelper.transfer({
+                    from,
+                    to: selectMakerConfig.recipient,
+                    tokenAddress,
+                    targetAddress,
+                    amount: rAmountValue,
+                    safeCode
+                })
+                try {
+                    this.$gtag.event('click', {
+                    'event_category': 'Transfer',
+                    'event_label': selectMakerConfig.recipient,
+                    'userAddress': from, 
+                    'hash': hash 
+                    })
+                }catch(error) {
+                  console.error('click error', error);
+                }
+     
+                if (hash) {
+                    this.onTransferSucceed(from, value, fromChainID, hash)
+                }
+            } catch (error) {
+              console.error('transfer error', error);
+                this.$notify.error({
+                    title: error.message || String(error),
+                    duration: 3000,
+                })
+            } finally {
+                this.transferLoading = false
+            }
+        },
+        async fuelTransfer(value) {
+            console.log("value", value)
+            const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+                transferDataState
+
+                const isConnected = await fuelsHelper.isConnected()
+                let from = await fuelsHelper.fuelsAccount()
+
+            if (!isConnected || !from) {
+                await fuelsHelper.connect()
+                this.transferLoading = false
+                return
+            }
+
+            const safeCode = transferCalculate.safeCode()
+
+            const { starkNetAddress, starkChain } = web3State.starkNet
+
+            const rAmount = new BigNumber(transferValue)
+              .plus(new BigNumber(selectMakerConfig.tradingFee))
+              .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+            const rAmountValue = rAmount.toFixed()
+
+            const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+            let targetAddress = evmAddress
+            
+            if (
+                toChainID === CHAIN_ID.starknet ||
+                toChainID === CHAIN_ID.starknet_test
+            ) {
+
+                targetAddress = starkNetAddress
+
+                if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+                    util.showMessage('please connect Starknet Wallet', 'error')
+                    this.transferLoading = false
+                    return
+                }
+
+                if (!starkNetAddress) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("STARKNET")
+                    this.transferLoading = false
+                    return;
+                }
+            }
+
+            if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                targetAddress = tonHelper.account()
+                const isConnected = await tonHelper.isConnected()
+
+                if(!targetAddress || !isConnected) {
+                    await tonHelper.connect()
+                    return
+                }
+            }
+
+            if (
+                toChainID === CHAIN_ID.solana ||
+                toChainID === CHAIN_ID.solana_test
+            ) {
+
+                const solanaAddress = solanaHelper.solanaAddress()
+                const isConnect = solanaHelper.isConnect()
+
+                targetAddress = solanaAddress
+
+                if (!solanaAddress || !isConnect) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("SOLANA")
+                    this.transferLoading = false
+                    return;
+                }
+            }
+            try {
+                const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+                const hash = await fuelsHelper.transfer({
                     from,
                     to: selectMakerConfig.recipient,
                     tokenAddress,
@@ -1699,6 +1865,23 @@ export default {
                         return
                     }
                 }
+
+                if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ) {
+                    const fuelIsConnected =  fuelsHelper.isConnected()
+                    const account = await fuelsHelper.fuelsAccount()
+                    if(!!account && fuelIsConnected) {
+                        to = account
+                        if(!to){
+                            util.showMessage('Fuel Address Error: ' + to, 'error');
+                            this.transferLoading = false
+                            return;
+                        }
+                    } else {
+                        await fuelsHelper.connect()
+                        this.transferLoading = false
+                        return
+                    }
+                }
                 
                 if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ) {
                     const tonIsConnected =  tonHelper.isConnected()
@@ -1706,7 +1889,7 @@ export default {
                     if(!!account && tonIsConnected) {
                         to = account
                         if(!to){
-                            util.showMessage('Solana Address Error: ' + to, 'error');
+                            util.showMessage('Ton Address Error: ' + to, 'error');
                             this.transferLoading = false
                             return;
                         }
@@ -2042,6 +2225,16 @@ export default {
                 }
             }
 
+            if(toChainID === CHAIN_ID.fuel) {
+                toAddress = await fuelsHelper.fuelsAccount()
+                const isConnected = fuelsHelper.isConnected()
+
+                if(!toAddress || !isConnected) {
+                    await fuelsHelper.connect()
+                    return
+                }
+            }
+
             if(toChainID === CHAIN_ID.ton) {
                 toAddress = tonHelper.account()
                 const isConnected = tonHelper.isConnected()
@@ -2200,6 +2393,11 @@ export default {
                     return 
                 }
 
+                if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+                    this.fuelTransfer(tValue.tAmount)
+                    return 
+                }
+
                 if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
                     this.tonTransfer(tValue.tAmount)
                     return 
@@ -2218,8 +2416,8 @@ export default {
                     return
                 }
 
-                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-                    await this.transferToSolanaOrTon()
+                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+                    await this.transferToNotEvm()
                     this.transferLoading = false
                     return
                 }

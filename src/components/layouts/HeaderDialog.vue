@@ -247,7 +247,7 @@ export default {
         },
         loginInfoData() {
             if (this.isStarkNetDialog) {
-                const starkChain = web3State.starkNet?.starkChainc
+                const starkChain = web3State.starkNet?.starkChain
                 const solanaChain = web3State.solana?.solanaChain
                 let networkName = ''
                 if (starkChain) {
