@@ -53,8 +53,8 @@ export default {
         {
           label: '4. How to Share 200$BNB and get 0 Bridging-Fee?',
           text: [
-            '- The top 300 users in the bridging competition will share a 200 $BNB prize pool. Additionally, the top 10 users will receive a 0 Bridging Fee extra reward.',
-            '- We will rebate all bridging fees ($2/tx) except for gas fees.'
+            '- The top 300 users in the bridging competition will share a 200 $BNB prize pool. <span class="orbiter_global_prizes_rule_tag">Additionally, the top 10 users will be rebated all bridging fees ($2/tx) except for gas fees as extra reward at the end of competition. </span>',
+            '<span class="orbiter_global_prizes_rule_tag">- The estimated earnings for the top 10 on the leaderboard do not include the rebated bridging fees.</span>'
           ],
         },
         {
