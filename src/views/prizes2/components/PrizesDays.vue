@@ -484,9 +484,12 @@ export default {
       const opointsList = this.opointsList
       let count = 0
       let list = []
-      signDayList.forEach((item) => {
+      signDayList.forEach((item, idx) => {
         if (item.isSign) {
           count += 1
+          if((idx === signDayList.length-1)) {
+            list = list.concat([count])
+          }
         } else {
           list = list.concat([count])
           count = 0
