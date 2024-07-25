@@ -2,6 +2,7 @@ import { web3State } from '../composition/hooks'
 import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 import solanaHelper from '../util/solana/solana_helper'
 import tonHelper from '../util/ton/ton_helper'
+import fuelsHelper from '../util/fuels/fuels_helper'
 
 export function showAddress() {
   const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -37,6 +38,16 @@ export function tonAddress() {
   if (tAddress && tAddress.length > 5) {
     const subStr1 = tAddress.slice(0, 4)
     const subStr2 = tAddress.slice(tAddress.length - 4)
+    return subStr1 + '...' + subStr2
+  }
+  return 'not connected'
+}
+
+export async function fuelAddress() {
+  const fAddress = (await fuelsHelper.fuelsAccount()) || ''
+  if (fAddress && fAddress.length > 5) {
+    const subStr1 = fAddress.slice(0, 4)
+    const subStr2 = fAddress.slice(fAddress.length - 4)
     return subStr1 + '...' + subStr2
   }
   return 'not connected'

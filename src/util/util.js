@@ -461,6 +461,8 @@ export default {
       CHAIN_ID.solana_test,
       CHAIN_ID.ton,
       CHAIN_ID.ton_test,
+      CHAIN_ID.fuel,
+      CHAIN_ID.fuel_test,
       CHAIN_ID.imx,
       CHAIN_ID.imx_test,
       CHAIN_ID.loopring,
@@ -528,6 +530,16 @@ export default {
       fromChainID === CHAIN_ID.solana_test ||
       toChainID === CHAIN_ID.solana ||
       toChainID === CHAIN_ID.solana_test
+    )
+  },
+
+  isFuel() {
+    const { fromChainID, toChainID } = transferDataState
+    return (
+      fromChainID === CHAIN_ID.fuel ||
+      fromChainID === CHAIN_ID.fuel_test ||
+      toChainID === CHAIN_ID.fuel ||
+      toChainID === CHAIN_ID.fuel_test
     )
   },
 

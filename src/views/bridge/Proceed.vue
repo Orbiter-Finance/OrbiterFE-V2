@@ -227,6 +227,7 @@ import { CHAIN_ID } from '../../config'
 import solanaHelper from '../../util/solana/solana_helper'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import tonHelper from '../../util/ton/ton_helper'
+import fuelsHelper from '../../util/fuels/fuels_helper'
 import { completeTx } from '../../util/proceeding/getProceeding'
 import { MQTT_HREF, MQTT_USER_NAME, MQTT_PASSWORD } from '../../const'
 import mqtt from 'mqtt'
@@ -387,7 +388,7 @@ export default {
     },
   },
   methods: {
-    getMessageData() {
+    async getMessageData() {
       const { toChainID } = transferDataState
       const hash = this.$store?.state?.proceeding?.userTransfer?.txid || ''
 
@@ -405,6 +406,10 @@ export default {
       if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
         userAddress = tonHelper.account()
       }
+      if (toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+        userAddress = await fuelsHelper.fuelsAccount()
+      }
+      
 
       if (
         !MQTT_USER_NAME ||
@@ -456,7 +461,7 @@ export default {
      }
 
     },
-    openIconUrl(isFrom, explorerInfo) {
+   async openIconUrl(isFrom, explorerInfo) {
       // let params = explorerInfo?.icon?.toLocaleLowerCase() === "oklink" ? "?channelId=orbite" :""
       let params = "?channelId=orbite"
       let hash = ''
@@ -492,6 +497,10 @@ export default {
       }
       if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
         userAddress = tonHelper.account()
+      }
+
+      if (chainId === CHAIN_ID.fuel || chainId === CHAIN_ID.fuel_test) {
+        userAddress = await fuelsHelper.fuelsAccount()
       }
       const accountUrl =
         explorerInfo.accountUrl || explorerInfo.url + '/address'
@@ -578,6 +587,9 @@ export default {
         if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           userAddress = tonHelper.account()
         }
+        if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+          userAddress = await fuelsHelper.fuelsAccount()
+        }
         url = util.getAccountExploreUrl(fromChainID) + userAddress
 
         // ImmutableX
@@ -607,7 +619,7 @@ export default {
       const { toChainID, state } = data
       let url = null
 
-      const commHandler = () => {
+      const commHandler = async () => {
         // let userAddress = web3State.coinbase
         const userAddress =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -625,6 +637,9 @@ export default {
         }
         if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
           userAddress = tonHelper.account()
+        }
+        if (toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+          userAddress = await fuelsHelper.fuelsAccount()
         }
         url = util.getAccountExploreUrl(toChainID) + userAddress
 
@@ -707,7 +722,7 @@ export default {
       }
     },
   },
-  beforeDestroy() {
+  async beforeDestroy() {
     if (client?.connected) {
 
       try {
@@ -727,6 +742,9 @@ export default {
         }
         if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           userAddress = tonHelper.account()
+        }
+        if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+          userAddress = await fuelsHelper.fuelsAccount()
         }
         client.unsubscribe(
           `bridge-success/pending-confirm/address/${userAddress}`,

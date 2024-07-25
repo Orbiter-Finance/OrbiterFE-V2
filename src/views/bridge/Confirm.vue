@@ -222,7 +222,8 @@ import { isBrowserApp, isProd } from "../../util";
 import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, zksyncEraGasTokenContract } from "../../util/zksyncEraGasToken";
 import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper';
-import orbiterHelper from '../../util/orbiter_helper';
+import fuelsHelper from '../../util/fuels/fuels_helper';
+import { shortString } from 'starknet';
 
 const {
     walletDispatchersOnSignature,
@@ -321,7 +322,8 @@ export default {
             )
 
             if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || 
-                fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test 
+                fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test || 
+                fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test
             ) {
                 realTransferAmount = ethers.utils.formatEther(
                     ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
@@ -610,7 +612,7 @@ export default {
                 this.transferLoading = false
             }
         },
-        async transferToSolanaOrTon() {
+        async transferToNotEvm() {
             const { selectMakerConfig, fromChainID, transferValue, toChainID, fromCurrency } =
                 transferDataState
 
@@ -709,7 +711,7 @@ export default {
                 }
 
             } catch (err) {
-                console.error('transferToSolanaOrTon error', err);
+                console.error('transferToNotEvm error', err);
                 this.$notify.error({
                     title: err?.data?.message || err.message,
                     duration: 3000,
@@ -1657,6 +1659,117 @@ export default {
                 this.transferLoading = false
             }
         },
+        async fuelTransfer(value) {
+            console.log("value", value)
+            const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+                transferDataState
+
+                const isConnected = await fuelsHelper.isConnected()
+                let from = await fuelsHelper.fuelsAccount()
+
+            if (!isConnected || !from) {
+                await fuelsHelper.connect()
+                this.transferLoading = false
+                return
+            }
+
+            const safeCode = transferCalculate.safeCode()
+
+            const { starkNetAddress, starkChain } = web3State.starkNet
+
+            const rAmount = new BigNumber(transferValue)
+              .plus(new BigNumber(selectMakerConfig.tradingFee))
+              .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+            const rAmountValue = rAmount.toFixed()
+
+            const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+            let targetAddress = evmAddress
+            
+            if (
+                toChainID === CHAIN_ID.starknet ||
+                toChainID === CHAIN_ID.starknet_test
+            ) {
+
+                targetAddress = starkNetAddress
+
+                if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+                    util.showMessage('please connect Starknet Wallet', 'error')
+                    this.transferLoading = false
+                    return
+                }
+
+                if (!starkNetAddress) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("STARKNET")
+                    this.transferLoading = false
+                    return;
+                }
+            }
+
+            if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                targetAddress = tonHelper.account()
+                const isConnected = await tonHelper.isConnected()
+
+                if(!targetAddress || !isConnected) {
+                    await tonHelper.connect()
+                    return
+                }
+            }
+
+            if (
+                toChainID === CHAIN_ID.solana ||
+                toChainID === CHAIN_ID.solana_test
+            ) {
+
+                const solanaAddress = solanaHelper.solanaAddress()
+                const isConnect = solanaHelper.isConnect()
+
+                targetAddress = solanaAddress
+
+                if (!solanaAddress || !isConnect) {
+                    setSelectWalletDialogVisible(true)
+                    setConnectWalletGroupKey("SOLANA")
+                    this.transferLoading = false
+                    return;
+                }
+            }
+            try {
+                const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+                const hash = await fuelsHelper.transfer({
+                    from,
+                    to: selectMakerConfig.recipient,
+                    tokenAddress,
+                    targetAddress,
+                    amount: rAmountValue,
+                    safeCode,
+                    chainId:fromChainID
+                })
+                try {
+                    this.$gtag.event('click', {
+                    'event_category': 'Transfer',
+                    'event_label': selectMakerConfig.recipient,
+                    'userAddress': from, 
+                    'hash': hash 
+                    })
+                }catch(error) {
+                  console.error('click error', error);
+                }
+     
+                if (hash) {
+                    this.onTransferSucceed(from, value, fromChainID, hash)
+                }
+            } catch (error) {
+              console.error('transfer error', error);
+                this.$notify.error({
+                    title: error.message || String(error),
+                    duration: 3000,
+                })
+            } finally {
+                this.transferLoading = false
+            }
+        },
         async starknetTransfer(value) {
             const { selectMakerConfig, fromChainID, toChainID, fromCurrency, transferValue } =
                 transferDataState
@@ -2102,7 +2215,10 @@ export default {
 
             const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
 
-            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test && fromChainID !== CHAIN_ID.ton && fromChainID !== CHAIN_ID.ton_test) {
+            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && 
+            fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test && 
+            fromChainID !== CHAIN_ID.ton && fromChainID !== CHAIN_ID.ton_test && 
+            fromChainID !== CHAIN_ID.fuel && fromChainID !== CHAIN_ID.fuel_test) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
@@ -2176,6 +2292,11 @@ export default {
                     return 
                 }
 
+                if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+                    this.fuelTransfer(tValue.tAmount)
+                    return 
+                }
+
                 if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
                     this.tonTransfer(tValue.tAmount)
                     return 
@@ -2194,8 +2315,8 @@ export default {
                     return
                 }
 
-                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-                    await this.transferToSolanaOrTon()
+                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+                    await this.transferToNotEvm()
                     this.transferLoading = false
                     return
                 }

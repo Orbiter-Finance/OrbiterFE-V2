@@ -55,7 +55,7 @@
       </span>
       <!-- <span @click="showHistory" class="ops-item">History</span> -->
       <div
-        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
+        v-if="toGroup.isAddress"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -63,9 +63,9 @@
       >
         <svg-icon
           style="width: 2rem; height: 2rem"
-          :iconName="connectWalletIcon"
+          :iconName="toGroup.icon"
         ></svg-icon>
-        <span class="address">{{ connectAddress }}</span>
+        <span class="address">{{ toGroup.showAddress }}</span>
       </div>
       <div
         ref="connectedBtn"
@@ -75,9 +75,9 @@
       >
         <svg-icon
           style="width: 2rem; height: 2rem"
-          :iconName="connectFirstWalletIcon"
+          :iconName="fromGroup.icon"
         ></svg-icon>
-        <span class="address">{{ connectFirstAddress }}</span>
+        <span class="address">{{ fromGroup.showAddress }}</span>
       </div>
     </template>
     <!-- <div @click="toggleThemeMode" class="ops-mode">
@@ -98,6 +98,7 @@ import {
   starkAddress,
   solAddress,
   tonAddress,
+  fuelAddress,
   showAddress,
   saveSenderPageWorkingState,
   setActDialogVisible,
@@ -116,17 +117,18 @@ import {
   setConnectWalletGroupKey,
   setSolanaDialog,
   isTonDialog,
+  isFuelDialog,
   setTonDialog,
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
   setClaimCardModalShow,
-  setActPointFetchStatus
+  setActPointFetchStatus,
+  setFuelDialog,
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
   walletIsLogin,
 } from '../../composition/walletsResponsiveData'
-import { connectStarkNetWallet } from '../../util/constants/starknet/helper.js'
 import { CHAIN_ID } from '../../config'
 import { requestPointSystem, requestLotteryCard } from '../../common/openApiAx'
 import util from '../../util/util'
@@ -134,6 +136,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
+import fuelsHelper from '../../util/fuels/fuels_helper.js'
 
 let timer1
 
@@ -231,11 +234,23 @@ export default {
         toChainID === CHAIN_ID.ton_test
       )
     },
+    isSelectedFuel() {
+      const { fromChainID, toChainID } = transferDataState
+      return (
+        fromChainID === CHAIN_ID.fuel ||
+        fromChainID === CHAIN_ID.fuel_test ||
+        toChainID === CHAIN_ID.fuel ||
+        toChainID === CHAIN_ID.fuel_test
+      )
+    },
     starkAddress() {
       return starkAddress()
     },
     solanaAddress() {
       return solAddress()
+    },
+    async fAddress() {
+      return await fuelAddress()
     },
     tAddress() {
       return tonAddress()
@@ -246,6 +261,20 @@ export default {
     otherAddress() {
       return [
         {
+          address: this.fAddress,
+          isSelected: this.isSelectedFuel,
+          connect: async () => {
+            await fuelsHelper.connect()
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(false)
+            setFuelDialog(true)
+          },
+          icon: CHAIN_ID.fuel,
+        },
+        {
           address: this.tAddress,
           isSelected: this.isSelectedTon,
           connect: async () => {
@@ -254,6 +283,7 @@ export default {
           open: () => {
             setSolanaDialog(false)
             setStarkNetDialog(false)
+            setFuelDialog(false)
             setTonDialog(true)
           },
           icon: CHAIN_ID.ton,
@@ -268,6 +298,7 @@ export default {
           open: () => {
             setSolanaDialog(true)
             setStarkNetDialog(false)
+            setFuelDialog(false)
             setTonDialog(false)
           },
           icon: solanaHelper.readWalletName() || CHAIN_ID.solana,
@@ -283,6 +314,7 @@ export default {
             setStarkNetDialog(true)
             setSolanaDialog(false)
             setTonDialog(false)
+            setFuelDialog(false)
           },
           icon: CHAIN_ID.starknet,
         },
@@ -293,6 +325,7 @@ export default {
       const firstGroup = this.otherAddress
         .slice(first)
         .filter((item) => !!item.isSelected)[0]
+      console.log('firstGroup', this.otherAddress, firstGroup)
       return (
         firstGroup?.icon ||
         (this.globalSelectWalletConf.walletType
@@ -320,14 +353,19 @@ export default {
       const address = option?.address || 'Connect Wallet'
       return address
     },
-    currentWalletAddress() {
-      return [
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
-        web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
-        solanaHelper.solanaAddress(),
-        tonHelper.account(),
-        ...[],
-      ]
+    web3Address() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase()
+    },
+    starkNetAddress() {
+      return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
+    },
+    fromChainId() {
+      const { fromChainID } = transferDataState
+      return fromChainID
+    },
+    toChainId() {
+      const { toChainID } = transferDataState
+      return toChainID
     },
   },
   data() {
@@ -338,6 +376,8 @@ export default {
       selectedWallet,
       recaptchaId: 0,
       timeList: [],
+      fromGroup: {},
+      toGroup: {},
     }
   },
   watch: {
@@ -345,6 +385,22 @@ export default {
       if (!!newVisible) {
         // this.getWalletAddressPoint()
       }
+    },
+    fromChainId: function (newFromChainId, oldFromChainId) {
+      if (newFromChainId && newFromChainId !== oldFromChainId) {
+        this.initGetAddressBatch()
+      }
+    },
+    toChainId: function (newToChainId, oldToChainId) {
+      if (newToChainId && newToChainId !== oldToChainId) {
+        this.initGetAddressBatch()
+      }
+    },
+    web3Address: function () {
+      this.initGetAddressBatch()
+    },
+    starkAddress: function () {
+      this.initGetAddressBatch()
     },
   },
   methods: {
@@ -358,15 +414,150 @@ export default {
     openAct() {
       setActDialogVisible(true)
       this.$emit('closeDrawer')
+
+    },
+    async initGetAddressBatch() {
+      const { fromChainID, toChainID } = transferDataState
+      if(!fromChainID && !toChainID) return
+      
+      const res = await Promise.all([this.getAddress(fromChainID, { isFrom: true }), this.getAddress(toChainID, { isFrom: false }) ])
+      const [first, last] = res || []
+      this.fromGroup = first
+      if(first.type !== last.type) {
+        this.toGroup = last
+      } else {
+        this.toGroup = {}
+      }
+    },
+    async getAddress(chainID) {
+      let addressGroup = {
+        isAddress: false,
+        address: '',
+        icon: '',
+        showAddress: '',
+      }
+
+      const { fromChainID } = transferDataState
+
+      const chainId = chainID || fromChainID
+      if (!chainId) return addressGroup
+      const web3Address = this.web3Address
+      const starkNetAddress = this.starkNetAddress
+
+      if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
+        const isStarknet = !!isStarkNetDialog.value
+        if (
+          !!starkNetAddress &&
+          !util.getAccountAddressError(starkNetAddress || '', isStarknet)
+        ) {
+          addressGroup = {
+            isAddress: true,
+            address: starkNetAddress,
+            icon: CHAIN_ID.starknet,
+            type: "Starknet",
+            connect: () => {
+              setConnectWalletGroupKey('STARKNET')
+              setSelectWalletDialogVisible(true)
+            },
+            open: () => {
+              setStarkNetDialog(true)
+              setSolanaDialog(false)
+              setTonDialog(false)
+              setFuelDialog(false)
+            },
+          }
+        }
+      } else if (
+        chainId === CHAIN_ID.solana ||
+        chainId === CHAIN_ID.solana_test
+      ) {
+        const solanaAddress = solanaHelper.solanaAddress()
+        addressGroup = {
+          isAddress: !!solanaAddress,
+          address: solanaAddress,
+          icon: solanaHelper.readWalletName() || CHAIN_ID.solana,
+          type: "Solana",
+          connect: () => {
+            setConnectWalletGroupKey('SOLANA')
+            setSelectWalletDialogVisible(true)
+          },
+          open: () => {
+            setSolanaDialog(true)
+            setStarkNetDialog(false)
+            setFuelDialog(false)
+            setTonDialog(false)
+          },
+        }
+      } else if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
+        const tonAddress = tonHelper.account()
+        addressGroup = {
+          isAddress: !!tonAddress,
+          address: tonAddress,
+          icon: CHAIN_ID.ton,
+          type: "Ton",
+          connect: async () => {
+            await tonHelper.connect()
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setFuelDialog(false)
+            setTonDialog(true)
+          },
+        }
+      } else if (chainId === CHAIN_ID.fuel || chainId === CHAIN_ID.fuel_test) {
+        const fuelAddress = await fuelsHelper.fuelsAccount()
+        addressGroup = {
+          isAddress: !!fuelAddress,
+          address: fuelAddress,
+          icon: CHAIN_ID.fuel,
+          type: "Fuel",
+          connect: async () => {
+            await fuelsHelper.connect()
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(false)
+            setFuelDialog(true)
+          },
+        }
+      } else {
+        if (!!web3Address && web3Address !== '0x') {
+          addressGroup = {
+            isAddress: true,
+            address: web3Address,
+            icon: this.globalSelectWalletConf.walletType
+              ? this.globalSelectWalletConf.walletType.toLowerCase()
+              : '',
+            connect: async () => {
+              setConnectWalletGroupKey('EVM')
+              setSelectWalletDialogVisible(true)
+            },
+            type: "EVM",
+            open: () => {
+              setTonDialog(false)
+              setSolanaDialog(false)
+              setStarkNetDialog(false)
+              setActDialogVisible(true)
+            },
+          }
+        }
+      }
+
+      const showAddress = util.shortAddress(addressGroup.address)
+
+      addressGroup = {
+        ...addressGroup,
+        chainId,
+        showAddress,
+      }
+      return addressGroup
     },
     async connectStarkNetWallet() {
-      const option = this.otherAddress.filter((item) => item.isSelected)[0]
-      const isConnect =
-        option?.address &&
-        option?.address !== 'Connect Wallet' &&
-        option?.address !== 'not connected'
+      const option = this.toGroup
 
-      if (isConnect) {
+      if (option?.isAddress) {
         option.open()
         setActDialogVisible(true)
       } else {
@@ -374,32 +565,13 @@ export default {
       }
     },
     async connectAWallet() {
-      const evm = {
-        address: this.showAddress,
-        connect: async () => {
-          setConnectWalletGroupKey('EVM')
-          setSelectWalletDialogVisible(true)
-        },
-        open: () => {
-          setTonDialog(false)
-          setSolanaDialog(false)
-          setStarkNetDialog(false)
-          setActDialogVisible(true)
-        },
-      }
-      const first = this.otherAddress.findIndex((item) => !!item.isSelected) + 1
-      const firstGroup =
-        this.otherAddress.slice(first).filter((item) => !!item.isSelected)[0] ||
-        evm
-      const isConnect =
-        firstGroup?.address &&
-        firstGroup?.address !== 'Connect Wallet' &&
-        firstGroup?.address !== 'not connected'
-      if (isConnect) {
-        firstGroup.open()
+      const option = this.fromGroup
+
+      if (option?.isAddress) {
+        option.open()
         setActDialogVisible(true)
       } else {
-        await firstGroup.connect()
+        await option.connect()
       }
     },
     showHistory() {
@@ -423,41 +595,13 @@ export default {
           path: '/history',
         })
     },
-    getAddress() {
-      let addressGroup = {
-        isAddress: false,
-        address: '',
-      }
-      const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const solanaAddress = solanaHelper.solanaAddress()
-      const tonAddress = tonHelper.account()
-      const address =
-        !!isTonDialog.value && tonAddress
-          ? tonAddress
-          : !!isSolanaDialog.value && solanaAddress
-          ? solanaAddress
-          : !!isStarkNetDialog.value
-          ? starkNetAddress
-          : web3Address
-      const isStarknet = !!isStarkNetDialog.value
-      if (
-        !address ||
-        (!isSolanaDialog.value &&
-          util.getAccountAddressError(address || '', isStarknet))
-      ) {
-        return addressGroup
-      }
-      return {
-        ...addressGroup,
-        isAddress: true,
-        address,
-      }
-    },
     async getWalletAddressPoint() {
-      const { isAddress, address } = this.getAddress()
-      const [_web3Address, starkNetAddress] = this.currentWalletAddress
+      const { isAddress, address } = await this.getAddress()
+
+      const starkNetAddress = this.starkNetAddress
 
       const tonAddress = tonHelper.account()
+      const fuelsAccount = await fuelsHelper.fuelsAccount()
       const solanaAddress = solanaHelper.solanaAddress()
 
       if (isAddress) {
@@ -468,7 +612,10 @@ export default {
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
-          if (tonAddress) {
+          if (fuelsAccount) {
+            setFuelDialog(true)
+            setActDialogVisible(true)
+          } else if (tonAddress) {
             setTonDialog(true)
             setActDialogVisible(true)
           } else if (solanaAddress) {
@@ -489,7 +636,7 @@ export default {
       }
     },
     async getWalletAddressActList() {
-      const { isAddress, address } = this.getAddress()
+      const { isAddress, address } = await this.getAddress()
 
       if (isAddress) {
         const res = await requestPointSystem('v2/activity/list', {
@@ -517,7 +664,7 @@ export default {
     },
 
     async getLotteryCardData() {
-      const { isAddress, address } = this.getAddress()
+      const { isAddress, address } = await this.getAddress()
 
       if (isAddress) {
         const {
@@ -537,7 +684,8 @@ export default {
       }
     },
   },
-  // created() {
+  created() {
+    this.initGetAddress()
   //   if (process.env['VUE_APP_RECAPTCHA']) {
   //     if (typeof window === 'undefined') return
   //     window.vueRecaptchaInit = () => {}
@@ -551,7 +699,7 @@ export default {
   //     recaptchaScript.setAttribute('defer', '')
   //     ;(document.body || document.head).appendChild(recaptchaScript)
   //   }
-  // },
+  },
   async mounted() {
     let flag = false
     timer1 = setInterval(() => {
@@ -563,7 +711,8 @@ export default {
       let time = timeS
       if (timeS <= 0) {
         if (Number(t)) {
-          const [web3Address] = this.currentWalletAddress
+          
+        const web3Address = this.web3Address
 
           this.$store.commit('requestLuckyBagDataInfo', {
             address: web3Address,
@@ -627,7 +776,7 @@ export default {
     const _this = this
     setInterval(async () => {
       if (!this.$store.state.proceeding.makerTransfer.txid) return
-      const { address } = this.getAddress()
+      const { address } = await this.getAddress()
 
       if (address && address !== '0x') {
         setActPointFetchStatus()

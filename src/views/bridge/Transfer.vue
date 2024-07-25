@@ -35,7 +35,9 @@
             transferDataState.fromChainID === CHAIN_ID.solana ||
             transferDataState.fromChainID === CHAIN_ID.solana_test ||
             transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test  
+            transferDataState.fromChainID === CHAIN_ID.ton_test ||
+            transferDataState.fromChainID === CHAIN_ID.fuel ||
+            transferDataState.fromChainID === CHAIN_ID.fuel_test 
           "
           >
             <template v-slot:titleDesc>
@@ -111,7 +113,9 @@
             transferDataState.fromChainID === CHAIN_ID.solana ||
             transferDataState.fromChainID === CHAIN_ID.solana_test ||
             transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test  
+            transferDataState.fromChainID === CHAIN_ID.ton_test ||
+            transferDataState.fromChainID === CHAIN_ID.fuel ||
+            transferDataState.fromChainID === CHAIN_ID.fuel_test  
           "
           >
             <template v-slot:titleDesc>
@@ -460,12 +464,15 @@ import { ethers } from 'ethers'
 import solanaHelper from "../../util/solana/solana_helper"
 import { decimalNumTh } from '../../util/decimalNum'
 import tonHelper from "../../util/ton/ton_helper"
+import fuelsHelper from '../../util/fuels/fuels_helper';
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
 let chain = config.chain;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
+
+let timer1
 
 export default {
   name: 'Transfer',
@@ -606,6 +613,9 @@ export default {
       if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
         return false;
       }
+      if (transferDataState.toChainID === CHAIN_ID.fuel || transferDataState.toChainID === CHAIN_ID.fuel_test) {
+        return false;
+      }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
     },
     isErrorAddress() {
@@ -622,6 +632,9 @@ export default {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
+        return false;
+      }
+      if (transferDataState.toChainID === CHAIN_ID.fuel || transferDataState.toChainID === CHAIN_ID.fuel_test) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -664,10 +677,19 @@ export default {
     isStarknet() {
       return this.refererUpper === 'STARKNET';
     },
-    // crossAddressInputDisable() {
-    //   const toChainID = transferDataState.toChainID;
-    //   return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test;
-    // },
+    crossAddressInputDisable() {
+      const toChainID = transferDataState.toChainID;
+      return toChainID === CHAIN_ID.starknet || 
+      toChainID === CHAIN_ID.starknet_test || 
+      toChainID === CHAIN_ID.solana || 
+      toChainID === CHAIN_ID.solana_test || 
+      toChainID === CHAIN_ID.ton || 
+      toChainID === CHAIN_ID.ton_test || 
+      toChainID === CHAIN_ID.dydx || 
+      toChainID === CHAIN_ID.dydx_test || 
+      toChainID === CHAIN_ID.fuel || 
+      toChainID === CHAIN_ID.fuel_test ;
+    },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
       const { href } = window.location;
@@ -1813,13 +1835,17 @@ export default {
       this.updateTransferInfo()
     },
     transfer_mid() {
-      const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
-      this.updateTransferInfo({
-        toChainID: fromChainID,
-        fromChainID: toChainID,
-      });
-      this.selectFromToken = toCurrency;
-      this.selectToToken = fromCurrency;
+      clearTimeout(timer1)
+      let self = this
+      timer1 = setTimeout(() => {
+        const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
+        self.updateTransferInfo({
+          toChainID: fromChainID,
+          fromChainID: toChainID,
+        });
+        self.selectFromToken = toCurrency;
+        self.selectToToken = fromCurrency;
+      }, 200);
     },
     changeFromChain() {
       if (!this.fromChainIdList.length) {
@@ -2148,6 +2174,13 @@ export default {
             return
           }
           
+        } else if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+          const isConnect = await fuelsHelper.isConnected()
+          if(!isConnect) {
+            await fuelsHelper.connect()
+            return
+          }
+          
         } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           const isConnected = await tonHelper.isConnected()
           const account = await tonHelper.account()
@@ -2195,7 +2228,16 @@ export default {
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
-          toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase())
+          toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test ? 
+          await fuelsHelper.fuelsAccount() : (
+            toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? 
+            tonHelper.account()  : 
+          (
+            toChainID === CHAIN_ID.solana || 
+              toChainID ===  CHAIN_ID.solana_test ? 
+              solanaHelper.solanaAddress() : 
+              compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
+          ))
         );
         // sendTransfer
         const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
@@ -2392,6 +2434,9 @@ export default {
       if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
       }
+      if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+        address = await fuelsHelper.fuelsAccount();
+      }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
                   .then(async (response) => {
@@ -2424,6 +2469,9 @@ export default {
       }
       if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
+      }
+      if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+        address = await fuelsHelper.fuelsAccount();
       }
       // if (address && address !== '0x') {
       //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)

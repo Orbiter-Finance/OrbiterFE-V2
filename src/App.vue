@@ -21,6 +21,7 @@
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" class="router" />
       </div>
+
       <keep-alive>
         <BottomNav
           v-if="isBottomNav"
@@ -228,7 +229,7 @@ export default {
     GlobalTgCard,
     UserInfoDetailsCardModal,
     ClaimRewardModal,
-    OPointsRankingCard
+    OPointsRankingCard,
   },
   updated() {
     if(!this.isInit) {
