@@ -173,21 +173,21 @@ export default {
       // )
     },
     drawLuckyTaskBag() {
-      console.log("amount", this.amount)
-      if(!Number(this.amount)) return 
-      this.$store.commit('getClaimORBGUYRewardData', {
-        type: 'LUCKY_BAG_TASK',
-        distributeResult: this.amount || 0,
-      })
-      // const evmAddress = this.evmAddress
-      // if (!Number(this.amount) || !evmAddress || evmAddress === '0x') return
-      // const name = 'CLAIM_TO_BNB_LUCKY_BAG_AABANK'
-      // const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
-      // this.$gtag.event(name, {
-      //   event_category: name,
-      //   event_label: evmAddress,
+      // console.log("amount", this.amount)
+      // if(!Number(this.amount)) return 
+      // this.$store.commit('getClaimORBGUYRewardData', {
+      //   type: 'LUCKY_BAG_TASK',
+      //   distributeResult: this.amount || 0,
       // })
-      // window.open(url, '_blank')
+      const evmAddress = this.evmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      const name = 'CLAIM_TO_SCROLL_LUCKY_BAG_AABANK'
+      const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: evmAddress,
+      })
+      window.open(url, '_blank')
     },
     getData() {
       this.$store.commit('getLuckyBagTaskInfo')
