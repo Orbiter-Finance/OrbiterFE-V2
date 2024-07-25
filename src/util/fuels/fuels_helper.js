@@ -3,6 +3,8 @@ import { defaultConnectors } from '@fuels/connectors'
 import util from '../util'
 import { utils } from 'ethers'
 
+let address = ''
+
 const fuelProvider = () => {
   return new Fuel({
     connectors: defaultConnectors(),
@@ -22,16 +24,22 @@ const connect = async () => {
   const fuel = fuelProvider()
   await fuel.selectConnector('Fuel Wallet')
   await fuel.connect()
+  const fuelC = fuelConnector()
+  const currentAccount = await fuelC.currentAccount()
+  address = new Address(currentAccount).toHexString()
 }
 
 const fuelsAccount = async () => {
   if (!isConnected()) return ''
   const fuel = fuelConnector()
   try {
-    const currentAccount = await fuel.currentAccount()
-    console.log('currentAccount', currentAccount)
-
-    return new Address(currentAccount).toHexString()
+    if (address) {
+      return address
+    } else {
+      const currentAccount = await fuel.currentAccount()
+      address = new Address(currentAccount).toHexString()
+      return address
+    }
   } catch (error) {
     return ''
   }

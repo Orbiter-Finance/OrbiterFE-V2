@@ -31,7 +31,7 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
 import fuelsHelper from '../fuels/fuels_helper'
-import { parseEther, zeroAddress } from 'viem'
+import { zeroAddress } from 'viem'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -1077,12 +1077,6 @@ export default {
           tokenAddress,
           userAddress,
         })
-        console.log(
-          'amount',
-          isMaker,
-          amount,
-          parseEther(amount.toString()).toString()
-        )
         return amount.toString()
       } catch (error) {
         return '0'

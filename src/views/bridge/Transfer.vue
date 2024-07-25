@@ -468,6 +468,8 @@ let chain = config.chain;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
+let timer1
+
 export default {
   name: 'Transfer',
   components: {
@@ -1818,13 +1820,17 @@ export default {
       this.updateTransferInfo()
     },
     transfer_mid() {
-      const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
-      this.updateTransferInfo({
-        toChainID: fromChainID,
-        fromChainID: toChainID,
-      });
-      this.selectFromToken = toCurrency;
-      this.selectToToken = fromCurrency;
+      clearTimeout(timer1)
+      let self = this
+      timer1 = setTimeout(() => {
+        const { fromChainID, toChainID, fromCurrency, toCurrency } = transferDataState;
+        self.updateTransferInfo({
+          toChainID: fromChainID,
+          fromChainID: toChainID,
+        });
+        self.selectFromToken = toCurrency;
+        self.selectToToken = fromCurrency;
+      }, 200);
     },
     changeFromChain() {
       if (!this.fromChainIdList.length) {
