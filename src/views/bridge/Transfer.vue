@@ -917,6 +917,8 @@ export default {
     },
     isCrossAddress: function (newValue) {
       updateIsCrossAddress(newValue);
+      this.crossAddressReceipt = ""
+      updateCrossAddressReceipt("");
       this.updateTransferInfo();
     },
     // currentNetwork(newValue, oldValue) {
@@ -1000,7 +1002,7 @@ export default {
   methods: {
     checkAddressCall() {
       const {crossAddressReceipt, isCrossAddress, toChainID } = this.transferDataState
-      if(!isCrossAddress) return false
+      if(!isCrossAddress || !crossAddressReceipt) return false
       const isCheck = orbiterHelper.checkAddress({address: crossAddressReceipt, chainId: toChainID})
       return isCheck
     },

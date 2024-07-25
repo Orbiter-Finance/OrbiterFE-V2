@@ -416,29 +416,25 @@ export default {
             if(this.isCrossAddress) {
               if(!!this.crossAddressReceipt || !!orbiterHelper.checkAddress({address: this.crossAddressReceipt, chainId: toChainID})) {
                 return this.crossAddressReceipt
-              } else {
-                orbiterHelper.openConnectModal({chainId: toChainID})
-                return ""
-              }
+              } 
+            }
+            let address = ""
+            if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+              address = await fuelsHelper.fuelsAccount()
+            } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+              address = tonHelper.account()
+            } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+              address = solanaHelper.solanaAddress()
+            } else  if(toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+              address = this.starkAddress
             } else {
-                let address = ""
-                if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
-                  address = await fuelsHelper.fuelsAccount()
-                } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-                  address = tonHelper.account()
-                } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-                  address = solanaHelper.solanaAddress()
-                } else  if(toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-                  address = this.starkAddress
-                } else {
-                  address = this.currentWalletAddress
-                }
-                if(!orbiterHelper.checkAddress({chainId: toChainID, address: address})) {
-                  this.openConnectModal()
-                  return ""
-                } else {
-                    return address
-                }
+              address = this.currentWalletAddress
+            }
+            if(!orbiterHelper.checkAddress({chainId: toChainID, address: address})) {
+              this.openConnectModal()
+              return ""
+            } else {
+                return address
             }
         },
         async loopringWalletTransfer(rAmountValue) {

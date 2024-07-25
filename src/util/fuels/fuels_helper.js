@@ -22,6 +22,11 @@ const fuelConnector = () => {
 
 const connect = async () => {
   const fuel = fuelProvider()
+  if (!fuel.installed) {
+    util.showMessage(`Please install fuel wallet`, 'warning')
+    return
+  }
+
   await fuel.selectConnector('Fuel Wallet')
   await fuel.connect()
   const fuelC = fuelConnector()
@@ -30,7 +35,8 @@ const connect = async () => {
 }
 
 const fuelsAccount = async () => {
-  if (!isConnected()) return ''
+  const connetd = await isConnected()
+  if (!connetd) return ''
   const fuel = fuelConnector()
   try {
     if (address) {
@@ -46,21 +52,20 @@ const fuelsAccount = async () => {
 }
 
 const isConnected = async () => {
-  const fuel = fuelConnector()
-  const connected = await fuel.isConnected()
-  console.log('connected', connected)
-  return !!connected
+  try {
+    const fuel = fuelConnector()
+    if (!fuel) return false
+    const connected = await fuel.isConnected()
+    return !!connected
+  } catch (error) {
+    return false
+  }
 }
 
 const getBalance = async ({ tokenAddress, userAddress, chainId }) => {
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   const rpc = chainInfo?.rpc?.[0]
   const provider = await Provider.create(rpc)
-  console.log('provider', provider)
-  const p = fuelProvider()
-  console.log('p', p)
-  const fuel = fuelConnector()
-  console.log('fuel', fuel)
   const fromWallet = Wallet.fromAddress(userAddress, provider)
   const res = BigInt(String(await fromWallet.getBalance(tokenAddress)))
   return res
@@ -73,59 +78,16 @@ const transfer = async ({
   targetAddress,
   amount,
   safeCode,
-  chainId,
 }) => {
-  console.log(
-    'transfer',
-    from,
-    to,
-    tokenAddress,
-    targetAddress,
-    amount,
-    safeCode,
-    chainId
-  )
-
   const fromBech32 = toBech32(from)
   const fromAddress = new Address(fromBech32)
-  console.log('fromAddress', fromAddress)
 
-  const tokenBech32 = toBech32(tokenAddress)
-  const token = new Address(tokenBech32)
-  console.log('token', token)
-
-  const toBech = toBech32(to)
-  const toAddress = new Address(toBech)
-  console.log('toAddress', toAddress)
-
-  const chainInfo = util.getV3ChainInfoByChainId(chainId)
-  console.log('chainInfo', chainInfo)
-  const rpc = chainInfo?.rpc?.[0]
-  const provider = await Provider.create(rpc)
-  console.log('provider', provider)
   const fuel = fuelConnector()
-  console.log('fuelConnector', fuel)
-
-  const fuel1 = fuelProvider()
-  console.log('fuelProvider', fuel1)
-
   const wallet = await fuelProvider().getWallet(fromAddress)
-  console.log('wallet', wallet)
 
   const memo = utils.hexlify(
     utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`)
   )
-
-  console.log('memo', memo)
-
-  // const transactionRequest = new ScriptTransactionRequest({
-  //   gasLimit: 2000,
-  //   maxFee: 0,
-  // })
-
-  // console.log('gas', transactionRequest)
-
-  // transactionRequest.addCoinOutput(fromAddress, amount, tokenAddress)
 
   const request = await wallet.createTransfer(
     to,
@@ -135,26 +97,7 @@ const transfer = async ({
       scriptData: memo,
     }
   )
-  console.log('request', request)
-
-  // const estimateFee = await provider.estimateTxGasAndFee({ transactionRequest: request });
-  // const txRequest = {
-  //   gasLimit: estimateFee.gasLimit,
-  //   maxFee: estimateFee.maxFee,
-  //   scriptData: memo,
-  // }
-  // await this.getGasPrice(txRequest);
-  // const tx = await this.wallet.transfer(to, Number(amount), token, txRequest)
-
-  // const predicateCoins = await provider.getResourcesToSpend(
-  //   [{ amount, assetId: toAddress }],
-  //   { message: [memo] }
-  // )
-  // console.log('predicateCoins', predicateCoins)
-  // transactionRequest.addResources(predicateCoins)
-  // console.log('transactionRequest', transactionRequest)
   const hash = await fuel.sendTransaction(fromBech32, request)
-  console.log('hash', hash)
   return hash
 }
 
