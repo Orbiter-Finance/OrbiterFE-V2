@@ -224,7 +224,6 @@ import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper';
 import fuelsHelper from '../../util/fuels/fuels_helper';
 import orbiterHelper from '../../util/orbiter_helper';
-import { shortString } from 'starknet';
 
 const {
     walletDispatchersOnSignature,
@@ -251,28 +250,22 @@ export default {
         isStarkNetChain() {
             const { fromChainID, toChainID } = transferDataState
             return (
-                fromChainID === CHAIN_ID.starknet ||
-                fromChainID === CHAIN_ID.starknet_test ||
-                toChainID === CHAIN_ID.starknet ||
-                toChainID === CHAIN_ID.starknet_test
+                orbiterHelper.isStarknetChain({chainId: fromChainID})||
+                orbiterHelper.isStarknetChain({chainId: toChainID})
             )
         },
         isSolanaChain() {
             const { fromChainID, toChainID } = transferDataState
             return (
-                fromChainID === CHAIN_ID.solana ||
-                fromChainID === CHAIN_ID.solana_test ||
-                toChainID === CHAIN_ID.solana ||
-                toChainID === CHAIN_ID.solana_test
+                orbiterHelper.isSolanaChain({chainId: fromChainID})||
+                orbiterHelper.isSolanaChain({chainId: toChainID})
             )
         },
         isTonChain() {
             const { fromChainID, toChainID } = transferDataState
             return (
-                fromChainID === CHAIN_ID.ton ||
-                fromChainID === CHAIN_ID.ton_test ||
-                toChainID === CHAIN_ID.ton ||
-                toChainID === CHAIN_ID.ton_test
+                orbiterHelper.isTonChain({chainId: fromChainID})||
+                orbiterHelper.isTonChain({chainId: toChainID})
             )
         },
         currentFromChainID() {
@@ -322,9 +315,10 @@ export default {
                 )
             )
 
-            if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test || 
-                fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test || 
-                fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test
+            if(
+                orbiterHelper.isTonChain({chainId: fromChainID}) || 
+                orbiterHelper.isStarknetChain({chainId: fromChainID}) || 
+                orbiterHelper.isSolanaChain({chainId: fromChainID})
             ) {
                 realTransferAmount = ethers.utils.formatEther(
                     ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
@@ -419,13 +413,13 @@ export default {
               } 
             }
             let address = ""
-            if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+            if( orbiterHelper.isFuelChain({chainId: toChainID})) {
               address = await fuelsHelper.fuelsAccount()
-            } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+            } else  if( orbiterHelper.isTonChain({chainId: toChainID}) ) {
               address = tonHelper.account()
-            } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+            } else  if(orbiterHelper.isSolanaChain({chainId: toChainID})) {
               address = solanaHelper.solanaAddress()
-            } else  if(toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+            } else  if(orbiterHelper.isStarknetChain({chainId: toChainID})) {
               address = this.starkAddress
             } else {
               address = this.currentWalletAddress
@@ -1546,44 +1540,7 @@ export default {
                 return 
             }
             
-            // if (
-            //     toChainID === CHAIN_ID.starknet ||
-            //     toChainID === CHAIN_ID.starknet_test
-            // ) {
-
-            //     targetAddress = starkNetAddress
-
-            //     if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-            //         util.showMessage('please connect Starknet Wallet', 'error')
-            //         this.transferLoading = false
-            //         return
-            //     }
-
-            //     if (!starkNetAddress) {
-            //         setSelectWalletDialogVisible(true)
-            //         setConnectWalletGroupKey("STARKNET")
-            //         this.transferLoading = false
-            //         return;
-            //     }
-            // }
-
-            // if (
-            //     toChainID === CHAIN_ID.solana ||
-            //     toChainID === CHAIN_ID.solana_test
-            // ) {
-
-            //     const solanaAddress = solanaHelper.solanaAddress()
-            //     const isConnect = solanaHelper.isConnect()
-
-            //     targetAddress = solanaAddress
-
-            //     if (!solanaAddress || !isConnect) {
-            //         setSelectWalletDialogVisible(true)
-            //         setConnectWalletGroupKey("SOLANA")
-            //         this.transferLoading = false
-            //         return;
-            //     }
-            // }
+           
             try {
                 const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
@@ -1647,8 +1604,7 @@ export default {
             let targetAddress = evmAddress
             
             if (
-                toChainID === CHAIN_ID.starknet ||
-                toChainID === CHAIN_ID.starknet_test
+                orbiterHelper.isStarknetChain({chainId: toChainID})
             ) {
 
                 targetAddress = starkNetAddress
@@ -1667,7 +1623,7 @@ export default {
                 }
             }
 
-            if( toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+            if( orbiterHelper.isTonChain({chainId: toChainID})) {
                 targetAddress = tonHelper.account()
                 const isConnected = await tonHelper.isConnected()
 
@@ -1678,8 +1634,7 @@ export default {
             }
 
             if (
-                toChainID === CHAIN_ID.solana ||
-                toChainID === CHAIN_ID.solana_test
+                orbiterHelper.isSolanaChain({chainId: toChainID})
             ) {
 
                 const solanaAddress = solanaHelper.solanaAddress()
@@ -1737,10 +1692,8 @@ export default {
             let tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
             if (
-                fromChainID === CHAIN_ID.starknet ||
-                fromChainID === CHAIN_ID.starknet_test ||
-                toChainID === CHAIN_ID.starknet ||
-                toChainID === CHAIN_ID.starknet_test
+                orbiterHelper.isStarknetChain({chainId: fromChainID}) || 
+                orbiterHelper.isStarknetChain({chainId: toChainID})
             ) {
                 let { starkChain } = web3State.starkNet
                 starkChain = +starkChain ? +starkChain : starkChain
@@ -1780,7 +1733,7 @@ export default {
             }
             
 
-            if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test){
+            if(orbiterHelper.isSolanaChain({chainId :toChainID}) || orbiterHelper.isTonChain({chainId: toChainID}) || orbiterHelper.isFuelChain({chainId: toChainID})){
 
                 const hash = await sendTransferV3({
                     targetAddress: toAddress,
@@ -2132,10 +2085,7 @@ export default {
 
             const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
 
-            if (fromChainID !== CHAIN_ID.starknet && fromChainID !== CHAIN_ID.starknet_test && 
-            fromChainID !== CHAIN_ID.solana && fromChainID !== CHAIN_ID.solana_test && 
-            fromChainID !== CHAIN_ID.ton && fromChainID !== CHAIN_ID.ton_test && 
-            fromChainID !== CHAIN_ID.fuel && fromChainID !== CHAIN_ID.fuel_test) {
+            if (!orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
                 if (
                     compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
                     util.getMetaMaskNetworkId(fromChainID).toString()
@@ -2204,17 +2154,17 @@ export default {
                     return 
                 }
 
-                if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+                if (orbiterHelper.isSolanaChain({chainId: fromChainID})) {
                     this.solanaTransfer(tValue.tAmount)
                     return 
                 }
 
-                if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+                if (orbiterHelper.isFuelChain({chainId: fromChainID})) {
                     this.fuelTransfer(tValue.tAmount)
                     return 
                 }
 
-                if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+                if (orbiterHelper.isTonChain({chainId: fromChainID})) {
                     this.tonTransfer(tValue.tAmount)
                     return 
                 }
@@ -2222,7 +2172,7 @@ export default {
                 const account =
                     compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
-                if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+                if (orbiterHelper.isStarknetChain({chainId: fromChainID})) {
                     this.starknetTransfer(tValue.tAmount)
                     return
                 }
@@ -2232,13 +2182,13 @@ export default {
                     return
                 }
 
-                if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+                if (orbiterHelper.isNotEVMChain({chainId: toChainID})) {
                     await this.transferToNotEvm()
                     this.transferLoading = false
                     return
                 }
 
-                if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+                if (orbiterHelper.isStarknetChain({chainId: toChainID})) {
                     this.transferToStarkNet(tValue.tAmount)
                     return
                 }

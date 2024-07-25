@@ -111,9 +111,44 @@ const openConnectModal = async ({ chainId }) => {
   }
 }
 
+const isSolanaChain = ({ chainId }) => {
+  return (
+    chainId === CHAIN_ID.solana ||
+    chainId === CHAIN_ID.solana_test ||
+    chainId === CHAIN_ID.eclipse_test ||
+    chainId === CHAIN_ID.sonic_test
+  )
+}
+
+const isTonChain = ({ chainId }) => {
+  return chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test
+}
+
+const isStarknetChain = ({ chainId }) => {
+  return chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test
+}
+
+const isFuelChain = ({ chainId }) => {
+  return chainId === CHAIN_ID.fuel || chainId === CHAIN_ID.fuel_test
+}
+
+const isNotEVMChain = ({ chainId }) => {
+  return (
+    isSolanaChain({ chainId }) ||
+    isTonChain({ chainId }) ||
+    isStarknetChain({ chainId }) ||
+    isFuelChain({ chainId })
+  )
+}
+
 const orbiterHelper = {
   checkAddress,
   openConnectModal,
+  isSolanaChain,
+  isTonChain,
+  isStarknetChain,
+  isFuelChain,
+  isNotEVMChain,
 }
 
 export default orbiterHelper
