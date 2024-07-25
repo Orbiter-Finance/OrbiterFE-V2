@@ -80,11 +80,11 @@
           :url="'https://0xastra.xyz/'"
         />
       </el-carousel-item> -->
-        <el-carousel-item>
+        <!-- <el-carousel-item>
         <EcosystemLikidDappPro
         :showCard="showCard"
         ></EcosystemLikidDappPro>
-      </el-carousel-item>
+      </el-carousel-item> -->
       <!-- <el-carousel-item>
         <EcosystemDapp
           :holders="0"
@@ -101,6 +101,22 @@
           :url="'https://www.colorprotocol.com/'"
         />
       </el-carousel-item> -->
+      <el-carousel-item>
+        <EcosystemDapp
+          :holders="totalUser"
+          :isTags="true"
+          :isHolders="true"
+          :ratio="ratio"
+          :showCard="showCard"
+          :banner="'astra2.png'"
+          :tag="'Cross-chain Game'"
+          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
+          :description="'Complete quest to split 2M $MNT with 0xAstra.'"
+          :isProgress="false"
+          :name="'0xastra'"
+          :url="'https://0xastra.xyz/'"
+        />
+      </el-carousel-item>
         <el-carousel-item>
           <EcosystemDapp
             :holders="bullishsTotal"
@@ -133,22 +149,7 @@
             :url="'https://www.pinketh.xyz/'"
           />
         </el-carousel-item>
-        <el-carousel-item>
-          <EcosystemDapp
-            :holders="totalUser"
-            :isTags="true"
-            :isHolders="true"
-            :ratio="ratio"
-            :showCard="showCard"
-            :banner="'astra.png'"
-            :tag="'Cross-chain Game'"
-            :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-            :description="'Exclusive Early Rewards for orbiter Premium Users is airdroping.'"
-            :isProgress="false"
-            :name="'0xastra'"
-            :url="'https://0xastra.xyz/'"
-          />
-        </el-carousel-item>
+        
       </el-carousel>
     </div>
   </div>
@@ -161,7 +162,7 @@ import Web3 from 'web3'
 import { isMobile } from '../../composition/hooks'
 import util from '../../util/util'
 import EcosystemDapp from './EcosystemDapp.vue'
-import EcosystemLikidDappPro from './EcosystemLikidDappPro.vue'
+// import EcosystemLikidDappPro from './EcosystemLikidDappPro.vue'
 
 let timer
 let timer1
@@ -170,7 +171,7 @@ export default {
   name: 'EcosystemDappPro',
   components: {
     EcosystemDapp,
-    EcosystemLikidDappPro
+    // EcosystemLikidDappPro
   },
   data() {
     return {

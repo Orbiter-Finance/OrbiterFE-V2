@@ -27,7 +27,7 @@
         </div>
         <!-- <img
           class="prizes-banner-image-mobile"
-          :src="require('../../../assets/prizes/banner-bg-mobile.png')"
+          :src="require('../../../assets/prizes/v1/banner-bg-mobile.png')"
         /> -->
 
         <div class="prizes-banner-image-mobile">
@@ -58,7 +58,7 @@
       </div>
       <!-- <img
         class="prizes-banner-image"
-        :src="require('../../../assets/prizes/banner-bg.png')"
+        :src="require('../../../assets/prizes/v1/banner-bg.png')"
       /> -->
       <div class="prizes-claim-group">
         <PrizesClaimCard ></PrizesClaimCard>
@@ -290,7 +290,7 @@ export default {
         left: -100%;
         width: 300%;
         padding: 32%;
-        background-image: url('../../../assets/prizes/banner-bg-bottom.png');
+        background-image: url('../../../assets/prizes/v1/banner-bg-bottom.png');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
@@ -390,7 +390,7 @@ export default {
       left: 0;
       width: 150%;
       padding: 12%;
-      background-image: url('../../../assets/prizes/banner-bg-bottom.png');
+      background-image: url('../../../assets/prizes/v1/banner-bg-bottom.png');
       background-repeat: no-repeat;
       background-position: center;
       background-size: 100% 100%;
