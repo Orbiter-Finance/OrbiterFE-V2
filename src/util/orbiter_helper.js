@@ -18,6 +18,11 @@ const checkStarknetAddress = (address) => {
   }
 }
 
+const checkFuelsAddress = (address) => {
+  const ETH_ADDRESS = new RegExp('^(0x)?[0-9a-fA-F]{64}$')
+  return ETH_ADDRESS.test(address)
+}
+
 const checkEvmAddress = (address) => {
   const ETH_ADDRESS = new RegExp('^(0x)?[0-9a-fA-F]{40}$')
   return ETH_ADDRESS.test(address)
@@ -38,12 +43,15 @@ const checkAddress = ({ address, chainId }) => {
   )
   if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
     return tonHelper.checkAddress(address)
+  } else if (chainId === CHAIN_ID.fuel || chainId === CHAIN_ID.fuel_test) {
+    return checkFuelsAddress(address)
   } else if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
     return solanaHelper.checkAddress(address)
   } else if (
     chainId === CHAIN_ID.starknet ||
     chainId === CHAIN_ID.starknet_test
   ) {
+    console.log('openConnectModal', address, chainId)
     return checkStarknetAddress(address)
   } else if (Number(chainId) || flag) {
     return checkEvmAddress(address)

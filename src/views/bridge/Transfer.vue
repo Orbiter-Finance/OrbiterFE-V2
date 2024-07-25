@@ -1955,11 +1955,13 @@ export default {
       if(!this.isCrossAddress) {
 
         let fromAddress = ""
-        if(fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        if(fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+          fromAddress = await fuelsHelper.fuelsAccount()
+        } else if(fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           fromAddress = tonHelper.account()
-        } else  if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+        } else if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
           fromAddress = solanaHelper.solanaAddress()
-        } else  if(fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        } else if(fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
           fromAddress = this.starkAddress
         } else {
           fromAddress = this.currentWalletAddress
@@ -1970,15 +1972,18 @@ export default {
         }
 
         let toAddress = ""
-        if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+        if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+          toAddress = await fuelsHelper.fuelsAccount()
+        } else if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
           toAddress = tonHelper.account()
         } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
           toAddress = solanaHelper.solanaAddress()
-        } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+        } else  if(toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
           toAddress = this.starkAddress
         } else {
           toAddress = this.currentWalletAddress
         }
+
         if(!orbiterHelper.checkAddress({chainId: toChainID, address: toAddress})) {
           orbiterHelper.openConnectModal({chainId: toChainID})
           return

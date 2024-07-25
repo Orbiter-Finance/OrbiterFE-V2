@@ -104,7 +104,6 @@ import {
   setActDialogVisible,
   setActAddPointVisible,
   setActAddPoint,
-  isStarkNetDialog,
   isSolanaDialog,
   actDialogVisible,
   actTotalPoint,
@@ -445,10 +444,9 @@ export default {
       const starkNetAddress = this.starkNetAddress
 
       if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
-        const isStarknet = !!isStarkNetDialog.value
         if (
           !!starkNetAddress &&
-          !util.getAccountAddressError(starkNetAddress || '', isStarknet)
+          !util.getAccountAddressError(starkNetAddress || '', !!starkNetAddress)
         ) {
           addressGroup = {
             isAddress: true,
@@ -685,7 +683,7 @@ export default {
     },
   },
   created() {
-    this.initGetAddress()
+    this.initGetAddressBatch()
   //   if (process.env['VUE_APP_RECAPTCHA']) {
   //     if (typeof window === 'undefined') return
   //     window.vueRecaptchaInit = () => {}

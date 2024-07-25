@@ -223,6 +223,7 @@ import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, zksyncEraGasTokenContract
 import solanaHelper from '../../util/solana/solana_helper';
 import tonHelper from '../../util/ton/ton_helper';
 import fuelsHelper from '../../util/fuels/fuels_helper';
+import orbiterHelper from '../../util/orbiter_helper';
 import { shortString } from 'starknet';
 
 const {
@@ -410,7 +411,7 @@ export default {
             const { toChainID } = transferDataState
             orbiterHelper.openConnectModal({chainId: toChainID})
         },
-        toCrossAddressReceipt() {
+        async toCrossAddressReceipt() {
             const { toChainID } = transferDataState
             if(this.isCrossAddress) {
               if(!!this.crossAddressReceipt || !!orbiterHelper.checkAddress({address: this.crossAddressReceipt, chainId: toChainID})) {
@@ -421,11 +422,13 @@ export default {
               }
             } else {
                 let address = ""
-                if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+                  address = await fuelsHelper.fuelsAccount()
+                } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
                   address = tonHelper.account()
                 } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
                   address = solanaHelper.solanaAddress()
-                } else  if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+                } else  if(toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
                   address = this.starkAddress
                 } else {
                   address = this.currentWalletAddress
@@ -473,7 +476,7 @@ export default {
                 compatibleGlobalWalletConf.value.walletPayload.provider || window?.ethereum
             )
             const signer = provider.getSigner()
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             if(!toAddress) {
                 this.openConnectModal()
                 return 
@@ -551,7 +554,7 @@ export default {
 
             const contractAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
 
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             const str = `c=${safeCode}&t=${toAddress}`
 
             if(!toAddress) {
@@ -621,7 +624,7 @@ export default {
             }
             const from = compatibleGlobalWalletConf.value.walletPayload.walletAddress || web3State.coinbase
 
-            let toAddress = this.toCrossAddressReceipt()
+            let toAddress = await this.toCrossAddressReceipt()
             let isConnected = false
             if(!toAddress) {
                 this.openConnectModal()
@@ -730,7 +733,7 @@ export default {
             const recipient = selectMakerConfig.recipient
             const amount = ethers.BigNumber.from(value)
             
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             if(!toAddress) {
                 this.openConnectModal()
                 return 
@@ -1267,51 +1270,12 @@ export default {
                 }
                 const p_text = 9000 + Number(chainInfo.internalId) + '';
                 const amount = tValue.tAmount
-                const toAddress = this.toCrossAddressReceipt()
+                const toAddress = await this.toCrossAddressReceipt()
                 if(!toAddress) {
                     this.openConnectModal()
                     return 
                 }
                 let memo = `${p_text}_${toAddress}`
-                // if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-                //     const solanaAddress = solanaHelper.solanaAddress()
-                //     const isConnected = await solanaHelper.isConnect()
-                //     if(!isConnected || !solanaAddress) {
-                //         setSelectWalletDialogVisible(true)
-                //         setConnectWalletGroupKey("SOLANA")
-                //         return 
-                //     }
-                //     // try {
-                //     //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                //     //     if(res !== "created") {
-                //     //         return
-                //     //     }
-                //     // } catch (error) {
-                //     //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-                //     //     return
-                //     // }
-                //     memo = `${p_text}_${solanaAddress}`
-                // }
-
-                // if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-                //     const tonAddress = tonHelper.account()
-                //     const tonIsConnected =  tonHelper.isConnected()
-                //     if(!tonIsConnected || !tonAddress) {
-                //         await tonHelper.connect()
-                //         return 
-                //     }
-                //     // try {
-                //     //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                //     //     if(res !== "created") {
-                //     //         return
-                //     //     }
-                //     // } catch (error) {
-                //     //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-                //     //     return
-                //     // }
-                //     memo = `${p_text}_${tonAddress}`
-                // }
-
 
                 if (memo.length > 128) {
                     this.$notify.error({
@@ -1513,7 +1477,7 @@ export default {
               .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
             const rAmountValue = rAmount.toFixed()
 
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             if(!toAddress) {
                 this.openConnectModal()
                 return 
@@ -1580,7 +1544,7 @@ export default {
 
             // let targetAddress = evmAddress
 
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             if(!toAddress) {
                 this.openConnectModal()
                 return 
@@ -1813,7 +1777,7 @@ export default {
                 }
             }
 
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             if(!toAddress) {
                 this.openConnectModal()
                 return 
@@ -1821,49 +1785,6 @@ export default {
             
 
             if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test){
-
-                // if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test ) {
-                //     const isConnectSolana = await solanaHelper.isConnect()
-                //     if(isConnectSolana) {
-                //         to = solanaHelper.solanaAddress()
-                //         if(!to){
-                //             util.showMessage('Solana Address Error: ' + to, 'error');
-                //             this.transferLoading = false
-                //             return;
-                //         }
-                //     } else {
-                //         setSelectWalletDialogVisible(true)
-                //         setConnectWalletGroupKey("SOLANA")
-                //         this.transferLoading = false
-                //         return
-                //     }
-                // }
-                
-                // if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ) {
-                //     const tonIsConnected =  tonHelper.isConnected()
-                //     const account =  tonHelper.account()
-                //     if(!!account && tonIsConnected) {
-                //         to = account
-                //         if(!to){
-                //             util.showMessage('Solana Address Error: ' + to, 'error');
-                //             this.transferLoading = false
-                //             return;
-                //         }
-                //     } else {
-                //         await tonHelper.connect()
-                //         this.transferLoading = false
-                //         return
-                //     }
-                // }
-                // try {
-                //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-                //     if(res !== "created") {
-                //         return
-                //     }
-                // } catch (error) {
-                //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-                //     return
-                // }
 
                 const hash = await sendTransferV3({
                     targetAddress: toAddress,
@@ -2068,7 +1989,7 @@ export default {
                 return
             }
 
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             if(!toAddress) {
                 this.openConnectModal()
                 return 
@@ -2173,7 +2094,7 @@ export default {
             const to = selectMakerConfig.recipient
             const tValue = transferCalculate.getTransferTValue()                                 
 
-            const toAddress = this.toCrossAddressReceipt()
+            const toAddress = await this.toCrossAddressReceipt()
             if(!toAddress) {
                 this.openConnectModal()
                 return 
