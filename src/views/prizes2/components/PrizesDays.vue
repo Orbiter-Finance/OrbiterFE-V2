@@ -181,7 +181,7 @@
                     ></div>
                   </template>
 
-                  <div
+                  <!-- <div
                     v-if="!!Number(taskAddressCount)"
                     class="orbguy-user-amount"
                     :style="`left:${userLeft};`"
@@ -192,7 +192,7 @@
                       alt=""
                     />
                     {{ taskAddressCount }}
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
