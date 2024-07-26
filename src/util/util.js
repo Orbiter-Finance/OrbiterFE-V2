@@ -12,6 +12,7 @@ import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
 import { RequestMethod, requestOpenApi } from '../common/openApiAx'
 import axios from 'axios'
+import orbiterHelper from './orbiter_helper.js'
 let chainsList = []
 
 export default {
@@ -516,40 +517,32 @@ export default {
   isStarkNet() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === CHAIN_ID.starknet ||
-      fromChainID === CHAIN_ID.starknet_test ||
-      toChainID === CHAIN_ID.starknet ||
-      toChainID === CHAIN_ID.starknet_test
+      orbiterHelper.isStarknetChain({ chainId: fromChainID }) ||
+      orbiterHelper.isStarknetChain({ chainId: toChainID })
     )
   },
 
   isSolana() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === CHAIN_ID.solana ||
-      fromChainID === CHAIN_ID.solana_test ||
-      toChainID === CHAIN_ID.solana ||
-      toChainID === CHAIN_ID.solana_test
+      orbiterHelper.isSolanaChain({ chainId: fromChainID }) ||
+      orbiterHelper.isSolanaChain({ chainId: toChainID })
     )
   },
 
   isFuel() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === CHAIN_ID.fuel ||
-      fromChainID === CHAIN_ID.fuel_test ||
-      toChainID === CHAIN_ID.fuel ||
-      toChainID === CHAIN_ID.fuel_test
+      orbiterHelper.isFuelChain({ chainId: fromChainID }) ||
+      orbiterHelper.isFuelChain({ chainId: toChainID })
     )
   },
 
   isTon() {
     const { fromChainID, toChainID } = transferDataState
     return (
-      fromChainID === CHAIN_ID.ton ||
-      fromChainID === CHAIN_ID.ton_test ||
-      toChainID === CHAIN_ID.ton ||
-      toChainID === CHAIN_ID.ton_test
+      orbiterHelper.isTonChain({ chainId: fromChainID }) ||
+      orbiterHelper.isTonChain({ chainId: toChainID })
     )
   },
   isSupportXVMContract() {

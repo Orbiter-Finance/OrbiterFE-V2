@@ -4,6 +4,7 @@ import zkspace from '../actions/zkspace'
 import { getStarkNonce } from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import { CHAIN_ID } from '../../config'
+import orbiterHelper from '../../util/orbiter_helper'
 
 export default {
   getNonce: async function (
@@ -32,30 +33,18 @@ export default {
         console.warn('error =', error)
         return 0
       }
-    } else if (
-      localChainID === CHAIN_ID.starknet ||
-      localChainID === CHAIN_ID.starknet_test
-    ) {
+    } else if (orbiterHelper.isStarknetChain({ chainId: localChainID })) {
       try {
         const nonce = Number(await getStarkNonce())
         return nonce
       } catch (error) {
         return 0
       }
-    } else if (
-      localChainID === CHAIN_ID.solana ||
-      localChainID === CHAIN_ID.solana_test
-    ) {
+    } else if (orbiterHelper.isSolanaChain({ chainId: localChainID })) {
       return 0
-    } else if (
-      localChainID === CHAIN_ID.ton ||
-      localChainID === CHAIN_ID.ton_test
-    ) {
+    } else if (orbiterHelper.isTonChain({ chainId: localChainID })) {
       return 0
-    } else if (
-      localChainID === CHAIN_ID.fuel ||
-      localChainID === CHAIN_ID.fuel_test
-    ) {
+    } else if (orbiterHelper.isFuelChain({ chainId: localChainID })) {
       return 0
     } else if (
       localChainID === CHAIN_ID.imx ||

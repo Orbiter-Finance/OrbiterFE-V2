@@ -32,6 +32,7 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 import tonHelper from '../ton/ton_helper'
 import fuelsHelper from '../fuels/fuels_helper'
 import { zeroAddress } from 'viem'
+import orbiterHelper from '../orbiter_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -600,10 +601,7 @@ export default {
         throw new Error('zksync withdraw error')
       }
     }
-    if (
-      fromChainID === CHAIN_ID.starknet ||
-      fromChainID === CHAIN_ID.starknet_test
-    ) {
+    if (orbiterHelper.isStarknetChain({ chainId: fromChainID })) {
       // stark cost
       ethGas = 200000000000000
       // mainnet cost
@@ -612,14 +610,11 @@ export default {
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
       ethGas += SNWithDrawL1Gas
     }
-    if (
-      fromChainID === CHAIN_ID.solana ||
-      fromChainID === CHAIN_ID.solana_test
-    ) {
+    if (orbiterHelper.isSolanaChain({ chainId: fromChainID })) {
       // solana cost
       ethGas = 15 * 10 ** 3
     }
-    if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
       // solana cost
       ethGas = 1 * 10 ** 8
     }
@@ -1038,10 +1033,7 @@ export default {
         console.warn('error =', error)
         throw 'getZKBalanceError'
       }
-    } else if (
-      localChainID === CHAIN_ID.starknet ||
-      localChainID === CHAIN_ID.starknet_test
-    ) {
+    } else if (orbiterHelper.isStarknetChain({ chainId: localChainID })) {
       const networkId = localChainID === CHAIN_ID.starknet ? 1 : 5
       let starknetAddress = web3State.starkNet.starkNetAddress
       if (!isMaker) {
@@ -1052,10 +1044,7 @@ export default {
         starknetAddress = userAddress
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
-    } else if (
-      localChainID === CHAIN_ID.solana ||
-      localChainID === CHAIN_ID.solana_test
-    ) {
+    } else if (orbiterHelper.isSolanaChain({ chainId: localChainID })) {
       try {
         const tokenAccountBalance = await util.getSolanaBalance(
           localChainID,
@@ -1067,10 +1056,7 @@ export default {
       } catch (error) {
         return '0'
       }
-    } else if (
-      localChainID === CHAIN_ID.fuel ||
-      localChainID === CHAIN_ID.fuel_test
-    ) {
+    } else if (orbiterHelper.isFuelChain({ chainId: localChainID })) {
       try {
         const amount = await fuelsHelper.getBalance({
           chainId: localChainID,
