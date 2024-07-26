@@ -52,7 +52,6 @@ const checkAddress = ({ address, chainId }) => {
     chainId === CHAIN_ID.starknet ||
     chainId === CHAIN_ID.starknet_test
   ) {
-    console.log('openConnectModal', address, chainId)
     return checkStarknetAddress(address)
   } else if (Number(chainId) || flag) {
     return checkEvmAddress(address)
