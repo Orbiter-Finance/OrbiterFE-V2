@@ -267,7 +267,12 @@ export default {
       })
     },
     userLeft() {
-      let ratio = ((this.taskAddressCount || 0) / 707) * 100
+      const count = this.taskAddressCount
+      const list = [0, 99, 199, 299, 399, 499, 599, 699].filter((item)=>{
+        return Math.abs(item - count) <= 99
+      })
+      const amount = list[list.length-1] || count 
+      let ratio = ((amount || 0) / 707) * 100
       ratio = this.isDayEnd ? 100 : ratio > 100 ? 99 : ratio
       return (ratio || 0) + '%'
     },
