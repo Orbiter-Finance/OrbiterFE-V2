@@ -2200,7 +2200,7 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.imx || toChainID === chainID.imx_test) {
+      if (toChainID === CHAIN_ID.imx || toChainID === CHAIN_ID.imx_test) {
         try {
           const senderWalletAddress =
             compatibleGlobalWalletConf.value.walletPayload.walletAddress
