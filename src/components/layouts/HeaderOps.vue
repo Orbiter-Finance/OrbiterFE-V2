@@ -55,7 +55,7 @@
       </span>
       <!-- <span @click="showHistory" class="ops-item">History</span> -->
       <div
-        v-if="toGroup && toGroup.isAddress"
+        v-if="toGroup"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -65,7 +65,7 @@
           style="width: 2rem; height: 2rem"
           :iconName="toGroup.icon"
         ></svg-icon>
-        <span class="address">{{ toGroup.showAddress }}</span>
+        <span class="address">{{ toGroup.showAddress || "Connect" }}</span>
       </div>
       <div
         ref="connectedBtn"
@@ -332,10 +332,11 @@ export default {
       const [first, last] = list
 
       this.fromGroup = first
-      if(first.type !== last.type) {
+
+      if(first && last && first.type !== last.type) {
         this.toGroup = last
       } else {
-        this.toGroup = {}
+        this.toGroup = null
       }
     },
     async getAddress(chainID) {

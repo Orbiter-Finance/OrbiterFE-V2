@@ -68,7 +68,10 @@ const getBalance = async ({ tokenAddress, userAddress, chainId }) => {
   const rpc = chainInfo?.rpc?.[0]
   const provider = await Provider.create(rpc)
   const fromWallet = Wallet.fromAddress(userAddress, provider)
+  const banlance = await fromWallet.getBalance(tokenAddress)
+  console.log('banlance', banlance)
   const res = BigInt(String(await fromWallet.getBalance(tokenAddress)))
+  console.log('res', res.toString())
   return res
 }
 
