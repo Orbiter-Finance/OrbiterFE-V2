@@ -27,6 +27,10 @@ export const web3State = reactive({
   ton: {
     tonAddress: '',
   },
+  fuel: {
+    fuelAddress: '',
+    isConnected: false,
+  },
 })
 
 export function updateCoinbase(coinbase) {
@@ -55,4 +59,12 @@ export function updatelpAccountInfo(accountInfo) {
 
 export function updateIsInstallMeta(isInstallMeta) {
   web3State.isInstallMeta = isInstallMeta
+}
+
+export function updateFuelAddress(address) {
+  web3State.fuel.fuelAddress = address
+}
+
+export function updateFuelConnectStatus(status) {
+  web3State.fuel.isConnected = status
 }

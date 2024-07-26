@@ -414,7 +414,7 @@ export default {
             }
             let address = ""
             if( orbiterHelper.isFuelChain({chainId: toChainID})) {
-              address = await fuelsHelper.fuelsAccount()
+              address = fuelsHelper.fuelsAccount()
             } else  if( orbiterHelper.isTonChain({chainId: toChainID}) ) {
               address = tonHelper.account()
             } else  if(orbiterHelper.isSolanaChain({chainId: toChainID})) {
@@ -1581,8 +1581,8 @@ export default {
             const { selectMakerConfig, fromChainID, toChainID, transferValue } =
                 transferDataState
 
-                const isConnected = await fuelsHelper.isConnected()
-                let from = await fuelsHelper.fuelsAccount()
+                const isConnected = fuelsHelper.isConnected()
+                let from = fuelsHelper.fuelsAccount()
 
             if (!isConnected || !from) {
                 await fuelsHelper.connect()

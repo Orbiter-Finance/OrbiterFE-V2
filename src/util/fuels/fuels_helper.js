@@ -2,8 +2,11 @@ import { Address, Fuel, Provider, Wallet, toBech32 } from 'fuels'
 import { defaultConnectors } from '@fuels/connectors'
 import util from '../util'
 import { utils } from 'ethers'
-
-let address = ''
+import {
+  updateFuelAddress,
+  updateFuelConnectStatus,
+  web3State,
+} from '../../composition/hooks'
 
 const fuelProvider = () => {
   return new Fuel({
@@ -11,55 +14,53 @@ const fuelProvider = () => {
   })
 }
 
-const fuelConnector = () => {
+const fuelConnector = async () => {
   const fuel = fuelProvider()
-  try {
-    return fuel.getConnector('Fuel Wallet')
-  } catch (error) {
-    return null
-  }
+  let response
+
+  return new Promise((res) => {
+    try {
+      response = fuel.getConnector('Fuel Wallet')
+    } catch (error) {
+      response = null
+    }
+
+    setTimeout(() => {
+      res(response)
+    }, 500)
+  })
 }
 
 const connect = async () => {
-  const fuel = fuelProvider()
-  if (!fuel.installed) {
+  const fuelC = await fuelConnector()
+  if (!fuelC?.installed) {
     util.showMessage(`Please install fuel wallet`, 'warning')
     return
   }
+  const fuel = fuelProvider()
 
   await fuel.selectConnector('Fuel Wallet')
   await fuel.connect()
-  const fuelC = fuelConnector()
   const currentAccount = await fuelC.currentAccount()
-  address = new Address(currentAccount).toHexString()
+  const address = new Address(currentAccount).toHexString()
+  updateFuelAddress(address)
+  updateFuelConnectStatus(true)
 }
 
-const fuelsAccount = async () => {
-  const connetd = await isConnected()
+const fuelsAccount = () => {
+  const connetd = isConnected()
   if (!connetd) return ''
-  const fuel = fuelConnector()
-  try {
-    if (address) {
-      return address
-    } else {
-      const currentAccount = await fuel.currentAccount()
-      address = new Address(currentAccount).toHexString()
-      return address
-    }
-  } catch (error) {
-    return ''
-  }
+  let address = web3State.fuel.fuelAddress
+  return address
 }
 
-const isConnected = async () => {
-  try {
-    const fuel = fuelConnector()
-    if (!fuel) return false
-    const connected = await fuel.isConnected()
-    return !!connected
-  } catch (error) {
-    return false
-  }
+const disconnect = async () => {
+  const fuelC = await fuelConnector()
+  await fuelC.disconnect()
+}
+
+const isConnected = () => {
+  return web3State.fuel.isConnected
 }
 
 const getBalance = async ({ tokenAddress, userAddress, chainId }) => {
@@ -82,7 +83,6 @@ const transfer = async ({
   const fromBech32 = toBech32(from)
   const fromAddress = new Address(fromBech32)
 
-  const fuel = fuelConnector()
   const wallet = await fuelProvider().getWallet(fromAddress)
 
   const memo = utils.hexlify(
@@ -97,6 +97,7 @@ const transfer = async ({
       scriptData: memo,
     }
   )
+  const fuel = await fuelConnector()
   const hash = await fuel.sendTransaction(fromBech32, request)
   return hash
 }
@@ -107,6 +108,7 @@ const fuelsHelper = {
   fuelsAccount,
   getBalance,
   transfer,
+  disconnect,
 }
 
 export default fuelsHelper

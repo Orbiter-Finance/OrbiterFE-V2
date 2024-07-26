@@ -407,7 +407,7 @@ export default {
         userAddress = tonHelper.account()
       }
       if (toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
-        userAddress = await fuelsHelper.fuelsAccount()
+        userAddress = fuelsHelper.fuelsAccount()
       }
       
 
@@ -500,7 +500,7 @@ export default {
       }
 
       if (chainId === CHAIN_ID.fuel || chainId === CHAIN_ID.fuel_test) {
-        userAddress = await fuelsHelper.fuelsAccount()
+        userAddress = fuelsHelper.fuelsAccount()
       }
       const accountUrl =
         explorerInfo.accountUrl || explorerInfo.url + '/address'
@@ -588,7 +588,7 @@ export default {
           userAddress = tonHelper.account()
         }
         if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
-          userAddress = await fuelsHelper.fuelsAccount()
+          userAddress = fuelsHelper.fuelsAccount()
         }
         url = util.getAccountExploreUrl(fromChainID) + userAddress
 
@@ -639,7 +639,7 @@ export default {
           userAddress = tonHelper.account()
         }
         if (toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
-          userAddress = await fuelsHelper.fuelsAccount()
+          userAddress = fuelsHelper.fuelsAccount()
         }
         url = util.getAccountExploreUrl(toChainID) + userAddress
 
@@ -744,7 +744,7 @@ export default {
           userAddress = tonHelper.account()
         }
         if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
-          userAddress = await fuelsHelper.fuelsAccount()
+          userAddress = fuelsHelper.fuelsAccount()
         }
         client.unsubscribe(
           `bridge-success/pending-confirm/address/${userAddress}`,

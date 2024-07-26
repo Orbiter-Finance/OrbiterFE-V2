@@ -44,7 +44,7 @@ export function tonAddress() {
 }
 
 export async function fuelAddress() {
-  const fAddress = (await fuelsHelper.fuelsAccount()) || ''
+  const fAddress = fuelsHelper.fuelsAccount() || ''
   if (fAddress && fAddress.length > 5) {
     const subStr1 = fAddress.slice(0, 4)
     const subStr2 = fAddress.slice(fAddress.length - 4)

@@ -42,7 +42,7 @@
               <div class="text_97">{{ networkName }}</div>
             </div>
             <div
-              v-clipboard:copy="currentWalletAddress"
+              v-clipboard:copy="currentAddress"
               v-clipboard:success="onCopySuccess"
               class="label_17"
             >
@@ -289,7 +289,12 @@ import {
   tonAddress,
   setUserInfoDetailsCardModalShow,
   setOPointsCardModalShow,
-  setActPointRank
+  setActPointRank,
+  isFuelDialog,
+  setFuelDialog,
+  fuelAddress,
+  updateFuelAddress,
+  updateFuelConnectStatus
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -321,6 +326,7 @@ import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
+import fuelsHelper from '../../util/fuels/fuels_helper';
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -382,7 +388,9 @@ export default {
           timeStamp: '2024-05-28 06:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
-      showEcosystemDapp: true
+      showEcosystemDapp: true,
+      currentAddress: "",
+      showWalletAddress: ""
     }
   },
   computed: {
@@ -450,38 +458,19 @@ export default {
         (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
       )
     },
+    isFuel(){
+      return isFuelDialog.value
+    },
     isStarknet() {
       return isStarkNetDialog.value
     },
     isSolana() {
       return isSolanaDialog.value
     },
-    showWalletAddress() {
-      if(isTonDialog.value) {
-        return tonAddress()
-      }
-      if(isSolanaDialog.value) {
-        return solAddress()
-      }
-      if (!isStarkNetDialog.value) {
-        return showAddress()
-      }
-      return starkAddress()
-    },
-    currentWalletAddress() {
-      if(isTonDialog.value) {
-        return tonHelper.account()
-      }
-      if(isSolanaDialog.value) {
-        return solanaHelper.solanaAddress()
-      }
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress
-      }
-      const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      return evmAddress?.toLocaleLowerCase();
-    },
     networkId() {
+      if(isFuelDialog.value) {
+        return CHAIN_ID.fuel
+      }
       if(isTonDialog.value) {
         return CHAIN_ID.ton
       }
@@ -495,6 +484,11 @@ export default {
       }
     },
     networkName() {
+      if(isFuelDialog.value) {
+        return util.netWorkName(
+          !!isProd() ? CHAIN_ID.fuel : CHAIN_ID.fuel_test
+        )
+      }
       if(!!isTonDialog.value) {
         return util.netWorkName(
           !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
@@ -517,6 +511,9 @@ export default {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
+      if(isFuelDialog.value) {
+        return CHAIN_ID.fuel
+      }
       if(isTonDialog.value) {
         return CHAIN_ID.ton
       }
@@ -540,7 +537,6 @@ export default {
   },
   watch: {
     selectWalletDialogVisible(item1, item2) {
-
       if (item1) {
         this.showPointsCall()
         this.getUserRank()
@@ -549,20 +545,22 @@ export default {
       }
 
       if (item1 !== item2) {
+        this.showShortAddress()
         setTimeout(() => {
           this.getTaskHeight()
         }, 200)
       }
-
-      
     },
-    currentWalletAddress(item1, item2) {
-      if (!!item1 && !!item2) {
-        this.showPointsCall()
+    currentAddress(item1, item2) {
+      if(item1) {
+        if (!!item2) {
+          this.showPointsCall()
+        }
+        if(item1 !== item2) {
+          this.getUserRank()
+        }
       }
-      if(item1 && (item1 !== item2)) {
-        this.getUserRank()
-      }
+      
     },
     isMobile(item1, item2) {
       if (item1 !== item2) {
@@ -574,6 +572,39 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
+    async showShortAddress() {
+      let address = ""
+      if(isFuelDialog.value) {
+        address = await fuelAddress()
+      } else if(isTonDialog.value) {
+        address = tonAddress()
+      } else if(isSolanaDialog.value) {
+        address = solAddress()
+      } else if (!isStarkNetDialog.value) {
+        address = showAddress()
+      } else {
+        address = starkAddress()
+      }
+      this.showWalletAddress = address
+    },
+    async currentWalletAddress() {
+      let address = ""
+      if(isFuelDialog.value) {
+        address = fuelsHelper.fuelsAccount()
+      } else if(isTonDialog.value) {
+        address = tonHelper.account()
+      } else if(isSolanaDialog.value) {
+        address = solanaHelper.solanaAddress()
+      } else if (!!isStarkNetDialog.value) {
+        address = web3State.starkNet.starkNetAddress
+      } else {
+        const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        address = evmAddress?.toLocaleLowerCase();
+      }
+      
+      this.currentAddress = address
+      return address
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
@@ -581,7 +612,7 @@ export default {
       clearTimeout(time2)
       time2 = setTimeout(async () => {
 
-        const address = this.currentWalletAddress
+        const address = await this.currentWalletAddress()
         if(address) {
           const response = await fetch(
             `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
@@ -625,18 +656,19 @@ export default {
         this.getTaskHeight()
         }, 200)
     },
-    showPointsCall() {
+    async showPointsCall() {
       const group = JSON.parse(
         localStorage.getItem(PONITS_EXPAND_COUNT) || JSON.stringify({})
       )
-      if (this.currentWalletAddress) {
-        let count = group[this.currentWalletAddress.toLocaleLowerCase()]
+      const address = await this.currentWalletAddress()
+      if (address) {
+        let count = group[address.toLocaleLowerCase()]
         count = count ?? 2
         if (count !== undefined && count > 0) {
           this.showDetail = true
           const newGroup = {
             ...group,
-            [this.currentWalletAddress.toLocaleLowerCase()]: --count,
+            [address.toLocaleLowerCase()]: --count,
           }
           localStorage.setItem(PONITS_EXPAND_COUNT, JSON.stringify(newGroup))
         } else {
@@ -696,7 +728,11 @@ export default {
     },
     async disconnect() {
       try {
-        if(!!isTonDialog.value) {
+        if(!!isFuelDialog.value) {
+          await fuelsHelper.disconnect()
+          updateFuelAddress("")
+          updateFuelConnectStatus(false)
+        }else if(!!isTonDialog.value) {
           await tonHelper.disconnect()
         }else if(!!isSolanaDialog.value) {
           await solanaHelper.disConnect()
@@ -766,8 +802,9 @@ export default {
       }
     },
     async getActDataList(pageSize, page) {
+      const address = await this.currentWalletAddress()
       const res = await requestPointSystem('v2/activity/list', {
-        address: this.currentWalletAddress,
+        address: address,
         pageSize,
         page,
       })

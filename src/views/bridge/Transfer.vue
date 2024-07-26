@@ -1958,7 +1958,7 @@ export default {
 
         let fromAddress = ""
         if(fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
-          fromAddress = await fuelsHelper.fuelsAccount()
+          fromAddress = fuelsHelper.fuelsAccount()
         } else if(fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           fromAddress = tonHelper.account()
         } else if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
@@ -1975,7 +1975,7 @@ export default {
 
         let toAddress = ""
         if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
-          toAddress = await fuelsHelper.fuelsAccount()
+          toAddress = fuelsHelper.fuelsAccount()
         } else if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
           toAddress = tonHelper.account()
         } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
@@ -2182,7 +2182,7 @@ export default {
           }
           
         } else if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
-          const isConnect = await fuelsHelper.isConnected()
+          const isConnect = fuelsHelper.isConnected()
           if(!isConnect) {
             await fuelsHelper.connect()
             return
@@ -2236,7 +2236,7 @@ export default {
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
           toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test ? 
-          await fuelsHelper.fuelsAccount() : (
+          fuelsHelper.fuelsAccount() : (
             toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? 
             tonHelper.account()  : 
           (
@@ -2442,7 +2442,7 @@ export default {
         address = tonHelper.account();
       }
       if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
-        address = await fuelsHelper.fuelsAccount();
+        address = fuelsHelper.fuelsAccount();
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
@@ -2478,7 +2478,7 @@ export default {
         address = tonHelper.account();
       }
       if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
-        address = await fuelsHelper.fuelsAccount();
+        address = fuelsHelper.fuelsAccount();
       }
       // if (address && address !== '0x') {
       //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
