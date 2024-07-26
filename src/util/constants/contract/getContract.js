@@ -7,6 +7,7 @@ import {
 import { web3State } from '../../../composition/hooks'
 import { CHAIN_ID } from '../../../config'
 import Web3 from 'web3'
+import orbiterHelper from '../../orbiter_helper.js'
 
 // To obtain the token contract on the current network, use metamask as a provider to initiate a transaction
 function getTransferContract(localChainID, contractAddress) {
@@ -16,22 +17,16 @@ function getTransferContract(localChainID, contractAddress) {
   ) {
     return
   }
-  if (
-    localChainID === CHAIN_ID.starknet ||
-    localChainID === CHAIN_ID.starknet_test
-  ) {
+  if (orbiterHelper.isStarknetChain({ chainId: localChainID })) {
     return
   }
-  if (
-    localChainID === CHAIN_ID.solana ||
-    localChainID === CHAIN_ID.solana_test
-  ) {
+  if (orbiterHelper.isSolanaChain({ chainId: localChainID })) {
     return
   }
-  if (localChainID === CHAIN_ID.ton || localChainID === CHAIN_ID.ton_test) {
+  if (orbiterHelper.isTonChain({ chainId: localChainID })) {
     return
   }
-  if (localChainID === CHAIN_ID.fuel || localChainID === CHAIN_ID.fuel_test) {
+  if (orbiterHelper.isFuelChain({ chainId: localChainID })) {
     return
   }
   if (walletIsLogin.value) {

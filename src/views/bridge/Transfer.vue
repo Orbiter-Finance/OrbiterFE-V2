@@ -29,16 +29,7 @@
       <div class="from-area">
         <div class="topItem">
           <o-tooltip
-                  v-if="
-            transferDataState.fromChainID === CHAIN_ID.starknet ||
-            transferDataState.fromChainID === CHAIN_ID.starknet_test ||
-            transferDataState.fromChainID === CHAIN_ID.solana ||
-            transferDataState.fromChainID === CHAIN_ID.solana_test ||
-            transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test ||
-            transferDataState.fromChainID === CHAIN_ID.fuel ||
-            transferDataState.fromChainID === CHAIN_ID.fuel_test 
-          "
+                  v-if="orbiterHelper.isNotEVMChain({chainId: transferDataState.fromChainID})"
           >
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
@@ -107,16 +98,7 @@
       >
         <div class="topItem">
           <o-tooltip
-                  v-if="
-            transferDataState.toChainID == CHAIN_ID.starknet ||
-            transferDataState.toChainID == CHAIN_ID.starknet_test ||
-            transferDataState.fromChainID === CHAIN_ID.solana ||
-            transferDataState.fromChainID === CHAIN_ID.solana_test ||
-            transferDataState.fromChainID === CHAIN_ID.ton ||
-            transferDataState.fromChainID === CHAIN_ID.ton_test ||
-            transferDataState.fromChainID === CHAIN_ID.fuel ||
-            transferDataState.fromChainID === CHAIN_ID.fuel_test  
-          "
+                  v-if="orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})"
           >
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
@@ -604,16 +586,7 @@ export default {
       if (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract()) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.fuel || transferDataState.toChainID === CHAIN_ID.fuel_test) {
+      if (orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})) {
         return false;
       }
       return !!util.equalsIgnoreCase(this.crossAddressReceipt, this.currentWalletAddress);
@@ -625,16 +598,7 @@ export default {
       if (!(isArgentApp() && util.isStarkNet()) && (!this.isCrossAddress || !this.crossAddressReceipt || !util.isSupportXVMContract())) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.starknet || transferDataState.toChainID === CHAIN_ID.starknet_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
-        return false;
-      }
-      if (transferDataState.toChainID === CHAIN_ID.fuel || transferDataState.toChainID === CHAIN_ID.fuel_test) {
+      if (orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})) {
         return false;
       }
       const reg = new RegExp(/^0x[a-fA-F0-9]{40}$/);
@@ -679,16 +643,7 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || 
-      toChainID === CHAIN_ID.starknet_test || 
-      toChainID === CHAIN_ID.solana || 
-      toChainID === CHAIN_ID.solana_test || 
-      toChainID === CHAIN_ID.ton || 
-      toChainID === CHAIN_ID.ton_test || 
-      toChainID === CHAIN_ID.dydx || 
-      toChainID === CHAIN_ID.dydx_test || 
-      toChainID === CHAIN_ID.fuel || 
-      toChainID === CHAIN_ID.fuel_test ;
+      return orbiterHelper.isNotEVMChain({chainId: toChainID})
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -1957,13 +1912,13 @@ export default {
       if(!this.isCrossAddress) {
 
         let fromAddress = ""
-        if(fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+        if(orbiterHelper.isFuelChain({chainId: fromChainID})) {
           fromAddress = fuelsHelper.fuelsAccount()
-        } else if(fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        } else if(orbiterHelper.isTonChain({chainId: fromChainID})) {
           fromAddress = tonHelper.account()
-        } else if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+        } else if(orbiterHelper.isSolanaChain({chainId: fromChainID})) {
           fromAddress = solanaHelper.solanaAddress()
-        } else if(fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+        } else if(orbiterHelper.isStarknetChain({chainId: fromChainID})) {
           fromAddress = this.starkAddress
         } else {
           fromAddress = this.currentWalletAddress
@@ -1974,13 +1929,13 @@ export default {
         }
 
         let toAddress = ""
-        if(toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test) {
+        if( orbiterHelper.isFuelChain({chainId: toChainID}) ) {
           toAddress = fuelsHelper.fuelsAccount()
-        } else if(toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+        } else if(orbiterHelper.isTonChain({chainId: toChainID}) ) {
           toAddress = tonHelper.account()
-        } else  if(toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+        } else  if(orbiterHelper.isSolanaChain({chainId: toChainID}) ) {
           toAddress = solanaHelper.solanaAddress()
-        } else  if(toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+        } else  if(orbiterHelper.isStarknetChain({chainId: toChainID}) ) {
           toAddress = this.starkAddress
         } else {
           toAddress = this.currentWalletAddress
@@ -2173,7 +2128,7 @@ export default {
             );
             return;
           }
-        } else if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+        } else if (orbiterHelper.isSolanaChain({chainId: fromChainID}) ) {
           const isConnect = await solanaHelper.isConnect()
           if(!isConnect) {
             setSelectWalletDialogVisible(true)
@@ -2181,14 +2136,14 @@ export default {
             return
           }
           
-        } else if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+        } else if (orbiterHelper.isFuelChain({chainId: fromChainID}) ) {
           const isConnect = fuelsHelper.isConnected()
           if(!isConnect) {
             await fuelsHelper.connect()
             return
           }
           
-        } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        } else if (orbiterHelper.isTonChain({chainId: fromChainID}) ) {
           const isConnected = await tonHelper.isConnected()
           const account = await tonHelper.account()
           if(!isConnected || !account) {
@@ -2234,14 +2189,13 @@ export default {
         const toAddress = util.shortAddress(toAddressAll);
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
-        const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
-          toChainID === CHAIN_ID.fuel || toChainID === CHAIN_ID.fuel_test ? 
+        const walletAddress = (isCrossAddress || orbiterHelper.isStarknetChain({chainId: toChainID})) ?  crossAddressReceipt?.toLowerCase() : (
+          orbiterHelper.isFuelChain({chainId: toChainID}) ? 
           fuelsHelper.fuelsAccount() : (
-            toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? 
+            orbiterHelper.isTonChain({chainId: toChainID})? 
             tonHelper.account()  : 
           (
-            toChainID === CHAIN_ID.solana || 
-              toChainID ===  CHAIN_ID.solana_test ? 
+            orbiterHelper.isSolanaChain({chainId: toChainID}) ? 
               solanaHelper.solanaAddress() : 
               compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
           ))
@@ -2432,16 +2386,16 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       let address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
+      if (orbiterHelper.isStarknetChain({chainId: fromChainID }) ) {
         address = web3State.starkNet.starkNetAddress;
       }
-      if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
+      if (orbiterHelper.isSolanaChain({chainId: fromChainID }) ) {
         address = solanaHelper.solanaAddress();
       }
-      if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+      if (orbiterHelper.isTonChain({chainId: fromChainID }) ) {
         address = tonHelper.account();
       }
-      if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+      if (orbiterHelper.isFuelChain({chainId: fromChainID }) ) {
         address = fuelsHelper.fuelsAccount();
       }
       if (address && address !== '0x') {
@@ -2468,16 +2422,16 @@ export default {
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+      if (orbiterHelper.isStarknetChain({chainId: fromChainID }) ) {
         address = web3State.starkNet.starkNetAddress;
       }
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+      if (orbiterHelper.isSolanaChain({chainId: fromChainID }) ) {
         address = solanaHelper.solanaAddress();
       }
-      if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+      if (orbiterHelper.isTonChain({chainId: fromChainID }) ) {
         address = tonHelper.account();
       }
-      if (fromChainID === CHAIN_ID.fuel || fromChainID === CHAIN_ID.fuel_test) {
+      if (orbiterHelper.isFuelChain({chainId: fromChainID }) ) {
         address = fuelsHelper.fuelsAccount();
       }
       // if (address && address !== '0x') {

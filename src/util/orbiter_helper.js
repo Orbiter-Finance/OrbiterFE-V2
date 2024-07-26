@@ -92,16 +92,13 @@ const openConnectModal = async ({ chainId }) => {
   const flag = evmChain.some(
     (item) => item.toLocaleLowerCase() === String(chainId).toLocaleLowerCase()
   )
-  if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
+  if (isTonChain({ chainId })) {
     await tonConnectModal()
-  } else if (chainId === CHAIN_ID.fuel || chainId === CHAIN_ID.fuel_test) {
+  } else if (isFuelChain({ chainId })) {
     await fuelsHelper.connect()
-  } else if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
+  } else if (isSolanaChain({ chainId })) {
     openSolanaConnectModal()
-  } else if (
-    chainId === CHAIN_ID.starknet ||
-    chainId === CHAIN_ID.starknet_test
-  ) {
+  } else if (isStarknetChain({ chainId })) {
     openStarknetConnectModal()
   } else if (Number(chainId) || flag) {
     openEvmConnectModal()

@@ -190,6 +190,7 @@
   import SvgIcon from '../components/SvgIcon/SvgIcon.vue';
   import solanaHelper from "../util/solana/solana_helper"
 import tonHelper from '../util/ton/ton_helper';
+import orbiterHelper from '../util/orbiter_helper';
   let timer = 0
   export default {
     name: 'History',
@@ -309,14 +310,14 @@ import tonHelper from '../util/ton/ton_helper';
           util.showMessage("Hash error", "error");
           return;
         }
-        if (selectChainId === CHAIN_ID.starknet || selectChainId === CHAIN_ID.starknet_test) {
+        if (orbiterHelper.isStarknetChain({chainId: selectChainId})) {
           // starknet
           txHash = util.starknetHashFormat(txHash);
-        } else if (selectChainId === CHAIN_ID.solana || selectChainId === CHAIN_ID.solana_test) {
+        } else if (orbiterHelper.isSolanaChain({chainId: selectChainId})) {
           // solana
-        } else if (selectChainId === CHAIN_ID.fuel || selectChainId === CHAIN_ID.fuel_test) {
+        } else if (orbiterHelper.isFuelChain({chainId: selectChainId})) {
           // fuel
-        } else if (selectChainId === CHAIN_ID.ton || selectChainId === CHAIN_ID.ton_test) {
+        } else if (orbiterHelper.isTonChain({chainId: selectChainId})) {
           // ton
         } else if (selectChainId === CHAIN_ID.imx || selectChainId === CHAIN_ID.imx_test) {
           if (!Number(txHash)) {
