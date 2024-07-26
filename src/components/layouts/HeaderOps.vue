@@ -235,8 +235,8 @@ export default {
     solanaAddress() {
       return solAddress()
     },
-    async fAddress() {
-      return await fuelAddress()
+    fAddress() {
+      return fuelAddress()
     },
     tAddress() {
       return tonAddress()
@@ -246,6 +246,9 @@ export default {
     },
     web3Address() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase()
+    },
+    fuelsAddress() {
+      return web3State.fuel.fuelAddress
     },
     starkNetAddress() {
       return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
@@ -287,6 +290,9 @@ export default {
         this.initGetAddressBatch()
       }
     },
+    fuelsAddress: function () {
+      this.initGetAddressBatch()
+    },
     web3Address: function () {
       this.initGetAddressBatch()
     },
@@ -310,8 +316,6 @@ export default {
     async initGetAddressBatch() {
       const { fromChainID, toChainID } = transferDataState
       if(!fromChainID && !toChainID) return
-
-      console.log("fromChainID, toChainID", fromChainID, toChainID)
       
       const res = await Promise.all([this.getAddress(fromChainID, { isFrom: true }), this.getAddress(toChainID, { isFrom: false }) ])
 
@@ -406,7 +410,7 @@ export default {
           },
         }
       } else if (orbiterHelper.isFuelChain({chainId})) {
-        const fuelAddress = await fuelsHelper.fuelsAccount()
+        const fuelAddress = fuelsHelper.fuelsAccount()
         addressGroup = {
           isAddress: !!fuelAddress,
           address: fuelAddress,
@@ -416,10 +420,10 @@ export default {
             await fuelsHelper.connect()
           },
           open: () => {
+            setFuelDialog(true)
             setSolanaDialog(false)
             setStarkNetDialog(false)
             setTonDialog(false)
-            setFuelDialog(true)
           },
         }
       } else {
@@ -438,6 +442,7 @@ export default {
               setTonDialog(false)
               setSolanaDialog(false)
               setStarkNetDialog(false)
+              setFuelDialog(false)
               setActDialogVisible(true)
             },
           }
@@ -454,7 +459,6 @@ export default {
     },
     async connectStarkNetWallet() {
       const option = this.toGroup
-
       if (option?.isAddress) {
         option.open()
         setActDialogVisible(true)
@@ -498,7 +502,7 @@ export default {
       const starkNetAddress = this.starkNetAddress
 
       const tonAddress = tonHelper.account()
-      const fuelsAccount = await fuelsHelper.fuelsAccount()
+      const fuelsAccount = fuelsHelper.fuelsAccount()
       const solanaAddress = solanaHelper.solanaAddress()
 
       if (isAddress) {

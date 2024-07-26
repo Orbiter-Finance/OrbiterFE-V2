@@ -157,6 +157,7 @@ import { ethers } from 'ethers'
 import orbiterCryptoTool from '../util/orbiterCryptoTool'
 import { PASSPHRASE } from '../const'
 import { balanceList, updateBalanceList } from "../composition/hooks"
+import orbiterHelper from '../util/orbiter_helper.js';
 
 const chainConfig = config.chainConfig
 
@@ -484,7 +485,7 @@ export default {
       try {
         const tonAddress = tonHelper.account()
         const solanaAddress = solanaHelper.solanaAddress()
-        const fuelsAddress = await fuelsHelper.fuelsAccount()
+        const fuelsAddress = fuelsHelper.fuelsAccount()
         const symbol = this.symbol
         const address = [
           {
@@ -612,7 +613,7 @@ export default {
     async getChainInfo(e, index) {
       // When chain use stark system
 
-      if (this.isStarkSystem(e.localID)) {
+      if (orbiterHelper.isNotEVMChain({chainId: e.localID})) {
         try {
           // starknet
           // if (
@@ -628,34 +629,34 @@ export default {
           // }
 
           // solana
-          if (
-            e.localID === CHAIN_ID.solana ||
-            e.localID === CHAIN_ID.solana_test
-          ) {
-            const isConnected = await solanaHelper.isConnect()
-            if (!isConnected) {
-              setSelectWalletDialogVisible(true)
-              setConnectWalletGroupKey('SOLANA')
-              return
-            }
-          }
+          // if (
+          //   orbiterHelper.isSolanaChain({chainId: e.localID})
+          // ) {
+          //   const isConnected = await solanaHelper.isConnect()
+          //   if (!isConnected) {
+          //     setSelectWalletDialogVisible(true)
+          //     setConnectWalletGroupKey('SOLANA')
+          //     return
+          //   }
+          // }
+          // fuel
+          // if ( orbiterHelper.isFuelChain({chainId: e.localID})) {
+          //   const account = fuelsHelper.fuelsAccount()
+          //   const isConnected = fuelsHelper.isConnected()
+          //   if (!account || !isConnected) {
+          //     await fuelsHelper.connect()
+          //     return
+          //   }
+          // }
           // ton
-          if (e.localID === CHAIN_ID.fuel || e.localID === CHAIN_ID.fuel_test) {
-            const account = await fuelsHelper.fuelsAccount()
-            const isConnected = await fuelsHelper.isConnected()
-            if (!account || !isConnected) {
-              await fuelsHelper.connect()
-              return
-            }
-          }
-          if (e.localID === CHAIN_ID.ton || e.localID === CHAIN_ID.ton_test) {
-            const account = await tonHelper.account()
-            const isConnected = await tonHelper.isConnected()
-            if (!account || !isConnected) {
-              await tonHelper.connect()
-              return
-            }
-          }
+          // if (orbiterHelper.isTonChain({chainId: e.localID}) ) {
+          //   const account = await tonHelper.account()
+          //   const isConnected = await tonHelper.isConnected()
+          //   if (!account || !isConnected) {
+          //     await tonHelper.connect()
+          //     return
+          //   }
+          // }
           // immutableX
           if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
             this.loadingIndex = index
@@ -702,24 +703,7 @@ export default {
     },
     search() {},
     checkKeyWord() {},
-    isStarkSystem(chainId) {
-      return (
-        [
-          CHAIN_ID.starknet,
-          CHAIN_ID.starknet_test,
-          CHAIN_ID.solana,
-          CHAIN_ID.solana_test,
-          CHAIN_ID.dydx,
-          CHAIN_ID.dydx_test,
-          CHAIN_ID.imx,
-          CHAIN_ID.imx_test,
-          CHAIN_ID.ton,
-          CHAIN_ID.ton_test,
-          CHAIN_ID.fuel,
-          CHAIN_ID.fuel_test,
-        ].indexOf(chainId) > -1
-      )
-    },
+
   },
 }
 </script>
