@@ -208,6 +208,7 @@ import Web3 from 'web3'
 import dayjs from 'dayjs'
 import { decimalNum } from '../../../util/decimalNum'
 import { isDev } from '../../../util'
+import util from '../../../util/util'
 const BigNumber = require('bignumber.js')
 
 import {
@@ -561,6 +562,7 @@ export default {
         })
         return res
       } catch (error) {
+        util.showMessage(error?.message || error?.data?.message || String(error), 'error');
         this.isDrawLoading = false
         return ''
       }
@@ -583,7 +585,7 @@ export default {
     },
     async openORBGUYReward() {
       const address = this.evmAddress
-      if (!address || !this.taskId || address === '0x') {
+      if (this.isDrawLoading || !address || !this.taskId || address === '0x') {
       } else {
         if (this.isDraw) {
           this.isDrawLoading = true

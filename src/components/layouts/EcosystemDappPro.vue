@@ -272,7 +272,6 @@ export default {
         data: raw,
       })
       const result = web3.eth.abi.decodeParameters(['uint256'], res || '')
-      console.log("result", result, result[0])
       const amount = result[0]
       const ratio = ethers.utils
         .parseEther(amount)
