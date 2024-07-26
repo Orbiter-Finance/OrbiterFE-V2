@@ -29,7 +29,7 @@
       <div class="from-area">
         <div class="topItem">
           <o-tooltip
-                  v-if="orbiterHelper.isNotEVMChain({chainId: transferDataState.fromChainID})"
+                  v-if="isFromNotEVM"
           >
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
@@ -98,7 +98,7 @@
       >
         <div class="topItem">
           <o-tooltip
-                  v-if="orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})"
+                  v-if="isToNotEVM"
           >
             <template v-slot:titleDesc>
               <span v-html="starkAddress"></span>
@@ -546,6 +546,12 @@ export default {
     };
   },
   computed: {
+    isFromNotEVM(){
+      return orbiterHelper.isNotEVMChain({chainId: transferDataState.fromChainID})
+    },
+    isToNotEVM(){
+      return orbiterHelper.isNotEVMChain({chainId: transferDataState.toChainID})
+    },
     isHiddenCrossAddress() {
       return this.fromChainId === CHAIN_ID.zksync || 
       this.fromChainId === CHAIN_ID.zksync_test  || 
