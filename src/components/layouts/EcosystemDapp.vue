@@ -70,12 +70,11 @@
           <div class="holders">
             <div class="total">
               Launch Progress:
-              <o-tooltip>
+              <o-tooltip v-if="!!tooltipText">
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
-                    <span
-                      >Receive an airdrop share for every 6 TXs To Taiko. Stops
-                      once the total amount (2,888,888 TXs) reaches.
+                    <span>
+                      {{ tooltipText }}
                     </span>
                   </div>
                 </template>
@@ -104,7 +103,7 @@
           </div>
         </div>
         <div :class="['join', { 'join-end': isEnd }]" @click="openUrl()">
-          Join
+          {{ joinLabel }}
         </div>
       </div>
     </div>
@@ -130,12 +129,21 @@ export default {
     naem: String,
     url: String,
     isHolders: Boolean,
-    isTags: Boolean
-
+    isTags: Boolean,
+    btnLabel: String|undefined,
+    tooltipLabel: String|undefined
   },
   data() {
     return {
       isEnd: false,
+    }
+  },
+  computed: {
+    joinLabel() {
+      return this.btnLabel || "Join"
+    },
+    tooltipText () {
+      return this.tooltipLabel || ""
     }
   },
   methods: {

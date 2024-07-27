@@ -1305,9 +1305,9 @@
           "address":"0x0000000000000000000000000000000000000000"
        },
        "rpc":[
-          "https://scroll.blockpi.network/v1/rpc/public",
-          "https://rpc.scroll.io",
-          "https://l2api.orbiter.finance/rpc/scroll"
+         "https://rpc.scroll.io",
+         "https://rpc.ankr.com/scroll",
+         "https://scroll-mainnet.chainstacklabs.com"
        ],
        "contract":{
           "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc":"OBSource",
@@ -3094,7 +3094,14 @@
              "symbol":"BTC",
              "decimals":8,
              "address":"0x03c7054bcb39f7b2e5b2c7acb37583e32d70cfa3"
-          }
+          },
+          {
+            "name":"USDC.e",
+            "coinKey":"USDC",
+            "symbol":"USDC",
+            "decimals":6,
+            "address":"0xe75d0fb2c24a55ca1e3f96781a2bcc7bdba058f0"
+         }
        ],
        "internalId":57,
        "nativeCurrency":{
@@ -3831,5 +3838,83 @@
              ]
           }
        ]
-    }
+    },
+    {
+      "api": {
+          "url": "https://explorer.fuse.io/api",
+          "key": ""
+      },
+      "name": "Fuse",
+      "rpc": [
+          "https://rpc.fuse.io"
+      ],
+      "features": [
+          {
+              "name": "evm-account6"
+          },
+          {
+              "name": "evm-rpc"
+          }
+      ],
+      "service": {
+          "rpc": "EVMRpcScanningV6Service"
+      },
+      "tokens": [
+          {
+              "coinKey": "ETH",
+              "address": "0x5622f6dc93e08a8b717b149677930c38d5d50682",
+              "name": "Wrapped Ether",
+              "symbol": "ETH",
+              "decimals": 18
+          },
+          {
+              "coinKey": "USDC",
+              "address": "0x28c3d1cd466ba22f6cae51b1a4692a831696391a",
+              "name": "USD Coin",
+              "symbol": "USDC",
+              "decimals": 6
+          }
+      ],
+      "internalId": "73",
+      "nativeCurrency": {
+          "coinKey": "FUSE",
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "FUSE Token",
+          "symbol": "FUSE",
+          "decimals": 18
+      },
+      "infoURL": "https://explorer.fuse.io",
+      "chainId": "122",
+      "networkId": "122",
+      "explorers": [
+          {
+              "name": "Explorer",
+              "url": "https://explorer.fuse.io"
+          }
+      ],
+      "contract": {
+          "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+          "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+      },
+      "contracts": [
+          {
+              "name": "OBSource",
+              "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+              "methods": [
+                  "transfer(address,bytes)",
+                  "transferERC20(address,address,uint256,bytes)"
+              ]
+          },
+          {
+              "name": "OrbiterRouterV3",
+              "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+              "methods": [
+                  "transfer(address,bytes)",
+                  "transferToken(address,address,uint256,bytes)",
+                  "transfers(address[],uint256[])",
+                  "transferTokens(address,address[],uint256[])"
+              ]
+          }
+      ]
+  }
  ]

@@ -36,7 +36,7 @@
         <div class="rank-mobile-left">
           <img
             class="rank-logo"
-            :src="`${require('../../../assets/prizes/rank-top-' +
+            :src="`${require('../../../assets/prizes/v1/rank-top-' +
               item.rank +
               '.png')}`"
             alt=""
@@ -273,37 +273,37 @@ export default {
     }
 
     .rank-top-1 {
-      background-image: url(../../../assets/prizes/top1.png);
+      background-image: url(../../../assets/prizes/v1/top1.png);
       margin-bottom: 72px;
 
       .rank-top-img {
         width: 80px;
         height: 80px;
-        background-image: url(../../../assets/prizes/rank-top-1.png);
+        background-image: url(../../../assets/prizes/v1/rank-top-1.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
       }
     }
     .rank-top-2 {
-      background-image: url(../../../assets/prizes/top2.png);
+      background-image: url(../../../assets/prizes/v1/top2.png);
       margin-top: 72px;
       .rank-top-img {
         width: 80px;
         height: 80px;
-        background-image: url(../../../assets/prizes/rank-top-2.png);
+        background-image: url(../../../assets/prizes/v1/rank-top-2.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
       }
     }
     .rank-top-3 {
-      background-image: url(../../../assets/prizes/top3.png);
+      background-image: url(../../../assets/prizes/v1/top3.png);
       margin-top: 72px;
       .rank-top-img {
         width: 80px;
         height: 80px;
-        background-image: url(../../../assets/prizes/rank-top-3.png);
+        background-image: url(../../../assets/prizes/v1/rank-top-3.png);
         background-repeat: no-repeat;
         background-position: center;
         background-size: 100% 100%;
@@ -317,7 +317,7 @@ export default {
       left: 50%;
       transform: translate(-50%, 50%);
       padding: 20% 0;
-      background-image: url(../../../assets/prizes/rank-bg.png);
+      background-image: url(../../../assets/prizes/v1/rank-bg.png);
       background-repeat: no-repeat;
       background-position: center;
       background-size: 100% 100%;
@@ -404,7 +404,7 @@ export default {
       bottom: 0;
       left: 50%;
       transform: translate(-50%, 120%);
-      background-image: url(../../../assets/prizes/rank-bg.png);
+      background-image: url(../../../assets/prizes/v1/rank-bg.png);
       background-repeat: no-repeat;
       background-position: center;
       background-size: 100% 100%;

@@ -37,7 +37,7 @@
     <HeaderWalletGroup />
     <!-- HeaderActDialog  HeaderLotteryCard dialog -->
     <HeaderLotteryCardDialog v-if="isTopNav" />
-    <ClaimRewardModal v-if="isTopNav"></ClaimRewardModal>
+    <ClaimRewardModal></ClaimRewardModal>
     <div id="ton-connect-wallet"></div>
     <GlobalTgCard v-if="isTopNav"></GlobalTgCard>
     <UserInfoDetailsCardModal v-if="isTopNav"></UserInfoDetailsCardModal>

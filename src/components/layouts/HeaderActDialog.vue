@@ -140,7 +140,7 @@
           </div>
         </div>
       </div>
-      <div
+      <div id="block_mobile_scroll_group"
         ref="block_mobile_scroll_group"
         :style="
           isMobile
@@ -153,7 +153,7 @@
         <div style="width: 100%; display: flex;">
           <span class="text_21">🛸 Quests </span>
         </div>
-        <div class="ativity-list" 
+        <div class="ativity-list"  id="ativity-list"
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
@@ -161,10 +161,10 @@
          <LuckyTaskBagBanner></LuckyTaskBagBanner>
         <div 
         >
-          <div v-if="!actDataList.length">
+          <!-- <div v-if="!actDataList.length">
             <LuckyTaskCard></LuckyTaskCard>
-          </div>
-          <div v-else :key="index" v-for="(item, index) in actDataList">
+          </div> -->
+          <div :key="index" v-for="(item, index) in actDataList">
             <div v-if="!item">
               <LuckyTaskCard></LuckyTaskCard>
             </div>
@@ -252,7 +252,7 @@
         </div>
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
 
-          <!-- <ActDialogBanner ></ActDialogBanner> -->
+          <ActDialogBanner ></ActDialogBanner>
             <EcosystemDappPro
             ></EcosystemDappPro>
         </div>
@@ -310,7 +310,7 @@ import HeaderActGroup from './HeaderActGroup.vue'
 import HeaderLotteryCard from "./HeaderLotteryCard.vue"
 import EcosystemDapp from './EcosystemDapp.vue'
 import EcosystemDappPro from './EcosystemDappPro.vue'
-// import ActDialogBanner from './ActDialogBanner.vue'
+import ActDialogBanner from './ActDialogBanner.vue'
 import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
@@ -333,7 +333,7 @@ export default {
     HeaderLotteryCard,
     EcosystemDapp,
     EcosystemDappPro,
-    // ActDialogBanner,
+    ActDialogBanner,
     SvgIcon,
     // PrizesCard,
     LuckyTaskCard,
@@ -438,11 +438,7 @@ export default {
           ...(item?.label || {})
         }
       }))
-      return data.filter((item)=>{
-        return Number(item?.label?.isTop) ===1
-      }).concat([null]).concat( data.filter((item)=>{
-        return Number(item?.label?.isTop) !==1
-      }))
+      return data
     },
     actOtherDataList() {
       const list = transferDataState.actDataList || []

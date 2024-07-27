@@ -23,10 +23,10 @@ export default {
     return {
       bannerList: [
         {
-          url: 'https://t.me/catizenbot?start=we_2205992_4',
-          img: 'catizenbot.png',
-          name: 'catizenbot',
-          timeStamp: '2024-07-01T09:00:00.000Z',
+          url: 'https://holdstation.exchange/paymaster',
+          img: 'paymaster_banner.jpg',
+          name: 'paymaster_zksummer',
+          timeStamp: '2024-08-01T10:00:00.000Z',
         },
         // {
         //   url: 'https://kzco.in/',
