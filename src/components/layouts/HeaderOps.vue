@@ -315,9 +315,12 @@ export default {
     },
     async initGetAddressBatch() {
       const { fromChainID, toChainID } = transferDataState
-      if(!fromChainID && !toChainID) return
+
+      const fromChainId = fromChainID || "1"
+      const toChainId = toChainID
+      if(!fromChainId && !toChainId) return
       
-      const res = await Promise.all([this.getAddress(fromChainID, { isFrom: true }), this.getAddress(toChainID, { isFrom: false }) ])
+      const res = await Promise.all([this.getAddress(fromChainId, { isFrom: true }), this.getAddress(toChainId, { isFrom: false }) ])
 
       const chainListType = ["EVM", "Starknet", "Solana", "Ton", "Fuel"]
 

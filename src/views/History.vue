@@ -269,11 +269,16 @@ import orbiterHelper from '../util/orbiter_helper';
       },
     },
     created() {
-      this.options = [];
+      let list = []
       const chainConfig = config.chainConfig;
       for (const data of chainConfig) {
-        this.options.push({ label: data.name, value: data.chainId });
+        const flag = list.some((item)=> item.value === data.chainId) 
+        if(!flag) {
+          list = list.concat([{ label: data.name, value: data.chainId }])
+        }
       }
+      this.options = list
+     
     },
     mounted() {
       const { query } = this.$route;

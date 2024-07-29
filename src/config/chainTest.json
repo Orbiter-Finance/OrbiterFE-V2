@@ -616,51 +616,6 @@
   },
   {
     "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "11155111",
-    "networkId": "11155111",
-    "internalId": "526",
-    "name": "Sepolia(G)",
-    "features": [
-      "Etherscan"
-    ],
-    "contract": {
-      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
-    },
-    "debug": false,
-    "contracts": [],
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://rpc.sepolia.org"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x5da066443180476e8f113546a0D112517D0d4915"
-      }
-    ],
-    "infoURL": "https://sepolia.etherscan.io"
-  },
-  {
-    "api": {
       "url": "https://okbrpc.okbchain.org/v1",
       "key": ""
     },
