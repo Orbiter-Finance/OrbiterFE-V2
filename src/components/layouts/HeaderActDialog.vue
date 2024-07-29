@@ -158,7 +158,7 @@
         @scroll="itemScroll"
         >
         <!-- <PrizesCard></PrizesCard> -->
-         <LuckyTaskBagBanner></LuckyTaskBagBanner>
+         <!-- <LuckyTaskBagBanner></LuckyTaskBagBanner> -->
         <div 
         >
           <!-- <div v-if="!actDataList.length">
@@ -317,7 +317,7 @@ import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 // import PrizesCard  from "./PrizesCard.vue"
 import LuckyTaskCard  from "./LuckyTaskCard.vue"
-import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
+// import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
@@ -337,7 +337,7 @@ export default {
     SvgIcon,
     // PrizesCard,
     LuckyTaskCard,
-    LuckyTaskBagBanner
+    // LuckyTaskBagBanner
   },
   data() {
     return {
