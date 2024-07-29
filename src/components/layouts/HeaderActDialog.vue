@@ -161,14 +161,11 @@
          <LuckyTaskBagBanner></LuckyTaskBagBanner>
         <div 
         >
-          <!-- <div v-if="!actDataList.length">
-            <LuckyTaskCard></LuckyTaskCard>
-          </div> -->
+        <SignTaskCard></SignTaskCard>
+        <!-- <LuckyTaskCard></LuckyTaskCard> -->
           <div :key="index" v-for="(item, index) in actDataList">
-            <div v-if="!item">
-              <LuckyTaskCard></LuckyTaskCard>
-            </div>
-            <div v-else class="activity-card">
+           
+            <div class="activity-card">
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
                   <svg-icon
@@ -316,7 +313,8 @@ import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
 // import PrizesCard  from "./PrizesCard.vue"
-import LuckyTaskCard  from "./LuckyTaskCard.vue"
+// import LuckyTaskCard  from "./HeaderQuestsTaskList/LuckyTaskCard.vue"
+import SignTaskCard  from "./HeaderQuestsTaskList/SignTaskCard.vue"
 import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
@@ -336,8 +334,9 @@ export default {
     ActDialogBanner,
     SvgIcon,
     // PrizesCard,
-    LuckyTaskCard,
-    LuckyTaskBagBanner
+    // LuckyTaskCard,
+    LuckyTaskBagBanner,
+    SignTaskCard
   },
   data() {
     return {

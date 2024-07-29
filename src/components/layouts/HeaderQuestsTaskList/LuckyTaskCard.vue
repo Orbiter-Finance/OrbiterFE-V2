@@ -19,7 +19,6 @@
                       <br />
                       Arbitrum 、Linea、Cyber、Optopia、Base、Zklink
                       Nova、Manta、Polygon、Blast、Optimism、Ethereum 、Zora
-                      <!-- 、Taiko -->
                     </span>
                   </div>
                 </template>
@@ -57,7 +56,7 @@
             v-if="item.isTask"
             class="bag-image"
             @click="drawLuckyTaskBag(item)"
-            :src="require('../../assets/activity/points_task/bag.png')"
+            :src="require('../../../assets/activity/points_task/bag.png')"
             alt=""
           />
         </div>
@@ -67,16 +66,15 @@
 </template>
 
 <script>
-import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
-import { decimalNum } from '../../util/decimalNum'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+import { decimalNum } from '../../../util/decimalNum'
 
-import SvgIcon from '../SvgIcon/SvgIcon.vue'
+import SvgIcon from '../../SvgIcon/SvgIcon.vue'
 
 import {
-  luckyBaTaskgOrbguyInfo,
   luckyBaTaskgUserOrbguyInfo,
   actDialogVisible,
-} from '../../composition/hooks'
+} from '../../../composition/hooks'
 import Web3 from 'web3'
 const BigNumber = require('bignumber.js')
 
@@ -365,7 +363,7 @@ export default {
           .task-progress {
             padding: 0 8px;
             height: 20px;
-            background: url('../../assets/activity/light_tag_undone.png') 100%
+            background: url('../../../assets/activity/light_tag_undone.png') 100%
               no-repeat;
             background-size: 100% 100%;
             margin-left: 2px;
@@ -405,7 +403,7 @@ export default {
         .task-progress {
           color: rgba(255, 255, 255, 0.8);
           height: 20px;
-          background: url('../../assets/activity/dark_tag_undone.png') 100%
+          background: url('../../../assets/activity/dark_tag_undone.png') 100%
             no-repeat;
           background-size: 100% 100%;
           margin-left: 2px;
