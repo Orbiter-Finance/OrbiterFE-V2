@@ -379,7 +379,9 @@ export default {
         return
       }
       timerActivityList = timerN
-
+      this.$store.commit(
+        'getTaskInfoList',
+      )
       if (isAddress) {
         const res = await requestPointSystem('v2/activity/list', {
           address,

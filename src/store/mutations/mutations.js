@@ -27,6 +27,7 @@ import {
   setPrizesV2UserList,
   setPrizesV2TotalOrbguy,
   setPrizesV2ProjectTime,
+  setQuestsInfoList,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -49,6 +50,7 @@ let timer3
 let timer4
 let timer5
 let timer6
+let timer7
 
 export default {
   updateZKTokenList(state, obj) {
@@ -549,6 +551,26 @@ export default {
           message: '',
         })
       }
+    }, 500)
+  },
+
+  async getTaskInfoList(state) {
+    clearTimeout(timer7)
+    timer7 = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}/${
+            isDev() ? 'activity' : 'active-platform'
+          }/project/activeProjectList`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        const res = await response.json()
+        setQuestsInfoList(res?.result || [])
+      } catch (error) {}
     }, 500)
   },
 }

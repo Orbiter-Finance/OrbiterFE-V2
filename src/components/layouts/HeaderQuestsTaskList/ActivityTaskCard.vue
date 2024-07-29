@@ -3,64 +3,59 @@
     <div class="activity-card-title">
       <div class="activity-card-title-left">
         <svg-icon
-          v-if="item.label.icon"
+          v-if="icon"
           class="icon"
-          :iconName="item.label.icon"
+          :iconName="icon"
         ></svg-icon>
-        <div class="text">{{ item.name }}</div>
+        <div class="text">{{ title }}</div>
       </div>
       <o-tooltip>
         <template v-slot:titleDesc>
           <div class="task-tips-time" style="margin-left: -20px">
-            {{ formatTime3(item.startTime) }} -
-            {{ formatTime3(item.endTime) }}
+            {{ formatTime3(startTime) }} -
+            {{ formatTime3(endTime) }}
           </div>
         </template>
         <div class="text_5">
-          {{ formatTime2(item.startTime) }} -
-          {{ formatTime2(item.endTime) }}
+          {{ formatTime2(startTime) }} -
+          {{ formatTime2(endTime) }}
         </div>
       </o-tooltip>
     </div>
     <div>
-      <template v-for="option in item.taskList">
+      <template v-for="option in taskList">
         <div
           class="task-card"
-          :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+          :style="`opacity:${option.isSuccess ? '0.4' : '1'};`"
         >
           <div class="title">
             <div class="task-info">
               <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
-              <div class="description" v-html="option.description"></div>
+              <div class="description" v-html="option.name"></div>
             </div>
           </div>
           <div class="group">
             <div v-for="tag in option.tags">
-              <div v-if="tag.style === 'token'" class="token-tag">
+              <div v-if="tag.type === 'opoint'" class="group-reward">
+                <svg-icon iconName="O-Points"></svg-icon>
+                + {{ tag.amount }} OPoints
+              </div>
+              <div v-else-if="tag.token" class="token-tag">
                 <img
                   v-if="tag.icon"
                   :src="tag.icon"
                   alt=""
                   class="tag-token-icon"
                 />
-                <span class="tag-token-text">{{ tag.description }}</span>
+                <span class="tag-token-text">{{ tag.title }}</span>
               </div>
               <div
                 class="text-wrapper_17 flex-col"
-                :key="tag.description"
+                :key="tag.title"
                 v-else
               >
-                <span class="text_27">{{ tag.description }}</span>
+                <span class="text_27">{{ tag.title }}</span>
               </div>
-            </div>
-
-            <!-- <div v-else class="text-wrapper_4 flex-col">
-                <span class="text_9">Done</span>
-              </div> -->
-
-            <div class="group-reward">
-              <svg-icon iconName="O-Points"></svg-icon>
-              + {{ option.points }} OPoints
             </div>
 
             <div class="text-wrapper_18">
@@ -79,12 +74,71 @@
 </template>
 
 <script>
+import dayjs from 'dayjs';
+import SvgIcon from '../../SvgIcon/SvgIcon.vue'
+
 export default {
   name: 'ActivityTaskCard',
-  data(){
-    return {
-        item: {}
-    }
+  components: {
+    SvgIcon,
+  },
+  props: {
+    dataInfo: Object,
+  },
+  computed: {
+    startTime(){
+      return this.dataInfo.start_time
+    },
+    endTime(){
+      return this.dataInfo.end_time
+    },
+    title() {
+      console.log("this.dataInfo", this.dataInfo)
+      return this.dataInfo.name
+    },
+    icon() {
+      return this.dataInfo.icon
+    },
+    taskList() {
+      const list = this.dataInfo.tasks || []
+      const task = list.slice(0, list.length - 1)
+
+      return task.map((item)=>{
+        const total = Number(item?.rule?.totalVolume)
+
+        const tags = item.rewards.map((item)=>{
+            return ({
+              icon: item.rule.icon || "",
+              amount: item.rule.amount,
+              type: item.rule.name,
+              title: item.rule.title,
+              token: item.rule.token
+            })
+        })
+
+        return ({
+          name: item.name,
+          isSuccess: false,
+          tags,
+          progress: total ? ({
+            total,
+            current: 0
+          }) : null
+        })
+      })
+    },
+  },
+  methods: {
+    formatTime(time) {
+      return dayjs.utc(time).format("MMM.DD")
+    },
+    formatTime2(time) {
+
+      return dayjs.utc(time).format("MMM.DD")
+    },
+    formatTime3(time) {
+      return dayjs.utc(time).format("MMM.DD HH:mm")
+    },
   }
 }
 </script>
@@ -96,6 +150,7 @@ export default {
   background-color: #f5f5f5;
   padding: 12px;
   margin: 12px 16px;
+  
   .activity-card-title {
     width: 100%;
     display: flex;
@@ -120,6 +175,20 @@ export default {
         letter-spacing: 0px;
         text-align: left;
       }
+    }
+    .task-tips-time {
+        letter-spacing: 0;
+        font-size: 12px;
+      }
+    .text_5 {
+        height: 17px;
+        overflow-wrap: break-word;
+        color: rgba(153, 153, 153, 1);
+        font-size: 12px;
+        font-family: GeneralSans-Regular;
+        text-align: left;
+        white-space: nowrap;
+        line-height: 17px;
     }
   }
 
@@ -157,6 +226,49 @@ export default {
       align-items: center;
       margin-top: 8px;
 
+      .text-wrapper_17 {
+        height: 20px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        color: #FFF;
+        background: linear-gradient(139.64deg, rgb(229, 69, 255) 0%,rgb(255, 0, 0) 85.476%);
+        .text_27 {
+            height: 17px;
+            overflow-wrap: break-word;
+            font-size: 12px;
+            font-family: GeneralSans-Bold;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+            margin: 0 8px;
+        }
+      }
+
+      .token-tag {
+        height: 20px;
+        border-radius: 4px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        color: #FFF;
+        background: #000000;
+        padding: 2px 4px;
+    
+        .tag-token-icon {
+          width: 12px;
+          height: 12px;
+          margin-right: 4px;
+        }
+        .tag-token-text {
+          font-size: 12px;
+          font-family: GeneralSans-SemiBold;
+        } 
+      }
+
       .group-reward {
         display: flex;
         justify-content: start;
@@ -174,6 +286,30 @@ export default {
           margin-right: 4px;
         }
       }
+
+      .text-wrapper_18 {
+        padding: 0 8px;
+        height: 20px;
+        background: url('../../../assets/activity/light_tag_undone.png') 100% no-repeat;
+        background-size: 100% 100%;
+        margin-left: 2px;
+        width: 35px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .text_28 {
+            width: 35px;
+            height: 17px;
+            overflow-wrap: break-word;
+            color: rgba(34, 34, 34, 1);
+            font-size: 12px;
+            font-family: GeneralSans-SemiBold;
+            text-align: left;
+            white-space: nowrap;
+            line-height: 17px;
+          }
+      }
+    
     }
   }
 }
@@ -185,6 +321,14 @@ export default {
       .text {
         color: #fff;
       }
+    }
+    .task-card {
+        background-color: var(--dark-page-box-bg);
+        .group {
+            .group-reward {
+                background-color: #222222;
+              }
+        }
     }
   }
 }

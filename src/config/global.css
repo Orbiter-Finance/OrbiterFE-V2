@@ -323,3 +323,7 @@ p {
   background-position: left -40px top 0;
   animation: orbiter_global_shine 2s ease infinite;
 }
+
+.orbiter_global_underline {
+  text-decoration: underline;
+}

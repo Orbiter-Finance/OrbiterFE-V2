@@ -157,95 +157,7 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <!-- <PrizesCard></PrizesCard> -->
-         <LuckyTaskBagBanner></LuckyTaskBagBanner>
-        <div 
-        >
-        <SignTaskCard></SignTaskCard>
-        <!-- <LuckyTaskCard></LuckyTaskCard> -->
-          <div :key="index" v-for="(item, index) in actDataList">
-           
-            <div class="activity-card">
-              <div class="activity-card-title">
-                <div class="activity-card-title-left">
-                  <svg-icon
-                    v-if="item.label.icon"
-                    class="icon"
-                    :iconName="item.label.icon"
-                  ></svg-icon>
-                  <div class="text">{{ item.name }}</div>
-                </div>
-                <o-tooltip>
-                  <template v-slot:titleDesc>
-                    <div class="task-tips-time" style="margin-left: -20px">
-                      {{ formatTime3(item.startTime) }} -
-                    {{ formatTime3(item.endTime) }}
-                    </div>
-                  </template>
-                  <div class="text_5" >
-                    {{ formatTime2(item.startTime) }} -
-                    {{ formatTime2(item.endTime) }}
-                  </div>
-                </o-tooltip>
-                
-              </div>
-              <div>
-              <template v-for="option in item.taskList">
-                <div class="task-card" 
-                :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
-                >
-                  <div class="title">
-                    <div class="task-info">
-                    <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
-                    <div class="description" v-html="option.description"></div>
-                    </div>
-                  </div>
-                  <div class="group">
-                    <div
-                    v-for="tag in option.tags"
-                    >
-                      <div v-if="tag.style === 'token'"
-                      class="token-tag"
-                      >
-                        <img v-if="tag.icon" :src="tag.icon" alt="" class="tag-token-icon">
-                        <span class="tag-token-text">{{ tag.description }}</span>
-                      </div>
-                      <div
-                          class="text-wrapper_17 flex-col"
-                          :key="tag.description"
-                          v-else
-                        >
-                        <span class="text_27">{{ tag.description }}</span>
-                      </div>
-
-                    </div>
-                    
-                    <!-- <div v-else class="text-wrapper_4 flex-col">
-                      <span class="text_9">Done</span>
-                    </div> -->
-
-                    <div class="group-reward">
-                      <svg-icon iconName="O-Points"></svg-icon>
-                      + {{ option.points }} OPoints
-                    </div>
-                    
-
-                    <div class="text-wrapper_18">
-                      <span class="text_28" v-if="!!option.progress">{{
-                        option.progress
-                          ? `${option.progress.current}/${option.progress.total}`
-                          : '0/0'
-                      }}</span>
-                      <span v-else class="text_28">Undone</span>
-                    </div>
-                    
-                  </div>
-                </div>
-              </template>
-            </div>
-            </div>
-          </div>
-        </div>
+        <HeaderQuestsTaskList></HeaderQuestsTaskList>
         </div>
         <div ref="act_dialog_bottom_group_ref" style="box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.11);">
 
@@ -312,10 +224,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
-// import PrizesCard  from "./PrizesCard.vue"
-// import LuckyTaskCard  from "./HeaderQuestsTaskList/LuckyTaskCard.vue"
-import SignTaskCard  from "./HeaderQuestsTaskList/SignTaskCard.vue"
-import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
+import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
@@ -334,9 +243,7 @@ export default {
     ActDialogBanner,
     SvgIcon,
     // PrizesCard,
-    // LuckyTaskCard,
-    LuckyTaskBagBanner,
-    SignTaskCard
+    HeaderQuestsTaskList,
   },
   data() {
     return {
@@ -1303,16 +1210,7 @@ export default {
     background-size: 100% 100%;
   }
 
-  .text_27 {
-    height: 17px;
-    overflow-wrap: break-word;
-    font-size: 12px;
-    font-family: GeneralSans-Bold;
-    text-align: left;
-    white-space: nowrap;
-    line-height: 17px;
-    margin: 0 8px;
-  }
+  
 
   .text_29 {
     width: 76px;
@@ -1326,64 +1224,6 @@ export default {
     white-space: nowrap;
     line-height: 17px;
     margin: 1px 8px;
-  }
-
-  .text-wrapper_18 {
-    padding: 0 8px;
-    height: 20px;
-    background: url('../../assets/activity/light_tag_undone.png') 100% no-repeat;
-    background-size: 100% 100%;
-    margin-left: 2px;
-    width: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .text_28 {
-    width: 35px;
-    height: 17px;
-    overflow-wrap: break-word;
-    color: rgba(34, 34, 34, 1);
-    font-size: 12px;
-    font-family: GeneralSans-SemiBold;
-    text-align: left;
-    white-space: nowrap;
-    line-height: 17px;
-  }
-
-  .token-tag {
-    height: 20px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
-    color: #FFF;
-    background: #000000;
-    padding: 2px 4px;
-
-    .tag-token-icon {
-      width: 12px;
-      height: 12px;
-      margin-right: 4px;
-    }
-
-    .tag-token-text {
-      font-size: 12px;
-      font-family: GeneralSans-SemiBold;
-    }
-  }
-
-  .text-wrapper_17 {
-    height: 20px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
-    color: #FFF;
-    background: linear-gradient(139.64deg, rgb(229, 69, 255) 0%,rgb(255, 0, 0) 85.476%);
   }
 
   .text-wrapper_1_17 {
