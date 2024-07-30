@@ -34,8 +34,8 @@ async function aesDecrypt(cipherDataStr, keyStr, ivStr) {
   }
   const key = await importAESKey(keyData)
 
-  const iv = new Uint8Array(ivStr.split(','))
-  const cipherData = new Uint8Array(cipherDataStr.split(','))
+  const iv = new Uint8Array(ivStr?.split(','))
+  const cipherData = new Uint8Array(cipherDataStr?.split(','))
 
   const dec = new TextDecoder()
   const plainData = await subtle.decrypt(

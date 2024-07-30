@@ -59,7 +59,7 @@
             </div>
 
             <div class="text-wrapper_18">
-              <span class="text_28" v-if="!!option.progress">{{
+              <span class="text_28" v-if="!option.isSuccess">{{
                 option.progress
                   ? `${option.progress.current}/${option.progress.total}`
                   : '0/0'
@@ -76,6 +76,7 @@
 <script>
 import dayjs from 'dayjs';
 import SvgIcon from '../../SvgIcon/SvgIcon.vue'
+import { questsUserInfoList } from '../../../composition/hooks';
 
 export default {
   name: 'ActivityTaskCard',
@@ -86,6 +87,15 @@ export default {
     dataInfo: Object,
   },
   computed: {
+    questsUserList() {
+      return questsUserInfoList.value
+    },
+    currentUserInfo(){
+      const list = this.questsUserList || []
+      console.log("this.questsUserList", this.dataInfo, this.id, this.questsUserList)
+      const option = list.filter((item)=> this.id === item.projectId)?.[0]
+      return option || null
+    },
     startTime(){
       return this.dataInfo.start_time
     },
@@ -96,29 +106,37 @@ export default {
       console.log("this.dataInfo", this.dataInfo)
       return this.dataInfo.name
     },
+    id() {
+      return this.dataInfo.id
+    },
     icon() {
       return this.dataInfo.icon
     },
     taskList() {
+      const currentUserInfo = this.currentUserInfo
+      console.log("currentUserInfo", currentUserInfo);
       const list = this.dataInfo.tasks || []
+      const useList = this.currentUserInfo?.records || []
       const task = list.slice(0, list.length - 1)
 
       return task.map((item)=>{
         const total = Number(item?.rule?.totalVolume)
 
-        const tags = item.rewards.map((item)=>{
+        const userInfo = useList.filter((option)=> option.task_id === item.id)?.[0]
+
+        const tags = item.rewards.map((option)=>{
             return ({
-              icon: item.rule.icon || "",
-              amount: item.rule.amount,
-              type: item.rule.name,
-              title: item.rule.title,
-              token: item.rule.token
+              icon: option.rule.icon || "",
+              amount: option.rule.amount,
+              type: option.rule.name,
+              title: option.rule.title,
+              token: option.rule.token
             })
         })
 
         return ({
           name: item.name,
-          isSuccess: false,
+          isSuccess: Number(userInfo?.task_result || 0) >= total,
           tags,
           progress: total ? ({
             total,

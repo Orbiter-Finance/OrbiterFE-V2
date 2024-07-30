@@ -140,7 +140,7 @@
 
 <script>
 import { decimalNum } from '../../../util/decimalNum'
-
+import { questsUserInfoList } from '../../../composition/hooks'
 import SvgIcon from '../../SvgIcon/SvgIcon.vue'
 
 export default {
@@ -157,6 +157,19 @@ export default {
     }
   },
   computed: {
+    questsUserList() {
+      return questsUserInfoList.value
+    },
+    currentUserInfo() {
+      const list = this.questsUserList || []
+      const option = list.filter((item) => this.id === item.projectId)?.[0]
+      return option || null
+    },
+    userRecordsList() {
+      const list = this.currentUserInfo?.records || []
+
+      return list.slice(0, list.length - 1)
+    },
     title() {
       return this.dataInfo.name
     },
@@ -168,10 +181,29 @@ export default {
       return list.slice(0, list.length - 1)
     },
     signDaysAmount() {
-      return 3
+      const list = this.userRecordsList || []
+      console.log('list', list)
+      let count = 0
+      list.forEach((item) => {
+        if (item.task_result >= 3) {
+          count += 1
+        }
+      })
+      return count
     },
     reward() {
-      return '--'
+      const list = this.userRecordsList || []
+      let count = 0
+      list.forEach((item) => {
+        const list = JSON.parse(item.distribute_result || JSON.stringify([]))
+        const data = list.filter(
+          (option) => option.name.toLocaleLowerCase() === 'orbguy'
+        )[0]
+        console.log("task_result", item.task_result)
+        count += Number(data?.amount) || 0
+      })
+
+      return count ? count : '--'
     },
     ratio() {
       const amount = this.signDaysAmount
@@ -179,13 +211,19 @@ export default {
       ratio = ratio >= 100 ? 100 : ratio
       return decimalNum(ratio, 4) + '%'
     },
+    id() {
+      return this.dataInfo.id
+    },
     taskList() {
       const amount = this.signDaysAmount
-      const list =
-        this.taskInfo?.[0]?.rewards?.[0]?.rule?.timesWithRewardList || []
+      const rewards =
+        this.taskInfo?.[0]?.rewards || []
 
-      return list
-        .map((item) => {
+        const option = rewards.filter((item)=> item.rule.name === "orbguy")?.[0]
+
+        const list = option.rule?.timesWithRewardList || []
+
+      return list.map((item) => {
           return {
             amount: item.rewardAmount,
             times: item.times,
