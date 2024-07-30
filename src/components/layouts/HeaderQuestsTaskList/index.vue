@@ -24,7 +24,6 @@ export default {
   name: 'HeaderQuestsTaskList',
   computed: {
     questsList(){
-      console.log("questsInfoList", questsInfoList.value)
       return questsInfoList.value
     }
   },

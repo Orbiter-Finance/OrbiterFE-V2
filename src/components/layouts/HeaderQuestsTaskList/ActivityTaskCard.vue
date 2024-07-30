@@ -92,7 +92,6 @@ export default {
     },
     currentUserInfo(){
       const list = this.questsUserList || []
-      console.log("this.questsUserList", this.dataInfo, this.id, this.questsUserList)
       const option = list.filter((item)=> this.id === item.projectId)?.[0]
       return option || null
     },
@@ -103,7 +102,6 @@ export default {
       return this.dataInfo.end_time
     },
     title() {
-      console.log("this.dataInfo", this.dataInfo)
       return this.dataInfo.name
     },
     id() {
@@ -114,7 +112,6 @@ export default {
     },
     taskList() {
       const currentUserInfo = this.currentUserInfo
-      console.log("currentUserInfo", currentUserInfo);
       const list = this.dataInfo.tasks || []
       const useList = this.currentUserInfo?.records || []
       const task = list.slice(0, list.length - 1)

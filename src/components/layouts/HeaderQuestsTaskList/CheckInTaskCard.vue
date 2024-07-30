@@ -182,7 +182,6 @@ export default {
     },
     signDaysAmount() {
       const list = this.userRecordsList || []
-      console.log('list', list)
       let count = 0
       list.forEach((item) => {
         if (item.task_result >= 3) {
@@ -199,7 +198,6 @@ export default {
         const data = list.filter(
           (option) => option.name.toLocaleLowerCase() === 'orbguy'
         )[0]
-        console.log("task_result", item.task_result)
         count += Number(data?.amount) || 0
       })
 

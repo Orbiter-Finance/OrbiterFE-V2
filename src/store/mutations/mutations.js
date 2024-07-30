@@ -512,7 +512,6 @@ export default {
   },
 
   async lotteryPrizesV2TaskReward(state, { address, taskId, token, call }) {
-    console.log('address, taskId, token, call', address, taskId, token, call)
     if (!taskId || !token || !address || address === '0x') {
       call({
         status: 'Error',
@@ -535,7 +534,6 @@ export default {
           }
         )
         const res = await response.json()
-        console.log('res', res)
         if (Number(res?.code) !== 0) {
           call({
             status: 'Error',
