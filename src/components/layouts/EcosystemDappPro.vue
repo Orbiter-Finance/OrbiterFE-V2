@@ -86,6 +86,22 @@
         ></EcosystemLikidDappPro>
       </el-carousel-item> -->
       <el-carousel-item>
+          <EcosystemDapp
+            :holders="bullishsTotal"
+            :isTags="true"
+            :isHolders="true"
+            :ratio="ratio"
+            :showCard="showCard"
+            :banner="'bullishs.png'"
+            :tag="'Cross-chain Game'"
+            :tagStyle="'background: linear-gradient(174.86deg, rgb(200, 129, 239) 28.525%,rgb(171, 70, 214) 57.649%);'"
+            :description="'BullKing Boost Coming...'"
+            :isProgress="false"
+            :name="'bullishs'"
+            :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
+          />
+        </el-carousel-item>
+      <el-carousel-item>
         <EcosystemDapp
           :holders="0"
           :isTags="true"
@@ -118,22 +134,7 @@
           :url="'https://0xastra.xyz/'"
         />
       </el-carousel-item>
-        <el-carousel-item>
-          <EcosystemDapp
-            :holders="bullishsTotal"
-            :isTags="true"
-            :isHolders="true"
-            :ratio="ratio"
-            :showCard="showCard"
-            :banner="'bullishs.png'"
-            :tag="'Cross-chain Game'"
-            :tagStyle="'background: linear-gradient(174.86deg, rgb(200, 129, 239) 28.525%,rgb(171, 70, 214) 57.649%);'"
-            :description="'Deposit 0.01 ETH to Earn Exclusive Mega Rewards for Orbiter Users!'"
-            :isProgress="false"
-            :name="'bullishs'"
-            :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
-          />
-        </el-carousel-item>
+    
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"
