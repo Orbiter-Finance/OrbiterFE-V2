@@ -128,7 +128,7 @@
             :banner="'bullishs.png'"
             :tag="'Cross-chain Game'"
             :tagStyle="'background: linear-gradient(174.86deg, rgb(200, 129, 239) 28.525%,rgb(171, 70, 214) 57.649%);'"
-            :description="'Deposit 0.01 ETH to Earn Exclusive Mega Rewards for Orbiter Users!'"
+            :description="'BullKing Boost Coming...'"
             :isProgress="false"
             :name="'bullishs'"
             :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
