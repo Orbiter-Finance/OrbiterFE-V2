@@ -142,6 +142,7 @@
 import { decimalNum } from '../../../util/decimalNum'
 import { questsUserInfoList } from '../../../composition/hooks'
 import SvgIcon from '../../SvgIcon/SvgIcon.vue'
+import dayjs from "dayjs"
 
 export default {
   components: {
@@ -222,7 +223,15 @@ export default {
 
       const list = option.rule?.timesWithRewardList || []
 
-      const taskResultList = userList.map((item)=> item.task_result).filter((item)=>!!Number(item))
+      const taskResultList = userList.map((item)=>{
+        const taskId = item.task_id
+        const option = this.taskInfo.filter((option)=> option.id === taskId)?.[0] || {}
+        const [startDate] = option?.rule?.date || []
+        const startTime = +dayjs.utc(startDate)
+        const now = +dayjs()
+        const flag = item.task_result >= 3 || now <= startTime
+        return flag ? item.task_result : 0
+      } ).filter((item)=>!!Number(item))
 
       return list.map((item, index) => {
         const task = this.taskInfo?.[index] || {}
