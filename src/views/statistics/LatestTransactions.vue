@@ -205,7 +205,7 @@
                 class="token-symbol"
                 :iconName="item.sourceSymbol"
               ></svg-icon>
-              ETH
+              {{ item.sourceSymbol }}
             </div>
           </div>
           <div class="table-col amount transaction-box-right">
