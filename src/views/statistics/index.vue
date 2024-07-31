@@ -1,6 +1,6 @@
 <template>
   <div class="contnet">
-    <div class="title">Orbiter Statistics</div>
+    <!-- <div class="title">Orbiter Statistics</div> -->
     <div class="statistics-info">
       <div class="info-item">
         <div class="item-title">Total Tx</div>
@@ -22,7 +22,7 @@
         <CommLoading :hidden="hideDataLoading" width="3rem" height="3rem" />
       </div>
     </div>
-    <!-- <LatestTransactions></LatestTransactions> -->
+    <LatestTransactions></LatestTransactions>
     <div v-if="showSource" class="tx-content">
       <div class="tx-head">
         <span class="tx-title">Tx Statistics <span>Data source: Orbiter Finance Bridge & Vizing</span></span>

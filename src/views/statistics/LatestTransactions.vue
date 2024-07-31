@@ -2,6 +2,50 @@
   <div class="last-transactions">
     <div class="transaction-title">
       <div class="label">Latest Transactions</div>
+      <div class="select-chain">
+        <div class="source" @click="extendsSelectChain(true)">
+          Source chain:
+          <div class="chain-info">
+            <svg-icon
+              class="chain-icon"
+              v-if="showSourceIcon"
+              :iconName="showSourceIcon"
+            ></svg-icon>
+            <div class="chain-name">{{ showSourceLabel }}</div>
+          </div>
+          <svg-icon
+            :class="`${showSourceCard ? 'expend' : 'close'} extend-icon`"
+            iconName="arrow_up"
+          ></svg-icon>
+          <template v-if="showSourceCard">
+            <TransactionSelectChain
+              @selectChainFunc="selectChainFn"
+              :selectChain="params.sourceChain"
+            ></TransactionSelectChain>
+          </template>
+        </div>
+        <div class="target" @click="extendsSelectChain(false)">
+          Destination chain:
+          <div class="chain-info">
+            <svg-icon
+              class="chain-icon"
+              v-if="showTargetIcon"
+              :iconName="showTargetIcon"
+            ></svg-icon>
+            <div class="chain-name">{{ showTargetLabel }}</div>
+          </div>
+          <svg-icon
+            :class="`${showTargetCard ? 'expend' : 'close'} extend-icon`"
+            iconName="arrow_up"
+          ></svg-icon>
+          <template v-if="showTargetCard">
+            <TransactionSelectChain
+              @selectChainFunc="selectChainFn"
+              :selectChain="params.targetChain"
+            ></TransactionSelectChain>
+          </template>
+        </div>
+      </div>
     </div>
     <div class="transaction-table">
       <div class="table-header border-b">
@@ -212,8 +256,12 @@ import SvgIcon from '../../components/SvgIcon/SvgIcon.vue'
 import util from '../../util/util'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs'
+import TransactionSelectChain from './TransactionSelectChain.vue'
+let timer
+let timer2
+
 export default {
-  components: { SvgIcon },
+  components: { SvgIcon, TransactionSelectChain },
   name: 'LatestTransactions',
   data() {
     return {
@@ -226,38 +274,88 @@ export default {
         sourceChain: '',
         targetChain: '',
       },
+      extendKey: '',
     }
+  },
+  computed: {
+    showSourceCard() {
+      return this.extendKey === 'source'
+    },
+    showTargetCard() {
+      return this.extendKey === 'target'
+    },
+    showSourceIcon() {
+      return this.params.sourceChain
+    },
+    showSourceLabel() {
+      const chainId = this.params.sourceChain
+      const info = util.getV3ChainInfoByChainId(chainId)
+      return chainId ? info?.name : 'All'
+    },
+    showTargetIcon() {
+      return this.params.targetChain
+    },
+    showTargetLabel() {
+      const chainId = this.params.targetChain
+      const info = util.getV3ChainInfoByChainId(chainId)
+      return chainId ? info?.name : 'All'
+    },
   },
   created() {
     this.getData()
   },
   methods: {
+    extendsSelectChain(status) {
+      const type = status ? 'source' : 'target'
+      this.extendKey = this.extendKey === type ? '' : type
+    },
+    closeSelectChain() {
+      this.extendKey = ''
+    },
     openexplor(item, { isFrom }) {
       const chainId = isFrom ? item.sourceChain : item.targetChain
       const hash = isFrom ? item.sourceId : item.targetId
+
       if (!chainId || !hash) return
       const url = util.getTxExploreUrl(chainId) + hash
+      const name =
+        'Statistics_Latest_Transactions_Hash' + (isFrom ? '_Source' : '_Target')
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: url,
+      })
       window.open(url, '_blank')
     },
     async getData() {
-      try {
-        this.loading = true
-        const { current , sourceChain, targetChain} = this.params
-        let paramsGroup = {
+      clearTimeout(timer)
+      clearTimeout(timer2)
+      let self = this
+      timer2 = setTimeout(async () => {
+        try {
+          self.loading = true
+          const { current, sourceChain, targetChain } = self.params
+          let paramsGroup = {
             page: current,
-            ...(sourceChain ? ({sourceChain}) : {}),
-            ...(targetChain ? ({targetChain}) : {}),
+            ...(sourceChain ? { sourceChain } : {}),
+            ...(targetChain ? { targetChain } : {}),
+          }
+          const respone = await fetch(
+            `${process.env.VUE_APP_OPEN_URL}/partner-data-openness/transcations/list` +
+              self.objToParams(paramsGroup)
+          )
+          const res = await respone.json()
+          self.list = res?.data?.rows || []
+          self.total = res?.data?.count || 0
+          self.loading = false
+        } catch (error) {
+          self.loading = false
         }
-        const respone = await fetch(
-          `${process.env.VUE_APP_OPEN_URL}/partner-data-openness/transcations/list` + this.objToParams(paramsGroup)
-        )
-        const res = await respone.json()
-        this.list = res?.data?.rows || []
-        this.total = res?.data?.count || 0
-        this.loading = false
-      } catch (error) {
-        this.loading = false
-      }
+        if (Number(self?.params?.current) === 1) {
+          timer = setTimeout(() => {
+            return self.getData()
+          }, 10000)
+        }
+      }, 200)
     },
     decimalNumC(num, decimal, delimiter, currencySymbol) {
       return decimalNum(num, decimal, delimiter, currencySymbol)
@@ -293,12 +391,31 @@ export default {
 
       return list?.length ? '?' + list.join('&') : ''
     },
+    selectChainFn(chainId) {
+      const isSource = this.extendKey === 'source'
+      this.closeSelectChain()
+      if (isSource) {
+        this.params = {
+          ...this.params,
+          sourceChain: chainId,
+          current: 1,
+        }
+      } else {
+        this.params = {
+          ...this.params,
+          targetChain: chainId,
+          current: 1,
+        }
+      }
+    },
   },
   watch: {
-    params: function (data) {
-      console.log('data', data)
+    params: function () {
       this.getData()
     },
+  },
+  unmounted() {
+    clearTimeout(timer)
   },
 }
 </script>
@@ -372,6 +489,59 @@ export default {
       font-family: 'Kodchasan-SemiBold';
       line-height: 32px;
       letter-spacing: 0px;
+    }
+    .select-chain {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      font-size: 14px;
+      font-family: GeneralSans-Medium;
+      line-height: 20px;
+      letter-spacing: 0%;
+      color: #a3a3a3;
+      .source {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        margin-right: 8px;
+        cursor: pointer;
+        position: relative;
+        top: 0;
+        left: 0;
+      }
+      .target {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+        top: 0;
+        left: 0;
+      }
+      .chain-info {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #1a1a1a;
+        margin-left: 4px;
+        .chain-icon {
+          width: 20px;
+          height: 20px;
+          margin-right: 4px;
+        }
+      }
+      .extend-icon {
+        width: 20px;
+        height: 20px;
+        transition: all 0.3s;
+        will-change: rotate;
+      }
+      .expend {
+        rotate: 0deg;
+      }
+      .close {
+        rotate: 180deg;
+      }
     }
   }
   .transaction-table {
