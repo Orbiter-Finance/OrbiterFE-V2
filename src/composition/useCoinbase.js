@@ -40,12 +40,11 @@ export function updateCoinbase(coinbase) {
   }
   updatelpAccountInfo(null)
   updatelpApiKey(null)
-  // if (coinbase instanceof Array) {
-  //   web3State.coinbase = coinbase[0]
-  // } else {
-  //   web3State.coinbase = coinbase
-  // }
-  web3State.coinbase = '0xae9cf179e11aaa285bdccf5a108f4e29b6b10fe5'
+  if (coinbase instanceof Array) {
+    web3State.coinbase = coinbase[0]
+  } else {
+    web3State.coinbase = coinbase
+  }
 }
 export function updatelpApiKey(accountInfo) {
   lpApiKey.value = accountInfo
