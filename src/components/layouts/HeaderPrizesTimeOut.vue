@@ -1,12 +1,18 @@
 <template>
-  <div>
-    <div class="time-out">
-      <div class="time-card-item" v-for="(item, index) in timeList" :key="item.symbol">
+  <div class="time-out">
+    <div v-if="isEnd">End of event</div>
+    <div class="time-card">
+      <div
+        class="time-card-item"
+        v-for="(item, index) in timeList"
+        :key="item.symbol"
+      >
         <div class="card-item-value">{{ item.value }}</div>
         <div class="card-item-symbol">{{ item.symbol }}</div>
         <div v-if="index !== 3" class="card-item-invi">:</div>
       </div>
     </div>
+    <div class="card"></div>
   </div>
 </template>
 
@@ -16,7 +22,7 @@ import {
   setPrizesV2TimeEnd,
   prizesV2ProjectTime,
 } from '../../composition/hooks'
-import dayjs from "dayjs"
+import dayjs from 'dayjs'
 
 let timer1
 
@@ -123,39 +129,51 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@keyframes glow {
-    0% {
-		border-color: #FF4F4F;
-		box-shadow: 0 0 5px rgba(255, 0, 0,.2), inset 0 0 5px rgba(255, 0, 0,.1);
-    }	
-    100% {
-		border-color: #FF0000;
-		box-shadow: 0 0 20px rgba(255, 0, 0,.6), inset 0 0 10px rgba(255, 0, 0,.4);
-    }
-}
-
 .time-out {
+  width: 108px;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  background: #f3ba2f;
+  border-radius: 8px;
+  backdrop-filter: blur(156px);
+  padding: 0 2px;
+  zoom: 0.9;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .time-card {
+    width: 100%;
     display: flex;
-    color: #FFFFFF;
-    background: #df2e2d;
-    border-radius: 8px;
-    backdrop-filter: blur(156px);
-    animation: glow 800ms ease-out infinite alternate;
-    padding: 0 2px;
-    scale: 0.8;
-    .time-card-item {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        font-family: GeneralSans-Medium;
-        font-weight: 400;
-        font-size: 12px;
-      
-        .card-item-invi {
-          margin: 0 1px;
-        }
-      }
-}
+    justify-content: center;
+    align-items: center;
 
+    .time-card-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      font-family: GeneralSans-Medium;
+      font-weight: 400;
+      font-size: 12px;
+
+      .card-item-invi {
+        margin: 0 1px;
+      }
+    }
+  }
+  .card {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform-origin: 50% 50%;
+    transform: translateY(50%) rotate(45deg);
+    background: #f3ba2f;
+  }
+}
 </style>

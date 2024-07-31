@@ -151,6 +151,9 @@ export default {
     padding-top: 12px;
     position: relative;
     display: inline-flex;
+    position: relative;
+    top: 0;
+    left: 0;
   }
   .nav-item.selected::after {
     content: '';

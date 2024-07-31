@@ -7,37 +7,103 @@
       <div class="table-header border-b">
         <div class="header-item transaction-box-left">Status</div>
         <div class="header-item transaction-box-left">From/To</div>
-        <div class="header-item transaction-box-left">Asset</div>
-        <div class="header-item transaction-box-center">Amount</div>
+        <div class="header-item asset transaction-box-left">Asset</div>
+        <div class="header-item amount transaction-box-right">Amount</div>
         <div class="header-item transaction-box-right">Source TX</div>
         <div class="header-item transaction-box-right">Destination TX</div>
         <div class="header-item transaction-box-right">Time</div>
       </div>
       <div class="table-row border-b">
         <div class="header-item transaction-box-left">
-            <div>
-                <svg class="status-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16.000000" height="16.000000" viewBox="0 0 16 16" fill="none">
-                    <rect id="vuesax/linear/refresh-2" width="16.000000" height="16.000000" fill="#FFCC2D" fill-opacity="0"/>
-                    <path id="Vector" d="M14.66 8C14.66 11.67 11.68 14.66 8 14.66C4.32 14.66 2.07 10.96 2.07 10.96M1.33 8C1.33 4.32 4.29 1.33 8 1.33C12.44 1.33 14.66 5.04 14.66 5.04M11.7 5.04L14.66 5.04L14.66 1.7M2.07 14.29L2.07 10.96L5.08 10.96" stroke="#3478F5" stroke-opacity="1.000000" stroke-width="1.000000" stroke-linejoin="round" stroke-linecap="round"/>
-                </svg>
-
-                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16.000000" height="16.000000" viewBox="0 0 16 16" fill="none">
-                    <circle cx="8.000000" cy="8.000000" r="7.500000" stroke="#1EB4AB" stroke-opacity="1.000000" stroke-width="1.000000"/>
-                    <mask id="mask_2176_1251" fill="white">
-                        <path d="M11.1795 5.93555C10.9843 5.74023 10.6677 5.74023 10.4724 5.93555L7.29034 9.11719L5.52106 7.34766C5.32581 7.15234 5.00922 7.15234 4.81396 7.34766C4.61871 7.54297 4.61871 7.85938 4.81396 8.05469L6.9353 10.1758C6.94238 10.1836 6.94965 10.1914 6.95709 10.1973C7.15344 10.373 7.45532 10.3672 7.64398 10.1777L11.1795 6.64258C11.3748 6.44727 11.3748 6.13086 11.1795 5.93555Z" clip-rule="evenodd" fill="" fill-opacity="1.000000" fill-rule="evenodd"/>
-                    </mask>
-                    <path d="M11.1795 5.93555C10.9843 5.74023 10.6677 5.74023 10.4724 5.93555L7.29034 9.11719L5.52106 7.34766C5.32581 7.15234 5.00922 7.15234 4.81396 7.34766C4.61871 7.54297 4.61871 7.85938 4.81396 8.05469L6.9353 10.1758C6.94238 10.1836 6.94965 10.1914 6.95709 10.1973C7.15344 10.373 7.45532 10.3672 7.64398 10.1777L11.1795 6.64258C11.3748 6.44727 11.3748 6.13086 11.1795 5.93555Z" clip-rule="evenodd" fill="#1EB4AB" fill-opacity="1.000000" fill-rule="evenodd" mask="url(#mask_2176_1251)"/>
-                    <path d="" clip-rule="evenodd" fill="#979797" fill-opacity="0.000000" fill-rule="evenodd"/>
-                </svg>
+          <div>
+            <div class="pending-card">
+              <svg
+                class="status-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="16.000000"
+                height="16.000000"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <rect
+                  id="vuesax/linear/refresh-2"
+                  width="16.000000"
+                  height="16.000000"
+                  fill="#FFCC2D"
+                  fill-opacity="0"
+                />
+                <path
+                  id="Vector"
+                  d="M14.66 8C14.66 11.67 11.68 14.66 8 14.66C4.32 14.66 2.07 10.96 2.07 10.96M1.33 8C1.33 4.32 4.29 1.33 8 1.33C12.44 1.33 14.66 5.04 14.66 5.04M11.7 5.04L14.66 5.04L14.66 1.7M2.07 14.29L2.07 10.96L5.08 10.96"
+                  stroke="#3478F5"
+                  stroke-opacity="1.000000"
+                  stroke-width="1.000000"
+                  stroke-linejoin="round"
+                  stroke-linecap="round"
+                />
+              </svg>
+              Pending
             </div>
+
+            <div class="completed-card">
+              <svg
+                class="status-icon"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="16.000000"
+                height="16.000000"
+                viewBox="0 0 16 16"
+                fill="none"
+              >
+                <circle
+                  cx="8.000000"
+                  cy="8.000000"
+                  r="7.500000"
+                  stroke="#1EB4AB"
+                  stroke-opacity="1.000000"
+                  stroke-width="1.000000"
+                />
+                <mask id="mask_2176_1251" fill="white">
+                  <path
+                    d="M11.1795 5.93555C10.9843 5.74023 10.6677 5.74023 10.4724 5.93555L7.29034 9.11719L5.52106 7.34766C5.32581 7.15234 5.00922 7.15234 4.81396 7.34766C4.61871 7.54297 4.61871 7.85938 4.81396 8.05469L6.9353 10.1758C6.94238 10.1836 6.94965 10.1914 6.95709 10.1973C7.15344 10.373 7.45532 10.3672 7.64398 10.1777L11.1795 6.64258C11.3748 6.44727 11.3748 6.13086 11.1795 5.93555Z"
+                    clip-rule="evenodd"
+                    fill=""
+                    fill-opacity="1.000000"
+                    fill-rule="evenodd"
+                  />
+                </mask>
+                <path
+                  d="M11.1795 5.93555C10.9843 5.74023 10.6677 5.74023 10.4724 5.93555L7.29034 9.11719L5.52106 7.34766C5.32581 7.15234 5.00922 7.15234 4.81396 7.34766C4.61871 7.54297 4.61871 7.85938 4.81396 8.05469L6.9353 10.1758C6.94238 10.1836 6.94965 10.1914 6.95709 10.1973C7.15344 10.373 7.45532 10.3672 7.64398 10.1777L11.1795 6.64258C11.3748 6.44727 11.3748 6.13086 11.1795 5.93555Z"
+                  clip-rule="evenodd"
+                  fill="#1EB4AB"
+                  fill-opacity="1.000000"
+                  fill-rule="evenodd"
+                  mask="url(#mask_2176_1251)"
+                />
+                <path
+                  d=""
+                  clip-rule="evenodd"
+                  fill="#979797"
+                  fill-opacity="0.000000"
+                  fill-rule="evenodd"
+                />
+              </svg>
+              Completed
+            </div>
+          </div>
         </div>
         <div class="header-item transaction-box-left">
-            <svg-icon class="token-icon" iconName="324"></svg-icon>
-            <svg-icon class="token-icon" iconName="arrow-right"></svg-icon>
-            <svg-icon class="token-icon" iconName="1"></svg-icon>
+          <svg-icon class="token-icon" iconName="324"></svg-icon>
+          <svg-icon class="token-icon" iconName="arrow-right"></svg-icon>
+          <svg-icon class="token-icon" iconName="1"></svg-icon>
         </div>
-        <div class="header-item transaction-box-left">Asset</div>
-        <div class="header-item transaction-box-center">Amount</div>
+        <div class="header-item asset transaction-box-left">
+          <div class="asset-group">
+            <svg-icon class="token-symbol" iconName="ETH"></svg-icon> ETH
+          </div>
+        </div>
+        <div class="header-item amount transaction-box-right">Amount</div>
         <div class="header-item transaction-box-right">Source TX</div>
         <div class="header-item transaction-box-right">Destination TX</div>
         <div class="header-item transaction-box-right">Time</div>
@@ -114,12 +180,16 @@ export default {
       .header-item {
         flex: 1;
       }
-      .header-item.transaction-box-center{
+      .header-item.transaction-box-center {
         flex: 0.8;
+      }
+      .header-item.asset,
+      .header-item.amount {
+        flex: 0.6;
       }
     }
     .table-row {
-        width: 100%;
+      width: 100%;
       display: flex;
       justify-content: flex-start;
       align-items: center;
@@ -128,20 +198,60 @@ export default {
       letter-spacing: 0%;
       padding: 18px 16px;
       font-family: GeneralSans-Medium;
-      color: #1A1A1A;
+      color: #1a1a1a;
       .header-item {
         flex: 1;
         .status-icon {
-            width: 16px;
-            height: 16px;
+          width: 16px;
+          height: 16px;
         }
         .token-icon {
+          width: 28px;
+          height: 28px;
+        }
+
+        .status-icon {
+          margin-right: 4px;
+        }
+
+        .pending-card {
+          width: fit-content;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          color: #3478f5;
+          padding: 4px 8px;
+          border-radius: 8px;
+          background: rgb(235, 242, 254);
+        }
+        .completed-card {
+          width: fit-content;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          color: #1eb4ab;
+          padding: 4px 8px;
+          border-radius: 8px;
+          background: rgb(229, 247, 247);
+        }
+        .asset-group {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          font-size: 14px;
+          font-family: GeneralSans-Medium;
+          line-height: 20px;
+          letter-spacing: 0%;
+          .token-symbol {
             width: 28px;
             height: 28px;
+            margin-right: 4px;
+          }
         }
       }
-      .header-item.transaction-box-center{
-        flex: 0.8;
+      .header-item.asset,
+      .header-item.amount {
+        flex: 0.6;
       }
     }
   }
