@@ -3720,7 +3720,8 @@
     {
        "name":"Zircuit",
        "rpc":[
-          "https://mainnet-node1-s3cur1ty5.zircuit.com/?token=VYfutCPhMuYxuhvrfHygufPNkcyLwwxnEMRMLMkWXCyJbroAqfdj"
+          "https://zircuit1-mainnet.p2pify.com",
+          "https://zircuit1-mainnet.liquify.com"
        ],
        "features":[
           {
