@@ -156,8 +156,8 @@ export default {
       justify-content: center;
       align-items: center;
       text-align: center;
-      font-family: GeneralSans-Medium;
-      font-weight: 400;
+      font-family: GeneralSans-SemiBold;
+      font-weight: 600;
       font-size: 12px;
 
       .card-item-invi {
