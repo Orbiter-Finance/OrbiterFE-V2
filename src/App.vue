@@ -481,6 +481,9 @@ export default {
       }
     },
   },
+  created() {
+    this.$store.commit('getPrizesV2ProjectInfo')
+  }
 }
 </script>
 

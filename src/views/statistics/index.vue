@@ -22,6 +22,7 @@
         <CommLoading :hidden="hideDataLoading" width="3rem" height="3rem" />
       </div>
     </div>
+    <!-- <LatestTransactions></LatestTransactions> -->
     <div v-if="showSource" class="tx-content">
       <div class="tx-head">
         <span class="tx-title">Tx Statistics <span>Data source: Orbiter Finance Bridge & Vizing</span></span>
@@ -132,6 +133,7 @@ import { mapMutations } from 'vuex'
 import { BigNumber } from 'bignumber.js'
 import { utils } from 'ethers'
 import config from '../../config';
+import LatestTransactions from "./LatestTransactions.vue"
 let globalChain = config.chain.map((item)=> item.chainId);
 const STATISTICS_VALUE = 1000
 
@@ -155,6 +157,9 @@ export default {
       hideAmountLoading: false,
       hideUserLoading: false
     }
+  },
+  components: {
+    LatestTransactions
   },
   computed: {
     formatTxCount() {
@@ -671,7 +676,7 @@ export default {
   width: 100%;
   background: #ffffff;
   border-radius: 24px;
-  height: 670px;
+  height: 560px;
   display: flex;
   flex-direction: column;
 }
@@ -727,17 +732,17 @@ export default {
   background-color: #eeeeee;
 }
 .tx-source-chart {
-  height: 610px;
+  height: 504px;
 }
 .tx-dest-chart {
-  height: 610px;
+  height: 504px;
 }
 .amount-content {
   width: 100%;
   background: #ffffff;
   margin-top: 20px;
   border-radius: 24px;
-  height: 670px;
+  height: 560px;
   display: flex;
   flex-direction: column;
 }
@@ -754,10 +759,10 @@ export default {
   color: #222222;
 }
 .amount-chart {
-  height: 610px;
+  height: 504px;
 }
 .user-content {
-  height: 670px;
+  height: 560px;
   width: 100%;
   background: #ffffff;
   margin-top: 20px;
@@ -778,10 +783,10 @@ export default {
   color: #222222;
 }
 .amount-chart {
-  height: 610px;
+  height: 504px;
 }
 .user-chart {
-  height: 610px;
+  height: 504px;
 }
 .chart-loading {
   margin: 0 auto;
