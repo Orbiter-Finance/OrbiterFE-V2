@@ -20,6 +20,8 @@ import config from '../../config'
 
 const chain = config.chain
 
+const H_List = ["28518","2649","48900"]
+
 export default {
   components: { SvgIcon },
   name: 'TransactionSelectChain',
@@ -29,7 +31,9 @@ export default {
   },
   computed: {
     chainList() {
-      const list = chain.map((item) => {
+      const list = chain.filter((item)=>{
+        return !H_List?.some((option)=> String(item.chainId).toLocaleLowerCase() === String(option).toLocaleLowerCase())
+      }).map((item) => {
         return {
           chainId: item.chainId,
           name: item.name,
