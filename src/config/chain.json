@@ -3557,13 +3557,13 @@
           "symbol":"ETH",
           "decimals":18
        },
-       "infoURL":"https://explorer.taiko.xyz",
+       "infoURL":"https://taikoscan.io",
        "chainId":"167000",
        "networkId":"167000",
        "explorers":[
           {
              "name":"Taiko Mainnet Explorer",
-             "url":"https://explorer.taiko.xyz"
+             "url":"https://taikoscan.io"
           }
        ],
        "contract":{
