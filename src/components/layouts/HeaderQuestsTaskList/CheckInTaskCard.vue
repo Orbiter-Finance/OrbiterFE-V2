@@ -226,10 +226,10 @@ export default {
       const taskResultList = userList.map((item)=>{
         const taskId = item.task_id
         const option = this.taskInfo.filter((option)=> option.id === taskId)?.[0] || {}
-        const [startDate] = option?.rule?.date || []
-        const startTime = +dayjs.utc(startDate)
+        const [_, endDate] = option?.rule?.date || []
+        const endTime = +dayjs.utc(endDate)
         const now = +dayjs()
-        const flag = item.task_result >= 3 || now <= startTime
+        const flag = item.task_result >= 3 || now <= endTime
         return flag ? item.task_result : 0
       } ).filter((item)=>!!Number(item))
 
