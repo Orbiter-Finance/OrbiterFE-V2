@@ -129,7 +129,7 @@
               v-for="(item, idx) in taskList"
               :key="idx"
             >
-              {{ item.times }} day
+              {{ item.current }}/{{ item.total }}
             </div>
           </div>
         </div>
@@ -189,6 +189,7 @@ export default {
         }
       })
       return count
+
     },
     reward() {
       const list = this.userRecordsList || []
@@ -214,22 +215,29 @@ export default {
     },
     taskList() {
       const amount = this.signDaysAmount
-      const rewards =
-        this.taskInfo?.[0]?.rewards || []
+      const rewards = this.taskInfo?.[0]?.rewards || []
+      const userList = this.userRecordsList || []
 
-        const option = rewards.filter((item)=> item.rule.name === "orbguy")?.[0]
+      const option = rewards.filter((item) => item.rule.name === 'orbguy')?.[0]
 
-        const list = option.rule?.timesWithRewardList || []
+      const list = option.rule?.timesWithRewardList || []
 
-      return list.map((item) => {
+      const taskResultList = userList.map((item)=> item.task_result).filter((item)=>!!Number(item))
+
+      return list.map((item, index) => {
+        const task = this.taskInfo?.[index] || {}
           return {
             amount: item.rewardAmount,
             times: item.times,
+            id: task.id,
           }
         })
-        .map((item) => {
+        .map((item, index) => {
+          const current =  Number(taskResultList[index] || 0)
           return {
             ...item,
+            current,
+            total: 3,
             isSuccess: item.times <= amount,
           }
         })
