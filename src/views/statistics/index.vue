@@ -211,10 +211,10 @@ export default {
           this.usdcStatisticsData = res[1]
           this.usdtStatisticsData = res[2]
           this.btcStatisticsData = res[3]
-          const txChartDom = document.getElementById('tx-source-chart')
-          this.initTxStatisticsData(txChartDom, true)
+          const txChartDom = document.getElementById('tx-dest-chart')
+          this.initTxStatisticsData(txChartDom, false)
           const amountChartDom = document.getElementById('amount-chart')
-          this.initTxStatisticsData(amountChartDom, true, true)
+          this.initTxStatisticsData(amountChartDom, false, true)
         })
       })
       queryUsersStatisticsData().then((userStatisticsData) => {
