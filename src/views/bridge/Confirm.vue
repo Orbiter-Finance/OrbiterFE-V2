@@ -414,13 +414,13 @@ export default {
             }
             let address = ""
             if( orbiterHelper.isFuelChain({chainId: toChainID})) {
-              address = fuelsHelper.fuelsAccount()
+              address = web3State.fuel.fuelAddress
             } else  if( orbiterHelper.isTonChain({chainId: toChainID}) ) {
               address = tonHelper.account()
             } else  if(orbiterHelper.isSolanaChain({chainId: toChainID})) {
-              address = solanaHelper.solanaAddress()
+              address = web3State.solana.solanaAddress
             } else  if(orbiterHelper.isStarknetChain({chainId: toChainID})) {
-              address = this.starkAddress
+              address = web3State.starkNet.starkNetAddress
             } else {
               address = this.currentWalletAddress
             }
@@ -1444,8 +1444,8 @@ export default {
             const { selectMakerConfig, fromChainID, toChainID, transferValue } =
                 transferDataState
 
-                const isConnected = await solanaHelper.isConnect()
-                let from = solanaHelper.solanaAddress()
+                const isConnected = web3State.solana.solanaIsConnected
+                let from = web3State.solana.solanaAddress
 
             if (!isConnected || !from) {
                 setSelectWalletDialogVisible(true)
@@ -1581,8 +1581,8 @@ export default {
             const { selectMakerConfig, fromChainID, toChainID, transferValue } =
                 transferDataState
 
-                const isConnected = fuelsHelper.isConnected()
-                let from = fuelsHelper.fuelsAccount()
+                const isConnected = web3State.fuel.isConnected
+                let from = web3State.fuel.fuelAddress
 
             if (!isConnected || !from) {
                 await fuelsHelper.connect()
@@ -1637,8 +1637,8 @@ export default {
                 orbiterHelper.isSolanaChain({chainId: toChainID})
             ) {
 
-                const solanaAddress = solanaHelper.solanaAddress()
-                const isConnect = solanaHelper.isConnect()
+                const solanaAddress = web3State.solana.solanaAddress
+                const isConnect = web3State.solana.solanaIsConnected
 
                 targetAddress = solanaAddress
 

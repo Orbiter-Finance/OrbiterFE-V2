@@ -155,7 +155,7 @@ export default {
     },
     currentWalletAddress() {
       const solanaAddress =
-        web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+        web3State.solana.solanaAddress
       const tonAddress = web3State.ton.tonAddress || tonHelper?.account()
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
@@ -284,9 +284,8 @@ export default {
       }
     },
     currentWalletAddress: function (newAddress, oldAddress) {
-      const [web3Address, starkNetAddress] = newAddress
+      const [web3Address, starkNetAddress, solanaAddress] = newAddress
       const [web3OldAddress] = oldAddress || []
-      const solanaAddress = solanaHelper.solanaAddress()
       const tonAddress = tonHelper.account()
       if (web3Address && web3Address !== web3OldAddress) {
         setClaimCardModalShow(false, '')
@@ -325,8 +324,7 @@ export default {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const solanaAddress = solanaHelper.solanaAddress()
+      const [web3Address, starkNetAddress, solanaAddress] = this.currentWalletAddress
       const tonAddress = tonHelper.account()
       const address =
         !!isTonDialog.value && tonAddress

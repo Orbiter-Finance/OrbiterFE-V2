@@ -93,7 +93,7 @@ import {
   setStarkNetDialog,
   setSelectWalletDialogVisible,
   starkAddress,
-  solAddress,
+  sAddress,
   tonAddress,
   fuelAddress,
   showAddress,
@@ -232,8 +232,8 @@ export default {
     starkAddress() {
       return starkAddress()
     },
-    solanaAddress() {
-      return solAddress()
+    solAddress() {
+      return sAddress()
     },
     fAddress() {
       return fuelAddress()
@@ -249,6 +249,9 @@ export default {
     },
     fuelsAddress() {
       return web3State.fuel.fuelAddress
+    },
+    solanaAddress() {
+      return web3State.solana.solanaAddress
     },
     starkNetAddress() {
       return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
@@ -289,6 +292,9 @@ export default {
       if (newToChainId && newToChainId !== oldToChainId) {
         this.initGetAddressBatch()
       }
+    },
+    solanaAddress: function () {
+      this.initGetAddressBatch()
     },
     fuelsAddress: function () {
       this.initGetAddressBatch()
@@ -379,7 +385,7 @@ export default {
       } else if (
         orbiterHelper.isSolanaChain({chainId})
       ) {
-        const solanaAddress = solanaHelper.solanaAddress()
+        const solanaAddress = web3State.solana.solanaAddress
         addressGroup = {
           isAddress: !!solanaAddress,
           address: solanaAddress,
@@ -414,7 +420,7 @@ export default {
           },
         }
       } else if (orbiterHelper.isFuelChain({chainId})) {
-        const fuelAddress = fuelsHelper.fuelsAccount()
+        const fuelAddress = web3State.fuel.fuelAddress
         addressGroup = {
           isAddress: !!fuelAddress,
           address: fuelAddress,
@@ -506,8 +512,8 @@ export default {
       const starkNetAddress = this.starkNetAddress
 
       const tonAddress = tonHelper.account()
-      const fuelsAccount = fuelsHelper.fuelsAccount()
-      const solanaAddress = solanaHelper.solanaAddress()
+      const fuelsAccount = web3State.fuel.fuelAddress
+      const solanaAddress = web3State.solana.solanaAddress
 
       if (isAddress) {
         setActPointFetchStatus()

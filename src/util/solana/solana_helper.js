@@ -19,6 +19,12 @@ import util from '../util'
 import { isProd } from '../env'
 import { CHAIN_ID } from '../../config'
 
+import {
+  updateSolanaAddress,
+  updateSolanaConnectStatus,
+  web3State,
+} from '../../composition/hooks'
+
 const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
 const readWalletName = () => {
@@ -65,7 +71,11 @@ const disConnect = async () => {
 const connect = async (walletName) => {
   updateWalletName(walletName)
   const res = await getProvider()?.connect()
-  return !!res?.toString()
+  const publicKey = res?.publicKey || res
+  const address = publicKey?.toString()
+  updateSolanaAddress(address)
+  updateSolanaConnectStatus(!!address)
+  return address
 }
 
 const getPublicKey = (address) => {
@@ -92,8 +102,8 @@ const isConnect = () => {
 }
 
 const solanaAddress = () => {
-  const publickey = getWallet()?.publicKey
-  return publickey?.toString()
+  if (!isConnect) return ''
+  return web3State.solana.solanaAddress
 }
 
 const transfer = async ({

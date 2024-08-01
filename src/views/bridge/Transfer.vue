@@ -1920,11 +1920,11 @@ export default {
 
         let fromAddress = ""
         if(orbiterHelper.isFuelChain({chainId: fromChainID})) {
-          fromAddress = fuelsHelper.fuelsAccount()
+          fromAddress = web3State.fuel.fuelAddress
         } else if(orbiterHelper.isTonChain({chainId: fromChainID})) {
           fromAddress = tonHelper.account()
         } else if(orbiterHelper.isSolanaChain({chainId: fromChainID})) {
-          fromAddress = solanaHelper.solanaAddress()
+          fromAddress = web3State.solana.solanaAddress
         } else if(orbiterHelper.isStarknetChain({chainId: fromChainID})) {
           fromAddress = this.starkAddress
         } else {
@@ -1937,11 +1937,11 @@ export default {
 
         let toAddress = ""
         if( orbiterHelper.isFuelChain({chainId: toChainID}) ) {
-          toAddress = fuelsHelper.fuelsAccount()
+          toAddress = web3State.fuel.fuelAddress
         } else if(orbiterHelper.isTonChain({chainId: toChainID}) ) {
           toAddress = tonHelper.account()
         } else  if(orbiterHelper.isSolanaChain({chainId: toChainID}) ) {
-          toAddress = solanaHelper.solanaAddress()
+          toAddress = web3State.solana.solanaAddress
         } else  if(orbiterHelper.isStarknetChain({chainId: toChainID}) ) {
           toAddress = this.starkAddress
         } else {
@@ -2136,7 +2136,7 @@ export default {
             return;
           }
         } else if (orbiterHelper.isSolanaChain({chainId: fromChainID}) ) {
-          const isConnect = await solanaHelper.isConnect()
+          const isConnect = web3State.solana.solanaIsConnected
           if(!isConnect) {
             setSelectWalletDialogVisible(true)
             setConnectWalletGroupKey("SOLANA")
@@ -2144,7 +2144,7 @@ export default {
           }
           
         } else if (orbiterHelper.isFuelChain({chainId: fromChainID}) ) {
-          const isConnect = fuelsHelper.isConnected()
+          const isConnect = web3State.fuel.isConnected
           if(!isConnect) {
             await fuelsHelper.connect()
             return
@@ -2198,12 +2198,12 @@ export default {
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || orbiterHelper.isStarknetChain({chainId: toChainID})) ?  crossAddressReceipt?.toLowerCase() : (
           orbiterHelper.isFuelChain({chainId: toChainID}) ? 
-          fuelsHelper.fuelsAccount() : (
+          web3State.fuel.fuelAddress : (
             orbiterHelper.isTonChain({chainId: toChainID})? 
             tonHelper.account()  : 
           (
             orbiterHelper.isSolanaChain({chainId: toChainID}) ? 
-              solanaHelper.solanaAddress() : 
+            web3State.solana.solanaAddress : 
               compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
           ))
         );
@@ -2397,13 +2397,13 @@ export default {
         address = web3State.starkNet.starkNetAddress;
       }
       if (orbiterHelper.isSolanaChain({chainId: fromChainID }) ) {
-        address = solanaHelper.solanaAddress();
+        address = web3State.solana.solanaAddress;
       }
       if (orbiterHelper.isTonChain({chainId: fromChainID }) ) {
         address = tonHelper.account();
       }
       if (orbiterHelper.isFuelChain({chainId: fromChainID }) ) {
-        address = fuelsHelper.fuelsAccount();
+        address = web3State.fuel.fuelAddress
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
@@ -2434,13 +2434,13 @@ export default {
         address = web3State.starkNet.starkNetAddress;
       }
       if (orbiterHelper.isSolanaChain({chainId: fromChainID }) ) {
-        address = solanaHelper.solanaAddress();
+        address = web3State.solana.solanaAddress;
       }
       if (orbiterHelper.isTonChain({chainId: fromChainID }) ) {
         address = tonHelper.account();
       }
       if (orbiterHelper.isFuelChain({chainId: fromChainID }) ) {
-        address = fuelsHelper.fuelsAccount();
+        address = web3State.fuel.fuelAddress
       }
       // if (address && address !== '0x') {
       //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)

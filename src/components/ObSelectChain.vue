@@ -241,9 +241,12 @@ export default {
     starknetAddress() {
       return web3State.starkNet.starkNetAddress
     },
+    fuelAddress() {
+      const fuelAddress = web3State.fuel.fuelAddress
+      return fuelAddress
+    },
     solanaAddress() {
-      const solanaAddress =
-        web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+      const solanaAddress = web3State.solana.solanaAddress
       return solanaAddress
     },
     tabsList() {
@@ -488,12 +491,10 @@ export default {
       // this.loading = true
       try {
         const tonAddress = tonHelper.account()
-        const solanaAddress = solanaHelper.solanaAddress()
-        const fuelsAddress = fuelsHelper.fuelsAccount()
         const symbol = this.symbol
         const address = [
           {
-            address: fuelsAddress,
+            address: this.fuelAddress,
             type: 'Fuel',
           },
           {
@@ -501,7 +502,7 @@ export default {
             type: 'Ton',
           },
           {
-            address: solanaAddress,
+            address: this.solanaAddress,
             type: 'Solana',
           },
           {
@@ -636,7 +637,7 @@ export default {
           if (
             orbiterHelper.isSolanaChain({chainId: e.localID})
           ) {
-            const isConnected = await solanaHelper.isConnect()
+            const isConnected = web3State.solana.solanaIsConnected
             if (!isConnected) {
               setSelectWalletDialogVisible(true)
               setConnectWalletGroupKey('SOLANA')
@@ -645,8 +646,8 @@ export default {
           }
           // fuel
           if ( orbiterHelper.isFuelChain({chainId: e.localID})) {
-            const account = fuelsHelper.fuelsAccount()
-            const isConnected = fuelsHelper.isConnected()
+            const account = this.fuelAddress
+            const isConnected = web3State.fuel.isConnected
             if (!account || !isConnected) {
               await fuelsHelper.connect()
               return

@@ -401,13 +401,13 @@ export default {
         userAddress = web3State.starkNet.starkNetAddress
       }
       if (orbiterHelper.isSolanaChain({ chainId: toChainID })) {
-        userAddress = solanaHelper.solanaAddress()
+        userAddress = web3State.solana.solanaAddress
       }
       if (orbiterHelper.isTonChain({ chainId: toChainID })) {
         userAddress = tonHelper.account()
       }
       if (orbiterHelper.isFuelChain({ chainId: toChainID })) {
-        userAddress = fuelsHelper.fuelsAccount()
+        userAddress = web3State.fuel.fuelAddress
       }
       
 
@@ -493,14 +493,14 @@ export default {
         userAddress = web3State.starkNet.starkNetAddress
       }
       if (orbiterHelper.isSolanaChain({ chainId })) {
-        userAddress = solanaHelper.solanaAddress()
+        userAddress = web3State.solana.solanaAddress
       }
       if (orbiterHelper.isTonChain({ chainId })) {
         userAddress = tonHelper.account()
       }
 
       if (orbiterHelper.isFuelChain({ chainId })) {
-        userAddress = fuelsHelper.fuelsAccount()
+        userAddress = web3State.fuel.fuelAddress
       }
       const accountUrl =
         explorerInfo.accountUrl || explorerInfo.url + '/address'
@@ -580,7 +580,7 @@ export default {
         if (
           orbiterHelper.isSolanaChain({ chainId: fromChainID })
         ) {
-          userAddress = solanaHelper.solanaAddress()
+          userAddress = web3State.solana.solanaAddress
         }
         if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
           userAddress = tonHelper.account()
@@ -588,7 +588,7 @@ export default {
         if (
           orbiterHelper.isFuelChain({ chainId: fromChainID })
         ) {
-          userAddress = fuelsHelper.fuelsAccount()
+          userAddress = web3State.fuel.fuelAddress
         }
         url = util.getAccountExploreUrl(fromChainID) + userAddress
 
@@ -631,7 +631,7 @@ export default {
         if (
           orbiterHelper.isSolanaChain({ chainId: toChainID })
         ) {
-          userAddress = solanaHelper.solanaAddress()
+          userAddress = web3State.solana.solanaAddress
         }
         if (
           orbiterHelper.isTonChain({ chainId: toChainID })
@@ -641,7 +641,7 @@ export default {
         if (
           orbiterHelper.isFuelChain({ chainId: toChainID })
         ) {
-          userAddress = fuelsHelper.fuelsAccount()
+          userAddress = web3State.fuel.fuelAddress
         }
         url = util.getAccountExploreUrl(toChainID) + userAddress
 
@@ -738,13 +738,13 @@ export default {
         if (
           orbiterHelper.isSolanaChain({ chainId: fromChainID })
         ) {
-          userAddress = solanaHelper.solanaAddress()
+          userAddress = web3State.solana.solanaAddress
         }
         if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
           userAddress = tonHelper.account()
         }
         if ( orbiterHelper.isFuelChain({ chainId: fromChainID })) {
-          userAddress = fuelsHelper.fuelsAccount()
+          userAddress = web3State.fuel.fuelAddress
         }
         client.unsubscribe(
           `bridge-success/pending-confirm/address/${userAddress}`,

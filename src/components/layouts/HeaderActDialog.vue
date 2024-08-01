@@ -281,7 +281,7 @@ import {
   actPointRank,
   actNftList,
   isSolanaDialog,
-  solAddress,
+  sAddress,
   setConnectWalletGroupKey,
   setSolanaDialog,
   updateActDataList,
@@ -579,7 +579,7 @@ export default {
       } else if(isTonDialog.value) {
         address = tonAddress()
       } else if(isSolanaDialog.value) {
-        address = solAddress()
+        address = sAddress()
       } else if (!isStarkNetDialog.value) {
         address = showAddress()
       } else {
@@ -590,11 +590,11 @@ export default {
     async currentWalletAddress() {
       let address = ""
       if(isFuelDialog.value) {
-        address = fuelsHelper.fuelsAccount()
+        address = web3State.fuel.fuelAddress
       } else if(isTonDialog.value) {
         address = tonHelper.account()
       } else if(isSolanaDialog.value) {
-        address = solanaHelper.solanaAddress()
+        address = web3State.solana.solanaAddress
       } else if (!!isStarkNetDialog.value) {
         address = web3State.starkNet.starkNetAddress
       } else {

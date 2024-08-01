@@ -103,7 +103,7 @@ export default {
         return tonHelper.account()
       }
       if(!!isSolanaDialog.value) {
-        return solanaHelper.solanaAddress()
+        return web3State.solana.solanaAddress
       }
       if (!!isStarkNetDialog.value) {
         return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
@@ -171,8 +171,9 @@ export default {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const solanaAddress = solanaHelper.solanaAddress()
+      const web3Address = this.currentWalletAddress
+      const starkNetAddress = web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
+      const solanaAddress = web3State.solana.solanaAddress
       const tonAddress = tonHelper.account()
       const address = !!isTonDialog.value && tonAddress ? tonAddress : (
         !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
