@@ -326,7 +326,7 @@ export default {
       })
       window.open(url, '_blank')
     },
-    async getData() {
+    async getData(isRefresh) {
       clearTimeout(timer)
       clearTimeout(timer2)
       let self = this
@@ -344,15 +344,20 @@ export default {
               self.objToParams(paramsGroup)
           )
           const res = await respone.json()
-          self.list = res?.data?.rows || []
-          self.total = res?.data?.count || 0
+            const rows = res?.data?.rows
+            if(rows?.length) {
+              self.list = rows
+            } else if(!isRefresh){
+              self.list = []
+            } else {}
+            self.total = res?.data?.count || 0
           self.loading = false
         } catch (error) {
           self.loading = false
         }
         if (Number(self?.params?.current) === 1) {
           timer = setTimeout(() => {
-            return self.getData()
+            return self.getData(true)
           }, 10000)
         }
       }, 200)
