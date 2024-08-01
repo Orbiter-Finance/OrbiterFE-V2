@@ -145,7 +145,7 @@ export default {
       addressCount: 0,
       totalUsd: 0,
       txCount: 0,
-      showSource: true,
+      showSource: false,
       sourceChart: undefined,
       destChart: undefined,
       ethStatisticsData: undefined,
