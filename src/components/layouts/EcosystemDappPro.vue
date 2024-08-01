@@ -86,6 +86,22 @@
         ></EcosystemLikidDappPro>
       </el-carousel-item> -->
       <el-carousel-item>
+        <EcosystemDapp
+          :holders="0"
+          :isTags="true"
+          :isHolders="false"
+          :ratio="0"
+          :showCard="showCard"
+          :banner="'season1.png'"
+          :tag="'Omni-chain Meme'"
+          :tagStyle="'background:linear-gradient(172.41deg, rgb(242, 185, 255) 26.053%,rgb(254, 206, 210) 64.374%);'"
+          :description="'LIKWID MEME CREATION CONTEST'"
+          :isProgress="false"
+          :name="'season1'"
+          :url="'https://likwid.meme/contest/season1'"
+        />
+      </el-carousel-item>
+      <el-carousel-item>
           <EcosystemDapp
             :holders="bullishsTotal"
             :isTags="true"
@@ -101,7 +117,7 @@
             :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
           />
         </el-carousel-item>
-      <el-carousel-item>
+      <!-- <el-carousel-item>
         <EcosystemDapp
           :holders="0"
           :isTags="true"
@@ -117,7 +133,7 @@
           :url="'https://xmint.pro/'"
           :btnLabel="'Mint'"
         />
-      </el-carousel-item>
+      </el-carousel-item> -->
       <el-carousel-item>
         <EcosystemDapp
           :holders="totalUser"
