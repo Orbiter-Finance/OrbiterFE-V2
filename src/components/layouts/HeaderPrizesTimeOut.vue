@@ -1,7 +1,7 @@
 <template>
   <div class="time-out">
-    <div v-if="isEnd">End of event</div>
-    <div class="time-card">
+    <div class="end-text" v-if="isEnd">End of event</div>
+    <div v-else class="time-card">
       <div
         class="time-card-item"
         v-for="(item, index) in timeList"
@@ -145,6 +145,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  .end-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: GeneralSans-SemiBold;
+    font-weight: 600;
+    font-size: 12px;
+  }
   .time-card {
     width: 100%;
     display: flex;
