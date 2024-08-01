@@ -94,7 +94,7 @@
           :showCard="showCard"
           :banner="'season1.png'"
           :tag="'Omni-chain Meme'"
-          :tagStyle="'background:linear-gradient(172.41deg, rgb(242, 185, 255) 26.053%,rgb(254, 206, 210) 64.374%);'"
+          :tagStyle="'background:linear-gradient(172.41deg, #54E4FC, #D9F6FA);'"
           :description="'LIKWID MEME CREATION CONTEST'"
           :isProgress="false"
           :name="'season1'"
