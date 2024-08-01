@@ -1478,7 +1478,9 @@ export default {
       // if (util.isStarkNet()) {
       //     this.isCrossAddress = true;
       // }
-      const availableDigit = toChain.decimals === 8 || fromChain.decimals === 8 ? 6 : fromChain.decimals === 18 ? 6 : 2;
+      const availableDigit = orbiterHelper.isMiddleDecimals({ decimals: toChain.decimals }) || 
+      orbiterHelper.isMiddleDecimals({ decimals: fromChain.decimals }) ? 
+      6 : fromChain.decimals === 18 ? 6 : 2;
       let opBalance = 10 ** -availableDigit;
       let useBalance = this.fromBalance === "-1" ? new BigNumber(100) : new BigNumber(this.fromBalance)
               .minus(new BigNumber(selectMakerConfig.tradingFee))
@@ -1711,7 +1713,6 @@ export default {
               .minus(new BigNumber(opBalance))
               .minus(new BigNumber(transferGasFee))
               .minus(new BigNumber(preGas));
-              console.log("userBalance", tradingFee, this.fromBalance, transferGasFee, preGas, userBalance.toString())
       let userMax = userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
               ? userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
@@ -1883,11 +1884,15 @@ export default {
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
       if (fromChain.chainId === CHAIN_ID.loopring || fromChain.chainId === CHAIN_ID.loopring_test || toChain.chainId === CHAIN_ID.loopring || toChain.chainId === CHAIN_ID.loopring_test) {
-        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = orbiterHelper.isMiddleDecimals({decimals: toChain.decimals}) ||
+        orbiterHelper.isMiddleDecimals({decimals: fromChain.decimals}) ?
+          this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,5})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       } else {
-        this.transferValue = toChain.decimals === 8 || fromChain.decimals === 8 ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
+        this.transferValue = orbiterHelper.isMiddleDecimals({decimals: toChain.decimals}) ||
+        orbiterHelper.isMiddleDecimals({decimals: fromChain.decimals})
+         ?  this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1') : fromChain.decimals === 18
                 ? this.transferValue.replace(/^\D*(\d*(?:\.\d{0,6})?).*$/g, '$1')
                 : this.transferValue.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1');
       }

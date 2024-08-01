@@ -134,6 +134,11 @@ const isNotEVMChain = ({ chainId }) => {
   )
 }
 
+const isMiddleDecimals = ({ decimals }) => {
+  const d = Number(decimals)
+  return d === 8 || d === 9
+}
+
 const orbiterHelper = {
   checkAddress,
   openConnectModal,
@@ -142,6 +147,7 @@ const orbiterHelper = {
   isStarknetChain,
   isFuelChain,
   isNotEVMChain,
+  isMiddleDecimals,
 }
 
 export default orbiterHelper

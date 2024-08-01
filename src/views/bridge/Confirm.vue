@@ -1482,7 +1482,8 @@ export default {
                     tokenAddress,
                     targetAddress: toAddress,
                     amount: rAmountValue,
-                    safeCode
+                    safeCode,
+                    chainId: fromChainID
                 })
                 try {
                     this.$gtag.event('click', {
@@ -2391,7 +2392,7 @@ export default {
             const fromCurrency = fromChain.symbol
             const toCurrency = toChain.symbol
             if (fromCurrency !== toCurrency) {
-                const decimal =  toChain.decimals === 8 ? 6 : toChain.decimals === 18 ? 5 : 3
+                const decimal = orbiterHelper.isMiddleDecimals({ decimals: toChain.decimals }) ? 6 : toChain.decimals === 18 ? 5 : 3
                 const highValue = (
                     await exchangeToCoin(amount, fromCurrency, toCurrency)
                 ).toFixed(decimal)

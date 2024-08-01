@@ -132,8 +132,18 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
-    if (orbiterHelper.isNotEVMChain({ chainId: fromChainID })) {
-      return 0
+    if (orbiterHelper.isFuelChain({ chainId: fromChainID })) {
+      const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+      const decimals = chainInfo?.nativeCurrency?.decimals
+      if (!decimals) return '0'
+      const gasCost = await fuelsHelper.estimateGas({
+        makerAddress,
+        token: fromTokenAddress,
+      })
+      return ethers.utils.formatUnits(
+        ethers.utils.parseUnits(gasCost, 'wei').mul('12').div('10'),
+        decimals
+      )
     } else if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test
@@ -608,6 +618,10 @@ export default {
       const L1GasPrice = await this.getGasPrice(L1ChainID)
       const SNWithDrawL1Gas = L1GasPrice * STARKNET_ETH_WITHDRAW_ONL1
       ethGas += SNWithDrawL1Gas
+    }
+    if (orbiterHelper.isFuelChain({ chainId: fromChainID })) {
+      // solana cost
+      ethGas = 1 * 10 ** 6
     }
     if (orbiterHelper.isSolanaChain({ chainId: fromChainID })) {
       // solana cost
@@ -1263,9 +1277,15 @@ export default {
   safeCode() {
     const { selectMakerConfig, toChainID, fromCurrency } = transferDataState
 
-    const currency = fromCurrency || selectMakerConfig?.fromChain?.symbol
+    console.log('toChainID', toChainID, selectMakerConfig)
 
-    if (currency?.toLocaleLowerCase() === 'btc') {
+    const f = selectMakerConfig?.fromChain?.decimals
+    const t = selectMakerConfig?.toChain?.decimals
+
+    if (
+      orbiterHelper.isMiddleDecimals({ decimals: f }) ||
+      orbiterHelper.isMiddleDecimals({ decimals: t })
+    ) {
       const chainInfo = util.getV3ChainInfoByChainId(toChainID)
       return String(chainInfo.internalId)
     }

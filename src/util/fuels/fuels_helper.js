@@ -72,6 +72,21 @@ const getBalance = async ({ tokenAddress, userAddress, chainId }) => {
   return res
 }
 
+const estimateGas = async ({ makerAddress, token }) => {
+  try {
+    const userAddress = fuelsAccount()
+    const wallet = await fuelProvider().getWallet(userAddress)
+    const memo = utils.hexlify(utils.toUtf8Bytes(`c=0000&t=${makerAddress}`))
+    const request = await wallet.createTransfer(makerAddress, 1, token, {
+      scriptData: memo,
+    })
+    const cost = await wallet.provider.getTransactionCost(request)
+    return cost.maxGas.toString()
+  } catch (error) {
+    return '0'
+  }
+}
+
 const transfer = async ({
   from,
   to,
@@ -109,6 +124,7 @@ const fuelsHelper = {
   getBalance,
   transfer,
   disconnect,
+  estimateGas,
 }
 
 export default fuelsHelper

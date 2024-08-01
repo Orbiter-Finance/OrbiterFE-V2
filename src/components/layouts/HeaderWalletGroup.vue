@@ -281,9 +281,7 @@ export default {
     },
     async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)
-      console.log("status", status)
       const fromPublicKey = solanaHelper.solanaAddress()
-      console.log("fromPublicKey", fromPublicKey)
       store.commit('updateSolanaAddress', fromPublicKey)
       store.commit('updateSolanaWalletName', item.icon.toLocaleLowerCase())
       store.commit('updateSolanaWalletIcon', item.icon.toLocaleLowerCase())

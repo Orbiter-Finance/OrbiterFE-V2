@@ -16,8 +16,6 @@ import {
 
 import { utils } from 'ethers'
 import util from '../util'
-import { isProd } from '../env'
-import { CHAIN_ID } from '../../config'
 
 import {
   updateSolanaAddress,
@@ -35,11 +33,11 @@ const updateWalletName = (str) => {
   sessionStorage.setItem(SOLNA_WALLET_NAME, str?.toLocaleLowerCase() || '')
 }
 
-const getConnection = () => {
-  const chainId = isProd() ? CHAIN_ID.solana : CHAIN_ID.solana_test
+const getConnection = (chainId) => {
+  if (!chainId) return null
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   const rpc = chainInfo?.rpc?.[0]
-  return new Connection(rpc, 'confirmed')
+  return rpc ? new Connection(rpc, 'confirmed') : null
 }
 
 const getWallet = () => {
@@ -87,9 +85,10 @@ const getTokenAccount = async ({
   fromPublicKey,
   tokenPublickey,
   toPublickey,
+  chainId,
 }) => {
   return await getOrCreateAssociatedTokenAccount(
-    connection || getConnection(),
+    connection || getConnection(chainId),
     fromPublicKey,
     tokenPublickey,
     toPublickey
@@ -113,12 +112,13 @@ const transfer = async ({
   targetAddress,
   amount,
   safeCode,
+  chainId,
 }) => {
   const provider = getProvider()
 
   const fromPublicKey = getPublicKey(from)
 
-  const connection = getConnection()
+  const connection = getConnection(chainId)
 
   const toPublicKey = new PublicKey(to)
 
@@ -173,13 +173,11 @@ const transfer = async ({
       })
     )
 
-  const res = await tokenTransaction.getEstimatedFee(connection)
-  console.log('res', res)
+  const signedTx = await provider.signTransaction(tokenTransaction)
 
-  const signature = await provider.signAndSendTransaction(tokenTransaction)
-  console.log('signature', signature)
+  const signature = await connection.sendRawTransaction(signedTx.serialize())
 
-  return signature.signature
+  return signature
 }
 
 const activationTokenAccount = async ({ toChainID, fromCurrency }) => {
@@ -190,7 +188,7 @@ const activationTokenAccount = async ({ toChainID, fromCurrency }) => {
       item?.symbol?.toLocaleLowerCase() === fromCurrency?.toLocaleLowerCase()
   )[0]?.address
 
-  const connection = getConnection()
+  const connection = getConnection(toChainID)
 
   const provider = getProvider()
 

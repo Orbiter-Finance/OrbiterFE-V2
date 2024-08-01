@@ -11,36 +11,41 @@ import env from '../../env'
 import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
 import { RequestMethod, requestOpenApi } from '../common/openApiAx'
-import axios from 'axios'
 import orbiterHelper from './orbiter_helper.js'
+import solanaHelper from './solana/solana_helper.js'
 let chainsList = []
 
 export default {
   async getSolanaBalance(chainId, address, tokenAddress) {
-    if (['SOLANA_DEV', 'SOLANA_TEST', 'SOLANA_MAIN'].includes(chainId)) {
-      const networkParams = chainId === 'SOLANA_DEV' ? '?network=devnet' : ''
-      // solflare
-      try {
-        const res = await axios.get(
-          `https://wallet-api.solflare.com/v3/portfolio/tokens/${address}${networkParams}`,
-          { timeout: 2000 }
+    try {
+      const chainInfo = this.getV3ChainInfoByChainId(chainId)
+      const nativeCurrency = chainInfo?.nativeCurrency?.address
+      const connection = solanaHelper.getConnection(chainId)
+
+      let balanceString = ''
+
+      if (nativeCurrency === tokenAddress) {
+        const balance = await connection.getBalance(
+          solanaHelper.getPublicKey(address)
         )
-        const tokens = res.data.tokens
-        const token = tokens.find(
-          (item) => String(item.mint) === String(tokenAddress)
-        )
-        if (!token) return '0'
-        return new BigNumber(token.totalUiAmount).multipliedBy(
-          10 ** token.decimals
-        )
-      } catch (e) {
-        console.error('solflare api error', e)
-        return await requestOpenApi(RequestMethod.getBalance, [
+        balanceString = String(balance || '0')
+      } else {
+        const fromTokenAcount = await solanaHelper.getTokenAccount({
+          connection,
+          fromPublicKey: solanaHelper.getPublicKey(address),
+          tokenPublickey: solanaHelper.getPublicKey(tokenAddress),
+          toPublickey: solanaHelper.getPublicKey(address),
           chainId,
-          address,
-          tokenAddress,
-        ])
+        })
+        const balance = await connection.getTokenAccountBalance(
+          fromTokenAcount.address
+        )
+        const amount = balance?.value?.amount
+        balanceString = String(amount || '0')
       }
+      return balanceString
+    } catch (error) {
+      return '0'
     }
   },
 
@@ -409,9 +414,11 @@ export default {
     const gasFee = value
       .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
       .dividedBy(new BigNumber(1000))
+    const f = selectMakerConfig.fromChain.decimals
+    const t = selectMakerConfig.toChain.decimals
     const gasFee_fix = gasFee.decimalPlaces(
-      selectMakerConfig.fromChain.decimals === 8 ||
-        selectMakerConfig.toChain.decimals === 8
+      orbiterHelper.isMiddleDecimals({ decimals: f }) ||
+        orbiterHelper.isMiddleDecimals({ decimals: t })
         ? 6
         : selectMakerConfig.fromChain.decimals === 18
         ? 5
