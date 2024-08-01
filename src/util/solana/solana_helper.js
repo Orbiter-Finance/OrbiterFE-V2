@@ -19,7 +19,7 @@ import util from '../util'
 import { isProd } from '../env'
 import { CHAIN_ID } from '../../config'
 
-const SOLNA_WALLET_NAME = ''
+const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
 const readWalletName = () => {
   return sessionStorage.getItem(SOLNA_WALLET_NAME)

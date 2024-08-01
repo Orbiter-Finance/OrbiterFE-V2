@@ -147,6 +147,7 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   transferDataState,
+  isMobile
 } from '../composition/hooks'
 import config, { CHAIN_ID } from '../config'
 import solanaHelper from '../util/solana/solana_helper'
@@ -197,6 +198,9 @@ export default {
     }
   },
   computed: {
+    isMobile() {
+      return isMobile.value
+    },
     balanceGroup () {
       return balanceList.value || {}
     },
@@ -613,50 +617,50 @@ export default {
     async getChainInfo(e, index) {
       // When chain use stark system
 
-      if (orbiterHelper.isNotEVMChain({chainId: e.localID})) {
+      if (orbiterHelper.isNotEVMChain({chainId: e.localID}) && this.type === "from") {
         try {
           // starknet
-          // if (
-          //   e.localID === CHAIN_ID.starknet ||
-          //   e.localID === CHAIN_ID.starknet_test
-          // ) {
-          //   const { starkIsConnected, starkNetAddress } = web3State.starkNet
-          //   if (!starkIsConnected && !starkNetAddress) {
-          //     setConnectWalletGroupKey('STARKNET')
-          //     setSelectWalletDialogVisible(true)
-          //     return
-          //   }
-          // }
+          if (
+            e.localID === CHAIN_ID.starknet ||
+            e.localID === CHAIN_ID.starknet_test
+          ) {
+            const { starkIsConnected, starkNetAddress } = web3State.starkNet
+            if (!starkIsConnected && !starkNetAddress) {
+              setConnectWalletGroupKey('STARKNET')
+              setSelectWalletDialogVisible(true)
+              return
+            }
+          }
 
           // solana
-          // if (
-          //   orbiterHelper.isSolanaChain({chainId: e.localID})
-          // ) {
-          //   const isConnected = await solanaHelper.isConnect()
-          //   if (!isConnected) {
-          //     setSelectWalletDialogVisible(true)
-          //     setConnectWalletGroupKey('SOLANA')
-          //     return
-          //   }
-          // }
+          if (
+            orbiterHelper.isSolanaChain({chainId: e.localID})
+          ) {
+            const isConnected = await solanaHelper.isConnect()
+            if (!isConnected) {
+              setSelectWalletDialogVisible(true)
+              setConnectWalletGroupKey('SOLANA')
+              return
+            }
+          }
           // fuel
-          // if ( orbiterHelper.isFuelChain({chainId: e.localID})) {
-          //   const account = fuelsHelper.fuelsAccount()
-          //   const isConnected = fuelsHelper.isConnected()
-          //   if (!account || !isConnected) {
-          //     await fuelsHelper.connect()
-          //     return
-          //   }
-          // }
+          if ( orbiterHelper.isFuelChain({chainId: e.localID})) {
+            const account = fuelsHelper.fuelsAccount()
+            const isConnected = fuelsHelper.isConnected()
+            if (!account || !isConnected) {
+              await fuelsHelper.connect()
+              return
+            }
+          }
           // ton
-          // if (orbiterHelper.isTonChain({chainId: e.localID}) ) {
-          //   const account = await tonHelper.account()
-          //   const isConnected = await tonHelper.isConnected()
-          //   if (!account || !isConnected) {
-          //     await tonHelper.connect()
-          //     return
-          //   }
-          // }
+          if (orbiterHelper.isTonChain({chainId: e.localID}) ) {
+            const account = await tonHelper.account()
+            const isConnected = await tonHelper.isConnected()
+            if (!account || !isConnected) {
+              await tonHelper.connect()
+              return
+            }
+          }
           // immutableX
           if (e.localID === CHAIN_ID.imx || e.localID === CHAIN_ID.imx_test) {
             this.loadingIndex = index

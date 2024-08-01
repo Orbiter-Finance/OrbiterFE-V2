@@ -1711,6 +1711,7 @@ export default {
               .minus(new BigNumber(opBalance))
               .minus(new BigNumber(transferGasFee))
               .minus(new BigNumber(preGas));
+              console.log("userBalance", tradingFee, this.fromBalance, transferGasFee, preGas, userBalance.toString())
       let userMax = userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN) > 0
               ? userBalance.decimalPlaces(avalibleDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
@@ -2425,6 +2426,7 @@ export default {
           self.fromBalanceLoading = false;
       } else {
         self.fromBalanceLoading = false;
+        self.fromBalance = "-1"
       }
 
       address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;

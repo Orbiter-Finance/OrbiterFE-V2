@@ -42,16 +42,13 @@ const checkAddress = ({ address, chainId }) => {
   const flag = evmChain.some(
     (item) => item.toLocaleLowerCase() === String(chainId).toLocaleLowerCase()
   )
-  if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
+  if (isTonChain({ chainId })) {
     return tonHelper.checkAddress(address)
-  } else if (chainId === CHAIN_ID.fuel || chainId === CHAIN_ID.fuel_test) {
+  } else if (isFuelChain({ chainId })) {
     return checkFuelsAddress(address)
-  } else if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
+  } else if (isSolanaChain({ chainId })) {
     return solanaHelper.checkAddress(address)
-  } else if (
-    chainId === CHAIN_ID.starknet ||
-    chainId === CHAIN_ID.starknet_test
-  ) {
+  } else if (isStarknetChain({ chainId })) {
     return checkStarknetAddress(address)
   } else if (Number(chainId) || flag) {
     return checkEvmAddress(address)

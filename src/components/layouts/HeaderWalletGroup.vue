@@ -254,6 +254,11 @@ export default {
           icon: 'phantom',
           title: 'Phantom',
         },
+        {
+          isConnect: false,
+          icon: 'nightly',
+          title: 'Nightly',
+        },
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',

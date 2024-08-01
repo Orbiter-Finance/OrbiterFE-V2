@@ -132,7 +132,9 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
-    if (
+    if (orbiterHelper.isNotEVMChain({ chainId: fromChainID })) {
+      return 0
+    } else if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test
     ) {
@@ -191,10 +193,7 @@ export default {
         console.warn('getZKSpaceTransferGasFeeError =', error)
       }
       return transferFee
-    } else if (
-      fromChainID === CHAIN_ID.starknet ||
-      fromChainID === CHAIN_ID.starknet_test
-    ) {
+    } else if (orbiterHelper.isStarknetChain({ chainId: fromChainID })) {
       const realTransferAmount = this.realTransferAmount().toString()
       const starkFee = await getStarkTransferFee(
         web3State.coinbase,
