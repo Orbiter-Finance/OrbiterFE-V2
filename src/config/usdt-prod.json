@@ -2003,18 +2003,6 @@
             "endTime": 99999999999999
         }
     },
-    "20-48": {
-        "USDT-USDT": {
-            "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
-            "sender": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
-            "gasFee": 2,
-            "tradingFee": 1,
-            "maxPrice": 10000,
-            "minPrice": 0.1,
-            "startTime": 0,
-            "endTime": 99999999999999
-        }
-    },
     "9-20": {
         "USDT-USDT": {
             "makerAddress": "0xd7Aa9ba6cAAC7b0436c91396f22ca5a7F31664fC",
