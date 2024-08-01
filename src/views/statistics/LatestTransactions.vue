@@ -21,6 +21,7 @@
             <TransactionSelectChain
               @selectChainFunc="selectChainFn"
               :selectChain="params.sourceChain"
+              @closeModal="closeSelectChain"
             ></TransactionSelectChain>
           </template>
         </div>
@@ -42,6 +43,7 @@
             <TransactionSelectChain
               @selectChainFunc="selectChainFn"
               :selectChain="params.targetChain"
+              @closeModal="closeSelectChain"
             ></TransactionSelectChain>
           </template>
         </div>
@@ -522,6 +524,7 @@ export default {
         position: relative;
         top: 0;
         left: 0;
+        z-index: 3;
       }
       .chain-info {
         display: flex;

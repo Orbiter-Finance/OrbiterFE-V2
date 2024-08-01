@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div></div>
+    <div class="empty" @click.stop="close"></div>
     <div class="select-chain">
       <div @click.stop="selectChainCall(item)" v-for="item in chainList" :class="`${selectChain === item.chainId ? 'chain-item-active' : ''} chain-item`" :key="item.chainId">
         <svg-icon
@@ -42,6 +42,9 @@ export default {
     },
   },
   methods: {
+    close() {
+      this.$emit("closeModal")
+    },
     selectChainCall(item) {
       if(item.chainId === this.selectChain) return
       this.$emit("selectChainFunc", item.chainId)
@@ -51,6 +54,14 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.empty {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+}
 .select-chain {
   position: absolute;
   top: 20px;
