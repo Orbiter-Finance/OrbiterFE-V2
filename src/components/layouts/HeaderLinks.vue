@@ -94,10 +94,10 @@ export default {
             },
           ],
         },
-        {
-          name: 'L2 Data',
-          href: '/data',
-        },
+        // {
+        //   name: 'L2 Data',
+        //   href: '/data',
+        // },
         {
           name: 'Explore',
           href: '/statistics',
