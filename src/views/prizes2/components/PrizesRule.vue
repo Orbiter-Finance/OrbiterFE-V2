@@ -72,7 +72,7 @@ export default {
         {
           label: '7. When will the rewards be distributed?',
           text: [
-            '- Thank you for your participation. The rewards are being calculated and will be distributed within 7 days. We will announce the release of the rewards through our social media channels, please stay tuned.',
+            '- Thank you for your participation. The rewards are being calculated and will be distributed within 7 days.We will announce the official distribution time through our social media channels, so please stay tuned.',
           ],
         },
       ],
