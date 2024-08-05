@@ -43,15 +43,14 @@ const getConnection = (chainId) => {
 
 const getWallet = () => {
   const walletName = readWalletName()
-  // const provider = window?.[walletName?.toLocaleLowerCase() || '']?.solana
-  const provider = window.solflare
+  const provider = window?.[walletName?.toLocaleLowerCase() || '']?.solana
+  // const provider = window.solflare
 
   return provider
 }
 
 const getProvider = () => {
   const provider = getWallet()
-  // const provider = window.solflare
 
   if (!provider) {
     util.showMessage(
@@ -231,19 +230,19 @@ const bridgeType1transfer = async ({
     utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
   )
   console.log('memo', memo, memo.toString())
-  const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
-    units: 1000000,
-  })
-  console.log('modifyComputeUnits', modifyComputeUnits)
+  // const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
+  //   units: 1000000,
+  // })
+  // console.log('modifyComputeUnits', modifyComputeUnits)
 
-  const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
-    microLamports: 100,
-  })
-  console.log('addPriorityFee', addPriorityFee)
+  // const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+  //   microLamports: 100,
+  // })
+  // console.log('addPriorityFee', addPriorityFee)
 
   const recentBlockhash = await connection.getLatestBlockhash('confirmed')
 
-  // memo._isBuffer = true
+  memo._isBuffer = true
 
   console.log(
     'parmas',
