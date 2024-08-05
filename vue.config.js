@@ -2,6 +2,8 @@ const isProduction = process.env.NODE_ENV !== 'development'
 const path = require('path')
 const NullishCoalescingOperatorPlugin = require('@babel/plugin-proposal-nullish-coalescing-operator')
 const LogicalAssignmentOperators = require('@babel/plugin-proposal-logical-assignment-operators')
+const NumericSeparator = require('@babel/plugin-proposal-numeric-separator')
+const ExportNamespaceFrom = require('@babel/plugin-proposal-export-namespace-from')
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -33,13 +35,18 @@ module.exports = {
       .end()
     config.module
       .rule('solana')
-      .test(/\.js$/)
+      .test(/(\.mjs$)|(\.js$)/)
       .include.add(path.resolve(__dirname, 'node_modules/@solana'))
+      .add(path.resolve(__dirname, 'node_modules/@project-serum/anchor'))
       .end()
       .use('babel-loader')
       .loader('babel-loader')
       .options({
-        plugins: [LogicalAssignmentOperators],
+        plugins: [
+          LogicalAssignmentOperators,
+          NumericSeparator,
+          ExportNamespaceFrom,
+        ],
       })
       .end()
     config.module

@@ -1,0 +1,828 @@
+{
+    "version": "0.1.0",
+    "name": "opool",
+    "instructions": [
+        {
+            "name": "initialize",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "owner",
+                    "type": "publicKey"
+                },
+                {
+                    "name": "fee",
+                    "type": "u64"
+                },
+                {
+                    "name": "feeReceiver",
+                    "type": "publicKey"
+                },
+                {
+                    "name": "paused",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "lock",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "lcokState",
+                    "type": "bool"
+                }
+            ]
+        },
+        {
+            "name": "withdrawRegister",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenToManager",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "makerValid",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "powerUserPda",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": []
+        },
+        {
+            "name": "setMakerList",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "makerValid",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "makers",
+                    "type": {
+                        "vec": "publicKey"
+                    }
+                },
+                {
+                    "name": "status",
+                    "type": {
+                        "vec": "bool"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "setFee",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "newFee",
+                    "type": "u64"
+                }
+            ]
+        },
+        {
+            "name": "setFeeReceiver",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "newFeeReceiver",
+                    "type": "publicKey"
+                }
+            ]
+        },
+        {
+            "name": "tranferOwner",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                }
+            ],
+            "args": [
+                {
+                    "name": "newOwner",
+                    "type": "publicKey"
+                }
+            ]
+        },
+        {
+            "name": "setManagerList",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenToManager",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "tokens",
+                    "type": {
+                        "vec": "publicKey"
+                    }
+                },
+                {
+                    "name": "managers",
+                    "type": {
+                        "vec": "publicKey"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "setTokenReceiver",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenToReceiver",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "tokens",
+                    "type": {
+                        "vec": "publicKey"
+                    }
+                },
+                {
+                    "name": "receivers",
+                    "type": {
+                        "vec": "publicKey"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "inbox",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "source",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "destination",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "feeReceiver",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenProgram",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "systemProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "amount",
+                    "type": "u64"
+                },
+                {
+                    "name": "data",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "outbox",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "source",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "destination",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "contractAuthority",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenProgram",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "makerValid",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "amount",
+                    "type": "u64"
+                },
+                {
+                    "name": "thisBump",
+                    "type": "u8"
+                },
+                {
+                    "name": "data",
+                    "type": "bytes"
+                }
+            ]
+        },
+        {
+            "name": "withdraw",
+            "accounts": [
+                {
+                    "name": "state",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "user",
+                    "isMut": true,
+                    "isSigner": true
+                },
+                {
+                    "name": "source",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "destination",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenToManager",
+                    "isMut": false,
+                    "isSigner": false
+                },
+                {
+                    "name": "contractAuthority",
+                    "isMut": true,
+                    "isSigner": false
+                },
+                {
+                    "name": "tokenProgram",
+                    "isMut": false,
+                    "isSigner": false
+                }
+            ],
+            "args": [
+                {
+                    "name": "amount",
+                    "type": "u64"
+                },
+                {
+                    "name": "thisBump",
+                    "type": "u8"
+                }
+            ]
+        }
+    ],
+    "accounts": [
+        {
+            "name": "MappingTokenToManager",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "mappings",
+                        "type": {
+                            "vec": {
+                                "defined": "PubkeyPair"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "MappingTokenToReceiver",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "mappings",
+                        "type": {
+                            "vec": {
+                                "defined": "PubkeyPair"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "MappingMakerToBool",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "mappings",
+                        "type": {
+                            "vec": {
+                                "defined": "PubkeyBoolPair"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "name": "InitializeState",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "owner",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "currentAddress",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "paused",
+                        "type": "bool"
+                    },
+                    {
+                        "name": "fee",
+                        "type": "u64"
+                    },
+                    {
+                        "name": "feeReceiver",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "initialized",
+                        "type": "bool"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PowerUser",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "user",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "bump",
+                        "type": "u8"
+                    }
+                ]
+            }
+        }
+    ],
+    "types": [
+        {
+            "name": "PubkeyPair",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "key",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "value",
+                        "type": "publicKey"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "PubkeyBoolPair",
+            "type": {
+                "kind": "struct",
+                "fields": [
+                    {
+                        "name": "key",
+                        "type": "publicKey"
+                    },
+                    {
+                        "name": "value",
+                        "type": "bool"
+                    }
+                ]
+            }
+        }
+    ],
+    "events": [
+        {
+            "name": "OwnerChangeEvent",
+            "fields": [
+                {
+                    "name": "oldOwner",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "newOwner",
+                    "type": "publicKey",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "LockEvent",
+            "fields": [
+                {
+                    "name": "stateKey",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "lockState",
+                    "type": "bool",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "ChangeMakers",
+            "fields": [
+                {
+                    "name": "stateKey",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "newMakers",
+                    "type": {
+                        "vec": "publicKey"
+                    },
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "InboxEvent",
+            "fields": [
+                {
+                    "name": "token",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "sender",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "receiver",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "amount",
+                    "type": "u64",
+                    "index": false
+                },
+                {
+                    "name": "data",
+                    "type": "bytes",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "InboxFeeEvent",
+            "fields": [
+                {
+                    "name": "sender",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "feeReceiver",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "feeAmount",
+                    "type": "u64",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "OutboxEvent",
+            "fields": [
+                {
+                    "name": "token",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "sender",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "receiver",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "amount",
+                    "type": "u64",
+                    "index": false
+                },
+                {
+                    "name": "data",
+                    "type": "bytes",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "OutboxBatchEvent",
+            "fields": [
+                {
+                    "name": "token",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "to",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "amount",
+                    "type": "u64",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "FeeChanged",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "newFee",
+                    "type": "u64",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "FeeReceiverChanged",
+            "fields": [
+                {
+                    "name": "owner",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "newFeeReceiver",
+                    "type": "publicKey",
+                    "index": false
+                }
+            ]
+        },
+        {
+            "name": "WithdrawEvent",
+            "fields": [
+                {
+                    "name": "token",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "user",
+                    "type": "publicKey",
+                    "index": false
+                },
+                {
+                    "name": "amount",
+                    "type": "u64",
+                    "index": false
+                }
+            ]
+        }
+    ],
+    "errors": [
+        {
+            "code": 6000,
+            "name": "NoPermission",
+            "msg": "No permission to perform this action."
+        },
+        {
+            "code": 6001,
+            "name": "AlreadyInitialized",
+            "msg": "Initialization has been performed."
+        },
+        {
+            "code": 6002,
+            "name": "InsufficientAmount",
+            "msg": "Insufficient amount."
+        },
+        {
+            "code": 6003,
+            "name": "ContractPaused",
+            "msg": "Contract is paused."
+        },
+        {
+            "code": 6004,
+            "name": "NonFeeReceiver",
+            "msg": "Invalid fee receiver."
+        },
+        {
+            "code": 6005,
+            "name": "InvalidLength",
+            "msg": "Invalid length."
+        },
+        {
+            "code": 6006,
+            "name": "InvalidFeeAmount",
+            "msg": "Invalid fee amount"
+        },
+        {
+            "code": 6007,
+            "name": "Overflow",
+            "msg": "Overflow"
+        },
+        {
+            "code": 6008,
+            "name": "NotMaker",
+            "msg": "Not a maker."
+        },
+        {
+            "code": 6009,
+            "name": "FeeOver10000",
+            "msg": "Fee over 10000."
+        },
+        {
+            "code": 6010,
+            "name": "NotManager",
+            "msg": "Not a manager"
+        }
+    ]
+}

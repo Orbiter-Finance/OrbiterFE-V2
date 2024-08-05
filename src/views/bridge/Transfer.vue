@@ -923,6 +923,11 @@ export default {
         this.updateTransferInfo();
       }
     },
+    'web3State.solana.solanaAddress': function (newValue) {
+      if (newValue) {
+        this.updateTransferInfo();
+      }
+    },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);

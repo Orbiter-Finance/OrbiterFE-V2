@@ -513,95 +513,132 @@ export default {
       }
     },
     async BridgeType1Transfer() {
-      const { selectMakerConfig, fromChainID, transferValue } =
+      const { selectMakerConfig, fromChainID, transferValue, toChainID } =
         transferDataState
-      const safeCode = transferCalculate.safeCode()
 
-      const from =
+        const from =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
-
-      const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
-      const withholdingFee = selectMakerConfig.tradingFee
-
-      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
-      const recipient = selectMakerConfig.recipient
-
-      console.log('transferValue', transferValue, chainInfo, safeCode)
-      const contractGroup = chainInfo?.contract || {}
-
-      const contractList = Object.keys(contractGroup).map((key) => {
-        return {
-          name: contractGroup[key],
-          address: key,
-        }
-      })
-
-      const contractAddress = contractList?.filter(
-        (item) =>
-          item?.name?.toLocaleLowerCase() === 'OPool'?.toLocaleLowerCase()
-      )[0]?.address
-
-      try {
-        const provider = new ethers.providers.Web3Provider(
-          compatibleGlobalWalletConf.value.walletPayload.provider
-        )
-
-        const signer = provider.getSigner()
 
         const amount = new BigNumber(transferValue).multipliedBy(
           new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
         )
         const amountValue = amount.toFixed()
 
-        const tokenContract = new ethers.Contract(
-          tokenAddress,
-          Coin_ABI,
-          signer
-        )
+        const safeCode = transferCalculate.safeCode()
 
-        console.log('tokenContract', tokenContract)
+        const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
+        const withholdingFee = selectMakerConfig.tradingFee
 
-        const allowance = await tokenContract.allowance(from, contractAddress)
+        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+        const recipient = selectMakerConfig.recipient
+      
+        const contractGroup = chainInfo?.contract || {}
 
-        console.log('allowance', allowance)
+        const contractList = Object.keys(contractGroup).map((key) => {
+          return {
+            name: contractGroup[key],
+            address: key,
+          }
+        })
 
-        if (allowance.lt(amountValue)) {
-          const approveRes = await tokenContract.approve(
-            contractAddress,
-            amountValue
-          )
-          console.log('approveRes', approveRes)
-          await approveRes.wait()
+        const contractAddress = contractList?.filter(
+          (item) =>
+            item?.name?.toLocaleLowerCase() === 'OPool'?.toLocaleLowerCase()
+        )[0]?.address
+
+        let hash = ""
+
+      try {
+          if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test){
+            const solanaAddress = solanaHelper.solanaAddress()
+              const isConnected = await solanaHelper.isConnect()
+              if (!isConnected || !solanaAddress) {
+                setSelectWalletDialogVisible(true)
+                setConnectWalletGroupKey('SOLANA')
+                this.transferLoading = false
+                return
+              }
+            hash = await solanaHelper.bridgeType1transfer({
+              from: solanaAddress,
+              targetAddress: from,
+              tokenAddress,
+              toAddress: recipient,
+              safeCode,
+              withholdingFee,
+              contractAddress,
+              amount: amount.toString(),
+              chainId: fromChainID
+            })
+          } else {
+
+            let memo = `c=${safeCode}`
+
+            if (
+              toChainID === CHAIN_ID.solana ||
+              toChainID === CHAIN_ID.solana_test
+            ) {
+              const solanaAddress = solanaHelper.solanaAddress()
+              const isConnected = await solanaHelper.isConnect()
+              if (!isConnected || !solanaAddress) {
+                setSelectWalletDialogVisible(true)
+                setConnectWalletGroupKey('SOLANA')
+                this.transferLoading = false
+                return
+              }
+              memo = `c=${safeCode}&t=${solanaAddress}`
+            }
+            const provider = new ethers.providers.Web3Provider(
+              compatibleGlobalWalletConf.value.walletPayload.provider
+            )
+
+            const signer = provider.getSigner()
+
+            const tokenContract = new ethers.Contract(
+              tokenAddress,
+              Coin_ABI,
+              signer
+            )
+
+            console.log('tokenContract', tokenContract)
+
+            const allowance = await tokenContract.allowance(from, contractAddress)
+
+            console.log('allowance', allowance)
+
+            if (allowance.lt(amountValue)) {
+              const approveRes = await tokenContract.approve(
+                contractAddress,
+                amountValue
+              )
+              console.log('approveRes', approveRes)
+              await approveRes.wait()
+            }
+
+            const transferContract = new ethers.Contract(
+              contractAddress,
+              Orbiter_OPOOL_ABI,
+              signer
+            )
+
+            const res = await transferContract.inbox(
+              recipient,
+              tokenAddress,
+              amountValue,
+              ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
+              {
+                value: ethers.utils.parseUnits(
+                  String(withholdingFee),
+                  chainInfo.nativeCurrency.decimals
+                ),
+              }
+            )
+
+            hash = res?.hash
         }
 
-        const transferContract = new ethers.Contract(
-          contractAddress,
-          Orbiter_OPOOL_ABI,
-          signer
-        )
-
-        console.log(
-          'transferContract',
-          withholdingFee,
-          transferContract,
-          chainInfo.nativeCurrency.decimals
-        )
-
-        const res = await transferContract.inbox(
-          recipient,
-          tokenAddress,
-          amountValue,
-          ethers.utils.hexlify(ethers.utils.toUtf8Bytes(`c=${safeCode}`)),
-          {
-            value: ethers.utils.parseUnits(
-              String(withholdingFee),
-              chainInfo.nativeCurrency.decimals
-            ),
-          }
-        )
-        if (res.hash) {
-          this.onTransferSucceed(from, amountValue, fromChainID, res.hash)
+        if (hash) {
+          this.onTransferSucceed(from, amountValue, fromChainID, hash)
         }
       } catch (err) {
         console.error('BridgeType1Transfer error', err)
@@ -1296,15 +1333,6 @@ export default {
             setConnectWalletGroupKey('SOLANA')
             return
           }
-          // try {
-          //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-          //     if(res !== "created") {
-          //         return
-          //     }
-          // } catch (error) {
-          //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-          //     return
-          // }
           memo = `${p_text}_${solanaAddress}`
         }
 
@@ -1559,6 +1587,7 @@ export default {
           targetAddress,
           amount: rAmountValue,
           safeCode,
+          chainId: fromChainID
         })
         try {
           this.$gtag.event('click', {
