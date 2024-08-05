@@ -26,6 +26,7 @@
       >
         {{ nav.name }}
         <SvgIconThemed v-if="!verical && !isMobile && nav.children == 0" />
+        <HeaderPrizesTimeOut v-if="nav.name === 'Prizes'"></HeaderPrizesTimeOut>
       </div>
       <template v-if="isMobile && nav.children && nav.children.length">
         <div
@@ -57,10 +58,10 @@ import {
   transferDataState,
   setActDialogVisible
 } from '../../composition/hooks'
-
+import HeaderPrizesTimeOut from "./HeaderPrizesTimeOut.vue"
 export default {
   name: 'HeaderLinks',
-  components: { SvgIconThemed },
+  components: { SvgIconThemed,HeaderPrizesTimeOut },
   props: {
     verical: {
       type: Boolean,
@@ -150,6 +151,9 @@ export default {
     padding-top: 12px;
     position: relative;
     display: inline-flex;
+    position: relative;
+    top: 0;
+    left: 0;
   }
   .nav-item.selected::after {
     content: '';

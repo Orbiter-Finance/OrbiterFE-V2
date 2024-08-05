@@ -919,6 +919,11 @@ export default {
         this.updateTransferInfo();
       }
     },
+    'web3State.solana.solanaAddress': function (newValue) {
+      if (newValue) {
+        this.updateTransferInfo();
+      }
+    },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
@@ -994,7 +999,7 @@ export default {
 
     },
     handleTipsCall() {
-        const linkChain = (process.env.VUE_APP_COIN_USDC_CHAIN.split(",")).map((item)=> item.trim())
+        const linkChain = ((process.env.VUE_APP_COIN_USDC_CHAIN || '').split(",")).map((item)=> item.trim())
 
         const fromChainId = this.transferDataState.fromChainID
         const targetChainId = this.transferDataState.toChainID

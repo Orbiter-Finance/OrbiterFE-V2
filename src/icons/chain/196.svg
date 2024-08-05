@@ -1,16 +1,31 @@
-<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="240" height="240" rx="120" fill="url(#paint0_linear_2225_4)"/>
-<rect x="49" y="65" width="37" height="37" rx="2" fill="white"/>
-<rect x="123" y="65" width="37" height="37" rx="2" fill="white"/>
-<path d="M169.5 65H189C190.105 65 191 65.8954 191 67V100C191 101.105 190.105 102 189 102H169.5V65Z" fill="white" fill-opacity="0.6"/>
-<path d="M169.5 138H189C190.105 138 191 138.895 191 140V173C191 174.105 190.105 175 189 175H169.5V138Z" fill="white" fill-opacity="0.6"/>
-<rect x="49" y="139" width="37" height="37" rx="2" fill="white"/>
-<rect x="123" y="139" width="37" height="37" rx="2" fill="white"/>
-<rect x="86" y="101" width="37" height="37" rx="2" fill="white"/>
-<defs>
-<linearGradient id="paint0_linear_2225_4" x1="0" y1="0" x2="240" y2="240" gradientUnits="userSpaceOnUse">
-<stop stop-color="#3D3D3D"/>
-<stop offset="1" stop-color="#191919"/>
-</linearGradient>
-</defs>
+<svg width="120.000000" height="120.000000" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<clipPath id="clip78_832">
+			<rect id="XLayer" rx="60.000000" width="120.000000" height="120.000000" fill="white" fill-opacity="0"/>
+		</clipPath>
+		<linearGradient x1="120.000000" y1="187.394440" x2="24.240593" y2="-17.190491" id="paint_linear_78_816_0" gradientUnits="userSpaceOnUse">
+			<stop stop-color="#000000"/>
+			<stop offset="1.000000" stop-color="#444444"/>
+		</linearGradient>
+	</defs>
+	<g clip-path="url(#clip78_832)">
+		<rect id="rect" width="120.000000" height="120.000000" fill="url(#paint_linear_78_816_0)" fill-opacity="1.000000"/>
+		<mask id="mask78_819" mask-type="alpha" maskUnits="userSpaceOnUse" x="85.036621" y="32.389709" width="10.412964" height="18.404877">
+			<rect id="rect" width="10.412951" height="18.404879" transform="matrix(-1 0 0 1 95.4496 32.3897)" fill="#000000" fill-opacity="1.000000"/>
+		</mask>
+		<g mask="url(#mask78_819)">
+			<path id="path" d="M94.22 32.38L78.27 32.38C77.59 32.38 77.04 32.93 77.04 33.61L77.04 49.56C77.04 50.24 77.59 50.79 78.27 50.79L94.22 50.79C94.9 50.79 95.44 50.24 95.44 49.56L95.44 33.61C95.44 32.93 94.9 32.38 94.22 32.38Z" fill="#FFFFFF" fill-opacity="0.498039" fill-rule="nonzero"/>
+		</g>
+		<mask id="mask78_824" mask-type="alpha" maskUnits="userSpaceOnUse" x="85.036377" y="69.198914" width="10.412964" height="18.404877">
+			<rect id="rect" width="10.412951" height="18.404879" transform="matrix(-1 0 0 1 95.4492 69.1989)" fill="#000000" fill-opacity="1.000000"/>
+		</mask>
+		<g mask="url(#mask78_824)">
+			<path id="path" d="M94.22 69.19L78.27 69.19C77.59 69.19 77.04 69.74 77.04 70.42L77.04 86.37C77.04 87.05 77.59 87.6 78.27 87.6L94.22 87.6C94.9 87.6 95.44 87.05 95.44 86.37L95.44 70.42C95.44 69.74 94.9 69.19 94.22 69.19Z" fill="#FFFFFF" fill-opacity="0.498039" fill-rule="nonzero"/>
+		</g>
+		<path id="path" d="M60.11 50.84L44.24 50.84C43.56 50.84 43.01 51.38 43.01 52.05L43.01 67.81C43.01 68.48 43.56 69.02 44.24 69.02L60.11 69.02C60.79 69.02 61.33 68.48 61.33 67.81L61.33 52.05C61.33 51.38 60.79 50.84 60.11 50.84Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="path" d="M41.74 32.38L25.78 32.38C25.11 32.38 24.56 32.93 24.56 33.61L24.56 49.56C24.56 50.24 25.11 50.79 25.78 50.79L41.74 50.79C42.41 50.79 42.96 50.24 42.96 49.56L42.96 33.61C42.96 32.93 42.41 32.38 41.74 32.38Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="path" d="M78.54 32.38L62.59 32.38C61.91 32.38 61.36 32.93 61.36 33.61L61.36 49.56C61.36 50.24 61.91 50.79 62.59 50.79L78.54 50.79C79.21 50.79 79.76 50.24 79.76 49.56L79.76 33.61C79.76 32.93 79.21 32.38 78.54 32.38Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="path" d="M41.74 69.19L25.78 69.19C25.11 69.19 24.56 69.74 24.56 70.42L24.56 86.37C24.56 87.05 25.11 87.6 25.78 87.6L41.74 87.6C42.41 87.6 42.96 87.05 42.96 86.37L42.96 70.42C42.96 69.74 42.41 69.19 41.74 69.19Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="path" d="M78.54 69.19L62.59 69.19C61.91 69.19 61.36 69.74 61.36 70.42L61.36 86.37C61.36 87.05 61.91 87.6 62.59 87.6L78.54 87.6C79.21 87.6 79.76 87.05 79.76 86.37L79.76 70.42C79.76 69.74 79.21 69.19 78.54 69.19Z" fill="#FFFFFF" fill-opacity="1.000000" fill-rule="nonzero"/>
+	</g>
 </svg>

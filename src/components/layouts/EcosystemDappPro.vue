@@ -85,20 +85,53 @@
         :showCard="showCard"
         ></EcosystemLikidDappPro>
       </el-carousel-item> -->
-      <!-- <el-carousel-item>
+      <el-carousel-item>
         <EcosystemDapp
           :holders="0"
           :isTags="true"
           :isHolders="false"
           :ratio="0"
           :showCard="showCard"
-          :banner="'pepe.png'"
-          :tag="'First Cross-chain Memecoin'"
-          :tagStyle="'background: linear-gradient(178.05deg, rgb(186, 250, 107) 11.723%,rgb(117, 212, 34) 53.312%);'"
-          :description="`Bridge 15,000,000 ~ 25,000,000 PEPE to Base to generate pepe's PFP Collection.`"
+          :banner="'season1.png'"
+          :tag="'Omni-chain Meme'"
+          :tagStyle="'background:linear-gradient(172.41deg, #54E4FC, #D9F6FA);'"
+          :description="'LIKWID MEME CREATION CONTEST'"
           :isProgress="false"
-          :name="'pepe'"
-          :url="'https://www.colorprotocol.com/'"
+          :name="'season1'"
+          :url="'https://likwid.meme/contest/season1'"
+        />
+      </el-carousel-item>
+      <el-carousel-item>
+          <EcosystemDapp
+            :holders="bullishsTotal"
+            :isTags="true"
+            :isHolders="true"
+            :ratio="ratio"
+            :showCard="showCard"
+            :banner="'bullishs.png'"
+            :tag="'Cross-chain Game'"
+            :tagStyle="'background: linear-gradient(174.86deg, rgb(200, 129, 239) 28.525%,rgb(171, 70, 214) 57.649%);'"
+            :description="'BullKing Boost Coming...'"
+            :isProgress="false"
+            :name="'bullishs'"
+            :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
+          />
+        </el-carousel-item>
+      <!-- <el-carousel-item>
+        <EcosystemDapp
+          :holders="0"
+          :isTags="true"
+          :isHolders="false"
+          :ratio="xMintRatio"
+          :showCard="showCard"
+          :banner="'x-mint.png'"
+          :tag="'Omni-chain NFT'"
+          :tagStyle="'background: linear-gradient(178.05deg, rgb(186, 250, 107) 11.723%,rgb(117, 212, 34) 53.312%);'"
+          :description="`Mint your ORBGUY NFT to win great prizes.`"
+          :isProgress="true"
+          :name="'xmint'"
+          :url="'https://xmint.pro/'"
+          :btnLabel="'Mint'"
         />
       </el-carousel-item> -->
       <el-carousel-item>
@@ -117,22 +150,7 @@
           :url="'https://0xastra.xyz/'"
         />
       </el-carousel-item>
-        <el-carousel-item>
-          <EcosystemDapp
-            :holders="bullishsTotal"
-            :isTags="true"
-            :isHolders="true"
-            :ratio="ratio"
-            :showCard="showCard"
-            :banner="'bullishs.png'"
-            :tag="'Cross-chain Game'"
-            :tagStyle="'background: linear-gradient(174.86deg, rgb(200, 129, 239) 28.525%,rgb(171, 70, 214) 57.649%);'"
-            :description="'Deposit 0.01 ETH to Earn Exclusive Mega Rewards for Orbiter Users!'"
-            :isProgress="false"
-            :name="'bullishs'"
-            :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
-          />
-        </el-carousel-item>
+    
         <el-carousel-item>
           <EcosystemDapp
             :holders="holders"
@@ -145,6 +163,7 @@
             :tagStyle="'background: linear-gradient( 169deg, rgb(248, 218, 211) 7.353%,  rgb(220, 84, 161) 60.561%);'"
             :description="`Transfer ≥ <span class='orbiter_global_ecosystem_dapp_condition_pink'>6TXs</span> to Taiko to grab  <span class='orbiter_global_ecosystem_dapp_condition_pink'>$PINK</span>.`"
             :isProgress="true"
+            :tooltipLabel="'Receive an airdrop share for every 6 TXs To Taiko. Stops once the total amount (2,888,888 TXs) reaches.'"
             :name="'TaiKo'"
             :url="'https://www.pinketh.xyz/'"
           />
@@ -184,6 +203,8 @@ export default {
       timeStr: '2024/5/23 16:00:00',
       timeList: [],
       bullishsTotal: 0,
+      xMintRatio: 0,
+      xMintTotal: "10000",
     }
   },
   computed: {
@@ -258,6 +279,23 @@ export default {
       )
       return Date.parse(d2)
     },
+    async getXmintData() {
+      const web3 = new Web3(
+        new Web3.providers.HttpProvider('https://rpc.vizing.com')
+      )
+      const raw = web3.eth.abi.encodeFunctionSignature('currentTokenId()')
+      const res = await web3.eth.call({
+        to: '0x5915de7a42bba2332d643c0ef8f024a5ebb46631',
+        data: raw,
+      })
+      const result = web3.eth.abi.decodeParameters(['uint256'], res || '')
+      const amount = result[0]
+      const ratio = ethers.utils
+        .parseEther(amount)
+        .mul('100')
+        .div(this.xMintTotal)
+      this.xMintRatio = ethers.utils.formatEther(ratio)
+    }
   },
   // mounted() {
   //   timer1 = setInterval(() => {
@@ -324,6 +362,7 @@ export default {
     this.getData()
     this.getData2()
     this.getData3()
+    this.getXmintData()
     // const _self = this
     // if(!this.isMobile) {
     //   setTimeout(() => {

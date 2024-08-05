@@ -137,7 +137,7 @@
                 <template v-slot:titleDesc>
                   <div style="margin-left: -20px">
                     <span>
-                      $ORBUGY gift boxes are distributed daily on a FCFS basis.
+                      $ORBGUY gift boxes are distributed daily on a FCFS basis.
                       Participants securing the 99th, 199th, 299th, 399th,
                       499th, 599th, and 699th positions when drawing a gift box
                       each day will receive a surprising $ORBGUY bonus.
@@ -145,7 +145,7 @@
                   </div>
                 </template>
                 <div class="task-orbguy-group">
-                  <span>lucky 99th,199th…,win $orguy super box!</span>
+                  <span>lucky 99th,199th…,win $orbguy super box!</span>
                   <div class="fcfs"></div>
                 </div>
               </o-tooltip>
@@ -181,7 +181,7 @@
                     ></div>
                   </template>
 
-                  <div
+                  <!-- <div
                     v-if="!!Number(taskAddressCount)"
                     class="orbguy-user-amount"
                     :style="`left:${userLeft};`"
@@ -192,7 +192,7 @@
                       alt=""
                     />
                     {{ taskAddressCount }}
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -208,6 +208,7 @@ import Web3 from 'web3'
 import dayjs from 'dayjs'
 import { decimalNum } from '../../../util/decimalNum'
 import { isDev } from '../../../util'
+import util from '../../../util/util'
 const BigNumber = require('bignumber.js')
 
 import {
@@ -266,7 +267,12 @@ export default {
       })
     },
     userLeft() {
-      let ratio = ((this.taskAddressCount || 0) / 707) * 100
+      const count = this.taskAddressCount
+      const list = [0, 99, 199, 299, 399, 499, 599, 699].filter((item)=>{
+        return Math.abs(item - count) <= 99
+      })
+      const amount = list[list.length-1] || count 
+      let ratio = ((amount || 0) / 707) * 100
       ratio = this.isDayEnd ? 100 : ratio > 100 ? 99 : ratio
       return (ratio || 0) + '%'
     },
@@ -376,7 +382,7 @@ export default {
     bridgeLabel() {
       return !Number(this.orbguyAmount)
         ? 'start bridge'
-        : 'keep bridging to earn BNB'
+        : 'keep bridging to earn $BNB'
     },
     isDraw() {
       return (
@@ -484,9 +490,12 @@ export default {
       const opointsList = this.opointsList
       let count = 0
       let list = []
-      signDayList.forEach((item) => {
+      signDayList.forEach((item, idx) => {
         if (item.isSign) {
           count += 1
+          if((idx === signDayList.length-1)) {
+            list = list.concat([count])
+          }
         } else {
           list = list.concat([count])
           count = 0
@@ -494,10 +503,10 @@ export default {
       })
       const total = list.reduce((prev, item) => {
         if (Number(item) && Number(item) >= 3) {
-          const amount = opointsList.reduce((oPrev, option) => {
-            return oPrev + (item >= option.days ? option.reward : 0)
-          }, 0)
-          return prev + amount
+          const amountList = opointsList.filter((option)=> item >= option.days) || []
+          const index =amountList?.length ? (amountList?.length-1) : 0
+          const group = amountList[index] || {}
+          return prev + (group?.reward ? group.reward : 0)
         }
         return prev
       }, 0)
@@ -558,6 +567,7 @@ export default {
         })
         return res
       } catch (error) {
+        util.showMessage(error?.message || error?.data?.message || String(error), 'error');
         this.isDrawLoading = false
         return ''
       }
@@ -580,7 +590,7 @@ export default {
     },
     async openORBGUYReward() {
       const address = this.evmAddress
-      if (!address || !this.taskId || address === '0x') {
+      if (this.isDrawLoading || !address || !this.taskId || address === '0x') {
       } else {
         if (this.isDraw) {
           this.isDrawLoading = true

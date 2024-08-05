@@ -1,14 +1,17 @@
 <template>
-  <div id="lucky-task-card-banner" @click="luckyClick"  class="lucky-task-card-banner">
+  <div
+    id="lucky-task-card-banner"
+    class="lucky-task-card-banner"
+  >
     <div class="lucky-task-card">
-        <div class="top-banenr">
-          <div class="banner-content">
-            <div class="banner-title">
-              <div class="banner-task-title orbiter_global_o_points_title">
-                <svg-icon class="task-icon" iconName="534352"></svg-icon>
-                $ORBGUY Prize Pool
-              </div>
-              <div class="orbguy-price" @click="openLikwidSwap">
+      <div class="top-banenr">
+        <div class="banner-content">
+          <div class="banner-title">
+            <div class="banner-task-title orbiter_global_o_points_title">
+              <svg-icon class="task-icon" iconName="534352"></svg-icon>
+              $ORBGUY Prize Pool
+            </div>
+            <!-- <div class="orbguy-price" @click="openLikwidSwap">
                 <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
                 <div class="price-amount">{{ price }}</div>
                 <span class="price-symbol">ETH/ORBGUY</span>
@@ -32,13 +35,21 @@
                 </div>
                 <div class="progress-label">Claim Progress</div>
               </div>
-            </div>
-            <!-- <img class="bag-image" @click="drawLuckyTaskBag()"
-             :src="require(`../../assets/activity/points_task/${amount ? 'bag' :'bag-d'}.png`)" 
-            alt=""> -->
+            </div> -->
+            <img
+              class="bag-image"
+              @click="drawLuckyTaskBag()"
+              :src="
+                require(`../../assets/activity/points_task/${
+                  amount ? 'bag' : 'bag-d'
+                }.png`)
+              "
+              alt=""
+            />
           </div>
         </div>
       </div>
+    </div>
   </div>
 </template>
 
@@ -63,7 +74,7 @@ export default {
 
   data() {
     return {
-      price: "",
+      price: '',
     }
   },
 
@@ -91,21 +102,35 @@ export default {
     luckyBagUserInfo() {
       return luckyBaTaskgUserOrbguyInfo.value
     },
+    amount() {
+      const luckyUserList = this.luckyBagUserInfo || []
+      let amountValue = 0
+      luckyUserList.forEach((item) => {
+        const value = item?.distributeResult || 0
+        amountValue += Number(value)
+      })
+      return amountValue
+    },
   },
   created() {
     this.getData()
     this.getOrbguyPrice()
+    this.getUserData()
+  },
+  watch: {
+    evmAddress(item1, item2) {
+      if (!!item1 && item1 !== item2) {
+        this.getUserData()
+      }
+    },
+    selectWalletDialogVisible: function (newVisible) {
+      if (!!newVisible) {
+        this.getUserData()
+      }
+    },
   },
 
   methods: {
-    luckyClick() {
-      if (isMobileDevice()) {
-        document.getElementById('block_mobile_scroll_group').scrollTop = document.getElementById('lucky-task-card-group').offsetTop - 160;
-      } else {
-        document.getElementById('ativity-list').scrollTop = document.getElementById('lucky-task-card-group').offsetTop - 200;
-      }
-
-    },
     openLikwidSwap() {
       const evmAddress = this.evmAddress
       if (!evmAddress || evmAddress === '0x') return
@@ -131,25 +156,38 @@ export default {
         res || ''
       )
       this.price = this.decimalNumC(
-        new BigNumber(result[0]).div(result[1] + "").toFixed(7) + "",
+        new BigNumber(result[0]).div(result[1] + '').toFixed(7) + '',
         7,
         ','
       )
     },
-    drawLuckyTaskBag(data) {
-      this.$store.commit("getClaimORBGUYRewardData", {
-          type: "LUCKY_BAG_TASK",
-          distributeResult: Number(data?.distributeResult) || 0
-      })
-      // const evmAddress = this.evmAddress
-      // if (!Number(this.amount) || !evmAddress || evmAddress === '0x') return
-      // const name = 'CLAIM_TO_BNB_LUCKY_BAG_AABANK'
-      // const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
-      // this.$gtag.event(name, {
-      //   event_category: name,
-      //   event_label: evmAddress,
+    getUserData() {
+      if (!this.evmAddress || this.evmAddress === '0x') return
+      this.$store.commit(
+        'getLuckyBagUserTaskInfo',
+        this.evmAddress.toLocaleLowerCase()
+      )
+      // this.$store.commit(
+      //   'getLuckyBagTaskUserOPointsInfo',
+      //   this.evmAddress.toLocaleLowerCase()
+      // )
+    },
+    drawLuckyTaskBag() {
+      // console.log("amount", this.amount)
+      // if(!Number(this.amount)) return 
+      // this.$store.commit('getClaimORBGUYRewardData', {
+      //   type: 'LUCKY_BAG_TASK',
+      //   distributeResult: this.amount || 0,
       // })
-      // window.open(url, '_blank')
+      const evmAddress = this.evmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      const name = 'CLAIM_TO_SCROLL_LUCKY_BAG_AABANK'
+      const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: evmAddress,
+      })
+      window.open(url, '_blank')
     },
     getData() {
       this.$store.commit('getLuckyBagTaskInfo')
@@ -175,14 +213,14 @@ export default {
 <style lang="scss" scoped>
 
 @keyframes shine {
-    to {
-      // Move shine from left to right, with offset on the right based on the width of the shine - see background-size
-      background-position: right -40px top 0;
-    }
+  to {
+    // Move shine from left to right, with offset on the right based on the width of the shine - see background-size
+    background-position: right -40px top 0;
   }
+}
 
 .lucky-task-card-banner {
-    width: 100%;
+  width: 100%;
 
 
   .lucky-task-card {

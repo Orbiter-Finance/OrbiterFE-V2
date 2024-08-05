@@ -124,7 +124,7 @@ export class IMXHelper {
 
     try {
       const imxClient = await this.getImmutableXClient()
-      await imxClient.getUser({ user })
+      return await imxClient.getUser({ user });
     } catch (err) {
       if (!err.message || !/account_not_found/i.test(err.message)) {
         throw err

@@ -2292,6 +2292,7 @@ const Orbiter_CLAIM_ABI = [
     type: 'receive',
   },
 ]
+export * as SOLANA_OPOOL_ABI from './OPool.idl.json'
 
 export {
   Coin_ABI,
