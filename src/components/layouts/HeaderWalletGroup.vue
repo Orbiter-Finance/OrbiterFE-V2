@@ -259,6 +259,16 @@ export default {
           icon: 'nightly',
           title: 'Nightly',
         },
+        {
+          isConnect: false,
+          icon: 'salmon',
+          title: 'Salmon',
+        },
+        {
+          isConnect: false,
+          icon: 'solflare',
+          title: 'Solflare',
+        },
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',

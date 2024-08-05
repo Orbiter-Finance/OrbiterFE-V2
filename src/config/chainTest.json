@@ -782,53 +782,6 @@
     ]
   },
   {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "SOLANA_DEV",
-    "networkId": "SOLANA_DEV",
-    "internalId": "551",
-    "name": "Solana",
-    "batchLimit": 20,
-    "debug": true,
-    "service": {
-      "api": "SolanaApiScanningService"
-    },
-    "features": [],
-    "nativeCurrency": {
-      "name": "SOL",
-      "symbol": "SOL",
-      "decimals": 9,
-      "address": "So11111111111111111111111111111111111111112"
-    },
-    "rpc": [
-      "https://solana-devnet.g.alchemy.com/v2/azgtbx3M3JRazx0tzsZ-2XLX3-nHc9fH"
-    ],
-    "contracts": [
-      {
-        "name": "MemoProgram",
-        "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
-        "methods": []
-      }
-    ],
-    "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 9,
-        "address": "GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "9PEiZDedcuv5kAmqVstgkK2YXVVB59quPQPt5wZ7Q2DR"
-      }
-    ],
-    "infoURL": "https://solscan.io/"
-  },
-  {
     "name": "Eclipse",
     "internalId": "565",
     "shortName": "Eclipse",

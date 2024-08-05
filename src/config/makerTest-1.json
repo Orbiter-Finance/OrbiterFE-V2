@@ -356,247 +356,271 @@
     }
   },
   "526-551": {
-            "ETH-ETH": {
-                "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-        "551-526": {
-            "ETH-ETH": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-
-        "526-565": {
-            "ETH-ETH": {
-                "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-        "565-526": {
-            "ETH-ETH": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-
-        "526-569": {
-            "ETH-ETH": {
-                "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-        "569-526": {
-            "ETH-ETH": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-
-        "565-569": {
-            "ETH-ETH": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-        "569-565": {
-            "ETH-ETH": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-
-        "551-569": {
-            "ETH-ETH": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        },
-        "569-551": {
-            "ETH-ETH": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.00001,
-                "maxPrice": 5,
-                "minPrice": 0.00001,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            },
-            "USDC-USDC": {
-                "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
-                "gasFee": 5,
-                "tradingFee": 0.1,
-                "maxPrice": 5,
-                "minPrice": 0.1,
-                "slippage": 200,
-                "startTime": 0,
-                "endTime": 99999999999999
-            }
-        }
+    "ETH-ETH": {
+      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "551-526": {
+    "ETH-ETH": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "526-565": {
+    "ETH-ETH": {
+      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "565-526": {
+    "ETH-ETH": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "526-569": {
+    "ETH-ETH": {
+      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "569-526": {
+    "ETH-ETH": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "565-569": {
+    "ETH-ETH": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "569-565": {
+    "ETH-ETH": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "551-569": {
+    "ETH-ETH": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "569-551": {
+    "ETH-ETH": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.00001,
+      "maxPrice": 5,
+      "minPrice": 0.00001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    },
+    "USDC-USDC": {
+      "makerAddress": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "sender": "Exf58y5uLJc84oKVAvjfpwMbbSB59unwLHTagLd2tF9g",
+      "gasFee": 5,
+      "tradingFee": 0.1,
+      "maxPrice": 5,
+      "minPrice": 0.1,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "515-551": {
+    "AIDOGE-AIDOGE": {
+      "bridgeType": 1,
+      "makerAddress": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
+      "sender": "4SyGaDFJ394ovGUemfQTPSCKqphawcBGkQTBpgoMR46x",
+      "gasFee": 0,
+      "tradingFee": 0.001,
+      "maxPrice": 5000,
+      "minPrice": 0.001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  },
+  "551-515": {
+    "AIDOGE-AIDOGE": {
+      "bridgeType": 1,
+      "makerAddress": "4SyGaDFJ394ovGUemfQTPSCKqphawcBGkQTBpgoMR46x",
+      "sender": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
+      "gasFee": 0,
+      "tradingFee": 0.001,
+      "maxPrice": 5000,
+      "minPrice": 0.001,
+      "slippage": 200,
+      "startTime": 0,
+      "endTime": 99999999999999
+    }
+  }
 }

@@ -46,7 +46,9 @@ const getConnection = (chainId) => {
 
 const getWallet = () => {
   const walletName = readWalletName()
-  const provider = window?.[walletName?.toLocaleLowerCase() || '']?.solana
+
+  const wallet = window?.[walletName?.toLocaleLowerCase() || '']
+  const provider = wallet?.solana || wallet
   // const provider = window.solflare
 
   return provider
@@ -73,8 +75,9 @@ const disConnect = async () => {
 
 const connect = async (walletName) => {
   updateWalletName(walletName)
-  const res = await getProvider()?.connect()
-  const publicKey = res?.publicKey || res
+  const provider = getProvider()
+  const res = await provider?.connect()
+  const publicKey = res?.publicKey || provider?.publicKey || res
   const address = publicKey?.toString()
   updateSolanaAddress(address)
   updateSolanaConnectStatus(!!address)
