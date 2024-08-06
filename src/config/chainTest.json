@@ -626,11 +626,9 @@
         "name": "OPool",
         "address": "FiyoeqDdRaV5cKCUXoXwiXt1rQpBokQXag2P9QMqob8Z",
         "state": "4dQEMZbTwgmLg8jDjnXBob8nWG7k4pt9VPWCrP8gHhaF",
-        "authority": "4YcjUyA6HQubDCEhDowrKMqoYVZp6ZqcgD1RtRbozmvo",
-        "makerValid": "41RMSiuftLBX16vUjqFjfQGNVce5tWaWPYdAA44eFCub",
         "feeReceiver": "E54F5SsYJv44kh5RrP4W42kSuCTe5qxqrRc1oHi1woj",
         "methods": []
-      }
+    }
     ],
     "tokens": [
       {
@@ -650,6 +648,12 @@
         "symbol": "AIDOGE",
         "decimals": 6,
         "address": "Av39iDnGgKhkccKfKvYedihkhh6KwXjmAUatbAEZouxw"
+      },
+      {
+        "name": "BOME",
+        "symbol": "BOME",
+        "decimals": 6,
+        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm"
       }
     ],
     "infoURL": "https://solscan.io"
@@ -714,6 +718,7 @@
       {
         "name": "OPool",
         "address": "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0",
+        "feeToken": "0x0000000000000000000000000000000000000000",
         "methods": [
           "inbox(address,address,uint256,bytes)",
           "outbox(address,address,uint256,bytes)",
@@ -952,6 +957,11 @@
       {
         "name": "OrbiterRouterV3",
         "address": "0x78606Ea26275F6180745480FaF74E311586EB652"
+      },
+      {
+        "name": "OPool",
+        "address": "0x6a99aF2B5398Ee7bb340bfC337d32Eb8D58655ae",
+        "feeToken": "0x0000000000000000000000000000000000000000"
       }
     ],
     "nativeCurrency": {
@@ -985,5 +995,57 @@
       }
     ],
     "infoURL": "https://sepolia.arbiscan.io"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "9738",
+    "networkId": "9738",
+    "internalId": "573",
+    "name": "Bomechain",
+    "debug": false,
+    "service": {
+        "rpc": "EVMRpcScanningV6Service"
+    },
+    "features": [
+      {
+        "name": "evm-account5"
+      }
+    ],
+    "contract": {
+      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2":"OPool"
+    },
+    "nativeCurrency": {
+      "name": "BOME",
+      "symbol": "BOME",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://testrpc.bomechain.org"
+    ],
+    "tokens": [
+      {
+        "name": "TestToken",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0x443AD766a83928465d2d40c2ad36cAFf11E4415A"
+      }
+    ],
+    "infoURL": "https://testnet.bomescan.org",
+    "contracts": [
+      {
+                "name": "OPool",
+                "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
+                "feeToken": "0x0000000000000000000000000000000000000000",
+                "methods": [
+                    "inbox(address,address,uint256,bytes)",
+                    "outbox(address,address,uint256,bytes)",
+                  "outboxBatch(address,address[],uint256[],bytes[])"
+                ]
+            }
+    ]
   }
 ]

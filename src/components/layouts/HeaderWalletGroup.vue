@@ -262,6 +262,11 @@ export default {
           isConnect: false,
           icon: 'backpack',
           title: 'Backpack',
+        },
+        {
+          isConnect: false,
+          icon: 'solflare',
+          title: 'Solflare',
         }
         // {
         //     isConnect: false,
