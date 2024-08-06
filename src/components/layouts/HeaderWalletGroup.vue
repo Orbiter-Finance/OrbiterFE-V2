@@ -258,6 +258,11 @@ export default {
           icon: 'phantom',
           title: 'Phantom',
         },
+        {
+          isConnect: false,
+          icon: 'backpack',
+          title: 'Backpack',
+        }
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',

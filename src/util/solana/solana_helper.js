@@ -20,8 +20,6 @@ import { utils } from 'ethers'
 import util from '../util'
 import { BN, Program } from '@project-serum/anchor'
 import { SOLANA_OPOOL_ABI } from '../constants/contract/contract'
-import * as a from '@project-serum/anchor'
-console.log('a', a)
 
 const SOLNA_WALLET_NAME = ''
 
@@ -43,7 +41,8 @@ const getConnection = (chainId) => {
 
 const getWallet = () => {
   const walletName = readWalletName()
-  const provider = window?.[walletName?.toLocaleLowerCase() || '']?.solana
+  const wallet = window?.[walletName?.toLocaleLowerCase() || '']
+  const provider = wallet?.solana || wallet
   // const provider = window.solflare
 
   return provider
