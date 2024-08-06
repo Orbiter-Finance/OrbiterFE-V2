@@ -2893,5 +2893,66 @@
             ]
          }
       ]
-   }
+   },
+   {
+      "name": "Zircuit",
+      "rpc": [
+          "https://zircuit1-mainnet.p2pify.com","https://zircuit1-mainnet.liquify.com"
+      ],
+      "features": [
+          {
+              "name": "evm-account6"
+          },
+          {
+              "name": "evm-rpc"
+          }
+      ],
+      "service": {
+          "rpc": "EVMRpcScanningV6Service"
+      },
+      "tokens": [
+
+      ],
+      "internalId": 71,
+      "nativeCurrency": {
+          "coinKey": "ETH",
+          "address": "0x0000000000000000000000000000000000000000",
+          "name": "ETH",
+          "symbol": "ETH",
+          "decimals": 18
+      },
+      "infoURL": "https://explorermainnet.zircuit.com",
+      "chainId": "48900",
+      "networkId": "48900",
+      "explorers": [
+          {
+              "name": "Explorer",
+              "url": "https://explorermainnet.zircuit.com"
+          }
+      ],
+      "contract": {
+          "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+          "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+      },
+      "contracts": [
+          {
+              "name": "OBSource",
+              "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+              "methods": [
+                  "transfer(address,bytes)",
+                  "transferERC20(address,address,uint256,bytes)"
+              ]
+          },
+          {
+              "name": "OrbiterRouterV3",
+              "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+              "methods": [
+                  "transfer(address,bytes)",
+                  "transferToken(address,address,uint256,bytes)",
+                  "transfers(address[],uint256[])",
+                  "transferTokens(address,address[],uint256[])"
+              ]
+          }
+      ]
+  }
 ]
