@@ -1518,8 +1518,8 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    name: 'AddressEmptyCode',
     type: 'error',
+    name: 'AddressEmptyCode',
   },
   {
     inputs: [
@@ -1529,13 +1529,13 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    name: 'AddressInsufficientBalance',
     type: 'error',
+    name: 'AddressInsufficientBalance',
   },
   {
     inputs: [],
-    name: 'FailedInnerCall',
     type: 'error',
+    name: 'FailedInnerCall',
   },
   {
     inputs: [
@@ -1545,8 +1545,8 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    name: 'OwnableInvalidOwner',
     type: 'error',
+    name: 'OwnableInvalidOwner',
   },
   {
     inputs: [
@@ -1556,13 +1556,13 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    name: 'OwnableUnauthorizedAccount',
     type: 'error',
+    name: 'OwnableUnauthorizedAccount',
   },
   {
     inputs: [],
-    name: 'ReentrancyGuardReentrantCall',
     type: 'error',
+    name: 'ReentrancyGuardReentrantCall',
   },
   {
     inputs: [
@@ -1572,101 +1572,101 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    name: 'SafeERC20FailedOperation',
     type: 'error',
+    name: 'SafeERC20FailedOperation',
   },
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: true,
         internalType: 'address',
         name: 'feeReceiver',
         type: 'address',
+        indexed: true,
       },
       {
-        indexed: true,
         internalType: 'address',
         name: 'token',
         type: 'address',
+        indexed: true,
       },
       {
-        indexed: false,
         internalType: 'address',
         name: 'tokenfrom',
         type: 'address',
+        indexed: false,
       },
       {
-        indexed: false,
         internalType: 'address',
         name: 'tokenReceiver',
         type: 'address',
+        indexed: false,
       },
       {
-        indexed: false,
         internalType: 'uint256',
         name: 'amount',
         type: 'uint256',
+        indexed: false,
       },
       {
-        indexed: false,
         internalType: 'bytes',
         name: 'data',
         type: 'bytes',
+        indexed: false,
       },
     ],
-    name: 'Inbox',
     type: 'event',
+    name: 'Inbox',
+    anonymous: false,
   },
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: true,
         internalType: 'address',
         name: 'token',
         type: 'address',
+        indexed: true,
       },
       {
-        indexed: false,
         internalType: 'address',
         name: 'to',
         type: 'address',
+        indexed: false,
       },
       {
-        indexed: false,
         internalType: 'uint256',
         name: 'amount',
         type: 'uint256',
+        indexed: false,
       },
       {
-        indexed: false,
         internalType: 'bytes',
         name: 'data',
         type: 'bytes',
+        indexed: false,
       },
     ],
-    name: 'Outbox',
     type: 'event',
+    name: 'Outbox',
+    anonymous: false,
   },
   {
-    anonymous: false,
     inputs: [
       {
-        indexed: true,
         internalType: 'address',
         name: 'previousOwner',
         type: 'address',
+        indexed: true,
       },
       {
-        indexed: true,
         internalType: 'address',
         name: 'newOwner',
         type: 'address',
+        indexed: true,
       },
     ],
-    name: 'OwnershipTransferred',
     type: 'event',
+    name: 'OwnershipTransferred',
+    anonymous: false,
   },
   {
     inputs: [
@@ -1691,10 +1691,41 @@ const Orbiter_OPOOL_ABI = [
         type: 'bytes',
       },
     ],
-    name: 'inbox',
-    outputs: [],
     stateMutability: 'payable',
     type: 'function',
+    name: 'inbox',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'address',
+        name: 'feeReceiver',
+        type: 'address',
+      },
+      {
+        internalType: 'address',
+        name: 'feeToken',
+        type: 'address',
+      },
+      {
+        internalType: 'uint256',
+        name: 'fee',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'amount',
+        type: 'uint256',
+      },
+      {
+        internalType: 'bytes',
+        name: 'data',
+        type: 'bytes',
+      },
+    ],
+    stateMutability: 'payable',
+    type: 'function',
+    name: 'inboxNative',
   },
   {
     inputs: [
@@ -1704,6 +1735,8 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
+    type: 'function',
     name: 'makerList',
     outputs: [
       {
@@ -1712,8 +1745,6 @@ const Orbiter_OPOOL_ABI = [
         type: 'bool',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
   },
   {
     inputs: [
@@ -1723,6 +1754,8 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
+    type: 'function',
     name: 'managerList',
     outputs: [
       {
@@ -1731,8 +1764,6 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
   },
   {
     inputs: [
@@ -1757,10 +1788,9 @@ const Orbiter_OPOOL_ABI = [
         type: 'bytes',
       },
     ],
-    name: 'outbox',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'outbox',
   },
   {
     inputs: [
@@ -1785,13 +1815,14 @@ const Orbiter_OPOOL_ABI = [
         type: 'bytes[]',
       },
     ],
-    name: 'outboxBatch',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'outboxBatch',
   },
   {
     inputs: [],
+    stateMutability: 'view',
+    type: 'function',
     name: 'owner',
     outputs: [
       {
@@ -1800,15 +1831,12 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
   },
   {
     inputs: [],
-    name: 'renounceOwnership',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'renounceOwnership',
   },
   {
     inputs: [
@@ -1823,10 +1851,9 @@ const Orbiter_OPOOL_ABI = [
         type: 'bool[]',
       },
     ],
-    name: 'setMakerList',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'setMakerList',
   },
   {
     inputs: [
@@ -1841,10 +1868,9 @@ const Orbiter_OPOOL_ABI = [
         type: 'address[]',
       },
     ],
-    name: 'setManagerList',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'setManagerList',
   },
   {
     inputs: [
@@ -1859,10 +1885,9 @@ const Orbiter_OPOOL_ABI = [
         type: 'address[]',
       },
     ],
-    name: 'setTokenReceiver',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'setTokenReceiver',
   },
   {
     inputs: [
@@ -1872,6 +1897,8 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
+    stateMutability: 'view',
+    type: 'function',
     name: 'tokenReceivers',
     outputs: [
       {
@@ -1880,8 +1907,6 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    stateMutability: 'view',
-    type: 'function',
   },
   {
     inputs: [
@@ -1891,10 +1916,9 @@ const Orbiter_OPOOL_ABI = [
         type: 'address',
       },
     ],
-    name: 'transferOwnership',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'transferOwnership',
   },
   {
     inputs: [
@@ -1909,12 +1933,12 @@ const Orbiter_OPOOL_ABI = [
         type: 'uint256',
       },
     ],
-    name: 'withdraw',
-    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
+    name: 'withdraw',
   },
   {
+    inputs: [],
     stateMutability: 'payable',
     type: 'receive',
   },

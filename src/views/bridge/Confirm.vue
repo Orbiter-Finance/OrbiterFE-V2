@@ -300,8 +300,11 @@ export default {
 
           realTransferAmount = bridgeType1 ? transferValue : realTransferAmount
 
-          const originWithholdingFee = +(selectMakerConfig.originWithholdingFee || 0);
-          const withholdingFee = +(selectMakerConfig.tradingFee || 0);
+      const originWithholdingFee = (
+        selectMakerConfig.originWithholdingFee || 0
+      )
+
+      const withholdingFee = (selectMakerConfig.tradingFee || 0)
 
           const tieredFeeMax = transferCalculate.max()
 
@@ -441,38 +444,38 @@ export default {
 
           try {
 
-          const contractList = Object.keys(contractGroup).map((key)=> {
-              return ({
-                  name: contractGroup[key],
-                  address: key 
-              })
-          })
+            const contractList = Object.keys(contractGroup).map((key)=> {
+                return ({
+                    name: contractGroup[key],
+                    address: key 
+                })
+            })
 
-          const contractAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OrbiterRouterV3"?.toLocaleLowerCase())[0]?.address
+            const contractAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OrbiterRouterV3"?.toLocaleLowerCase())[0]?.address
 
-          if(!contractAddress) {
-              this.$notify.error({
-                  title: 'Not Contract, ChainId: ' + fromChainID ,
-                  duration: 3000,
-              })
-              return
-          }
-          let transferHash = ""
+            if(!contractAddress) {
+                this.$notify.error({
+                    title: 'Not Contract, ChainId: ' + fromChainID ,
+                    duration: 3000,
+                })
+                return
+            }
+            let transferHash = ""
 
-          const tokenAddress = selectMakerConfig.fromChain.tokenAddress
-          const recipient = selectMakerConfig.recipient
+            const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+            const recipient = selectMakerConfig.recipient
 
-          const provider = new ethers.providers.Web3Provider(
-              compatibleGlobalWalletConf.value.walletPayload.provider || window?.ethereum
-          )
-          const signer = provider.getSigner()
-          const toAddress = await this.toCrossAddressReceipt()
-          if(!toAddress) {
-              this.openConnectModal()
-              return 
-          }
-          const str = `t=${toAddress}`
-          const transferContract = new ethers.Contract(
+            const provider = new ethers.providers.Web3Provider(
+                compatibleGlobalWalletConf.value.walletPayload.provider || window?.ethereum
+            )
+            const signer = provider.getSigner()
+            const toAddress = await this.toCrossAddressReceipt()
+            if(!toAddress) {
+                this.openConnectModal()
+                return 
+            }
+            const str = `t=${toAddress}`
+            const transferContract = new ethers.Contract(
                   contractAddress,
                   Orbiter_V3_ABI_EVM,
                   signer
@@ -529,6 +532,8 @@ export default {
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
 
+        let toAddress = await this.toCrossAddressReceipt()
+
         const amount = new BigNumber(transferValue).multipliedBy(
           new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
         )
@@ -541,20 +546,15 @@ export default {
 
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
         const recipient = selectMakerConfig.recipient
-      
-        const contractGroup = chainInfo?.contract || {}
+        
+        const contractList = chainInfo?.contracts || []
 
-        const contractList = Object.keys(contractGroup).map((key) => {
-          return {
-            name: contractGroup[key],
-            address: key,
-          }
-        })
-
-        const contractAddress = contractList?.filter(
+        const contractInfo = contractList?.filter(
           (item) =>
             item?.name?.toLocaleLowerCase() === 'OPool'?.toLocaleLowerCase()
-        )[0]?.address
+        )[0]
+
+        const contractAddress = contractInfo?.address
 
         let hash = ""
 
@@ -570,7 +570,7 @@ export default {
               }
             hash = await solanaHelper.bridgeType1transfer({
               from: solanaAddress,
-              targetAddress: from,
+              targetAddress: toAddress,
               tokenAddress,
               toAddress: recipient,
               safeCode,
@@ -584,18 +584,9 @@ export default {
             let memo = `c=${safeCode}`
 
             if (
-              toChainID === CHAIN_ID.solana ||
-              toChainID === CHAIN_ID.solana_test
+              from !== toAddress
             ) {
-              const solanaAddress = solanaHelper.solanaAddress()
-              const isConnected = await solanaHelper.isConnect()
-              if (!isConnected || !solanaAddress) {
-                setSelectWalletDialogVisible(true)
-                setConnectWalletGroupKey('SOLANA')
-                this.transferLoading = false
-                return
-              }
-              memo = `c=${safeCode}&t=${solanaAddress}`
+              memo = `c=${safeCode}&t=${toAddress}`
             }
             const provider = new ethers.providers.Web3Provider(
               compatibleGlobalWalletConf.value.walletPayload.provider
@@ -603,47 +594,101 @@ export default {
 
             const signer = provider.getSigner()
 
-            const tokenContract = new ethers.Contract(
+            const feeToken = contractInfo?.feeToken
+
+            const tokens = chainInfo?.tokens
+
+            let transferAmount = ethers.utils.parseUnits(
+                    String("0"),
+                    chainInfo.nativeCurrency.decimals
+                  )
+            if (!util.isEthTokenAddress(fromChainID, tokenAddress)) {
+              const tokenContract = new ethers.Contract(
               tokenAddress,
               Coin_ABI,
               signer
             )
-
-            console.log('tokenContract', tokenContract)
-
             const allowance = await tokenContract.allowance(from, contractAddress)
-
-            console.log('allowance', allowance)
-
             if (allowance.lt(amountValue)) {
               const approveRes = await tokenContract.approve(
                 contractAddress,
                 amountValue
               )
-              console.log('approveRes', approveRes)
               await approveRes.wait()
             }
+            } else {
+              transferAmount = amountValue
+            }
 
-            const transferContract = new ethers.Contract(
-              contractAddress,
-              Orbiter_OPOOL_ABI,
-              signer
-            )
+            let feeAmount = "0"
 
-            const res = await transferContract.inbox(
-              recipient,
-              tokenAddress,
-              amountValue,
-              ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
-              {
-                value: ethers.utils.parseUnits(
-                  String(withholdingFee),
-                  chainInfo.nativeCurrency.decimals
-                ),
+            const decimals = (tokens.concat(chainInfo.nativeCurrency))?.filter((item)=> item.address === feeToken)?.[0]?.decimals
+
+              if(!decimals){
+                this.$notify.error({
+                  title: "Coin decimals Error: " + decimals,
+                  duration: 3000,
+                })
+                this.transferLoading = false
+                return 
               }
-            )
 
-            hash = res?.hash
+            feeAmount = ethers.utils.parseUnits(String(withholdingFee), decimals)
+
+            if (!util.isEthTokenAddress(fromChainID, feeToken)) {
+              const tokenContract = new ethers.Contract(
+                feeToken,
+                Coin_ABI,
+                signer
+              )
+              const allowance = await tokenContract.allowance(from, contractAddress)
+
+              if (allowance.lt(amount)) {
+                const approveRes = await tokenContract.approve(
+                  contractAddress,
+                  amount
+                )
+                await approveRes.wait()
+                }
+            } else {
+              transferAmount = feeAmount.add(transferAmount)
+            }
+
+              const transferContract = new ethers.Contract(
+                contractAddress,
+                Orbiter_OPOOL_ABI,
+                signer
+              )
+
+            if(!util.isEthTokenAddress(fromChainID, tokenAddress)) {
+
+              const res = await transferContract.inbox(
+                recipient,
+                tokenAddress,
+                amountValue,
+                ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
+                {
+                  value: transferAmount,
+                }
+              )
+
+              hash = res?.hash
+            } else {
+              const res = await transferContract.inboxNative(
+                recipient,
+                tokenAddress,
+                feeAmount,
+                amountValue,
+                ethers.utils.hexlify(ethers.utils.toUtf8Bytes(memo)),
+                {
+                  value: transferAmount,
+                }
+              )
+
+              hash = res?.hash
+            }
+
+            
         }
 
         if (hash) {

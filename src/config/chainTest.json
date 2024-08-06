@@ -177,73 +177,6 @@
   },
   {
     "api": {
-      "url": "https://api-testnet.bscscan.com/api",
-      "key": ""
-    },
-    "chainId": "97",
-    "networkId": "97",
-    "internalId": "515",
-    "name": "BSC(G)",
-    "debug": false,
-    "contracts": [],
-    "contract": {
-      "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0": "OPool"
-    },
-    "nativeCurrency": {
-      "name": "BNB",
-      "symbol": "BNB",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://data-seed-prebsc-1-s1.binance.org:8545",
-      "https://bsc-testnet.public.blastapi.io"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
-      },
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-      },
-      {
-        "name": "AIDOGE",
-        "symbol": "AIDOGE",
-        "decimals": 6,
-        "address": "0x6FE7f27BE081D25222C47ee5ff418455b88aBB8C"
-      }
-    ],
-    "xvmList": [
-      "0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"
-    ],
-    "faucets": [
-      "https://testnet.binance.org/faucet-smart"
-    ],
-    "infoURL": "https://testnet.binance.org/"
-  },
-  {
-    "api": {
       "url": "",
       "key": ""
     },
@@ -410,6 +343,12 @@
         "symbol": "AIDOGE",
         "decimals": 6,
         "address": "Av39iDnGgKhkccKfKvYedihkhh6KwXjmAUatbAEZouxw"
+      },
+      {
+        "name": "BOME",
+        "symbol": "BOME",
+        "decimals": 6,
+        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm"
       }
     ],
     "infoURL": "https://solscan.io"
@@ -474,6 +413,7 @@
       {
         "name": "OPool",
         "address": "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0",
+        "feeToken": "0x0000000000000000000000000000000000000000",
         "methods": [
           "inbox(address,address,uint256,bytes)",
           "outbox(address,address,uint256,bytes)",
@@ -629,6 +569,11 @@
       {
         "name": "OrbiterRouterV3",
         "address": "0x78606Ea26275F6180745480FaF74E311586EB652"
+      },
+      {
+        "name": "OPool",
+        "address": "0x6a99aF2B5398Ee7bb340bfC337d32Eb8D58655ae",
+        "feeToken": "0x0000000000000000000000000000000000000000"
       }
     ],
     "nativeCurrency": {
@@ -876,5 +821,57 @@
       }
     ],
     "infoURL": "https://explorer.sonic.game"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "9738",
+    "networkId": "9738",
+    "internalId": "573",
+    "name": "Bomechain",
+    "debug": false,
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "features": [
+      {
+        "name": "evm-account5"
+      }
+    ],
+    "contract": {
+      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2": "OPool"
+    },
+    "nativeCurrency": {
+      "name": "BOME",
+      "symbol": "BOME",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://testrpc.bomechain.org"
+    ],
+    "tokens": [
+      {
+        "name": "TestToken",
+        "symbol": "ETH",
+        "decimals": 18,
+        "address": "0x443AD766a83928465d2d40c2ad36cAFf11E4415A"
+      }
+    ],
+    "infoURL": "https://testnet.bomescan.org",
+    "contracts": [
+      {
+        "name": "OPool",
+        "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
+        "feeToken": "0x0000000000000000000000000000000000000000",
+        "methods": [
+          "inbox(address,address,uint256,bytes)",
+          "outbox(address,address,uint256,bytes)",
+          "outboxBatch(address,address[],uint256[],bytes[])"
+        ]
+      }
+    ]
   }
 ]

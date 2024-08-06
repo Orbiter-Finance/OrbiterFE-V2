@@ -211,6 +211,7 @@ const bridgeType1transfer = async ({
   console.log('tokenPublicKey', tokenPublicKey)
   const fromPublicKey = getPublicKey(from)
   console.log('fromPublicKey', fromPublicKey)
+  console.log('toAddress', toAddress)
   const fromTokenAccount = await getAssociatedTokenAddress(
     tokenPublicKey,
     fromPublicKey
@@ -218,7 +219,8 @@ const bridgeType1transfer = async ({
   console.log('fromTokenAccount', fromTokenAccount)
   const makerTokenAccount = await getAssociatedTokenAddress(
     tokenPublicKey,
-    getPublicKey(toAddress) // maker address
+    getPublicKey(toAddress), // maker address
+    true
   )
   console.log('makerTokenAccount', makerTokenAccount)
 

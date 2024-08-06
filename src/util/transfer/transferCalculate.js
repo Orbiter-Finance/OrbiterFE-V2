@@ -1434,7 +1434,7 @@ export default {
   discount() {
     const { selectMakerConfig } = transferDataState
 
-    const withholdingFee = +(selectMakerConfig.tradingFee || 0)
+    const withholdingFee = selectMakerConfig.tradingFee || 0
 
     const tieredFeeMax = this.max()
     let discount = '0'
