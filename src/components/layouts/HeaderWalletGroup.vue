@@ -256,6 +256,11 @@ export default {
         },
         {
           isConnect: false,
+          icon: 'backpack',
+          title: 'Backpack',
+        },
+        {
+          isConnect: false,
           icon: 'nightly',
           title: 'Nightly',
         },
@@ -268,7 +273,7 @@ export default {
           isConnect: false,
           icon: 'solflare',
           title: 'Solflare',
-        },
+        }
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',

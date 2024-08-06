@@ -46,7 +46,6 @@ const getConnection = (chainId) => {
 
 const getWallet = () => {
   const walletName = readWalletName()
-
   const wallet = window?.[walletName?.toLocaleLowerCase() || '']
   const provider = wallet?.solana || wallet
   // const provider = window.solflare
