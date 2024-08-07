@@ -39,10 +39,8 @@
             <div
               class="prizes-to-bridge-btn"
               @click="toBridgeCall"
-              :style="`opacity: ${isEnd ? '0.3' : '1'};`"
             >
-              {{ isEnd ? 'In the statistics...' : 'Start Bridge' }}
-              <!-- {{ isEnd ? 'Claim' : 'Start Bridge' }} -->
+            Claim
             </div>
           </div>
         </div>
@@ -62,6 +60,7 @@
 import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
 import { isDev } from '../../../util'
 import getUTCTime from '../../../util/time'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
 import {
   prizesV2TimeEnd,
   setPrizesV2TimeEnd,
@@ -101,6 +100,9 @@ export default {
     }
   },
   computed: {
+    evmAddress() {
+      return compatibleGlobalWalletConf.value.walletPayload.walletAddress || ''
+    },
     timeStr() {
       return prizesV2ProjectTime.value
     },
@@ -123,25 +125,51 @@ export default {
       return Date.parse(d2)
     },
     toBridgeCall() {
-      if (this.isEnd) return
-      const name ="PRIZES_V2_BANNER_TO_BRIDGE"
+      const evmAddress = this.evmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      const name = 'CLAIM_TO_PRIZESV2_AABANK'
+      const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
       this.$gtag.event(name, {
         event_category: name,
-        event_label: "to home",
+        event_label: evmAddress,
       })
-      localStorage.setItem(
-        'last_page_before_history',
-        JSON.stringify({
-          params: {},
-          path: '/',
-          query: { source: 'Ethereum', dest: 'BNB Chain', token: 'ETH' },
-        })
-      )
-      this.$router.push({
-        path: isDev()
-          ? '/?source=Sepolia%28G%29&dest=BNB%20Chain'
-          : '/?source=Ethereum&dest=BNB%20Chain&token=ETH',
-      })
+      window.open(url, '_blank')
+      // if (this.isDrawLoading || !address || !this.taskId || address === '0x') {
+      // } else {
+      //   if (this.isDraw) {
+      //     this.isDrawLoading = true
+      //     const token = await this.signCall()
+      //     if (!token) return
+      //     this.$store.commit('lotteryPrizesV2TaskReward', {
+      //       address,
+      //       taskId: this.taskId,
+      //       token,
+      //       call: (res) => {
+      //         this.drawCardCall(res)
+      //       },
+      //     })
+      //   }
+      // }
+      // },
+      // if (this.isEnd) return
+      // const name ="PRIZES_V2_BANNER_TO_BRIDGE"
+      // this.$gtag.event(name, {
+      //   event_category: name,
+      //   event_label: "to home",
+      // })
+      // localStorage.setItem(
+      //   'last_page_before_history',
+      //   JSON.stringify({
+      //     params: {},
+      //     path: '/',
+      //     query: { source: 'Ethereum', dest: 'BNB Chain', token: 'ETH' },
+      //   })
+      // )
+      // this.$router.push({
+      //   path: isDev()
+      //     ? '/?source=Sepolia%28G%29&dest=BNB%20Chain'
+      //     : '/?source=Ethereum&dest=BNB%20Chain&token=ETH',
+      // })
     },
     toggleEnd() {
       setPrizesV2TimeEnd(true)

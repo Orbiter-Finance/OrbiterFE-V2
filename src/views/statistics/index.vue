@@ -1,6 +1,6 @@
 <template>
   <div class="contnet">
-    <div class="title">Orbiter Statistics</div>
+    <!-- <div class="title">Orbiter Statistics</div> -->
     <div class="statistics-info">
       <div class="info-item">
         <div class="item-title">Total Tx</div>
@@ -22,6 +22,7 @@
         <CommLoading :hidden="hideDataLoading" width="3rem" height="3rem" />
       </div>
     </div>
+    <LatestTransactions></LatestTransactions>
     <div v-if="showSource" class="tx-content">
       <div class="tx-head">
         <span class="tx-title">Tx Statistics <span>Data source: Orbiter Finance Bridge & Vizing</span></span>
@@ -132,6 +133,7 @@ import { mapMutations } from 'vuex'
 import { BigNumber } from 'bignumber.js'
 import { utils } from 'ethers'
 import config from '../../config';
+import LatestTransactions from "./LatestTransactions.vue"
 let globalChain = config.chain.map((item)=> item.chainId);
 const STATISTICS_VALUE = 1000
 
@@ -143,7 +145,7 @@ export default {
       addressCount: 0,
       totalUsd: 0,
       txCount: 0,
-      showSource: true,
+      showSource: false,
       sourceChart: undefined,
       destChart: undefined,
       ethStatisticsData: undefined,
@@ -155,6 +157,9 @@ export default {
       hideAmountLoading: false,
       hideUserLoading: false
     }
+  },
+  components: {
+    LatestTransactions
   },
   computed: {
     formatTxCount() {
@@ -206,10 +211,10 @@ export default {
           this.usdcStatisticsData = res[1]
           this.usdtStatisticsData = res[2]
           this.btcStatisticsData = res[3]
-          const txChartDom = document.getElementById('tx-source-chart')
-          this.initTxStatisticsData(txChartDom, true)
+          const txChartDom = document.getElementById('tx-dest-chart')
+          this.initTxStatisticsData(txChartDom, false)
           const amountChartDom = document.getElementById('amount-chart')
-          this.initTxStatisticsData(amountChartDom, true, true)
+          this.initTxStatisticsData(amountChartDom, false, true)
         })
       })
       queryUsersStatisticsData().then((userStatisticsData) => {
@@ -671,7 +676,7 @@ export default {
   width: 100%;
   background: #ffffff;
   border-radius: 24px;
-  height: 670px;
+  height: 560px;
   display: flex;
   flex-direction: column;
 }
@@ -727,17 +732,17 @@ export default {
   background-color: #eeeeee;
 }
 .tx-source-chart {
-  height: 610px;
+  height: 504px;
 }
 .tx-dest-chart {
-  height: 610px;
+  height: 504px;
 }
 .amount-content {
   width: 100%;
   background: #ffffff;
   margin-top: 20px;
   border-radius: 24px;
-  height: 670px;
+  height: 560px;
   display: flex;
   flex-direction: column;
 }
@@ -754,10 +759,10 @@ export default {
   color: #222222;
 }
 .amount-chart {
-  height: 610px;
+  height: 504px;
 }
 .user-content {
-  height: 670px;
+  height: 560px;
   width: 100%;
   background: #ffffff;
   margin-top: 20px;
@@ -778,10 +783,10 @@ export default {
   color: #222222;
 }
 .amount-chart {
-  height: 610px;
+  height: 504px;
 }
 .user-chart {
-  height: 610px;
+  height: 504px;
 }
 .chart-loading {
   margin: 0 auto;

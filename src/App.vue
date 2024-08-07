@@ -39,7 +39,7 @@
     <HeaderLotteryCardDialog v-if="isTopNav" />
     <ClaimRewardModal></ClaimRewardModal>
     <div id="ton-connect-wallet"></div>
-    <GlobalTgCard v-if="isTopNav"></GlobalTgCard>
+    <GlobalTgCard v-if="isHeaderActDialog"></GlobalTgCard>
     <UserInfoDetailsCardModal v-if="isTopNav"></UserInfoDetailsCardModal>
     <OPointsRankingCard v-if="isTopNav"></OPointsRankingCard>
   </div>
@@ -483,6 +483,9 @@ export default {
       }
     },
   },
+  created() {
+    this.$store.commit('getPrizesV2ProjectInfo')
+  }
 }
 </script>
 
