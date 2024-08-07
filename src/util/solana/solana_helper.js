@@ -222,7 +222,7 @@ const bridgeType1transfer = async ({
   const decimals = tokens
     .concat([chainInfo?.nativeCurrency || {}])
     ?.filter((item) => item.address === feeToken)?.[0]?.decimals
-
+  console.log('decimals', decimals)
   const provider = getProvider()
 
   const programId = getPublicKey(contractAddress)
