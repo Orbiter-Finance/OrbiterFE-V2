@@ -97,7 +97,8 @@ export default {
     padding: 8px 24px 24px;
     width: 100%;
     border: 1px solid rgba(243, 223, 47, 0.3);
-    background: rgb(1, 1, 1);
+    border-radius: 16px;
+    background: linear-gradient(-3.58deg, rgba(15, 34, 37, 0.2) 60.756%,rgba(209, 112, 85, 0.2) 102.538%),rgb(15, 34, 37);
     text-align: left;
     margin-top: 16px;
     .card-label {

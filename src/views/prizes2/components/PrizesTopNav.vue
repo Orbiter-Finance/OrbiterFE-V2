@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="prizes-top-nav-empty"></div>
+    <!-- <div class="prizes-top-nav-empty"></div> -->
     <div class="prizes-top-nav" id="prizes-top-nav">
       <div @click="toHome">
         <svg-icon

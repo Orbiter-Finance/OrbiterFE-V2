@@ -229,11 +229,12 @@ export default {
 .prizes-top-banner {
   width: 100%;
   padding: 80px 0 40px;
-  background-image: url('../../../assets/prizes/v2/bg.png');
-  background-size: 36px 36px;
+  background-image: url('../../../assets/prizes/bg.png');
+  background-size: 100% 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  background-repeat: no-repeat;
   .prizes-content {
     width: 100%;
     max-width: 1200px;
