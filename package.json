@@ -43,6 +43,7 @@
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
     "bignumber.js": "^9.0.1",
+    "buffer": "6.0.3",
     "caniuse-lite": "^1.0.30001458",
     "core-js": "^3.6.5",
     "dayjs": "^1.11.11",
