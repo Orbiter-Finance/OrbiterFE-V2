@@ -99,7 +99,8 @@ const getTokenAccount = async ({
     connection || getConnection(chainId),
     fromPublicKey,
     tokenPublickey,
-    toPublickey
+    toPublickey,
+    true
   )
 }
 

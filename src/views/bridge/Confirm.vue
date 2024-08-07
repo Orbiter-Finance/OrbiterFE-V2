@@ -559,7 +559,7 @@ export default {
         let hash = ""
 
       try {
-          if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test){
+          if(orbiterHelper.isSolanaChain({chainId: fromChainID})){
             const solanaAddress = solanaHelper.solanaAddress()
               const isConnected = await solanaHelper.isConnect()
               if (!isConnected || !solanaAddress) {

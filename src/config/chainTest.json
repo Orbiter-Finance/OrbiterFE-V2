@@ -322,6 +322,7 @@
         "authority": "4YcjUyA6HQubDCEhDowrKMqoYVZp6ZqcgD1RtRbozmvo",
         "makerValid": "41RMSiuftLBX16vUjqFjfQGNVce5tWaWPYdAA44eFCub",
         "feeReceiver": "E54F5SsYJv44kh5RrP4W42kSuCTe5qxqrRc1oHi1woj",
+        "tokenAccount": "4YcjUyA6HQubDCEhDowrKMqoYVZp6ZqcgD1RtRbozmvo",
         "methods": []
       }
     ],
