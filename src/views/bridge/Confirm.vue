@@ -430,15 +430,9 @@ export default {
         web3State.coinbase
       const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-      const contractGroup = chainInfo?.contract || {}
+      const contractList = chainInfo?.contracts || []
 
       try {
-        const contractList = Object.keys(contractGroup).map((key) => {
-          return {
-            name: contractGroup[key],
-            address: key,
-          }
-        })
 
         const contractAddress = contractList?.filter(
           (item) =>
@@ -753,14 +747,7 @@ export default {
 
       const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-      const contractGroup = chainInfo?.contract || {}
-
-      const contractList = Object.keys(contractGroup).map((key) => {
-        return {
-          name: contractGroup[key],
-          address: key,
-        }
-      })
+      const contractList = chainInfo?.contracts || []
 
       const contractAddress = contractList?.filter(
         (item) =>

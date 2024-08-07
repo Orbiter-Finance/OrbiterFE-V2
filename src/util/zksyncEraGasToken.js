@@ -129,14 +129,7 @@ export const zksyncEraGasTokenContract = async ({
 
   const chainInfo = util.getV3ChainInfoByChainId(fromChainID)
 
-  const contractGroup = chainInfo?.contract || {}
-
-  const contractList = Object.keys(contractGroup).map((key) => {
-    return {
-      name: contractGroup[key],
-      address: key,
-    }
-  })
+  const contractList = chainInfo?.contracts || []
 
   const contractAddress = contractList?.filter(
     (item) =>
