@@ -2239,7 +2239,7 @@ export default {
           const chainInfo = util.getV3ChainInfoByChainId(chainId)
           const contractList = chainInfo?.contracts || []
           const contract = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]
-          sender = contract?.tokenAccount || contract?.address
+          sender = contract?.authority || contract?.address
         }
         const response = await transferCalculate.getTransferBalance(
                 chainId,
