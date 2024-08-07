@@ -64,7 +64,10 @@
       <div class="task-group">
         <div class="opoints-card">
           <div class="my-opoints">
-            <div class="opoints-reward-title">My O-Point Rewards</div>
+            <div class="opoints-reward-title">
+              <div>My O-Point Rewards</div>
+              <img v-if="Number(totalOpoints)" :src="require('../../../assets/prizes/v2/claim-card.png')" />
+            </div>
             <div class="reward-info">
               <svg-icon iconName="O-Points" class="o-points-symbol"></svg-icon>
               {{ totalOpoints }}
@@ -124,8 +127,7 @@
             </div>
 
             <div
-              :style="`opacity: ${isDraw ? '1' : '0.3'};`"
-              :class="`${isDraw ? 'prizes-to-bridge-animation' : ''} draw-btn`"
+              class="prizes-to-bridge-animation draw-btn"
               @click="openORBGUYReward"
             >
               Draw $ORBGUY
@@ -589,23 +591,31 @@ export default {
       }
     },
     async openORBGUYReward() {
-      const address = this.evmAddress
-      if (this.isDrawLoading || !address || !this.taskId || address === '0x') {
-      } else {
-        if (this.isDraw) {
-          this.isDrawLoading = true
-          const token = await this.signCall()
-          if (!token) return
-          this.$store.commit('lotteryPrizesV2TaskReward', {
-            address,
-            taskId: this.taskId,
-            token,
-            call: (res) => {
-              this.drawCardCall(res)
-            },
-          })
-        }
-      }
+      const evmAddress = this.evmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      const name = 'CLAIM_TO_PRIZESV2_AABANK_ORBGUY'
+      const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: evmAddress,
+      })
+      window.open(url, '_blank')
+      // if (this.isDrawLoading || !address || !this.taskId || address === '0x') {
+      // } else {
+      //   if (this.isDraw) {
+      //     this.isDrawLoading = true
+      //     const token = await this.signCall()
+      //     if (!token) return
+      //     this.$store.commit('lotteryPrizesV2TaskReward', {
+      //       address,
+      //       taskId: this.taskId,
+      //       token,
+      //       call: (res) => {
+      //         this.drawCardCall(res)
+      //       },
+      //     })
+      //   }
+      // }
     },
     async getOrbguyPrice() {
       const web3 = new Web3(
@@ -1126,6 +1136,15 @@ export default {
             line-height: 24px;
             letter-spacing: 0px;
             text-align: left;
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            img {
+              width: 100px;
+              height: 16px;
+              margin-left: 8px;
+            }
+
           }
           .reward-info {
             margin-top: 10px;
