@@ -618,7 +618,7 @@ export default {
 
             let feeAmount = "0"
 
-            const decimals = (tokens.concat(chainInfo.nativeCurrency))?.filter((item)=> item.address === feeToken)?.[0]?.decimals
+            const decimals = (tokens.concat([chainInfo?.nativeCurrency || {}]))?.filter((item)=> item.address === feeToken)?.[0]?.decimals
 
               if(!decimals){
                 this.$notify.error({

@@ -21,7 +21,9 @@ import util from '../util'
 import { BN, Program } from '@project-serum/anchor'
 import { SOLANA_OPOOL_ABI } from '../constants/contract/contract'
 
-const SOLNA_WALLET_NAME = ''
+import { Buffer } from 'buffer'
+
+const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
 const readWalletName = () => {
   return sessionStorage.getItem(SOLNA_WALLET_NAME)
@@ -223,14 +225,12 @@ const bridgeType1transfer = async ({
   const programId = getPublicKey(contractAddress)
   console.log('programId', programId)
   const program = new Program(SOLANA_OPOOL_ABI, programId, provider)
-  console.log('program', program)
   const state = group.state
   const feeReceiver = group.feeReceiver
-
-  const memo = utils.toUtf8Bytes(
-    utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`))
+  const memo = Buffer.from(
+    utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`)),
+    'utf-8'
   )
-  console.log('memo', memo, memo.toString())
   // const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
   //   units: 1000000,
   // })
@@ -239,21 +239,7 @@ const bridgeType1transfer = async ({
   // const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
   //   microLamports: 100,
   // })
-  // console.log('addPriorityFee', addPriorityFee)
-
   const recentBlockhash = await connection.getLatestBlockhash('confirmed')
-
-  memo._isBuffer = true
-
-  console.log(
-    'parmas',
-    state,
-    fromPublicKey,
-    fromTokenAccount,
-    makerTokenAccount,
-    feeReceiver,
-    memo
-  )
 
   const tokenTransaction = new Transaction({
     recentBlockhash: recentBlockhash.blockhash,
@@ -275,17 +261,8 @@ const bridgeType1transfer = async ({
         })
         .instruction()
     )
-  // .add(
-  //   new TransactionInstruction({
-  //     keys: [{ pubkey: fromPublicKey, isSigner: true, isWritable: true }],
-  //     data: memo,
-  //     programId: getPublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
-  //   })
-  // )
-  console.log('tokenTransaction', tokenTransaction)
 
   const signature = await provider.signAndSendTransaction(tokenTransaction)
-  console.log('signature', signature)
 
   return signature.signature
 }
