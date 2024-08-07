@@ -200,6 +200,7 @@ const bridgeType1transfer = async ({
   )?.[0]
   console.log('gropup', group)
   const contractAddress = group.address
+  const feeToken = group.feeToken
   const connection = getConnection(chainId)
   console.log('connection', connection)
   const tokenPublicKey = getPublicKey(tokenAddress)
@@ -219,6 +220,11 @@ const bridgeType1transfer = async ({
   )
   console.log('makerTokenAccount', makerTokenAccount)
 
+  const tokens = chainInfo?.tokens || []
+  const decimals = tokens
+    .concat([chainInfo?.nativeCurrency || {}])
+    ?.filter((item) => item.address === feeToken)?.[0]?.decimals
+
   const provider = getProvider()
 
   console.log('provider', provider)
@@ -228,6 +234,8 @@ const bridgeType1transfer = async ({
   const program = new Program(SOLANA_OPOOL_ABI, programId, provider)
   const state = group.state
   const feeReceiver = group.feeReceiver
+  const tokenToReceiver = group.tokenToReceiver
+
   const memo = Buffer.from(
     utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`)),
     'utf-8'
@@ -250,12 +258,18 @@ const bridgeType1transfer = async ({
     // .add(addPriorityFee)
     .add(
       await program.methods
-        .inbox(new BN(Number(amount)), memo)
+        .inbox(
+          new BN(amount),
+          new BN(utils.parseUnits(withholdingFee, decimals).toString()),
+          memo
+        )
         .accounts({
           state: getPublicKey(state),
           user: fromPublicKey,
           source: fromTokenAccount,
           destination: makerTokenAccount,
+          tokenAddress: tokenPublicKey,
+          tokenToReceiver: getPublicKey(tokenToReceiver),
           feeReceiver: getPublicKey(feeReceiver),
           tokenProgram: TOKEN_PROGRAM_ID,
           systemProgram: SystemProgram.programId,
