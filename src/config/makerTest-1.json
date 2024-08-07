@@ -338,10 +338,10 @@
   "573-551": {
     "BOME-BOME": {
       "bridgeType": 1,
-      "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "makerAddress": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
       "sender": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
       "gasFee": 0,
-      "tradingFee": "0.0000001",
+      "tradingFee": 0.00001,
       "maxPrice": 5000,
       "minPrice": 0.001,
       "slippage": 200,
@@ -353,9 +353,9 @@
     "BOME-BOME": {
       "bridgeType": 1,
       "makerAddress": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
-      "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+      "sender": "0x4eaf936c172b5e5511959167e8ab4f7031113ca3",
       "gasFee": 0,
-      "tradingFee": "0.0000001",
+      "tradingFee": 0.1,
       "maxPrice": 5000,
       "minPrice": 0.001,
       "slippage": 200,

@@ -37,7 +37,6 @@ const getConnection = (chainId) => {
   if (!chainId) return null
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   const rpc = chainInfo?.rpc?.[0]
-  console.log('rpc', rpc)
   return rpc ? new Connection(rpc, 'confirmed') : null
 }
 
@@ -173,11 +172,9 @@ const transfer = async ({
       })
     )
 
-  const res = await tokenTransaction.getEstimatedFee(connection)
-  console.log('res', res)
+  // const res = await tokenTransaction.getEstimatedFee(connection)
 
   const signature = await provider.signAndSendTransaction(tokenTransaction)
-  console.log('signature', signature)
 
   return signature.signature
 }
@@ -193,32 +190,23 @@ const bridgeType1transfer = async ({
   chainId,
 }) => {
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
-  console.log('amount', amount)
-  console.log('chainInfo', chainInfo)
   const group = (chainInfo?.contracts || []).filter(
     (item) => item.name === 'OPool'
   )?.[0]
-  console.log('gropup', group)
   const contractAddress = group.address
   const feeToken = group.feeToken
   const connection = getConnection(chainId)
-  console.log('connection', connection)
   const tokenPublicKey = getPublicKey(tokenAddress)
-  console.log('tokenPublicKey', tokenPublicKey)
   const fromPublicKey = getPublicKey(from)
-  console.log('fromPublicKey', fromPublicKey)
-  console.log('toAddress', toAddress)
   const fromTokenAccount = await getAssociatedTokenAddress(
     tokenPublicKey,
     fromPublicKey
   )
-  console.log('fromTokenAccount', fromTokenAccount)
   const makerTokenAccount = await getAssociatedTokenAddress(
     tokenPublicKey,
     getPublicKey(toAddress), // maker address
     true
   )
-  console.log('makerTokenAccount', makerTokenAccount)
 
   const tokens = chainInfo?.tokens || []
   const decimals = tokens
@@ -227,10 +215,7 @@ const bridgeType1transfer = async ({
 
   const provider = getProvider()
 
-  console.log('provider', provider)
-
   const programId = getPublicKey(contractAddress)
-  console.log('programId', programId)
   const program = new Program(SOLANA_OPOOL_ABI, programId, provider)
   const state = group.state
   const feeReceiver = group.feeReceiver
@@ -240,27 +225,26 @@ const bridgeType1transfer = async ({
     utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`)),
     'utf-8'
   )
-  // const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
-  //   units: 1000000,
-  // })
-  // console.log('modifyComputeUnits', modifyComputeUnits)
+  const modifyComputeUnits = ComputeBudgetProgram.setComputeUnitLimit({
+    units: 1000000,
+  })
 
-  // const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
-  //   microLamports: 100,
-  // })
+  const addPriorityFee = ComputeBudgetProgram.setComputeUnitPrice({
+    microLamports: 100,
+  })
   const recentBlockhash = await connection.getLatestBlockhash('confirmed')
 
   const tokenTransaction = new Transaction({
     recentBlockhash: recentBlockhash.blockhash,
     feePayer: fromPublicKey,
   })
-    // .add(modifyComputeUnits)
-    // .add(addPriorityFee)
+    .add(modifyComputeUnits)
+    .add(addPriorityFee)
     .add(
       await program.methods
         .inbox(
           new BN(amount),
-          new BN(utils.parseUnits(withholdingFee, decimals).toString()),
+          new BN(utils.parseUnits(String(withholdingFee), decimals).toString()),
           memo
         )
         .accounts({
