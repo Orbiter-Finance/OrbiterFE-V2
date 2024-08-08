@@ -1702,9 +1702,11 @@ export default {
       }
 
       if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
-      [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
+      ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId)) || Number(selectMakerConfig?.bridgeType) === 1)
+    ) {
         preGas = 10 ** -preGasDigit;
       }
+      console.log("preGas", preGas)
       let userBalance = new BigNumber(this.fromBalance)
               .minus(new BigNumber(tradingFee))
               .minus(new BigNumber(opBalance))
