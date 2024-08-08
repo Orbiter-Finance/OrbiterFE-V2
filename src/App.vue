@@ -484,7 +484,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('getPrizesV2ProjectInfo')
+    this.$store.commit('getPrizesProjectInfo')
   }
 }
 </script>

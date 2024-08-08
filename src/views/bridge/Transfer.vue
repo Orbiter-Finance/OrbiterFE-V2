@@ -201,7 +201,7 @@
           />
         </div>
       </div>
-      <img v-if="!isPrizesEnd" :src="require('../../assets/prizes/v2/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
+      <img v-if="!isPrizesEnd" :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -445,7 +445,7 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   setActPointFetchStatus,
-  prizesV2TimeEnd
+  prizesTimeEnd
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import { RequestMethod, requestOpenApi, requestPointSystem, getNoticeData } from "../../common/openApiAx";
@@ -554,7 +554,7 @@ export default {
   },
   computed: {
     isPrizesEnd(){
-      return prizesV2TimeEnd.value
+      return prizesTimeEnd.value
     },
     isMobileSize() {
       return isMobile.value
@@ -966,8 +966,8 @@ export default {
   },
   methods: {
     goToPrizes(){
-      this.$gtag.event("TRANSFER_TO_PRIZESV2", {
-        event_category: "TRANSFER_TO_PRIZESV2",
+      this.$gtag.event("TRANSFER_TO_PRIZESV3", {
+        event_category: "TRANSFER_TO_PRIZESV3",
         event_label: "to prizes",
       })
       this.$router.push("/prizes")
