@@ -5,8 +5,7 @@ const Data = () => import('./views/data/Index/Index.vue')
 const DataDetail = () => import('./views/data/DataDetail/DataDetail.vue')
 const Home = () => import('./views/home/index.vue')
 const Statistics = () => import('./views/statistics/index.vue')
-const PrizesOld = () => import('./views/prizes/index.vue')
-const Prizes = () => import('./views/prizes2/index.vue')
+const Prizes = () => import('./views/prizes/index.vue')
 
 Vue.use(Router)
 

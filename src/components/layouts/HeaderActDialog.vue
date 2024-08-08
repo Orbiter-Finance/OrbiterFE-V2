@@ -326,7 +326,6 @@ export default {
     EcosystemDappPro,
     ActDialogBanner,
     SvgIcon,
-    // PrizesCard,
     HeaderQuestsTaskList,
   },
   data() {
