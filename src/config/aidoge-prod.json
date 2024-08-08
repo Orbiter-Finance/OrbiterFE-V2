@@ -8,7 +8,7 @@
             "tradingFee": 240,
             "maxPrice": 200000,
             "slippage": 0,
-            "minPrice": 10,
+            "minPrice": 200,
             "startTime": 0,
             "endTime": 99999999999999
         }
@@ -22,7 +22,7 @@
             "tradingFee": 0,
             "maxPrice": 20000000,
             "slippage": 0,
-            "minPrice": 10,
+            "minPrice": 200,
             "startTime": 0,
             "endTime": 99999999999999
         }
