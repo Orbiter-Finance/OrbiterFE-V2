@@ -20,7 +20,6 @@ import {
   TRUSTWALLET_APP,
   SAFEPAL,
   BINANCEWALLET,
-  PHANTOMWALLET,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -69,8 +68,8 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
   if (walletType === SAFEPAL) return ethereum.isSafePal
   if (walletType === BINANCEWALLET) return ethereum.isBinance
-  if (walletType === PHANTOMWALLET)
-    return !!window?.phantom?.ethereum?.isPhantom
+  // if (walletType === PHANTOMWALLET)
+  //   return !!window?.phantom?.ethereum?.isPhantom
   if (walletType === TRUSTWALLET_APP)
     return !!window?.trustwallet?.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
@@ -121,20 +120,12 @@ export const findMatchWeb3ProviderByWalletType = (
     if (walletType === TRUSTWALLET_APP && window.trustwallet !== 'undefined') {
       return window.trustwallet
     }
-
-    console.log(
-      'walletType',
-      walletType,
-      walletType === PHANTOMWALLET,
-      window?.phantom?.ethereum
-    )
-
-    if (
-      walletType === PHANTOMWALLET &&
-      window?.phantom?.ethereum !== 'undefined'
-    ) {
-      return window.phantom.ethereum
-    }
+    // if (
+    //   walletType === PHANTOMWALLET &&
+    //   window?.phantom?.ethereum !== 'undefined'
+    // ) {
+    //   return window.phantom.ethereum
+    // }
 
     if (
       walletType === SAFEPAL &&
@@ -176,7 +167,7 @@ export const fetchTargetWalletLoginStatus = ({ walletType }) => {
  */
 export const getMobileAppTypeByProvider = () => {
   const provider = window?.ethereum || {}
-  if (window?.phantom?.ethereum?.isPhantom) return PHANTOMWALLET
+  // if (window?.phantom?.ethereum?.isPhantom) return PHANTOMWALLET
   if (!provider) return undefined
   if (provider.isImToken) return IM_TOKEN_APP
   if (provider.isSafePal) return SAFEPAL

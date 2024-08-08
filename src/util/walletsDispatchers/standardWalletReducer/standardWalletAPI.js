@@ -82,7 +82,6 @@ export const performWalletInformation = async (
     walletAddress: null,
   }
   const matchWalletWeb3Provider = new Web3(matchWalletProvider) // inject web3
-  console.log('matchWalletWeb3Provider', PHANTOMWALLET, matchWalletWeb3Provider)
   let networkId, walletAddress
   if (walletType !== PHANTOMWALLET) {
     if (matchWalletProvider.request) {

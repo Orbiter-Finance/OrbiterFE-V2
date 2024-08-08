@@ -175,11 +175,11 @@ export default {
           icon: 'imtokenapp',
           title: 'imTokenApp',
         },
-        {
-          isConnect: false,
-          icon: 'phantom',
-          title: PHANTOMWALLET,
-        },
+        // {
+        //   isConnect: false,
+        //   icon: 'phantom',
+        //   title: PHANTOMWALLET,
+        // },
         {
           isConnect: false,
           icon: 'zerion',
