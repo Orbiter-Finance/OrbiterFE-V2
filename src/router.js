@@ -31,7 +31,7 @@ export default new Router({
       component: (resolve) => require(['./views/History'], resolve),
       meta: {
         title: 'Orbiter',
-        keepAlive: true,
+        keepAlive: false,
       },
     },
     {
