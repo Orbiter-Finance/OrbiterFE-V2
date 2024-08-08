@@ -1489,7 +1489,7 @@ export default {
       let userMax = useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN) > 0
               ? useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
-      if(Number(selectMakerConfig?.bridgeType) === 1) {
+      if(Number(selectMakerConfig?.bridgeType) === 1 ) {
         useBalance = new BigNumber(this.fromBalance)
         userMax = useBalance
       }
@@ -1723,7 +1723,7 @@ export default {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
       }
       if(Number(selectMakerConfig?.bridgeType) === 1) {
-        max = userBalance
+        max = userBalance.gte(max) ? max : userBalance
         userMax = userBalance
       }
       this.userMaxPrice = max.toString();
@@ -1919,6 +1919,36 @@ export default {
       //     return;
       //   }
       // }
+      let toAddress = ""
+      let open = () => {}
+      if(CHAIN_ID.ton === toChainID || CHAIN_ID.ton_test === toChainID ) {
+        toAddress = tonHelper.account()
+        open = async () => {
+          await tonHelper.connect()
+        }
+      } else  if(CHAIN_ID.solana === toChainID || CHAIN_ID.solana_test === toChainID ) {
+        toAddress = web3State.solana.solanaAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+        }
+      } else  if(CHAIN_ID.starknet === toChainID || CHAIN_ID.starknet_test === toChainID) {
+        toAddress = this.starkAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+        }
+      } else {
+        toAddress = this.currentWalletAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('EVM')
+        }
+      }
+      if(!toAddress || toAddress === "0x") {
+        await open()
+        return
+      }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,

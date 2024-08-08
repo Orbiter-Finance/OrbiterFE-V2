@@ -39,7 +39,6 @@ export default {
         const balance = await connection.getTokenAccountBalance(
           fromTokenAcount.address
         )
-        console.log('balance', balance)
         const amount = balance?.value?.amount
         balanceString = String(amount || '0')
       }
