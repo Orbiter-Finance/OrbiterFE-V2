@@ -329,10 +329,7 @@ export default {
         ...[],
       ]
     },
-    fromChainID() {
-      const { fromChainID } = transferDataState
-      return fromChainID
-    }
+    
   },
   data() {
     const selectedWallet = JSON.parse(
@@ -350,46 +347,9 @@ export default {
         // this.getWalletAddressPoint()
       }
     },
-    fromChainID: function(a, b) {
-      if(a && a !== b) {
-        this.connectWallet(a)
-      }
-    }
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    async connectWallet(chainId){
-      let toAddress = ""
-      let open = () => {}
-      if(CHAIN_ID.ton === chainId || CHAIN_ID.ton_test === chainId ) {
-        toAddress = tonHelper.account()
-        open = async () => {
-          await tonHelper.connect()
-        }
-      } else  if(CHAIN_ID.solana === chainId || CHAIN_ID.solana_test === chainId ) {
-        toAddress = web3State.solana.solanaAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-        }
-      } else  if(CHAIN_ID.starknet === chainId || CHAIN_ID.starknet_test === chainId) {
-        toAddress = this.starkAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('STARKNET')
-        }
-      } else {
-        toAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('EVM')
-        }
-      }
-      if(!toAddress || toAddress === "0x") {
-        await open()
-        return
-      }
-    },
     timeNum() {
       return Math.floor(Date.now() / 1000)
     },
