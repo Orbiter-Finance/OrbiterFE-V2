@@ -923,6 +923,11 @@ export default {
         this.updateTransferInfo();
       }
     },
+    'web3State.solana.solanaAddress': function (newValue) {
+      if (newValue) {
+        this.updateTransferInfo();
+      }
+    },
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
@@ -2138,24 +2143,11 @@ export default {
         );
         // sendTransfer
         const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
-        const contractGroup = chainInfo?.contract || {}
-
-        const contractList = Object.keys(contractGroup).map((key)=> {
-            return ({
-                name: contractGroup[key],
-                address: key 
-            })
-        })
+        const contractList = chainInfo?.contracts || []
         const contractFromAddress = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
 
-        const toContractGroup = toChainInfo?.contract || {}
+        const toContractList = chainInfo?.contracts || []
 
-        const toContractList = Object.keys(toContractGroup).map((key)=> {
-          return ({
-              name: toContractGroup[key],
-              address: key 
-          })
-        })
         const ContractToAddress = toContractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
 
         this.$store.commit('updateConfirmRouteDescInfo',  bridgeType1?  [
@@ -2245,15 +2237,9 @@ export default {
         }
         if(bridgeType1) {
           const chainInfo = util.getV3ChainInfoByChainId(chainId)
-          const contractGroup = chainInfo?.contract || {}
-          const contractList = Object.keys(contractGroup).map((key)=> {
-              return ({
-                  name: contractGroup[key],
-                  address: key 
-              })
-          })
-          sender = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]?.address
-
+          const contractList = chainInfo?.contracts || []
+          const contract = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]
+          sender = contract?.authority || contract?.address
         }
         const response = await transferCalculate.getTransferBalance(
                 chainId,

@@ -311,73 +311,6 @@
   },
   {
     "api": {
-      "url": "https://api-testnet.bscscan.com/api",
-      "key": ""
-    },
-    "chainId": "97",
-    "networkId": "97",
-    "internalId": "515",
-    "name": "BSC(G)",
-    "debug": false,
-    "contracts": [],
-    "contract": {
-      "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0": "OPool"
-    },
-    "nativeCurrency": {
-      "name": "BNB",
-      "symbol": "BNB",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://data-seed-prebsc-1-s1.binance.org:8545",
-      "https://bsc-testnet.public.blastapi.io"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x2ceEA9FeAD4584aBA77eCdE697E9fc80C9BD4c56"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
-      },
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-      },
-      {
-        "name": "AIDOGE",
-        "symbol": "AIDOGE",
-        "decimals": 6,
-        "address": "0x6FE7f27BE081D25222C47ee5ff418455b88aBB8C"
-      }
-    ],
-    "xvmList": [
-      "0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"
-    ],
-    "faucets": [
-      "https://testnet.binance.org/faucet-smart"
-    ],
-    "infoURL": "https://testnet.binance.org/"
-  },
-  {
-    "api": {
       "url": "https://explorer.public.zkevm-test.net/api",
       "key": "",
       "intervalTime": 10000
@@ -658,6 +591,158 @@
   },
   {
     "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "SOLANA_DEV",
+    "networkId": "SOLANA_DEV",
+    "internalId": "551",
+    "name": "Solana",
+    "batchLimit": 20,
+    "debug": true,
+    "service": {
+      "api": "SolanaApiScanningService"
+    },
+    "features": [],
+    "nativeCurrency": {
+      "name": "SOL",
+      "symbol": "SOL",
+      "decimals": 9,
+      "address": "So11111111111111111111111111111111111111112"
+    },
+    "rpc": [
+      "https://api-devnet.solscan.io"
+    ],
+    "contract": {
+      "FiyoeqDdRaV5cKCUXoXwiXt1rQpBokQXag2P9QMqob8Z": "OPool"
+    },
+    "contracts": [
+      {
+        "name": "MemoProgram",
+        "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+        "methods": []
+      },
+      {
+        "name": "OPool",
+        "address": "FiyoeqDdRaV5cKCUXoXwiXt1rQpBokQXag2P9QMqob8Z",
+        "state": "cP4BEymMnW1fMYXDUm5XuWZfCRzKQ6tZHZqxVPFSz6c",
+        "makerValid": "C9ujSCZc7Z5HP5CBCYR1wVKGEuWnNbAoyi43EU12e3YU",
+        "authority": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
+        "feeReceiver": "EreFj1KD2HqsbbwehDLdkUSTju7kPEzRWXyHU9RBBYxQ",
+        "tokenToReceiver":"DJajVJ9MSngXjRAVxJeK9Z4g5gudwT6VAodJF1A2eAaV",
+        "feeToken":"9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
+        "methods": []
+      }
+    ],
+    "tokens": [
+      {
+        "name": "ETH",
+        "symbol": "ETH",
+        "decimals": 9,
+        "address": "GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE"
+      },
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "9PEiZDedcuv5kAmqVstgkK2YXVVB59quPQPt5wZ7Q2DR"
+      },
+      {
+        "name": "AIDOGE",
+        "symbol": "AIDOGE",
+        "decimals": 6,
+        "address": "Av39iDnGgKhkccKfKvYedihkhh6KwXjmAUatbAEZouxw"
+      },
+      {
+        "name": "BOME",
+        "symbol": "BOME",
+        "decimals": 6,
+        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm"
+      }
+    ],
+    "infoURL": "https://solscan.io"
+  },
+  {
+    "api": {
+      "url": "https://api-testnet.bscscan.com/api",
+      "key": ""
+    },
+    "chainId": "97",
+    "networkId": "97",
+    "internalId": "515",
+    "name": "BSC TestNet",
+    "debug": false,
+    "bridge": 3,
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "features": [
+      {
+        "name": "evm-account5"
+      }
+    ],
+    "contract": {
+      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3",
+      "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0": "OPool"
+    },
+    "nativeCurrency": {
+      "name": "BNB",
+      "symbol": "BNB",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://bsc-testnet.publicnode.com",
+      "https://api.zan.top/node/v1/bsc/testnet/public",
+      "https://endpoints.omniatech.io/v1/bsc/testnet/public",
+      "https://data-seed-prebsc-2-s2.bnbchain.org:8545"
+    ],
+    "tokens": [
+      {
+        "name": "AIDOGE",
+        "symbol": "AIDOGE",
+        "decimals": 6,
+        "address": "0x6FE7f27BE081D25222C47ee5ff418455b88aBB8C"
+      },
+      {
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
+      },
+      {
+        "name": "USDT",
+        "symbol": "USDT",
+        "decimals": 6,
+        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
+      }
+    ],
+    "infoURL": "https://testnet.bscscan.com",
+    "contracts": [
+      {
+        "name": "OPool",
+        "address": "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0",
+        "feeToken": "0x0000000000000000000000000000000000000000",
+        "methods": [
+          "inbox(address,address,uint256,bytes)",
+          "outbox(address,address,uint256,bytes)",
+          "outboxBatch(address,address[],uint256[],bytes[])"
+        ]
+      },
+      {
+        "name": "OrbiterRouterV3",
+        "address": "0x78606Ea26275F6180745480FaF74E311586EB652",
+        "methods": [
+          "transfer(address,bytes)",
+          "transferToken(address,address,uint256,bytes)",
+          "transfers(address[],uint256[])",
+          "transferTokens(address,address[],uint256[])"
+        ]
+      }
+    ]
+  },
+  {
+    "api": {
       "url": "https://okbrpc.okbchain.org/v1",
       "key": ""
     },
@@ -876,6 +961,11 @@
       {
         "name": "OrbiterRouterV3",
         "address": "0x78606Ea26275F6180745480FaF74E311586EB652"
+      },
+      {
+        "name": "OPool",
+        "address": "0x6a99aF2B5398Ee7bb340bfC337d32Eb8D58655ae",
+        "feeToken": "0x0000000000000000000000000000000000000000"
       }
     ],
     "nativeCurrency": {
@@ -920,14 +1010,17 @@
     "internalId": "573",
     "name": "Bomechain",
     "debug": false,
-    "bridge": 2,
-    "service": {},
+    "service": {
+        "rpc": "EVMRpcScanningV6Service"
+    },
     "features": [
       {
         "name": "evm-account5"
       }
     ],
-    "contract": {},
+    "contract": {
+      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2":"OPool"
+    },
     "nativeCurrency": {
       "name": "BOME",
       "symbol": "BOME",
@@ -946,6 +1039,17 @@
       }
     ],
     "infoURL": "https://testnet.bomescan.org",
-    "contracts": []
+    "contracts": [
+      {
+                "name": "OPool",
+                "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
+                "feeToken": "0x0000000000000000000000000000000000000000",
+                "methods": [
+                    "inbox(address,address,uint256,bytes)",
+                    "outbox(address,address,uint256,bytes)",
+                  "outboxBatch(address,address[],uint256[],bytes[])"
+                ]
+            }
+    ]
   }
 ]

@@ -258,6 +258,16 @@ export default {
           icon: 'phantom',
           title: 'Phantom',
         },
+        {
+          isConnect: false,
+          icon: 'backpack',
+          title: 'Backpack',
+        },
+        {
+          isConnect: false,
+          icon: 'solflare',
+          title: 'Solflare',
+        }
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',
