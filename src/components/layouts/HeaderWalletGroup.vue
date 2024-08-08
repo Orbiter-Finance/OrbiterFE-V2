@@ -84,7 +84,8 @@ import walletDispatchers, {
   FOXWALLET_APP,
   // TRUSTWALLET_APP,
   SAFEPAL,
-  BINANCEWALLET
+  BINANCEWALLET,
+  PHANTOMWALLET
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -174,6 +175,11 @@ export default {
           icon: 'imtokenapp',
           title: 'imTokenApp',
         },
+        // {
+        //   isConnect: false,
+        //   icon: 'phantom',
+        //   title: PHANTOMWALLET,
+        // },
         {
           isConnect: false,
           icon: 'zerion',
