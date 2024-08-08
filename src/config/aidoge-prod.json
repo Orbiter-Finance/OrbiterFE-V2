@@ -24,5 +24,32 @@
             "startTime": 0,
             "endTime": 99999999999999
         }
+    },
+    "74-51": {
+        "BOME-BOME": {
+            "bridgeType": 1,
+            "makerAddress": "0x732efacd14b0355999aebb133585787921aba3a9",
+            "sender": "Fmfmay8KzgEvF7NGWRjgFcki2Zy79sa8qXCw9pXTJ5Et",
+            "gasFee": 0,
+            "tradingFee": 0.1,
+            "maxPrice": 1,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "51-74": {
+        "BOME-BOME": {
+            "bridgeType": 1,
+            "makerAddress": "Fmfmay8KzgEvF7NGWRjgFcki2Zy79sa8qXCw9pXTJ5Et",
+            "sender": "0x732efacd14b0355999aebb133585787921aba3a9",
+            "gasFee": 0,
+            "tradingFee": 0.001,
+            "maxPrice": 1,
+            "minPrice": 0.001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
     }
+
 }
