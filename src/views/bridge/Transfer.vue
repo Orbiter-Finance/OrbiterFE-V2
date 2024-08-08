@@ -1689,7 +1689,10 @@ export default {
 
       let tradingFee = selectMakerConfig.tradingFee
 
-      if(Number(selectMakerConfig?.bridgeType) === 1) {
+      const contractList = chainInfo?.contracts || []
+      const group = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]
+      const nativeAddress = chainInfo?.nativeCurrency?.address
+      if(Number(selectMakerConfig?.bridgeType) === 1 && nativeAddress !== group?.feeToken) {
         avalibleDigit = 0
         opBalance = 0
         preGasDigit = 0
