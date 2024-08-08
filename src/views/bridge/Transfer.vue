@@ -1692,12 +1692,13 @@ export default {
       const contractList = chainInfo?.contracts || []
       const group = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]
       const nativeAddress = chainInfo?.nativeCurrency?.address
-      if(Number(selectMakerConfig?.bridgeType) === 1 && nativeAddress !== group?.feeToken) {
-        avalibleDigit = 0
+      if(Number(selectMakerConfig?.bridgeType) === 1) {
         opBalance = 0
         preGasDigit = 0
         preGas = 0
-        tradingFee = 0
+        if(nativeAddress !== group?.feeToken) {
+          tradingFee = 0
+        }
       }
 
       if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
