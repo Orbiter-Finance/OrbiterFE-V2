@@ -1694,10 +1694,10 @@ export default {
       const nativeAddress = chainInfo?.nativeCurrency?.address
       if(Number(selectMakerConfig?.bridgeType) === 1) {
         opBalance = 0
-        preGasDigit = 0
-        preGas = 0
         if(nativeAddress !== group?.feeToken) {
           tradingFee = 0
+          preGas = 0
+          preGasDigit = 0
         }
       }
 
