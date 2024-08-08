@@ -3085,13 +3085,13 @@
          "symbol": "BOME",
          "decimals": 18
       },
-      "infoURL": "https://mainnet.bomescan.org",
+      "infoURL": "https://bomescan.org",
       "chainId": "9736",
       "networkId": "9736",
       "explorers": [
          {
             "name": "Explorer",
-            "url": "https://mainnet.bomescan.org"
+            "url": "https://bomescan.org"
          }
       ],
       "contract": {
