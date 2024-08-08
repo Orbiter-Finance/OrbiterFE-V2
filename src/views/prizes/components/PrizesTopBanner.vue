@@ -108,9 +108,11 @@ export default {
           query: { source: 'Ethereum', dest: 'Linea', token: 'ETH' },
         })
       )
-      this.$router.push({
-        path: '/?source=Ethereum&dest=Linea&token=ETH'
-      })
+      
+      const url = location.origin + '/?source=Ethereum&dest=Linea&token=ETH'
+
+      window.open(url, "_self")
+      
     },
     toggleEnd() {
       setPrizesTimeEnd(true)
