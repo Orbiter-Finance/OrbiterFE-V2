@@ -2191,7 +2191,7 @@ export default {
             to: util.shortAddress(contractFromAddress),
             fromTip: '',
             toTip: contractFromAddress,
-            icon: 'contract'
+            icon: 'wallet'
           },
           {
             no: 2,
@@ -2210,7 +2210,7 @@ export default {
             to: toAddress,
             fromTip: '',
             toTip: toAddressAll,
-            icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
+            icon: util.isExecuteXVMContract() ? 'wallet' : 'wallet'
           },
           {
             no: 2,
