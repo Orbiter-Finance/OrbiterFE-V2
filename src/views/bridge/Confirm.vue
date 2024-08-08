@@ -319,9 +319,9 @@ export default {
           )
 
           if(
-              orbiterHelper.isTonChain({chainId: fromChainID}) || 
+             ( orbiterHelper.isTonChain({chainId: fromChainID}) || 
               orbiterHelper.isStarknetChain({chainId: fromChainID}) || 
-              orbiterHelper.isSolanaChain({chainId: fromChainID})
+              orbiterHelper.isSolanaChain({chainId: fromChainID})) && !bridgeType1
           ) {
               realTransferAmount = ethers.utils.formatEther(
                   ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
