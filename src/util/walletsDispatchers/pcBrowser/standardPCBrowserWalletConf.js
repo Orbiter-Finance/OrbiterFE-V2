@@ -10,6 +10,7 @@ import {
   ZERION,
   COIN98_APP,
   TRUSTWALLET_APP,
+  PHANTOMWALLET,
 } from '../constants'
 import { Notification } from 'element-ui'
 import { isBraveWallet } from '../utils'
@@ -172,6 +173,24 @@ export default [
         duration: 3000,
         message:
           '<div style="font-family:Inter Regular;text-align: left;">If you already have Trust Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
+      })
+    },
+  },
+  {
+    walletType: PHANTOMWALLET,
+    icon: PHANTOMWALLET,
+    walletIsInstalledInvestigator: (provider) =>
+      window.phantom.ethereum?.isPhantomt,
+    shouldAddChainCode: -32603,
+    walletNotInstallReducer: () => {
+      return Notification({
+        title: 'Error: Phantom Wallet has not been installed.',
+        dangerouslyUseHTMLString: true,
+        type: 'warning',
+        customClass: 'installWalletTips',
+        duration: 3000,
+        message:
+          '<div style="font-family:Inter Regular;text-align: left;">If you already have Phantom Wallet installed, check your browser extension settings to make sure you have it enabled and that you have disabled any other browser extension wallets.</div>',
       })
     },
   },
