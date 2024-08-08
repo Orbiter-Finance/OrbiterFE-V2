@@ -102,22 +102,6 @@
         ></EcosystemLikidDappPro>
       </el-carousel-item> -->
       <el-carousel-item>
-        <EcosystemDapp
-          :holders="0"
-          :isTags="true"
-          :isHolders="false"
-          :ratio="0"
-          :showCard="showCard"
-          :banner="'season1.png'"
-          :tag="'Omni-chain Meme'"
-          :tagStyle="'background:linear-gradient(172.41deg, #54E4FC, #D9F6FA);'"
-          :description="'LIKWID MEME CREATION CONTEST'"
-          :isProgress="false"
-          :name="'season1'"
-          :url="'https://likwid.meme/contest/season1'"
-        />
-      </el-carousel-item>
-      <el-carousel-item>
           <EcosystemDapp
             :holders="bullishsTotal"
             :isTags="true"
