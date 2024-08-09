@@ -72,7 +72,8 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === BINANCEWALLET) return ethereum.isBinance
   if (walletType === PHANTOMWALLET)
     return !!window?.phantom?.ethereum?.isPhantom
-  if (walletType === BACKPACKWALLET) return !!window?.backpack !== 'undefined'
+  if (walletType === BACKPACKWALLET)
+    return !!ethereum?.isBackpack && !ethereum?.isMetaMask
   if (walletType === TRUSTWALLET_APP)
     return !!window?.trustwallet?.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
@@ -120,13 +121,6 @@ export const findMatchWeb3ProviderByWalletType = (
       return window.okxwallet
     }
 
-    if (
-      walletType === BACKPACKWALLET &&
-      typeof window.backpack !== 'undefined'
-    ) {
-      return window.backpack
-    }
-
     if (walletType === TRUSTWALLET_APP && window.trustwallet !== 'undefined') {
       return window.trustwallet
     }
@@ -148,7 +142,10 @@ export const findMatchWeb3ProviderByWalletType = (
     if (walletType === BIT_KEEP && typeof window.bitkeep !== 'undefined') {
       return window.bitkeep.ethereum
     }
-
+    console.log(
+      'ethereumWalletTypeFitChecker(walletType, window.ethereum || {})',
+      ethereumWalletTypeFitChecker(walletType, window.ethereum || {})
+    )
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum || {}))
       return window.ethereum
     return null

@@ -314,7 +314,6 @@ export default {
       return
     },
     async connectEvmWallet(walletConf) {
-      console.log("window.backpack", window.backpack)
       if (walletConf === WALLETCONNECT && isBrowserApp()) {
         walletConnectDispatcherOnInit(WALLETCONNECT)
         return

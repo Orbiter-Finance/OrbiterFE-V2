@@ -109,6 +109,7 @@ export default [
     walletType: BACKPACKWALLET,
     icon: BACKPACKWALLET,
     shouldAddChainCode: -32603,
+    walletIsInstalledInvestigator: (provider) => provider.isBackpack,
     walletNotInstallReducer: () => {
       return Notification({
         title: 'Error: Backpack Wallet has not been installed.',
