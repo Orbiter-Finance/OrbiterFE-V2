@@ -70,7 +70,6 @@ export const performWalletInformation = async (
     walletType,
     walletIsInstalledInvestigator
   )
-  console.log('matchWalletProvider', matchWalletProvider)
   if (!matchWalletProvider) throw new Error(`not install ${walletType}`)
   if (window.ethereum?.isLoopring || walletType === PHANTOMWALLET) {
     await matchWalletProvider.enable()

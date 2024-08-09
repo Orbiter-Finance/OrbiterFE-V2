@@ -20,6 +20,8 @@ import {
   TRUSTWALLET_APP,
   SAFEPAL,
   BINANCEWALLET,
+  PHANTOMWALLET,
+  BACKPACKWALLET,
 } from './constants'
 import {
   updateGlobalSelectWalletConf,
@@ -68,8 +70,10 @@ export const ethereumWalletTypeFitChecker = (walletType, ethereum) => {
   if (walletType === COIN98_APP) return !!ethereum.isCoin98
   if (walletType === SAFEPAL) return ethereum.isSafePal
   if (walletType === BINANCEWALLET) return ethereum.isBinance
-  // if (walletType === PHANTOMWALLET)
-  //   return !!window?.phantom?.ethereum?.isPhantom
+  if (walletType === PHANTOMWALLET)
+    return !!window?.phantom?.ethereum?.isPhantom
+  if (walletType === BACKPACKWALLET)
+    return !!ethereum?.isBackpack && !ethereum?.isMetaMask
   if (walletType === TRUSTWALLET_APP)
     return !!window?.trustwallet?.isTrustWallet
   if (walletType === METAMASK) return ethereum.isMetaMask && !isBraveWallet
@@ -120,12 +124,13 @@ export const findMatchWeb3ProviderByWalletType = (
     if (walletType === TRUSTWALLET_APP && window.trustwallet !== 'undefined') {
       return window.trustwallet
     }
-    // if (
-    //   walletType === PHANTOMWALLET &&
-    //   window?.phantom?.ethereum !== 'undefined'
-    // ) {
-    //   return window.phantom.ethereum
-    // }
+
+    if (
+      walletType === PHANTOMWALLET &&
+      window?.phantom?.ethereum !== 'undefined'
+    ) {
+      return window.phantom.ethereum
+    }
 
     if (
       walletType === SAFEPAL &&
@@ -137,7 +142,10 @@ export const findMatchWeb3ProviderByWalletType = (
     if (walletType === BIT_KEEP && typeof window.bitkeep !== 'undefined') {
       return window.bitkeep.ethereum
     }
-
+    console.log(
+      'ethereumWalletTypeFitChecker(walletType, window.ethereum || {})',
+      ethereumWalletTypeFitChecker(walletType, window.ethereum || {})
+    )
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum || {}))
       return window.ethereum
     return null

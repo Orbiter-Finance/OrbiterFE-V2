@@ -12,6 +12,7 @@ import {
   TRUSTWALLET_APP,
   SAFEPAL,
   BINANCEWALLET,
+  PHANTOMWALLET,
 } from '../constants'
 import { isBraveWallet } from '../utils'
 
@@ -88,12 +89,12 @@ const standardMobileAppConf = [
     walletIsInstalledInvestigator: (provider) => provider.isTrustWallet,
     chainIdTransfer: (chainId) => Number(chainId),
   },
-  // {
-  //   walletType: PHANTOMWALLET,
-  //   walletIsInstalledInvestigator: (provider) =>
-  //     window.phantom.ethereum?.isPhantomt,
-  //   chainIdTransfer: (chainId) => Number(chainId),
-  // },
+  {
+    walletType: PHANTOMWALLET,
+    walletIsInstalledInvestigator: (provider) =>
+      window.phantom.ethereum?.isPhantomt,
+    chainIdTransfer: (chainId) => Number(chainId),
+  },
 ]
 
 export default standardMobileAppConf
