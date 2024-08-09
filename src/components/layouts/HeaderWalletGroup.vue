@@ -85,7 +85,8 @@ import walletDispatchers, {
   // TRUSTWALLET_APP,
   SAFEPAL,
   BINANCEWALLET,
-  PHANTOMWALLET
+  PHANTOMWALLET,
+  BACKPACKWALLET
 } from '../../util/walletsDispatchers'
 
 import util, { isMobileDevice, isBrowserApp } from '../../util'
@@ -175,11 +176,16 @@ export default {
           icon: 'imtokenapp',
           title: 'imTokenApp',
         },
-        // {
-        //   isConnect: false,
-        //   icon: 'phantom',
-        //   title: PHANTOMWALLET,
-        // },
+        {
+          isConnect: false,
+          icon: 'phantom',
+          title: PHANTOMWALLET,
+        },
+        {
+          isConnect: false,
+          icon: 'backpack',
+          title: BACKPACKWALLET,
+        },
         {
           isConnect: false,
           icon: 'zerion',
@@ -308,6 +314,7 @@ export default {
       return
     },
     async connectEvmWallet(walletConf) {
+      console.log("window.backpack", window.backpack)
       if (walletConf === WALLETCONNECT && isBrowserApp()) {
         walletConnectDispatcherOnInit(WALLETCONNECT)
         return

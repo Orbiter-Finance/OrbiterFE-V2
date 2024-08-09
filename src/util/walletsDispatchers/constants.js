@@ -17,12 +17,13 @@ export const BRAVE_APP = 'braveApp' // brave wallet constant
 export const LOOPRING_APP = 'loopringApp' // brave wallet constant
 export const ZERION_APP = 'ZerionApp' // zerion wallet constant
 export const COIN98_APP = 'Coin98' // Coin98 wallet constant
-export const TRUSTWALLET_APP = 'TrustWallet' // Coin98 wallet constant
-export const FOXWALLET_APP = 'FoxWallet' // Coin98 wallet constant
-export const TONWALLET = 'Ton Wallet' // Coin98 wallet constant
-export const SAFEPAL = 'SafePal' // Coin98 wallet constant
-export const BINANCEWALLET = 'Binance Wallet' // Coin98 wallet constant
-export const PHANTOMWALLET = 'Phantom' // Coin98 wallet constant
+export const TRUSTWALLET_APP = 'TrustWallet' // Trust wallet constant
+export const FOXWALLET_APP = 'FoxWallet' // Fox wallet constant
+export const TONWALLET = 'Ton Wallet' // Ton wallet constant
+export const SAFEPAL = 'SafePal' // SafePal wallet constant
+export const BINANCEWALLET = 'Binance Wallet' // Binance wallet constant
+export const PHANTOMWALLET = 'Phantom' // Phantom wallet constant
+export const BACKPACKWALLET = 'BackPack' // BackPack wallet constant
 
 export const CURRENT_SUPPORT_WALLET = [
   METAMASK,
@@ -41,4 +42,5 @@ export const CURRENT_SUPPORT_WALLET = [
   SAFEPAL,
   BINANCEWALLET,
   PHANTOMWALLET,
+  BACKPACKWALLET,
 ].map((item) => item.toLocaleLowerCase())
