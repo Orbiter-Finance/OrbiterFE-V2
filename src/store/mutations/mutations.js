@@ -5,28 +5,21 @@ import {
   web3State,
   setClaimCardModalShow,
   setClaimCardModalDataInfo,
-  setPrizesUserRank,
-  setPrizesUserTx,
-  setPrizesUserReward,
-  setPrizesUserTelegramId,
-  setPrizesUserIsJoinTelegram,
-  setPrizesTotalAddress,
-  setPrizesTotalRewards,
-  setPrizesRankList,
-  setPrizesTop100tx,
   claimCardModalDataInfo,
   claimCardModalAmountInfo,
   setClaimCardModalAmountInfo,
-  setLuckyBaTaskgOrbguyInfo,
-  setLuckyBaTaskgUserOrbguyInfo,
   setClaimCardModalOtherDataInfo,
-  setPrizesV2TaskList,
-  setPrizesV2RankList,
-  setPrizesV2ProjectTaskDetailsList,
-  setPrizesV2UserRank,
-  setPrizesV2UserList,
-  setPrizesV2TotalOrbguy,
-  setPrizesV2ProjectTime,
+  setPrizesTaskList,
+  setPrizesRankList,
+  setPrizesRankRefreshTime,
+  setPrizesProjectTaskDetailsList,
+  setPrizesUserRank,
+  setPrizesUserList,
+  setPrizesTotalOrbguy,
+  setPrizesProjectTime,
+  setQuestsInfoList,
+  setQuestsUserInfoList,
+  setPrizesTotaltx,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -40,7 +33,7 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import util from '../../util/util'
 import { ethers } from 'ethers'
 
-const activityProjectId = '5f622f2c-10d5-45b9-ab4d-c76f8d4a0086'
+const activityProjectId = 'f39a04ea-b958-4ff4-86a9-213aa277071f'
 
 let timer
 let timer1
@@ -49,6 +42,8 @@ let timer3
 let timer4
 let timer5
 let timer6
+let timer7
+let timer8
 
 export default {
   updateZKTokenList(state, obj) {
@@ -364,191 +359,116 @@ export default {
     }, 500)
   },
 
-  async getPrizesuserInfo(state, address) {
-    if (!address || address === '0x') return
-    const response = await fetch(
-      `${
-        process.env.VUE_APP_OPEN_URL
-      }/points_platform/competition/address?address=${address.toLocaleLowerCase()}`
-    )
-    const { result } = await response.json()
-    const { count, rank, reward, isJoinTelegram, telegramId } = result || {}
-
-    setPrizesUserRank(rank || '0')
-    setPrizesUserTx(count || '0')
-    setPrizesUserReward(reward || '0')
-    setPrizesUserTelegramId(telegramId || '')
-    setPrizesUserIsJoinTelegram(!!isJoinTelegram)
-  },
-
-  async getPrizesData() {
-    const response = await fetch(
-      `${process.env.VUE_APP_OPEN_URL}/points_platform/competition/info`
-    )
-    const { result } = await response.json()
-    const { addressCount, totalRewards, txCount, list } = result || {}
-
-    setPrizesTotalAddress(addressCount ? String(addressCount) : '0')
-    setPrizesTotalRewards(totalRewards ? String(totalRewards) : '0')
-    // this.txCount = txCount ? String(txCount) : '0'
-    setPrizesRankList(list)
-    setPrizesTop100tx(list[list?.length - 1 || 0]?.count || 0)
-  },
-
-  async getLuckyBagTaskInfo() {
-    const response = await fetch(
-      `${process.env.VUE_APP_OPEN_URL}/${
-        isDev() ? 'activity' : 'active-platform'
-      }/project/condition?projectId=${activityProjectId}&name=orbguy`
-    )
-    const res = await response.json()
-
-    const data = res?.result || {}
-
-    const current = Number(data?.count) || 0
-    const total = Number(data?.target) || 0
-
-    let ratio = total > 0 ? current / total : 0
-
-    setLuckyBaTaskgOrbguyInfo({
-      total,
-      current,
-      progressRatio: ratio,
-    })
-  },
-
-  async getLuckyBagUserTaskInfo(state, address) {
-    if (!address || address === '0x') return
-    clearTimeout(timer1)
-    timer1 = setTimeout(async () => {
-      const response = await fetch(
-        `${process.env.VUE_APP_OPEN_URL}/${
-          isDev() ? 'activity' : 'active-platform'
-        }/project/tasksStatus?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
-      )
-      const res = await response.json()
-      setLuckyBaTaskgUserOrbguyInfo(
-        res?.result?.records?.map((item) => {
-          const list = JSON.parse(item.distribute_result || JSON.stringify([]))
-          const data = list.filter(
-            (option) => option.name.toLocaleLowerCase() === 'orbguy'
-          )[0]
-          return {
-            taskResult: Number(item?.task_result) || 0,
-            distributeResult: Number(data?.amount) || 0,
-            distributed: !!item?.distributed,
-          }
-        }) || []
-      )
-    }, 500)
-  },
-
-  async getPrizesV2ProjectDetail(state) {
+  async getPrizesProjectDetail(state) {
     clearTimeout(timer2)
     timer2 = setTimeout(async () => {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}${
           isDev() ? '/activity' : '/active-platform'
-        }/project/detail?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+        }/project/detail?projectId=${activityProjectId}`
       )
       const res = await response.json()
-      setPrizesV2ProjectTaskDetailsList(
+      setPrizesTotaltx(res?.result?.projectDetail?.totalTxsCount)
+      setPrizesProjectTaskDetailsList(
         res?.result?.projectDetail.taskDetails || []
       )
     }, 500)
   },
 
-  async getPrizesV2ProjectInfo(state) {
+  async getPrizesProjectInfo(state) {
     clearTimeout(timer3)
     timer3 = setTimeout(async () => {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}${
           isDev() ? '/activity' : '/active-platform'
-        }/project/info?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+        }/project/info?projectId=${activityProjectId}`
       )
       const res = await response.json()
       const list = res?.result?.tasks || []
-      setPrizesV2TaskList(list)
-      setPrizesV2ProjectTime(res?.result?.end_time || '')
+      setPrizesTaskList(list)
+      setPrizesProjectTime(res?.result?.end_time || '')
     }, 500)
   },
-  async getPrizesV2ProjectRank(state) {
+  async getPrizesProjectRank(state) {
     clearTimeout(timer4)
     timer4 = setTimeout(async () => {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}${
           isDev() ? '/activity' : '/active-platform'
-        }/competition/rankReward?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba`
+        }/competition/rankReward?projectId=${activityProjectId}`
       )
       const res = await response.json()
-      setPrizesV2RankList(res?.result?.rankRewards || [])
+      setPrizesRankList(res?.result?.rankRewards || [])
+      console.log(
+        'res?.result?.updateInfo?.lastRefreshTime',
+        res?.result?.updateInfo?.lastRefreshTime
+      )
+      setPrizesRankRefreshTime(res?.result?.updateInfo?.lastRefreshTime || '')
     }, 500)
   },
 
-  async getPrizesV2UserInfo(state, address) {
+  async getPrizesUserInfo(state, address) {
     if (!address || address === '0x') return
     clearTimeout(timer5)
     timer5 = setTimeout(async () => {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}/${
           isDev() ? 'activity' : 'active-platform'
-        }/project/tasksStatus?projectId=81f31781-80ae-49ad-b838-053fcc8b72ba&address=${address.toLocaleLowerCase()}`
+        }/project/tasksStatus?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
-      setPrizesV2UserRank(res?.result?.rank || '--')
+      setPrizesUserRank(res?.result?.rank || '--')
       const records = res?.result?.records || []
       const distributeResults = res?.result?.distributeResults || []
 
-      setPrizesV2TotalOrbguy(
+      setPrizesTotalOrbguy(
         distributeResults.filter((item) => item.name === 'orbguy')?.[0]
           ?.amount || '0'
       )
-      setPrizesV2UserList(records)
+      setPrizesUserList(records)
     }, 500)
   },
 
-  async lotteryPrizesV2TaskReward(state, { address, taskId, token, call }) {
-    console.log('address, taskId, token, call', address, taskId, token, call)
-    if (!taskId || !token || !address || address === '0x') {
-      call({
-        status: 'Error',
-        message: '',
-      })
-      return
-    }
-    clearTimeout(timer6)
-    timer6 = setTimeout(async () => {
+  async getTaskInfoList(state) {
+    clearTimeout(timer7)
+    timer7 = setTimeout(async () => {
       try {
         const response = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/${
             isDev() ? 'activity' : 'active-platform'
-          }/task/lottery?taskId=${taskId}&address=${address.toLocaleLowerCase()}&rewardName=orbguy`,
+          }/project/activeProjectList`,
           {
             headers: {
-              token,
               'Content-Type': 'application/json',
             },
           }
         )
         const res = await response.json()
-        console.log('res', res)
-        if (Number(res?.code) !== 0) {
-          call({
-            status: 'Error',
-            message: res?.message || '',
-          })
-        } else {
-          call({
-            status: 'Success',
-            message: res?.result || '0',
-          })
-        }
-      } catch (error) {
-        call({
-          status: 'Error',
-          message: '',
-        })
-      }
+        setQuestsInfoList(res?.result || [])
+      } catch (error) {}
+    }, 500)
+  },
+  async getUserTaskInfoList(state, { projectList, address }) {
+    clearTimeout(timer8)
+    const list = projectList.filter((item) => !!item)
+    if (!list?.length || !address || address === '0x') return
+    timer8 = setTimeout(async () => {
+      try {
+        const response = await fetch(
+          `${process.env.VUE_APP_OPEN_URL}/${
+            isDev() ? 'activity' : 'active-platform'
+          }/project/multipleTasksStatus?projectIds=${JSON.stringify(
+            list
+          )}&address=${address}`,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        const res = await response.json()
+        setQuestsUserInfoList(res?.result || [])
+      } catch (error) {}
     }, 500)
   },
 }

@@ -334,11 +334,10 @@ export default {
       )
 
       if (
-       ( fromChainID === CHAIN_ID.solana ||
+        (fromChainID === CHAIN_ID.solana ||
         fromChainID === CHAIN_ID.solana_test ||
         fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test) && 
-        !bridgeType1
+        fromChainID === CHAIN_ID.ton_test)&& !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils

@@ -157,18 +157,10 @@
         :style="isMobile ? 'overflow:none;' : `height:${taskHeight}px;`"
         @scroll="itemScroll"
         >
-        <!-- <PrizesCard></PrizesCard> -->
-         <!-- <LuckyTaskBagBanner></LuckyTaskBagBanner> -->
-        <div 
-        >
-          <!-- <div v-if="!actDataList.length">
-            <LuckyTaskCard></LuckyTaskCard>
-          </div> -->
+        <HeaderQuestsTaskList></HeaderQuestsTaskList>
+        <div >
           <div :key="index" v-for="(item, index) in actDataList">
-            <div v-if="!item">
-              <LuckyTaskCard></LuckyTaskCard>
-            </div>
-            <div v-else class="activity-card">
+            <div class="activity-card">
               <div class="activity-card-title">
                 <div class="activity-card-title-left">
                   <svg-icon
@@ -289,7 +281,8 @@ import {
   tonAddress,
   setUserInfoDetailsCardModalShow,
   setOPointsCardModalShow,
-  setActPointRank
+  setActPointRank,
+  questsInfoList
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -315,9 +308,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import { CHAIN_ID } from '../../config'
 import tonHelper from '../../util/ton/ton_helper'
 import SvgIcon from '../SvgIcon/SvgIcon.vue'
-// import PrizesCard  from "./PrizesCard.vue"
-import LuckyTaskCard  from "./LuckyTaskCard.vue"
-// import LuckyTaskBagBanner  from "./LuckyTaskBagBanner.vue"
+import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
@@ -335,9 +326,7 @@ export default {
     EcosystemDappPro,
     ActDialogBanner,
     SvgIcon,
-    // PrizesCard,
-    LuckyTaskCard,
-    // LuckyTaskBagBanner
+    HeaderQuestsTaskList,
   },
   data() {
     return {
@@ -386,6 +375,9 @@ export default {
     }
   },
   computed: {
+    questsTaskList(){
+      return questsInfoList.value
+    },
     nftList() {
       const dragon = "0x98f2bf4408fae2b6acb7f875efd7c587b593615c".toLocaleLowerCase()
       const list = actNftList.value
@@ -538,6 +530,7 @@ export default {
     selectWalletDialogVisible(item1, item2) {
 
       if (item1) {
+        this.getUserTask()
         this.showPointsCall()
         this.getUserRank()
       } else {
@@ -549,16 +542,32 @@ export default {
           this.getTaskHeight()
         }, 200)
       }
+    },
+    questsTaskList(item1, item2){
 
+      const list = item1.filter((item)=> !!item?.id)
+
+      if (list.length) {
+        this.getUserTask()
+      } 
+
+      if (item1 !== item2) {
+        setTimeout(() => {
+          this.getTaskHeight()
+        }, 200)
+      }
       
     },
     currentWalletAddress(item1, item2) {
-      if (!!item1 && !!item2) {
-        this.showPointsCall()
+      if (!!item1) {
+        if(!!item2) {
+          this.showPointsCall()
+        }
+        if( (item1 !== item2)) {
+          this.getUserRank()
+        }
       }
-      if(item1 && (item1 !== item2)) {
-        this.getUserRank()
-      }
+      
     },
     isMobile(item1, item2) {
       if (item1 !== item2) {
@@ -572,6 +581,15 @@ export default {
     ...mapMutations(['toggleThemeMode']),
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
+    },
+    async getUserTask() {
+      const address = this.currentWalletAddress
+      const list = this.questsTaskList.filter((item)=> !!item?.id)
+      if(!list?.length || !address || address === "0x") return
+      this.$store.commit("getUserTaskInfoList", {
+        address,
+        projectList: list.map((item)=> item.id)
+      })
     },
     async getUserRank() {
       clearTimeout(time2)

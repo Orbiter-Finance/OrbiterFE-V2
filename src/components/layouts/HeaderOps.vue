@@ -329,6 +329,7 @@ export default {
         ...[],
       ]
     },
+    
   },
   data() {
     const selectedWallet = JSON.parse(

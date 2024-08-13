@@ -1944,7 +1944,13 @@
             "decimals": 6,
             "coinKey": "USDC",
             "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
-         }
+         },
+         {
+            "name": "BOME",
+            "symbol": "BOME",
+            "decimals": 6,
+            "address": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
+        }
       ],
       "batchLimit": 100,
       "internalId": "51",
@@ -1966,8 +1972,32 @@
             "icon": "SOLANA_MAIN"
          }
       ],
-      "contract": {},
-      "contracts": []
+      "contract": {
+
+      },
+      "contracts": [
+         {
+            "name": "NonceProgram",
+            "address": "FkdKXv2Y7NC4UCHv4qUL4NymUiGZcF3fNBLSr8xYKEm6",
+            "methods": []
+         },
+         {
+            "name": "MemoProgram",
+            "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+            "methods": []
+         },
+         {
+            "name": "OPool",
+            "address": "8dt4v1CYg48RHdLVfF7idvbNi3Jfig4i47FbSGNz5H2D",
+            "state": "5R9LKpG3igbh7q1yUoKn8n8ED8tZt7g9B6Wu6W55QvaA",
+            "makerValid": "LR8nhrj7RfRCtSEMLv9CF4YFnMAMBWHkqbWZVDJgvk8",
+            "feeReceiver": "GaqFCMEhCLYQSDvwJiL2cMX6ftFqtCFGdri8TNV6nAwh",
+            "tokenToReceiver": "9Jw4tg17hFYUJ2wwNNqs71KUv3DXVTM1iDMRtsKBh6Q",
+            "feeToken": "So11111111111111111111111111111111111111112",
+            "authority": "Fmfmay8KzgEvF7NGWRjgFcki2Zy79sa8qXCw9pXTJ5Et",
+            "methods": []
+         }
+      ]
    },
    {
       "name": "Proof of Play Apex",
@@ -3055,13 +3085,13 @@
          "symbol": "BOME",
          "decimals": 18
       },
-      "infoURL": "https://mainnet.bomescan.org",
+      "infoURL": "https://bomescan.org",
       "chainId": "9736",
       "networkId": "9736",
       "explorers": [
          {
             "name": "Explorer",
-            "url": "https://mainnet.bomescan.org"
+            "url": "https://bomescan.org"
          }
       ],
       "contract": {
@@ -3071,6 +3101,7 @@
          {
             "name": "OPool",
             "address": "0xbc0e9721c011fc836F518e7E2A759C7220D3D11c",
+            "feeToken": "0x0000000000000000000000000000000000000000",
             "methods": [
                "inbox(address,address,uint256,bytes)",
                "outbox(address,address,uint256,bytes)",
