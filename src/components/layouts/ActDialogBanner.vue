@@ -23,10 +23,10 @@ export default {
     return {
       bannerList: [
         {
-          url: 'https://holdstation.exchange/paymaster',
-          img: 'paymaster_banner.jpg',
-          name: 'paymaster_zksummer',
-          timeStamp: '2024-08-01T10:00:00.000Z',
+          url: 'https://www.bitlayer.org/me',
+          img: 'bitlayer_0813.png',
+          name: '',
+          timeStamp: '2024-08-20T00:00:00.000Z',
         },
         // {
         //   url: 'https://kzco.in/',
