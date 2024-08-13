@@ -8524,7 +8524,7 @@
     },
     "72-1": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.0055,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8548,7 +8548,7 @@
     },
     "72-2": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8572,7 +8572,7 @@
     },
     "72-7": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8596,7 +8596,7 @@
     },
     "72-23": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8620,7 +8620,7 @@
     },
     "72-20": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8644,7 +8644,7 @@
     },
     "72-19": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8668,7 +8668,7 @@
     },
     "72-21": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8692,7 +8692,7 @@
     },
     "72-14": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8716,7 +8716,7 @@
     },
     "72-3": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8740,7 +8740,7 @@
     },
     "72-4": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8764,7 +8764,7 @@
     },
     "72-30": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8788,7 +8788,7 @@
     },
     "72-40": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8812,7 +8812,7 @@
     },
     "72-24": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8836,7 +8836,7 @@
     },
     "72-17": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8860,7 +8860,7 @@
     },
     "72-47": {
         "ETH-ETH": {
-            "gasFee": 0,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8884,7 +8884,7 @@
     },
     "72-69": {
         "ETH-ETH": {
-            "gasFee": 0,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8908,7 +8908,7 @@
     },
     "72-57": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8932,7 +8932,7 @@
     },
     "72-27": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -8956,7 +8956,7 @@
     },
     "72-68": {
         "ETH-ETH": {
-            "gasFee": 5,
+            "gasFee": 26,
             "tradingFee": 0.001,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
