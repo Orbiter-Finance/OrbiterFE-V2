@@ -264,6 +264,7 @@ export default {
       const { toChainID } = transferDataState
       return toChainID
     },
+    
   },
   data() {
     const selectedWallet = JSON.parse(

@@ -190,7 +190,7 @@
           />
         </div>
       </div>
-      <img v-if="!isPrizesEnd" :src="require('../../assets/prizes/v2/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
+      <img v-if="!isPrizesEnd" :src="require('../../assets/prizes/prizes-transfer-image.png')" class="prizes-card" @click="goToPrizes" />
       <CommBtn
               @click="sendTransfer"
               :disabled="sendBtnInfo ? sendBtnInfo.disabled : true"
@@ -434,7 +434,7 @@ import {
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
   setActPointFetchStatus,
-  prizesV2TimeEnd
+  prizesTimeEnd
 } from '../../composition/hooks';
 import { isArgentApp, isBrowserApp, isDev } from "../../util";
 import orbiterHelper from "../../util/orbiter_helper"
@@ -559,7 +559,7 @@ export default {
       this.fromChainId === CHAIN_ID.imx
     },
     isPrizesEnd(){
-      return prizesV2TimeEnd.value
+      return prizesTimeEnd.value
     },
     isMobileSize() {
       return isMobile.value
@@ -973,8 +973,8 @@ export default {
       return isCheck
     },
     goToPrizes(){
-      this.$gtag.event("TRANSFER_TO_PRIZESV2", {
-        event_category: "TRANSFER_TO_PRIZESV2",
+      this.$gtag.event("TRANSFER_TO_PRIZESV3", {
+        event_category: "TRANSFER_TO_PRIZESV3",
         event_label: "to prizes",
       })
       this.$router.push("/prizes")
@@ -1493,7 +1493,7 @@ export default {
       let userMax = useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN) > 0
               ? useBalance.decimalPlaces(availableDigit, BigNumber.ROUND_DOWN)
               : new BigNumber(0);
-      if(Number(selectMakerConfig?.bridgeType) === 1) {
+      if(Number(selectMakerConfig?.bridgeType) === 1 ) {
         useBalance = new BigNumber(this.fromBalance)
         userMax = useBalance
       }
@@ -1701,18 +1701,24 @@ export default {
 
       let tradingFee = selectMakerConfig.tradingFee
 
+      const contractList = chainInfo?.contracts || []
+      const group = contractList?.filter((item)=> item?.name?.toLocaleLowerCase() === "OPool"?.toLocaleLowerCase())[0]
+      const nativeAddress = chainInfo?.nativeCurrency?.address
       if(Number(selectMakerConfig?.bridgeType) === 1) {
-        avalibleDigit = 0
         opBalance = 0
-        preGasDigit = 0
-        preGas = 0
-        tradingFee = 0
+        if(nativeAddress !== group?.feeToken) {
+          tradingFee = 0
+          preGas = 0
+          preGasDigit = 0
+        }
       }
 
       if ( (chainInfo?.nativeCurrency?.address?.toLocaleLowerCase() === fromChain?.tokenAddress?.toLocaleLowerCase()) &&
-      [CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId))) {
+      ([CHAIN_ID.zksync, CHAIN_ID.zksync_test, CHAIN_ID.mainnet, CHAIN_ID.goerli, CHAIN_ID.ar, CHAIN_ID.op, CHAIN_ID.nova].find(item => String(item) === String(fromChain.chainId)) || Number(selectMakerConfig?.bridgeType) === 1)
+    ) {
         preGas = 10 ** -preGasDigit;
       }
+      console.log("preGas", preGas)
       let userBalance = new BigNumber(this.fromBalance)
               .minus(new BigNumber(tradingFee))
               .minus(new BigNumber(opBalance))
@@ -1735,7 +1741,7 @@ export default {
         max = max.decimalPlaces(5, BigNumber.ROUND_DOWN);
       }
       if(Number(selectMakerConfig?.bridgeType) === 1) {
-        max = userBalance
+        max = userBalance.gte(max) ? max : userBalance
         userMax = userBalance
       }
       this.userMaxPrice = max.toString();
@@ -1980,6 +1986,36 @@ export default {
       //     return;
       //   }
       // }
+      let toAddress = ""
+      let open = () => {}
+      if(CHAIN_ID.ton === toChainID || CHAIN_ID.ton_test === toChainID ) {
+        toAddress = tonHelper.account()
+        open = async () => {
+          await tonHelper.connect()
+        }
+      } else  if(CHAIN_ID.solana === toChainID || CHAIN_ID.solana_test === toChainID ) {
+        toAddress = web3State.solana.solanaAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+        }
+      } else  if(CHAIN_ID.starknet === toChainID || CHAIN_ID.starknet_test === toChainID) {
+        toAddress = this.starkAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+        }
+      } else {
+        toAddress = this.currentWalletAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('EVM')
+        }
+      }
+      if(!toAddress || toAddress === "0x") {
+        await open()
+        return
+      }
       if (!await util.isLegalAddress()) {
         this.$notify.error({
           title: `Contract address is not supported, please use EVM address.`,
@@ -2233,7 +2269,7 @@ export default {
             to: util.shortAddress(contractFromAddress),
             fromTip: '',
             toTip: contractFromAddress,
-            icon: 'contract'
+            icon: 'wallet'
           },
           {
             no: 2,
@@ -2252,7 +2288,7 @@ export default {
             to: toAddress,
             fromTip: '',
             toTip: toAddressAll,
-            icon: util.isExecuteXVMContract() ? 'contract' : 'wallet'
+            icon: util.isExecuteXVMContract() ? 'wallet' : 'wallet'
           },
           {
             no: 2,

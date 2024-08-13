@@ -1,7 +1,34 @@
 {
+    "74-51": {
+        "BOME-BOME": {
+            "bridgeType": 1,
+            "makerAddress": "0x732efacd14b0355999aebb133585787921aba3a9",
+            "sender": "Fmfmay8KzgEvF7NGWRjgFcki2Zy79sa8qXCw9pXTJ5Et",
+            "gasFee": 1.5,
+            "tradingFee": 240,
+            "maxPrice": 200000,
+            "slippage": 0,
+            "minPrice": 10,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "51-74": {
+        "BOME-BOME": {
+            "bridgeType": 1,
+            "makerAddress": "Fmfmay8KzgEvF7NGWRjgFcki2Zy79sa8qXCw9pXTJ5Et",
+            "sender": "0x732efacd14b0355999aebb133585787921aba3a9",
+            "gasFee": 0,
+            "tradingFee": 0,
+            "maxPrice": 20000000,
+            "slippage": 0,
+            "minPrice": 10,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
     "15-2": {
         "AIDOGE-AIDOGE": {
-            "bridgeType": 1,
             "makerAddress": "0x732efacd14b0355999aebb133585787921aba3a9",
             "sender": "0x732efacd14b0355999aebb133585787921aba3a9",
             "maxPrice": 54000000000000,
@@ -9,12 +36,13 @@
             "tradingFee": 0.0025,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "bridgeType": 1,
+            "slippage": 0
         }
     },
     "2-15": {
         "AIDOGE-AIDOGE": {
-            "bridgeType": 1,
             "makerAddress": "0x732efacd14b0355999aebb133585787921aba3a9",
             "sender": "0x732efacd14b0355999aebb133585787921aba3a9",
             "maxPrice": 54000000000000,
@@ -22,7 +50,9 @@
             "tradingFee": 0.0005,
             "gasFee": 0,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "bridgeType": 1,
+            "slippage": 0
         }
     }
 }

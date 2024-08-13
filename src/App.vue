@@ -80,7 +80,8 @@ import {
   isTonDialog,
   setTonDialog,
   setClaimCardModalShow,
-  setActPointFetchStatus
+  setActPointFetchStatus,
+  transferDataState
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -116,6 +117,7 @@ import {
   requestClaimLuckyBagRewardData,
 } from './common/openApiAx'
 import { ethers } from 'ethers'
+import { CHAIN_ID } from './config';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -210,6 +212,10 @@ export default {
           'linear-gradient(180deg, #373951 0%, #28293D 100%);',
       }
     },
+    fromChainID() {
+      const { fromChainID } = transferDataState
+      return fromChainID
+    }
   },
   data() {
     return {
@@ -312,8 +318,45 @@ export default {
         }
       }
     },
+    fromChainID: function(a, b) {
+      if(a && a !== b) {
+        this.connectWallet(a)
+      }
+    }
   },
   methods: {
+    async connectWallet(chainId){
+      let toAddress = ""
+      let open = () => {}
+      if(CHAIN_ID.ton === chainId || CHAIN_ID.ton_test === chainId ) {
+        toAddress = tonHelper.account()
+        open = async () => {
+          await tonHelper.connect()
+        }
+      } else  if(CHAIN_ID.solana === chainId || CHAIN_ID.solana_test === chainId ) {
+        toAddress = web3State.solana.solanaAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+        }
+      } else  if(CHAIN_ID.starknet === chainId || CHAIN_ID.starknet_test === chainId) {
+        toAddress = this.starkAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+        }
+      } else {
+        toAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('EVM')
+        }
+      }
+      if(!toAddress || toAddress === "0x") {
+        await open()
+        return
+      }
+    },
     async getClaimRewardModalData() {
       const [web3Address] = this.currentWalletAddress
       if (!web3Address) return
@@ -378,7 +421,9 @@ export default {
         return
       }
       timerActivityList = timerN
-
+      this.$store.commit(
+        'getTaskInfoList',
+      )
       if (isAddress) {
         const res = await requestPointSystem('v2/activity/list', {
           address,
@@ -481,7 +526,7 @@ export default {
     },
   },
   created() {
-    this.$store.commit('getPrizesV2ProjectInfo')
+    this.$store.commit('getPrizesProjectInfo')
   }
 }
 </script>

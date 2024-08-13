@@ -1,172 +1,168 @@
 <template>
   <div class="confirm-box">
-      <CommBoxHeader
-          :back="closerButton"
-          :style="isMobile ? '' : 'margin-bottom:30px;'"
-          >Confirm</CommBoxHeader
-      >
-      <div
-          v-for="item in confirmData"
-          :key="item.title"
-          class="confirm-item"
-          :style="{ marginBottom: '22px' }"
-      >
-          <div class="confirm-item-top-group">
-              <div class="item-left">
-                  <SvgIconThemed :icon="item.icon" />
-                  <span class="left-txt">{{ item.title }}</span>
-                  <o-tooltip placement="topLeft">
-                      <template v-slot:titleDesc>
-                          <span class="o-tip">{{ item.notice }}</span>
-                      </template>
-                      <HelpIcon v-if="item.notice" size="sm" />
-                  </o-tooltip>
-              </div>
-              <div class="item-right">
-                  <div v-if="item.isCom" >
-                      <GasObSelect></GasObSelect>
-                  </div>
-                  <div>
-                      <span v-if="item.desc" :class="`${item.lineThrough ? 'fee' : ''} ${item.tieredFee || item.discount ? 'text-decoration-line-through' : ''}`">{{ item.desc }}</span>
-                      <div v-if="item.tieredFee" class="n-withholding-fee">
-                          <div >{{ item.nWithholdingFee }} <span class="tiered-fee-max">(↓{{ item.tieredFee }}%)</span></div>
-                      </div>
-                  </div>
-                  <span :style="`text-decoration: line-through;${!isMobile ? 'margin-left: 5px' : ''}`" v-if="item.lineThrough">
-                      <span v-if="isMobile"><br /></span>
-                      {{ item.lineThrough }}
-                  </span>
-              </div>
+    <CommBoxHeader
+      :back="closerButton"
+      :style="isMobile ? '' : 'margin-bottom:30px;'"
+      >Confirm</CommBoxHeader
+    >
+    <div
+      v-for="item in confirmData"
+      :key="item.title"
+      class="confirm-item"
+      :style="{ marginBottom: '22px' }"
+    >
+      <div class="confirm-item-top-group">
+        <div class="item-left">
+          <SvgIconThemed :icon="item.icon" />
+          <span class="left-txt">{{ item.title }}</span>
+          <o-tooltip placement="topLeft">
+            <template v-slot:titleDesc>
+              <span class="o-tip">{{ item.notice }}</span>
+            </template>
+            <HelpIcon v-if="item.notice" size="sm" />
+          </o-tooltip>
+        </div>
+        <div class="item-right">
+          <div v-if="item.isCom">
+            <GasObSelect></GasObSelect>
           </div>
-          <div
-              v-if="item.descInfo && item.descInfo.length > 0"
-              class="descBottom"
-          >
-              <div
-                  v-for="(desc, index) in item.descInfo"
-                  :key="desc.no"
-                  style="margin-bottom: 1rem"
-              >
-                  <span
-                      style="
-                          width: 40px;
-                          display: -moz-inline-box;
-                          display: inline-block;
-                      "
-                  >
-                      {{ index === 0 ? 'Send' : '' }}
-                  </span>
-                  <o-tooltip v-if="desc.fromTip" placement="topLeft">
-                      <template v-slot:titleDesc>
-                          <span class="o-tip">{{ desc.fromTip }}</span>
-                      </template>
-                      <span
-                          style="
-                              margin-left: 0.7rem;
-                              margin-right: 0.7rem;
-                              color: #df2e2d;
-                              width: 100px;
-                              display: -moz-inline-box;
-                              display: inline-block;
-                              text-align: center;
-                              white-space: nowrap;
-                          "
-                      >
-                          {{ desc.from }}
-                      </span>
-                  </o-tooltip>
-                  <span
-                      v-else
-                      style="
-                          margin-left: 0.7rem;
-                          margin-right: 0.7rem;
-                          color: #df2e2d;
-                          width: 100px;
-                          display: -moz-inline-box;
-                          display: inline-block;
-                          text-align: center;
-                          white-space: nowrap;
-                      "
-                  >
-                      {{ desc.from }}
-                  </span>
-                  To
-                  <o-tooltip placement="topLeft">
-                      <template v-slot:titleDesc>
-                          <span class="o-tip">{{ desc.toTip }}</span>
-                      </template>
-                      <span
-                          style="
-                              margin-left: 0.7rem;
-                              color: #df2e2d;
-                              width: 90px;
-                              display: -moz-inline-box;
-                              display: inline-block;
-                              text-align: center;
-                          "
-                      >
-                          {{ desc.to }}
-                      </span>
-                  </o-tooltip>
-                  <span style="margin-left: 0.3rem; vertical-align: -25%">
-                      <SvgIconThemed :icon="desc.icon" />
-                  </span>
+          <div>
+            <span
+              v-if="item.desc"
+              :class="`${item.lineThrough ? 'fee' : ''} ${
+                item.tieredFee || item.discount
+                  ? 'text-decoration-line-through'
+                  : ''
+              }`"
+              >{{ item.desc }}</span
+            >
+            <div v-if="item.tieredFee" class="n-withholding-fee">
+              <div>
+                {{ item.nWithholdingFee }}
+                <span class="tiered-fee-max">(↓{{ item.tieredFee }}%)</span>
               </div>
+            </div>
           </div>
-          <div
-              v-if="item.haveSep"
-              style="
-                  border-bottom: 2px dashed rgba(0, 0, 0, 0.2);
-                  height: 43px;
-              "
-          ></div>
-      </div>
-      <div
-          v-if="isStarkNetChain"
-          style="
-              padding: 0 30px;
-              display: flex;
-              text-align: left;
-              padding-top: 8px;
-          "
-      >
-          <SvgIconThemed style="margin-right: 10px" icon="info" />
-          <span style="color: #df2e2d; flex: 1"
-              >Starknet is still in alpha version, the transaction on it maybe
-              will be done in 1~2 hours. Orbiter keeps your funds safe.</span
-          >
-      </div>
-      <div
-          style="
-              padding: 0 30px;
-              display: flex;
-              text-align: left;
-              padding-top: 8px;
-          "
-      >
-          <SvgIconThemed style="margin-right: 10px" icon="info" />
-          <span style="color: #df2e2d; flex: 1"
-              >Please do not modify the transaction or remove the last four
-              digits on the transfer amount in your wallet as this will cause
-              the transaction to fail.</span
-          >
-      </div>
-
-      <CommBtn @click="RealTransfer" class="select-wallet-dialog">
           <span
-              v-if="!transferLoading"
-              class="wbold s16"
-              style="letter-spacing: 0.1rem"
-              >CONFIRM AND SEND</span
+            :style="`text-decoration: line-through;${
+              !isMobile ? 'margin-left: 5px' : ''
+            }`"
+            v-if="item.lineThrough"
           >
-          <CommLoading
-              v-else
-              style="margin: auto"
-              loadingColor="white"
-              width="2rem"
-              height="2rem"
-          />
-      </CommBtn>
+            <span v-if="isMobile"><br /></span>
+            {{ item.lineThrough }}
+          </span>
+        </div>
+      </div>
+      <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
+        <div
+          v-for="(desc, index) in item.descInfo"
+          :key="desc.no"
+          style="margin-bottom: 1rem"
+        >
+          <span
+            style="width: 40px; display: -moz-inline-box; display: inline-block"
+          >
+            {{ index === 0 ? 'Send' : '' }}
+          </span>
+          <o-tooltip v-if="desc.fromTip" placement="topLeft">
+            <template v-slot:titleDesc>
+              <span class="o-tip">{{ desc.fromTip }}</span>
+            </template>
+            <span
+              style="
+                margin-left: 0.7rem;
+                margin-right: 0.7rem;
+                color: #df2e2d;
+                width: 100px;
+                display: -moz-inline-box;
+                display: inline-block;
+                text-align: center;
+                white-space: nowrap;
+              "
+            >
+              {{ desc.from }}
+            </span>
+          </o-tooltip>
+          <span
+            v-else
+            style="
+              margin-left: 0.7rem;
+              margin-right: 0.7rem;
+              color: #df2e2d;
+              width: 100px;
+              display: -moz-inline-box;
+              display: inline-block;
+              text-align: center;
+              white-space: nowrap;
+            "
+          >
+            {{ desc.from }}
+          </span>
+          To
+          <o-tooltip placement="topLeft">
+            <template v-slot:titleDesc>
+              <span class="o-tip">{{ desc.toTip }}</span>
+            </template>
+            <span
+              style="
+                margin-left: 0.7rem;
+                color: #df2e2d;
+                width: 90px;
+                display: -moz-inline-box;
+                display: inline-block;
+                text-align: center;
+              "
+            >
+              {{ desc.to }}
+            </span>
+          </o-tooltip>
+          <span style="margin-left: 0.3rem; vertical-align: -25%">
+            <SvgIconThemed :icon="desc.icon" />
+          </span>
+        </div>
+      </div>
+      <div
+        v-if="item.haveSep"
+        style="border-bottom: 2px dashed rgba(0, 0, 0, 0.2); height: 43px"
+      ></div>
+    </div>
+    <div
+      v-if="isStarkNetChain"
+      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
+    >
+      <SvgIconThemed style="margin-right: 10px" icon="info" />
+      <span style="color: #df2e2d; flex: 1"
+        >Starknet is still in alpha version, the transaction on it maybe will be
+        done in 1~2 hours. Orbiter keeps your funds safe.</span
+      >
+    </div>
+    <div
+      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
+    >
+      <SvgIconThemed style="margin-right: 10px" icon="info" />
+      <span style="color: #df2e2d; flex: 1"
+        >Please do not modify the transaction or remove the last four digits on
+        the transfer amount in your wallet as this will cause the transaction to
+        fail.</span
+      >
+    </div>
+
+    <CommBtn @click="RealTransfer" class="select-wallet-dialog">
+      <span
+        v-if="!transferLoading"
+        class="wbold s16"
+        style="letter-spacing: 0.1rem"
+        >CONFIRM AND SEND</span
+      >
+      <CommLoading
+        v-else
+        style="margin: auto"
+        loadingColor="white"
+        width="2rem"
+        height="2rem"
+      />
+    </CommBtn>
   </div>
 </template>
 
@@ -217,13 +213,16 @@ import { Coin_ABI, Orbiter_V3_ABI_EVM, Orbiter_OPOOL_ABI } from '../../util/cons
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
-import { CHAIN_ID } from "../../config";
-import { isBrowserApp, isProd } from "../../util";
-import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, zksyncEraGasTokenContract } from "../../util/zksyncEraGasToken";
-import solanaHelper from '../../util/solana/solana_helper';
-import tonHelper from '../../util/ton/ton_helper';
-import fuelsHelper from '../../util/fuels/fuels_helper';
-import orbiterHelper from '../../util/orbiter_helper';
+import { CHAIN_ID } from '../../config'
+import { isBrowserApp, isProd } from '../../util'
+import {
+  zksyncEraGasTokenETH,
+  zksyncEraGasTokenERC20,
+  zksyncEraGasTokenContract,
+} from '../../util/zksyncEraGasToken'
+import solanaHelper from '../../util/solana/solana_helper'
+import tonHelper from '../../util/ton/ton_helper'
+import { shortString } from 'starknet'
 
 const {
   walletDispatchersOnSignature,
@@ -306,102 +305,106 @@ export default {
 
       const withholdingFee = (selectMakerConfig.tradingFee || 0)
 
-          const tieredFeeMax = transferCalculate.max()
+      const tieredFeeMax = transferCalculate.max()
 
           let discount = transferCalculate
               .discount()
               .toString()
 
-          let nWithholdingFee = ethers.utils.formatEther(
-              ethers.utils.parseEther(withholdingFee+"").sub(
-                  ethers.utils.parseEther(discount)
+      let nWithholdingFee = ethers.utils.formatEther(
+        ethers.utils
+          .parseEther(withholdingFee + '')
+          .sub(ethers.utils.parseEther(discount))
+      )
+
+      if (
+       ( fromChainID === CHAIN_ID.solana ||
+        fromChainID === CHAIN_ID.solana_test ||
+        fromChainID === CHAIN_ID.ton ||
+        fromChainID === CHAIN_ID.ton_test) && 
+        !bridgeType1
+      ) {
+        realTransferAmount = ethers.utils.formatEther(
+          ethers.utils
+            .parseEther(transferValue || '0')
+            .add(
+              ethers.utils.parseEther(
+                withholdingFee ? String(withholdingFee) : '0'
               )
-          )
-
-          if(
-             ( orbiterHelper.isTonChain({chainId: fromChainID}) || 
-              orbiterHelper.isStarknetChain({chainId: fromChainID}) || 
-              orbiterHelper.isSolanaChain({chainId: fromChainID})) && !bridgeType1
-          ) {
-              realTransferAmount = ethers.utils.formatEther(
-                  ethers.utils.parseEther(transferValue || "0").add(ethers.utils.parseEther(withholdingFee ? String(withholdingFee) : "0"))
-                  )
-          }
-          
-          const isGasTokenChain = (this.currentFromChainID === CHAIN_ID.zksync2)
-          const comm = [
-              {
-                  icon: 'withholding',
-                  title: 'Withholding Fee',
-                  notice: 'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
-                  desc:
-                      selectMakerConfig.tradingFee +
-                      ' ' +
-                      symbol,
-                  tieredFee: tieredFeeMax,
-                  nWithholdingFee: nWithholdingFee + ' ' +
-                      selectMakerConfig.fromChain.symbol,
-                  lineThrough: withholdingFee<originWithholdingFee?originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol : '',
-              },
-              {
-                  icon: 'security',
-                  title: 'Identification Code',
-                  notice: 'In Orbiter, each transaction has a four digit identification code. The identification code can be seen at the end of the total amount being transferred as a way to identify the transaction. The identification code will be the evidence in the case that the ‘Maker’ does not send the assets to the target network. This will act as an evidence to claim your funds from the margin contract.',
-                  desc: transferCalculate.safeCode(),
-                  haveSep: true,
-              },
-              {
-                  icon: 'send',
-                  title: 'Total Send',
-                  notice: 'Total amount sent by the ‘Sender’ including the withholding fee.',
-                  desc:
-                      realTransferAmount +
-                      ' ' +
-                      selectMakerConfig.fromChain.symbol + (bridgeType1 ? " + " +  withholdingFee +
-                      ' ' +
-                      symbol : ""),
-                  textBold: true,
-              },
-              {
-                  icon: 'received',
-                  title: 'Received',
-                  desc: this.expectValue,
-                  ...(bridgeType1 ? {notice: "Token burning results in a less number of tokens received"} : {}),
-                  textBold: true,
-              },
-              ...(isGasTokenChain ? [{
-                  icon: 'gas',
-                  title: 'Select Gas Token',
-                  notice: 'Select Gas Token',
-                  desc: "",
-                  isCom: true,
-                  textBold: true,
-              }] : []),
-              {
-                  icon: 'exchange',
-                  title: 'Maker Routes',
-                  notice: 'After the ‘Sender’ submits the transaction, the assets are transferred to the ‘Maker’s’ address who will provide the liquidity. Orbiter’s contract will ensure the safety of the assets and will make sure that the ‘Sender’ receives the assets to the target network.',
-                  descInfo: this.$store.state.confirmData.routeDescInfo,
-              },
-          ]
-          return [...comm]
-      },
-      isCrossAddress() {
-          const { isCrossAddress } = transferDataState
-          return isCrossAddress
-      },
-      crossAddressReceipt() {
-          const { crossAddressReceipt, toChainID } = transferDataState
-
-          const isCheck = orbiterHelper.checkAddress({chainId: toChainID, address: crossAddressReceipt})
-
-          if(this.isCrossAddress && isCheck) {
-              return crossAddressReceipt
-          } else {
-              return ""
-          }
+            )
+        )
       }
 
+      const isGasTokenChain = this.currentFromChainID === CHAIN_ID.zksync2
+      const comm = [
+        {
+          icon: 'withholding',
+          title: 'Withholding Fee',
+          notice:
+            'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
+          desc: selectMakerConfig.tradingFee + ' ' + symbol,
+          tieredFee: tieredFeeMax,
+          nWithholdingFee:
+            nWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol,
+          lineThrough:
+            withholdingFee < originWithholdingFee
+              ? originWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol
+              : '',
+        },
+        {
+          icon: 'security',
+          title: 'Identification Code',
+          notice:
+            'In Orbiter, each transaction has a four digit identification code. The identification code can be seen at the end of the total amount being transferred as a way to identify the transaction. The identification code will be the evidence in the case that the ‘Maker’ does not send the assets to the target network. This will act as an evidence to claim your funds from the margin contract.',
+          desc: transferCalculate.safeCode(),
+          haveSep: true,
+        },
+        {
+          icon: 'send',
+          title: 'Total Send',
+          notice:
+            'Total amount sent by the ‘Sender’ including the withholding fee.',
+          desc:
+            realTransferAmount +
+            ' ' +
+            selectMakerConfig.fromChain.symbol +
+            (bridgeType1 ? ' + ' + withholdingFee + ' ' + symbol : ''),
+          textBold: true,
+        },
+        {
+          icon: 'received',
+          title: 'Received',
+          desc: this.expectValue,
+          ...(bridgeType1
+            ? {
+                notice:
+                  'Token burning results in a less number of tokens received',
+              }
+            : {}),
+          textBold: true,
+        },
+        ...(isGasTokenChain
+          ? [
+              {
+                icon: 'gas',
+                title: 'Select Gas Token',
+                notice: 'Select Gas Token',
+                desc: '',
+                isCom: true,
+                textBold: true,
+              },
+            ]
+          : []),
+        {
+          icon: 'exchange',
+          title: 'Maker Routes',
+          notice:
+            'After the ‘Sender’ submits the transaction, the assets are transferred to the ‘Maker’s’ address who will provide the liquidity. Orbiter’s contract will ensure the safety of the assets and will make sure that the ‘Sender’ receives the assets to the target network.',
+          descInfo: this.$store.state.confirmData.routeDescInfo,
+        },
+      ]
+      return [...comm]
+    },
   },
   methods: {
       openConnectModal() {
@@ -2585,25 +2588,23 @@ export default {
               font-weight: 600;
           }
 
-          .n-withholding-fee {
-              margin-top: -8px;
+      .n-withholding-fee {
+        margin-top: -8px;
 
-              .tiered-fee-max {
-                  margin-top: -8px;
-                  font-size: 12px;
-                  color: #df2e2d;
-                  font-weight: 700;
-              }
-              .tiered-fee-discount {
-                  margin-top: -8px;
-                  font-size: 12px;
-                  color: #3183ff;
-                  font-weight: 700;
-              }
-          }
-
-          
+        .tiered-fee-max {
+          margin-top: -8px;
+          font-size: 12px;
+          color: #df2e2d;
+          font-weight: 700;
+        }
+        .tiered-fee-discount {
+          margin-top: -8px;
+          font-size: 12px;
+          color: #3183ff;
+          font-weight: 700;
+        }
       }
+    }
 
       .descBottom {
           max-height: 9.2rem;

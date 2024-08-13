@@ -33,6 +33,7 @@ import tonHelper from '../ton/ton_helper'
 import fuelsHelper from '../fuels/fuels_helper'
 import { zeroAddress } from 'viem'
 import orbiterHelper from '../orbiter_helper'
+import { TieredFeeKey } from '../../const'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -1319,9 +1320,10 @@ export default {
 
   getTradingFee() {
     const { selectMakerConfig } = transferDataState
-    return new BigNumber(selectMakerConfig.tradingFee).minus(
-      new BigNumber(this.discount())
-    )
+    return new BigNumber(selectMakerConfig.tradingFee)
+    // .minus(
+    //   new BigNumber(this.discount())
+    // )
   },
 
   getTransferTValue() {
@@ -1416,35 +1418,77 @@ export default {
   max() {
     const { selectMakerConfig, transferValue } = transferDataState
 
+    console.log('transferValue', transferValue)
+
     const { tieredFee } = selectMakerConfig
 
-    const tieredFeeList = tieredFee
-      ?.filter((item) => {
-        const [min, max] = item?.range
-        return (
-          Number(min) <= Number(transferValue) &&
-          Number(max) >= Number(transferValue)
-        )
-      })
-      ?.map((item) => item?.discount || '0')
+    const tieredFeeList = tieredFee?.filter((item) => {
+      const [min, max] = item?.range
+      return (
+        Number(min) <= Number(transferValue) &&
+        Number(max) >= Number(transferValue)
+      )
+    })
+    const discountList = tieredFeeList?.map((item) => item?.discount || '0')
+    const withholdingFeeList = tieredFeeList?.map(
+      (item) => item?.withholdingFee || '0'
+    )
 
-    const tieredFeeMax = Math.max(...(tieredFeeList || []), 0)
-    return tieredFeeMax
+    let tieredFeeDiscountMax = 0
+    let tieredFeeWithholdingFeeMax = 0
+
+    discountList.forEach((item) => {
+      if (Number(item) >= tieredFeeDiscountMax) {
+        tieredFeeDiscountMax = item
+      }
+    })
+    withholdingFeeList.forEach((item) => {
+      if (!tieredFeeWithholdingFeeMax) {
+        tieredFeeWithholdingFeeMax = item
+      } else {
+        if (Number(item) <= tieredFeeWithholdingFeeMax && Number(item)) {
+          tieredFeeWithholdingFeeMax = item
+        }
+      }
+    })
+    console.log(
+      'tieredFeeWithholdingFeeMax',
+      withholdingFeeList,
+      tieredFeeWithholdingFeeMax,
+      discountList,
+      tieredFeeDiscountMax
+    )
+    return Number(tieredFeeWithholdingFeeMax)
+      ? {
+          type: TieredFeeKey.withholdingFee,
+          value: tieredFeeWithholdingFeeMax,
+        }
+      : {
+          type: TieredFeeKey.discountFee,
+          value: tieredFeeDiscountMax,
+        }
   },
   discount() {
     const { selectMakerConfig } = transferDataState
 
     const withholdingFee = selectMakerConfig.tradingFee || 0
 
-    const tieredFeeMax = this.max()
+    const { type, value: tieredFeeMax } = this.max()
     let discount = '0'
+
     if (tieredFeeMax) {
       const w = ethers.utils.parseEther(withholdingFee + '')
-      discount = ethers.utils.formatEther(
-        w
-          .mul(ethers.utils.parseEther(tieredFeeMax / 100 + ''))
-          .div(ethers.utils.parseEther('1'))
-      )
+      if (type === TieredFeeKey.discountFee) {
+        discount = ethers.utils.formatEther(
+          w
+            .mul(ethers.utils.parseEther(tieredFeeMax / 100 + ''))
+            .div(ethers.utils.parseEther('1'))
+        )
+      } else {
+        discount = ethers.utils.formatEther(
+          w.sub(ethers.utils.parseEther(tieredFeeMax + ''))
+        )
+      }
     }
 
     return discount

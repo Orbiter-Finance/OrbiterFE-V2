@@ -7,9 +7,9 @@
         <div
           class="card-rule-text"
           v-for="(option, idx) in item.text"
-          :key="idx" v-html="option"
-        >
-        </div>
+          :key="idx"
+          v-html="option"
+        ></div>
       </div>
     </div>
   </div>
@@ -22,54 +22,49 @@ export default {
     return {
       ruleList: [
         {
-          label: 'How to Get Rewards:',
+          label: '1.Which networks are participating in this event?',
           text: [
-            'Bridge from specific network to Arbitrum. ',
-            'Specific networks include:<strong> Blast, Optopia, ZKFair, Mode, zkLink Nova, Zora, Manta, Mantle, Polygon, Scroll, OPBNB, zkSync Lite, Arbitrum Nova, Proof of Play Apex, BSC, BOB, zkSync Era, Taiko, BEVM, Merlin</strong>',
+            '- Bridge <span class="orbiter_global_prizes_rule_tag">from specific networks to Linea Chain.</span> ( Ethereum, Arbitrum, zkSync Lite, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Polygon zkEVM, Scroll, Base, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse )',
+            '- The minimum amount required: 0.03 ETH.',
+            '- Bridge token: ETH',
           ],
         },
         {
-          label: 'Complete the following tasks to get rewards accordingly:',
+          label: '2.How to share the 35,000 USDC prize pool?',
           text: [
-            '1. Join the orbiter telegram group: +3 OPoints',
-            '2. Complete the first bridging: +5 OPoints',
-            '3. Complete the second bridging: +12 OPoints',
+          '- Complete ≥3 transactions to qualify for a share of the prize pool.',
+          '- The top 100 users in this bridging competition will share a 35,000 USDC prize pool.',
           ],
         },
         {
-          label:
-            'Complete the specified amount of transactions to share the prize pool accordingly:',
+          label: '3.What is the 0 Bridging Fee & 50% Bridging Fee Rebates?',
           text: [
-            '- Complete 3 transactions: share 10% of the prize pool',
-            '- Complete 5 transactions: share 15% of the prize pool',
-            '- Complete 8 transactions: share 20% of the prize pool',
-            '- Complete 15 transactions: share 25% of the prize pool',
-            '- Top 100 users (the transactions are over 20): share 30% of the prize pool',
+            '- TOP 1 to 8 users, all bridging fees (except for gas fees) will be rebated.',
+            '- TOP 9 to 20 users, 50% of bridging fees (except for gas fees) will be rebated.'
           ],
         },
         {
-          label: 'Surprise rewards:',
+          label: '4.What are the prize pool rules?',
           text: [
-            'The top 800 users (according to the amount of transactions) will receive a certain amount of $ORBGUY for free randomly! ',
+            '- The total  prize pool is 35,000 USDC, with a base pool of 7,000 USDC. ',
+            '- When the total transactions ≥ 55,000, the pool increases to 10,500 USDC.',
+            '- When the total transactions ≥100,000, the pool increases to 21,000 USDC.',
+            '- When the total transactions  ≥180,000, the pool increases to 35,000 USDC.'
           ],
         },
         {
-          label: 'Reward Distribution Rules',
+          label: '5.What is the rule of ranking?',
           text: [
-            '- When the number of participants is ≤ 5000, and the initial prize pool is $25,000.',
-            '- For every 1000 users participation, the prize pool will increase $2,000, and the prize pool will increase in this way until $100,000 highest.',
-            '- Each address can only share the rewards of the final prize pool level counted at the end of the competition, and the bonus pool each user gets cannot be accumulated.',
-            '- The prize pools for the tiers that have completed 3-15 bridging transactions tasks, the winning users will share the prize equally according to the prize pool.',
-            '- The top 100 users will share 30% of the prize pool according to the proportion of transaction amounts.',
+            '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
           ],
         },
         {
-          label: 'Note',
+          label: '6.When will the rewards be distributed?',
           text: [
-            '- You only need to complete more than 3 transactions to participate in the prize pool of $100,000.',
-            '- The rewards will be distributed when the competition ends.',
+            '- All rewards will be distributed after the competition ends, including USDC and bridging fee rebates for the top 20 users.',
+            '- Please stay informed and claim your rewards within 3 days of the reward claim portal opening!'
           ],
-        },
+        }
       ],
     }
   },
@@ -79,7 +74,7 @@ export default {
 <style scoped lang="scss">
 .prizes-rule {
   width: 100%;
-  margin: 64px 0 200px;
+  margin: 56px 0 200px;
   .rule-title {
     width: 100%;
     font-size: 32px;
@@ -89,17 +84,20 @@ export default {
     text-align: center;
   }
   .prizes-rule-card {
-    margin: 16px 0 4px;
-    width: 100%;
     padding: 8px 24px 24px;
+    width: 100%;
+    border: 1px solid rgba(243, 223, 47, 0.3);
     border-radius: 16px;
-    background: rgb(34, 34, 34);
+    background: linear-gradient(-3.58deg, rgba(15, 34, 37, 0.2) 60.756%,rgba(209, 112, 85, 0.2) 102.538%),rgb(15, 34, 37);
     text-align: left;
+    margin-top: 16px;
     .card-label {
+      margin-top: 16px;
       font-size: 16px;
       font-weight: 600;
       line-height: 28px;
       letter-spacing: 0px;
+      font-family: GeneralSans-SemiBold;
       margin-top: 16px;
     }
 
@@ -107,9 +105,8 @@ export default {
       font-size: 14px;
       font-weight: 400;
       line-height: 23px;
-      font-family: 'Open Sans';
       letter-spacing: 0px;
-      opacity: 0.6;
+      color: rgba(255, 255, 255, 0.6);
     }
   }
 }
@@ -117,8 +114,10 @@ export default {
 @media (max-width: 740px) {
   #prizes-rule {
     width: 100%;
-    padding: 0 12px;
     margin: 32px 0 60px;
+    .prizes-rule-card {
+      padding: 8px 16px;
+    }
     .rule-title {
       font-size: 24px;
     }

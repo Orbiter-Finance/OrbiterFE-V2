@@ -18,7 +18,7 @@ import {
 import { showMessage } from '../../constants/web3/getWeb3'
 import { getNetworkIdByChainId } from '../../chainUtils'
 import util from '../../util'
-import { BRAVE, BRAVE_APP, SAFEPAL } from '../constants'
+import { BRAVE, BRAVE_APP, PHANTOMWALLET, SAFEPAL } from '../constants'
 
 // install wallet checks if target wallet extension is installed
 // if installed, the provider of this wallet will be return
@@ -71,7 +71,7 @@ export const performWalletInformation = async (
     walletIsInstalledInvestigator
   )
   if (!matchWalletProvider) throw new Error(`not install ${walletType}`)
-  if (window.ethereum?.isLoopring) {
+  if (window.ethereum?.isLoopring || walletType === PHANTOMWALLET) {
     await matchWalletProvider.enable()
   }
   const performResult = {
@@ -82,16 +82,21 @@ export const performWalletInformation = async (
   }
   const matchWalletWeb3Provider = new Web3(matchWalletProvider) // inject web3
   let networkId, walletAddress
-  if (matchWalletProvider.request) {
-    // provide ethereum standard request method, more compatible, recommend first
-    networkId = await matchWalletProvider.request({
-      method: 'net_version',
-    })
+  if (walletType !== PHANTOMWALLET) {
+    if (matchWalletProvider.request) {
+      // provide ethereum standard request method, more compatible, recommend first
+      networkId = await matchWalletProvider.request({
+        method: 'net_version',
+      })
+    } else {
+      networkId = await matchWalletWeb3Provider.eth.request({
+        method: 'net_version ',
+      })
+    }
   } else {
-    networkId = await matchWalletWeb3Provider.eth.request({
-      method: 'net_version ',
-    })
+    networkId = window.phantom?.ethereum?.networkVersion
   }
+
   if (!networkId)
     showMessage('get netWorkID failed, refresh and try again', 'error')
   else {
