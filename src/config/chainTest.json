@@ -412,15 +412,17 @@
       "url": "",
       "key": ""
     },
-    "chainId": "84531",
-    "networkId": "84531",
+    "chainId": "84532",
+    "networkId": "84532",
     "internalId": "521",
-    "name": "Base(G)",
+    "name": "Base Sepolia",
     "debug": false,
-    "contracts": [],
-    "features": [
-      "Etherscan"
-    ],
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "contract": {
+      "0x48F3d8F498e0A59798c72120215146C6833b5BFC": "OrbiterRouterV3"
+    },
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
@@ -428,13 +430,11 @@
       "address": "0x0000000000000000000000000000000000000000"
     },
     "rpc": [
-      "https://goerli.base.org"
-    ],
-    "watch": [
-      "rpc"
+      "https://sepolia.base.org"
     ],
     "tokens": [],
-    "infoURL": "https://goerli.basescan.org"
+    "infoURL": "https://base-sepolia.blockscout.com",
+    "vm": "EVM"
   },
   {
     "api": {
