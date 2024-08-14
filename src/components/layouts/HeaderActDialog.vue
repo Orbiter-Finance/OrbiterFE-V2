@@ -196,7 +196,8 @@
                     </div>
                   </div>
                   <div class="group">
-                    <div
+                    <div class="group-info">
+                      <div
                     v-for="tag in option.tags"
                     >
                       <div v-if="tag.style === 'token'"
@@ -233,7 +234,10 @@
                       }}</span>
                       <span v-else class="text_28">Undone</span>
                     </div>
-                    
+                    </div>
+                    <div class="group-link" v-if="showScrollNFTImage(option)">
+                      <img @click="mintScrollNFT" :src="require(`../../assets/activity/scroll-nft-${showScrollNFTImage(option)}.png`)" alt="">
+                    </div>
                   </div>
                 </div>
               </template>
@@ -579,6 +583,16 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
+    mintScrollNFT(){
+      console.log("mintScrollNFT")
+    },
+    showScrollNFTImage(group){
+      const list = process.env?.VUE_APP_SCROLL_NFT_ID?.split("-") || []
+      const isActivity = group?.activity_id == list[0]
+      const index = list.findIndex((item)=> group?.id && (String(group?.id) === String(item)))
+      
+      return !!group?.status && isActivity && (index !== -1) ? index : 0
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
@@ -2229,9 +2243,29 @@ export default {
         .group {
           width: 100%;
           display: flex;
-          justify-content: start;
+          justify-content: space-between;
           align-items: center;
           margin-top: 8px;
+
+          .group-info {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            flex: 1;
+          }
+
+          .group-link {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            img {
+              width: 100%;
+              height: 100%;
+              cursor: pointer;
+            }
+          }
 
           .group-reward {
             display: flex;
