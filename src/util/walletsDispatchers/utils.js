@@ -142,10 +142,7 @@ export const findMatchWeb3ProviderByWalletType = (
     if (walletType === BIT_KEEP && typeof window.bitkeep !== 'undefined') {
       return window.bitkeep.ethereum
     }
-    console.log(
-      'ethereumWalletTypeFitChecker(walletType, window.ethereum || {})',
-      ethereumWalletTypeFitChecker(walletType, window.ethereum || {})
-    )
+
     if (ethereumWalletTypeFitChecker(walletType, window.ethereum || {}))
       return window.ethereum
     return null
