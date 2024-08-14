@@ -187,17 +187,22 @@
               <div>
               <template v-for="option in item.taskList">
                 <div class="task-card" 
-                :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
                 >
-                  <div class="title">
+                  <div class="title"
+                    :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                  >
+                  <div class="title-info">
                     <div class="task-info">
-                    <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
-                    <div class="description" v-html="option.description"></div>
+                      <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
+                      <div class="description" v-html="option.description"></div>
+                    </div>
+                  </div>
+                    <div class="task-link" v-if="showScrollNFTImage(option)">
+                      <svg-icon iconName="task-arrow-right"></svg-icon>
                     </div>
                   </div>
                   <div class="group">
-                    <div class="group-info">
-                      <div
+                    <div
                     v-for="tag in option.tags"
                     >
                       <div v-if="tag.style === 'token'"
@@ -234,11 +239,9 @@
                       }}</span>
                       <span v-else class="text_28">Undone</span>
                     </div>
-                    </div>
-                    <div class="group-link" v-if="showScrollNFTImage(option)">
-                      <img @click="mintScrollNFT" :src="require(`../../assets/activity/scroll-nft-${showScrollNFTImage(option)}.png`)" alt="">
-                    </div>
+                    
                   </div>
+                    
                 </div>
               </template>
             </div>
@@ -2228,6 +2231,12 @@ export default {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .title-info {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            flex: 1;
+          }
           .task-info {
             display: flex;
             justify-content: start;
@@ -2238,34 +2247,23 @@ export default {
               margin-right: 8px;
             }
           }
+
+          .task-link {
+            width: 20px;
+            height: 20px;
+            svg {
+              width: 20px;
+              height: 20px;
+            }
+          }
         }
 
         .group {
           width: 100%;
           display: flex;
-          justify-content: space-between;
+          justify-content: start;
           align-items: center;
           margin-top: 8px;
-
-          .group-info {
-            display: flex;
-            justify-content: start;
-            align-items: center;
-            flex: 1;
-          }
-
-          .group-link {
-            width: 24px;
-            height: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            img {
-              width: 100%;
-              height: 100%;
-              cursor: pointer;
-            }
-          }
 
           .group-reward {
             display: flex;
