@@ -219,9 +219,9 @@ export default {
       const rewards = this.taskInfo?.[0]?.rewards || []
       const userList = this.userRecordsList || []
 
-      const option = rewards.filter((item) => item.rule.name === 'orbguy')?.[0]
+      const option = rewards.filter((item) => item?.rule.name === 'orbguy')?.[0]
 
-      const list = option.rule?.timesWithRewardList || []
+      const list = option?.rule?.timesWithRewardList || []
 
       const taskResultList = userList.map((item)=>{
         const taskId = item.task_id

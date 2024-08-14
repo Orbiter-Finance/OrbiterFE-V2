@@ -123,11 +123,11 @@ export default {
 
         const tags = item.rewards.map((option)=>{
             return ({
-              icon: option.rule.icon || "",
-              amount: option.rule.amount,
-              type: option.rule.name,
-              title: option.rule.title,
-              token: option.rule.token
+              icon: option?.rule.icon || "",
+              amount: option?.rule.amount,
+              type: option?.rule.name,
+              title: option?.rule.title,
+              token: option?.rule.token
             })
         })
 

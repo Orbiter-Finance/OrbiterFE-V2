@@ -1142,7 +1142,7 @@ export default {
     async openApiFilter() {
       try {
         const data = await getNoticeData();
-        const banList = data?.map((item)=> item.rule) || []
+        const banList = data?.map((item)=> item?.rule) || []
         if (Array.isArray(banList)) {
           this.banList = banList;
         }
@@ -1154,7 +1154,7 @@ export default {
       const cron = setInterval(async () => {
         try {
           const data = await getNoticeData();
-          const banList = data?.map((item)=> item.rule) || []
+          const banList = data?.map((item)=> item?.rule) || []
           if (Array.isArray(banList)) {
             self.banList = banList;
           }

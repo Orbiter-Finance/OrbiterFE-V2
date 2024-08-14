@@ -613,7 +613,7 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     async getUserTask() {
-      const address = this.currentWalletAddress
+      const address = this.currentWalletAddress()
       const list = this.questsTaskList.filter((item)=> !!item?.id)
       if(!list?.length || !address || address === "0x") return
       this.$store.commit("getUserTaskInfoList", {
