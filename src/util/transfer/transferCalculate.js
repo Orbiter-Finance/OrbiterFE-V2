@@ -1422,7 +1422,7 @@ export default {
 
     const { tieredFee } = selectMakerConfig
 
-    const tieredFeeList = tieredFee?.filter((item) => {
+    const tieredFeeList = (tieredFee || [])?.filter((item) => {
       const [min, max] = item?.range
       return (
         Number(min) <= Number(transferValue) &&
