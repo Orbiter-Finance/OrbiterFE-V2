@@ -613,7 +613,7 @@ export default {
       return decimalNum(num, decimal, delimiter)
     },
     async getUserTask() {
-      const address = this.currentWalletAddress()
+      const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
       const list = this.questsTaskList.filter((item)=> !!item?.id)
       if(!list?.length || !address || address === "0x") return
       this.$store.commit("getUserTaskInfoList", {
@@ -625,7 +625,7 @@ export default {
       clearTimeout(time2)
       time2 = setTimeout(async () => {
 
-        const address = await this.currentWalletAddress()
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if(address) {
           const response = await fetch(
             `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
