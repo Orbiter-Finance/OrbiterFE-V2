@@ -2,11 +2,9 @@ import { ref } from './'
 
 export const prizesTotaltx = ref('')
 export const prizesTotalAddress = ref('')
-export const prizesTaskList = ref([])
 export const prizesRankList = ref([])
 export const prizesProjectTaskDetailsList = ref([])
 export const prizesUserRank = ref('')
-export const prizesTotalOrbguy = ref('')
 export const prizesUserList = ref([])
 export const prizesProjectTime = ref('')
 export const prizesRankRefreshTime = ref('')
@@ -14,12 +12,10 @@ export const prizesTimeEnd = ref(false)
 
 export const setPrizesTotaltx = (flag) => (prizesTotaltx.value = flag)
 export const setPrizesTotalAddress = (flag) => (prizesTotalAddress.value = flag)
-export const setPrizesTaskList = (flag) => (prizesTaskList.value = flag)
 export const setPrizesRankList = (flag) => (prizesRankList.value = flag)
 export const setPrizesProjectTaskDetailsList = (flag) =>
   (prizesProjectTaskDetailsList.value = flag)
 export const setPrizesUserRank = (flag) => (prizesUserRank.value = flag)
-export const setPrizesTotalOrbguy = (flag) => (prizesTotalOrbguy.value = flag)
 export const setPrizesUserList = (flag) => (prizesUserList.value = flag)
 export const setPrizesProjectTime = (flag) => (prizesProjectTime.value = flag)
 export const setPrizesRankRefreshTime = (flag) =>

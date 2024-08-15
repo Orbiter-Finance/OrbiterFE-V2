@@ -76,37 +76,54 @@ export default {
     return {
       group: [
         {
-          tx: '0~2,800 Tx',
+          tx: '0~2,999 Tx',
           reward: '',
-          range: [0, 980],
+          range: [0, 2999],
+          bridge50Fee: 0,
+          bridge100Fee: 0,
         },
         {
-          tx: '980~2,800 Tx',
-          reward: '$1,000',
-          range: [980, 2800],
+          tx: '3,000~9,999 Tx',
+          reward: '$3,500',
+          range: [3000, 9999],
+          bridge50Fee: 5,
+          bridge100Fee: 15,
         },
         {
-          tx: '2,801~9,100 Tx',
-          reward: '$10,500',
-          range: [2801, 9100],
+          tx: '10,000~29,999 Tx',
+          reward: '$12,600',
+          range: [10000, 29999],
+          bridge50Fee: 10,
+          bridge100Fee: 30,
         },
         {
-          tx: '9,101~21,000 Tx',
-          reward: '$21,000',
-          range: [9101, 21000],
-        },
-        {
-          tx: '≥21,001 Tx',
+          tx: '30,000~54,999 Tx',
           reward: '$35,000',
-          range: [21001, 500000],
+          range: [30000, 54999],
+          bridge50Fee: 20,
+          bridge100Fee: 45,
         },
-      ],
+        {
+          tx: '55,000~119,999 Tx',
+          reward: '$56,000',
+          range: [55000, 119999],
+          bridge50Fee: 30,
+          bridge100Fee: 60,
+        },
+        {
+          tx: '≥120,000 Tx',
+          reward: '$70,000',
+          range: [120000, 999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+        },
+      ]
     }
   },
   computed: {
     totalTx() {
-      const tx = prizesTotaltx.value || 0
-      return Math.floor(Number(tx) / 5) || 0
+      const tx = Number(prizesTotaltx.value) || 0
+      return tx
     },
     totalTxAmount() {
       const tx = this.totalTx
@@ -120,8 +137,7 @@ export default {
         const [first, last] = item.range
         return first <= tx && last >= tx
       })?.[0]
-      // return group?.reward || '$0'
-      return "To be unlocked"
+      return group?.reward || "To be unlocked"
     },
     ratio() {
       let ratioAmount = 0

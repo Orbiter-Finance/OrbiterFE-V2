@@ -11,7 +11,7 @@
         <div class="title orbiter-linear-text">$35,000 Prize Pool</div>
       </div>
       <div class="group">
-        <div class="amount orbiter-linear-text">Scroll Trading Frenzy</div>
+        <div class="amount orbiter-linear-text"><span class="chain orbiter-linear-text">Scroll</span> Trading Frenzy</div>
       </div>
       <div class="group">
         <div class="time-card">
@@ -101,7 +101,7 @@ export default {
     toBridgeCall() {
       const address = this.evmAddress
       if (!address || address === '0x' || this.isEnd) return
-      const name = 'PRIZES_V3_BANNER_TO_BRIDGE'
+      const name = 'PRIZES_V4_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
         event_label: 'to home',
@@ -111,11 +111,11 @@ export default {
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Linea', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'Scroll', token: 'ETH' },
         })
       )
 
-      const url = location.origin + '/?source=Ethereum&dest=Linea&token=ETH'
+      const url = location.origin + '/?source=Ethereum&dest=Scroll&token=ETH'
 
       window.open(url, '_self')
     },
@@ -202,29 +202,37 @@ export default {
       }
       .title {
         margin-top: 16px;
-        color: rgb(143, 247, 255);
+        
+        color: rgb(255, 242, 240);
         background-image: linear-gradient(
-          178.28deg,
-          rgb(228, 255, 236),
-          rgb(143, 247, 255)
+          to right,
+          rgb(255, 242, 240),
+        rgb(255, 222, 181)
         );
-        font-size: 44px;
-        font-weight: 500;
-        line-height: 54px;
+        font-size: 88px;
+        line-height: 1;
+        font-family: GeneralSans-SemiBold;
+        letter-spacing: 0px;
       }
       .amount {
         margin-top: 16px;
         background-image: linear-gradient(
-          30.14deg,
+          to right,
           rgb(255, 242, 240),
-          rgb(150, 223, 201)
+        rgb(255, 222, 181)
         );
         color: rgb(255, 242, 240);
         font-size: 88px;
-        font-weight: 600;
-        line-height: 112px;
+        line-height: 1;
         letter-spacing: 0px;
         font-family: GeneralSans-SemiBold;
+        .chain {
+          background-image: linear-gradient(
+          to right,
+          #FFC47D,
+          #FFC47D
+        );
+        }
       }
     }
 
@@ -301,6 +309,9 @@ export default {
   #prizes-top-banner {
     height: 420px;
     .prizes-content {
+      .badge {
+        font-size: 16px;
+      }
       .title {
         font-size: 24px;
         line-height: 1;
