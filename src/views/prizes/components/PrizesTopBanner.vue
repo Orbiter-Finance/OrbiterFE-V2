@@ -2,10 +2,16 @@
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
       <div class="group">
-        <div class="title orbiter-linear-text">Linea Trading Challenge</div>
+
+      <div class="badge">
+          Mint Your Exclusive Pilot Badge
+      </div>
+    </div>
+      <div class="group">
+        <div class="title orbiter-linear-text">$35,000 Prize Pool</div>
       </div>
       <div class="group">
-        <div class="amount orbiter-linear-text">35,000 USDC Prize Pool</div>
+        <div class="amount orbiter-linear-text">Scroll Trading Frenzy</div>
       </div>
       <div class="group">
         <div class="time-card">
@@ -94,11 +100,11 @@ export default {
     },
     toBridgeCall() {
       const address = this.evmAddress
-      if ( !address || address === '0x' || this.isEnd) return
-      const name ="PRIZES_V3_BANNER_TO_BRIDGE"
+      if (!address || address === '0x' || this.isEnd) return
+      const name = 'PRIZES_V3_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
-        event_label: "to home",
+        event_label: 'to home',
       })
       localStorage.setItem(
         'last_page_before_history',
@@ -108,11 +114,10 @@ export default {
           query: { source: 'Ethereum', dest: 'Linea', token: 'ETH' },
         })
       )
-      
+
       const url = location.origin + '/?source=Ethereum&dest=Linea&token=ETH'
 
-      window.open(url, "_self")
-      
+      window.open(url, '_self')
     },
     toggleEnd() {
       setPrizesTimeEnd(true)
@@ -181,12 +186,22 @@ export default {
   height: 680px;
   .prizes-content {
     width: 100%;
+   
     .group {
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      .badge {
+        border-radius: 999px;
+        background: linear-gradient(176.00deg, rgb(255, 232, 181) 30%,rgb(255, 196, 125) 53.451%);
+        padding: 12px 40px;
+        color: #0A1313;
+        font-family: GeneralSans-SemiBold;
+        font-size: 24px;
+      }
       .title {
+        margin-top: 16px;
         color: rgb(143, 247, 255);
         background-image: linear-gradient(
           178.28deg,
@@ -228,7 +243,7 @@ export default {
             rgba(21, 63, 66, 0),
             rgba(255, 21, 0, 0.2) 100%
           ),
-          rgba(21, 63, 66, 0.8);
+          rgb(71, 55, 21);
         margin: 0 6px;
         .card-item-value {
           font-size: 28px;
@@ -238,7 +253,7 @@ export default {
           margin-top: 6px;
         }
         .card-item-symbol {
-          color: rgb(39, 255, 251);
+          color: #FFDEB5;
           font-family: GeneralSans-Medium;
           font-size: 14px;
           line-height: 16px;
@@ -270,7 +285,14 @@ export default {
       font-family: GeneralSans-SemiBold;
       line-height: 28px;
       letter-spacing: 0px;
-      clip-path: polygon( 0 12px, 12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+      clip-path: polygon(
+        0 12px,
+        12px 0,
+        100% 0,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        0 100%
+      );
     }
   }
 }

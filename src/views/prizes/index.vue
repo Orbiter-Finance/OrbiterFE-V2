@@ -6,9 +6,9 @@
       <div class="content">
         <PrizesPool></PrizesPool>
         <PrizesUser></PrizesUser>
+        <PrizesAllocation></PrizesAllocation>
         <PrizesRank></PrizesRank>
         <PrizesRule></PrizesRule>
-        <!-- <PrizesUserBall></PrizesUserBall> -->
       </div>
     </div>
   </div>
@@ -23,6 +23,8 @@ import PrizesUser from './components/PrizesUser.vue'
 import PrizesRank from './components/PrizesRank.vue'
 import PrizesRule from './components/PrizesRule.vue'
 import PrizesPool from './components/PrizesPool.vue'
+import PrizesAllocation from './components/PrizesAllocation.vue'
+
 
 export default {
   name: 'Prizes2',
@@ -33,6 +35,7 @@ export default {
     PrizesUser,
     PrizesRank,
     PrizesRule,
+    PrizesAllocation
   },
   computed: {
     evmAddress() {
