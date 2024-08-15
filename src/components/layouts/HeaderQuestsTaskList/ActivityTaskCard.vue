@@ -119,15 +119,15 @@ export default {
       return task.map((item)=>{
         const total = Number(item?.rule?.totalVolume)
 
-        const userInfo = useList.filter((option)=> option.task_id === item.id)?.[0]
+        const userInfo = useList.filter((option)=> option?.task_id === item?.id)?.[0]
 
         const tags = item.rewards.map((option)=>{
             return ({
-              icon: option?.rule.icon || "",
-              amount: option?.rule.amount,
-              type: option?.rule.name,
-              title: option?.rule.title,
-              token: option?.rule.token
+              icon: option?.rule?.icon || "",
+              amount: option?.rule?.amount,
+              type: option?.rule?.name,
+              title: option?.rule?.title,
+              token: option?.rule?.token
             })
         })
 

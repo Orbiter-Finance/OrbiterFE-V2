@@ -219,13 +219,13 @@ export default {
       const rewards = this.taskInfo?.[0]?.rewards || []
       const userList = this.userRecordsList || []
 
-      const option = rewards.filter((item) => item?.rule.name === 'orbguy')?.[0]
+      const option = rewards.filter((item) => item?.rule?.name === 'orbguy')?.[0]
 
       const list = option?.rule?.timesWithRewardList || []
 
       const taskResultList = userList.map((item)=>{
         const taskId = item.task_id
-        const option = this.taskInfo.filter((option)=> option.id === taskId)?.[0] || {}
+        const option = this.taskInfo.filter((option)=> option?.id === taskId)?.[0] || {}
         const [_, endDate] = option?.rule?.date || []
         const endTime = +dayjs.utc(endDate)
         const now = +dayjs()
@@ -236,7 +236,7 @@ export default {
       return list.map((item, index) => {
         const task = this.taskInfo?.[index] || {}
           return {
-            amount: item.rewardAmount,
+            amount: item?.rewardAmount,
             times: item.times,
             id: task.id,
           }

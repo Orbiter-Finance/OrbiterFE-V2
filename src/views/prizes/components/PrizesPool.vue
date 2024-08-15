@@ -16,7 +16,13 @@
         <div class="progress-info">
           <div class="progress-pool-amount-group">
             <div class="progress-pool-amount">
-              <div :class="`pool-item ${totalPool === item.reward ? 'pool-item-active' : ''}`" v-for="item in group" :key="item.reward">
+              <div
+                :class="`pool-item ${
+                  totalPool === item.reward ? 'pool-item-active' : ''
+                }`"
+                v-for="item in group"
+                :key="item.reward"
+              >
                 {{ item.reward }}
               </div>
             </div>
@@ -28,7 +34,9 @@
                 class="progress-box-item"
                 v-for="item in group"
                 :key="item.reward"
-              ></div>
+              >
+              <svg-icon iconName="lock"></svg-icon>
+              </div>
               <div class="progress" :style="`width: ${ratio}%;`">
                 <div class="skeleton"></div>
               </div>
@@ -38,7 +46,9 @@
           <div class="progress-participants-amount-group">
             <div class="progress-participants-amount">
               <div
-                :class="`participants-item ${totalPool === item.reward ? 'participants-item-active' : ''}`"
+                :class="`participants-item ${
+                  totalPool === item.reward ? 'participants-item-active' : ''
+                }`"
                 v-for="item in group"
                 :key="item.tx"
               >
@@ -54,69 +64,89 @@
 </template>
 
 <script>
-import { 
-  prizesTotaltx
- } from "../../../composition/hooks"
+import SvgIcon from '../../../components/SvgIcon/SvgIcon.vue'
+import { prizesTotaltx } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
 
 export default {
+  components: { SvgIcon },
   name: 'PrizesPool',
 
   data() {
     return {
       group: [
         {
-          tx: "1~55,000 Tx",
-          reward: "$7,000",
-          range:[1, 55000]
+          tx: '0~2,999 Tx',
+          reward: '',
+          range: [0, 2999],
+          bridge50Fee: 0,
+          bridge100Fee: 0,
         },
         {
-          tx: "55,000~100,000 Tx",
-          reward: "$10,500",
-          range:[55000, 100000]
-
+          tx: '3,000~9,999 Tx',
+          reward: '$3,500',
+          range: [3000, 9999],
+          bridge50Fee: 5,
+          bridge100Fee: 15,
         },
         {
-          tx: "100,000~180,000 Tx",
-          reward: "$21,000",
-          range:[100000, 180000]
+          tx: '10,000~29,999 Tx',
+          reward: '$12,600',
+          range: [10000, 29999],
+          bridge50Fee: 10,
+          bridge100Fee: 30,
         },
         {
-          tx: "≥180,000 Tx",
-          reward: "$35,000",
-          range:[180000, 500000]
-        }
+          tx: '30,000~54,999 Tx',
+          reward: '$35,000',
+          range: [30000, 54999],
+          bridge50Fee: 20,
+          bridge100Fee: 45,
+        },
+        {
+          tx: '55,000~119,999 Tx',
+          reward: '$56,000',
+          range: [55000, 119999],
+          bridge50Fee: 30,
+          bridge100Fee: 60,
+        },
+        {
+          tx: '≥120,000 Tx',
+          reward: '$70,000',
+          range: [120000, 999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+        },
       ]
     }
   },
   computed: {
     totalTx() {
-      const tx = prizesTotaltx.value || 0
-
+      const tx = Number(prizesTotaltx.value) || 0
       return tx
     },
     totalTxAmount() {
       const tx = this.totalTx
-      return this.decimalNumC(tx, 0, ",")
+      return this.decimalNumC(tx, 0, ',')
     },
     totalPool() {
       const list = this.group
       const tx = this.totalTx
-      if(tx >= 180000) return list[list.length-1]?.reward || "$0"
-      const group = list.filter((item)=> {
+      if (tx >= 180000) return list[list.length - 1]?.reward || '$0'
+      const group = list.filter((item) => {
         const [first, last] = item.range
         return first <= tx && last >= tx
       })?.[0]
-      return group?.reward || "$0"
+      return group?.reward || "To be unlocked"
     },
     ratio() {
       let ratioAmount = 0
       const list = this.group
       const tx = this.totalTx
-      list.forEach((item)=> {
+      list.forEach((item) => {
         const [first, last] = item.range
-        if(first <= tx) {
-          ratioAmount += 25
+        if (first <= tx) {
+          ratioAmount += 100 / this.group.length
         } else {
           ratioAmount += 0
         }
@@ -136,24 +166,33 @@ export default {
 <style scoped lang="scss">
 .prizes-pool {
   width: 100%;
-  margin-top: 4px;
+  margin-top: 56px;
 
   .pool-total {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-family: GeneralSans-SemiBold;
     .pool {
       width: calc(50% - 12px);
       padding: 20px 0;
       box-sizing: border-box;
       border-radius: 16px;
-      background: linear-gradient(-0.77deg, rgba(15, 34, 37, 0.2) 60.809%,rgba(209, 112, 85, 0.2) 117.632%),rgb(15, 34, 37);
+      background: linear-gradient(
+          -0.77deg,
+          rgba(15, 34, 37, 0.2) 60.809%,
+          rgba(209, 112, 85, 0.2) 117.632%
+        ),
+        rgb(15, 34, 37);
       font-weight: 500;
       .pool-total-amount {
-        color: #27FFFB;
-        font-weight: 600;
-        font-size: 48px;
+        color: #FFC47D;
+        font-size: 32px;
+        height: 72px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
     .participants {
@@ -161,12 +200,20 @@ export default {
       box-sizing: border-box;
       padding: 20px 0;
       border-radius: 16px;
-      background: linear-gradient(-0.77deg, rgba(15, 34, 37, 0.2) 60.809%,rgba(209, 112, 85, 0.2) 117.632%),rgb(15, 34, 37);
+      background: linear-gradient(
+          -0.77deg,
+          rgba(15, 34, 37, 0.2) 60.809%,
+          rgba(209, 112, 85, 0.2) 117.632%
+        ),
+        rgb(15, 34, 37);
       font-weight: 500;
       .participants-total-amount {
-        color: #FF4F4F;
-        font-weight: 600;
+        color: #ff4f4f;
         font-size: 48px;
+        height: 72px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
   }
@@ -177,7 +224,7 @@ export default {
     text-align: left;
 
     .progress-pool-title {
-      color: #27FFFB;
+      color: #FFC47D;
     }
 
     .progress-info-scroll {
@@ -206,10 +253,9 @@ export default {
             .pool-item-active {
               font-size: 20px;
               font-family: GeneralSans-SemiBold;
-              color: #27FFFB;
+              color: #27fffb;
             }
           }
-          
         }
 
         .progress-content {
@@ -221,10 +267,11 @@ export default {
             height: 32px;
             margin: 12px 0;
             box-sizing: border-box;
-            border: 1px solid rgb(239, 47, 45);
+            border: 1px solid rgb(65, 79, 81);
             border-radius: 999px;
-            box-shadow: inset 0px 0px 34px 0px rgba(239, 47, 45, 0.4);
+            background: linear-gradient(179.63deg, rgba(239, 47, 45, 0.04) 34.849%,rgba(255, 102, 101, 0.04) 57.408%);            
             backdrop-filter: blur(156px);
+            background-color: rgb(15, 34, 37);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -236,7 +283,14 @@ export default {
               width: 100%;
               height: 100%;
               flex: 1;
-              border-right: 1px solid rgba(239, 47, 45, 0.2);
+              border-right: 1px solid #414F51;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              svg {
+                width: 20px;
+                height: 20px;
+              }
             }
 
             .progress {
@@ -279,7 +333,7 @@ export default {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                color: #FF4F4F;
+                color: #ff4f4f;
                 text-align: center;
               }
               .progress-icon {
@@ -293,7 +347,6 @@ export default {
                 }
               }
             }
-            
           }
         }
 
@@ -315,14 +368,14 @@ export default {
           .participants-item-active {
             font-size: 20px;
             font-family: GeneralSans-SemiBold;
-            color: #FF4F4F;
+            color: #ff4f4f;
           }
         }
       }
     }
 
     .progress-participants-title {
-      color: #FF4F4F;
+      color: #ff4f4f;
     }
   }
 }
@@ -335,9 +388,11 @@ export default {
       font-size: 14px;
       .pool-total-amount {
         font-size: 24px;
+        height: 36px;
       }
       .participants-total-amount {
         font-size: 24px;
+        height: 36px;
       }
     }
 

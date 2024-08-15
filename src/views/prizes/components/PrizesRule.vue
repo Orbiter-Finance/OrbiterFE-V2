@@ -4,6 +4,9 @@
     <div class="prizes-rule-card">
       <div v-for="(item, index) in ruleList" :key="index">
         <div class="card-label">{{ item.label }}</div>
+        <div v-if="item.image" class="image">
+          <img :src="require(`../../../assets/prizes/${item.image}`)" alt="">
+        </div>
         <div
           class="card-rule-text"
           v-for="(option, idx) in item.text"
@@ -24,47 +27,41 @@ export default {
         {
           label: '1.Which networks are participating in this event?',
           text: [
-            '- Bridge <span class="orbiter_global_prizes_rule_tag">from specific networks to Linea Chain.</span> ( Ethereum, Arbitrum, zkSync Lite, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Polygon zkEVM, Scroll, Base, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse )',
-            '- The minimum amount required: 0.03 ETH.',
+            '- <span class="orbiter_global_prizes_rule_tag">Bridge from/to Scroll (specific netoworks)</span>',
+            '- Specific networks include: Ethereum, Arbitrum, zkSync Lite, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Polygon zkEVM, Base, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse, Linea',
+            '- Minmium bridging amount required: 0.03 ETH',
             '- Bridge token: ETH',
           ],
         },
         {
-          label: '2.How to share the 35,000 USDC prize pool?',
+          label:
+            '2.How to share a 70,000 USDC prize pool and mint your Exclusive Badge on Scroll?',
           text: [
-          '- Complete ≥3 transactions to qualify for a share of the prize pool.',
-          '- The top 100 users in this bridging competition will share a 35,000 USDC prize pool.',
+            '- Complete <span class="orbiter_global_prizes_rule_tag">≥3 transactions </span> to qualify for a share of the prize pool.',
+            '- <span class="orbiter_global_prizes_rule_tag">TOP 100</span> users will qualify for <span class="orbiter_global_prizes_rule_tag">minting exclusive badge</span> on scroll after the event concludes.',
           ],
         },
         {
-          label: '3.What is the 0 Bridging Fee & 50% Bridging Fee Rebates?',
+          label: '3.What are the prize pool and bridging fee rebates rules?',
+          image: "rule.png",
           text: [
-            '- TOP 1 to 8 users, all bridging fees (except for gas fees) will be rebated.',
-            '- TOP 9 to 20 users, 50% of bridging fees (except for gas fees) will be rebated.'
+            '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 3,000.',
+            '- TOP 1 - 8 users, up to 95% bridging fees (except for gas fees) will be rebated.',
+            '- TOP 9 - 20 users, up to 50% of bridging fees (except for gas fees) will be rebated.',
           ],
         },
         {
-          label: '4.What are the prize pool rules?',
-          text: [
-            '- The total  prize pool is 35,000 USDC, with a base pool of 7,000 USDC. ',
-            '- When the total transactions ≥ 55,000, the pool increases to 10,500 USDC.',
-            '- When the total transactions ≥100,000, the pool increases to 21,000 USDC.',
-            '- When the total transactions  ≥180,000, the pool increases to 35,000 USDC.'
-          ],
-        },
-        {
-          label: '5.What is the rule of ranking?',
+          label: '4.What is the rule of ranking?',
           text: [
             '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
           ],
         },
         {
-          label: '6.When will the rewards be distributed?',
+          label: '5.When will the rewards be distributed?',
           text: [
-            '- All rewards will be distributed after the competition ends, including USDC and bridging fee rebates for the top 20 users.',
-            '- Please stay informed and claim your rewards within 3 days of the reward claim portal opening!'
+            '- All rewards will be distributed after the event ends, including USDC and bridging fee rebates for the top 20 users.',
           ],
-        }
+        },
       ],
     }
   },
@@ -86,7 +83,6 @@ export default {
   .prizes-rule-card {
     padding: 8px 24px 24px;
     width: 100%;
-    border: 1px solid rgba(243, 223, 47, 0.3);
     border-radius: 16px;
     background: linear-gradient(-3.58deg, rgba(15, 34, 37, 0.2) 60.756%,rgba(209, 112, 85, 0.2) 102.538%),rgb(15, 34, 37);
     text-align: left;
@@ -99,6 +95,14 @@ export default {
       letter-spacing: 0px;
       font-family: GeneralSans-SemiBold;
       margin-top: 16px;
+    }
+
+    .image {
+      width: 100%;
+      margin-top: 12px;
+      img {
+        width: 100%;
+      }
     }
 
     .card-rule-text {

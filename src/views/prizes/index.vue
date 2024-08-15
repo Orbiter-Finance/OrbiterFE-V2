@@ -5,10 +5,9 @@
     <div class="prizes-content">
       <div class="content">
         <PrizesPool></PrizesPool>
-        <PrizesUser></PrizesUser>
+        <PrizesAllocation></PrizesAllocation>
         <PrizesRank></PrizesRank>
         <PrizesRule></PrizesRule>
-        <!-- <PrizesUserBall></PrizesUserBall> -->
       </div>
     </div>
   </div>
@@ -19,10 +18,11 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 
 import PrizesTopNav from './components/PrizesTopNav.vue'
 import PrizesTopBanner from './components/PrizesTopBanner.vue'
-import PrizesUser from './components/PrizesUser.vue'
 import PrizesRank from './components/PrizesRank.vue'
 import PrizesRule from './components/PrizesRule.vue'
 import PrizesPool from './components/PrizesPool.vue'
+import PrizesAllocation from './components/PrizesAllocation.vue'
+
 
 export default {
   name: 'Prizes2',
@@ -30,9 +30,9 @@ export default {
     PrizesTopNav,
     PrizesTopBanner,
     PrizesPool,
-    PrizesUser,
     PrizesRank,
     PrizesRule,
+    PrizesAllocation
   },
   computed: {
     evmAddress() {
@@ -57,6 +57,9 @@ export default {
       if (!this.evmAddress || this.evmAddress === '0x') return
       this.$store.commit(
         'getPrizesUserInfo',
+        this.evmAddress.toLocaleLowerCase()
+      )
+      this.$store.commit("getPrizesUserRank", 
         this.evmAddress.toLocaleLowerCase()
       )
     },

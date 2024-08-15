@@ -68,7 +68,6 @@ export default {
         
         const address = item.address?.toLocaleLowerCase()
         const evmAddresss = this.evmAddress?.toLocaleLowerCase()
-        console.log("rank", rank)
         return address && evmAddresss && address.slice(0, 6) === evmAddresss.slice(0, 6) && 
         address.slice(address.length-6) === evmAddresss.slice(address.length-6) && rank === item.rank
       })?.[0]
