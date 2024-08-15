@@ -6,10 +6,11 @@
         <div v-html="title"></div>
       </div>
       <div class="task-reward">
-        MY Rewards: <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
-        <span class="reward-amount">{{ reward }} $ORBGUY</span>
+        <!-- MY Rewards: <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
+        <span class="reward-amount">{{ reward }} $ORBGUY</span> -->
+        In the statistics...
       </div>
-      <div class="task-card-item">
+      <!-- <div class="task-card-item">
         <div class="task-title">
           <div class="task-info">
             <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
@@ -133,7 +134,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -270,14 +271,16 @@ export default {
     width: calc(100% - 32px);
     background: #f5f5f5;
     border-radius: 12px;
-
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     .task-card-title {
-      width: 100%;
       display: flex;
       justify-content: flex-start;
       align-items: center;
       font-size: 14px;
       font-family: GeneralSans-Bold;
+      white-space: nowrap;
       .task-icon {
         display: flex;
         justify-content: center;
@@ -292,16 +295,15 @@ export default {
     }
 
     .task-reward {
-      width: 100%;
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      margin-top: 8px;
       font-size: 12px;
       line-height: 16px;
       letter-spacing: 0px;
-      font-family: GeneralSans-Regular;
-      color: #666666;
+      font-family: GeneralSans-SemiBold;
+      color: #FFC47D;
+      white-space: nowrap;
       .task-icon {
         width: 16px;
         height: 16px;
@@ -477,7 +479,7 @@ export default {
       background-color: #373951;
 
       .task-reward {
-        color: #cccccc;
+        color: #FFC47D;
       }
       .task-card-item {
         background-color: var(--dark-page-box-bg);
