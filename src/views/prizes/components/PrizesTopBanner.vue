@@ -20,7 +20,11 @@
         </div>
       </div>
       <div class="group">
-        <div class="bridge" @click="toBridgeCall">Start Bridge</div>
+        <div class="bridge" @click="toBridgeCall"
+        :style="`opacity:${isEnd ? '0.4' : '1'};`"
+        >
+          {{isEnd ? "In the statistics..." : "Start Bridge" }}
+        </div>
       </div>
     </div>
   </div>
