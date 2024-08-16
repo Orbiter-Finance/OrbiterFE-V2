@@ -1,9 +1,9 @@
 <template>
   <div id="prizes-allocation" class="prizes-allocation">
     <div class="prizes-allocation-title">
-      $100,000 Bridging
+      Overall prize pool 
       <br class="title-br" />
-      Competition Dashboard
+      composition and allocation
     </div>
     <div class="prizes-ratio-group">
       <div class="prizes-ratio-item" v-for="item in ratioList" :key="item.text">
@@ -28,12 +28,12 @@
           <div class="info-label">Current Rank:</div>
           <div class="info-value">{{ rank || "--" }}</div>
         </div>
-        <div class="info-item">
+        <!-- <div class="info-item">
           <div class="info-label">Estimated Earnings: </div>
           <div class="info-value">
             {{ reward }}
           </div>
-        </div>
+        </div> -->
         <div class="info-item">
           <div class="info-label">Accumulated:</div>
           <div class="info-value">{{ tx }} Tx</div>
@@ -128,10 +128,10 @@
                     </span>
                   </template>
                   <span class="orbiter_global_prizes_tips_underline tip-text">
-                    specific network
+                    Specific networks
                   </span>
                 </o-tooltip>
-                <span v-if="item.specificChain">to Scroll</span>
+                <span v-if="item.specificChain">from/to Scroll</span>
                 <span class="content-text" v-html="item.lastText"></span>
               </div>
             </div>
@@ -185,19 +185,19 @@ export default {
     rankList() {
       return prizesRankList.value
     },
-    reward() {
-      const list = this.rankList
-      const rank = this.rank
-      const option = list.filter((item)=> {
-        const address = item.address?.toLocaleLowerCase()
-        const evmAddresss = this.evmAddress?.toLocaleLowerCase()
-        return address && evmAddresss && address.slice(0, 6) === evmAddresss.slice(0, 6) && 
-        address.slice(address.length-6) === evmAddresss.slice(address.length-6) && rank === item.rank
-      })?.[0]
-      const amount = option?.reward?.uAmount
-      const total = (Number(amount) || 0)
-      return Number(total) ? (this.decimalNumC(total, 2, ",")+ " USDC") : "--"
-    },
+    // reward() {
+    //   const list = this.rankList
+    //   const rank = this.rank
+    //   const option = list.filter((item)=> {
+    //     const address = item.address?.toLocaleLowerCase()
+    //     const evmAddresss = this.evmAddress?.toLocaleLowerCase()
+    //     return address && evmAddresss && address.slice(0, 6) === evmAddresss.slice(0, 6) && 
+    //     address.slice(address.length-6) === evmAddresss.slice(address.length-6) && rank === item.rank
+    //   })?.[0]
+    //   const amount = option?.reward?.uAmount
+    //   const total = (Number(amount) || 0)
+    //   return Number(total) ? (this.decimalNumC(total, 2, ",")+ " USDC") : ""
+    // },
     tx() {
       let count = 0;
       const list = this.userList || []
@@ -227,34 +227,34 @@ export default {
         },
         {
           img: 'prizes.png',
-          des: 'Cumulative ≥8 tx',
+          des: '70,000 Prize Pool',
           position: 5,
-          label: '3Tx',
-          ratio: '$35,000 Prize Pool',
+          ratio: '≥3 tx',
+          label: '70,000 Prize Pool',
           isSuccess: Number(tx) >= 3
         },
         {
           img: 'badge.png',
-          des: 'Scroll Special Badge',
+          des: 'Diamond Scroll Bridger Badge',
           position: 10,
-          label: 'Top 100',
-          ratio: 'Scroll Special Badge',
+          ratio: 'Top 100',
+          label: 'Diamond Scroll Bridger Badge',
           isSuccess:  Number(rank) && Number(rank) <= 100
         },
         {
           img: 'bridge50.png',
-          des: 'Up to 50% Bridging Fee revert',
+          des: 'Up to 50% Bridging Fee rebate',
           position: 15,
-          label: 'Rank 9-20',
-          ratio: '50% Bridging Fee revert',
+          ratio: 'Top 9-20',
+          label: '50% Bridging Fee rebate',
           isSuccess:  Number(rank) && Number(rank) <= 20
         },
         {
           img: 'bridge95.png',
-          des: 'Up to 95% Bridging Fee revert',
+          des: 'Up to 95% Bridging Fee rebate',
           position: 20,
-          label: 'Rank 1-8',
-          ratio: '95% Bridging Fee revert',
+          ratio: 'Top 1-8',
+          label: '95% Bridging Fee rebate',
           isSuccess:  Number(rank) && Number(rank) <= 8
         }
       ])
@@ -309,7 +309,7 @@ export default {
       return [
         {
           icon: 'bridge',
-          text: `Bridge <span class="orbiter_global_prizes_tx-color">3 TX</span>`,
+          text: `Bridge 3 TX`,
           specificChain: true,
           // isSuccess: txN >= 3,
           isSuccess: false,
@@ -317,24 +317,24 @@ export default {
         },
         {
           icon: 'bridge',
-          text: `Bridge from`,
+          text: `Bridge`,
           specificChain: true,
           isSuccess: false,
-          lastText: "<span class='orbiter_global_prizes_tx-color'>Top 100 Users </span>"
+          lastText: "to achieve <span class='orbiter_global_prizes_tx-color'>Top 100</span>"
         },
         {
           icon: 'bridge',
-          text: `Bridge from`,
+          text: `Bridge`,
           specificChain: true,
           isSuccess: false,
-          lastText: "<span class='orbiter_global_prizes_tx-color'>Rank 9-20 </span> (50% Bridging Fee)"
+          lastText: "to achieve <span class='orbiter_global_prizes_tx-color'>Top 9-20 </span>"
         },
         {
           icon: 'bridge',
-          text: `Bridge from`,
+          text: `Bridge`,
           specificChain: true,
           isSuccess: false,
-          lastText: "<span class='orbiter_global_prizes_tx-color'>Rank 1-8 </span> (95% Bridging Fee)"
+          lastText: "to achieve<span class='orbiter_global_prizes_tx-color'>Top 1-8</span>"
         },
       ]
     },
@@ -370,7 +370,7 @@ export default {
 <style scoped lang="scss">
 .prizes-allocation {
   width: 100%;
-  margin-top: 32px;
+  margin-top: 80px;
   .prizes-allocation-title {
     width: 100%;
     text-align: center;
@@ -390,7 +390,7 @@ export default {
     .prizes-ratio-item {
       margin-top: 16px;
       width: 20%;
-      max-width: 160px;
+      max-width: 180px;
       .prizes-ratio-item-group {
         width: 100%;
         display: flex;

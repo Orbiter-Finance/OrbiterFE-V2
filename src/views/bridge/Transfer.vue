@@ -1931,47 +1931,6 @@ export default {
         util.log('sendBtnInfo disabled');
         return;
       }
-
-      if(!this.isCrossAddress) {
-
-        let fromAddress = ""
-        if(orbiterHelper.isFuelChain({chainId: fromChainID})) {
-          fromAddress = web3State.fuel.fuelAddress
-        } else if(orbiterHelper.isTonChain({chainId: fromChainID})) {
-          fromAddress = tonHelper.account()
-        } else if(orbiterHelper.isSolanaChain({chainId: fromChainID})) {
-          fromAddress = web3State.solana.solanaAddress
-        } else if(orbiterHelper.isStarknetChain({chainId: fromChainID})) {
-          fromAddress = this.starkAddress
-        } else {
-          fromAddress = this.currentWalletAddress
-        }
-        if(!orbiterHelper.checkAddress({chainId: fromChainID, address: fromAddress})) {
-          orbiterHelper.openConnectModal({chainId: fromChainID})
-          return
-        }
-
-        let toAddress = ""
-        if( orbiterHelper.isFuelChain({chainId: toChainID}) ) {
-          toAddress = web3State.fuel.fuelAddress
-        } else if(orbiterHelper.isTonChain({chainId: toChainID}) ) {
-          toAddress = tonHelper.account()
-        } else  if(orbiterHelper.isSolanaChain({chainId: toChainID}) ) {
-          toAddress = web3State.solana.solanaAddress
-        } else  if(orbiterHelper.isStarknetChain({chainId: toChainID}) ) {
-          toAddress = this.starkAddress
-        } else {
-          toAddress = this.currentWalletAddress
-        }
-
-        if(!orbiterHelper.checkAddress({chainId: toChainID, address: toAddress})) {
-          orbiterHelper.openConnectModal({chainId: toChainID})
-          return
-        }
-      } else {
-        const isCheck = this.checkAddressCall()
-        if(!isCheck) return 
-      }
       // if (selectMakerConfig.ebcId) {
       //   try {
       //     const receiveValue = await transferCalculate.calEBCValue();
