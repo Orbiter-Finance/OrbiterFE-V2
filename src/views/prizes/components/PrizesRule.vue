@@ -27,9 +27,9 @@ export default {
         {
           label: '1.Which networks are participating in this event?',
           text: [
-            '- <span class="orbiter_global_prizes_rule_tag">Bridge from/to Scroll (specific netoworks)</span>',
+            '- <span class="orbiter_global_prizes_rule_tag">Bridge from/to Scroll (specific networks)</span>',
             '- Specific networks include: Ethereum, Arbitrum, zkSync Lite, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Polygon zkEVM, Base, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse, Linea',
-            '- Minmium bridging amount required: 0.03 ETH',
+            '- Minimum bridging amount required: 0.03 ETH',
             '- Bridge token: ETH',
           ],
         },
@@ -38,22 +38,22 @@ export default {
             '2.How to share a 70,000 USDC prize pool and mint your Exclusive Badge on Scroll?',
           text: [
             '- Complete <span class="orbiter_global_prizes_rule_tag">≥3 transactions </span> to qualify for a share of the prize pool.',
-            '- <span class="orbiter_global_prizes_rule_tag">TOP 100</span> users will qualify for <span class="orbiter_global_prizes_rule_tag">minting exclusive badge</span> on scroll after the event concludes.',
+            '- <span class="orbiter_global_prizes_rule_tag">The TOP 100 users</span> will qualify for minting <span class="orbiter_global_prizes_rule_tag">Diamond Scroll Bridger Badge</span> on Scroll after the event concludes.',
           ],
         },
         {
-          label: '3.What are the prize pool and bridging fee rebates rules?',
+          label: '3.What are the prize pool and bridging fee rebate rules?',
           image: "rule.png",
           text: [
             '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 3,000.',
-            '- TOP 1 - 8 users, up to 95% bridging fees (except for gas fees) will be rebated.',
+            '- TOP 1 - 8 users, up to 95% of bridging fees (except for gas fees) will be rebated.',
             '- TOP 9 - 20 users, up to 50% of bridging fees (except for gas fees) will be rebated.',
           ],
         },
         {
           label: '4.What is the rule of ranking?',
           text: [
-            '- The ranking is determined based on transactions. If users have the same number of transactions, ranking will be based on the transaction value. More transactions, greater chance to win!',
+            '- The ranking is determined based on transactions. The ranking will be based on the transaction value if users have the same number of transactions. More transactions, greater chance to win!',
           ],
         },
         {
@@ -71,7 +71,7 @@ export default {
 <style scoped lang="scss">
 .prizes-rule {
   width: 100%;
-  margin: 56px 0 200px;
+  margin: 80px 0 200px;
   .rule-title {
     width: 100%;
     font-size: 32px;

@@ -4,11 +4,11 @@
       <div class="group">
 
       <div class="badge">
-          Mint Your Exclusive Pilot Badge
+        Mint Your Diamond Scroll Bridger Badge
       </div>
     </div>
       <div class="group">
-        <div class="title orbiter-linear-text">$35,000 Prize Pool</div>
+        <div class="title orbiter-linear-text">$70,000 Prize Pool</div>
       </div>
       <div class="group">
         <div class="amount orbiter-linear-text"><span class="chain orbiter-linear-text">Scroll</span> Trading Frenzy</div>
@@ -26,7 +26,11 @@
         </div>
       </div>
       <div class="group">
-        <div class="bridge" @click="toBridgeCall">Start Bridge</div>
+        <div class="bridge" @click="toBridgeCall"
+        :style="`opacity:${isEnd ? '0.4' : '1'};`"
+        >
+          {{isEnd ? "In the statistics..." : "Start Bridge" }}
+        </div>
       </div>
     </div>
   </div>
@@ -178,7 +182,8 @@ export default {
   width: 100%;
   padding: 0 0 80px;
   background-image: url('../../../assets/prizes/bg.png');
-  background-size: 100% 100%;
+  background-size: cover;
+  background-position: 75% 0;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,10 +1,12 @@
 <template>
   <div id="prizes-rank" class="prizes-rank">
+    
+    <div class="prizes-rank-title">Top 100 Leaderboard</div>
     <div class="rank-title">
-      <div class="rank-tabs">
+      <!-- <div class="rank-tabs">
         <div class="tab1">Rank 1-8 (0 Bridging Fee)</div>
         <div class="tab2">Rank 9-20 (50% Bridging Fee)</div>
-      </div>
+      </div> -->
       <div class="refresh-time">
         update time: {{ calculateRelativeTime(refreshTime) }}
       </div>
@@ -35,26 +37,6 @@
         </div>
         <div class="cumulative-tx">
           {{ decimalNumC(item.txAmount, 0, ',') }} tx
-
-          <!-- <o-tooltip>
-            <template v-slot:titleDesc>
-              <div style="margin-left: -20px">
-                <span
-                  >Bridging fee will be rebated when the competition ends.</span
-                >
-              </div>
-            </template>
-            <img
-              v-if="showBridgeFee(item)"
-              class="bridge-fee-image"
-              :src="require('../../../assets/prizes/bridge-fee-0.png')"
-            />
-            <img
-              v-if="showBridgeFee50(item)"
-              class="bridge-fee-image"
-              :src="require('../../../assets/prizes/bridge-fee-50.png')"
-            />
-          </o-tooltip> -->
         </div>
         <div class="bridge-fee" v-if="current <= 2">{{ bridgingFee(item) }}</div>
         <div class="emit-reward">
@@ -284,17 +266,6 @@ export default {
         return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
       }
     },
-    showBridgeFee50(group) {
-      if (!this.showBridgeFee(group)) {
-        const rank = group.rank
-        const txAmount = group.txAmount
-        return rank <= rankB && txAmount >= txBase
-      }
-      return false
-    },
-    showBridgeFee({ rank, txAmount }) {
-      return rank <= rankA && txAmount >= txBase
-    },
     curChange(cur) {
       this.current = cur
     },
@@ -312,15 +283,18 @@ export default {
     bridgingFee(group) {
       const rank = Number(group?.rank) || 0
       const fee = this.currentPool
+      let bridgeFee = 0
       if (rank && rank <= 20) {
         if (rank <= 8) {
-          return fee?.bridge100Fee + "%"
+          bridgeFee = fee?.bridge100Fee
         } else {
-          return fee?.bridge50Fee + "%"
+          bridgeFee = fee?.bridge50Fee
         }
-      }else {
-        return ""
+      } else {
+        bridgeFee = ""
       }
+
+      return !!bridgeFee ? (bridgeFee + "%") : "--"
     },
   },
 }
@@ -336,8 +310,14 @@ export default {
 }
 .prizes-rank {
   width: 100%;
-  margin-top: 56px;
-
+  margin-top: 80px;
+  .prizes-rank-title {
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+    font-family: GeneralSans-SemiBold;
+    text-align: center;
+  }
   .rank-title {
     width: 100%;
     display: flex;
@@ -574,6 +554,12 @@ export default {
   #prizes-rank {
     margin-top: 32px;
     padding: 0;
+    .prizes-rank-title {
+      font-size: 24px;
+      .title-br {
+        display: block;
+      }
+    }
     .rank-title {
       display: block;
       .rank-tabs {
