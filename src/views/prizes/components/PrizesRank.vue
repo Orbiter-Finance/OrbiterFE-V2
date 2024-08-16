@@ -41,10 +41,9 @@
         <div class="bridge-fee" v-if="current <= 2">{{ bridgingFee(item) }}</div>
         <div class="emit-reward">
           <div>
-            +{{ decimalNumC(Number(item.reward.amount) || 0, 4, ',') }}
-            {{ item.reward.name }}
+            {{ emiteReward(item) }}
           </div>
-          <span>≈ ${{ decimalNumC(item.reward.uAmount, 4, ',') }}</span>
+          <span>{{ emiteRewardU(item) }}</span>
         </div>
       </div>
       <div class="pagination-group">
@@ -296,6 +295,15 @@ export default {
 
       return !!bridgeFee ? (bridgeFee + "%") : "--"
     },
+    emiteReward(group) {
+      const amount = group?.reward?.amount || 0
+      const symbol = group?.reward?.name || ""
+      return Number(amount) ? ("+" + this.decimalNumC(Number(amount) || 0, 4, ',') + " symbol") : "--"
+    },
+    emiteRewardU(group) {
+      const amount = group?.reward?.amount || 0
+      return Number(amount) ? ("≈ $" + this.decimalNumC(item.reward.uAmount, 4, ',')) : "--"
+    }
   },
 }
 </script>

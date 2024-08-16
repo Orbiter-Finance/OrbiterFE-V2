@@ -618,7 +618,7 @@ export default {
     },
     async getUserTask() {
       const address = this.currentWalletAddress
-      const list = this.questsTaskList.filter((item)=> !!item?.id)
+      const list = this.questsTaskList.filter((item)=> !!item?.id && item?.status === "PROGRESS")
       if(!list?.length || !address || address === "0x") return
       this.$store.commit("getUserTaskInfoList", {
         address,
