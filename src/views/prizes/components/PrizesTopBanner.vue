@@ -2,10 +2,16 @@
   <div id="prizes-top-banner" class="prizes-top-banner">
     <div class="prizes-content">
       <div class="group">
-        <div class="title orbiter-linear-text">Linea Trading Challenge</div>
+
+      <div class="badge">
+        Mint Your Diamond Scroll Bridger Badge
+      </div>
+    </div>
+      <div class="group">
+        <div class="title orbiter-linear-text">$70,000 Prize Pool</div>
       </div>
       <div class="group">
-        <div class="amount orbiter-linear-text">35,000 USDC Prize Pool</div>
+        <div class="amount orbiter-linear-text"><span class="chain orbiter-linear-text">Scroll</span> Trading Frenzy</div>
       </div>
       <div class="group">
         <div class="time-card">
@@ -98,25 +104,24 @@ export default {
     },
     toBridgeCall() {
       const address = this.evmAddress
-      if ( !address || address === '0x' || this.isEnd) return
-      const name ="PRIZES_V3_BANNER_TO_BRIDGE"
+      if (!address || address === '0x' || this.isEnd) return
+      const name = 'PRIZES_V4_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
-        event_label: "to home",
+        event_label: 'to home',
       })
       localStorage.setItem(
         'last_page_before_history',
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Linea', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'Scroll', token: 'ETH' },
         })
       )
-      
-      const url = location.origin + '/?source=Ethereum&dest=Linea&token=ETH'
 
-      window.open(url, "_self")
-      
+      const url = location.origin + '/?source=Ethereum&dest=Scroll&token=ETH'
+
+      window.open(url, '_self')
     },
     toggleEnd() {
       setPrizesTimeEnd(true)
@@ -177,7 +182,8 @@ export default {
   width: 100%;
   padding: 0 0 80px;
   background-image: url('../../../assets/prizes/bg.png');
-  background-size: 100% 100%;
+  background-size: cover;
+  background-position: 75% 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -185,35 +191,53 @@ export default {
   height: 680px;
   .prizes-content {
     width: 100%;
+   
     .group {
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      .badge {
+        border-radius: 999px;
+        background: linear-gradient(176.00deg, rgb(255, 232, 181) 30%,rgb(255, 196, 125) 53.451%);
+        padding: 12px 40px;
+        color: #0A1313;
+        font-family: GeneralSans-SemiBold;
+        font-size: 24px;
+      }
       .title {
-        color: rgb(143, 247, 255);
+        margin-top: 16px;
+        
+        color: rgb(255, 242, 240);
         background-image: linear-gradient(
-          178.28deg,
-          rgb(228, 255, 236),
-          rgb(143, 247, 255)
+          to right,
+          rgb(255, 242, 240),
+        rgb(255, 222, 181)
         );
-        font-size: 44px;
-        font-weight: 500;
-        line-height: 54px;
+        font-size: 88px;
+        line-height: 1;
+        font-family: GeneralSans-SemiBold;
+        letter-spacing: 0px;
       }
       .amount {
         margin-top: 16px;
         background-image: linear-gradient(
-          30.14deg,
+          to right,
           rgb(255, 242, 240),
-          rgb(150, 223, 201)
+        rgb(255, 222, 181)
         );
         color: rgb(255, 242, 240);
         font-size: 88px;
-        font-weight: 600;
-        line-height: 112px;
+        line-height: 1.5;
         letter-spacing: 0px;
         font-family: GeneralSans-SemiBold;
+        .chain {
+          background-image: linear-gradient(
+          to right,
+          #FFC47D,
+          #FFC47D
+        );
+        }
       }
     }
 
@@ -232,7 +256,7 @@ export default {
             rgba(21, 63, 66, 0),
             rgba(255, 21, 0, 0.2) 100%
           ),
-          rgba(21, 63, 66, 0.8);
+          rgb(71, 55, 21);
         margin: 0 6px;
         .card-item-value {
           font-size: 28px;
@@ -242,7 +266,7 @@ export default {
           margin-top: 6px;
         }
         .card-item-symbol {
-          color: rgb(39, 255, 251);
+          color: #FFDEB5;
           font-family: GeneralSans-Medium;
           font-size: 14px;
           line-height: 16px;
@@ -274,7 +298,14 @@ export default {
       font-family: GeneralSans-SemiBold;
       line-height: 28px;
       letter-spacing: 0px;
-      clip-path: polygon( 0 12px, 12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+      clip-path: polygon(
+        0 12px,
+        12px 0,
+        100% 0,
+        100% calc(100% - 12px),
+        calc(100% - 12px) 100%,
+        0 100%
+      );
     }
   }
 }
@@ -283,13 +314,17 @@ export default {
   #prizes-top-banner {
     height: 420px;
     .prizes-content {
+      .badge {
+        font-size: 16px;
+        padding: 8px 16px;
+      }
       .title {
         font-size: 24px;
         line-height: 1;
       }
       .amount {
         font-size: 32px;
-        line-height: 1;
+        line-height: 1.5;
       }
       .bridge {
         margin-top: 24px;
