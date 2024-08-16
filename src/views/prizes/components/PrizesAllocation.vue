@@ -309,11 +309,11 @@ export default {
       return [
         {
           icon: 'bridge',
-          text: `Bridge 3 TX`,
+          text: `Bridge <span class='orbiter_global_prizes_tx-color'>3 TX</span>`,
           specificChain: true,
           // isSuccess: txN >= 3,
           isSuccess: false,
-          lastText: ""
+          lastText: "to <span class='orbiter_global_prizes_tx-color'>enter prize pool</span>"
         },
         {
           icon: 'bridge',
@@ -655,6 +655,7 @@ export default {
               justify-content: start;
               align-items: center;
               flex-wrap: wrap;
+              text-align: left;
               span {
                 white-space: nowrap;
               }
