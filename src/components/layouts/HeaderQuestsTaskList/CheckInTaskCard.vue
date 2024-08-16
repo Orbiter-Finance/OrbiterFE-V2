@@ -272,7 +272,7 @@ export default {
     claimCall() {
       const evmAddress = this.currentEvmAddress
       if (!evmAddress || evmAddress === '0x') return
-      const name = 'CLAIM_REWARD_AABANK_'
+      const name = 'CLAIM_REWARD_AABANK_SIGN_7DAYS'
       const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
       this.$gtag.event(name, {
         event_category: name,
