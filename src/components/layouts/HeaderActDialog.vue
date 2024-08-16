@@ -187,6 +187,7 @@
               <div>
               <template v-for="option in item.taskList">
                 <div class="task-card" 
+                  @click="mintScrollNFT(option)"
                 >
                   <div class="title"
                     :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
@@ -197,7 +198,7 @@
                       <div class="description" v-html="option.description"></div>
                     </div>
                   </div>
-                    <div class="task-link" v-if="showScrollNFTImage(option)">
+                    <div class="task-link" v-if="showScrollNFT(option)">
                       <svg-icon iconName="task-arrow-right"></svg-icon>
                     </div>
                   </div>
@@ -319,6 +320,7 @@ import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
+import ScrollNftConfig from "../../const/scroll-NFT.json"
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -586,15 +588,30 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
-    mintScrollNFT(){
-      console.log("mintScrollNFT")
+    getScrollConfig(group){
+      const nftConfig = (ScrollNftConfig || []).filter((item)=> {
+        const id = String(group?.id || "")
+        return id && 
+        (item?.task || []).some((option)=>{
+         return String(option) === id
+        })
+      })?.[0]
+      return nftConfig
     },
-    showScrollNFTImage(group){
-      const list = process.env?.VUE_APP_SCROLL_NFT_ID?.split("-") || []
-      const isActivity = group?.activity_id == list[0]
-      const index = list.findIndex((item)=> group?.id && (String(group?.id) === String(item)))
-      
-      return !!group?.status && isActivity && (index !== -1) ? index : 0
+    mintScrollNFT(group){
+      const config = this.getScrollConfig(group)
+      if(!this.showScrollNFT(group)) return
+      const name = "MINT_SCROLl_NFT_" + config?.name
+      const url = config?.link
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: url,
+      })
+      window.open(url, '_blank')
+    },
+    showScrollNFT(group){
+
+      return !!this.getScrollConfig(group) && group?.status && (group?.status !== 0)
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
