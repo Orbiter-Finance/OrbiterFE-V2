@@ -298,11 +298,11 @@ export default {
     emiteReward(group) {
       const amount = group?.reward?.amount || 0
       const symbol = group?.reward?.name || ""
-      return Number(amount) ? ("+" + this.decimalNumC(Number(amount) || 0, 4, ',') + " symbol") : "--"
+      return Number(amount) ? ("+" + this.decimalNumC(Number(amount) || 0, 4, ',') + ` ${symbol}`) : "--"
     },
     emiteRewardU(group) {
-      const amount = group?.reward?.amount || 0
-      return Number(amount) ? ("≈ $" + this.decimalNumC(item.reward.uAmount, 4, ',')) : "--"
+      const amount = group?.reward?.uAmount || 0
+      return Number(amount) ? ("≈ $" + this.decimalNumC(amount, 4, ',')) : "--"
     }
   },
 }
