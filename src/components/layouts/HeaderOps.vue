@@ -427,8 +427,9 @@ export default {
           address: fuelAddress,
           icon: chainId,
           type: "Fuel",
-          connect: async () => {
-            await fuelsHelper.connect()
+          connect: () => {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey('FUEL')
           },
           open: () => {
             setFuelDialog(true)

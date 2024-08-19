@@ -435,7 +435,7 @@ export default {
         const response = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/${
             isDev() ? 'activity' : 'active-platform'
-          }/project/activeProjectList`,
+          }/project/showProjectList`,
           {
             headers: {
               'Content-Type': 'application/json',

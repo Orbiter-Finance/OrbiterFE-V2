@@ -649,7 +649,8 @@ export default {
             const account = this.fuelAddress
             const isConnected = web3State.fuel.isConnected
             if (!account || !isConnected) {
-              await fuelsHelper.connect()
+              setSelectWalletDialogVisible(true)
+              setConnectWalletGroupKey('FUEL')
               return
             }
           }

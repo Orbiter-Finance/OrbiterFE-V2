@@ -3,7 +3,9 @@
     <div class="pool-total">
       <div class="pool">
         <div>Prize Pool (USDC)</div>
-        <div class="pool-total-amount">{{ totalPool }}</div>
+        <div class="pool-total-amount"
+        :style="`font-size: ${ !currentPool ? '32px' : '48px'};`"
+        >{{ totalPool }}</div>
       </div>
       <div class="participants">
         <div>Tx Amount</div>
@@ -129,15 +131,18 @@ export default {
       const tx = this.totalTx
       return this.decimalNumC(tx, 0, ',')
     },
-    totalPool() {
+    currentPool() {
       const list = this.group
       const tx = this.totalTx
-      if (tx >= 180000) return list[list.length - 1]?.reward || '$0'
+      if (tx >= 120000) return list[list.length - 1]?.reward || '$0'
       const group = list.filter((item) => {
         const [first, last] = item.range
         return first <= tx && last >= tx
       })?.[0]
-      return group?.reward || "To be unlocked"
+      return group?.reward
+    },
+    totalPool() {
+      return this.currentPool || "To be unlocked"
     },
     ratio() {
       let ratioAmount = 0
@@ -188,7 +193,6 @@ export default {
       font-weight: 500;
       .pool-total-amount {
         color: #FFC47D;
-        font-size: 32px;
         height: 72px;
         display: flex;
         justify-content: center;

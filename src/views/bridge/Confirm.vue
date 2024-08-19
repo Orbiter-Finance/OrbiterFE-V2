@@ -1726,7 +1726,9 @@ export default {
       let from = web3State.fuel.fuelAddress
 
       if (!isConnected || !from) {
-        await fuelsHelper.connect()
+        
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('FUEL')
         this.transferLoading = false
         return
       }

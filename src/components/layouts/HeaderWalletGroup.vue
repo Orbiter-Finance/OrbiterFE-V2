@@ -57,6 +57,23 @@
             </div>
           </div>
         </div>
+        <div
+          v-else-if="connectWalletGroupKey === 'FUEL'"
+          class="wallet-group"
+        >
+          <div class="wallet-group-title">FUEL Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in fuelsWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectFuelWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -105,6 +122,7 @@ import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcB
 
 import { store } from '../../store'
 import solanaHelper from '../../util/solana/solana_helper'
+import fuelsHelper from '../../util/fuels/fuels_helper';
 
 let ton
 
@@ -294,6 +312,21 @@ export default {
       ]
       return wallets
     },
+    fuelsWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'FUEL',
+          title: 'Fuel Wallet',
+        },
+        {
+          isConnect: false,
+          icon: 'fuelet',
+          title: 'Fuelet Wallet',
+        }
+      ]
+      return wallets
+    },
     isLogin() {
       return walletIsLogin.value
     },
@@ -305,6 +338,12 @@ export default {
     },
     checkIsMobileEnv() {
       return isMobileDevice()
+    },
+    async connectFuelWallet(item) {
+      console.log("item", item)
+       await fuelsHelper.connect(item.title)
+      this.closeSelectWalletDialog()
+      return
     },
     async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)

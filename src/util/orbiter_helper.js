@@ -6,7 +6,6 @@ import {
   setConnectWalletGroupKey,
   setSelectWalletDialogVisible,
 } from '../composition/hooks'
-import fuelsHelper from './fuels/fuels_helper'
 
 const checkStarknetAddress = (address) => {
   if (address?.length <= 50) {
@@ -76,6 +75,11 @@ const tonConnectModal = async () => {
   await tonHelper.connect()
 }
 
+const openFuelConnectModal = () => {
+  setSelectWalletDialogVisible(true)
+  setConnectWalletGroupKey('FUEL')
+}
+
 const openConnectModal = async ({ chainId }) => {
   if (!chainId) return
   const evmChain = [
@@ -92,7 +96,7 @@ const openConnectModal = async ({ chainId }) => {
   if (isTonChain({ chainId })) {
     await tonConnectModal()
   } else if (isFuelChain({ chainId })) {
-    await fuelsHelper.connect()
+    openFuelConnectModal()
   } else if (isSolanaChain({ chainId })) {
     openSolanaConnectModal()
   } else if (isStarknetChain({ chainId })) {

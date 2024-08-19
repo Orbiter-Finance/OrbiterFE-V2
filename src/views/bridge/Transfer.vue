@@ -2151,7 +2151,8 @@ export default {
         } else if (orbiterHelper.isFuelChain({chainId: fromChainID}) ) {
           const isConnect = web3State.fuel.isConnected
           if(!isConnect) {
-            await fuelsHelper.connect()
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey("FUEL")
             return
           }
           

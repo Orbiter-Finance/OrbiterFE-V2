@@ -187,12 +187,19 @@
               <div>
               <template v-for="option in item.taskList">
                 <div class="task-card" 
-                :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                  @click="mintScrollNFT(option)"
                 >
-                  <div class="title">
+                  <div class="title"
+                    :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                  >
+                  <div class="title-info">
                     <div class="task-info">
-                    <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
-                    <div class="description" v-html="option.description"></div>
+                      <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
+                      <div class="description" v-html="option.description"></div>
+                    </div>
+                  </div>
+                    <div class="task-link" v-if="showScrollNFT(option)">
+                      <svg-icon iconName="task-arrow-right"></svg-icon>
                     </div>
                   </div>
                   <div class="group">
@@ -235,6 +242,7 @@
                     </div>
                     
                   </div>
+                    
                 </div>
               </template>
             </div>
@@ -318,6 +326,7 @@ import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
 import fuelsHelper from '../../util/fuels/fuels_helper';
+import ScrollNftConfig from "../../const/scroll-NFT.json"
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -609,12 +618,37 @@ export default {
       this.currentAddress = address
       return address
     },
+    getScrollConfig(group){
+      const nftConfig = (ScrollNftConfig || []).filter((item)=> {
+        const id = String(group?.id || "")
+        return id && 
+        (item?.task || []).some((option)=>{
+         return String(option) === id
+        })
+      })?.[0]
+      return nftConfig
+    },
+    mintScrollNFT(group){
+      const config = this.getScrollConfig(group)
+      if(!this.showScrollNFT(group)) return
+      const name = "MINT_SCROLl_NFT_" + config?.name
+      const url = config?.link
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: url,
+      })
+      window.open(url, '_blank')
+    },
+    showScrollNFT(group){
+
+      return !!this.getScrollConfig(group) && group?.status && (group?.status !== 0)
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
     async getUserTask() {
-      const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      const list = this.questsTaskList.filter((item)=> !!item?.id)
+      const address = this.currentWalletAddress
+      const list = this.questsTaskList.filter((item)=> !!item?.id && item?.status === "PROGRESS")
       if(!list?.length || !address || address === "0x") return
       this.$store.commit("getUserTaskInfoList", {
         address,
@@ -2250,6 +2284,12 @@ export default {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .title-info {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            flex: 1;
+          }
           .task-info {
             display: flex;
             justify-content: start;
@@ -2258,6 +2298,15 @@ export default {
               width: 20px;
               height: 20px;
               margin-right: 8px;
+            }
+          }
+
+          .task-link {
+            width: 20px;
+            height: 20px;
+            svg {
+              width: 20px;
+              height: 20px;
             }
           }
         }

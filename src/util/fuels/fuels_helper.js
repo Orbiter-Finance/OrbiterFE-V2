@@ -16,6 +16,7 @@ const fuelProvider = () => {
 
 const fuelConnector = async () => {
   const fuel = fuelProvider()
+  const r = await fuel.connectors()
   let response
 
   return new Promise((res) => {
@@ -31,20 +32,21 @@ const fuelConnector = async () => {
   })
 }
 
-const connect = async () => {
+const connect = async (name) => {
   const fuelC = await fuelConnector()
   if (!fuelC?.installed) {
-    util.showMessage(`Please install fuel wallet`, 'warning')
+    util.showMessage(`Please install ${name}`, 'warning')
     return
   }
   const fuel = fuelProvider()
 
-  await fuel.selectConnector('Fuel Wallet')
+  await fuel.selectConnector(name)
   await fuel.connect()
   const currentAccount = await fuelC.currentAccount()
   const address = new Address(currentAccount).toHexString()
   updateFuelAddress(address)
   updateFuelConnectStatus(true)
+  return address
 }
 
 const fuelsAccount = () => {

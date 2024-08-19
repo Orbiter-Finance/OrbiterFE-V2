@@ -129,7 +129,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 99;
 
   backdrop-filter: blur(156px);
   background: rgba(0, 0, 0, 0.1);

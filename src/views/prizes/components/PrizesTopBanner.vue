@@ -228,7 +228,7 @@ export default {
         );
         color: rgb(255, 242, 240);
         font-size: 88px;
-        line-height: 1;
+        line-height: 1.5;
         letter-spacing: 0px;
         font-family: GeneralSans-SemiBold;
         .chain {
@@ -316,6 +316,7 @@ export default {
     .prizes-content {
       .badge {
         font-size: 16px;
+        padding: 8px 16px;
       }
       .title {
         font-size: 24px;
@@ -323,7 +324,7 @@ export default {
       }
       .amount {
         font-size: 32px;
-        line-height: 1;
+        line-height: 1.5;
       }
       .bridge {
         margin-top: 24px;
