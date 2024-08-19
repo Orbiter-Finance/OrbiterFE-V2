@@ -9,28 +9,30 @@ let v2TradingPairs = []
 
 let random = 0
 
-export async function getV2TradingPair() {
+export async function getV2TradingPair(isRefresh) {
   if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
     throw new Error('USE LOCAL Config')
   }
-  if (v2TradingPairs.length) {
+  if (v2TradingPairs.length && !isRefresh) {
     return v2TradingPairs
   }
-  const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, [])
-  let ruleList = apiRes.ruleList
-  if (process.env.VUE_APP_WHITE_LIST) {
-    const whiteList = process.env.VUE_APP_WHITE_LIST.split(',')
-    ruleList = ruleList.filter((rule) => {
-      return whiteList.find(
-        (address) => address.toLowerCase() === rule?.recipient.toLowerCase()
-      )
-    })
-  }
-  if (apiRes?.chainList && apiRes.chainList.length) {
-    config.chainConfig = apiRes.chainList
-  }
+  try {
+    const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, [])
+    let ruleList = apiRes.ruleList
+    if (process.env.VUE_APP_WHITE_LIST) {
+      const whiteList = process.env.VUE_APP_WHITE_LIST.split(',')
+      ruleList = ruleList.filter((rule) => {
+        return whiteList.find(
+          (address) => address.toLowerCase() === rule?.recipient.toLowerCase()
+        )
+      })
+    }
+    if (apiRes?.chainList && apiRes.chainList.length) {
+      config.chainConfig = apiRes.chainList
+    }
 
-  v2TradingPairs = sortRule(ruleList)
+    v2TradingPairs = sortRule(ruleList)
+  } catch (error) {}
 
   return v2TradingPairs
 }

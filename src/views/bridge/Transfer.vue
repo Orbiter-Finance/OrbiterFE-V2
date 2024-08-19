@@ -463,6 +463,8 @@ let chain = config.chain;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
+let timer
+
 export default {
   name: 'Transfer',
   components: {
@@ -934,6 +936,11 @@ export default {
     },
   },
   async mounted() {
+    const self = this
+    clearInterval(timer)
+    timer = setInterval(() => {
+      self.refreshConfig(true);
+    }, 5 * 60 * 1000);
     try {
       await this.syncV3Data(1);
     } catch (e) {
@@ -1229,11 +1236,12 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
-    async refreshConfig() {
+    async refreshConfig(isRefresh) {
+      console.log("this.isV3", this.isV3)
       if (this.isV3) {
         return;
       }
-      const allMakerConfigs = await getV2TradingPair();
+      const allMakerConfigs = await getV2TradingPair(isRefresh);
       if (this.isNewVersion) {
         makerConfigs = JSON.parse(JSON.stringify(allMakerConfigs));
       } else {
