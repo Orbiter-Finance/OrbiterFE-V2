@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="user-rank-and-reward">
+      <!-- <div class="user-rank-and-reward">
         <div class="current-rank" v-if="isUserRanking">
           <span>Current rank: </span>
           <span class="current-ranking">{{ userRanking }}</span>
@@ -53,7 +53,7 @@
           <span>Accumulated: </span>
           <span class="tx-amount">{{ txAmount }} Tx bridges</span>
         </div>
-      </div>
+      </div> -->
 
       <div class="progress-group-scroll">
         <div class="pogress-group">
