@@ -16,23 +16,21 @@ export async function getV2TradingPair(isRefresh) {
   if (v2TradingPairs.length && !isRefresh) {
     return v2TradingPairs
   }
-  try {
-    const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, [])
-    let ruleList = apiRes.ruleList
-    if (process.env.VUE_APP_WHITE_LIST) {
-      const whiteList = process.env.VUE_APP_WHITE_LIST.split(',')
-      ruleList = ruleList.filter((rule) => {
-        return whiteList.find(
-          (address) => address.toLowerCase() === rule?.recipient.toLowerCase()
-        )
-      })
-    }
-    if (apiRes?.chainList && apiRes.chainList.length) {
-      config.chainConfig = apiRes.chainList
-    }
+  const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, [])
+  let ruleList = apiRes.ruleList
+  if (process.env.VUE_APP_WHITE_LIST) {
+    const whiteList = process.env.VUE_APP_WHITE_LIST.split(',')
+    ruleList = ruleList.filter((rule) => {
+      return whiteList.find(
+        (address) => address.toLowerCase() === rule?.recipient.toLowerCase()
+      )
+    })
+  }
+  if (apiRes?.chainList && apiRes.chainList.length) {
+    config.chainConfig = apiRes.chainList
+  }
 
-    v2TradingPairs = sortRule(ruleList)
-  } catch (error) {}
+  v2TradingPairs = sortRule(ruleList)
 
   return v2TradingPairs
 }
