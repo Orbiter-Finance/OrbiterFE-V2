@@ -55,7 +55,7 @@
       </span>
       <!-- <span @click="showHistory" class="ops-item">History</span> -->
       <div
-        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
+        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon || isSelectedFractal"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -120,7 +120,8 @@ import {
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
   setClaimCardModalShow,
-  setActPointFetchStatus
+  setActPointFetchStatus,
+  fractalAddress
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -134,6 +135,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
+import orbiterHelper from '../../util/orbiter_helper.js';
 
 let timer1
 
@@ -201,7 +203,8 @@ export default {
         walletIsLogin.value ||
         this.isSelectedStarkNet ||
         this.isSelectedSolana ||
-        this.isSelectedTon
+        this.isSelectedTon || 
+        this.isSelectedFractal
       )
     },
     isSelectedStarkNet() {
@@ -231,6 +234,13 @@ export default {
         toChainID === CHAIN_ID.ton_test
       )
     },
+    isSelectedFractal() {
+      const { fromChainID, toChainID } = transferDataState
+      return (
+        orbiterHelper.isFractalChain({chainId: fromChainID})
+        || orbiterHelper.isFractalChain({chainId: toChainID})
+      )
+    },
     starkAddress() {
       return starkAddress()
     },
@@ -239,6 +249,9 @@ export default {
     },
     tAddress() {
       return tonAddress()
+    },
+    fbAddress() {
+      return fractalAddress()
     },
     showAddress() {
       return showAddress()
@@ -257,6 +270,20 @@ export default {
             setTonDialog(true)
           },
           icon: CHAIN_ID.ton,
+        },
+        {
+          address: this.fbAddress,
+          isSelected: this.isSelectedFractal,
+          connect: async () => {
+            setConnectWalletGroupKey('FRACTAL')
+            setSelectWalletDialogVisible(true)
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(true)
+          },
+          icon: web3State.fractal.fractalWalletIcon,
         },
         {
           address: this.solanaAddress,
@@ -326,6 +353,7 @@ export default {
         web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
         solanaHelper.solanaAddress(),
         tonHelper.account(),
+        web3State.fractal.fractalAddress,
         ...[],
       ]
     },

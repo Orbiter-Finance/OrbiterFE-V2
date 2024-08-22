@@ -27,6 +27,13 @@ export const web3State = reactive({
   ton: {
     tonAddress: '',
   },
+  fractal: {
+    fractalAddress: '',
+    fractalWalletName: '',
+    fractalWalletIcon: '',
+    fractalIsConnect: false,
+    fractalChain: '',
+  },
 })
 
 export function updateCoinbase(coinbase) {

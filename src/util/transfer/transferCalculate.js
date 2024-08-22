@@ -31,6 +31,8 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
 import { zeroAddress } from 'viem'
+import orbiterHelper from '../orbiter_helper'
+import fractalHelper from '../fractal/fractal_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -1051,10 +1053,14 @@ export default {
         starknetAddress = userAddress
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
-    } else if (
-      localChainID === CHAIN_ID.solana ||
-      localChainID === CHAIN_ID.solana_test
-    ) {
+    } else if (orbiterHelper.isFractalChain({ chainId: localChainID })) {
+      const res = await fractalHelper.getBalance(
+        userAddress,
+        tokenAddress,
+        localChainID
+      )
+      return res || '0'
+    } else if (orbiterHelper.isSolanaChain({ chainId: localChainID })) {
       try {
         const tokenAccountBalance = await util.getSolanaBalance(
           localChainID,

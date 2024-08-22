@@ -57,6 +57,25 @@
             </div>
           </div>
         </div>
+        <div
+          v-else-if="connectWalletGroupKey === 'FRACTAL'"
+          class="wallet-group"
+        >
+          <div class="wallet-group-title">Fracta Wallet</div>
+          <div class="wallet-group-list">
+            <div
+              v-for="item in fractalWallet"
+              :key="item.title"
+              class="wallet-item"
+              @click="connectFractaWallet(item)"
+            >
+              <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+              <span class="wallet-title">{{ item.title }}</span>
+            </div>
+          </div>
+        </div>
+
+        
       </div>
     </div>
   </div>
@@ -109,6 +128,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import { THEME, TonConnectUI } from '@tonconnect/ui'
 import * as TonconnectUI from '@tonconnect/ui'
 import * as TonconnectUiSdk from '@tonconnect/sdk'
+import fractalHelper from '../../util/fractal/fractal_helper';
 
 let ton
 
@@ -288,6 +308,16 @@ export default {
       ]
       return wallets
     },
+    fractalWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'unisat',
+          title: 'Unisat',
+        }
+      ]
+      return wallets
+    },
     isLogin() {
       return walletIsLogin.value
     },
@@ -367,6 +397,13 @@ export default {
         })
       }
     },
+
+    async connectFractaWallet(item) {
+      const status = await fractalHelper.connect(item.icon)
+      this.closeSelectWalletDialog()
+
+      return
+    }
   },
 }
 </script>

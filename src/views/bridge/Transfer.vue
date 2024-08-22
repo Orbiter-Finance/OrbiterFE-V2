@@ -456,6 +456,7 @@ import { ethers } from 'ethers'
 import solanaHelper from "../../util/solana/solana_helper"
 import { decimalNumTh } from '../../util/decimalNum'
 import tonHelper from "../../util/ton/ton_helper"
+import orbiterHelper from '../../util/orbiter_helper';
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -1940,7 +1941,13 @@ export default {
         open = async () => {
           await tonHelper.connect()
         }
-      } else  if(CHAIN_ID.solana === toChainID || CHAIN_ID.solana_test === toChainID ) {
+      } else if(orbiterHelper.isFractalChain({chainId: toChainID})) {
+        toAddress = web3State.fractal.fractalAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('FRACTAL')
+        }
+      }  else  if(CHAIN_ID.solana === toChainID || CHAIN_ID.solana_test === toChainID ) {
         toAddress = web3State.solana.solanaAddress
         open = () => {
           setSelectWalletDialogVisible(true)
@@ -2136,6 +2143,13 @@ export default {
             return
           }
           
+        } else if(orbiterHelper.isFractalChain({chainId: fromChainID})) {
+          const isConnect = web3State.fractal.fractalAddress
+          if(!isConnect) {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey("SOLANA")
+            return
+          }
         } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           const isConnected = await tonHelper.isConnected()
           const account = await tonHelper.account()
@@ -2183,7 +2197,9 @@ export default {
         const senderShortAddress = util.shortAddress(senderAddress);
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
-          toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase())
+          toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : 
+          (orbiterHelper.isFractalChain({chainId: toChainID}) ? web3State.fractal.fractalAddress : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase() )
+          )
         );
         // sendTransfer
         const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
@@ -2360,6 +2376,9 @@ export default {
       }
       if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
         address = tonHelper.account();
+      }
+      if (orbiterHelper.isFractalChain({chainId: fromChainID})) {
+        address = web3State.fractal.fractalAddress
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)

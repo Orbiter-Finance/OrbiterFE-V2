@@ -117,6 +117,7 @@ import {
 } from './common/openApiAx'
 import { ethers } from 'ethers'
 import { CHAIN_ID } from './config';
+import orbiterHelper from './util/orbiter_helper';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -332,6 +333,12 @@ export default {
         toAddress = tonHelper.account()
         open = async () => {
           await tonHelper.connect()
+        }
+      } else if(orbiterHelper.isFractalChain({chainId}) ) {
+        toAddress = web3State.fractal.fractalAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('FRACTAL')
         }
       } else  if(CHAIN_ID.solana === chainId || CHAIN_ID.solana_test === chainId ) {
         toAddress = web3State.solana.solanaAddress

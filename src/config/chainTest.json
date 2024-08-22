@@ -585,6 +585,12 @@
         "symbol": "USDC",
         "decimals": 6,
         "address": "0x5da066443180476e8f113546a0D112517D0d4915"
+      },
+      {
+        "name": "BTC",
+        "symbol": "BTC",
+        "decimals": 18,
+        "address": "0x781f8fa7aCA459482F63c41bD51d170F4312842A"
       }
     ],
     "infoURL": "https://sepolia.etherscan.io"
@@ -629,8 +635,8 @@
         "makerValid": "C9ujSCZc7Z5HP5CBCYR1wVKGEuWnNbAoyi43EU12e3YU",
         "authority": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
         "feeReceiver": "EreFj1KD2HqsbbwehDLdkUSTju7kPEzRWXyHU9RBBYxQ",
-        "tokenToReceiver":"DJajVJ9MSngXjRAVxJeK9Z4g5gudwT6VAodJF1A2eAaV",
-        "feeToken":"9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
+        "tokenToReceiver": "DJajVJ9MSngXjRAVxJeK9Z4g5gudwT6VAodJF1A2eAaV",
+        "feeToken": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
         "methods": []
       }
     ],
@@ -1011,7 +1017,7 @@
     "name": "Bomechain",
     "debug": false,
     "service": {
-        "rpc": "EVMRpcScanningV6Service"
+      "rpc": "EVMRpcScanningV6Service"
     },
     "features": [
       {
@@ -1019,7 +1025,7 @@
       }
     ],
     "contract": {
-      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2":"OPool"
+      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2": "OPool"
     },
     "nativeCurrency": {
       "name": "BOME",
@@ -1041,15 +1047,48 @@
     "infoURL": "https://testnet.bomescan.org",
     "contracts": [
       {
-                "name": "OPool",
-                "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
-                "feeToken": "0x0000000000000000000000000000000000000000",
-                "methods": [
-                    "inbox(address,address,uint256,bytes)",
-                    "outbox(address,address,uint256,bytes)",
-                  "outboxBatch(address,address[],uint256[],bytes[])"
-                ]
-            }
+        "name": "OPool",
+        "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
+        "feeToken": "0x0000000000000000000000000000000000000000",
+        "methods": [
+          "inbox(address,address,uint256,bytes)",
+          "outbox(address,address,uint256,bytes)",
+          "outboxBatch(address,address[],uint256[],bytes[])"
+        ]
+      }
     ]
+  },
+  {
+    "api": {
+      "url": "https://open-api-fractal.unisat.io",
+      "key": "499715d0844ba805fe7ec7d8bb60639cb18f7b92aff88b52ad6771ee6545a283"
+    },
+    "chainId": "FRACTAL_TEST",
+    "networkId": "FRACTAL_TEST",
+    "internalId": "574",
+    "name": "Fractal",
+    "debug": true,
+    "service": {
+      "api": "FractalApiScanningService"
+    },
+    "features": [],
+    "nativeCurrency": {
+      "name": "tFB",
+      "symbol": "tFB",
+      "decimals": 8,
+      "address": ""
+    },
+    "rpc": [
+      "https://mempool.fractalbitcoin.io"
+    ],
+    "contracts": [],
+    "tokens": [{
+        "name": "BTC",
+        "symbol": "BTC",
+        "decimals": 8,
+        "address": "0x0000000000000000000000000000000000000000"
+      }],
+    "infoURL": "https://mempool-testnet.fractalbitcoin.io",
+    "vm": "BitVM"
   }
 ]

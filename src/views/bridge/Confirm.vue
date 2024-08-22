@@ -241,6 +241,8 @@ import {
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { shortString } from 'starknet'
+import orbiterHelper from '../../util/orbiter_helper.js';
+import fractalHelper from '../../util/fractal/fractal_helper.js';
 
 const {
   walletDispatchersOnSignature,
@@ -1746,6 +1748,44 @@ export default {
         this.transferLoading = false
       }
     },
+    async fractalTransfer(value) {
+      const {
+        selectMakerConfig,
+        fromChainID,
+      } = transferDataState
+
+      let from = web3State.fractal.fractalAddress
+      const isConnected = web3State.fractal.fractalIsConnect
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('FRACTAL')
+        this.transferLoading = false
+        return
+      }
+
+      console.log("selectMakerConfig.recipient", selectMakerConfig)
+      try{
+        const hash = await fractalHelper.transfer(
+          selectMakerConfig.recipient,
+          value
+        )
+
+        if (hash) {
+            this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
+    },
     async starknetTransfer(value) {
       const {
         selectMakerConfig,
@@ -2225,12 +2265,7 @@ export default {
       const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
 
       if (
-        fromChainID !== CHAIN_ID.starknet &&
-        fromChainID !== CHAIN_ID.starknet_test &&
-        fromChainID !== CHAIN_ID.solana &&
-        fromChainID !== CHAIN_ID.solana_test &&
-        fromChainID !== CHAIN_ID.ton &&
-        fromChainID !== CHAIN_ID.ton_test
+        !orbiterHelper.isNotEVMChain({chainId: fromChainID})
       ) {
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
@@ -2349,6 +2384,12 @@ export default {
           this.tonTransfer(tValue.tAmount)
           return
         }
+
+        if (orbiterHelper.isFractalChain({chainId: fromChainID})) {
+          this.fractalTransfer(tValue.tAmount)
+          return
+        }
+
 
         const account =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
