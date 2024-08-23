@@ -1,957 +1,117 @@
 [
-  {
-    "api": {
-      "url": "https://goerli-api.zksync.io/api/v0.2",
-      "key": ""
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "11155111",
+        "networkId": "11155111",
+        "internalId": "526",
+        "name": "Sepolia",
+        "debug": false,
+        "bridge": 2,
+        "batchLimit": 5,
+        "targetConfirmation": 2,
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "features": [
+            {
+                "name": "evm-account5"
+            }
+        ],
+        "contract": {
+            "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
+        },
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://eth-sepolia.g.alchemy.com/v2/mf7LavWgl6idryZtb9IJadAr0jf8KETr",
+            "https://ethereum-sepolia-rpc.publicnode.com",
+            "https://ethereum-sepolia.publicnode.com",
+            "https://rpc.notadegen.com/eth/sepolia",
+            "https://ethereum-sepolia.blockpi.network/v1/rpc/public",
+            "https://rpc.notadegen.com/sepolia",
+            "https://sepolia.gateway.tenderly.co",
+            "https://api.zan.top/node/v1/eth/sepolia/public",
+            "https://rpc.sepolia.org"
+        ],
+        "tokens": [
+            {
+                "name": "USDC",
+                "symbol": "USDC",
+                "decimals": 6,
+                "address": "0x5da066443180476e8f113546a0d112517d0d4915"
+            },
+            {
+                "name": "USDT",
+                "symbol": "USDT",
+                "decimals": 6,
+                "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
+            },
+            {
+                "name": "BTC",
+                "symbol": "BTC",
+                "decimals": 18,
+                "address": "0x781f8fa7aCA459482F63c41bD51d170F4312842A"
+            },
+            {
+                "name": "BERA",
+                "symbol": "BERA",
+                "decimals": 18,
+                "address": "0xa01afff94b800267368db6710311559ef0d70248"
+            }
+        ],
+        "infoURL": "https://sepolia.etherscan.io",
+        "contracts": [
+            {
+                "name": "OrbiterRouterV3",
+                "address": "0x78606Ea26275F6180745480FaF74E311586EB652",
+                "methods": [
+                    "transfer(address,bytes)",
+                    "transferToken(address,address,uint256,bytes)",
+                    "transfers(address[],uint256[])",
+                    "transferTokens(address,address[],uint256[])"
+                ]
+            }
+        ],
+        "vm": "EVM"
     },
-    "chainId": "zksync_test",
-    "networkId": "zksync",
-    "internalId": "33",
-    "debug": false,
-    "bridge": 1,
-    "name": "zkSync Lite(G)",
-    "nativeCurrency": {
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [],
-    "watch": [
-      "api"
-    ],
-    "contracts": [],
-    "tokens": [],
-    "infoURL": "https://goerli.zkscan.io/explorer/transasdactions"
-  },
-  {
-    "api": {
-      "url": "https://alpha4.starknet.io",
-      "key": ""
-    },
-    "chainId": "SN_SEPOLIA",
-    "networkId": "goerli-alpha",
-    "internalId": "44",
-    "name": "Starknet(G)",
-    "contracts": [
-      "0x0457bf9a97e854007039c43a6cc1a81464bd2a4b907594dabc9132c162563eb3"
-    ],
-    "nativeCurrency": {
-      "id": 0,
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7"
-    },
-    "rpc": [
-      "https://starknet-testnet.public.blastapi.io"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0x03e85bfbb8e2a42b7bead9e88e9a1b19dbccf661471061807292120462396ec9"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x005a643907b9a4bc6a55e9069c4fd5fd1f5c79a22470690f75556c4736e34426"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x0386e8d061177f19b3b485c20e31137e6f6bc497cc635ccdfcab96fadf5add6a"
-      }
-    ],
-    "infoURL": "https://goerli.voyager.online"
-  },
-  {
-    "api": {
-      "url": "https://api-testnet.polygonscan.com/api",
-      "key": ""
-    },
-    "chainId": "80001",
-    "networkId": "80001",
-    "internalId": "66",
-    "name": "Polygon Mumbai",
-    "nativeCurrency": {},
-    "rpc": [
-      "https://polygon-mumbai.gateway.tenderly.co",
-      "https://matic-testnet-archive-rpc.bwarelabs.com",
-      "https://polygon-testnet.public.blastapi.io",
-      "https://rpc.ankr.com/polygon_mumbai",
-      "https://matic-mumbai.chainstacklabs.com"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "contracts": [],
-    "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0xA6FA4fB5f76172d178d61B04b0ecd319C5d1C0aa"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x6b56404816A1CB8ab8E8863222d8C1666De942d5"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x1c8f9D9C1D74c38c8Aeb5033126EA1133728b32f"
-      },
-      {
-        "name": "DAI",
-        "symbol": "DAI",
-        "decimals": 18,
-        "address": "0xFEf68eb974c562B0dCBF307d9690e0BD10e35cEa"
-      }
-    ],
-    "xvmList": [
-      "0x2096D6DD537CF7A7ee1662BBbEc8C2809fCf2647"
-    ],
-    "faucets": [
-      "https://faucet.matic.network/"
-    ],
-    "infoURL": "https://matic.network/"
-  },
-  {
-    "api": {
-      "url": "https://api.sandbox.x.immutable.com",
-      "key": ""
-    },
-    "chainId": "immutableX_test",
-    "networkId": 5,
-    "internalId": "88",
-    "name": "ImmutableX(S)",
-    "nativeCurrency": {
-      "name": "Ether",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "service": {
-      "api": "ImmutableApiScanningService"
-    },
-    "rpc": [],
-    "watch": [
-      "api"
-    ],
-    "contracts": [],
-    "tokens": [],
-    "infoURL": "https://immutascan.io"
-  },
-  {
-    "api": {
-      "url": "https://uat2.loopring.io/api/v3",
-      "key": ""
-    },
-    "chainId": "loopring_test",
-    "networkId": "5",
-    "internalId": "99",
-    "name": "Loopring(R)",
-    "nativeCurrency": {
-      "name": "Ethereum",
-      "symbol": "ETH",
-      "decimals": 18,
-      "id": 0,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [],
-    "watch": [
-      "api"
-    ],
-    "contracts": [],
-    "tokens": []
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "84532",
-    "networkId": "84532",
-    "internalId": "521",
-    "name": "Base Sepolia",
-    "debug": false,
-    "service": {
-      "rpc": "EVMRpcScanningV6Service"
-    },
-    "contract": {
-      "0x48F3d8F498e0A59798c72120215146C6833b5BFC": "OrbiterRouterV3"
-    },
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://sepolia.base.org"
-    ],
-    "tokens": [],
-    "infoURL": "https://base-sepolia.blockscout.com",
-    "vm": "EVM"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "59140",
-    "networkId": "59140",
-    "internalId": "523",
-    "name": "Linea(G)",
-    "debug": false,
-    "features": [
-      "EIP1559",
-      "Etherscan"
-    ],
-    "contracts": [],
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "tokens": [
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x81a8cD37af3F5570E79E75Ccd17A877159cF226E"
-      }
-    ],
-    "router": {
-      "0xa14113c142e1b3f33f1da3ee43eccb9e0471ff2d": "OrbiterRouterV3"
-    },
-    "rpc": [
-      "https://rpc.goerli.linea.build"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "infoURL": "https://goerli.lineascan.build"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "5001",
-    "networkId": "5001",
-    "internalId": "524",
-    "name": "mantle(G)",
-    "debug": false,
-    "contracts": [
-      "0xf1e276a6518dff455fdabfdc582591fda35797ea"
-    ],
-    "features": [
-      "Etherscan"
-    ],
-    "nativeCurrency": {
-      "name": "MNT",
-      "symbol": "MNT",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://rpc.testnet.mantle.xyz",
-      "https://rpc.ankr.com/mantle_testnet"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "Ether (WETH)",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111"
-      }
-    ],
-    "router": {
-      "0xf06a54463c6dbc6d64547760891167aff9de76c5": "OrbiterRouterV3"
-    },
-    "infoURL": "https://explorer.testnet.mantle.xyz"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "5611",
-    "networkId": "5611",
-    "internalId": "525",
-    "name": "opBSC(G)",
-    "debug": false,
-    "features": [
-      "Etherscan"
-    ],
-    "contracts": [],
-    "nativeCurrency": {
-      "name": "tBNB",
-      "symbol": "BNB",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://opbnb-testnet-rpc.bnbchain.org"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [],
-    "infoURL": "https://opbnbscan.com"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "11155111",
-    "networkId": "11155111",
-    "internalId": "526",
-    "name": "Sepolia(G)",
-    "features": [
-      "Etherscan"
-    ],
-    "contract": {
-      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
-    },
-    "debug": false,
-    "contracts": [],
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://rpc.sepolia.org"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x5da066443180476e8f113546a0D112517D0d4915"
-      }
-    ],
-    "infoURL": "https://sepolia.etherscan.io"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "SOLANA_DEV",
-    "networkId": "SOLANA_DEV",
-    "internalId": "551",
-    "name": "Solana",
-    "batchLimit": 20,
-    "debug": true,
-    "service": {
-      "api": "SolanaApiScanningService"
-    },
-    "features": [],
-    "nativeCurrency": {
-      "name": "SOL",
-      "symbol": "SOL",
-      "decimals": 9,
-      "address": "So11111111111111111111111111111111111111112"
-    },
-    "rpc": [
-      "https://api-devnet.solscan.io"
-    ],
-    "contract": {
-      "FiyoeqDdRaV5cKCUXoXwiXt1rQpBokQXag2P9QMqob8Z": "OPool"
-    },
-    "contracts": [
-      {
-        "name": "MemoProgram",
-        "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
-        "methods": []
-      },
-      {
-        "name": "OPool",
-        "address": "FiyoeqDdRaV5cKCUXoXwiXt1rQpBokQXag2P9QMqob8Z",
-        "state": "cP4BEymMnW1fMYXDUm5XuWZfCRzKQ6tZHZqxVPFSz6c",
-        "makerValid": "C9ujSCZc7Z5HP5CBCYR1wVKGEuWnNbAoyi43EU12e3YU",
-        "authority": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
-        "feeReceiver": "EreFj1KD2HqsbbwehDLdkUSTju7kPEzRWXyHU9RBBYxQ",
-        "tokenToReceiver":"DJajVJ9MSngXjRAVxJeK9Z4g5gudwT6VAodJF1A2eAaV",
-        "feeToken":"So11111111111111111111111111111111111111112",
-        "methods": []
-      }
-    ],
-    "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 9,
-        "address": "GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "9PEiZDedcuv5kAmqVstgkK2YXVVB59quPQPt5wZ7Q2DR"
-      },
-      {
-        "name": "AIDOGE",
-        "symbol": "AIDOGE",
-        "decimals": 6,
-        "address": "Av39iDnGgKhkccKfKvYedihkhh6KwXjmAUatbAEZouxw"
-      },
-      {
-        "name": "BOME",
-        "symbol": "BOME",
-        "decimals": 6,
-        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm"
-      }
-    ],
-    "infoURL": "https://solscan.io"
-  },
-  {
-    "api": {
-      "url": "https://api-testnet.bscscan.com/api",
-      "key": ""
-    },
-    "chainId": "97",
-    "networkId": "97",
-    "internalId": "515",
-    "name": "BSC TestNet",
-    "debug": false,
-    "bridge": 3,
-    "service": {
-      "rpc": "EVMRpcScanningV6Service"
-    },
-    "features": [
-      {
-        "name": "evm-account5"
-      }
-    ],
-    "contract": {
-      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3",
-      "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0": "OPool"
-    },
-    "nativeCurrency": {
-      "name": "BNB",
-      "symbol": "BNB",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://bsc-testnet.publicnode.com",
-      "https://api.zan.top/node/v1/bsc/testnet/public",
-      "https://endpoints.omniatech.io/v1/bsc/testnet/public",
-      "https://data-seed-prebsc-2-s2.bnbchain.org:8545"
-    ],
-    "tokens": [
-      {
-        "name": "AIDOGE",
-        "symbol": "AIDOGE",
-        "decimals": 6,
-        "address": "0x6FE7f27BE081D25222C47ee5ff418455b88aBB8C"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
-      }
-    ],
-    "infoURL": "https://testnet.bscscan.com",
-    "contracts": [
-      {
-        "name": "OPool",
-        "address": "0x64e37f2873a9AF5CFD2EEe6600844A1b0d52aCf0",
-        "feeToken": "0x0000000000000000000000000000000000000000",
-        "methods": [
-          "inbox(address,address,uint256,bytes)",
-          "outbox(address,address,uint256,bytes)",
-          "outboxBatch(address,address[],uint256[],bytes[])"
-        ]
-      },
-      {
-        "name": "OrbiterRouterV3",
-        "address": "0x78606Ea26275F6180745480FaF74E311586EB652",
-        "methods": [
-          "transfer(address,bytes)",
-          "transferToken(address,address,uint256,bytes)",
-          "transfers(address[],uint256[])",
-          "transferTokens(address,address[],uint256[])"
-        ]
-      }
-    ]
-  },
-  {
-    "api": {
-      "url": "https://okbrpc.okbchain.org/v1",
-      "key": ""
-    },
-    "chainId": "195",
-    "networkId": "195",
-    "internalId": "527",
-    "name": "OKB(G)",
-    "debug": false,
-    "contracts": [],
-    "features": [
-      "Etherscan"
-    ],
-    "nativeCurrency": {
-      "name": "OKB",
-      "symbol": "OKB",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://okbtestrpc.okbchain.org"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [
-      {
-        "name": "Ether (WETH)",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0xaf99998DCFaB1A506213B73Fe50E3f31166B7EB1"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x01a22c7aB5dc856884eB61be019044C8f844A005"
-      }
-    ],
-    "infoURL": "https://www.okx.com/explorer/okbc-test"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "534351",
-    "networkId": "534351",
-    "internalId": "528",
-    "name": "Scroll Sepolia",
-    "features": [],
-    "debug": false,
-    "contracts": [],
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://sepolia-rpc.scroll.io",
-      "http://scroll-testnet-public.unifra.io/",
-      "https://rpc.ankr.com/scroll_sepolia_testnet"
-    ],
-    "watch": [
-      "rpc"
-    ],
-    "tokens": [],
-    "infoURL": "https://sepolia-blockscout.scroll.io"
-  },
-  {
-    "api": {
-      "url": "https://testnet.toncenter.com/api/v2/jsonRPC",
-      "key": ""
-    },
-    "chainId": "TON_TEST",
-    "icon": "TON_MAIN",
-    "networkId": "TON_TEST",
-    "internalId": "556",
-    "name": "TON",
-    "batchLimit": 20,
-    "debug": false,
-    "service": {
-      "api": "TonApiScanningService"
-    },
-    "features": [
-      {
-        "name": "evm-rpc"
-      }
-    ],
-    "nativeCurrency": {
-      "name": "TON",
-      "symbol": "TON",
-      "decimals": 9,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [],
-    "contracts": [],
-    "tokens": [
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "EQAQjU0zuO0YJSnHMXaUUOQ5Kru2O2i_4zfbqR-kHvf-DNRm"
-      },
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 9,
-        "address": "EQAK21xHTaxD04aX6SMqTegMXrnDfjszsjQTZGZRkB_jQEt2"
-      }
-    ],
-    "infoURL": "https://testnet.tonscan.org"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "421614",
-    "networkId": "421614",
-    "internalId": "535",
-    "name": "Arbitrum Sepolia",
-    "debug": false,
-    "bridge": 2,
-    "service": {
-      "rpc": "EVMRpcScanningV6Service"
-    },
-    "contract": {
-      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3",
-      "0x6a99aF2B5398Ee7bb340bfC337d32Eb8D58655ae": "OPool"
-    },
-    "contracts": [
-      {
-        "name": "OrbiterRouterV3",
-        "address": "0x78606Ea26275F6180745480FaF74E311586EB652"
-      },
-      {
-        "name": "OPool",
-        "address": "0x6a99aF2B5398Ee7bb340bfC337d32Eb8D58655ae",
-        "feeToken": "0x0000000000000000000000000000000000000000"
-      }
-    ],
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://sepolia-rollup.arbitrum.io/rpc",
-      "https://sepolia-rollup-sequencer.arbitrum.io/rpc"
-    ],
-    "tokens": [
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
-      },
-      {
-        "name": "AIDOGE",
-        "symbol": "AIDOGE",
-        "decimals": 6,
-        "address": "0xc36353B3Efc4D8F3f18063E39C445eBcE77905cF"
-      }
-    ],
-    "infoURL": "https://sepolia.arbiscan.io"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "FUEL_TEST",
-    "networkId": "FUEL_TEST",
-    "internalId": "567",
-    "icon": "FUEL",
-    "name": "Fuel Sepolia",
-    "batchLimit": 10,
-    "targetConfirmation": 2,
-    "debug": false,
-    "service": {
-      "rpc": "FuelRpcScanningService"
-    },
-    "features": [],
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 9,
-      "address": "0xf8f8b6283d7fa5b672b530cbb84fcccb4ff8dc40f8176ef4544ddb1f1952ad07"
-    },
-    "rpc": [
-      "https://testnet.fuel.network/v1/graphql"
-    ],
-    "tokens": [
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x991b4544a65333ea7299abc013cceaf4b1f9d945c765e9f9722c1bb39c96c26e"
-      }
-    ],
-    "infoURL": "https://app.fuel.network",
-    "contracts": []
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "11155111",
-    "networkId": "11155111",
-    "internalId": "526",
-    "name": "Sepolia",
-    "debug": false,
-    "bridge": 2,
-    "batchLimit": 5,
-    "targetConfirmation": 2,
-    "service": {
-      "rpc": "EVMRpcScanningV6Service"
-    },
-    "features": [
-      {
-        "name": "evm-account5"
-      }
-    ],
-    "contract": {
-      "0x78606Ea26275F6180745480FaF74E311586EB652": "OrbiterRouterV3"
-    },
-    "nativeCurrency": {
-      "name": "ETH",
-      "symbol": "ETH",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://eth-sepolia.g.alchemy.com/v2/mf7LavWgl6idryZtb9IJadAr0jf8KETr",
-      "https://ethereum-sepolia-rpc.publicnode.com",
-      "https://ethereum-sepolia.publicnode.com",
-      "https://rpc.notadegen.com/eth/sepolia",
-      "https://ethereum-sepolia.blockpi.network/v1/rpc/public",
-      "https://rpc.notadegen.com/sepolia",
-      "https://sepolia.gateway.tenderly.co",
-      "https://api.zan.top/node/v1/eth/sepolia/public",
-      "https://rpc.sepolia.org"
-    ],
-    "tokens": [
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
-      },
-      {
-        "name": "USDT",
-        "symbol": "USDT",
-        "decimals": 6,
-        "address": "0x42c7013dfe01a9a431903fe36523690cbe571b7e"
-      },
-      {
-        "name": "BTC",
-        "symbol": "BTC",
-        "decimals": 18,
-        "address": "0x781f8fa7aCA459482F63c41bD51d170F4312842A"
-      },
-      {
-        "name": "BERA",
-        "symbol": "BERA",
-        "decimals": 18,
-        "address": "0xa01afff94b800267368db6710311559ef0d70248"
-      }
-    ],
-    "infoURL": "https://sepolia.etherscan.io",
-    "contracts": [
-      {
-        "name": "OrbiterRouterV3",
-        "address": "0x78606Ea26275F6180745480FaF74E311586EB652",
-        "methods": [
-          "transfer(address,bytes)",
-          "transferToken(address,address,uint256,bytes)",
-          "transfers(address[],uint256[])",
-          "transferTokens(address,address[],uint256[])"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Eclipse",
-    "internalId": "565",
-    "shortName": "Eclipse",
-    "chainId": "ECLIPSE_DEV",
-    "networkId": "ECLIPSE_DEV",
-    "nativeCurrency": {
-      "name": "SOL",
-      "symbol": "SOL",
-      "decimals": 9,
-      "address": "So11111111111111111111111111111111111111112"
-    },
-    "rpc": [
-      "https://staging-rpc.dev2.eclipsenetwork.xyz"
-    ],
-    "service": {
-      "api": "EclipseApiScanningService"
-    },
-    "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 9,
-        "address": "B5HhBDX8mTNFLV6AUiMFnKUV8wAhBpdjEVdEEbmivnyD"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "55mjeUcYc5p5FmJqef1JffAAYtP1A6dFDSfHE7FjK8CK"
-      }
-    ],
-    "infoURL": "https://explorer.dev.eclipsenetwork.xyz",
-    "explorers": [
-      {
-        "name": "Block Explorer",
-        "url": "https://explorer.dev.eclipsenetwork.xyz",
-        "icon": "eclipse"
-      }
-    ],
-    "contract": {},
-    "contracts": [
-      {
-        "name": "MemoProgram",
-        "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
-        "methods": []
-      }
-    ]
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "SONIC_DEV",
-    "networkId": "SONIC_DEV",
-    "internalId": "569",
-    "name": "Sonic",
-    "batchLimit": 20,
-    "debug": false,
-    "service": {
-      "api": "SonicApiScanningService"
-    },
-    "features": [],
-    "nativeCurrency": {
-      "name": "SOL",
-      "symbol": "SOL",
-      "decimals": 9,
-      "address": "So11111111111111111111111111111111111111112"
-    },
-    "rpc": [
-      "https://devnet.sonic.game"
-    ],
-    "contracts": [
-      {
-        "name": "MemoProgram",
-        "address": "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
-        "methods": []
-      }
-    ],
-    "tokens": [
-      {
-        "name": "ETH",
-        "symbol": "ETH",
-        "decimals": 9,
-        "address": "FgskuB6BNweB8epH6PUPf5MdwttnZvuY52H2QxiqbUDS"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "7su6AFaFyGh2ACDzERmHLXRzRbhaKWz5HjporGNpT1kK"
-      }
-    ],
-    "infoURL": "https://explorer.sonic.game"
-  },
-  {
-    "api": {
-      "url": "",
-      "key": ""
-    },
-    "chainId": "9738",
-    "networkId": "9738",
-    "internalId": "573",
-    "name": "Bomechain",
-    "debug": false,
-    "service": {
-      "rpc": "EVMRpcScanningV6Service"
-    },
-    "features": [
-      {
-        "name": "evm-account5"
-      }
-    ],
-    "contract": {
-      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2": "OPool"
-    },
-    "nativeCurrency": {
-      "name": "BOME",
-      "symbol": "BOME",
-      "decimals": 18,
-      "address": "0x0000000000000000000000000000000000000000"
-    },
-    "rpc": [
-      "https://testrpc.bomechain.org"
-    ],
-    "tokens": [
-      {
-        "name": "TestToken",
-        "symbol": "ETH",
-        "decimals": 18,
-        "address": "0x443AD766a83928465d2d40c2ad36cAFf11E4415A"
-      }
-    ],
-    "infoURL": "https://testnet.bomescan.org",
-    "contracts": [
-      {
-        "name": "OPool",
-        "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
-        "feeToken": "0x0000000000000000000000000000000000000000",
-        "methods": [
-          "inbox(address,address,uint256,bytes)",
-          "outbox(address,address,uint256,bytes)",
-          "outboxBatch(address,address[],uint256[],bytes[])"
-        ]
-      }
-    ]
-  }
+    {
+        "api": {
+            "url": "",
+            "key": ""
+        },
+        "chainId": "59141",
+        "networkId": "59141",
+        "internalId": "523",
+        "name": "Linea Sepolia",
+        "debug": false,
+        "bridge": 2,
+        "service": {
+            "rpc": "EVMRpcScanningV6Service"
+        },
+        "contract": {
+            "0xd3e283c535617b76a67b2183b84ca19ebcc350af": "OrbiterRouterV3"
+        },
+        "nativeCurrency": {
+            "name": "ETH",
+            "symbol": "ETH",
+            "decimals": 18,
+            "address": "0x0000000000000000000000000000000000000000"
+        },
+        "rpc": [
+            "https://rpc.sepolia.linea.build",
+            "https://linea-sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+            "https://linea-sepolia.blockpi.network/v1/rpc/public",
+            "https://linea-sepolia.infura.io/v3"
+        ],
+        "tokens": [],
+        "infoURL": "https://sepolia.lineascan.build",
+        "vm": "EVM"
+    }
 ]
