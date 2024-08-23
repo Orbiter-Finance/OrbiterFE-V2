@@ -5042,5 +5042,29 @@
             "startTime": 0,
             "endTime": 99999999999999
         }
+    },
+    "526-575": {
+        "ETH-ETH": {
+            "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+            "sender": "0x7d2eb6b88f8bf710392772974aac4ad47d08f68632a33efb54d54e5924536f32",
+            "gasFee": 0,
+            "tradingFee": 0,
+            "maxPrice": 1,
+            "minPrice": 0.00000001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "575-526": {
+        "ETH-ETH": {
+            "makerAddress": "0x7d2eb6b88f8bf710392772974aac4ad47d08f68632a33efb54d54e5924536f32",
+            "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+            "gasFee": 0,
+            "tradingFee": 0,
+            "maxPrice": 1,
+            "minPrice": 0.00000001,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
     }
 }

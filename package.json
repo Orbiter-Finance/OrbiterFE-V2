@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@alphabatem/vue2-wallet-adapter": "^0.1.7233",
+    "@aptos-labs/ts-sdk": "^1.27.0",
     "@babel/core": "^7.24.3",
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@babel/plugin-proposal-logical-assignment-operators": "^7.20.7",
@@ -42,6 +43,7 @@
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
     "bignumber.js": "^9.0.1",
+    "bitcoinjs-lib": "^6.1.6",
     "buffer": "6.0.3",
     "caniuse-lite": "^1.0.30001458",
     "core-js": "^3.6.5",

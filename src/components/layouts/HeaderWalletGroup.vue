@@ -74,7 +74,23 @@
             </div>
           </div>
         </div>
-
+        <div
+        v-else-if="connectWalletGroupKey === 'APTOS'"
+        class="wallet-group"
+      >
+        <div class="wallet-group-title">Aptos Wallet</div>
+        <div class="wallet-group-list">
+          <div
+            v-for="item in aptosWallet"
+            :key="item.title"
+            class="wallet-item"
+            @click="connectAptosWallet(item)"
+          >
+            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+            <span class="wallet-title">{{ item.title }}</span>
+          </div>
+        </div>
+      </div>
         
       </div>
     </div>
@@ -129,6 +145,7 @@ import { THEME, TonConnectUI } from '@tonconnect/ui'
 import * as TonconnectUI from '@tonconnect/ui'
 import * as TonconnectUiSdk from '@tonconnect/sdk'
 import fractalHelper from '../../util/fractal/fractal_helper';
+import aptosHelper from '../../util/aptos/aptos_helper';
 
 let ton
 
@@ -318,6 +335,16 @@ export default {
       ]
       return wallets
     },
+    aptosWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'nightly',
+          title: 'Nightly',
+        },
+      ]
+      return wallets
+    },
     isLogin() {
       return walletIsLogin.value
     },
@@ -402,6 +429,11 @@ export default {
       const status = await fractalHelper.connect(item.icon)
       this.closeSelectWalletDialog()
 
+      return
+    },
+    async connectAptosWallet(item) {
+      const status = await aptosHelper.connect(item.icon)
+      this.closeSelectWalletDialog()
       return
     }
   },

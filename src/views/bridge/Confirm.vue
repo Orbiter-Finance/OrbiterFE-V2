@@ -243,6 +243,7 @@ import tonHelper from '../../util/ton/ton_helper'
 import { shortString } from 'starknet'
 import orbiterHelper from '../../util/orbiter_helper.js';
 import fractalHelper from '../../util/fractal/fractal_helper.js';
+import aptosHelper from '../../util/aptos/aptos_helper.js';
 
 const {
   walletDispatchersOnSignature,
@@ -1768,6 +1769,46 @@ export default {
       try{
         const hash = await fractalHelper.transfer(
           selectMakerConfig.recipient,
+          value,
+          fromChainID
+        )
+
+        if (hash) {
+            this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
+    },
+
+    async aptosTransfer(value) {
+      const {
+        selectMakerConfig,
+        fromChainID,
+      } = transferDataState
+
+      let from = web3State.aptos.aptosAddress
+      const isConnected = web3State.aptos.aptosIsConnect
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('APTOS')
+        this.transferLoading = false
+        return
+      }
+
+      console.log("selectMakerConfig.recipient", selectMakerConfig)
+      try{
+        const hash = await aptosHelper.transfer(
+          selectMakerConfig.recipient,
           value
         )
 
@@ -2390,6 +2431,10 @@ export default {
           return
         }
 
+        if (orbiterHelper.isAptosChain({chainId: fromChainID})) {
+          this.aptosTransfer(tValue.tAmount)
+          return
+        }
 
         const account =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress

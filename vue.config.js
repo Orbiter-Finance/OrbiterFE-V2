@@ -50,6 +50,17 @@ module.exports = {
       })
       .end()
     config.module
+      .rule('aptos')
+      .test(/(\.mjs$)|(\.js$)/)
+      .include.add(path.resolve(__dirname, 'node_modules/@aptos-labs/ts-sdk'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators],
+      })
+      .end()
+    config.module
       .rule('ton')
       .test(/\.js$/)
       .include.add(path.resolve(__dirname, 'node_modules/tonweb'))

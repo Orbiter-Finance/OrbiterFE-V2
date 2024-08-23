@@ -33,6 +33,7 @@ import tonHelper from '../ton/ton_helper'
 import { zeroAddress } from 'viem'
 import orbiterHelper from '../orbiter_helper'
 import fractalHelper from '../fractal/fractal_helper'
+import aptosHelper from '../aptos/aptos_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -1053,6 +1054,21 @@ export default {
         starknetAddress = userAddress
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
+    } else if (orbiterHelper.isAptosChain({ chainId: localChainID })) {
+      console.log(
+        'NAME',
+        localChainID,
+        tokenAddress,
+        tokenName,
+        userAddress,
+        isMaker
+      )
+      const res = await aptosHelper.getBalance(
+        userAddress,
+        tokenAddress,
+        localChainID
+      )
+      return res || '0'
     } else if (orbiterHelper.isFractalChain({ chainId: localChainID })) {
       const res = await fractalHelper.getBalance(
         userAddress,

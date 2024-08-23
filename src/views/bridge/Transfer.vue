@@ -1941,7 +1941,13 @@ export default {
         open = async () => {
           await tonHelper.connect()
         }
-      } else if(orbiterHelper.isFractalChain({chainId: toChainID})) {
+      } else if(orbiterHelper.isAptosChain({chainId: toChainID})) {
+        toAddress = web3State.aptos.aptosAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('APTOS')
+        }
+      }  else if(orbiterHelper.isFractalChain({chainId: toChainID})) {
         toAddress = web3State.fractal.fractalAddress
         open = () => {
           setSelectWalletDialogVisible(true)
@@ -2143,11 +2149,18 @@ export default {
             return
           }
           
+        } else if(orbiterHelper.isAptosChain({chainId: fromChainID})) {
+          const isConnect = web3State.aptos.aptosAddress
+          if(!isConnect) {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey("APTOS")
+            return
+          }
         } else if(orbiterHelper.isFractalChain({chainId: fromChainID})) {
           const isConnect = web3State.fractal.fractalAddress
           if(!isConnect) {
             setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey("SOLANA")
+            setConnectWalletGroupKey("FRACTAL")
             return
           }
         } else if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
@@ -2198,7 +2211,9 @@ export default {
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
           toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() : 
-          (orbiterHelper.isFractalChain({chainId: toChainID}) ? web3State.fractal.fractalAddress : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase() )
+          (orbiterHelper.isFractalChain({chainId: toChainID}) ? web3State.fractal.fractalAddress : (
+            orbiterHelper.isAptosChain({chainId: toChainID}) ? web3State.aptos?.aptosAddress : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
+          ) )
           )
         );
         // sendTransfer
@@ -2379,6 +2394,9 @@ export default {
       }
       if (orbiterHelper.isFractalChain({chainId: fromChainID})) {
         address = web3State.fractal.fractalAddress
+      }
+      if (orbiterHelper.isAptosChain({chainId: fromChainID})) {
+        address = web3State.aptos.aptosAddress
       }
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)

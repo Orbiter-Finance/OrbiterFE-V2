@@ -55,7 +55,7 @@
       </span>
       <!-- <span @click="showHistory" class="ops-item">History</span> -->
       <div
-        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon || isSelectedFractal"
+        v-if="isLastWallet"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -121,7 +121,8 @@ import {
   claimCardModalDataInfo,
   setClaimCardModalShow,
   setActPointFetchStatus,
-  fractalAddress
+  fractalAddress,
+  aptosAddress
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -151,6 +152,13 @@ export default {
     },
   },
   computed: {
+    isLastWallet() {
+      return this.isSelectedStarkNet ||
+        this.isSelectedSolana ||
+        this.isSelectedTon || 
+        this.isSelectedFractal || 
+        this.isSelectedAptos
+    },
     claimCardModalAmountInfoData() {
       return claimCardModalAmountInfo.value
     },
@@ -204,7 +212,8 @@ export default {
         this.isSelectedStarkNet ||
         this.isSelectedSolana ||
         this.isSelectedTon || 
-        this.isSelectedFractal
+        this.isSelectedFractal || 
+        this.isSelectedAptos
       )
     },
     isSelectedStarkNet() {
@@ -241,6 +250,13 @@ export default {
         || orbiterHelper.isFractalChain({chainId: toChainID})
       )
     },
+    isSelectedAptos() {
+      const { fromChainID, toChainID } = transferDataState
+      return (
+        orbiterHelper.isAptosChain({chainId: fromChainID})
+        || orbiterHelper.isAptosChain({chainId: toChainID})
+      )
+    },
     starkAddress() {
       return starkAddress()
     },
@@ -252,6 +268,9 @@ export default {
     },
     fbAddress() {
       return fractalAddress()
+    },
+    aptAddress() {
+      return aptosAddress()
     },
     showAddress() {
       return showAddress()
@@ -270,6 +289,20 @@ export default {
             setTonDialog(true)
           },
           icon: CHAIN_ID.ton,
+        },
+        {
+          address: this.aptAddress,
+          isSelected: this.isSelectedAptos,
+          connect: async () => {
+            setConnectWalletGroupKey('APTOS')
+            setSelectWalletDialogVisible(true)
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(true)
+          },
+          icon: web3State.aptos.aptosWalletIcon,
         },
         {
           address: this.fbAddress,
@@ -354,6 +387,7 @@ export default {
         solanaHelper.solanaAddress(),
         tonHelper.account(),
         web3State.fractal.fractalAddress,
+        web3State.aptos.aptosAddress,
         ...[],
       ]
     },

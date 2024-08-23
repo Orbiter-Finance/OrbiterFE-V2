@@ -1,7 +1,9 @@
-import { Connection } from '@solana/web3.js'
+import * as bitcoin from 'bitcoinjs-lib'
 
 import util from '../util'
 import { web3State } from '../../composition/useCoinbase'
+
+console.log('bitcoin', bitcoin)
 
 const FRACTAL_WALLET_NAME = 'FRACTAL_WALLET_NAME'
 
@@ -11,13 +13,6 @@ const readWalletName = () => {
 
 const updateWalletName = (str) => {
   sessionStorage.setItem(FRACTAL_WALLET_NAME, str?.toLocaleLowerCase() || '')
-}
-
-const getConnection = (chainId) => {
-  if (!chainId) return null
-  const chainInfo = util.getV3ChainInfoByChainId(chainId)
-  const rpc = chainInfo?.rpc?.[0]
-  return rpc ? new Connection(rpc, 'confirmed') : null
 }
 
 const getWallet = () => {
@@ -37,12 +32,18 @@ const getBalance = async (userAddress, tokenAddress, localChainID) => {
   return String(b.total)
 }
 
+const getChainInfo = (chainId) => {
+  if (!chainId) return null
+  const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  return chainInfo
+}
+
 const getProvider = () => {
   const provider = getWallet()
 
   if (!provider) {
     util.showMessage(
-      'Install ' + (readWalletName() || 'Solana Wallet'),
+      'Install ' + (readWalletName() || 'Fractal Wallet'),
       'error'
     )
     updateWalletName('')
@@ -75,16 +76,17 @@ const fractalAddress = () => {
   return web3State.fractal.fractalAddress
 }
 
-const transfer = async (maekr, value) => {
-  const wallet = getProvider()
-  console.log('wallet', wallet, maekr, value)
-  const res = await wallet.sendBitcoin(maekr, Number(value))
+const transfer = async (maker, value) => {
+  const wallet = getWallet()
+
+  const res = await wallet.sendBitcoin(maker, Number(value), {
+    memo: 'abcdfwwaaassdd',
+  })
   console.log('res', res)
   return res
 }
 
 const fractalHelper = {
-  getConnection,
   isConnect,
   disConnect,
   getBalance,

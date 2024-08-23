@@ -3,6 +3,7 @@ import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 import solanaHelper from '../util/solana/solana_helper'
 import tonHelper from '../util/ton/ton_helper'
 import fractalHelper from '../util/fractal/fractal_helper'
+import aptosHelper from '../util/aptos/aptos_helper'
 
 export function showAddress() {
   const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -44,11 +45,21 @@ export function tonAddress() {
 }
 
 export function fractalAddress() {
-  const solanaAddress =
+  const address =
     web3State.fractal.fractalAddress || fractalHelper.fractalAddress() || ''
-  if (solanaAddress && solanaAddress.length > 5) {
-    const subStr1 = solanaAddress.slice(0, 4)
-    const subStr2 = solanaAddress.slice(solanaAddress.length - 4)
+  if (address && address.length > 5) {
+    const subStr1 = address.slice(0, 4)
+    const subStr2 = address.slice(address.length - 4)
+    return subStr1 + '...' + subStr2
+  }
+  return 'not connected'
+}
+
+export function aptosAddress() {
+  const address = web3State.aptos.aptos || aptosHelper.aptosAddress() || ''
+  if (address && address.length > 5) {
+    const subStr1 = address.slice(0, 4)
+    const subStr2 = address.slice(address.length - 4)
     return subStr1 + '...' + subStr2
   }
   return 'not connected'

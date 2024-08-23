@@ -340,6 +340,12 @@ export default {
           setSelectWalletDialogVisible(true)
           setConnectWalletGroupKey('FRACTAL')
         }
+      } else if(orbiterHelper.isAptosChain({chainId}) ) {
+        toAddress = web3State.aptos.aptosAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('APTOS')
+        }
       } else  if(CHAIN_ID.solana === chainId || CHAIN_ID.solana_test === chainId ) {
         toAddress = web3State.solana.solanaAddress
         open = () => {

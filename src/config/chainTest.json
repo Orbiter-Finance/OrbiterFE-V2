@@ -1090,5 +1090,40 @@
       }],
     "infoURL": "https://mempool-testnet.fractalbitcoin.io",
     "vm": "BitVM"
-  }
+  },
+  {
+    "api": {
+        "url": "",
+        "key": ""
+    },
+    "chainId": "MOVEMENT_TEST",
+    "networkId": "MOVEMENT_TEST",
+    "internalId": "575",
+    "name": "Movement",
+    "debug": true,
+    "service": {
+        "rpc": "MovementRpcScanningService"
+    },
+    "features": [],
+    "nativeCurrency": {
+        "name": "MOVE",
+        "symbol": "MOVE",
+        "decimals": 8,
+        "address": "0x1::aptos_coin::AptosCoin"
+    },
+    "rpc": [
+        "https://aptos.testnet.suzuka.movementlabs.xyz/v1"
+    ],
+    "contracts": [],
+    "tokens": [
+        {
+            "name": "WETH",
+            "symbol": "ETH",
+            "decimals": 8,
+            "address": "0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f::tokens::WETH"
+        }
+    ],
+    "infoURL": "https://explorer.movementlabs.xyz",
+    "vm": "MoveEVM"
+}
 ]
