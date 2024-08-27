@@ -1,13 +1,22 @@
 import { validateAndParseAddress } from 'starknet'
 import { CHAIN_ID } from '../config'
 import tonHelper from './ton/ton_helper'
-import solanaHelper from './solana/solana_helper.js'
+import solanaHelper from './solana/solana_helper'
+import fuelsHelper from './fuels/fuels_helper'
 import {
   setConnectWalletGroupKey,
   setSelectWalletDialogVisible,
   web3State,
 } from '../composition/hooks'
 import { compatibleGlobalWalletConf } from '../composition/walletsResponsiveData/index.js'
+import { WALLETCONNECT } from './walletsDispatchers/constants.js'
+import { ethereumClient } from './walletsDispatchers/pcBrowser/walletConnectPCBrowserDispatcher.js'
+import walletsDispatchers from './walletsDispatchers/index.js'
+import { store } from '../store/index.js'
+import { disConnectStarkNetWallet } from './constants/starknet/helper.js'
+import fractalHelper from './fractal/fractal_helper.js'
+import aptosHelper from './aptos/aptos_helper.js'
+const { walletDispatchersOnDisconnect } = walletsDispatchers
 
 const checkStarknetAddress = (address) => {
   if (address?.length <= 50) {
@@ -125,21 +134,38 @@ const isMiddleDecimals = ({ decimals }) => {
   return d === 8 || d === 9
 }
 
-const currentConnectChainInfo = ({ chainId }) => {
+const currentConnectChainInfo = ({ chainId, isList }) => {
+  const evmAddress =
+    compatibleGlobalWalletConf.value.walletPayload.walletAddress
   const evmInfo = {
-    address: compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+    address: evmAddress,
     open: openEvmConnectModal,
-    isConnected: !!compatibleGlobalWalletConf.value.walletPayload.walletAddress,
+    isConnected: !!evmAddress && evmAddress !== '0x',
     checkAddress: checkEvmAddress,
     walletIcon: compatibleGlobalWalletConf?.walletType?.toLocaleLowerCase(),
+    type: 'EVM',
+    disconnect: () => {
+      localStorage.setItem('selectedWallet', JSON.stringify({}))
+      store.commit('updateLocalLogin', false)
+      localStorage.setItem('localLogin', false)
+      if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
+        ethereumClient.disconnect()
+        localStorage.setItem('wc@2:client:0.3//session', null)
+      }
+      walletDispatchersOnDisconnect[
+        compatibleGlobalWalletConf.value.walletType
+      ]()
+    },
   }
 
-  const satrknetInfo = {
+  const starknetInfo = {
     address: web3State.starkNet.starkNetAddress,
     open: openStarknetConnectModal,
     isConnected: !!web3State.starkNet.starkIsConnected,
     checkAddress: checkStarknetAddress,
     walletIcon: CHAIN_ID.starknet,
+    type: 'Starknet',
+    disconnect: disConnectStarkNetWallet,
   }
   const solanaInfo = {
     address: web3State.solana.solanaAddress,
@@ -149,6 +175,15 @@ const currentConnectChainInfo = ({ chainId }) => {
       return solanaHelper.checkAddress(address)
     },
     walletIcon: solanaHelper.readWalletName() || CHAIN_ID.solana,
+    type: 'Solana',
+    disconnect: async () => {
+      await solanaHelper.disConnect()
+      setConnectWalletGroupKey('SOLANA')
+      store.commit('updateSolanaAddress', '')
+      store.commit('updateSolanaWalletName', '')
+      store.commit('updateSolanaWalletIcon', '')
+      store.commit('updateSolanaIsConnect', false)
+    },
   }
   const tonInfo = {
     address: tonHelper.account(),
@@ -157,7 +192,11 @@ const currentConnectChainInfo = ({ chainId }) => {
     checkAddress: (address) => {
       return tonHelper.checkAddress(address)
     },
-    walletIcon: CHAIN_ID.ton,
+    walletIcon: CHAIN_ID.ton || CHAIN_ID.ton,
+    type: 'Ton',
+    disconnect: async () => {
+      await tonHelper.disconnect()
+    },
   }
   const fuelInfo = {
     address: web3State.fuel.fuelAddress,
@@ -165,6 +204,12 @@ const currentConnectChainInfo = ({ chainId }) => {
     isConnected: !!web3State.fuel.fuelIsConnect,
     checkAddress: checkFuelsAddress,
     walletIcon: CHAIN_ID.fuel,
+    type: 'Fuel',
+    disconnect: async () => {
+      await fuelsHelper.disconnect()
+      web3State.fuel.fuelAddress = ''
+      web3State.fuel.fuelIsConnect = false
+    },
   }
   const fractalInfo = {
     address: web3State.fractal.fractalAddress,
@@ -173,7 +218,13 @@ const currentConnectChainInfo = ({ chainId }) => {
     checkAddress: () => {
       return true
     },
-    walletIcon: web3State.fractal.fractalWalletIcon,
+    walletIcon: web3State.fractal.fractalWalletIcon || CHAIN_ID.fractal_test,
+    type: 'Fractal',
+    disconnect: async () => {
+      await fractalHelper.disConnect()
+      web3State.fractal.fractalAddress = ''
+      web3State.fractal.fractalIsConnect = false
+    },
   }
   const aptosInfo = {
     address: web3State.aptos.aptosAddress,
@@ -182,7 +233,17 @@ const currentConnectChainInfo = ({ chainId }) => {
     checkAddress: () => {
       return true
     },
-    walletIcon: web3State.aptos.aptosWalletIcon,
+    walletIcon: web3State.aptos.aptosWalletIcon || CHAIN_ID.movement_test,
+    type: 'Aptos',
+    disconnect: async () => {
+      await aptosHelper.disConnect()
+      web3State.aptos.aptosAddress = ''
+      web3State.aptos.aptosIsConnect = false
+    },
+  }
+
+  if (isList) {
+    return [evmInfo, starknetInfo, solanaInfo, tonInfo, fractalInfo, aptosInfo]
   }
 
   let current = null
@@ -194,7 +255,7 @@ const currentConnectChainInfo = ({ chainId }) => {
   } else if (isSolanaChain({ chainId })) {
     current = solanaInfo
   } else if (isStarknetChain({ chainId })) {
-    current = satrknetInfo
+    current = starknetInfo
   } else if (isFractalChain({ chainId })) {
     current = fractalInfo
   } else if (isAptosChain({ chainId })) {
@@ -205,6 +266,11 @@ const currentConnectChainInfo = ({ chainId }) => {
     current = null
   }
   return current
+    ? {
+        ...current,
+        chainId,
+      }
+    : current
 }
 
 const checkAddress = ({ address, chainId }) => {

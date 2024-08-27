@@ -29,10 +29,7 @@ const getChainInfo = (chainId) => {
 
 const getBalance = async (userAddress, tokenAddress, localChainID) => {
   const provider = getProvider(localChainID)
-  console.log('1111', provider, userAddress, tokenAddress, localChainID)
-
   const chainInfo = getChainInfo(localChainID)
-  console.log('chainInfo', chainInfo)
   const nativeAddress = chainInfo?.nativeCurrency?.address
   try {
     if (nativeAddress === tokenAddress) {
@@ -88,6 +85,7 @@ const connect = async (walletName) => {
   if (address) {
     web3State.aptos.aptosAddress = address
     web3State.aptos.aptosIsConnect = !!address
+    web3State.aptos.aptosWalletIcon = walletName
   }
   return address
 }
@@ -100,30 +98,43 @@ const aptosAddress = () => {
   return web3State.aptos.aptosAddress
 }
 
-const transfer = async (maekr, value) => {
-  const aptos = getProvider()
-  const wallet = getProvider()
-  console.log('wallet', wallet, maekr, value)
+const transfer = async (
+  maker,
+  value,
+  tokenAddress,
+  safeCode,
+  targetAddress,
+  chainId
+) => {
+  const aptos = getProvider(chainId)
+  const wallet = getWallet()
+  console.log('wallet', wallet, maker, value)
 
   const address = aptosAddress()
+
+  const chainInfo = getChainInfo(chainId)
+  console.log('chainInfo', chainInfo)
+
+  const contractList = chainInfo?.contracts || []
+
+  const contractAddress = contractList?.filter(
+    (item) =>
+      item?.name?.toLocaleLowerCase() === 'OrbiterRouterV3'?.toLocaleLowerCase()
+  )[0]?.address
 
   const txn = await aptos.transaction.build.simple({
     sender: address,
     data: {
-      function: '0x1::coin::transfer',
-      typeArguments: [
-        '0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f::tokens::WETH',
-      ],
-      functionArguments: [
-        '0x12fec277a443d9ee4a21013841439508930b227b47a81e2b28fb6ceeea728fbb',
-        100,
-      ],
+      function: `${contractAddress}::message::transfer_token`,
+      typeArguments: [tokenAddress],
+      functionArguments: [maker, value, `c=${safeCode}&t=${targetAddress}`],
     },
   })
 
   console.log('\n=== Transfer transaction ===\n', txn)
   const res = await wallet.signAndSubmitTransaction(txn)
   console.log('res', res)
+  return res?.hash
 }
 
 const aptosHelper = {

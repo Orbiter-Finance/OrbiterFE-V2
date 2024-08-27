@@ -64,6 +64,7 @@ const connect = async (walletName) => {
   if (address) {
     web3State.fractal.fractalAddress = address
     web3State.fractal.fractalIsConnect = !!address
+    web3State.fractal.fractalWalletIcon = walletName
   }
   return address
 }
@@ -76,11 +77,18 @@ const fractalAddress = () => {
   return web3State.fractal.fractalAddress
 }
 
-const transfer = async (maker, value) => {
+const transfer = async (
+  maker,
+  value,
+  tokenAddress,
+  safeCode,
+  targetAddress,
+  chainId
+) => {
   const wallet = getWallet()
 
   const res = await wallet.sendBitcoin(maker, Number(value), {
-    memo: 'abcdfwwaaassdd',
+    memo: `c=${safeCode}&t=${targetAddress}`,
   })
   console.log('res', res)
   return res

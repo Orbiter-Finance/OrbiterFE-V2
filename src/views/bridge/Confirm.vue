@@ -267,28 +267,8 @@ export default {
     isStarkNetChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.starknet ||
-        fromChainID === CHAIN_ID.starknet_test ||
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
-      )
-    },
-    isSolanaChain() {
-      const { fromChainID, toChainID } = transferDataState
-      return (
-        fromChainID === CHAIN_ID.solana ||
-        fromChainID === CHAIN_ID.solana_test ||
-        toChainID === CHAIN_ID.solana ||
-        toChainID === CHAIN_ID.solana_test
-      )
-    },
-    isTonChain() {
-      const { fromChainID, toChainID } = transferDataState
-      return (
-        fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test ||
-        toChainID === CHAIN_ID.ton ||
-        toChainID === CHAIN_ID.ton_test
+        orbiterHelper.isStarknetChain({chainId: fromChainID}) ||
+        orbiterHelper.isStarknetChain({chainId: toChainID})
       )
     },
     currentFromChainID() {
@@ -337,10 +317,7 @@ export default {
       )
 
       if (
-        (fromChainID === CHAIN_ID.solana ||
-        fromChainID === CHAIN_ID.solana_test ||
-        fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test)&& !bridgeType1
+        (orbiterHelper.isSolanaChain({chainId: fromChainID}))&& !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -567,15 +544,16 @@ export default {
 
             let memo = `c=${safeCode}`
 
+            
+
             if (
-              toChainID === CHAIN_ID.solana ||
-              toChainID === CHAIN_ID.solana_test
+              orbiterHelper.isNotEVMChain({chainId: toChainID})
             ) {
-              const solanaAddress = solanaHelper.solanaAddress()
-              const isConnected = await solanaHelper.isConnect()
-              if (!isConnected || !solanaAddress) {
-                setSelectWalletDialogVisible(true)
-                setConnectWalletGroupKey('SOLANA')
+              const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+              const address = toInfo?.address
+              const isConnect = toInfo?.isConnected
+              if (!isConnect || !address) {
+                await toInfo.open()
                 this.transferLoading = false
                 return
               }
@@ -715,23 +693,13 @@ export default {
       let toAddress = ''
       let isConnected = false
 
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        toAddress = solanaHelper.solanaAddress()
-        isConnected = await solanaHelper.isConnect()
+      if(orbiterHelper.isNotEVMChain({chainId: toChainID})) {
+        const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+        toAddress = toInfo?.address
+        isConnected = toInfo?.isConnected
 
         if (!toAddress || !isConnected) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-        toAddress = tonHelper.account()
-        isConnected = await tonHelper.isConnected()
-
-        if (!toAddress || !isConnected) {
-          await tonHelper.connect()
+          await toInfo.open()
           return
         }
       }
@@ -1362,39 +1330,22 @@ export default {
         const p_text = 9000 + Number(chainInfo.internalId) + ''
         const amount = tValue.tAmount
         let memo = isCrossAddress ? `${p_text}_${crossAddressReceipt}` : p_text
-        if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test
-        ) {
-          const solanaAddress = solanaHelper.solanaAddress()
-          const isConnected = await solanaHelper.isConnect()
-          if (!isConnected || !solanaAddress) {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey('SOLANA')
+
+        let toAddress = ''
+        let isConnected = false
+
+        if(orbiterHelper.isNotEVMChain({chainId: toChainID})) {
+          const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+          toAddress = toInfo?.address
+          isConnected = toInfo?.isConnected
+
+          if (!toAddress || !isConnected) {
+            await toInfo.open()
+            this.transferLoading = false
             return
           }
-          memo = `${p_text}_${solanaAddress}`
+          memo = `${p_text}_${toAddress}`
         }
-
-        if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          const tonAddress = tonHelper.account()
-          const tonIsConnected = tonHelper.isConnected()
-          if (!tonIsConnected || !tonAddress) {
-            await tonHelper.connect()
-            return
-          }
-          // try {
-          //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-          //     if(res !== "created") {
-          //         return
-          //     }
-          // } catch (error) {
-          //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-          //     return
-          // }
-          memo = `${p_text}_${tonAddress}`
-        }
-
         if (memo.length > 128) {
           this.$notify.error({
             title: 'The sending address is too long',
@@ -1681,39 +1632,16 @@ export default {
 
       let targetAddress = evmAddress
 
-      if (
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
-      ) {
-        targetAddress = starkNetAddress
-
-        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
-          util.showMessage('please connect Starknet Wallet', 'error')
-          this.transferLoading = false
-          return
-        }
-
-        if (!starkNetAddress) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('STARKNET')
-          this.transferLoading = false
-          return
-        }
+      const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const address = toInfo?.address
+      const isConnect = toInfo?.isConnected
+      if (!address || !isConnect) {
+        await toInfo.open()
+        this.transferLoading = false
+        return 
       }
+      targetAddress = address
 
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = solanaHelper.solanaAddress()
-        const isConnect = solanaHelper.isConnect()
-
-        targetAddress = solanaAddress
-
-        if (!solanaAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          this.transferLoading = false
-          return
-        }
-      }
       try {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
@@ -1724,6 +1652,7 @@ export default {
           targetAddress,
           amount: rAmountValue,
           safeCode,
+          chainId: fromChainID
         })
         try {
           this.$gtag.event('click', {
@@ -1753,6 +1682,7 @@ export default {
       const {
         selectMakerConfig,
         fromChainID,
+        toChainID
       } = transferDataState
 
       let from = web3State.fractal.fractalAddress
@@ -1764,17 +1694,29 @@ export default {
         this.transferLoading = false
         return
       }
-
-      console.log("selectMakerConfig.recipient", selectMakerConfig)
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+      const safeCode = transferCalculate.safeCode()
+      const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const targetAddress = toInfo?.address
+      const toIsConnected = toInfo?.isConnecte
+      if (!targetAddress || !toIsConnected) {
+        await toInfo.open()
+        this.transferLoading = false
+        return
+      }
+      
       try{
         const hash = await fractalHelper.transfer(
           selectMakerConfig.recipient,
           value,
+          tokenAddress,
+          safeCode,
+          targetAddress,
           fromChainID
         )
 
         if (hash) {
-            this.onTransferSucceed(from, value, fromChainID, hash)
+          this.onTransferSucceed(from, value, fromChainID, hash)
         }
 
       } catch (error) {
@@ -1793,6 +1735,7 @@ export default {
       const {
         selectMakerConfig,
         fromChainID,
+        toChainID
       } = transferDataState
 
       let from = web3State.aptos.aptosAddress
@@ -1806,10 +1749,25 @@ export default {
       }
 
       console.log("selectMakerConfig.recipient", selectMakerConfig)
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+      const safeCode = transferCalculate.safeCode()
+      const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const targetAddress = toInfo?.address
+      const toIsConnected = toInfo?.isConnecte
+      if (!targetAddress || !toIsConnected) {
+        await toInfo.open()
+        this.transferLoading = false
+        return
+      }
+
       try{
         const hash = await aptosHelper.transfer(
           selectMakerConfig.recipient,
-          value
+          value,
+          tokenAddress,
+          safeCode,
+          targetAddress,
+          fromChainID
         )
 
         if (hash) {
@@ -1871,82 +1829,18 @@ export default {
           return
         }
       }
-      if (
-        toChainID === CHAIN_ID.solana ||
-        toChainID === CHAIN_ID.solana_test ||
-        toChainID === CHAIN_ID.ton ||
-        toChainID === CHAIN_ID.ton_test
-      ) {
-        if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test
-        ) {
-          const isConnectSolana = await solanaHelper.isConnect()
-          if (isConnectSolana) {
-            to = solanaHelper.solanaAddress()
-            if (!to) {
-              util.showMessage('Solana Address Error: ' + to, 'error')
-              this.transferLoading = false
-              return
-            }
-          } else {
-            setSelectWalletDialogVisible(true)
-            setConnectWalletGroupKey('SOLANA')
-            this.transferLoading = false
-            return
-          }
-        }
 
-        if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          const tonIsConnected = tonHelper.isConnected()
-          const account = tonHelper.account()
-          if (!!account && tonIsConnected) {
-            to = account
-            if (!to) {
-              util.showMessage('Solana Address Error: ' + to, 'error')
-              this.transferLoading = false
-              return
-            }
-          } else {
-            await tonHelper.connect()
-            this.transferLoading = false
-            return
-          }
-        }
-        // try {
-        //     const res = await solanaHelper.activationTokenAccount({toChainID, fromCurrency})
-        //     if(res !== "created") {
-        //         return
-        //     }
-        // } catch (error) {
-        //     util.showMessage(error?.message || error?.data?.message || String(error), 'error');
-        //     return
-        // }
-
-        const hash = await sendTransferV3({
-          targetAddress: to,
-          tokenAddress,
-          makerAddress: selectMakerConfig.recipient,
-          amount: new BigNumber(value),
-          chainID: fromChainID,
-        })
-        try {
-          this.$gtag.event('click', {
-            event_category: 'Transfer',
-            event_label: selectMakerConfig.recipient.toLocaleLowerCase(),
-            userAddress: from,
-            hash: hash,
-          })
-        } catch (error) {
-          console.error('click error', error)
-        }
-
-        if (hash) {
-          this.onTransferSucceed(from, value, fromChainID, hash)
-        }
+      const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      to = toInfo?.address
+      isConnected = toInfo?.isConnecte
+      if (!to || !isConnected) {
+        util.showMessage(`${toInfo?.type} Address Error: ` + to, 'error')
+        await toInfo.open()
         this.transferLoading = false
         return
       }
+
+
       if (!walletIsLogin.value) {
         this.transferLoading = false
         return
@@ -2201,25 +2095,16 @@ export default {
 
       let toAddress = ''
 
-      if (toChainID === CHAIN_ID.solana) {
-        toAddress = solanaHelper.solanaAddress()
-        const isConnected = await solanaHelper.isConnect()
+      if(orbiterHelper.isNotEVMChain({chainId: toChainID})) {
+          const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+          toAddress = toInfo?.address
+          isConnected = toInfo?.isConnected
 
-        if (!toAddress || !isConnected) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-          return
-        }
-      }
-
-      if (toChainID === CHAIN_ID.ton) {
-        toAddress = tonHelper.account()
-        const isConnected = tonHelper.isConnected()
-
-        if (!toAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
+          if (!toAddress || !isConnected) {
+            await toInfo.open()
+            this.transferLoading = false
+            return
+          }
       }
 
       if (toChainID === CHAIN_ID.starknet) {
@@ -2414,14 +2299,13 @@ export default {
         }
 
         if (
-          fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test
+          orbiterHelper.isSolanaChain({chainId: fromChainID})
         ) {
           this.solanaTransfer(tValue.tAmount)
           return
         }
 
-        if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
+        if ( orbiterHelper.isTonChain({chainId: fromChainID}) ) {
           this.tonTransfer(tValue.tAmount)
           return
         }
@@ -2457,10 +2341,7 @@ export default {
         }
 
         if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test ||
-          toChainID === CHAIN_ID.ton ||
-          toChainID === CHAIN_ID.ton_test
+          orbiterHelper.isNotEVMChain({chainId: toChainID})
         ) {
           await this.transferToSolanaOrTon()
           this.transferLoading = false

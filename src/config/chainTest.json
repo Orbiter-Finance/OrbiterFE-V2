@@ -560,7 +560,10 @@
       "Etherscan"
     ],
     "debug": false,
-    "contracts": [],
+    "contracts": [{
+      "address": "0x78606Ea26275F6180745480FaF74E311586EB652",
+      "name": "OrbiterRouterV3"
+    }],
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
@@ -591,6 +594,18 @@
         "symbol": "BTC",
         "decimals": 18,
         "address": "0x781f8fa7aCA459482F63c41bD51d170F4312842A"
+      },
+      {
+        "name": "BERA",
+        "symbol": "BERA",
+        "decimals": 18,
+        "address": "0xa01afff94b800267368db6710311559ef0d70248"
+      },
+      {
+        "name": "MOVE",
+        "symbol": "MOVE",
+        "decimals": 6,
+        "address": "0x5da066443180476e8f113546a0d112517d0d4915"
       }
     ],
     "infoURL": "https://sepolia.etherscan.io"
@@ -907,40 +922,35 @@
       "key": ""
     },
     "chainId": "TON_TEST",
-    "icon": "TON_MAIN",
     "networkId": "TON_TEST",
     "internalId": "556",
-    "name": "TON",
-    "batchLimit": 20,
+    "name": "TON Testnet",
     "debug": false,
-    "service": {
-      "api": "TonApiScanningService"
+    "service": {},
+    "contract": {
+      "": "OrbiterRouterV3"
     },
-    "features": [
-      {
-        "name": "evm-rpc"
-      }
-    ],
     "nativeCurrency": {
       "name": "TON",
       "symbol": "TON",
       "decimals": 9,
       "address": "0x0000000000000000000000000000000000000000"
     },
-    "rpc": [],
-    "contracts": [],
+    "rpc": [
+      "https://testnet.tonapi.io"
+    ],
     "tokens": [
       {
         "name": "USDC",
         "symbol": "USDC",
         "decimals": 6,
-        "address": "EQAQjU0zuO0YJSnHMXaUUOQ5Kru2O2i_4zfbqR-kHvf-DNRm"
+        "address": "0QAQjU0zuO0YJSnHMXaUUOQ5Kru2O2i_4zfbqR-kHvf-DDIp"
       },
       {
         "name": "ETH",
         "symbol": "ETH",
         "decimals": 9,
-        "address": "EQAK21xHTaxD04aX6SMqTegMXrnDfjszsjQTZGZRkB_jQEt2"
+        "address": "0QAK21xHTaxD04aX6SMqTegMXrnDfjszsjQTZGZRkB_jQK05"
       }
     ],
     "infoURL": "https://testnet.tonscan.org"
@@ -1082,48 +1092,136 @@
       "https://mempool.fractalbitcoin.io"
     ],
     "contracts": [],
-    "tokens": [{
+    "tokens": [
+      {
         "name": "BTC",
         "symbol": "BTC",
         "decimals": 8,
         "address": "0x0000000000000000000000000000000000000000"
-      }],
+      }
+    ],
     "infoURL": "https://mempool-testnet.fractalbitcoin.io",
     "vm": "BitVM"
   },
   {
     "api": {
-        "url": "",
-        "key": ""
+      "url": "",
+      "key": ""
     },
-    "chainId": "MOVEMENT_TEST",
-    "networkId": "MOVEMENT_TEST",
+    "chainId": "MOVEMENT_DEV",
+    "networkId": "MOVEMENT_DEV",
     "internalId": "575",
-    "name": "Movement",
+    "name": "Movement Dev",
     "debug": true,
     "service": {
-        "rpc": "MovementRpcScanningService"
+      "api": "MovementApiScanningService"
     },
     "features": [],
     "nativeCurrency": {
-        "name": "MOVE",
-        "symbol": "MOVE",
-        "decimals": 8,
-        "address": "0x1::aptos_coin::AptosCoin"
+      "name": "MOVE",
+      "symbol": "MOVE",
+      "decimals": 8,
+      "address": "0x1::aptos_coin::AptosCoin"
     },
     "rpc": [
-        "https://aptos.testnet.suzuka.movementlabs.xyz/v1"
+      "https://fullnode.devnet.aptoslabs.com"
     ],
-    "contracts": [],
+    "contracts": [
+      {
+        "name": "OrbiterRouterV3",
+        "address": "0x28a5296fc7a59f344635e7860020cf027921f83645a3132105b8bb1dce5e1bbb",
+        "methods": [
+          "0x28a5296fc7a59f344635e7860020cf027921f83645a3132105b8bb1dce5e1bbb::message::transfer_token",
+          "0x28a5296fc7a59f344635e7860020cf027921f83645a3132105b8bb1dce5e1bbb::message::batch_transfer_token"
+        ]
+      }
+    ],
+    "tokens": [],
+    "infoURL": "https://explorer.aptoslabs.com",
+    "vm": "Aptos"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "MOVEMENT_TEST",
+    "networkId": "MOVEMENT_TEST",
+    "internalId": "576",
+    "name": "Movement",
+    "debug": true,
+    "service": {
+      "rpc": "MovementRpcScanningService"
+    },
+    "features": [],
+    "nativeCurrency": {
+      "name": "MOVE",
+      "symbol": "MOVE",
+      "decimals": 8,
+      "address": "0x1::aptos_coin::AptosCoin"
+    },
+    "rpc": [
+      "https://aptos.testnet.suzuka.movementlabs.xyz/v1"
+    ],
+    "contracts": [
+      {
+        "name": "OrbiterRouterV3",
+        "address": "0x1de0d11e323ef3b5578a74d3e9f51058a2a373288ad72017f3a2627241a0a00f",
+        "methods": [
+          "0x1de0d11e323ef3b5578a74d3e9f51058a2a373288ad72017f3a2627241a0a00f::message::transfer_token",
+          "0x1de0d11e323ef3b5578a74d3e9f51058a2a373288ad72017f3a2627241a0a00f::message::batch_transfer_token"
+        ]
+      }
+    ],
     "tokens": [
-        {
-            "name": "WETH",
-            "symbol": "ETH",
-            "decimals": 8,
-            "address": "0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f::tokens::WETH"
-        }
+      {
+        "name": "WETH",
+        "symbol": "ETH",
+        "decimals": 8,
+        "address": "0x275f508689de8756169d1ee02d889c777de1cebda3a7bbcce63ba8a27c563c6f::tokens::WETH"
+      }
     ],
     "infoURL": "https://explorer.movementlabs.xyz",
-    "vm": "MoveEVM"
-}
+    "vm": "Aptos"
+  },
+  {
+    "api": {
+      "url": "",
+      "key": ""
+    },
+    "chainId": "202105",
+    "networkId": "202105",
+    "internalId": "578",
+    "name": "Duckchain Testnet",
+    "service": {
+      "rpc": "EVMRpcScanningV6Service"
+    },
+    "features": [
+      {
+        "name": "evm-account5"
+      }
+    ],
+    "nativeCurrency": {
+      "name": "TON",
+      "symbol": "TON",
+      "decimals": 18,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://testnet-rpc.duckchain.io"
+    ],
+    "contracts": [ {
+      "name": "OrbiterRouterV3",
+      "address": "0x9C5FfC8421D45f09d5e187d9C368bFeB79A4F34E",
+      "methods": [
+        "transfer(address,bytes)",
+        "transferToken(address,address,uint256,bytes)",
+        "transfers(address[],uint256[])",
+        "transferTokens(address,address[],uint256[])"
+      ]
+    }],
+    "tokens": [],
+    "infoURL": "https://testnet-scan.duckchain.io",
+    "vm": "EVM"
+  }
 ]

@@ -30,7 +30,6 @@ import { EBC_ABI } from '../constants/contract/contract'
 import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
-import { zeroAddress } from 'viem'
 import orbiterHelper from '../orbiter_helper'
 import fractalHelper from '../fractal/fractal_helper'
 import aptosHelper from '../aptos/aptos_helper'
@@ -133,6 +132,9 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+      return null
+    }
     if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test
@@ -1070,6 +1072,7 @@ export default {
       )
       return res || '0'
     } else if (orbiterHelper.isFractalChain({ chainId: localChainID })) {
+      console.log('isMaker', isMaker)
       const res = await fractalHelper.getBalance(
         userAddress,
         tokenAddress,
@@ -1088,10 +1091,7 @@ export default {
       } catch (error) {
         return '0'
       }
-    } else if (
-      localChainID === CHAIN_ID.ton ||
-      localChainID === CHAIN_ID.ton_test
-    ) {
+    } else if (orbiterHelper.isTonChain({ chainId: localChainID })) {
       try {
         if (isMaker) {
           const tokenAccountBalance = await util.getTonBalance(
@@ -1104,9 +1104,12 @@ export default {
 
         const tonweb = tonHelper.tonwebProvider()
 
+        const chainInfo = util.getV3ChainInfoByChainId(localChainID)
+        const nativeCurrency = chainInfo?.nativeCurrency?.address
+
         const userTonAddress = new TonWeb.Address(userAddress)
         try {
-          if (tokenAddress === zeroAddress) {
+          if (tokenAddress === nativeCurrency) {
             const res = await tonweb.getBalance(userTonAddress)
             return res.toString()
           }

@@ -12,6 +12,7 @@ import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
 import { RequestMethod, requestOpenApi } from '../common/openApiAx'
 import solanaHelper from './solana/solana_helper.js'
+import tonHelper from './ton/ton_helper.js'
 let chainsList = []
 
 export default {
@@ -49,6 +50,8 @@ export default {
   },
 
   async getTonBalance(chainId, address, tokenAddress) {
+    const provider = tonHelper.tonwebProvider()
+    console.log('provider', provider)
     const res = await requestOpenApi(RequestMethod.getBalance, [
       chainId,
       address,

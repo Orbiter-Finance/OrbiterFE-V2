@@ -80,7 +80,8 @@ import {
   setTonDialog,
   setClaimCardModalShow,
   setActPointFetchStatus,
-  transferDataState
+  transferDataState,
+  setActConnectWalletInfo
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -274,6 +275,9 @@ export default {
         if (!!item1) {
           if(this.isNotPrizes && !isMobileDevice()) {
             setActDialogVisible(true)
+            setActConnectWalletInfo(
+              orbiterHelper.currentConnectChainInfo({chainId: "1"})
+            )
           }
         } else {
           setActDialogVisible(false)

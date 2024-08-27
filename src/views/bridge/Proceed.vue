@@ -230,6 +230,7 @@ import tonHelper from '../../util/ton/ton_helper'
 import { completeTx } from '../../util/proceeding/getProceeding'
 import { MQTT_HREF, MQTT_USER_NAME, MQTT_PASSWORD } from '../../const'
 import mqtt from 'mqtt'
+import orbiterHelper from '../../util/orbiter_helper';
 
 let client = null
 
@@ -391,20 +392,7 @@ export default {
       const { toChainID } = transferDataState
       const hash = this.$store?.state?.proceeding?.userTransfer?.txid || ''
 
-      let userAddress =
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      if (
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
-      ) {
-        userAddress = web3State.starkNet.starkNetAddress
-      }
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        userAddress = solanaHelper.solanaAddress()
-      }
-      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-        userAddress = tonHelper.account()
-      }
+      let userAddress = orbiterHelper.currentConnectChainInfo({chainId: toChainID})?.address || ""
 
       if (
         !MQTT_USER_NAME ||
@@ -482,17 +470,7 @@ export default {
       const { fromChainID, toChainID } = transferDataState
       const chainId = isFrom ? fromChainID : toChainID
       //   let userAddress = web3State.coinbase;
-      let userAddress =
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
-        userAddress = web3State.starkNet.starkNetAddress
-      }
-      if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
-        userAddress = solanaHelper.solanaAddress()
-      }
-      if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
-        userAddress = tonHelper.account()
-      }
+      let userAddress = orbiterHelper.currentConnectChainInfo({chainId})?.address || ""
       const accountUrl =
         explorerInfo.accountUrl || explorerInfo.url + '/address'
       const url = accountUrl + '/' + userAddress + params
@@ -561,23 +539,7 @@ export default {
       const { fromChainID } = transferDataState
       if (this.$store.state.proceedState === 1) {
         // let userAddress = web3State.coinbase
-        let userAddress =
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        if (
-          fromChainID === CHAIN_ID.starknet ||
-          fromChainID === CHAIN_ID.starknet_test
-        ) {
-          userAddress = web3State.starkNet.starkNetAddress
-        }
-        if (
-          fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test
-        ) {
-          userAddress = solanaHelper.solanaAddress()
-        }
-        if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-          userAddress = tonHelper.account()
-        }
+        let userAddress = orbiterHelper.currentConnectChainInfo({chainId: fromChainID})?.address || ""
         url = util.getAccountExploreUrl(fromChainID) + userAddress
 
         // ImmutableX
@@ -609,23 +571,7 @@ export default {
 
       const commHandler = () => {
         // let userAddress = web3State.coinbase
-        const userAddress =
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        if (
-          toChainID === CHAIN_ID.starknet ||
-          toChainID === CHAIN_ID.starknet_test
-        ) {
-          userAddress = web3State.starkNet.starkNetAddress
-        }
-        if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test
-        ) {
-          userAddress = solanaHelper.solanaAddress()
-        }
-        if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
-          userAddress = tonHelper.account()
-        }
+        const userAddress = orbiterHelper.currentConnectChainInfo({chainId: toChainID})?.address || ""
         url = util.getAccountExploreUrl(toChainID) + userAddress
 
         // ImmutableX
@@ -711,23 +657,7 @@ export default {
     if (client?.connected) {
 
       try {
-        let userAddress =
-          compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        if (
-          fromChainID === CHAIN_ID.starknet ||
-          fromChainID === CHAIN_ID.starknet_test
-        ) {
-          userAddress = web3State.starkNet.starkNetAddress
-        }
-        if (
-          fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test
-        ) {
-          userAddress = solanaHelper.solanaAddress()
-        }
-        if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-          userAddress = tonHelper.account()
-        }
+        let userAddress = orbiterHelper.currentConnectChainInfo({chainId: fromChainID})?.address || ""
         client.unsubscribe(
           `bridge-success/pending-confirm/address/${userAddress}`,
           { qos: 0 },

@@ -330,7 +330,7 @@ export default {
         {
           isConnect: false,
           icon: 'unisat',
-          title: 'Unisat',
+          title: 'Unisat Wallet',
         }
       ]
       return wallets
