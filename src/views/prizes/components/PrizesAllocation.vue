@@ -11,10 +11,11 @@
           <img :src="require(`../../../assets/prizes/${item.img}`)" alt="">
         </div>
         <div class="prizes-ratio-item-group">
-          <div class="text">{{ item.ratio }}</div>
+          <div class="text">{{ item.reward }}</div>
         </div>
         <div class="prizes-ratio-item-group">
-          <div class="des">{{ item.des }}</div>
+          <div class="des">{{ item.condition }}</div>
+          <div v-if="item.isComment">Up to 95% bridging fee rebate</div>
         </div>
       </div>
     </div>
@@ -40,21 +41,6 @@
         </div>
       </div>
 
-      <!-- <div class="user-rank-and-reward">
-        <div class="current-rank" v-if="isUserRanking">
-          <span>Current rank: </span>
-          <span class="current-ranking">{{ userRanking }}</span>
-        </div>
-        <div v-if="isRewardAmount" class="rank-reward">
-          <span>Estimated earnings: </span>
-          <span class="reward-amount">{{ rewardAmount }} USDC</span>
-        </div>
-        <div v-if="isTxAmount" class="rank-tx-amount">
-          <span>Accumulated: </span>
-          <span class="tx-amount">{{ txAmount }} Tx bridges</span>
-        </div>
-      </div> -->
-
       <div class="progress-group-scroll">
         <div class="pogress-group">
           <div class="progress-ratio-group">
@@ -62,9 +48,10 @@
               class="progress-ratio-group-item"
               v-for="item in progressStage"
               :key="item.position"
+              v-show="!item.disabled"
               :style="`left: ${(item.position / 20) * 100}%;`"
             >
-              {{ item.ratio }}
+              {{ item.reward }}
             </div>
           </div>
           <div class="pogress-box">
@@ -72,11 +59,12 @@
             <div
               class="progress-stage"
               v-for="item in progressStage"
+              v-show="!item.disabled"
               :key="item.position"
               :style="`left: ${(item.position / 20) * 100}%;visibility:${
                 item.position ? 'visable' : 'hidden'
               };background-color:${
-                item.isSuccess ? '#FFBA56' : '#0A1618'
+                item.isSuccess ? '#3B7FFF' : '#0A1618'
               };`"
             ></div>
           </div>
@@ -85,6 +73,7 @@
               class="progress-tx-group-item"
               :style="`left: ${(item.position / 20) * 100}%;`"
               v-for="item in progressStage"
+              v-show="!item.disabled"
               :key="item.position"
             >
               {{ item.label }}
@@ -119,11 +108,7 @@
                       <span>
                         <span>Specific networks include: </span>
                         <br />
-                        Ethereum, Arbitrum, zkSync Lite, Polygon, Optimism, Loopring, zkSyncEra, 
-                        BNB Chain, Arbitrum Nova, Polygon zkEVM, Base, Mantle, opBNB, X Layer, 
-                        Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, 
-                        Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, 
-                        Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse, linea
+                        Ethereum, Arbitrum, zkSync Lite, Linea, Scroll, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Polygon zkEVM, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse
                       </span>
                     </span>
                   </template>
@@ -131,22 +116,34 @@
                     Specific networks
                   </span>
                 </o-tooltip>
-                <span v-if="item.specificChain">from/to Scroll</span>
+                <span v-if="item.specificChain">from/to Base</span>
                 <span class="content-text" v-html="item.lastText"></span>
               </div>
             </div>
-            <div class="prizes-promotion">
-              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.000000" height="24.000000" viewBox="0 0 24 24" fill="none">
-                <rect width="24.000000" height="24.000000" fill="#D8D8D8" fill-opacity="0"/>
-                <rect x="0.500000" y="0.500000" width="23.000000" height="23.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
-                <path d="M11.18 6.05L11.18 6.08L10.67 6.59L16.31 12.24L10.67 17.88L11.18 18.4L11.18 18.42C10.89 18.72 10.42 18.72 10.12 18.42C9.82 18.13 9.82 17.66 10.12 17.36L10.15 17.36L10.65 17.87L10.65 6.61L10.15 7.11L10.12 7.11C9.82 6.81 9.82 6.35 10.12 6.05C10.42 5.75 10.89 5.75 11.18 6.05Z" fill="#D8D8D8" fill-opacity="0" fill-rule="evenodd"/>
-                <path d="M10.65 17.89L16.31 12.24L10.65 6.58" stroke="#FFFFFF" stroke-opacity="1.000000" stroke-width="1.500000" stroke-linejoin="round" stroke-linecap="round"/>
-              </svg>
+            <div v-if="item.icon === 'bridge'">
+              <div v-if="item.isPromotion" class="prizes-promotion">
+                Already entered in higher stage pools
+              </div>
+              <div v-else>
+                <div class="prizes-promotion">
+                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.000000" height="24.000000" viewBox="0 0 24 24" fill="none">
+                    <rect width="24.000000" height="24.000000" fill="#D8D8D8" fill-opacity="0"/>
+                    <rect x="0.500000" y="0.500000" width="23.000000" height="23.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
+                    <path d="M11.18 6.05L11.18 6.08L10.67 6.59L16.31 12.24L10.67 17.88L11.18 18.4L11.18 18.42C10.89 18.72 10.42 18.72 10.12 18.42C9.82 18.13 9.82 17.66 10.12 17.36L10.15 17.36L10.65 17.87L10.65 6.61L10.15 7.11L10.12 7.11C9.82 6.81 9.82 6.35 10.12 6.05C10.42 5.75 10.89 5.75 11.18 6.05Z" fill="#D8D8D8" fill-opacity="0" fill-rule="evenodd"/>
+                    <path d="M10.65 17.89L16.31 12.24L10.65 6.58" stroke="#FFFFFF" stroke-opacity="1.000000" stroke-width="1.500000" stroke-linejoin="round" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
             </div>
+            <div v-else>
+              <div class="earn-nft">Earn NFT</div>
+            </div>
+
+            
           </div>
         </div>
 
-        <div v-if="isEnd" class="prizes-end-modal">End of event</div>
+        <!-- <div v-if="isEnd" class="prizes-end-modal">End of event</div> -->
       </div>
     </div>
   </div>
@@ -205,7 +202,8 @@ export default {
         const num = Number(item?.task_result) || 0
         count += num
       });
-      return count
+      // return count
+      return 19
     },
     rank() {
       const tx = this.tx
@@ -222,40 +220,59 @@ export default {
         {
           position: 0,
           label: '0Tx',
-          ratio: '',
+          reward: '',
+          condition: "",
           isSuccess: false
         },
         {
           img: 'prizes.png',
-          des: '70,000 Prize Pool',
-          position: 5,
-          ratio: '≥3 tx',
-          label: '70,000 Prize Pool',
+          condition: 'bridge ≥1tx on Galxe',
+          position: 1,
+          reward: 'NFT',
+          label: '1Tx',
+          disabled: true,
+          isSuccess: Number(tx) >= 1
+        },
+        {
+          img: 'prizes.png',
+          reward: '3%',
+          position: 3,
+          condition: 'Bridge ≥3 tx',
+          label: "3Tx",
           isSuccess: Number(tx) >= 3
         },
         {
+          img: 'prizes.png',
+          reward: '5%',
+          position: 6,
+          condition: 'Bridge ≥8 tx',
+          label: "8Tx",
+          isSuccess: Number(tx) >= 8
+        },
+        {
           img: 'badge.png',
-          des: 'Diamond Scroll Bridger Badge',
-          position: 10,
-          ratio: 'Top 100',
-          label: 'Diamond Scroll Bridger Badge',
-          isSuccess:  Number(rank) && Number(rank) <= 100
+          reward: '10%',
+          position: 9,
+          condition: 'Bridge >=15 tx',
+          label: '15Tx',
+          isSuccess:  Number(tx) >= 15
         },
         {
           img: 'bridge50.png',
-          des: 'Up to 50% Bridging Fee rebate',
+          reward: '22%',
           position: 15,
-          ratio: 'Top 9-20',
-          label: '50% Bridging Fee rebate',
-          isSuccess:  Number(rank) && Number(rank) <= 20
+          condition: 'Top 100',
+          label: 'Top 100',
+          isSuccess:  Number(rank) && Number(rank) <= 100
         },
         {
           img: 'bridge95.png',
-          des: 'Up to 95% Bridging Fee rebate',
+          reward: '60%',
           position: 20,
-          ratio: 'Top 1-8',
-          label: '95% Bridging Fee rebate',
-          isSuccess:  Number(rank) && Number(rank) <= 8
+          condition: 'Top 1-20',
+          label: 'Top 1-20',
+          isComment: true,
+          isSuccess:  Number(rank) && Number(rank) <= 20
         }
       ])
     },
@@ -306,34 +323,64 @@ export default {
       return progressRation >= 100 ? 100 : progressRation
     },
     taskPoolList() {
+      const tx = this.tx
+      const rank = this.rank
       return [
+        {
+          icon: 'task',
+          text: `Complete tasks from Galxe`,
+          specificChain: false,
+          isPromotion: false,
+          isSuccess: false,
+          lastText: "",
+          
+        },
         {
           icon: 'bridge',
           text: `Bridge <span class='orbiter_global_prizes_tx-color'>3 TX</span>`,
           specificChain: true,
-          // isSuccess: txN >= 3,
-          isSuccess: false,
+          isPromotion: tx >= 8,
+          isSuccess: tx >= 3,
           lastText: "to <span class='orbiter_global_prizes_tx-color'>enter prize pool</span>"
+        },
+        {
+          icon: 'bridge',
+          text: `Bridge <span class='orbiter_global_prizes_tx-color'>8 TX</span>`,
+          specificChain: true,
+          isPromotion: tx >= 15,
+          isSuccess: tx >= 8,
+          lastText: ""
+        },
+        {
+          icon: 'bridge',
+          text: `Bridge <span class='orbiter_global_prizes_tx-color'>15 TX</span>`,
+          specificChain: true,
+          isPromotion: tx >= 20 && rank <= 100,
+          isSuccess: tx >= 15,
+          lastText: ""
         },
         {
           icon: 'bridge',
           text: `Bridge`,
           specificChain: true,
-          isSuccess: false,
+          isPromotion: tx >= 20 && rank <= 20,
+          isSuccess: tx >= 20 && rank <= 100,
           lastText: "to achieve <span class='orbiter_global_prizes_tx-color'>Top 100</span>"
         },
         {
           icon: 'bridge',
           text: `Bridge`,
           specificChain: true,
-          isSuccess: false,
+          isPromotion: tx >= 20 && rank <= 8,
+          isSuccess: tx >= 20 && rank <= 20,
           lastText: "to achieve <span class='orbiter_global_prizes_tx-color'>Top 9-20 </span>"
         },
         {
           icon: 'bridge',
           text: `Bridge`,
           specificChain: true,
-          isSuccess: false,
+          isPromotion: false,
+          isSuccess: tx >= 20 && rank <= 8,
           lastText: "to achieve<span class='orbiter_global_prizes_tx-color'>Top 1-8</span>"
         },
       ]
@@ -394,8 +441,9 @@ export default {
       .prizes-ratio-item-group {
         width: 100%;
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
+        flex-direction: column;
         & > img {
           width: 120px;
           height: 120px;
@@ -404,7 +452,7 @@ export default {
           margin-top: 12px;
           font-size: 24px;
           font-family: GeneralSans-SemiBold;
-          color: #FFC47D;
+          color: #3B7FFF;
         }
         .des {
           white-space: nowrap;
@@ -451,7 +499,7 @@ export default {
           white-space: nowrap;
         }
         .info-value {
-          color: #FFC47D;
+          color: #3B7FFF;
           white-space: nowrap;
         }
       }
@@ -532,7 +580,7 @@ export default {
           .progress-bar {
             height: 100%;
             border-radius: 16px;
-            background: rgb(255, 186, 86);
+            background: #3B7FFF;
           }
           .progress-stage {
             position: absolute;
@@ -769,6 +817,29 @@ export default {
               width: 24px;
               height: 24px;
             }
+          }
+
+          .earn-nft {
+            width: 88px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-family: GeneralSans-SemiBold;
+            border-radius: 4px;
+            box-shadow: 0px 0px 24px 0px rgba(255, 21, 0, 0.4);
+            backdrop-filter: blur(156px);
+            background: linear-gradient(186.60deg, rgb(234, 242, 255) -10.933%,rgb(255, 79, 79) 57.286%),rgb(255, 79, 79);
+            cursor: pointer;
+            clip-path: polygon(
+              0 6px,
+              6px 0,
+              100% 0,
+              100% calc(100% - 6px),
+              calc(100% - 6px) 100%,
+              0 100%
+            );
           }
         }
       }

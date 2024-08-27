@@ -199,9 +199,10 @@ export default {
       align-items: center;
       .badge {
         border-radius: 999px;
-        background: linear-gradient(176.00deg, rgb(255, 232, 181) 30%,rgb(255, 196, 125) 53.451%);
+
+background: linear-gradient(206.24deg, rgba(255, 104, 104, 0.6) 9.711%,rgba(0, 88, 255, 0) 83.497%),linear-gradient(163.83deg, rgb(219, 231, 255) -5.987%,rgb(0, 88, 255) 31.747%);
         padding: 12px 40px;
-        color: #0A1313;
+        color: #EAF2FF;
         font-family: GeneralSans-SemiBold;
         font-size: 24px;
       }
@@ -211,8 +212,8 @@ export default {
         color: rgb(255, 242, 240);
         background-image: linear-gradient(
           to right,
-          rgb(255, 242, 240),
-        rgb(255, 222, 181)
+          rgb(234, 242, 255) 80%,
+          rgb(255, 138, 138) 100%
         );
         font-size: 88px;
         line-height: 1;
@@ -223,8 +224,8 @@ export default {
         margin-top: 16px;
         background-image: linear-gradient(
           to right,
-          rgb(255, 242, 240),
-        rgb(255, 222, 181)
+          rgb(234, 242, 255) 80%,
+          rgb(255, 138, 138) 100%
         );
         color: rgb(255, 242, 240);
         font-size: 88px;
@@ -233,9 +234,9 @@ export default {
         font-family: GeneralSans-SemiBold;
         .chain {
           background-image: linear-gradient(
-          to right,
-          #FFC47D,
-          #FFC47D
+          to top,
+          rgb(0, 88, 255) 60%,
+          rgb(234, 242, 255)
         );
         }
       }
@@ -251,12 +252,7 @@ export default {
         height: 64px;
         border-radius: 8px;
         backdrop-filter: blur(156px);
-        background: linear-gradient(
-            180deg,
-            rgba(21, 63, 66, 0),
-            rgba(255, 21, 0, 0.2) 100%
-          ),
-          rgb(71, 55, 21);
+        background: linear-gradient(180.00deg, rgba(21, 63, 66, 0),rgba(255, 21, 0, 0.2) 100%),rgb(21, 37, 71);
         margin: 0 6px;
         .card-item-value {
           font-size: 28px;
@@ -266,13 +262,13 @@ export default {
           margin-top: 6px;
         }
         .card-item-symbol {
-          color: #FFDEB5;
           font-family: GeneralSans-Medium;
           font-size: 14px;
           line-height: 16px;
           letter-spacing: 0px;
           text-align: center;
           margin-top: 4px;
+          color: #EAF2FF;
         }
       }
     }
