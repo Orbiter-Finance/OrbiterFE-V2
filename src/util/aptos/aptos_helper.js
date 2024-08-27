@@ -119,8 +119,11 @@ const transfer = async (
 
   const contractAddress = contractList?.filter(
     (item) =>
-      item?.name?.toLocaleLowerCase() === 'OrbiterRouterV3'?.toLocaleLowerCase()
+      item?.name?.toLocaleLowerCase() ===
+        'OrbiterRouterV3'?.toLocaleLowerCase() ||
+      item?.key?.toLocaleLowerCase() === 'OrbiterRouterV3'?.toLocaleLowerCase()
   )[0]?.address
+  console.log('contractAddress', contractAddress)
 
   const txn = await aptos.transaction.build.simple({
     sender: address,
