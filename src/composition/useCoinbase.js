@@ -29,7 +29,24 @@ export const web3State = reactive({
   },
   fuel: {
     fuelAddress: '',
-    isConnected: false,
+    fuelWalletName: '',
+    fuelWalletIcon: '',
+    fuelIsConnected: false,
+    fuelChain: '',
+  },
+  fractal: {
+    fractalAddress: '',
+    fractalWalletName: '',
+    fractalWalletIcon: '',
+    fractalIsConnect: false,
+    fractalChain: '',
+  },
+  aptos: {
+    aptosAddress: '',
+    aptosWalletName: '',
+    aptosWalletIcon: '',
+    aptosIsConnect: false,
+    aptosChain: '',
   },
 })
 
@@ -74,5 +91,5 @@ export function updateFuelAddress(address) {
 }
 
 export function updateFuelConnectStatus(status) {
-  web3State.fuel.isConnected = status
+  web3State.fuel.fuelIsConnected = status
 }

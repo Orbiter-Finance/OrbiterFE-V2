@@ -81,7 +81,8 @@ import {
   setTonDialog,
   setClaimCardModalShow,
   setActPointFetchStatus,
-  transferDataState
+  transferDataState,
+  setActConnectWalletInfo
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -118,6 +119,7 @@ import {
 } from './common/openApiAx'
 import { ethers } from 'ethers'
 import { CHAIN_ID } from './config';
+import orbiterHelper from './util/orbiter_helper';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -274,6 +276,9 @@ export default {
         if (!!item1) {
           if(this.isNotPrizes && !isMobileDevice()) {
             setActDialogVisible(true)
+            setActConnectWalletInfo(
+              orbiterHelper.currentConnectChainInfo({chainId: "1"})
+            )
           }
         } else {
           setActDialogVisible(false)
@@ -289,35 +294,35 @@ export default {
           this.getNftList()
       }
     },
-    currentWalletAddress: function (newAddress, oldAddress) {
-      const [web3Address, starkNetAddress, solanaAddress] = newAddress
-      const [web3OldAddress] = oldAddress || []
-      const tonAddress = tonHelper.account()
-      if (web3Address && web3Address !== web3OldAddress) {
-        setClaimCardModalShow(false, '')
-        if(this.isTopNav) {
-          this.getClaimRewardModalData()
-        }
-      }
-      if (tonAddress) {
-        setTonDialog(true)
-        setActDialogVisible(true)
-      } else if (solanaAddress) {
-        setSolanaDialog(true)
-        setActDialogVisible(true)
-      } else if (starkNetAddress) {
-        setStarkNetDialog(true)
-        setActDialogVisible(true)
-      }
+    // currentWalletAddress: function (newAddress, oldAddress) {
+    //   const [web3Address, starkNetAddress, solanaAddress] = newAddress
+    //   const [web3OldAddress] = oldAddress || []
+    //   const tonAddress = tonHelper.account()
+    //   if (web3Address && web3Address !== web3OldAddress) {
+    //     setClaimCardModalShow(false, '')
+    //     if(this.isTopNav) {
+    //       this.getClaimRewardModalData()
+    //     }
+    //   }
+    //   if (tonAddress) {
+    //     setTonDialog(true)
+    //     setActDialogVisible(true)
+    //   } else if (solanaAddress) {
+    //     setSolanaDialog(true)
+    //     setActDialogVisible(true)
+    //   } else if (starkNetAddress) {
+    //     setStarkNetDialog(true)
+    //     setActDialogVisible(true)
+    //   }
 
-      if (!!web3Address || !!starkNetAddress) {
-        if(this.isTopNav) {
-          this.getWalletAddressActList()
-          this.getWalletAddressPoint()
-          this.getNftList()
-        }
-      }
-    },
+    //   if (!!web3Address || !!starkNetAddress) {
+    //     if(this.isTopNav) {
+    //       this.getWalletAddressActList()
+    //       this.getWalletAddressPoint()
+    //       this.getNftList()
+    //     }
+    //   }
+    // },
     fromChainID: function(a, b) {
       if(a && a !== b) {
         this.connectWallet(a)
@@ -332,6 +337,18 @@ export default {
         toAddress = tonHelper.account()
         open = async () => {
           await tonHelper.connect()
+        }
+      } else if(orbiterHelper.isFractalChain({chainId}) ) {
+        toAddress = web3State.fractal.fractalAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('FRACTAL')
+        }
+      } else if(orbiterHelper.isAptosChain({chainId}) ) {
+        toAddress = web3State.aptos.aptosAddress
+        open = () => {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('APTOS')
         }
       } else  if(CHAIN_ID.solana === chainId || CHAIN_ID.solana_test === chainId ) {
         toAddress = web3State.solana.solanaAddress

@@ -62,7 +62,7 @@ const disconnect = async () => {
 }
 
 const isConnected = () => {
-  return web3State.fuel.isConnected
+  return web3State.fuel.fuelIsConnected
 }
 
 const getBalance = async ({ tokenAddress, userAddress, chainId }) => {

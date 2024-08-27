@@ -629,7 +629,6 @@ export default {
             if (!starkIsConnected && !starkNetAddress) {
               setConnectWalletGroupKey('STARKNET')
               setSelectWalletDialogVisible(true)
-              return
             }
           }
 
@@ -641,17 +640,15 @@ export default {
             if (!isConnected) {
               setSelectWalletDialogVisible(true)
               setConnectWalletGroupKey('SOLANA')
-              return
             }
           }
           // fuel
           if ( orbiterHelper.isFuelChain({chainId: e.localID})) {
             const account = this.fuelAddress
-            const isConnected = web3State.fuel.isConnected
+            const isConnected = web3State.fuel.fuelIsConnected
             if (!account || !isConnected) {
               setSelectWalletDialogVisible(true)
               setConnectWalletGroupKey('FUEL')
-              return
             }
           }
           // ton
@@ -660,7 +657,6 @@ export default {
             const isConnected = await tonHelper.isConnected()
             if (!account || !isConnected) {
               await tonHelper.connect()
-              return
             }
           }
           // immutableX

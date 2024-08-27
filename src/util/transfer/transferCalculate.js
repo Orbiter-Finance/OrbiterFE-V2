@@ -31,9 +31,10 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
 import fuelsHelper from '../fuels/fuels_helper'
-import { zeroAddress } from 'viem'
 import orbiterHelper from '../orbiter_helper'
 import { TieredFeeKey } from '../../const'
+import fractalHelper from '../fractal/fractal_helper'
+import aptosHelper from '../aptos/aptos_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -145,7 +146,10 @@ export default {
         ethers.utils.parseUnits(gasCost, 'wei').mul('12').div('10'),
         decimals
       )
-    } else if (
+    } else if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+      return null
+    }
+    if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test
     ) {
@@ -1058,6 +1062,29 @@ export default {
         starknetAddress = userAddress
       }
       return await getErc20Balance(starknetAddress, tokenAddress, networkId)
+    } else if (orbiterHelper.isAptosChain({ chainId: localChainID })) {
+      console.log(
+        'NAME',
+        localChainID,
+        tokenAddress,
+        tokenName,
+        userAddress,
+        isMaker
+      )
+      const res = await aptosHelper.getBalance(
+        userAddress,
+        tokenAddress,
+        localChainID
+      )
+      return res || '0'
+    } else if (orbiterHelper.isFractalChain({ chainId: localChainID })) {
+      console.log('isMaker', isMaker)
+      const res = await fractalHelper.getBalance(
+        userAddress,
+        tokenAddress,
+        localChainID
+      )
+      return res || '0'
     } else if (orbiterHelper.isSolanaChain({ chainId: localChainID })) {
       try {
         const tokenAccountBalance = await util.getSolanaBalance(
@@ -1081,10 +1108,7 @@ export default {
       } catch (error) {
         return '0'
       }
-    } else if (
-      localChainID === CHAIN_ID.ton ||
-      localChainID === CHAIN_ID.ton_test
-    ) {
+    } else if (orbiterHelper.isTonChain({ chainId: localChainID })) {
       try {
         if (isMaker) {
           const tokenAccountBalance = await util.getTonBalance(
@@ -1097,9 +1121,12 @@ export default {
 
         const tonweb = tonHelper.tonwebProvider()
 
+        const chainInfo = util.getV3ChainInfoByChainId(localChainID)
+        const nativeCurrency = chainInfo?.nativeCurrency?.address
+
         const userTonAddress = new TonWeb.Address(userAddress)
         try {
-          if (tokenAddress === zeroAddress) {
+          if (tokenAddress === nativeCurrency) {
             const res = await tonweb.getBalance(userTonAddress)
             return res.toString()
           }

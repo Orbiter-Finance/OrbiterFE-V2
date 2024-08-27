@@ -34,6 +34,7 @@ module.exports = {
         plugins: [LogicalAssignmentOperators],
       })
       .end()
+
     config.module
       .rule('solana')
       .test(/(\.mjs$)|(\.js$)/)
@@ -54,11 +55,12 @@ module.exports = {
     config.module
       .rule('fuels')
       .test(/(\.mjs$)|(\.js$)/)
-      .include.add(resolve('node_modules/fuels'))
-      .add(resolve('node_modules/@fuel-ts'))
-      .add(resolve('node_modules/lit'))
-      .add(resolve('node_modules/unstorage'))
-      .add(resolve('node_modules/@fuels/connectors'))
+      .include.add(path.resolve(__dirname, 'node_modules/fuels'))
+      .add(path.resolve(__dirname, 'node_modules/@fuel-ts'))
+      .add(path.resolve(__dirname, 'node_modules/mipd'))
+      .add(path.resolve(__dirname, 'node_modules/lit'))
+      .add(path.resolve(__dirname, 'node_modules/unstorage'))
+      .add(path.resolve(__dirname, 'node_modules/@fuels/connectors'))
       .end()
       .use('babel-loader')
       .loader('babel-loader')
@@ -67,6 +69,17 @@ module.exports = {
       })
       .end()
 
+    config.module
+      .rule('aptos')
+      .test(/(\.mjs$)|(\.js$)/)
+      .include.add(path.resolve(__dirname, 'node_modules/@aptos-labs/ts-sdk'))
+      .end()
+      .use('babel-loader')
+      .loader('babel-loader')
+      .options({
+        plugins: [LogicalAssignmentOperators],
+      })
+      .end()
     config.module
       .rule('ton')
       .test(/\.js$/)
