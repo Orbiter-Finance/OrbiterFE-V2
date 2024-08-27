@@ -6,6 +6,7 @@ export const isTonDialog = ref(false)
 export const isFuelDialog = ref(false)
 export const selectWalletDialogVisible = ref(false)
 export const actDialogVisible = ref(false)
+export const actConnectWalletInfo = ref(null)
 export const actDialogHover = ref(false)
 export const actAddPointVisible = ref(false)
 export const actAddPoint = ref('0')
@@ -46,6 +47,9 @@ export const setSelectWalletDialogVisible = (flag) =>
 export const setConnectWalletGroupKey = (value) =>
   (connectWalletGroupKey.value = value)
 export const setActDialogVisible = (flag) => (actDialogVisible.value = flag)
+export const setActConnectWalletInfo = (flag) =>
+  (actConnectWalletInfo.value = flag)
+
 export const setActDialogHover = (flag) => (actDialogHover.value = flag)
 export const setActAddPointVisible = (flag) => (actAddPointVisible.value = flag)
 export const setActAddPoint = (flag) => (actAddPoint.value = flag)

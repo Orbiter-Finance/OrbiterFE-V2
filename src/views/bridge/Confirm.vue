@@ -245,6 +245,8 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { shortString } from 'starknet'
 import orbiterHelper from '../../util/orbiter_helper.js';
+import fractalHelper from '../../util/fractal/fractal_helper.js';
+import aptosHelper from '../../util/aptos/aptos_helper.js';
 
 const {
   walletDispatchersOnSignature,
@@ -274,22 +276,8 @@ export default {
     isStarkNetChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        orbiterHelper.isStarknetChain({ chainId: fromChainID }) ||
-        orbiterHelper.isStarknetChain({ chainId: toChainID })
-      )
-    },
-    isSolanaChain() {
-      const { fromChainID, toChainID } = transferDataState
-      return (
-        orbiterHelper.isSolanaChain({ chainId: fromChainID }) ||
-        orbiterHelper.isSolanaChain({ chainId: toChainID })
-      )
-    },
-    isTonChain() {
-      const { fromChainID, toChainID } = transferDataState
-      return (
-        orbiterHelper.isTonChain({ chainId: fromChainID }) ||
-        orbiterHelper.isTonChain({ chainId: toChainID })
+        orbiterHelper.isStarknetChain({chainId: fromChainID}) ||
+        orbiterHelper.isStarknetChain({chainId: toChainID})
       )
     },
     currentFromChainID() {
@@ -338,11 +326,7 @@ export default {
       )
 
       if (
-        (fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test ||
-          fromChainID === CHAIN_ID.ton ||
-          fromChainID === CHAIN_ID.ton_test) &&
-        !bridgeType1
+        (orbiterHelper.isSolanaChain({chainId: fromChainID}))&& !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -445,8 +429,11 @@ export default {
       const { toChainID } = transferDataState
       orbiterHelper.openConnectModal({ chainId: toChainID })
     },
-    async toCrossAddressReceipt() {
+    toCrossAddressReceipt() {
       const { toChainID } = transferDataState
+      const group = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const address = group?.address || ""
+      console.log("addressaddressaddress", address, this.isCrossAddress)
       if (this.isCrossAddress) {
         if (
           !!this.crossAddressReceipt ||
@@ -457,18 +444,6 @@ export default {
         ) {
           return this.crossAddressReceipt
         }
-      }
-      let address = ''
-      if (orbiterHelper.isFuelChain({ chainId: toChainID })) {
-        address = web3State.fuel.fuelAddress
-      } else if (orbiterHelper.isTonChain({ chainId: toChainID })) {
-        address = tonHelper.account()
-      } else if (orbiterHelper.isSolanaChain({ chainId: toChainID })) {
-        address = web3State.solana.solanaAddress
-      } else if (orbiterHelper.isStarknetChain({ chainId: toChainID })) {
-        address = web3State.starkNet.starkNetAddress
-      } else {
-        address = this.currentWalletAddress
       }
       if (
         !orbiterHelper.checkAddress({ chainId: toChainID, address: address })
@@ -520,7 +495,7 @@ export default {
             window?.ethereum
         )
         const signer = provider.getSigner()
-        const toAddress = await this.toCrossAddressReceipt()
+        const toAddress = this.toCrossAddressReceipt()
         if (!toAddress) {
           this.openConnectModal()
           return
@@ -588,7 +563,7 @@ export default {
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
 
-      let toAddress = await this.toCrossAddressReceipt()
+      let toAddress = this.toCrossAddressReceipt()
 
       const amount = new BigNumber(transferValue).multipliedBy(
         new BigNumber(10 ** selectMakerConfig.fromChain.decimals)
@@ -638,14 +613,24 @@ export default {
         } else {
           let memo = `c=${safeCode}`
 
-          if (from !== toAddress) {
-            memo = `c=${safeCode}&t=${toAddress}`
-          }
-          const provider = new ethers.providers.Web3Provider(
-            compatibleGlobalWalletConf.value.walletPayload.provider
-          )
+          
 
           const signer = provider.getSigner()
+            if (
+              orbiterHelper.isNotEVMChain({chainId: toChainID})
+            ) {
+              if (!toAddress) {
+                this.openConnectModal()
+                this.transferLoading = false
+                return
+              }
+              if (from !== toAddress) {
+                memo = `c=${safeCode}&t=${toAddress}`
+              }
+            }
+            const provider = new ethers.providers.Web3Provider(
+              compatibleGlobalWalletConf.value.walletPayload.provider
+            )
 
           const feeToken = contractInfo?.feeToken
 
@@ -777,8 +762,7 @@ export default {
         compatibleGlobalWalletConf.value.walletPayload.walletAddress ||
         web3State.coinbase
 
-      let toAddress = await this.toCrossAddressReceipt()
-      let isConnected = false
+      let toAddress = this.toCrossAddressReceipt()
       if (!toAddress) {
         this.openConnectModal()
         return
@@ -904,7 +888,7 @@ export default {
       const recipient = selectMakerConfig.recipient
       const amount = ethers.BigNumber.from(value)
 
-      const toAddress = await this.toCrossAddressReceipt()
+      const toAddress = this.toCrossAddressReceipt()
       if (!toAddress) {
         this.openConnectModal()
         return
@@ -1409,7 +1393,7 @@ export default {
         }
         const p_text = 9000 + Number(chainInfo.internalId) + ''
         const amount = tValue.tAmount
-        const toAddress = await this.toCrossAddressReceipt()
+        const toAddress = this.toCrossAddressReceipt()
         if (!toAddress) {
           this.openConnectModal()
           return
@@ -1608,7 +1592,7 @@ export default {
         .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
       const rAmountValue = rAmount.toFixed()
 
-      const toAddress = await this.toCrossAddressReceipt()
+      const toAddress = this.toCrossAddressReceipt()
       if (!toAddress) {
         this.openConnectModal()
         return
@@ -1676,7 +1660,8 @@ export default {
 
       // let targetAddress = evmAddress
 
-      const toAddress = await this.toCrossAddressReceipt()
+      const toAddress = this.toCrossAddressReceipt()
+      console.log("toAddress", toAddress)
       if (!toAddress) {
         this.openConnectModal()
         return
@@ -1692,6 +1677,7 @@ export default {
           targetAddress: toAddress,
           amount: rAmountValue,
           safeCode,
+          chainId: fromChainID
         })
         try {
           this.$gtag.event('click', {
@@ -1718,11 +1704,10 @@ export default {
       }
     },
     async fuelTransfer(value) {
-      console.log('value', value)
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
-      const isConnected = web3State.fuel.isConnected
+      const isConnected = web3State.fuel.fuelIsConnected
       let from = web3State.fuel.fuelAddress
 
       if (!isConnected || !from) {
@@ -1762,57 +1747,91 @@ export default {
           this.transferLoading = false
           return
         }
-      }
-
-      if (orbiterHelper.isTonChain({ chainId: toChainID })) {
-        targetAddress = tonHelper.account()
-        const isConnected = await tonHelper.isConnected()
-
-        if (!targetAddress || !isConnected) {
-          await tonHelper.connect()
-          return
-        }
-      }
-
-      if (orbiterHelper.isSolanaChain({ chainId: toChainID })) {
-        const solanaAddress = web3State.solana.solanaAddress
-        const isConnect = web3State.solana.solanaIsConnected
-
-        targetAddress = solanaAddress
-
-        if (!solanaAddress || !isConnect) {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
+        const address = this.toCrossAddressReceipt()
+        if (!address) {
+          this.openConnectModal()
           this.transferLoading = false
-          return
+          return 
+        }
+        targetAddress = address
+
+        try {
+          const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+          const hash = await fuelsHelper.transfer({
+            from,
+            to: selectMakerConfig.recipient,
+            tokenAddress,
+            targetAddress,
+            amount: rAmountValue,
+            safeCode,
+            chainId: fromChainID
+          })
+          try {
+            this.$gtag.event('click', {
+              event_category: 'Transfer',
+              event_label: selectMakerConfig.recipient,
+              userAddress: from,
+              hash: hash,
+            })
+          } catch (error) {
+            console.error('click error', error)
+          }
+
+          if (hash) {
+            this.onTransferSucceed(from, value, fromChainID, hash)
+          }
+        } catch (error) {
+          console.error('transfer error', error)
+          this.$notify.error({
+            title: error.message || String(error),
+            duration: 3000,
+          })
+        } finally {
+          this.transferLoading = false
         }
       }
-      try {
-        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+    },
+    async fractalTransfer(value) {
+      const {
+        selectMakerConfig,
+        fromChainID,
+        toChainID
+      } = transferDataState
 
-        const hash = await fuelsHelper.transfer({
-          from,
-          to: selectMakerConfig.recipient,
+      let from = web3State.fractal.fractalAddress
+      const isConnected = web3State.fractal.fractalIsConnect
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('FRACTAL')
+        this.transferLoading = false
+        return
+      }
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+      const safeCode = transferCalculate.safeCode()
+      const targetAddress = this.toCrossAddressReceipt()
+      console.log("targetAddress", targetAddress)
+      if (!targetAddress) {
+        this.openConnectModal()
+        this.transferLoading = false
+        return
+      }
+      
+      try{
+        const hash = await fractalHelper.transfer(
+          selectMakerConfig.recipient,
+          value,
           tokenAddress,
-          targetAddress,
-          amount: rAmountValue,
           safeCode,
-          chainId: fromChainID,
-        })
-        try {
-          this.$gtag.event('click', {
-            event_category: 'Transfer',
-            event_label: selectMakerConfig.recipient,
-            userAddress: from,
-            hash: hash,
-          })
-        } catch (error) {
-          console.error('click error', error)
-        }
+          targetAddress,
+          fromChainID
+        )
 
         if (hash) {
           this.onTransferSucceed(from, value, fromChainID, hash)
         }
+
       } catch (error) {
         console.error('transfer error', error)
         this.$notify.error({
@@ -1822,6 +1841,62 @@ export default {
       } finally {
         this.transferLoading = false
       }
+
+    },
+
+    async aptosTransfer(value) {
+      const {
+        selectMakerConfig,
+        fromChainID,
+        toChainID
+      } = transferDataState
+
+      let from = web3State.aptos.aptosAddress
+      const isConnected = web3State.aptos.aptosIsConnect
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('APTOS')
+        this.transferLoading = false
+        return
+      }
+
+      console.log("selectMakerConfig.recipient", selectMakerConfig)
+      const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+      const safeCode = transferCalculate.safeCode()
+      const toInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+      const targetAddress = this.toCrossAddressReceipt()
+      if (!targetAddress) {
+        this.openConnectModal()
+        this.transferLoading = false
+        return
+      }
+      
+
+      try{
+        const hash = await aptosHelper.transfer(
+          selectMakerConfig.recipient,
+          value,
+          tokenAddress,
+          safeCode,
+          targetAddress,
+          fromChainID
+        )
+
+        if (hash) {
+            this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
     },
     async starknetTransfer(value) {
       const {
@@ -1865,16 +1940,14 @@ export default {
         }
       }
 
-      const toAddress = await this.toCrossAddressReceipt()
+      const toAddress = this.toCrossAddressReceipt()
       if (!toAddress) {
         this.openConnectModal()
         return
       }
 
       if (
-        orbiterHelper.isSolanaChain({ chainId: toChainID }) ||
-        orbiterHelper.isTonChain({ chainId: toChainID }) ||
-        orbiterHelper.isFuelChain({ chainId: toChainID })
+        orbiterHelper.isNotEVMChain({chainId: toChainID})
       ) {
         const hash = await sendTransferV3({
           targetAddress: toAddress,
@@ -1897,9 +1970,9 @@ export default {
         if (hash) {
           this.onTransferSucceed(toAddress, value, fromChainID, hash)
         }
-        this.transferLoading = false
-        return
       }
+
+
       if (!walletIsLogin.value) {
         this.transferLoading = false
         return
@@ -2057,7 +2130,7 @@ export default {
         return
       }
 
-      const toAddress = await this.toCrossAddressReceipt()
+      const toAddress = this.toCrossAddressReceipt()
       if (!toAddress) {
         this.openConnectModal()
         return
@@ -2150,7 +2223,7 @@ export default {
       const to = selectMakerConfig.recipient
       const tValue = transferCalculate.getTransferTValue()
 
-      const toAddress = await this.toCrossAddressReceipt()
+      const toAddress = this.toCrossAddressReceipt()
       if (!toAddress) {
         this.openConnectModal()
         return
@@ -2302,6 +2375,16 @@ export default {
           return
         }
 
+        if (orbiterHelper.isFractalChain({chainId: fromChainID})) {
+          this.fractalTransfer(tValue.tAmount)
+          return
+        }
+
+        if (orbiterHelper.isAptosChain({chainId: fromChainID})) {
+          this.aptosTransfer(tValue.tAmount)
+          return
+        }
+
         const account =
           compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
@@ -2360,7 +2443,7 @@ export default {
         // EVM V3 contract
         if (isCrossAddress) {
           this.transferLoading = true
-          await this.transferToSolanaOrTon()
+          await this.transferToNotEvm()
           this.transferLoading = false
           return
         }

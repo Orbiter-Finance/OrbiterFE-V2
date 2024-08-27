@@ -25,8 +25,14 @@ export default {
         {
           url: 'https://www.bitlayer.org/me',
           img: 'bitlayer_0813.png',
-          name: '',
+          name: 'bitlayer_0813',
           timeStamp: '2024-08-20T00:00:00.000Z',
+        },
+        {
+          url: 'https://www.intract.io/events/66b9e41cc8ff56cba8440d36',
+          img: 'bob_0819.png',
+          name: 'bob_0819',
+          timeStamp: '2024-08-26T10:00:00.000Z',
         },
         // {
         //   url: 'https://kzco.in/',

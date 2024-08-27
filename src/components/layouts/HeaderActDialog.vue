@@ -270,32 +270,17 @@ import {
   setActDialogVisible,
   setActDialogHover,
   transferDataState,
-  showAddress,
-  starkAddress,
-  setSelectWalletDialogVisible,
-  isStarkNetDialog,
-  web3State,
   actAddPointVisible,
   actAddPoint,
   actTotalPoint,
   actPointRank,
   actNftList,
-  isSolanaDialog,
-  sAddress,
-  setConnectWalletGroupKey,
-  setSolanaDialog,
   updateActDataList,
-  isTonDialog,
-  tonAddress,
   setUserInfoDetailsCardModalShow,
   setOPointsCardModalShow,
   setActPointRank,
-  isFuelDialog,
-  setFuelDialog,
-  fuelAddress,
-  updateFuelAddress,
-  updateFuelConnectStatus,
-  questsInfoList
+  questsInfoList,
+  actConnectWalletInfo
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -327,6 +312,7 @@ import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
 import fuelsHelper from '../../util/fuels/fuels_helper';
 import ScrollNftConfig from "../../const/scroll-NFT.json"
+import { shortenAddress } from '../../util/shortenAddress';
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -392,6 +378,9 @@ export default {
     }
   },
   computed: {
+    connectWalletInfo(){
+      return actConnectWalletInfo.value
+    },
     questsTaskList(){
       return questsInfoList.value
     },
@@ -455,81 +444,38 @@ export default {
         (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
       )
     },
-    isFuel(){
-      return isFuelDialog.value
-    },
-    isStarknet() {
-      return isStarkNetDialog.value
-    },
-    isSolana() {
-      return isSolanaDialog.value
+    currentWalletAddress() {
+      const address = this.connectWalletInfo?.address || ""
+      return address
     },
     networkId() {
-      if(isFuelDialog.value) {
-        return CHAIN_ID.fuel
-      }
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
-      if(isSolanaDialog.value) {
-        return CHAIN_ID.solana
-      }
-      if (!isStarkNetDialog.value) {
-        return compatibleGlobalWalletConf.value.walletPayload.networkId
-      } else {
-        return web3State.starkNet?.starkChain
-      }
+      const chainId = this.connectWalletInfo?.chainId
+      return chainId
     },
     networkName() {
-      if(isFuelDialog.value) {
-        return util.netWorkName(
-          !!isProd() ? CHAIN_ID.fuel : CHAIN_ID.fuel_test
-        )
-      }
-      if(!!isTonDialog.value) {
-        return util.netWorkName(
-          !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
-        )
-      }
-      if(!!isSolanaDialog.value) {
-        return util.netWorkName(
-          CHAIN_ID.solana
-        )
-      }
-      if (!isStarkNetDialog.value) {
-        return util.netWorkName(
-          +compatibleGlobalWalletConf.value.walletPayload.networkId
-        )
-      } else {
-        return util.netWorkName(web3State.starkNet?.starkChain)
-      }
+      return util.netWorkName(this.networkId)
     },
     walletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
-      if(isFuelDialog.value) {
-        return CHAIN_ID.fuel
-      }
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
-      if(!!isSolanaDialog.value) {       
-        return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
-      }
-      if (!isStarkNetDialog.value) {
-        const walletName = String(compatibleGlobalWalletConf.value.walletType)
-          .toLowerCase()
-          .replace('app', '')
-
-        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase())
+      const walletName = this.connectWalletInfo?.walletIcon
+      const type = this.connectWalletInfo?.type
+      let wallet = ""
+      if(type === "EVM") {
+        wallet = CURRENT_SUPPORT_WALLET.includes(walletName?.toLocaleLowerCase()) && walletName
+          ? walletName
+          : METAMASK.toLocaleLowerCase()
+      } else if(type === "Starknet") {
+        wallet = walletName
           ? walletName
           : METAMASK.toLocaleLowerCase()
       } else {
-        return getStarknet && getStarknet()?.id === 'braavos'
-          ? 'braavos'
-          : 'argent'
+        wallet = walletName
+          ? walletName
+          : METAMASK.toLocaleLowerCase()
       }
+      return wallet
     },
   },
   watch: {
@@ -586,37 +532,8 @@ export default {
   methods: {
     ...mapMutations(['toggleThemeMode']),
     async showShortAddress() {
-      let address = ""
-      if(isFuelDialog.value) {
-        address = await fuelAddress()
-      } else if(isTonDialog.value) {
-        address = tonAddress()
-      } else if(isSolanaDialog.value) {
-        address = sAddress()
-      } else if (!isStarkNetDialog.value) {
-        address = showAddress()
-      } else {
-        address = starkAddress()
-      }
-      this.showWalletAddress = address
-    },
-    async currentWalletAddress() {
-      let address = ""
-      if(isFuelDialog.value) {
-        address = web3State.fuel.fuelAddress
-      } else if(isTonDialog.value) {
-        address = tonHelper.account()
-      } else if(isSolanaDialog.value) {
-        address = web3State.solana.solanaAddress
-      } else if (!!isStarkNetDialog.value) {
-        address = web3State.starkNet.starkNetAddress
-      } else {
-        const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-        address = evmAddress?.toLocaleLowerCase();
-      }
-      
-      this.currentAddress = address
-      return address
+      const address = this.currentWalletAddress || ""
+      this.showWalletAddress =  shortenAddress(address)
     },
     getScrollConfig(group){
       const nftConfig = (ScrollNftConfig || []).filter((item)=> {
@@ -659,7 +576,7 @@ export default {
       clearTimeout(time2)
       time2 = setTimeout(async () => {
 
-        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
+        const address = this.currentWalletAddress
         if(address) {
           const response = await fetch(
             `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
@@ -707,7 +624,7 @@ export default {
       const group = JSON.parse(
         localStorage.getItem(PONITS_EXPAND_COUNT) || JSON.stringify({})
       )
-      const address = await this.currentWalletAddress()
+      const address = await this.currentWalletAddress
       if (address) {
         let count = group[address.toLocaleLowerCase()]
         count = count ?? 2
@@ -775,42 +692,12 @@ export default {
     },
     async disconnect() {
       try {
-        if(!!isFuelDialog.value) {
-          await fuelsHelper.disconnect()
-          updateFuelAddress("")
-          updateFuelConnectStatus(false)
-        }else if(!!isTonDialog.value) {
-          await tonHelper.disconnect()
-        }else if(!!isSolanaDialog.value) {
-          await solanaHelper.disConnect()
-          setConnectWalletGroupKey("SOLANA")
-          this.$store.commit('updateSolanaAddress', "")
-          this.$store.commit('updateSolanaWalletName', "")
-          this.$store.commit('updateSolanaWalletIcon', "")
-          this.$store.commit('updateSolanaIsConnect', false)
-          setSolanaDialog(false)
-        } else if (!isStarkNetDialog.value) {
-          this.selectedWallet = {}
-          localStorage.setItem('selectedWallet', JSON.stringify({}))
-          this.$store.commit('updateLocalLogin', false)
-          localStorage.setItem('localLogin', false)
-          if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
-            ethereumClient.disconnect()
-            localStorage.setItem('wc@2:client:0.3//session', null)
-          }
-          walletDispatchersOnDisconnect[
-            compatibleGlobalWalletConf.value.walletType
-          ]()
-          setConnectWalletGroupKey("EVM")
-        } else  {
-          disConnectStarkNetWallet()
-          setConnectWalletGroupKey("STARKNET")
-        }
+        await this.connectWalletInfo.disconnect()
       } catch (e) {
         console.error(e)
       }
       setActDialogVisible(false)
-      setSelectWalletDialogVisible(true)
+      await  this.connectWalletInfo.open()
     },
     itemScroll(e) {
       if (new Date().valueOf() - this.scrollLastTime > 40) {
@@ -849,7 +736,7 @@ export default {
       }
     },
     async getActDataList(pageSize, page) {
-      const address = await this.currentWalletAddress()
+      const address = await this.currentWalletAddress
       const res = await requestPointSystem('v2/activity/list', {
         address: address,
         pageSize,

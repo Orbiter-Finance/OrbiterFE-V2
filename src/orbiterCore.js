@@ -72,10 +72,9 @@ function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
     .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
     .dividedBy(new BigNumber(1000))
   let digit =
-    orbiterHelper.isMiddleDecimals({ decimals }) ||
-    orbiterHelper.isMiddleDecimals({ decimals: toDecimals })
+    decimals === 8 || toDecimals === 8
       ? 6
-      : decimals === 18
+      : decimals >= 9 && toDecimals > 9
       ? 5
       : 2
   let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)

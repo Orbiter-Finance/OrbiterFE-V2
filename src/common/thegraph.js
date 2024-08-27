@@ -9,11 +9,11 @@ let v2TradingPairs = []
 
 let random = 0
 
-export async function getV2TradingPair() {
+export async function getV2TradingPair(isRefresh) {
   if (process.env.VUE_APP_PAIR_SOURCE_LOCAL) {
     throw new Error('USE LOCAL Config')
   }
-  if (v2TradingPairs.length) {
+  if (v2TradingPairs.length && !isRefresh) {
     return v2TradingPairs
   }
   const apiRes = await requestOpenApi(RequestMethod.getTradingPairs, [])
