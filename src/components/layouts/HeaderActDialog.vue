@@ -590,8 +590,7 @@ export default {
     ...mapMutations(['toggleThemeMode']),
     checkScrollConfig(group){
       const id = group?.id 
-      const activity_id = group?.activity_id
-      return Number(activity_id) === 49 && (Number(id) === 184 || Number(id) === 187)
+      return (Number(id) === 184 || Number(id) === 187)
     },
     mintScrollNFT(group){
       if(!this.showScrollNFT(group)) return
