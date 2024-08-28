@@ -4,14 +4,14 @@
       <div class="group">
 
       <div class="badge">
-        Mint Your Diamond Scroll Bridger Badge
+        Get Base × Orbiter NFT
       </div>
     </div>
       <div class="group">
-        <div class="title orbiter-linear-text">$70,000 Prize Pool</div>
+        <div class="title orbiter-linear-text">$35,000 Prize Pool</div>
       </div>
       <div class="group">
-        <div class="amount orbiter-linear-text"><span class="chain orbiter-linear-text">Scroll</span> Trading Frenzy</div>
+        <div class="amount orbiter-linear-text"><span class="chain orbiter-linear-text">Base</span> Trading Frenzy</div>
       </div>
       <div class="group">
         <div class="time-card">
@@ -105,7 +105,7 @@ export default {
     toBridgeCall() {
       const address = this.evmAddress
       if (!address || address === '0x' || this.isEnd) return
-      const name = 'PRIZES_V4_BANNER_TO_BRIDGE'
+      const name = 'PRIZES_V5_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
         event_label: 'to home',
@@ -115,11 +115,11 @@ export default {
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Scroll', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'Base', token: 'ETH' },
         })
       )
 
-      const url = location.origin + '/?source=Ethereum&dest=Scroll&token=ETH'
+      const url = location.origin + '/?source=Ethereum&dest=Base&token=ETH'
 
       window.open(url, '_self')
     },

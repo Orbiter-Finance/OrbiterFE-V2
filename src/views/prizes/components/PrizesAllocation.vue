@@ -1,14 +1,14 @@
 <template>
   <div id="prizes-allocation" class="prizes-allocation">
     <div class="prizes-allocation-title">
-      Overall prize pool 
+      Overall prize pool
       <br class="title-br" />
       composition and allocation
     </div>
     <div class="prizes-ratio-group">
       <div class="prizes-ratio-item" v-for="item in ratioList" :key="item.text">
         <div class="prizes-ratio-item-group">
-          <img :src="require(`../../../assets/prizes/${item.img}`)" alt="">
+          <img :src="require(`../../../assets/prizes/${item.img}`)" alt="" />
         </div>
         <div class="prizes-ratio-item-group">
           <div class="text">{{ item.reward }}</div>
@@ -27,7 +27,7 @@
       <div class="user-info">
         <div class="info-item">
           <div class="info-label">Current Rank:</div>
-          <div class="info-value">{{ rank || "--" }}</div>
+          <div class="info-value">{{ rank || '--' }}</div>
         </div>
         <!-- <div class="info-item">
           <div class="info-label">Estimated Earnings: </div>
@@ -63,9 +63,7 @@
               :key="item.position"
               :style="`left: ${(item.position / 20) * 100}%;visibility:${
                 item.position ? 'visable' : 'hidden'
-              };background-color:${
-                item.isSuccess ? '#3B7FFF' : '#0A1618'
-              };`"
+              };background-color:${item.isSuccess ? '#3B7FFF' : '#0A1618'};`"
             ></div>
           </div>
           <div class="progress-tx-group">
@@ -85,20 +83,84 @@
       <div class="task-title">Quest</div>
 
       <div class="task-list-group">
-
         <div
           class="task-card-pool-group"
           v-for="item in taskPoolList"
           :key="item.reward"
           @click="openTelegram(item)"
+          :class="
+            !item.isSuccess || !!item.isPromotion
+              ? ''
+              : 'task-card-options-group-success'
+          "
+          :style="`opacity:${
+            !!item.isSuccess && !!item.isPromotion ? '0.4' : '1'
+          };`"
         >
-          <div
-            class="task-card-pool"
-            :style="`opacity:${item.isSuccess ? '0.4' : '1'};`"
-          >
+          <div class="task-card-pool">
             <div class="info">
-
-                <svg-icon class="icon" iconName="task-icon"></svg-icon>
+              <svg-icon
+                v-if="item.icon === 'bridge'"
+                class="icon"
+                iconName="task-icon"
+              ></svg-icon>
+              <svg
+                v-else
+                class="icon"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="24.000000"
+                height="24.000000"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <defs>
+                  <clipPath id="clip2248_786">
+                    <rect
+                      id="svg"
+                      width="20.000000"
+                      height="12.444445"
+                      transform="translate(2.000000 6.000000)"
+                      fill="white"
+                      fill-opacity="0"
+                    />
+                  </clipPath>
+                  <clipPath id="clip2248_597">
+                    <rect
+                      id="X.10d54851.svg"
+                      width="24.000000"
+                      height="24.000000"
+                      fill="white"
+                      fill-opacity="0"
+                    />
+                  </clipPath>
+                </defs>
+                <g clip-path="url(#clip2248_597)">
+                  <g clip-path="url(#clip2248_786)">
+                    <path
+                      id="path"
+                      d="M21.47 7.6C21.34 7.34 21.12 7.15 20.85 7.06C20.58 6.97 20.29 6.99 20.03 7.12L2 18.42L20.99 9.03C21.24 8.9 21.43 8.68 21.52 8.41C21.61 8.14 21.59 7.85 21.47 7.6Z"
+                      fill="#FFFFFF"
+                      fill-opacity="1.000000"
+                      fill-rule="nonzero"
+                    />
+                    <path
+                      id="path"
+                      d="M16.13 7.55C16.52 7.37 16.69 6.91 16.52 6.52C16.34 6.12 15.87 5.95 15.48 6.13L3.77 14.45L16.13 7.55Z"
+                      fill="#FFFFFF"
+                      fill-opacity="1.000000"
+                      fill-rule="nonzero"
+                    />
+                    <path
+                      id="path"
+                      d="M16.81 14.45C17.12 14.29 17.25 13.91 17.09 13.6C16.93 13.28 16.55 13.15 16.23 13.31L8.7 17.7L16.81 14.45Z"
+                      fill="#FFFFFF"
+                      fill-opacity="1.000000"
+                      fill-rule="nonzero"
+                    />
+                  </g>
+                </g>
+              </svg>
 
               <div class="content-text-group">
                 <span class="content-text" v-html="item.text"></span>
@@ -108,7 +170,13 @@
                       <span>
                         <span>Specific networks include: </span>
                         <br />
-                        Ethereum, Arbitrum, zkSync Lite, Linea, Scroll, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Polygon zkEVM, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse
+                        Ethereum, Arbitrum, zkSync Lite, Linea, Scroll, Polygon,
+                        Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova,
+                        Polygon zkEVM, Mantle, opBNB, X Layer, Zora, Manta,
+                        Kroma, zkFair, Blast, ZetaChain, B² Network, Mode,
+                        zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB,
+                        Core, Bitlayer, BounceBit, Optopia, Cyber, Mint,
+                        AlienxChain, Fraxtal, Zircuit, Fuse
                       </span>
                     </span>
                   </template>
@@ -126,24 +194,62 @@
               </div>
               <div v-else>
                 <div class="prizes-promotion">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.000000" height="24.000000" viewBox="0 0 24 24" fill="none">
-                    <rect width="24.000000" height="24.000000" fill="#D8D8D8" fill-opacity="0"/>
-                    <rect x="0.500000" y="0.500000" width="23.000000" height="23.000000" stroke="#979797" stroke-opacity="0" stroke-width="1.000000"/>
-                    <path d="M11.18 6.05L11.18 6.08L10.67 6.59L16.31 12.24L10.67 17.88L11.18 18.4L11.18 18.42C10.89 18.72 10.42 18.72 10.12 18.42C9.82 18.13 9.82 17.66 10.12 17.36L10.15 17.36L10.65 17.87L10.65 6.61L10.15 7.11L10.12 7.11C9.82 6.81 9.82 6.35 10.12 6.05C10.42 5.75 10.89 5.75 11.18 6.05Z" fill="#D8D8D8" fill-opacity="0" fill-rule="evenodd"/>
-                    <path d="M10.65 17.89L16.31 12.24L10.65 6.58" stroke="#FFFFFF" stroke-opacity="1.000000" stroke-width="1.500000" stroke-linejoin="round" stroke-linecap="round"/>
+                  <div
+                    class="task-reward-laebl"
+                    :style="`color:${item.color};`"
+                  >
+                    {{ item.reward }}
+                  </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    width="24.000000"
+                    height="24.000000"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <rect
+                      width="24.000000"
+                      height="24.000000"
+                      fill="#D8D8D8"
+                      fill-opacity="0"
+                    />
+                    <rect
+                      x="0.500000"
+                      y="0.500000"
+                      width="23.000000"
+                      height="23.000000"
+                      stroke="#979797"
+                      stroke-opacity="0"
+                      stroke-width="1.000000"
+                    />
+                    <path
+                      d="M11.18 6.05L11.18 6.08L10.67 6.59L16.31 12.24L10.67 17.88L11.18 18.4L11.18 18.42C10.89 18.72 10.42 18.72 10.12 18.42C9.82 18.13 9.82 17.66 10.12 17.36L10.15 17.36L10.65 17.87L10.65 6.61L10.15 7.11L10.12 7.11C9.82 6.81 9.82 6.35 10.12 6.05C10.42 5.75 10.89 5.75 11.18 6.05Z"
+                      fill="#D8D8D8"
+                      fill-opacity="0"
+                      fill-rule="evenodd"
+                    />
+                    <path
+                      d="M10.65 17.89L16.31 12.24L10.65 6.58"
+                      stroke="#FFFFFF"
+                      stroke-opacity="1.000000"
+                      stroke-width="1.500000"
+                      stroke-linejoin="round"
+                      stroke-linecap="round"
+                    />
                   </svg>
                 </div>
               </div>
             </div>
             <div v-else>
-              <div class="earn-nft">Earn NFT</div>
+              <div @click.stop="toGalxeBtn" class="earn-nft">
+                Get Base × Orbiter NFT
+              </div>
             </div>
-
-            
           </div>
         </div>
 
-        <!-- <div v-if="isEnd" class="prizes-end-modal">End of event</div> -->
+        <div v-if="isEnd" class="prizes-end-modal">End of event</div>
       </div>
     </div>
   </div>
@@ -156,7 +262,7 @@ import {
   prizesTimeEnd,
   prizesUserList,
   prizesRankList,
-  prizesTotaltx
+  prizesTotaltx,
 } from '../../../composition/hooks'
 import PrizesTaskSuccessIcon from './PrizesTaskSuccess.vue'
 import { decimalNum } from '../../../util/decimalNum'
@@ -168,9 +274,7 @@ export default {
     SvgIcon,
   },
   data() {
-    return {
-      
-    }
+    return {}
   },
   computed: {
     isEnd() {
@@ -188,7 +292,7 @@ export default {
     //   const option = list.filter((item)=> {
     //     const address = item.address?.toLocaleLowerCase()
     //     const evmAddresss = this.evmAddress?.toLocaleLowerCase()
-    //     return address && evmAddresss && address.slice(0, 6) === evmAddresss.slice(0, 6) && 
+    //     return address && evmAddresss && address.slice(0, 6) === evmAddresss.slice(0, 6) &&
     //     address.slice(address.length-6) === evmAddresss.slice(address.length-6) && rank === item.rank
     //   })?.[0]
     //   const amount = option?.reward?.uAmount
@@ -196,14 +300,13 @@ export default {
     //   return Number(total) ? (this.decimalNumC(total, 2, ",")+ " USDC") : ""
     // },
     tx() {
-      let count = 0;
+      let count = 0
       const list = this.userList || []
-      list.forEach(item => {
+      list.forEach((item) => {
         const num = Number(item?.task_result) || 0
         count += num
-      });
-      // return count
-      return 19
+      })
+      return count
     },
     rank() {
       const tx = this.tx
@@ -221,49 +324,55 @@ export default {
           position: 0,
           label: '0Tx',
           reward: '',
-          condition: "",
-          isSuccess: false
+          condition: '',
+          value: 0,
+          isSuccess: false,
         },
         {
           img: 'prizes.png',
-          condition: 'bridge ≥1tx on Galxe',
+          condition: 'Bridge ≥1 tx on Galxe',
           position: 1,
           reward: 'NFT',
           label: '1Tx',
           disabled: true,
-          isSuccess: Number(tx) >= 1
+          value: 1,
+          isSuccess: Number(tx) >= 1,
         },
         {
-          img: 'prizes.png',
+          img: 'ratio3.png',
           reward: '3%',
           position: 3,
           condition: 'Bridge ≥3 tx',
-          label: "3Tx",
-          isSuccess: Number(tx) >= 3
+          label: '3Tx',
+          value: 3,
+          isSuccess: Number(tx) >= 3,
         },
         {
-          img: 'prizes.png',
+          img: 'ratio5.png',
           reward: '5%',
           position: 6,
           condition: 'Bridge ≥8 tx',
-          label: "8Tx",
-          isSuccess: Number(tx) >= 8
+          label: '8Tx',
+          value: 8,
+          isSuccess: Number(tx) >= 8,
         },
         {
-          img: 'badge.png',
+          img: 'ratio10.png',
           reward: '10%',
           position: 9,
-          condition: 'Bridge >=15 tx',
+          condition: 'Bridge ≥15 tx',
           label: '15Tx',
-          isSuccess:  Number(tx) >= 15
+          value: 15,
+          isSuccess: Number(tx) >= 15,
         },
         {
-          img: 'bridge50.png',
+          img: 'ratio22.png',
           reward: '22%',
           position: 15,
           condition: 'Top 100',
           label: 'Top 100',
-          isSuccess:  Number(rank) && Number(rank) <= 100
+          value: 20,
+          isSuccess: Number(tx) >= 20 && Number(rank) && Number(rank) <= 100,
         },
         {
           img: 'bridge95.png',
@@ -272,8 +381,9 @@ export default {
           condition: 'Top 1-20',
           label: 'Top 1-20',
           isComment: true,
-          isSuccess:  Number(rank) && Number(rank) <= 20
-        }
+          value: 30,
+          isSuccess: Number(tx) >= 20 && Number(rank) && Number(rank) <= 20,
+        },
       ])
     },
     ratioList() {
@@ -305,21 +415,32 @@ export default {
       return this.txAmount + 'Tx'
     },
     tipsLabel() {
-      const list =
-        this.progressStage.filter((item) => item.isSuccess) || []
+      const list = this.progressStage.filter((item) => item.isSuccess) || []
       const option = list[list?.length - 1] || {}
       return option?.ratio || '--'
     },
     ratio() {
       const list = this.ratioList
       const len = list.length
-      let count = 0;
-      list.forEach((item)=>{
-        if(item.isSuccess) {
-          count+=1
+      const tx = this.tx
+      let count = 0
+      let flag = false
+      let localTx = 0
+      list.forEach((item) => {
+        if (item.isSuccess) {
+          count = item.position
+          localTx = item.value
+        } else {
+          if (!flag) {
+            flag = true
+            count += !(item.value - localTx)
+              ? 0
+              : ((tx - localTx) / (item.value - localTx)) *
+                (item.position - count)
+          }
         }
       })
-      const progressRation = len > 0 ? count / len * 100 : 0
+      const progressRation = len > 0 ? (count / 20) * 100 : 0
       return progressRation >= 100 ? 100 : progressRation
     },
     taskPoolList() {
@@ -328,60 +449,63 @@ export default {
       return [
         {
           icon: 'task',
-          text: `Complete tasks from Galxe`,
+          text: `Complete tasks on Galxe`,
           specificChain: false,
           isPromotion: false,
           isSuccess: false,
-          lastText: "",
-          
+          lastText: '',
         },
         {
           icon: 'bridge',
+          color: '#F6FFA8',
+          reward: '3% Prize Pool',
           text: `Bridge <span class='orbiter_global_prizes_tx-color'>3 TX</span>`,
           specificChain: true,
           isPromotion: tx >= 8,
           isSuccess: tx >= 3,
-          lastText: "to <span class='orbiter_global_prizes_tx-color'>enter prize pool</span>"
+          lastText: '',
         },
         {
           icon: 'bridge',
+          color: '#FF85EA',
+          reward: '5% Prize Pool',
           text: `Bridge <span class='orbiter_global_prizes_tx-color'>8 TX</span>`,
           specificChain: true,
           isPromotion: tx >= 15,
           isSuccess: tx >= 8,
-          lastText: ""
+          lastText: '',
         },
         {
           icon: 'bridge',
+          color: '#FFE0CA',
+          reward: '10% Prize Pool',
           text: `Bridge <span class='orbiter_global_prizes_tx-color'>15 TX</span>`,
           specificChain: true,
           isPromotion: tx >= 20 && rank <= 100,
           isSuccess: tx >= 15,
-          lastText: ""
+          lastText: '',
         },
         {
           icon: 'bridge',
+          color: '#DCF6FB',
+          reward: '22% Prize Pool',
           text: `Bridge`,
           specificChain: true,
           isPromotion: tx >= 20 && rank <= 20,
           isSuccess: tx >= 20 && rank <= 100,
-          lastText: "to achieve <span class='orbiter_global_prizes_tx-color'>Top 100</span>"
+          lastText:
+            "to achieve <span class='orbiter_global_prizes_tx-color'>Top 21-100</span>",
         },
         {
           icon: 'bridge',
-          text: `Bridge`,
-          specificChain: true,
-          isPromotion: tx >= 20 && rank <= 8,
-          isSuccess: tx >= 20 && rank <= 20,
-          lastText: "to achieve <span class='orbiter_global_prizes_tx-color'>Top 9-20 </span>"
-        },
-        {
-          icon: 'bridge',
+          color: '#F6E08E',
+          reward: '60% Prize Pool',
           text: `Bridge`,
           specificChain: true,
           isPromotion: false,
-          isSuccess: tx >= 20 && rank <= 8,
-          lastText: "to achieve<span class='orbiter_global_prizes_tx-color'>Top 1-8</span>"
+          isSuccess: tx >= 20 && rank <= 20,
+          lastText:
+            "to achieve <span class='orbiter_global_prizes_tx-color'>Top 1-20 </span>",
         },
       ]
     },
@@ -390,10 +514,26 @@ export default {
     decimalNumC(num, decimal, delimiter, symbol) {
       return decimalNum(num, decimal, delimiter, symbol)
     },
+    toGalxeBtn() {
+      console.log('toGalxeBtn')
+      this.$gtag.event('PRIZES_V5_ERAN_NFT', {
+        event_category: 'PRIZES_V5_ERAN_NFT',
+        event_label: 'to galxe',
+      })
+      const link = process.env.VUE_APP_PRIZES_V5_GLAXE_LINK
+      if (link) {
+        window.open(link, "_blank")
+      } else {
+        this.$notify.warning({
+          title: 'Comming Soon...',
+          duration: 3000,
+        })
+      }
+    },
     openTelegram(option) {
       const address = this.evmAddress
       if (!address || address === '0x' || this.isEnd) return
-      const name = 'PRIZES_V4_BANNER_TO_BRIDGE'
+      const name = 'PRIZES_V5_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,
         event_label: 'to home',
@@ -403,14 +543,14 @@ export default {
         JSON.stringify({
           params: {},
           path: '/',
-          query: { source: 'Ethereum', dest: 'Scroll', token: 'ETH' },
+          query: { source: 'Ethereum', dest: 'Base', token: 'ETH' },
         })
       )
 
-      const url = location.origin + '/?source=Ethereum&dest=Scroll&token=ETH'
+      const url = location.origin + '/?source=Ethereum&dest=Base&token=ETH'
 
       window.open(url, '_self')
-    }
+    },
   },
 }
 </script>
@@ -452,7 +592,7 @@ export default {
           margin-top: 12px;
           font-size: 24px;
           font-family: GeneralSans-SemiBold;
-          color: #3B7FFF;
+          color: #3b7fff;
         }
         .des {
           white-space: nowrap;
@@ -466,7 +606,12 @@ export default {
     padding: 24px;
     margin-top: 32px;
     border-radius: 16px;
-    background: linear-gradient(-3.58deg, rgba(15, 34, 37, 0.2) 60.508%,rgba(209, 112, 85, 0.2) 98.796%),rgb(15, 34, 37);
+    background: linear-gradient(
+        -3.58deg,
+        rgba(15, 34, 37, 0.2) 60.508%,
+        rgba(209, 112, 85, 0.2) 98.796%
+      ),
+      rgb(15, 34, 37);
     .title {
       width: 100%;
       font-size: 20px;
@@ -494,12 +639,12 @@ export default {
         font-family: GeneralSans-SemiBold;
         margin-right: 10%;
         .info-label {
-          color: #FFF;
+          color: #fff;
           margin-right: 4px;
           white-space: nowrap;
         }
         .info-value {
-          color: #3B7FFF;
+          color: #3b7fff;
           white-space: nowrap;
         }
       }
@@ -573,14 +718,14 @@ export default {
           justify-content: start;
           align-items: center;
           border-radius: 12px;
-          background: #0A1618;
+          background: #0a1618;
           position: relative;
           top: 0;
           left: 0;
           .progress-bar {
             height: 100%;
             border-radius: 16px;
-            background: #3B7FFF;
+            background: #3b7fff;
           }
           .progress-stage {
             position: absolute;
@@ -679,7 +824,7 @@ export default {
       }
       .task-card-options-group {
         width: 100%;
-        background: #0A1618;
+        background: #0a1618;
         margin-top: 12px;
         border-radius: 12px;
         cursor: pointer;
@@ -761,12 +906,11 @@ export default {
           }
         }
       }
-      .task-card-options-group-success {
-        // opacity: 0.6;
-        // border: 1px solid rgb(219, 239, 45);
+      .task-card-pool-group.task-card-options-group-success {
+        border: 1px solid rgb(59, 127, 255);
         border-radius: 12px;
         backdrop-filter: blur(12px);
-        // background: rgba(219, 239, 45, 0.15);
+        background: rgba(59, 127, 255, 0.15);
       }
       .task-card-pool-group {
         width: 100%;
@@ -812,7 +956,14 @@ export default {
             text-align: right;
           }
           .prizes-promotion {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
             color: #ffff;
+            .task-reward-laebl {
+              font-size: 16px;
+              font-family: GeneralSans-SemiBold;
+            }
             svg {
               width: 24px;
               height: 24px;
@@ -820,7 +971,7 @@ export default {
           }
 
           .earn-nft {
-            width: 88px;
+            padding: 0 12px;
             height: 32px;
             display: flex;
             justify-content: center;
@@ -830,7 +981,12 @@ export default {
             border-radius: 4px;
             box-shadow: 0px 0px 24px 0px rgba(255, 21, 0, 0.4);
             backdrop-filter: blur(156px);
-            background: linear-gradient(186.60deg, rgb(234, 242, 255) -10.933%,rgb(255, 79, 79) 57.286%),rgb(255, 79, 79);
+            background: linear-gradient(
+                186.6deg,
+                rgb(234, 242, 255) -10.933%,
+                rgb(255, 79, 79) 57.286%
+              ),
+              rgb(255, 79, 79);
             cursor: pointer;
             clip-path: polygon(
               0 6px,
