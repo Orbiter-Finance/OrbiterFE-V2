@@ -327,7 +327,7 @@ export default {
       line-height: 16px;
       letter-spacing: 0px;
       font-family: GeneralSans-SemiBold;
-      background-color: #ffc47d;
+      background-color: #3B7FFF;
       color: #222222;
       white-space: nowrap;
       padding: 6px 16px;

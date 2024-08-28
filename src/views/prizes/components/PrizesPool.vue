@@ -78,44 +78,44 @@ export default {
     return {
       group: [
         {
-          tx: '0~2,999 Tx',
+          tx: '0~2,499 Tx',
           reward: '',
-          range: [0, 2999],
+          range: [0, 2499],
           bridge50Fee: 0,
           bridge100Fee: 0,
         },
         {
-          tx: '3,000~9,999 Tx',
-          reward: '$3,500',
-          range: [3000, 9999],
+          tx: '2,500~11,499 Tx',
+          reward: '$1,750',
+          range: [2500, 11499],
           bridge50Fee: 5,
           bridge100Fee: 15,
         },
         {
-          tx: '10,000~29,999 Tx',
-          reward: '$12,600',
-          range: [10000, 29999],
+          tx: '11,500~25,999 Tx',
+          reward: '$5,250',
+          range: [11500, 25999],
           bridge50Fee: 10,
           bridge100Fee: 30,
         },
         {
-          tx: '30,000~54,999 Tx',
-          reward: '$35,000',
-          range: [30000, 54999],
+          tx: '26,000~45,999 Tx',
+          reward: '$15,750',
+          range: [26000, 45999],
           bridge50Fee: 20,
           bridge100Fee: 45,
         },
         {
-          tx: '55,000~119,999 Tx',
-          reward: '$56,000',
-          range: [55000, 119999],
+          tx: '46,000~99,999 Tx',
+          reward: '$28,000',
+          range: [46000, 99999],
           bridge50Fee: 30,
           bridge100Fee: 60,
         },
         {
-          tx: '≥120,000 Tx',
-          reward: '$70,000',
-          range: [120000, 999999],
+          tx: '≥100,000 Tx',
+          reward: '$35,000',
+          range: [100000, 999999],
           bridge50Fee: 50,
           bridge100Fee: 95,
         },
@@ -184,15 +184,11 @@ export default {
       padding: 20px 0;
       box-sizing: border-box;
       border-radius: 16px;
-      background: linear-gradient(
-          -0.77deg,
-          rgba(15, 34, 37, 0.2) 60.809%,
-          rgba(209, 112, 85, 0.2) 117.632%
-        ),
-        rgb(15, 34, 37);
+      border-radius: 16px;
+      background: linear-gradient(-0.77deg, rgba(15, 34, 37, 0.2) 60.809%,rgba(209, 112, 85, 0.2) 117.632%),rgb(15, 34, 37);
       font-weight: 500;
       .pool-total-amount {
-        color: #FFC47D;
+        color: #3B7FFF;
         height: 72px;
         display: flex;
         justify-content: center;
@@ -228,7 +224,7 @@ export default {
     text-align: left;
 
     .progress-pool-title {
-      color: #FFC47D;
+      color: #3B7FFF;
     }
 
     .progress-info-scroll {
@@ -257,7 +253,7 @@ export default {
             .pool-item-active {
               font-size: 20px;
               font-family: GeneralSans-SemiBold;
-              color: #27fffb;
+              color: #3B7FFF;
             }
           }
         }
