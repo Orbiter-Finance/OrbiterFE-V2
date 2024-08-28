@@ -78,7 +78,7 @@
             :tagStyle="'background: linear-gradient(to right, #ACCCFF ,#F590FF);'"
             :description="'Earn 9 rewards per Tx. Also, grab 200 $BitlayerPoints at the Race Center.'"
             :isProgress="false"
-            :name="'bullishs'"
+            :name="'BitlayerPoints'"
             :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
           />
         </el-carousel-item>
