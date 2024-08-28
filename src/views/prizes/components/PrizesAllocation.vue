@@ -11,7 +11,7 @@
           <img :src="require(`../../../assets/prizes/${item.img}`)" alt="" />
         </div>
         <div class="prizes-ratio-item-group">
-          <div class="text">{{ item.reward }}</div>
+          <div :style="item.color" class="text orbiter-linear-text">{{ item.reward }}</div>
         </div>
         <div class="prizes-ratio-item-group">
           <div class="des">{{ item.condition }}</div>
@@ -286,19 +286,14 @@ export default {
     rankList() {
       return prizesRankList.value
     },
-    // reward() {
-    //   const list = this.rankList
-    //   const rank = this.rank
-    //   const option = list.filter((item)=> {
-    //     const address = item.address?.toLocaleLowerCase()
-    //     const evmAddresss = this.evmAddress?.toLocaleLowerCase()
-    //     return address && evmAddresss && address.slice(0, 6) === evmAddresss.slice(0, 6) &&
-    //     address.slice(address.length-6) === evmAddresss.slice(address.length-6) && rank === item.rank
-    //   })?.[0]
-    //   const amount = option?.reward?.uAmount
-    //   const total = (Number(amount) || 0)
-    //   return Number(total) ? (this.decimalNumC(total, 2, ",")+ " USDC") : ""
-    // },
+    top20() {
+      const list = this.rankList
+      return list[19]?.txAmount || 20
+    },
+    top100() {
+      const list = this.rankList
+      return list[99]?.txAmount || 20
+    },
     tx() {
       let count = 0
       const list = this.userList || []
@@ -319,6 +314,8 @@ export default {
     progressStage() {
       const tx = this.tx
       const rank = this.rank
+      const top100 =this.top100
+      const top20 =this.top20
       return [].concat([
         {
           position: 0,
@@ -329,7 +326,7 @@ export default {
           isSuccess: false,
         },
         {
-          img: 'prizes.png',
+          img: 'nft.png',
           condition: 'Bridge ≥1 tx on Galxe',
           position: 1,
           reward: 'NFT',
@@ -337,6 +334,7 @@ export default {
           disabled: true,
           value: 1,
           isSuccess: Number(tx) >= 1,
+          color: "background-image: linear-gradient(180.00deg, rgb(202, 209, 255),rgb(59, 127, 255));"
         },
         {
           img: 'ratio3.png',
@@ -346,6 +344,7 @@ export default {
           label: '3Tx',
           value: 3,
           isSuccess: Number(tx) >= 3,
+          color: "background-image: linear-gradient(180.00deg, rgb(225, 222, 217),rgb(100, 81, 81));"
         },
         {
           img: 'ratio5.png',
@@ -355,6 +354,7 @@ export default {
           label: '8Tx',
           value: 8,
           isSuccess: Number(tx) >= 8,
+          color: "background-image: linear-gradient(180.00deg, rgb(221, 218, 194),rgb(188, 109, 106));"
         },
         {
           img: 'ratio10.png',
@@ -364,6 +364,7 @@ export default {
           label: '15Tx',
           value: 15,
           isSuccess: Number(tx) >= 15,
+          color: "background-image: linear-gradient(180.00deg, rgb(222, 244, 255),rgb(108, 151, 155));"
         },
         {
           img: 'ratio22.png',
@@ -371,8 +372,9 @@ export default {
           position: 15,
           condition: 'Top 100',
           label: 'Top 100',
-          value: 20,
+          value: top100,
           isSuccess: Number(tx) >= 20 && Number(rank) && Number(rank) <= 100,
+          color: "background-image: linear-gradient(180.00deg, rgb(217, 236, 235),rgb(168, 226, 239));"
         },
         {
           img: 'bridge95.png',
@@ -381,8 +383,9 @@ export default {
           condition: 'Top 1-20',
           label: 'Top 1-20',
           isComment: true,
-          value: 30,
+          value: top20,
           isSuccess: Number(tx) >= 20 && Number(rank) && Number(rank) <= 20,
+          color: "background-image: linear-gradient(180.00deg, rgb(249, 250, 228),rgb(236, 192, 49));"
         },
       ])
     },
@@ -532,7 +535,7 @@ export default {
     },
     openTelegram(option) {
       const address = this.evmAddress
-      if (!address || address === '0x' || this.isEnd) return
+      if (!address || address === '0x' || this.isEnd || option.icon === "task") return
       const name = 'PRIZES_V5_BANNER_TO_BRIDGE'
       this.$gtag.event(name, {
         event_category: name,

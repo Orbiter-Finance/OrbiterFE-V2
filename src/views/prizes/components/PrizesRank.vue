@@ -11,9 +11,24 @@
         update time: {{ calculateRelativeTime(refreshTime) }}
       </div>
     </div>
+   <div class="rank-list-group">
     <div class="rank-list">
       <div class="rank-list-header rank-list-card-item">
-        <div class="ranking">Rank</div>
+        <div class="ranking">
+          Rank
+          <o-tooltip >
+            <template v-slot:titleDesc>
+              <span style="margin-left: -20px">
+                <span>
+                  The Top 100 leaderboard only displays users with ≥20 transactions.
+                </span>
+              </span>
+            </template>
+            <span class="tips">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            </span>
+          </o-tooltip>
+        </div>
         <div class="user-address">User</div>
         <div class="cumulative-tx">Total Transaction</div>
         <div class="bridge-fee" v-if="current <= 2">Bridging fee rebate</div>
@@ -57,6 +72,7 @@
         </el-pagination>
       </div>
     </div>
+   </div>
   </div>
 </template>
 
@@ -396,6 +412,10 @@ export default {
     }
   }
 
+  .rank-list-group {
+    width: 100%;
+  }
+
   .rank-list {
     width: 100%;
     text-align: left;
@@ -421,7 +441,15 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 64px;
+        width: 84px;
+        .tips {
+          cursor: pointer;
+          margin-left: 2px;
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+        }
       }
 
       .user-address {
@@ -442,9 +470,6 @@ export default {
 
       .bridge-fee {
         width: 26%;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
       }
 
       .emit-reward {
@@ -597,44 +622,52 @@ export default {
       display: block;
     }
 
-    .rank-list {
-      margin-top: 24px;
-      .rank-list-header {
-        display: none;
-      }
-      .rank-list-item {
-        height: 54px;
-      }
-      .rank-list-card-item {
-        padding: 6px 12px;
-        .ranking {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 40px;
+    .rank-list-group {
+      width: 100%;
+      max-width: 100%;
+      overflow: auto;
+      .rank-list {
+        width: 100%;
+        min-width: 520px;
+        margin-top: 24px;
+        .rank-list-item {
+          height: 54px;
         }
-        .cumulative-tx {
-          width: 30%;
-          display: block;
-          .bridge-fee-image {
-            width: 72px;
-            height: 16px;
+        .rank-list-card-item {
+          padding: 6px 12px;
+          .ranking {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
           }
-        }
-        .emit-reward {
-          white-space: nowrap;
-        }
-        .ranking,
-        .user-address,
-        .cumulative-tx,
-        .emit-reward {
-          font-size: 14px;
-          span {
-            font-size: 12px;
+          .cumulative-tx {
+            width: 20%;
+            display: block;
+            text-align: center;
+            .bridge-fee-image {
+              width: 72px;
+              height: 16px;
+            }
+          }
+          .bridge-fee {
+            width: 30%;
+            text-align: center;
+          }
+          .ranking,
+          .user-address,
+          .cumulative-tx,
+          .emit-reward {
+            font-size: 14px;
+            span {
+              font-size: 12px;
+            }
           }
         }
       }
     }
+
+    
   }
 }
 </style>

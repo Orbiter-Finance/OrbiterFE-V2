@@ -1237,7 +1237,6 @@ export default {
           this.refreshGasFeeToolTip();
       },
     async refreshConfig(isRefresh) {
-      console.log("this.isV3", this.isV3)
       if (this.isV3) {
         return;
       }

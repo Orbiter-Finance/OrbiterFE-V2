@@ -29,7 +29,7 @@ export default {
           label: '1. Which networks are participating in this event?',
           text: [
             '- <span class="orbiter_global_prizes_rule_tag">Bridge from specific networks to Base Chain or bridge from Base Chain to specific networks</span>',
-            '- Specific Chains include: Ethereum, Arbitrum, zkSync Lite, Linea, Scroll, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse polygon zkevm',
+            '- Specific Chains include: Ethereum, Arbitrum, zkSync Lite, Linea, Scroll, Polygon, Optimism, Loopring, zkSyncEra, BNB Chain, Arbitrum Nova, Mantle, opBNB, X Layer, Zora, Manta, Kroma, zkFair, Blast, ZetaChain, B² Network, Mode, zkLink Nova, Proof of Play Apex, Merlin, BEVM, BOB, Core, Bitlayer, BounceBit, Optopia, Cyber, Mint, AlienxChain, Fraxtal, Zircuit, Fuse',
             '- The minimum amount required: 0.03 ETH',
             '- Bridge token: ETH',
           ],
