@@ -14846,9 +14846,9 @@
         "AIDOGE-AIDOGE": {
             "bridgeType": 1,
             "makerAddress": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
-            "sender": "4SyGaDFJ394ovGUemfQTPSCKqphawcBGkQTBpgoMR46x",
-            "gasFee": 0,
-            "tradingFee": 0.001,
+            "sender": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
+            "gasFee": 15,
+            "tradingFee": 0.1,
             "maxPrice": 5000,
             "minPrice": 0.001,
             "slippage": 200,
@@ -14859,7 +14859,7 @@
     "551-515": {
         "AIDOGE-AIDOGE": {
             "bridgeType": 1,
-            "makerAddress": "4SyGaDFJ394ovGUemfQTPSCKqphawcBGkQTBpgoMR46x",
+            "makerAddress": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
             "sender": "0x80CEaD4b66A87d1F728EBa116b94592b57eB0695",
             "gasFee": 0,
             "tradingFee": 0.001,
