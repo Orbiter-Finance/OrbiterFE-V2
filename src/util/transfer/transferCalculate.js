@@ -1409,28 +1409,36 @@ export default {
         Number(max) >= Number(transferValue)
       )
     })
-    const discountList = tieredFeeList?.map((item) => item?.discount || '0')
-    const withholdingFeeList = tieredFeeList?.map(
-      (item) => item?.withholdingFee || '0'
-    )
+    const discountList = (tieredFeeList || []).map((item) => item?.discount || '0')
+    let withholdingFeeList = [];
+    if(tieredFeeList) {
+       withholdingFeeList = tieredFeeList?.map(
+        (item) => item?.withholdingFee || '0'
+      )
+    }
 
     let tieredFeeDiscountMax = 0
     let tieredFeeWithholdingFeeMax = 0
-
-    discountList.forEach((item) => {
-      if (Number(item) >= tieredFeeDiscountMax) {
-        tieredFeeDiscountMax = item
-      }
-    })
-    withholdingFeeList.forEach((item) => {
-      if (!tieredFeeWithholdingFeeMax) {
-        tieredFeeWithholdingFeeMax = item
-      } else {
-        if (Number(item) <= tieredFeeWithholdingFeeMax && Number(item)) {
-          tieredFeeWithholdingFeeMax = item
+    if(discountList) {
+      discountList.forEach((item) => {
+        if (Number(item) >= tieredFeeDiscountMax) {
+          tieredFeeDiscountMax = item
         }
-      }
-    })
+      })
+    }
+
+    if (withholdingFeeList) {
+      withholdingFeeList.forEach((item) => {
+        if (!tieredFeeWithholdingFeeMax) {
+          tieredFeeWithholdingFeeMax = item
+        } else {
+          if (Number(item) <= tieredFeeWithholdingFeeMax && Number(item)) {
+            tieredFeeWithholdingFeeMax = item
+          }
+        }
+      })
+    }
+
     console.log(
       'tieredFeeWithholdingFeeMax',
       withholdingFeeList,
