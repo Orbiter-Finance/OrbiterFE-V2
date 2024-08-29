@@ -1950,7 +1950,7 @@
             "symbol": "BOME",
             "decimals": 6,
             "address": "ukHH6c7mMyiWCf1b9pnWe25TSpkDDt3H5pQZgZ74J82"
-        }
+         }
       ],
       "batchLimit": 100,
       "internalId": "51",
@@ -1972,9 +1972,7 @@
             "icon": "SOLANA_MAIN"
          }
       ],
-      "contract": {
-
-      },
+      "contract": {},
       "contracts": [
          {
             "name": "NonceProgram",
@@ -3077,7 +3075,7 @@
          "https://rpc.bomechain.org"
       ],
       "tokens": [],
-      "internalId": 74,
+      "internalId": "74",
       "nativeCurrency": {
          "coinKey": "BOME",
          "address": "0x0000000000000000000000000000000000000000",
@@ -3109,5 +3107,138 @@
             ]
          }
       ]
+   },
+   {
+      "chainId": "48900",
+      "contract": {
+         "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+         "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+      },
+      "contracts": [
+         {
+            "name": "OBSource",
+            "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+            "methods": [
+               "transfer(address,bytes)",
+               "transferERC20(address,address,uint256,bytes)"
+            ]
+         },
+         {
+            "name": "OrbiterRouterV3",
+            "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+            "methods": [
+               "transfer(address,bytes)",
+               "transferToken(address,address,uint256,bytes)",
+               "transfers(address[],uint256[])",
+               "transferTokens(address,address[],uint256[])"
+            ]
+         }
+      ],
+      "explorers": [
+         {
+            "name": "Explorer",
+            "url": "https://explorermainnet.zircuit.com"
+         }
+      ],
+      "features": [
+         {
+            "name": "evm-account6"
+         },
+         {
+            "name": "evm-rpc"
+         }
+      ],
+      "infoURL": "https://explorermainnet.zircuit.com",
+      "internalId": "71",
+      "name": "Zircuit",
+      "nativeCurrency": {
+         "coinKey": "ETH",
+         "address": "0x0000000000000000000000000000000000000000",
+         "name": "ETH",
+         "symbol": "ETH",
+         "decimals": 18
+      },
+      "networkId": "48900",
+      "rpc": [
+         "https://zircuit1-mainnet.p2pify.com",
+         "https://zircuit1-mainnet.liquify.com"
+      ],
+      "service": {
+         "rpc": "EVMRpcScanningV6Service"
+      },
+      "tokens": [],
+      "vm": "EVM"
+   },
+   {
+      "api": {
+         "url": "",
+         "key": ""
+      },
+      "chainId": "1625",
+      "contract": {
+         "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc": "OBSource",
+         "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172": "OrbiterRouterV3"
+      },
+      "contracts": [
+         {
+            "name": "OBSource",
+            "address": "0xd9d74a29307cc6fc8bf424ee4217f1a587fbc8dc",
+            "methods": [
+               "transfer(address,bytes)",
+               "transferERC20(address,address,uint256,bytes)"
+            ]
+         },
+         {
+            "name": "OrbiterRouterV3",
+            "address": "0x13e46b2a3f8512ed4682a8fb8b560589fe3c2172",
+            "methods": [
+               "transfer(address,bytes)",
+               "transferToken(address,address,uint256,bytes)",
+               "transfers(address[],uint256[])",
+               "transferTokens(address,address[],uint256[])"
+            ]
+         }
+      ],
+      "explorers": [
+         {
+            "name": "Explorer",
+            "url": "https://explorer.gravity.xyz"
+         }
+      ],
+      "features": [
+         {
+            "name": "evm-account6"
+         },
+         {
+            "name": "evm-rpc"
+         }
+      ],
+      "infoURL": "https://explorer.gravity.xyz",
+      "internalId": "75",
+      "name": "Gravity",
+      "nativeCurrency": {
+         "coinKey": "G",
+         "address": "0x0000000000000000000000000000000000000000",
+         "name": "Gravity Token",
+         "symbol": "G",
+         "decimals": 18
+      },
+      "networkId": "1625",
+      "rpc": [
+         "https://rpc.gravity.xyz"
+      ],
+      "service": {
+         "rpc": "EVMRpcScanningV6Service"
+      },
+      "tokens": [
+         {
+            "coinKey": "ETH",
+            "address": "0xf6f832466cd6c21967e0d954109403f36bc8ceaa",
+            "name": "Wrapped Ether",
+            "symbol": "ETH",
+            "decimals": 18
+         }
+      ],
+      "vm": "EVM"
    }
 ]

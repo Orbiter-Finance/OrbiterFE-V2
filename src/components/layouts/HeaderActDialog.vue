@@ -187,12 +187,19 @@
               <div>
               <template v-for="option in item.taskList">
                 <div class="task-card" 
-                :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                  @click="mintScrollNFT(option)"
                 >
-                  <div class="title">
+                  <div class="title"
+                    :style="`opacity:${option.status === 0 ? '1' : '0.4'};`"
+                  >
+                  <div class="title-info">
                     <div class="task-info">
-                    <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
-                    <div class="description" v-html="option.description"></div>
+                      <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
+                      <div class="description" v-html="option.description"></div>
+                    </div>
+                  </div>
+                    <div class="task-link" v-if="showScrollNFT(option)">
+                      <svg-icon-themed iconName="arrow_down"></svg-icon-themed>
                     </div>
                   </div>
                   <div class="group">
@@ -235,6 +242,7 @@
                     </div>
                     
                   </div>
+                    
                 </div>
               </template>
             </div>
@@ -312,6 +320,7 @@ import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
+import ScrollNftConfig from "../../const/scroll-NFT.json"
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -579,12 +588,30 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
+    checkScrollConfig(group){
+      const id = group?.id 
+      return (Number(id) === 184 || Number(id) === 187)
+    },
+    mintScrollNFT(group){
+      if(!this.showScrollNFT(group)) return
+      const name = "MINT_SCROLl_NFT_BADGE"
+      const url = "https://scroll.io/canvas/badge-contract/0xfBe58B2E84eecA5DAeCbdcEB77B45481c6c88A5A"
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: url,
+      })
+      window.open(url, '_blank')
+    },
+    showScrollNFT(group){
+
+      return !!this.checkScrollConfig(group) && group?.status && (group?.status !== 0)
+    },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
     },
     async getUserTask() {
       const address = this.currentWalletAddress
-      const list = this.questsTaskList.filter((item)=> !!item?.id)
+      const list = this.questsTaskList.filter((item)=> !!item?.id && item?.status === "PROGRESS")
       if(!list?.length || !address || address === "0x") return
       this.$store.commit("getUserTaskInfoList", {
         address,
@@ -595,7 +622,7 @@ export default {
       clearTimeout(time2)
       time2 = setTimeout(async () => {
 
-        const address = this.currentWalletAddress
+        const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
         if(address) {
           const response = await fetch(
             `${process.env.VUE_APP_OPEN_URL}/points_platform/rank/address/${address}`
@@ -2214,6 +2241,12 @@ export default {
           display: flex;
           justify-content: space-between;
           align-items: center;
+          .title-info {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            flex: 1;
+          }
           .task-info {
             display: flex;
             justify-content: start;
@@ -2222,6 +2255,16 @@ export default {
               width: 20px;
               height: 20px;
               margin-right: 8px;
+            }
+          }
+
+          .task-link {
+            width: 20px;
+            height: 20px;
+            svg {
+              width: 20px;
+              height: 20px;
+              rotate: -90deg;
             }
           }
         }

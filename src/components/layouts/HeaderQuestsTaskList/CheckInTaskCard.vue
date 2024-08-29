@@ -5,11 +5,13 @@
         <svg-icon class="task-icon" :iconName="icon"></svg-icon>
         <div v-html="title"></div>
       </div>
-      <div class="task-reward">
-        MY Rewards: <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
-        <span class="reward-amount">{{ reward }} $ORBGUY</span>
+      <div class="task-reward" @click="claimCall">
+        <!-- MY Rewards: <svg-icon class="task-icon" iconName="ORBGUY"></svg-icon>
+        <span class="reward-amount">{{ reward }} $ORBGUY</span> -->
+        <!-- In the statistics... -->
+        Claim
       </div>
-      <div class="task-card-item">
+      <!-- <div class="task-card-item">
         <div class="task-title">
           <div class="task-info">
             <svg-icon class="task-icon" iconName="task-icon"></svg-icon>
@@ -133,7 +135,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -141,8 +143,10 @@
 <script>
 import { decimalNum } from '../../../util/decimalNum'
 import { questsUserInfoList } from '../../../composition/hooks'
+import { compatibleGlobalWalletConf } from '../../../composition/walletsResponsiveData'
+
 import SvgIcon from '../../SvgIcon/SvgIcon.vue'
-import dayjs from "dayjs"
+import dayjs from 'dayjs'
 
 export default {
   components: {
@@ -158,6 +162,9 @@ export default {
     }
   },
   computed: {
+    currentEvmAddress() {
+      return compatibleGlobalWalletConf?.value?.walletPayload?.walletAddress
+    },
     questsUserList() {
       return questsUserInfoList.value
     },
@@ -219,30 +226,36 @@ export default {
       const rewards = this.taskInfo?.[0]?.rewards || []
       const userList = this.userRecordsList || []
 
-      const option = rewards.filter((item) => item.rule.name === 'orbguy')?.[0]
+      const option = rewards.filter(
+        (item) => item?.rule?.name === 'orbguy'
+      )?.[0]
 
-      const list = option.rule?.timesWithRewardList || []
+      const list = option?.rule?.timesWithRewardList || []
 
-      const taskResultList = userList.map((item)=>{
-        const taskId = item.task_id
-        const option = this.taskInfo.filter((option)=> option.id === taskId)?.[0] || {}
-        const [_, endDate] = option?.rule?.date || []
-        const endTime = +dayjs.utc(endDate)
-        const now = +dayjs()
-        const flag = item.task_result >= 3 || now <= endTime
-        return flag ? item.task_result : 0
-      } ).filter((item)=>!!Number(item))
+      const taskResultList = userList
+        .map((item) => {
+          const taskId = item.task_id
+          const option =
+            this.taskInfo.filter((option) => option?.id === taskId)?.[0] || {}
+          const [_, endDate] = option?.rule?.date || []
+          const endTime = +dayjs.utc(endDate)
+          const now = +dayjs()
+          const flag = item.task_result >= 3 || now <= endTime
+          return flag ? item.task_result : 0
+        })
+        .filter((item) => !!Number(item))
 
-      return list.map((item, index) => {
-        const task = this.taskInfo?.[index] || {}
+      return list
+        .map((item, index) => {
+          const task = this.taskInfo?.[index] || {}
           return {
-            amount: item.rewardAmount,
+            amount: item?.rewardAmount,
             times: item.times,
             id: task.id,
           }
         })
         .map((item, index) => {
-          const current =  Number(taskResultList[index] || 0)
+          const current = Number(taskResultList[index] || 0)
           return {
             ...item,
             current,
@@ -255,7 +268,20 @@ export default {
       return actDialogVisible.value
     },
   },
-  methods: {},
+  methods: {
+    claimCall() {
+      const evmAddress = this.currentEvmAddress
+      if (!evmAddress || evmAddress === '0x') return
+      const name = 'CLAIM_REWARD_AABANK_SIGN_7DAYS'
+      const url = 'https://www.aabank.xyz/claim?from=orbiter&user=' + evmAddress
+      this.$gtag.event(name, {
+        event_category: name,
+        event_label: evmAddress,
+      })
+      window.open(url, '_blank')
+      return
+    },
+  },
 }
 </script>
 
@@ -270,14 +296,16 @@ export default {
     width: calc(100% - 32px);
     background: #f5f5f5;
     border-radius: 12px;
-
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     .task-card-title {
-      width: 100%;
       display: flex;
       justify-content: flex-start;
       align-items: center;
       font-size: 14px;
       font-family: GeneralSans-Bold;
+      white-space: nowrap;
       .task-icon {
         display: flex;
         justify-content: center;
@@ -292,16 +320,19 @@ export default {
     }
 
     .task-reward {
-      width: 100%;
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      margin-top: 8px;
       font-size: 12px;
       line-height: 16px;
       letter-spacing: 0px;
-      font-family: GeneralSans-Regular;
-      color: #666666;
+      font-family: GeneralSans-SemiBold;
+      background-color: #3B7FFF;
+      color: #222222;
+      white-space: nowrap;
+      padding: 6px 16px;
+      border-radius: 6px;
+      cursor: pointer;
       .task-icon {
         width: 16px;
         height: 16px;
@@ -475,10 +506,6 @@ export default {
   #lucky-task-card-group {
     .task-card-group {
       background-color: #373951;
-
-      .task-reward {
-        color: #cccccc;
-      }
       .task-card-item {
         background-color: var(--dark-page-box-bg);
 

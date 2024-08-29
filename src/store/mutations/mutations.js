@@ -9,17 +9,15 @@ import {
   claimCardModalAmountInfo,
   setClaimCardModalAmountInfo,
   setClaimCardModalOtherDataInfo,
-  setPrizesTaskList,
   setPrizesRankList,
   setPrizesRankRefreshTime,
   setPrizesProjectTaskDetailsList,
-  setPrizesUserRank,
   setPrizesUserList,
-  setPrizesTotalOrbguy,
   setPrizesProjectTime,
   setQuestsInfoList,
   setQuestsUserInfoList,
   setPrizesTotaltx,
+  setPrizesUserRank,
 } from '../../composition/hooks'
 import { CHAIN_ID } from '../../config'
 
@@ -33,7 +31,7 @@ import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveD
 import util from '../../util/util'
 import { ethers } from 'ethers'
 
-const activityProjectId = 'f39a04ea-b958-4ff4-86a9-213aa277071f'
+const activityProjectId = '123104d2-4a00-4242-bce6-461faf1267ef'
 
 let timer
 let timer1
@@ -365,7 +363,7 @@ export default {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}${
           isDev() ? '/activity' : '/active-platform'
-        }/project/detail?projectId=${activityProjectId}`
+        }/projectStatus/detail?projectId=${activityProjectId}`
       )
       const res = await response.json()
       setPrizesTotaltx(res?.result?.projectDetail?.totalTxsCount)
@@ -384,8 +382,6 @@ export default {
         }/project/info?projectId=${activityProjectId}`
       )
       const res = await response.json()
-      const list = res?.result?.tasks || []
-      setPrizesTaskList(list)
       setPrizesProjectTime(res?.result?.end_time || '')
     }, 500)
   },
@@ -399,10 +395,6 @@ export default {
       )
       const res = await response.json()
       setPrizesRankList(res?.result?.rankRewards || [])
-      console.log(
-        'res?.result?.updateInfo?.lastRefreshTime',
-        res?.result?.updateInfo?.lastRefreshTime
-      )
       setPrizesRankRefreshTime(res?.result?.updateInfo?.lastRefreshTime || '')
     }, 500)
   },
@@ -414,18 +406,25 @@ export default {
       const response = await fetch(
         `${process.env.VUE_APP_OPEN_URL}/${
           isDev() ? 'activity' : 'active-platform'
-        }/project/tasksStatus?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
+        }/projectStatus/addressForSingle?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
       )
       const res = await response.json()
-      setPrizesUserRank(res?.result?.rank || '--')
       const records = res?.result?.records || []
-      const distributeResults = res?.result?.distributeResults || []
-
-      setPrizesTotalOrbguy(
-        distributeResults.filter((item) => item.name === 'orbguy')?.[0]
-          ?.amount || '0'
-      )
       setPrizesUserList(records)
+    }, 500)
+  },
+
+  async getPrizesUserRank(state, address) {
+    if (!address || address === '0x') return
+    clearTimeout(timer6)
+    timer6 = setTimeout(async () => {
+      const response = await fetch(
+        `${process.env.VUE_APP_OPEN_URL}/${
+          isDev() ? 'activity' : 'active-platform'
+        }/projectStatus/addressRank?projectId=${activityProjectId}&address=${address.toLocaleLowerCase()}`
+      )
+      const res = await response.json()
+      setPrizesUserRank(res?.result?.rank || 0)
     }, 500)
   },
 
@@ -436,7 +435,7 @@ export default {
         const response = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/${
             isDev() ? 'activity' : 'active-platform'
-          }/project/activeProjectList`,
+          }/project/showProjectList`,
           {
             headers: {
               'Content-Type': 'application/json',
@@ -457,7 +456,7 @@ export default {
         const response = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/${
             isDev() ? 'activity' : 'active-platform'
-          }/project/multipleTasksStatus?projectIds=${JSON.stringify(
+          }/projectStatus/addressForMutiple?projectIds=${JSON.stringify(
             list
           )}&address=${address}`,
           {

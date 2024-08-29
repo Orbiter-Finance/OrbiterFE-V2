@@ -1,17 +1,37 @@
 <template>
   <div id="prizes-rank" class="prizes-rank">
+    
+    <div class="prizes-rank-title">Top 100 Leaderboard</div>
     <div class="rank-title">
-      <div class="rank-tabs">
+      <!-- <div class="rank-tabs">
         <div class="tab1">Rank 1-8 (0 Bridging Fee)</div>
         <div class="tab2">Rank 9-20 (50% Bridging Fee)</div>
+      </div> -->
+      <div class="refresh-time">
+        update time: {{ calculateRelativeTime(refreshTime) }}
       </div>
-      <div class="refresh-time">update time: {{ calculateRelativeTime(refreshTime) }}</div>
     </div>
+   <div class="rank-list-group">
     <div class="rank-list">
       <div class="rank-list-header rank-list-card-item">
-        <div class="ranking">Rank</div>
+        <div class="ranking">
+          Rank
+          <o-tooltip >
+            <template v-slot:titleDesc>
+              <span style="margin-left: -20px">
+                <span>
+                  The Top 100 leaderboard only displays users with ≥20 transactions.
+                </span>
+              </span>
+            </template>
+            <span class="tips">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            </span>
+          </o-tooltip>
+        </div>
         <div class="user-address">User</div>
         <div class="cumulative-tx">Total Transaction</div>
+        <div class="bridge-fee" v-if="current <= 2">Bridging fee rebate</div>
         <div class="emit-reward">Estimated Earnings</div>
       </div>
       <div
@@ -32,33 +52,13 @@
         </div>
         <div class="cumulative-tx">
           {{ decimalNumC(item.txAmount, 0, ',') }} tx
-
-          <o-tooltip>
-            <template v-slot:titleDesc>
-              <div style="margin-left: -20px">
-                <span
-                  >Bridging fee will be rebated when the competition ends.</span
-                >
-              </div>
-            </template>
-            <img
-              v-if="showBridgeFee(item)"
-              class="bridge-fee-image"
-              :src="require('../../../assets/prizes/bridge-fee-0.png')"
-            />
-            <img
-              v-if="showBridgeFee50(item)"
-              class="bridge-fee-image"
-              :src="require('../../../assets/prizes/bridge-fee-50.png')"
-            />
-          </o-tooltip>
         </div>
+        <div class="bridge-fee" v-if="current <= 2">{{ bridgingFee(item) }}</div>
         <div class="emit-reward">
           <div>
-            +{{ decimalNumC(Number(item.reward.amount) || 0, 4, ',') }}
-            {{ item.reward.name }}
+            {{ emiteReward(item) }}
           </div>
-          <span>≈ ${{ decimalNumC(item.reward.uAmount, 4, ',') }}</span>
+          <span>{{ emiteRewardU(item) }}</span>
         </div>
       </div>
       <div class="pagination-group">
@@ -72,6 +72,7 @@
         </el-pagination>
       </div>
     </div>
+   </div>
   </div>
 </template>
 
@@ -82,10 +83,11 @@ import {
   prizesRankList,
   prizesUserList,
   prizesUserRank,
-  prizesRankRefreshTime
+  prizesRankRefreshTime,
+  prizesTotaltx,
 } from '../../../composition/hooks'
 import { decimalNum } from '../../../util/decimalNum'
-import dayjs from "dayjs"
+import dayjs from 'dayjs'
 let rankA = 8
 let rankB = 20
 let txBase = 3
@@ -95,9 +97,68 @@ export default {
   data() {
     return {
       current: 1,
+      poolList: [
+        {
+          tx: '0~2,999 Tx',
+          reward: '',
+          range: [0, 2999],
+          bridge50Fee: 0,
+          bridge100Fee: 0,
+        },
+        {
+          tx: '3,000~9,999 Tx',
+          reward: '$3,500',
+          range: [3000, 9999],
+          bridge50Fee: 5,
+          bridge100Fee: 15,
+        },
+        {
+          tx: '10,000~29,999 Tx',
+          reward: '$12,600',
+          range: [10000, 29999],
+          bridge50Fee: 10,
+          bridge100Fee: 30,
+        },
+        {
+          tx: '30,000~54,999 Tx',
+          reward: '$35,000',
+          range: [30000, 54999],
+          bridge50Fee: 20,
+          bridge100Fee: 45,
+        },
+        {
+          tx: '55,000~119,999 Tx',
+          reward: '$56,000',
+          range: [55000, 119999],
+          bridge50Fee: 30,
+          bridge100Fee: 60,
+        },
+        {
+          tx: '≥120,000 Tx',
+          reward: '$70,000',
+          range: [120000, 999999],
+          bridge50Fee: 50,
+          bridge100Fee: 95,
+        },
+      ],
     }
   },
   computed: {
+    currentPool() {
+      const list = this.poolList
+      const tx = this.totalTx
+      if (tx >= list[list.length - 1].range?.[1])
+        return list[list.length - 1] || {}
+      const group = list.filter((item) => {
+        const [first, last] = item.range
+        return first <= tx && last >= tx
+      })?.[0]
+      return group
+    },
+    totalTx() {
+      const tx = Number(prizesTotaltx.value) || 0
+      return tx
+    },
     refreshTime() {
       return prizesRankRefreshTime.value
     },
@@ -220,17 +281,6 @@ export default {
         return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
       }
     },
-    showBridgeFee50(group) {
-      if(!this.showBridgeFee(group)){
-        const rank = group.rank
-        const txAmount = group.txAmount
-        return rank <= rankB && txAmount >= txBase
-      }
-      return false
-    },
-    showBridgeFee({rank, txAmount}) {
-      return rank <= rankA && txAmount >= txBase
-    },
     curChange(cur) {
       this.current = cur
     },
@@ -245,6 +295,31 @@ export default {
       }
       return ''
     },
+    bridgingFee(group) {
+      const rank = Number(group?.rank) || 0
+      const fee = this.currentPool
+      let bridgeFee = 0
+      if (rank && rank <= 20) {
+        if (rank <= 8) {
+          bridgeFee = fee?.bridge100Fee
+        } else {
+          bridgeFee = fee?.bridge50Fee
+        }
+      } else {
+        bridgeFee = ""
+      }
+
+      return !!bridgeFee ? (bridgeFee + "%") : "--"
+    },
+    emiteReward(group) {
+      const amount = group?.reward?.amount || 0
+      const symbol = group?.reward?.name || ""
+      return Number(amount) ? ("+" + this.decimalNumC(Number(amount) || 0, 4, ',') + ` ${symbol}`) : "--"
+    },
+    emiteRewardU(group) {
+      const amount = group?.reward?.uAmount || 0
+      return Number(amount) ? ("≈ $" + this.decimalNumC(amount, 4, ',')) : "--"
+    }
   },
 }
 </script>
@@ -259,8 +334,14 @@ export default {
 }
 .prizes-rank {
   width: 100%;
-  margin-top: 40px;
-
+  margin-top: 80px;
+  .prizes-rank-title {
+    width: 100%;
+    text-align: center;
+    font-size: 32px;
+    font-family: GeneralSans-SemiBold;
+    text-align: center;
+  }
   .rank-title {
     width: 100%;
     display: flex;
@@ -281,8 +362,21 @@ export default {
         align-items: center;
         width: 248px;
         height: 52px;
-        background: linear-gradient(-3.03deg, rgb(255, 21, 0) 42.396%,rgb(255, 238, 185) 156.936%);
-        clip-path: polygon( 8px 0, 0 8px, 0 calc(100% - 8px), 8px 100%, 100% 100%, calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) 8px, 100% 0);
+        background: linear-gradient(
+          -3.03deg,
+          rgb(255, 21, 0) 42.396%,
+          rgb(255, 238, 185) 156.936%
+        );
+        clip-path: polygon(
+          8px 0,
+          0 8px,
+          0 calc(100% - 8px),
+          8px 100%,
+          100% 100%,
+          calc(100% - 8px) calc(100% - 8px),
+          calc(100% - 8px) 8px,
+          100% 0
+        );
       }
       .tab2 {
         display: flex;
@@ -291,8 +385,21 @@ export default {
         width: 300px;
         height: 52px;
         margin-left: 8px;
-        background: linear-gradient(-45deg, rgb(21, 67, 84) 37.809%,rgb(255, 21, 0) 117.206%);
-        clip-path: polygon( 8px 0, 0 8px, 0 calc(100% - 8px), 8px 100%, 100% 100%, calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) 8px, 100% 0);
+        background: linear-gradient(
+          -45deg,
+          rgb(21, 67, 84) 37.809%,
+          rgb(255, 21, 0) 117.206%
+        );
+        clip-path: polygon(
+          8px 0,
+          0 8px,
+          0 calc(100% - 8px),
+          8px 100%,
+          100% 100%,
+          calc(100% - 8px) calc(100% - 8px),
+          calc(100% - 8px) 8px,
+          100% 0
+        );
       }
     }
     .refresh-time {
@@ -303,10 +410,11 @@ export default {
       font-size: 14px;
       color: rgba(255, 255, 255, 0.8);
     }
-
   }
 
-  
+  .rank-list-group {
+    width: 100%;
+  }
 
   .rank-list {
     width: 100%;
@@ -333,15 +441,23 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 64px;
+        width: 84px;
+        .tips {
+          cursor: pointer;
+          margin-left: 2px;
+          svg {
+            width: 12px;
+            height: 12px;
+          }
+        }
       }
 
       .user-address {
-        width: 30%;
+        width: 26%;
       }
 
       .cumulative-tx {
-        width: 30%;
+        width: 26%;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -350,6 +466,10 @@ export default {
           width: 95px;
           height: 20px;
         }
+      }
+
+      .bridge-fee {
+        width: 26%;
       }
 
       .emit-reward {
@@ -467,6 +587,12 @@ export default {
   #prizes-rank {
     margin-top: 32px;
     padding: 0;
+    .prizes-rank-title {
+      font-size: 24px;
+      .title-br {
+        display: block;
+      }
+    }
     .rank-title {
       display: block;
       .rank-tabs {
@@ -484,7 +610,7 @@ export default {
         margin-top: 8px;
       }
     }
-    
+
     .title {
       font-size: 24px;
     }
@@ -496,44 +622,52 @@ export default {
       display: block;
     }
 
-    .rank-list {
-      margin-top: 24px;
-      .rank-list-header {
-        display: none;
-      }
-      .rank-list-item {
-        height: 54px;
-      }
-      .rank-list-card-item {
-        padding: 6px 12px;
-        .ranking {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          width: 40px;
+    .rank-list-group {
+      width: 100%;
+      max-width: 100%;
+      overflow: auto;
+      .rank-list {
+        width: 100%;
+        min-width: 520px;
+        margin-top: 24px;
+        .rank-list-item {
+          height: 54px;
         }
-        .cumulative-tx {
-          width: 30%;
-          display: block;
-          .bridge-fee-image {
-            width: 72px;
-            height: 16px;
+        .rank-list-card-item {
+          padding: 6px 12px;
+          .ranking {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 60px;
           }
-        }
-        .emit-reward {
-          white-space: nowrap;
-        }
-        .ranking,
-        .user-address,
-        .cumulative-tx,
-        .emit-reward {
-          font-size: 14px;
-          span {
-            font-size: 12px;
+          .cumulative-tx {
+            width: 20%;
+            display: block;
+            text-align: center;
+            .bridge-fee-image {
+              width: 72px;
+              height: 16px;
+            }
+          }
+          .bridge-fee {
+            width: 30%;
+            text-align: center;
+          }
+          .ranking,
+          .user-address,
+          .cumulative-tx,
+          .emit-reward {
+            font-size: 14px;
+            span {
+              font-size: 12px;
+            }
           }
         }
       }
     }
+
+    
   }
 }
 </style>

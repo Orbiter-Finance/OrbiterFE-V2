@@ -463,6 +463,8 @@ let chain = config.chain;
 
 const { walletDispatchersOnSwitchChain } = walletDispatchers
 
+let timer
+
 export default {
   name: 'Transfer',
   components: {
@@ -937,6 +939,11 @@ export default {
     },
   },
   async mounted() {
+    const self = this
+    clearInterval(timer)
+    timer = setInterval(() => {
+      self.refreshConfig(true);
+    }, 5 * 60 * 1000);
     try {
       await this.syncV3Data(1);
     } catch (e) {
@@ -1147,7 +1154,7 @@ export default {
     async openApiFilter() {
       try {
         const data = await getNoticeData();
-        const banList = data?.map((item)=> item.rule) || []
+        const banList = data?.map((item)=> item?.rule) || []
         if (Array.isArray(banList)) {
           this.banList = banList;
         }
@@ -1159,7 +1166,7 @@ export default {
       const cron = setInterval(async () => {
         try {
           const data = await getNoticeData();
-          const banList = data?.map((item)=> item.rule) || []
+          const banList = data?.map((item)=> item?.rule) || []
           if (Array.isArray(banList)) {
             self.banList = banList;
           }
@@ -1236,11 +1243,11 @@ export default {
           this.refreshGasSavingMax();
           this.refreshGasFeeToolTip();
       },
-    async refreshConfig() {
+    async refreshConfig(isRefresh) {
       if (this.isV3) {
         return;
       }
-      const allMakerConfigs = await getV2TradingPair();
+      const allMakerConfigs = await getV2TradingPair(isRefresh);
       if (this.isNewVersion) {
         makerConfigs = JSON.parse(JSON.stringify(allMakerConfigs));
       } else {
