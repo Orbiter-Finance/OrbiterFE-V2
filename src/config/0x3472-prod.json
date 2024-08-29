@@ -172,11 +172,37 @@
             "makerAddress": "0x34723b92ae9708ba33843120a86035d049da7dfa",
             "sender": "0x34723b92ae9708ba33843120a86035d049da7dfa",
             "gasFee": 18,
-            "tradingFee": 0.00028,
+            "tradingFee": 0.0005,
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "20-40": {
