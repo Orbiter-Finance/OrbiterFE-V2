@@ -199,7 +199,7 @@
                     </div>
                   </div>
                     <div class="task-link" v-if="showScrollNFT(option)">
-                      <svg-icon iconName="task-arrow-right"></svg-icon>
+                      <svg-icon-themed iconName="arrow_down"></svg-icon-themed>
                     </div>
                   </div>
                   <div class="group">
@@ -535,21 +535,14 @@ export default {
       const address = this.currentWalletAddress || ""
       this.showWalletAddress =  shortenAddress(address)
     },
-    getScrollConfig(group){
-      const nftConfig = (ScrollNftConfig || []).filter((item)=> {
-        const id = String(group?.id || "")
-        return id && 
-        (item?.task || []).some((option)=>{
-         return String(option) === id
-        })
-      })?.[0]
-      return nftConfig
+    checkScrollConfig(group){
+      const id = group?.id 
+      return (Number(id) === 184 || Number(id) === 187)
     },
     mintScrollNFT(group){
-      const config = this.getScrollConfig(group)
       if(!this.showScrollNFT(group)) return
-      const name = "MINT_SCROLl_NFT_" + config?.name
-      const url = config?.link
+      const name = "MINT_SCROLl_NFT_BADGE"
+      const url = "https://scroll.io/canvas/badge-contract/0xfBe58B2E84eecA5DAeCbdcEB77B45481c6c88A5A"
       this.$gtag.event(name, {
         event_category: name,
         event_label: url,
@@ -558,7 +551,7 @@ export default {
     },
     showScrollNFT(group){
 
-      return !!this.getScrollConfig(group) && group?.status && (group?.status !== 0)
+      return !!this.checkScrollConfig(group) && group?.status && (group?.status !== 0)
     },
     decimalNumC(num, decimal, delimiter) {
       return decimalNum(num, decimal, delimiter)
@@ -2194,6 +2187,7 @@ export default {
             svg {
               width: 20px;
               height: 20px;
+              rotate: -90deg;
             }
           }
         }

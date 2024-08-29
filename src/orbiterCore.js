@@ -60,6 +60,28 @@ function isLimitNumber(chain) {
   return false
 }
 
+function getGasFee(userAmount, selectMakerConfig) {
+  const tieredFee = selectMakerConfig?.tieredFee
+  let gasFee = selectMakerConfig?.gasFee
+  if (tieredFee?.length && !!Number(userAmount)) {
+    const transferValue = userAmount
+    tieredFee?.forEach((item) => {
+      const [min, max] = item?.range
+      const fee = Number(item?.tradeFee)
+      if (
+        Number(min) < Number(transferValue) &&
+        Number(max) >= Number(transferValue) &&
+        fee <= gasFee
+      ) {
+        gasFee = fee
+      }
+    })
+  }
+  console.log('gasFee', userAmount, gasFee)
+
+  return gasFee
+}
+
 function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
   const decimals =
     selectMakerConfig.fromChain?.decimals || selectMakerConfig.precision
@@ -67,9 +89,9 @@ function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
   let toAmount_tradingFee = new BigNumber(userAmount).minus(
     new BigNumber(selectMakerConfig.tradingFee)
   )
-
-  let gasFee = toAmount_tradingFee
-    .multipliedBy(new BigNumber(selectMakerConfig.gasFee))
+  let gasFee = getGasFee(userAmount, selectMakerConfig)
+  let gasFeeAmount = toAmount_tradingFee
+    .multipliedBy(new BigNumber(gasFee))
     .dividedBy(new BigNumber(1000))
   let digit =
     decimals === 8 || toDecimals === 8
@@ -77,7 +99,7 @@ function getToAmountFromUserAmount(userAmount, selectMakerConfig, isWei) {
       : decimals >= 9 && toDecimals > 9
       ? 5
       : 2
-  let gasFee_fix = gasFee.decimalPlaces(digit, BigNumber.ROUND_UP)
+  let gasFee_fix = gasFeeAmount.decimalPlaces(digit, BigNumber.ROUND_UP)
   let toAmount_fee = toAmount_tradingFee.minus(gasFee_fix)
 
   if (
@@ -240,4 +262,5 @@ export default {
   getRAmountFromTAmount,
   getToAmountFromUserAmount,
   getDigitByPrecision,
+  getGasFee,
 }

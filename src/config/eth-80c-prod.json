@@ -26,7 +26,7 @@
     "2-19": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
@@ -38,7 +38,7 @@
     "19-2": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 3,
@@ -50,7 +50,7 @@
     "7-19": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -62,7 +62,7 @@
     "19-7": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -98,7 +98,7 @@
     "21-19": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -110,7 +110,7 @@
     "19-21": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -122,7 +122,7 @@
     "23-19": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 2,
@@ -135,7 +135,7 @@
     "19-23": {
         "ETH-ETH": {
             "gasFee": 0,
-            "tradingFee": 0.0005,
+            "tradingFee": 0.00035,
             "makerAddress": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 5,
@@ -367,8 +367,8 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 2,
             "minPrice": 0.00005,
-            "tradingFee": 0.0007,
-            "gasFee": 0,
+            "tradingFee": 0.00024,
+            "gasFee": 0.3,
             "startTime": 0,
             "endTime": 99999999999999,
             "originWithholdingFee": 0.001
@@ -380,8 +380,8 @@
             "sender": "0x80C67432656d59144cEFf962E8fAF8926599bCF8",
             "maxPrice": 2,
             "minPrice": 0.00005,
-            "tradingFee": 0.0005,
-            "gasFee": 0,
+            "tradingFee": 0.00024,
+            "gasFee": 0.3,
             "startTime": 0,
             "endTime": 99999999999999,
             "originWithholdingFee": 0.001
@@ -1280,13 +1280,39 @@
     "40-1": {
         "ETH-ETH": {
             "gasFee": 23,
-            "tradingFee": 0.0065,
+            "tradingFee": 0.0022,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0022
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0022
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0022
+                }
+            ]
         }
     },
     "2-40": {
@@ -1310,7 +1336,33 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "7-40": {
@@ -1328,13 +1380,39 @@
     "40-7": {
         "ETH-ETH": {
             "gasFee": 18,
-            "tradingFee": 0.00042,
+            "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "19-40": {
@@ -1358,7 +1436,33 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "14-40": {
@@ -1382,7 +1486,33 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "21-40": {
@@ -1406,7 +1536,33 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "23-40": {
@@ -1430,7 +1586,33 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "6-40": {
@@ -1454,7 +1636,33 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 10,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 25,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     }
 }

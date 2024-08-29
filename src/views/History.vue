@@ -335,7 +335,7 @@ import orbiterHelper from '../util/orbiter_helper';
         }
 
         this.searchLoading = true;
-        const res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash]);
+        const res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash, selectChainId]);
         this.searchLoading = false;
         if (!res) {
           util.showMessage("Request frequent", "error");
@@ -343,7 +343,7 @@ import orbiterHelper from '../util/orbiter_helper';
         }
         let { status, txList } = res;
         if (status === -1) {
-          const v2Res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash], false);
+          const v2Res = await requestOpenApi(RequestMethod.getTransactionByHash, [txHash, selectChainId], false);
           if (!v2Res) {
             util.showMessage("Request frequent", "error");
             return;
