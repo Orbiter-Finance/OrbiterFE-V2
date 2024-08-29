@@ -377,13 +377,15 @@
         "name": "AIDOGE",
         "symbol": "AIDOGE",
         "decimals": 6,
-        "address": "Av39iDnGgKhkccKfKvYedihkhh6KwXjmAUatbAEZouxw"
+        "address": "9PEiZDedcuv5kAmqVstgkK2YXVVB59quPQPt5wZ7Q2DR",
+        "tokenToReceiver": "DVGKdjZ8FKF8A3uqo3PW8VQfpEneaYQcgdxA3ydT5UFz"
       },
       {
         "name": "BOME",
         "symbol": "BOME",
         "decimals": 6,
-        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm"
+        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
+        "tokenToReceiver": "244czWmsm7CaB1PQbpjgdVMjDRyfuu5c6oKRGRswfLFd"
       }
     ],
     "infoURL": "https://solscan.io"
