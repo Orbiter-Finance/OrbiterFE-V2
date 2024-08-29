@@ -1279,7 +1279,7 @@
     },
     "40-1": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 25,
             "tradingFee": 0.0022,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
@@ -1329,7 +1329,7 @@
     },
     "40-2": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 25,
             "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
@@ -1379,7 +1379,7 @@
     },
     "40-7": {
         "ETH-ETH": {
-            "gasFee": 18,
+            "gasFee": 25,
             "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
@@ -1429,7 +1429,7 @@
     },
     "40-19": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 25,
             "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
@@ -1479,7 +1479,7 @@
     },
     "40-14": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 25,
             "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
@@ -1529,7 +1529,7 @@
     },
     "40-21": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 25,
             "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
@@ -1579,7 +1579,7 @@
     },
     "40-23": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 25,
             "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
@@ -1629,7 +1629,7 @@
     },
     "40-6": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 25,
             "tradingFee": 0.0005,
             "makerAddress": "0x80c67432656d59144ceff962e8faf8926599bcf8",
             "sender": "0x80c67432656d59144ceff962e8faf8926599bcf8",
