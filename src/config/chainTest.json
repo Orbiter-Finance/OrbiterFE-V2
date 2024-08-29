@@ -337,7 +337,7 @@
       "address": "So11111111111111111111111111111111111111112"
     },
     "rpc": [
-      "https://api-devnet.solscan.io"
+      "https://solana-devnet.g.alchemy.com/v2/azgtbx3M3JRazx0tzsZ-2XLX3-nHc9fH"
     ],
     "contract": {
       "FiyoeqDdRaV5cKCUXoXwiXt1rQpBokQXag2P9QMqob8Z": "OPool"
@@ -366,12 +366,6 @@
         "symbol": "ETH",
         "decimals": 9,
         "address": "GSihgzyhuRxf4RveXxXTkaFJnkWiy7mrLdN9rAQ8TYEE"
-      },
-      {
-        "name": "USDC",
-        "symbol": "USDC",
-        "decimals": 6,
-        "address": "9PEiZDedcuv5kAmqVstgkK2YXVVB59quPQPt5wZ7Q2DR"
       },
       {
         "name": "AIDOGE",
