@@ -69,8 +69,7 @@ function getGasFee(userAmount, selectMakerConfig) {
       const fee = Number(item?.tradeFee)
       if (
         Number(min) < Number(transferValue) &&
-        Number(max) >= Number(transferValue) &&
-        fee <= gasFee
+        Number(max) >= Number(transferValue)
       ) {
         gasFee = fee
       }
