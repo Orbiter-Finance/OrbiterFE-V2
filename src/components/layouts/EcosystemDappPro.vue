@@ -79,7 +79,7 @@
           :description="'🎉 OKX Cryptopedia Event is Now Live! 🚀 Claim 0.3% of the total $STAR supply on OKX!  🚀Earn 2x O-Points'"
           :isProgress="false"
           :name="'0xastra'"
-          :url="'https://0xastra.xyz/'"
+          :url="'https://www.okx.com/web3/discover/cryptopedia/event/45'"
         />
       </el-carousel-item>
         <el-carousel-item>
