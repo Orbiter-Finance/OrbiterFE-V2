@@ -1405,7 +1405,7 @@ export default {
     const tieredFeeList = tieredFee?.filter((item) => {
       const [min, max] = item?.range
       return (
-        Number(min) <= Number(transferValue) &&
+        Number(min) < Number(transferValue) &&
         Number(max) >= Number(transferValue)
       )
     })
