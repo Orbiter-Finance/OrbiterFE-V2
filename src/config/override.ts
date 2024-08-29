@@ -16,7 +16,7 @@
 
 
 // change fee
-const allRules = require('./0x3472-prod.json');
+const allRules = require('./eth-80c-prod.json');
 for (const chain in allRules) {
     const [fcId, tcId] = chain.split('-');
     for (const symbol in allRules[chain]) {
@@ -39,7 +39,7 @@ for (const chain in allRules) {
                     0.1,
                     0.3
                 ],
-                "tradeFee": 2,
+                "tradeFee": 1,
                 "withholdingFee": 0.0022
             },
             {
@@ -67,7 +67,7 @@ for (const chain in allRules) {
                     0.1,
                     0.3
                 ],
-                "tradeFee": 2,
+                "tradeFee": 1,
                 "withholdingFee": 0.0005
             },
             {
