@@ -19,7 +19,7 @@ export async function XVMSwap(
   const toChainId = +toChain.id
   const toCurrency = toChain.symbol
   const t2Address = toChain.tokenAddress
-  const slippage = +selectMakerConfig.slippage || 50
+  const slippage = +0
   const expectValue = await util.getExpectValue()
   util.log(selectMakerConfig)
   util.log(

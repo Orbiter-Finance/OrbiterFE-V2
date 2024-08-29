@@ -1,75 +1,94 @@
 <template>
-  <div class="confirm-box">
-    <CommBoxHeader
-      :back="closerButton"
-      :style="isMobile ? '' : 'margin-bottom:30px;'"
-      >Confirm</CommBoxHeader
-    >
-    <div
-      v-for="item in confirmData"
-      :key="item.title"
-      class="confirm-item"
-      :style="{ marginBottom: '22px' }"
-    >
-      <div class="confirm-item-top-group">
-        <div class="item-left">
-          <SvgIconThemed :icon="item.icon" />
-          <span class="left-txt">{{ item.title }}</span>
-          <o-tooltip placement="topLeft">
-            <template v-slot:titleDesc>
-              <span class="o-tip">{{ item.notice }}</span>
-            </template>
-            <HelpIcon v-if="item.notice" size="sm" />
-          </o-tooltip>
-        </div>
-        <div class="item-right">
-          <div v-if="item.isCom">
-            <GasObSelect></GasObSelect>
+    <div class="confirm-box">
+      <CommBoxHeader
+        :back="closerButton"
+        :style="isMobile ? '' : 'margin-bottom:30px;'"
+        >Confirm</CommBoxHeader
+      >
+      <div
+        v-for="item in confirmData"
+        :key="item.title"
+        class="confirm-item"
+        :style="{ marginBottom: '22px' }"
+      >
+        <div class="confirm-item-top-group">
+          <div class="item-left">
+            <SvgIconThemed :icon="item.icon" />
+            <span class="left-txt">{{ item.title }}</span>
+            <o-tooltip placement="topLeft">
+              <template v-slot:titleDesc>
+                <span class="o-tip">{{ item.notice }}</span>
+              </template>
+              <HelpIcon v-if="item.notice" size="sm" />
+            </o-tooltip>
           </div>
-          <div>
-            <span
-              v-if="item.desc"
-              :class="`${item.lineThrough ? 'fee' : ''} ${
-                item.tieredFee || item.discount
-                  ? 'text-decoration-line-through'
-                  : ''
-              }`"
-              >{{ item.desc }}</span
-            >
-            <div v-if="item.tieredFee" class="n-withholding-fee">
-              <div>
-                {{ item.nWithholdingFee }}
-                <span class="tiered-fee-max">(↓{{ item.tieredFee }}%)</span>
+          <div class="item-right">
+            <div v-if="item.isCom">
+              <GasObSelect></GasObSelect>
+            </div>
+            <div>
+              <span
+                v-if="item.desc"
+                :class="`${item.lineThrough ? 'fee' : ''} ${
+                  item.isTieredFee || item.isDiscount
+                    ? 'text-decoration-line-through'
+                    : ''
+                }`"
+                >{{ item.desc }}</span>
+              <div v-if="item.isDiscount" class="tiered-fee-max">
+                +{{ item.discount }}
+                </div>
+              <div v-if="item.isTieredFee" class="n-withholding-fee">
+                <div>
+                  {{ item.nWithholdingFee }}
+                  <span class="tiered-fee-max">{{ item.tieredFee }}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <span
-            :style="`text-decoration: line-through;${
-              !isMobile ? 'margin-left: 5px' : ''
-            }`"
-            v-if="item.lineThrough"
-          >
-            <span v-if="isMobile"><br /></span>
-            {{ item.lineThrough }}
-          </span>
-        </div>
-      </div>
-      <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
-        <div
-          v-for="(desc, index) in item.descInfo"
-          :key="desc.no"
-          style="margin-bottom: 1rem"
-        >
-          <span
-            style="width: 40px; display: -moz-inline-box; display: inline-block"
-          >
-            {{ index === 0 ? 'Send' : '' }}
-          </span>
-          <o-tooltip v-if="desc.fromTip" placement="topLeft">
-            <template v-slot:titleDesc>
-              <span class="o-tip">{{ desc.fromTip }}</span>
-            </template>
+            
             <span
+              :style="`text-decoration: line-through;${
+                !isMobile ? 'margin-left: 5px' : ''
+              }`"
+              v-if="item.lineThrough"
+            >
+              <span v-if="isMobile"><br /></span>
+              {{ item.lineThrough }}
+            </span>
+          </div>
+        </div>
+        <div v-if="item.descInfo && item.descInfo.length > 0" class="descBottom">
+          <div
+            v-for="(desc, index) in item.descInfo"
+            :key="desc.no"
+            style="margin-bottom: 1rem"
+          >
+            <span
+              style="width: 40px; display: -moz-inline-box; display: inline-block"
+            >
+              {{ index === 0 ? 'Send' : '' }}
+            </span>
+            <o-tooltip v-if="desc.fromTip" placement="topLeft">
+              <template v-slot:titleDesc>
+                <span class="o-tip">{{ desc.fromTip }}</span>
+              </template>
+              <span
+                style="
+                  margin-left: 0.7rem;
+                  margin-right: 0.7rem;
+                  color: #df2e2d;
+                  width: 100px;
+                  display: -moz-inline-box;
+                  display: inline-block;
+                  text-align: center;
+                  white-space: nowrap;
+                "
+              >
+                {{ desc.from }}
+              </span>
+            </o-tooltip>
+            <span
+              v-else
               style="
                 margin-left: 0.7rem;
                 margin-right: 0.7rem;
@@ -83,88 +102,72 @@
             >
               {{ desc.from }}
             </span>
-          </o-tooltip>
-          <span
-            v-else
-            style="
-              margin-left: 0.7rem;
-              margin-right: 0.7rem;
-              color: #df2e2d;
-              width: 100px;
-              display: -moz-inline-box;
-              display: inline-block;
-              text-align: center;
-              white-space: nowrap;
-            "
-          >
-            {{ desc.from }}
-          </span>
-          To
-          <o-tooltip placement="topLeft">
-            <template v-slot:titleDesc>
-              <span class="o-tip">{{ desc.toTip }}</span>
-            </template>
-            <span
-              style="
-                margin-left: 0.7rem;
-                color: #df2e2d;
-                width: 90px;
-                display: -moz-inline-box;
-                display: inline-block;
-                text-align: center;
-              "
-            >
-              {{ desc.to }}
+            To
+            <o-tooltip placement="topLeft">
+              <template v-slot:titleDesc>
+                <span class="o-tip">{{ desc.toTip }}</span>
+              </template>
+              <span
+                style="
+                  margin-left: 0.7rem;
+                  color: #df2e2d;
+                  width: 90px;
+                  display: -moz-inline-box;
+                  display: inline-block;
+                  text-align: center;
+                "
+              >
+                {{ desc.to }}
+              </span>
+            </o-tooltip>
+            <span style="margin-left: 0.3rem; vertical-align: -25%">
+              <SvgIconThemed :icon="desc.icon" />
             </span>
-          </o-tooltip>
-          <span style="margin-left: 0.3rem; vertical-align: -25%">
-            <SvgIconThemed :icon="desc.icon" />
-          </span>
+          </div>
         </div>
+        <div
+          v-if="item.haveSep"
+          style="border-bottom: 2px dashed rgba(0, 0, 0, 0.2); height: 43px"
+        ></div>
       </div>
       <div
-        v-if="item.haveSep"
-        style="border-bottom: 2px dashed rgba(0, 0, 0, 0.2); height: 43px"
-      ></div>
-    </div>
-    <div
-      v-if="isStarkNetChain"
-      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
-    >
-      <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d; flex: 1"
-        >Starknet is still in alpha version, the transaction on it maybe will be
-        done in 1~2 hours. Orbiter keeps your funds safe.</span
+        v-if="isStarkNetChain"
+        style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
       >
-    </div>
-    <div
-      style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
-    >
-      <SvgIconThemed style="margin-right: 10px" icon="info" />
-      <span style="color: #df2e2d; flex: 1"
-        >Please do not modify the transaction or remove the last four digits on
-        the transfer amount in your wallet as this will cause the transaction to
-        fail.</span
+        <SvgIconThemed style="margin-right: 10px" icon="info" />
+        <span style="color: #df2e2d; flex: 1"
+          >Starknet is still in alpha version, the transaction on it maybe will be
+          done in 1~2 hours. Orbiter keeps your funds safe.</span
+        >
+      </div>
+      <div
+        style="padding: 0 30px; display: flex; text-align: left; padding-top: 8px"
       >
+        <SvgIconThemed style="margin-right: 10px" icon="info" />
+        <span style="color: #df2e2d; flex: 1"
+          >Please do not modify the transaction or remove the last four digits on
+          the transfer amount in your wallet as this will cause the transaction to
+          fail.</span
+        >
+      </div>
+  
+      <CommBtn @click="RealTransfer" class="select-wallet-dialog">
+        <span
+          v-if="!transferLoading"
+          class="wbold s16"
+          style="letter-spacing: 0.1rem"
+          >CONFIRM AND SEND</span
+        >
+        <CommLoading
+          v-else
+          style="margin: auto"
+          loadingColor="white"
+          width="2rem"
+          height="2rem"
+        />
+      </CommBtn>
     </div>
-
-    <CommBtn @click="RealTransfer" class="select-wallet-dialog">
-      <span
-        v-if="!transferLoading"
-        class="wbold s16"
-        style="letter-spacing: 0.1rem"
-        >CONFIRM AND SEND</span
-      >
-      <CommLoading
-        v-else
-        style="margin: auto"
-        loadingColor="white"
-        width="2rem"
-        height="2rem"
-      />
-    </CommBtn>
-  </div>
-</template>
+  </template>
 
 <script>
 import {
@@ -231,16 +234,12 @@ import {
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
-import { CHAIN_ID } from '../../config'
-import { isBrowserApp, isProd } from '../../util'
-import {
-  zksyncEraGasTokenETH,
-  zksyncEraGasTokenERC20,
-  zksyncEraGasTokenContract,
-} from '../../util/zksyncEraGasToken'
-import solanaHelper from '../../util/solana/solana_helper'
-import tonHelper from '../../util/ton/ton_helper'
-import { shortString } from 'starknet'
+import { CHAIN_ID } from "../../config";
+import { isBrowserApp, isProd } from "../../util";
+import { zksyncEraGasTokenETH, zksyncEraGasTokenERC20, zksyncEraGasTokenContract } from "../../util/zksyncEraGasToken";
+import solanaHelper from '../../util/solana/solana_helper';
+import tonHelper from '../../util/ton/ton_helper';
+import { TieredFeeKey } from '../../const/index.js';
 
 const {
   walletDispatchersOnSignature,
@@ -323,14 +322,12 @@ export default {
 
       const withholdingFee = (selectMakerConfig.tradingFee || 0)
 
-      const tieredFeeMax = transferCalculate.max()
-
       let discount = transferCalculate.discount().toString()
 
       let nWithholdingFee = ethers.utils.formatEther(
         ethers.utils
           .parseEther(withholdingFee + '')
-          .sub(ethers.utils.parseEther(discount))
+        //   .sub(ethers.utils.parseEther(discount))
       )
 
       if (
@@ -350,6 +347,16 @@ export default {
         )
       }
 
+      const [revicedAmount, revicedSymbol] = this.expectValue.split(" ")
+
+      const nRevicedAmount = ethers.utils.formatEther(
+        ethers.utils.parseEther(revicedAmount.trim() || "0").add(
+            ethers.utils.parseEther(discount.trim()||"0")
+        )
+      )
+
+      console.log("nRevicedAmount", discount, nRevicedAmount)
+
       const isGasTokenChain = this.currentFromChainID === CHAIN_ID.zksync2
       const comm = [
         {
@@ -358,7 +365,9 @@ export default {
           notice:
             'The ‘Maker’ charges the ‘Sender’ a fixed fee to cover the fluctuating gas fees that incur when sending funds to the destination network.',
           desc: selectMakerConfig.tradingFee + ' ' + symbol,
-          tieredFee: tieredFeeMax,
+        //   tieredFee: type === TieredFeeKey.discountFee ? `(↓${tieredFeeMax}%)` : "",
+        //   isTieredFee: !!Number(tieredFeeMax),
+            isTieredFee: false,
           nWithholdingFee:
             nWithholdingFee + ' ' + selectMakerConfig.fromChain.symbol,
           lineThrough:
@@ -389,6 +398,10 @@ export default {
         {
           icon: 'received',
           title: 'Received',
+          isDiscount: !!Number(discount),
+          discount:  nRevicedAmount +
+            ' ' +
+                revicedSymbol,
           desc: this.expectValue,
           ...(bridgeType1
             ? {
@@ -2665,19 +2678,18 @@ export default {
 
       .n-withholding-fee {
         margin-top: -8px;
-
-        .tiered-fee-max {
-          margin-top: -8px;
-          font-size: 12px;
-          color: #df2e2d;
-          font-weight: 700;
-        }
-        .tiered-fee-discount {
-          margin-top: -8px;
-          font-size: 12px;
-          color: #3183ff;
-          font-weight: 700;
-        }
+      }
+      .tiered-fee-max {
+        margin-top: -8px;
+        font-size: 12px;
+        color: #df2e2d;
+        font-weight: 700;
+      }
+      .tiered-fee-discount {
+        margin-top: -8px;
+        font-size: 12px;
+        color: #3183ff;
+        font-weight: 700;
       }
     }
 
