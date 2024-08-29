@@ -336,11 +336,11 @@ export default {
           icon: 'salmon',
           title: 'Salmon',
         },
-        {
-          isConnect: false,
-          icon: 'solflare',
-          title: 'Solflare',
-        }
+        // {
+        //   isConnect: false,
+        //   icon: 'solflare',
+        //   title: 'Solflare',
+        // }
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',

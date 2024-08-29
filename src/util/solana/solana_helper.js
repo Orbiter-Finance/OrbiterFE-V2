@@ -222,14 +222,15 @@ const bridgeType1transfer = async ({
   const decimals = tokens
     .concat([chainInfo?.nativeCurrency || {}])
     ?.filter((item) => item.address === feeToken)?.[0]?.decimals
-  console.log('decimals', decimals)
+  const tokenToReceiver = tokens
+    .concat([chainInfo?.nativeCurrency || {}])
+    ?.filter((item) => item.address === tokenAddress)?.[0]?.tokenToReceiver
   const provider = getProvider()
 
   const programId = getPublicKey(contractAddress)
   const program = new Program(SOLANA_OPOOL_ABI, programId, provider)
   const state = group.state
   const feeReceiver = group.feeReceiver
-  const tokenToReceiver = group.tokenToReceiver
 
   const memo = Buffer.from(
     utils.hexlify(utils.toUtf8Bytes(`c=${safeCode}&t=${targetAddress}`)),
@@ -271,9 +272,11 @@ const bridgeType1transfer = async ({
         .instruction()
     )
 
-  const signature = await provider.signAndSendTransaction(tokenTransaction)
+  const signedTx = await provider.signTransaction(tokenTransaction)
 
-  return signature.signature
+  const signature = await connection.sendRawTransaction(signedTx.serialize())
+
+  return signature
 }
 const activationTokenAccount = async ({ toChainID, fromCurrency, chainId }) => {
   const chainInfo = await util.getV3ChainInfoByChainId(toChainID)

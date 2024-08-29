@@ -613,7 +613,9 @@ export default {
         } else {
           let memo = `c=${safeCode}`
 
-          
+          const provider = new ethers.providers.Web3Provider(
+              compatibleGlobalWalletConf.value.walletPayload.provider
+            )
 
           const signer = provider.getSigner()
             if (
@@ -628,9 +630,6 @@ export default {
                 memo = `c=${safeCode}&t=${toAddress}`
               }
             }
-            const provider = new ethers.providers.Web3Provider(
-              compatibleGlobalWalletConf.value.walletPayload.provider
-            )
 
           const feeToken = contractInfo?.feeToken
 
@@ -738,6 +737,7 @@ export default {
           this.onTransferSucceed(from, amountValue, fromChainID, hash)
         }
       } catch (err) {
+        console.error('eeeee====',new Error(err))
         console.error('BridgeType1Transfer error', err)
         this.$notify.error({
           title: err?.data?.message || err.message,
