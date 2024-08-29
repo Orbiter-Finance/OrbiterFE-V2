@@ -149,6 +149,9 @@ export default {
     } else if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
       return null
     }
+    if (orbiterHelper.isFractalChain({ chainId: fromChainID })) {
+      return null
+    }
     if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test
@@ -1078,12 +1081,12 @@ export default {
       )
       return res || '0'
     } else if (orbiterHelper.isFractalChain({ chainId: localChainID })) {
-      console.log('isMaker', isMaker)
       const res = await fractalHelper.getBalance(
         userAddress,
         tokenAddress,
         localChainID
       )
+      console.log('res', res)
       return res || '0'
     } else if (orbiterHelper.isSolanaChain({ chainId: localChainID })) {
       try {
