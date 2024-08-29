@@ -287,7 +287,7 @@ p {
 }
 
 .orbiter_global_prizes_tx-color {
-  color: #FFBA56;
+  color: #3B7FFF;
 }
 
 .orbiter_global_prizes_tips_underline {
@@ -298,7 +298,7 @@ p {
   color: #FF4F4F;
 }
 
-.orbiter_global_prizes_rule_tag {
+#app .orbiter_global_prizes_rule_tag {
   color: #f3ba2f;
   font-family: GeneralSans-SemiBold;
 }
