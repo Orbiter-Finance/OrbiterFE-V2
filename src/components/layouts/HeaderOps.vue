@@ -55,7 +55,7 @@
       </span>
       <!-- <span @click="showHistory" class="ops-item">History</span> -->
       <div
-        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon"
+        v-if="isSelectedStarkNet || isSelectedSolana || isSelectedTon || isSelectedTron"
         ref="connectedStarkNetBtn"
         @click="connectStarkNetWallet"
         class="ops-item center"
@@ -120,7 +120,9 @@ import {
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
   setClaimCardModalShow,
-  setActPointFetchStatus
+  setActPointFetchStatus,
+  setTronDialog,
+  tronChainAddress
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -134,6 +136,8 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { decimalNum } from '../../util/decimalNum'
 import { ethers } from 'ethers'
+import { ChainId } from '@loopring-web/loopring-sdk';
+import orbiterHelper from '../../util/orbiter_helper.js';
 
 let timer1
 
@@ -201,7 +205,8 @@ export default {
         walletIsLogin.value ||
         this.isSelectedStarkNet ||
         this.isSelectedSolana ||
-        this.isSelectedTon
+        this.isSelectedTon || 
+        this.isSelectedTron
       )
     },
     isSelectedStarkNet() {
@@ -222,6 +227,13 @@ export default {
         toChainID === CHAIN_ID.solana_test
       )
     },
+    isSelectedTron() {
+      const { fromChainID, toChainID } = transferDataState
+      return (
+        orbiterHelper.isTronChain({chainId: fromChainID}) || 
+        orbiterHelper.isTronChain({chainId: toChainID})
+      )
+    },
     isSelectedTon() {
       const { fromChainID, toChainID } = transferDataState
       return (
@@ -240,6 +252,9 @@ export default {
     tAddress() {
       return tonAddress()
     },
+    tronAddress() {
+      return tronChainAddress()
+    },
     showAddress() {
       return showAddress()
     },
@@ -255,6 +270,7 @@ export default {
             setSolanaDialog(false)
             setStarkNetDialog(false)
             setTonDialog(true)
+            setTronDialog(false)
           },
           icon: CHAIN_ID.ton,
         },
@@ -269,8 +285,24 @@ export default {
             setSolanaDialog(true)
             setStarkNetDialog(false)
             setTonDialog(false)
+            setTronDialog(false)
           },
           icon: solanaHelper.readWalletName() || CHAIN_ID.solana,
+        },
+        {
+          address: this.tronAddress,
+          isSelected: this.isSelectedTron,
+          connect: () => {
+            setConnectWalletGroupKey('TRON')
+            setSelectWalletDialogVisible(true)
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(false)
+            setTronDialog(true)
+          },
+          icon: web3State.tron.tronWalletIcon || ChainId.tron,
         },
         {
           address: this.starkAddress,
@@ -283,6 +315,7 @@ export default {
             setStarkNetDialog(true)
             setSolanaDialog(false)
             setTonDialog(false)
+            setTronDialog(false)
           },
           icon: CHAIN_ID.starknet,
         },
@@ -317,6 +350,7 @@ export default {
     },
     connectAddress() {
       const option = this.otherAddress.filter((item) => item.isSelected)[0]
+      console.log("option", option)
       const address = option?.address || 'Connect Wallet'
       return address
     },
@@ -339,6 +373,8 @@ export default {
       selectedWallet,
       recaptchaId: 0,
       timeList: [],
+      fromGroup: null,
+      toGroup: null,
     }
   },
   watch: {
@@ -385,6 +421,7 @@ export default {
           setTonDialog(false)
           setSolanaDialog(false)
           setStarkNetDialog(false)
+          setTronDialog(false)
           setActDialogVisible(true)
         },
       }

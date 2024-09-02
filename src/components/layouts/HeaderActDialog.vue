@@ -290,7 +290,10 @@ import {
   setUserInfoDetailsCardModalShow,
   setOPointsCardModalShow,
   setActPointRank,
-  questsInfoList
+  questsInfoList,
+  isTronDialog,
+  tronChainAddress,
+  setTronDialog
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -321,6 +324,7 @@ import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
 import ScrollNftConfig from "../../const/scroll-NFT.json"
+import tronHelper from '../../util/tron/tron_helper';
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -454,6 +458,9 @@ export default {
       return isSolanaDialog.value
     },
     showWalletAddress() {
+      if(isTronDialog.value) {
+        return tronChainAddress()
+      }
       if(isTonDialog.value) {
         return tonAddress()
       }
@@ -466,6 +473,9 @@ export default {
       return starkAddress()
     },
     currentWalletAddress() {
+      if(isTronDialog.value) {
+        return web3State.tron.tronAddress
+      }
       if(isTonDialog.value) {
         return tonHelper.account()
       }
@@ -485,6 +495,9 @@ export default {
       if(isSolanaDialog.value) {
         return CHAIN_ID.solana
       }
+      if(isTronDialog.value) {
+        return web3State.tron.tronChain
+      }
       if (!isStarkNetDialog.value) {
         return compatibleGlobalWalletConf.value.walletPayload.networkId
       } else {
@@ -496,6 +509,9 @@ export default {
         return util.netWorkName(
           !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
         )
+      }
+      if(!!isTronDialog.value) {
+        return web3State.tron.tronChain
       }
       if(!!isSolanaDialog.value) {
         return util.netWorkName(
@@ -519,6 +535,9 @@ export default {
       }
       if(!!isSolanaDialog.value) {       
         return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
+      }
+      if(!!isTronDialog.value) {       
+        return web3State.tron.tronWalletIcon
       }
       if (!isStarkNetDialog.value) {
         const walletName = String(compatibleGlobalWalletConf.value.walletType)
@@ -737,7 +756,11 @@ export default {
     },
     async disconnect() {
       try {
-        if(!!isTonDialog.value) {
+        if(!!isTronDialog.value) {
+          await tronHelper.disConnect()
+          setConnectWalletGroupKey("TRON")
+          setTronDialog(false)
+        }else if(!!isTonDialog.value) {
           await tonHelper.disconnect()
         }else if(!!isSolanaDialog.value) {
           await solanaHelper.disConnect()

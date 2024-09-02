@@ -27,6 +27,13 @@ export const web3State = reactive({
   ton: {
     tonAddress: '',
   },
+  tron: {
+    tronAddress: '',
+    tronWalletName: '',
+    tronWalletIcon: '',
+    tronIsConnected: false,
+    tronChain: '',
+  },
 })
 
 export function updateCoinbase(coinbase) {

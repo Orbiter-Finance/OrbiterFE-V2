@@ -117,6 +117,7 @@ import {
 } from './common/openApiAx'
 import { ethers } from 'ethers'
 import { CHAIN_ID } from './config';
+import orbiterHelper from './util/orbiter_helper';
 
 const { walletDispatchersOnInit } = walletDispatchers
 
@@ -157,11 +158,14 @@ export default {
     currentWalletAddress() {
       const solanaAddress =
         web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+        const tronAddress =
+        web3State.tron.tronAddress || solanaHelper.solanaAddress()
       const tonAddress = web3State.ton.tonAddress || tonHelper?.account()
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress,
         web3State.starkNet.starkNetAddress,
         solanaAddress,
+        tronAddress,
         tonAddress,
         ...[],
       ]
@@ -288,36 +292,36 @@ export default {
           this.getNftList()
       }
     },
-    currentWalletAddress: function (newAddress, oldAddress) {
-      const [web3Address, starkNetAddress] = newAddress
-      const [web3OldAddress] = oldAddress || []
-      const solanaAddress = solanaHelper.solanaAddress()
-      const tonAddress = tonHelper.account()
-      if (web3Address && web3Address !== web3OldAddress) {
-        setClaimCardModalShow(false, '')
-        if(this.isTopNav) {
-          this.getClaimRewardModalData()
-        }
-      }
-      if (tonAddress) {
-        setTonDialog(true)
-        setActDialogVisible(true)
-      } else if (solanaAddress) {
-        setSolanaDialog(true)
-        setActDialogVisible(true)
-      } else if (starkNetAddress) {
-        setStarkNetDialog(true)
-        setActDialogVisible(true)
-      }
+    // currentWalletAddress: function (newAddress, oldAddress) {
+    //   const [web3Address, starkNetAddress] = newAddress
+    //   const [web3OldAddress] = oldAddress || []
+    //   const solanaAddress = solanaHelper.solanaAddress()
+    //   const tonAddress = tonHelper.account()
+    //   if (web3Address && web3Address !== web3OldAddress) {
+    //     setClaimCardModalShow(false, '')
+    //     if(this.isTopNav) {
+    //       this.getClaimRewardModalData()
+    //     }
+    //   }
+    //   if (tonAddress) {
+    //     setTonDialog(true)
+    //     setActDialogVisible(true)
+    //   } else if (solanaAddress) {
+    //     setSolanaDialog(true)
+    //     setActDialogVisible(true)
+    //   } else if (starkNetAddress) {
+    //     setStarkNetDialog(true)
+    //     setActDialogVisible(true)
+    //   }
 
-      if (!!web3Address || !!starkNetAddress) {
-        if(this.isTopNav) {
-          this.getWalletAddressActList()
-          this.getWalletAddressPoint()
-          this.getNftList()
-        }
-      }
-    },
+    //   if (!!web3Address || !!starkNetAddress) {
+    //     if(this.isTopNav) {
+    //       this.getWalletAddressActList()
+    //       this.getWalletAddressPoint()
+    //       this.getNftList()
+    //     }
+    //   }
+    // },
     fromChainID: function(a, b) {
       if(a && a !== b) {
         this.connectWallet(a)
@@ -326,33 +330,10 @@ export default {
   },
   methods: {
     async connectWallet(chainId){
-      let toAddress = ""
-      let open = () => {}
-      if(CHAIN_ID.ton === chainId || CHAIN_ID.ton_test === chainId ) {
-        toAddress = tonHelper.account()
-        open = async () => {
-          await tonHelper.connect()
-        }
-      } else  if(CHAIN_ID.solana === chainId || CHAIN_ID.solana_test === chainId ) {
-        toAddress = web3State.solana.solanaAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('SOLANA')
-        }
-      } else  if(CHAIN_ID.starknet === chainId || CHAIN_ID.starknet_test === chainId) {
-        toAddress = this.starkAddress
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('STARKNET')
-        }
-      } else {
-        toAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
-        open = () => {
-          setSelectWalletDialogVisible(true)
-          setConnectWalletGroupKey('EVM')
-        }
-      }
-      if(!toAddress || toAddress === "0x") {
+      const currentInfo = orbiterHelper.currentConnectChainInfo({chainId})
+      const toAddress = currentInfo?.address
+      const open = currentInfo?.open
+      if((!toAddress || toAddress === "0x") && open) {
         await open()
         return
       }

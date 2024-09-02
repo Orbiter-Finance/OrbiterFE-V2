@@ -57,6 +57,23 @@
             </div>
           </div>
         </div>
+        <div
+        v-else-if="connectWalletGroupKey === 'TRON'"
+        class="wallet-group"
+      >
+        <div class="wallet-group-title">Tron Wallet</div>
+        <div class="wallet-group-list">
+          <div
+            v-for="item in tronWallet"
+            :key="item.title"
+            class="wallet-item"
+            @click="connectTronWallet(item)"
+          >
+            <svg-icon class="wallet-icon" :iconName="item.icon"></svg-icon>
+            <span class="wallet-title">{{ item.title }}</span>
+          </div>
+        </div>
+      </div>
       </div>
     </div>
   </div>
@@ -105,10 +122,7 @@ import { walletConnectDispatcherOnInit } from '../../util/walletsDispatchers/pcB
 
 import { store } from '../../store'
 import solanaHelper from '../../util/solana/solana_helper'
-
-import { THEME, TonConnectUI } from '@tonconnect/ui'
-import * as TonconnectUI from '@tonconnect/ui'
-import * as TonconnectUiSdk from '@tonconnect/sdk'
+import tronHelper from '../../util/tron/tron_helper';
 
 let ton
 
@@ -277,14 +291,29 @@ export default {
         },
         {
           isConnect: false,
-          icon: 'solflare',
-          title: 'Solflare',
+          icon: 'nightly',
+          title: 'Nightly',
         }
         // {
         //     isConnect: false,
         //     icon: 'trustwallet',
         //     title: TRUSTWALLET_APP,
         // }
+      ]
+      return wallets
+    },
+    tronWallet() {
+      const wallets = [
+        {
+          isConnect: false,
+          icon: 'okxwallet',
+          title: 'OKXWallet',
+        },
+        {
+          isConnect: false,
+          icon: 'tronLink',
+          title: 'TronLink',
+        }
       ]
       return wallets
     },
@@ -299,6 +328,13 @@ export default {
     },
     checkIsMobileEnv() {
       return isMobileDevice()
+    },
+    async connectTronWallet(item) {
+      const status = await tronHelper.connect(item.icon)
+
+      this.closeSelectWalletDialog()
+
+      return
     },
     async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)

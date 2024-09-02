@@ -241,6 +241,7 @@ import {
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { shortString } from 'starknet'
+import tronHelper from '../../util/tron/tron_helper.js';
 
 const {
   walletDispatchersOnSignature,
@@ -277,6 +278,13 @@ export default {
         fromChainID === CHAIN_ID.solana_test ||
         toChainID === CHAIN_ID.solana ||
         toChainID === CHAIN_ID.solana_test
+      )
+    },
+    isTronChain() {
+      const { fromChainID, toChainID } = transferDataState
+      return (
+        fromChainID === CHAIN_ID.tron_nile_test ||
+        toChainID === CHAIN_ID.tron_nile_test
       )
     },
     isTonChain() {
@@ -337,7 +345,9 @@ export default {
         (fromChainID === CHAIN_ID.solana ||
         fromChainID === CHAIN_ID.solana_test ||
         fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test)&& !bridgeType1
+        fromChainID === CHAIN_ID.ton_test || 
+        fromChainID === CHAIN_ID.tron_nile_test
+      )&& !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -719,6 +729,17 @@ export default {
         if (!toAddress || !isConnected) {
           setSelectWalletDialogVisible(true)
           setConnectWalletGroupKey('SOLANA')
+          return
+        }
+      }
+
+      if (toChainID === CHAIN_ID.tron_nile_test) {
+        toAddress = web3State.tron.tronAddress
+        isConnected = web3State.tron.tronIsConnected
+
+        if (!toAddress || !isConnected) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
           return
         }
       }
@@ -1373,6 +1394,19 @@ export default {
           memo = `${p_text}_${solanaAddress}`
         }
 
+        if (
+          toChainID === CHAIN_ID.tron_nile_test
+        ) {
+          const tronAddress = web3State.tron.tronAddress
+          const isConnected = web3State.tron.tronIsConnected
+          if (!isConnected || !tronAddress) {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey('TRON')
+            return
+          }
+          memo = `${p_text}_${tronAddress}`
+        }
+
         if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
           const tonAddress = tonHelper.account()
           const tonIsConnected = tonHelper.isConnected()
@@ -1595,6 +1629,20 @@ export default {
         }
       }
 
+      if (toChainID === CHAIN_ID.tron_nile_test) {
+        const tronAddress = web3State.tron.tronAddress
+        const isConnect = web3State.tron.tronIsConnected
+
+        targetAddress = tronAddress
+
+        if (!tronAddress || !isConnect) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
+          this.transferLoading = false
+          return
+        }
+      }
+
       if (
         toChainID === CHAIN_ID.starknet ||
         toChainID === CHAIN_ID.starknet_test
@@ -1711,6 +1759,19 @@ export default {
           return
         }
       }
+      if (toChainID === CHAIN_ID.tron_nile_test) {
+        const tronAddress = web3State.tron.tronAddress
+        const isConnect = web3State.tron.tronIsConnected
+
+        targetAddress = tronAddress
+
+        if (!tronAddress || !isConnect) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
+          this.transferLoading = false
+          return
+        }
+      }
       try {
         const tokenAddress = selectMakerConfig.fromChain.tokenAddress
 
@@ -1745,6 +1806,116 @@ export default {
       } finally {
         this.transferLoading = false
       }
+    },
+    async tronTransfer(value) {
+
+      console.log('value', value)
+      const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+        transferDataState
+
+      const isConnected = web3State.tron.tronIsConnected
+      let from = web3State.tron.tronAddress
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('TRON')
+        this.transferLoading = false
+        return
+      }
+
+      const safeCode = transferCalculate.safeCode()
+
+      const { starkNetAddress, starkChain } = web3State.starkNet
+
+      const rAmount = new BigNumber(transferValue)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+      const rAmountValue = rAmount.toFixed()
+
+      const evmAddress =
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+      let targetAddress = evmAddress
+
+      if (
+        toChainID === CHAIN_ID.starknet ||
+        toChainID === CHAIN_ID.starknet_test
+      ) {
+        targetAddress = starkNetAddress
+
+        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+          util.showMessage('please connect Starknet Wallet', 'error')
+          this.transferLoading = false
+          return
+        }
+
+        if (!starkNetAddress) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+          this.transferLoading = false
+          return
+        }
+      }
+
+      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+        const solanaAddress = solanaHelper.solanaAddress()
+        const isConnect = solanaHelper.isConnect()
+
+        targetAddress = solanaAddress
+
+        if (!solanaAddress || !isConnect) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+          this.transferLoading = false
+          return
+        }
+      }
+
+      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+        targetAddress = tonHelper.account()
+        const isConnected = await tonHelper.isConnected()
+
+        if (!targetAddress || !isConnected) {
+          await tonHelper.connect()
+          return
+        }
+      }
+      try {
+        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+        const hash = await tronHelper.transfer({
+          from,
+          to: selectMakerConfig.recipient,
+          tokenAddress,
+          targetAddress,
+          amount: rAmountValue,
+          safeCode,
+          chainId: fromChainID
+        })
+        try {
+          this.$gtag.event('click', {
+            event_category: 'Transfer',
+            event_label: selectMakerConfig.recipient,
+            userAddress: from,
+            hash: hash,
+          })
+        } catch (error) {
+          console.error('click error', error)
+        }
+
+        if (hash) {
+          this.onTransferSucceed(from, value, fromChainID, hash)
+        }
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
     },
     async starknetTransfer(value) {
       const {
@@ -1794,7 +1965,8 @@ export default {
         toChainID === CHAIN_ID.solana ||
         toChainID === CHAIN_ID.solana_test ||
         toChainID === CHAIN_ID.ton ||
-        toChainID === CHAIN_ID.ton_test
+        toChainID === CHAIN_ID.ton_test || 
+        toChainID === CHAIN_ID.tron_nile_test
       ) {
         if (
           toChainID === CHAIN_ID.solana ||
@@ -1811,6 +1983,25 @@ export default {
           } else {
             setSelectWalletDialogVisible(true)
             setConnectWalletGroupKey('SOLANA')
+            this.transferLoading = false
+            return
+          }
+        }
+
+        if (
+          toChainID === CHAIN_ID.tron_nile_test
+        ) {
+          const isConnect = web3State.tron.tronIsConnected
+          if (isConnect) {
+            to = web3State.tron.tronAddress
+            if (!to) {
+              util.showMessage('Tron Address Error: ' + to, 'error')
+              this.transferLoading = false
+              return
+            }
+          } else {
+            setSelectWalletDialogVisible(true)
+            setConnectWalletGroupKey('TRON')
             this.transferLoading = false
             return
           }
@@ -2131,6 +2322,17 @@ export default {
         }
       }
 
+      if (toChainID === CHAIN_ID.tron_nile_test) {
+        toAddress = web3State.tron.tronAddress
+        const isConnected = web3State.tron.tronIsConnected
+
+        if (!toAddress || !isConnected) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('TRON')
+          return
+        }
+      }
+
       if (toChainID === CHAIN_ID.ton) {
         toAddress = tonHelper.account()
         const isConnected = tonHelper.isConnected()
@@ -2230,7 +2432,8 @@ export default {
         fromChainID !== CHAIN_ID.solana &&
         fromChainID !== CHAIN_ID.solana_test &&
         fromChainID !== CHAIN_ID.ton &&
-        fromChainID !== CHAIN_ID.ton_test
+        fromChainID !== CHAIN_ID.ton_test &&
+        fromChainID !== CHAIN_ID.tron_nile_test
       ) {
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
@@ -2345,6 +2548,13 @@ export default {
           return
         }
 
+        if (
+          fromChainID === CHAIN_ID.tron_nile_test
+        ) {
+          this.tronTransfer(tValue.tAmount)
+          return
+        }
+
         if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           this.tonTransfer(tValue.tAmount)
           return
@@ -2374,7 +2584,8 @@ export default {
           toChainID === CHAIN_ID.solana ||
           toChainID === CHAIN_ID.solana_test ||
           toChainID === CHAIN_ID.ton ||
-          toChainID === CHAIN_ID.ton_test
+          toChainID === CHAIN_ID.ton_test ||
+          toChainID === CHAIN_ID.tron_nile_test
         ) {
           await this.transferToSolanaOrTon()
           this.transferLoading = false

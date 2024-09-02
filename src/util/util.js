@@ -12,6 +12,7 @@ import { validateAndParseAddress } from 'starknet'
 import { shuffle, uniq } from 'lodash'
 import { RequestMethod, requestOpenApi } from '../common/openApiAx'
 import solanaHelper from './solana/solana_helper.js'
+import orbiterHelper from './orbiter_helper.js'
 let chainsList = []
 
 export default {
@@ -464,6 +465,9 @@ export default {
       CHAIN_ID.starknet_test,
       CHAIN_ID.solana,
       CHAIN_ID.solana_test,
+      CHAIN_ID.tron_nile_test,
+      CHAIN_ID.tron_shasta_test,
+      CHAIN_ID.tron,
       CHAIN_ID.ton,
       CHAIN_ID.ton_test,
       CHAIN_ID.imx,
@@ -533,6 +537,14 @@ export default {
       fromChainID === CHAIN_ID.solana_test ||
       toChainID === CHAIN_ID.solana ||
       toChainID === CHAIN_ID.solana_test
+    )
+  },
+
+  isTron() {
+    const { fromChainID, toChainID } = transferDataState
+    return (
+      orbiterHelper.isTronChain({ chainId: fromChainID }) ||
+      orbiterHelper.isTronChain({ chainId: toChainID })
     )
   },
 

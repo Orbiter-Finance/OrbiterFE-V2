@@ -402,6 +402,9 @@ export default {
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
         userAddress = solanaHelper.solanaAddress()
       }
+      if (toChainID === CHAIN_ID.tron_nile_test) {
+        userAddress = web3State.tron.tronAddress
+      }
       if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
         userAddress = tonHelper.account()
       }
@@ -490,6 +493,9 @@ export default {
       if (chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test) {
         userAddress = solanaHelper.solanaAddress()
       }
+      if (chainId === CHAIN_ID.tron_nile_test) {
+        userAddress = web3State.tron.tronAddress
+      }
       if (chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test) {
         userAddress = tonHelper.account()
       }
@@ -575,6 +581,11 @@ export default {
         ) {
           userAddress = solanaHelper.solanaAddress()
         }
+        if (
+          fromChainID === CHAIN_ID.tron_nile_test
+        ) {
+          userAddress = web3State.tron.tronAddress
+        }
         if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           userAddress = tonHelper.account()
         }
@@ -622,6 +633,11 @@ export default {
           toChainID === CHAIN_ID.solana_test
         ) {
           userAddress = solanaHelper.solanaAddress()
+        }
+        if (
+          toChainID === CHAIN_ID.tron_nile_test
+        ) {
+          userAddress = web3State.tron.tronAddress
         }
         if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
           userAddress = tonHelper.account()
@@ -724,6 +740,11 @@ export default {
           fromChainID === CHAIN_ID.solana_test
         ) {
           userAddress = solanaHelper.solanaAddress()
+        }
+        if (
+          fromChainID === CHAIN_ID.tron_nile_test
+        ) {
+          userAddress = web3State.tron.tronAddress
         }
         if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
           userAddress = tonHelper.account()

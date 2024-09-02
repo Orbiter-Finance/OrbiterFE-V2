@@ -4,6 +4,7 @@ import zkspace from '../actions/zkspace'
 import { getStarkNonce } from '../../util/constants/starknet/helper'
 import util from '../../util/util'
 import { CHAIN_ID } from '../../config'
+import orbiterHelper from '../../util/orbiter_helper'
 
 export default {
   getNonce: async function (
@@ -46,6 +47,8 @@ export default {
       localChainID === CHAIN_ID.solana ||
       localChainID === CHAIN_ID.solana_test
     ) {
+      return 0
+    } else if (orbiterHelper.isTronChain({ chainId: localChainID })) {
       return 0
     } else if (
       localChainID === CHAIN_ID.ton ||

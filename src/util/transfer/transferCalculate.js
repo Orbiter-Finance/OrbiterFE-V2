@@ -31,6 +31,8 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
 import { zeroAddress } from 'viem'
+import tronHelper from '../tron/tron_helper'
+import orbiterHelper from '../orbiter_helper'
 
 // zk deposit
 const ZK_ERC20_DEPOSIT_APPROVEL_ONL1 = 45135
@@ -618,6 +620,16 @@ export default {
       // solana cost
       ethGas = 15 * 10 ** 3
     }
+    if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
+      // trx cost
+      console.log('selectMakerConfig', selectMakerConfig)
+      await tronHelper.metisGas({
+        chainId: fromChainID,
+        tokenAddress: selectMakerConfig?.fromChain?.tokenAddress,
+        makerAddress: selectMakerConfig?.recipient,
+      })
+      ethGas = 0
+    }
     if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
       // solana cost
       ethGas = 1 * 10 ** 8
@@ -1064,6 +1076,19 @@ export default {
 
         return String(tokenAccountBalance || '0')
       } catch (error) {
+        return '0'
+      }
+    } else if (localChainID === CHAIN_ID.tron_nile_test) {
+      try {
+        const tokenAccountBalance = await tronHelper.getBalance({
+          chainId: localChainID,
+          userAddress,
+          tokenAddress,
+        })
+
+        return String(tokenAccountBalance || '0')
+      } catch (error) {
+        console.log('error', error)
         return '0'
       }
     } else if (

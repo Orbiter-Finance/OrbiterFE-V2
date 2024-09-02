@@ -560,7 +560,18 @@
       "Etherscan"
     ],
     "debug": false,
-    "contracts": [],
+    "contracts": [
+      {
+        "name": "OrbiterRouterV3",
+        "address": "0x78606Ea26275F6180745480FaF74E311586EB652",
+        "methods": [
+          "transfer(address,bytes)",
+          "transferToken(address,address,uint256,bytes)",
+          "transfers(address[],uint256[])",
+          "transferTokens(address,address[],uint256[])"
+        ]
+      }
+    ],
     "nativeCurrency": {
       "name": "ETH",
       "symbol": "ETH",
@@ -585,7 +596,14 @@
         "symbol": "USDC",
         "decimals": 6,
         "address": "0x5da066443180476e8f113546a0D112517D0d4915"
+      },
+      {
+        "name": "JST",
+        "symbol": "JST",
+        "decimals": 18,
+        "address": "0xb811b64cafad00062cf11dbaecde850f7a009365"
       }
+
     ],
     "infoURL": "https://sepolia.etherscan.io"
   },
@@ -629,8 +647,8 @@
         "makerValid": "C9ujSCZc7Z5HP5CBCYR1wVKGEuWnNbAoyi43EU12e3YU",
         "authority": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
         "feeReceiver": "EreFj1KD2HqsbbwehDLdkUSTju7kPEzRWXyHU9RBBYxQ",
-        "tokenToReceiver":"DJajVJ9MSngXjRAVxJeK9Z4g5gudwT6VAodJF1A2eAaV",
-        "feeToken":"9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
+        "tokenToReceiver": "DJajVJ9MSngXjRAVxJeK9Z4g5gudwT6VAodJF1A2eAaV",
+        "feeToken": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
         "methods": []
       }
     ],
@@ -1011,7 +1029,7 @@
     "name": "Bomechain",
     "debug": false,
     "service": {
-        "rpc": "EVMRpcScanningV6Service"
+      "rpc": "EVMRpcScanningV6Service"
     },
     "features": [
       {
@@ -1019,7 +1037,7 @@
       }
     ],
     "contract": {
-      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2":"OPool"
+      "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2": "OPool"
     },
     "nativeCurrency": {
       "name": "BOME",
@@ -1041,15 +1059,64 @@
     "infoURL": "https://testnet.bomescan.org",
     "contracts": [
       {
-                "name": "OPool",
-                "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
-                "feeToken": "0x0000000000000000000000000000000000000000",
-                "methods": [
-                    "inbox(address,address,uint256,bytes)",
-                    "outbox(address,address,uint256,bytes)",
-                  "outboxBatch(address,address[],uint256[],bytes[])"
-                ]
-            }
+        "name": "OPool",
+        "address": "0x6f5dc9DD1ab7C9277493F26A551a688eF85E52b2",
+        "feeToken": "0x0000000000000000000000000000000000000000",
+        "methods": [
+          "inbox(address,address,uint256,bytes)",
+          "outbox(address,address,uint256,bytes)",
+          "outboxBatch(address,address[],uint256[],bytes[])"
+        ]
+      }
     ]
+  },
+  {
+    "api": {
+      "url": "https://nile.trongrid.io",
+      "key": "f696c7e9-8b72-4859-9e98-97ef6689f3bf"
+    },
+    "chainId": "Tron_Nile",
+    "networkId": "Tron_Nile",
+    "internalId": "579",
+    "name": "Tron Nile Testnet",
+    "debug": true,
+    "service": {
+      "rpc": "TronRpcScanningService"
+    },
+    "features": [],
+    "contract": {
+      "TE2YfPnKDZFKmwpAJvDReV7m8TUtpuhhrt": "OrbiterRouterV3"
+    },
+    "nativeCurrency": {
+      "name": "TRX",
+      "symbol": "TRX",
+      "decimals": 6,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://nile.trongrid.io"
+    ],
+    "tokens": [
+      {
+        "name": "JST",
+        "symbol": "JST",
+        "decimals": 18,
+        "address": "TF17BgPaZYbz8oxbjhriubPDsA7ArKoLX3"
+      }
+    ],
+    "infoURL": "https://tron.network",
+    "contracts": [
+      {
+        "name": "OrbiterRouterV3",
+        "address": "TE2YfPnKDZFKmwpAJvDReV7m8TUtpuhhrt",
+        "methods": [
+          "transfer(address,bytes)",
+          "transferToken(address,address,uint256,bytes)",
+          "transfers(address[],uint256[])",
+          "transferTokens(address,address[],uint256[])"
+        ]
+      }
+    ],
+    "vm": "TRONVM"
   }
 ]

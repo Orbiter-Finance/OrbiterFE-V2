@@ -153,7 +153,8 @@ import {
   setClaimCardModalShow,
   transferDataState,
   web3State,
-  setTonDialog
+  setTonDialog,
+  setTronDialog
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -169,6 +170,7 @@ import util from '../../util/util'
 import { CHAIN_ID } from '../../config';
 import tonHelper from '../../util/ton/ton_helper';
 import solanaHelper from '../../util/solana/solana_helper';
+import orbiterHelper from '../../util/orbiter_helper';
 
 
 export default {
@@ -246,7 +248,7 @@ export default {
     starkAddress() {
       return starkAddress()
     },
-    solanaAddress() {
+    solAddress() {
       return solAddress()
     },
     tAddress() {
@@ -260,6 +262,9 @@ export default {
     },
     solanaAddress() {
       return web3State.solana.solanaAddress
+    },
+    tronAddress() {
+      return web3State.tr.tronAddress
     },
     starkNetAddress() {
       return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
@@ -365,9 +370,12 @@ export default {
     web3Address: function () {
       this.initGetAddressBatch()
     },
-    starkAddress: function () {
+    starkNetAddress: function () {
       this.initGetAddressBatch()
     },
+    tronAddress: function() {
+      this.initGetAddressBatch()
+    }
   },
   methods: {
     openActDialog() {
@@ -440,8 +448,30 @@ export default {
               setSolanaDialog(false)
               setTonDialog(false)
               setActDialogVisible(true)
+              setTronDialog(false)
             },
           }
+      } else if (
+        orbiterHelper.isTronChain({chainId})
+      ) {
+        const trxAddress = web3State.tron.tronAddress
+        addressGroup = {
+          isAddress: !!trxAddress,
+          address: trxAddress,
+          icon: web3State.tron.tronWalletIcon,
+          type: "Tron",
+          connect: () => {
+            setConnectWalletGroupKey('TRON')
+            setSelectWalletDialogVisible(true)
+          },
+          open: () => {
+            setSolanaDialog(false)
+            setStarkNetDialog(false)
+            setTonDialog(false)
+            setActDialogVisible(true)
+            setTronDialog(true)
+          },
+        }
       } else if (
         chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test
       ) {
@@ -460,6 +490,7 @@ export default {
             setStarkNetDialog(false)
             setTonDialog(false)
             setActDialogVisible(true)
+            setTronDialog(false)
           },
         }
       } else if (
@@ -479,6 +510,7 @@ export default {
             setStarkNetDialog(false)
             setTonDialog(true)
             setActDialogVisible(true)
+            setTronDialog(false)
           },
         }
       } else {
@@ -497,6 +529,7 @@ export default {
               setTonDialog(false)
               setSolanaDialog(false)
               setStarkNetDialog(false)
+              setTronDialog(false)
               setActDialogVisible(true)
             },
           }
