@@ -652,7 +652,6 @@ export default {
             if (!isConnected) {
               setSelectWalletDialogVisible(true)
               setConnectWalletGroupKey('SOLANA')
-              return
             }
           }
           if (
@@ -663,7 +662,6 @@ export default {
             if (!address || !isConnected) {
               setSelectWalletDialogVisible(true)
               setConnectWalletGroupKey('TRON')
-              return
             }
           }
           // ton
@@ -672,7 +670,6 @@ export default {
             const isConnected = await tonHelper.isConnected()
             if (!account || !isConnected) {
               await tonHelper.connect()
-              return
             }
           }
           // immutableX

@@ -1,9 +1,5 @@
 import { ref } from './'
 
-export const isStarkNetDialog = ref(false)
-export const isSolanaDialog = ref(false)
-export const isTonDialog = ref(false)
-export const isTronDialog = ref(false)
 export const selectWalletDialogVisible = ref(false)
 export const actDialogVisible = ref(false)
 export const actConnectWalletInfo = ref(null)
@@ -36,11 +32,6 @@ export const OPointsCardModalShow = ref(false)
 export const lotteryPointsNum = ref('0')
 export const lotteryCardCurrentProgress = ref('0')
 export const lotteryCardProgressMax = ref('0')
-
-export const setStarkNetDialog = (flag) => (isStarkNetDialog.value = flag)
-export const setSolanaDialog = (flag) => (isSolanaDialog.value = flag)
-export const setTonDialog = (flag) => (isTonDialog.value = flag)
-export const setTronDialog = (flag) => (isTronDialog.value = flag)
 
 export const setSelectWalletDialogVisible = (flag) =>
   (selectWalletDialogVisible.value = flag)

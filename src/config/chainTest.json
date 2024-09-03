@@ -629,7 +629,7 @@
       "address": "So11111111111111111111111111111111111111112"
     },
     "rpc": [
-      "https://api-devnet.solscan.io"
+      "https://solana-devnet.g.alchemy.com/v2/azgtbx3M3JRazx0tzsZ-2XLX3-nHc9fH"
     ],
     "contract": {
       "FiyoeqDdRaV5cKCUXoXwiXt1rQpBokQXag2P9QMqob8Z": "OPool"
@@ -647,8 +647,8 @@
         "makerValid": "C9ujSCZc7Z5HP5CBCYR1wVKGEuWnNbAoyi43EU12e3YU",
         "authority": "Haq4o3b7SjyG2zR1DiazcH2zQy1gQBDefR8SCc6xjGFr",
         "feeReceiver": "EreFj1KD2HqsbbwehDLdkUSTju7kPEzRWXyHU9RBBYxQ",
-        "tokenToReceiver": "DJajVJ9MSngXjRAVxJeK9Z4g5gudwT6VAodJF1A2eAaV",
-        "feeToken": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
+        "tokenToReceiver":"244czWmsm7CaB1PQbpjgdVMjDRyfuu5c6oKRGRswfLFd",
+        "feeToken":"So11111111111111111111111111111111111111112",
         "methods": []
       }
     ],
@@ -675,7 +675,8 @@
         "name": "BOME",
         "symbol": "BOME",
         "decimals": 6,
-        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm"
+        "address": "9cncNmvujx6jfj6PLaXRFUUohAf5Uam4mKuNjnZMEnUm",
+        "tokenToReceiver": "244czWmsm7CaB1PQbpjgdVMjDRyfuu5c6oKRGRswfLFd"
       }
     ],
     "infoURL": "https://solscan.io"
@@ -1075,8 +1076,8 @@
       "url": "https://nile.trongrid.io",
       "key": "f696c7e9-8b72-4859-9e98-97ef6689f3bf"
     },
-    "chainId": "Tron_Nile",
-    "networkId": "Tron_Nile",
+    "chainId": "3448148188",
+    "networkId": "3448148188",
     "internalId": "579",
     "name": "Tron Nile Testnet",
     "debug": true,
@@ -1104,7 +1105,7 @@
         "address": "TF17BgPaZYbz8oxbjhriubPDsA7ArKoLX3"
       }
     ],
-    "infoURL": "https://tron.network",
+    "infoURL": "https://nile.tronscan.org/#",
     "contracts": [
       {
         "name": "OrbiterRouterV3",

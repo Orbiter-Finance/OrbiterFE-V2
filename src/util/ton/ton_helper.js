@@ -4,6 +4,7 @@ import { store } from '../../store'
 import { isProd } from '../env'
 import { CHAIN_ID } from '../../config'
 import util from '../util'
+import { web3State } from '../../composition/useCoinbase'
 
 let tonConnect
 
@@ -111,8 +112,12 @@ const connect = async () => {
 }
 
 const account = () => {
+  let address = web3State.ton.tonAddress
+  if (address) {
+    return address
+  }
   if (tonConnect?.account?.address) {
-    const address = addressToTonwebAddress(tonConnect?.account?.address)
+    address = addressToTonwebAddress(tonConnect?.account?.address)
     return address
   }
   return tonConnect?.account

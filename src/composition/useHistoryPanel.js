@@ -61,12 +61,14 @@ export async function getTransactionsHistory(params = {}) {
   const evmAddress =
     compatibleGlobalWalletConf.value.walletPayload.walletAddress
   const starknetAddress = web3State.starkNet.starkNetAddress
+  const tronAddress = web3State.tron.tronAddress
   const solanaAddress = solanaHelper.solanaAddress()
   const tonAddress = web3State.ton.tonAddress || tonHelper.account()
 
   const walletAddress = [
     tonAddress,
     evmAddress?.toLocaleLowerCase(),
+    tronAddress,
     starknetAddress?.toLocaleLowerCase(),
     solanaAddress,
   ]

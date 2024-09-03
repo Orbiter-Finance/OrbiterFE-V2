@@ -81,13 +81,8 @@
 
 <script>
 import {
-  isMobile,
-  starkAddress,
-  showAddress,
-  isStarkNetDialog,
   selectWalletDialogVisible,
   setSelectWalletDialogVisible,
-  web3State,
   connectWalletGroupKey,
   setConnectWalletGroupKey,
 } from '../../composition/hooks'
@@ -124,8 +119,6 @@ import { store } from '../../store'
 import solanaHelper from '../../util/solana/solana_helper'
 import tronHelper from '../../util/tron/tron_helper';
 
-let ton
-
 const { walletDispatchersOnInit, walletDispatchersOnDisconnect } =
   walletDispatchers
 
@@ -137,21 +130,6 @@ export default {
     },
     selectWalletDialogVisible() {
       return selectWalletDialogVisible.value
-    },
-    walletType() {
-      if (!isStarkNetDialog.value) {
-        const walletName = String(compatibleGlobalWalletConf.value.walletType)
-          .toLowerCase()
-          .replace('app', '')
-
-        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase())
-          ? walletName
-          : METAMASK.toLocaleLowerCase()
-      } else {
-        return getStarknet && getStarknet()?.id === 'braavos'
-          ? 'braavos'
-          : 'argent'
-      }
     },
     evmWallet() {
       const wallets = [

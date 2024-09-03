@@ -242,6 +242,7 @@ import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
 import { shortString } from 'starknet'
 import tronHelper from '../../util/tron/tron_helper.js';
+import orbiterHelper from '../../util/orbiter_helper.js';
 
 const {
   walletDispatchersOnSignature,
@@ -265,35 +266,29 @@ export default {
     isStarkNetChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.starknet ||
-        fromChainID === CHAIN_ID.starknet_test ||
-        toChainID === CHAIN_ID.starknet ||
-        toChainID === CHAIN_ID.starknet_test
+        orbiterHelper.isStarknetChain({ chainId: fromChainID }) || 
+        orbiterHelper.isStarknetChain({ chainId: toChainID })
       )
     },
     isSolanaChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.solana ||
-        fromChainID === CHAIN_ID.solana_test ||
-        toChainID === CHAIN_ID.solana ||
-        toChainID === CHAIN_ID.solana_test
+        orbiterHelper.isSolanaChain({ chainId: fromChainID }) || 
+        orbiterHelper.isSolanaChain({ chainId: toChainID })
       )
     },
     isTronChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.tron_nile_test ||
-        toChainID === CHAIN_ID.tron_nile_test
+        orbiterHelper.isTronChain({ chainId: fromChainID }) || 
+        orbiterHelper.isTronChain({ chainId: toChainID })
       )
     },
     isTonChain() {
       const { fromChainID, toChainID } = transferDataState
       return (
-        fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test ||
-        toChainID === CHAIN_ID.ton ||
-        toChainID === CHAIN_ID.ton_test
+        orbiterHelper.isTonChain({ chainId: fromChainID }) || 
+        orbiterHelper.isTonChain({ chainId: toChainID })
       )
     },
     currentFromChainID() {
@@ -342,12 +337,7 @@ export default {
       )
 
       if (
-        (fromChainID === CHAIN_ID.solana ||
-        fromChainID === CHAIN_ID.solana_test ||
-        fromChainID === CHAIN_ID.ton ||
-        fromChainID === CHAIN_ID.ton_test || 
-        fromChainID === CHAIN_ID.tron_nile_test
-      )&& !bridgeType1
+        (orbiterHelper.isSolanaChain({chainId: fromChainID})) && !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -733,7 +723,7 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.tron_nile_test) {
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
         toAddress = web3State.tron.tronAddress
         isConnected = web3State.tron.tronIsConnected
 
@@ -1395,7 +1385,7 @@ export default {
         }
 
         if (
-          toChainID === CHAIN_ID.tron_nile_test
+          orbiterHelper.isTronChain({chainId: toChainID})
         ) {
           const tronAddress = web3State.tron.tronAddress
           const isConnected = web3State.tron.tronIsConnected
@@ -1592,6 +1582,7 @@ export default {
       }
     },
     async solanaTransfer(value) {
+      console.log("value", value)
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
@@ -1629,7 +1620,7 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.tron_nile_test) {
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
         const tronAddress = web3State.tron.tronAddress
         const isConnect = web3State.tron.tronIsConnected
 
@@ -1759,7 +1750,7 @@ export default {
           return
         }
       }
-      if (toChainID === CHAIN_ID.tron_nile_test) {
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
         const tronAddress = web3State.tron.tronAddress
         const isConnect = web3State.tron.tronIsConnected
 
@@ -1962,11 +1953,9 @@ export default {
         }
       }
       if (
-        toChainID === CHAIN_ID.solana ||
-        toChainID === CHAIN_ID.solana_test ||
-        toChainID === CHAIN_ID.ton ||
-        toChainID === CHAIN_ID.ton_test || 
-        toChainID === CHAIN_ID.tron_nile_test
+        orbiterHelper.isSolanaChain({chainId: toChainID}) || 
+        orbiterHelper.isTonChain({chainId: toChainID}) || 
+        orbiterHelper.isTronChain({chainId: toChainID})
       ) {
         if (
           toChainID === CHAIN_ID.solana ||
@@ -1989,7 +1978,7 @@ export default {
         }
 
         if (
-          toChainID === CHAIN_ID.tron_nile_test
+          orbiterHelper.isTronChain({chainId: toChainID})
         ) {
           const isConnect = web3State.tron.tronIsConnected
           if (isConnect) {
@@ -2322,7 +2311,7 @@ export default {
         }
       }
 
-      if (toChainID === CHAIN_ID.tron_nile_test) {
+      if (orbiterHelper.isTronChain({chainId: toChainID})) {
         toAddress = web3State.tron.tronAddress
         const isConnected = web3State.tron.tronIsConnected
 
@@ -2427,13 +2416,7 @@ export default {
       const bridgeType1 = Number(selectMakerConfig?.bridgeType) === 1
 
       if (
-        fromChainID !== CHAIN_ID.starknet &&
-        fromChainID !== CHAIN_ID.starknet_test &&
-        fromChainID !== CHAIN_ID.solana &&
-        fromChainID !== CHAIN_ID.solana_test &&
-        fromChainID !== CHAIN_ID.ton &&
-        fromChainID !== CHAIN_ID.ton_test &&
-        fromChainID !== CHAIN_ID.tron_nile_test
+        !orbiterHelper.isNotEVMChain({chainId: fromChainID})
       ) {
         if (
           compatibleGlobalWalletConf.value.walletPayload.networkId.toString() !==
@@ -2549,7 +2532,7 @@ export default {
         }
 
         if (
-          fromChainID === CHAIN_ID.tron_nile_test
+          orbiterHelper.isTronChain({chainId: fromChainID})
         ) {
           this.tronTransfer(tValue.tAmount)
           return
@@ -2581,11 +2564,10 @@ export default {
         }
 
         if (
-          toChainID === CHAIN_ID.solana ||
-          toChainID === CHAIN_ID.solana_test ||
-          toChainID === CHAIN_ID.ton ||
-          toChainID === CHAIN_ID.ton_test ||
-          toChainID === CHAIN_ID.tron_nile_test
+          orbiterHelper.isSolanaChain({chainId: toChainID}) || 
+          orbiterHelper.isTonChain({chainId: toChainID}) || 
+          orbiterHelper.isTronChain({chainId: toChainID}) 
+
         ) {
           await this.transferToSolanaOrTon()
           this.transferLoading = false

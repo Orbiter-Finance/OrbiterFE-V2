@@ -177,6 +177,7 @@ import { Orbiter_CLAIM_ABI } from '../../util/constants/contract/contract'
 
 import { COINBASE, TOKEN_POCKET_APP } from '../../util/walletsDispatchers'
 import { METAMASK, WALLETCONNECT } from '../../util/walletsDispatchers/index'
+import orbiterHelper from '../../util/orbiter_helper';
 export default {
   components: { SvgIcon },
   name: 'ClaimRewardModal',
@@ -456,7 +457,7 @@ export default {
         +provider?.network?.chainId ||
         +this.currentNetwork
 
-      if (Number(chainID) !== Number(chainId)) {
+      if (Number(chainID) !== Number(chainId) && !orbiterHelper.isNotEVMChain({chainId})) {
         util.showMessage(`Please Switch ${this.chainName} Network`, 'warning')
         if (
           [METAMASK, COINBASE, WALLETCONNECT, TOKEN_POCKET_APP].includes(

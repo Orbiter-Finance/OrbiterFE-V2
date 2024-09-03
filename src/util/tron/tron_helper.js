@@ -110,11 +110,9 @@ const getBalance = async ({ tokenAddress, chainId, userAddress }) => {
 }
 
 const metisGas = async ({ chainId, tokenAddress, makerAddress }) => {
-  console.log('11111')
   const provider = getProvider()
   const address = tronAddress()
   if (!address) return '0'
-  console.log('provider', provider, chainId)
 
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
 
@@ -124,9 +122,6 @@ const metisGas = async ({ chainId, tokenAddress, makerAddress }) => {
       item?.name?.toLocaleLowerCase() === 'OrbiterRouterV3'?.toLocaleLowerCase()
   )[0]?.address
 
-  console.log('contractAddress', contractAddress)
-  const contract = await provider.contract().at(contractAddress)
-  console.log('contract', contract)
   const tokenTxReceipt =
     await provider.transactionBuilder.triggerConfirmedConstantContract(
       contractAddress,
@@ -162,20 +157,7 @@ const transfer = async ({
   safeCode,
   chainId,
 }) => {
-  console.log(
-    '1111',
-    from,
-    to,
-    tokenAddress,
-    targetAddress,
-    amount,
-    safeCode,
-    chainId
-  )
-
   const provider = getProvider()
-
-  console.log('provider', provider, chainId)
 
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
 
@@ -186,10 +168,7 @@ const transfer = async ({
       item?.name?.toLocaleLowerCase() === 'OrbiterRouterV3'?.toLocaleLowerCase()
   )[0]?.address
 
-  console.log('contractAddress', contractAddress)
-
   const contract = await provider.contract().at(contractAddress)
-  console.log('contract', contract)
 
   const nativeCurrency = chainInfo?.nativeCurrency?.address
 
@@ -197,45 +176,18 @@ const transfer = async ({
     const tokenTxReceipt = await contract.methods
       .transfer(to, provider.toHex(`c=${safeCode}&t=${targetAddress}`))
       .send({ callValue: amount })
-    console.log('TRC-10 token transfer successful:', tokenTxReceipt)
     return tokenTxReceipt
   } else {
     const tokenContract = await provider.contract().at(tokenAddress)
-    console.log('tokenContract', tokenContract)
     const allowance = await tokenContract.methods
       .allowance(from, contractAddress)
       .call()
-    console.log('allowance', allowance, Number(allowance))
     if (Number(allowance) <= Number(amount)) {
       await tokenContract.methods['approve(address,uint256)'](
         contractAddress,
         amount
       ).send()
     }
-    const transaction =
-      await provider.transactionBuilder.triggerConfirmedConstantContract(
-        contractAddress,
-        'transferToken(address,address,uint256,bytes)',
-        {},
-        [
-          { type: 'address', value: tokenAddress },
-          { type: 'address', value: to },
-          { type: 'uint256', value: amount },
-          {
-            type: 'bytes',
-            value: provider.toHex(`c=${safeCode}&t=${targetAddress}`),
-          },
-        ],
-        from
-      )
-    const transactionSize = transaction.transaction.raw_data_hex.length / 2
-    const bandwidthUsed = transactionSize
-    console.log(
-      'TRC-10 token transfer successful:',
-      transaction,
-      bandwidthUsed,
-      transaction.energy_used * bandwidthUsed
-    )
     const tokenTxReceipt = await contract.methods
       .transferToken(
         tokenAddress,
@@ -244,7 +196,6 @@ const transfer = async ({
         provider.toHex(`c=${safeCode}&t=${targetAddress}`)
       )
       .send()
-    console.log('TRC-20 token transfer successful:', tokenTxReceipt)
     return tokenTxReceipt
   }
 }

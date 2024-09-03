@@ -27,7 +27,6 @@
         />
       </keep-alive>
     </div>
-    <!-- <HeaderDialog /> -->
     <HeaderActDialog
       v-if="
         isHeaderActDialog
@@ -64,11 +63,7 @@ import {
   actDialogVisible,
   isMobile,
   setActDialogVisible,
-  setStarkNetDialog,
-  setSolanaDialog,
   web3State,
-  isStarkNetDialog,
-  isSolanaDialog,
   setActAddPoint,
   setActAddPointVisible,
   setActPoint,
@@ -76,11 +71,10 @@ import {
   updateActDataList,
   setSelectWalletDialogVisible,
   setConnectWalletGroupKey,
-  isTonDialog,
-  setTonDialog,
-  setClaimCardModalShow,
   setActPointFetchStatus,
-  transferDataState
+  transferDataState,
+  actConnectWalletInfo,
+  setActConnectWalletInfo
 } from './composition/hooks'
 import {
   walletIsLogin,
@@ -91,7 +85,6 @@ import getLpToken from './util/tokenInfo/supportLpTokenInfo'
 import * as lightbg from './assets/v2/light-bg.png'
 import * as darkbg from './assets/v2/dark-bg.png'
 import * as topbg from './assets/v2/light-top-bg.jpg'
-import HeaderDialog from './components/layouts/HeaderDialog.vue'
 import HeaderActDialog from './components/layouts/HeaderActDialog.vue'
 import HeaderLotteryCardDialog from './components/layouts/HeaderLotteryCardDialog.vue'
 import HeaderWalletGroup from './components/layouts/HeaderWalletGroup.vue'
@@ -231,7 +224,6 @@ export default {
   components: {
     TopNav,
     BottomNav,
-    HeaderDialog,
     HeaderActDialog,
     HeaderLotteryCardDialog,
     HeaderWalletGroup,
@@ -276,6 +268,9 @@ export default {
       if (item1 !== item2) {
         if (!!item1) {
           if(this.isNotPrizes && !isMobileDevice()) {
+            setActConnectWalletInfo(
+              orbiterHelper.currentConnectChainInfo({chainId: "1"})
+            )
             setActDialogVisible(true)
           }
         } else {
@@ -292,36 +287,6 @@ export default {
           this.getNftList()
       }
     },
-    // currentWalletAddress: function (newAddress, oldAddress) {
-    //   const [web3Address, starkNetAddress] = newAddress
-    //   const [web3OldAddress] = oldAddress || []
-    //   const solanaAddress = solanaHelper.solanaAddress()
-    //   const tonAddress = tonHelper.account()
-    //   if (web3Address && web3Address !== web3OldAddress) {
-    //     setClaimCardModalShow(false, '')
-    //     if(this.isTopNav) {
-    //       this.getClaimRewardModalData()
-    //     }
-    //   }
-    //   if (tonAddress) {
-    //     setTonDialog(true)
-    //     setActDialogVisible(true)
-    //   } else if (solanaAddress) {
-    //     setSolanaDialog(true)
-    //     setActDialogVisible(true)
-    //   } else if (starkNetAddress) {
-    //     setStarkNetDialog(true)
-    //     setActDialogVisible(true)
-    //   }
-
-    //   if (!!web3Address || !!starkNetAddress) {
-    //     if(this.isTopNav) {
-    //       this.getWalletAddressActList()
-    //       this.getWalletAddressPoint()
-    //       this.getNftList()
-    //     }
-    //   }
-    // },
     fromChainID: function(a, b) {
       if(a && a !== b) {
         this.connectWallet(a)
@@ -348,28 +313,12 @@ export default {
         isAddress: false,
         address: '',
       }
-      const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const solanaAddress = solanaHelper.solanaAddress()
-      const tonAddress = tonHelper.account()
-      const address =
-        !!isTonDialog.value && tonAddress
-          ? tonAddress
-          : !!isSolanaDialog.value && solanaAddress
-          ? solanaAddress
-          : !!isStarkNetDialog.value
-          ? starkNetAddress
-          : web3Address
-      const isStarknet = !!isStarkNetDialog.value
-      if (
-        !address ||
-        (!isSolanaDialog.value &&
-          util.getAccountAddressError(address || '', isStarknet))
-      ) {
-        return addressGroup
-      }
+      const group = actConnectWalletInfo.value
+      const address = group?.address
+      const isAddress = !!group?.isConnected
       return {
         ...addressGroup,
-        isAddress: true,
+        isAddress,
         address,
       }
     },

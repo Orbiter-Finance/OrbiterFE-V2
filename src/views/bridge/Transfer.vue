@@ -184,7 +184,7 @@
         >More</a
         >
       </div>
-      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)  || (targetChainId === CHAIN_ID.ton || targetChainId === CHAIN_ID.ton_test) || (targetChainId === CHAIN_ID.tron_nile_test )">
+      <div :hidden="(!isNewVersion || selectFromToken === selectToToken || !isSupportXVM) && !isLoopring && !(isBrowserApp && selectStarknet) || (targetChainId === CHAIN_ID.solana || targetChainId === CHAIN_ID.solana_test)  || (targetChainId === CHAIN_ID.ton || targetChainId === CHAIN_ID.ton_test) || ( orbiterHelper.isTronChain({chainId: targetChainId}) )">
         <div style="text-align: left;margin-top: 10px;padding-left: 20px;font-size: 16px;">
           <input v-if="!isBrowserApp" type="checkbox" style="margin-right: 5px" id="checkbox" :disabled="crossAddressInputDisable" v-model="isCrossAddress" />
           <label v-if="transferDataState.selectMakerConfig && transferDataState.selectMakerConfig.toChain" for="checkbox"> To {{ transferDataState.selectMakerConfig.toChain.name }} Address </label>
@@ -458,6 +458,7 @@ import { ethers } from 'ethers'
 import solanaHelper from "../../util/solana/solana_helper"
 import { decimalNumTh } from '../../util/decimalNum'
 import tonHelper from "../../util/ton/ton_helper"
+import orbiterHelper from '../../util/orbiter_helper';
 
 let makerConfigs = config.v1MakerConfigs;
 let v1MakerConfigs = config.v1MakerConfigs;
@@ -597,7 +598,7 @@ export default {
       if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.tron_nile_test) {
+      if (orbiterHelper.isTronChain({chainId: transferDataState.toChainID})) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
@@ -618,7 +619,7 @@ export default {
       if (transferDataState.toChainID === CHAIN_ID.solana || transferDataState.toChainID === CHAIN_ID.solana_test) {
         return false;
       }
-      if (transferDataState.toChainID === CHAIN_ID.tron_nile_test) {
+      if (orbiterHelper.isTronChain({chainId: ransferDataState.toChainID})) {
         return false;
       }
       if (transferDataState.toChainID === CHAIN_ID.ton || transferDataState.toChainID === CHAIN_ID.ton_test) {
@@ -666,7 +667,7 @@ export default {
     },
     crossAddressInputDisable() {
       const toChainID = transferDataState.toChainID;
-      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test || toChainID === CHAIN_ID.tron_nile_test;
+      return toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test || toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test || toChainID === CHAIN_ID.dydx || toChainID === CHAIN_ID.dydx_test ||  orbiterHelper.isTronChain({chainId: toChainID})
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -843,6 +844,9 @@ export default {
     transferSavingTime() {
       return this.originTimeSpent?.replace('~', '');
     },
+    currentConenctInfoList() {
+      return orbiterHelper.currentConnectChainInfo({ isList: true })
+    },
   },
   watch: {
     'transferDataState.fromChainID': function (value) {
@@ -947,6 +951,10 @@ export default {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
     },
+    currentConenctInfoList: function (newValue) {
+      this.updateTransferInfo();
+    },
+
   },
   async mounted() {
     const self = this
@@ -1638,7 +1646,7 @@ export default {
     },
     async specialProcessing(oldFromChainID, oldToChainID) {
       const { fromChainID, toChainID } = transferDataState;
-      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test || oldToChainID === CHAIN_ID.tron_nile_test) {
+      if (toChainID !== oldToChainID && oldToChainID === CHAIN_ID.starknet || oldToChainID === CHAIN_ID.starknet_test || oldToChainID === CHAIN_ID.dydx || oldToChainID === CHAIN_ID.dydx_test || oldToChainID === CHAIN_ID.solana || oldToChainID === CHAIN_ID.solana_test || oldToChainID === CHAIN_ID.ton || oldToChainID === CHAIN_ID.ton_test || orbiterHelper.isTronChain({chainId: oldToChainID})) {
         if (this.isCrossAddress) this.isCrossAddress = false;
         if (this.crossAddressReceipt) this.crossAddressReceipt = '';
       }
@@ -1958,7 +1966,7 @@ export default {
           setSelectWalletDialogVisible(true)
           setConnectWalletGroupKey('SOLANA')
         }
-      } else  if(CHAIN_ID.tron_nile_test === toChainID ) {
+      } else if(orbiterHelper.isTronChain({chainId: toChainID}) ) {
         toAddress = web3State.tron.tronAddress
         open = () => {
           setSelectWalletDialogVisible(true)
@@ -1977,7 +1985,6 @@ export default {
           setConnectWalletGroupKey('EVM')
         }
       }
-      console.log("toAddress", toAddress)
       if(!toAddress || toAddress === "0x") {
         await open()
         return
@@ -2155,7 +2162,7 @@ export default {
             return
           }
           
-        } else if (fromChainID === CHAIN_ID.tron_nile_test) {
+        } else if (orbiterHelper.isTronChain({chainId: fromChainID})) {
           const isConnect = web3State.tron.tronIsConnected
           const address = web3State.tron.tronAddress
           if(!isConnect || !address) {
@@ -2214,7 +2221,7 @@ export default {
           toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (
             toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() 
             : (
-              toChainID === CHAIN_ID.tron_nile_test ? web3State.tron.tronAddress : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
+              orbiterHelper.isTronChain({chainId: toChainID}) ? web3State.tron.tronAddress : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
             ))
         );
         // sendTransfer
@@ -2383,19 +2390,8 @@ export default {
       const { fromChainID, toChainID, selectMakerConfig } = transferDataState;
       if (!selectMakerConfig) return;
       const { fromChain, toChain } = selectMakerConfig;
-      let address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test) {
-        address = web3State.starkNet.starkNetAddress;
-      }
-      if (fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test) {
-        address = solanaHelper.solanaAddress();
-      }
-      if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-        address = tonHelper.account();
-      }
-      if (fromChainID === CHAIN_ID.tron_nile_test) {
-        address = web3State.tron.tronAddress
-      }
+      const currentWalletInfo = orbiterHelper.currentConnectChainInfo({chainId: fromChainID})
+      let address = currentWalletInfo?.address
       if (address && address !== '0x') {
           await transferCalculate.getTransferBalance(fromChain.chainId, fromChain.tokenAddress, fromChain.symbol, address)
                   .then(async (response) => {
@@ -2419,19 +2415,9 @@ export default {
         self.fromBalanceLoading = false;
       }
 
-      address = compatibleGlobalWalletConf.value.walletPayload.walletAddress;
-      if (toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
-        address = web3State.starkNet.starkNetAddress;
-      }
-      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        address = solanaHelper.solanaAddress();
-      }
-      if (toChainID === CHAIN_ID.tron_nile_test) {
-        address = web3State.tron.tronAddress
-      }
-      if (fromChainID === CHAIN_ID.ton || fromChainID === CHAIN_ID.ton_test) {
-        address = tonHelper.account();
-      }
+      const toCurrentWalletInfo = orbiterHelper.currentConnectChainInfo({chainId: toChainID})
+       address = toCurrentWalletInfo?.address
+
       // if (address && address !== '0x') {
       //     await transferCalculate.getTransferBalance(toChain.chainId, toChain.tokenAddress, toChain.symbol, address)
       //             .then((response) => {

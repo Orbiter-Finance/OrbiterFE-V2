@@ -1078,7 +1078,7 @@ export default {
       } catch (error) {
         return '0'
       }
-    } else if (localChainID === CHAIN_ID.tron_nile_test) {
+    } else if (orbiterHelper.isTronChain({ chainId: localChainID })) {
       try {
         const tokenAccountBalance = await tronHelper.getBalance({
           chainId: localChainID,

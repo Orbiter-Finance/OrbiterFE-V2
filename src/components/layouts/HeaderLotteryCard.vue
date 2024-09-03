@@ -34,8 +34,6 @@
 <script>
 import {
   actDialogVisible,
-  isStarkNetDialog,
-  web3State,
   actTotalPoint,
   setActPoint,
   setActAddPoint,
@@ -50,11 +48,9 @@ import {
   setLotteryCardModalShow,
   setLotteryPointsNum,
   setLotteryCardProgress,
-  isSolanaDialog,
-  isTonDialog,
-  setActPointFetchStatus
+  setActPointFetchStatus,
+  actConnectWalletInfo
 } from '../../composition/hooks'
-import util from '../../util/util'
 
 import {
   requestLotteryCard,
@@ -64,8 +60,6 @@ import {
 
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
 import CommCardTooltip from '../CommCardTooltip.vue'
-import solanaHelper from '../../util/solana/solana_helper';
-import tonHelper from '../../util/ton/ton_helper'
 
 let timer
 
@@ -80,6 +74,9 @@ export default {
     }
   },
   computed: {
+    connectWalletInfo(){
+      return actConnectWalletInfo.value
+    },
     currentProgress() {
       return lotteryCardCurrentProgress.value
     },
@@ -99,27 +96,10 @@ export default {
       return isMobile.value
     },
     currentWalletAddress() {
-      if(!!isTonDialog.value) {
-        return tonHelper.account()
-      }
-      if(!!isSolanaDialog.value) {
-        return solanaHelper.solanaAddress()
-      }
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
-      }
-      const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      return evmAddress?.toLocaleLowerCase()
+      return this.connectWalletInfo?.address || ""
     },
     selectWalletDialogVisible() {
       return actDialogVisible.value
-    },
-    walletAddress() {
-      return [
-        compatibleGlobalWalletConf.value.walletPayload.walletAddress,
-        web3State.starkNet.starkNetAddress,
-        ...[],
-      ]
     },
     mergeStatus() {
       return {
@@ -166,26 +146,15 @@ export default {
       }, 500);
 
     },
-    getAddress () {
+    getAddress() {
+      const isAddress = !!this.connectWalletInfo?.isConnect
+      const address = this.connectWalletInfo?.address
       let addressGroup = {
-        isAddress: false,
-        address: '',
-      }
-      const [web3Address, starkNetAddress] = this.currentWalletAddress
-      const solanaAddress = solanaHelper.solanaAddress()
-      const tonAddress = tonHelper.account()
-      const address = !!isTonDialog.value && tonAddress ? tonAddress : (
-        !!isSolanaDialog.value && solanaAddress ? solanaAddress : (!!isStarkNetDialog.value ? starkNetAddress : web3Address)
-      )
-      const isStarknet = !!isStarkNetDialog.value
-      if (!address || (!isSolanaDialog.value && util.getAccountAddressError(address || '', isStarknet))) {
-        return addressGroup
-      }
-      return {
-        ...addressGroup,
-        isAddress: true,
+        isAddress,
         address,
+        group: this.fromGroup
       }
+      return addressGroup
     },
 
     async getLotteryCardDataDraw() {

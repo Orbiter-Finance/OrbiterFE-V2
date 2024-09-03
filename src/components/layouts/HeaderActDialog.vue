@@ -270,30 +270,17 @@ import {
   setActDialogVisible,
   setActDialogHover,
   transferDataState,
-  showAddress,
-  starkAddress,
-  setSelectWalletDialogVisible,
-  isStarkNetDialog,
-  web3State,
   actAddPointVisible,
   actAddPoint,
   actTotalPoint,
   actPointRank,
   actNftList,
-  isSolanaDialog,
-  solAddress,
-  setConnectWalletGroupKey,
-  setSolanaDialog,
   updateActDataList,
-  isTonDialog,
-  tonAddress,
   setUserInfoDetailsCardModalShow,
   setOPointsCardModalShow,
   setActPointRank,
   questsInfoList,
-  isTronDialog,
-  tronChainAddress,
-  setTronDialog
+  actConnectWalletInfo
 } from '../../composition/hooks'
 import { requestPointSystem } from '../../common/openApiAx'
 import { compatibleGlobalWalletConf } from '../../composition/walletsResponsiveData'
@@ -325,6 +312,7 @@ import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
 import ScrollNftConfig from "../../const/scroll-NFT.json"
 import tronHelper from '../../util/tron/tron_helper';
+import { shortenAddress } from '../../util/shortenAddress'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -384,10 +372,15 @@ export default {
           timeStamp: '2024-05-28 06:00:00',
         }
       ].filter((item) => +new Date(item.timeStamp) >= getUTCTime()),
-      showEcosystemDapp: true
+      showEcosystemDapp: true,
+      currentAddress: "",
+      showWalletAddress: ""
     }
   },
   computed: {
+    connectWalletInfo(){
+      return actConnectWalletInfo.value
+    },
     questsTaskList(){
       return questsInfoList.value
     },
@@ -451,107 +444,38 @@ export default {
         (item) => item.type !== 1 && +new Date(item.endTime) >= getUTCTime()
       )
     },
-    isStarknet() {
-      return isStarkNetDialog.value
-    },
-    isSolana() {
-      return isSolanaDialog.value
-    },
-    showWalletAddress() {
-      if(isTronDialog.value) {
-        return tronChainAddress()
-      }
-      if(isTonDialog.value) {
-        return tonAddress()
-      }
-      if(isSolanaDialog.value) {
-        return solAddress()
-      }
-      if (!isStarkNetDialog.value) {
-        return showAddress()
-      }
-      return starkAddress()
-    },
     currentWalletAddress() {
-      if(isTronDialog.value) {
-        return web3State.tron.tronAddress
-      }
-      if(isTonDialog.value) {
-        return tonHelper.account()
-      }
-      if(isSolanaDialog.value) {
-        return solanaHelper.solanaAddress()
-      }
-      if (!!isStarkNetDialog.value) {
-        return web3State.starkNet.starkNetAddress
-      }
-      const evmAddress = compatibleGlobalWalletConf.value.walletPayload.walletAddress
-      return evmAddress?.toLocaleLowerCase();
+      const address = this.connectWalletInfo?.address || ""
+      return address
     },
     networkId() {
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
-      if(isSolanaDialog.value) {
-        return CHAIN_ID.solana
-      }
-      if(isTronDialog.value) {
-        return web3State.tron.tronChain
-      }
-      if (!isStarkNetDialog.value) {
-        return compatibleGlobalWalletConf.value.walletPayload.networkId
-      } else {
-        return web3State.starkNet?.starkChain
-      }
+      const chainId = this.connectWalletInfo?.chainId
+      return chainId
     },
     networkName() {
-      if(!!isTonDialog.value) {
-        return util.netWorkName(
-          !!isProd() ? CHAIN_ID.ton : CHAIN_ID.ton_test
-        )
-      }
-      if(!!isTronDialog.value) {
-        return web3State.tron.tronChain
-      }
-      if(!!isSolanaDialog.value) {
-        return util.netWorkName(
-          CHAIN_ID.solana
-        )
-      }
-      if (!isStarkNetDialog.value) {
-        return util.netWorkName(
-          +compatibleGlobalWalletConf.value.walletPayload.networkId
-        )
-      } else {
-        return util.netWorkName(web3State.starkNet?.starkChain)
-      }
+      return util.netWorkName(this.networkId)
     },
     walletAddress() {
       return compatibleGlobalWalletConf.value.walletPayload.walletAddress
     },
     walletType() {
-      if(isTonDialog.value) {
-        return CHAIN_ID.ton
-      }
-      if(!!isSolanaDialog.value) {       
-        return web3State.solana.solanaWalletName || solanaHelper.readWalletName() || "SOLANA_MAIN"
-      }
-      if(!!isTronDialog.value) {       
-        return web3State.tron.tronWalletIcon
-      }
-      if (!isStarkNetDialog.value) {
-        const walletName = String(compatibleGlobalWalletConf.value.walletType)
-          .toLowerCase()
-          .replace('app', '')
-
-        return CURRENT_SUPPORT_WALLET.includes(walletName.toLocaleLowerCase())
+      const walletName = this.connectWalletInfo?.walletIcon
+      const type = this.connectWalletInfo?.type
+      let wallet = ""
+      if(type === "EVM") {
+        wallet = CURRENT_SUPPORT_WALLET.includes(walletName?.toLocaleLowerCase()) && walletName
+          ? walletName
+          : METAMASK.toLocaleLowerCase()
+      } else if(type === "Starknet") {
+        wallet = walletName
           ? walletName
           : METAMASK.toLocaleLowerCase()
       } else {
-        return getStarknet && getStarknet()?.id === 'braavos'
-          ? 'braavos'
-          : 'argent'
+        wallet = walletName
+          ? walletName
+          : METAMASK.toLocaleLowerCase()
       }
+      return wallet
     },
   },
   watch: {
@@ -566,6 +490,7 @@ export default {
       }
 
       if (item1 !== item2) {
+        this.showShortAddress()
         setTimeout(() => {
           this.getTaskHeight()
         }, 200)
@@ -607,6 +532,10 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleThemeMode']),
+    async showShortAddress() {
+      const address = this.currentWalletAddress || ""
+      this.showWalletAddress = shortenAddress(address)
+    },
     checkScrollConfig(group){
       const id = group?.id 
       return (Number(id) === 184 || Number(id) === 187)
@@ -756,42 +685,12 @@ export default {
     },
     async disconnect() {
       try {
-        if(!!isTronDialog.value) {
-          await tronHelper.disConnect()
-          setConnectWalletGroupKey("TRON")
-          setTronDialog(false)
-        }else if(!!isTonDialog.value) {
-          await tonHelper.disconnect()
-        }else if(!!isSolanaDialog.value) {
-          await solanaHelper.disConnect()
-          setConnectWalletGroupKey("SOLANA")
-          this.$store.commit('updateSolanaAddress', "")
-          this.$store.commit('updateSolanaWalletName', "")
-          this.$store.commit('updateSolanaWalletIcon', "")
-          this.$store.commit('updateSolanaIsConnect', false)
-          setSolanaDialog(false)
-        } else if (!isStarkNetDialog.value) {
-          this.selectedWallet = {}
-          localStorage.setItem('selectedWallet', JSON.stringify({}))
-          this.$store.commit('updateLocalLogin', false)
-          localStorage.setItem('localLogin', false)
-          if (compatibleGlobalWalletConf.value.walletType === WALLETCONNECT) {
-            ethereumClient.disconnect()
-            localStorage.setItem('wc@2:client:0.3//session', null)
-          }
-          walletDispatchersOnDisconnect[
-            compatibleGlobalWalletConf.value.walletType
-          ]()
-          setConnectWalletGroupKey("EVM")
-        } else  {
-          disConnectStarkNetWallet()
-          setConnectWalletGroupKey("STARKNET")
-        }
+        await this.connectWalletInfo.disconnect()
       } catch (e) {
         console.error(e)
       }
       setActDialogVisible(false)
-      setSelectWalletDialogVisible(true)
+      await this.connectWalletInfo.open()
     },
     itemScroll(e) {
       if (new Date().valueOf() - this.scrollLastTime > 40) {
