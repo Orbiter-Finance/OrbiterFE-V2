@@ -736,6 +736,12 @@
         "symbol": "BERA",
         "decimals": 18,
         "address": "0xa01afff94b800267368db6710311559ef0d70248"
+      },
+      {
+        "name": "JST",
+        "symbol": "JST",
+        "decimals": 18,
+        "address": "0xb811b64cafad00062cf11dbaecde850f7a009365"
       }
     ],
     "infoURL": "https://sepolia.etherscan.io",
