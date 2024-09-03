@@ -171,7 +171,7 @@
         "ETH-ETH": {
             "makerAddress": "0x34723b92ae9708ba33843120a86035d049da7dfa",
             "sender": "0x34723b92ae9708ba33843120a86035d049da7dfa",
-            "gasFee": 18,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "maxPrice": 3,
             "minPrice": 0.00005,
@@ -191,7 +191,7 @@
                         0.1,
                         0.3
                     ],
-                    "tradeFee": 10,
+                    "tradeFee": 1,
                     "withholdingFee": 0.0005
                 },
                 {
@@ -199,7 +199,7 @@
                         0.3,
                         9999999999
                     ],
-                    "tradeFee": 25,
+                    "tradeFee": 2.5,
                     "withholdingFee": 0.0005
                 }
             ]

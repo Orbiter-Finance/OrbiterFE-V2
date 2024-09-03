@@ -14995,5 +14995,29 @@
             "startTime": 0,
             "endTime": 99999999999999
         }
+    },
+    "526-579": {
+        "JST-JST": {
+            "makerAddress": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+            "sender": "TGv8TDGPzg94kiFKvhp3qVLwR4hjikjmbH",
+            "gasFee": 100,
+            "tradingFee": 0.5,
+            "maxPrice": 50,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
+    },
+    "579-526": {
+        "JST-JST": {
+            "makerAddress": "TGv8TDGPzg94kiFKvhp3qVLwR4hjikjmbH",
+            "sender": "0x4eAF936c172b5e5511959167e8Ab4f7031113Ca3",
+            "gasFee": 100,
+            "tradingFee": 0.5,
+            "maxPrice": 50,
+            "minPrice": 0.1,
+            "startTime": 0,
+            "endTime": 99999999999999
+        }
     }
 }

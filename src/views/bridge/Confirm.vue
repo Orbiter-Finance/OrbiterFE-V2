@@ -234,19 +234,19 @@ import {
 import { providers } from 'ethers'
 import { XVMSwap } from '../../util/constants/contract/xvm'
 import { exchangeToCoin } from '../../util/coinbase'
-import { CHAIN_ID } from '../../config'
-import { isBrowserApp, isProd } from '../../util'
 import {
   zksyncEraGasTokenETH,
   zksyncEraGasTokenERC20,
   zksyncEraGasTokenContract,
 } from '../../util/zksyncEraGasToken'
+import tronHelper from '../../util/tron/tron_helper.js';
+import orbiterHelper from '../../util/orbiter_helper.js';
 import solanaHelper from '../../util/solana/solana_helper'
 import tonHelper from '../../util/ton/ton_helper'
-import { shortString } from 'starknet'
-import orbiterHelper from '../../util/orbiter_helper.js';
 import fractalHelper from '../../util/fractal/fractal_helper.js';
 import aptosHelper from '../../util/aptos/aptos_helper.js';
+import { CHAIN_ID } from "../../config";
+import { isBrowserApp, isProd } from "../../util";
 
 const {
   walletDispatchersOnSignature,
@@ -326,7 +326,7 @@ export default {
       )
 
       if (
-        (orbiterHelper.isSolanaChain({chainId: fromChainID}))&& !bridgeType1
+        (orbiterHelper.isSolanaChain({chainId: fromChainID})) && !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -1566,6 +1566,7 @@ export default {
       }
     },
     async solanaTransfer(value) {
+      console.log("value", value)
       const { selectMakerConfig, fromChainID, toChainID, transferValue } =
         transferDataState
 
@@ -1887,6 +1888,116 @@ export default {
             this.onTransferSucceed(from, value, fromChainID, hash)
         }
 
+      } catch (error) {
+        console.error('transfer error', error)
+        this.$notify.error({
+          title: error.message || String(error),
+          duration: 3000,
+        })
+      } finally {
+        this.transferLoading = false
+      }
+
+    },
+    async tronTransfer(value) {
+
+      console.log('value', value)
+      const { selectMakerConfig, fromChainID, toChainID, transferValue } =
+        transferDataState
+
+      const isConnected = web3State.tron.tronIsConnected
+      let from = web3State.tron.tronAddress
+
+      if (!isConnected || !from) {
+        setSelectWalletDialogVisible(true)
+        setConnectWalletGroupKey('TRON')
+        this.transferLoading = false
+        return
+      }
+
+      const safeCode = transferCalculate.safeCode()
+
+      const { starkNetAddress, starkChain } = web3State.starkNet
+
+      const rAmount = new BigNumber(transferValue)
+        .plus(new BigNumber(selectMakerConfig.tradingFee))
+        .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
+      const rAmountValue = rAmount.toFixed()
+
+      const evmAddress =
+        compatibleGlobalWalletConf.value.walletPayload.walletAddress
+
+      let targetAddress = evmAddress
+
+      if (
+        toChainID === CHAIN_ID.starknet ||
+        toChainID === CHAIN_ID.starknet_test
+      ) {
+        targetAddress = starkNetAddress
+
+        if (!starkChain || (isProd() && starkChain === 'unlogin')) {
+          util.showMessage('please connect Starknet Wallet', 'error')
+          this.transferLoading = false
+          return
+        }
+
+        if (!starkNetAddress) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('STARKNET')
+          this.transferLoading = false
+          return
+        }
+      }
+
+      if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
+        const solanaAddress = solanaHelper.solanaAddress()
+        const isConnect = solanaHelper.isConnect()
+
+        targetAddress = solanaAddress
+
+        if (!solanaAddress || !isConnect) {
+          setSelectWalletDialogVisible(true)
+          setConnectWalletGroupKey('SOLANA')
+          this.transferLoading = false
+          return
+        }
+      }
+
+      if (toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test) {
+        targetAddress = tonHelper.account()
+        const isConnected = await tonHelper.isConnected()
+
+        if (!targetAddress || !isConnected) {
+          await tonHelper.connect()
+          return
+        }
+      }
+      try {
+        const tokenAddress = selectMakerConfig.fromChain.tokenAddress
+
+        const hash = await tronHelper.transfer({
+          from,
+          to: selectMakerConfig.recipient,
+          tokenAddress,
+          targetAddress,
+          amount: rAmountValue,
+          safeCode,
+          chainId: fromChainID
+        })
+        try {
+          this.$gtag.event('click', {
+            event_category: 'Transfer',
+            event_label: selectMakerConfig.recipient,
+            userAddress: from,
+            hash: hash,
+          })
+        } catch (error) {
+          console.error('click error', error)
+        }
+
+        if (hash) {
+          this.onTransferSucceed(from, value, fromChainID, hash)
+        }
       } catch (error) {
         console.error('transfer error', error)
         this.$notify.error({
@@ -2367,6 +2478,13 @@ export default {
 
         if (orbiterHelper.isFuelChain({ chainId: fromChainID })) {
           this.fuelTransfer(tValue.tAmount)
+          return
+        }
+
+        if (
+          orbiterHelper.isTronChain({chainId: fromChainID})
+        ) {
+          this.tronTransfer(tValue.tAmount)
           return
         }
 

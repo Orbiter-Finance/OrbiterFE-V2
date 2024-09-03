@@ -135,25 +135,17 @@ import { SvgIconThemed } from '../'
 import {
   actAddPoint,
   actAddPointVisible,
-  actDialogHover,
   isMobile,
   setPageTab,
   setPageSenderTab,
   showAddress,
-  setStarkNetDialog,
-  setSelectWalletDialogVisible,
   starkAddress,
   solAddress,
   tonAddress,
   setActDialogVisible,
-  setConnectWalletGroupKey,
-  setSolanaDialog,
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
-  setClaimCardModalShow,
   transferDataState,
-  web3State,
-  setTonDialog
 } from '../../composition/hooks'
 import HeaderOps from './HeaderOps.vue'
 import HeaderLinks from './HeaderLinks.vue'
@@ -169,6 +161,7 @@ import util from '../../util/util'
 import { CHAIN_ID } from '../../config';
 import tonHelper from '../../util/ton/ton_helper';
 import solanaHelper from '../../util/solana/solana_helper';
+import orbiterHelper from '../../util/orbiter_helper';
 
 
 export default {
@@ -211,7 +204,7 @@ export default {
       return compatibleGlobalWalletConf.value
     },
     isConenct (){
-      return !!this.fromGroup?.isAddress
+      return !!this.fromGroup?.isConnected
     },
     isLogin() {
       return walletIsLogin.value
@@ -246,7 +239,7 @@ export default {
     starkAddress() {
       return starkAddress()
     },
-    solanaAddress() {
+    solAddress() {
       return solAddress()
     },
     tAddress() {
@@ -254,15 +247,6 @@ export default {
     },
     isMobile() {
       return isMobile.value
-    },
-    web3Address() {
-      return compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase()
-    },
-    solanaAddress() {
-      return web3State.solana.solanaAddress
-    },
-    starkNetAddress() {
-      return web3State.starkNet.starkNetAddress?.toLocaleLowerCase()
     },
     refererUpper() {
       // Don't use [$route.query.referer], because it will delay
@@ -345,6 +329,9 @@ export default {
       const { toChainID } = transferDataState
       return toChainID
     },
+    walletList() {
+      return orbiterHelper.currentConnectChainInfo({isList: true})
+    }
   },
   created() {
   },
@@ -359,13 +346,7 @@ export default {
         this.initGetAddressBatch()
       }
     },
-    solanaAddress: function () {
-      this.initGetAddressBatch()
-    },
-    web3Address: function () {
-      this.initGetAddressBatch()
-    },
-    starkAddress: function () {
+    walletList: function () {
       this.initGetAddressBatch()
     },
   },
@@ -393,10 +374,9 @@ export default {
       const toChainId = toChainID
       if(!fromChainId && !toChainId) return
       
-      const res = await Promise.all([this.getAddress(fromChainId, { isFrom: true }), this.getAddress(toChainId, { isFrom: false }) ])
+      const res = await Promise.all([this.getAddress(fromChainId), this.getAddress(toChainId) ])
 
-      const [first, last] = res
-
+      const [first, last] = res || []
       this.fromGroup = first
 
       if(first && last && first.type !== last.type) {
@@ -406,101 +386,16 @@ export default {
       }
     },
     async connectWallet(){
-       await this.fromGroup.connect()
+       await this.fromGroup.open()
     },
     async getAddress(chainID) {
-      let addressGroup = {
-        isAddress: false,
-        address: '',
-        icon: '',
-        showAddress: '',
-      }
-
+      
       const { fromChainID } = transferDataState
 
-      const chainId = chainID || fromChainID
-      if (!chainId) return addressGroup
-      const web3Address = this.web3Address
-      const starkNetAddress = this.starkNetAddress
+      const chainId = chainID || fromChainID || "1"
 
-
-      if (chainId === CHAIN_ID.starknet || chainId === CHAIN_ID.starknet_test) {
-          addressGroup = {
-            isAddress: !!starkNetAddress &&
-            !util.getAccountAddressError(starkNetAddress || '', !!starkNetAddress),
-            address: starkNetAddress,
-            icon: chainId,
-            type: "Starknet",
-            connect: () => {
-              setConnectWalletGroupKey('STARKNET')
-              setSelectWalletDialogVisible(true)
-            },
-            open: () => {
-              setStarkNetDialog(true)
-              setSolanaDialog(false)
-              setTonDialog(false)
-              setActDialogVisible(true)
-            },
-          }
-      } else if (
-        chainId === CHAIN_ID.solana || chainId === CHAIN_ID.solana_test
-      ) {
-        const solanaAddress = web3State.solana.solanaAddress
-        addressGroup = {
-          isAddress: !!solanaAddress,
-          address: solanaAddress,
-          icon: solanaHelper.readWalletName() ||chainId,
-          type: "Solana",
-          connect: () => {
-            setConnectWalletGroupKey('SOLANA')
-            setSelectWalletDialogVisible(true)
-          },
-          open: () => {
-            setSolanaDialog(true)
-            setStarkNetDialog(false)
-            setTonDialog(false)
-            setActDialogVisible(true)
-          },
-        }
-      } else if (
-        chainId === CHAIN_ID.ton || chainId === CHAIN_ID.ton_test
-      ) {
-        const tonAddress = tonHelper.account()
-        addressGroup = {
-          isAddress: !!tonAddress,
-          address: tonAddress,
-          icon: chainId,
-          type: "Ton",
-          connect: async () => {
-            await tonHelper.connect()
-          },
-          open: () => {
-            setSolanaDialog(false)
-            setStarkNetDialog(false)
-            setTonDialog(true)
-            setActDialogVisible(true)
-          },
-        }
-      } else {
-          addressGroup = {
-            isAddress: !!web3Address && web3Address !== '0x',
-            address: web3Address,
-            icon: this.globalSelectWalletConf.walletType
-              ? this.globalSelectWalletConf.walletType.toLowerCase()
-              : '',
-            connect: async () => {
-              setConnectWalletGroupKey('EVM')
-              setSelectWalletDialogVisible(true)
-            },
-            type: "EVM",
-            open: () => {
-              setTonDialog(false)
-              setSolanaDialog(false)
-              setStarkNetDialog(false)
-              setActDialogVisible(true)
-            },
-          }
-      }
+      let addressGroup = orbiterHelper.currentConnectChainInfo({chainId})
+      
 
       const showAddress = util.shortAddress(addressGroup.address)
 

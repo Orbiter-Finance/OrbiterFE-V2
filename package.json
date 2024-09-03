@@ -43,6 +43,7 @@
     "@web3modal/html": "^2.7.0",
     "ant-design-vue": "^1.7.6",
     "axios": "^0.21.0",
+    "bech32": "^2.0.0",
     "bignumber.js": "^9.0.1",
     "bitcoinjs-lib": "^6.1.6",
     "buffer": "6.0.3",

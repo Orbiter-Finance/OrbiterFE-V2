@@ -46,6 +46,8 @@ export default {
       return 0
     } else if (orbiterHelper.isFuelChain({ chainId: localChainID })) {
       return 0
+    } else if (orbiterHelper.isTronChain({ chainId: localChainID })) {
+      return 0
     } else if (
       localChainID === CHAIN_ID.imx ||
       localChainID === CHAIN_ID.imx_test

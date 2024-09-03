@@ -37,6 +37,7 @@ export default {
     [CHAIN_ID.zkspace_test]: 'https://v3-rinkeby.zkswap.info/transaction/',
     [CHAIN_ID.solana]: 'https://solscan.io/tx/',
     [CHAIN_ID.solana_test]: 'https://solscan.io/tx/',
+    [CHAIN_ID.tron_nile_test]: 'https://nile.tronscan.org/#/transaction/',
   },
   accountExploreUrl: {
     [CHAIN_ID.zksync]: 'https://zkscan.io/explorer/accounts/',

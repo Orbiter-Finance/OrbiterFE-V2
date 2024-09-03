@@ -67,6 +67,22 @@
       </div>
       <el-carousel :interval="6000" trigger="click" height="272px">
         <el-carousel-item>
+        <EcosystemDapp
+          :holders="totalUser"
+          :isTags="true"
+          :isHolders="true"
+          :ratio="ratio"
+          :showCard="showCard"
+          :banner="'astra2.png'"
+          :tag="'Cross-chain Game'"
+          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
+          :description="'🎉 OKX Cryptopedia Event is Now Live! 🚀 Claim 0.3% of the total $STAR supply on OKX!  🚀Earn 2x O-Points'"
+          :isProgress="false"
+          :name="'0xastra'"
+          :url="'https://www.okx.com/web3/discover/cryptopedia/event/45'"
+        />
+      </el-carousel-item>
+        <el-carousel-item>
           <EcosystemDapp
             :holders="bullishsTotal"
             :isTags="true"
@@ -82,22 +98,7 @@
             :url="'https://www.bullishs.io?task=orbiter_new_user_rewards'"
           />
         </el-carousel-item>
-        <el-carousel-item>
-        <EcosystemDapp
-          :holders="totalUser"
-          :isTags="true"
-          :isHolders="true"
-          :ratio="ratio"
-          :showCard="showCard"
-          :banner="'astra2.png'"
-          :tag="'Cross-chain Game'"
-          :tagStyle="'background: linear-gradient(174.86deg, rgb(234, 255, 188) 20.221%,rgb(219, 239, 45) 62.868%);'"
-          :description="'THE ULTI DREAM Event with @UltiverseDAO is now Live! 🎉 300,000 $ULTI initial prize pool, with Infinity upper limit.'"
-          :isProgress="false"
-          :name="'0xastra'"
-          :url="'https://0xastra.xyz/'"
-        />
-      </el-carousel-item>
+      
       
         <!-- <el-carousel-item>
         <EcosystemLikidDappPro

@@ -1055,5 +1055,54 @@
     "tokens": [],
     "infoURL": "https://testnet-scan.duckchain.io",
     "vm": "EVM"
+  },
+  {
+    "api": {
+      "url": "https://nile.trongrid.io",
+      "key": "f696c7e9-8b72-4859-9e98-97ef6689f3bf"
+    },
+    "chainId": "3448148188",
+    "networkId": "3448148188",
+    "internalId": "579",
+    "name": "Tron Nile Testnet",
+    "debug": true,
+    "service": {
+      "rpc": "TronRpcScanningService"
+    },
+    "features": [],
+    "contract": {
+      "TE2YfPnKDZFKmwpAJvDReV7m8TUtpuhhrt": "OrbiterRouterV3"
+    },
+    "nativeCurrency": {
+      "name": "TRX",
+      "symbol": "TRX",
+      "decimals": 6,
+      "address": "0x0000000000000000000000000000000000000000"
+    },
+    "rpc": [
+      "https://nile.trongrid.io"
+    ],
+    "tokens": [
+      {
+        "name": "JST",
+        "symbol": "JST",
+        "decimals": 18,
+        "address": "TF17BgPaZYbz8oxbjhriubPDsA7ArKoLX3"
+      }
+    ],
+    "infoURL": "https://nile.tronscan.org/#",
+    "contracts": [
+      {
+        "name": "OrbiterRouterV3",
+        "address": "TE2YfPnKDZFKmwpAJvDReV7m8TUtpuhhrt",
+        "methods": [
+          "transfer(address,bytes)",
+          "transferToken(address,address,uint256,bytes)",
+          "transfers(address[],uint256[])",
+          "transferTokens(address,address[],uint256[])"
+        ]
+      }
+    ],
+    "vm": "TRONVM"
   }
 ]
