@@ -3,6 +3,7 @@ import { compatibleGlobalWalletConf } from './walletsResponsiveData'
 import tonHelper from '../util/ton/ton_helper'
 import fractalHelper from '../util/fractal/fractal_helper'
 import aptosHelper from '../util/aptos/aptos_helper'
+import tronHelper from '../util/tron/tron_helper'
 
 export function showAddress() {
   const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -67,6 +68,18 @@ export function aptosAddress() {
   if (address && address.length > 5) {
     const subStr1 = address.slice(0, 4)
     const subStr2 = address.slice(address.length - 4)
+
+    return subStr1 + '...' + subStr2
+  }
+  return 'not connected'
+}
+
+export function tronChainAddress() {
+  const tAddress =
+    web3State?.tron?.tronAddress || tronHelper.tronAddress() || ''
+  if (tAddress && tAddress.length > 5) {
+    const subStr1 = tAddress.slice(0, 4)
+    const subStr2 = tAddress.slice(tAddress.length - 4)
     return subStr1 + '...' + subStr2
   }
   return 'not connected'

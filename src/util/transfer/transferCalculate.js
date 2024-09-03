@@ -31,6 +31,7 @@ import { isArgentApp, isBrowserApp, isDev } from '../env'
 
 import tonHelper from '../ton/ton_helper'
 import fuelsHelper from '../fuels/fuels_helper'
+import tronHelper from '../tron/tron_helper'
 import orbiterHelper from '../orbiter_helper'
 import { TieredFeeKey } from '../../const'
 import fractalHelper from '../fractal/fractal_helper'
@@ -636,8 +637,17 @@ export default {
       ethGas = 15 * 10 ** 3
     }
     if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
-      // solana cost
       ethGas = 1 * 10 ** 8
+    }
+    if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
+      // trx cost
+      console.log('selectMakerConfig', selectMakerConfig)
+      // await tronHelper.metisGas({
+      //   chainId: fromChainID,
+      //   tokenAddress: selectMakerConfig?.fromChain?.tokenAddress,
+      //   makerAddress: selectMakerConfig?.recipient,
+      // })
+      ethGas = 0
     }
     if (fromChainID === CHAIN_ID.po || fromChainID === CHAIN_ID.po_test) {
       try {
@@ -1111,6 +1121,19 @@ export default {
       } catch (error) {
         return '0'
       }
+    } else if (orbiterHelper.isTronChain({ chainId: localChainID })) {
+      try {
+        const tokenAccountBalance = await tronHelper.getBalance({
+          chainId: localChainID,
+          userAddress,
+          tokenAddress,
+        })
+
+        return String(tokenAccountBalance || '0')
+      } catch (error) {
+        console.log('error', error)
+        return '0'
+      }
     } else if (orbiterHelper.isTonChain({ chainId: localChainID })) {
       try {
         if (isMaker) {
@@ -1459,28 +1482,38 @@ export default {
         Number(max) >= Number(transferValue)
       )
     })
-    const discountList = tieredFeeList?.map((item) => item?.discount || '0')
-    const withholdingFeeList = tieredFeeList?.map(
-      (item) => item?.withholdingFee || '0'
+    const discountList = (tieredFeeList || []).map(
+      (item) => item?.discount || '0'
     )
+    let withholdingFeeList = []
+    if (tieredFeeList) {
+      withholdingFeeList = tieredFeeList?.map(
+        (item) => item?.withholdingFee || '0'
+      )
+    }
 
     let tieredFeeDiscountMax = 0
     let tieredFeeWithholdingFeeMax = 0
-
-    discountList.forEach((item) => {
-      if (Number(item) >= tieredFeeDiscountMax) {
-        tieredFeeDiscountMax = item
-      }
-    })
-    withholdingFeeList.forEach((item) => {
-      if (!tieredFeeWithholdingFeeMax) {
-        tieredFeeWithholdingFeeMax = item
-      } else {
-        if (Number(item) <= tieredFeeWithholdingFeeMax && Number(item)) {
-          tieredFeeWithholdingFeeMax = item
+    if (discountList) {
+      discountList.forEach((item) => {
+        if (Number(item) >= tieredFeeDiscountMax) {
+          tieredFeeDiscountMax = item
         }
-      }
-    })
+      })
+    }
+
+    if (withholdingFeeList) {
+      withholdingFeeList.forEach((item) => {
+        if (!tieredFeeWithholdingFeeMax) {
+          tieredFeeWithholdingFeeMax = item
+        } else {
+          if (Number(item) <= tieredFeeWithholdingFeeMax && Number(item)) {
+            tieredFeeWithholdingFeeMax = item
+          }
+        }
+      })
+    }
+
     console.log(
       'tieredFeeWithholdingFeeMax',
       withholdingFeeList,

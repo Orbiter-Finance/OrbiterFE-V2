@@ -310,9 +310,7 @@ import HeaderQuestsTaskList  from "./HeaderQuestsTaskList"
 import { mapMutations } from 'vuex'
 import { decimalNum } from '../../util/decimalNum'
 import dayjs from 'dayjs';
-import fuelsHelper from '../../util/fuels/fuels_helper';
-import ScrollNftConfig from "../../const/scroll-NFT.json"
-import { shortenAddress } from '../../util/shortenAddress';
+import { shortenAddress } from '../../util/shortenAddress'
 
 const { walletDispatchersOnDisconnect } = walletDispatchers
 let time2 = 0
@@ -533,7 +531,7 @@ export default {
     ...mapMutations(['toggleThemeMode']),
     async showShortAddress() {
       const address = this.currentWalletAddress || ""
-      this.showWalletAddress =  shortenAddress(address)
+      this.showWalletAddress = shortenAddress(address)
     },
     checkScrollConfig(group){
       const id = group?.id 
@@ -690,7 +688,7 @@ export default {
         console.error(e)
       }
       setActDialogVisible(false)
-      await  this.connectWalletInfo.open()
+      await this.connectWalletInfo.open()
     },
     itemScroll(e) {
       if (new Date().valueOf() - this.scrollLastTime > 40) {

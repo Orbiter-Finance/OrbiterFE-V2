@@ -1,9 +1,8 @@
 import * as bitcoin from 'bitcoinjs-lib'
+import { bech32 } from 'bech32'
 
 import util from '../util'
 import { web3State } from '../../composition/useCoinbase'
-
-console.log('bitcoin', bitcoin)
 
 const FRACTAL_WALLET_NAME = 'FRACTAL_WALLET_NAME'
 
@@ -36,6 +35,23 @@ const getChainInfo = (chainId) => {
   if (!chainId) return null
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   return chainInfo
+}
+
+const checkAddress = (address) => {
+  try {
+    if (address.startsWith('bc1')) {
+      const { prefix } = bech32.decode(address)
+      if (prefix === 'bc') {
+        return true
+      }
+    } else {
+      bitcoin.address.toOutputScript(address)
+      return true
+    }
+  } catch (e) {
+    return false
+  }
+  return false
 }
 
 const getProvider = () => {
@@ -103,6 +119,7 @@ const fractalHelper = {
   updateWalletName,
   fractalAddress,
   transfer,
+  checkAddress,
 }
 
 export default fractalHelper

@@ -1,7 +1,16 @@
 import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk'
+import * as apt from '@aptos-labs/ts-sdk'
 
 import { web3State } from '../../composition/useCoinbase'
 import util from '../util'
+
+console.log(
+  'apt',
+  apt
+  // apt.AptosAccount.isValidAccountAddress(
+  //   '0x2c9d52547d9f86b28eca0bae0493a6c0d8314334d4a9d7084c61d9a5aa3bcb03'
+  // )
+)
 
 const FRACTAL_WALLET_NAME = 'FRACTAL_WALLET_NAME'
 
@@ -69,7 +78,6 @@ const getProvider = (chainId) => {
     fullnode: rpc,
   }) // default network is devnet
   const aptos = new Aptos(config)
-
   return aptos
 }
 

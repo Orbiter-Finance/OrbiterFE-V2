@@ -470,6 +470,9 @@ export default {
       CHAIN_ID.starknet_test,
       CHAIN_ID.solana,
       CHAIN_ID.solana_test,
+      CHAIN_ID.tron_nile_test,
+      CHAIN_ID.tron_shasta_test,
+      CHAIN_ID.tron,
       CHAIN_ID.ton,
       CHAIN_ID.ton_test,
       CHAIN_ID.fuel,
@@ -545,6 +548,14 @@ export default {
     return (
       orbiterHelper.isFuelChain({ chainId: fromChainID }) ||
       orbiterHelper.isFuelChain({ chainId: toChainID })
+    )
+  },
+
+  isTron() {
+    const { fromChainID, toChainID } = transferDataState
+    return (
+      orbiterHelper.isTronChain({ chainId: fromChainID }) ||
+      orbiterHelper.isTronChain({ chainId: toChainID })
     )
   },
 

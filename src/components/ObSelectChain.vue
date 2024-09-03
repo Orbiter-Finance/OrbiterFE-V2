@@ -249,6 +249,11 @@ export default {
       const solanaAddress = web3State.solana.solanaAddress
       return solanaAddress
     },
+    tronAddress() {
+      const tronAddress =
+        web3State.tron.tronAddress
+      return tronAddress
+    },
     tabsList() {
       return [
         {
@@ -334,6 +339,9 @@ export default {
         CHAIN_ID.bsc_test,
         CHAIN_ID.solana,
         CHAIN_ID.solana_test,
+        CHAIN_ID.tron_nile_test,
+        CHAIN_ID.tron_shasta_test,
+        CHAIN_ID.tron,
         CHAIN_ID.ton,
         CHAIN_ID.ton_test,
         CHAIN_ID.fuel,
@@ -439,6 +447,9 @@ export default {
         CHAIN_ID.bsc_test,
         CHAIN_ID.solana,
         CHAIN_ID.solana_test,
+        CHAIN_ID.tron_nile_test,
+        CHAIN_ID.tron_shasta_test,
+        CHAIN_ID.tron,
         CHAIN_ID.ton,
         CHAIN_ID.ton_test,
       ]
@@ -500,6 +511,10 @@ export default {
           {
             address: tonAddress,
             type: 'Ton',
+          },
+          {
+            address: this.tronAddress,
+            type: 'Tron',
           },
           {
             address: this.solanaAddress,
@@ -651,6 +666,16 @@ export default {
               setConnectWalletGroupKey('FUEL')
             }
           }
+          if (
+           orbiterHelper.isTronChain({chainId:  e.localID})
+          ) {
+            const address = web3State.tron.tronAddress
+            const isConnected = web3State.tron.tronIsConnected
+            if (!address || !isConnected) {
+              setSelectWalletDialogVisible(true)
+              setConnectWalletGroupKey('TRON')
+            }
+          }
           // ton
           if (orbiterHelper.isTonChain({chainId: e.localID}) ) {
             const account = await tonHelper.account()
@@ -705,7 +730,6 @@ export default {
     },
     search() {},
     checkKeyWord() {},
-
   },
 }
 </script>

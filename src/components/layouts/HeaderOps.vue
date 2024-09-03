@@ -93,18 +93,10 @@ import {
   actAddPointVisible,
   actAddPoint,
   isMobile,
-  setStarkNetDialog,
-  setSelectWalletDialogVisible,
-  starkAddress,
-  solAddress,
-  tonAddress,
-  showAddress,
   saveSenderPageWorkingState,
   setActDialogVisible,
   setActAddPointVisible,
   setActAddPoint,
-  isStarkNetDialog,
-  isSolanaDialog,
   actDialogVisible,
   actTotalPoint,
   setActPoint,
@@ -113,17 +105,10 @@ import {
   setLotteryCardTotal,
   setLotteryCardProgress,
   transferDataState,
-  setConnectWalletGroupKey,
-  setSolanaDialog,
-  isTonDialog,
-  setTonDialog,
   claimCardModalAmountInfo,
   claimCardModalDataInfo,
-  setClaimCardModalShow,
   setActPointFetchStatus,
-  fractalAddress,
-  aptosAddress,
-  setActConnectWalletInfo,
+  setActConnectWalletInfo
 } from '../../composition/hooks'
 import {
   compatibleGlobalWalletConf,
@@ -204,11 +189,8 @@ export default {
     isLogin() {
       return (
         walletIsLogin.value ||
-        this.isSelectedStarkNet ||
-        this.isSelectedSolana ||
-        this.isSelectedTon ||
-        this.isSelectedFractal ||
-        this.isSelectedAptos
+        this.fromGroup || 
+        this.toGroup
       )
     },
     connectFirstWalletIcon() {
@@ -231,6 +213,7 @@ export default {
       return [
         compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
         web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
+        web3State.tron.tronAddress,
         solanaHelper.solanaAddress(),
         tonHelper.account(),
         web3State.fractal.fractalAddress,
@@ -301,9 +284,10 @@ export default {
         'Starknet',
         'Solana',
         'Ton',
+        "Tron",
         'Fuel',
         'Fractal',
-        'Aptos',
+        'Aptos'
       ]
 
       const list = chainListType
@@ -317,9 +301,7 @@ export default {
         })
         .filter((item) => !!item)
 
-      const [first, last] = list
-
-      console.log('first, last', first, last)
+      const [first, last] = list || []
 
       this.fromGroup = first
 
@@ -393,20 +375,17 @@ export default {
     },
     getAddress() {
 
-      const isAddress = this.fromGroup.isConnect
+      const isAddress = this.fromGroup.isConnected
       const address = this.fromGroup.address
       let addressGroup = {
         isAddress,
         address,
+        group: this.fromGroup
       }
       return addressGroup
     },
     async getWalletAddressPoint() {
-      
-      const fromGroup = this.fromGroup
-
-      const isAddress = this.fromGroup.isConnect
-      const address = this.fromGroup.address
+      const { isAddress, address, group } = this.getAddress()
 
       if (isAddress && address) {
         setActPointFetchStatus()
@@ -416,7 +395,7 @@ export default {
         const point = pointRes.data.total
         setActPoint(pointRes.data)
         if (point) {
-          setActConnectWalletInfo(fromGroup)
+          setActConnectWalletInfo(group)
           setTimeout(() => {
             setActAddPoint(String(point || ''))
             setActAddPointVisible(true)

@@ -16,6 +16,7 @@ import { disConnectStarkNetWallet } from './constants/starknet/helper.js'
 import fractalHelper from './fractal/fractal_helper.js'
 import aptosHelper from './aptos/aptos_helper.js'
 import { walletDispatchersOnDisconnect } from './walletsDispatchers'
+import tronHelper from './tron/tron_helper.js'
 
 const checkStarknetAddress = (address) => {
   if (address?.length <= 50) {
@@ -51,6 +52,11 @@ const openStarknetConnectModal = () => {
 const openSolanaConnectModal = () => {
   setSelectWalletDialogVisible(true)
   setConnectWalletGroupKey('SOLANA')
+}
+
+const openTronConnectModal = () => {
+  setSelectWalletDialogVisible(true)
+  setConnectWalletGroupKey('TRON')
 }
 
 const tonConnectModal = async () => {
@@ -110,6 +116,14 @@ const isAptosChain = ({ chainId }) => {
   return chainId === CHAIN_ID.movement_test
 }
 
+const isTronChain = ({ chainId }) => {
+  return (
+    chainId === CHAIN_ID.tron_nile_test ||
+    chainId === CHAIN_ID.tron_shasta_test ||
+    chainId === CHAIN_ID.tron
+  )
+}
+
 const isEVMChain = ({ chainId }) => {
   const flag = evmChain.some(
     (item) => item.toLocaleLowerCase() === String(chainId).toLocaleLowerCase()
@@ -124,7 +138,8 @@ const isNotEVMChain = ({ chainId }) => {
     isStarknetChain({ chainId }) ||
     isFuelChain({ chainId }) ||
     isFractalChain({ chainId }) ||
-    isAptosChain({ chainId })
+    isAptosChain({ chainId }) ||
+    isTronChain({ chainId })
   )
 }
 
@@ -214,8 +229,8 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
     address: web3State.fractal.fractalAddress,
     open: openFractalConnectModal,
     isConnected: !!web3State.fractal.fractalIsConnect,
-    checkAddress: () => {
-      return true
+    checkAddress: (address) => {
+      return fractalHelper.checkAddress(address)
     },
     walletIcon: web3State.fractal.fractalWalletIcon || CHAIN_ID.fractal_test,
     type: 'Fractal',
@@ -240,6 +255,24 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
       web3State.aptos.aptosIsConnect = false
     },
   }
+  const tronInfo = {
+    address: web3State.tron.tronAddress,
+    open: openTronConnectModal,
+    isConnected: !!web3State.tron.tronIsConnected,
+    checkAddress: (address) => {
+      return !!tronHelper.checkAddress(address)
+    },
+    walletIcon: web3State.tron.tronWalletIcon || CHAIN_ID.tron,
+    type: 'Tron',
+    disconnect: async () => {
+      await tronHelper.disConnect()
+      web3State.tron.tronAddress = ''
+      web3State.tron.tronIsConnected = false
+      web3State.tron.tronWalletName = ''
+      web3State.tron.tronChain = ''
+      web3State.tron.tronWalletIcon = ''
+    },
+  }
 
   if (isList) {
     return [
@@ -250,6 +283,7 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
       fuelInfo,
       fractalInfo,
       aptosInfo,
+      tronInfo,
     ]
   }
 
@@ -267,7 +301,9 @@ const currentConnectChainInfo = ({ chainId, isList }) => {
     current = fractalInfo
   } else if (isAptosChain({ chainId })) {
     current = aptosInfo
-  } else if (isEVMChain({ chainId })) {
+  } else if (isTronChain({ chainId })) {
+    current = tronInfo
+  } else if (isEVMChain({ chainId }) && !isNotEVMChain({ chainId })) {
     current = evmInfo
   } else {
     current = null
@@ -301,6 +337,7 @@ const orbiterHelper = {
   isAptosChain,
   isTonChain,
   isStarknetChain,
+  isTronChain,
   isFuelChain,
   isNotEVMChain,
   isEVMChain,

@@ -48,6 +48,13 @@ export const web3State = reactive({
     aptosIsConnect: false,
     aptosChain: '',
   },
+  tron: {
+    tronAddress: '',
+    tronWalletName: '',
+    tronWalletIcon: '',
+    tronIsConnected: false,
+    tronChain: '',
+  },
 })
 
 export function updateCoinbase(coinbase) {
