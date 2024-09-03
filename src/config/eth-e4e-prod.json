@@ -5006,14 +5006,40 @@
     },
     "40-1": {
         "ETH-ETH": {
-            "gasFee": 23,
-            "tradingFee": 0.0065,
+            "gasFee": 2.5,
+            "tradingFee": 0.0022,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0022
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0022
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0022
+                }
+            ]
         }
     },
     "2-40": {
@@ -5030,14 +5056,40 @@
     },
     "40-2": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "7-40": {
@@ -5054,14 +5106,40 @@
     },
     "40-7": {
         "ETH-ETH": {
-            "gasFee": 18,
-            "tradingFee": 0.00042,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "4-40": {
@@ -5078,14 +5156,40 @@
     },
     "40-4": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0x064A24243F2Aabae8D2148FA878276e6E6E452E3941b417f3c33b1649EA83e11",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "19-40": {
@@ -5102,14 +5206,40 @@
     },
     "40-19": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "14-40": {
@@ -5126,14 +5256,40 @@
     },
     "40-14": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "3-40": {
@@ -5150,14 +5306,40 @@
     },
     "40-3": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "21-40": {
@@ -5174,14 +5356,40 @@
     },
     "40-21": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "23-40": {
@@ -5198,14 +5406,40 @@
     },
     "40-23": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "31-40": {
@@ -5222,14 +5456,40 @@
     },
     "40-31": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "6-40": {
@@ -5246,14 +5506,40 @@
     },
     "40-6": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "17-40": {
@@ -5270,14 +5556,40 @@
     },
     "40-17": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "30-40": {
@@ -5294,14 +5606,40 @@
     },
     "40-30": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "41-40": {
@@ -5318,14 +5656,40 @@
     },
     "40-41": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "47-40": {
@@ -5342,26 +5706,78 @@
     },
     "40-47": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "40-36": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "24-40": {
@@ -5378,7 +5794,7 @@
     },
     "40-24": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
@@ -5386,7 +5802,33 @@
             "minPrice": 0.00005,
             "startTime": 0,
             "endTime": 99999999999999,
-            "originWithholdingFee": 0.0005
+            "originWithholdingFee": 0.0005,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "16-40": {
@@ -5403,14 +5845,40 @@
     },
     "40-16": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "1-53": {
@@ -5836,14 +6304,40 @@
     },
     "40-53": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 1,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "53-40": {
@@ -6220,14 +6714,40 @@
     },
     "40-27": {
         "ETH-ETH": {
-            "gasFee": 23,
-            "tradingFee": 0.00022,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "27-40": {
@@ -6474,12 +6994,38 @@
         "ETH-ETH": {
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
-            "gasFee": 23,
-            "tradingFee": 0.00039,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "57-40": {
@@ -6810,12 +7356,38 @@
         "ETH-ETH": {
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
-            "gasFee": 10,
-            "tradingFee": 0.0012,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "48-40": {
@@ -7026,12 +7598,38 @@
         "ETH-ETH": {
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "67-40": {
@@ -7314,12 +7912,38 @@
         "ETH-ETH": {
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "68-40": {
@@ -7626,12 +8250,38 @@
         "ETH-ETH": {
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
-            "gasFee": 18,
-            "tradingFee": 0.00028,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "20-40": {
@@ -7989,9 +8639,35 @@
             "maxPrice": 3,
             "minPrice": 0.00005,
             "tradingFee": 0.0005,
-            "gasFee": 18,
+            "gasFee": 2.5,
             "startTime": 1663297201,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "59-40": {
@@ -8344,14 +9020,40 @@
     },
     "40-69": {
         "ETH-ETH": {
-            "gasFee": 18,
-            "tradingFee": 0.00042,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "maxPrice": 3,
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "69-40": {
@@ -8776,14 +9478,40 @@
     },
     "40-72": {
         "ETH-ETH": {
-            "gasFee": 18,
-            "tradingFee": 0.0008,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "maxLimit": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "72-40": {
@@ -9232,14 +9960,40 @@
     },
     "40-71": {
         "ETH-ETH": {
-            "gasFee": 18,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "maxPrice": 0.35,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "71-40": {
@@ -9640,14 +10394,40 @@
     },
     "40-73": {
         "ETH-ETH": {
-            "gasFee": 18,
-            "tradingFee": 0.00038,
+            "gasFee": 2.5,
+            "tradingFee": 0.0005,
             "maxPrice": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "73-40": {
@@ -10072,14 +10852,40 @@
     },
     "40-75": {
         "ETH-ETH": {
-            "gasFee": 23,
+            "gasFee": 2.5,
             "tradingFee": 0.0005,
             "maxPrice": 3,
             "makerAddress": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "sender": "0xe4edb277e41dc89ab076a1f049f4a3efa700bce8",
             "minPrice": 0.00005,
             "startTime": 0,
-            "endTime": 99999999999999
+            "endTime": 99999999999999,
+            "tieredFee": [
+                {
+                    "range": [
+                        0,
+                        0.1
+                    ],
+                    "tradeFee": 0,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.1,
+                        0.3
+                    ],
+                    "tradeFee": 1,
+                    "withholdingFee": 0.0005
+                },
+                {
+                    "range": [
+                        0.3,
+                        9999999999
+                    ],
+                    "tradeFee": 2.5,
+                    "withholdingFee": 0.0005
+                }
+            ]
         }
     },
     "75-40": {

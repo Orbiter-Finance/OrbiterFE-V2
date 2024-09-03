@@ -14,3 +14,8 @@ export const MQTT_PASSWORD = process.env.VUE_APP_MQTT_PASSWORD
 export const MQTT_HREF = process.env.VUE_APP_MQTT_HREF
 
 export const PASSPHRASE = process.env.VUE_APP_BALANCE_LIST_PASSPHRASE
+
+export const TieredFeeKey = {
+  withholdingFee: 'withholdingFee',
+  discountFee: 'discountFee',
+}

@@ -852,9 +852,11 @@ export default {
     'transferDataState.fromChainID': function (value) {
       this.loopringFromFillAddress(value)
       this.handleTipsCall()
+      this.tipsGasFee()
     },
     'transferDataState.toChainID': function () {
       this.handleTipsCall()
+      this.tipsGasFee()
     },
     curPageStatus(value) {
       if (Number(value) === 1) this.updateTransferInfo();
@@ -950,6 +952,7 @@ export default {
     transferValue: function (newValue) {
       transferDataState.transferValue !== newValue &&
       updateTransferValue(newValue);
+      this.tipsGasFee()
     },
     currentConenctInfoList: function (newValue) {
       this.updateTransferInfo();
@@ -998,6 +1001,10 @@ export default {
     this.replaceStarknetWrongHref();
   },
   methods: {
+    tipsGasFee() {
+      const { selectMakerConfig } = transferDataState
+      this.toValueToolTip = `Sender pays a ${ parseFloat(((orbiterCore.getGasFee(this.transferValue, selectMakerConfig) || 0) / 10).toFixed(3))}% trading fee for each transfer.`;
+    },
     goToPrizes(){
       this.$gtag.event("TRANSFER_TO_PRIZESV3", {
         event_category: "TRANSFER_TO_PRIZESV3",
@@ -1469,7 +1476,6 @@ export default {
       } else {
         this.isWillUpdate = false;
       }
-      this.toValueToolTip = `Sender pays a ${ parseFloat(((makerConfigInfo.gasFee || 0) / 10).toFixed(3)) }% trading fee for each transfer.`;
       this.specialProcessing(oldFromChainID, oldToChainID);
       if (fromChainID !== oldFromChainID || toChainID !== oldToChainID) {
         this.updateOriginGasCost();

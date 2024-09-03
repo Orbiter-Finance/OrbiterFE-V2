@@ -31,7 +31,10 @@ function confirmUserTransaction(chainId, userAddress, hash, toChainId) {
     // }
     try {
       const { status, txList = [] } =
-        (await requestOpenApi(RequestMethod.getTransactionByHash, [hash])) || {}
+        (await requestOpenApi(RequestMethod.getTransactionByHash, [
+          hash,
+          chainId,
+        ])) || {}
       util.log('txStatus', status, 'txList', txList)
       for (const tx of txList) {
         if (tx.side === 0) {
