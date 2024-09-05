@@ -1079,15 +1079,17 @@
     "chainId": "3448148188",
     "networkId": "3448148188",
     "internalId": "579",
-    "name": "Tron Nile Testnet",
+    "name": "Tron NILE Testnet",
     "debug": true,
     "service": {
       "rpc": "TronRpcScanningService"
     },
     "features": [],
     "contract": {
-      "TE2YfPnKDZFKmwpAJvDReV7m8TUtpuhhrt": "OrbiterRouterV3"
+      "TE2YfPnKDZFKmwpAJvDReV7m8TUtpuhhrt": "OrbiterRouterV3",
+      "TXpWqLLHVHZDnHCo6j182xn8d7ui9kxGPL": "OrbiterRouterV4"
     },
+    "targetConfirmation": 5,
     "nativeCurrency": {
       "name": "TRX",
       "symbol": "TRX",
@@ -1105,7 +1107,7 @@
         "address": "TF17BgPaZYbz8oxbjhriubPDsA7ArKoLX3"
       }
     ],
-    "infoURL": "https://nile.tronscan.org/#",
+    "infoURL": "https://tron.network",
     "contracts": [
       {
         "name": "OrbiterRouterV3",
@@ -1115,6 +1117,20 @@
           "transferToken(address,address,uint256,bytes)",
           "transfers(address[],uint256[])",
           "transferTokens(address,address[],uint256[])"
+        ]
+      },
+      {
+        "name": "OrbiterRouterV4",
+        "address": "TXpWqLLHVHZDnHCo6j182xn8d7ui9kxGPL",
+        "methods": [
+          "transfer(address,bytes)",
+          "transferToken(address,address,uint256,bytes)",
+          "transfers(address[],uint256[])",
+          "transfers(address[],uint256[],bytes[])",
+          "transferTokens(address,address[],uint256[])",
+          "transferTokens(address,address[],uint256[],bytes[])",
+          "TransferTo(address,uint256)",
+          "TransferTo(address,uint256,bytes)"
         ]
       }
     ],
