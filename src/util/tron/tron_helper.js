@@ -119,7 +119,7 @@ const metisGas = async ({ chainId, tokenAddress, makerAddress }) => {
   const contractList = chainInfo?.contracts || []
   const contractAddress = contractList?.filter(
     (item) =>
-      item?.name?.toLocaleLowerCase() === 'OrbiterRouterV3'?.toLocaleLowerCase()
+      item?.name?.toLocaleLowerCase() === 'OrbiterRouterV4'?.toLocaleLowerCase()
   )[0]?.address
 
   const tokenTxReceipt =
@@ -165,7 +165,7 @@ const transfer = async ({
 
   const contractAddress = contractList?.filter(
     (item) =>
-      item?.name?.toLocaleLowerCase() === 'OrbiterRouterV3'?.toLocaleLowerCase()
+      item?.name?.toLocaleLowerCase() === 'OrbiterRouterV4'?.toLocaleLowerCase()
   )[0]?.address
 
   const contract = await provider.contract().at(contractAddress)
