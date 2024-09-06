@@ -28,7 +28,7 @@ const getTronLink = () => {
 const getProvider = () => {
   const wallet = getTronLink()
   const walletName = readWalletName() || 'Tron Wallet'
-  if (!wallet?.tronWeb) {
+  if (!wallet) {
     util.showMessage(
       wallet ? `Login ${walletName}` : `Install ${walletName}`,
       'error'
@@ -48,13 +48,41 @@ const disConnect = async () => {
   updateWalletName('')
 }
 
+const tronEnable = async () => {
+  const tronLink = getTronLink()
+  let group = {
+    code: 0,
+    message: 'Connect Wallet Error',
+  }
+  try {
+    const res = await window.tron.request({ method: 'eth_requestAccounts' })
+    console.log('res', res)
+    group = {
+      code: 200,
+      message: '',
+    }
+  } catch (error) {
+    console.log('error', error, error?.message)
+    const res = await tronLink?.request({
+      method: 'tron_requestAccounts',
+    })
+    const { code, message } = res || {}
+    group = {
+      ...group,
+      code,
+      message: res ? message : String(error?.message || ''),
+    }
+  }
+  return group
+}
+
 const connect = async (walletName) => {
   updateWalletName(walletName)
-  const tronLink = getTronLink()
-  const { code, message } = await tronLink?.request({
-    method: 'tron_requestAccounts',
-  })
+  const { code, message } = await tronEnable()
   const tronWeb = getProvider()
+  if (code !== 200) {
+    util.showMessage(message, 'error')
+  }
   if (!tronWeb) return
   const address = tronWeb?.defaultAddress?.base58 || ''
   const ready = !!tronWeb?.ready
@@ -71,10 +99,6 @@ const connect = async (walletName) => {
     web3State.tron.tronChain = CHAIN_ID.tron_nile_test
   } else {
     console.log('Unknown Network')
-  }
-
-  if (code !== 200) {
-    util.showMessage(message, 'error')
   }
 
   web3State.tron.tronAddress = address
@@ -97,6 +121,7 @@ const tronAddress = () => {
 
 const getBalance = async ({ tokenAddress, chainId, userAddress }) => {
   const provider = getProvider()
+  if (!provider) return '0'
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
   const nativeCurrency = chainInfo?.nativeCurrency?.address
   if (nativeCurrency === tokenAddress) {
@@ -112,7 +137,7 @@ const getBalance = async ({ tokenAddress, chainId, userAddress }) => {
 const metisGas = async ({ chainId, tokenAddress, makerAddress }) => {
   const provider = getProvider()
   const address = tronAddress()
-  if (!address) return '0'
+  if (!address || !provider) return '0'
 
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
 
@@ -160,13 +185,17 @@ const transfer = async ({
   const provider = getProvider()
 
   const chainInfo = util.getV3ChainInfoByChainId(chainId)
+  console.log('chainId', chainId, chainInfo)
 
   const contractList = chainInfo?.contracts || []
+  console.log('contractList', contractList)
 
   const contractAddress = contractList?.filter(
     (item) =>
       item?.name?.toLocaleLowerCase() === 'OrbiterRouterV4'?.toLocaleLowerCase()
   )[0]?.address
+
+  console.log('contractAddress', contractAddress)
 
   const contract = await provider.contract().at(contractAddress)
 
@@ -210,6 +239,7 @@ const tronHelper = {
   updateWalletName,
   getBalance,
   metisGas,
+  tronEnable,
 }
 
 export default tronHelper

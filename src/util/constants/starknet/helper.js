@@ -103,7 +103,6 @@ export async function connectStarkNetWallet() {
       .then((address) => !!address?.length)
 
     if (enabled) {
-      console.log('starknet address', getStarknet().selectedAddress)
       store.commit('updateStarkNetAddress', getStarknet().selectedAddress)
       store.commit('updateStarkNetWalletName', wallet.name)
       store.commit('updateStarkNetWalletIcon', wallet.icon)
@@ -237,8 +236,6 @@ export async function sendTransferV3({
   amount,
   chainID,
 }) {
-  console.log('tokenAddress', tokenAddress)
-  console.log('makerAddress', makerAddress)
   const networkID = getNetworkIdByChainId(chainID)
 
   const chainId = networkID === 1 ? CHAIN_ID.starknet : CHAIN_ID.starknet_test

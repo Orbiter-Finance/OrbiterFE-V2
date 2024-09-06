@@ -223,7 +223,7 @@ export default {
         compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLocaleLowerCase(),
         web3State.starkNet.starkNetAddress?.toLocaleLowerCase(),
         web3State.tron.tronAddress,
-        solanaHelper.solanaAddress(),
+        web3State.solana.solanaAddress,
         tonHelper.account(),
         ...[],
       ]
@@ -338,7 +338,6 @@ export default {
     },
     async connectAWallet() {
       const firstGroup = this.fromGroup
-      console.log("firstGroup", firstGroup)
       if (!firstGroup) return
       const isConnect =
         firstGroup?.address &&

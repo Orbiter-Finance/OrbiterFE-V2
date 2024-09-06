@@ -133,6 +133,12 @@ export default {
   // min ~ max
   async getTransferGasLimit(fromChainID, makerAddress, fromTokenAddress) {
     const { selectMakerConfig } = transferDataState
+    if (orbiterHelper.isTonChain({ chainId: fromChainID })) {
+      return null
+    }
+    if (orbiterHelper.isTronChain({ chainId: fromChainID })) {
+      return null
+    }
     if (
       fromChainID === CHAIN_ID.zksync ||
       fromChainID === CHAIN_ID.zksync_test
@@ -1423,8 +1429,6 @@ export default {
   max() {
     const { selectMakerConfig, transferValue } = transferDataState
 
-    console.log('transferValue', transferValue)
-
     const { tieredFee } = selectMakerConfig
 
     const tieredFeeList = tieredFee?.filter((item) => {
@@ -1466,13 +1470,6 @@ export default {
       })
     }
 
-    console.log(
-      'tieredFeeWithholdingFeeMax',
-      withholdingFeeList,
-      tieredFeeWithholdingFeeMax,
-      discountList,
-      tieredFeeDiscountMax
-    )
     return Number(tieredFeeWithholdingFeeMax)
       ? {
           type: TieredFeeKey.withholdingFee,

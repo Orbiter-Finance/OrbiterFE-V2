@@ -407,7 +407,6 @@ export default {
       return addressGroup
     },
     connectAWallet() {
-      console.log("11111", this.fromGroup)
       this.fromGroup.open()
     },
   },

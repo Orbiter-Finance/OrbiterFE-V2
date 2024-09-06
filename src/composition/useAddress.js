@@ -1,8 +1,6 @@
 import { web3State } from '../composition/hooks'
 import { compatibleGlobalWalletConf } from './walletsResponsiveData'
-import solanaHelper from '../util/solana/solana_helper'
 import tonHelper from '../util/ton/ton_helper'
-import tronHelper from '../util/tron/tron_helper'
 
 export function showAddress() {
   const address = compatibleGlobalWalletConf.value.walletPayload.walletAddress
@@ -23,8 +21,7 @@ export function starkAddress() {
   return 'not connected'
 }
 export function solAddress() {
-  const solanaAddress =
-    web3State.solana.solanaAddress || solanaHelper.solanaAddress() || ''
+  const solanaAddress = web3State.solana.solanaAddress || ''
   if (solanaAddress && solanaAddress.length > 5) {
     const subStr1 = solanaAddress.slice(0, 4)
     const subStr2 = solanaAddress.slice(solanaAddress.length - 4)
@@ -44,8 +41,7 @@ export function tonAddress() {
 }
 
 export function tronChainAddress() {
-  const tAddress =
-    web3State?.tron?.tronAddress || tronHelper.tronAddress() || ''
+  const tAddress = web3State?.tron?.tronAddress || ''
   if (tAddress && tAddress.length > 5) {
     const subStr1 = tAddress.slice(0, 4)
     const subStr2 = tAddress.slice(tAddress.length - 4)

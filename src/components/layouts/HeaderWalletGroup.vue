@@ -85,6 +85,7 @@ import {
   setSelectWalletDialogVisible,
   connectWalletGroupKey,
   setConnectWalletGroupKey,
+  web3State,
 } from '../../composition/hooks'
 
 import walletDispatchers, {
@@ -316,7 +317,7 @@ export default {
     },
     async connectSolanaWallet(item) {
       const status = await solanaHelper.connect(item.icon)
-      const fromPublicKey = solanaHelper.solanaAddress()
+      const fromPublicKey = web3State.solana.solanaAddress
 
       store.commit('updateSolanaAddress', fromPublicKey)
       store.commit('updateSolanaWalletName', item.icon.toLocaleLowerCase())

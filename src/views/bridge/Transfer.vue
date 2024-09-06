@@ -2135,7 +2135,7 @@ export default {
           walletAddress && (await imxHelper.ensureUser(walletAddress));
         }
 
-        if (fromChainID === CHAIN_ID.starknet || fromChainID === CHAIN_ID.starknet_test || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) {
+        if (!!orbiterHelper.isNotEVMChain({chainId: fromChainID})) {
           let { starkChain } = web3State.starkNet;
           starkChain = +starkChain ? +starkChain : starkChain;
           // if (!starkChain || starkChain === 'unlogin') {
@@ -2225,7 +2225,7 @@ export default {
         const { isCrossAddress, crossAddressReceipt } = transferDataState;
         const walletAddress = (isCrossAddress || toChainID === CHAIN_ID.starknet || toChainID === CHAIN_ID.starknet_test) ?  crossAddressReceipt?.toLowerCase() : (
           toChainID === CHAIN_ID.ton || toChainID === CHAIN_ID.ton_test ? tonHelper.account()  : (
-            toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? solanaHelper.solanaAddress() 
+            toChainID === CHAIN_ID.solana || toChainID ===  CHAIN_ID.solana_test ? web3State.solana.solanaAddress
             : (
               orbiterHelper.isTronChain({chainId: toChainID}) ? web3State.tron.tronAddress : compatibleGlobalWalletConf.value.walletPayload.walletAddress?.toLowerCase()
             ))

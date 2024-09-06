@@ -63,3 +63,19 @@ export function updatelpAccountInfo(accountInfo) {
 export function updateIsInstallMeta(isInstallMeta) {
   web3State.isInstallMeta = isInstallMeta
 }
+
+export function updateSolanaAddress(address) {
+  web3State.solana.solanaAddress = address
+}
+
+export function updateSolanaConnectStatus(status) {
+  web3State.solana.solanaIsConnected = status
+}
+
+export function updateFuelAddress(address) {
+  web3State.fuel.fuelAddress = address
+}
+
+export function updateFuelConnectStatus(status) {
+  web3State.fuel.fuelIsConnected = status
+}

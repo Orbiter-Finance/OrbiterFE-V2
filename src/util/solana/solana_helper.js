@@ -22,6 +22,10 @@ import { BN, Program } from '@project-serum/anchor'
 import { SOLANA_OPOOL_ABI } from '../constants/contract/contract'
 
 import { Buffer } from 'buffer'
+import {
+  updateSolanaAddress,
+  updateSolanaConnectStatus,
+} from '../../composition/useCoinbase'
 
 const SOLNA_WALLET_NAME = 'SOLNA_WALLET_NAME'
 
@@ -70,8 +74,13 @@ const disConnect = async () => {
 
 const connect = async (walletName) => {
   updateWalletName(walletName)
-  const res = await getProvider()?.connect()
-  return !!res?.toString()
+  const provider = getProvider()
+  const res = await provider?.connect()
+  const publicKey = res?.publicKey || provider?.publicKey || res
+  const address = publicKey?.toString()
+  updateSolanaAddress(address)
+  updateSolanaConnectStatus(!!address)
+  return address
 }
 
 const getPublicKey = (address) => {
@@ -172,11 +181,11 @@ const transfer = async ({
       })
     )
 
-  // const res = await tokenTransaction.getEstimatedFee(connection)
+  const signedTx = await provider.signTransaction(tokenTransaction)
 
-  const signature = await provider.signAndSendTransaction(tokenTransaction)
+  const signature = await connection.sendRawTransaction(signedTx.serialize())
 
-  return signature.signature
+  return signature
 }
 
 const bridgeType1transfer = async ({
@@ -261,9 +270,11 @@ const bridgeType1transfer = async ({
         .instruction()
     )
 
-  const signature = await provider.signAndSendTransaction(tokenTransaction)
+  const signedTx = await provider.signTransaction(tokenTransaction)
 
-  return signature.signature
+  const signature = await connection.sendRawTransaction(signedTx.serialize())
+
+  return signature
 }
 const activationTokenAccount = async ({ toChainID, fromCurrency, chainId }) => {
   const chainInfo = await util.getV3ChainInfoByChainId(toChainID)

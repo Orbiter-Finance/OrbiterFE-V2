@@ -337,7 +337,11 @@ export default {
       )
 
       if (
-        (orbiterHelper.isSolanaChain({chainId: fromChainID})) && !bridgeType1
+        (
+          orbiterHelper.isSolanaChain({chainId: fromChainID}) ||
+          orbiterHelper.isTronChain({chainId: fromChainID}) ||
+          orbiterHelper.isTonChain({chainId: fromChainID})
+      ) && !bridgeType1
       ) {
         realTransferAmount = ethers.utils.formatEther(
           ethers.utils
@@ -357,8 +361,6 @@ export default {
             ethers.utils.parseEther(discount.trim()||"0")
         )
       )
-
-      console.log("nRevicedAmount", discount, nRevicedAmount)
 
       const isGasTokenChain = this.currentFromChainID === CHAIN_ID.zksync2
       const comm = [
@@ -557,7 +559,7 @@ export default {
 
       try {
           if(fromChainID === CHAIN_ID.solana || fromChainID === CHAIN_ID.solana_test){
-            const solanaAddress = solanaHelper.solanaAddress()
+            const solanaAddress = web3State.solana.solanaAddress
               const isConnected = await solanaHelper.isConnect()
               if (!isConnected || !solanaAddress) {
                 setSelectWalletDialogVisible(true)
@@ -584,7 +586,7 @@ export default {
               toChainID === CHAIN_ID.solana ||
               toChainID === CHAIN_ID.solana_test
             ) {
-              const solanaAddress = solanaHelper.solanaAddress()
+              const solanaAddress = web3State.solana.solanaAddress
               const isConnected = await solanaHelper.isConnect()
               if (!isConnected || !solanaAddress) {
                 setSelectWalletDialogVisible(true)
@@ -729,7 +731,7 @@ export default {
       let isConnected = false
 
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        toAddress = solanaHelper.solanaAddress()
+        toAddress = web3State.solana.solanaAddress
         isConnected = await solanaHelper.isConnect()
 
         if (!toAddress || !isConnected) {
@@ -1390,7 +1392,7 @@ export default {
           toChainID === CHAIN_ID.solana ||
           toChainID === CHAIN_ID.solana_test
         ) {
-          const solanaAddress = solanaHelper.solanaAddress()
+          const solanaAddress = web3State.solana.solanaAddress
           const isConnected = await solanaHelper.isConnect()
           if (!isConnected || !solanaAddress) {
             setSelectWalletDialogVisible(true)
@@ -1603,7 +1605,7 @@ export default {
         transferDataState
 
       const isConnected = await solanaHelper.isConnect()
-      let from = solanaHelper.solanaAddress()
+      let from = web3State.solana.solanaAddress
 
       if (!isConnected || !from) {
         setSelectWalletDialogVisible(true)
@@ -1754,7 +1756,7 @@ export default {
       }
 
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = solanaHelper.solanaAddress()
+        const solanaAddress = web3State.solana.solanaAddress
         const isConnect = solanaHelper.isConnect()
 
         targetAddress = solanaAddress
@@ -1839,6 +1841,8 @@ export default {
         .multipliedBy(new BigNumber(10 ** selectMakerConfig.fromChain.decimals))
       const rAmountValue = rAmount.toFixed()
 
+      console.log("rAmountValue", rAmountValue)
+
       const evmAddress =
         compatibleGlobalWalletConf.value.walletPayload.walletAddress
 
@@ -1865,7 +1869,7 @@ export default {
       }
 
       if (toChainID === CHAIN_ID.solana || toChainID === CHAIN_ID.solana_test) {
-        const solanaAddress = solanaHelper.solanaAddress()
+        const solanaAddress = web3State.solana.solanaAddress
         const isConnect = solanaHelper.isConnect()
 
         targetAddress = solanaAddress
@@ -1979,7 +1983,7 @@ export default {
         ) {
           const isConnectSolana = await solanaHelper.isConnect()
           if (isConnectSolana) {
-            to = solanaHelper.solanaAddress()
+            to = web3State.solana.solanaAddress
             if (!to) {
               util.showMessage('Solana Address Error: ' + to, 'error')
               this.transferLoading = false
@@ -2317,7 +2321,7 @@ export default {
       let toAddress = ''
 
       if (toChainID === CHAIN_ID.solana) {
-        toAddress = solanaHelper.solanaAddress()
+        toAddress = web3State.solana.solanaAddress
         const isConnected = await solanaHelper.isConnect()
 
         if (!toAddress || !isConnected) {
@@ -2540,8 +2544,7 @@ export default {
         }
 
         if (
-          fromChainID === CHAIN_ID.solana ||
-          fromChainID === CHAIN_ID.solana_test
+          orbiterHelper.isSolanaChain({chainId: fromChainID})
         ) {
           this.solanaTransfer(tValue.tAmount)
           return

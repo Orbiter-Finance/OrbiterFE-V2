@@ -239,7 +239,7 @@ export default {
     },
     solanaAddress() {
       const solanaAddress =
-        web3State.solana.solanaAddress || solanaHelper.solanaAddress()
+        web3State.solana.solanaAddress
       return solanaAddress
     },
     tronAddress() {
@@ -493,7 +493,7 @@ export default {
       // this.loading = true
       try {
         const tonAddress = tonHelper.account()
-        const solanaAddress = solanaHelper.solanaAddress()
+        const solanaAddress = web3State.solana.solanaAddress
         const symbol = this.symbol
         const address = [
           {
@@ -517,7 +517,6 @@ export default {
             type: 'EVM',
           },
         ].filter((item) => !!item.address)
-        // console.log('address', symbol, address)
         const respone = await fetch(
           `${process.env.VUE_APP_OPEN_URL}/sdk/chains/balance`,
           {

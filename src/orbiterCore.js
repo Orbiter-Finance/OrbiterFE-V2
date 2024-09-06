@@ -75,7 +75,6 @@ function getGasFee(userAmount, selectMakerConfig) {
       }
     })
   }
-  console.log('gasFee', userAmount, gasFee)
 
   return gasFee
 }
