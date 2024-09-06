@@ -3272,7 +3272,13 @@
                 "symbol": "USDC",
                 "decimals": 6,
                 "address": "TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8"
-            }
+            },
+            {
+               "name": "USDT",
+               "symbol": "USDT",
+               "decimals": 6,
+               "address": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+           }
         ],
         "infoURL": "https://tronscan.org",
         "contracts": [
