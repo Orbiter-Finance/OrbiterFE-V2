@@ -51,9 +51,14 @@ export default {
           image: "rule.png",
           text: [
             '<span class="orbiter_global_prizes_rule_tag">Note:</span>',
+            '<span class="orbiter_global_prizes_rule_tag">In Tiers 1~5:</span>',
             '- The prize pool will be unlocked when the amount of transactions (TX) ≥ 2,500;',
             '- TOP 1 to 8 users, up to 95% bridging fees (except for gas fees) will be rebated.',
             '- TOP 9 to 20 users, up to 50% of bridging fees (except for gas fees) will be rebated.',
+            '<span class="orbiter_global_prizes_rule_tag">In Extended session: </span>',
+            '- TOP 1 to 3 users, 98% bridging fees (except for gas fees) will be rebated.',
+            '- TOP 4 to 8 users, 95% bridging fees (except for gas fees) will be rebated.',
+            '- TOP 9 to 20 users, 50% of bridging fees (except for gas fees) will be rebated.',
           ],
         },
         {

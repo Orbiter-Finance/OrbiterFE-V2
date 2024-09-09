@@ -15,7 +15,7 @@
         </div>
         <div class="prizes-ratio-item-group">
           <div class="des">{{ item.condition }}</div>
-          <div v-if="item.isComment">Up to 95% bridging fee rebate</div>
+          <div v-if="item.isComment">Up to 98% bridging fee rebate</div>
         </div>
       </div>
     </div>
